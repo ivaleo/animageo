@@ -1,0 +1,842 @@
+{
+  "format": "animageo-board/v1",
+  "boundingbox": [
+    -14.629969,
+    7.856526,
+    13.442498,
+    -7.934236
+  ],
+  "size": [
+    572,
+    827
+  ],
+  "chrome": {
+    "axis": false,
+    "grid": false,
+    "background": "#FFFFFF",
+    "axesColor": "#1C1C1F",
+    "gridColor": "#B4B3BA",
+    "showXAxis": false,
+    "showYAxis": false,
+    "keepAspectRatio": true,
+    "gridBold": false,
+    "gridStep": null,
+    "xShowNumbers": true,
+    "yShowNumbers": true,
+    "xTickDistance": null,
+    "yTickDistance": null
+  },
+  "options": {
+    "mathjax": true,
+    "showNavigation": true,
+    "jsxgraphVersion": "1.10.1",
+    "divId": "agbox"
+  },
+  "inputs": [
+    {
+      "name": "A",
+      "kind": "point",
+      "x": -4.0,
+      "y": -1.0
+    },
+    {
+      "name": "B",
+      "kind": "point",
+      "x": 0.41824802660643584,
+      "y": 3.503087683033848
+    },
+    {
+      "name": "C",
+      "kind": "point",
+      "x": 3.0,
+      "y": -1.0
+    },
+    {
+      "name": "G",
+      "kind": "glider",
+      "x": 2.57084732441227,
+      "y": 1.7584095803694244,
+      "on": "f",
+      "t": 3.051079508423972
+    }
+  ],
+  "elements": [
+    {
+      "name": "A",
+      "role": "input",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        -4,
+        -1
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#1565C0",
+        "strokeWidth": 1.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(A\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#1565C0",
+          "offset": [
+            -15.0,
+            -39.0
+          ]
+        },
+        "size": 5,
+        "face": "o"
+      },
+      "detail": "free point"
+    },
+    {
+      "name": "B",
+      "role": "input",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        0.4182,
+        3.5031
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#1565C0",
+        "strokeWidth": 1.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(B\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#1565C0",
+          "offset": [
+            -10.0,
+            7.0
+          ]
+        },
+        "size": 5,
+        "face": "o"
+      },
+      "detail": "free point"
+    },
+    {
+      "name": "C",
+      "role": "input",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        3,
+        -1
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#1565C0",
+        "strokeWidth": 1.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(C\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#1565C0",
+          "offset": [
+            3.0,
+            -31.0
+          ]
+        },
+        "size": 5,
+        "face": "o"
+      },
+      "detail": "free point"
+    },
+    {
+      "name": "t1",
+      "role": "live",
+      "kind": "Polygon",
+      "engine": "polygon",
+      "parents": [
+        {
+          "ref": "A"
+        },
+        {
+          "ref": "B"
+        },
+        {
+          "ref": "C"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#1565C0",
+        "fillColor": "#1565C0",
+        "strokeWidth": 2.5,
+        "strokeOpacity": 0.8,
+        "fillOpacity": 0.1,
+        "layer": 3,
+        "withLabel": false
+      },
+      "detail": "Polygon",
+      "tracksDrag": true
+    },
+    {
+      "name": "c",
+      "role": "live",
+      "kind": "line",
+      "form": "bind",
+      "bind": "S[\"t1\"].borders[0]",
+      "detail": "Polygon edge",
+      "tracksDrag": true
+    },
+    {
+      "form": "stmt",
+      "js": "S[\"c\"].setAttribute({strokeColor: \"#1565C0\", strokeWidth: 2.5, strokeOpacity: 0.8});"
+    },
+    {
+      "name": "a",
+      "role": "live",
+      "kind": "line",
+      "form": "bind",
+      "bind": "S[\"t1\"].borders[1]",
+      "detail": "Polygon edge",
+      "tracksDrag": true
+    },
+    {
+      "form": "stmt",
+      "js": "S[\"a\"].setAttribute({strokeColor: \"#1565C0\", strokeWidth: 2.5, strokeOpacity: 0.8});"
+    },
+    {
+      "name": "b",
+      "role": "live",
+      "kind": "line",
+      "form": "bind",
+      "bind": "S[\"t1\"].borders[2]",
+      "detail": "Polygon edge",
+      "tracksDrag": true
+    },
+    {
+      "form": "stmt",
+      "js": "S[\"b\"].setAttribute({strokeColor: \"#1565C0\", strokeWidth: 2.5, strokeOpacity: 0.8});"
+    },
+    {
+      "name": "M",
+      "role": "live",
+      "kind": "Point",
+      "engine": "midpoint",
+      "parents": [
+        {
+          "ref": "c"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#6E6D73",
+        "strokeWidth": 1.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(M\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#6E6D73",
+          "offset": [
+            -27.0,
+            2.0
+          ]
+        },
+        "size": 4,
+        "face": "o"
+      },
+      "detail": "Midpoint",
+      "tracksDrag": true
+    },
+    {
+      "name": "f",
+      "role": "live",
+      "kind": "Line",
+      "engine": "bisector",
+      "parents": [
+        {
+          "ref": "C"
+        },
+        {
+          "ref": "A"
+        },
+        {
+          "ref": "B"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "strokeColor": "#6E6D73",
+        "fillColor": "#FFFFFF",
+        "strokeWidth": 2.5,
+        "strokeOpacity": 0.8,
+        "fillOpacity": 1.0,
+        "layer": 6,
+        "withLabel": false
+      },
+      "detail": "AngularBisector",
+      "tracksDrag": true
+    },
+    {
+      "name": "g",
+      "role": "live",
+      "kind": "Line",
+      "engine": "perpendicular",
+      "parents": [
+        {
+          "ref": "b"
+        },
+        {
+          "ref": "B"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "strokeColor": "#6E6D73",
+        "fillColor": "#FFFFFF",
+        "strokeWidth": 2.5,
+        "strokeOpacity": 0.8,
+        "fillOpacity": 1.0,
+        "layer": 6,
+        "withLabel": false
+      },
+      "detail": "OrthogonalLine",
+      "tracksDrag": true
+    },
+    {
+      "name": "L",
+      "role": "live",
+      "kind": "Point",
+      "engine": "intersection",
+      "parents": [
+        {
+          "ref": "f"
+        },
+        {
+          "ref": "a"
+        },
+        0
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#6E6D73",
+        "strokeWidth": 1.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(L\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#6E6D73",
+          "offset": [
+            -4.0,
+            12.0
+          ]
+        },
+        "size": 4,
+        "face": "o"
+      },
+      "detail": "intersect",
+      "tracksDrag": true
+    },
+    {
+      "name": "H",
+      "role": "live",
+      "kind": "Point",
+      "engine": "intersection",
+      "parents": [
+        {
+          "ref": "g"
+        },
+        {
+          "ref": "b"
+        },
+        0
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#6E6D73",
+        "strokeWidth": 1.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(H\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#6E6D73",
+          "offset": [
+            -1.0,
+            -33.0
+          ]
+        },
+        "size": 4,
+        "face": "o"
+      },
+      "detail": "intersect",
+      "tracksDrag": true
+    },
+    {
+      "name": "G",
+      "role": "input",
+      "kind": "glider",
+      "engine": "glider",
+      "parents": [
+        2.5708,
+        1.7584,
+        {
+          "ref": "f"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "strokeColor": "#000000",
+        "fillColor": "#1565C0",
+        "strokeWidth": 1.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(G\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#1565C0"
+        },
+        "size": 5,
+        "face": "o"
+      },
+      "detail": "glider"
+    },
+    {
+      "name": "h",
+      "role": "live",
+      "kind": "Segment",
+      "engine": "segment",
+      "parents": [
+        {
+          "ref": "A"
+        },
+        {
+          "ref": "G"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#6E6D73",
+        "fillColor": "#FFFFFF",
+        "strokeWidth": 2.5,
+        "strokeOpacity": 0.8,
+        "fillOpacity": 1.0,
+        "layer": 7,
+        "withLabel": false
+      },
+      "detail": "Segment",
+      "tracksDrag": true
+    },
+    {
+      "name": "i",
+      "role": "live",
+      "kind": "Segment",
+      "engine": "segment",
+      "parents": [
+        {
+          "ref": "B"
+        },
+        {
+          "ref": "H"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#6E6D73",
+        "fillColor": "#FFFFFF",
+        "strokeWidth": 2.5,
+        "strokeOpacity": 0.8,
+        "fillOpacity": 1.0,
+        "layer": 7,
+        "withLabel": false
+      },
+      "detail": "Segment",
+      "tracksDrag": true
+    },
+    {
+      "name": "α",
+      "role": "live",
+      "kind": "Angle",
+      "engine": "nonreflexangle",
+      "parents": [
+        {
+          "ref": "A"
+        },
+        {
+          "ref": "H"
+        },
+        {
+          "ref": "B"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 2.0,
+        "strokeOpacity": 0.6,
+        "fillOpacity": 0.1,
+        "layer": 5,
+        "withLabel": false,
+        "radius": 0.5728208882297874
+      },
+      "detail": "Angle",
+      "tracksDrag": true
+    },
+    {
+      "name": "j",
+      "role": "live",
+      "kind": "Segment",
+      "engine": "segment",
+      "parents": [
+        {
+          "ref": "A"
+        },
+        {
+          "ref": "M"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#6E6D73",
+        "fillColor": "#FFFFFF",
+        "strokeWidth": 2.5,
+        "strokeOpacity": 0.8,
+        "fillOpacity": 1.0,
+        "layer": 7,
+        "withLabel": false
+      },
+      "detail": "Segment",
+      "tracksDrag": true
+    },
+    {
+      "name": "__tick_j_0_p1",
+      "role": "aux",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        {
+          "fn": "function(){var dx=S[\"M\"].X()-S[\"A\"].X(),dy=S[\"M\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"M\"].X())/2,my=(S[\"A\"].Y()+S[\"M\"].Y())/2;return (mx+tx*(0))+nx*0.085923;}"
+        },
+        {
+          "fn": "function(){var dx=S[\"M\"].X()-S[\"A\"].X(),dy=S[\"M\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"M\"].X())/2,my=(S[\"A\"].Y()+S[\"M\"].Y())/2;return (my+ty*(0))+ny*0.085923;}"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "fixed": true,
+        "withLabel": false,
+        "name": "",
+        "showInfobox": false
+      }
+    },
+    {
+      "name": "__tick_j_0_p2",
+      "role": "aux",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        {
+          "fn": "function(){var dx=S[\"M\"].X()-S[\"A\"].X(),dy=S[\"M\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"M\"].X())/2,my=(S[\"A\"].Y()+S[\"M\"].Y())/2;return (mx+tx*(0))-nx*0.085923;}"
+        },
+        {
+          "fn": "function(){var dx=S[\"M\"].X()-S[\"A\"].X(),dy=S[\"M\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"M\"].X())/2,my=(S[\"A\"].Y()+S[\"M\"].Y())/2;return (my+ty*(0))-ny*0.085923;}"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "fixed": true,
+        "withLabel": false,
+        "name": "",
+        "showInfobox": false
+      }
+    },
+    {
+      "name": "__tick_j_0",
+      "role": "live",
+      "kind": "segment",
+      "engine": "segment",
+      "parents": [
+        {
+          "ref": "__tick_j_0_p1"
+        },
+        {
+          "ref": "__tick_j_0_p2"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#6E6D73",
+        "highlight": false,
+        "fixed": true,
+        "withLabel": false,
+        "layer": 8,
+        "strokeWidth": 1.5
+      },
+      "detail": "segment tick",
+      "tracksDrag": true
+    },
+    {
+      "name": "k",
+      "role": "live",
+      "kind": "Segment",
+      "engine": "segment",
+      "parents": [
+        {
+          "ref": "M"
+        },
+        {
+          "ref": "B"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#6E6D73",
+        "fillColor": "#FFFFFF",
+        "strokeWidth": 2.5,
+        "strokeOpacity": 0.8,
+        "fillOpacity": 1.0,
+        "layer": 7,
+        "withLabel": false
+      },
+      "detail": "Segment",
+      "tracksDrag": true
+    },
+    {
+      "name": "__tick_k_0_p1",
+      "role": "aux",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"M\"].X(),dy=S[\"B\"].Y()-S[\"M\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"M\"].X()+S[\"B\"].X())/2,my=(S[\"M\"].Y()+S[\"B\"].Y())/2;return (mx+tx*(0))+nx*0.085923;}"
+        },
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"M\"].X(),dy=S[\"B\"].Y()-S[\"M\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"M\"].X()+S[\"B\"].X())/2,my=(S[\"M\"].Y()+S[\"B\"].Y())/2;return (my+ty*(0))+ny*0.085923;}"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "fixed": true,
+        "withLabel": false,
+        "name": "",
+        "showInfobox": false
+      }
+    },
+    {
+      "name": "__tick_k_0_p2",
+      "role": "aux",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"M\"].X(),dy=S[\"B\"].Y()-S[\"M\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"M\"].X()+S[\"B\"].X())/2,my=(S[\"M\"].Y()+S[\"B\"].Y())/2;return (mx+tx*(0))-nx*0.085923;}"
+        },
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"M\"].X(),dy=S[\"B\"].Y()-S[\"M\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"M\"].X()+S[\"B\"].X())/2,my=(S[\"M\"].Y()+S[\"B\"].Y())/2;return (my+ty*(0))-ny*0.085923;}"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "fixed": true,
+        "withLabel": false,
+        "name": "",
+        "showInfobox": false
+      }
+    },
+    {
+      "name": "__tick_k_0",
+      "role": "live",
+      "kind": "segment",
+      "engine": "segment",
+      "parents": [
+        {
+          "ref": "__tick_k_0_p1"
+        },
+        {
+          "ref": "__tick_k_0_p2"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#6E6D73",
+        "highlight": false,
+        "fixed": true,
+        "withLabel": false,
+        "layer": 8,
+        "strokeWidth": 1.5
+      },
+      "detail": "segment tick",
+      "tracksDrag": true
+    },
+    {
+      "name": "β",
+      "role": "live",
+      "kind": "Angle",
+      "engine": "nonreflexangle",
+      "parents": [
+        {
+          "ref": "C"
+        },
+        {
+          "ref": "A"
+        },
+        {
+          "ref": "L"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 2.0,
+        "strokeOpacity": 0.6,
+        "fillOpacity": 0.1,
+        "layer": 5,
+        "withLabel": false,
+        "radius": 0.6682910362680853
+      },
+      "detail": "Angle",
+      "tracksDrag": true
+    },
+    {
+      "name": "γ",
+      "role": "live",
+      "kind": "Angle",
+      "engine": "nonreflexangle",
+      "parents": [
+        {
+          "ref": "L"
+        },
+        {
+          "ref": "A"
+        },
+        {
+          "ref": "B"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 2.0,
+        "strokeOpacity": 0.6,
+        "fillOpacity": 0.1,
+        "layer": 5,
+        "withLabel": false,
+        "radius": 0.5728208882297874
+      },
+      "detail": "Angle",
+      "tracksDrag": true
+    }
+  ],
+  "coverage": [
+    {
+      "name": "A",
+      "kind": "input",
+      "detail": "free point"
+    },
+    {
+      "name": "B",
+      "kind": "input",
+      "detail": "free point"
+    },
+    {
+      "name": "C",
+      "kind": "input",
+      "detail": "free point"
+    },
+    {
+      "name": "t1",
+      "kind": "live",
+      "detail": "Polygon"
+    },
+    {
+      "name": "c",
+      "kind": "live",
+      "detail": "Polygon edge"
+    },
+    {
+      "name": "a",
+      "kind": "live",
+      "detail": "Polygon edge"
+    },
+    {
+      "name": "b",
+      "kind": "live",
+      "detail": "Polygon edge"
+    },
+    {
+      "name": "M",
+      "kind": "live",
+      "detail": "Midpoint"
+    },
+    {
+      "name": "f",
+      "kind": "live",
+      "detail": "AngularBisector"
+    },
+    {
+      "name": "g",
+      "kind": "live",
+      "detail": "OrthogonalLine"
+    },
+    {
+      "name": "L",
+      "kind": "live",
+      "detail": "intersect"
+    },
+    {
+      "name": "H",
+      "kind": "live",
+      "detail": "intersect"
+    },
+    {
+      "name": "G",
+      "kind": "live",
+      "detail": "glider"
+    },
+    {
+      "name": "h",
+      "kind": "live",
+      "detail": "Segment"
+    },
+    {
+      "name": "i",
+      "kind": "live",
+      "detail": "Segment"
+    },
+    {
+      "name": "α",
+      "kind": "live",
+      "detail": "Angle"
+    },
+    {
+      "name": "j",
+      "kind": "live",
+      "detail": "Segment"
+    },
+    {
+      "name": "__tick_j_0",
+      "kind": "live",
+      "detail": "segment tick"
+    },
+    {
+      "name": "k",
+      "kind": "live",
+      "detail": "Segment"
+    },
+    {
+      "name": "__tick_k_0",
+      "kind": "live",
+      "detail": "segment tick"
+    },
+    {
+      "name": "β",
+      "kind": "live",
+      "detail": "Angle"
+    },
+    {
+      "name": "γ",
+      "kind": "live",
+      "detail": "Angle"
+    }
+  ]
+}

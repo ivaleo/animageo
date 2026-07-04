@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>&lt;animageo-board&gt; demo</title>
+  <style>
+    body { font: 14px system-ui, sans-serif; margin: 2rem; max-width: 760px; }
+    animageo-board { display: block; width: 640px; height: 480px; border: 1px solid #ddd; }
+    #log { margin-top: 1rem; padding: .5rem; background: #f6f6f6; border-radius: 6px;
+           font-family: ui-monospace, monospace; white-space: pre-wrap; min-height: 3rem; }
+    button { margin-right: .5rem; }
+  </style>
+</head>
+<body>
+  <h1>&lt;animageo-board&gt; demo</h1>
+  <p>Drag the free points / glider. The state of the construction is reported below
+     (the same signals an app would consume). Serve this folder over HTTP:
+     <code>cd web &amp;&amp; python3 -m http.server 8000</code>, then open
+     <code>/web-component/demo.html</code>.</p>
+
+  <animageo-board id="board"></animageo-board>
+
+  <p>
+    <button id="reset">reset</button>
+    <button id="get">log getState()</button>
+  </p>
+  <div id="log">…</div>
+
+  <!-- The component auto-loads JSXGraph from a CDN if no JXG global exists. -->
+  <script type="module">
+    import './src/animageo-board.js';
+
+    const el = document.getElementById('board');
+    const log = document.getElementById('log');
+    const show = (label, obj) => { log.textContent = label + '\n' + JSON.stringify(obj, null, 2); };
+
+    // A real spec produced by the Python exporter (committed test fixture).
+    el.spec = await fetch('../runtime/test/fixtures/ex_general.board.json').then((r) => r.json());
+
+    el.addEventListener('animageo:ready',  (e) => show('ready',  e.detail.state));
+    el.addEventListener('animageo:change', (e) => show('change ' + e.detail.name, e.detail.state));
+    el.addEventListener('animageo:commit', (e) => show('commit ' + e.detail.name, e.detail.value));
+    el.addEventListener('animageo:error',  (e) => show('error', e.detail));
+
+    document.getElementById('reset').onclick = () => el.reset();
+    document.getElementById('get').onclick = () => show('getState()', el.getState());
+  </script>
+</body>
+</html>

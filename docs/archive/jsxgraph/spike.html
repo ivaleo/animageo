@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--
+  AnimaGeo — JSXGraph export Phase 0 spike (self-contained HTML reference).
+
+  Open in a browser: drag A / B, drag the glider P around circle c, move the
+  slider r (circle k follows). Labels render via MathJax. This is the target
+  shape of the Phase 1 `output="html"` export — assets from CDN, one board.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AnimaGeo · JSXGraph spike</title>
+
+  <!-- JSXGraph (pinned) -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.1/distrib/jsxgraph.css" />
+
+  <!-- MathJax 3 (configure before loading) -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; }
+    #agbox { width: 640px; height: 533px; border: 1px solid #ddd; }
+    p.hint { color: #555; max-width: 640px; }
+  </style>
+</head>
+<body>
+  <h1>AnimaGeo · JSXGraph spike</h1>
+  <p class="hint">
+    Drag <b>A</b> / <b>B</b>, drag <b>P</b> along the circle, move slider
+    <b>r</b>. Everything dependent recomputes live in the browser.
+  </p>
+
+  <div id="agbox"></div>
+
+  <!-- JSXGraph core, then the board script -->
+  <script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.1/distrib/jsxgraphcore.js"></script>
+  <script src="spike.js"></script>
+</body>
+</html>

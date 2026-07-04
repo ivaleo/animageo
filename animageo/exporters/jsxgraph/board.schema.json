@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://animageo.dev/schema/animageo-board-v1.json",
+  "title": "AnimaGeo board spec (animageo-board/v1)",
+  "description": "Declarative, eval-free description of an interactive geometry board, produced by AnimaGeoScene.exportJSXGraph(output=\"spec\"). Consumed by the framework-agnostic JS runtime / Web Component.",
+  "type": "object",
+  "required": ["format", "boundingbox", "size", "chrome", "inputs", "elements"],
+  "properties": {
+    "format": { "const": "animageo-board/v1" },
+    "boundingbox": {
+      "description": "[left, top, right, bottom] in math units.",
+      "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4
+    },
+    "size": {
+      "description": "[width, height] of the container in pixels.",
+      "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2
+    },
+    "ptUnitGgb": {
+      "description": "GeoGebra px-per-unit the label offsets were authored at. A live board rendering the bbox at a different px-per-unit can rescale label offsets (offset_math = offset_px / ptUnitGgb) to match the static export. May be null when unknown.",
+      "type": ["number", "null"]
+    },
+    "ptUnitExport": {
+      "description": "Export px-per-unit of the static frame. A live board can reproduce the absolute pixel size of pixel-sized decorations (e.g. angle arcs) by dividing the user-unit value by this and multiplying back by the live px-per-unit. May be null when unknown.",
+      "type": ["number", "null"]
+    },
+    "chrome": { "$ref": "#/$defs/chrome" },
+    "options": {
+      "type": "object",
+      "properties": {
+        "mathjax": { "type": "boolean" },
+        "showNavigation": { "type": "boolean" },
+        "jsxgraphVersion": { "type": "string" },
+        "divId": { "type": "string" }
+      }
+    },
+    "inputs": {
+      "description": "Interactive inputs — the unit of state and of change/commit signals.",
+      "type": "array", "items": { "$ref": "#/$defs/input" }
+    },
+    "elements": {
+      "description": "All board entries in build (topological) order.",
+      "type": "array", "items": { "$ref": "#/$defs/element" }
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "kind", "detail"],
+        "properties": {
+          "name": { "type": "string" },
+          "kind": { "enum": ["input", "live", "static", "skip"] },
+          "detail": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "chrome": {
+      "type": "object",
+      "properties": {
+        "axis": { "type": "boolean" },
+        "grid": { "type": "boolean" },
+        "background": { "type": ["string", "null"] },
+        "axesColor": { "type": ["string", "null"] },
+        "gridColor": { "type": ["string", "null"] },
+        "showXAxis": { "type": "boolean" },
+        "showYAxis": { "type": "boolean" },
+        "keepAspectRatio": { "type": "boolean" },
+        "gridBold": { "type": "boolean" },
+        "gridStep": { "type": ["array", "null"], "items": { "type": "number" } },
+        "xShowNumbers": { "type": "boolean" },
+        "yShowNumbers": { "type": "boolean" },
+        "xTickDistance": { "type": ["number", "null"] },
+        "yTickDistance": { "type": ["number", "null"] }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["name", "kind"],
+      "properties": {
+        "name": { "type": "string" },
+        "kind": { "enum": ["point", "number", "angle", "boolean", "glider"] },
+        "value": {},
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "on": { "description": "glider: parent curve name", "type": "string" },
+        "t": { "description": "glider: parameter (informational)", "type": "number" },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "step": { "type": "number" }
+      }
+    },
+    "element": {
+      "type": "object",
+      "allOf": [
+        {
+          "if": { "properties": { "form": { "const": "stmt" } }, "required": ["form"] },
+          "then": { "required": ["js"] },
+          "else": { "required": ["name", "role"] }
+        }
+      ],
+      "properties": {
+        "name": { "type": "string" },
+        "form": { "enum": ["create", "bind", "stmt"], "default": "create" },
+        "role": { "enum": ["input", "live", "static", "skip", "aux"] },
+        "kind": { "description": "AnimaGeo semantic kind.", "type": "string" },
+        "engine": { "description": "Engine creator (form=create).", "type": "string" },
+        "parents": {
+          "description": "Structured parents: {\"ref\":name} | number | [x,y] | [[xs],[ys]] | string | {\"fn\":body} | {\"js\":expr}.",
+          "type": "array"
+        },
+        "attrs": { "type": "object" },
+        "bind": { "description": "form=bind: JS expression assigned to S[name].", "type": "string" },
+        "js": { "description": "form=stmt: verbatim JS statement.", "type": "string" },
+        "detail": { "type": "string" },
+        "tracksDrag": {
+          "description": "true=live; false=frozen but has a draggable ancestor (will desync); omitted otherwise.",
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

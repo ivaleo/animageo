@@ -1,0 +1,57 @@
+{
+    "name": "pandora",
+    "version": 0.1,
+    "presets": {
+        "color": {
+            "main": "#2581b5",
+            "light": "#bef3fc",
+            "accent": "#ef60ab",
+            "accent_light": "#ffd2ee",
+            "aux": "#000000",
+            "black": "#000000"
+        },
+        "point_size": {
+            "main": 7,
+            "bold": 9,
+            "aux": 5
+        },
+        "line_width": {
+            "main": 2,
+            "bold": 2.5,
+            "aux": 1.5
+        },
+        "angle_radius": { "main": 20, "shift": 3, "right": 14 },
+        "tick": { "main": { "tick_width_px": 1, "tick_length_px": 12, "tick_shift_px": 4 } },
+        "arrow": { "main": { "arrow_width_px": 7.5, "arrow_length_px": 10.5 } },
+        "font_size": { "main": 17 }
+    },
+    "defaults": {
+        "angle": { "stroke_width_px": 1 }
+    },
+    "rendering": {
+        "line_cap": "round",
+        "right_angle_joint": "miter",
+        "polygon_boundary_layer": "top",
+        "points_display": "only_labels"
+    },
+    "import": {
+        "colors": {
+            "#1565c0": "color.main",
+            "#1565c0 0.1": "color.main 0",
+            "#d32f2f": "color.accent",
+            "#d32f2f 0.1": "color.accent_light 1",
+            "#616161": "color.aux",
+            "#000000 0.6": "color.main",
+            "#000000 0.1": "color.light 1",
+            "#1565c0 0": "color.white 1",
+            "#d32f2f 0": "color.white 1"
+        },
+        "point_size": {
+            "5": "point_size.main"
+        },
+        "line_width": {
+            "5": "line_width.main",
+            "3": "line_width.aux"
+        }
+    }
+}

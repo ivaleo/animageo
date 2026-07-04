@@ -1,0 +1,23 @@
+{
+  "name": "@animageo/runtime",
+  "version": "0.1.0",
+  "description": "Framework-agnostic runtime for AnimaGeo interactive geometry boards: builds a live JSXGraph board from an animageo-board/v1 spec and exposes a signals/actions handle.",
+  "type": "module",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src", "README.md"],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": ["geometry", "jsxgraph", "interactive", "animageo", "svg"],
+  "license": "MIT",
+  "peerDependencies": {
+    "jsxgraph": ">=1.10.0"
+  },
+  "peerDependenciesMeta": {
+    "jsxgraph": { "optional": true }
+  }
+}

@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "animageo"
+version = "1.5.0"
+authors = [
+    {name = "Leonid Ivanov", email = "leo.ivadev@gmail.com"}
+]
+description = "Convert GeoGebra constructions into high-quality SVG images and MP4 animations using manim"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = "Apache-2.0"
+keywords = ["geometry", "dynamic", "geogebra", "manim", "animation", "drawing", "svg", "mp4", "python"]
+classifiers = [
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Multimedia :: Graphics"
+]
+# Minimum 3.10 — uses PEP 604 union syntax (``str | Path``) and PEP 585
+# generic built-ins (``dict[str, X]``). No newer features used.
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26.0,<3.0",
+    "manim>=0.20.1,<0.22",
+    "pycairo>=1.0.0",
+    "sympy>=1.12",
+    "scipy>=1.11"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+markers = [
+    "manim: requires the optional Manim render dependency",
+]
+
+[project.urls]
+Homepage = "https://animageo.ru/"
+
+[project.scripts]
+animageo = "animageo.__main__:main"
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.0.0",
+    "twine>=4.0.0",
+    "setuptools>=65.0.0",
+    "pytest>=7.0.0"
+]
+
+[tool.setuptools.packages.find]
+include = ["animageo*"]
+exclude = ["tests*", "docs*", "examples*", "build*", "dist*"]
+
+[tool.setuptools.package-data]
+animageo = [
+    "*.md",
+    "*.pyi",
+    "style/builtin.json",
+    "style/*.pyi",
+    "parsers/dsl/*.pyi",
+    "exporters/jsxgraph/board.schema.json"
+]

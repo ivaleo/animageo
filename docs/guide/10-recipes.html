@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §10 · Рецепты</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html" class="current-page">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#uniform">Унификация оформления</a></li>
+        <li><a href="#visual">Визуальные эффекты</a></li>
+        <li><a href="#curves">Кривые</a></li>
+        <li><a href="#export">Экспорт и качество</a></li>
+        <li><a href="#tricks">Хитрости</a></li>
+        <li><a href="#gotchas">Подводные камни</a></li>
+        <li><a href="#troubleshooting-styles">Troubleshooting стилей</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§10 · Рецепты</h1>
+
+<p class="subtitle-main">
+Короткие «как добиться X». Каждый — минимальный код без лишних обвесок.
+Большинство рецептов комбинируются между собой.
+</p>
+
+<h2 id="uniform">Унификация оформления</h2>
+
+<h3>Все подписи одного цвета и размера</h3>
+<pre><code>ImportPolicy(font_size_px=14, label_color='#222222')</code></pre>
+
+<h3>Все точки одного размера</h3>
+<pre><code>ImportPolicy(size_px=3)</code></pre>
+
+<h3>Только три категории толщин</h3>
+<pre><code>ImportPolicy(stroke_width_px='quantize:[0.75, 1.5, 3]')</code></pre>
+
+<h3>Скрыть все подписи</h3>
+<pre><code>{
+  "overlay": {
+    "per_type": {
+      "point":   {"label_visible": false},
+      "segment": {"label_visible": false},
+      "angle":   {"label_visible": false}
+    }
+  }
+}</code></pre>
+
+<h3>Замена палитры одной конструкции</h3>
+<p>Через <code>style/*.json</code>:</p>
+<pre><code>"import": {
+    "colors": {
+        "#1565c0": "color.main",
+        "#1565c0 0.1": "color.light 1",
+        "#d32f2f": "color.accent"
+    }
+}</code></pre>
+<p>Результирующий <code>fill</code>/<code>stroke</code> всегда остаётся hex
+<code>#rrggbb</code>. Opacity меняется только если она явно указана справа
+(например <code>"color.light 1"</code>); иначе текущая прозрачность элемента
+сохраняется.</p>
+<p>Через <code>ImportPolicy</code>:</p>
+<pre><code>ImportPolicy(stroke="remap:{'#1565c0':'#0066cc'}")</code></pre>
+
+<h2 id="visual">Визуальные эффекты</h2>
+
+<h3>Подпись точки в заданной стороне</h3>
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">label-side.py · пробуйте TC, ML, MR, BR в overrides</span>
+<pre><code>A = Point(0, 0)
+
+style(A, label_visible=True)
+A.style.label_anchor = 'BC'
+A.style.label_offset_px = [0, 10]</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/10-recipes-00.svg" alt="Label above point">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<h3>Двойная / тройная дуга равных углов</h3>
+<pre><code>alpha.style['tick_count'] = 2   # двойная
+beta.style['tick_count']  = 2   # тоже двойная → равные</code></pre>
+
+<h3>Wave-штрихи на сегментах</h3>
+<pre><code>a.style['tick_count'] = 2
+a.style['tick_style'] = 'wave'
+a.style['lines_radius'] = 1.5</code></pre>
+
+<h3>Полигон поверх всего</h3>
+<p>Глобально для всех полигонов:</p>
+<pre><code>"rendering": { "polygon_boundary_layer": "top" }</code></pre>
+<p>Для одного полигона:</p>
+<pre><code>p.style['z_index'] = 100</code></pre>
+
+<h3>Затенение (Shade/Restore) для «фокуса»</h3>
+<pre><code>self.playShade(['A', 'B', 'C'])        # вся геометрия серая
+self.playRestore(['A', 'B', 'C'])      # вернуть</code></pre>
+
+<h3>Пунктирная окружность</h3>
+<pre><code>c.style['stroke_dash_ratio'] = 0.5</code></pre>
+
+<h3>Диаграмма «буквы»: только подписи, без точек</h3>
+<pre><code>"rendering": { "points_display": "only_labels" }</code></pre>
+
+<h3>Точка как «кольцо» вместо сплошной</h3>
+<pre><code>A.style['fill'] = '#ffffff'
+A.style['stroke'] = '#000000'
+A.style['stroke_width_px'] = 1.4</code></pre>
+
+<h2 id="curves">Кривые</h2>
+
+<h3>Парабола / эллипс / гипербола одной строкой</h3>
+<pre><code>p = Conic("y = x^2 - 2")                   # PARABOLA
+e = Conic("(x+1)^2/4 + y^2/2 = 1")         # ELLIPSE
+h = Conic("x^2/2 - y^2 = 1")               # HYPERBOLA</code></pre>
+
+<h3>Явная функция и сугар</h3>
+<pre><code>f = Function("y = sin(x) / x")
+# Эквивалент — DSL-сугар:
+f(x) = sin(x) / x</code></pre>
+
+<h3>Ограничить область определения</h3>
+<pre><code># Через If[...] (работает в DSL):
+f(x) = If[-2 <= x <= 2, x^2 - 1]
+
+# Через Python API (domain= kwarg):
+from animageo.geo.lib_function import Function
+f = Function('x**2 - 1', domain=(-2, 2))</code></pre>
+
+<h3>Точка на функции / конике / неявной кривой</h3>
+<pre><code># Intersect диспатчится по парам типов — §3
+line = Line(Point(-3, 0), Point(3, 1))
+P = Intersect(f, line)         # Function ∩ Line
+Q = Intersect(parabola, line)  # Conic ∩ Line</code></pre>
+
+<h3>Неявная кривая (лемниската, фолиум, …)</h3>
+<pre><code>L = ImplicitCurve("(x^2 + y^2)^2 = 4 * (x^2 - y^2)")
+L.style['stroke'] = '#4d87c6'
+L.style['stroke_width_px'] = 2.2</code></pre>
+
+<h2 id="export">Экспорт и качество</h2>
+
+<h3>Pixel-perfect 2× retina</h3>
+<pre><code>scene.loadGGB('x.ggb', style_file='style/default.json', px_size=[1600, 1200])</code></pre>
+<p>Или через флаг в стиле:</p>
+<pre><code>"rendering": { "scale_export": 2 }</code></pre>
+
+<h3>Высокое качество MP4</h3>
+<pre><code>$ manim -qh scene.py MyScene    # 1920×1080, 60 fps
+# px_size задавайте пропорционально:
+self.loadGGB('x.ggb', style_file='...', px_size=[1920, 1080])</code></pre>
+
+<h3>SVG без запуска manim</h3>
+<pre><code>scene = MyScene()
+scene.construct()   # строит сцену и вызывает exportSVG внутри
+# Запускается обычным python3, не manim</code></pre>
+
+<h3>Summary для AI style-generation</h3>
+<pre><code>scene.loadGGB('problem.ggb', style_file='base.json', px_size=[800, 600])
+summary = scene.exportStylePromptSummary('problem.summary.json')
+
+# Если файл не нужен:
+summary = scene.exportStylePromptSummary(include_resolved_style=True)</code></pre>
+<p>Формат <code>animageo-construction-summary/v1</code> хранит имена,
+типы, компактную геометрию, видимость, <code>ggb_style</code> и diagnostics
+без сырого XML. Подробно — <a href="../construction_summary.md">docs/construction_summary.md</a>.</p>
+
+<h3>Одна и та же сцена в разных стилях</h3>
+<pre><code>for style in ['default', 'book_blue', 'book_red', 'pandora']:
+    scene = MyScene()
+    scene.applyStyle(style_file=f'style/{style}.json', px_size=[820, 520])
+    scene.exportSVG(f'{style}.svg')</code></pre>
+
+<h2 id="tricks">Хитрости</h2>
+
+<h3>Горячая замена палитры без re-parse</h3>
+<pre><code>scene.reloadPolicy(ImportPolicy(stroke="remap:{'#1565c0':'#0066cc'}"))</code></pre>
+<p>Не перечитывает <code>.ggb</code> XML — использует кеш <code>elem.ggb_raw</code>.</p>
+
+<h3>Per-name override в стиле</h3>
+<pre><code>"overlay": {
+    "per_name": {
+        "A": { "size_px": 10, "label_color": "#e74c3c" },
+        "B": { "size_px": 10, "label_color": "#e74c3c" }
+    }
+}</code></pre>
+
+<h3>Разное оформление для разных типов</h3>
+<pre><code>"overlay": {
+    "per_type": {
+        "polygon": {"fill_opacity": 0.1},
+        "point":   {"size_px": 7}
+    }
+}</code></pre>
+
+<h3>Сложные TeX-подписи</h3>
+<pre><code>M.style['label_text'] = r'$\frac{a + b}{2}$'
+N.style['label_text'] = r'$\sqrt{x^2 + y^2}$'
+O.style['label_text'] = r'$\angle 60^{\circ}$'</code></pre>
+<p>Можно и Unicode — замены автоматические (§6).</p>
+
+<h3>Блокировка подписи от автораскладки</h3>
+<pre><code>A.style['label_placement_locked'] = True
+A.style['label_offset_px'] = [10, -5]
+# autoPlaceLabels обойдёт A стороной</code></pre>
+
+<h3>Автораскладка с кастомными весами</h3>
+<pre><code>"rendering": {
+    "label_placement": {
+        "enabled":     true,
+        "distance_px": 10,       // дальше от геометрии
+        "w_label":     20,       // сильнее штраф за перекрытие подписей
+        "w_geom":      5         // слабее штраф за пересечение геометрии
+    }
+}</code></pre>
+
+<h3>Просто построить и сохранить один кадр</h3>
+<pre><code># Без автораскладки, без политик — самый короткий hello world
+from animageo.animageo import AnimaGeoScene
+
+class S(AnimaGeoScene):
+    def construct(self):
+        self.applyStyle(style_file='style.json', px_size=[800, 600])
+        self.putCode('A=Point(-2,0); B=Point(2,0); C=Point(0,2); p,a,b,c=Polygon(A,B,C)')
+        self.addAllGeometry(show=True)
+        self.updateAllGeometry()
+        self.exportSVG('tri.svg')
+
+S().construct()</code></pre>
+
+<h2 id="gotchas">Подводные камни</h2>
+
+<div class="callout warn">
+<strong><code>dynamic_angles=true</code> сам ничего не делает.</strong>
+Нужен либо <code>keyframe_snapshots=true</code>, либо
+<code>autoPlaceLabels(dynamic=True)</code>.
+</div>
+
+<div class="callout warn">
+<strong><code>canonicalize_anchor=true</code> ломает snapshot-тесты.</strong>
+Они записали <code>BL</code>/<code>BC</code>/…. По умолчанию <code>false</code>;
+включайте только для плавной анимации.
+</div>
+
+<div class="callout warn">
+<strong><code>arc_size_px</code> — основной радиус дуги.</strong>
+Для расстояния между кратными дугами используйте <code>arc_shift_px</code>;
+для числа дуг / меток равенства — <code>tick_count</code>.
+</div>
+
+<div class="callout warn">
+<strong>Right-mark auto-detect через <code>np.isclose(angle, π/2)</code>.</strong>
+Может ложно срабатывать в районе 89.5–91°. Задавайте явно, если важна
+точность: <code>elem.style['right_angle_marker'] = True</code>.
+</div>
+
+<div class="callout warn">
+<strong><code>elem.ggb_raw</code> пусто у элементов из Python-DSL.</strong>
+<code>ImportPolicy.resolve_overrides_only()</code> получит <code>raw=None</code> — политика
+применится только через литералы и callables.
+</div>
+
+<div class="callout warn">
+<strong><code>stroke_dash_ratio</code> и <code>fill</code> работают у кривых лишь частично.</strong>
+Только <code>Conic(CIRCLE|ELLIPSE)</code> читает <code>fill</code>/<code>fill_opacity</code>;
+<code>stroke_dash_ratio</code> — только у <code>CIRCLE</code>. Parabola, Hyperbola,
+Function и ImplicitCurve рисуются как polyline-VMobject и эти ключи
+игнорируют. См. §7.
+</div>
+
+<div class="callout warn">
+<strong>Автораскладка подписей не знает о кривых.</strong>
+<code>compute_label_layout</code> видит только точки/сегменты/окружности/углы;
+<code>Conic</code>/<code>Function</code>/<code>ImplicitCurve</code> — невидимые
+препятствия. Подпись точки может оказаться «на» кривой. Решение — ручной
+<code>label_offset_px</code> + <code>label_placement_locked=True</code>.
+</div>
+
+<div class="callout note">
+Полный список подводных камней — в <code>docs/gotchas.md</code>.
+</div>
+
+<h2 id="troubleshooting-styles">Troubleshooting стилей</h2>
+
+<p>Самый быстрый способ понять, откуда берётся значение — трассировать
+resolver-цепочку:</p>
+
+<pre><code>from animageo.style.resolver import trace
+source, value = trace(scene, A, 'size_px')
+print(f'size_px = {value} from {source}')   # напр. 'overlay.per_name'</code></pre>
+
+<h3>«Поставил overlay.per_type, но ничего не изменилось»</h3>
+<p>Overlay читается resolver'ом лениво. Если меняете
+<code>scene.style_config.overlay</code> после загрузки — перерисуйте через
+<code>updateAllGeometry()</code> или пересоздайте сцену.</p>
+
+<h3>«ImportPolicy не работает для DSL-элементов»</h3>
+<p>ImportPolicy — GGB-only: он читает <code>elem.ggb_raw</code>, которого у
+DSL-элементов нет. Для DSL используйте <code>overlay</code> или прямые записи в
+<code>elem.style</code>.</p>
+
+<h3>«Моё значение elem.style игнорируется»</h3>
+<p><code>trace()</code> покажет источник. Если он <code>overlay.per_name</code>
+или <code>overlay.per_type</code> — overlay перекрывает запись (overlay
+применяется на этапе <code>addAllGeometry</code>, до пост-настройки). Уберите
+ключ из overlay или пишите в <code>elem.style</code> уже после загрузки.</p>
+
+<h3>«Размер шрифта неправильный при смене px_size»</h3>
+<p>Используйте <code>font_size_px</code> (pixel-invariant), а не старый
+<code>font_size</code> — runtime читает первый через resolver.</p>
+
+<h3>«Угол выглядит иначе после смены холста»</h3>
+<p>Дуги/штрихи углов в пикселях. Узкий угол при
+<code>angle_radius.enabled=false</code> может «схлопнуться» на маленьком холсте —
+включите <code>angle_radius.enabled=true</code> с разумным <code>min_px</code>
+(см. <a href="05-styles.html#overlay">§5 · overlay.angle_radius</a>).</p>
+
+<h3>«Удалил ключ из elem.style — ничего не поменялось»</h3>
+<p><code>del A.style['size_px']</code> убирает явную запись, но overlay/defaults
+всё ещё дают значение. <code>trace()</code> покажет, откуда оно теперь.</p>
+
+<div class="footer-nav">
+<a href="10-web.html">← §10 · Интерактивный веб-экспорт</a>
+<a href="11-reference.html">§12 · Reference →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

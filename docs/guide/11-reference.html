@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §11 · Reference</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html" class="current-page">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#json-style">JSON: style.*</a></li>
+        <li><a href="#json-rendering">JSON: rendering</a></li>
+        <li><a href="#json-label-placement">overlay.label_placement</a></li>
+        <li><a href="#json-angle-radius">overlay.angle_radius</a></li>
+        <li><a href="#json-import">import</a></li>
+        <li><a href="#json-import-policy">import_policy</a></li>
+        <li><a href="#elem-style">elem.style</a></li>
+        <li><a href="#curves-style">Кривые</a></li>
+        <li><a href="#export-dict">scene.style.export</a></li>
+        <li><a href="#scaling-constants">Scaling constants</a></li>
+        <li><a href="#zindex-constants">Z-index</a></li>
+        <li><a href="#geostyle-attrs">GeoStyle attrs</a></li>
+        <li><a href="#api-methods">AnimaGeoScene API</a></li>
+        <li><a href="#export-options">Export options</a></li>
+        <li><a href="#board-spec">animageo-board/v1</a></li>
+        <li><a href="#cli">CLI</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§11 · Reference</h1>
+<p class="subtitle-main">
+Полный справочник ключей и публичного API. Используется как чек-лист при
+настройке стиля и сцены. Для узконаправленных объяснений — ссылки на
+соответствующие главы.
+</p>
+
+<h2 id="json-style">JSON: <code>style.*</code></h2>
+
+<table>
+<thead><tr><th>Путь</th><th>Тип</th><th>Default</th><th>→ GeoStyle attr</th><th>Комментарий</th></tr></thead>
+<tbody>
+<tr><td><code>point_size.main</code></td><td>float</td><td>6</td><td><code>size_px</code></td><td>размер точки, px</td></tr>
+<tr><td><code>point_size.bold</code></td><td>float</td><td>—</td><td>—</td><td>опц. именован., <code>import.point_size</code></td></tr>
+<tr><td><code>point_size.aux</code></td><td>float</td><td>—</td><td>—</td><td>то же</td></tr>
+<tr><td><code>line_width.main</code></td><td>float</td><td>1.5</td><td><code>stroke_width_px</code></td><td>толщина, px</td></tr>
+<tr><td><code>line_width.bold</code> / <code>aux</code></td><td>float</td><td>—</td><td>—</td><td>именованные варианты</td></tr>
+<tr><td><code>defaults.angle.stroke_width_px</code></td><td>float</td><td>0.75</td><td><code>stroke_width_px</code></td><td>толщина дуги, px</td></tr>
+<tr><td><code>defaults.angle.arc_size_px</code></td><td>float</td><td>17</td><td><code>arc_size_px</code></td><td>радиус дуги, px</td></tr>
+<tr><td><code>defaults.angle.arc_shift_px</code></td><td>float</td><td>1.5</td><td><code>arc_shift_px</code></td><td>расстояние между дугами, px</td></tr>
+<tr><td><code>defaults.angle.right_angle_size_px</code></td><td>float</td><td>17</td><td><code>right_angle_size_px</code></td><td>размер метки прямого угла, px</td></tr>
+<tr><td><code>tick.main.tick_width_px</code></td><td>float</td><td>1.5</td><td><code>tick_width_px</code></td><td>толщина штриха, px</td></tr>
+<tr><td><code>tick.main.tick_length_px</code></td><td>float</td><td>9</td><td><code>tick_length_px</code></td><td>длина штриха, px</td></tr>
+<tr><td><code>tick.main.tick_shift_px</code></td><td>float</td><td>2</td><td><code>tick_shift_px</code></td><td>расстояние между штрихами, px</td></tr>
+<tr><td><code>arrow.main.arrow_width_px</code></td><td>float</td><td>7.5</td><td><code>arrow_width_px</code></td><td>ширина наконечника, px</td></tr>
+<tr><td><code>arrow.main.arrow_length_px</code></td><td>float</td><td>11</td><td><code>arrow_length_px</code></td><td>длина наконечника, px</td></tr>
+<tr><td><code>color.main</code></td><td>hex</td><td><code>#000000</code></td><td><code>col</code></td><td>основной цвет</td></tr>
+<tr><td><code>color.light</code></td><td>hex</td><td><code>#cccccc</code></td><td><code>col_light</code></td><td>светлый вариант</td></tr>
+<tr><td><code>color.accent</code></td><td>hex</td><td><code>#d05456</code></td><td><code>col_accent</code></td><td>акцентный</td></tr>
+<tr><td><code>color.accent_light</code></td><td>hex</td><td><code>#f6e0db</code></td><td><code>col_accent_light</code></td><td>светлый акцент</td></tr>
+<tr><td><code>color.black</code>/<code>white</code>/<code>aux</code></td><td>hex</td><td>—</td><td>—</td><td>доп. именованные цвета</td></tr>
+<tr><td><code>font_size.main</code></td><td>float</td><td>14</td><td><code>font_size_px</code></td><td>размер шрифта, px</td></tr>
+</tbody>
+</table>
+
+<h2 id="json-rendering">JSON: <code>rendering</code></h2>
+
+<table>
+<thead><tr><th>Ключ</th><th>Тип</th><th>Default</th><th>Эффект</th></tr></thead>
+<tbody>
+<tr><td><code>line_cap</code></td><td>enum</td><td><code>butt</code></td><td>окончания линий: <code>butt</code> / <code>round</code> / <code>square</code></td></tr>
+<tr><td><code>right_angle_joint</code></td><td>enum</td><td><code>auto</code></td><td><code>auto</code> / <code>bevel</code> / <code>miter</code> / <code>round</code></td></tr>
+<tr><td><code>polygon_boundary_layer</code></td><td>enum</td><td>null</td><td><code>top</code> = контур поверх заливки (<code>z_index=10</code>)</td></tr>
+<tr><td><code>points_display</code></td><td>enum</td><td><code>auto</code></td><td><code>auto</code> / <code>only_labels</code> / <code>only_points</code></td></tr>
+<tr><td><code>label_anchor</code></td><td>enum</td><td><code>BC</code></td><td>сценовый дефолт: <code>TL</code>..<code>BR</code></td></tr>
+<tr><td><code>scale_export</code></td><td>float</td><td>1</td><td>legacy-множитель <code>px_size</code>; для нового экспорта используйте <code>export_size/export_fit</code></td></tr>
+</tbody>
+</table>
+<p><code>overlay.angle_radius</code> и <code>overlay.label_placement</code> — automation-слой,
+а не <code>rendering</code>; см. следующие таблицы.</p>
+
+<h2 id="json-label-placement"><code>overlay.label_placement</code></h2>
+
+<table>
+<thead><tr><th>Ключ</th><th>Тип</th><th>Default</th><th>Эффект</th></tr></thead>
+<tbody>
+<tr><td><code>enabled</code></td><td>bool</td><td>false</td><td>автовызов <code>autoPlaceLabels()</code> в <code>loadGGB</code></td></tr>
+<tr><td><code>distance_px</code></td><td>int</td><td>6</td><td>базовое anchor→центр подписи</td></tr>
+<tr><td><code>padding_px</code></td><td>int</td><td>2</td><td>зазор вокруг bbox при проверке перекрытий</td></tr>
+<tr><td><code>angle_gap_arc_px</code></td><td>int</td><td>3</td><td>зазор внешняя дуга → bbox подписи</td></tr>
+<tr><td><code>angle_gap_sides_px</code></td><td>int</td><td>3</td><td>зазор стороны угла → bbox (narrow-angle clamp)</td></tr>
+<tr><td><code>angle_gap_px</code></td><td>int</td><td>3</td><td>legacy fallback для обоих split-ключей</td></tr>
+<tr><td><code>w_anchor</code></td><td>float</td><td>1.0</td><td>штраф за направление</td></tr>
+<tr><td><code>w_label</code></td><td>float</td><td>10.0</td><td>штраф label×label</td></tr>
+<tr><td><code>w_geom</code></td><td>float</td><td>8.0</td><td>штраф label×geometry</td></tr>
+<tr><td><code>dynamic_angles</code></td><td>bool</td><td>false</td><td>per-frame пересчёт биссектрис <span class="pill warn">нужен keyframes/tracker</span></td></tr>
+<tr><td><code>keyframe_snapshots</code></td><td>bool</td><td>false</td><td>раскладка на каждом keyframe + интерполяция</td></tr>
+<tr><td><code>canonicalize_anchor</code></td><td>bool</td><td>false</td><td>перевести в <code>MC</code> <span class="pill warn">ломает snapshots</span></td></tr>
+<tr><td><code>interpolation</code></td><td>enum</td><td><code>linear</code></td><td><code>linear</code> / <code>smooth</code></td></tr>
+<tr><td><code>ema_alpha</code></td><td>float</td><td>0.2</td><td>вес свежего решателя (tracker)</td></tr>
+<tr><td><code>anchor_flip_frames</code></td><td>int</td><td>6</td><td>кадров подряд перед сменой якоря</td></tr>
+<tr><td><code>solver_every_n_frames</code></td><td>int</td><td>2</td><td>throttle решателя</td></tr>
+</tbody>
+</table>
+
+<h2 id="json-angle-radius"><code>overlay.angle_radius</code></h2>
+
+<p>Авто-подбор радиуса дуги для узких углов: <code>scale = (pivot_rad / angle) ** exp</code>,
+затем clamp в <code>[min_px, max_arm_fraction × arm_length × ptUnit]</code>.</p>
+
+<table>
+<thead><tr><th>Ключ</th><th>Тип</th><th>Default</th><th>Эффект</th></tr></thead>
+<tbody>
+<tr><td><code>enabled</code></td><td>bool</td><td>false</td><td>opt-in; меняет визуал всех углов</td></tr>
+<tr><td><code>exp</code></td><td>float</td><td>0.25</td><td>показатель; <code>0</code> = без скейлинга</td></tr>
+<tr><td><code>pivot_rad</code></td><td>float</td><td>π/2</td><td>угол, при котором <code>scale = 1.0</code></td></tr>
+<tr><td><code>min_px</code></td><td>float</td><td>12</td><td>нижний порог радиуса, px</td></tr>
+<tr><td><code>max_arm_fraction</code></td><td>float</td><td>0.65</td><td>верхний порог как доля от длины короткой стороны</td></tr>
+<tr><td><code>apply_to_right</code></td><td>bool</td><td>false</td><td>применять ли clamps к метке прямого угла</td></tr>
+</tbody>
+</table>
+
+<p>Per-element escape: <code>elem.style['auto_radius'] = False</code> — фиксирует
+<code>arc_size_px</code> для конкретного угла, даже если глобальный флаг
+включён.</p>
+
+<h2 id="json-import">JSON: <code>import</code></h2>
+
+<table>
+<thead><tr><th>Ключ</th><th>Тип</th><th>Синонимы</th><th>Эффект</th></tr></thead>
+<tbody>
+<tr><td><code>import.enabled</code></td><td>bool</td><td>—</td><td><code>false</code>: загрузить геометрию и сохранить <code>ggb_raw</code>, но взять visual baseline из <code>defaults</code> и пропустить остальные правила import</td></tr>
+<tr><td><code>import.colors</code></td><td>dict <code>"#hex [opacity]" → "color_name|#hex [opacity]"</code></td><td>—</td><td>маппинг GGB-цветов на именованные / hex; цвет пишется как <code>#rrggbb</code>, target-opacity применяется отдельно и только если задана</td></tr>
+<tr><td><code>import.line_width</code></td><td>dict</td><td><code>line_width</code></td><td>маппинг GGB-толщины на именованную категорию</td></tr>
+<tr><td><code>import.point_size</code></td><td>dict</td><td><code>dot_size</code></td><td>маппинг GGB-размера точек</td></tr>
+<tr><td><code>import.policy</code></td><td>dict</td><td>—</td><td>декларативная политика импорта, см. §4</td></tr>
+</tbody>
+</table>
+
+<h2 id="json-import-policy"><code>import.policy</code></h2>
+
+<p>См. <a href="04-geogebra.html#policy">§4 · ImportPolicy</a> для деталей.</p>
+
+<table>
+<thead><tr><th>Ключ</th><th>Тип</th><th>GGB-источник</th><th>elem.ggb_style target</th></tr></thead>
+<tbody>
+<tr><td><code>preset</code></td><td>enum</td><td>—</td><td><code>faithful</code> / <code>style_only</code></td></tr>
+<tr><td><code>size_px</code></td><td>scalar / DSL</td><td><code>&lt;pointSize&gt;</code></td><td><code>size_px</code></td></tr>
+<tr><td><code>stroke_width_px</code></td><td>scalar / DSL</td><td><code>&lt;lineStyle thickness&gt;</code></td><td><code>stroke_width_px</code></td></tr>
+<tr><td><code>arc_size_px</code></td><td>scalar / DSL</td><td><code>&lt;arcSize&gt;</code></td><td><code>arc_size_px</code></td></tr>
+<tr><td><code>label_offset_px</code></td><td>list / DSL</td><td><code>&lt;labelOffset&gt;</code></td><td><code>label_offset_px</code></td></tr>
+<tr><td><code>label_color</code></td><td>hex / DSL</td><td><code>obj_color.hex</code></td><td><code>label_color</code></td></tr>
+<tr><td><code>label_visible</code></td><td>bool / DSL</td><td><code>&lt;show label&gt;</code></td><td><code>label_visible</code></td></tr>
+<tr><td><code>visible</code></td><td>bool / DSL</td><td><code>&lt;show object&gt;</code></td><td><code>visible</code></td></tr>
+<tr><td><code>label_text</code></td><td>str / DSL</td><td><code>&lt;caption&gt;</code></td><td><code>label_text</code></td></tr>
+<tr><td><code>label_mode</code></td><td>enum / DSL</td><td><code>&lt;labelMode&gt;</code></td><td><code>label_mode</code></td></tr>
+<tr><td><code>label_value_precision</code></td><td>int / DSL</td><td>literal</td><td><code>label_value_precision</code></td></tr>
+<tr><td><code>label_angle_unit</code></td><td>enum / DSL</td><td>literal</td><td><code>label_angle_unit</code></td></tr>
+<tr><td><code>angle_range</code></td><td>enum / DSL</td><td><code>&lt;angleStyle&gt;</code></td><td><code>angle_range</code></td></tr>
+<tr><td><code>tick_count</code></td><td>int / DSL</td><td><code>&lt;decoration type&gt;</code></td><td><code>tick_count</code></td></tr>
+<tr><td><code>font_size_px</code></td><td>scalar / DSL</td><td><code>&lt;gui&gt;&lt;font size&gt;</code></td><td><code>font_size_px</code></td></tr>
+<tr><td><code>stroke</code></td><td>hex / DSL</td><td><code>obj_color.hex</code></td><td><code>stroke</code></td></tr>
+<tr><td><code>fill</code></td><td>hex / DSL</td><td><code>obj_color.hex</code></td><td><code>fill</code></td></tr>
+<tr><td><code>fill_opacity</code></td><td>float / DSL</td><td><code>obj_color.opacity</code></td><td><code>fill_opacity</code></td></tr>
+<tr><td><code>point_shape</code></td><td>str / DSL</td><td><code>&lt;pointStyle&gt;</code></td><td><code>point_shape</code></td></tr>
+<tr><td><code>stroke_opacity</code></td><td>float / DSL</td><td><code>&lt;lineStyle opacity&gt;</code></td><td><code>stroke_opacity</code></td></tr>
+<tr><td><code>stroke_dash_ratio</code></td><td>float / DSL</td><td><code>&lt;lineStyle type&gt;</code></td><td><code>stroke_dash_ratio</code></td></tr>
+<tr><td><code>stroke_linecap</code></td><td>str / DSL</td><td>—</td><td><code>stroke_linecap</code></td></tr>
+</tbody>
+</table>
+
+<h4>DSL-строки политики</h4>
+
+<table>
+<tbody>
+<tr><td><code>"const:3"</code></td><td>фиксированное значение</td></tr>
+<tr><td><code>"scale:1.5"</code></td><td>умножить raw на 1.5</td></tr>
+<tr><td><code>"quantize:[1,2,4]"</code></td><td>snap к ближайшему</td></tr>
+<tr><td><code>"remap:{'#f00':'#c00'}"</code></td><td>lookup, miss → raw</td></tr>
+<tr><td><code>"match_element"</code></td><td>sentinel</td></tr>
+<tr><td><code>"auto"</code></td><td>sentinel</td></tr>
+</tbody>
+</table>
+
+<h2 id="elem-style">Per-element <code>elem.style</code></h2>
+
+<h4>Видимость</h4>
+<table>
+<thead><tr><th>Ключ</th><th>Тип</th><th>Default</th><th>Эффект</th></tr></thead>
+<tbody>
+<tr><td><code>elem.visible</code> (атрибут)</td><td>bool</td><td>True</td><td>полностью скрывает mobject</td></tr>
+<tr><td><code>visible</code></td><td>bool</td><td>True</td><td>resolver-key для <code>elem.visible</code>; это состояние построения, не visual style</td></tr>
+<tr><td><code>label_visible</code></td><td>bool</td><td>зависит</td><td>отрисовать подпись</td></tr>
+</tbody>
+</table>
+
+<h4>Stroke</h4>
+<table>
+<tbody>
+<tr><td><code>stroke</code></td><td>hex</td><td><code>style.strong</code></td><td>цвет контура</td></tr>
+<tr><td><code>stroke_width_px</code></td><td>float (px)</td><td><code>defaults.&lt;type&gt;.stroke_width_px</code></td><td>толщина; рендер: <code>× 100 / ptUnit</code></td></tr>
+<tr><td><code>stroke_opacity</code></td><td>0..1</td><td>1</td><td>прозрачность</td></tr>
+<tr><td><code>stroke_dash_ratio</code></td><td>0..1 / null</td><td>null</td><td>пунктир (ratio)</td></tr>
+<tr><td><code>stroke_linecap</code></td><td>enum</td><td><code>rendering.line_cap</code></td><td><code>butt</code>/<code>round</code>/<code>square</code></td></tr>
+</tbody>
+</table>
+
+<h4>Fill</h4>
+<table>
+<tbody>
+<tr><td><code>fill</code></td><td>hex</td><td><code>style.background</code></td><td>цвет заливки</td></tr>
+<tr><td><code>fill_opacity</code></td><td>0..1</td><td>1</td><td>прозрачность заливки</td></tr>
+</tbody>
+</table>
+
+<h4>Точки</h4>
+<table>
+<tbody>
+<tr><td><code>size_px</code></td><td>float (px)</td><td><code>defaults.point.size_px</code></td><td>диаметр = <code>size_px / 2 / ptUnit</code></td></tr>
+<tr><td><code>point_shape</code></td><td>enum</td><td><code>circle</code></td><td><code>circle</code>, <code>square</code>, <code>cross</code>, <code>plus</code>, треугольники</td></tr>
+</tbody>
+</table>
+
+<h4>Углы</h4>
+<table>
+<tbody>
+<tr><td><code>arc_size_px</code></td><td>float (px)</td><td>—</td><td>базовый радиус; масштабируется <code>overlay.angle_radius</code> при включении</td></tr>
+<tr><td><code>arc_shift_px</code></td><td>float (px)</td><td><code>defaults.angle.arc_shift_px</code></td><td>расстояние между кратными дугами</td></tr>
+<tr><td><code>auto_radius</code></td><td>bool</td><td>true</td><td>escape: <code>False</code> — отключить <code>overlay.angle_radius</code> для этого угла</td></tr>
+<tr><td><code>angle_range</code></td><td><code>minor</code> / <code>reflex</code></td><td><code>minor</code></td><td>видимый диапазон угла</td></tr>
+<tr><td><code>right_angle_marker</code></td><td>bool / null</td><td>авто</td><td>квадратная метка</td></tr>
+<tr><td><code>tick_count</code></td><td>int</td><td>1</td><td>число кратных дуг / меток равенства углов</td></tr>
+</tbody>
+</table>
+
+<h4>Сегменты / векторы</h4>
+<table>
+<tbody>
+<tr><td><code>tick_count</code></td><td>int</td><td>0</td><td>число штрихов на середине</td></tr>
+<tr><td><code>tick_style</code></td><td><code>line</code> / <code>wave</code></td><td><code>line</code></td><td>wave = волнистая метка</td></tr>
+<tr><td><code>tick_radius_px</code></td><td>float</td><td><code>0.45 × tick_shift_px</code></td><td>радиус скругления wave-углов</td></tr>
+</tbody>
+</table>
+
+<h4>Подписи</h4>
+<table>
+<tbody>
+<tr><td><code>label_text</code></td><td>TeX-строка</td><td><code>"$name$"</code></td><td>текст подписи</td></tr>
+<tr><td><code>label_mode</code></td><td><code>label</code>/<code>value</code>/<code>label_value</code></td><td><code>label</code></td><td>режим текста подписи</td></tr>
+<tr><td><code>label_color</code></td><td>hex</td><td><code>style.strong</code></td><td>цвет текста</td></tr>
+<tr><td><code>label_anchor</code></td><td>enum</td><td><code>rendering.label_anchor</code>/<code>BL</code></td><td><code>TL</code>..<code>BR</code></td></tr>
+<tr><td><code>label_offset_px</code></td><td>[x, y] (px)</td><td>[0, 0]</td><td>смещение после позиционирования</td></tr>
+<tr><td><code>font_size_px</code></td><td>float</td><td><code>defaults.&lt;type&gt;.font_size_px</code></td><td>per-element размер</td></tr>
+<tr><td><code>label_radial_offset_px</code></td><td>float</td><td><code>defaults.angle.label_radial_offset_px</code></td><td>радиальный отступ (углы)</td></tr>
+<tr><td><code>label_placement_locked</code></td><td>bool</td><td>false</td><td>защита от автораскладки</td></tr>
+</tbody>
+</table>
+
+<h4>Z-index</h4>
+<table>
+<tbody>
+<tr><td><code>z_index</code></td><td>float</td><td>по типу элемента</td><td>перекрывает автоматику</td></tr>
+<tr><td><code>z_index_fill</code></td><td>float</td><td><code>Z_FILL</code></td><td>только для CircleSector</td></tr>
+</tbody>
+</table>
+
+<h2 id="curves-style">Кривые (Conic / Function / ImplicitCurve)</h2>
+
+<p>Рендер читает те же ключи, что у линий, но с ограничениями — см.
+<a href="07-curves.html#style-keys">§7</a>.</p>
+
+<table>
+<thead><tr><th>Ключ</th><th>Тип</th><th>Default</th><th>Применим к</th></tr></thead>
+<tbody>
+<tr><td><code>stroke</code></td><td>hex</td><td><code>style.strong</code></td><td>все</td></tr>
+<tr><td><code>stroke_width_px</code></td><td>float (px)</td><td><code>defaults.&lt;type&gt;.stroke_width_px</code></td><td>все</td></tr>
+<tr><td><code>stroke_opacity</code></td><td>0..1</td><td>1</td><td>все</td></tr>
+<tr><td><code>stroke_linecap</code></td><td>enum</td><td><code>rendering.line_cap</code></td><td>все</td></tr>
+<tr><td><code>stroke_dash_ratio</code></td><td>0..1</td><td>None</td><td>только <code>Conic(CIRCLE)</code></td></tr>
+<tr><td><code>fill</code></td><td>hex</td><td><code>style.background</code></td><td>только <code>Conic(CIRCLE|ELLIPSE)</code></td></tr>
+<tr><td><code>fill_opacity</code></td><td>0..1</td><td>1</td><td>только <code>Conic(CIRCLE|ELLIPSE)</code></td></tr>
+<tr><td><code>z_index</code></td><td>float</td><td><code>Z_LINE = 4</code></td><td>все</td></tr>
+</tbody>
+</table>
+
+<h4>Константы сэмплирования (hard-coded, <code>geo/curve_sampling.py</code>)</h4>
+
+<table>
+<thead><tr><th>Параметр</th><th>Значение</th><th>Применяется в</th></tr></thead>
+<tbody>
+<tr><td><code>segment_mu</code></td><td><code>3.0 / ptUnit</code></td><td>Conic (parabola/hyperbola), Function</td></tr>
+<tr><td><code>initial_samples</code></td><td>32</td><td><code>sample_parametric</code></td></tr>
+<tr><td><code>max_samples</code></td><td>500</td><td><code>sample_parametric</code> — жёсткий cap</td></tr>
+<tr><td><code>grid_n</code></td><td>128</td><td><code>marching_squares</code> (ImplicitCurve)</td></tr>
+<tr><td><code>viewport_pad</code></td><td>0.1 MU</td><td>Liang–Barsky clipping</td></tr>
+</tbody>
+</table>
+
+<h4>GGB Graphics View</h4>
+<table>
+<tbody>
+<tr><td><code>showAxes</code></td><td>bool</td><td><code>&lt;evSettings axes&gt;</code>; включает фоновые оси</td></tr>
+<tr><td><code>showGrid</code></td><td>bool</td><td><code>&lt;evSettings grid&gt;</code>; включает фоновую сетку</td></tr>
+<tr><td><code>gridIsBold</code></td><td>bool</td><td><code>&lt;evSettings gridIsBold&gt;</code>; чуть плотнее линии сетки</td></tr>
+<tr><td><code>gridType</code></td><td>int</td><td><code>&lt;evSettings gridType&gt;</code>; сохраняется, сейчас рендерится декартова сетка</td></tr>
+<tr><td><code>axesColor</code> / <code>gridColor</code></td><td>hex</td><td><code>&lt;axesColor&gt;</code> / <code>&lt;gridColor&gt;</code></td></tr>
+<tr><td><code>gridDistX</code> / <code>gridDistY</code></td><td>float</td><td><code>&lt;grid distX distY&gt;</code>; шаг сетки</td></tr>
+<tr><td><code>axes.x</code> / <code>axes.y</code></td><td>dict</td><td><code>&lt;axis id="0|1"&gt;</code>: <code>show</code>, <code>showNumbers</code>, <code>tickDistance</code>, <code>axisCross</code>, <code>positiveAxis</code></td></tr>
+</tbody>
+</table>
+
+<h4>Конструкторы и DSL</h4>
+
+<table>
+<tbody>
+<tr><td><code>Conic(matrix)</code></td><td>3×3 ndarray</td></tr>
+<tr><td><code>Conic.from_coeffs(a, b, c, d, e, f)</code></td><td>общее уравнение 2-й степени</td></tr>
+<tr><td><code>Conic.from_ggb_matrix(A0..A5)</code></td><td>GGB XML совместимо</td></tr>
+<tr><td><code>Conic("eq")</code> / <code>.from_string(eq)</code></td><td>строковый парсинг через sympy</td></tr>
+<tr><td><code>Function("y = ...")</code> / <code>.from_string(eq)</code></td><td>строковая форма</td></tr>
+<tr><td><code>Function(expr, var, domain=(a, b))</code></td><td>Python-only, с ограничением x-диапазона</td></tr>
+<tr><td><code>f(x) = expr</code> (DSL-сугар)</td><td>preprocessor → <code>f = Function("y = expr")</code></td></tr>
+<tr><td><code>ImplicitCurve("F(x, y) = 0")</code></td><td>нормализуется к <code>LHS − RHS = 0</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="export-dict"><code>scene.style.export</code></h2>
+
+<table>
+<thead><tr><th>Ключ</th><th>Тип</th><th>Default</th><th>Эффект</th></tr></thead>
+<tbody>
+<tr><td><code>ptUnit</code></td><td>float</td><td>1</td><td>пикселей на manim-единицу (текущая сцена)</td></tr>
+<tr><td><code>ptUnit_style</code></td><td>float</td><td><code>ptUnit</code></td><td>reference-масштаб для визуальных <code>*_px</code> значений</td></tr>
+<tr><td><code>ptUnit_ggb</code></td><td>float</td><td>—</td><td>оригинал ptUnit из <code>.ggb</code></td></tr>
+<tr><td><code>ptWidth</code></td><td>int</td><td><code>config.pixel_width</code></td><td>ширина холста, px</td></tr>
+<tr><td><code>ptHeight</code></td><td>int</td><td><code>config.pixel_height</code></td><td>высота</td></tr>
+<tr><td><code>ptXZero</code></td><td>float</td><td>0</td><td>origin от левого края, px</td></tr>
+<tr><td><code>ptYZero</code></td><td>float</td><td>0</td><td>origin от верхнего края</td></tr>
+<tr><td><code>fontSize</code></td><td>int</td><td>—</td><td>GGB gui.font size, px</td></tr>
+<tr><td><code>referenceWidth/referenceHeight</code></td><td>float</td><td>—</td><td>эталонный холст нового export-layout</td></tr>
+<tr><td><code>contentScale</code></td><td>float</td><td>—</td><td><code>ptUnit / ptUnit_style</code>, масштаб reference-холста в export-холст</td></tr>
+</tbody>
+</table>
+
+<h2 id="scaling-constants">Scaling constants (<code>animageo/constants.py</code>)</h2>
+
+<table>
+<thead><tr><th>Константа</th><th>Значение</th><th>Использование</th></tr></thead>
+<tbody>
+<tr><td><code>STYLE_TO_INTERNAL</code></td><td>0.02</td><td>JSON style unit → internal</td></tr>
+<tr><td><code>LINE_WIDTH_SCALE</code></td><td>2</td><td>JSON line width → manim stroke</td></tr>
+<tr><td><code>FONT_SIZE_RATIO</code></td><td>50 / 25.9</td><td>JSON font size → manim font</td></tr>
+<tr><td><code>STROKE_WIDTH_SCALE</code></td><td>100</td><td><code>stroke_width_px</code> → manim (/ active style scale: <code>ptUnit</code> legacy или <code>ptUnit_style</code>)</td></tr>
+<tr><td><code>GGB_FONT_SCALE</code></td><td>100.0</td><td>GGB font px → manim font_size (/ active style scale)</td></tr>
+</tbody>
+</table>
+
+<h2 id="zindex-constants">Z-index constants</h2>
+
+<table>
+<thead><tr><th>Константа</th><th>Значение</th><th>Использование</th></tr></thead>
+<tbody>
+<tr><td><code>Z_FILL_INNER</code></td><td>0.001</td><td>зарезервированный нижний fill-слой</td></tr>
+<tr><td><code>Z_FILL</code></td><td>0.01</td><td>заливки полигонов / секторов</td></tr>
+<tr><td><code>Z_FILL_LABEL</code></td><td>0.1</td><td>подписи на fill-уровне</td></tr>
+<tr><td><code>Z_ANGLE</code></td><td>3</td><td>дуги углов</td></tr>
+<tr><td><code>Z_LINE</code></td><td>4</td><td>линии, окружности (без fill)</td></tr>
+<tr><td><code>Z_STROKE</code></td><td>5</td><td>сегменты, окружности (stroke), дуги</td></tr>
+<tr><td><code>Z_POINT</code></td><td>50</td><td>точки</td></tr>
+<tr><td><code>Z_LABEL</code></td><td>50</td><td>подписи на stroke-уровне</td></tr>
+</tbody>
+</table>
+
+<h2 id="geostyle-attrs">GeoStyle attributes</h2>
+
+<table>
+<thead><tr><th>Атрибут</th><th>JSON-источник</th><th>Default</th><th>Эффект</th></tr></thead>
+<tbody>
+<tr><td><code>dot_size</code></td><td><code>point_size.main</code></td><td>6</td><td>совместимый scene-атрибут; renderer читает <code>size_px</code></td></tr>
+<tr><td><code>line_width</code></td><td><code>line_width.main</code></td><td>1.5</td><td>совместимый scene-атрибут; renderer читает <code>stroke_width_px</code></td></tr>
+<tr><td><code>ang_width</code></td><td><code>defaults.angle.stroke_width_px</code></td><td>0.75</td><td>толщина дуги</td></tr>
+<tr><td><code>ang_rdefault</code></td><td><code>defaults.angle.arc_size_px</code></td><td>17</td><td>совместимый scene-атрибут; renderer читает <code>arc_size_px</code></td></tr>
+<tr><td><code>ang_rshift</code></td><td><code>defaults.angle.arc_shift_px</code></td><td>1.5</td><td>шаг между кратными дугами</td></tr>
+<tr><td><code>ang_right</code></td><td><code>defaults.angle.right_angle_size_px</code></td><td>17</td><td>размер метки прямого угла</td></tr>
+<tr><td><code>strich_width</code></td><td><code>tick.main.tick_width_px</code></td><td>1.5</td><td></td></tr>
+<tr><td><code>strich_len</code></td><td><code>tick.main.tick_length_px</code></td><td>9</td><td></td></tr>
+<tr><td><code>strich_rshift</code></td><td><code>tick.main.tick_shift_px</code></td><td>2</td><td></td></tr>
+<tr><td><code>arrow_height</code></td><td><code>arrow.main.arrow_length_px</code></td><td>11</td><td>длина наконечника</td></tr>
+<tr><td><code>arrow_width</code></td><td><code>arrow.main.arrow_width_px</code></td><td>7.5</td><td>ширина</td></tr>
+<tr><td><code>label_r_offset</code></td><td><code>label_radial_offset_px</code></td><td>legacy input alias</td><td>мигрируется в px</td></tr>
+<tr><td><code>background</code> / <code>strong</code></td><td>—</td><td>WHITE / BLACK</td><td>фон сцены / основной foreground</td></tr>
+<tr><td><code>col</code> / <code>col_light</code> / <code>col_accent</code> / <code>col_accent_light</code></td><td><code>color.*</code></td><td></td><td>палитра</td></tr>
+<tr><td><code>col_shade</code></td><td>—</td><td><code>#eeeeee</code></td><td>цвет ghosted-элементов (Shade/Restore)</td></tr>
+<tr><td><code>rendering</code></td><td><code>rendering</code></td><td><code>{}</code></td><td>dict с флагами</td></tr>
+<tr><td><code>ggb</code></td><td><code>import</code></td><td><code>{}</code></td><td>GGB-маппинги</td></tr>
+<tr><td><code>export</code></td><td>—</td><td>см. выше</td><td>canvas / scale</td></tr>
+</tbody>
+</table>
+
+<h2 id="api-methods">AnimaGeoScene — публичное API</h2>
+
+<h4>Загрузка</h4>
+<table>
+<tbody>
+<tr><td><code>loadGGB(filepath, style_file=None, px_size=None, import_policy=None, debug=False, generate_stubs=True, strict=False, reference_size=None, export_size=None, export_fit='contain', export_source_rect='ggb_view', export_scale=None, export_anchor='center', export_offset=None, export_bounds_padding=0, export_infinite_policy='ignore')</code></td><td>загрузить .ggb; <code>px_size</code> — legacy размер холста, <code>reference_size/export_size</code> разделяют эталонный стиль-холст и физический export-холст; <code>export_source_rect</code>: <code>ggb_view</code> или <code>rendered_bounds</code></td></tr>
+<tr><td><code>loadCode(filepath, debug=False, show=True)</code></td><td>загрузить Python-DSL из файла (exec-движок)</td></tr>
+<tr><td><code>putCode(code, debug=False, show=True)</code></td><td>исполнить строку DSL (exec-движок; циклы, def, kwargs, .field access)</td></tr>
+<tr><td><code>applyStyle(style_file=None, px_size=None, import_policy=None, reference_size=None, export_size=None, export_fit='contain', export_source_rect='ggb_view', export_scale=None, export_anchor='center', export_offset=None, export_bounds_padding=0, export_infinite_policy='ignore')</code></td><td>применить style.json и настроить viewport/export-layout; если <code>export_size</code> не передан в split-режиме, <code>px_size</code> используется только как fallback physical size; <code>rendered_bounds</code> измеряет видимые mobject-ы до финального fit</td></tr>
+<tr><td><code>reloadPolicy(import_policy)</code></td><td>пересобрать с другой политикой без повторного парсинга</td></tr>
+</tbody>
+</table>
+
+<h4>Переменные и анимация</h4>
+<table>
+<tbody>
+<tr><td><code>addVar(name, value)</code></td><td>создать <code>NamedValueTracker</code></td></tr>
+<tr><td><code>addUpdater(tracker)</code></td><td>привязать live-обновление</td></tr>
+<tr><td><code>clearUpdater(tracker)</code></td><td>отвязать</td></tr>
+<tr><td><code>animating(tracker)</code></td><td>context manager</td></tr>
+<tr><td><code>play_keyframes(keyframes_data)</code></td><td>воспроизвести keyframe-анимацию</td></tr>
+<tr><td><code>get_independent_elements()</code></td><td>список animatable-элементов (для UI)</td></tr>
+</tbody>
+</table>
+
+<h4>Видимость</h4>
+<table>
+<tbody>
+<tr><td><code>Show / playShow(names, mode='Fade'|'Create')</code></td><td>показать</td></tr>
+<tr><td><code>Hide / playHide(names)</code></td><td>скрыть</td></tr>
+<tr><td><code>Update / playUpdate(names)</code></td><td>FadeOut → recreate → FadeIn</td></tr>
+<tr><td><code>Shade / playShade(names)</code></td><td>затенить</td></tr>
+<tr><td><code>Restore / playRestore(names)</code></td><td>восстановить</td></tr>
+<tr><td><code>ShowCreate(name)</code></td><td>смешанный режим по типу</td></tr>
+<tr><td><code>HideAll / ShowAll / UpdateAll</code></td><td>массовые варианты</td></tr>
+</tbody>
+</table>
+
+<h4>Стили</h4>
+<table>
+<tbody>
+<tr><td><code>setElementStyle(names, **props)</code></td><td>массовая установка свойств</td></tr>
+<tr><td><code>setVisible(names, visible)</code></td><td>массовая видимость</td></tr>
+<tr><td><code>element(name)</code></td><td>получить Element</td></tr>
+<tr><td><code>mobject(name)</code></td><td>получить Manim Mobject</td></tr>
+</tbody>
+</table>
+
+<h4>Подписи</h4>
+<table>
+<tbody>
+<tr><td><code>autoPlaceLabels(dynamic=False)</code></td><td>расставить подписи (one-shot / tracker)</td></tr>
+<tr><td><code>clearLabelTracker()</code></td><td>снять tracker</td></tr>
+</tbody>
+</table>
+
+<h4>Экспорт / утилиты</h4>
+<table>
+<thead><tr><th>Метод</th><th>Формат</th><th>Описание</th></tr></thead>
+<tbody>
+<tr><td><code>exportSVG(filepath)</code></td><td>SVG</td><td>векторный SVG через Cairo (без manim-рендерера)</td></tr>
+<tr><td><code>exportPDF(filepath, dpi=96)</code></td><td>PDF</td><td>векторный PDF (тот же Cairo-обход); <code>dpi</code> задаёт физический размер страницы</td></tr>
+<tr><td><code>exportEPS(filepath, dpi=96)</code></td><td>EPS</td><td>Encapsulated PostScript; предупреждает при полупрозрачности (EPS её не поддерживает)</td></tr>
+<tr><td><code>exportTikZ(filepath, *, options=None, standalone=False, **kwargs)</code></td><td>TikZ</td><td>семантический native TikZ для LaTeX; <code>standalone=True</code> — компилируемый документ</td></tr>
+<tr><td><code>exportJSXGraph(filepath, *, options=None, **kwargs)</code></td><td>HTML/JS/spec</td><td>интерактивная JSXGraph-доска; <code>output</code> ∈ <code>html</code>/<code>js</code>/<code>spec</code>/<code>json</code>/<code>moodle</code></td></tr>
+<tr><td><code>exportStylePromptSummary(filepath=None)</code></td><td>JSON</td><td>компактная сводка конструкции для AI-генерации стиля</td></tr>
+<tr><td><code>addGrid(x_range, y_range)</code></td><td>—</td><td>ручная координатная сетка</td></tr>
+<tr><td><code>addCoordinateBackground()</code></td><td>—</td><td>фоновая сетка/оси из импортированного GGB <code>euclidianView</code></td></tr>
+<tr><td><code>waitCut(msg)</code></td><td>—</td><td>пауза для видеомонтажа с меткой</td></tr>
+</tbody>
+</table>
+
+<h4>Внутренние (полезно знать)</h4>
+<table>
+<tbody>
+<tr><td><code>_get_scene_bounds(padding=0.1)</code></td><td>границы камеры (used by Line/Ray clipping)</td></tr>
+<tr><td><code>CreateMObject(elem, z_auto=False)</code></td><td>создать manim VGroup из Element</td></tr>
+<tr><td><code>updateGeoElements(updates=None)</code></td><td>перерисовать элементы (full или подмножество)</td></tr>
+<tr><td><code>updateVar(tracker)</code></td><td>обновить переменную и пересобрать зависимости</td></tr>
+</tbody>
+</table>
+
+<h4>Construction — публичное API</h4>
+<table>
+<tbody>
+<tr><td><code>element(name)</code> / <code>var(name)</code> / <code>objectByName(name)</code></td><td>поиск по имени</td></tr>
+<tr><td><code>add(obj)</code></td><td>добавить Element, Var или Command</td></tr>
+<tr><td><code>update(name, data)</code></td><td>обновить data элемента</td></tr>
+<tr><td><code>rebuild(debug=False, full=False)</code></td><td>пересчитать (full=True — все команды)</td></tr>
+<tr><td><code>rename(old_name, new_name)</code></td><td>переименовать + обновить ссылки в commands/state</td></tr>
+<tr><td><code>add_and_build(cmd)</code></td><td>инкрементально добавить команду и построить только её узел (eager для DSL)</td></tr>
+<tr><td><code>update_tparam(name, tparam)</code></td><td>обновить curve/locus-параметр constrained-точки</td></tr>
+<tr><td><code>get_independents()</code></td><td>dict independent-элементов (для keyframe UI)</td></tr>
+</tbody>
+</table>
+
+<h4>DSL-модуль — entry points</h4>
+<table>
+<tbody>
+<tr><td><code>dsl.run(constr, code, debug=False, show=True)</code></td><td>прямой запуск exec-DSL без сцены</td></tr>
+<tr><td><code>with dsl.scope(constr): ...</code></td><td>ContextVar для direct factory use (файл-mode с IDE-подсказками)</td></tr>
+<tr><td><code>from animageo.dsl import *</code></td><td>super-module: все 74 фабрики + proxy-типы (<code>Point</code>, <code>Circle</code>, …) для IDE</td></tr>
+</tbody>
+</table>
+
+<h2 id="export-options">Export options — TikZOptions / JSXGraphOptions</h2>
+
+<h4>TikZOptions (<code>animageo.exporters.tikz.TikZOptions</code>)</h4>
+<table>
+<thead><tr><th>Поле</th><th>По умолчанию</th><th>Смысл</th></tr></thead>
+<tbody>
+<tr><td><code>standalone</code></td><td><code>False</code></td><td>обернуть в компилируемый <code>\documentclass{standalone}</code> (иначе сниппет для <code>\input{}</code>)</td></tr>
+<tr><td><code>dpi</code></td><td><code>96</code></td><td>px → pt: единица картинки <code>x=/y=</code> повторяет физический размер SVG</td></tr>
+<tr><td><code>clip</code></td><td><code>True</code></td><td>обрезать по рамке viewport</td></tr>
+<tr><td><code>background</code></td><td><code>None</code></td><td>цвет фона <code>\fill</code> или <code>None</code></td></tr>
+<tr><td><code>emit_font_size</code></td><td><code>True</code></td><td>выставлять размер шрифта подписей в pt</td></tr>
+<tr><td><code>precision</code></td><td><code>3</code></td><td>число знаков после запятой в координатах</td></tr>
+</tbody>
+</table>
+
+<h4>JSXGraphOptions (<code>animageo.exporters.jsxgraph.JSXGraphOptions</code>)</h4>
+<table>
+<thead><tr><th>Поле</th><th>По умолчанию</th><th>Смысл</th></tr></thead>
+<tbody>
+<tr><td><code>output</code></td><td><code>"html"</code></td><td><code>html</code> (самодостаточная страница) · <code>js</code> (фрагмент) · <code>spec</code> (декларативный <code>animageo-board/v1</code>, без JS-строк) · <code>json</code> (legacy) · <code>moodle</code></td></tr>
+<tr><td><code>boundingbox</code></td><td><code>None</code></td><td><code>(left, top, right, bottom)</code> в math-units; <code>None</code> — из viewport сцены</td></tr>
+<tr><td><code>keepaspectratio</code></td><td><code>None</code></td><td>круги остаются круглыми; <code>None</code> зеркалит GGB-сцену</td></tr>
+<tr><td><code>axis</code> / <code>grid</code></td><td><code>None</code></td><td>оси/сетка; <code>None</code> зеркалит сцену (GGB-дефолты)</td></tr>
+<tr><td><code>background</code></td><td><code>None</code></td><td>цвет фона доски; <code>""</code> — прозрачный (фон страницы)</td></tr>
+<tr><td><code>mathjax</code></td><td><code>True</code></td><td>подписи как LaTeX через MathJax</td></tr>
+<tr><td><code>shownavigation</code></td><td><code>True</code></td><td>навигационная панель JSXGraph</td></tr>
+<tr><td><code>jsxgraph_version</code></td><td><code>"1.10.1"</code></td><td>версия CDN для пина</td></tr>
+<tr><td><code>div_id</code></td><td><code>"agbox"</code></td><td>id контейнера <code>&lt;div&gt;</code></td></tr>
+<tr><td><code>fallback</code></td><td><code>"static"</code></td><td>что делать с неживыми командами: <code>static</code> (заморозить) или <code>skip</code></td></tr>
+<tr><td><code>coordinate_precision</code></td><td><code>4</code></td><td>знаков после запятой в координатах</td></tr>
+</tbody>
+</table>
+
+<h2 id="board-spec">animageo-board/v1 — board spec</h2>
+
+<p>Декларативный, eval-free контракт между Python (<code>exportJSXGraph(output="spec")</code>)
+и фреймворк-агностичным JS-рантаймом. JSON-схема:
+<code>animageo/exporters/jsxgraph/board.schema.json</code> (поставляется в wheel,
+доступна через <code>animageo.exporters.jsxgraph.load_schema()</code>).</p>
+
+<table>
+<thead><tr><th>Ключ</th><th>Смысл</th></tr></thead>
+<tbody>
+<tr><td><code>format</code></td><td>всегда <code>"animageo-board/v1"</code></td></tr>
+<tr><td><code>boundingbox</code></td><td><code>[left, top, right, bottom]</code> в math-units</td></tr>
+<tr><td><code>size</code></td><td><code>[width, height]</code> контейнера в px</td></tr>
+<tr><td><code>chrome</code></td><td>оси/сетка/фон/keep-aspect (импорт из GGB-вида)</td></tr>
+<tr><td><code>inputs[]</code></td><td>интерактивные входы: <code>{name, kind, value/x/y, min/max/step, on, t}</code>; <code>kind</code> ∈ <code>point</code>/<code>number</code>/<code>angle</code>/<code>boolean</code>/<code>glider</code></td></tr>
+<tr><td><code>elements[]</code></td><td>элементы в топопорядке: <code>{name, role, kind, engine, parents[], attrs, tracksDrag}</code>; <code>role</code> ∈ <code>input</code>/<code>live</code>/<code>static</code></td></tr>
+<tr><td><code>coverage[]</code></td><td>отчёт live-vs-static по каждому элементу</td></tr>
+</tbody>
+</table>
+
+<p>Структурированные формы <code>parents[]</code>: <code>{"ref": name}</code> ·
+число · <code>[x, y]</code> · <code>[[xs],[ys]]</code> (sampled polyline) ·
+<code>{"fn": body}</code> (живая функция-координата) ·
+<code>{"js": expr}</code> (escape-hatch).</p>
+
+<h4>BoardHandle (JS, <code>@animageo/runtime</code>)</h4>
+<table>
+<thead><tr><th>API</th><th>Что</th></tr></thead>
+<tbody>
+<tr><td><code>createBoard(spec, container, opts)</code></td><td>построить доску, вернуть handle</td></tr>
+<tr><td><code>on(signal, cb)</code></td><td>сигналы: <code>ready</code> · <code>change</code> (драг) · <code>commit</code> (конец драга) · <code>viewchange</code> · <code>error</code></td></tr>
+<tr><td><code>getState()</code> / <code>setState(partial)</code></td><td>прочитать / задать состояние входов</td></tr>
+<tr><td><code>getValue/setValue/getElement/reset/setVisible/setStyle</code></td><td>точечные действия</td></tr>
+<tr><td><code>destroy()</code></td><td>снять слушатели, освободить доску</td></tr>
+</tbody>
+</table>
+
+<h2 id="cli">CLI (<code>python -m animageo</code>)</h2>
+<table>
+<thead><tr><th>Флаг</th><th>Смысл</th></tr></thead>
+<tbody>
+<tr><td><code>-o FILE</code></td><td>выходной файл; формат выводится из расширения (<code>.svg/.pdf/.eps/.tex/.html/.json/.png/.gif/.mp4/.webm/.mov</code>)</td></tr>
+<tr><td><code>-f / --format FMT</code></td><td>явный формат: <code>svg pdf eps tikz jsxgraph png gif mp4 webm mov</code></td></tr>
+<tr><td><code>--standalone</code></td><td>TikZ: компилируемый документ вместо сниппета</td></tr>
+<tr><td><code>--dpi N</code></td><td>PDF/EPS/TikZ: физический размер страницы (по умолчанию 96)</td></tr>
+<tr><td><code>--keyframes FILE</code></td><td>render-дорожка: keyframe-последовательность (иначе один кадр)</td></tr>
+<tr><td><code>--quality {l,m,h,p,k}</code></td><td>пресет разрешения/fps render-дорожки</td></tr>
+<tr><td><code>--fps N</code> / <code>--transparent</code></td><td>проброс в manim (GIF/WebM/MOV)</td></tr>
+<tr><td><code>-v/--verbose · -q/--quiet · --log-level LVL · --strict</code></td><td>логирование и строгий режим (unsupported → ошибка)</td></tr>
+</tbody>
+</table>
+
+<p style="color: var(--text-muted); font-size: 12px; margin-top: 24px;">
+<em>Источники истины: <code>animageo/style/schema.py</code>,
+<code>animageo/constants.py</code>, <code>animageo/animageo.py</code>,
+<code>animageo/geo/lib_conic.py</code>, <code>animageo/geo/lib_function.py</code>,
+<code>animageo/geo/lib_implicit.py</code>, <code>animageo/geo/curve_sampling.py</code>,
+<code>animageo/parsers/dsl/</code>.
+Актуально на 2026-05-30. Экспортёры: <code>animageo/exporters/tikz/</code>, <code>animageo/exporters/jsxgraph/</code> (+ <code>board.schema.json</code>); CLI — <code>animageo/__main__.py</code>; Полный список имён полей —
+<a href="../field_names.md">docs/field_names.md</a>, подробности про DSL —
+<a href="../python_dsl.md">docs/python_dsl.md</a>.</em>
+</p>
+
+<div class="footer-nav">
+<a href="10-recipes.html">← §11 · Рецепты</a>
+<a href="index.html">К оглавлению →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

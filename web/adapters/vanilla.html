@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AnimaGeo runtime — vanilla JS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.1/distrib/jsxgraph.css" />
+  <style>#box { width: 640px; height: 480px; border: 1px solid #ddd; }</style>
+</head>
+<body>
+  <h1>Vanilla JS (no framework, no web component)</h1>
+  <div id="box"></div>
+  <pre id="out"></pre>
+
+  <!-- JSXGraph as a global; the runtime picks it up automatically. -->
+  <script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.1/distrib/jsxgraphcore.js"></script>
+  <script type="module">
+    import { createBoard } from '../runtime/src/index.js';
+
+    const spec = await fetch('../runtime/test/fixtures/ex_general.board.json').then((r) => r.json());
+    const out = document.getElementById('out');
+
+    const handle = createBoard(spec, document.getElementById('box'), { debounceMs: 30 });
+    handle.on('change', ({ name, state }) => {
+      out.textContent = 'moved ' + name + '\n' + JSON.stringify(state, null, 2);
+    });
+    handle.on('ready', ({ state }) => (out.textContent = JSON.stringify(state, null, 2)));
+
+    // Drive it from code, too:
+    // handle.setState({ A: { x: -3, y: 2 } });
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+include CHANGELOG.md
+include README.md
+include LICENSE
+include NOTICE
+include pyproject.toml
+recursive-include animageo *.pyi *.json *.md
+prune animageo/.claude
+prune tests
+prune docs
+prune examples
+prune build
+prune dist
+global-exclude __pycache__
+global-exclude *.pyc
+global-exclude .DS_Store

@@ -1,0 +1,78 @@
+# Python bytecode & packaging
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+/dist/
+/build/
+.eggs/
+
+# Environment & credentials
+.env
+.venv/
+venv/
+.pypirc
+
+# IDE & OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Manim output
+/media/
+
+# Web: JS deps and vendored JSXGraph for the browser smoke test
+node_modules/
+web/runtime/scripts/browser-smoke/vendor/
+web/runtime/scripts/browser-smoke/screenshot.png
+
+# Deprecated/removed modules
+/_draw/
+/_drawsvg/
+
+# --------------------------------------------------------
+# Local data — examples, styles, icons, construction data
+# (not part of the distributed package)
+# --------------------------------------------------------
+/examples/*
+/example/
+/data/
+/icons/
+/style/
+
+# Web service (separate project, uses animageo via pip)
+/animageo_web/
+
+# Standalone scripts & scratch files at project root
+/anima_test.py
+/ex_*.py
+/expr_test.py
+/temp.py
+/pandora.py
+
+# Root-level loose files (test/example GeoGebra files, old entry points)
+/*.ggb
+/*.svg
+/*.json
+/examples.py
+/main.py
+
+# Local AI assistant context
+*.clau[d]e/
+*CLAU?E.md
+.co[d]ex/
+
+# Label-placement comparison/feedback tool — generated page is large and embeds
+# untracked examples/*.ggb renders. Keep the generator (build_feedback_compare.py)
+# but ignore the generated HTML, temp render, and exported feedback files.
+/docs/label_placement_examples/compare.html
+/docs/label_placement_examples/_tmp.svg
+/docs/label_placement_examples/label_placement_feedback*

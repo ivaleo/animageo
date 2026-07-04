@@ -1,0 +1,325 @@
+{
+  "format": "animageo-board/v1",
+  "boundingbox": [
+    -8.888889,
+    5.0,
+    8.888889,
+    -5.0
+  ],
+  "size": [
+    480,
+    400
+  ],
+  "chrome": {
+    "axis": true,
+    "grid": false,
+    "background": "#FFFFFF",
+    "axesColor": null,
+    "gridColor": null,
+    "showXAxis": true,
+    "showYAxis": true,
+    "keepAspectRatio": true,
+    "gridBold": false,
+    "gridStep": null,
+    "xShowNumbers": true,
+    "yShowNumbers": true,
+    "xTickDistance": null,
+    "yTickDistance": null
+  },
+  "options": {
+    "mathjax": true,
+    "showNavigation": true,
+    "jsxgraphVersion": "1.10.1",
+    "divId": "agbox"
+  },
+  "inputs": [],
+  "elements": [
+    {
+      "name": "A",
+      "role": "static",
+      "kind": "Point",
+      "engine": "point",
+      "parents": [
+        -3,
+        -2
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 0.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "withLabel": false,
+        "size": 3,
+        "face": "o",
+        "fixed": true
+      },
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "B",
+      "role": "static",
+      "kind": "Point",
+      "engine": "point",
+      "parents": [
+        3,
+        2
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 0.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "withLabel": false,
+        "size": 3,
+        "face": "o",
+        "fixed": true
+      },
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "C",
+      "role": "static",
+      "kind": "Point",
+      "engine": "point",
+      "parents": [
+        -3,
+        2
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 0.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "withLabel": false,
+        "size": 3,
+        "face": "o",
+        "fixed": true
+      },
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "m",
+      "role": "live",
+      "kind": "Segment",
+      "engine": "segment",
+      "parents": [
+        {
+          "ref": "A"
+        },
+        {
+          "ref": "B"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#FFFFFF",
+        "strokeWidth": 1.5,
+        "fillOpacity": 1.0,
+        "layer": 7,
+        "withLabel": false
+      },
+      "detail": "Segment",
+      "tracksDrag": true
+    },
+    {
+      "name": "__tick_m_0_p1",
+      "role": "aux",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"A\"].X(),dy=S[\"B\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"B\"].X())/2,my=(S[\"A\"].Y()+S[\"B\"].Y())/2;return (mx+tx*(-0.025))+nx*0.1125;}"
+        },
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"A\"].X(),dy=S[\"B\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"B\"].X())/2,my=(S[\"A\"].Y()+S[\"B\"].Y())/2;return (my+ty*(-0.025))+ny*0.1125;}"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "fixed": true,
+        "withLabel": false,
+        "name": "",
+        "showInfobox": false
+      }
+    },
+    {
+      "name": "__tick_m_0_p2",
+      "role": "aux",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"A\"].X(),dy=S[\"B\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"B\"].X())/2,my=(S[\"A\"].Y()+S[\"B\"].Y())/2;return (mx+tx*(-0.025))-nx*0.1125;}"
+        },
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"A\"].X(),dy=S[\"B\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"B\"].X())/2,my=(S[\"A\"].Y()+S[\"B\"].Y())/2;return (my+ty*(-0.025))-ny*0.1125;}"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "fixed": true,
+        "withLabel": false,
+        "name": "",
+        "showInfobox": false
+      }
+    },
+    {
+      "name": "__tick_m_0",
+      "role": "live",
+      "kind": "segment",
+      "engine": "segment",
+      "parents": [
+        {
+          "ref": "__tick_m_0_p1"
+        },
+        {
+          "ref": "__tick_m_0_p2"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "highlight": false,
+        "fixed": true,
+        "withLabel": false,
+        "layer": 8,
+        "strokeWidth": 1.5
+      },
+      "detail": "segment tick",
+      "tracksDrag": true
+    },
+    {
+      "name": "__tick_m_1_p1",
+      "role": "aux",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"A\"].X(),dy=S[\"B\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"B\"].X())/2,my=(S[\"A\"].Y()+S[\"B\"].Y())/2;return (mx+tx*(0.025))+nx*0.1125;}"
+        },
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"A\"].X(),dy=S[\"B\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"B\"].X())/2,my=(S[\"A\"].Y()+S[\"B\"].Y())/2;return (my+ty*(0.025))+ny*0.1125;}"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "fixed": true,
+        "withLabel": false,
+        "name": "",
+        "showInfobox": false
+      }
+    },
+    {
+      "name": "__tick_m_1_p2",
+      "role": "aux",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"A\"].X(),dy=S[\"B\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"B\"].X())/2,my=(S[\"A\"].Y()+S[\"B\"].Y())/2;return (mx+tx*(0.025))-nx*0.1125;}"
+        },
+        {
+          "fn": "function(){var dx=S[\"B\"].X()-S[\"A\"].X(),dy=S[\"B\"].Y()-S[\"A\"].Y(),L=Math.hypot(dx,dy)||1;var tx=dx/L,ty=dy/L,nx=-ty,ny=tx;var mx=(S[\"A\"].X()+S[\"B\"].X())/2,my=(S[\"A\"].Y()+S[\"B\"].Y())/2;return (my+ty*(0.025))-ny*0.1125;}"
+        }
+      ],
+      "attrs": {
+        "visible": false,
+        "fixed": true,
+        "withLabel": false,
+        "name": "",
+        "showInfobox": false
+      }
+    },
+    {
+      "name": "__tick_m_1",
+      "role": "live",
+      "kind": "segment",
+      "engine": "segment",
+      "parents": [
+        {
+          "ref": "__tick_m_1_p1"
+        },
+        {
+          "ref": "__tick_m_1_p2"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "highlight": false,
+        "fixed": true,
+        "withLabel": false,
+        "layer": 8,
+        "strokeWidth": 1.5
+      },
+      "detail": "segment tick",
+      "tracksDrag": true
+    },
+    {
+      "name": "v",
+      "role": "live",
+      "kind": "Vector",
+      "engine": "arrow",
+      "parents": [
+        {
+          "ref": "C"
+        },
+        {
+          "ref": "B"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#FFFFFF",
+        "strokeWidth": 1.5,
+        "fillOpacity": 1.0,
+        "layer": 7,
+        "withLabel": false,
+        "lastArrow": {
+          "type": 1,
+          "size": 7.33
+        }
+      },
+      "detail": "Vector",
+      "tracksDrag": true
+    }
+  ],
+  "coverage": [
+    {
+      "name": "A",
+      "kind": "static",
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "B",
+      "kind": "static",
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "C",
+      "kind": "static",
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "m",
+      "kind": "live",
+      "detail": "Segment"
+    },
+    {
+      "name": "__tick_m_0",
+      "kind": "live",
+      "detail": "segment tick"
+    },
+    {
+      "name": "__tick_m_1",
+      "kind": "live",
+      "detail": "segment tick"
+    },
+    {
+      "name": "v",
+      "kind": "live",
+      "detail": "Vector"
+    }
+  ]
+}

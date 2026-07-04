@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §2 · Установка и первый запуск</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html" class="current-page">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#requirements">Системные требования</a></li>
+        <li><a href="#install">Установка</a></li>
+        <li><a href="#verify">Проверка</a></li>
+        <li><a href="#first-script">Первый скрипт</a></li>
+        <li><a href="#anatomy">Анатомия Scene</a></li>
+        <li><a href="#guide-server">Render-сервер для этого гайда</a></li>
+        <li><a href="#next">Что дальше</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§2 · Установка и первый запуск</h1>
+
+<p class="subtitle-main">
+AnimaGeo — обычный Python-пакет. Поставить можно из pypi
+(<code>pip install animageo</code>) или из репозитория, если нужны
+последние фиксы. Вместе с ней идут <code>manim</code> и <code>pycairo</code>
+как транзитивные зависимости; для TeX-подписей отдельно нужен системный
+LaTeX.
+</p>
+
+<h2 id="requirements">Системные требования</h2>
+
+<table>
+<thead><tr><th>Компонент</th><th>Версия</th><th>Зачем</th></tr></thead>
+<tbody>
+<tr><td><code>python</code></td><td>≥ 3.9 (тестируется на 3.13 и 3.14)</td><td>язык и окружение</td></tr>
+<tr><td><code>manim</code></td><td>≥ 0.20.1</td><td>графическое ядро (<code>Mobject</code>, <code>Scene</code>)</td></tr>
+<tr><td><code>numpy</code></td><td>≥ 1.26</td><td>геометрия, адаптивный sampling</td></tr>
+<tr><td><code>pycairo</code></td><td>≥ 1.0</td><td>экспорт в SVG (минуя manim-рендерер)</td></tr>
+<tr><td><code>lark</code></td><td>≥ 1.1</td><td>парсер GGB-выражений</td></tr>
+<tr><td>LaTeX</td><td>любая (<code>basictex</code>, <code>texlive-latex-base</code>, MikTeX)</td><td>TeX-подписи: <code>$\alpha$</code>, <code>\triangle ABC</code></td></tr>
+</tbody>
+</table>
+
+<p><code>sympy</code> и <code>scipy</code> нужны только если вы используете
+<code>Function</code>/<code>ImplicitCurve</code> и хотите аналитические пересечения
+кривых — обычно идут вместе с <code>manim</code>.</p>
+
+<div class="callout note">
+Если вы в macOS и собираетесь рендерить подписи, самый лёгкий LaTeX —
+<code>brew install --cask basictex</code> (~100 MB). Для Linux —
+<code>apt install texlive-latex-base texlive-fonts-recommended</code>.
+</div>
+
+<h2 id="install">Установка</h2>
+
+<h3>Вариант 1 — pip (release)</h3>
+<pre><code>python3.13 -m pip install animageo</code></pre>
+
+<p>Это стянет <code>manim</code> и <code>pycairo</code> как зависимости. На macOS
+<code>pycairo</code> сначала хочет <code>brew install cairo pkg-config</code>, на
+Linux — <code>apt install libcairo2-dev pkg-config</code>.</p>
+
+<h3>Вариант 2 — из репозитория (dev)</h3>
+<pre><code>git clone https://github.com/ivaleo/animageo.git
+cd animageo
+python3.13 -m pip install -e '.[dev]'</code></pre>
+
+<p><code>-e</code> ставит в editable-режиме: правки в <code>animageo/*.py</code>
+видны сразу, без переустановки. Так же разрабатывается сам этот гайд.</p>
+
+<h3>Зависимости render-сервера для этого гайда</h3>
+
+<pre><code>python3.13 -m pip install fastapi uvicorn pydantic</code></pre>
+
+<p>Нужны только если вы планируете интерактивные примеры — для обычного
+использования AnimaGeo в своих скриптах не требуются.</p>
+
+<h3>Интерактивный веб-экспорт (опционально, JS)</h3>
+
+<p>Для встраивания подвижных чертежей в web (см. <a href="10-web.html">§10</a>)
+нужен только <a href="https://jsxgraph.org">JSXGraph</a> на стороне браузера —
+из npm (<code>npm i jsxgraph</code>) или с CDN. Python-сторона
+(<code>exportJSXGraph</code>) дополнительных зависимостей не требует.</p>
+
+<h2 id="verify">Проверка установки</h2>
+
+<p>Самый дешёвый способ убедиться, что всё работает — импортировать
+<code>AnimaGeoScene</code>:</p>
+
+<pre><code>$ python3.13 -c "from animageo.animageo import AnimaGeoScene; print('OK')"
+Manim Community v0.20.1
+OK</code></pre>
+
+<p>Баннер <em>Manim Community</em> печатается самим <code>manim</code>
+при первом импорте. Если вместо <code>OK</code> вы получили
+<code>ModuleNotFoundError</code> — проверьте, что <code>pip install</code>
+прошёл в то же окружение, где запускается <code>python3.13</code>.</p>
+
+<div class="callout note">
+На одной машине может быть несколько Python. Проверяйте именно тот
+интерпретатор, которым запускаете рендер:
+<code>which python3.13</code> и <code>python3.13 -m pip show manim</code>.
+Если <code>python3</code> указывает на другой Python без <code>manim</code>,
+используйте явный <code>python3.13</code>.
+</div>
+
+<h2 id="cli">CLI: .ggb → SVG одной командой</h2>
+
+<p>Для простого конверта GeoGebra-файла не обязательно писать Scene-класс:</p>
+
+<pre><code>$ animageo problem.ggb -o problem.svg -s my_style.json -px 800 600</code></pre>
+
+<p>CLI создаёт временный driver-script, запускает <code>manim</code> и вызывает
+<code>loadGGB(...)</code> + <code>exportSVG(...)</code>. Размеры <code>-px</code>
+принимают числа или <code>auto</code>.</p>
+
+<h2 id="first-script">Первый скрипт</h2>
+
+<p>Минимальная программа на AnimaGeo — это <code>Scene</code>-подкласс с методом
+<code>construct()</code>. Ниже — треугольник с описанной окружностью и
+экспортом в SVG.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true}'>
+  <div class="ex-code">
+    <span class="ex-label">hello.py · попробуйте поменять вершины</span>
+<pre><code>A = Point(-3.5, -1.5)
+B = Point(3.5, -1.5)
+C = Point(0.4, 2.3)
+p, a, b, c = Polygon(A, B, C)
+
+# описанная окружность:
+O = Center(Circle(A, B, C))
+r = Segment(O, A)
+k = Circle(O, A)
+
+style(A, B, C, O, label_visible=True)</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/02-installation-00.svg" alt="Треугольник и описанная окружность">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<p>Тело над чертой — это <em>DSL</em>. В скрипте его отдают методу
+<code>putCode(...)</code>, а сам скрипт — обёртка вокруг AnimaGeoScene:</p>
+
+<pre><code>from animageo.animageo import AnimaGeoScene
+
+class HelloScene(AnimaGeoScene):
+    def construct(self):
+        self.applyStyle(style_file='guide_style.json', px_size=[520, 340])
+        self.putCode("""
+A = Point(-3.5, -1.5)
+B = Point(3.5, -1.5)
+C = Point(0.4, 2.3)
+p, a, b, c = Polygon(A, B, C)
+O = Center(Circle(A, B, C))
+k = Circle(O, A)
+""")
+        for n in ['A', 'B', 'C', 'O']:
+            self.element(n).style['label_visible'] = True
+        self.addAllGeometry(show=True)
+        self.updateAllGeometry()
+        self.autoPlaceLabels()
+        self.exportSVG('hello.svg')
+
+if __name__ == '__main__':
+    HelloScene().construct()</code></pre>
+
+<p>Запуск:</p>
+
+<pre><code>$ python3.13 hello.py
+$ open hello.svg      # macOS
+$ xdg-open hello.svg  # Linux</code></pre>
+
+<h2 id="anatomy">Анатомия Scene</h2>
+
+<p>Любой скрипт AnimaGeo повторяет шесть шагов. Запомнить их стоит один
+раз — дальше в гайде мы их уже не будем повторять.</p>
+
+<table>
+<thead><tr><th>#</th><th>Вызов</th><th>Что происходит</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><code>HelloScene()</code></td><td>создаётся <code>manim.Scene</code>; <code>AnimaGeoScene.__init__</code> готовит пустой <code>GeoStyle</code> и пустой <code>Construction</code></td></tr>
+<tr><td>2</td><td><code>self.applyStyle(...)</code></td><td>грузится JSON-стиль, распаковывается в <code>self.style</code>; <code>px_size</code> задаёт холст в пикселях</td></tr>
+<tr><td>3</td><td><code>self.putCode(...)</code></td><td>exec-движок (<code>parsers/dsl/</code>) превращает Python-DSL в команды и наполняет <code>Construction</code></td></tr>
+<tr><td>4</td><td><code>self.element(n).style[...]</code></td><td>(опционально) per-element overrides поверх применённого стиля</td></tr>
+<tr><td>5</td><td><code>self.addAllGeometry(show=True)</code><br><code>self.updateAllGeometry()</code></td><td>строится mobject-граф; вычисляются актуальные координаты всех зависимых объектов</td></tr>
+<tr><td>6</td><td><code>self.exportSVG(path)</code></td><td>Cairo-контекст → SVG-файл. Никакого видео-рендера, ~10–150 мс.</td></tr>
+</tbody>
+</table>
+
+<div class="callout note">
+Для MP4 используется другой путь — запускаете скрипт через
+<code>manim</code>-CLI, вместо <code>exportSVG</code> работают
+<code>self.play(...)</code>-ы и <code>self.wait(...)</code>. Подробно в §9.
+</div>
+
+<h3>Что делает <code>putCode</code> vs «прямой» API</h3>
+
+<p><code>putCode("""A = Point(0, 0)\nB = Point(3, 0)\n...""")</code> —
+это сахар, эквивалентный набору прямых вызовов через
+<code>self.geo</code>. Оба пути работают, но предпочтительнее первый:
+тот же текст можно вставить в <code>.ggb</code>-файл, в интерактивный
+пример, прислать другому человеку — это <em>один и тот же</em> DSL.</p>
+
+<details><summary>Прямой API (для сравнения)</summary>
+<pre><code>self.geo.Point('A', [-3, 0])
+self.geo.Point('B', [3, 0])
+self.geo.Point('C', [0, 2])
+self.geo.Polygon('p', ['A', 'B', 'C'])
+# полный список команд — animageo/geo/lib_commands.py
+</code></pre>
+</details>
+
+<h2 id="guide-server">Render-сервер для этого гайда</h2>
+
+<p>Чтобы заработали кнопки <strong>Edit</strong> / <strong>Run</strong>
+в интерактивных примерах, нужен локальный сервер:</p>
+
+<pre><code>cd /path/to/animageo
+PYTHONPATH=. python3.13 docs/guide/server/serve.py</code></pre>
+
+<p>Сервер слушает <code>http://127.0.0.1:8765</code>. Откройте гайд по
+этому URL, и кнопка <strong>Edit</strong> станет рабочей. Если сервер
+не запущен, гайд всё равно читается — иллюстрации показываются как
+статические SVG, просто не получится их перерисовать.</p>
+
+<div class="callout warn">
+Эндпоинт <code>POST /render</code> исполняет произвольный Python через
+<code>AnimaGeoScene.putCode()</code>. Сервер жёстко биндится на
+<code>127.0.0.1</code> и никогда не должен смотреть наружу без
+дополнительного sandbox'а.
+</div>
+
+<h2 id="test">Пробуем интерактив прямо здесь</h2>
+
+<p>Если сервер запущен, пример ниже должен отработать: нажмите
+<strong>Edit</strong>, поменяйте, скажем, <code>r = 2</code> на <code>r = 3.5</code>,
+нажмите <strong>Run</strong>.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true}'>
+  <div class="ex-code">
+    <span class="ex-label">install-sanity.py</span>
+<pre><code>O = Point(0, 0)
+r = 2
+P = Point(r, 0)
+c = Circle(O, P)
+
+style(O, P, label_visible=True)</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/02-installation-01.svg" alt="Окружность с радиусом">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<p>Внизу справа в панели иллюстрации появится таймкод рендера
+(<code>рендер 30ms · 80ms total</code>) — первый раз медленнее из-за
+манименного init и, если подписи TeX — компиляции шрифтов; повторы
+попадают в LRU-кэш и отвечают за &lt;2&nbsp;мс.</p>
+
+<h2 id="next">Что дальше</h2>
+
+<ul>
+<li><strong><a href="03-dsl.html">§3</a></strong> — полный Python-DSL. Что уже работало в примерах выше (<code>Point</code>, <code>Polygon</code>, <code>Circle</code>, <code>Center</code>) — малая часть. В DSL есть <code>Midpoint</code>, <code>Intersect</code>, <code>OrthogonalLine</code>, <code>LineBisector</code>, <code>Tangent</code>, <code>AngularBisector</code>, и ещё 150+ команд.</li>
+<li><strong><a href="04-geogebra.html">§4</a></strong> — загрузка из <code>.ggb</code>: <code>loadGGB</code> и <code>ImportPolicy</code>.</li>
+<li><strong><a href="05-styles.html">§5</a></strong> — стили: всё про JSON-файл, который мы передаём в <code>applyStyle</code>.</li>
+</ul>
+
+<div class="footer-nav">
+<a href="01-introduction.html">← §1 · Что такое AnimaGeo</a>
+<a href="03-dsl.html">§3 · Python-DSL →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

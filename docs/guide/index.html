@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · Guide</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html" class="current-page">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+</nav>
+
+<main class="wide">
+
+<h1>AnimaGeo Guide</h1>
+<p class="subtitle-main">
+Полное руководство по AnimaGeo — библиотеке, которая превращает
+геометрические конструкции (Python-DSL или <code>.ggb</code>) в высококачественные SVG и
+MP4-анимации. Каждый пример в этом гайде интерактивный: нажмите
+<strong>Edit</strong> — отредактируйте код — нажмите <strong>Run</strong>, и
+иллюстрация перерисуется через локальный Python-процесс.
+</p>
+
+<div class="callout note">
+Интерактив требует запущенного render-сервера на <code>127.0.0.1:8765</code>:
+<pre style="margin: 6px 0 0;"><code>cd /path/to/animageo
+PYTHONPATH=. python3.13 docs/guide/server/serve.py</code></pre>
+Без сервера гайд всё равно читается — иллюстрации показываются как статические SVG.
+</div>
+
+<h2>Попробовать прямо сейчас</h2>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true}'>
+  <div class="ex-code">
+    <span class="ex-label">python-DSL · попробуйте поменять координаты</span>
+<pre><code>A = Point(-4.5, -2)
+B = Point(4.5, -2)
+C = Point(-0.5, 2.8)
+p, a, b, c = Polygon(A, B, C)
+alpha = Angle(B, A, C)
+beta  = Angle(C, B, A)
+gamma = Angle(A, C, B)
+
+style(A, B, C, label_visible=True)
+alpha.style.label_text = r'$\alpha$'
+beta.style.label_text = r'$\beta$'
+gamma.style.label_text = r'$\gamma$'</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/index-00.svg" alt="Базовый треугольник">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/01-basic.py" download>01-basic.py</a>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<h2>Карта гайда</h2>
+
+<div class="cards">
+<a class="card" href="01-introduction.html">
+  <div class="num">§1</div>
+  <div class="t">Что такое AnimaGeo</div>
+  <div class="d">Пайплайн GGB→SVG/MP4, три источника стилей, место AnimaGeo между GeoGebra и manim.</div>
+</a>
+<a class="card" href="02-installation.html">
+  <div class="num">§2</div>
+  <div class="t">Установка и первый запуск</div>
+  <div class="d">Зависимости, требования к Python/manim/cairo, первый Hello-World-скрипт.</div>
+</a>
+<a class="card" href="03-dsl.html">
+  <div class="num">§3</div>
+  <div class="t">Python-DSL</div>
+  <div class="d">Point, Segment, Polygon, Angle, Circle, Arc, Vector — полный обзор DSL-конструкторов и команд.</div>
+</a>
+<a class="card" href="04-geogebra.html">
+  <div class="num">§4</div>
+  <div class="t">Загрузка из GeoGebra</div>
+  <div class="d">loadGGB, ImportPolicy, reloadPolicy, кэш ggb_raw.</div>
+</a>
+<a class="card" href="05-styles.html">
+  <div class="num">§5</div>
+  <div class="t">Стили</div>
+  <div class="d">JSON-стили, палитры, per-element overrides, rendering-флаги, scaling-константы.</div>
+</a>
+<a class="card" href="06-labels.html">
+  <div class="num">§6</div>
+  <div class="t">Подписи и автораскладка</div>
+  <div class="d">9-точечные якоря, TeX, autoPlaceLabels, EMA-трекер для addUpdater.</div>
+</a>
+<a class="card" href="07-curves.html">
+  <div class="num">§7</div>
+  <div class="t">Кривые</div>
+  <div class="d">Conic (9 ветвей), Function (Piecewise, асимптоты), ImplicitCurve (marching squares).</div>
+</a>
+<a class="card" href="08-animation.html">
+  <div class="num">§8</div>
+  <div class="t">Анимации</div>
+  <div class="d">Keyframes (play_keyframes), addUpdater / ValueTracker, easing, live-трекинг подписей.</div>
+</a>
+<a class="card" href="09-export.html">
+  <div class="num">§9</div>
+  <div class="t">Экспорт: все форматы</div>
+  <div class="d">SVG / PDF / EPS / TikZ (вектор) и PNG / GIF / MP4 / WebM / MOV (render); таблица выбора формата, CLI, ptUnit / px_size и pixel-invariance.</div>
+</a>
+<a class="card" href="10-web.html">
+  <div class="num">§10</div>
+  <div class="t">Интерактивный веб-экспорт</div>
+  <div class="d">Живые подвижные чертежи в браузере: exportJSXGraph, контракт animageo-board/v1, рантайм createBoard с сигналами/действиями, &lt;animageo-board&gt; и адаптеры.</div>
+</a>
+<a class="card" href="10-recipes.html">
+  <div class="num">§11</div>
+  <div class="t">Рецепты</div>
+  <div class="d">Как добиться X: брендинг, унификация, pixel-perfect 2×, z-перекрытия, динамические подписи.</div>
+</a>
+<a class="card" href="11-reference.html">
+  <div class="num">§12</div>
+  <div class="t">Reference</div>
+  <div class="d">Полный ключ-референс: JSON-схема, elem.style, экспортёры, animageo-board/v1, CLI, константы, публичное API.</div>
+</a>
+</div>
+
+<h2>Что такое интерактивный пример</h2>
+<p>У каждого блока с кодом есть кнопка <strong>Edit</strong>. Нажав её,
+вы переключаете блок в режим редактирования: появляется <code>textarea</code>
+с текущим кодом и панель из трёх кнопок.</p>
+
+<table>
+<thead><tr><th>Кнопка</th><th>Что делает</th></tr></thead>
+<tbody>
+<tr><td><code>Run</code> (или ⌘/Ctrl+Enter)</td><td>Посылает текущий код на локальный render-сервер, получает SVG, обновляет иллюстрацию рядом.</td></tr>
+<tr><td><code>Reset</code></td><td>Возвращает исходный код примера (иллюстрация не сбрасывается).</td></tr>
+<tr><td><code>Close</code></td><td>Закрывает редактор, возвращает исходный SVG.</td></tr>
+</tbody>
+</table>
+
+<p>Только один редактор активен за раз — клик по другому примеру автоматически закрывает предыдущий.
+Кнопка <strong>Скачать</strong> всегда отдаёт полный оригинальный <code>.py</code>-скрипт, не фрагмент из редактора.</p>
+
+<div class="callout warn">
+<strong>Локальное исполнение Python.</strong> Эндпоинт <code>/render</code>
+выполняет произвольный Python-код через <code>AnimaGeoScene.putCode()</code>.
+Сервер слушает только <code>127.0.0.1</code> и не должен выходить в сеть.
+</div>
+
+<div class="footer-nav">
+<span></span>
+<a href="01-introduction.html">§1 · Что такое AnimaGeo →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>
