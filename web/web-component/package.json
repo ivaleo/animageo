@@ -1,0 +1,26 @@
+{
+  "name": "@animageo/web-component",
+  "version": "0.1.0",
+  "description": "<animageo-board> custom element — zero-framework embedding of AnimaGeo interactive geometry boards. Works in any framework or none.",
+  "type": "module",
+  "main": "src/animageo-board.js",
+  "module": "src/animageo-board.js",
+  "exports": {
+    ".": "./src/animageo-board.js"
+  },
+  "files": ["src", "README.md"],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": ["web-component", "custom-element", "geometry", "jsxgraph", "animageo"],
+  "license": "MIT",
+  "dependencies": {
+    "@animageo/runtime": "^0.1.0"
+  },
+  "peerDependencies": {
+    "jsxgraph": ">=1.10.0"
+  },
+  "peerDependenciesMeta": {
+    "jsxgraph": { "optional": true }
+  }
+}

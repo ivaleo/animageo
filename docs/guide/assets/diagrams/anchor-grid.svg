@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 320" width="360" height="320" font-family="-apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif">
+  <defs>
+    <style>
+      .bbox    { fill: none; stroke: #4d87c6; stroke-width: 2; stroke-dasharray: 4 3; }
+      .anchor  { fill: #4d87c6; }
+      .anchor.mc { fill: #f15b5b; }
+      .text    { font-size: 42px; font-weight: 500; fill: #1a1f26; font-family: "Times New Roman", serif; font-style: italic; }
+      .lbl     { font-size: 11px; fill: #5a6470; font-family: ui-monospace, monospace; font-weight: 600; }
+      .ctx     { font-size: 13px; fill: #1a1f26; }
+      .title   { font-size: 15px; font-weight: 700; fill: #1a1f26; }
+    </style>
+  </defs>
+
+  <text class="title" x="180" y="22" text-anchor="middle">9-point label anchor</text>
+
+  <rect class="bbox" x="80" y="70" width="200" height="100"/>
+
+  <text class="text" x="180" y="138" text-anchor="middle">A&#8322;</text>
+
+  <circle class="anchor"    cx="80"  cy="70"  r="5"/>
+  <text class="lbl"   x="70"  y="65" text-anchor="end">TL</text>
+
+  <circle class="anchor"    cx="180" cy="70"  r="5"/>
+  <text class="lbl"   x="180" y="58" text-anchor="middle">TC</text>
+
+  <circle class="anchor"    cx="280" cy="70"  r="5"/>
+  <text class="lbl"   x="290" y="65">TR</text>
+
+  <circle class="anchor"    cx="80"  cy="120" r="5"/>
+  <text class="lbl"   x="70"  y="124" text-anchor="end">ML</text>
+
+  <circle class="anchor mc" cx="180" cy="120" r="6"/>
+  <text class="lbl"   x="195" y="124">MC</text>
+
+  <circle class="anchor"    cx="280" cy="120" r="5"/>
+  <text class="lbl"   x="290" y="124">MR</text>
+
+  <circle class="anchor"    cx="80"  cy="170" r="5"/>
+  <text class="lbl"   x="70"  y="185" text-anchor="end">BL</text>
+
+  <circle class="anchor"    cx="180" cy="170" r="5"/>
+  <text class="lbl"   x="180" y="185" text-anchor="middle">BC</text>
+
+  <circle class="anchor"    cx="280" cy="170" r="5"/>
+  <text class="lbl"   x="290" y="185">BR</text>
+
+  <text class="ctx" x="30"  y="230">Якорь — та часть bbox подписи, которую</text>
+  <text class="ctx" x="30"  y="248">«прибивают» к целевой точке + offset.</text>
+  <text class="ctx" x="30"  y="270">GGB default = <tspan style="font-family: ui-monospace, monospace; font-weight: 600; fill: #4d87c6;">BL</tspan></text>
+  <text class="ctx" x="30"  y="288">Авто-раскладка с canonicalize = <tspan style="font-family: ui-monospace, monospace; font-weight: 600; fill: #f15b5b;">MC</tspan></text>
+</svg>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §6 · Подписи и автораскладка</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html" class="current-page">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#basics">Базовое управление</a></li>
+        <li><a href="#anchors">9-точечный якорь</a></li>
+        <li><a href="#offset">Offset</a></li>
+        <li><a href="#tex">TeX и Unicode</a></li>
+        <li><a href="#auto">Автораскладка</a></li>
+        <li><a href="#config">Конфигурация</a></li>
+        <li><a href="#animation">Подписи в анимации</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§6 · Подписи и автораскладка</h1>
+
+<p class="subtitle-main">
+Подпись в AnimaGeo — отдельный TeX-объект, не часть элемента. Позиция
+задаётся парой: 9-точечный якорь + pixel-offset. Для сложных сцен
+работает автоматическая раскладка: жадный решатель минимизирует
+перекрытия, углы размещаются аналитически по биссектрисе.
+</p>
+
+<h2 id="basics">Базовое управление</h2>
+
+<table>
+<thead><tr><th>Ключ <code>elem.style</code></th><th>Тип</th><th>Default</th><th>Эффект</th></tr></thead>
+<tbody>
+<tr><td><code>label_visible</code></td><td>bool</td><td>зависит от типа</td><td>Отрисовать подпись рядом с элементом.</td></tr>
+<tr><td><code>label_text</code></td><td>строка</td><td><code>"$name$"</code></td><td>Текст (TeX или Unicode).</td></tr>
+<tr><td><code>label_mode</code></td><td><code>label</code> / <code>value</code> / <code>label_value</code></td><td><code>label</code></td><td>Показывать текст подписи, значение или <code>label = value</code>.</td></tr>
+<tr><td><code>label_value_precision</code></td><td>int</td><td><code>rendering.label_value_precision</code> / 1</td><td>Округление численной части.</td></tr>
+<tr><td><code>label_angle_unit</code></td><td><code>degree</code> / <code>radian</code></td><td><code>degree</code></td><td>Единицы для значений углов.</td></tr>
+<tr><td><code>label_color</code></td><td>hex</td><td><code>style.strong</code></td><td>Цвет подписи.</td></tr>
+<tr><td><code>label_anchor</code></td><td><code>TL</code>..<code>BR</code></td><td><code>rendering.label_anchor</code> / <code>BL</code></td><td>Какая точка bbox «прибивается» к якорной позиции.</td></tr>
+<tr><td><code>label_offset_px</code></td><td><code>[dx, dy]</code> px</td><td>[0, 0]</td><td>Доп. сдвиг после якоря. Положительный <em>y</em> — вверх.</td></tr>
+<tr><td><code>font_size_px</code></td><td>float</td><td><code>defaults.&lt;type&gt;.font_size_px</code></td><td>Per-element размер шрифта в пикселях.</td></tr>
+<tr><td><code>label_placement_locked</code></td><td>bool</td><td>false</td><td>Защита от автораскладки — ручной <code>label_offset_px</code> остаётся.</td></tr>
+</tbody>
+</table>
+
+<h2 id="anchors">9-точечный якорь</h2>
+
+<figure>
+    <img src="/assets/diagrams/anchor-grid.svg" alt="9-точечный якорь">
+    <figcaption>Якорь — это та точка bbox, которую «прибивают» к позиции рядом с элементом.</figcaption>
+</figure>
+
+<div class="anchor-grid">
+<div class="cell">TL</div><div class="cell">TC</div><div class="cell">TR</div>
+<div class="cell">ML</div><div class="cell mc">MC</div><div class="cell">MR</div>
+<div class="cell">BL</div><div class="cell">BC</div><div class="cell">BR</div>
+</div>
+
+<ul>
+<li><strong><code>BL</code></strong> — GeoGebra-default. Подпись справа-сверху от точки (базовая линия заглавных лежит на <em>y</em>).</li>
+<li><strong><code>MC</code></strong> — центр bbox. Используется для подписей углов и для <code>canonicalize_anchor=true</code>-режима автораскладки.</li>
+<li><strong><code>TC</code> / <code>BC</code></strong> — подпись сверху/снизу от точки.</li>
+<li><strong><code>ML</code> / <code>MR</code></strong> — слева/справа от точки.</li>
+</ul>
+
+<h3>Как смотрится каждый якорь</h3>
+
+<div class="ex-row">
+<div class="mini">
+    <img src="/assets/examples/15-anchor-BL.svg" alt="BL">
+    <div class="cap">BL (справа-сверху)</div>
+</div>
+<div class="mini">
+    <img src="/assets/examples/15-anchor-BC.svg" alt="BC">
+    <div class="cap">BC (сверху)</div>
+</div>
+<div class="mini">
+    <img src="/assets/examples/15-anchor-TC.svg" alt="TC">
+    <div class="cap">TC (снизу)</div>
+</div>
+<div class="mini">
+    <img src="/assets/examples/15-anchor-MR.svg" alt="MR">
+    <div class="cap">MR (слева)</div>
+</div>
+<div class="mini">
+    <img src="/assets/examples/15-anchor-MC.svg" alt="MC">
+    <div class="cap">MC (поверх)</div>
+</div>
+</div>
+
+<div class="callout tip">
+Сценовый default — <code>rendering.label_anchor</code> в JSON-стиле.
+Per-element <code>elem.style['label_anchor']</code> его перекрывает.
+</div>
+
+<h2 id="offset">Offset — сдвиг подписи</h2>
+
+<p><code>offset=[dx, dy]</code> — в пикселях, <em>после</em> якорения. По
+конвенции математических координат: положительный <em>y</em> направлен
+вверх. При смене <code>px_size</code> offset остаётся pixel-invariant
+(делится на <code>ptUnit_ggb</code>, зафиксированный на момент импорта).</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">offset · правьте координаты; смещения подписей — через overrides</span>
+<pre><code>P = Point(-2, 0)
+Q = Point(2, 0)
+
+style(P, Q, label_visible=True)
+P.style.label_offset_px = [0, 0]
+Q.style.label_offset_px = [14, 16]</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/06-labels-00.svg" alt="Label offsets">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/16-label-offsets.py" download>16-label-offsets.py</a>
+  </div>
+</div>
+
+<h2 id="tex">TeX и Unicode</h2>
+
+<p>Подписи компилируются через pdfLaTeX с шаблоном RusTex
+(T2A + babel russian + utf8). В <code>ui.py</code> есть кастомная обработка
+дробей, уменьшенные <code>\angle</code> и <code>\triangle</code>, и словарь
+автозамен Unicode → TeX.</p>
+
+<table>
+<thead><tr><th>Запись</th><th>Что компилирует</th><th>Результат</th></tr></thead>
+<tbody>
+<tr><td><code>'$A_1$'</code></td><td>raw-TeX</td><td>A₁ (с индексом)</td></tr>
+<tr><td><code>r'$\alpha + \beta$'</code></td><td>raw-TeX</td><td>α + β</td></tr>
+<tr><td><code>r'$\frac{a}{b}$'</code></td><td>raw-TeX</td><td>дробь a/b</td></tr>
+<tr><td><code>r'$\triangle ABC$'</code></td><td>raw-TeX</td><td>△ABC</td></tr>
+<tr><td><code>r'$x \in \mathbb{R}$'</code></td><td>raw-TeX</td><td>x ∈ ℝ</td></tr>
+<tr><td><code>'α + β = γ'</code></td><td>Unicode-autoreplace → TeX</td><td>α + β = γ</td></tr>
+</tbody>
+</table>
+
+<div class="ex-row">
+<div class="mini">
+    <img src="/assets/examples/20-tex-labels.svg" alt="TeX labels">
+    <div class="cap">шесть типичных TeX-подписей</div>
+</div>
+</div>
+
+<h3>Автозамена Unicode</h3>
+
+<p>В <code>ui.py::correctedLabel()</code> прописан словарь из 96 замен:</p>
+
+<pre><code>·   → \cdot         α → \alpha      △ → \triangle
+×   → \times        β → \beta       ∠ → \angle
+∈   → \in           π → \pi         ±  → \pm
+⇔   → \Leftrightarrow                ∞  → \infty
+...
+</code></pre>
+
+<p>Следствие: можно писать <code>label = 'α + β = γ'</code> обычным Unicode — TeX
+получит корректное <code>$\alpha + \beta = \gamma$</code>. Удобно, если источник
+подписей — таблица, CSV или GGB-файл с Unicode-текстом.</p>
+
+<h2 id="auto">Автораскладка</h2>
+
+<p>Когда подписей много, они начинают перекрывать друг друга и сами
+элементы. AnimaGeo решает это автоматически: вызовите
+<code>scene.autoPlaceLabels()</code> перед <code>exportSVG</code>.</p>
+
+<p>Алгоритм — <em>жадный решатель</em> с приоритетом:</p>
+<ol>
+<li>Для каждой подписи генерируется 8 кандидатов (E, NE, N, NW, W, SW, S, SE) на базовом расстоянии <code>distance_px</code>.</li>
+<li>Каждому кандидату назначается штраф: за направление относительно «идеального», за пересечение с другими подписями, за пересечение с геометрией.</li>
+<li>Подписи сортируются по «сложности» (мало свободных позиций → первыми) и размещаются жадно.</li>
+<li>Если все 8 кандидатов имеют штраф — радиус ступенчато увеличивается (до <code>+10 px</code>) пока не найдётся чистая позиция.</li>
+</ol>
+
+<p>Для углов — <em>аналитика</em> вместо 8 вариантов: подпись садится на
+биссектрису, отодвигается на <code>arc_r + half_label_size + gap_arc_px</code>.</p>
+
+<h3>До и после</h3>
+
+<div class="ex-row">
+<div class="mini">
+    <img src="/assets/examples/17-autolayout-before.svg" alt="Before autoPlaceLabels">
+    <div class="cap">до: offset из GGB или дефолты</div>
+</div>
+<div class="mini">
+    <img src="/assets/examples/17-autolayout-after.svg" alt="After autoPlaceLabels">
+    <div class="cap">после <code>autoPlaceLabels()</code></div>
+</div>
+</div>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true, "overlay_extra": {"label_placement": {"enabled": true, "distance_px": 8, "padding_px": 2, "w_label": 12, "w_geom": 8}}}'>
+  <div class="ex-code">
+    <span class="ex-label">autoPlaceLabels · попробуйте сдвинуть точку C и пересчитать</span>
+<pre><code>A = Point(-2, 1.5)
+B = Point(2, 1.5)
+C = Point(0, -1.5)
+s1 = Segment(A, C)
+s2 = Segment(B, C)
+s3 = Segment(A, B)
+M = Midpoint(A, B)
+D = Midpoint(A, C)
+E = Midpoint(B, C)
+
+style(A, B, C, D, E, M, label_visible=True)</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/06-labels-01.svg" alt="Auto-placed labels">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<h3>Углы: два независимых зазора</h3>
+
+<p>Подпись угла садится на биссектрисе снаружи дуги. Две независимые
+величины определяют, насколько далеко:</p>
+
+<ul>
+<li><code>angle_gap_arc_px</code> — расстояние <em>от внешней дуги</em> до ближайшей
+стороны bbox подписи. Базово: <code>dist = arc_r + max(hw, hh) + gap_arc_px</code>.</li>
+<li><code>angle_gap_sides_px</code> — зазор <em>от сторон угла</em> до bbox (narrow-angle clamp).
+Для острых углов bbox «зажимается в воронку»; clamp отодвигает подпись дальше
+по биссектрисе: <code>dist ≥ (half_diag + gap_sides_px) / sin(half_angle)</code>.</li>
+</ul>
+
+<p><code>arc_r</code> — это <em>эффективный</em> внешний радиус: для одной дуги
+равен <code>arc_size_px</code>; при <code>lines ≥ 2</code> —
+<code>arc_size_px + (lines − 1) × ang_rshift</code>. Подпись автоматически уходит
+за самую внешнюю дугу, не налезая.</p>
+
+<h3>Ручная блокировка</h3>
+
+<pre><code>scene.element('A').style['label_placement_locked'] = True
+scene.element('A').style['label_offset_px'] = [10, -5]
+# autoPlaceLabels обойдёт A стороной; ручной offset останется.</code></pre>
+
+<h2 id="config">Конфигурация автораскладки</h2>
+
+<p>Все параметры — в <code>overlay.label_placement</code> в JSON-стиле:</p>
+
+<table>
+<thead><tr><th>Параметр</th><th>Default</th><th>Описание</th></tr></thead>
+<tbody>
+<tr><td><code>enabled</code></td><td>false</td><td>Вызвать <code>autoPlaceLabels()</code> автоматически в конце <code>loadGGB</code>.</td></tr>
+<tr><td><code>distance_px</code></td><td>6</td><td>Базовое расстояние якорь → центр подписи, пикселей.</td></tr>
+<tr><td><code>padding_px</code></td><td>2</td><td>Зазор вокруг bbox для overlap-тестов.</td></tr>
+<tr><td><code>angle_gap_arc_px</code></td><td>3</td><td>Зазор дуга угла → подпись, пикселей.</td></tr>
+<tr><td><code>angle_gap_sides_px</code></td><td>3</td><td>Зазор стороны угла → bbox (narrow-angle clamp).</td></tr>
+<tr><td><code>angle_gap_px</code></td><td>3</td><td>Legacy: fallback, если два параметра выше не заданы.</td></tr>
+<tr><td><code>w_anchor</code></td><td>1.0</td><td>Штраф за отклонение от «идеального» направления.</td></tr>
+<tr><td><code>w_label</code></td><td>10.0</td><td>Штраф за пересечение с другими подписями.</td></tr>
+<tr><td><code>w_geom</code></td><td>8.0</td><td>Штраф за пересечение с геометрией.</td></tr>
+<tr><td><code>dynamic_angles</code></td><td>false</td><td>Пересчитывать биссектрисы каждый кадр (нужен anim-режим, см. ниже).</td></tr>
+<tr><td><code>keyframe_snapshots</code></td><td>false</td><td>Для <code>play_keyframes</code>: snapshot на каждом keyframe + интерполяция.</td></tr>
+<tr><td><code>canonicalize_anchor</code></td><td>false</td><td>Всё в <code>MC</code> — убирает дискретные скачки якоря между кадрами.</td></tr>
+<tr><td><code>interpolation</code></td><td><code>linear</code></td><td>Easing offset между snapshot-ами: <code>linear</code> / <code>smooth</code>.</td></tr>
+<tr><td><code>ema_alpha</code></td><td>0.2</td><td>Вес свежего решения в EMA (dynamic tracker).</td></tr>
+<tr><td><code>anchor_flip_frames</code></td><td>6</td><td>Минимум кадров перед сменой якоря (hysteresis).</td></tr>
+<tr><td><code>solver_every_n_frames</code></td><td>2</td><td>Throttle решателя в tracker-режиме.</td></tr>
+</tbody>
+</table>
+
+<div class="callout warn">
+<code>dynamic_angles=true</code> <em>сам по себе</em> ничего не делает.
+Ему нужен один из активных режимов: <code>keyframe_snapshots=true</code> (для
+<code>play_keyframes</code>) или <code>autoPlaceLabels(dynamic=True)</code>
+(для <code>addUpdater</code>-анимаций). Это сделано сознательно: стоимость
+per-frame-вычислений должна быть явной.
+</div>
+
+<h2 id="animation">Подписи в анимации</h2>
+
+<p>Три режима работы в анимации:</p>
+
+<table>
+<thead><tr><th>Режим</th><th>Когда</th><th>Что делает</th></tr></thead>
+<tbody>
+<tr><td>Статика</td><td><code>scene.autoPlaceLabels()</code></td><td>One-shot: решатель запускается один раз, результат замораживается.</td></tr>
+<tr><td>Keyframe-snapshot</td><td><code>overlay.label_placement.keyframe_snapshots=true</code></td><td>Pre-pass на каждом keyframe (со сохранением/восстановлением состояния), offset между snapshot-ами интерполируется.</td></tr>
+<tr><td>Per-frame tracker</td><td><code>autoPlaceLabels(dynamic=True)</code></td><td>Ставит <code>LabelTracker</code> в сцену: каждый кадр решатель перезапускается, результат сглаживается через EMA, якоря меняются только после <em>N</em> стабильных кадров (hysteresis).</td></tr>
+</tbody>
+</table>
+
+<h3>Рекомендуемая конфигурация для keyframes</h3>
+
+<pre><code>"rendering": {
+    "label_placement": {
+        "enabled":              true,
+        "keyframe_snapshots":   true,
+        "dynamic_angles":       true,
+        "canonicalize_anchor":  true,
+        "interpolation":        "smooth"
+    }
+}</code></pre>
+
+<p>Что получается: на каждом keyframe solver находит лучшую раскладку,
+все подписи приводятся к якорю <code>MC</code> (исключает скачки между
+кадрами), offset-ы плавно интерполируются smoothstep-ом, биссектрисы
+углов обновляются аналитически каждый кадр.</p>
+
+<p>Живые примеры — в §8 (Анимации).</p>
+
+<div class="footer-nav">
+<a href="05-styles.html">← §5 · Стили</a>
+<a href="07-curves.html">§7 · Кривые →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

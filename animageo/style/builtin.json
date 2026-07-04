@@ -1,0 +1,233 @@
+{
+    "name": "builtin",
+    "version": 1,
+    "_comment": "Package-shipped baseline. Loaded unconditionally by StyleConfig.load; user JSON files are deep-merged on top. All *_px values are pixels; the renderer divides by ptUnit_style at draw time. Opinionated per-type fills are the user JSON's job: they apply via overlay or defaults merge.",
+
+    "presets": {
+        "color": {
+            "main":         "#000000",
+            "light":        "#cccccc",
+            "accent":       "#d05456",
+            "accent_light": "#f6e0db",
+            "aux":          "#808080",
+            "black":        "#000000",
+            "white":        "#ffffff",
+            "shade":        "#eeeeee",
+            "background":   "#ffffff",
+            "strong":       "#000000"
+        },
+        "point_size": {
+            "main": 6,
+            "bold": 9,
+            "aux": 4
+        },
+        "line_width": {
+            "main": 1.5,
+            "bold": 2.5,
+            "aux": 0.75
+        },
+        "angle_radius": {
+            "main": 17,
+            "bold": 24,
+            "aux": 12,
+            "shift": 1.5,
+            "right": 17
+        },
+        "tick": {
+            "main": {
+                "tick_length_px": 9,
+                "tick_width_px": 1.5,
+                "tick_shift_px": 2
+            }
+        },
+        "arrow": {
+            "main": {
+                "arrow_length_px": 11,
+                "arrow_width_px": 7.5
+            }
+        },
+        "font_size": {
+            "main": 14,
+            "bold": 16,
+            "aux": 12
+        }
+    },
+
+    "defaults": {
+        "point": {
+            "size_px":       "presets.point_size.main",
+            "fill":          "presets.color.strong",
+            "stroke":        "presets.color.strong",
+            "stroke_width_px": 0,
+            "fill_opacity":  1,
+            "stroke_opacity": 1,
+            "label_color":   "presets.color.strong",
+            "font_size_px":  "presets.font_size.main",
+            "point_shape":   "circle"
+        },
+        "segment": {
+            "$include":        "presets.tick.main",
+            "stroke":          "presets.color.strong",
+            "stroke_width_px": "presets.line_width.main",
+            "stroke_opacity":  1,
+            "stroke_linecap":  "butt",
+            "fill":            "presets.color.background",
+            "fill_opacity":    1,
+            "label_color":     "presets.color.strong",
+            "font_size_px":    "presets.font_size.main"
+        },
+        "line": {
+            "stroke":          "presets.color.strong",
+            "stroke_width_px": "presets.line_width.main",
+            "stroke_opacity":  1,
+            "fill":            "presets.color.background",
+            "fill_opacity":    1,
+            "label_color":     "presets.color.strong",
+            "font_size_px":    "presets.font_size.main"
+        },
+        "ray": {
+            "stroke":          "presets.color.strong",
+            "stroke_width_px": "presets.line_width.main",
+            "stroke_opacity":  1,
+            "fill":            "presets.color.background",
+            "fill_opacity":    1,
+            "label_color":     "presets.color.strong",
+            "font_size_px":    "presets.font_size.main"
+        },
+        "vector": {
+            "$include":         ["presets.tick.main", "presets.arrow.main"],
+            "stroke":           "presets.color.strong",
+            "stroke_width_px":  "presets.line_width.main",
+            "stroke_opacity":   1,
+            "fill":             "presets.color.background",
+            "fill_opacity":     1,
+            "label_color":      "presets.color.strong",
+            "font_size_px":     "presets.font_size.main"
+        },
+        "angle": {
+            "arc_size_px":       "presets.angle_radius.main",
+            "arc_shift_px":      "presets.angle_radius.shift",
+            "right_angle_size_px": "presets.angle_radius.right",
+            "stroke":            "presets.color.strong",
+            "stroke_width_px":   "presets.line_width.aux",
+            "stroke_opacity":    1,
+            "fill":              "presets.color.background",
+            "fill_opacity":      1,
+            "label_color":       "presets.color.strong",
+            "font_size_px":      "presets.font_size.main",
+            "label_radial_offset_px": 0,
+            "tick_count":        1
+        },
+        "polygon": {
+            "stroke":           "presets.color.strong",
+            "stroke_width_px":  "presets.line_width.main",
+            "stroke_opacity":   1,
+            "fill":             "presets.color.background",
+            "fill_opacity":     1,
+            "label_color":      "presets.color.strong",
+            "font_size_px":     "presets.font_size.main"
+        },
+        "circle": {
+            "stroke":           "presets.color.strong",
+            "stroke_width_px":  "presets.line_width.main",
+            "stroke_opacity":   1,
+            "fill":             "presets.color.background",
+            "fill_opacity":     1,
+            "label_color":      "presets.color.strong",
+            "font_size_px":     "presets.font_size.main"
+        },
+        "arc": {
+            "stroke":           "presets.color.strong",
+            "stroke_width_px":  "presets.line_width.main",
+            "stroke_opacity":   1,
+            "fill":             "presets.color.background",
+            "fill_opacity":     1,
+            "label_color":      "presets.color.strong",
+            "font_size_px":     "presets.font_size.main"
+        },
+        "circlesector": {
+            "stroke":           "presets.color.strong",
+            "stroke_width_px":  "presets.line_width.main",
+            "stroke_opacity":   1,
+            "fill":             "presets.color.background",
+            "fill_opacity":     1,
+            "label_color":      "presets.color.strong",
+            "font_size_px":     "presets.font_size.main"
+        },
+        "conic": {
+            "stroke":           "presets.color.strong",
+            "stroke_width_px":  "presets.line_width.main",
+            "stroke_opacity":   1,
+            "fill":             "presets.color.background",
+            "fill_opacity":     1,
+            "label_color":      "presets.color.strong",
+            "font_size_px":     "presets.font_size.main"
+        },
+        "function": {
+            "stroke":           "presets.color.strong",
+            "stroke_width_px":  "presets.line_width.main",
+            "stroke_opacity":   1,
+            "fill":             "presets.color.background",
+            "fill_opacity":     1,
+            "label_color":      "presets.color.strong",
+            "font_size_px":     "presets.font_size.main"
+        },
+        "implicitcurve": {
+            "stroke":           "presets.color.strong",
+            "stroke_width_px":  "presets.line_width.main",
+            "stroke_opacity":   1,
+            "fill":             "presets.color.background",
+            "fill_opacity":     1,
+            "label_color":      "presets.color.strong",
+            "font_size_px":     "presets.font_size.main"
+        },
+        "decoration": {
+            "_comment":         "Shared sub-defaults for tick-marks on segments/angles and arrow heads on vectors/rays. Callers merge these into the relevant type as needed.",
+            "$include":         "presets.tick.main"
+        },
+        "text": {
+            "label_color":      "presets.color.strong",
+            "font_size_px":     "presets.font_size.bold"
+        }
+    },
+
+    "overlay": {
+        "per_type": {},
+        "per_name": {},
+        "angle_radius": {
+            "enabled":          false,
+            "exp":              0.25,
+            "pivot_rad":        1.5707963267948966,
+            "min_px":           12,
+            "max_arm_fraction": 0.65,
+            "apply_to_right":   false
+        },
+        "label_placement": {
+            "enabled":             false,
+            "distance_px":         6,
+            "padding_px":          2,
+            "angle_gap_arc_px":    3,
+            "angle_gap_sides_px":  3,
+            "w_anchor":            1.0,
+            "w_label":             10.0,
+            "w_geom":              8.0,
+            "dynamic_angles":      false,
+            "keyframe_snapshots":  false,
+            "canonicalize_anchor": false,
+            "interpolation":       "linear",
+            "ema_alpha":           0.2,
+            "anchor_flip_frames":  6,
+            "solver_every_n_frames": 2
+        }
+    },
+
+    "rendering": {
+        "background":             "presets.color.background",
+        "line_cap":               "butt",
+        "right_angle_joint":      "auto",
+        "polygon_boundary_layer": null,
+        "points_display":         "auto",
+        "label_anchor":           "BC",
+        "label_value_precision":  1
+    }
+}

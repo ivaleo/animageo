@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 340" width="560" height="340" font-family="-apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif">
+  <defs>
+    <style>
+      .shade0 { fill: #fdddd7; stroke: #f15b5b; }
+      .shade1 { fill: #f6e0db; stroke: #d05456; }
+      .shade2 { fill: #dee7f5; stroke: #6688c2; }
+      .shade3 { fill: #d6e5f6; stroke: #4d87c6; }
+      .shade4 { fill: #d6f0df; stroke: #58c57e; }
+      .shade5 { fill: #f3ecf9; stroke: #9b6dbf; }
+      .shade6 { fill: #f5edd8; stroke: #c59a47; }
+      .shade7 { fill: #e8e8e8; stroke: #5a6470; }
+      .layer  { stroke-width: 1.5; rx: 8; }
+      .ltext  { font-size: 13px; font-weight: 600; fill: #1a1f26; }
+      .zval   { font-size: 12px; font-family: ui-monospace, monospace; fill: #5a6470; }
+      .title  { font-size: 14px; font-weight: 700; fill: #1a1f26; }
+      .hint   { font-size: 11px; fill: #5a6470; font-style: italic; }
+    </style>
+  </defs>
+
+  <text class="title" x="280" y="24" text-anchor="middle">Z-index tiers — front to back</text>
+
+  <rect class="layer shade3" x="60" y="40" width="440" height="32"/>
+  <text class="ltext" x="80"  y="61">Z_POINT  ·  Z_LABEL</text>
+  <text class="zval"  x="480" y="61" text-anchor="end">50</text>
+
+  <rect class="layer shade2" x="60" y="80" width="440" height="32"/>
+  <text class="ltext" x="80"  y="101">Z_STROKE · сегменты, окружности (stroke), дуги</text>
+  <text class="zval"  x="480" y="101" text-anchor="end">5</text>
+
+  <rect class="layer shade4" x="60" y="120" width="440" height="32"/>
+  <text class="ltext" x="80"  y="141">Z_LINE · линии, окружности (fill-less)</text>
+  <text class="zval"  x="480" y="141" text-anchor="end">4</text>
+
+  <rect class="layer shade5" x="60" y="160" width="440" height="32"/>
+  <text class="ltext" x="80"  y="181">Z_ANGLE · дуги углов</text>
+  <text class="zval"  x="480" y="181" text-anchor="end">3</text>
+
+  <rect class="layer shade6" x="60" y="200" width="440" height="32"/>
+  <text class="ltext" x="80"  y="221">Z_FILL_LABEL · подписи на заливках</text>
+  <text class="zval"  x="480" y="221" text-anchor="end">0.1</text>
+
+  <rect class="layer shade1" x="60" y="240" width="440" height="32"/>
+  <text class="ltext" x="80"  y="261">Z_FILL · полигоны, сектора</text>
+  <text class="zval"  x="480" y="261" text-anchor="end">0.01</text>
+
+  <rect class="layer shade0" x="60" y="280" width="440" height="32"/>
+  <text class="ltext" x="80"  y="301">Z_FILL_INNER · резервный нижний fill</text>
+  <text class="zval"  x="480" y="301" text-anchor="end">0.001</text>
+
+  <text class="hint" x="280" y="330" text-anchor="middle">Точки и подписи всегда видны; заливки — самые нижние.</text>
+</svg>

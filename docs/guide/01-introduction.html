@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §1 · Что такое AnimaGeo</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html" class="current-page">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#problem">Что решает AnimaGeo</a></li>
+        <li><a href="#pipeline">Пайплайн</a></li>
+        <li><a href="#hello">Hello World</a></li>
+        <li><a href="#styles">Меняем стили на лету</a></li>
+        <li><a href="#labels">Подписи и автораскладка</a></li>
+        <li><a href="#next">Что дальше</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§1 · Что такое AnimaGeo</h1>
+
+<p class="subtitle-main">
+AnimaGeo — Python-библиотека, которая переводит геометрические конструкции
+(написанные в Python-DSL или импортированные из <code>.ggb</code>) в SVG и
+MP4-анимации типографского качества. Ядро — поверх
+<a href="https://www.manim.community">manim&nbsp;community</a>, но весь
+пользовательский слой — про геометрию: <code>Point</code>,
+<code>Polygon</code>, <code>Angle</code>, а не про
+<code>Mobject</code>/<code>Animation</code>.
+</p>
+
+<h2 id="problem">Что решает AnimaGeo</h2>
+<p>Типичный сценарий — у вас есть <code>.ggb</code>-файл из GeoGebra
+(учитель, методист, автор учебника) и нужен из него качественный SVG
+для статьи или MP4 для урока. Ручной перевод в manim — долго и хрупко:
+каждая точка, сегмент, угол требует отдельного <code>Mobject</code>,
+стили копируются вручную, подписи накладываются друг на друга.</p>
+
+<p>AnimaGeo делает две вещи:</p>
+<ul>
+<li>Читает <code>.ggb</code>-файл (или Python-DSL, если вам не нужен GeoGebra) → строит <em>Construction</em> — ориентированный граф геометрических зависимостей.</li>
+<li>Рендерит Construction в SVG (через Cairo) или MP4 (через manim) с применением JSON-стилей, ImportPolicy-правил и автораскладки подписей.</li>
+</ul>
+
+<h2 id="pipeline">Пайплайн</h2>
+
+<figure>
+    <img src="/assets/diagrams/pipeline.svg" alt="Пайплайн: .ggb → ggb_parser → Construction → applyStyle → CreateMObject → SVG/MP4">
+    <figcaption>Путь от <code>.ggb</code> до SVG/MP4. Стили применяются в <code>applyStyle</code> поверх распарсенной конструкции.</figcaption>
+</figure>
+
+<table>
+<thead><tr><th>Шаг</th><th>Код</th><th>Что делает</th></tr></thead>
+<tbody>
+<tr><td>1. Parse</td><td><code>parsers/ggb_parser.py</code> или <code>parsers/dsl/</code></td><td>XML из <code>.ggb</code> или Python-DSL (exec-движок) → список команд и сырых стилей (<code>elem.ggb_raw</code>)</td></tr>
+<tr><td>2. Build</td><td><code>geo/construction.py</code></td><td>Топологическая сортировка, ленивое построение: <code>Point</code> → <code>Segment</code> → <code>Angle</code> → …</td></tr>
+<tr><td>3. Style</td><td><code>applyStyle</code> + <code>ImportPolicy</code></td><td>JSON-правила → <code>elem.style</code>. Политики решают, как конвертировать GGB-значения.</td></tr>
+<tr><td>4. Render</td><td><code>CreateMObject</code> + <code>exportSVG</code> / manim</td><td>Элементы → manim Mobject → Cairo (SVG) или manim-рендерер (MP4)</td></tr>
+</tbody>
+</table>
+
+<h2 id="outputs">Во что выводит</h2>
+
+<p>Из одной конструкции AnimaGeo получает три рода вывода:</p>
+
+<table>
+<thead><tr><th>Дорожка</th><th>Форматы</th><th>Когда</th></tr></thead>
+<tbody>
+<tr><td><strong>Статический вектор</strong></td><td>SVG · PDF · EPS · TikZ</td><td>книги, статьи, печать, LaTeX</td></tr>
+<tr><td><strong>Render</strong></td><td>PNG · GIF · MP4 · WebM · MOV</td><td>обучающие видео, анимированные доказательства</td></tr>
+<tr><td><strong>Интерактивный web</strong></td><td>JSXGraph (живой SVG)</td><td>подвижные чертежи на сайте: тяни точки/слайдеры</td></tr>
+</tbody>
+</table>
+
+<p>Статика и render разбираются в <a href="09-export.html">§9 · Экспорт</a>,
+интерактивные подвижные чертежи — в <a href="10-web.html">§10 · Веб-экспорт</a>.</p>
+
+<h2 id="hello">Hello World</h2>
+
+<p>Самая короткая программа — треугольник с подписями и углами. Попробуйте
+поменять координаты или удалить <code>beta</code>, нажмите <strong>Run</strong>.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true}'>
+  <div class="ex-code">
+    <span class="ex-label">hello.py</span>
+<pre><code>A = Point(-4.5, -2)
+B = Point(4.5, -2)
+C = Point(-0.5, 2.8)
+p, a, b, c = Polygon(A, B, C)
+alpha = Angle(B, A, C)
+beta  = Angle(C, B, A)
+gamma = Angle(A, C, B)
+
+style(A, B, C, label_visible=True)
+alpha.style.label_text = r'$\alpha$'
+beta.style.label_text = r'$\beta$'
+gamma.style.label_text = r'$\gamma$'</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/01-introduction-00.svg" alt="Базовый треугольник">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/01-basic.py" download>01-basic.py</a>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<p>Ключевые моменты:</p>
+<ul>
+<li><code>Point(x, y)</code> — входная точка в декартовых координатах сцены.</li>
+<li><code>Polygon(A, B, C)</code> возвращает кортеж из полигона и трёх сегментов — <em>AB</em>, <em>BC</em>, <em>CA</em>. Это не туда-сюда как в GeoGebra; порядок фиксирован.</li>
+<li><code>Angle(B, A, C)</code> — угол при вершине A, между лучами AB и AC. Порядок важен: при CCW-ориентации <code>Angle(A, B, C)</code> даёт reflex-сектор (&gt;180°).</li>
+<li>Все переменные (<code>alpha</code>, <code>p</code>, <code>a</code>…) — <em>имена</em> в Construction, по которым к ним можно обращаться через <code>scene.element(name)</code>.</li>
+</ul>
+
+<h2 id="styles">Меняем стили на лету</h2>
+
+<p>Тот же треугольник, но с явными overrides через <code>elem.style</code>. Любой
+элемент сцены имеет словарь <code>style</code>, в который можно положить
+<code>'stroke'</code>, <code>'fill'</code>, <code>'stroke_width_px'</code>,
+<code>'stroke_dash_ratio'</code> и ещё десяток ключей.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true}'>
+  <div class="ex-code">
+    <span class="ex-label">styled.py · правьте геометрию, стили применяются через пример-шаблон</span>
+<pre><code>A = Point(-4, -1.8)
+B = Point(4, -1.8)
+C = Point(-0.8, 2.6)
+p, a, b, c = Polygon(A, B, C)
+
+style(A, B, C, label_visible=True)
+p.style.fill = '#d6e5f6'
+p.style.fill_opacity = 0.55
+p.style.stroke = '#4d87c6'
+p.style.stroke_width_px = 2.0
+a.style.stroke_dash_ratio = 0.5
+c.style.stroke = '#f15b5b'</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/01-introduction-01.svg" alt="Треугольник со стилями">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<p>В собственном скрипте (не в интерактиве) то же самое пишется напрямую в
+<code>elem.style</code> — после <code>putCode</code>:</p>
+
+<pre><code>scene.putCode("""
+A = Point(-4, -1.8)
+B = Point(4, -1.8)
+C = Point(-0.8, 2.6)
+p, a, b, c = Polygon(A, B, C)
+""")
+
+scene.element('p').style['fill'] = '#d6e5f6'
+scene.element('p').style['fill_opacity'] = 0.55
+scene.element('p').style['stroke'] = '#4d87c6'
+scene.element('p').style['stroke_width_px'] = 2.0
+scene.element('a').style['stroke_dash_ratio'] = 0.5
+scene.element('c').style['stroke'] = '#f15b5b'</code></pre>
+
+<div class="callout note">
+DSL внутри <code>putCode</code> принимает только геометрические
+конструкторы — <code>Point</code>, <code>Segment</code>, <code>Polygon</code> и
+т.д. Присваивания вида <code>elem.style[...] = ...</code> — обычный Python,
+пишутся <em>после</em> <code>putCode()</code>, через <code>scene.element(name)</code>.
+В интерактивных примерах гайда стили передаются через <code>data-example.overrides</code>.
+</div>
+
+<h2 id="labels">Подписи и автораскладка</h2>
+
+<p>В AnimaGeo подписи — <em>не часть элемента</em>, а отдельный <code>Tex</code>,
+размещённый рядом. Положение задаётся парой: якорь (9-точечная сетка TL/TC/TR…BR)
+и pixel-offset. Проблема: если подписей много, они перекрывают геометрию.
+Решение — <code>scene.autoPlaceLabels()</code>: жадный решатель, 8 кандидатов на
+каждую подпись, приоритет по степени свободы.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true, "overlay_extra": {"label_placement": {"enabled": true, "distance_px": 8, "padding_px": 2, "w_label": 12, "w_geom": 8}}}'>
+  <div class="ex-code">
+    <span class="ex-label">autolayout.py</span>
+<pre><code>A = Point(-2, 1.5)
+B = Point(2, 1.5)
+C = Point(0, -1.5)
+s1 = Segment(A, C)
+s2 = Segment(B, C)
+s3 = Segment(A, B)
+M = Midpoint(A, B)
+D = Midpoint(A, C)
+E = Midpoint(B, C)
+
+style(A, B, C, D, E, M, label_visible=True)</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/01-introduction-02.svg" alt="Авто-раскладка подписей">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<p>Включение авто-раскладки описано в JSON-стиле под ключом
+<code>overlay.label_placement</code> — либо вызовом
+<code>scene.autoPlaceLabels()</code> напрямую. Полное описание — §6.</p>
+
+<h2 id="next">Что дальше</h2>
+
+<p>Следующие разделы гайда раскроют каждый шаг пайплайна подробнее:</p>
+<ul>
+<li><strong><a href="02-installation.html">§2</a></strong> — установка: Python, manim, Cairo, первый запуск, рендер-сервер.</li>
+<li><strong><a href="03-dsl.html">§3</a></strong> — полный Python-DSL: все конструкторы и 150+ команд (<code>Midpoint</code>, <code>Intersect</code>, <code>AngularBisector</code>, <code>Tangent</code>…).</li>
+<li><strong><a href="04-geogebra.html">§4</a></strong> — импорт из GeoGebra: <code>loadGGB</code>, <code>ImportPolicy</code> со своим mini-DSL для конвертации значений.</li>
+<li><strong><a href="05-styles.html">§5</a></strong> — стили: JSON-схема, палитры, per-type/per-name overrides, rendering-флаги, scaling-константы.</li>
+<li><strong><a href="07-curves.html">§7</a></strong> — кривые: <code>Conic</code>, <code>Function</code>, <code>ImplicitCurve</code> с адаптивным sampler'ом и marching squares.</li>
+<li><strong><a href="08-animation.html">§8</a></strong> — анимации: keyframes, <code>addUpdater</code>, EMA-смягчение.</li>
+</ul>
+
+
+<div class="footer-nav">
+<a href="index.html">← Обзор</a>
+<a href="02-installation.html">§2 · Установка и первый запуск →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

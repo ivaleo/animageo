@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §10 · Интерактивный веб-экспорт</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.1/distrib/jsxgraph.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, svg: { fontCache: 'global' } };</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+<script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.1/distrib/jsxgraphcore.js"></script>
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html" class="current-page">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#why">Зачем</a></li>
+        <li><a href="#live">Живой пример</a></li>
+        <li><a href="#export">Экспорт: html / js / spec</a></li>
+        <li><a href="#spec">Контракт animageo-board/v1</a></li>
+        <li><a href="#runtime">Рантайм: сигналы и действия</a></li>
+        <li><a href="#component">Web Component и адаптеры</a></li>
+        <li><a href="#coverage">Live vs static</a></li>
+        <li><a href="#limits">Ограничения</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§10 · Интерактивный веб-экспорт</h1>
+
+<p class="subtitle-main">
+В отличие от остальных форматов (которые сериализуют один кадр), этот путь даёт
+<strong>живую, перетаскиваемую</strong> конструкцию в браузере: тяните свободные
+точки / глайдеры / слайдеры — зависимая геометрия пересчитывается прямо на
+странице. Под капотом — <a href="https://jsxgraph.org">JSXGraph</a> (его рендерер —
+SVG), а AnimaGeo транспилирует <em>граф конструкции</em>, а не картинку.
+Это единственный экспорт, который не может выдать ни один «скриншот-из-GeoGebra»
+инструмент — он требует семантического графа, которым AnimaGeo уже владеет.
+</p>
+
+<h2 id="why">Зачем</h2>
+
+<p>Цель — встраивать построения как <strong>управляемые подвижные чертежи</strong>
+в любой веб-проект (React / Vue / Svelte / vanilla / без сборки), с понятной
+системой <em>сигналов и действий</em> в терминах конструкции (имена элементов +
+AnimaGeo-типы), а не движка рендеринга. Слои:</p>
+
+<table>
+<thead><tr><th>Слой</th><th>Что</th></tr></thead>
+<tbody>
+<tr><td>Python (библиотека)</td><td><code>exportJSXGraph(output="spec")</code> → <code>animageo-board/v1</code> (декларативные данные) + JSON-схема</td></tr>
+<tr><td><code>@animageo/runtime</code></td><td><code>createBoard(spec, container, opts) → BoardHandle</code>: сигналы + действия; JSXGraph инъектируется; без глобалей</td></tr>
+<tr><td><code>&lt;animageo-board&gt;</code></td><td>Web Component — сигналы как <code>CustomEvent</code>, действия как методы</td></tr>
+<tr><td>адаптеры</td><td>тонкие шаблоны React / Vue / Svelte / vanilla (~30 строк)</td></tr>
+</tbody>
+</table>
+
+<h2 id="live">Живой пример</h2>
+
+<p>Это <strong>настоящая</strong> JSXGraph-доска, построенная из спеки, которую
+выдал Python (<code>exportJSXGraph(output="spec")</code> на
+<code>ex_general.ggb</code>). Перетащите точки <em>A</em>, <em>B</em>, <em>C</em>
+или глайдер <em>G</em> — зависимая геометрия и состояние внизу обновляются live.</p>
+
+<div class="ex-row">
+<div style="flex:1; min-width:340px">
+  <div id="agboard" style="width:100%; height:420px; border:1px solid var(--border, #ddd); border-radius:8px;"></div>
+</div>
+</div>
+<p style="margin-top:8px">
+  <button id="ag-reset" class="btn">reset</button>
+  <span style="color:var(--text-muted); font-size:13px"> — состояние конструкции (сигнал <code>change</code>):</span>
+</p>
+<pre id="ag-state" style="min-height:3em">…</pre>
+
+<script type="module">
+  import { createBoard } from './assets/web/runtime/index.js';
+  const out = document.getElementById('ag-state');
+  const show = (s) => { out.textContent = JSON.stringify(s, null, 2); };
+  try {
+    const spec = await fetch('./assets/web/demo-board.json').then(r => r.json());
+    const board = createBoard(spec, document.getElementById('agboard'), { debounceMs: 30 });
+    board.on('ready',  ({ state }) => show(state));
+    board.on('change', ({ state }) => show(state));
+    document.getElementById('ag-reset').onclick = () => board.reset();
+  } catch (e) {
+    out.textContent = 'демо требует запущенного guide-сервера (HTTP): ' + e.message;
+  }
+</script>
+
+<div class="callout note">
+Если вы читаете гайд из файловой системы (<code>file://</code>), браузер
+заблокирует загрузку модулей/спеки. Запустите сервер гайда
+(<code>PYTHONPATH=. python3.13 docs/guide/server/serve.py</code>) и откройте
+страницу по <code>http://127.0.0.1:8765/</code>.
+</div>
+
+<h2 id="export">Экспорт: html / js / spec</h2>
+
+<pre><code>scene.loadGGB("scene.ggb", style="style.json", px_size=[800, 600])
+
+scene.exportJSXGraph("board.html")              # самодостаточная страница (по умолч.)
+scene.exportJSXGraph("board.js",  output="js")  # фрагмент для встраивания
+scene.exportJSXGraph("board.json", output="spec")  # декларативный animageo-board/v1</code></pre>
+
+<table>
+<thead><tr><th><code>output</code></th><th>Что это</th><th>Когда</th></tr></thead>
+<tbody>
+<tr><td><code>"html"</code></td><td>самодостаточная страница (CDN JSXGraph + MathJax)</td><td>быстро показать / iframe</td></tr>
+<tr><td><code>"js"</code></td><td>фрагмент-скрипт <code>initBoard</code> + <code>create</code></td><td>вставить в готовую страницу</td></tr>
+<tr><td><code>"spec"</code></td><td><strong>декларативный JSON</strong> (<code>animageo-board/v1</code>), без JS-строк</td><td>интеграция в приложение через рантайм</td></tr>
+<tr><td><code>"json"</code></td><td>legacy-спека (несёт JS-строки)</td><td>обратная совместимость</td></tr>
+<tr><td><code>"moodle"</code></td><td><code>&lt;jsxgraph&gt;</code>-блок для filter_jsxgraph</td><td>Moodle</td></tr>
+</tbody>
+</table>
+
+<p>CLI: <code>python -m animageo scene.ggb -o board.html</code> (или
+<code>-o board.json --format jsxgraph</code> для спеки).</p>
+
+<h2 id="spec">Контракт animageo-board/v1</h2>
+
+<p>Спека — это <strong>eval-free структурированные данные</strong>: консьюмеру не
+нужно исполнять JS, чтобы построить доску. JSON-схема поставляется в пакете
+(<code>animageo/exporters/jsxgraph/board.schema.json</code>, доступна через
+<code>load_schema()</code>) и реальные экспорты валидируются против неё в тестах.</p>
+
+<pre><code>{
+  "format": "animageo-board/v1",
+  "boundingbox": [-8, 6, 8, -6],
+  "inputs": [
+    { "name": "A", "kind": "point",  "x": -2, "y": -1 },
+    { "name": "G", "kind": "glider", "on": "f", "t": 0.4, "x": 1.2, "y": 0.7 }
+  ],
+  "elements": [
+    { "name": "M", "role": "live", "kind": "midpoint",
+      "engine": "midpoint", "parents": [{"ref":"A"}, {"ref":"B"}], "attrs": {} },
+    { "name": "f", "role": "static", "kind": "Function",
+      "engine": "curve", "parents": [[/*xs*/],[/*ys*/]], "tracksDrag": false }
+  ],
+  "coverage": [ /* live vs static по каждому элементу */ ]
+}</code></pre>
+
+<p>Формы <code>parents[]</code>: <code>{"ref": name}</code> · число ·
+<code>[x, y]</code> · <code>[[xs],[ys]]</code> · <code>{"fn": body}</code>
+(живая функция-координата) · <code>{"js": expr}</code> (escape-hatch). Полная
+таблица ключей — <a href="11-reference.html#board-spec">§reference</a>.</p>
+
+<h2 id="runtime">Рантайм: сигналы и действия</h2>
+
+<pre><code>import { createBoard } from '@animageo/runtime';
+
+const spec = await fetch('/board.json').then(r =&gt; r.json());
+const board = createBoard(spec, document.getElementById('box'));
+
+// сигналы наружу
+board.on('ready',  () =&gt; console.log('built', board.getState()));
+board.on('change', ({ name, value, state }) =&gt; updateApp(state)); // драг (непрерывно)
+board.on('commit', ({ name, value }) =&gt; save(name, value));        // конец драга
+
+// действия внутрь
+board.setState({ A: { x: 1, y: 2 } });   // управляемый режим</code></pre>
+
+<table>
+<thead><tr><th>Сигнал</th><th>Когда</th></tr></thead>
+<tbody>
+<tr><td><code>ready</code></td><td>доска построена (после typeset MathJax)</td></tr>
+<tr><td><code>change</code></td><td>свободная точка / слайдер / глайдер движется (непрерывно)</td></tr>
+<tr><td><code>commit</code></td><td>драг завершён</td></tr>
+<tr><td><code>viewchange</code></td><td>pan / zoom</td></tr>
+<tr><td><code>error</code></td><td>один элемент не построился</td></tr>
+</tbody>
+</table>
+
+<p>Действия: <code>getState/setState</code>, <code>getValue/setValue</code>,
+<code>getElement</code>, <code>reset</code>, <code>setVisible/setStyle</code>,
+<code>destroy</code>. Словарь — в терминах конструкции (имена + AnimaGeo-типы),
+не JSXGraph. JSXGraph инъектируется как peer-зависимость; нет глобалей;
+несколько досок на странице независимы.</p>
+
+<h2 id="component">Web Component и адаптеры</h2>
+
+<p>Наименьший общий знаменатель для интеграции без фреймворка —
+<code>&lt;animageo-board&gt;</code>: сигналы → <code>CustomEvent</code>,
+действия → методы элемента.</p>
+
+<pre><code>&lt;animageo-board id="b" spec="/board.json" debounce="50"
+                style="display:block;width:640px;height:480px"&gt;&lt;/animageo-board&gt;
+
+&lt;script type="module"&gt;
+  import '@animageo/web-component';   // регистрирует &lt;animageo-board&gt;
+  const el = document.getElementById('b');
+  el.addEventListener('animageo:change', (e) =&gt; console.log(e.detail.state));
+  // el.setState({ A: { x: 1, y: 2 } });
+&lt;/script&gt;</code></pre>
+
+<p>В каталоге <code>web/adapters/</code> — тонкие шаблоны
+<code>useAnimageoBoard()</code> (React-хук), composable (Vue), action (Svelte) и
+vanilla. Это <em>примеры</em>, не ядро: каждый проект дописывает ~30 строк под
+свой стек.</p>
+
+<h2 id="coverage">Live vs static</h2>
+
+<p>Экспорт честно делит элементы на живые и замороженные и пишет
+<strong>coverage-отчёт</strong> (логируется на INFO: <code>N live, M static</code>).</p>
+
+<ul>
+<li><strong>Live (пересчёт на драге):</strong> точки/глайдеры/слайдеры, midpoint,
+segment, line/parallel, ray, vector, circle (в т.ч. радиус от слайдера/расстояния),
+semicircle, polygon (с рёбрами), perpendicular, серединный перпендикуляр,
+биссектриса, angle, ellipse/hyperbola/parabola/conic, reflection, intersection,
+rotate/translate. <strong>Декорации</strong> тоже живые: стрелки векторов и
+штрихи равенства на сегментах.</li>
+<li><strong>Static (сэмплированные кривые):</strong> функции, неявные кривые,
+коники из уравнения, дуги, секторы, локусы, касательная из точки. Если такой
+элемент зависит от драгаемого входа, он <em>не</em> следует за драгом — это
+помечается в coverage (<code>tracksDrag: false</code>).</li>
+</ul>
+
+<h2 id="limits">Ограничения</h2>
+
+<ul>
+<li><strong>DSL-точки <code>Point(x, y)</code> не интерактивны</strong>: они несут
+input-команду и не детектируются как свободные входы. Лучшие результаты — на
+GGB-импортированных сценах (свободные точки → draggable, точки на кривой →
+глайдеры, числа → слайдеры).</li>
+<li><strong>Статические кривые не ресэмплятся при pan/zoom</strong>: аналитическое
+определение не отправляется в браузер. Рантайм эмитит <code>viewchange</code> —
+хост может перезапросить спеку для нового bbox. Live-элементы точны при любом зуме.</li>
+<li><strong>Два движка.</strong> Live-элементы считаются в JS (JSXGraph), static —
+заморожены из Python. Coverage-отчёт делает это явным, а не молчаливым.</li>
+</ul>
+
+<div class="callout tip">
+Полный разбор архитектуры и контракта — <code>docs/jsxgraph_web_integration_audit.md</code>
+и <code>docs/jsxgraph_web_integration_plan.md</code>; код — каталог <code>web/</code>.
+</div>
+
+<div class="footer-nav">
+<a href="09-export.html">← §9 · Экспорт: все форматы</a>
+<a href="10-recipes.html">§11 · Рецепты →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

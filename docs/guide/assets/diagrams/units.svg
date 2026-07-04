@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" width="720" height="220" font-family="-apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif">
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6470"/>
+    </marker>
+    <style>
+      .box   { rx: 10; stroke-width: 2; }
+      .ggb   { fill: #fdddd7; stroke: #f15b5b; }
+      .json  { fill: #d6e5f6; stroke: #4d87c6; }
+      .int   { fill: #dff5e6; stroke: #58c57e; }
+      .lbl   { font-size: 14px; font-weight: 700; fill: #1a1f26; }
+      .sub   { font-size: 11px; fill: #5a6470; font-family: ui-monospace, monospace; }
+      .formula { font-size: 12px; fill: #3a4250; font-family: ui-monospace, monospace; }
+      .title { font-size: 15px; font-weight: 700; fill: #1a1f26; }
+      .edge  { fill: none; stroke: #5a6470; stroke-width: 1.5; }
+    </style>
+  </defs>
+
+  <text class="title" x="360" y="24" text-anchor="middle">Три системы единиц</text>
+
+  <rect class="box ggb"  x="30"  y="60"  width="200" height="90"/>
+  <text class="lbl" x="130" y="92"  text-anchor="middle">GGB pixel</text>
+  <text class="sub" x="130" y="112" text-anchor="middle">pointSize, thickness,</text>
+  <text class="sub" x="130" y="128" text-anchor="middle">arcSize, labelOffset</text>
+
+  <rect class="box json" x="260" y="60"  width="200" height="90"/>
+  <text class="lbl" x="360" y="92"  text-anchor="middle">JSON style units</text>
+  <text class="sub" x="360" y="112" text-anchor="middle">dot.main, line.bold,</text>
+  <text class="sub" x="360" y="128" text-anchor="middle">font.size</text>
+
+  <rect class="box int"  x="490" y="60"  width="200" height="90"/>
+  <text class="lbl" x="590" y="92"  text-anchor="middle">Internal (manim)</text>
+  <text class="sub" x="590" y="112" text-anchor="middle">dot_size, stroke_width,</text>
+  <text class="sub" x="590" y="128" text-anchor="middle">ang_rdefault × 1/ptUnit</text>
+
+  <line class="edge" x1="230" y1="105" x2="260" y2="105" marker-end="url(#arr2)"/>
+  <line class="edge" x1="460" y1="105" x2="490" y2="105" marker-end="url(#arr2)"/>
+
+  <text class="formula" x="245" y="170" text-anchor="middle">ggb_*_to_style()</text>
+  <text class="formula" x="475" y="170" text-anchor="middle">json_*_to_internal()</text>
+
+  <text class="formula" x="360" y="200" text-anchor="middle">render: все значения делятся на ptUnit → pixel-invariance</text>
+</svg>

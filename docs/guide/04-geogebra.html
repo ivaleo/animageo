@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §4 · Загрузка из GeoGebra</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html" class="current-page">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#format">Формат .ggb</a></li>
+        <li><a href="#loadggb">loadGGB</a></li>
+        <li><a href="#ggb-raw">ggb_raw vs style</a></li>
+        <li><a href="#policy">ImportPolicy</a></li>
+        <li><a href="#mini-dsl">Mini-DSL политик</a></li>
+        <li><a href="#overlay">Типы и имена через overlay</a></li>
+        <li><a href="#reload">reloadPolicy</a></li>
+        <li><a href="#embedded">Политики внутри JSON-стиля</a></li>
+        <li><a href="#cookbook">Рецепты</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§4 · Загрузка из GeoGebra</h1>
+
+<p class="subtitle-main">
+<code>.ggb</code>-файл — ZIP с XML-описанием конструкции плюс превью-изображения.
+AnimaGeo распаковывает его, парсит XML в список команд, строит
+Construction и применяет стили. При необходимости — через <em>ImportPolicy</em>
+вы можете перезадать, как именно значения из файла превращаются в стили:
+отмасштабировать размеры, квантовать толщины, сменить палитру, унифицировать
+шрифт, скрыть подписи — всё одним JSON-объектом.
+</p>
+
+<h2 id="format">Формат .ggb</h2>
+
+<p>Файл <code>.ggb</code> — обычный ZIP. Внутри:</p>
+
+<pre><code>geogebra.xml          ← главный файл: конструкция + стили + view
+geogebra_defaults.xml ← дефолты, могут отсутствовать
+geogebra_thumbnail.png ← превью для файлового менеджера</code></pre>
+
+<p><code>geogebra.xml</code> содержит три интересующих AnimaGeo блока:</p>
+
+<ul>
+<li><code>&lt;construction&gt;</code> — упорядоченный список команд (<code>Point</code>, <code>Segment</code>, <code>Intersect</code>, ...) с именами, выражениями и базовыми стилями.</li>
+<li><code>&lt;euclidianView&gt;</code> — текущий viewport (xmin/xmax, ymin/ymax) и размер шрифта.</li>
+<li><code>&lt;element&gt;...&lt;label&gt;</code> — позиция подписи относительно элемента в экранных пикселях.</li>
+</ul>
+
+<p>AnimaGeo читает всё необходимое и <em>ничего не пишет</em> в .ggb — это
+read-only импорт.</p>
+
+<h2 id="loadggb">loadGGB</h2>
+
+<p>Самый короткий путь — загрузить файл и экспортировать:</p>
+
+<pre><code>from animageo.animageo import AnimaGeoScene
+
+class Scene(AnimaGeoScene):
+    def construct(self):
+        self.loadGGB('problem.ggb',
+                     style_file='my_style.json',
+                     px_size=[800, 600])
+        self.exportSVG('problem.svg')
+
+Scene().construct()</code></pre>
+
+<p>Сигнатура:</p>
+
+<pre><code>loadGGB(filepath,
+        style_file = None,         # путь к JSON-стилю
+        px_size = None,            # [width, height] в пикселях
+        import_policy = None,      # см. ImportPolicy ниже
+        debug = False,             # подробный лог парсинга
+        generate_stubs = True,     # записать <basename>_stubs.pyi для IDE
+        strict = False)            # unsupported-команды: diagnostics или ошибка</code></pre>
+
+<p><code>loadGGB</code> делает четыре вещи:</p>
+<ol>
+<li>Распаковывает ZIP, парсит <code>geogebra.xml</code> (<code>parsers/ggb_parser.py</code>).</li>
+<li>Строит Construction и <em>сразу</em> вызывает <code>rebuild(full=True)</code> — все зависимости пересчитываются.</li>
+<li>Применяет стили из <code>style_file</code> плюс <code>ImportPolicy</code> поверх.</li>
+<li>Добавляет геометрию в сцену через <code>addAllGeometry(show=True)</code>. При включённом <code>overlay.label_placement</code> сразу запускает <code>autoPlaceLabels()</code>.</li>
+</ol>
+
+<p>Если часть команд GeoGebra не поддержана, обычный режим не печатает cascade
+warning-и от зависимых <code>NoneType</code>. Root-команды доступны в
+<code>scene.geo.command_diagnostics</code>; при <code>strict=True</code> первая
+root unsupported-команда становится исключением.</p>
+
+<pre><code>scene.loadGGB('problem.ggb', strict=False)
+scene.geo.command_diagnostics
+# [{'command': 'Sub', 'signature': ['str', 'AngleSize'],
+#   'outputs': ['_3'], 'reason': 'unsupported_signature',
+#   'dependents': [...]}]</code></pre>
+
+<p>Аудит покрытия GeoGebra-команд ведётся отдельно:
+<a href="../geogebra_command_audit.md">docs/geogebra_command_audit.md</a>.</p>
+
+<div class="callout note">
+После <code>loadGGB</code> все элементы уже в сцене. В отличие от <code>putCode</code>,
+отдельного вызова <code>addAllGeometry</code> делать не нужно.
+</div>
+
+<div class="ex-with-ggb">
+  <div class="ex-code">
+    <span class="ex-label">load_sample.py · чтение <code>.ggb</code> как источника</span>
+<pre><code>from animageo.animageo import AnimaGeoScene
+
+
+class Scene(AnimaGeoScene):
+    def construct(self):
+        # Треугольник, построенный в GeoGebra, загружается вместе со всеми
+        # стилями из XML. Политика по умолчанию — faithful (byte-for-byte).
+        self.loadGGB(
+            'sample_triangle.ggb',
+            style_file='guide_style.json',
+            px_size=[520, 340],
+        )
+        # Поверх GGB-стилей дорисовываем один акцент:
+        self.element('A').style['stroke'] = '#f15b5b'
+        self.element('A').style['stroke_width_px'] = 1.6
+
+        self.exportSVG('sample_triangle.svg')</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/04-geogebra-sample.svg" alt="Треугольник из sample_triangle.ggb"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+    <div class="ex-placeholder" style="display:none">
+      <em>Иллюстрация не сгенерирована — запустите<br>
+      <code>PYTHONPATH=. python3 /tmp/regen_guide_assets.py</code> чтобы собрать
+      или используйте download-ссылку справа, чтобы открыть ggb в GeoGebra.</em>
+    </div>
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/ggb/sample_triangle.ggb" download>sample_triangle.ggb</a>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<p><strong>Конвенция:</strong> ggb-файлы, сопровождающие иллюстрации гайда,
+лежат в <code>docs/guide/assets/ggb/</code> и доступны по относительному пути
+<code>/ggb/&lt;name&gt;.ggb</code>. Download-кнопка добавляется вручную в
+<code>&lt;div class="ex-downloads"&gt;</code>, когда пример берёт начало из
+GeoGebra-файла, — так читатель может открыть его у себя и увидеть
+исходное построение.</p>
+
+<h2 id="ggb-raw">ggb_raw, ggb_style и elem.style</h2>
+
+<p>В момент парсинга каждый элемент получает отдельные словари исходника и
+нормализованного import-layer:</p>
+
+<table>
+<thead><tr><th>Словарь</th><th>Когда заполняется</th><th>Что хранит</th></tr></thead>
+<tbody>
+<tr><td><code>elem.ggb_raw</code></td><td>в парсере, из XML</td><td>исходные значения: <code>point_size=5</code>, <code>line_thickness=3</code>, <code>arc_size=30</code>, <code>label_offset_px=(12, −14)</code>, <code>obj_color.hex='#1565c0'</code>, <code>obj_color.opacity=0.1</code></td></tr>
+<tr><td><code>elem.ggb_style</code></td><td>парсер + <code>applyStyle</code>/ImportPolicy</td><td>адаптированные GGB visual keys: <code>size_px</code>, <code>stroke_width_px</code>, <code>arc_size_px</code>, <code>label_offset_px</code>, <code>stroke</code>, <code>point_shape</code></td></tr>
+<tr><td><code>elem.style</code></td><td>DSL/API</td><td>явные per-element overrides, которые выигрывают у overlay, GGB import и defaults</td></tr>
+</tbody>
+</table>
+
+<p>Правило: <code>ggb_raw</code> — то, что <em>было</em> в файле,
+<code>ggb_style</code> — во что это адаптировал GGB import, а итоговое
+значение для рендера даёт resolver.</p>
+
+<div class="callout tip">
+<code>ggb_raw</code> кэшируется — достаточно одного <code>loadGGB</code>, чтобы потом
+любое количество раз применять разные политики без перепарсинга XML. Это
+<code>scene.reloadPolicy(new_policy)</code> — см. ниже.
+</div>
+
+<h2 id="policy">ImportPolicy</h2>
+
+<p><code>ImportPolicy</code> — dataclass со списком правил, как
+конвертировать <code>ggb_raw</code> в <code>elem.ggb_style</code>. Без него работает
+<em>faithful</em>-режим: значения из файла попадают в рендер <em>как есть</em>
+(с pixel-invariance через <code>ptUnit</code>, но без переопределений).</p>
+
+<p>Три самых частых сценария:</p>
+
+<div class="ex-row">
+<div class="mini">
+    <img src="/assets/examples/18-policy-mixed-sizes.svg" alt="исходные размеры из .ggb">
+    <div class="cap">до: размеры из .ggb (6, 4, 3, 5 — разные)</div>
+</div>
+<div class="mini">
+    <img src="/assets/examples/18-policy-unified-sizes.svg" alt="унифицированные размеры">
+    <div class="cap">после: <code>size_px=5</code> — все одинаково</div>
+</div>
+</div>
+
+<pre><code>from animageo.style.import_policy import ImportPolicy
+
+# 1. унификация — все точки одного размера
+policy = ImportPolicy(size_px=5, font_size_px=14)
+scene.loadGGB('problem.ggb', style_file='s.json', px_size=[800, 600],
+              import_policy=policy)
+
+# 2. scale: помножить на коэффициент
+policy = ImportPolicy(size_px=lambda raw, d, e: raw * 1.5)
+
+# 3. полностью игнорировать .ggb-стили, использовать только style.json
+policy = ImportPolicy.style_only()</code></pre>
+
+<p>Параметры (все опциональны — что не задано, берётся из faithful-режима):</p>
+
+<table>
+<thead><tr><th>Поле</th><th>Принимает</th><th>Действует на</th></tr></thead>
+<tbody>
+<tr><td><code>size_px</code></td><td>число, callable или DSL-строка</td><td><code>elem.ggb_style['size_px']</code> точек</td></tr>
+<tr><td><code>stroke_width_px</code></td><td>число, callable или DSL-строка</td><td><code>stroke_width_px</code> сегментов, линий, лучей</td></tr>
+<tr><td><code>stroke_opacity</code></td><td>число, callable или DSL-строка</td><td><code>stroke_opacity</code> из <code>line_opacity</code></td></tr>
+<tr><td><code>stroke_dash_ratio</code></td><td>число, callable или DSL-строка</td><td><code>stroke_dash_ratio</code> из <code>line_type</code></td></tr>
+<tr><td><code>font_size_px</code></td><td>число</td><td><code>font_size_px</code> подписей</td></tr>
+<tr><td><code>label_color</code></td><td>hex-строка</td><td><code>label_color</code></td></tr>
+<tr><td><code>label_text</code></td><td>строка или DSL</td><td><code>label_text</code></td></tr>
+<tr><td><code>visible</code></td><td>bool или DSL</td><td><code>visible</code> через resolver</td></tr>
+<tr><td><code>stroke</code></td><td>hex или DSL</td><td><code>stroke</code></td></tr>
+<tr><td><code>fill</code></td><td>hex или DSL</td><td><code>fill</code></td></tr>
+<tr><td><code>arc_size_px</code></td><td>число или callable</td><td><code>arc_size_px</code></td></tr>
+<tr><td><code>angle_range</code></td><td><code>minor</code>/<code>reflex</code> или DSL</td><td><code>angle_range</code></td></tr>
+<tr><td><code>tick_count</code></td><td>число или DSL</td><td><code>tick_count</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="mini-dsl">Mini-DSL для значений политик</h2>
+
+<p>Строковые значения политик поддерживают мини-DSL. Четыре префикса:</p>
+
+<table>
+<thead><tr><th>Префикс</th><th>Синтаксис</th><th>Что делает</th></tr></thead>
+<tbody>
+<tr><td><code>const:</code></td><td><code>"const:5"</code></td><td>Константа — удобно, когда тип поля иначе неоднозначен.</td></tr>
+<tr><td><code>scale:</code></td><td><code>"scale:1.5"</code></td><td>Умножить raw-значение на коэффициент.</td></tr>
+<tr><td><code>quantize:</code></td><td><code>"quantize:[1,2,4]"</code></td><td>Приблизить raw к ближайшему элементу списка. Хорошо для толщин линий.</td></tr>
+<tr><td><code>remap:</code></td><td><code>"remap:{'#1565c0':'#0066cc'}"</code></td><td>Словарь-замена. Точное совпадение raw → value.</td></tr>
+</tbody>
+</table>
+
+<p>Пример — политика, подгоняющая .ggb-файлы под свою фирменную палитру:</p>
+
+<pre><code>policy = ImportPolicy(
+    stroke="remap:{'#1565c0':'#0066cc', '#d32f2f':'#cc3300'}",
+    fill="remap:{'#1565c0':'#0066cc', '#d32f2f':'#cc3300'}",
+    label_color="remap:{'#1565c0':'#0066cc', '#d32f2f':'#cc3300'}",
+    stroke_width_px="quantize:[1,2,4]",
+    font_size_px=14,
+)</code></pre>
+
+<h3>Python-callable</h3>
+
+<p>Для сложной логики — обычная функция. Подпись: <code>(raw, defaults, elem)</code>:</p>
+
+<pre><code>def point_size(raw, d, e):
+    # В .ggb большие точки (≥6) — оставляем как есть,
+    # маленькие — подтягиваем до 4, чтобы не терялись на экспорте.
+    return max(raw, 4) if raw else d.get('size_px', 4)
+
+policy = ImportPolicy(size_px=point_size)</code></pre>
+
+<h2 id="overlay">Типы и имена через overlay</h2>
+
+<p>Если нужен контроль по типу или имени элемента, это не import policy,
+а слой <code>overlay</code>. Он применяется поверх GGB-адаптации и работает
+одинаково для GGB и DSL:</p>
+
+<pre><code>{
+  "overlay": {
+    "per_type": {
+      "point":   {"fill": "#000", "stroke_width_px": 0.8},
+      "segment": {"stroke": "#333"},
+      "angle":   {"font_size_px": 11, "arc_size_px": 22}
+    },
+    "per_name": {
+      "A": {"size_px": 8, "label_color": "#f15b5b"},
+      "O": {"fill": "#ffffff"}
+    }
+  }
+}</code></pre>
+
+<p>Порядок приоритетов (от низкого к высокому):</p>
+
+<ol>
+<li>Дефолты из <code>style_file</code> (JSON-стиль)</li>
+<li>ImportPolicy — верхнеуровневые поля</li>
+<li>Overlay — <code>per_type</code></li>
+<li>Overlay — <code>per_name</code></li>
+<li>Прямая правка из Python: <code>scene.element('A').style[...] = ...</code></li>
+</ol>
+
+<h2 id="reload">reloadPolicy — без перепарсинга</h2>
+
+<p>Частый сценарий: подобрать политику под один и тот же файл. Каждый
+раз перечитывать XML — накладно; <code>ggb_raw</code> уже есть в памяти.</p>
+
+<pre><code>scene = Scene()
+scene.loadGGB('problem.ggb', style_file='s.json', px_size=[800, 600],
+              import_policy=None)   # faithful
+
+# посмотрели — решили унифицировать шрифт:
+scene.reloadPolicy(ImportPolicy(font_size_px=14))
+scene.exportSVG('v2.svg')
+
+# потом — квантовать толщины:
+scene.reloadPolicy(ImportPolicy(stroke_width_px="quantize:[1,2,4]",
+                                font_size_px=14))
+scene.exportSVG('v3.svg')</code></pre>
+
+<p>Внутри <code>reloadPolicy</code> берёт <code>elem.ggb_raw</code> и накладывает
+новые policy-overrides поверх текущего <code>elem.ggb_style</code>, не перечитывая
+XML. Это быстрый layered override: если предыдущая политика уже записала
+ключ, а новая его не задаёт, старое значение останется. Для чистой замены
+политики перечитайте файл через <code>loadGGB(..., import_policy=...)</code> или
+передавайте в <code>reloadPolicy</code> полный набор активных override-ключей.</p>
+
+<h2 id="embedded">Политики внутри JSON-стиля</h2>
+
+<p>Если политика не меняется между запусками, удобнее положить её
+прямо в файл стиля — под ключ <code>import.policy</code>:</p>
+
+<pre><code>// brand_style.json
+{
+  "presets": { "color": { "main": "#0066cc", "accent": "#d05456" } },
+  "defaults": { "point": {"size_px": 8}, "line": {"stroke_width_px": 2} },
+  "overlay": { "label_placement": {"enabled": true} },
+  "import": {
+    "policy": {
+      "stroke": "remap:{'#1565c0':'#0066cc'}",
+      "stroke_width_px": "quantize:[1,2,4]",
+      "font_size_px": 14
+    }
+  },
+  "overlay": {
+    "per_type": {
+      "point": {"fill": "#000"},
+      "angle": {"font_size_px": 11}
+    }
+  }
+}</code></pre>
+
+<pre><code>scene.loadGGB('problem.ggb', style_file='brand_style.json',
+              px_size=[800, 600])
+# ImportPolicy из JSON подхватится автоматически</code></pre>
+
+<p>Готовые пресеты лежат в репозитории в <code>examples/policies/</code>:
+<code>faithful.json</code>, <code>flat_black.json</code>, <code>no_labels.json</code>,
+<code>quantized.json</code>, <code>brand_colors.json</code>. Каждый — законченный
+JSON-стиль со своей политикой, можно копировать и править под себя.</p>
+
+<h2 id="cookbook">Рецепты</h2>
+
+<h3>Унифицировать все подписи</h3>
+<pre><code>ImportPolicy(font_size_px=14, label_color='#1a1a1a')</code></pre>
+<p>Полезно, когда в .ggb у каждого автора свой размер шрифта.</p>
+
+<h3>Увеличить размеры в полтора раза</h3>
+<pre><code>ImportPolicy(
+    size_px="scale:1.5",
+    stroke_width_px="scale:1.5",
+    font_size_px="scale:1.2",
+)</code></pre>
+<p>Пропорциональное увеличение — полезно при экспорте в 2× для retina-дисплеев (см. §10).</p>
+
+<h3>Выключить все подписи</h3>
+<pre><code>{
+  "overlay": {
+    "per_type": {
+      "point":   {"label_visible": false},
+      "segment": {"label_visible": false},
+      "angle":   {"label_visible": false}
+    }
+  }
+}</code></pre>
+<p>Для аксонометрических чертежей или тех, где подписи добавляются поверх — например, подписи переводятся на другой язык в векторном редакторе.</p>
+
+<h3>Сделать точки кольцами вместо дисков</h3>
+<pre><code>{
+  "overlay": {
+    "per_type": {
+      "point": {
+        "fill": "#ffffff",
+        "stroke": "#000000",
+        "stroke_width_px": 1.4
+      }
+    }
+  }
+}</code></pre>
+
+<h3>Фильтр «школьный учебник»</h3>
+<pre><code>ImportPolicy(
+    stroke="#000000",               # всё чёрным
+    fill="#ffffff",                 # без цветных заливок
+    label_color="#000000",
+    stroke_width_px="quantize:[1,2]",
+    font_size_px=12,
+)</code></pre>
+<p>А единое оформление углов добавьте поверх импорта:</p>
+<pre><code>{
+  "overlay": {
+    "per_type": {
+      "angle": {"arc_size_px": 24}
+    }
+  }
+}</code></pre>
+
+<div class="callout note">
+<strong>Интерактив.</strong> Render-сервер этого гайда пока не поддерживает
+редактирование <em>политик</em> в браузере — нужен дополнительный ход, чтобы сервер
+принимал .ggb-файл и JSON-политику и рендерил через <code>loadGGB</code>.
+Запустите рецепты из этого раздела как standalone-скрипты
+(<code>python3.13 my_scene.py</code>) — эффекты увидите мгновенно. Поддержка
+интерактива для loadGGB — в планах.
+</div>
+
+<div class="footer-nav">
+<a href="03-dsl.html">← §3 · Python-DSL</a>
+<a href="05-styles.html">§5 · Стили →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

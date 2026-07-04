@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §8 · Анимации</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html" class="current-page">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#static-vs-mp4">Статика vs MP4</a></li>
+        <li><a href="#show-hide">Show / Hide / Update</a></li>
+        <li><a href="#buildup">Build-up</a></li>
+        <li><a href="#keyframes">Keyframe-анимация</a></li>
+        <li><a href="#updater">addUpdater и ValueTracker</a></li>
+        <li><a href="#label-tracking">Трекинг подписей</a></li>
+        <li><a href="#running">Как запустить MP4-рендер</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§8 · Анимации</h1>
+
+<p class="subtitle-main">
+AnimaGeo-сцена — это полноценный <code>manim.Scene</code>. Анимация
+строится через keyframe-интерполяцию (<code>play_keyframes</code>),
+явный <code>ValueTracker</code>-updater или комбинацию. Размеры точек,
+толщины и шрифты остаются pixel-invariant в видео: отрендеренный в
+854×480 тест визуально неотличим от 1920×1080 продакшена, отличается
+только детализацией.
+</p>
+
+<div class="callout warn">
+Интерактивный render-сервер этого гайда отдаёт <em>статические SVG</em>
+— анимации невозможно «проиграть» через кнопку <strong>Run</strong>.
+Для MP4 используется <code>manim</code> CLI (см. §9). MP4-превью
+ниже — встроенные <code>&lt;video&gt;</code>-теги с уже отрендеренными
+файлами.
+</div>
+
+<h2 id="static-vs-mp4">Статика vs MP4</h2>
+
+<table>
+<thead><tr><th>Аспект</th><th>SVG (<code>exportSVG</code>)</th><th>MP4 (<code>manim</code>-CLI)</th></tr></thead>
+<tbody>
+<tr><td>Подписи</td><td>одноразово <code>autoPlaceLabels()</code></td><td><code>keyframe_snapshots</code> + интерполяция, или per-frame tracker</td></tr>
+<tr><td>Углы</td><td>биссектриса один раз</td><td><code>dynamic_angles</code> → аналитический пересчёт каждый кадр</td></tr>
+<tr><td>Z-index</td><td>читается на экспорте</td><td>переустановка при <code>updateGeoElements</code></td></tr>
+<tr><td>ptUnit</td><td>фиксирован после <code>applyStyle</code></td><td>фиксирован; изменение камеры не пересчитывает размеры</td></tr>
+<tr><td>Холст</td><td>произвольный (<code>px_size</code>)</td><td>manim-canvas из <code>config.pixel_width/height</code></td></tr>
+</tbody>
+</table>
+
+<div class="callout note">
+MP4 использует <code>config.pixel_width</code>/<code>pixel_height</code>,
+не <code>style.export.ptWidth</code>. <code>applyStyle</code> согласует
+через соотношение сторон. Рекомендация: <code>px_size</code>
+пропорционально manim-canvas (<code>1920×1080</code> для <code>-qh</code>,
+<code>854×480</code> для <code>-ql</code>).
+</div>
+
+<h2 id="show-hide">Show / Hide / Update</h2>
+
+<p>Базовые строительные блоки анимации. Все возвращают список
+<code>Animation</code>; «Play»-варианты оборачивают в
+<code>self.play(...)</code>.</p>
+
+<table>
+<thead><tr><th>Метод</th><th>Что делает</th></tr></thead>
+<tbody>
+<tr><td><code>Show(names, mode='Fade'|'Create')</code></td><td>Показать элементы: Fade — мгновенное появление с прозрачностью; Create — рост (для линий).</td></tr>
+<tr><td><code>Hide(names)</code></td><td>Скрыть.</td></tr>
+<tr><td><code>Update(names)</code></td><td>FadeOut → пересоздать → FadeIn. Для случая, когда координаты изменились вне анимации.</td></tr>
+<tr><td><code>Shade(names)</code></td><td>Затенить (цвет заменяется на <code>col_shade</code>).</td></tr>
+<tr><td><code>Restore(names)</code></td><td>Восстановить после Shade.</td></tr>
+<tr><td><code>ShowCreate(name)</code></td><td>Тип-зависимый: Create для линий, Fade для заливок.</td></tr>
+</tbody>
+</table>
+
+<pre><code>self.playShow(['A', 'B', 'C'], mode='Create')
+self.playHide(['poly'])
+self.playShade(['A', 'B'])
+self.playRestore(['A', 'B'])</code></pre>
+
+<h2 id="buildup">Build-up: поэтапное появление</h2>
+
+<div class="ex wide">
+  <div class="ex-code">
+    <span class="ex-label">AnimShowBuildup · manim -ql anim_scenes.py</span>
+<pre><code>self.putCode("""
+A = Point(-3.5, -1.8)
+B = Point(3.5, -1.8)
+C = Point(0.5, 2.5)
+p, a, b, c = Polygon(A, B, C)
+alpha = Angle(B, A, C)
+""")
+
+# Сначала скрыть всё
+for el in self.geo.elements:
+    el.visible = False
+self.addAllGeometry(show=False)
+
+# Поэтапное появление
+self.playShow(['A', 'B', 'C'], mode='Fade')
+self.playShow(['a', 'b', 'c'], mode='Create', run_time=1.2)
+self.playShow(['p'], mode='Fade')
+self.playShow(['alpha'], mode='Create')</code></pre>
+  </div>
+  <div class="ex-visual">
+    <video src="/assets/examples/AnimShowBuildup.mp4" controls autoplay muted loop playsinline></video>
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/AnimShowBuildup.mp4" download>AnimShowBuildup.mp4</a>
+  </div>
+</div>
+
+<h2 id="keyframes">Keyframe-анимация</h2>
+
+<p><code>play_keyframes(json)</code> интерполирует координаты,
+curve/locus-параметры (<code>tparam</code>) и видимость элементов между кадрами.
+Перед стартом playback сцена приводится к состоянию первого keyframe:
+применяются его <code>values</code> и <code>show</code>/<code>hide</code>,
+перестраивается геометрия и обновляются mobject-ы. Поэтому первый кадр рендера
+соответствует keyframe <code>0</code>, а не сохраненному состоянию файла
+<code>.ggb</code>.</p>
+
+<h3>Формат JSON</h3>
+
+<pre><code>{
+  "keyframes": [
+    {"t": 0, "values": {"A": [0, 0], "x": 35, "D": {"tparam": 0.0}}},
+    {"t": 2, "values": {"A": [4, 4], "x": 110,
+                          "D": {"tparam": 3.14, "direction": "ccw"}},
+              "show": ["line1"], "hide": ["aux"], "easing": "smooth"},
+    {"t": 4, "values": {"A": [0, 0], "x": 35}}
+  ]
+}</code></pre>
+
+<h3>Независимые элементы</h3>
+
+<p>Что можно анимировать — всё, что возвращает <code>scene.get_independents()</code>:</p>
+
+<table>
+<thead><tr><th>Type</th><th>JSON-формат</th><th>Интерполяция</th></tr></thead>
+<tbody>
+<tr><td><code>free_point</code></td><td><code>[x, y]</code></td><td>линейная по координатам</td></tr>
+<tr><td><code>tparam_point</code> (на окружности)</td><td><code>{"tparam": rad, "direction": "short"/"cw"/"ccw"}</code></td><td>угловая</td></tr>
+<tr><td><code>tparam_point</code> (на сегменте/линии/луче)</td><td><code>{"tparam": 0..1}</code></td><td>линейная</td></tr>
+<tr><td><code>number</code> / <code>measure</code></td><td><code>float</code></td><td>линейная</td></tr>
+<tr><td><code>angle</code></td><td><code>float</code> (rad)</td><td>линейная</td></tr>
+<tr><td><code>boolean</code></td><td><code>true</code>/<code>false</code></td><td>snap на <em>t=0.5</em></td></tr>
+</tbody>
+</table>
+
+<div class="callout note">
+JSON wire-format для constrained-точек использует тип
+<code>'tparam_point'</code> и ключ <code>"tparam"</code>.
+</div>
+
+<p>Easing функции: <code>linear</code>, <code>smooth</code> (default),
+<code>in</code>, <code>out</code>, <code>in_out</code>.</p>
+
+<h3>Пример 1 — точка на окружности</h3>
+
+<div class="ex wide">
+  <div class="ex-code">
+    <span class="ex-label">AnimCirclePoint</span>
+<pre><code>self.putCode("""
+O = Point(0, 0); R = Point(3, 0)
+c = Circle(O, R)
+P = Point(c)                  # tparam-точка на окружности
+Q = Point(-3, 0)
+rOQ = Segment(O, Q); rOP = Segment(O, P)
+s = Segment(Q, P); alpha = Angle(Q, O, P)
+""")
+self.geo.update_tparam('P', np.pi / 6)
+self.geo.rebuild()
+
+# вспомогательные радиусы — серым
+for n in ('rOQ', 'rOP'):
+    self.element(n).style['stroke'] = '#b1b3b6'
+    self.element(n).style['stroke_width_px'] = 0.8
+
+# O статична — подпись фиксируем вручную снизу
+self.element('O').style.update({
+    'offset': [0, -16], 'label_anchor': 'TC',
+    'label_placement_locked': True,
+})
+
+# per-frame решатель: P движется по дуге, линейная
+# интерполяция offset между keyframes давала бы промах
+self.style_config.overlay.label_placement = {
+    'enabled': True, 'dynamic_angles': True,
+    'distance_px': 6, 'ema_alpha': 0.25,
+    'anchor_flip_frames': 10, 'solver_every_n_frames': 2,
+}
+self.autoPlaceLabels(dynamic=True)
+
+# ValueTracker + sentinel updater
+from manim import ValueTracker, linear, Mobject
+a_param = ValueTracker(np.pi / 6)
+self.add(a_param)
+scene = self
+def on_frame(mobj):
+    scene.geo.update_tparam('P', a_param.get_value())
+    scene.updateGeoElements(scene.geo.rebuild())
+    if scene._label_tracker is not None:
+        scene._apply_dynamic_labels()
+sentinel = Mobject(); sentinel.add_updater(on_frame); self.add(sentinel)
+
+target = 2 * np.pi + np.pi / 6 - 0.001
+self.play(a_param.animate.set_value(target), run_time=5, rate_func=linear)
+sentinel.clear_updaters()
+self.clearLabelTracker()</code></pre>
+  </div>
+  <div class="ex-visual">
+    <video src="/assets/examples/AnimCirclePoint.mp4" controls autoplay muted loop playsinline></video>
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/AnimCirclePoint.mp4" download>AnimCirclePoint.mp4</a>
+  </div>
+</div>
+
+<div class="callout tip">
+Подписи и дуга угла α плавно следуют за <em>P</em> благодаря
+<code>autoPlaceLabels(dynamic=True)</code> и
+<code>dynamic_angles=True</code>. Без них подписи остались бы в
+стартовых позициях, а дуга угла — с неверным углом.
+</div>
+
+<h3>Пример 2 — вершина треугольника скользит по прямой</h3>
+
+<div class="ex wide">
+  <div class="ex-code">
+    <span class="ex-label">AnimMovingVertex</span>
+<pre><code>self.putCode("""
+A = Point(-3.5, -1.8); B = Point(3.5, -1.8)
+L1 = Point(-3.5, 2.0); L2 = Point(3.5, 2.0)
+rail = Line(L1, L2)
+C = Point(rail)          # C — tparam-точка на прямой
+p, a, b, c = Polygon(A, B, C)
+alpha = Angle(B, A, C); beta = Angle(A, B, C)
+""")
+self.element('C').tparam = 0.0
+for n in ('rail', 'L1', 'L2'):
+    self.element(n).visible = False
+
+# Для play_keyframes — keyframe_snapshots (не dynamic=True).
+self.style_config.overlay.label_placement = {
+    'enabled':             True,
+    'keyframe_snapshots':  True,
+    'dynamic_angles':      True,
+    'canonicalize_anchor': True,
+}
+self.autoPlaceLabels()
+
+self.play_keyframes({
+    "keyframes": [
+        {"t": 0, "values": {"C": {"tparam": 0.2}}},
+        {"t": 2, "values": {"C": {"tparam": 0.8}}},
+        {"t": 4, "values": {"C": {"tparam": 0.2}}},
+    ]
+})</code></pre>
+  </div>
+  <div class="ex-visual">
+    <video src="/assets/examples/AnimMovingVertex.mp4" controls autoplay muted loop playsinline></video>
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/AnimMovingVertex.mp4" download>AnimMovingVertex.mp4</a>
+  </div>
+</div>
+
+<h2 id="updater">addUpdater и ValueTracker</h2>
+
+<p>Для тонкого контроля — когда <code>play_keyframes</code> слишком
+декларативен или нужно связать несколько движений — используется
+<em>updater</em>: функция, которая вызывается каждый кадр и читает
+текущее значение <code>ValueTracker</code>.</p>
+
+<pre><code>from manim import ValueTracker, linear
+
+x = self.addVar('x', 0)          # обёртка над ValueTracker
+self.autoPlaceLabels(dynamic=True)  # per-frame решатель подписей
+self.addUpdater(x)                # связывает x с перестройкой
+
+self.play(x.animate.set_value(1), run_time=3, rate_func=linear)
+
+self.clearUpdater(x)
+self.clearLabelTracker()</code></pre>
+
+<p>Что происходит:</p>
+
+<ol>
+<li><code>addVar('x', 0)</code> создаёт независимую переменную <em>x</em> со стартовым значением 0.</li>
+<li><code>addUpdater(x)</code> ставит per-frame hook: при изменении <em>x</em> вызывается <code>update_var('x', new_value)</code> и <code>rebuild()</code>, пересчитывая все зависимые элементы.</li>
+<li><code>autoPlaceLabels(dynamic=True)</code> ставит LabelTracker: подписи пересчитываются каждые <code>solver_every_n_frames</code> кадров, сглаживаются EMA, флипы якоря проходят hysteresis.</li>
+<li><code>play(x.animate.set_value(1))</code> — стандартный manim-анимационный вызов; manim сам тикает <em>x</em> от 0 до 1, ValueTracker триггерит updater.</li>
+</ol>
+
+<div class="ex wide">
+  <div class="ex-code">
+    <span class="ex-label">AnimUpdater · тот же pattern</span>
+<pre><code># DSL-конструкция, где x — "угол" отдельного луча
+self.putCode("""
+O = Point(0, 0)
+A = Point(cos(x), sin(x))       # x — переменная: радиан
+s = Segment(O, A)
+""")
+
+x = self.addVar('x', 0)
+self.autoPlaceLabels(dynamic=True)
+self.addUpdater(x)
+
+self.play(x.animate.set_value(np.pi), run_time=3, rate_func=linear)
+
+self.clearUpdater(x)
+self.clearLabelTracker()</code></pre>
+  </div>
+  <div class="ex-visual">
+    <video src="/assets/examples/AnimUpdater.mp4" controls autoplay muted loop playsinline></video>
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/AnimUpdater.mp4" download>AnimUpdater.mp4</a>
+  </div>
+</div>
+
+<h2 id="label-tracking">Трекинг подписей</h2>
+
+<p>Три режима, уже упомянутые в §6:</p>
+
+<table>
+<thead><tr><th>Режим</th><th>Активируется</th><th>Подходит для</th></tr></thead>
+<tbody>
+<tr><td>Snapshot</td><td><code>overlay.label_placement.keyframe_snapshots=true</code></td><td><code>play_keyframes</code> — решатель запускается только на keyframes, offset между ними интерполируется.</td></tr>
+<tr><td>Dynamic tracker</td><td><code>autoPlaceLabels(dynamic=True)</code></td><td><code>addUpdater</code>-анимации — решатель каждые <em>N</em> кадров, EMA-сглаживание, hysteresis на якорях.</td></tr>
+<tr><td>Static frozen</td><td><code>autoPlaceLabels()</code></td><td>One-shot для SVG или если подписи не движутся.</td></tr>
+</tbody>
+</table>
+
+<h3>Рекомендуемая конфигурация для keyframe-анимации</h3>
+
+<pre><code>"rendering": {
+    "label_placement": {
+        "enabled":             true,
+        "keyframe_snapshots":  true,
+        "dynamic_angles":      true,
+        "canonicalize_anchor": true,
+        "interpolation":       "smooth"
+    }
+}</code></pre>
+
+<h3>Рекомендуемая конфигурация для addUpdater</h3>
+
+<pre><code>"rendering": {
+    "label_placement": {
+        "enabled":               true,
+        "dynamic_angles":        true,
+        "ema_alpha":             0.2,
+        "anchor_flip_frames":    6,
+        "solver_every_n_frames": 2
+    }
+}</code></pre>
+
+<p>Плюс в коде: <code>self.autoPlaceLabels(dynamic=True)</code>.</p>
+
+<h2 id="running">Как запустить MP4-рендер</h2>
+
+<p>SVG пишется из <code>exportSVG</code>. MP4 — из manim-CLI:</p>
+
+<pre><code>$ cd /path/to/animageo
+$ PYTHONPATH=. manim -ql my_scene.py MyScene
+# -ql = quick low (854×480, 15 fps) — для iteration
+# -qh = quick high (1920×1080, 60 fps) — для продакшена
+# --media_dir /tmp/animageo — куда складывать temp-файлы
+# --disable_caching — пересчитать всё (обычно manim кэширует кадры)</code></pre>
+
+<p>Итоговый файл окажется в <code>media/videos/&lt;script&gt;/480p15/MyScene.mp4</code>.</p>
+
+<div class="callout note">
+Обратите внимание: когда в одном Python-файле описано несколько
+<code>Scene</code>-подклассов, manim берёт их <em>имена</em> из CLI:
+<code>manim -ql scenes.py SceneA SceneB SceneC</code> отрендерит три
+отдельных MP4. Это полезно для пакетной регенерации примеров гайда.
+</div>
+
+<div class="footer-nav">
+<a href="07-curves.html">← §7 · Кривые</a>
+<a href="09-export.html">§9 · Экспорт SVG и MP4 →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

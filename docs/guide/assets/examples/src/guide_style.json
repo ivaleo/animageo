@@ -1,0 +1,95 @@
+{
+    "name": "guide_style",
+    "version": 0.1,
+    "presets": {
+        "color": {
+            "main": "#4d87c6",
+            "light": "#d6e5f6",
+            "accent": "#f15b5b",
+            "accent_light": "#fdddd7",
+            "aux": "#b1b3b6",
+            "black": "#000000",
+            "white": "#ffffff"
+        },
+        "point_size": {
+            "main": 2.8346456692916,
+            "bold": 4.2519685039374,
+            "aux": 2.1259842519687
+        },
+        "line_width": {
+            "main": 1,
+            "bold": 1.5,
+            "aux": 0.75
+        },
+        "angle_radius": { "main": 17, "shift": 1.5, "right": 17 },
+        "tick": { "main": { "tick_width_px": 1.5, "tick_length_px": 18, "tick_shift_px": 5 } },
+        "arrow": { "main": { "arrow_width_px": 15, "arrow_length_px": 22 } },
+        "font_size": { "main": 10.5 }
+    },
+    "defaults": {
+        "angle": { "stroke_width_px": 0.75 }
+    },
+    "overlay": {
+        "_comment": "Applies uniformly to GGB and DSL elements. Type/name styling belongs here; import.policy is reserved for raw GGB value conversion.",
+        "per_type": {
+            "point":   {"size_px": 7, "fill_opacity": 1, "stroke_width_px": 1.0,
+                        "fill": "color.black", "stroke": "color.black",
+                        "stroke_opacity": 1, "font_size_px": 62, "label_color": "#000000"},
+            "angle":   {"arc_size_px": 22, "font_size_px": 56, "label_color": "#000000"},
+            "segment": {"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"},
+            "line":    {"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"},
+            "ray":     {"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"},
+            "vector":  {"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"},
+            "polygon": {"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"},
+            "circle":  {"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"},
+            "arc":     {"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"},
+            "circlesector": {"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"},
+            "conic":   {"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"},
+            "function":{"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"},
+            "implicitcurve": {"stroke_width_px": 2.2, "font_size_px": 62, "label_color": "#000000"}
+        },
+        "angle_radius": {
+            "_comment": "Auto-scale arc radius: narrow angles get bigger arcs. exp=0.4 is a touch more aggressive than the default 0.25 — for guide examples where angles vary from 15° to 130° we want clear visual differentiation.",
+            "enabled": true,
+            "exp": 0.4,
+            "pivot_rad": 1.5708,
+            "min_px": 18,
+            "max_arm_fraction": 0.55,
+            "apply_to_right": false
+        },
+        "label_placement": {
+            "enabled": true,
+            "distance_px": 7,
+            "padding_px": 2,
+            "angle_gap_arc_px": 5,
+            "angle_gap_sides_px": 4,
+            "w_anchor": 0.5,
+            "w_geom": 2.0,
+            "w_label": 10.0,
+            "canonicalize_anchor": true
+        }
+    },
+    "rendering": {
+        "line_cap": "butt",
+        "right_angle_joint": "round",
+        "polygon_boundary_layer": "top",
+        "points_display": "auto"
+    },
+    "import": {
+        "colors": {
+            "#1565c0": "color.main",
+            "#1565c0 0.1": "color.light 1",
+            "#d32f2f": "color.accent",
+            "#d32f2f 0.1": "color.accent_light 1",
+            "#616161": "#000000",
+            "#000000 0.6": "#2581b5"
+        },
+        "point_size": {
+            "5": "point_size.main"
+        },
+        "line_width": {
+            "5": "line_width.main"
+        }
+    },
+    "_comment": "Style for AnimaGeo HTML guide examples, canvas ~520px. Sizes bumped ~60% over the first version so labels/points look confident at small render size; strich/arrow proportions re-targeted to match book_blue.json when rendered on this canvas (arrows were too thin, equal-side ticks too short)."
+}

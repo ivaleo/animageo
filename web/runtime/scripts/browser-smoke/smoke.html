@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AnimaGeo runtime — browser smoke</title>
+  <link rel="stylesheet" href="vendor/jsxgraph.css" />
+  <!-- Classic script: defines the JXG global before the deferred module runs. -->
+  <script src="vendor/jsxgraphcore.js"></script>
+  <!-- MathJax (from CDN) so labels typeset like the real `html` export; the
+       runtime's ready signal awaits typesetting when MathJax is present. The
+       assertions don't depend on it, so a network-less run still passes. -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+  <style>#box { width: 600px; height: 400px; }</style>
+</head>
+<body>
+  <div id="box"></div>
+  <pre id="result"></pre>
+  <script type="module">
+    import { runSmoke } from './smoke-runner.js';
+
+    function encode(obj) {
+      // unicode-safe base64 so the result survives DOM serialisation intact
+      return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+    }
+
+    (async () => {
+      let out;
+      try {
+        // ?fixture=NAME selects a different committed fixture (default ex_general).
+        const name = new URLSearchParams(location.search).get('fixture') || 'ex_general';
+        const spec = await fetch(`../../test/fixtures/${name}.board.json`).then((r) => r.json());
+        out = await runSmoke(spec);
+      } catch (e) {
+        out = { ok: false, checks: [], errors: ['harness: ' + ((e && e.message) || e)] };
+      }
+      document.getElementById('result').textContent =
+        'RESULT_START' + encode(out) + 'RESULT_END';
+    })();
+  </script>
+</body>
+</html>

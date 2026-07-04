@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 260" width="760" height="260" font-family="-apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6470"/>
+    </marker>
+    <style>
+      .box  { fill: #ffffff; stroke: #4d87c6; stroke-width: 2; rx: 10; }
+      .box2 { fill: #d6e5f6; stroke: #4d87c6; stroke-width: 2; rx: 10; }
+      .box3 { fill: #fdddd7; stroke: #f15b5b; stroke-width: 2; rx: 10; }
+      .title{ font-weight: 700; font-size: 14px; fill: #1a1f26; }
+      .sub  { font-size: 11px; fill: #5a6470; font-family: ui-monospace, monospace; }
+      .edge { fill: none; stroke: #5a6470; stroke-width: 1.5; }
+      .note { font-size: 11px; fill: #5a6470; font-style: italic; }
+    </style>
+  </defs>
+
+  <rect class="box"  x="10"  y="20"  width="120" height="54"/>
+  <text class="title" x="70"  y="44"  text-anchor="middle">.ggb ZIP</text>
+  <text class="sub"   x="70"  y="62"  text-anchor="middle">XML + assets</text>
+
+  <rect class="box"  x="170" y="20"  width="140" height="54"/>
+  <text class="title" x="240" y="42"  text-anchor="middle">ggb_parser</text>
+  <text class="sub"   x="240" y="60"  text-anchor="middle">elem.ggb_raw</text>
+
+  <rect class="box2" x="350" y="20"  width="140" height="54"/>
+  <text class="title" x="420" y="42"  text-anchor="middle">Construction</text>
+  <text class="sub"   x="420" y="60"  text-anchor="middle">elements + levels</text>
+
+  <rect class="box2" x="530" y="20"  width="140" height="54"/>
+  <text class="title" x="600" y="42"  text-anchor="middle">applyStyle</text>
+  <text class="sub"   x="600" y="60"  text-anchor="middle">GeoStyle + ImportPolicy</text>
+
+  <rect class="box2" x="170" y="112" width="140" height="54"/>
+  <text class="title" x="240" y="134" text-anchor="middle">elem.style</text>
+  <text class="sub"   x="240" y="152" text-anchor="middle">per-element dict</text>
+
+  <rect class="box2" x="350" y="112" width="140" height="54"/>
+  <text class="title" x="420" y="134" text-anchor="middle">CreateMObject</text>
+  <text class="sub"   x="420" y="152" text-anchor="middle">→ manim VGroup</text>
+
+  <rect class="box3" x="250" y="198" width="120" height="48"/>
+  <text class="title" x="310" y="220" text-anchor="middle">SVG</text>
+  <text class="sub"   x="310" y="236" text-anchor="middle">Cairo</text>
+
+  <rect class="box3" x="400" y="198" width="120" height="48"/>
+  <text class="title" x="460" y="220" text-anchor="middle">MP4</text>
+  <text class="sub"   x="460" y="236" text-anchor="middle">manim renderer</text>
+
+  <line class="edge" x1="130" y1="47"  x2="170" y2="47"  marker-end="url(#arr)"/>
+  <line class="edge" x1="310" y1="47"  x2="350" y2="47"  marker-end="url(#arr)"/>
+  <line class="edge" x1="490" y1="47"  x2="530" y2="47"  marker-end="url(#arr)"/>
+  <path class="edge" d="M 600,74 V 95 H 240 V 112" marker-end="url(#arr)"/>
+  <line class="edge" x1="310" y1="139" x2="350" y2="139" marker-end="url(#arr)"/>
+  <path class="edge" d="M 420,166 V 180 L 310,198"       marker-end="url(#arr)"/>
+  <path class="edge" d="M 420,166 V 180 L 460,198"       marker-end="url(#arr)"/>
+
+  <text class="note" x="680" y="100" text-anchor="middle">faithful legacy</text>
+  <text class="note" x="680" y="114" text-anchor="middle">or user policy</text>
+</svg>

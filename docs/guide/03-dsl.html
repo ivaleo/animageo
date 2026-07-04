@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §3 · Python-DSL</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html" class="current-page">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#overview">Обзор</a></li>
+        <li><a href="#points">Точки</a></li>
+        <li><a href="#lines">Линии, сегменты, лучи, векторы</a></li>
+        <li><a href="#angles">Углы</a></li>
+        <li><a href="#circles">Окружности и дуги</a></li>
+        <li><a href="#polygons">Полигоны</a></li>
+        <li><a href="#commands">Конструирующие команды</a></li>
+        <li><a href="#vars">Переменные и измерения</a></li>
+        <li><a href="#python-access">Доступ из Python</a></li>
+        <li><a href="#dispatch">Dispatch convention</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§3 · Python-DSL</h1>
+
+<p class="subtitle-main">
+DSL — маленький язык поверх Python: те же правила синтаксиса (имена,
+выражения, арифметика, комментарии), но зарезервированные имена —
+геометрические. <code>Point</code> возвращает точку, <code>Polygon</code> —
+кортеж, <code>Intersect</code> делает то, что написано. Вы пишете
+конструкцию, а AnimaGeo превращает её в граф зависимостей, который
+пересобирается при анимации.
+</p>
+
+<h2 id="overview">Обзор</h2>
+
+<p>Любая AnimaGeo-сцена строится из элементов. В DSL каждому элементу
+соответствует имя (идентификатор) — AnimaGeo использует его и для
+построения графа, и для доступа через <code>scene.element('имя')</code>.</p>
+
+<table>
+<thead><tr><th>Категория</th><th>Примеры имён</th><th>Что делает</th></tr></thead>
+<tbody>
+<tr><td>Примитивы</td><td><code>Point</code>, <code>Segment</code>, <code>Line</code>, <code>Ray</code>, <code>Vector</code>, <code>Circle</code>, <code>Polygon</code>, <code>Angle</code></td><td>Создают базовые геометрические объекты.</td></tr>
+<tr><td>Конструкции</td><td><code>Midpoint</code>, <code>Intersect</code>, <code>OrthogonalLine</code>, <code>AngularBisector</code>, <code>LineBisector</code>, <code>Center</code>, <code>Centroid</code>, <code>Tangent</code>, <code>Touches</code>, <code>Mirror</code>, <code>Rotate</code></td><td>Строят новый объект из уже существующих.</td></tr>
+<tr><td>Измерения</td><td><code>Distance</code>, <code>Area</code>, <code>AngleMeasure</code></td><td>Возвращают <code>Measure</code> — число с единицами.</td></tr>
+<tr><td>Кривые</td><td><code>Conic</code>, <code>Function</code>, <code>ImplicitCurve</code>, <code>Ellipse</code>, <code>Parabola</code>, <code>Hyperbola</code></td><td>Подробно в §7.</td></tr>
+<tr><td>Переменные</td><td><code>Measure</code>, <code>AngleSize</code>, <code>Boolean</code></td><td>Анимируемые значения (см. §8).</td></tr>
+</tbody>
+</table>
+
+<div class="callout note">
+В DSL <strong>регистр важен</strong>: <code>Point(0,0)</code> — валидно,
+<code>point(0,0)</code> — не распознаётся. Внутри DSL — обычный Python: можно
+писать <code>x = -2.5</code>, <code>r = (a + b) / 2</code> или
+<code>for i in range(3): ...</code>, и эти выражения будут выполнены как
+ожидается.
+</div>
+
+<div class="callout">
+<strong>Три способа подключить DSL к сцене.</strong> У любого
+интерактивного примера ниже есть кнопка <em>Scaffold</em>, которая
+показывает host-обёртку в трёх вариантах:
+<ul style="margin: 8px 0 0 18px;">
+<li><strong>Inline</strong> — <code>scene.putCode("""&nbsp;…&nbsp;""")</code>.
+Код едет строкой, работает полный DSL-transform: LHS-имена попадают в
+<code>Construction</code>, повтор в цикле даёт <code>p, p_2, p_3…</code>,
+поддержан сахар <code>f(x) = x^2</code>.</li>
+<li><strong>From file</strong> — <code>scene.loadCode('scene.ag.py')</code>.
+Тот же движок, просто DSL живёт в отдельном файле. Расширение
+<code>.ag.py</code> — чтобы IDE подсвечивала как Python и подхватывала
+стабы <code>&lt;ggb&gt;_stubs.pyi</code>, которые пишет
+<code>loadGGB</code>.</li>
+<li><strong>Pure Python</strong> —
+<code>with dsl.scope(self.geo):&nbsp;…</code>. AST-transform <em>не</em>
+запускается; фабрики вызываются как обычные функции. IDE-autocomplete
+работает из коробки, но за имена в графе отвечаете вы сами —
+передавайте <code>name='A'</code> явно. Loop-scope уникализации тоже
+нет: повтор имени = коллизия.</li>
+</ul>
+<p style="margin: 8px 0 0;">Во всех трёх вариантах получается один и
+тот же <code>Construction</code> и, как следствие, <em>одна и та же
+картинка</em>. Переключайте вкладки в Scaffold, чтобы увидеть ту же
+DSL-логику в трёх Python-обвязках.</p>
+</div>
+
+<h2 id="points">Точки</h2>
+
+<p>Точка — атом. Всё остальное строится от точек. В DSL есть два
+основных способа их создать:</p>
+
+<table>
+<thead><tr><th>Вызов</th><th>Смысл</th></tr></thead>
+<tbody>
+<tr><td><code>Point(x, y)</code></td><td>Свободная точка с заданными координатами сцены.</td></tr>
+<tr><td><code>Point(circle)</code> + <code>elem.tparam = θ</code></td><td>Точка на окружности, параметр <code>tparam</code> — угол в радианах. Анимируется через <code>update_tparam</code>.</td></tr>
+<tr><td><code>Point(segment)</code> + <code>elem.tparam = t</code></td><td>Точка на сегменте, <code>tparam</code> — линейный параметр (0..1 для внутренней). Анимируется.</td></tr>
+<tr><td><code>Midpoint(A, B)</code></td><td>Середина отрезка <em>AB</em>.</td></tr>
+<tr><td><code>Intersect(g1, g2)</code></td><td>Пересечение (линии, окружности, кривые — любые пары). Возвращает точку или список точек.</td></tr>
+<tr><td><code>Center(Circle(A, B, C))</code></td><td>Центр описанной окружности треугольника <em>ABC</em>.</td></tr>
+<tr><td><code>Centroid(A, B, C)</code></td><td>Центроид треугольника (точка пересечения медиан).</td></tr>
+<tr><td><code>Incenter(A, B, C)</code></td><td>Центр вписанной окружности.</td></tr>
+</tbody>
+</table>
+
+<div class="callout note">
+<strong>Поле <code>.tparam</code></strong> — curve/locus parameter для точки, закреплённой на локусе. Для окружности это угол в радианах, для сегмента/прямой/луча — линейный параметр <em>t</em>.
+</div>
+
+<p>Точки можно складывать и умножать на число — удобно для небольших
+конструкций без явного создания промежуточных элементов:</p>
+
+<pre><code>L = A + (B - A) * 0.3        # точка на 30% пути от A к B
+E = Centroid + (A - Centroid) * 1.2  # «продлить» медиану на 20%</code></pre>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true}'>
+  <div class="ex-code">
+    <span class="ex-label">points.py · три способа получить точку</span>
+<pre><code>A = Point(-3.8, -1.6)
+B = Point(3.8, -1.6)
+C = Point(0.6, 2.4)
+p, a, b, c = Polygon(A, B, C)
+
+M = Midpoint(A, B)                      # середина
+G = Centroid(A, B, C)                   # центроид
+O = Center(Circle(A, B, C))               # описанная окружность
+
+med = Segment(C, M)                     # медиана из C
+k = Circle(O, A)                        # описанная окружность
+
+style(A, B, C, M, G, O, label_visible=True)</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/03-dsl-00.svg" alt="Точки на треугольнике">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<h2 id="lines">Линии, сегменты, лучи, векторы</h2>
+
+<p>Четыре примитива отличаются тем, как рендерятся и участвуют в
+пересечениях:</p>
+
+<table>
+<thead><tr><th>Примитив</th><th>DSL</th><th>Рендер</th><th>Используется для</th></tr></thead>
+<tbody>
+<tr><td><em>Line</em></td><td><code>Line(P, Q)</code> или <code>Line(P, direction_vector)</code></td><td>Прямая, обрезанная viewport'ом</td><td>Бесконечные построения: биссектрисы, перпендикуляры, касательные-прямые.</td></tr>
+<tr><td><em>Segment</em></td><td><code>Segment(A, B)</code></td><td>Отрезок от <em>A</em> до <em>B</em></td><td>Стороны полигонов, сегменты-подписи (<code>AM = MB</code>).</td></tr>
+<tr><td><em>Ray</em></td><td><code>Ray(origin, direction_point)</code></td><td>Луч из <em>origin</em> через <em>direction_point</em>, обрезан viewport'ом</td><td>Биссектрисы-лучи, направления света/зрения.</td></tr>
+<tr><td><em>Vector</em></td><td><code>Vector(tail, head)</code></td><td>Стрелка от <em>tail</em> до <em>head</em></td><td>Векторы в физике/алгебре, направления сил.</td></tr>
+</tbody>
+</table>
+
+<div class="callout note">
+Разница видна в обрезании viewport'ом: <code>Line</code> и <code>Ray</code>
+всегда тянутся до края, <code>Segment</code> — строго между концов.
+<code>Intersect</code> тоже ведёт себя по-разному: пересечение
+<code>Line×Line</code> всегда в одной точке (если не параллельны),
+<code>Segment×Segment</code> — только если реально пересекаются в
+границах.
+</div>
+
+<h3>Стили штрихов и меток равенства</h3>
+
+<p>У сегментов есть <code>elem.style['tick_count']</code>: 1, 2 или 3 штриха
+поперёк — классическая школьная нотация «эти стороны равны». Плюс
+<code>'tick_style': 'wave'</code> даёт волнистые штрихи вместо прямых.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true}'>
+  <div class="ex-code">
+    <span class="ex-label">segments.py · AM = MB</span>
+<pre><code>A = Point(-3, 0)
+B = Point(3, 0)
+M = Midpoint(A, B)
+
+s1 = Segment(A, M)
+s2 = Segment(M, B)
+# overrides снаружи добавляют равные штрихи (lines=2)
+# попробуйте убрать — иллюстрация потеряет метки равенства
+
+style(A, B, M, label_visible=True)
+s1.style.tick_count = 2
+s2.style.tick_count = 2</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/03-dsl-01.svg" alt="Сегменты с метками равенства">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/10-segment-marks.py" download>segments.py</a>
+  </div>
+</div>
+
+<h2 id="angles">Углы</h2>
+
+<p>Угол в AnimaGeo — не просто число, а <em>объект</em>. У него есть
+вершина, две стороны и дуга, которую можно стилизовать:</p>
+
+<pre><code>Angle(P, V, Q)   # угол при вершине V, от луча VP до луча VQ</code></pre>
+
+<p>Порядок аргументов определяет направление дуги — это важно для
+ориентированных (CCW) полигонов.</p>
+
+<div class="callout warn">
+<strong>Reflex-сектор.</strong> Если ваш полигон ориентирован против часовой стрелки
+(typical для CCW-координат), <code>Angle(A, B, C)</code> для
+внутреннего угла при B — правильный порядок. Если поменять местами
+<code>A</code> и <code>C</code>, получите &gt;180°-дугу. При заливке
+<code>fill</code> это заметнее всего: half-plane вывернется наизнанку.
+</div>
+
+<p>У углов есть несколько ключей стиля, специфичных именно для углов:</p>
+
+<table>
+<thead><tr><th>Ключ</th><th>Что делает</th></tr></thead>
+<tbody>
+<tr><td><code>tick_count</code></td><td>1, 2 или 3 концентрических дуги — показать, что углы равны. <code>arc_shift_px</code> между дугами задаётся в стиле.</td></tr>
+<tr><td><code>arc_size_px</code></td><td>Радиус внешней дуги в пикселях (pixel-invariant).</td></tr>
+<tr><td><code>fill</code> / <code>fill_opacity</code></td><td>Заливка сектора.</td></tr>
+<tr><td><code>label_text</code></td><td>TeX или Unicode-строка, напр. <code>$\alpha$</code>, <code>$60°$</code>, <code>$\frac{\pi}{3}$</code>.</td></tr>
+</tbody>
+</table>
+
+<p>Прямой угол визуализируется автоматически — если <code>Angle(A, B, C)</code>
+на момент построения равен 90°, рисуется квадратик вместо дуги.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true}'>
+  <div class="ex-code">
+    <span class="ex-label">angles.py · разные дуги</span>
+<pre><code>A = Point(-4.5, -2)
+B = Point(4.5, -2)
+C = Point(-0.5, 2.8)
+p, a, b, c = Polygon(A, B, C)
+
+alpha = Angle(B, A, C)   # при A
+beta  = Angle(C, B, A)   # при B
+gamma = Angle(A, C, B)   # при C
+# overrides: lines 1/2/3 — стандартная школьная нотация
+
+style(A, B, C, label_visible=True)
+alpha.style.label_text = r'$\alpha$'
+beta.style.label_text = r'$\beta$'
+gamma.style.label_text = r'$\gamma$'
+alpha.style.tick_count = 1
+beta.style.tick_count = 2
+gamma.style.tick_count = 3</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/03-dsl-02.svg" alt="Углы с разными дугами">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/11-angle-multi-arcs.py" download>angles.py</a>
+    <a href="/assets/examples/src/guide_style.json" download>guide_style.json</a>
+  </div>
+</div>
+
+<h2 id="circles">Окружности, дуги, секторы</h2>
+
+<table>
+<thead><tr><th>DSL</th><th>Что</th></tr></thead>
+<tbody>
+<tr><td><code>Circle(center, passing_point)</code></td><td>Окружность с центром <em>center</em>, проходящая через <em>passing_point</em>.</td></tr>
+<tr><td><code>Circle(center, r)</code></td><td>Окружность радиуса <em>r</em> (число или <code>Measure</code>).</td></tr>
+<tr><td><code>Circle(A, B, C)</code></td><td>Окружность через три точки (= описанная для треугольника).</td></tr>
+<tr><td><code>CircleArc(center, A, B)</code></td><td>Дуга окружности от <em>A</em> до <em>B</em> (CCW).</td></tr>
+<tr><td><code>CircleSector(center, A, B)</code></td><td>Сектор (дуга + два радиуса).</td></tr>
+<tr><td><code>CircumcircleArc(A, B, C)</code></td><td>Дуга описанной окружности, проходящая через <em>A → B → C</em>.</td></tr>
+</tbody>
+</table>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true}'>
+  <div class="ex-code">
+    <span class="ex-label">circle.py</span>
+<pre><code>O = Point(0, 0)
+R = Point(2.5, 0)
+c = Circle(O, R)
+
+# две точки на окружности и дуга между ними
+P = Point(-1.9, 1.6)
+Q = Point(1.9, 1.6)
+arc1 = CircleArc(O, Q, P)
+
+style(O, R, P, Q, label_visible=True)
+arc1.style.stroke = '#f15b5b'
+arc1.style.stroke_width_px = 2.5</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/03-dsl-03.svg" alt="Окружность и дуга">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/22-arc.py" download>circle.py</a>
+  </div>
+</div>
+
+<h2 id="polygons">Полигоны</h2>
+
+<p><code>Polygon(P1, P2, ..., Pn)</code> возвращает <em>кортеж</em>:
+сам полигон + его стороны, по порядку.</p>
+
+<pre><code>p, a, b, c = Polygon(A, B, C)
+# p — полигон (для заливки)
+# a = Segment(A, B), b = Segment(B, C), c = Segment(C, A)</code></pre>
+
+<p>Для <em>n</em>-угольника кортеж имеет <em>n+1</em> элемент: полигон и
+<em>n</em> сторон (замыкающая идёт последней, от <em>Pn</em> к <em>P1</em>).
+Сторону можно использовать как обычный сегмент, в том числе передавать
+в <code>Intersect</code>:</p>
+
+<pre><code>A = Point(-4, -1.5); B = Point(4, -1.5); C = Point(0, 2.5)
+p, sAB, sBC, sCA = Polygon(A, B, C)
+M = Intersect(AngularBisector(B, A, C), sBC)   # M ∈ BC</code></pre>
+
+<div class="callout note">
+Полигон рендерится как <em>заливка</em> (под всеми линиями) + его
+стороны рисуются поверх. Если нужен только контур — установите
+<code>p.style['fill_opacity'] = 0</code>. Если только заливка — скройте
+стороны через <code>a.visible = False; b.visible = False; ...</code>.
+</div>
+
+<h2 id="commands">Конструирующие команды</h2>
+
+<p>Шесть самых частых команд — основа любой школьной геометрии.
+Каждая принимает существующие точки/линии и возвращает новый объект.</p>
+
+<table>
+<thead><tr><th>Команда</th><th>Сигнатура</th><th>Возвращает</th></tr></thead>
+<tbody>
+<tr><td>Середина</td><td><code>Midpoint(A, B)</code> или <code>Midpoint(segment)</code></td><td>Точка</td></tr>
+<tr><td>Пересечение</td><td><code>Intersect(g1, g2)</code></td><td>Точка (или список, если их несколько — см. ниже)</td></tr>
+<tr><td>Перпендикуляр</td><td><code>PerpendicularLine(P, l)</code></td><td>Прямая через <em>P</em> перпендикулярно <em>l</em></td></tr>
+<tr><td>Параллельная</td><td><code>ParallelLine(P, l)</code></td><td>Прямая через <em>P</em> параллельно <em>l</em></td></tr>
+<tr><td>Биссектриса угла</td><td><code>AngularBisector(P, V, Q)</code></td><td>Луч из <em>V</em>, делящий угол <em>PVQ</em> пополам</td></tr>
+<tr><td>Серединный перпендикуляр</td><td><code>PerpendicularBisector(A, B)</code></td><td>Прямая</td></tr>
+<tr><td>Касательная</td><td><code>Tangent(P, circle)</code></td><td>Пара прямых (или пустой список, если <em>P</em> внутри)</td></tr>
+</tbody>
+</table>
+
+<h3>Несколько пересечений</h3>
+
+<p><code>Intersect</code> для «линия × окружность» даёт две точки. Если
+нужна конкретная — можно передать <em>индекс</em>: публичный DSL использует
+нумерацию <code>1, 2, ...</code> и принимает как позиционный аргумент, так и
+<code>index=</code>.</p>
+
+<pre><code>P1 = Intersect(line, circle, index=1)   # первая точка
+P2 = Intersect(line, circle, 2)         # вторая</code></pre>
+
+<p>Без индекса <code>Intersect</code> отдаёт объект-контейнер; обычно
+удобнее деструктуризовать:</p>
+
+<pre><code>P1, P2 = Intersect(line, circle)</code></pre>
+
+<p>Порядок пересечений является частью публичного контракта:
+<code>P1, P2 = Intersect(a, b)</code> соответствует
+<code>Intersect(a, b, index=1)</code> и
+<code>Intersect(a, b, index=2)</code>. Для окружностей AnimaGeo сохраняет
+GeoGebra-like эвристику: если точки пересечения уже участвовали во входных
+объектах окружности или второго объекта, они идут первыми в этом порядке;
+оставшиеся точки сохраняют внутренний детерминированный порядок. Один и тот
+же порядок используется в Python DSL, <code>.ggb</code> import и
+экспортных путях.</p>
+
+<h3>Составной пример: биссектриса и её пересечение со стороной</h3>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": true}'>
+  <div class="ex-code">
+    <span class="ex-label">bisector.py</span>
+<pre><code>A = Point(-4, -1.8)
+B = Point(4, -1.8)
+C = Point(-0.8, 2.6)
+p, a, b, c = Polygon(A, B, C)
+
+# биссектриса угла A — прямая через f
+f = AngularBisector(C, A, B)
+
+# точка, где она пересекает противолежащую сторону BC
+L = Intersect(f, b)
+
+# видимый сегмент A→L (биссектриса как отрезок)
+bis = Segment(A, L)
+
+# два полууглa при A (для равных дуг)
+beta  = Angle(C, A, L)
+gamma = Angle(L, A, B)
+
+hide(f)
+style(A, B, C, L, label_visible=True)
+beta.style.label_text = r'$\beta$'
+gamma.style.label_text = r'$\gamma$'
+bis.style.stroke = '#f15b5b'
+bis.style.stroke_width_px = 1.5</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/03-dsl-04.svg" alt="Биссектриса угла A в треугольнике">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/25-composite.py" download>bisector.py</a>
+  </div>
+</div>
+
+<h2 id="vars">Переменные и измерения</h2>
+
+<p>Три типа «переменной» — это числовые значения, которые можно
+анимировать, привязывать к построениям и показывать как подписи.</p>
+
+<table>
+<thead><tr><th>Тип</th><th>Создание</th><th>Применение</th></tr></thead>
+<tbody>
+<tr><td><code>Measure</code></td><td><code>d = Distance(A, B)</code>, <code>s = Area(p)</code></td><td>Длины, площади. Автоматически пересчитывается при изменении точек.</td></tr>
+<tr><td><code>AngleSize</code></td><td><code>x = AngleMeasure(B, A, C)</code></td><td>Размер угла (в радианах). Можно использовать в <code>If</code>, сравнениях.</td></tr>
+<tr><td><code>Boolean</code></td><td><code>b = Boolean(True)</code>, условия на сцене</td><td>Управление видимостью (см. §8, keyframes).</td></tr>
+</tbody>
+</table>
+
+<p>Любой <code>Measure</code> можно показать как подпись — либо рядом с
+элементом, от которого измерение получено, либо в отдельной точке:</p>
+
+<pre><code>A = Point(-3, 0); B = Point(3, 0)
+s = Segment(A, B)
+d = Distance(A, B)              # Measure
+s.style['label_visible'] = True
+s.style['label_text'] = f'{d:.1f}'   # «6.0»</code></pre>
+
+<div class="callout note">
+В анимации значение <code>d</code> — живое: при движении <em>A</em> или
+<em>B</em> подпись обновляется автоматически. Для живой подписи
+используйте строку с плейсхолдером <code>{measure}</code> —
+подробно в §6.
+</div>
+
+<h2 id="python-access">Доступ из Python</h2>
+
+<p>После <code>putCode(...)</code> все имена из DSL живут в Construction.
+Доступ через <code>scene.element(name)</code> или напрямую через
+<code>scene.geo.elements</code>. Стили можно писать как через
+<code>style[...]</code>, так и атрибутом <code>style.X</code>
+(<code>StyleProxy</code> поддерживает оба варианта).</p>
+
+<pre><code>scene.putCode("""
+A = Point(-3, 0)
+B = Point(3, 0)
+s = Segment(A, B)
+""")
+
+s_obj = scene.element('s')
+s_obj.style.stroke = '#f15b5b'        # атрибутный стиль
+s_obj.style['stroke_width_px'] = 2.5     # dict-совместимый
+s_obj.style.label_visible = True
+s_obj.style.label_text = 'AB'
+
+# или скрыть элемент полностью:
+a_obj = scene.element('A')
+a_obj.visible = False
+
+# Прямой доступ к геометрическим полям
+s_obj.start, s_obj.end, s_obj.length     # через Segment
+a_obj.x, a_obj.y, a_obj.coords            # через Point</code></pre>
+
+<p>Внутри DSL (в коде, переданном в <code>putCode</code>) доступ к полям
+выглядит также: <code>A.x</code>, <code>circ.center</code>, <code>seg.length</code>
+и т.&nbsp;д. Полный список человечных имён полей — в
+<a href="../field_names.md">docs/field_names.md</a>.</p>
+
+<div class="callout note">
+В 2026-04 прошла финальная ревизия имён полей на data-классах.
+<strong>Короткие имена</strong> (<code>.a</code>, <code>.c</code>,
+<code>.n</code>, <code>.r</code>, <code>.M</code>, <code>.b</code>,
+<code>.x</code> у <code>Measure</code>, <code>.alpha</code>,
+<code>.angle</code>) полностью заменены на человечные
+(<code>.coords</code>, <code>.center/.offset</code>, <code>.normal</code>,
+<code>.radius</code>, <code>.matrix</code>, <code>.value</code>,
+<code>.tparam</code>, <code>.size</code>). Backward-compat алиасы
+<strong>удалены</strong> — старый код получает <code>AttributeError</code>.
+</div>
+
+<h3>Python-like DSL: control flow без unrestricted runtime</h3>
+
+<p>exec-движок исполняет DSL-строку как Python: <code>for</code>,
+<code>if</code>, <code>def</code>, <code>**kwargs</code>, comprehensions,
+f-строки, tuple-unpack — всё работает.</p>
+
+<div class="callout warn">
+Это не unrestricted Python. Импорты в DSL-строке удаляются как IDE-only,
+<code>global</code>, <code>nonlocal</code>, <code>+=</code>, walrus
+<code>:=</code>, chained assignment и annotated assignment с value запрещены.
+В runtime недоступны <code>open</code>, <code>eval</code>, <code>exec</code>,
+<code>__import__</code>. Lowercase unknown name создаёт forward-ref
+<code>Var(None)</code>, а CamelCase-опечатки должны падать как ошибка.
+</div>
+
+<pre><code>self.putCode("""
+# Цикл создаёт p, p_2, p_3 (авто-уникализация имён)
+for i in range(3):
+    p = Point(i, 0)
+
+# Функция с explicit names через kwarg
+def triangle(prefix, side):
+    A = Point(0, 0, name=f'{prefix}_A')
+    B = Point(side, 0, name=f'{prefix}_B')
+    C = Point(side/2, side*0.866, name=f'{prefix}_C')
+    return A, B, C
+
+triangle('t1', 3)
+triangle('t2', 5)
+
+# Арифметика на прокси (регистрирует Add/Sub/Mult-команды)
+D = A + B                    # Add(A, B)
+v = B - A                    # Sub(B, A)
+E = 2 * A                    # Mult(2, A)
+""")</code></pre>
+
+<p>Полный гайд по возможностям DSL —
+<a href="../python_dsl.md">docs/python_dsl.md</a>.</p>
+
+<h2 id="dispatch">Dispatch convention</h2>
+
+<p>Под капотом каждая DSL-команда становится вызовом функции
+<code>name_shortcut</code>, где <code>shortcut</code> — конкатенация
+однобуквенных кодов типов аргументов. AnimaGeo выбирает конкретную
+реализацию по фактическим типам переданных аргументов.</p>
+
+<table>
+<thead><tr><th>Код</th><th>Тип</th></tr></thead>
+<tbody>
+<tr><td><code>p</code></td><td><code>Point</code></td></tr>
+<tr><td><code>l</code></td><td><code>Line</code></td></tr>
+<tr><td><code>s</code></td><td><code>Segment</code></td></tr>
+<tr><td><code>r</code></td><td><code>Ray</code></td></tr>
+<tr><td><code>c</code></td><td><code>Circle</code></td></tr>
+<tr><td><code>C</code></td><td><code>Arc</code></td></tr>
+<tr><td><code>a</code></td><td><code>Angle</code></td></tr>
+<tr><td><code>P</code></td><td><code>Polygon</code></td></tr>
+<tr><td><code>v</code></td><td><code>Vector</code></td></tr>
+<tr><td><code>i</code></td><td><code>int</code>/<code>float</code></td></tr>
+<tr><td><code>m</code></td><td><code>Measure</code></td></tr>
+<tr><td><code>K</code></td><td><code>Conic</code></td></tr>
+<tr><td><code>F</code></td><td><code>Function</code></td></tr>
+<tr><td><code>I</code></td><td><code>ImplicitCurve</code></td></tr>
+<tr><td><code>T</code></td><td>строка (DSL-литерал, для <code>Conic("...")</code>)</td></tr>
+</tbody>
+</table>
+
+<p>Например, <code>Midpoint(A, B)</code> → <code>midpoint_pp</code>,
+<code>Intersect(l, c)</code> → <code>intersect_lc</code>,
+<code>Circle(O, r)</code> → <code>circle_pi</code> (если <em>r</em> — число),
+<code>Circle(O, P)</code> → <code>circle_pp</code> (если <em>P</em> — точка).</p>
+
+<p>Весь список реализаций — в <code>animageo/geo/lib_commands.py</code>.
+Там 150+ функций; знать их не обязательно — DSL-уровня достаточно
+для всех школьных задач.</p>
+
+<div class="callout tip">
+Если нужно расширить язык — добавить, скажем, <code>GoldenRatio(A, B)</code> —
+достаточно написать <code>golden_ratio_pp(p1, p2)</code> в
+<code>lib_commands.py</code> и перезапустить скрипт. Диспетчер подхватит
+новую функцию автоматически; никаких регистраций не требуется.
+</div>
+
+<div class="footer-nav">
+<a href="02-installation.html">← §2 · Установка</a>
+<a href="04-geogebra.html">§4 · Загрузка из GeoGebra →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

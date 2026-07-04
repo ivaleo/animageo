@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §7 · Кривые</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html" class="current-page">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#overview">Три типа кривых</a></li>
+        <li><a href="#conic">Conic</a></li>
+        <li><a href="#function">Function</a></li>
+        <li><a href="#implicit">ImplicitCurve</a></li>
+        <li><a href="#style-keys">Стилевые ключи</a></li>
+        <li><a href="#sampling">Параметры сэмплирования</a></li>
+        <li><a href="#gotchas">Особенности</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§7 · Кривые</h1>
+
+<p class="subtitle-main">
+Три полноправных типа кривых: <code>Conic</code> (матрица 3×3, 9 ветвей
+классификации), <code>Function</code> (<code>y = f(x)</code> с sympy-парсингом
+и автоматическими асимптотами), <code>ImplicitCurve</code> (<code>F(x, y) = 0</code>
+через marching squares). Все читают те же ключи стилей, что и линии:
+<code>stroke</code>, <code>stroke_width_px</code>, <code>fill</code>, <code>z_index</code>.
+</p>
+
+<h2 id="overview">Три типа кривых</h2>
+
+<table>
+<thead><tr><th>Тип</th><th>Что представляет</th><th>Как рисуется</th><th>fill</th><th>stroke_dash_ratio</th></tr></thead>
+<tbody>
+<tr><td><code>Conic</code></td><td>матрица 3×3; 9 ветвей (CIRCLE, ELLIPSE, PARABOLA, HYPERBOLA, 3× lines, POINT, EMPTY)</td><td>manim-примитив для замкнутых; адаптивный sampler + viewport-clip для парабол/гипербол</td><td>только CIRCLE, ELLIPSE</td><td>только CIRCLE</td></tr>
+<tr><td><code>Function</code></td><td>явная <code>y = f(x)</code>, sympy + numpy.lambdify</td><td>adaptive sampling с разделением по <em>natural_singularities</em></td><td>—</td><td>—</td></tr>
+<tr><td><code>ImplicitCurve</code></td><td>любое <code>F(x, y) = 0</code></td><td>marching squares 128×128 внутри viewport</td><td>—</td><td>—</td></tr>
+</tbody>
+</table>
+
+<div class="callout note">
+В отличие от полигонов, у кривых <strong>нет собственной JSON-секции</strong>
+(<code>style.curve.*</code> не существует). Они читают canonical defaults
+через resolver (<code>defaults.function</code>, <code>defaults.conic</code> и
+т.п.) и перекрываются per-element через <code>elem.style</code>, как обычные
+линии.
+</div>
+
+<div class="ex-row">
+<div class="mini"><img src="/assets/examples/31-conic-ellipse.svg" alt="ellipse"><div class="cap">Conic (ELLIPSE)</div></div>
+<div class="mini"><img src="/assets/examples/32-conic-hyperbola.svg" alt="hyperbola"><div class="cap">Conic (HYPERBOLA)</div></div>
+<div class="mini"><img src="/assets/examples/35-function-asymptote.svg" alt="y=1/x"><div class="cap">Function · асимптота</div></div>
+<div class="mini"><img src="/assets/examples/38-implicit-lemniscate.svg" alt="lemniscate"><div class="cap">ImplicitCurve</div></div>
+</div>
+
+<h2 id="conic">Conic — конические сечения</h2>
+
+<h3>Создание</h3>
+
+<table>
+<thead><tr><th>Конструктор</th><th>Когда используется</th></tr></thead>
+<tbody>
+<tr><td><code>Conic(matrix)</code></td><td>Сырой 3×3 ndarray — продвинутый случай.</td></tr>
+<tr><td><code>Conic.from_coeffs(a, b, c, d, e, f)</code></td><td>По общему уравнению <code>ax² + bxy + cy² + dx + ey + f = 0</code>.</td></tr>
+<tr><td><code>Conic.from_ggb_matrix(A0..A5)</code></td><td>Совместимо с GGB XML <code>&lt;matrix&gt;</code>.</td></tr>
+<tr><td><code>Conic("...")</code> / <code>Conic.from_string(eq)</code></td><td>DSL: произвольное уравнение, парсится через sympy.</td></tr>
+</tbody>
+</table>
+
+<p>В DSL поддерживается строковая форма:</p>
+
+<pre><code>g1 = Conic("x^2 + y^2 = 4")                # → CIRCLE
+g2 = Conic("(x+1)^2/4 + y^2/2 = 1")        # → ELLIPSE
+g3 = Conic("y = (x - 0.3)^2")              # → PARABOLA
+g4 = Conic("x^2/2 - y^2 = 1")              # → HYPERBOLA
+g5 = Conic("x^2 - y^2 = 0")                # → INTERSECTING_LINES</code></pre>
+
+<p>Тип классифицируется <em>лениво</em> при первом обращении к
+<code>conic.type</code> — по инвариантам ранга матрицы и знака
+<code>det(M₃₃)</code>. Кэшируется.</p>
+
+<h3>Эллипс: fill поддерживается</h3>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">ellipse.py · правьте уравнение; стили — через overrides</span>
+<pre><code>ell = Conic("(x+0.3)^2 / 5 + (y-0.2)^2 / 2.2 = 1")
+
+ell.style.fill = '#d6e5f6'
+ell.style.fill_opacity = 0.55
+ell.style.stroke = '#4d87c6'
+ell.style.stroke_width_px = 2.2</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/07-curves-00.svg" alt="Ellipse with fill">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/31-conic-ellipse.py" download>ellipse.py</a>
+  </div>
+</div>
+
+<h3>Окружность: поддерживает stroke_dash_ratio</h3>
+
+<p>Для <code>CIRCLE</code>-ветви рендер использует <code>DashedVMobject</code>,
+поэтому работает пунктир — в отличие от остальных коник.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">circle-dashed.py · попробуйте убрать stroke_dash_ratio</span>
+<pre><code>c = Conic("x^2 + y^2 = 6")
+
+c.style.stroke = '#4d87c6'
+c.style.stroke_width_px = 2.0
+c.style.stroke_dash_ratio = 0.5</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/07-curves-01.svg" alt="Dashed circle">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/33-conic-circle-dashed.py" download>circle-dashed.py</a>
+  </div>
+</div>
+
+<div class="callout warn">
+<code>stroke_dash_ratio</code> работает <strong>только</strong> для
+<code>CIRCLE</code>-ветви Conic (через <code>DashedVMobject</code>).
+Parabola/Hyperbola рендерятся как polylines VMobject-ом напрямую — этот
+путь не применяет dash. То же касается Function и ImplicitCurve.
+</div>
+
+<h3>Парабола: viewport-clipping</h3>
+
+<p>Парабола бесконечна. Чтобы sampler не тратил точки на невидимые
+участки, аналитически вычисляется диапазон параметра <code>|u| ≤ 2√(p·v_max)</code>,
+где <code>v_max</code> — максимальная проекция оси на видимую область
+(<code>viewport_t_ranges_parabola</code> в <code>geo/curve_sampling.py</code>).</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">parabola.py</span>
+<pre><code>parab = Conic("y - 0.4 = (x - 0.3)^2 / 1.6")
+
+parab.style.stroke = '#4d87c6'
+parab.style.stroke_width_px = 2.2</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/07-curves-02.svg" alt="Parabola">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/30-conic-parabola.py" download>parabola.py</a>
+  </div>
+</div>
+
+<h3>Гипербола: две ветви, каждая независимо</h3>
+
+<p>Для <code>HYPERBOLA</code> рендер строит две ветви (<code>sign = ±1</code>),
+для каждой аналитически сужает диапазон параметра до пересечения с viewport
+(<code>|t| ≤ min(acosh(u_max/a), asinh(v_max/b))</code>), затем вызывает
+<code>sample_parametric</code>.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">hyperbola.py</span>
+<pre><code>hyp = Conic("x^2 / 1.8 - y^2 / 1.2 = 1")
+
+hyp.style.stroke = '#4d87c6'
+hyp.style.stroke_width_px = 2.2</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/07-curves-03.svg" alt="Hyperbola">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/32-conic-hyperbola.py" download>hyperbola.py</a>
+  </div>
+</div>
+
+<h3>Вырожденные коники</h3>
+
+<p><code>INTERSECTING_LINES</code>, <code>PARALLEL_LINES</code>,
+<code>DOUBLE_LINE</code> раскладываются на обычные Line-объекты,
+обрезанные viewport'ом. <code>POINT</code> становится <code>Dot</code>.
+<code>EMPTY</code> не рисует ничего.</p>
+
+<h3>Производные свойства коник</h3>
+
+<p>На базе <code>Conic</code> доступны команды:</p>
+
+<pre><code>O   = Center(ell)          # центр
+F1  = Focus(hyp)            # первый фокус
+V   = Vertex(parab)         # вершина
+d   = Directrix(parab)      # директриса (Line)
+e   = Eccentricity(hyp)     # эксцентриситет (число)
+pol = Polar(P, conic)       # поляра точки
+tg  = Tangent(P, conic)     # касательная из внешней точки</code></pre>
+
+<p>Стилизация этих элементов — по их типу (<code>Line</code>/<code>Point</code>), см. §3.</p>
+
+<h2 id="function">Function — явные <code>y = f(x)</code></h2>
+
+<h3>Парсинг</h3>
+
+<p>Три эквивалентных способа создать функцию:</p>
+
+<pre><code># 1. Строковая форма — парсится sympy
+f1 = Function("y = x^2 - 3")
+
+# 2. DSL-сугар: f(x) = expr
+#    (preprocessor переписывает в Function("y = ..."))
+f2(x) = x^2 - 3
+
+# 3. Любое имя переменной — переименование автоматическое
+f3(t) = sin(t) / t</code></pre>
+
+<p>Парсер поддерживает:</p>
+
+<ul>
+<li><code>^</code> → <code>**</code> (возведение в степень по-школьному);</li>
+<li>Unicode-компараторы: <code>≤</code> → <code>&lt;=</code>, <code>≥</code> → <code>&gt;=</code>;</li>
+<li>Цепочки сравнений: <code>-1 ≤ x ≤ 1</code> → <code>(x ≥ -1) &amp; (x ≤ 1)</code>;</li>
+<li>GGB-конструкция <code>If[cond, then, else]</code> → <code>sympy.Piecewise</code> рекурсивно;</li>
+<li><code>abs(x)</code> и стандартные функции numpy/sympy.</li>
+</ul>
+
+<p>После парсинга выражение один раз пропускается через
+<code>sympy.lambdify('numpy')</code>; дальше горячий путь — только numpy-вызовы,
+без sympy.</p>
+
+<h3>Базовый случай</h3>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">basic.py · попробуйте sin, cos, exp</span>
+<pre><code>f(x) = x^2 / 2 - 1
+
+f.style.stroke = '#4d87c6'
+f.style.stroke_width_px = 2.2</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/07-curves-04.svg" alt="y = x²/2 − 1">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/34-function-basic.py" download>basic.py</a>
+  </div>
+</div>
+
+<h3>Асимптоты — автоматическое расщепление</h3>
+
+<p><code>y = 1/x</code> имеет вертикальную асимптоту в <code>x = 0</code>.
+<code>sympy.singularities</code> находит все такие точки и сохраняет в
+<code>func.natural_singularities</code>. Рендер делит x-диапазон на подотрезки
+между соседними singularities, каждый сэмплируется независимо — никакой
+«соединяющей» линии через бесконечность.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">asymptote.py · попробуйте tan(x) или 1/(x^2 - 1)</span>
+<pre><code>f(x) = 1 / x
+
+f.style.stroke = '#f15b5b'
+f.style.stroke_width_px = 2.2</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/07-curves-05.svg" alt="y = 1/x">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/35-function-asymptote.py" download>asymptote.py</a>
+  </div>
+</div>
+
+<div class="callout note">
+Sampler никогда не вызывает <code>f</code> в самой singularity — отступает
+на <code>ε = max(width × 1e-3, 1e-6)</code>, чтобы избежать
+<code>ZeroDivisionError</code>. У асимптот кривая визуально обрывается
+немного раньше теоретической бесконечности — обычно невидимо, но может
+проявиться при очень высоком zoom.
+</div>
+
+<h3>Piecewise через <code>If[...]</code></h3>
+
+<p>GGB-синтаксис <code>If[-2 ≤ x ≤ 2, x² - 1]</code> переводится в
+<code>sympy.Piecewise((x² - 1, (x ≥ -2) &amp; (x ≤ 2)), (nan, True))</code>.
+Вне области — NaN, sampler обрывает полилинию.</p>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">piecewise.py</span>
+<pre><code>f(x) = If[-2 &lt;= x &lt;= 2, x^2 - 1]
+
+f.style.stroke = '#4d87c6'
+f.style.stroke_width_px = 2.5</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/07-curves-06.svg" alt="Piecewise y = x²−1 на [-2, 2]">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/36-function-piecewise.py" download>piecewise.py</a>
+  </div>
+</div>
+
+<div class="callout tip">
+<strong>Альтернатива через Python API.</strong> Если функция создаётся из Python
+(не DSL), можно передать <code>domain=(a, b)</code> прямо в конструктор:
+<pre style="margin: 6px 0 0;"><code>from animageo.geo.lib_function import Function
+f = Function('x**2 - 1', domain=(-2, 2))</code></pre>
+Рендер пересечёт домен с viewport и сэмплирует только пересечение. DSL-форма
+<code>Function(...)</code> через <code>putCode</code> не принимает kwargs —
+для DSL используйте <code>If[...]</code>.
+</div>
+
+<h3>Несколько функций, разные стили</h3>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">trio.py · три гармоники</span>
+<pre><code>f(x) = sin(x)
+g(x) = sin(2 * x) / 2
+h(x) = sin(3 * x) / 3
+
+f.style.stroke = '#4d87c6'
+f.style.stroke_width_px = 2.2
+g.style.stroke = '#f15b5b'
+g.style.stroke_width_px = 1.6
+h.style.stroke = '#58c57e'
+h.style.stroke_width_px = 1.2</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/07-curves-07.svg" alt="Three sine harmonics">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/37-function-trio.py" download>trio.py</a>
+  </div>
+</div>
+
+<h2 id="implicit">ImplicitCurve — <code>F(x, y) = 0</code></h2>
+
+<h3>Когда нужно</h3>
+
+<p>Если кривая не раскрывается как <code>y = f(x)</code> (лемниската,
+декартов лист, кардиоида) и sympy-классификация не даёт ветви Conic —
+используется <code>ImplicitCurve</code>. Уравнения вида <code>LHS = RHS</code>
+нормализуются в <code>LHS − RHS = 0</code> автоматически.</p>
+
+<pre><code>L = ImplicitCurve("(x^2 + y^2)^2 = 4 * (x^2 - y^2)")   # лемниската
+F = ImplicitCurve("x^3 + y^3 = 3 * x * y")             # декартов лист
+S = ImplicitCurve("sin(x) + cos(y) = 0.5")             # периодический паттерн</code></pre>
+
+<h3>Marching squares</h3>
+
+<p>Рендер строит сетку 128×128 внутри viewport, для каждой ячейки
+смотрит знаки <code>F</code> в 4 углах, по 16-позиционной таблице
+восстанавливает отрезок контура. Сложность <code>O(grid_n²)</code>,
+память константна. Это значит:</p>
+
+<ul>
+<li>Нет адаптивности к локальной кривизне — на 128×128 у очень гладких кривых можно заметить едва видимое «ступенчатое» пересечение диагоналей ячеек.</li>
+<li>Самопересечения (фолиум в начале координат) нативно корректны — они дают две пересекающиеся пары отрезков.</li>
+<li>Области, где <code>F</code> → NaN (<code>sqrt(-y)</code> при <code>y &gt; 0</code>), пропускаются автоматически.</li>
+</ul>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">lemniscate.py</span>
+<pre><code>L = ImplicitCurve("(x^2 + y^2)^2 = 4 * (x^2 - y^2)")
+
+L.style.stroke = '#4d87c6'
+L.style.stroke_width_px = 2.2</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/07-curves-08.svg" alt="Lemniscate">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/38-implicit-lemniscate.py" download>lemniscate.py</a>
+  </div>
+</div>
+
+<div class="ex interactive wide"
+     data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
+  <div class="ex-code">
+    <span class="ex-label">folium.py · декартов лист</span>
+<pre><code>F = ImplicitCurve("x^3 + y^3 = 3 * x * y")
+
+F.style.stroke = '#f15b5b'
+F.style.stroke_width_px = 2.0</code></pre>
+  </div>
+  <div class="ex-visual">
+    <img src="assets/07-curves-09.svg" alt="Folium of Descartes">
+  </div>
+  <div class="ex-downloads">
+    <span class="lbl">Скачать:</span>
+    <a href="/assets/examples/src/39-implicit-folium.py" download>folium.py</a>
+  </div>
+</div>
+
+<h2 id="style-keys">Стилевые ключи</h2>
+
+<p>Рендер читает тот же набор ключей, что у линий. Дефолты — из
+<code>StyleConfig + resolver</code>:</p>
+
+<table>
+<thead><tr><th>Ключ</th><th>Тип</th><th>Default</th><th>Применим к</th><th>Эффект</th></tr></thead>
+<tbody>
+<tr><td><code>stroke</code></td><td>hex</td><td><code>defaults.&lt;type&gt;.stroke</code></td><td>все</td><td>цвет кривой</td></tr>
+<tr><td><code>stroke_width_px</code></td><td>float (px)</td><td><code>defaults.&lt;type&gt;.stroke_width_px</code></td><td>все</td><td>толщина; рендер: <code>× 100 / ptUnit</code></td></tr>
+<tr><td><code>stroke_opacity</code></td><td>0..1</td><td>1</td><td>все</td><td>прозрачность</td></tr>
+<tr><td><code>stroke_linecap</code></td><td>enum</td><td><code>rendering.line_cap</code></td><td>все</td><td><code>butt</code>/<code>round</code>/<code>square</code></td></tr>
+<tr><td><code>stroke_dash_ratio</code></td><td>0..1</td><td>None</td><td><strong>только CIRCLE-ветвь Conic</strong></td><td>пунктир через <code>DashedVMobject</code></td></tr>
+<tr><td><code>fill</code></td><td>hex</td><td><code>style.background</code></td><td><strong>только CIRCLE / ELLIPSE</strong></td><td>цвет заливки</td></tr>
+<tr><td><code>fill_opacity</code></td><td>0..1</td><td>1</td><td>только CIRCLE / ELLIPSE</td><td>прозрачность заливки</td></tr>
+<tr><td><code>z_index</code></td><td>float</td><td><code>Z_LINE = 4</code></td><td>все</td><td>перекрывает автоматику</td></tr>
+<tr><td>подпись</td><td>см. §6</td><td>—</td><td>все</td><td><code>label_visible</code>, <code>label_text</code>, <code>label_color</code>, <code>font_size_px</code>, <code>label_offset_px</code></td></tr>
+</tbody>
+</table>
+
+<div class="callout warn">
+<strong>Не конфигурируется per-element:</strong>
+<code>sample_count</code>, <code>max_samples</code>, <code>grid_n</code>,
+<code>segment_mu</code> — это глобальные constants в
+<code>geo/curve_sampling.py</code>. Для большей детализации — уменьшайте
+<code>px_size</code> / <code>ptUnit</code> (<code>segment_mu</code> станет
+меньше пропорционально) либо правьте модуль.
+</div>
+
+<h2 id="sampling">Параметры сэмплирования</h2>
+
+<p>Все значения фиксированы в коде. Приведены для справки.</p>
+
+<table>
+<thead><tr><th>Параметр</th><th>Значение</th><th>Где используется</th><th>Назначение</th></tr></thead>
+<tbody>
+<tr><td><code>segment_mu</code></td><td><code>3.0 / ptUnit</code></td><td>Conic (parabola, hyperbola), Function</td><td>цель адаптивного sampler'a: ≈3 px между соседними точками polyline</td></tr>
+<tr><td><code>initial_samples</code></td><td>32</td><td><code>sample_parametric</code></td><td>стартовая равномерная сетка по <code>t</code></td></tr>
+<tr><td><code>max_samples</code></td><td>500</td><td><code>sample_parametric</code></td><td>жёсткий cap — защита от зависаний на патологических кривых</td></tr>
+<tr><td><code>grid_n</code></td><td>128</td><td>ImplicitCurve</td><td>сетка 128×128 ≈ 16K ячеек</td></tr>
+<tr><td><code>viewport_pad</code></td><td>0.1 MU</td><td>Liang–Barsky</td><td>паддинг, чтобы stroke-cap не попал на край кадра</td></tr>
+<tr><td><code>ε</code> у асимптоты</td><td><code>max(width × 1e-3, 1e-6)</code></td><td>Function</td><td>отступ от singularity при сэмплировании</td></tr>
+</tbody>
+</table>
+
+<h2 id="gotchas">Особенности рендера</h2>
+
+<div class="callout warn">
+<strong>Пунктир — только у окружности.</strong> Parabola / Hyperbola / Function /
+ImplicitCurve рисуются как polylines VMobject; этот путь не применяет
+<code>DashedVMobject</code>. Для пунктирной функции — разрезать на
+чередующиеся куски через <code>If[...]</code> или использовать
+<code>ImplicitCurve</code> с периодическим <code>F</code>.
+</div>
+
+<div class="callout warn">
+<strong>Подписи кривых автораскладка не учитывает.</strong>
+<code>compute_label_layout</code> в <code>label_placement.py</code> знает
+только о точках, сегментах, окружностях, углах. Conic / Function /
+ImplicitCurve — невидимые для решателя препятствия. В сценах с кривыми
+лучше отключать автораскладку или фиксировать подписи через
+<code>label_placement_locked=True</code>.
+</div>
+
+<div class="callout note">
+<strong>Viewport-aware — для parabola/hyperbola/function, не для implicit.</strong>
+Implicit curves всегда сэмплируются на сетке 128×128 внутри видимой
+области — при zoom-in детализация остаётся той же. Parabola/hyperbola/function
+адаптивны в пикселях (<code>segment_mu ≈ 3 px</code>), поэтому под zoom
+качество сохраняется.
+</div>
+
+<div class="callout tip">
+<strong>Пересечения работают с любой парой.</strong>
+<code>Intersect(curve1, curve2)</code> диспатчится через
+<code>intersect_FK</code>, <code>intersect_Il</code>, <code>intersect_II</code>
+и т.д. — аналитика там, где возможно (Conic ∩ Line: квадратное уравнение;
+Conic ∩ Conic: пенсил-метод); numeric fallback (brentq + fsolve Newton)
+для функций и неявных. Результат — обычные <code>Point</code>-элементы.
+</div>
+
+<div class="footer-nav">
+<a href="06-labels.html">← §6 · Подписи</a>
+<a href="08-animation.html">§8 · Анимации →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

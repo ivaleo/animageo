@@ -1,0 +1,656 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://animageo.local/schemas/style-json.schema.json",
+  "title": "AnimaGeo Style JSON",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": ["number", "string"]
+    },
+    "presets": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "color": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/color"
+          }
+        },
+        "point_size": {
+          "$ref": "#/$defs/numberPresetMap"
+        },
+        "line_width": {
+          "$ref": "#/$defs/numberPresetMap"
+        },
+        "angle_radius": {
+          "$ref": "#/$defs/numberPresetMap"
+        },
+        "font_size": {
+          "$ref": "#/$defs/numberPresetMap"
+        },
+        "tick": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/tickPreset"
+          }
+        },
+        "arrow": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/arrowPreset"
+          }
+        }
+      }
+    },
+    "defaults": {
+      "$ref": "#/$defs/typeStyleMap"
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "size": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "width": {
+              "$ref": "#/$defs/referenceSizeValue"
+            },
+            "height": {
+              "$ref": "#/$defs/referenceSizeValue"
+            }
+          }
+        },
+        "source": {
+          "enum": ["manual", "source_view", "ggb_view"]
+        }
+      }
+    },
+    "overlay": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "per_type": {
+          "$ref": "#/$defs/typeStyleMap"
+        },
+        "per_name": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/styleBlock"
+          }
+        },
+        "angle_radius": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "exp": {
+              "type": "number"
+            },
+            "pivot_rad": {
+              "type": "number"
+            },
+            "min_px": {
+              "type": "number"
+            },
+            "max_arm_fraction": {
+              "type": "number"
+            },
+            "apply_to_right": {
+              "type": "boolean"
+            }
+          }
+        },
+        "label_placement": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "distance_px": {
+              "type": "number"
+            },
+            "padding_px": {
+              "type": "number"
+            },
+            "angle_gap_arc_px": {
+              "type": "number"
+            },
+            "angle_gap_sides_px": {
+              "type": "number"
+            },
+            "w_anchor": {
+              "type": "number"
+            },
+            "w_label": {
+              "type": "number"
+            },
+            "w_geom": {
+              "type": "number"
+            },
+            "dynamic_angles": {
+              "type": "boolean"
+            },
+            "keyframe_snapshots": {
+              "type": "boolean"
+            },
+            "canonicalize_anchor": {
+              "type": "boolean"
+            },
+            "interpolation": {
+              "enum": ["linear", "smooth"]
+            },
+            "ema_alpha": {
+              "type": "number"
+            },
+            "anchor_flip_frames": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "solver_every_n_frames": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "rendering": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/colorOrRef"
+        },
+        "line_cap": {
+          "$ref": "#/$defs/lineCap"
+        },
+        "right_angle_joint": {
+          "$ref": "#/$defs/rightAngleJoint"
+        },
+        "polygon_boundary_layer": {
+          "type": ["string", "null"],
+          "enum": ["top", null]
+        },
+        "points_display": {
+          "enum": ["auto", "only_labels", "only_points"]
+        },
+        "label_anchor": {
+          "$ref": "#/$defs/labelAnchor"
+        },
+        "label_value_precision": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "$ref": "#/$defs/ref"
+            }
+          ]
+        }
+      }
+    },
+    "import": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "colors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "point_size": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "number"]
+          }
+        },
+        "line_width": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "number"]
+          }
+        },
+        "policy": {
+          "$ref": "#/$defs/importPolicy"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "color": {
+      "type": "string",
+      "pattern": "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$"
+    },
+    "ref": {
+      "type": "string",
+      "pattern": "^presets\\.[A-Za-z_][A-Za-z0-9_]*\\.[A-Za-z_][A-Za-z0-9_]*$"
+    },
+    "colorOrRef": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/color"
+        },
+        {
+          "$ref": "#/$defs/ref"
+        }
+      ]
+    },
+    "numberPresetMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "referenceSizeValue": {
+      "anyOf": [
+        {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        {
+          "const": "auto"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "tickPreset": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tick_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tick_style": {
+          "enum": ["line", "wave"]
+        },
+        "tick_length_px": {
+          "type": "number"
+        },
+        "tick_width_px": {
+          "type": "number"
+        },
+        "tick_shift_px": {
+          "type": "number"
+        },
+        "tick_radius_px": {
+          "type": "number"
+        }
+      }
+    },
+    "arrowPreset": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "arrow_length_px": {
+          "type": "number"
+        },
+        "arrow_width_px": {
+          "type": "number"
+        }
+      }
+    },
+    "typeName": {
+      "enum": [
+        "point",
+        "segment",
+        "line",
+        "ray",
+        "vector",
+        "angle",
+        "polygon",
+        "circle",
+        "arc",
+        "circlesector",
+        "conic",
+        "function",
+        "implicitcurve",
+        "decoration"
+      ]
+    },
+    "typeStyleMap": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/typeName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/styleBlock"
+      }
+    },
+    "styleBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$include": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ref"
+              }
+            }
+          ]
+        },
+        "visible": {
+          "type": "boolean"
+        },
+        "label_visible": {
+          "type": "boolean"
+        },
+        "label_text": {
+          "type": "string"
+        },
+        "label_mode": {
+          "enum": ["label", "value", "label_value"]
+        },
+        "label_value_precision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "label_value_strip_zeros": {
+          "type": "boolean"
+        },
+        "label_angle_unit": {
+          "enum": ["degree", "radian"]
+        },
+        "label_value_separator": {
+          "type": "string"
+        },
+        "label_color": {
+          "$ref": "#/$defs/colorOrRef"
+        },
+        "label_anchor": {
+          "$ref": "#/$defs/labelAnchor"
+        },
+        "label_placement_locked": {
+          "type": "boolean"
+        },
+        "z_index": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "z_index_fill": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "label_offset_px": {
+          "$ref": "#/$defs/point2OrRef"
+        },
+        "label_radial_offset_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "stroke": {
+          "$ref": "#/$defs/colorOrRef"
+        },
+        "stroke_width_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "stroke_opacity": {
+          "$ref": "#/$defs/opacityOrRef"
+        },
+        "stroke_dash_ratio": {
+          "$ref": "#/$defs/ratioOrRef"
+        },
+        "stroke_linecap": {
+          "$ref": "#/$defs/lineCap"
+        },
+        "right_angle_joint": {
+          "$ref": "#/$defs/rightAngleJoint"
+        },
+        "fill": {
+          "$ref": "#/$defs/colorOrRef"
+        },
+        "fill_opacity": {
+          "$ref": "#/$defs/opacityOrRef"
+        },
+        "font_size_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "size_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "point_shape": {
+          "$ref": "#/$defs/pointShape"
+        },
+        "angle_range": {
+          "enum": ["minor", "reflex"]
+        },
+        "arc_size_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "arc_shift_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "right_angle_size_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "right_angle_marker": {
+          "type": "boolean"
+        },
+        "auto_radius": {
+          "type": "boolean"
+        },
+        "tick_count": {
+          "$ref": "#/$defs/nonNegativeIntegerOrRef"
+        },
+        "tick_style": {
+          "enum": ["line", "wave"]
+        },
+        "tick_radius_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "tick_length_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "tick_width_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "tick_shift_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "arrow_length_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "arrow_width_px": {
+          "$ref": "#/$defs/numberOrRef"
+        }
+      }
+    },
+    "importPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preset": {
+          "enum": ["faithful", "style_only", "custom"]
+        },
+        "base": {
+          "enum": ["faithful", "style_only"]
+        },
+        "size_px": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "stroke_width_px": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "arc_size_px": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "label_offset_px": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "label_color": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "label_visible": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "visible": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "label_text": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "label_mode": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "label_value_precision": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "label_value_strip_zeros": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "label_angle_unit": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "label_value_separator": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "angle_range": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "tick_count": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "font_size_px": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "stroke": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "fill": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "fill_opacity": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "point_shape": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "stroke_opacity": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "stroke_dash_ratio": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "stroke_linecap": {
+          "$ref": "#/$defs/policyValue"
+        }
+      }
+    },
+    "policyValue": {
+      "description": "Literal scalar/list/object or ImportPolicy mini-DSL string: const:, scale:, quantize:, remap:, match_element, auto.",
+      "type": ["string", "number", "integer", "boolean", "array", "object", "null"]
+    },
+    "point2": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "point2OrRef": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/point2"
+        },
+        {
+          "$ref": "#/$defs/ref"
+        }
+      ]
+    },
+    "numberOrRef": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "$ref": "#/$defs/ref"
+        }
+      ]
+    },
+    "nonNegativeIntegerOrRef": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "$ref": "#/$defs/ref"
+        }
+      ]
+    },
+    "opacity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "opacityOrRef": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/opacity"
+        },
+        {
+          "$ref": "#/$defs/ref"
+        }
+      ]
+    },
+    "ratioOrRef": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/opacity"
+        },
+        {
+          "$ref": "#/$defs/ref"
+        }
+      ]
+    },
+    "labelAnchor": {
+      "enum": ["TL", "TC", "TR", "ML", "MC", "MR", "BL", "BC", "BR"]
+    },
+    "lineCap": {
+      "enum": ["butt", "round", "square"]
+    },
+    "rightAngleJoint": {
+      "enum": ["auto", "bevel", "miter", "round"]
+    },
+    "pointShape": {
+      "enum": [
+        "circle",
+        "square",
+        "triangle_up",
+        "triangle_down",
+        "triangle_left",
+        "triangle_right",
+        "cross",
+        "plus"
+      ]
+    }
+  }
+}

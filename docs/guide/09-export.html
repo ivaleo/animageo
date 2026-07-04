@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimaGeo · §9 · Экспорт: все форматы</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+    <div class="brand">
+        <div class="title">AnimaGeo</div>
+        <div class="subtitle">guide · v0.1</div>
+    </div>
+
+    <ul>
+        <li><a href="index.html">Обзор</a></li>
+    </ul>
+
+    <div class="group">Разделы</div>
+    <ul>
+        <li><a href="01-introduction.html">1 · Что такое AnimaGeo</a></li>
+        <li><a href="02-installation.html">2 · Установка и первый запуск</a></li>
+        <li><a href="03-dsl.html">3 · Python-DSL</a></li>
+        <li><a href="04-geogebra.html">4 · Загрузка из GeoGebra</a></li>
+        <li><a href="05-styles.html">5 · Стили</a></li>
+        <li><a href="06-labels.html">6 · Подписи и автораскладка</a></li>
+        <li><a href="07-curves.html">7 · Кривые</a></li>
+        <li><a href="08-animation.html">8 · Анимации</a></li>
+        <li><a href="09-export.html" class="current-page">9 · Экспорт: все форматы</a></li>
+        <li><a href="10-web.html">10 · Интерактивный веб-экспорт</a></li>
+        <li><a href="10-recipes.html">11 · Рецепты</a></li>
+        <li><a href="11-reference.html">12 · Reference</a></li>
+    </ul>
+
+    <div class="group">На странице</div>
+    <ul>
+        <li><a href="#tracks">Две дорожки экспорта</a></li>
+        <li><a href="#picker">Какой формат выбрать</a></li>
+        <li><a href="#vector">Векторные: SVG / PDF / EPS</a></li>
+        <li><a href="#tikz">TikZ для LaTeX</a></li>
+        <li><a href="#render">Render: PNG / GIF / MP4 / WebM / MOV</a></li>
+        <li><a href="#cli">CLI: один файл — один формат</a></li>
+        <li><a href="#px-size">px_size и ptUnit</a></li>
+        <li><a href="#reference-export">Reference и export canvas</a></li>
+        <li><a href="#pixel-invariance">Pixel-invariance</a></li>
+        <li><a href="#retina">Retina 2× / 3×</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+    </ul>
+</nav>
+
+<main class="wide">
+
+<h1>§9 · Экспорт: все форматы</h1>
+
+<p class="subtitle-main">
+Одна и та же сцена выводится в четыре статических формата и пять видео/растровых.
+Векторная дорожка (<code>exportSVG/PDF/EPS</code> + <code>exportTikZ</code>) строит
+картинку один раз и сериализует её; render-дорожка прогоняет manim-рендерер и даёт
+PNG/GIF/MP4/WebM/MOV. Для интерактивных подвижных чертежей в web есть отдельный
+путь — <a href="11-reference.html#board-spec">JSXGraph-экспорт</a>.
+Визуальные размеры pixel-invariant: чертёж выглядит одинаково в 480×320 и 4K.
+</p>
+
+<h2 id="tracks">Две дорожки экспорта</h2>
+
+<figure>
+    <img src="/assets/diagrams/pipeline.svg" alt="Пайплайн экспорта">
+    <figcaption>Статическая и render-дорожка расходятся на финальном шаге: Cairo / семантический эмиттер vs manim renderer.</figcaption>
+</figure>
+
+<table>
+<thead><tr><th></th><th>Статическая дорожка</th><th>Render-дорожка</th></tr></thead>
+<tbody>
+<tr><td>Форматы</td><td>SVG · PDF · EPS · TikZ</td><td>PNG · GIF · MP4 · WebM · MOV</td></tr>
+<tr><td>Как строится</td><td>конструкция строится один раз, затем сериализуется</td><td>manim-рендерер прогоняет кадры (<code>self.play(...)</code>)</td></tr>
+<tr><td>Метод / запуск</td><td><code>scene.exportSVG/PDF/EPS/TikZ(path)</code></td><td><code>configure_render(...)</code> + manim CLI</td></tr>
+<tr><td>Анимация</td><td>нет (один кадр)</td><td>да (keyframes / <code>self.play</code>)</td></tr>
+<tr><td>Время</td><td>10–150 мс</td><td>секунды–минуты</td></tr>
+</tbody>
+</table>
+
+<h2 id="picker">Какой формат выбрать</h2>
+
+<table>
+<thead><tr><th>Цель</th><th>Формат</th></tr></thead>
+<tbody>
+<tr><td>LaTeX <code>\includegraphics</code>, журналы, печать</td><td><strong>PDF</strong> (или <strong>EPS</strong> для EPS-only процессов)</td></tr>
+<tr><td>Web, Inkscape, редактирование</td><td><strong>SVG</strong></td></tr>
+<tr><td>Нативная LaTeX-фигура (редактируемая, настоящие LaTeX-подписи)</td><td><strong>TikZ</strong></td></tr>
+<tr><td>Интерактивный web-виджет (драг точек/слайдеров)</td><td><strong>JSXGraph</strong> (<code>.html</code> / <code>spec</code>) — см. §reference</td></tr>
+<tr><td>Универсальная анимация (чат, слайды, README)</td><td><strong>GIF</strong></td></tr>
+<tr><td>Лёгкое web-видео / прозрачное видео</td><td><strong>WebM</strong> / <strong>MOV</strong></td></tr>
+<tr><td>Максимальная совместимость видео</td><td><strong>MP4</strong></td></tr>
+<tr><td>Быстрый растровый превью, вставка в Office/Docs</td><td><strong>PNG</strong></td></tr>
+</tbody>
+</table>
+
+<h2 id="vector">Векторные: SVG / PDF / EPS</h2>
+
+<p>Все три используют один и тот же Cairo-обход (идентичный вид), отличается
+только cairo-surface. Самый быстрый путь:</p>
+
+<pre><code>scene.loadGGB("scene.ggb", style="style.json", px_size=[800, 600])
+scene.exportSVG("figure.svg")            # вектор, для web/редактирования
+scene.exportPDF("figure.pdf")            # вектор, одна страница, для LaTeX/печати
+scene.exportEPS("figure.eps")            # Encapsulated PostScript
+scene.exportPDF("figure.pdf", dpi=150)   # плотнее: меньше физическая страница</code></pre>
+
+<ul>
+<li><strong>dpi</strong> (по умолчанию <code>96</code>) задаёт <em>физический размер
+страницы</em> PDF/EPS. SVG меряется в пикселях, PDF/EPS — в PostScript-точках
+(1/72"), так что пиксель → <code>72/dpi</code> pt. Фигура остаётся векторной;
+в LaTeX масштабируется через <code>\includegraphics[width=\linewidth]{figure.pdf}</code>.</li>
+<li><strong>Текст — это контуры, а не выделяемый текст</strong>: подписи рендерятся
+как Безье-кривые (как и SVG-path). Для печати — норма; не ищется поиском.</li>
+<li><strong>EPS не поддерживает прозрачность</strong>: полупрозрачные заливки/обводки
+флэттенятся (растеризуются) cairo, что раздувает файл и смягчает края (логируется
+предупреждение). Для прозрачности используйте PDF или SVG.</li>
+</ul>
+
+<h3>Что происходит внутри SVG</h3>
+<ol>
+<li><code>exportSVG(path)</code> открывает Cairo SVG-context на файл.</li>
+<li>Обходит все <code>Mobject</code>-члены сцены.</li>
+<li>Перекладывает path-data из manim-VMobject в Cairo-path и пишет XML.</li>
+</ol>
+<p>Никаких ValueTracker'ов и play-циклов — только статическая геометрия (финальное
+состояние, если в <code>construct</code> были <code>self.play(...)</code>).</p>
+
+<h2 id="tikz">TikZ для LaTeX</h2>
+
+<p><code>exportTikZ</code> — это <strong>семантический</strong> TikZ: обходит элементы
+в z-порядке и выдаёт нативные примитивы (<code>\draw circle</code>/<code>ellipse</code>/<code>(a)--(b)</code>/<code>arc</code>/<code>[-&gt;]</code>),
+настоящие LaTeX-<code>\node</code> подписи и <code>\draw plot coordinates</code>
+для сэмплированных кривых. Читает тот же style-resolver, что и рендерер.</p>
+
+<pre><code>scene.exportTikZ("figure.tex")                    # сниппет для \input{}
+scene.exportTikZ("figure.tex", standalone=True)   # компилируемый документ</code></pre>
+
+<ul>
+<li><strong>Сниппет по умолчанию</strong> (для <code>\input{}</code>);
+<code>standalone=True</code> оборачивает в <code>\documentclass{standalone}</code> с
+Cyrillic-ready преамбулой.</li>
+<li>Координаты — math-units; единица картинки <code>x=/y=</code> повторяет физический
+размер SVG, а fixed-size вещи (маркеры/толщины/шрифты) — в абсолютных <code>pt</code>.</li>
+<li>Цвета интернятся в <code>\definecolor</code>; переносятся прозрачности, dash-паттерны,
+торцы линий, штрихи, авто-радиус дуг, формы точек, z-порядок.</li>
+</ul>
+
+<div class="callout note">
+Полный разбор — <a href="../tikz_export.md">docs/tikz_export.md</a>. Покрыты все
+типы элементов и все настройки <code>TikZOptions</code>
+(см. <a href="11-reference.html#export-options">§reference</a>).
+</div>
+
+<h2 id="render">Render: PNG / GIF / MP4 / WebM / MOV</h2>
+
+<p>Контейнер выбирается через <code>configure_render</code> <strong>до</strong> рендера
+(manim читает его на этапе настройки сцены):</p>
+
+<pre><code>from animageo import configure_render
+
+configure_render(format="gif", fps=20)   # или "mp4" (по умолч.), "webm", "mov", "png"
+
+class MyScene(AnimaGeoScene):
+    def construct(self):
+        self.loadGGB("scene.ggb", style="style.json", px_size=[800, 600])
+        self.play_keyframes(keyframes_json)</code></pre>
+
+<table>
+<thead><tr><th>Контейнер</th><th>Прозрачность</th><th>Заметки</th></tr></thead>
+<tbody>
+<tr><td><code>mp4</code></td><td>нет</td><td>универсальное видео по умолчанию</td></tr>
+<tr><td><code>gif</code></td><td>1-бит</td><td>универсальный, но 256-цветная палитра → бандинг на градиентах</td></tr>
+<tr><td><code>webm</code></td><td>alpha</td><td>маленькое, современное web-видео</td></tr>
+<tr><td><code>mov</code></td><td>alpha</td><td>видео с альфой</td></tr>
+<tr><td><code>png</code></td><td>alpha</td><td>один кадр (последний)</td></tr>
+</tbody>
+</table>
+
+<p>Для градиентов/сглаженных заливок с прозрачным фоном предпочитайте
+<code>webm</code> или <code>mov</code>, а не <code>gif</code>.</p>
+
+<h2 id="cli">CLI: один файл — один формат</h2>
+
+<p>Формат выводится из расширения <code>-o</code> (или задаётся <code>--format</code>):</p>
+
+<pre><code>$ python -m animageo scene.ggb -o figure.svg          # SVG
+$ python -m animageo scene.ggb -o figure.pdf          # PDF (вектор)
+$ python -m animageo scene.ggb -o figure.eps --dpi 150
+$ python -m animageo scene.ggb -o figure.tex --standalone   # TikZ
+$ python -m animageo scene.ggb -o board.html          # интерактивный JSXGraph
+$ python -m animageo scene.ggb -o board.json --format jsxgraph   # spec (данные)
+
+# render-дорожка
+$ python -m animageo scene.ggb -o frame.png                       # один кадр
+$ python -m animageo scene.ggb -o anim.gif  --keyframes keys.json --fps 15
+$ python -m animageo scene.ggb -o anim.webm --keyframes keys.json --transparent
+$ python -m animageo scene.ggb --format mp4 -o anim.mp4 --keyframes keys.json</code></pre>
+
+<ul>
+<li><code>--keyframes file.json</code> — keyframe-последовательность (формат как у
+<code>play_keyframes</code>); без неё рендерится один кадр.</li>
+<li><code>--quality {l,m,h,p,k}</code> — пресет разрешения/fps render-дорожки
+(<code>l</code>=854×480@15 … <code>k</code>=3840×2160@60).</li>
+<li><code>--fps</code>, <code>--transparent</code> — проброс в manim.</li>
+</ul>
+
+<p>Полная таблица флагов — <a href="11-reference.html#cli">§reference · CLI</a>.</p>
+
+<h2 id="px-size">px_size и ptUnit</h2>
+
+<p>Две связанные величины задают «визуальный масштаб» сцены.</p>
+
+<table>
+<thead><tr><th>Что</th><th>Где задаётся</th><th>Что определяет</th></tr></thead>
+<tbody>
+<tr><td><code>px_size = [width, height]</code></td><td><code>applyStyle(px_size=[800, 600])</code></td><td>Размер выходного холста в пикселях.</td></tr>
+<tr><td><code>ptUnit</code></td><td>Автоматически из <code>px_size</code>: <code>ptUnit = width / 2 / xmax</code></td><td>Сколько пикселей в одной manim-MU по ширине.</td></tr>
+<tr><td><code>xmax</code>, <code>ymax</code></td><td>Из <code>px_size</code> и aspect ratio</td><td>Границы видимой сцены в математических координатах.</td></tr>
+</tbody>
+</table>
+
+<p>Если задать <code>px_size=[800, 600]</code>, то <code>ptUnit = 800/2/10 = 40</code>
+(при стандартном <code>xmax=10</code>): 1 math-unit = 40 px, точка с <code>size_px=5</code> = 5-пиксельный диск.</p>
+
+<h3>Явный контроль <code>ptUnit</code></h3>
+<pre><code>scene.style.export['ptUnit']   = 40       # 40 px / MU
+scene.style.export['ptWidth']  = 800
+scene.style.export['ptHeight'] = 600
+scene.style.export['ptXZero']  = 400      # координата 0 по X в пикселях
+scene.style.export['ptYZero']  = 300
+scene.applyStyle(style_file='s.json', px_size=[800, 600])</code></pre>
+
+<h2 id="reference-export">Reference canvas и export canvas</h2>
+
+<p><code>px_size</code> — старый режим: задаёт размер холста и пересчитывает
+<code>ptUnit</code> так, что визуальные <code>*_px</code> остаются теми же пикселями.
+Для увеличения маленького чертежа до большого выходного файла используйте
+отдельный export-layout:</p>
+
+<pre><code>self.loadGGB(
+    'construction.ggb',
+    style_file='style.json',
+    reference_size=[300, 220],
+    export_size=[1920, 1080],
+    export_fit='contain',
+    export_source_rect='ggb_view',
+)</code></pre>
+
+<table>
+<thead><tr><th>Параметр</th><th>Смысл</th></tr></thead>
+<tbody>
+<tr><td><code>reference_size</code></td><td>Эталонный холст, под который рассчитан стиль.</td></tr>
+<tr><td><code>export_size</code></td><td>Физический размер итогового SVG/MP4.</td></tr>
+<tr><td><code>export_fit</code></td><td><code>contain</code>, <code>cover</code>, <code>width</code>, <code>height</code>, <code>none</code> или <code>manual</code>.</td></tr>
+<tr><td><code>export_scale</code></td><td>Коэффициент для <code>export_fit='manual'</code>.</td></tr>
+<tr><td><code>export_anchor</code> / <code>export_offset</code></td><td>Куда прижать reference-холст и доп. сдвиг в пикселях.</td></tr>
+<tr><td><code>export_source_rect</code></td><td><code>ggb_view</code> (viewport GGB) или <code>rendered_bounds</code> (двухпроходный layout по измеренным объектам).</td></tr>
+<tr><td><code>export_infinite_policy</code></td><td><code>clip</code> или <code>ignore</code> для линий/лучей в <code>rendered_bounds</code>.</td></tr>
+</tbody>
+</table>
+
+<p>Внутри появляются две шкалы: <code>ptUnit_style</code> для визуальных размеров
+стиля и <code>ptUnit</code> для финального SVG/camera transform. Поэтому линии,
+точки, подписи и дуги масштабируются вместе с картинкой, а не остаются мелкими
+на большом холсте.</p>
+
+<h2 id="pixel-invariance">Pixel-invariance</h2>
+
+<figure>
+    <img src="/assets/diagrams/units.svg" alt="Единицы: пиксели vs math-units">
+    <figcaption>Визуальные размеры — в пикселях; координаты — в math-units.</figcaption>
+</figure>
+
+<p>Главный принцип AnimaGeo: все визуальные размеры (радиус точки, толщина линии,
+шрифт, дуга угла, offset подписи) хранятся в <em>пикселях</em>. В legacy-режиме
+делятся на <code>ptUnit</code>; в новом export-layout — на <code>ptUnit_style</code>.</p>
+
+<pre><code># pixel-invariant
+size_px = 5           # → радиус в пикселях = 5 (всегда)
+stroke_width_px = 1.5 # → толщина в пикселях = 1.5
+font_size_px = 14     # → 14 px шрифт
+arc_size_px = 22      # → дуга 22 px
+label_offset_px = [12, -8]  # → сдвиг 12 px вправо, 8 px вниз
+
+# НЕ pixel-invariant
+Point(3, 2)          # координаты в math-units
+Circle(O, 2)         # радиус 2 math-unit (в пикселях зависит от px_size)
+Segment(A, B)        # длина в math-units</code></pre>
+
+<div class="callout warn">
+<strong>Частая путаница.</strong> <code>Circle(O, 2)</code> в 800×600 даст радиус
+<code>2 × ptUnit = 80 px</code>, а в 400×300 — <code>40 px</code>. Чтобы окружность
+была pixel-invariant, задавайте её через <em>точку на окружности</em>:
+<code>Circle(O, P)</code>, где <em>P</em> — <code>Point(2, 0)</code>.
+</div>
+
+<h2 id="retina">Retina 2× / 3×</h2>
+
+<p>Для retina и печати в 2× рендерите в большем разрешении. Чтобы увеличить всю
+картинку целиком — <code>reference_size/export_size</code> из раздела выше. Чтобы
+сохранить те же пиксельные толщины — legacy-путь через <code>px_size</code>.</p>
+
+<h3>Legacy: <code>rendering.scale_export</code></h3>
+<pre><code>"rendering": { "scale_export": 2 }</code></pre>
+<p>Множитель: <code>px_size</code> и <code>ptUnit</code> удваиваются автоматически.</p>
+
+<h3>SVG / MP4 + retina</h3>
+<p>SVG векторный — он сам scalable, retina-hack обычно не нужен. Для MP4
+<code>--quality h</code> уже даёт 1920×1080; для печати — <code>k</code> (4K).
+При <code>export_size</code> выставляйте <code>config.pixel_width/height</code> в тот
+же физический размер.</p>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<h3>SVG/PDF — «фигура вышла за край»</h3>
+<p>Координаты вышли за <code>xmax</code>/<code>ymax</code>. Подвиньте к центру или
+задайте <code>scene.style.export['xmax']=15</code>.</p>
+
+<h3>EPS — «файл огромный и края мутные»</h3>
+<p>EPS флэттенит прозрачность в растр. Используйте PDF или SVG, если есть
+полупрозрачные заливки.</p>
+
+<h3>MP4 — «чёрный экран»</h3>
+<p>Не вызван <code>addAllGeometry(show=True)</code> или объекты <code>visible=False</code>.</p>
+
+<h3>MP4 — «подписи не следуют за геометрией»</h3>
+<p><code>autoPlaceLabels(dynamic=True)</code> + <code>addUpdater</code>, или
+<code>keyframe_snapshots=true</code> + <code>play_keyframes</code>.</p>
+
+<h3>TikZ — «не компилируется»</h3>
+<p>Используйте <code>standalone=True</code> для самостоятельного документа, или
+убедитесь, что в основном документе подключены нужные пакеты (Cyrillic-преамбула
+есть только в standalone-режиме).</p>
+
+<div class="footer-nav">
+<a href="08-animation.html">← §8 · Анимации</a>
+<a href="10-web.html">§10 · Интерактивный веб-экспорт →</a>
+</div>
+
+</main>
+
+</div>
+
+<script src="js/interactive.js"></script>
+</body>
+</html>

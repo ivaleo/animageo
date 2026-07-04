@@ -1,0 +1,69 @@
+"""Shared render context for TikZ emitters.
+
+``TikzContext`` bundles the scene, the export options, the in-progress
+``TikZDocument`` and the unit conversions every emitter needs. It is the TikZ
+analogue of ``AnimaGeoScene._build_render_ctx``: style values are read through
+the same resolver the manim renderer uses, so GGB import / overlay / explicit
+``elem.style`` all behave identically.
+
+Unit model (see ``docs/archive/tikz_export_plan.md``):
+- coordinates are math units (MU); the picture sets ``x=y=ptUnit*cm_per_px`` cm.
+- "size" pixels (stroke width, point radius, font) map to absolute pt via
+  ``px * (ptUnit/ptUnit_style) * pt_per_px`` — the same output-pixel size the
+  SVG path produces.
+- label-offset pixels map via ``px * (ptUnit/ptUnit_ggb) * pt_per_px``.
+"""
+from __future__ import annotations
+
+from typing import Any, Optional
+
+from ...labels import resolve_label_text
+from ...style.resolver import resolve as _resolve
+from .document import TikZDocument
+from .options import TikZOptions
+
+
+class TikzContext:
+    def __init__(self, scene, options: TikZOptions, document: TikZDocument):
+        self.scene = scene
+        self.opt = options
+        self.doc = document
+
+        export = getattr(scene.style, "export", {}) or {}
+        self.ptUnit = float(export.get("ptUnit", 1) or 1)
+        self.ptUnit_style = float(export.get("ptUnit_style", self.ptUnit) or self.ptUnit)
+        self.ptUnit_ggb = float(export.get("ptUnit_ggb", self.ptUnit_style) or self.ptUnit_style)
+        self.ggb_font_px = export.get("fontSize")
+
+        # px → pt factors. ``_size`` covers strokes/markers/fonts; ``_offset``
+        # covers GGB label offsets (which were authored at the GGB scale).
+        self._size_factor = (self.ptUnit / self.ptUnit_style) * self.opt.pt_per_px
+        self._offset_factor = (self.ptUnit / self.ptUnit_ggb) * self.opt.pt_per_px
+
+    # ── style resolution ────────────────────────────────────────────────
+    def resolve(self, elem, key: str, default: Any = None) -> Any:
+        return _resolve(self.scene, elem, key, default=default)
+
+    def label_text(self, elem) -> str:
+        return resolve_label_text(self.scene, elem)
+
+    # ── unit conversions ─────────────────────────────────────────────────
+    def size_pt(self, px: float) -> float:
+        """Convert a "size" pixel value to absolute pt (fixed, scale-free)."""
+        return float(px) * self._size_factor
+
+    def offset_pt(self, px: float) -> float:
+        """Convert a GGB label-offset pixel value to absolute pt."""
+        return float(px) * self._offset_factor
+
+    @property
+    def cm_per_mu(self) -> float:
+        return self.ptUnit * self.opt.cm_per_px
+
+    # ── geometry ─────────────────────────────────────────────────────────
+    def viewport(self):
+        """(left, bottom, right, top) of the export canvas in MU."""
+        return self.scene._get_scene_bounds(padding=0)
+
+    def is_visible(self, elem) -> bool:
+        return self.scene._element_visible(elem)
