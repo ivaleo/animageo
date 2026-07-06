@@ -11,7 +11,7 @@ sympy) and asymptote-aware splitting are handled in PR 7.
 """
 import logging
 import re
-from typing import Callable, List, Optional, Sequence, Tuple
+from typing import Callable, List, Mapping, Optional, Sequence, Tuple
 
 import numpy as np
 import sympy as sp
@@ -115,30 +115,49 @@ def _split_top_level_commas(s: str) -> List[str]:
     return parts
 
 
+def _find_matching_bracket(s: str, open_index: int) -> int:
+    """Return the index just after the matching bracket, or ``-1``."""
+    pairs = {'[': ']', '(': ')'}
+    opener = s[open_index]
+    if opener not in pairs:
+        return -1
+    stack = [pairs[opener]]
+    j = open_index + 1
+    while j < len(s) and stack:
+        ch = s[j]
+        if ch in pairs:
+            stack.append(pairs[ch])
+        elif ch in (']', ')'):
+            if ch != stack[-1]:
+                return -1
+            stack.pop()
+        j += 1
+    return j if not stack else -1
+
+
 def _translate_if_to_piecewise(s: str) -> str:
     """Rewrite GGB ``If[cond, then]`` / ``If[cond, then, else]`` as
     sympy ``Piecewise((then, cond), (fallback, True))``.
 
     Recursive: handles nested ``If[]`` at any depth. Works by
     bracket-matching rather than regex so conditions can contain
-    balanced brackets ("If[0 ≤ x ≤ 1, f(x)]").
+    balanced brackets ("If[0 ≤ x ≤ 1, f(x)]"). Also accepts ``If(...)``
+    because the GeoGebra XML converter normalizes square brackets to
+    parentheses before function parsing in some import paths.
     """
     out: List[str] = []
     i = 0
     n = len(s)
     while i < n:
-        # Match "If[" (word-boundary check — don't match inside names).
-        if (s[i:i + 3] == 'If['
-                and (i == 0 or not (s[i - 1].isalnum() or s[i - 1] == '_'))):
-            depth = 1
-            j = i + 3
-            while j < n and depth > 0:
-                if s[j] == '[':
-                    depth += 1
-                elif s[j] == ']':
-                    depth -= 1
-                j += 1
-            if depth != 0:
+        # Match "If[" or "If(" (word-boundary check — don't match inside names).
+        if (
+            s[i:i + 2] == 'If'
+            and i + 2 < n
+            and s[i + 2] in '[('
+            and (i == 0 or not (s[i - 1].isalnum() or s[i - 1] == '_'))
+        ):
+            j = _find_matching_bracket(s, i + 2)
+            if j < 0:
                 out.append(s[i])
                 i += 1
                 continue
@@ -265,8 +284,24 @@ class Function:
     # ── Construction helpers ──────────────────────────────────────────
 
     @classmethod
-    def from_string(cls, raw: str, var_name: str = 'x') -> 'Function':
+    def from_string(
+        cls,
+        raw: str,
+        var_name: str = 'x',
+        parameters: Optional[Mapping[str, float]] = None,
+    ) -> 'Function':
         expr, sym = parse_function_expression(raw, var_name)
+        if parameters:
+            subs = {}
+            for name, value in parameters.items():
+                if name == sym.name:
+                    continue
+                try:
+                    subs[sp.Symbol(str(name))] = float(value)
+                except (TypeError, ValueError):
+                    continue
+            if subs:
+                expr = expr.subs(subs)
         return cls(expr, sym, source=raw)
 
     # ── Evaluation ────────────────────────────────────────────────────

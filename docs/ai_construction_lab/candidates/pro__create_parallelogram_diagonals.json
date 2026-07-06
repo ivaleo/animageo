@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T09:51:22.898271+00:00",
+  "case_id": "create_parallelogram_diagonals",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй параллелограмм ABCD по трем вершинам и отметь точку пересечения диагоналей.",
+  "expected": [
+    "derives fourth vertex by vector addition",
+    "draws diagonals",
+    "marks that diagonals bisect each other"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Given three vertices A, B, C of a parallelogram\nA = Point(-2, 1)\nB = Point(1, 2)\nC = Point(2, -1)\n\n# Construct the fourth vertex D using vector addition: D = A + (C - B)\nD = A + (C - B)\n\n# Build the parallelogram sides\nAB = Segment(A, B)\nBC = Segment(B, C)\nCD = Segment(C, D)\nDA = Segment(D, A)\n\n# Construct diagonals and their intersection\nAC = Segment(A, C)\nBD = Segment(B, D)\nO = Intersect(AC, BD)\n\n# Style: main sides in main color, diagonals as auxiliary, intersection point bold\nstyle(AB, BC, CD, DA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(AC, BD, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(O, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\n\n# Ensure vertex labels are visible\nstyle(A, B, C, D, label_visible=True)",
+    "style": null,
+    "notes": [
+      "Построен параллелограмм по трём заданным вершинам A, B, C; четвёртая вершина D вычислена как A + (C - B).",
+      "Диагонали AC и BD построены, их пересечение O отмечено и подписано.",
+      "Стороны параллелограмма отрисованы основным цветом, диагонали — вспомогательным."
+    ]
+  }
+}

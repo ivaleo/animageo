@@ -1,0 +1,25 @@
+A = Point(0, 0)
+B = Point(4, 1)
+C = Point(2, 3)
+triangle, AB, BC, CA = Polygon(A, B, C)
+style(triangle, stroke="color.main", stroke_width_px="line_width.main", fill_opacity=0.1)
+style(A, B, C, label_visible=True)
+
+P = Point(-1, 2)
+Q = Point(5, 0)
+l = Line(P, Q)
+style(l, stroke="color.aux", stroke_width_px="line_width.aux")
+
+A1 = Reflect(A, l)
+B1 = Reflect(B, l)
+C1 = Reflect(C, l)
+triangle1, A1B1, B1C1, C1A1 = Polygon(A1, B1, C1)
+style(triangle1, stroke="color.accent", stroke_width_px="line_width.bold", fill_opacity=0.1)
+style(A1, B1, C1, label_visible=True, fill="color.accent", size_px="point_size.bold")
+
+AA1 = Segment(A, A1)
+BB1 = Segment(B, B1)
+CC1 = Segment(C, C1)
+style(AA1, BB1, CC1, stroke="color.aux", stroke_width_px="line_width.aux", stroke_dasharray="4 4")
+
+hide(P, Q)

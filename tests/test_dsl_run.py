@@ -35,6 +35,59 @@ class TestBasic:
         # The inner Points are phantom names.
         assert c.element("M") is not None
 
+    def test_trilinear(self):
+        # Auto-discovered command: Trilinear(A, B, C, 1, 1, 1) → incenter.
+        c = Construction()
+        dsl.run(c, "A = Point(0, 0)\nB = Point(4, 0)\nC = Point(0, 3)\n"
+                   "I = Trilinear(A, B, C, 1, 1, 1)")
+        assert np.allclose(c.element("I").data.coords, [1, 1])
+
+    def test_tier_a_b_commands(self):
+        # Smoke-test the auto-discovered Tier A/B commands end-to-end.
+        c = Construction()
+        dsl.run(c, "\n".join([
+            "A = Point(0, 0)",
+            "B = Point(4, 0)",
+            "C = Point(2, 6)",
+            "sl = Slope(Line(A, C))",         # 3.0
+            "u = UnitVector(Line(A, B))",     # unit
+            "cp = ClosestPoint(Line(A, B), Point(2, 5))",   # [2, 0]
+            "D = Dilate(C, 2, A)",            # [4, 12]
+        ]))
+        assert np.isclose(c.var("sl").data.value, 3.0)
+        assert np.isclose(np.linalg.norm(c.element("u").data.direction), 1.0)
+        assert np.allclose(c.element("cp").data.coords, [2, 0])
+        assert np.allclose(c.element("D").data.coords, [4, 12])
+
+    def test_tier_c_tangent(self):
+        # Tangent(Line, Conic) → 2 parallel tangents; Tangent(Point, Function).
+        c = Construction()
+        dsl.run(c, "\n".join([
+            "k = Conic(1, 1, -1, 0, 0, 0)",           # unit circle
+            "g = Line(Point(0, 0), Point(1, 0))",     # x-axis direction
+            "t1, t2 = Tangent(g, k)",                 # y = ±1
+            "tf = Tangent(Point(1, 0), Function(\"y = x^2\"))",
+        ]))
+        offs = sorted(
+            (l.data.offset if l.data.normal[1] > 0 else -l.data.offset)
+            for l in (c.element("t1"), c.element("t2")))
+        assert np.allclose(offs, [-1, 1])
+        assert c.element("tf").data.contains(np.array([2.0, 3.0]))
+
+    def test_tier_c_tangent_circles(self):
+        # Tangent(Circle, Circle) → 4 common tangents for separated circles.
+        c = Construction()
+        dsl.run(c, "\n".join([
+            "a = Circle(Point(0, 0), 1)",
+            "b = Circle(Point(6, 0), 2)",
+            "t1, t2, t3, t4 = Tangent(a, b)",
+        ]))
+        for nm in ("t1", "t2", "t3", "t4"):
+            line = c.element(nm).data
+            nn = np.linalg.norm(line.normal)
+            assert np.isclose(abs(np.dot(line.normal, [0, 0]) - line.offset) / nn, 1)
+            assert np.isclose(abs(np.dot(line.normal, [6, 0]) - line.offset) / nn, 2)
+
 
 # ── Python control flow: the whole point of Path B ───────────────
 

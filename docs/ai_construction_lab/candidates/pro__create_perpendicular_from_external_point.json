@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T11:19:11.485270+00:00",
+  "case_id": "create_perpendicular_from_external_point",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Из точки P вне прямой AB опусти перпендикуляр на AB и обозначь основание H.",
+  "expected": [
+    "constructs perpendicular through external point",
+    "marks foot H",
+    "marks right angle"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(0, 0)\nB = Point(4, 1)\nAB = Line(A, B)\nP = Point(1, 3)\nperp_line = PerpendicularLine(P, AB)\nH = Intersect(perp_line, AB)\nPH = Segment(P, H)\nright_angle = Angle(A, H, P)\nstyle(A, B, P, H, label_visible=True)\nstyle(AB, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(perp_line, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(PH, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(right_angle, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\nhide(perp_line)",
+    "style": null,
+    "notes": [
+      "Point P is placed above line AB for a clear perpendicular foot.",
+      "The infinite perpendicular helper line is hidden after constructing foot H; only segment PH is shown as the requested perpendicular.",
+      "Right angle at H is marked with a right-angle marker."
+    ]
+  }
+}

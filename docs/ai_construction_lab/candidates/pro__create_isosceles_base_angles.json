@@ -1,0 +1,23 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T12:52:46.861163+00:00",
+  "case_id": "create_isosceles_base_angles",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй равнобедренный треугольник ABC с AB = AC и отметь равные углы при основании.",
+  "expected": [
+    "constructs isosceles triangle",
+    "marks equal sides",
+    "marks equal base angles"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(0, 0)\nB = Point(4, 0)\nC = Point(2, 3)\nAB = Segment(A, B)\nAC = Segment(A, C)\nBC = Segment(B, C)\nstyle(AB, AC, BC, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(A, B, C, label_visible=True)\nang_B = Angle(A, B, C)\nang_C = Angle(B, C, A)\nstyle(ang_B, ang_C, tick_count=1, arc_size_px=\"angle_radius.main\")",
+    "style": null,
+    "notes": [
+      "Построен равнобедренный треугольник с вершинами A(0,0), B(4,0), C(2,3). Стороны AB и AC равны по построению (симметрия относительно x=2).",
+      "Равные углы при основании (∠ABC и ∠BCA) отмечены одной дугой."
+    ]
+  }
+}

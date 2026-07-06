@@ -1,0 +1,11 @@
+A = Point(-2.8, -1.4)
+B = Point(2.6, -1.2)
+C = Point(-0.5, 2.2)
+tri, AB, BC, CA = Polygon(A, B, C)
+area_ABC = Area(tri)
+per_ABC = Perimeter(tri)
+
+style(A, B, C, label_visible=True)
+style(tri, fill="color.accent", fill_opacity=0.10, label_visible=True, label_mode="label_value", label_text="$S$", label_value_precision=1)
+style(AB, BC, CA, stroke="color.strong", stroke_width_px="line_width.main")
+style(AB, label_visible=True, label_text="$P = {:.1f}$".format(per_ABC.data.value), label_anchor="TC", label_offset_px=[0, -18], label_placement_locked=True)

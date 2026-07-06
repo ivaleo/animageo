@@ -235,6 +235,17 @@ def _resolve_color_value(value, colors, fallback=None):
     return fallback if color is None else color
 
 
+def _is_concrete_color(value) -> bool:
+    """True iff ``value`` is a usable literal colour, not a style ref or blank.
+
+    Style-token refs (``"presets.color.background"`` / ``"color.background"``)
+    and empty/absent values are NOT concrete — they signal "no explicit colour".
+    """
+    if not isinstance(value, str) or value == '':
+        return False
+    return not (value.startswith('presets.') or value.startswith('color.'))
+
+
 def _resolve_group_ref(value, group_name, group_presets):
     """Resolve group preset refs for import maps.
 
@@ -352,6 +363,7 @@ class GeoStyle:
 
         # Colors
         self.background = WHITE
+        self.background_explicit = False
         self.strong = BLACK
         self.col_shade = '#eeeeee'
         self.col = '#6688c2'
@@ -389,6 +401,13 @@ class GeoStyle:
         warnings = validate_style_json(style_json, file_hint=file_hint)
         for w in warnings:
             logger.warning("Style '%s': %s", file_hint or '<dict>', w)
+
+        _user_color = (style_json.get('presets') or {}).get('color') or {}
+        _user_rendering = style_json.get('rendering') or {}
+        self.background_explicit = (
+            _is_concrete_color(_user_color.get('background'))
+            or _is_concrete_color(_user_rendering.get('background'))
+        )
 
         presets = _merged_presets(style_json.get('presets', {}))
         colors = dict(presets.get('color', {})) if isinstance(presets.get('color'), dict) else {}

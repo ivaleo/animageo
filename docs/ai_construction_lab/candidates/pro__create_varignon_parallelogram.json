@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T13:43:57.096149+00:00",
+  "case_id": "create_varignon_parallelogram",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй произвольный четырехугольник ABCD и параллелограмм Вариньона по серединам его сторон.",
+  "expected": [
+    "constructs side midpoints",
+    "connects them into Varignon parallelogram",
+    "marks midpoint equal halves without overlabeling every helper"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Произвольный четырёхугольник ABCD\nA = Point(-3, 2)\nB = Point(2, 3)\nC = Point(3, -1)\nD = Point(-2, -2)\n\n# Стороны четырёхугольника\nAB = Segment(A, B)\nBC = Segment(B, C)\nCD = Segment(C, D)\nDA = Segment(D, A)\n\n# Середины сторон\nM_AB = Midpoint(A, B)\nM_BC = Midpoint(B, C)\nM_CD = Midpoint(C, D)\nM_DA = Midpoint(D, A)\n\n# Параллелограмм Вариньона\nvarignon, V_AB, V_BC, V_CD, V_DA = Polygon(M_AB, M_BC, M_CD, M_DA)\n\n# Стилизация\nstyle(AB, BC, CD, DA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(varignon, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", fill=\"color.accent\", fill_opacity=0.15)\nstyle(M_AB, M_BC, M_CD, M_DA, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\nstyle(A, B, C, D, label_visible=True)\n\n# Отметки равенства половинок сторон (для наглядности)\n# Половины AB\nAM_AB = Segment(A, M_AB)\nM_AB_B = Segment(M_AB, B)\nstyle(AM_AB, M_AB_B, stroke_width_px=0, tick_count=1)\n\n# Половины BC\nBM_BC = Segment(B, M_BC)\nM_BC_C = Segment(M_BC, C)\nstyle(BM_BC, M_BC_C, stroke_width_px=0, tick_count=2)\n\n# Половины CD\nCM_CD = Segment(C, M_CD)\nM_CD_D = Segment(M_CD, D)\nstyle(CM_CD, M_CD_D, stroke_width_px=0, tick_count=3)\n\n# Половины DA\nDM_DA = Segment(D, M_DA)\nM_DA_A = Segment(M_DA, A)\nstyle(DM_DA, M_DA_A, stroke_width_px=0, tick_count=4)",
+    "style": null,
+    "notes": [
+      "Построен произвольный четырёхугольник ABCD с невырожденными координатами.",
+      "Параллелограмм Вариньона построен по серединам сторон.",
+      "Для наглядности добавлены отметки равенства половинок каждой стороны (разные tick_count для разных сторон)."
+    ]
+  }
+}

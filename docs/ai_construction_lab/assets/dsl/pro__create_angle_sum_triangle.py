@@ -1,0 +1,16 @@
+A = Point(0, 0)
+B = Point(4, 0)
+C = Point(1, 3)
+AB = Segment(A, B)
+BC = Segment(B, C)
+CA = Segment(C, A)
+style(AB, BC, CA, stroke="color.main", stroke_width_px="line_width.main")
+style(A, B, C, label_visible=True, fill="color.strong", size_px="point_size.main")
+
+ang_A = Angle(B, A, C)
+ang_B = Angle(C, B, A)
+ang_C = Angle(A, C, B)
+
+style(ang_A, arc_size_px="angle_radius.main", tick_count=1, label_visible=True, label_text="$\\alpha$")
+style(ang_B, arc_size_px="angle_radius.main", tick_count=2, label_visible=True, label_text="$\\beta$")
+style(ang_C, arc_size_px="angle_radius.main", tick_count=3, label_visible=True, label_text="$\\gamma$")

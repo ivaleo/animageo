@@ -86,7 +86,12 @@ class Construction:
         self.vars = []
         self.elements = [
             Element("xAxis", Line((0, 1), 0), visible=False),
-            Element("yAxis", Line((1, 0), 0), visible=False)
+            # yAxis normal is (-1, 0) so its direction vector perp_rot(n) = (0, 1)
+            # points +y, matching GeoGebra's yAxis orientation. This keeps the
+            # Intersect(conic, yAxis, index) ordering aligned with GGB (index 1 =
+            # lower y). Using (1, 0) flips the direction to (0, -1) and swaps the
+            # intersection order (see intersect_Kl).
+            Element("yAxis", Line((-1, 0), 0), visible=False)
         ]
         self.commands = []
         self.state = {}

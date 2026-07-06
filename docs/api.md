@@ -119,6 +119,34 @@ self.playRestore(['B', 'C'])
 self.playUpdate(['a', 'b'])
 ```
 
+### Keyframe-анимации
+
+| Метод | Описание |
+|-------|----------|
+| `get_independent_elements()` | Вернуть анимируемые входы конструкции для `values`: свободные точки, точки на путях, числа/углы/booleans и переменные, созданные через `addVar()` |
+| `get_element_states()` | Вернуть `{name: {type, visible, style}}` для всех не-осевых элементов: текущая видимость и resolved animatable style values; удобно для UI keyframe-state inspector |
+| `play_keyframes(keyframes_data)` | Воспроизвести JSON/dict timeline. `"version": 2` включает style tracks, visibility/effects, camera keyframes и events; v1 без `version` оставлен для совместимости и deprecated |
+| `apply_keyframes_at(keyframes_data, t)` | Статически применить состояние timeline в момент `t` без `self.play(...)`; полезно для SVG/PNG preview одного кадра |
+| `reveal_construction(lag=0.3, duration=0.5, effect=None, play=True)` | Сгенерировать v2 timeline появления элементов в dependency order и сразу проиграть его; при `play=False` вернуть timeline dict |
+
+Короткий пример:
+
+```python
+self.play_keyframes({
+    "version": 2,
+    "keyframes": [
+        {"t": 0, "values": {"A": [0, 0]}, "visible": {"a": False}},
+        {"t": 2, "values": {"A": [4, 2]},
+         "styles": {"a": {"stroke": "#d05456", "stroke_width_px": 4}},
+         "visible": {"a": True},
+         "enter": {"a": "create"},
+         "events": [{"effect": "indicate", "targets": ["A"], "at": 0.4, "duration": 0.6}]},
+    ],
+})
+```
+
+Полный формат: [docs/keyframes.md](keyframes.md).
+
 ### Пакетные операции
 
 | Метод | Описание |
@@ -177,13 +205,13 @@ scene.clearLabelTracker()
 
 Конфигурация — `overlay.label_placement` в JSON стиля (см. [docs/styles.md](styles.md)).
 
-`play_keyframes()` перед стартом playback применяет значения и `show`/`hide`
-из первого keyframe, перестраивает геометрию и обновляет mobject-ы. Поэтому
-первый rendered frame соответствует keyframe `0`, даже если сохраненный `.ggb`
-был в другом editor-state. При `keyframe_snapshots=true` раскладка считается на
-каждом keyframe (pre-pass со save/restore состояния), между ними offset’ы
-интерполируются. Углы дополнительно трекаются per-frame аналитически, если
-`dynamic_angles=true`.
+`play_keyframes()` перед стартом playback применяет значения, v2 `visible` и
+legacy `show`/`hide` из первого keyframe, перестраивает геометрию и обновляет
+mobject-ы. Поэтому первый rendered frame соответствует keyframe `0`, даже если
+сохраненный `.ggb` был в другом editor-state. При `keyframe_snapshots=true`
+раскладка считается на каждом keyframe (pre-pass со save/restore состояния,
+включая v2 `styles`), между ними offset’ы интерполируются. Углы дополнительно
+трекаются per-frame аналитически, если `dynamic_angles=true`.
 
 ### Экспорт
 

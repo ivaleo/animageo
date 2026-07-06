@@ -1,0 +1,20 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T13:03:17.533196+00:00",
+  "case_id": "create_ceva_concurrent_cevians",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй три чевианы треугольника ABC, проходящие через одну внутреннюю точку P.",
+  "expected": [
+    "constructs an interior point P",
+    "draws three cevians through P",
+    "marks feet on opposite sides"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Triangle ABC with three cevians through an interior point P\n\n# Free vertices of the triangle\nA = Point(-3, -2)\nB = Point(3, -2)\nC = Point(0, 4)\n\n# Triangle sides\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\n\n# Interior point P (free, placed inside the triangle)\nP = Point(0, 0)\n\n# Cevians: lines from each vertex through P, intersected with the opposite side\nline_AP = Line(A, P)\nline_BP = Line(B, P)\nline_CP = Line(C, P)\n\nD = Intersect(line_AP, BC)\nE = Intersect(line_BP, CA)\nF = Intersect(line_CP, AB)\n\n# Visible cevian segments\nAD = Segment(A, D)\nBE = Segment(B, E)\nCF = Segment(C, F)\n\n# Style: triangle sides as main, cevians as accent, point P highlighted\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(AD, BE, CF, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(P, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\n\n# Hide infinite helper lines\nhide(line_AP, line_BP, line_CP)\n\n# Ensure vertex labels are visible\nstyle(A, B, C, label_visible=True)\nstyle(D, E, F, label_visible=True, fill=\"color.aux\", size_px=\"point_size.aux\")",
+    "style": null,
+    "notes": []
+  }
+}

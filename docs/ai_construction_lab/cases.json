@@ -1,0 +1,2510 @@
+{
+  "schema": "animageo-ai-construction-lab-cases/v1",
+  "generated_at": "2026-05-11",
+  "context": "../ai_construction_generation_context.md",
+  "cases": [
+    {
+      "id": "create_triangle_medians",
+      "title": "Triangle Medians And Centroid",
+      "kind": "create",
+      "prompt": "Построй равносторонний треугольник ABC, проведи все медианы и отметь их точку пересечения.",
+      "expected": [
+        "creates triangle ABC",
+        "draws three medians",
+        "marks centroid/intersection",
+        "tick-marks equal halves"
+      ],
+      "viewport": {
+        "width": 640,
+        "height": 420,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3, -2)\nB = Point(3, -2)\nC = Point(0, -2 + 3 * sqrt(3))\n\ntri, AB, BC, CA = Polygon(A, B, C)\nM_ab = Midpoint(A, B)\nM_bc = Midpoint(B, C)\nM_ca = Midpoint(C, A)\n\nmedian_A = Segment(A, M_bc)\nmedian_B = Segment(B, M_ca)\nmedian_C = Segment(C, M_ab)\nG = Intersect(median_A, median_B)\n\nAB_l = Segment(A, M_ab)\nAB_r = Segment(M_ab, B)\nBC_l = Segment(B, M_bc)\nBC_r = Segment(M_bc, C)\nCA_l = Segment(C, M_ca)\nCA_r = Segment(M_ca, A)\n\nstyle(A, B, C, G, label_visible=True)\nstyle(median_A, median_B, median_C, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(G, fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(AB_l, AB_r, BC_l, BC_r, CA_l, CA_r, stroke_width_px=0, tick_count=1)",
+        "style": null,
+        "notes": [
+          "All side halves in an equilateral triangle are equal, so they share the same tick class."
+        ]
+      }
+    },
+    {
+      "id": "create_triangle_altitude",
+      "title": "Altitude From C",
+      "kind": "create",
+      "prompt": "Построй треугольник ABC и высоту из вершины C к стороне AB. Основание высоты обозначь H.",
+      "expected": [
+        "constructs altitude perpendicular to AB",
+        "marks H",
+        "marks right angle",
+        "hides helper infinite lines"
+      ],
+      "viewport": {
+        "width": 640,
+        "height": 420,
+        "scale": 62
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, -1.4)\nB = Point(3.2, -1.4)\nC = Point(-0.9, 2.4)\n\ntri, AB, BC, CA = Polygon(A, B, C)\nbase_line = Line(A, B)\nalt_line = PerpendicularLine(C, base_line)\nH = Intersect(base_line, alt_line)\nheight_C = Segment(C, H)\nright_H = Angle(A, H, C)\n\nhide(base_line, alt_line)\nstyle(A, B, C, H, label_visible=True)\nstyle(height_C, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(right_H, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "The right angle marker is part of the altitude semantics."
+        ]
+      }
+    },
+    {
+      "id": "create_angle_bisector",
+      "title": "Angle Bisector",
+      "kind": "create",
+      "prompt": "Построй треугольник ABC и биссектрису угла A до пересечения со стороной BC.",
+      "expected": [
+        "uses AngularBisector",
+        "intersects with side BC",
+        "shows finite bisector segment",
+        "marks equal angles"
+      ],
+      "viewport": {
+        "width": 640,
+        "height": 420,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3, -1.6)\nB = Point(3, -1.0)\nC = Point(-0.8, 2.4)\n\ntri, AB, BC, CA = Polygon(A, B, C)\nbis_A_line = AngularBisector(B, A, C)\nD = Intersect(bis_A_line, BC)\nbis_A = Segment(A, D)\nangle_BAD = Angle(B, A, D)\nangle_DAC = Angle(D, A, C)\n\nhide(bis_A_line)\nstyle(A, B, C, D, label_visible=True)\nstyle(bis_A, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(angle_BAD, tick_count=1, arc_size_px=22)\nstyle(angle_DAC, tick_count=1, arc_size_px=28)",
+        "style": null,
+        "notes": [
+          "Two angle arcs with different radii avoid visual merging."
+        ]
+      }
+    },
+    {
+      "id": "create_incircle",
+      "title": "Triangle Incircle",
+      "kind": "create",
+      "prompt": "Построй треугольник ABC, его вписанную окружность и центр этой окружности.",
+      "expected": [
+        "uses Incircle",
+        "marks incenter",
+        "does not restyle entire scene"
+      ],
+      "viewport": {
+        "width": 640,
+        "height": 420,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, -2)\nB = Point(3.1, -1.7)\nC = Point(-0.7, 2.3)\n\ntri, AB, BC, CA = Polygon(A, B, C)\nincircle = Incircle(A, B, C)\nI = Center(incircle)\n\nstyle(A, B, C, I, label_visible=True)\nstyle(incircle, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(I, fill=\"color.accent\", size_px=\"point_size.bold\")",
+        "style": null,
+        "notes": [
+          "Used Incircle and Center because the prompt asks for the incircle and its center."
+        ]
+      }
+    },
+    {
+      "id": "create_tangents_from_point",
+      "title": "Tangents From External Point",
+      "kind": "create",
+      "prompt": "Построй окружность с центром O и внешнюю точку P. Проведи из P две касательные к окружности и отметь точки касания.",
+      "expected": [
+        "uses Tangent(P, circle)",
+        "marks tangent points with subscripts",
+        "shows tangent segments",
+        "marks radius-tangent perpendicularity"
+      ],
+      "viewport": {
+        "width": 640,
+        "height": 420,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nc = Circle(O, 2)\nP = Point(4.2, 1.6)\n\nt1, t2 = Tangent(P, c)\nT1 = Intersect(c, t1)\nT2 = Intersect(c, t2)\ntangent_1 = Segment(P, T1)\ntangent_2 = Segment(P, T2)\nr1 = Segment(O, T1)\nr2 = Segment(O, T2)\nright_1 = Angle(O, T1, P)\nright_2 = Angle(O, T2, P)\n\nhide(t1, t2)\nstyle(O, P, T1, T2, label_visible=True)\nstyle(T1, label_text=\"$T_1$\")\nstyle(T2, label_text=\"$T_2$\")\nstyle(tangent_1, tangent_2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(r1, r2, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(right_1, right_2, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "Radius-to-tangent right angle markers explain why the lines are tangents."
+        ]
+      }
+    },
+    {
+      "id": "create_arc_and_chord",
+      "title": "Arc And Chord",
+      "kind": "create",
+      "prompt": "Построй окружность, две точки P и Q на ней, хорду PQ и дугу PQ через верхнюю часть окружности.",
+      "expected": [
+        "uses CircleArc",
+        "shows chord and arc",
+        "labels P and Q",
+        "keeps endpoints on circle"
+      ],
+      "viewport": {
+        "width": 640,
+        "height": 420,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nP = Point(-2.1, 1.7)\nQ = Point(2.1, 1.7)\nc = Circle(O, P)\nchord = Segment(P, Q)\narc_PQ = CircleArc(O, Q, P)\n\nstyle(O, P, Q, label_visible=True)\nstyle(chord, stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\nstyle(arc_PQ, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "The circle is defined through P and Q is chosen symmetrically on the same radius."
+        ]
+      }
+    },
+    {
+      "id": "create_function_intersections",
+      "title": "Function Intersections",
+      "kind": "create",
+      "prompt": "Построй параболу y = 0.35x^2 - 1.2 и прямую y = 0.35x + 0.2, отметь точки их пересечения и соедини их отрезком.",
+      "expected": [
+        "uses Function strings",
+        "uses Intersect with two outputs",
+        "marks both points"
+      ],
+      "viewport": {
+        "width": 640,
+        "height": 420,
+        "scale": 54
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "f = Function(\"y = 0.35*x^2 - 1.2\")\ng = Function(\"y = 0.35*x + 0.2\")\nP, Q = Intersect(f, g)\nsecant = Segment(P, Q)\n\nstyle(P, Q, label_visible=True)\nstyle(secant, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "Function intersections use tuple unpacking for two real roots."
+        ]
+      }
+    },
+    {
+      "id": "create_ellipse_axes",
+      "title": "Ellipse Axes",
+      "kind": "create",
+      "prompt": "Построй эллипс по двум фокусам F1, F2 и большой полуоси 3. Покажи его центр и оси.",
+      "expected": [
+        "uses Ellipse(F1, F2, 3)",
+        "constructs center and axes",
+        "labels foci and center"
+      ],
+      "viewport": {
+        "width": 640,
+        "height": 420,
+        "scale": 62
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "F1 = Point(-1.5, 0)\nF2 = Point(1.5, 0)\nellipse = Ellipse(F1, F2, 3)\nO = Center(ellipse)\nmajor_axis = MajorAxis(ellipse)\nminor_axis = MinorAxis(ellipse)\n\nstyle(F1, F2, O, label_visible=True)\nstyle(F1, label_text=\"$F_1$\")\nstyle(F2, label_text=\"$F_2$\")\nstyle(major_axis, minor_axis, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "Used the conic helpers Center, MajorAxis, and MinorAxis."
+        ]
+      }
+    },
+    {
+      "id": "create_square_diagonals",
+      "title": "Square Diagonals",
+      "kind": "create",
+      "prompt": "Построй квадрат ABCD, проведи диагонали и отметь их точку пересечения.",
+      "expected": [
+        "constructs square vertices",
+        "draws diagonals",
+        "marks intersection"
+      ],
+      "viewport": {
+        "width": 640,
+        "height": 420,
+        "scale": 62
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2, -2)\nB = Point(2, -2)\nC = Point(2, 2)\nD = Point(-2, 2)\n\nsquare, AB, BC, CD, DA = Polygon(A, B, C, D)\ndiag_AC = Segment(A, C)\ndiag_BD = Segment(B, D)\nO = Intersect(diag_AC, diag_BD)\n\nstyle(A, B, C, D, O, label_visible=True)\nstyle(diag_AC, diag_BD, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(O, fill=\"color.accent\", size_px=\"point_size.bold\")",
+        "style": null,
+        "notes": [
+          "The square is axis-aligned because no rotation was requested."
+        ]
+      }
+    },
+    {
+      "id": "create_chord_global_blue_style",
+      "title": "Chord With Global Blue Style",
+      "kind": "create_with_style",
+      "prompt": "Построй окружность с хордой AB и сделай общий спокойный синий стиль для всей конструкции.",
+      "expected": [
+        "keeps construction DSL focused on geometry",
+        "uses style JSON for global blue styling",
+        "does not repeat global style calls in DSL"
+      ],
+      "viewport": {
+        "width": 640,
+        "height": 420,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(-2.4, 1.1)\nB = Point(2.4, 1.1)\nc = Circle(O, A)\nchord = Segment(A, B)\n\nstyle(O, A, B, label_visible=True)",
+        "style": {
+          "presets": {
+            "color": {
+              "main": "#1f77b4",
+              "accent": "#d62728"
+            }
+          },
+          "overlay": {
+            "per_type": {
+              "circle": {
+                "stroke": "color.main",
+                "stroke_width_px": 2.6
+              },
+              "segment": {
+                "stroke": "color.main",
+                "stroke_width_px": 2.6
+              },
+              "point": {
+                "fill": "color.main",
+                "size_px": 7
+              },
+              "line": {
+                "stroke": "color.main",
+                "stroke_width_px": 2.4
+              }
+            }
+          }
+        },
+        "notes": [
+          "Global styling is returned as style JSON, not encoded by styling every element in DSL."
+        ]
+      }
+    },
+    {
+      "id": "create_perpendicular_bisector_compass",
+      "title": "Perpendicular Bisector With Compass Arcs",
+      "kind": "create",
+      "prompt": "Построй серединный перпендикуляр к отрезку AB через пересечения двух равных окружностей.",
+      "expected": [
+        "constructs equal circles from A and B",
+        "uses intersections to define the bisector",
+        "marks midpoint equality and right angle"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.6, -0.6)\nB = Point(2.6, -0.6)\nAB = Segment(A, B)\ncA = Circle(A, B)\ncB = Circle(B, A)\nP, Q = Intersect(cA, cB)\nbisector = Line(P, Q)\nM = Intersect(AB, bisector)\nAM = Segment(A, M)\nMB = Segment(M, B)\nright_M = Angle(A, M, P)\n\nstyle(A, B, M, P, Q, label_visible=True)\nstyle(cA, cB, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"5 5\")\nstyle(bisector, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(AM, MB, stroke_width_px=0, tick_count=1)\nstyle(right_M, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "Compass arcs are visible because the request asks for the construction method."
+        ]
+      }
+    },
+    {
+      "id": "create_parallel_through_point",
+      "title": "Parallel Line Through A Point",
+      "kind": "create",
+      "prompt": "Дана прямая AB и точка P вне ее. Проведи через P прямую, параллельную AB.",
+      "expected": [
+        "uses Line(P, base_line) for a parallel",
+        "shows finite representative segments",
+        "does not confuse local highlighting with global styling"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, -1.2)\nB = Point(2.8, 0.0)\nP = Point(-1.2, 2.0)\nbase = Line(A, B)\nparallel = Line(P, base)\n\nstyle(A, B, P, label_visible=True)\nstyle(base, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")\nstyle(parallel, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "The prompt asks for a line AB and a parallel line through P, so both visible objects are infinite lines."
+        ]
+      }
+    },
+    {
+      "id": "create_equilateral_on_segment",
+      "title": "Equilateral Triangle On Segment",
+      "kind": "create",
+      "prompt": "Построй равносторонний треугольник ABC на основании AB.",
+      "expected": [
+        "constructs C by rotating B around A by 60 degrees",
+        "marks equal sides",
+        "marks equal angles"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.8, -1.4)\nB = Point(2.8, -1.4)\nC = Rotate(B, pi / 3, A)\ntri, AB, BC, CA = Polygon(A, B, C)\n\nstyle(A, B, C, label_visible=True)\nstyle(AB, BC, CA, tick_count=1)",
+        "style": null,
+        "notes": [
+          "Equilateralness is primarily encoded by equal side marks; equal angle marks are omitted because the prompt did not ask for them."
+        ]
+      }
+    },
+    {
+      "id": "create_square_on_segment",
+      "title": "Square On Segment",
+      "kind": "create",
+      "prompt": "Построй квадрат ABCD на отрезке AB и отметь прямые углы.",
+      "expected": [
+        "constructs square from segment using rotation and vector addition",
+        "marks equal sides",
+        "marks all right angles"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.5, -1.7)\nB = Point(2.0, -1.7)\nD = Rotate(B, pi / 2, A)\nC = B + (D - A)\nsquare, AB, BC, CD, DA = Polygon(A, B, C, D)\nangle_A = Angle(D, A, B)\nangle_B = Angle(A, B, C)\nangle_C = Angle(B, C, D)\nangle_D = Angle(C, D, A)\n\nstyle(A, B, C, D, label_visible=True)\nstyle(angle_A, angle_B, angle_C, angle_D, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "The prompt asks to mark right angles; side equality marks are intentionally omitted."
+        ]
+      }
+    },
+    {
+      "id": "create_regular_hexagon_in_circle",
+      "title": "Regular Hexagon In A Circle",
+      "kind": "create",
+      "prompt": "Построй правильный шестиугольник, вписанный в окружность.",
+      "expected": [
+        "uses regular Polygon(A, B, 6)",
+        "shows circumcircle",
+        "marks equal sides and radii"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(2.2, 0)\nB = Point(1.1, 1.905)\nhexagon, AB, BC, CD, DE, EF, FA, C, D, E, F = Polygon(A, B, 6)\nO = Point(0, 0)\ncircle = Circle(O, A)\nOA = Segment(O, A)\nOB = Segment(O, B)\nOC = Segment(O, C)\nOD = Segment(O, D)\nOE = Segment(O, E)\nOF = Segment(O, F)\n\nstyle(A, B, C, D, E, F, O, label_visible=True)\nstyle(circle, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(AB, BC, CD, DE, EF, FA, tick_count=1)\nstyle(OA, OB, OC, OD, OE, OF, stroke=\"color.accent\", stroke_width_px=\"line_width.main\")",
+        "style": null,
+        "notes": [
+          "The regular polygon command generates the remaining vertices from AB."
+        ]
+      }
+    },
+    {
+      "id": "create_circumcenter_and_circumcircle",
+      "title": "Circumcenter And Circumcircle",
+      "kind": "create",
+      "prompt": "Построй треугольник ABC, серединные перпендикуляры, центр описанной окружности и саму окружность.",
+      "expected": [
+        "uses perpendicular bisectors",
+        "marks circumcenter",
+        "draws circumcircle",
+        "draws and marks equal radii OA, OB, OC"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.1, -1.6)\nB = Point(2.9, -1.2)\nC = Point(-0.6, 2.5)\ntri, AB, BC, CA = Polygon(A, B, C)\nM_ab = Midpoint(A, B)\nM_bc = Midpoint(B, C)\nbis_AB = PerpendicularBisector(A, B)\nbis_BC = PerpendicularBisector(B, C)\nO = Intersect(bis_AB, bis_BC)\ncircumcircle = Circle(O, A)\nOA = Segment(O, A)\nOB = Segment(O, B)\nOC = Segment(O, C)\nAB_l = Segment(A, M_ab)\nAB_r = Segment(M_ab, B)\nBC_l = Segment(B, M_bc)\nBC_r = Segment(M_bc, C)\nright_ab = Angle(A, M_ab, O)\nright_bc = Angle(B, M_bc, O)\n\nstyle(A, B, C, O, label_visible=True)\nstyle(M_ab, M_bc, label_visible=False, size_px=\"point_size.aux\")\nstyle(circumcircle, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(OA, OB, OC, stroke=\"color.accent\", stroke_width_px=\"line_width.main\", tick_count=1)\nstyle(bis_AB, bis_BC, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"5 5\")\nstyle(AB_l, AB_r, stroke_width_px=0, tick_count=2)\nstyle(BC_l, BC_r, stroke_width_px=0, tick_count=3)\nstyle(right_ab, right_bc, right_angle_marker=True)\n",
+        "style": null,
+        "notes": []
+      }
+    },
+    {
+      "id": "create_orthocenter_altitudes",
+      "title": "Orthocenter From Three Altitudes",
+      "kind": "create",
+      "prompt": "Построй треугольник ABC, все высоты и ортоцентр H.",
+      "expected": [
+        "constructs all altitudes",
+        "marks orthocenter H",
+        "marks feet and right angles"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, -1.5)\nB = Point(3.0, -1.1)\nC = Point(-0.7, 2.7)\ntri, AB, BC, CA = Polygon(A, B, C)\nline_AB = Line(A, B)\nline_BC = Line(B, C)\nline_CA = Line(C, A)\nalt_A_line = PerpendicularLine(A, line_BC)\nalt_B_line = PerpendicularLine(B, line_CA)\nalt_C_line = PerpendicularLine(C, line_AB)\nH = Intersect(alt_A_line, alt_B_line)\nF_a = Intersect(line_BC, alt_A_line)\nF_b = Intersect(line_CA, alt_B_line)\nF_c = Intersect(line_AB, alt_C_line)\nalt_A = Segment(A, F_a)\nalt_B = Segment(B, F_b)\nalt_C = Segment(C, F_c)\nright_A = Angle(B, F_a, A)\nright_B = Angle(C, F_b, B)\nright_C = Angle(A, F_c, C)\n\nhide(line_AB, line_BC, line_CA, alt_A_line, alt_B_line, alt_C_line)\nstyle(A, B, C, H, F_a, F_b, F_c, label_visible=True)\nstyle(F_a, label_text=\"$H_a$\")\nstyle(F_b, label_text=\"$H_b$\")\nstyle(F_c, label_text=\"$H_c$\")\nstyle(alt_A, alt_B, alt_C, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(right_A, right_B, right_C, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "Altitude helper lines are hidden; visible objects are the finite altitude segments."
+        ]
+      }
+    },
+    {
+      "id": "create_euler_line",
+      "title": "Euler Line",
+      "kind": "create",
+      "prompt": "Построй треугольник ABC, центр тяжести G, ортоцентр H, центр описанной окружности O и прямую Эйлера.",
+      "expected": [
+        "constructs centroid, circumcenter and orthocenter",
+        "draws Euler line",
+        "keeps helper altitudes hidden"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, -1.6)\nB = Point(3.2, -1.2)\nC = Point(-0.4, 2.6)\ntri, AB, BC, CA = Polygon(A, B, C)\nM_ab = Midpoint(A, B)\nM_bc = Midpoint(B, C)\nmedian_A = Segment(A, M_bc)\nmedian_C = Segment(C, M_ab)\nG = Intersect(median_A, median_C)\ncircum = Circle(A, B, C)\nO = Center(circum)\nline_AB = Line(A, B)\nline_BC = Line(B, C)\nalt_C = PerpendicularLine(C, line_AB)\nalt_A = PerpendicularLine(A, line_BC)\nH = Intersect(alt_A, alt_C)\neuler = Line(O, H)\n\nhide(line_AB, line_BC, alt_A, alt_C)\nstyle(A, B, C, G, O, H, label_visible=True)\nstyle(circum, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(median_A, median_C, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(euler, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "Euler line is represented by the line through O and H."
+        ]
+      }
+    },
+    {
+      "id": "create_nine_point_circle",
+      "title": "Nine-Point Circle",
+      "kind": "create",
+      "prompt": "Построй девятиточечную окружность треугольника: середины сторон, основания высот и середины отрезков от вершин до ортоцентра.",
+      "expected": [
+        "constructs nine notable points",
+        "draws circle through side midpoints",
+        "shows altitude feet and Euler midpoints"
+      ],
+      "viewport": {
+        "width": 760,
+        "height": 500,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.3, -1.5)\nB = Point(3.1, -1.2)\nC = Point(-0.8, 2.6)\ntri, AB, BC, CA = Polygon(A, B, C)\nM_ab = Midpoint(A, B)\nM_bc = Midpoint(B, C)\nM_ca = Midpoint(C, A)\nline_AB = Line(A, B)\nline_BC = Line(B, C)\nline_CA = Line(C, A)\nalt_A_line = PerpendicularLine(A, line_BC)\nalt_B_line = PerpendicularLine(B, line_CA)\nalt_C_line = PerpendicularLine(C, line_AB)\nH = Intersect(alt_A_line, alt_B_line)\nF_a = Intersect(line_BC, alt_A_line)\nF_b = Intersect(line_CA, alt_B_line)\nF_c = Intersect(line_AB, alt_C_line)\nE_a = Midpoint(A, H)\nE_b = Midpoint(B, H)\nE_c = Midpoint(C, H)\nnine = Circle(M_ab, M_bc, M_ca)\nalt_A = Segment(A, F_a)\nalt_B = Segment(B, F_b)\nalt_C = Segment(C, F_c)\n\nhide(line_AB, line_BC, line_CA, alt_A_line, alt_B_line, alt_C_line)\nstyle(A, B, C, H, label_visible=True)\nstyle(M_ab, M_bc, M_ca, F_a, F_b, F_c, E_a, E_b, E_c, label_visible=False, size_px=\"point_size.aux\")\nstyle(nine, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(alt_A, alt_B, alt_C, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")",
+        "style": null,
+        "notes": [
+          "The nine-point circle is defined through the three side midpoints; other six points are shown as unlabeled semantic points."
+        ]
+      }
+    },
+    {
+      "id": "create_medial_triangle",
+      "title": "Medial Triangle",
+      "kind": "create",
+      "prompt": "Построй срединный треугольник исходного треугольника ABC и отметь равные половины сторон.",
+      "expected": [
+        "constructs all side midpoints",
+        "connects them into medial triangle",
+        "uses distinct tick groups for equal halves"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.4, -1.6)\nB = Point(3.2, -1.4)\nC = Point(-0.3, 2.5)\ntri, AB, BC, CA = Polygon(A, B, C)\nM_ab = Midpoint(A, B)\nM_bc = Midpoint(B, C)\nM_ca = Midpoint(C, A)\nmedial, s1, s2, s3 = Polygon(M_ab, M_bc, M_ca)\nAB_l = Segment(A, M_ab)\nAB_r = Segment(M_ab, B)\nBC_l = Segment(B, M_bc)\nBC_r = Segment(M_bc, C)\nCA_l = Segment(C, M_ca)\nCA_r = Segment(M_ca, A)\n\nstyle(A, B, C, M_ab, M_bc, M_ca, label_visible=True)\nstyle(M_ab, label_text=\"$M_{AB}$\")\nstyle(M_bc, label_text=\"$M_{BC}$\")\nstyle(M_ca, label_text=\"$M_{CA}$\")\nstyle(medial, fill=\"color.accent\", fill_opacity=0.12)\nstyle(s1, s2, s3, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(AB_l, AB_r, stroke_width_px=0, tick_count=1)\nstyle(BC_l, BC_r, stroke_width_px=0, tick_count=2)\nstyle(CA_l, CA_r, stroke_width_px=0, tick_count=3)",
+        "style": null,
+        "notes": [
+          "Midpoint semantics are shown with auxiliary half-segment tick marks."
+        ]
+      }
+    },
+    {
+      "id": "create_orthic_triangle",
+      "title": "Orthic Triangle",
+      "kind": "create",
+      "prompt": "Построй ортический треугольник остроугольного треугольника ABC.",
+      "expected": [
+        "constructs altitude feet",
+        "forms orthic triangle",
+        "marks perpendicularity at each foot"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.1, -1.5)\nB = Point(3.2, -1.3)\nC = Point(-0.4, 2.5)\ntri, AB, BC, CA = Polygon(A, B, C)\nline_AB = Line(A, B)\nline_BC = Line(B, C)\nline_CA = Line(C, A)\nalt_A = PerpendicularLine(A, line_BC)\nalt_B = PerpendicularLine(B, line_CA)\nalt_C = PerpendicularLine(C, line_AB)\nF_a = Intersect(line_BC, alt_A)\nF_b = Intersect(line_CA, alt_B)\nF_c = Intersect(line_AB, alt_C)\northic, a1, a2, a3 = Polygon(F_a, F_b, F_c)\nAF_a = Segment(A, F_a)\nBF_b = Segment(B, F_b)\nCF_c = Segment(C, F_c)\nright_a = Angle(B, F_a, A)\nright_b = Angle(C, F_b, B)\nright_c = Angle(A, F_c, C)\n\nhide(line_AB, line_BC, line_CA, alt_A, alt_B, alt_C)\nstyle(A, B, C, F_a, F_b, F_c, label_visible=True)\nstyle(F_a, label_text=\"$H_a$\")\nstyle(F_b, label_text=\"$H_b$\")\nstyle(F_c, label_text=\"$H_c$\")\nstyle(orthic, fill=\"color.accent\", fill_opacity=0.14)\nstyle(a1, a2, a3, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(AF_a, BF_b, CF_c, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(right_a, right_b, right_c, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "The foot labels use indexed notation because the three points have the same role."
+        ]
+      }
+    },
+    {
+      "id": "create_pedal_triangle",
+      "title": "Pedal Triangle Of A Point",
+      "kind": "create",
+      "prompt": "Построй педальный треугольник точки P относительно треугольника ABC.",
+      "expected": [
+        "drops perpendiculars from P to all three sides",
+        "forms pedal triangle",
+        "marks right angles"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, -1.5)\nB = Point(3.1, -1.1)\nC = Point(-0.6, 2.5)\nP = Point(0.8, 0.5)\ntri, AB, BC, CA = Polygon(A, B, C)\nline_AB = Line(A, B)\nline_BC = Line(B, C)\nline_CA = Line(C, A)\np_to_ab = PerpendicularLine(P, line_AB)\np_to_bc = PerpendicularLine(P, line_BC)\np_to_ca = PerpendicularLine(P, line_CA)\nF_ab = Intersect(line_AB, p_to_ab)\nF_bc = Intersect(line_BC, p_to_bc)\nF_ca = Intersect(line_CA, p_to_ca)\npedal, s1, s2, s3 = Polygon(F_ab, F_bc, F_ca)\nPF_ab = Segment(P, F_ab)\nPF_bc = Segment(P, F_bc)\nPF_ca = Segment(P, F_ca)\nright_ab = Angle(A, F_ab, P)\nright_bc = Angle(B, F_bc, P)\nright_ca = Angle(C, F_ca, P)\n\nhide(line_AB, line_BC, line_CA, p_to_ab, p_to_bc, p_to_ca)\nstyle(A, B, C, P, F_ab, F_bc, F_ca, label_visible=True)\nstyle(F_ab, label_text=\"$P_{AB}$\")\nstyle(F_bc, label_text=\"$P_{BC}$\")\nstyle(F_ca, label_text=\"$P_{CA}$\")\nstyle(pedal, fill=\"color.accent\", fill_opacity=0.12)\nstyle(s1, s2, s3, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(PF_ab, PF_bc, PF_ca, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(right_ab, right_bc, right_ca, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "Foot labels identify the side each foot belongs to."
+        ]
+      }
+    },
+    {
+      "id": "create_simson_line",
+      "title": "Simson Line",
+      "kind": "create",
+      "prompt": "Построй прямую Симсона для точки P на описанной окружности треугольника ABC.",
+      "expected": [
+        "chooses P on the circumcircle",
+        "drops perpendiculars to all side lines",
+        "draws line through the feet"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3, 0)\nB = Point(3, 0)\nC = Point(0, 4)\nABseg = Segment(A, B)\nBCseg = Segment(B, C)\nCAseg = Segment(C, A)\nABline = Line(A, B)\nBCline = Line(B, C)\nCAline = Line(C, A)\nmidAB = Midpoint(A, B)\nmidBC = Midpoint(B, C)\nperpAB = PerpendicularBisector(A, B)\nperpBC = PerpendicularBisector(B, C)\nO = Intersect(perpAB, perpBC)\ncirc = Circle(O, A)\nP = Rotate(A, 1.2, O)\nperpP_AB = PerpendicularLine(P, ABline)\nperpP_BC = PerpendicularLine(P, BCline)\nperpP_CA = PerpendicularLine(P, CAline)\nfootAB = Intersect(ABline, perpP_AB)\nfootBC = Intersect(BCline, perpP_BC)\nfootCA = Intersect(CAline, perpP_CA)\nsegP_footAB = Segment(P, footAB)\nsegP_footBC = Segment(P, footBC)\nsegP_footCA = Segment(P, footCA)\nsimson = Line(footAB, footBC)\nright_AB = Angle(A, footAB, P)\nright_BC = Angle(B, footBC, P)\nright_CA = Angle(C, footCA, P)\nstyle(A, B, C, label_visible=True)\nstyle(O, label_visible=True, label_text=\"$O$\")\nstyle(P, label_visible=True, label_text=\"$P$\")\nstyle(footAB, footBC, footCA, label_visible=True, size_px=\"point_size.aux\")\nstyle(simson, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(segP_footAB, segP_footBC, segP_footCA, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", line_dash=\"dashed\")\nstyle(right_AB, right_BC, right_CA, right_angle_marker=True)\nhide(perpP_AB, perpP_BC, perpP_CA)\nhide(perpAB, perpBC)\nstyle(ABline, BCline, CAline, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", line_dash=\"dotted\")",
+        "style": null,
+        "notes": [
+          "Triangle ABC is isosceles with base AB. Circumcenter O found via perpendicular bisectors. Point P is placed on circumcircle by rotating A around O by 1.2 radians. Feet of perpendiculars from P to side lines are computed; for this configuration, foot on AB lies on the segment, others may be on extensions. The Simson line is drawn through two feet. Right angle markers are placed at each foot using the corresponding side vertex and P. Auxiliary perpendicular lines are hidden; side lines are shown as dotted auxiliary lines for clarity."
+        ]
+      }
+    },
+    {
+      "id": "create_gergonne_point",
+      "title": "Gergonne Point",
+      "kind": "create",
+      "prompt": "Построй вписанную окружность треугольника, точки касания и точку Жергонна.",
+      "expected": [
+        "constructs incircle and tangency points",
+        "draws cevians to touchpoints",
+        "marks their concurrence"
+      ],
+      "viewport": {
+        "width": 760,
+        "height": 500,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.3, -1.8)\nB = Point(3.1, -1.4)\nC = Point(-0.7, 2.5)\ntri, AB, BC, CA = Polygon(A, B, C)\ninc = Incircle(A, B, C)\nI = Center(inc)\nline_AB = Line(A, B)\nline_BC = Line(B, C)\nline_CA = Line(C, A)\nperp_ab = PerpendicularLine(I, line_AB)\nperp_bc = PerpendicularLine(I, line_BC)\nperp_ca = PerpendicularLine(I, line_CA)\nT_ab = Intersect(line_AB, perp_ab)\nT_bc = Intersect(line_BC, perp_bc)\nT_ca = Intersect(line_CA, perp_ca)\ncev_A = Segment(A, T_bc)\ncev_B = Segment(B, T_ca)\ncev_C = Segment(C, T_ab)\nG_e = Intersect(cev_A, cev_B)\nr_ab = Segment(I, T_ab)\nr_bc = Segment(I, T_bc)\nr_ca = Segment(I, T_ca)\nright_ab = Angle(A, T_ab, I)\nright_bc = Angle(B, T_bc, I)\nright_ca = Angle(C, T_ca, I)\n\nhide(line_AB, line_BC, line_CA, perp_ab, perp_bc, perp_ca)\nstyle(A, B, C, I, G_e, T_ab, T_bc, T_ca, label_visible=True)\nstyle(G_e, label_text=\"$G_e$\", fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(T_ab, label_text=\"$T_{AB}$\")\nstyle(T_bc, label_text=\"$T_{BC}$\")\nstyle(T_ca, label_text=\"$T_{CA}$\")\nstyle(inc, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(cev_A, cev_B, cev_C, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(r_ab, r_bc, r_ca, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(right_ab, right_bc, right_ca, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "Tangency points are constructed as perpendicular feet from the incenter to the sides."
+        ]
+      }
+    },
+    {
+      "id": "create_symmedian_point",
+      "title": "Symmedian Point",
+      "kind": "create",
+      "prompt": "Построй симмедианную точку треугольника как изогональное сопряжение центра тяжести.",
+      "expected": [
+        "constructs centroid",
+        "uses IsogonalConjugation",
+        "draws symmedians through K"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, -1.7)\nB = Point(3.2, -1.2)\nC = Point(-0.6, 2.6)\ntri, AB, BC, CA = Polygon(A, B, C)\nM_ab = Midpoint(A, B)\nM_bc = Midpoint(B, C)\nmedian_A = Segment(A, M_bc)\nmedian_C = Segment(C, M_ab)\nG = Intersect(median_A, median_C)\nK = IsogonalConjugation(A, B, C, G)\nsym_A = Segment(A, K)\nsym_B = Segment(B, K)\nsym_C = Segment(C, K)\n\nstyle(A, B, C, G, K, label_visible=True)\nstyle(K, fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(sym_A, sym_B, sym_C, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(median_A, median_C, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")",
+        "style": null,
+        "notes": [
+          "The symmedian point is generated by an exact triangle-geometry command rather than approximate coordinates."
+        ]
+      }
+    },
+    {
+      "id": "create_isogonal_conjugate",
+      "title": "Isogonal Conjugate Of A Point",
+      "kind": "create",
+      "prompt": "В треугольнике ABC построй точку P и ее изогонально сопряженную точку P*.",
+      "expected": [
+        "uses IsogonalConjugation",
+        "shows original and conjugate cevians",
+        "marks one reflected angle pair"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, -1.6)\nB = Point(3.0, -1.2)\nC = Point(-0.3, 2.5)\nP = Point(0.1, 0.2)\ntri, AB, BC, CA = Polygon(A, B, C)\nP_star = IsogonalConjugation(A, B, C, P)\nAP = Segment(A, P)\nBP = Segment(B, P)\nCP = Segment(C, P)\nAPs = Segment(A, P_star)\nBPs = Segment(B, P_star)\nCPs = Segment(C, P_star)\nangle_1 = Angle(B, A, P)\nangle_2 = Angle(P_star, A, C)\n\nstyle(A, B, C, P, P_star, label_visible=True)\nstyle(P_star, label_text=\"$P^*$\", fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(AP, BP, CP, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(APs, BPs, CPs, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(angle_1, angle_2, tick_count=1, arc_size_px=22)",
+        "style": null,
+        "notes": [
+          "Only one angle pair is marked to keep the diagram readable."
+        ]
+      }
+    },
+    {
+      "id": "create_fermat_point",
+      "title": "Fermat Point Construction",
+      "kind": "create",
+      "prompt": "Построй точку Ферма треугольника через внешние равносторонние треугольники.",
+      "expected": [
+        "constructs three equilateral triangles externally",
+        "draws concurrence lines",
+        "marks Fermat point"
+      ],
+      "viewport": {
+        "width": 800,
+        "height": 540,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.8, -1.5)\nB = Point(2.6, -1.3)\nC = Point(-0.4, 2.2)\ntri, AB, BC, CA = Polygon(A, B, C)\nD = Rotate(C, -pi / 3, B)\nE = Rotate(A, -pi / 3, C)\nF = Rotate(B, -pi / 3, A)\neq_BC, BC_1, CD, DB = Polygon(B, C, D)\neq_CA, CA_1, AE, EC = Polygon(C, A, E)\neq_AB, AB_1, BF, FA = Polygon(A, B, F)\nline_AD = Segment(A, D)\nline_BE = Segment(B, E)\nline_CF = Segment(C, F)\nX = Intersect(line_AD, line_BE)\n\nstyle(A, B, C, D, E, F, X, label_visible=True)\nstyle(X, label_text=\"$F_1$\", fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(eq_BC, eq_CA, eq_AB, fill=\"color.accent\", fill_opacity=0.08)\nstyle(line_AD, line_BE, line_CF, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "The chosen rotation direction gives one external Fermat construction for this orientation."
+        ]
+      }
+    },
+    {
+      "id": "create_napoleon_triangle",
+      "title": "Napoleon Triangle",
+      "kind": "create",
+      "prompt": "Построй внешние равносторонние треугольники на сторонах ABC и треугольник Наполеона по их центрам.",
+      "expected": [
+        "constructs equilateral triangles on each side",
+        "uses their centroids",
+        "forms Napoleon triangle"
+      ],
+      "viewport": {
+        "width": 800,
+        "height": 540,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.9, -1.4)\nB = Point(2.7, -1.2)\nC = Point(-0.4, 2.3)\ntri, AB, BC, CA = Polygon(A, B, C)\nD = Rotate(C, -pi / 3, B)\nE = Rotate(A, -pi / 3, C)\nF = Rotate(B, -pi / 3, A)\neq_BC, s1, s2, s3 = Polygon(B, C, D)\neq_CA, s4, s5, s6 = Polygon(C, A, E)\neq_AB, s7, s8, s9 = Polygon(A, B, F)\nN_a = Centroid(eq_BC)\nN_b = Centroid(eq_CA)\nN_c = Centroid(eq_AB)\nnapoleon, n1, n2, n3 = Polygon(N_a, N_b, N_c)\n\nstyle(A, B, C, D, E, F, N_a, N_b, N_c, label_visible=True)\nstyle(N_a, label_text=\"$N_a$\")\nstyle(N_b, label_text=\"$N_b$\")\nstyle(N_c, label_text=\"$N_c$\")\nstyle(eq_BC, eq_CA, eq_AB, fill=\"color.aux\", fill_opacity=0.08)\nstyle(napoleon, fill=\"color.accent\", fill_opacity=0.16)\nstyle(n1, n2, n3, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "Centroid is used on each equilateral triangle polygon."
+        ]
+      }
+    },
+    {
+      "id": "create_tangent_chord_theorem",
+      "title": "Tangent-Chord Theorem",
+      "kind": "create",
+      "prompt": "Покажи касательную в точке A окружности, хорду AB и вписанный угол ACB, соответствующий углу между касательной и хордой.",
+      "expected": [
+        "constructs tangent at A",
+        "shows chord AB",
+        "marks equal tangent-chord and inscribed angles"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(2.4, 0)\nc = Circle(O, A)\nB = Rotate(A, 2.1, O)\nC = Rotate(A, 4.5, O)\nR = Rotate(A, pi / 2, O)\nU = A + (R - O) * 1.2\nchord = Segment(A, B)\nside_CA = Segment(C, A)\nside_CB = Segment(C, B)\nt = Tangent(A, c)\ntangent_seg = Segment(A, U)\nangle_tan = Angle(U, A, B)\nangle_ins = Angle(A, C, B)\n\nhide(t, R)\nstyle(O, A, B, C, label_visible=True)\nstyle(chord, tangent_seg, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(side_CA, side_CB, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(angle_tan, angle_ins, tick_count=1)\nstyle(angle_tan, arc_size_px=22)\nstyle(angle_ins, arc_size_px=28)",
+        "style": null,
+        "notes": [
+          "The sides CA and CB are visible so the inscribed angle marker has visible arms."
+        ]
+      }
+    },
+    {
+      "id": "create_inscribed_angle_theorem",
+      "title": "Inscribed Angle Theorem",
+      "kind": "create",
+      "prompt": "Построй центральный угол AOB и вписанный угол ACB, опирающиеся на одну дугу AB.",
+      "expected": [
+        "central and inscribed angles share arc AB",
+        "labels central angle as 2 alpha and inscribed angle as alpha"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(2.5, 0)\nc = Circle(O, A)\nB = Rotate(A, 2.0, O)\nC = Rotate(A, 4.55, O)\nOA = Segment(O, A)\nOB = Segment(O, B)\nchord_CA = Segment(C, A)\nchord_CB = Segment(C, B)\ncentral = Angle(A, O, B)\ninscribed = Angle(A, C, B)\narc_AB = CircleArc(O, A, B)\n\nstyle(O, A, B, C, label_visible=True)\nstyle(OA, OB, chord_CA, chord_CB, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(arc_AB, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(central, label_visible=True, label_text=\"$2\\\\alpha$\", arc_size_px=30)\nstyle(inscribed, label_visible=True, label_text=\"$\\\\alpha$\", arc_size_px=22)",
+        "style": null,
+        "notes": [
+          "The common arc is highlighted; chord AB is omitted because it was not requested."
+        ]
+      }
+    },
+    {
+      "id": "create_thales_semicircle",
+      "title": "Thales Semicircle",
+      "kind": "create",
+      "prompt": "Построй полуокружность с диаметром AB, точку C на ней и отметь прямой угол ACB.",
+      "expected": [
+        "uses Semicircle(A, B)",
+        "places C on the semicircle",
+        "marks right angle ACB"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.8, -1.0)\nB = Point(2.8, -1.0)\nM = Midpoint(A, B)\nsemicircle = Semicircle(A, B)\nC = Rotate(B, 2.1, M)\ndiameter = Segment(A, B)\nAC = Segment(A, C)\nBC = Segment(B, C)\nangle_C = Angle(A, C, B)\n\nhide(M)\nstyle(A, B, C, label_visible=True)\nstyle(semicircle, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(diameter, stroke=\"color.aux\", stroke_width_px=2.0)\nstyle(AC, BC, stroke=\"color.strong\", stroke_width_px=2.0)\nstyle(angle_C, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "C is constructed on the circle with diameter AB by rotating endpoint B around the midpoint."
+        ]
+      }
+    },
+    {
+      "id": "create_cyclic_quadrilateral",
+      "title": "Cyclic Quadrilateral",
+      "kind": "create",
+      "prompt": "Построй вписанный четырехугольник ABCD и отметь противоположные углы.",
+      "expected": [
+        "all vertices are constructed on one circle",
+        "marks opposite angles",
+        "shows cyclic quadrilateral boundary"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(2.6, 0)\nc = Circle(O, A)\nB = Rotate(A, 1.55, O)\nC = Rotate(A, 3.35, O)\nD = Rotate(A, 5.25, O)\nquad, AB, BC, CD, DA = Polygon(A, B, C, D)\nangle_A = Angle(D, A, B)\nangle_C = Angle(B, C, D)\n\nhide(O)\nstyle(A, B, C, D, label_visible=True)\nstyle(c, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(angle_A, label_visible=True, label_text=\"$\\\\alpha$\", arc_size_px=24)\nstyle(angle_C, label_visible=True, label_text=\"$180^\\\\circ-\\\\alpha$\", arc_size_px=24)\nstyle(AB, BC, CD, DA, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")",
+        "style": null,
+        "notes": [
+          "Center and diagonal are omitted because the prompt only asks for a cyclic quadrilateral and opposite angles."
+        ]
+      }
+    },
+    {
+      "id": "create_radical_axis_intersecting_circles",
+      "title": "Radical Axis Of Two Circles",
+      "kind": "create",
+      "prompt": "Построй две пересекающиеся окружности и их радикальную ось.",
+      "expected": [
+        "uses two circle intersections",
+        "draws line through common points",
+        "shows relation to center line"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O1 = Point(-1.3, 0)\nO2 = Point(1.5, 0.3)\nc1 = Circle(O1, 2.2)\nc2 = Circle(O2, 1.8)\nP, Q = Intersect(c1, c2)\nradical = Line(P, Q)\ncenters = Segment(O1, O2)\nfoot_line = PerpendicularLine(P, centers)\n\nhide(foot_line)\nstyle(O1, O2, P, Q, label_visible=True)\nstyle(O1, label_text=\"$O_1$\")\nstyle(O2, label_text=\"$O_2$\")\nstyle(c1, c2, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(radical, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(centers, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")",
+        "style": null,
+        "notes": [
+          "For intersecting circles the radical axis is the common chord line."
+        ]
+      }
+    },
+    {
+      "id": "create_power_of_point_secants",
+      "title": "Power Of A Point With Two Secants",
+      "kind": "create",
+      "prompt": "Покажи из внешней точки P две секущие окружности и соответствующие отрезки.",
+      "expected": [
+        "constructs two secants from P",
+        "marks circle intersections",
+        "uses indexed labels"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA0 = Point(2.2, 0)\nc = Circle(O, A0)\nP = Point(4.2, 1.1)\nA = Rotate(A0, 0.5, O)\nC = Rotate(A0, -1.2, O)\nsec1_line = Line(P, A)\nsec2_line = Line(P, C)\nA1, B1 = Intersect(c, sec1_line)\nC1, D1 = Intersect(c, sec2_line)\nsec1 = Segment(P, B1)\nsec2 = Segment(P, D1)\nnear1 = Segment(P, A1)\nnear2 = Segment(P, C1)\n\nhide(sec1_line, sec2_line, A0)\nstyle(O, P, A1, B1, C1, D1, label_visible=True)\nstyle(A1, label_text=\"$A_1$\")\nstyle(B1, label_text=\"$B_1$\")\nstyle(C1, label_text=\"$C_1$\")\nstyle(D1, label_text=\"$D_1$\")\nstyle(sec1, sec2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(near1, near2, tick_count=1)",
+        "style": null,
+        "notes": [
+          "A and C are constructed on the circle by rotation; the other secant endpoints come from Intersect."
+        ]
+      }
+    },
+    {
+      "id": "create_polar_line_circle",
+      "title": "Polar Line Of A Point",
+      "kind": "create",
+      "prompt": "Построй полярную прямую внешней точки P относительно окружности и точки касания касательных.",
+      "expected": [
+        "uses Polar(P, circle)",
+        "confirms it through tangent contact points",
+        "shows tangent segments"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nc = Circle(O, 2)\nP = Point(4.0, 1.2)\npolar = Polar(P, c)\nt1, t2 = Tangent(P, c)\nT1 = Intersect(c, t1)\nT2 = Intersect(c, t2)\nchord = Segment(T1, T2)\ntangent_1 = Segment(P, T1)\ntangent_2 = Segment(P, T2)\n\nhide(t1, t2)\nstyle(O, P, T1, T2, label_visible=True)\nstyle(T1, label_text=\"$T_1$\")\nstyle(T2, label_text=\"$T_2$\")\nstyle(polar, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(chord, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(tangent_1, tangent_2, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")",
+        "style": null,
+        "notes": [
+          "For a circle, the polar of an external point is the chord of contact."
+        ]
+      }
+    },
+    {
+      "id": "create_inversion_in_circle",
+      "title": "Inversion In A Circle",
+      "kind": "create",
+      "prompt": "Построй образ точки A при инверсии относительно окружности с центром O.",
+      "expected": [
+        "uses Reflect(point, circle) for inversion",
+        "places A and A prime on the same ray from O",
+        "keeps circle as inversion reference"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nc = Circle(O, 2.2)\nA = Point(3.7, 1.2)\nA_inv = Reflect(A, c)\nray = Ray(O, A)\nOA = Segment(O, A)\nOAi = Segment(O, A_inv)\n\nhide(ray)\nstyle(O, A, A_inv, label_visible=True)\nstyle(A_inv, label_text=\"$A'$\", fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(c, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(OA, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(OAi, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "In this DSL Reflect with a circle performs circle inversion."
+        ]
+      }
+    },
+    {
+      "id": "create_reflection_triangle_axis",
+      "title": "Reflection Across A Line",
+      "kind": "create",
+      "prompt": "Отрази треугольник ABC относительно прямой l.",
+      "expected": [
+        "uses Reflect(point, line)",
+        "labels image vertices with primes",
+        "shows correspondence segments"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.8, -1.4)\nB = Point(-0.4, -0.6)\nC = Point(-2.0, 1.4)\nL1 = Point(0.7, -2.2)\nL2 = Point(1.2, 2.4)\naxis = Line(L1, L2)\ntri, AB, BC, CA = Polygon(A, B, C)\nA_ref = Reflect(A, axis)\nB_ref = Reflect(B, axis)\nC_ref = Reflect(C, axis)\ntri_ref, A1B1, B1C1, C1A1 = Polygon(A_ref, B_ref, C_ref)\na_to_axis = Segment(A, A_ref)\nb_to_axis = Segment(B, B_ref)\nc_to_axis = Segment(C, C_ref)\n\nhide(L1, L2)\nstyle(A, B, C, A_ref, B_ref, C_ref, label_visible=True)\nstyle(A_ref, label_text=\"$A'$\")\nstyle(B_ref, label_text=\"$B'$\")\nstyle(C_ref, label_text=\"$C'$\")\nstyle(axis, label_visible=True, label_text=\"$l$\", stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(tri_ref, fill=\"color.accent\", fill_opacity=0.12)\nstyle(a_to_axis, b_to_axis, c_to_axis, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"5 5\")",
+        "style": null,
+        "notes": [
+          "Helper points defining the abstract line l are hidden; the line itself is labeled."
+        ]
+      }
+    },
+    {
+      "id": "create_rotation_of_triangle",
+      "title": "Rotation Of A Triangle",
+      "kind": "create",
+      "prompt": "Поверни треугольник ABC вокруг точки O на 60 градусов.",
+      "expected": [
+        "uses Rotate(point, angle, center)",
+        "labels image vertices",
+        "shows rotation angle"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(-2.2, -1.0)\nB = Point(-0.3, -1.4)\nC = Point(-1.3, 0.8)\ntri, AB, BC, CA = Polygon(A, B, C)\nA_rot = Rotate(A, pi / 3, O)\nB_rot = Rotate(B, pi / 3, O)\nC_rot = Rotate(C, pi / 3, O)\ntri_rot, A1B1, B1C1, C1A1 = Polygon(A_rot, B_rot, C_rot)\narc_A = CircleArc(O, A, A_rot)\nOA = Segment(O, A)\nOA1 = Segment(O, A_rot)\nangle_A = Angle(A, O, A_rot)\n\nstyle(O, A, B, C, A_rot, B_rot, C_rot, label_visible=True)\nstyle(A_rot, label_text=\"$A'$\")\nstyle(B_rot, label_text=\"$B'$\")\nstyle(C_rot, label_text=\"$C'$\")\nstyle(tri_rot, fill=\"color.accent\", fill_opacity=0.12)\nstyle(arc_A, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(OA, OA1, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(angle_A, label_visible=True, label_text=\"$60^\\\\circ$\", arc_size_px=30)",
+        "style": null,
+        "notes": [
+          "A single angle marker is enough to describe the common rotation."
+        ]
+      }
+    },
+    {
+      "id": "create_translation_vector",
+      "title": "Translation By Vector",
+      "kind": "create",
+      "prompt": "Перенеси треугольник ABC на вектор v.",
+      "expected": [
+        "uses Vector and Translate",
+        "labels translated vertices",
+        "shows correspondence segments"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.0, -1.2)\nB = Point(-1.0, -1.5)\nC = Point(-2.2, 0.7)\nV0 = Point(0.6, -1.7)\nV1 = Point(2.2, -0.6)\nv = Vector(V0, V1)\ntri, AB, BC, CA = Polygon(A, B, C)\nA_tr = Translate(A, v)\nB_tr = Translate(B, v)\nC_tr = Translate(C, v)\ntri_tr, A1B1, B1C1, C1A1 = Polygon(A_tr, B_tr, C_tr)\nmove_A = Segment(A, A_tr)\nmove_B = Segment(B, B_tr)\nmove_C = Segment(C, C_tr)\n\nhide(V0, V1)\nstyle(A, B, C, A_tr, B_tr, C_tr, label_visible=True)\nstyle(A_tr, label_text=\"$A'$\")\nstyle(B_tr, label_text=\"$B'$\")\nstyle(C_tr, label_text=\"$C'$\")\nstyle(v, label_visible=True, label_text=\"$\\\\vec{v}$\", stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(tri_tr, fill=\"color.accent\", fill_opacity=0.12)\nstyle(move_A, move_B, move_C, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"5 5\")",
+        "style": null,
+        "notes": [
+          "The vector is labeled as v; its helper endpoints are hidden because the prompt does not name them."
+        ]
+      }
+    },
+    {
+      "id": "create_homothety_triangle",
+      "title": "Homothety From A Center",
+      "kind": "create",
+      "prompt": "Построй образ треугольника ABC при гомотетии с центром O и коэффициентом 1.6.",
+      "expected": [
+        "constructs image vertices by vector arithmetic",
+        "preserves rays from center",
+        "labels homothetic image"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(-2.0, -0.8)\nB = Point(-0.4, -1.2)\nC = Point(-1.3, 0.9)\ntri, AB, BC, CA = Polygon(A, B, C)\nk = 1.6\nA_h = O + (A - O) * k\nB_h = O + (B - O) * k\nC_h = O + (C - O) * k\ntri_h, A1B1, B1C1, C1A1 = Polygon(A_h, B_h, C_h)\nray_A = Ray(O, A_h)\nray_B = Ray(O, B_h)\nray_C = Ray(O, C_h)\n\nhide(ray_A, ray_B, ray_C)\nstyle(O, A, B, C, A_h, B_h, C_h, label_visible=True)\nstyle(A_h, label_text=\"$A'$\")\nstyle(B_h, label_text=\"$B'$\")\nstyle(C_h, label_text=\"$C'$\")\nstyle(tri_h, fill=\"color.accent\", fill_opacity=0.12)\nstyle(A1B1, B1C1, C1A1, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "There is no separate homothety factory, so dependent point arithmetic is the direct construction."
+        ]
+      }
+    },
+    {
+      "id": "create_parallelogram_diagonals",
+      "title": "Parallelogram Diagonals",
+      "kind": "create",
+      "prompt": "Построй параллелограмм ABCD по трем вершинам и отметь точку пересечения диагоналей.",
+      "expected": [
+        "derives fourth vertex by vector addition",
+        "draws diagonals",
+        "marks that diagonals bisect each other"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.0, -1.5)\nB = Point(1.4, -1.4)\nD = Point(-1.8, 1.5)\nC = B + (D - A)\npara, AB, BC, CD, DA = Polygon(A, B, C, D)\ndiag_AC = Segment(A, C)\ndiag_BD = Segment(B, D)\nO = Intersect(diag_AC, diag_BD)\n\nstyle(A, B, C, D, O, label_visible=True)\nstyle(diag_AC, diag_BD, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(O, fill=\"color.accent\", size_px=\"point_size.bold\")",
+        "style": null,
+        "notes": [
+          "Diagonals are drawn and their intersection is marked; bisecting tick marks are omitted because the prompt did not request that property."
+        ]
+      }
+    },
+    {
+      "id": "create_rhombus_from_circles",
+      "title": "Rhombus From Equal Circles",
+      "kind": "create",
+      "prompt": "Построй ромб с диагональю AB, используя две равные окружности с центрами A и B.",
+      "expected": [
+        "uses equal circles with centers A and B",
+        "uses circle intersections as the other two vertices",
+        "does not assume A and B lie on the opposite circles",
+        "marks the four rhombus sides equal without showing radius segments"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-1.75, -0.8)\nB = Point(1.75, -0.8)\ncA = Circle(A, 2.55)\ncB = Circle(B, 2.55)\nC, D = Intersect(cA, cB)\nrhombus, AC, CB, BD, DA = Polygon(A, C, B, D)\ndiagonal_AB = Segment(A, B)\n\nstyle(A, B, C, D, label_visible=True)\nstyle(cA, cB, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"5 5\")\nstyle(AC, CB, BD, DA, tick_count=1)\nstyle(diagonal_AB, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\n",
+        "style": null,
+        "notes": []
+      }
+    },
+    {
+      "id": "create_trapezoid_midline",
+      "title": "Trapezoid Midline",
+      "kind": "create",
+      "prompt": "Построй трапецию ABCD и ее среднюю линию.",
+      "expected": [
+        "constructs side midpoints",
+        "draws trapezoid midline",
+        "marks equal halves"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.0, -1.6)\nB = Point(3.0, -1.6)\nD = Point(-1.8, 1.5)\nC = D + (B - A) * 0.62\ntrap, AB, BC, CD, DA = Polygon(A, B, C, D)\nM_ad = Midpoint(A, D)\nM_bc = Midpoint(B, C)\nmidline = Segment(M_ad, M_bc)\nAD_1 = Segment(A, M_ad)\nAD_2 = Segment(M_ad, D)\nBC_1 = Segment(B, M_bc)\nBC_2 = Segment(M_bc, C)\n\nstyle(A, B, C, D, M_ad, M_bc, label_visible=True)\nstyle(M_ad, label_text=\"$M_{AD}$\")\nstyle(M_bc, label_text=\"$M_{BC}$\")\nstyle(midline, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(AD_1, AD_2, stroke_width_px=0, tick_count=1)\nstyle(BC_1, BC_2, stroke_width_px=0, tick_count=2)",
+        "style": null,
+        "notes": [
+          "The upper base is derived parallel to AB; bases are not marked equal."
+        ]
+      }
+    },
+    {
+      "id": "create_kite_symmetry",
+      "title": "Kite With Symmetry Axis",
+      "kind": "create",
+      "prompt": "Построй дельтоид ABCD с осью симметрии AC.",
+      "expected": [
+        "constructs D by reflecting B across AC",
+        "marks equal adjacent side pairs",
+        "shows perpendicular diagonals"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 2.4)\nC = Point(0, -2.0)\nB = Point(2.2, -0.25)\naxis = Line(A, C)\nD = Reflect(B, axis)\nkite, AB, BC, CD, DA = Polygon(A, B, C, D)\ndiag_AC = Segment(A, C)\ndiag_BD = Segment(B, D)\nO = Intersect(diag_AC, diag_BD)\nright_O = Angle(B, O, C)\n\nhide(axis)\nstyle(A, B, C, D, O, label_visible=True)\nstyle(AB, DA, tick_count=1)\nstyle(BC, CD, tick_count=2)\nstyle(diag_AC, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(diag_BD, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(right_O, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "Coordinates make the two adjacent side-pair lengths visibly different, so the kite does not read as a rhombus."
+        ]
+      }
+    },
+    {
+      "id": "create_parabola_focus_directrix",
+      "title": "Parabola Focus And Directrix",
+      "kind": "create",
+      "prompt": "Построй параболу по фокусу F и директрисе d, покажи вершину и ось.",
+      "expected": [
+        "uses Parabola(focus, directrix)",
+        "marks focus and vertex",
+        "labels the directrix d without exposing helper endpoints",
+        "draws the symmetry axis"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "F = Point(0, 1.4)\nD1 = Point(-3.2, -1.2)\nD2 = Point(3.2, -1.2)\ndirectrix = Line(D1, D2)\nparabola = Parabola(F, directrix)\nV = Center(parabola)\naxis = Axes(parabola)\nFV = Segment(F, V)\n\nhide(D1, D2)\nstyle(F, V, label_visible=True)\nstyle(directrix, label_visible=True, label_text=\"$d$\", stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"6 5\")\nstyle(parabola, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(axis, stroke=\"color.accent\", stroke_width_px=\"line_width.main\")\nstyle(FV, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\n",
+        "style": null,
+        "notes": []
+      }
+    },
+    {
+      "id": "create_hyperbola_foci_axes",
+      "title": "Hyperbola Foci And Axes",
+      "kind": "create",
+      "prompt": "Построй гиперболу по фокусам F1, F2 и полуоси 1.2, покажи центр, вершины и оси.",
+      "expected": [
+        "uses Hyperbola(foci, semi-axis)",
+        "marks foci, center and vertices",
+        "shows axes"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "F1 = Point(-2.0, 0)\nF2 = Point(2.0, 0)\nhyp = Hyperbola(F1, F2, 1.2)\nO = Center(hyp)\nV1, V2 = Vertex(hyp)\nmajor = MajorAxis(hyp)\nminor = MinorAxis(hyp)\n\nstyle(F1, F2, O, V1, V2, label_visible=True)\nstyle(F1, label_text=\"$F_1$\")\nstyle(F2, label_text=\"$F_2$\")\nstyle(V1, label_text=\"$V_1$\")\nstyle(V2, label_text=\"$V_2$\")\nstyle(hyp, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(major, minor, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(V1, V2, fill=\"color.accent\", size_px=\"point_size.bold\")",
+        "style": null,
+        "notes": [
+          "Tuple-unpack is used because Vertex(hyperbola) returns the two branch vertices."
+        ]
+      }
+    },
+    {
+      "id": "create_conic_five_points",
+      "title": "Conic Through Five Points",
+      "kind": "create",
+      "prompt": "Построй конику, проходящую через пять заданных точек.",
+      "expected": [
+        "uses Conic through five points",
+        "labels all defining points",
+        "does not add unsupported proof artifacts"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.8, -0.8)\nB = Point(-1.0, 1.5)\nC = Point(1.1, 1.3)\nD = Point(2.7, -0.5)\nE = Point(0.4, -1.7)\nconic = Conic(A, B, C, D, E)\n\nstyle(A, B, C, D, E, label_visible=True)\nstyle(conic, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "Five points determine a unique conic unless degenerate; these points are chosen nondegenerately."
+        ]
+      }
+    },
+    {
+      "id": "create_ellipse_tangents_from_point",
+      "title": "Tangents From Point To Ellipse",
+      "kind": "create",
+      "prompt": "Построй эллипс и две касательные из внешней точки P.",
+      "expected": [
+        "uses conic Tangent from external point",
+        "marks two tangent points",
+        "shows finite tangent segments"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "F1 = Point(-1.2, 0)\nF2 = Point(1.2, 0)\nell = Ellipse(F1, F2, 2.7)\nP = Point(3.7, 1.6)\nt1, t2 = Tangent(P, ell)\nT1 = Intersect(ell, t1)\nT2 = Intersect(ell, t2)\nseg1 = Segment(P, T1)\nseg2 = Segment(P, T2)\n\nhide(t1, t2)\nstyle(F1, F2, P, T1, T2, label_visible=True)\nstyle(F1, label_text=\"$F_1$\")\nstyle(F2, label_text=\"$F_2$\")\nstyle(T1, label_text=\"$T_1$\")\nstyle(T2, label_text=\"$T_2$\")\nstyle(ell, stroke=\"color.aux\", stroke_width_px=2)\nstyle(seg1, seg2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "The tangent helper lines are hidden after finite segments are constructed."
+        ]
+      }
+    },
+    {
+      "id": "create_implicit_lemniscate_line_intersections",
+      "title": "Implicit Lemniscate Intersections",
+      "kind": "create",
+      "prompt": "Построй лемнискату и прямую, отметь точки их пересечения.",
+      "expected": [
+        "uses ImplicitCurve string syntax",
+        "intersects with a line",
+        "marks the selected visible intersection points only",
+        "does not connect intersections unless requested"
+      ],
+      "viewport": {
+        "width": 760,
+        "height": 500,
+        "scale": 52
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "lemniscate = ImplicitCurve(\"(x^2 + y^2)^2 - 4*(x^2 - y^2) = 0\")\nA = Point(-4, -2)\nB = Point(4, 2)\nline = Line(A, B)\nP1, P2, P3 = Intersect(lemniscate, line)\nstyle(lemniscate, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(line, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(P1, P2, P3, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\nhide(A, B)",
+        "style": null,
+        "notes": [
+          "Constructed lemniscate of Bernoulli as ImplicitCurve with classical equation (simply scaled).",
+          "Line chosen as y = 0.5x (through (-4,-2) and (4,2)) to yield three intersections: origin and two others.",
+          "Intersect(ImplicitCurve, Line) is assumed supported; if not, manual construction would be needed."
+        ]
+      }
+    },
+    {
+      "id": "create_function_circle_intersections",
+      "title": "Function And Circle Intersections",
+      "kind": "create",
+      "prompt": "Построй график синуса, окружность и отметь точки их пересечения.",
+      "expected": [
+        "uses Function and Circle intersection",
+        "marks multiple roots",
+        "uses indexed-style point labels when generated by runtime"
+      ],
+      "viewport": {
+        "width": 760,
+        "height": 500,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "f = Function(\"y = sin(x)\")\nO = Point(0, 0)\nc = Circle(O, 2.0)\nP, Q, R, S = Intersect(f, c)\n\nstyle(O, P, Q, R, S, label_visible=True)\nstyle(f, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")\nstyle(c, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(P, Q, R, S, fill=\"color.accent\", size_px=\"point_size.bold\")",
+        "style": null,
+        "notes": [
+          "The prompt asks to mark intersections only; connecting segments are omitted."
+        ]
+      }
+    },
+    {
+      "id": "create_circle_sector_and_arc",
+      "title": "Circle Sector And Arc",
+      "kind": "create",
+      "prompt": "Построй сектор AOB окружности, выдели дугу AB и хорду AB.",
+      "expected": [
+        "uses CircleSector and CircleArc",
+        "shows radii, chord and arc",
+        "labels central angle"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(2.6, 0)\nB = Rotate(A, 1.25, O)\nc = Circle(O, A)\nsector = CircleSector(O, A, B)\narc = CircleArc(O, A, B)\nchord = Segment(A, B)\nOA = Segment(O, A)\nOB = Segment(O, B)\nangle_AOB = Angle(A, O, B)\n\nstyle(O, A, B, label_visible=True)\nstyle(sector, fill=\"color.accent\", fill_opacity=0.12)\nstyle(arc, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(chord, stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\nstyle(OA, OB, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(angle_AOB, label_visible=True, label_text=\"$\\\\theta$\", arc_size_px=30)",
+        "style": null,
+        "notes": [
+          "B is constructed by rotation, so it lies on the circle exactly."
+        ]
+      }
+    },
+    {
+      "id": "create_circumcircle_arc_triangle",
+      "title": "Circumcircle Arc Through Three Points",
+      "kind": "create",
+      "prompt": "Построй дугу окружности через точки A, B, C так, чтобы она проходила через B.",
+      "expected": [
+        "uses CircumcircleArc(A, B, C)",
+        "keeps full circle as helper",
+        "labels the three defining points"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.5, -0.7)\nB = Point(-0.2, 1.8)\nC = Point(2.6, -0.9)\ntri, AB, BC, CA = Polygon(A, B, C)\narc = CircumcircleArc(A, B, C)\ncirc = Circle(A, B, C)\n\nstyle(A, B, C, label_visible=True)\nstyle(circ, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"5 5\")\nstyle(arc, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "CircumcircleArc chooses the arc from A to C passing through B."
+        ]
+      }
+    },
+    {
+      "id": "create_copy_segment_with_circle",
+      "title": "Copy Segment With Compass",
+      "kind": "create",
+      "prompt": "Скопируй длину отрезка AB от точки P вдоль луча PQ.",
+      "expected": [
+        "uses Circle(P, segment) to copy length",
+        "intersects target ray with compass circle",
+        "marks congruent segments"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, 1.2)\nB = Point(-1.2, 1.9)\nP = Point(-1.5, -1.5)\nQ = Point(2.8, -0.8)\ngiven = Segment(A, B)\nray = Ray(P, Q)\ncompass = Circle(P, given)\nX = Intersect(ray, compass)\ncopied = Segment(P, X)\n\nstyle(A, B, P, Q, X, label_visible=True)\nstyle(compass, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"5 5\")\nstyle(given, copied, tick_count=1)\nstyle(copied, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "The compass circle is visible because it is the construction mechanism."
+        ]
+      }
+    },
+    {
+      "id": "create_copy_angle_by_rotation",
+      "title": "Copy Angle By Rotation",
+      "kind": "create",
+      "prompt": "Скопируй угол BAC в вершину P на луч PQ.",
+      "expected": [
+        "constructs target ray by rotating Q around P by the source angle",
+        "marks source and copied angles equal"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 0)\nB = Point(4, 0)\nC = Point(1, 3)\nP = Point(2, -2)\nQ = Point(5, -2)\nray_AB = Ray(A, B)\nray_AC = Ray(A, C)\nangle_BAC = Angle(B, A, C)\nstyle(angle_BAC, arc_size_px=20)\nray_PQ = Ray(P, Q)\nR = Rotate(Q, angle_BAC, P)\nray_PR = Ray(P, R)\nangle_QPR = Angle(Q, P, R)\nstyle(angle_QPR, arc_size_px=20, stroke=\"color.accent\")\nstyle(A, B, C, P, Q, R, label_visible=True)",
+        "style": null,
+        "notes": [
+          "Assumed orientation: Angle(B,A,C) defines directed angle from AB to AC. Rotated Q around P by that angle to obtain R. The copied angle is shown in accent color."
+        ]
+      }
+    },
+    {
+      "id": "create_triangle_with_area_measure",
+      "title": "Triangle Area And Perimeter Measures",
+      "kind": "create",
+      "prompt": "Построй треугольник ABC и добавь измерения площади и периметра.",
+      "expected": [
+        "uses Area and Perimeter measure commands",
+        "shows the triangle area as a value label",
+        "shows the perimeter as a static measurement label pending standalone measure labels"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.8, -1.4)\nB = Point(2.6, -1.2)\nC = Point(-0.5, 2.2)\ntri, AB, BC, CA = Polygon(A, B, C)\narea_ABC = Area(tri)\nper_ABC = Perimeter(tri)\n\nstyle(A, B, C, label_visible=True)\nstyle(tri, fill=\"color.accent\", fill_opacity=0.10, label_visible=True, label_mode=\"label_value\", label_text=\"$S$\", label_value_precision=1)\nstyle(AB, BC, CA, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")\nstyle(AB, label_visible=True, label_text=\"$P = {:.1f}$\".format(per_ABC.data.value), label_anchor=\"TC\", label_offset_px=[0, -18], label_placement_locked=True)\n",
+        "style": null,
+        "notes": [
+          "Perimeter is displayed as a static label attached near AB because standalone Measure labels are tracked as a future library task."
+        ]
+      }
+    },
+    {
+      "id": "create_angle_sum_triangle",
+      "title": "Triangle Angle Sum",
+      "kind": "create",
+      "prompt": "Построй треугольник ABC и отметь три его внутренних угла разными засечками.",
+      "expected": [
+        "constructs three interior angle objects",
+        "uses distinct labels and tick groups",
+        "does not globally restyle angles"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.0, -1.5)\nB = Point(3.0, -1.2)\nC = Point(-0.4, 2.4)\ntri, AB, BC, CA = Polygon(A, B, C)\nalpha = Angle(B, A, C)\nbeta = Angle(C, B, A)\ngamma = Angle(A, C, B)\n\nstyle(A, B, C, label_visible=True)\nstyle(alpha, label_visible=True, label_text=\"$\\\\alpha$\", tick_count=1, arc_size_px=24)\nstyle(beta, label_visible=True, label_text=\"$\\\\beta$\", tick_count=2, arc_size_px=24)\nstyle(gamma, label_visible=True, label_text=\"$\\\\gamma$\", tick_count=3, arc_size_px=24)",
+        "style": null,
+        "notes": [
+          "Individual angle style is semantic because the prompt asks to identify the three angles."
+        ]
+      }
+    },
+    {
+      "id": "create_external_angle_theorem",
+      "title": "Exterior Angle Theorem",
+      "kind": "create",
+      "prompt": "Построй внешний угол при вершине C треугольника ABC и отметь два удаленных внутренних угла.",
+      "expected": [
+        "extends side AC beyond C",
+        "marks exterior angle",
+        "marks remote interior angles"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.0, -1.4)\nB = Point(2.8, -1.2)\nC = Point(-0.4, 2.2)\ntri, AB, BC, CA = Polygon(A, B, C)\nD = C + (C - A) * 0.55\next_side = Segment(C, D)\nalpha = Angle(B, A, C)\nbeta = Angle(C, B, A)\nexterior = Angle(B, C, D)\n\nhide(D)\nstyle(A, B, C, label_visible=True)\nstyle(ext_side, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(alpha, beta, tick_count=1, arc_size_px=22)\nstyle(exterior, label_visible=True, label_text=\"$\\\\alpha+\\\\beta$\", arc_size_px=34)",
+        "style": null,
+        "notes": [
+          "The helper endpoint for the extension is hidden; only the side extension itself is visible."
+        ]
+      }
+    },
+    {
+      "id": "create_angle_bisectors_incenter",
+      "title": "Angle Bisectors And Incenter",
+      "kind": "create",
+      "prompt": "Построй три биссектрисы треугольника и их точку пересечения.",
+      "expected": [
+        "constructs three angle bisectors",
+        "marks incenter",
+        "marks equal angle pairs for two vertices"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, -1.6)\nB = Point(3.0, -1.3)\nC = Point(-0.6, 2.5)\ntri, AB, BC, CA = Polygon(A, B, C)\nbis_A_line = AngularBisector(B, A, C)\nbis_B_line = AngularBisector(C, B, A)\nbis_C_line = AngularBisector(A, C, B)\nI = Intersect(bis_A_line, bis_B_line)\nD = Intersect(bis_A_line, BC)\nE = Intersect(bis_B_line, CA)\nF = Intersect(bis_C_line, AB)\nbis_A = Segment(A, D)\nbis_B = Segment(B, E)\nbis_C = Segment(C, F)\nangle_BAD = Angle(B, A, D)\nangle_DAC = Angle(D, A, C)\nangle_CBE = Angle(C, B, E)\nangle_EBA = Angle(E, B, A)\n\nhide(bis_A_line, bis_B_line, bis_C_line)\nstyle(A, B, C, I, D, E, F, label_visible=True)\nstyle(I, fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(bis_A, bis_B, bis_C, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(angle_BAD, angle_DAC, tick_count=1)\nstyle(angle_BAD, arc_size_px=22)\nstyle(angle_DAC, arc_size_px=28)\nstyle(angle_CBE, angle_EBA, tick_count=2)\nstyle(angle_CBE, arc_size_px=22)\nstyle(angle_EBA, arc_size_px=28)\nangle_ACF = Angle(A, C, F)\nangle_FCB = Angle(F, C, B)\nstyle(angle_ACF, angle_FCB, tick_count=3)\nstyle(angle_ACF, arc_size_px=22)\nstyle(angle_FCB, arc_size_px=28)",
+        "style": null,
+        "notes": [
+          "All three angle bisectors now have visible equal-angle marks."
+        ]
+      }
+    },
+    {
+      "id": "create_perpendicular_from_external_point",
+      "title": "Perpendicular From External Point",
+      "kind": "create",
+      "prompt": "Из точки P вне прямой AB опусти перпендикуляр на AB и обозначь основание H.",
+      "expected": [
+        "constructs perpendicular through external point",
+        "marks foot H",
+        "marks right angle"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.2, -1.0)\nB = Point(3.0, -0.4)\nP = Point(-0.8, 2.0)\nbase = Line(A, B)\nperp = PerpendicularLine(P, base)\nH = Intersect(base, perp)\nPH = Segment(P, H)\nright_H = Angle(A, H, P)\n\nhide(perp)\nstyle(A, B, P, H, label_visible=True)\nstyle(base, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")\nstyle(PH, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(right_H, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "The prompt says line AB, so the visible baseline is the infinite line through A and B."
+        ]
+      }
+    },
+    {
+      "id": "create_circle_center_from_two_chords",
+      "title": "Circle Center From Two Chords",
+      "kind": "create",
+      "prompt": "Найди центр окружности как пересечение серединных перпендикуляров к двум хордам.",
+      "expected": [
+        "uses perpendicular bisectors of two chords",
+        "marks recovered center",
+        "hides non-semantic original center helper",
+        "keeps chord midpoint names hidden to reduce label clutter"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O0 = Point(0, 0)\nA = Point(2.6, 0)\nc = Circle(O0, A)\nB = Rotate(A, 2.1, O0)\nC = Rotate(A, 3.5, O0)\nD = Rotate(A, 5.1, O0)\nchord_AB = Segment(A, B)\nchord_CD = Segment(C, D)\nM_ab = Midpoint(A, B)\nM_cd = Midpoint(C, D)\nbis_AB = PerpendicularBisector(A, B)\nbis_CD = PerpendicularBisector(C, D)\nO = Intersect(bis_AB, bis_CD)\nAB_l = Segment(A, M_ab)\nAB_r = Segment(M_ab, B)\nCD_l = Segment(C, M_cd)\nCD_r = Segment(M_cd, D)\nright_ab = Angle(A, M_ab, O)\nright_cd = Angle(C, M_cd, O)\n\nhide(O0)\nstyle(A, B, C, D, O, label_visible=True)\nstyle(M_ab, M_cd, label_visible=False, size_px=\"point_size.aux\")\nstyle(c, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(chord_AB, chord_CD, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")\nstyle(bis_AB, bis_CD, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(AB_l, AB_r, stroke_width_px=0, tick_count=1)\nstyle(CD_l, CD_r, stroke_width_px=0, tick_count=2)\nstyle(right_ab, right_cd, right_angle_marker=True)\nstyle(O, fill=\"color.accent\", size_px=\"point_size.bold\")\n",
+        "style": null,
+        "notes": []
+      }
+    },
+    {
+      "id": "create_common_chord_lens",
+      "title": "Common Chord Lens",
+      "kind": "create",
+      "prompt": "Построй две пересекающиеся окружности, их общую хорду и линзу между ними.",
+      "expected": [
+        "constructs intersection points",
+        "draws common chord",
+        "highlights boundary arcs of the lens"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O1 = Point(-1.2, 0)\nO2 = Point(1.2, 0)\nc1 = Circle(O1, 2.2)\nc2 = Circle(O2, 2.2)\nP, Q = Intersect(c1, c2)\nchord = Segment(P, Q)\narc1 = CircleArc(O1, Q, P)\narc2 = CircleArc(O2, P, Q)\ncenters = Segment(O1, O2)\n\nstyle(O1, O2, P, Q, label_visible=True)\nstyle(O1, label_text=\"$O_1$\")\nstyle(O2, label_text=\"$O_2$\")\nstyle(c1, c2, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(chord, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")\nstyle(arc1, arc2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(centers, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")",
+        "style": null,
+        "notes": [
+          "The highlighted arcs are the inner lens boundary. Filled lens regions need a future region/boolean-fill capability."
+        ]
+      }
+    },
+    {
+      "id": "create_arbelos_three_semicircles",
+      "title": "Arbelos Three Semicircles",
+      "kind": "create",
+      "prompt": "Построй арбелос из трех полуокружностей на одном диаметре.",
+      "expected": [
+        "uses three semicircles on aligned points",
+        "shows shared diameter baseline",
+        "keeps helper points meaningful"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.0, -1.0)\nB = Point(3.0, -1.0)\nC = Point(-0.7, -1.0)\nouter = Semicircle(A, B)\nleft = Semicircle(A, C)\nright = Semicircle(C, B)\nAB = Segment(A, B)\nAC = Segment(A, C)\nCB = Segment(C, B)\n\nstyle(A, B, C, label_visible=True)\nstyle(outer, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(left, right, stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\nstyle(AB, AC, CB, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")",
+        "style": null,
+        "notes": [
+          "All three points are semantically relevant because they define the arbelos diameters."
+        ]
+      }
+    },
+    {
+      "id": "create_pappus_chain_start",
+      "title": "Pappus Chain First Two Circles",
+      "kind": "create",
+      "prompt": "Построй арбелос и первые две окружности цепи Паппа так, чтобы они касались соответствующих полуокружностей.",
+      "expected": [
+        "creates an arbelos reference",
+        "places the first two Pappus chain circles by the standard radius formula",
+        "does not use arbitrary approximate tangent circles"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.0, -1.0)\nB = Point(3.0, -1.0)\nC = Point(-0.9, -1.0)\nouter = Semicircle(A, B)\nleft = Semicircle(A, C)\nright = Semicircle(C, B)\nAB = Segment(A, B)\n\nouter_r = 3.0\nleft_r = 1.05\nright_r = 1.95\nfor n in range(1, 3):\n    r = left_r * right_r * (outer_r - left_r) / ((left_r + right_r) ** 2 * n * n + (outer_r - left_r) ** 2)\n    x = -0.9 + (right_r - left_r) * n * n / 2.0\n    y = -1.0 + 2 * n * r\n    O_n = Point(x, y, name=f\"O{n}\")\n    k_n = Circle(O_n, r, name=f\"k{n}\")\n    style(O_n, label_visible=True, label_text=f\"$O_{n}$\", fill=\"color.accent\", size_px=\"point_size.aux\")\n    style(k_n, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n\nstyle(A, B, C, label_visible=True)\nstyle(outer, left, right, stroke=\"color.aux\", stroke_width_px=\"line_width.bold\")\nstyle(AB, stroke=\"color.strong\", stroke_width_px=\"line_width.aux\")\n",
+        "style": null,
+        "notes": [
+          "Uses the Pappus-chain radius pattern instead of arbitrary circle placement; this remains an experimental visual construction."
+        ]
+      }
+    },
+    {
+      "id": "create_same_chord_angles",
+      "title": "Inscribed Angles On Same Chord",
+      "prompt": "Построй окружность, хорду AB и два вписанных угла ACB и ADB, опирающиеся на одну хорду AB.",
+      "expected": [
+        "constructs four points on one circle",
+        "draws chord AB",
+        "marks the two inscribed angles as equal"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(-2.3, -0.6)\nc = Circle(O, A)\nB = Rotate(A, -1.35, O)\nC = Rotate(A, 1.75, O)\nD = Rotate(A, 2.65, O)\nchord = Segment(A, B)\nAC = Segment(A, C)\nBC = Segment(B, C)\nAD = Segment(A, D)\nBD = Segment(B, D)\nangle_C = Angle(A, C, B)\nangle_D = Angle(A, D, B)\n\nstyle(A, B, C, D, O, label_visible=True)\nstyle(c, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(chord, stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\nstyle(AC, BC, AD, BD, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(angle_C, angle_D, tick_count=1, arc_size_px=24)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_tangent_radius_perpendicular",
+      "title": "Tangent Radius Perpendicular",
+      "prompt": "Построй касательную к окружности в точке T и радиус OT, отметь прямой угол.",
+      "expected": [
+        "constructs circle through T",
+        "draws tangent at T",
+        "draws radius OT",
+        "marks right angle"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nT = Point(2.0, 1.0)\nc = Circle(O, T)\nU = Point(0.8, 3.4)\nV = Point(3.2, -1.4)\ntangent = Line(U, V)\nradius = Segment(O, T)\nright_T = Angle(O, T, U)\n\nhide(U, V)\nstyle(O, T, label_visible=True)\nstyle(c, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(tangent, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(radius, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")\nstyle(right_T, right_angle_marker=True)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_equal_tangents_from_point",
+      "title": "Equal Tangent Segments",
+      "prompt": "Из внешней точки P проведи две касательные к окружности и отметь, что отрезки касательных равны.",
+      "expected": [
+        "uses Tangent(P, circle)",
+        "shows finite tangent segments",
+        "marks PT1 and PT2 equal",
+        "marks radius-tangent right angles"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nc = Circle(O, 1.75)\nP = Point(4.0, 1.3)\nt1, t2 = Tangent(P, c)\nT1 = Intersect(c, t1)\nT2 = Intersect(c, t2)\nPT1 = Segment(P, T1)\nPT2 = Segment(P, T2)\nOT1 = Segment(O, T1)\nOT2 = Segment(O, T2)\nright_1 = Angle(O, T1, P)\nright_2 = Angle(O, T2, P)\n\nhide(t1, t2)\nstyle(O, P, T1, T2, label_visible=True)\nstyle(T1, label_text=\"$T_1$\")\nstyle(T2, label_text=\"$T_2$\")\nstyle(c, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(PT1, PT2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", tick_count=1)\nstyle(OT1, OT2, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(right_1, right_2, right_angle_marker=True)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_intersecting_chords_theorem",
+      "title": "Intersecting Chords",
+      "prompt": "Построй две хорды окружности, пересекающиеся в точке E внутри окружности.",
+      "expected": [
+        "constructs two chords with endpoints on the circle",
+        "marks internal intersection E",
+        "does not add unrequested product formula as text"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(-2, 1)\nc = Circle(O, A)\nB = Point(2, -1)\nchord1 = Segment(A, B)\nC = Point(-2, -1)\nD = Point(2, 1)\nchord2 = Segment(C, D)\nE = Intersect(chord1, chord2)\nstyle(O, A, B, C, D, E, label_visible=True)\nstyle(chord1, chord2, stroke=\"color.main\")",
+        "style": null,
+        "notes": [
+          "Points A,B,C,D lie on circle c by construction (same distance from O).",
+          "Chords AB and CD intersect at point E inside the circle."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_tangent_secant_power",
+      "title": "Tangent Secant Power",
+      "prompt": "Покажи теорему о касательной и секущей: из точки P проведи касательную PT и секущую PAB.",
+      "expected": [
+        "constructs tangent and secant from P",
+        "marks tangent point T",
+        "shows finite secant segment through A and B",
+        "adds concise theorem label"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 55
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nc = Circle(O, 1.8)\nP = Point(4.1, 0.8)\nsec_line = Line(P, O)\nA, B = Intersect(c, sec_line)\nt1, t2 = Tangent(P, c)\nT = Intersect(c, t1)\nPT = Segment(P, T)\nPA = Segment(P, A)\nPB = Segment(P, B)\nOT = Segment(O, T)\nright_T = Angle(O, T, P)\n\nhide(sec_line, t1, t2)\nstyle(O, P, A, B, T, label_visible=True)\nstyle(c, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(PT, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", label_visible=True, label_text=\"$PT^2=PA\\\\cdot PB$\")\nstyle(PA, PB, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")\nstyle(OT, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(right_T, right_angle_marker=True)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_chord_perpendicular_from_center",
+      "title": "Center Perpendicular Bisects Chord",
+      "prompt": "Построй хорду AB окружности и перпендикуляр из центра O к хорде, покажи что он делит хорду пополам.",
+      "expected": [
+        "constructs chord endpoints on circle",
+        "draws perpendicular from center",
+        "marks midpoint equality and right angle"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(-2.1, 1.2)\nB = Point(2.1, 1.2)\nc = Circle(O, A)\nchord = Segment(A, B)\nM = Midpoint(A, B)\nOM = Segment(O, M)\nAM = Segment(A, M)\nMB = Segment(M, B)\nright_M = Angle(A, M, O)\n\nstyle(O, A, B, M, label_visible=True)\nstyle(c, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(chord, stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\nstyle(OM, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(AM, MB, stroke_width_px=0, tick_count=1)\nstyle(right_M, right_angle_marker=True)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_isosceles_base_angles",
+      "title": "Isosceles Triangle Base Angles",
+      "prompt": "Построй равнобедренный треугольник ABC с AB = AC и отметь равные углы при основании.",
+      "expected": [
+        "constructs isosceles triangle",
+        "marks equal sides",
+        "marks equal base angles"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 2.2)\nB = Point(-2.4, -1.4)\nC = Point(2.4, -1.4)\ntri, AB, BC, CA = Polygon(A, B, C)\nangle_B = Angle(A, B, C)\nangle_C = Angle(B, C, A)\n\nstyle(A, B, C, label_visible=True)\nstyle(AB, CA, tick_count=1)\nstyle(BC, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")\nstyle(angle_B, angle_C, tick_count=1, arc_size_px=24)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_right_triangle_circumcenter",
+      "title": "Right Triangle Circumcenter",
+      "prompt": "Построй прямоугольный треугольник и покажи, что центр описанной окружности лежит на середине гипотенузы.",
+      "expected": [
+        "constructs right triangle",
+        "places circumcenter at hypotenuse midpoint",
+        "draws circumcircle and equal radii",
+        "marks right angle"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.4, -1.4)\nB = Point(2.6, -1.4)\nC = Point(-2.4, 1.8)\ntri, AB, BC, CA = Polygon(A, B, C)\nO = Midpoint(B, C)\ncircum = Circle(O, B)\nOA = Segment(O, A)\nOB = Segment(O, B)\nOC = Segment(O, C)\nBO = Segment(B, O)\nOC_half = Segment(O, C)\nright_A = Angle(B, A, C)\n\nstyle(A, B, C, O, label_visible=True)\nstyle(circum, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(OA, OB, OC, stroke=\"color.aux\", stroke_width_px=\"line_width.main\", tick_count=1)\nstyle(BO, OC_half, stroke_width_px=0, tick_count=2)\nstyle(right_A, right_angle_marker=True)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_pythagorean_squares",
+      "title": "Pythagorean Squares",
+      "prompt": "Построй прямоугольный треугольник и квадраты на трех его сторонах для иллюстрации теоремы Пифагора.",
+      "expected": [
+        "constructs right triangle",
+        "constructs three external squares on the sides",
+        "uses fills to distinguish squares without hard-coded colors"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 520,
+        "scale": 43
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 0)\nB = Point(4, 0)\nC = Point(0, 3)\ntri = Polygon(A, B, C)\nD = Point(4, 4)\nE = Point(0, 4)\nsquare_AB = Polygon(A, B, D, E)\nF = Point(3, 3)\nG = Point(3, 0)\nsquare_AC = Polygon(A, C, F, G)\nP = Point(3, 7)\nQ = Point(7, 4)\nsquare_BC = Polygon(B, C, P, Q)\nra = Angle(B, A, C)\nstyle(ra, right_angle_marker=True)\nstyle(A, B, C, label_visible=True)\nstyle(square_AB, fill=\"#aaddaa\", opacity=0.3, stroke=\"#2d2d2d\")\nstyle(square_AC, fill=\"#aaddaa\", opacity=0.3, stroke=\"#2d2d2d\")\nstyle(square_BC, fill=\"#ffaaaa\", opacity=0.3, stroke=\"#2d2d2d\")\nstyle(tri, fill=\"#88aaff\", opacity=0.4, stroke=\"#3b3b3b\", stroke_width_px=3)\nstyle(D, E, F, G, P, Q, label_visible=False)",
+        "style": null,
+        "notes": [
+          "Right triangle with legs along axes, squares constructed externally on each side. Right angle marker placed at A. Squares are filled with slight transparency; hypotenuse square uses a different fill color to emphasize the theorem. Extra points hidden."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_triangle_midsegment_parallel",
+      "title": "Triangle Midsegment",
+      "prompt": "Построй среднюю линию треугольника, соединяющую середины двух сторон, и покажи сторону, которой она параллельна.",
+      "expected": [
+        "constructs two side midpoints",
+        "draws midsegment",
+        "keeps midpoint labels visible because they define the midsegment",
+        "highlights the parallel side"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3, -1)\nB = Point(3, -1)\nC = Point(0, 2.5)\ntri, AB, BC, CA = Polygon(A, B, C)\nM = Midpoint(A, B)\nN = Midpoint(A, C)\nmidline = Segment(M, N)\nstyle(A, B, C, label_visible=True)\nstyle(M, N, label_visible=True, size_px=\"point_size.aux\")\nstyle(midline, BC, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "The midline MN is constructed connecting midpoints M and N of sides AB and AC respectively. It is parallel to side BC, which is highlighted together with the midline using accent color and bold line width."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_angle_bisector_theorem",
+      "title": "Angle Bisector Theorem",
+      "prompt": "Построй биссектрису AD треугольника ABC и выдели отрезки BD и DC на стороне BC.",
+      "expected": [
+        "constructs angle bisector",
+        "shows equal split angles",
+        "highlights side parts BD and DC"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 57
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-1, 3)\nB = Point(-4, -2)\nC = Point(4, -2)\ntri, AB, BC, CA = Polygon(A, B, C)\nbis_line = AngularBisector(B, A, C)\nD = Intersect(bis_line, BC)\nAD = Segment(A, D)\nBD = Segment(B, D)\nDC = Segment(D, C)\nangle1 = Angle(B, A, D)\nangle2 = Angle(D, A, C)\nhide(bis_line)\nstyle(AD, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(BD, DC, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(angle1, tick_count=1, arc_size_px=22)\nstyle(angle2, tick_count=1, arc_size_px=28)",
+        "style": null,
+        "notes": [
+          "Constructed angle bisector AD using AngularBisector and Intersect. Highlighted AD, BD, and DC with accent color and bold width. Added two angle arcs with same tick count to show equal angles."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_ceva_concurrent_cevians",
+      "title": "Ceva Concurrent Cevians",
+      "prompt": "Построй три чевианы треугольника ABC, проходящие через одну внутреннюю точку P.",
+      "expected": [
+        "constructs an interior point P",
+        "draws three cevians through P",
+        "marks feet on opposite sides"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.0, -1.5)\nB = Point(3.1, -1.2)\nC = Point(-0.5, 2.5)\nP = Point(0.1, 0.1)\ntri, AB, BC, CA = Polygon(A, B, C)\nline_AP = Line(A, P)\nline_BP = Line(B, P)\nline_CP = Line(C, P)\nD = Intersect(line_AP, BC)\nE = Intersect(line_BP, CA)\nF = Intersect(line_CP, AB)\ncev_A = Segment(A, D)\ncev_B = Segment(B, E)\ncev_C = Segment(C, F)\n\nhide(line_AP, line_BP, line_CP)\nstyle(A, B, C, P, D, E, F, label_visible=True)\nstyle(P, fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(cev_A, cev_B, cev_C, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_menelaus_transversal",
+      "title": "Menelaus Transversal",
+      "prompt": "Построй треугольник ABC и прямую, пересекающую стороны AB, AC и продолжение BC в точках D, E, F.",
+      "expected": [
+        "constructs a transversal",
+        "uses extension of BC for F",
+        "hides only helper infinite side line"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 57
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-4, -1)\nB = Point(4, -1)\nC = Point(0, 3)\ntri, AB, AC, BC = Polygon(A, B, C)\nline_BC = Line(B, C)\nD = Point(-1, -1)\nt = 0.6\nE = Point(-4 + 4*t, -1 + 4*t)\nL = Line(D, E)\nF = Intersect(L, line_BC)\nstyle(L, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(line_BC, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(D, E, F, label_visible=True)\nstyle(A, B, C, label_visible=True)",
+        "style": null,
+        "notes": [
+          "Triangle ABC is defined with generic coordinates. The transversal line L passes through points D (on AB) and E (on AC) and intersects the extension of BC beyond C at F. The full line BC is shown as auxiliary to indicate the extension."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_similarity_parallel_cut",
+      "title": "Similar Triangles By Parallel Cut",
+      "prompt": "В треугольнике ABC проведи через точки D на AB и E на AC отрезок DE, параллельный BC.",
+      "expected": [
+        "chooses D and E with the same ratio from A",
+        "draws DE and BC as corresponding parallel sides",
+        "does not add unrequested angle clutter"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 57
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 0)\nB = Point(6, 0)\nC = Point(2, 4)\ntri, AB, BC, CA = Polygon(A, B, C)\nt = 0.4\nD = A + (B - A) * t\nP = D + (C - B)\nL = Line(D, P)\nE = Intersect(L, Line(A, C))\nDE = Segment(D, E)\nhide(P, L)\nstyle(A, B, C, D, E, label_visible=True)",
+        "style": null,
+        "notes": [
+          "Chose D at 40% of AB. Constructed line through D parallel to BC to find E. Hidden helper line and point P."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_viviani_theorem_equilateral",
+      "title": "Viviani Theorem Setup",
+      "prompt": "Построй равносторонний треугольник и из внутренней точки P опусти перпендикуляры на все три стороны.",
+      "expected": [
+        "constructs equilateral triangle",
+        "drops three perpendiculars from P",
+        "marks all right angles",
+        "uses auxiliary styling for perpendiculars"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 500,
+        "scale": 52
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-2.7, -1.8)\nB = Point(2.7, -1.8)\nC = Point(0, -1.8 + 5.4 * sqrt(3) / 2)\nP = Point(-0.2, 0.0)\ntri, AB, BC, CA = Polygon(A, B, C)\nline_AB = Line(A, B)\nline_BC = Line(B, C)\nline_CA = Line(C, A)\np_ab = PerpendicularLine(P, line_AB)\np_bc = PerpendicularLine(P, line_BC)\np_ca = PerpendicularLine(P, line_CA)\nF_ab = Intersect(line_AB, p_ab)\nF_bc = Intersect(line_BC, p_bc)\nF_ca = Intersect(line_CA, p_ca)\nd_ab = Segment(P, F_ab)\nd_bc = Segment(P, F_bc)\nd_ca = Segment(P, F_ca)\nright_ab = Angle(A, F_ab, P)\nright_bc = Angle(B, F_bc, P)\nright_ca = Angle(C, F_ca, P)\n\nhide(line_AB, line_BC, line_CA, p_ab, p_bc, p_ca)\nstyle(A, B, C, P, label_visible=True)\nstyle(F_ab, F_bc, F_ca, label_visible=False, size_px=\"point_size.aux\")\nstyle(d_ab, d_bc, d_ca, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(right_ab, right_bc, right_ca, right_angle_marker=True)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_apollonius_circle_ratio",
+      "title": "Apollonius Circle Ratio",
+      "prompt": "Построй окружность Аполлония для точек A и B: множество точек P, для которых PA:PB = 2:1.",
+      "expected": [
+        "constructs A and B",
+        "draws Apollonius circle for ratio 2:1",
+        "shows one sample point P on the circle with segments PA and PB"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 50
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 0)\nB = Point(3, 0)\nC = A + (B - A) * (2 / 3)\nD = B + (B - A)\nM = Midpoint(C, D)\napollonius_circle = Circle(M, C)\nstyle(A, B, label_visible=True, size_px=\"point_size.main\")\nstyle(apollonius_circle, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nhide(C, D, M)",
+        "style": null,
+        "notes": [
+          "Used generic coordinates for A and B. The Apollonius circle is constructed via internal and external division points C and D, which are hidden. The circle itself is highlighted."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_regular_pentagon_pentagram",
+      "title": "Regular Pentagon And Pentagram",
+      "prompt": "Построй правильный пятиугольник и его диагонали, образующие пентаграмму.",
+      "expected": [
+        "uses regular polygon constructor",
+        "draws all five diagonals",
+        "keeps sides and diagonals visually distinct"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 500,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 2.1)\nB = Point(2.0, 0.65)\npentagon, AB, BC, CD, DE, EA, C, D, E = Polygon(A, B, 5)\nAC = Segment(A, C)\nBD = Segment(B, D)\nCE = Segment(C, E)\nDA = Segment(D, A)\nEB = Segment(E, B)\n\nstyle(A, B, C, D, E, label_visible=True)\nstyle(AB, BC, CD, DE, EA, stroke=\"color.strong\", stroke_width_px=\"line_width.bold\", tick_count=1)\nstyle(AC, BD, CE, DA, EB, stroke=\"color.accent\", stroke_width_px=\"line_width.main\")\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_central_inscribed_double_angle",
+      "title": "Central And Inscribed Angle",
+      "prompt": "Покажи центральный угол AOB и вписанный угол ACB, опирающиеся на одну дугу, с пометками alpha и 2alpha.",
+      "expected": [
+        "constructs central and inscribed angles on same arc",
+        "labels central angle as 2alpha and inscribed as alpha",
+        "keeps arms visible"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(-2.1, 0.2)\nc = Circle(O, A)\nB = Rotate(A, -1.25, O)\nC = Rotate(A, 2.2, O)\nOA = Segment(O, A)\nOB = Segment(O, B)\nAC = Segment(A, C)\nBC = Segment(B, C)\ncentral = Angle(A, O, B)\ninscribed = Angle(A, C, B)\n\nstyle(O, A, B, C, label_visible=True)\nstyle(c, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(OA, OB, AC, BC, stroke=\"color.strong\", stroke_width_px=\"line_width.main\")\nstyle(central, label_visible=True, label_text=\"$2\\\\alpha$\", arc_size_px=34)\nstyle(inscribed, label_visible=True, label_text=\"$\\\\alpha$\", arc_size_px=24)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_radical_center_three_circles",
+      "title": "Radical Center Of Three Circles",
+      "prompt": "Построй три окружности и их радикальные оси, отметь радикальный центр.",
+      "expected": [
+        "constructs three circles",
+        "uses common chords as radical axes",
+        "marks their common intersection"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 500,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O1 = Point(-1.5, -0.2)\nO2 = Point(1.3, -0.1)\nO3 = Point(-0.2, 1.8)\nc1 = Circle(O1, 2.0)\nc2 = Circle(O2, 1.9)\nc3 = Circle(O3, 1.8)\nP12, Q12 = Intersect(c1, c2)\nP13, Q13 = Intersect(c1, c3)\nP23, Q23 = Intersect(c2, c3)\naxis12 = Line(P12, Q12)\naxis13 = Line(P13, Q13)\naxis23 = Line(P23, Q23)\nR = Intersect(axis12, axis13)\n\nstyle(O1, O2, O3, R, label_visible=True)\nstyle(O1, label_text=\"$O_1$\")\nstyle(O2, label_text=\"$O_2$\")\nstyle(O3, label_text=\"$O_3$\")\nstyle(P12, Q12, P13, Q13, P23, Q23, label_visible=False, size_px=\"point_size.aux\")\nstyle(c1, c2, c3, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(axis12, axis13, axis23, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(R, fill=\"color.accent\", size_px=\"point_size.bold\")\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_parabola_latus_rectum",
+      "title": "Parabola Latus Rectum",
+      "prompt": "Построй параболу по фокусу и директрисе, покажи фокальную хорду, перпендикулярную оси.",
+      "expected": [
+        "constructs focus-directrix parabola",
+        "draws directrix and axis",
+        "draws latus rectum through focus"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 520,
+        "scale": 55
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "F = Point(2, 0)\nd = Line(Point(-2, -5), Point(-2, 5))\nparabola = Parabola(F, d)\naxis = Axes(parabola)\nperp = PerpendicularLine(F, axis)\nP1, P2 = Intersect(perp, parabola)\nfocal_chord = Segment(P1, P2)\n\nstyle(F, size_px=\"point_size.bold\", fill=\"color.accent\")\nstyle(d, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(parabola, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(focal_chord, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(P1, P2, size_px=\"point_size.aux\", label_visible=False)",
+        "style": null,
+        "notes": [
+          "Focal chord constructed as intersection of perpendicular through focus with parabola. Directrix shown as auxiliary line. Focus and chord highlighted with accent style."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_ellipse_focal_radii",
+      "title": "Ellipse Focal Radii",
+      "prompt": "Построй эллипс с фокусами F1 и F2 и точку P на эллипсе, покажи фокальные радиусы PF1 и PF2.",
+      "expected": [
+        "constructs ellipse by foci and major semiaxis",
+        "chooses a point on the ellipse",
+        "draws both focal radii"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "F1 = Point(-3, 0)\nF2 = Point(3, 0)\nP = Point(0, 4)\nell = Ellipse(F1, F2, P)\nr1 = Segment(P, F1)\nr2 = Segment(P, F2)\nstyle(F1, F2, P, label_visible=True)\nstyle(r1, r2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_varignon_parallelogram",
+      "title": "Varignon Parallelogram",
+      "prompt": "Построй произвольный четырехугольник ABCD и параллелограмм Вариньона по серединам его сторон.",
+      "expected": [
+        "constructs side midpoints",
+        "connects them into Varignon parallelogram",
+        "marks midpoint equal halves without overlabeling every helper"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 0)\nB = Point(6, 0)\nC = Point(5, 3)\nD = Point(1, 4)\nquad, AB, BC, CD, DA = Polygon(A, B, C, D)\nM = Midpoint(A, B)\nN = Midpoint(B, C)\nP = Midpoint(C, D)\nQ = Midpoint(D, A)\nMN = Segment(M, N)\nNP = Segment(N, P)\nPQ = Segment(P, Q)\nQM = Segment(Q, M)\nAM = Segment(A, M)\nMB = Segment(M, B)\nBN = Segment(B, N)\nNC = Segment(N, C)\nCP = Segment(C, P)\nPD = Segment(P, D)\nDQ = Segment(D, Q)\nQA = Segment(Q, A)\nstyle(quad, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(MN, NP, PQ, QM, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(AM, MB, stroke_width_px=0, tick_count=1)\nstyle(BN, NC, stroke_width_px=0, tick_count=2)\nstyle(CP, PD, stroke_width_px=0, tick_count=3)\nstyle(DQ, QA, stroke_width_px=0, tick_count=4)\nstyle(A, B, C, D, M, N, P, Q, label_visible=True)",
+        "style": null,
+        "notes": [
+          "Constructed a convex quadrilateral ABCD and its Varignon parallelogram (MNPQ) using midpoints. Tick marks indicate equal halves of each side. The original quadrilateral is styled with main color, the Varignon parallelogram with accent bold."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_isosceles_trapezoid_angles",
+      "title": "Isosceles Trapezoid Angles",
+      "prompt": "Построй равнобедренную трапецию ABCD и отметь равные углы при каждом основании.",
+      "expected": [
+        "constructs isosceles trapezoid",
+        "marks equal legs",
+        "marks equal base angle pairs"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-4, 0)\nB = Point(4, 0)\nC = Point(2, 3)\nD = Point(-2, 3)\ntrap, AB, BC, CD, DA = Polygon(A, B, C, D)\nangle_DAB = Angle(D, A, B)\nangle_ABC = Angle(A, B, C)\nangle_ADC = Angle(A, D, C)\nangle_BCD = Angle(B, C, D)\nstyle(angle_DAB, angle_ABC, tick_count=1, arc_size_px=20)\nstyle(angle_ADC, angle_BCD, tick_count=2, arc_size_px=25)\nstyle(A, B, C, D, label_visible=True)\nhide(trap)",
+        "style": null,
+        "notes": [
+          "Isosceles trapezoid constructed symmetrically. Angles at base AB marked with one tick, at base CD with two ticks to show equality within each base."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_kite_perpendicular_diagonals",
+      "title": "Kite Perpendicular Diagonals",
+      "prompt": "Построй дельтоид ABCD и покажи, что его диагонали перпендикулярны.",
+      "expected": [
+        "constructs kite",
+        "draws both diagonals",
+        "marks their right angle intersection",
+        "marks adjacent equal side pairs"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 0)\nC = Point(5, 0)\nB = Point(2, 2)\nD = Point(2, -2)\nkite, AB, BC, CD, DA = Polygon(A, B, C, D)\ndiag1 = Segment(A, C)\ndiag2 = Segment(B, D)\nE = Intersect(diag1, diag2)\nright_angle = Angle(A, E, D)\nstyle(A, B, C, D, label_visible=True)\nstyle(diag1, diag2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(right_angle, right_angle_marker=True)\nhide(E)",
+        "style": null,
+        "notes": [
+          "Constructed a kite with vertices A(0,0), C(5,0), B(2,2), D(2,-2) ensuring AB=AD and CB=CD via symmetry about AC. Highlighted diagonals and marked the right angle at their intersection to show perpendicularity."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_incircle_contact_triangle",
+      "title": "Incircle Contact Triangle",
+      "prompt": "Построй вписанную окружность треугольника и точки ее касания со сторонами.",
+      "expected": [
+        "constructs incircle and incenter",
+        "drops perpendiculars to sides to get touchpoints",
+        "marks right angles at contact points"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.1, -1.6)\nB = Point(3.0, -1.3)\nC = Point(-0.5, 2.3)\ntri, AB, BC, CA = Polygon(A, B, C)\ninc = Incircle(A, B, C)\nI = Center(inc)\nline_AB = Line(A, B)\nline_BC = Line(B, C)\nline_CA = Line(C, A)\np_ab = PerpendicularLine(I, line_AB)\np_bc = PerpendicularLine(I, line_BC)\np_ca = PerpendicularLine(I, line_CA)\nT_ab = Intersect(line_AB, p_ab)\nT_bc = Intersect(line_BC, p_bc)\nT_ca = Intersect(line_CA, p_ca)\nr_ab = Segment(I, T_ab)\nr_bc = Segment(I, T_bc)\nr_ca = Segment(I, T_ca)\nright_ab = Angle(A, T_ab, I)\nright_bc = Angle(B, T_bc, I)\nright_ca = Angle(C, T_ca, I)\n\nhide(line_AB, line_BC, line_CA, p_ab, p_bc, p_ca)\nstyle(A, B, C, I, T_ab, T_bc, T_ca, label_visible=True)\nstyle(T_ab, label_text=\"$T_{AB}$\")\nstyle(T_bc, label_text=\"$T_{BC}$\")\nstyle(T_ca, label_text=\"$T_{CA}$\")\nstyle(inc, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(r_ab, r_bc, r_ca, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(right_ab, right_bc, right_ca, right_angle_marker=True)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_excentral_touchpoint_hint",
+      "title": "One Excircle And Touchpoint",
+      "prompt": "Построй треугольник ABC и вневписанную окружность напротив вершины A с точкой касания к стороне BC.",
+      "expected": [
+        "constructs a visible A-excircle approximation from external angle bisectors",
+        "marks contact foot on BC",
+        "states limitation if exact excircle command is unavailable"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 520,
+        "scale": 52
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 3)\nB = Point(-4, 0)\nC = Point(2, 0)\ntri, AB, BC, CA = Polygon(A, B, C)\n\n# Angle bisectors for excenter opposite A\nbis_A = AngularBisector(B, A, C)\nbis_B = AngularBisector(A, B, C)\next_B = PerpendicularLine(B, bis_B)\nI_A = Intersect(bis_A, ext_B)\n\n# Tangency point on BC\nline_BC = Line(B, C)\nperp_IA = PerpendicularLine(I_A, line_BC)\nT = Intersect(perp_IA, line_BC)\n\n# Excircle and right angle\nexcircle = Circle(I_A, T)\nright_angle = Angle(B, T, I_A)\n\n# Hide auxiliary lines\nhide(bis_A, bis_B, ext_B, line_BC, perp_IA)\n\n# Style for visibility\nstyle(A, B, C, label_visible=True)\nstyle(tri, stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\nstyle(excircle, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(T, label_visible=True, label_text=\"$T$\", fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(I_A, label_visible=True, label_text=\"$I_A$\", size_px=\"point_size.aux\", fill=\"color.aux\")\nstyle(right_angle, right_angle_marker=True)",
+        "style": null,
+        "notes": [
+          "Constructed A-excircle using internal bisector at A and external bisector at B (perpendicular to internal bisector at B). Tangency point T is foot of perpendicular from excenter I_A to side BC. Right angle at T is marked. Excenter is labeled I_A, circle and T are highlighted with accent color."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_butterfly_theorem_setup",
+      "title": "Butterfly Theorem Setup",
+      "prompt": "Построй конфигурацию теоремы о бабочке: хорда PQ с серединой M и две хорды AB и CD через M.",
+      "expected": [
+        "constructs circle and chord PQ",
+        "marks midpoint M of PQ",
+        "draws two chords through M",
+        "does not add unproved equality marks beyond midpoint"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nc = Circle(O, 5)\nM = Point(2, 0)\nline_OM = Line(O, M)\nperp = PerpendicularLine(M, line_OM)\nP, Q = Intersect(c, perp)\nhide(O, line_OM, perp)\nPM = Segment(P, M)\nMQ = Segment(M, Q)\nstyle(PM, MQ, tick_count=1)\ndir1 = Point(3, 1)\nline_AB = Line(M, dir1)\nA, B = Intersect(c, line_AB)\nhide(dir1, line_AB)\ndir2 = Point(3, -1)\nline_CD = Line(M, dir2)\nC, D = Intersect(c, line_CD)\nhide(dir2, line_CD)\nAB = Segment(A, B)\nCD = Segment(C, D)\nstyle(P, Q, M, A, B, C, D, label_visible=True)",
+        "style": null,
+        "notes": [
+          "Circle defined with numeric radius 5; if unsupported, replace with Circle(O, Point(5,0)) and hide the helper point.",
+          "M is midpoint of PQ by construction via perpendicular to OM.",
+          "Chords AB and CD are arbitrary lines through M with slopes 1 and -1."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_spiral_similarity_center",
+      "title": "Spiral Similarity Center Sketch",
+      "prompt": "Построй две пересекающиеся окружности и точку их пересечения как центр спирального подобия для двух хорд.",
+      "expected": [
+        "constructs two intersecting circles",
+        "marks a shared intersection as center",
+        "draws corresponding chord pairs"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O1 = Point(-1.2, 0)\nO2 = Point(1.2, 0)\nc1 = Circle(O1, 2.1)\nc2 = Circle(O2, 2.1)\nX, Y = Intersect(c1, c2)\nA = Rotate(X, 1.0, O1)\nB = Rotate(X, -1.0, O2)\nXA = Segment(X, A)\nXB = Segment(X, B)\nAB = Segment(A, B)\ncenters = Segment(O1, O2)\n\nstyle(O1, O2, X, A, B, label_visible=True)\nstyle(O1, label_text=\"$O_1$\")\nstyle(O2, label_text=\"$O_2$\")\nstyle(Y, label_visible=False, size_px=\"point_size.aux\")\nstyle(c1, c2, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(XA, XB, AB, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(centers, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\n",
+        "style": null,
+        "notes": [
+          "This is a structural sketch of a spiral-similarity configuration, not a full theorem proof."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_barycentric_centroid_ratio",
+      "title": "Centroid Median Ratio",
+      "prompt": "Построй медиану треугольника и отметь, что центр тяжести делит ее в отношении 2:1.",
+      "expected": [
+        "constructs centroid as intersection of medians",
+        "highlights one median",
+        "marks the two parts of the median with different semantic labels"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3, -1)\nB = Point(3, -1)\nC = Point(0, 2.5)\ntri, AB, BC, CA = Polygon(A, B, C)\nM_ab = Midpoint(A, B)\nmedian_CM = Segment(C, M_ab)\nG = Centroid(tri)\nseg_CG = Segment(C, G)\nseg_GM = Segment(G, M_ab)\nAB_left = Segment(A, M_ab)\nAB_right = Segment(M_ab, B)\nstyle(A, B, C, label_visible=True)\nstyle(G, label_visible=True, label_text=\"$G$\")\nstyle(M_ab, label_visible=True, label_text=\"$M_{ab}$\")\nstyle(seg_CG, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", label_visible=True, label_text=\"$2x$\")\nstyle(seg_GM, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", label_visible=True, label_text=\"$x$\")\nstyle(AB_left, AB_right, stroke_width_px=0, tick_count=1)\nhide(median_CM)  # hide original median as parts are shown",
+        "style": null,
+        "notes": [
+          "The ratio 2:1 is indicated by labeling the two subsegments of the median from vertex to centroid and centroid to midpoint as '2x' and 'x' respectively. The median itself is hidden to avoid duplication; only the two highlighted parts are shown. The midpoint of AB is labeled M_ab, and the centroid G is labeled."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_nine_point_center_euler",
+      "title": "Nine-Point Center On Euler Line",
+      "prompt": "Построй ортоцентр H, центр описанной окружности O и центр девятиточечной окружности N на прямой Эйлера.",
+      "expected": [
+        "constructs O and H",
+        "constructs N as midpoint of OH",
+        "draws Euler line and nine-point circle"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 500,
+        "scale": 55
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3.0, -1.5)\nB = Point(3.0, -1.2)\nC = Point(-0.6, 2.5)\ntri, AB, BC, CA = Polygon(A, B, C)\ncircum = Circle(A, B, C)\nO = Center(circum)\nline_AB = Line(A, B)\nline_BC = Line(B, C)\nalt_C = PerpendicularLine(C, line_AB)\nalt_A = PerpendicularLine(A, line_BC)\nH = Intersect(alt_A, alt_C)\nN = Midpoint(O, H)\neuler = Line(O, H)\nM_ab = Midpoint(A, B)\nM_bc = Midpoint(B, C)\nM_ca = Midpoint(C, A)\nnine = Circle(M_ab, M_bc, M_ca)\n\nhide(line_AB, line_BC, alt_A, alt_C)\nstyle(A, B, C, O, H, N, label_visible=True)\nstyle(M_ab, M_bc, M_ca, label_visible=False, size_px=\"point_size.aux\")\nstyle(circum, stroke=\"color.aux\", stroke_width_px=\"line_width.main\")\nstyle(nine, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(euler, stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_triangle_area_altitude_base",
+      "title": "Triangle Area Base And Height",
+      "prompt": "Построй треугольник с основанием AB и высотой CH, визуально выдели основание и высоту для формулы площади.",
+      "expected": [
+        "constructs altitude to AB",
+        "marks right angle at H",
+        "highlights base and height",
+        "does not add numeric text unless requested"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-4, 0)\nB = Point(4, 0)\nC = Point(1, 3)\ntri, AB, BC, CA = Polygon(A, B, C)\nbase_line = Line(A, B)\nalt_line = PerpendicularLine(C, base_line)\nH = Intersect(base_line, alt_line)\nheight_seg = Segment(C, H)\nright_angle = Angle(A, H, C)\nstyle(right_angle, right_angle_marker=True)\nhide(base_line, alt_line)\nstyle(AB, stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\nstyle(height_seg, stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\nstyle(A, B, C, H, label_visible=True)",
+        "style": null,
+        "notes": [
+          "Triangle constructed with base AB and altitude CH. Right angle at H marked. Base and height are visually highlighted for area formula."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_circle_annulus_radii",
+      "title": "Concentric Circles Annulus",
+      "prompt": "Построй две концентрические окружности с центром O и покажи внутренний и внешний радиусы.",
+      "expected": [
+        "constructs two concentric circles",
+        "draws two radii",
+        "labels them with semantic names"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(2, 0)\ninner = Circle(O, A)\nB = Point(3.5, 0)\nouter = Circle(O, B)\ninner_radius = Segment(O, A)\nouter_radius = Segment(O, B)\nstyle(O, A, B, label_visible=True)\nstyle(inner_radius, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", label_visible=True, label_text=\"$r_1$\")\nstyle(outer_radius, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", label_visible=True, label_text=\"$r_2$\")",
+        "style": null,
+        "notes": [
+          "Constructed two concentric circles with center O. Inner radius shown as segment OA, outer radius as segment OB, highlighted with accent color. Radii labeled as r1 and r2 in LaTeX."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_sector_with_area_value",
+      "title": "Sector Angle And Radius",
+      "prompt": "Построй сектор окружности AOB, выдели радиусы и центральный угол.",
+      "expected": [
+        "constructs sector boundary",
+        "shows both radii",
+        "labels central angle",
+        "does not invent a numeric area value"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(3, 0)\nangle = 2 * pi / 3\nB = Rotate(A, angle, O)\nc = Circle(O, A)\narc = CircularArc(O, A, B)\nradius_OA = Segment(O, A)\nradius_OB = Segment(O, B)\ncenter_angle = Angle(A, O, B)\nstyle(O, A, B, label_visible=True)\nstyle(radius_OA, radius_OB, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(center_angle, stroke=\"color.accent\")\nstyle(c, stroke=\"color.aux\", stroke_width_px=0.5, stroke_opacity=0.5)\nstyle(arc, stroke=\"color.main\", stroke_width_px=\"line_width.main\")",
+        "style": null,
+        "notes": [
+          "Sector is represented by arc and radii. Full circle shown in auxiliary style. Central angle set to 120 degrees for clarity."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_sine_cosine_unit_circle",
+      "title": "Unit Circle Projection",
+      "prompt": "Построй единичную окружность, точку P на ней и проекции, показывающие cos и sin.",
+      "expected": [
+        "constructs circle and point on it",
+        "draws horizontal and vertical projections",
+        "labels projection segments cos and sin"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 500,
+        "scale": 70
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "O = Point(0, 0)\nA = Point(1, 0)\nB = Point(0, 1)\nx_axis = Line(O, A)\ny_axis = Line(O, B)\nc = Circle(O, 1)\nP = Rotate(A, 1.0471975511965976, O)  # angle = pi/3\nfoot_x = Intersect(PerpendicularLine(P, x_axis), x_axis)\nfoot_y = Intersect(PerpendicularLine(P, y_axis), y_axis)\nseg_cos = Segment(P, foot_x)\nseg_sin = Segment(P, foot_y)\nstyle(O, label_visible=True, label_text=\"$O$\")\nstyle(A, label_visible=True, label_text=\"$A$\")\nstyle(B, label_visible=True, label_text=\"$B$\")\nstyle(x_axis, label_visible=True, label_text=\"$x$\")\nstyle(y_axis, label_visible=True, label_text=\"$y$\")\nstyle(P, label_visible=True, label_text=\"$P$\")\nstyle(foot_x, label_visible=True, label_text=\"$P_x$\")\nstyle(foot_y, label_visible=True, label_text=\"$P_y$\")\nstyle(seg_cos, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(seg_sin, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+        "style": null,
+        "notes": [
+          "Unit circle centered at origin, point P at angle 60°, projections to axes shown with accent color. Axes and points labeled."
+        ]
+      },
+      "kind": "create"
+    },
+    {
+      "id": "create_two_column_angle_chase",
+      "title": "Angle Chase With Parallel Lines",
+      "prompt": "Построй две параллельные прямые и секущую, отметь накрест лежащие углы.",
+      "expected": [
+        "draws two visible parallel lines",
+        "draws transversal",
+        "marks alternate interior angles equal"
+      ],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 58
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3, -1)\nB = Point(3, -1)\nC = Point(-3, 1.2)\nD = Point(3, 1.2)\nl1 = Line(A, B)\nl2 = Line(C, D)\nP = Point(-1.8, -1.6)\nQ = Point(1.5, 1.8)\ntransversal = Line(P, Q)\nE = Intersect(l1, transversal)\nF = Intersect(l2, transversal)\nangle_E = Angle(B, E, F)\nangle_F = Angle(C, F, E)\n\nhide(A, B, C, D, P, Q)\nstyle(l1, label_visible=True, label_text=\"$l_1$\", stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\nstyle(l2, label_visible=True, label_text=\"$l_2$\", stroke=\"color.strong\", stroke_width_px=\"line_width.bold\")\nstyle(transversal, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(E, F, label_visible=True)\nstyle(angle_E, angle_F, tick_count=1, arc_size_px=24)\n",
+        "style": null,
+        "notes": []
+      },
+      "kind": "create"
+    },
+    {
+      "id": "manual_smoke_test_prompt_only_segment",
+      "title": "Smoke test: prompt-only segment",
+      "kind": "manual",
+      "prompt": "Построй отрезок AB и подпиши точки.",
+      "expected": [],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56.0
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(0, 0)\nB = Point(4, 0)\nAB = Segment(A, B)\nstyle(A, B, label_visible=True)",
+        "style": null,
+        "notes": []
+      }
+    },
+    {
+      "id": "manual_______abc_____l",
+      "title": "В тупоугольном треугольнике ABC, провели биссектрису l внешнего угла при",
+      "kind": "manual",
+      "prompt": "В тупоугольном треугольнике ABC, провели биссектрису l внешнего угла при тупом угле C. Построй окружность с центром в вершине B и касающуюся этой биссектрисы.",
+      "expected": [],
+      "viewport": {
+        "width": 700,
+        "height": 460,
+        "scale": 56.0
+      },
+      "response": {
+        "schema": "animageo-ai-construction-response/v1",
+        "mode": "create",
+        "construction_dsl": "A = Point(-3, 1)\nB = Point(2, 1)\nC = Point(0, 0)\ntri, AB, BC, CA = Polygon(A, B, C)\nint_bis = AngularBisector(A, C, B)\next_bis = OrthogonalLine(C, int_bis)\nperp_from_B = OrthogonalLine(B, ext_bis)\nT = Intersect(ext_bis, perp_from_B)\ncircle = Circle(B, T)\nhide(int_bis)\nstyle(ext_bis, label_visible=True, label_text=\"$l$\", stroke=\"color.aux\")\nstyle(circle, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(T, label_visible=False, size_px=\"point_size.aux\")",
+        "style": null,
+        "notes": [
+          "Triangle ABC is chosen with C at (0,0), A at (-3,1), B at (2,1) so that angle C is obtuse (dot product of CA and CB negative).",
+          "External angle bisector l is constructed as the line through C perpendicular to the internal angle bisector (since internal and external bisectors are perpendicular).",
+          "Circle with center B is tangent to l; tangency point T is the foot of the perpendicular from B to l.",
+          "Internal bisector is hidden; external bisector is shown with label l; circle is highlighted with accent color."
+        ]
+      }
+    }
+  ]
+}

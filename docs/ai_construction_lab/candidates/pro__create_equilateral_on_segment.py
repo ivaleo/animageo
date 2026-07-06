@@ -1,0 +1,6 @@
+A = Point(0, 0)
+B = Point(4, 0)
+tri, AB, BC, CA, C = Polygon(A, B, 3)
+style(A, B, C, label_visible=True)
+style(tri, stroke="color.main", stroke_width_px="line_width.main", fill="color.aux")
+style(AB, BC, CA, stroke="color.main", stroke_width_px="line_width.main")

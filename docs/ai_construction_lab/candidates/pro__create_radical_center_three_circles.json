@@ -1,0 +1,23 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T13:33:21.835444+00:00",
+  "case_id": "create_radical_center_three_circles",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй три окружности и их радикальные оси, отметь радикальный центр.",
+  "expected": [
+    "constructs three circles",
+    "uses common chords as radical axes",
+    "marks their common intersection"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Three circles and their radical axes, with radical center\n\n# Centers\nO1 = Point(-3, 0)\nO2 = Point(3, 0)\nO3 = Point(0, 4)\n\n# Radii\nr1 = 2.5\nr2 = 2.5\nr3 = 2.0\n\n# Circles\nc1 = Circle(O1, r1)\nc2 = Circle(O2, r2)\nc3 = Circle(O3, r3)\n\n# Radical axes (line through intersection points of each pair)\n# For c1 and c2: symmetric about y-axis, radical axis is x=0\nrad12 = Line(Point(0, -3), Point(0, 3))\n# For c1 and c3: compute intersection of circles\n# Solve (x+3)^2 + y^2 = 6.25 and x^2 + (y-4)^2 = 4\n# Subtract: (x+3)^2 + y^2 - x^2 - (y-4)^2 = 2.25\n# => 6x + 9 + 8y - 16 = 2.25 => 6x + 8y = 9.25 => 3x + 4y = 4.625\n# Radical axis line: 3x + 4y = 4.625\n# Choose two points on this line\nrad13 = Line(Point(-1, 1.90625), Point(1, 0.40625))\n# For c2 and c3: similar\n# (x-3)^2 + y^2 = 6.25 and x^2 + (y-4)^2 = 4\n# => -6x + 9 + 8y - 16 = 2.25 => -6x + 8y = 9.25 => 3x - 4y = -4.625\nrad23 = Line(Point(-1, 0.40625), Point(1, 1.90625))\n\n# Radical center: intersection of any two radical axes\nRC = Intersect(rad12, rad13)\n\n# Style\nstyle(c1, c2, c3, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(O1, O2, O3, fill=\"color.main\", size_px=\"point_size.main\", label_visible=True)\nstyle(rad12, rad23, rad13, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(RC, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True, label_text=\"$RC$\")",
+    "style": null,
+    "notes": [
+      "Radical axes are constructed as lines through computed intersection points of circle pairs, but the current DSL does not have a direct radical axis command, so explicit line equations are used.",
+      "Radical center is the intersection of radical axes, marked as RC."
+    ]
+  }
+}

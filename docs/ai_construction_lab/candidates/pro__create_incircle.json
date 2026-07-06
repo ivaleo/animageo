@@ -1,0 +1,20 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-12T14:44:38.310722+00:00",
+  "case_id": "create_incircle",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй треугольник ABC, его вписанную окружность и центр этой окружности.",
+  "expected": [
+    "uses Incircle",
+    "marks incenter",
+    "does not restyle entire scene"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(2, 4)\nB = Point(-3, -1)\nC = Point(4, -2)\n\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\n\ninc = Incircle(A, B, C)\nI = Center(inc)\n\nstyle(A, B, C, label_visible=True, fill=\"color.strong\", size_px=\"point_size.bold\")\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(inc, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(I, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")",
+    "style": null,
+    "notes": []
+  }
+}

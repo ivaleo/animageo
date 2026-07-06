@@ -209,3 +209,41 @@ class TestFunc5IntersectCommands:
                 f"{name}: y expected {ey}, got {elem.data.coords[1]}"
             )
 
+
+# ── Axis intersection ordering matches GeoGebra ───────────────────────
+
+class TestAxisIntersectOrder:
+    """GeoGebra orients xAxis toward +x and yAxis toward +y, so
+    ``Intersect(circle, axis, 1)`` is the point lower along the positive
+    axis direction. The unit circle centred at the origin meets:
+    - xAxis at (-1, 0) [index 1] and (1, 0) [index 2] — ascending x
+    - yAxis at (0, -1) [index 1] and (0, 1) [index 2] — ascending y
+
+    The yAxis case regresses if its normal is (1, 0) instead of (-1, 0):
+    the direction vector flips to (0, -1) and the two points swap, which
+    (via a downstream ``Line(I, H)``) skews lines built through the wrong
+    intersection. Reproduced from shared/8wD1DwtEbOQ.
+    """
+
+    def _unit_circle(self):
+        # x² + y² − 1 = 0.
+        return Conic.from_coeffs(a=1, c=1, f=-1)
+
+    def test_xaxis_order(self):
+        from animageo.geo.construction import Construction
+        c = self._unit_circle()
+        xaxis = Construction().element('xAxis').data
+        p1 = intersect_Kli(c, xaxis, 1)
+        p2 = intersect_Kli(c, xaxis, 2)
+        assert np.allclose(p1.coords[:2], [-1, 0], atol=1e-9)
+        assert np.allclose(p2.coords[:2], [1, 0], atol=1e-9)
+
+    def test_yaxis_order(self):
+        from animageo.geo.construction import Construction
+        c = self._unit_circle()
+        yaxis = Construction().element('yAxis').data
+        p1 = intersect_Kli(c, yaxis, 1)
+        p2 = intersect_Kli(c, yaxis, 2)
+        assert np.allclose(p1.coords[:2], [0, -1], atol=1e-9)
+        assert np.allclose(p2.coords[:2], [0, 1], atol=1e-9)
+

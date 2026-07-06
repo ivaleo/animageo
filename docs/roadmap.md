@@ -60,6 +60,19 @@
   `IsogonalConjugation`, `Length`, `Perimeter`, `Circumference`,
   `Radius(Conic)`, `Area(Conic)`, Function ∩ {Segment, Ray},
   Arc ∩ {Circle, Arc, Conic}.
+- Актуализация 2026-07: `Trilinear(A, B, C, x, y, z)` → `trilinear_pppiii`
+  (точка по трилинейным координатам относительно треугольника).
+- Актуализация 2026-07 (Tier A/B «лёгких» команд): `Slope`, `Direction`,
+  `UnitVector`, `PerpendicularVector`, `UnitPerpendicularVector`, `Dot`,
+  `Cross`, `AffineRatio`, `CrossRatio`, `Midpoint(Conic)`, `Conic(6 чисел)`,
+  `Ray(Point,Vector)`, `Point(Point,Vector)`, `ClosestPoint(path,point)`,
+  `Dilate(obj,factor[,center])`, `Polar(Line,Conic)`. См.
+  `docs/archive/geogebra_command_audit.md` → «план «лёгких» команд».
+- Актуализация 2026-07 (Tier C, семейство `Tangent`): `Tangent(Line, Conic)`
+  → `tangent_lK/Kl` (касательные, параллельные прямой),
+  `Tangent(Point/x, Function)` → `tangent_pF/iF/mF` (касательная через
+  производную) и `Tangent(Circle, Circle)` → `tangent_cc` (общие касательные
+  двух окружностей, до 4).
 
 Остаются нереализованные:
 

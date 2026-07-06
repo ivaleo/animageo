@@ -1,0 +1,23 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T11:05:58.579688+00:00",
+  "case_id": "create_copy_angle_by_rotation",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Скопируй угол BAC в вершину P на луч PQ.",
+  "expected": [
+    "constructs target ray by rotating Q around P by the source angle",
+    "marks source and copied angles equal"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Copy angle BAC to vertex P on ray PQ\n\n# Given: angle BAC and ray PQ\nA = Point(0, 0)\nB = Point(3, 1)\nC = Point(2, 3)\nP = Point(5, 0)\nQ = Point(8, 1)\n\n# Draw given angle BAC\nAB = Ray(A, B)\nAC = Ray(A, C)\nang_BAC = Angle(B, A, C)\nstyle(ang_BAC, arc_size_px=\"angle_radius.main\", tick_count=1)\n\n# Draw given ray PQ\nray_PQ = Ray(P, Q)\n\n# Copy angle BAC to vertex P on ray PQ by rotation\n# Rotate Q around P by the measure of angle BAC\nang_size = AngleSize(B, A, C)\nR = Rotate(Q, ang_size, P)\n\n# Draw copied ray PR\nPR = Ray(P, R)\n\n# Mark copied angle QPR\nang_QPR = Angle(Q, P, R)\nstyle(ang_QPR, arc_size_px=\"angle_radius.main\", tick_count=1)\n\n# Style\nstyle(AB, AC, ray_PQ, PR, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(A, B, C, P, Q, R, label_visible=True, fill=\"color.main\", size_px=\"point_size.main\")\nstyle(ang_BAC, ang_QPR, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+    "style": null,
+    "notes": [
+      "Used rotation to copy angle BAC to vertex P on ray PQ.",
+      "Angle size measured from B-A-C and applied to rotate Q around P.",
+      "Both original and copied angles marked with one tick for equality."
+    ]
+  }
+}

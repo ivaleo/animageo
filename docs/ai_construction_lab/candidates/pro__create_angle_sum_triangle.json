@@ -1,0 +1,20 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T11:13:09.586869+00:00",
+  "case_id": "create_angle_sum_triangle",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй треугольник ABC и отметь три его внутренних угла разными засечками.",
+  "expected": [
+    "constructs three interior angle objects",
+    "uses distinct labels and tick groups",
+    "does not globally restyle angles"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(-3, -2)\nB = Point(4, -1)\nC = Point(0, 3)\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\nstyle(A, B, C, label_visible=True)\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nangA = Angle(B, A, C)\nangB = Angle(C, B, A)\nangC = Angle(A, C, B)\nstyle(angA, arc_size_px=\"angle_radius.main\", tick_count=1)\nstyle(angB, arc_size_px=\"angle_radius.main\", tick_count=2)\nstyle(angC, arc_size_px=\"angle_radius.main\", tick_count=3)",
+    "style": null,
+    "notes": []
+  }
+}

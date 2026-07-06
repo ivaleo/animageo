@@ -1,0 +1,25 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T08:27:35.036742+00:00",
+  "case_id": "create_nine_point_circle",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй девятиточечную окружность треугольника: середины сторон, основания высот и середины отрезков от вершин до ортоцентра.",
+  "expected": [
+    "constructs nine notable points",
+    "draws circle through side midpoints",
+    "shows altitude feet and Euler midpoints"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Triangle ABC\nA = Point(-4, -2)\nB = Point(4, -2)\nC = Point(0, 5)\nstyle(A, B, C, label_visible=True)\n\n# Sides\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\n\n# Midpoints of sides\nD = Midpoint(A, B)\nE = Midpoint(B, C)\nF = Midpoint(C, A)\nstyle(D, E, F, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\n\n# Altitudes and feet\n# Altitude from A to BC\nline_BC = Line(B, C)\nalt_A = PerpendicularLine(A, line_BC)\nH_A = Intersect(alt_A, line_BC)\n# Altitude from B to CA\nline_CA = Line(C, A)\nalt_B = PerpendicularLine(B, line_CA)\nH_B = Intersect(alt_B, line_CA)\n# Altitude from C to AB\nline_AB = Line(A, B)\nalt_C = PerpendicularLine(C, line_AB)\nH_C = Intersect(alt_C, line_AB)\n\n# Orthocenter\nH = Intersect(alt_A, alt_B)\nstyle(H, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\n\n# Midpoints of segments from vertices to orthocenter\nG = Midpoint(A, H)\nI = Midpoint(B, H)\nJ = Midpoint(C, H)\nstyle(G, I, J, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\n\n# Nine-point circle (through D, E, F)\nnine_point_circle = Circle(D, E, F)\nstyle(nine_point_circle, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n\n# Hide helper lines\nhide(line_BC, line_CA, line_AB, alt_A, alt_B, alt_C)\n\n# Mark right angles at feet\nright_angle_A = Angle(B, H_A, A)\nright_angle_B = Angle(C, H_B, B)\nright_angle_C = Angle(A, H_C, C)\nstyle(right_angle_A, right_angle_B, right_angle_C, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\n\n# Style feet\nstyle(H_A, H_B, H_C, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\n\n# Notes\n# The nine-point circle passes through D, E, F, H_A, H_B, H_C, G, I, J.\n# Right-angle markers are shown at feet.\n# All nine points are labeled and highlighted.",
+    "style": null,
+    "notes": [
+      "Triangle vertices chosen for a clear non-degenerate configuration.",
+      "Nine-point circle constructed through three side midpoints D, E, F.",
+      "Right-angle markers shown at altitude feet.",
+      "All nine points are labeled and highlighted with accent color."
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T13:25:13.831066+00:00",
+  "case_id": "create_central_inscribed_double_angle",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Покажи центральный угол AOB и вписанный угол ACB, опирающиеся на одну дугу, с пометками alpha и 2alpha.",
+  "expected": [
+    "constructs central and inscribed angles on same arc",
+    "labels central angle as 2alpha and inscribed as alpha",
+    "keeps arms visible"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "O = Point(0, 0)\nA = Point(2, 0)\nB = Rotate(A, 2 * pi / 3, O)\nC = Rotate(A, pi / 2, O)\ncircle = Circle(O, A)\nOA = Segment(O, A)\nOB = Segment(O, B)\nCA = Segment(C, A)\nCB = Segment(C, B)\ncentral = Angle(A, O, B)\ninscribed = Angle(A, C, B)\nstyle(circle, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(OA, OB, CA, CB, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(O, A, B, C, fill=\"color.main\", size_px=\"point_size.main\", label_visible=True)\nstyle(central, arc_size_px=\"angle_radius.bold\", tick_count=2, label_visible=True, label_text=\"$2\\\\alpha$\")\nstyle(inscribed, arc_size_px=\"angle_radius.bold\", tick_count=1, label_visible=True, label_text=\"$\\\\alpha$\")\nhide(OA, OB, CA, CB)",
+    "style": null,
+    "notes": []
+  }
+}

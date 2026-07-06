@@ -1,6 +1,7 @@
 import re
 import os
 import json
+import math
 import logging
 import traceback
 from contextlib import contextmanager
@@ -18,7 +19,7 @@ from .geo.curve_sampling import (
     make_hyperbola_branch_param,
     marching_squares,
 )
-from .style import GeoStyle, isnan, getColorFromDict, updateMin, updateMax, hasParam, GGB_FONT_SCALE, Z_FILL, Z_FILL_LABEL, Z_ANGLE, Z_STROKE, Z_POINT, Z_LABEL
+from .style import GeoStyle, isnan, getColorFromDict, updateMin, updateMax, hasParam, GGB_FONT_SCALE, Z_FILL, Z_FILL_LABEL, Z_ANGLE, Z_STROKE, Z_POINT, Z_LABEL, _is_concrete_color
 from .style.scaling import (
     ggb_font_px_to_manim_fontsize,
     stroke_width_to_manim,
@@ -26,6 +27,7 @@ from .style.scaling import (
 from .style.import_policy import ImportPolicy
 from .style.config import StyleConfig
 from .style.resolver import resolve as _resolve_style
+from .style.colorspace import COLOR_SPACES
 from .labels import resolve_label_text, resolve_label_spec
 from .ui import (
     RusTex, correctedLabel, create_label, round_corners_vmobject,
@@ -394,6 +396,10 @@ class AnimaGeoScene(MovingCameraScene):
                 self.addOrdered(mobj_new)
             if not needRemove and not needAdd:
                 mobj.become(mobj_new)
+                # become() copies points/draw style but not z_index — carry it
+                # so z_index style changes (incl. keyframe tracks) take effect.
+                for sub_old, sub_new in zip(mobj.get_family(), mobj_new.get_family()):
+                    sub_old.z_index = sub_new.z_index
 
     def addVar(self, name, value = 0):
         new_tracker = NamedValueTracker(name, value)
@@ -521,9 +527,23 @@ class AnimaGeoScene(MovingCameraScene):
         style_obj.strong           = colors.get('strong',       style_obj.strong)
         style_obj.background       = colors.get('background',   style_obj.background)
 
-        bg = self.style_config.rendering.get('background')
-        if bg is not None:
-            style_obj.background = bg
+        # Background resolution — style primary, GeoGebra secondary (opt-in),
+        # white fallback. "Cleared" style background (not background_explicit)
+        # falls through to the GeoGebra <bgColor>, which ggb_parser.load wrote
+        # into self.style.export (self.style is still the *previous* style here;
+        # the new style_obj is installed later via setStyle()).
+        rendering_bg = self.style_config.rendering.get('background')
+        if style_obj.background_explicit:
+            if _is_concrete_color(rendering_bg):
+                style_obj.background = rendering_bg
+            # else: the explicit presets.color.background set just above stands.
+        else:
+            ggb_bg = self.style.export.get('background')
+            style_obj.background = ggb_bg if _is_concrete_color(ggb_bg) else '#ffffff'
+
+        # Mirror the effective background into presets so fill refs and the
+        # rendering.background self-ref resolve to it.
+        self.style_config.presets.setdefault('color', {})['background'] = style_obj.background
 
         if 'polygon_boundary_layer' in style_obj.rendering:
             if style_obj.rendering['polygon_boundary_layer'] == 'top':
@@ -1327,6 +1347,29 @@ class AnimaGeoScene(MovingCameraScene):
         """
         return self.geo.get_independents()
 
+    def get_element_states(self):
+        """Per-element snapshot for the web keyframe-state inspector: every
+        non-axis element's type, current visibility, and resolved animatable
+        style values (the keys in ``ANIMATABLE_STYLE_KEYS``). Symmetric to
+        ``get_independent_elements()``; read-only.
+        """
+        from .style.animatable import ANIMATABLE_STYLE_KEYS
+        states = {}
+        for elem in self.geo.elements:
+            if elem.name in ('xAxis', 'yAxis'):
+                continue
+            style = {}
+            for key in ANIMATABLE_STYLE_KEYS:
+                val = _resolve_style(self, elem, key, default=None)
+                if val is not None:
+                    style[key] = val
+            states[elem.name] = {
+                'type': type(elem.data).__name__,
+                'visible': self._element_visible(elem),
+                'style': style,
+            }
+        return states
+
     def _apply_interp_value(self, name, kind, val):
         """Apply a single parsed (kind, val) to the construction in place.
 
@@ -1358,6 +1401,20 @@ class AnimaGeoScene(MovingCameraScene):
                 raw[name] = bool(info['value'])
         return raw, info_map
 
+    def _apply_camera(self, cam):
+        """Apply a ``{center?, width?}`` dict to ``self.camera.frame``.
+
+        No-op for an empty/falsy dict. Only moves/resizes the camera frame —
+        never mutates construction or style state.
+        """
+        if not cam:
+            return
+        if 'center' in cam:
+            cx, cy = cam['center']
+            self.camera.frame.move_to([float(cx), float(cy), 0.0])
+        if 'width' in cam:
+            self.camera.frame.set(width=float(cam['width']))
+
     def _apply_keyframe_state(self, kf, element_info, *, update_scene=True):
         """Apply one keyframe's values and visibility before playback starts."""
         from .keyframes import _parse_value
@@ -1383,6 +1440,20 @@ class AnimaGeoScene(MovingCameraScene):
             self._apply_interp_value(name, kind, val)
             touched.add(name)
 
+        for name, props in kf.styles.items():
+            elem = self.geo.element(name)
+            if elem is None:
+                logger.warning(
+                    "play_keyframes: skipping styles for '%s' — element not found",
+                    name,
+                )
+                continue
+            for key, value in props.items():
+                if value is None:
+                    continue   # null at keyframe 0 has nothing to revert
+                elem.style[key] = value
+            touched.add(name)
+
         for name in kf.show:
             elem = self.geo.element(name)
             if elem is not None:
@@ -1393,6 +1464,14 @@ class AnimaGeoScene(MovingCameraScene):
             if elem is not None:
                 elem.visible = False
                 touched.add(name)
+
+        for name, vis in kf.visible.items():
+            elem = self.geo.element(name)
+            if elem is not None:
+                elem.visible = bool(vis)
+                touched.add(name)
+
+        self._apply_camera(kf.camera)
 
         updates = self.geo.rebuild()
         touched.update(updates.keys())
@@ -1415,11 +1494,28 @@ class AnimaGeoScene(MovingCameraScene):
         saved_raw, element_info = self._snapshot_independents()
         saved_visibility = {e.name: e.visible for e in self.geo.elements}
 
+        # Snapshot the original value of every (name, key) that ANY keyframe's
+        # 'styles' animates, so it can be restored byte-for-byte afterward
+        # (the pre-pass must be side-effect-free on elem.style).
+        animated_keys = {
+            (name, key)
+            for kf in seq.keyframes
+            for name, props in kf.styles.items()
+            for key in props
+        }
+        saved_styles = {}
+        for name, key in animated_keys:
+            elem = self.geo.element(name)
+            if elem is None:
+                continue
+            saved_styles[(name, key)] = (key in elem.style, elem.style.get(key))
+
         clear_bbox_cache()
 
         # Carry-forward running state, starting from current construction values
         running_raw = dict(saved_raw)
         running_vis = dict(saved_visibility)
+        running_styles = {}
 
         layouts = []
         for kf in seq.keyframes:
@@ -1430,6 +1526,8 @@ class AnimaGeoScene(MovingCameraScene):
                 running_vis[name] = True
             for name in kf.hide:
                 running_vis[name] = False
+            for name, props in kf.styles.items():
+                running_styles.setdefault(name, {}).update(props)
 
             # Apply to geo
             for name, raw_value in running_raw.items():
@@ -1455,6 +1553,13 @@ class AnimaGeoScene(MovingCameraScene):
                 e = self.geo.element(name)
                 if e is not None:
                     e.visible = vis
+            for name, props in running_styles.items():
+                elem = self.geo.element(name)
+                if elem is None:
+                    continue
+                for k, v in props.items():
+                    if v is not None:
+                        elem.style[k] = v
 
             self.geo.rebuild()
             layouts.append(compute_label_layout(
@@ -1462,6 +1567,14 @@ class AnimaGeoScene(MovingCameraScene):
             ))
 
         # Restore original state
+        for (name, key), (had, val) in saved_styles.items():
+            elem = self.geo.element(name)
+            if elem is None:
+                continue
+            if had:
+                elem.style[key] = val
+            else:
+                elem.style.pop(key, None)
         for name, raw_value in saved_raw.items():
             info = element_info.get(name)
             if info is None:
@@ -1506,6 +1619,23 @@ class AnimaGeoScene(MovingCameraScene):
             seq = keyframes_data
         logger.info("Playing %d keyframes", len(seq.keyframes))
 
+        if seq.has_style_tracks():
+            color_space = self.style.rendering.get('color_interpolation', 'oklab')
+            if color_space not in COLOR_SPACES:
+                raise ValueError(
+                    f"rendering.color_interpolation must be one of {COLOR_SPACES}, "
+                    f"got {color_space!r}"
+                )
+            seq.bind_style_tracks(
+                get_element=self.geo.element,
+                resolve=lambda elem, key: _resolve_style(self, elem, key, default=None),
+                color_space=color_space,
+            )
+
+        use_v2_visibility = (seq.version >= 2)
+        if use_v2_visibility:
+            seq.bind_visibility(get_element=self.geo.element)
+
         cfg = self.style_config.overlay.label_placement
         use_snapshots = bool(cfg.get('keyframe_snapshots', False))
 
@@ -1523,25 +1653,102 @@ class AnimaGeoScene(MovingCameraScene):
                 from .label_placement import apply_label_layout
                 apply_label_layout(self, layouts[0], rerender=True)
 
-            for interval in seq.intervals:
-                # Apply visibility changes at start of interval
+            for i, interval in enumerate(seq.intervals):
+                if use_v2_visibility and (interval.enter_effects or interval.exit_effects):
+                    self._play_keyframe_interval_v2(interval)
+                    self._finalize_style_interval(interval)
+                    continue
+
+                # Legacy visibility path (v1, and v2 intervals with no effects)
                 if interval.show:
                     plays = self.Show(interval.show)
                     if plays:
                         self.play(*plays, run_time=0.4)
-
                 if interval.hide:
                     plays = self.Hide(interval.hide)
                     if plays:
                         self.play(*plays, run_time=0.4)
 
                 has_labels = bool(interval.label_interps) or bool(interval.dynamic_angle_params)
-                if not interval.interpolators and not has_labels:
+                has_styles = bool(interval.style_interps)
+                if (not interval.interpolators and not has_labels and not has_styles
+                        and interval.camera_interp is None and not interval.events):
                     if interval.duration > 0:
                         self.wait(interval.duration)
+                    self._finalize_style_interval(interval)
                     continue
 
                 self._play_keyframe_interval(interval)
+                self._finalize_style_interval(interval)
+
+    def apply_keyframes_at(self, keyframes_data, t):
+        """Statically place the scene at playhead time ``t`` (no animation) —
+        for a single-frame preview (e.g. then exportSVG). Idempotent."""
+        from .keyframes import KeyframeSequence
+        seq = (KeyframeSequence.from_json(keyframes_data, self.geo)
+               if isinstance(keyframes_data, dict) else keyframes_data)
+        if seq.has_style_tracks():
+            cs = self.style.rendering.get('color_interpolation', 'oklab')
+            seq.bind_style_tracks(get_element=self.geo.element,
+                                  resolve=lambda e, k: _resolve_style(self, e, k, default=None),
+                                  color_space=cs)
+        seq.bind_visibility(get_element=self.geo.element)
+        kfs = seq.keyframes
+        t = max(kfs[0].t, min(float(t), kfs[-1].t))
+        # find interval containing t
+        idx = 0
+        for i, iv in enumerate(seq.intervals):
+            if iv.start_t <= t <= iv.end_t:
+                idx = i
+                break
+        interval = seq.intervals[idx]
+        self._apply_keyframe_state(kfs[idx], seq.element_info, update_scene=False)
+        p = 0.0 if interval.duration <= 0 else (t - interval.start_t) / interval.duration
+        touched = set()
+        for interp in interval.interpolators:
+            self._apply_interp_value(interp.name, interp.kind, interp.at(p))
+            touched.add(interp.name)
+        # apply visibility state at end-keyframe if p>=1 else start already set
+        updates = self.geo.rebuild()
+        for name in touched:
+            updates[name] = updates.get(name, True)
+        for name in self._apply_style_interps(interval, p):
+            updates[name] = updates.get(name, True)
+        if interval.camera_interp:
+            self._apply_camera(interval.camera_interp.at(p))
+        self.updateGeoElements(updates)
+
+    def reveal_construction(self, lag=0.3, duration=0.5, effect=None, play=True):
+        """Stage a dependency-ordered, staggered reveal of the whole
+        construction (GeoGebra Construction-Protocol style). Returns the
+        generated v2 keyframes; plays them when ``play`` is True.
+        """
+        from .keyframes import build_reveal_keyframes
+        from . import geo as _geo
+        per_type = {
+            _geo.Point: 'fade', _geo.Segment: 'create', _geo.Line: 'create',
+            _geo.Ray: 'create', _geo.Vector: 'create', _geo.Circle: 'create',
+            _geo.Arc: 'create', _geo.Polygon: 'fade', _geo.CircleSector: 'fade',
+            _geo.Angle: 'fade', _geo.Text: 'write',
+            _geo.Conic: 'create', _geo.Function: 'create', _geo.ImplicitCurve: 'create',
+        }
+        names, type_effects = [], {}
+        for elem in self.geo.elements:
+            if elem.name in ('xAxis', 'yAxis'):
+                continue
+            if self.CreateMObject(elem) is None:
+                continue
+            names.append(elem.name)
+            if effect is None:
+                type_effects[elem.name] = per_type.get(type(elem.data), 'create')
+            else:
+                type_effects[elem.name] = effect
+        kfs = build_reveal_keyframes(names, type_effects, lag=lag,
+                                     duration=duration,
+                                     default_effect=effect or 'create')
+        if play:
+            self.play_keyframes(kfs)
+        return kfs
 
     def _play_keyframe_interval(self, interval):
         """Animate a single keyframe interval using ValueTracker + sentinel updater.
@@ -1568,8 +1775,11 @@ class AnimaGeoScene(MovingCameraScene):
         ptUnit = _style_ptUnit(self.style)
         ptUnit_ggb = self.style.export.get('ptUnit_ggb', ptUnit)
 
+        active_events = {}
+
         def on_frame(mob):
             t = progress.get_value()
+            t_abs = t * interval.duration
             touched = set()
             for interp in interps:
                 val = interp.at(t)
@@ -1578,6 +1788,9 @@ class AnimaGeoScene(MovingCameraScene):
 
             updates = geo_ref.rebuild()
             for name in touched:
+                updates[name] = updates.get(name, True)
+
+            for name in scene_ref._apply_style_interps(interval, t):
                 updates[name] = updates.get(name, True)
 
             # Label offsets must be written AFTER geo.rebuild so that
@@ -1599,7 +1812,22 @@ class AnimaGeoScene(MovingCameraScene):
                 )
                 updates[name] = updates.get(name, True)
 
+            # Ensure emphasis-event targets are (re)rendered this frame so
+            # the adapter always transforms a fresh mobject — otherwise a
+            # target that isn't otherwise touched is never re-become'd, and
+            # the transform (e.g. indicate's scale) compounds every frame
+            # instead of self-restoring once the event window closes.
+            for spec in interval.events:
+                for _nm in spec.targets:
+                    updates[_nm] = updates.get(_nm, True)
+
             scene_ref.updateGeoElements(updates)
+
+            if interval.camera_interp:
+                scene_ref._apply_camera(interval.camera_interp.at(t))
+
+            # Emphasis events LAST — transform the freshly rebuilt mobjects.
+            scene_ref._apply_events(interval, t_abs, active_events)
 
         sentinel.add_updater(on_frame)
         self.add(progress, sentinel)
@@ -1609,6 +1837,433 @@ class AnimaGeoScene(MovingCameraScene):
         )
         sentinel.clear_updaters()
         self.remove(progress, sentinel)
+        for m in list(active_events.values()):
+            self.remove(m)
+
+    def _play_keyframe_interval_v2(self, interval):
+        """v2 interval playback: geometry + style + labels + enter/exit effects
+        in one exact-duration play(). Entering elements are made present at the
+        interval start (transparent until their effect starts); exiting elements
+        are removed at the interval end.
+        """
+        from .label_placement import compute_angle_label_offset_px
+
+        # Lifecycle: reveal entering elements now (present-but-faded); their
+        # first-frame alpha keeps them invisible until the effect starts.
+        for e in interval.enter_effects:
+            elem = self.geo.element(e.name)
+            if elem is not None:
+                elem.visible = True
+        entering = [e.name for e in interval.enter_effects]
+        if entering:
+            self.updateGeoElements(entering)
+
+        progress = ValueTracker(0)
+        sentinel = Mobject()
+        interps = interval.interpolators
+        label_interps = interval.label_interps
+        dynamic_angle_params = interval.dynamic_angle_params
+        enter_effects = interval.enter_effects
+        exit_effects = interval.exit_effects
+        duration = interval.duration
+        geo_ref = self.geo
+        scene_ref = self
+        ptUnit = _style_ptUnit(self.style)
+        ptUnit_ggb = self.style.export.get('ptUnit_ggb', ptUnit)
+        active_events = {}
+
+        def on_frame(mob):
+            t = progress.get_value()
+            t_abs = t * duration
+            touched = set()
+            for interp in interps:
+                scene_ref._apply_interp_value(interp.name, interp.kind, interp.at(t))
+                touched.add(interp.name)
+
+            updates = geo_ref.rebuild()
+            for name in touched:
+                updates[name] = updates.get(name, True)
+            for name in scene_ref._apply_style_interps(interval, t):
+                updates[name] = updates.get(name, True)
+
+            for li in label_interps:
+                elem = geo_ref.element(li.name)
+                if elem is None or not scene_ref._element_visible(elem):
+                    continue
+                ox, oy = li.at(t)
+                elem.style['label_offset_px'] = [float(ox), float(oy)]
+                updates[li.name] = updates.get(li.name, True)
+            for name, ap in dynamic_angle_params.items():
+                elem = geo_ref.element(name)
+                if elem is None or not scene_ref._element_visible(elem):
+                    continue
+                elem.style['label_offset_px'] = list(
+                    compute_angle_label_offset_px(elem.data, ap, ptUnit, ptUnit_ggb))
+                updates[name] = updates.get(name, True)
+
+            # Ensure effect targets are (re)rendered this frame so the adapter
+            # transforms a fresh full-opacity mobject.
+            for e in enter_effects:
+                updates[e.name] = updates.get(e.name, True)
+            for e in exit_effects:
+                updates[e.name] = updates.get(e.name, True)
+
+            # Same for emphasis-event targets — otherwise a target that isn't
+            # otherwise touched is never re-become'd, and the transform (e.g.
+            # indicate's scale) compounds every frame instead of
+            # self-restoring once the event window closes.
+            for spec in interval.events:
+                for _nm in spec.targets:
+                    updates[_nm] = updates.get(_nm, True)
+
+            scene_ref.updateGeoElements(updates)
+
+            # Effects LAST — multiply over the freshly-become'd mobjects.
+            for e in enter_effects:
+                scene_ref._apply_effect_alpha(e.name, e.kind, scene_ref._effect_alpha(e, t_abs))
+            for e in exit_effects:
+                scene_ref._apply_effect_alpha(e.name, e.kind, scene_ref._effect_alpha(e, t_abs))
+
+            if interval.camera_interp:
+                scene_ref._apply_camera(interval.camera_interp.at(t))
+
+            # Emphasis events LAST — transform the freshly rebuilt mobjects.
+            scene_ref._apply_events(interval, t_abs, active_events)
+
+        sentinel.add_updater(on_frame)
+        self.add(progress, sentinel)
+        self.play(progress.animate(rate_func=linear).set_value(1), run_time=duration)
+        sentinel.clear_updaters()
+        self.remove(progress, sentinel)
+        for m in list(active_events.values()):
+            self.remove(m)
+
+        # Lifecycle end: hide + remove exited elements.
+        for e in exit_effects:
+            elem = self.geo.element(e.name)
+            if elem is not None:
+                elem.visible = False
+            m = self.mobject(e.name)
+            if m is not None:
+                self.remove(m)
+
+    def _effect_alpha(self, spec, t_abs):
+        """Visible-fraction of an enter/exit effect at absolute interval time.
+
+        1.0 = fully present, 0.0 = fully absent. 'in' ramps up, 'out' ramps down.
+        """
+        if spec.duration <= 0:
+            raw = 1.0 if t_abs >= spec.start else 0.0
+        else:
+            raw = (t_abs - spec.start) / spec.duration
+            raw = 0.0 if raw < 0 else (1.0 if raw > 1 else raw)
+        return raw if spec.direction == 'in' else 1.0 - raw
+
+    def _effect_fade(self, mobj, alpha):
+        """Multiply every family member's stroke & fill opacity by *alpha*."""
+        for sub in mobj.family_members_with_points():
+            try:
+                sub.set_stroke(opacity=sub.get_stroke_opacity() * alpha)
+            except Exception:
+                pass
+            try:
+                sub.set_fill(opacity=sub.get_fill_opacity() * alpha)
+            except Exception:
+                pass
+
+    def _effect_partial(self, mobj, alpha):
+        """Progressive stroke reveal (manim Create semantics): draw only the
+        first *alpha* fraction of each stroke sub-mobject; fade filled parts.
+        """
+        alpha = 0.0 if alpha < 0 else (1.0 if alpha > 1 else alpha)
+        for sub in mobj.family_members_with_points():
+            has_fill = getattr(sub, 'get_fill_opacity', lambda: 0)() > 0
+            if has_fill:
+                # Filled sub-mobject: fade it in rather than partial-draw.
+                try:
+                    sub.set_fill(opacity=sub.get_fill_opacity() * alpha)
+                    sub.set_stroke(opacity=sub.get_stroke_opacity() * alpha)
+                except Exception:
+                    pass
+                continue
+            try:
+                full = sub.copy()
+                sub.pointwise_become_partial(full, 0, alpha)
+            except Exception:
+                # Fallback: fade if partial draw isn't supported for this sub.
+                try:
+                    sub.set_stroke(opacity=sub.get_stroke_opacity() * alpha)
+                except Exception:
+                    pass
+
+    def _effect_scale(self, mobj, alpha):
+        """Scale *mobj* about its center by alpha (grow-from/shrink-to center)."""
+        factor = max(float(alpha), 1e-3)
+        try:
+            mobj.scale(factor, about_point=mobj.get_center())
+        except Exception:
+            pass
+
+    def _effect_write(self, mobj, alpha):
+        """Progressive glyph reveal (manim Write/AddTextLetterByLetter): show
+        the first ``alpha`` fraction of the glyph leaves, hide the rest.
+        Operates on leaf VMobjects (a Tex/label's glyphs live below its
+        top-level submobject), so it is genuinely progressive for real
+        single-Tex labels, not all-or-nothing. Falls back to a plain fade for
+        a mobject with no glyph substructure.
+        """
+        alpha = 0.0 if alpha < 0 else (1.0 if alpha > 1 else alpha)
+        leaves = list(mobj.family_members_with_points())
+        if not leaves:
+            self._effect_fade(mobj, alpha)
+            return
+        n = len(leaves)
+        show = int(round(alpha * n))
+        for i, leaf in enumerate(leaves):
+            self._effect_fade(leaf, 1.0 if i < show else 0.0)
+
+    def _apply_effect_alpha(self, name, kind, alpha):
+        """Transform the current mobject for *name* by *alpha* per effect *kind*.
+
+        Phase-2 Task 3 implements 'fade'/'none'; Task 4 adds 'create'/
+        'uncreate' (progressive stroke draw); Task 5 adds 'grow'/'shrink'
+        (scale about center). Phase-3 Task 2 adds 'write' (progressive
+        glyph reveal, enter-only).
+        """
+        mobj = self.mobject(name)
+        if mobj is None:
+            return
+        if kind == 'none':
+            # step visibility: fully shown iff alpha >= 1 (in) / > 0 (already
+            # handled by _effect_alpha stepping); hide when alpha == 0.
+            if alpha <= 0:
+                self._effect_fade(mobj, 0.0)
+            return
+        if kind in ('create', 'uncreate'):
+            self._effect_partial(mobj, alpha)
+            return
+        if kind in ('grow', 'shrink'):
+            self._effect_scale(mobj, alpha)
+            return
+        if kind == 'write':
+            self._effect_write(mobj, alpha)
+            return
+        # 'fade' and (for now) any not-yet-implemented kind
+        self._effect_fade(mobj, alpha)
+
+    def _event_envelope(self, spec, t_abs):
+        """There-and-back bump in [0, 1] for one ``EventSpec`` window.
+
+        0.0 at both edges of ``[spec.start, spec.start + spec.duration]``,
+        1.0 at the midpoint (``sin(pi * local)``), and EXACTLY 0.0 outside
+        the window — this is what makes emphasis events self-restoring:
+        once the interval's absolute time passes the window, no transform
+        is applied at all and the mobject renders at its normal geometry.
+        """
+        if spec.duration <= 0:
+            return 0.0
+        local = (t_abs - spec.start) / spec.duration
+        if local < 0.0 or local > 1.0:
+            return 0.0
+        return math.sin(math.pi * local)
+
+    def _event_indicate(self, mobj, env, spec):
+        """Scale *mobj* about its center by ``1 + (spec.scale - 1) * env`` and
+        nudge its stroke/fill colour toward ``spec.color`` by ``env``.
+
+        At ``env <= 0`` this is a strict no-op (identity) so the mobject is
+        left exactly as ``updateGeoElements`` rendered it — the self-restoring
+        half of the indicate pulse.
+        """
+        if env <= 0 or mobj is None:
+            return
+        factor = 1.0 + (spec.scale - 1.0) * env
+        try:
+            mobj.scale(factor, about_point=mobj.get_center())
+        except Exception:
+            pass
+        col = spec.color or '#ff8800'
+        try:
+            from .style.colorspace import lerp_color
+            for sub in mobj.family_members_with_points():
+                try:
+                    if sub.get_stroke_opacity() > 0:
+                        cur = sub.get_stroke_color().to_hex()
+                        sub.set_stroke(color=lerp_color(cur, col, env))
+                except Exception:
+                    pass
+                try:
+                    if sub.get_fill_opacity() > 0:
+                        cur_fill = sub.get_fill_color().to_hex()
+                        sub.set_fill(color=lerp_color(cur_fill, col, env))
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+    def _make_event_overlay(self, spec, target):
+        """Build the temp decoration mobject for a flash/circumscribe event
+        from *target*'s current geometry (centre / bounding box).
+
+        Returns ``None`` if construction fails for any reason (degenerate
+        target, zero-size bbox, ...) — the caller then simply skips adding
+        an overlay this frame instead of crashing.
+        """
+        try:
+            center = target.get_center()
+            width = float(target.width)
+            height = float(target.height)
+            if not math.isfinite(width) or width <= 0:
+                width = 0.2
+            if not math.isfinite(height) or height <= 0:
+                height = 0.2
+
+            if spec.effect == 'flash':
+                color = spec.color or '#ffcc00'
+                radius = max(width, height) / 2.0
+                flash_radius = radius + 0.05
+                line_length = max(radius * 0.6, 0.1)
+                num_lines = 12
+                lines = VGroup()
+                for i in range(num_lines):
+                    angle = i * (2 * math.pi / num_lines)
+                    line = Line(center, center + line_length * RIGHT)
+                    line.shift(flash_radius * RIGHT)
+                    line.rotate(angle, about_point=center)
+                    lines.add(line)
+                lines.set_stroke(color=color, width=3, opacity=1.0)
+                lines.set_z_index(60)
+                return lines
+
+            if spec.effect == 'circumscribe':
+                color = spec.color or '#ff8800'
+                pad = 0.15
+                rect = Rectangle(
+                    width=width + 2 * pad, height=height + 2 * pad,
+                    color=color, fill_opacity=0.0,
+                    stroke_opacity=1.0, stroke_width=3,
+                )
+                rect.move_to(center)
+                rect.set_z_index(60)
+                return rect
+        except Exception:
+            return None
+        return None
+
+    def _event_additive(self, spec, env, t_abs, active):
+        """Additive (overlay) emphasis events: ``flash`` / ``circumscribe``.
+
+        Unlike ``_event_indicate`` (which transforms the target's own
+        mobject in place, self-restoring because ``updateGeoElements``
+        re-``become()``s it every frame), these effects add a NEW temp
+        decoration mobject on top of the target and fade it in/out with
+        the envelope bump (see ``_event_envelope``) — it persists across
+        frames on its own, so it must be explicitly removed once the
+        window closes to keep the scene byte-identical to the no-event
+        case.
+
+        Keyed by ``id(spec)`` (unique per event/interval, stable across
+        the whole window) rather than target name, so two concurrent
+        events on the same target can't collide.
+
+        Never touches ``elem.style``, the target mobject, or construction
+        state — only creates/updates/removes its own overlay mobject.
+        """
+        key = id(spec)
+        temp = active.get(key)
+
+        if env <= 0:
+            if temp is not None:
+                try:
+                    self.remove(temp)
+                except Exception:
+                    pass
+                active.pop(key, None)
+            return
+
+        if temp is None:
+            if not spec.targets:
+                return
+            target = self.mobject(spec.targets[0])
+            if target is None:
+                return
+            temp = self._make_event_overlay(spec, target)
+            if temp is None:
+                return
+            try:
+                self.add(temp)
+            except Exception:
+                return
+            active[key] = temp
+
+        try:
+            temp.set_stroke(opacity=env)
+        except Exception:
+            pass
+        try:
+            if temp.get_fill_opacity() > 0:
+                temp.set_fill(opacity=env)
+        except Exception:
+            pass
+
+    def _apply_events(self, interval, t_abs, active):
+        """Apply every ``EventSpec`` in *interval* at absolute time *t_abs*.
+
+        Must run LAST in the frame loop (after ``updateGeoElements`` and
+        after visibility/enter-exit effects) so it transforms the freshly
+        rebuilt mobject. Never writes ``elem.style`` or construction state —
+        only mutates the live mobject, which is why the effect vanishes on
+        its own once the event window (see ``_event_envelope``) closes.
+        """
+        for spec in getattr(interval, 'events', []):
+            env = self._event_envelope(spec, t_abs)
+            if spec.effect == 'indicate':
+                for name in spec.targets:
+                    self._event_indicate(self.mobject(name), env, spec)
+            else:
+                self._event_additive(spec, env, t_abs, active)   # Task 3
+
+    def _apply_style_interps(self, interval, t):
+        """Write interpolated style-track values for *interval* at progress t.
+
+        Returns the set of touched element names (callers merge it into the
+        ``updateGeoElements`` updates dict).
+        """
+        touched = set()
+        for si in interval.style_interps:
+            elem = self.geo.element(si.name)
+            if elem is None:
+                continue
+            elem.style[si.key] = si.at(t)
+            touched.add(si.name)
+        return touched
+
+    def _finalize_style_interval(self, interval):
+        """Pin exact end-of-interval style values and run null-reverts.
+
+        'set' writes the exact target value (deterministic end state even if
+        the last updater frame landed slightly before t=1); 'revert' restores
+        the element's pre-animation ``elem.style`` entry, deleting the key if
+        there was none (the resolver then falls back to overlay/defaults —
+        visually identical to the interpolated baseline target).
+        """
+        touched = set()
+        for fin in interval.style_finalizers:
+            op, name, key = fin[0], fin[1], fin[2]
+            elem = self.geo.element(name)
+            if elem is None:
+                continue
+            if op == 'set':
+                elem.style[key] = fin[3]
+            else:   # 'revert'
+                had_explicit, explicit_val = fin[3], fin[4]
+                if had_explicit:
+                    elem.style[key] = explicit_val
+                elif key in elem.style:
+                    del elem.style[key]
+            touched.add(name)
+        if touched:
+            self.updateGeoElements(touched)
 
     def _export_cairo(self, filepath, *, surface, dpi, label):
         """Write the current frame to a cairo vector ``surface``.

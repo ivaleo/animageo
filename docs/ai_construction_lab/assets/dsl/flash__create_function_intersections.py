@@ -1,0 +1,6 @@
+parabola = Function("0.35*x^2 - 1.2")
+line = Function("0.35*x + 0.2")
+P1, P2 = Intersect(parabola, line)
+segment = Segment(P1, P2)
+style(P1, P2, label_visible=True, fill="color.accent", size_px="point_size.bold")
+style(segment, stroke="color.accent", stroke_width_px="line_width.bold")

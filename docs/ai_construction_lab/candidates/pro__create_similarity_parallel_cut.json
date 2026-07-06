@@ -1,0 +1,22 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T13:12:52.112345+00:00",
+  "case_id": "create_similarity_parallel_cut",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "В треугольнике ABC проведи через точки D на AB и E на AC отрезок DE, параллельный BC.",
+  "expected": [
+    "chooses D and E with the same ratio from A",
+    "draws DE and BC as corresponding parallel sides",
+    "does not add unrequested angle clutter"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(0, 0)\nB = Point(4, 0)\nC = Point(1, 3)\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\nD = Point(1, 0)\nE = Point(2.5, 1.5)\nDE = Segment(D, E)\nstyle(DE, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(D, E, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(A, B, C, label_visible=True)\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")",
+    "style": null,
+    "notes": [
+      "Точки D и E выбраны так, чтобы DE была визуально параллельна BC, но параллельность не закодирована через конструкцию (например, через параллельную прямую). Для точной параллельности следует использовать Line(D, BC) и затем пересечение с AC."
+    ]
+  }
+}

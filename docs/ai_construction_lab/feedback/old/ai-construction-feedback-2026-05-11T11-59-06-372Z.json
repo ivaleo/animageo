@@ -1,0 +1,833 @@
+{
+  "schema": "animageo-ai-construction-lab-feedback/v1",
+  "exported_at": "2026-05-11T11:59:06.372Z",
+  "library_generated_at": "2026-05-11T10:36:19.372469+00:00",
+  "context": "../ai_construction_generation_context.md",
+  "cases": [
+    {
+      "id": "create_triangle_medians",
+      "title": "Triangle Medians And Centroid",
+      "prompt": "Построй равносторонний треугольник ABC, проведи все медианы и отметь их точку пересечения.",
+      "hash": "446cf340cb66b670",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "поскольку треугольник равносторонний, значит, что все его стороны и половины сторон равны — значит, следовало отметить половины отрезков все одни штрихом. вообще отметь где-то если еще не отметил, что одинаковыми штрихами обычно отмечают равные отрезки, а одинаковыми отметками дуг (обычно, если хватает разметок) равные углы.",
+        "updated_at": "2026-05-11T10:56:12.151Z",
+        "hash": "446cf340cb66b670"
+      }
+    },
+    {
+      "id": "create_triangle_altitude",
+      "title": "Altitude From C",
+      "prompt": "Построй треугольник ABC и высоту из вершины C к стороне AB. Основание высоты обозначь H.",
+      "hash": "ca8f6d8e06891d8e",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T10:56:21.288Z",
+        "hash": "ca8f6d8e06891d8e"
+      }
+    },
+    {
+      "id": "create_angle_bisector",
+      "title": "Angle Bisector",
+      "prompt": "Построй треугольник ABC и биссектрису угла A до пересечения со стороной BC.",
+      "hash": "f981e3c3a8edb297",
+      "feedback": {
+        "rating": "unset",
+        "issues": {},
+        "comment": ""
+      }
+    },
+    {
+      "id": "create_incircle",
+      "title": "Triangle Incircle",
+      "prompt": "Построй треугольник ABC, его вписанную окружность и центр этой окружности.",
+      "hash": "e2d46674a6807bcc",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T10:57:24.670Z",
+        "hash": "e2d46674a6807bcc"
+      }
+    },
+    {
+      "id": "create_tangents_from_point",
+      "title": "Tangents From External Point",
+      "prompt": "Построй окружность с центром O и внешнюю точку P. Проведи из P две касательные к окружности и отметь точки касания.",
+      "hash": "b0d1b53edca735e6",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T10:58:01.588Z",
+        "hash": "b0d1b53edca735e6"
+      }
+    },
+    {
+      "id": "create_arc_and_chord",
+      "title": "Arc And Chord",
+      "prompt": "Построй окружность, две точки P и Q на ней, хорду PQ и дугу PQ через верхнюю часть окружности.",
+      "hash": "69e99109ec885fbb",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T10:58:00.137Z",
+        "hash": "69e99109ec885fbb"
+      }
+    },
+    {
+      "id": "create_function_intersections",
+      "title": "Function Intersections",
+      "prompt": "Построй параболу y = 0.35x^2 - 1.2 и прямую y = 0.35x + 0.2, отметь точки их пересечения и соедини их отрезком.",
+      "hash": "da6f33e95f6afd2e",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T10:58:18.038Z",
+        "hash": "da6f33e95f6afd2e"
+      }
+    },
+    {
+      "id": "create_ellipse_axes",
+      "title": "Ellipse Axes",
+      "prompt": "Построй эллипс по двум фокусам F1, F2 и большой полуоси 3. Покажи его центр и оси.",
+      "hash": "538a43be1c50dda6",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "точки F1 и F2 должны быть с нижним индексом — запомни, что в геометрии обычно не используется F1, F2 а чаще F_1 и F_2, то есть на чертеже должно быть нижний регистр у цифр",
+        "updated_at": "2026-05-11T11:04:51.526Z",
+        "hash": "538a43be1c50dda6"
+      }
+    },
+    {
+      "id": "create_square_diagonals",
+      "title": "Square Diagonals",
+      "prompt": "Построй квадрат ABCD, проведи диагонали и отметь их точку пересечения.",
+      "hash": "4e3fe1c082d7d07a",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:05:02.905Z",
+        "hash": "4e3fe1c082d7d07a"
+      }
+    },
+    {
+      "id": "create_chord_global_blue_style",
+      "title": "Chord With Global Blue Style",
+      "prompt": "Построй окружность с хордой AB и сделай общий спокойный синий стиль для всей конструкции.",
+      "hash": "21ed62cd628a96bd",
+      "feedback": {
+        "rating": "unset",
+        "issues": {},
+        "comment": ""
+      }
+    },
+    {
+      "id": "create_perpendicular_bisector_compass",
+      "title": "Perpendicular Bisector With Compass Arcs",
+      "prompt": "Построй серединный перпендикуляр к отрезку AB через пересечения двух равных окружностей.",
+      "hash": "b763b770688cb25e",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:06:00.805Z",
+        "hash": "b763b770688cb25e"
+      }
+    },
+    {
+      "id": "create_parallel_through_point",
+      "title": "Parallel Line Through A Point",
+      "prompt": "Дана прямая AB и точка P вне ее. Проведи через P прямую, параллельную AB.",
+      "hash": "d2f545ca7d823845",
+      "feedback": {
+        "rating": "fail",
+        "issues": {
+          "construction_error": true
+        },
+        "comment": "неверно трактована прямая — вместо нее нарисованы два равных отрезка",
+        "updated_at": "2026-05-11T11:08:51.989Z",
+        "hash": "d2f545ca7d823845"
+      }
+    },
+    {
+      "id": "create_equilateral_on_segment",
+      "title": "Equilateral Triangle On Segment",
+      "prompt": "Построй равносторонний треугольник ABC на основании AB.",
+      "hash": "5801fe73f03e9606",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "я бы сказал, что углы не обязательно отмечать, если это не просится — равносторонность обозначает прежде всего равенство сторон, но равенство углов это уже скорее свойство по запросу",
+        "updated_at": "2026-05-11T11:09:42.693Z",
+        "hash": "5801fe73f03e9606"
+      }
+    },
+    {
+      "id": "create_square_on_segment",
+      "title": "Square On Segment",
+      "prompt": "Построй квадрат ABCD на отрезке AB и отметь прямые углы.",
+      "hash": "350463fe2d02955e",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "я бы сказал, что если не требуется отмечать стороны, то их можно и не отмечать",
+        "updated_at": "2026-05-11T11:10:06.454Z",
+        "hash": "350463fe2d02955e"
+      }
+    },
+    {
+      "id": "create_regular_hexagon_in_circle",
+      "title": "Regular Hexagon In A Circle",
+      "prompt": "Построй правильный шестиугольник, вписанный в окружность.",
+      "hash": "f1834b33cb7c50fd",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:10:46.987Z",
+        "hash": "f1834b33cb7c50fd"
+      }
+    },
+    {
+      "id": "create_circumcenter_and_circumcircle",
+      "title": "Circumcenter And Circumcircle",
+      "prompt": "Построй треугольник ABC, серединные перпендикуляры, центр описанной окружности и саму окружность.",
+      "hash": "8adc6386b83fddd0",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "тут надо показать серединные перпендикуляры отметив равенство соответствующих отрезков-половин и прямой угол, а также присутствует на рисунке ошибка в обозначении радиусов OA, OB, OC — отображаются только их штрихи, а самих отрезков нет",
+        "updated_at": "2026-05-11T11:12:22.431Z",
+        "hash": "8adc6386b83fddd0"
+      }
+    },
+    {
+      "id": "create_orthocenter_altitudes",
+      "title": "Orthocenter From Three Altitudes",
+      "prompt": "Построй треугольник ABC, все высоты и ортоцентр H.",
+      "hash": "45f5724b3d7ecc11",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:12:44.503Z",
+        "hash": "45f5724b3d7ecc11"
+      }
+    },
+    {
+      "id": "create_euler_line",
+      "title": "Euler Line",
+      "prompt": "Построй треугольник ABC, центр тяжести G, ортоцентр H, центр описанной окружности O и прямую Эйлера.",
+      "hash": "dc6ef51980d281ad",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "в целом все хорошо, хотя спорный вопрос, стоит ли проводить медианы, если не требуется, и не следовало ли провести высоты, но тогда чертеж перегрузится, поэтому в целом ок, потому что потом можно все доуточнить",
+        "updated_at": "2026-05-11T11:14:36.537Z",
+        "hash": "dc6ef51980d281ad"
+      }
+    },
+    {
+      "id": "create_nine_point_circle",
+      "title": "Nine-Point Circle",
+      "prompt": "Построй девятиточечную окружность треугольника: середины сторон, основания высот и середины отрезков от вершин до ортоцентра.",
+      "hash": "e143440322a0c3c3",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:15:14.924Z",
+        "hash": "e143440322a0c3c3"
+      }
+    },
+    {
+      "id": "create_medial_triangle",
+      "title": "Medial Triangle",
+      "prompt": "Построй срединный треугольник исходного треугольника ABC и отметь равные половины сторон.",
+      "hash": "44599934510dcd1d",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:15:33.608Z",
+        "hash": "44599934510dcd1d"
+      }
+    },
+    {
+      "id": "create_orthic_triangle",
+      "title": "Orthic Triangle",
+      "prompt": "Построй ортический треугольник остроугольного треугольника ABC.",
+      "hash": "3a13e3c5d487ffb7",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:15:47.158Z",
+        "hash": "3a13e3c5d487ffb7"
+      }
+    },
+    {
+      "id": "create_pedal_triangle",
+      "title": "Pedal Triangle Of A Point",
+      "prompt": "Построй педальный треугольник точки P относительно треугольника ABC.",
+      "hash": "2f346141de68c351",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:16:03.675Z",
+        "hash": "2f346141de68c351"
+      }
+    },
+    {
+      "id": "create_simson_line",
+      "title": "Simson Line",
+      "prompt": "Построй прямую Симсона для точки P на описанной окружности треугольника ABC.",
+      "hash": "ccf90f1951119fc3",
+      "feedback": {
+        "rating": "partial",
+        "issues": {
+          "naming": true
+        },
+        "comment": "Тут отмечены точки F_ab, F_bc, F_ca вместе с их подписями, но сейчас подписи по умолчанию считываются не совсем корректно (не совсем так как хотелось бы), а именно F_ab переходит в $F_ab$ а не в $F_{ab}$ из-за чего одна буква попадает в нижний регистр, а вторая остается в обычном. Тут уже нужно отметить задачу в самой библиотеке на доработку — хочется чтобы такие случа парсились в нужном ожидаемом для нас виде, так как это привычнее. Да это немного не соответствует компиляции имени элемента в TeX напрямую, но это консистентность между использованием имени элемента в коде и ожиданием отображения его надписи на чертеже.",
+        "updated_at": "2026-05-11T11:21:27.168Z",
+        "hash": "ccf90f1951119fc3"
+      }
+    },
+    {
+      "id": "create_gergonne_point",
+      "title": "Gergonne Point",
+      "prompt": "Построй вписанную окружность треугольника, точки касания и точку Жергонна.",
+      "hash": "9089f6254c3b92db",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:22:00.973Z",
+        "hash": "9089f6254c3b92db"
+      }
+    },
+    {
+      "id": "create_symmedian_point",
+      "title": "Symmedian Point",
+      "prompt": "Построй симмедианную точку треугольника как изогональное сопряжение центра тяжести.",
+      "hash": "defa9efdf3c23e09",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:22:15.557Z",
+        "hash": "defa9efdf3c23e09"
+      }
+    },
+    {
+      "id": "create_isogonal_conjugate",
+      "title": "Isogonal Conjugate Of A Point",
+      "prompt": "В треугольнике ABC построй точку P и ее изогонально сопряженную точку P*.",
+      "hash": "86011e8717db94f8",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:22:31.540Z",
+        "hash": "86011e8717db94f8"
+      }
+    },
+    {
+      "id": "create_fermat_point",
+      "title": "Fermat Point Construction",
+      "prompt": "Построй точку Ферма треугольника через внешние равносторонние треугольники.",
+      "hash": "06214162c0695dd7",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:23:59.174Z",
+        "hash": "06214162c0695dd7"
+      }
+    },
+    {
+      "id": "create_napoleon_triangle",
+      "title": "Napoleon Triangle",
+      "prompt": "Построй внешние равносторонние треугольники на сторонах ABC и треугольник Наполеона по их центрам.",
+      "hash": "c684aecc1a2f0bd3",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:24:09.223Z",
+        "hash": "c684aecc1a2f0bd3"
+      }
+    },
+    {
+      "id": "create_tangent_chord_theorem",
+      "title": "Tangent-Chord Theorem",
+      "prompt": "Покажи касательную в точке A окружности, хорду AB и вписанный угол ACB, соответствующий углу между касательной и хордой.",
+      "hash": "f17120fc02dbc305",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "Угол ACB оказался \"подвисшим в воздухе\", так как угол отмечен, а его стороны не проведены. В этом случае нужно провести стороны-отрезки CA и CB.",
+        "updated_at": "2026-05-11T11:25:08.552Z",
+        "hash": "f17120fc02dbc305"
+      }
+    },
+    {
+      "id": "create_inscribed_angle_theorem",
+      "title": "Inscribed Angle Theorem",
+      "prompt": "Построй центральный угол AOB и вписанный угол ACB, опирающиеся на одну дугу AB.",
+      "hash": "f53cb91c4a161504",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "В данном случае лишняя хорда AB, так как речь только про дугу",
+        "updated_at": "2026-05-11T11:25:43.697Z",
+        "hash": "f53cb91c4a161504"
+      }
+    },
+    {
+      "id": "create_thales_semicircle",
+      "title": "Thales Semicircle",
+      "prompt": "Построй полуокружность с диаметром AB, точку C на ней и отметь прямой угол ACB.",
+      "hash": "8fffdfb0a794d742",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:26:00.706Z",
+        "hash": "8fffdfb0a794d742"
+      }
+    },
+    {
+      "id": "create_cyclic_quadrilateral",
+      "title": "Cyclic Quadrilateral",
+      "prompt": "Построй вписанный четырехугольник ABCD и отметь противоположные углы.",
+      "hash": "515479eb9b697f1e",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "в данном кейса не нужно проводить диагональ, это не требовалось. И центр окружности можно не показывать, так как четырехугольник просто вписанный, достаточно \"в общем\" показать, окружность описанную вокруг него",
+        "updated_at": "2026-05-11T11:27:04.514Z",
+        "hash": "515479eb9b697f1e"
+      }
+    },
+    {
+      "id": "create_radical_axis_intersecting_circles",
+      "title": "Radical Axis Of Two Circles",
+      "prompt": "Построй две пересекающиеся окружности и их радикальную ось.",
+      "hash": "4ba5a019da83beed",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:27:16.589Z",
+        "hash": "4ba5a019da83beed"
+      }
+    },
+    {
+      "id": "create_power_of_point_secants",
+      "title": "Power Of A Point With Two Secants",
+      "prompt": "Покажи из внешней точки P две секущие окружности и соответствующие отрезки.",
+      "hash": "6740f820b1b2a263",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "тут сам запрос неоднозначный был, но в целом скорее ок, потому что потом можно уже уточнить, что не так",
+        "updated_at": "2026-05-11T11:28:13.375Z",
+        "hash": "6740f820b1b2a263"
+      }
+    },
+    {
+      "id": "create_polar_line_circle",
+      "title": "Polar Line Of A Point",
+      "prompt": "Построй полярную прямую внешней точки P относительно окружности и точки касания касательных.",
+      "hash": "6a8b669afa27a11d",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:28:19.056Z",
+        "hash": "6a8b669afa27a11d"
+      }
+    },
+    {
+      "id": "create_inversion_in_circle",
+      "title": "Inversion In A Circle",
+      "prompt": "Построй образ точки A при инверсии относительно окружности с центром O.",
+      "hash": "5de12cbf101189f5",
+      "feedback": {
+        "rating": "unset",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:28:50.739Z",
+        "hash": "5de12cbf101189f5"
+      }
+    },
+    {
+      "id": "create_reflection_triangle_axis",
+      "title": "Reflection Across A Line",
+      "prompt": "Отрази треугольник ABC относительно прямой l.",
+      "hash": "f2969753e8d876c0",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "Во-первых в условии сказано прямая l абстрактно, значит точки через которые она проходит, можно не показывать. Во-вторых в условии сказано прямая с именем l — значит, следовало отобразить ее надпись причем доступно в пределах видимости — это видимо отдельная задача для внутренней доработки, отметь ее, что нужно уметь отображать надписи \"бесконечных\" объектов и при автовыравнивании надписей иметь механизм размещения этих надписей (причем в более низком приоритете чем для точек, углов, отрезков)",
+        "updated_at": "2026-05-11T11:31:20.801Z",
+        "hash": "f2969753e8d876c0"
+      }
+    },
+    {
+      "id": "create_rotation_of_triangle",
+      "title": "Rotation Of A Triangle",
+      "prompt": "Поверни треугольник ABC вокруг точки O на 60 градусов.",
+      "hash": "a5ba081c32749355",
+      "feedback": {
+        "rating": "pass",
+        "issues": {
+          "construction_error": false
+        },
+        "comment": "",
+        "updated_at": "2026-05-11T11:32:43.092Z",
+        "hash": "a5ba081c32749355"
+      }
+    },
+    {
+      "id": "create_translation_vector",
+      "title": "Translation By Vector",
+      "prompt": "Перенеси треугольник ABC на вектор v.",
+      "hash": "452ecff68d1fc5bb",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "надписи V0 и V1 должны были бы идти с нижним индексом V_0, V_1. Кроме того, в запросе сказано вектор v, значит вообще не нужно отмечать точки вектора, достаточно просто один вектор и его обозначение $\\vec{v}$",
+        "updated_at": "2026-05-11T11:34:12.752Z",
+        "hash": "452ecff68d1fc5bb"
+      }
+    },
+    {
+      "id": "create_homothety_triangle",
+      "title": "Homothety From A Center",
+      "prompt": "Построй образ треугольника ABC при гомотетии с центром O и коэффициентом 1.6.",
+      "hash": "0b4a91dfaeee74dc",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:35:31.142Z",
+        "hash": "0b4a91dfaeee74dc"
+      }
+    },
+    {
+      "id": "create_parallelogram_diagonals",
+      "title": "Parallelogram Diagonals",
+      "prompt": "Построй параллелограмм ABCD по трем вершинам и отметь точку пересечения диагоналей.",
+      "hash": "21ad9ae55a22d735",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "если не спрашивается отмечать равные отрезки, то не стоит их отмечать, это уже скорее свойство параллелограмма, по умолчанию достаточно просто их провести",
+        "updated_at": "2026-05-11T11:36:12.808Z",
+        "hash": "21ad9ae55a22d735"
+      }
+    },
+    {
+      "id": "create_rhombus_from_circles",
+      "title": "Rhombus From Equal Circles",
+      "prompt": "Построй ромб ABCD, используя две равные окружности с центрами A и B.",
+      "hash": "130ba9e86f0f08ce",
+      "feedback": {
+        "rating": "fail",
+        "issues": {
+          "construction_error": false
+        },
+        "comment": "тут как-то странно отмечены две стороны и два радиуса, скорее радиусы лучше отдельно не показывать. и еще здесь в запросе не было сказано, что A и B лежат на окружностях, то есть лучше отобразить более общий случай.",
+        "updated_at": "2026-05-11T11:38:31.327Z",
+        "hash": "130ba9e86f0f08ce"
+      }
+    },
+    {
+      "id": "create_trapezoid_midline",
+      "title": "Trapezoid Midline",
+      "prompt": "Построй трапецию ABCD и ее среднюю линию.",
+      "hash": "8aab21c805a3edf2",
+      "feedback": {
+        "rating": "fail",
+        "issues": {},
+        "comment": "здесь не надо отмечать засечками основания трапеции CD и AB — они не равны (они параллельны, но это можно не показывать). Кроме того здесь трапеция построена покоординатно, это не очень хорошо, лучше чтобы одно основание было параллельно другому.",
+        "updated_at": "2026-05-11T11:40:13.150Z",
+        "hash": "8aab21c805a3edf2"
+      }
+    },
+    {
+      "id": "create_kite_symmetry",
+      "title": "Kite With Symmetry Axis",
+      "prompt": "Построй дельтоид ABCD с осью симметрии AC.",
+      "hash": "96a9e6060817a1a9",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "дельтоид очень получился похожи на ромб, следовало бы сделать более разными координаты чтобы стороны не были похожи на равные",
+        "updated_at": "2026-05-11T11:41:53.810Z",
+        "hash": "96a9e6060817a1a9"
+      }
+    },
+    {
+      "id": "create_parabola_focus_directrix",
+      "title": "Parabola Focus And Directrix",
+      "prompt": "Построй параболу по фокусу F и директрисе d, покажи вершину и ось.",
+      "hash": "d289634252e156c7",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:42:37.009Z",
+        "hash": "d289634252e156c7"
+      }
+    },
+    {
+      "id": "create_hyperbola_foci_axes",
+      "title": "Hyperbola Foci And Axes",
+      "prompt": "Построй гиперболу по фокусам F1, F2 и полуоси 1.2, покажи центр, вершины и оси.",
+      "hash": "3201110fabb59be1",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "V1, V2 нужно как V_1, V_2",
+        "updated_at": "2026-05-11T11:42:35.125Z",
+        "hash": "3201110fabb59be1"
+      }
+    },
+    {
+      "id": "create_conic_five_points",
+      "title": "Conic Through Five Points",
+      "prompt": "Построй конику, проходящую через пять заданных точек.",
+      "hash": "c5db026f79d9ffd6",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:42:42.425Z",
+        "hash": "c5db026f79d9ffd6"
+      }
+    },
+    {
+      "id": "create_ellipse_tangents_from_point",
+      "title": "Tangents From Point To Ellipse",
+      "prompt": "Построй эллипс и две касательные из внешней точки P.",
+      "hash": "733ac83a510d4b25",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:47:55.374Z",
+        "hash": "733ac83a510d4b25"
+      }
+    },
+    {
+      "id": "create_implicit_lemniscate_line_intersections",
+      "title": "Implicit Lemniscate Intersections",
+      "prompt": "Построй лемнискату и прямую, отметь точки их пересечения.",
+      "hash": "7ed90ebed588006e",
+      "feedback": {
+        "rating": "fail",
+        "issues": {},
+        "comment": "тут не сказано соединять точки отрезком, а только отметить точки пересечения. Кроме того тут нужно уточнить, сколько точек пересечения — их может быть больше двух",
+        "updated_at": "2026-05-11T11:49:01.457Z",
+        "hash": "7ed90ebed588006e"
+      }
+    },
+    {
+      "id": "create_function_circle_intersections",
+      "title": "Function And Circle Intersections",
+      "prompt": "Построй график синуса, окружность и отметь точки их пересечения.",
+      "hash": "b36206de035715bd",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "не нужно проводить отрезки между точками пересечений",
+        "updated_at": "2026-05-11T11:49:37.292Z",
+        "hash": "b36206de035715bd"
+      }
+    },
+    {
+      "id": "create_circle_sector_and_arc",
+      "title": "Circle Sector And Arc",
+      "prompt": "Построй сектор AOB окружности, выдели дугу AB и хорду AB.",
+      "hash": "5c59c74c2c23dae8",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:49:59.206Z",
+        "hash": "5c59c74c2c23dae8"
+      }
+    },
+    {
+      "id": "create_circumcircle_arc_triangle",
+      "title": "Circumcircle Arc Through Three Points",
+      "prompt": "Построй дугу окружности через точки A, B, C так, чтобы она проходила через B.",
+      "hash": "bcb71c9bf78f581c",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:50:06.040Z",
+        "hash": "bcb71c9bf78f581c"
+      }
+    },
+    {
+      "id": "create_copy_segment_with_circle",
+      "title": "Copy Segment With Compass",
+      "prompt": "Скопируй длину отрезка AB от точки P вдоль луча PQ.",
+      "hash": "85781282a7ab804f",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:50:49.340Z",
+        "hash": "85781282a7ab804f"
+      }
+    },
+    {
+      "id": "create_copy_angle_by_rotation",
+      "title": "Copy Angle By Rotation",
+      "prompt": "Скопируй угол BAC в вершину P на луч PQ.",
+      "hash": "8097fd2f2386870a",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "тут скорее следовало показать луч PQ раз уж он фигурирует в запросе",
+        "updated_at": "2026-05-11T11:51:22.623Z",
+        "hash": "8097fd2f2386870a"
+      }
+    },
+    {
+      "id": "create_triangle_with_area_measure",
+      "title": "Triangle Area And Perimeter Measures",
+      "prompt": "Построй треугольник ABC и добавь измерения площади и периметра.",
+      "hash": "3128c11ab45b4e7a",
+      "feedback": {
+        "rating": "fail",
+        "issues": {},
+        "comment": "нет измерения площади и периметра — точнее есть вычисления но нужно вывести эти значения (если способа выводить надписи нету, то нужно поставить отдельную задачу для разработки)",
+        "updated_at": "2026-05-11T11:52:22.480Z",
+        "hash": "3128c11ab45b4e7a"
+      }
+    },
+    {
+      "id": "create_angle_sum_triangle",
+      "title": "Triangle Angle Sum",
+      "prompt": "Построй треугольник ABC и отметь три его внутренних угла разными засечками.",
+      "hash": "9bfb55a3eacc4acc",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:52:33.056Z",
+        "hash": "9bfb55a3eacc4acc"
+      }
+    },
+    {
+      "id": "create_external_angle_theorem",
+      "title": "Exterior Angle Theorem",
+      "prompt": "Построй внешний угол при вершине C треугольника ABC и отметь два удаленных внутренних угла.",
+      "hash": "268d7c126d9dc165",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "для внешнего угла нужно продолжение стороны, все ок, но не нужно отмечать точку продолжения D, так как мы просто образно показываем, что сторона продолжается. Вообще тут нужно тоже уточнить запомнить, что продолжения отрезков, сторон, и тп мы делаем на какую-то часть но обычно не отмечая конец этой части отдельной точкой (точка может участвовать только при построениях)",
+        "updated_at": "2026-05-11T11:54:47.607Z",
+        "hash": "268d7c126d9dc165"
+      }
+    },
+    {
+      "id": "create_angle_bisectors_incenter",
+      "title": "Angle Bisectors And Incenter",
+      "prompt": "Построй три биссектрисы треугольника и их точку пересечения.",
+      "hash": "0e08f6fb776e855e",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "не хватает отметок равных углов при вершине C",
+        "updated_at": "2026-05-11T11:55:14.856Z",
+        "hash": "0e08f6fb776e855e"
+      }
+    },
+    {
+      "id": "create_perpendicular_from_external_point",
+      "title": "Perpendicular From External Point",
+      "prompt": "Из точки P вне прямой AB опусти перпендикуляр на AB и обозначь основание H.",
+      "hash": "66fd14c4393d11bb",
+      "feedback": {
+        "rating": "fail",
+        "issues": {},
+        "comment": "в условии сказано прямая AB, значит, это должна быть прямая а не отрезок",
+        "updated_at": "2026-05-11T11:55:43.156Z",
+        "hash": "66fd14c4393d11bb"
+      }
+    },
+    {
+      "id": "create_circle_center_from_two_chords",
+      "title": "Circle Center From Two Chords",
+      "prompt": "Найди центр окружности как пересечение серединных перпендикуляров к двум хордам.",
+      "hash": "af98677b45ba0711",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "здесь нужно постараться отобразить серединные перпендикуляры — прямые углы и равество половин хорд",
+        "updated_at": "2026-05-11T11:56:14.861Z",
+        "hash": "af98677b45ba0711"
+      }
+    },
+    {
+      "id": "create_common_chord_lens",
+      "title": "Common Chord Lens",
+      "prompt": "Построй две пересекающиеся окружности, их общую хорду и линзу между ними.",
+      "hash": "a982344f2c7232fe",
+      "feedback": {
+        "rating": "partial",
+        "issues": {},
+        "comment": "построения верные, но выделена не та часть — выделены внешние дуги вместо внутренних, и кроме того можно было бы еще закрасить заливкой линзу (придумать как)",
+        "updated_at": "2026-05-11T11:57:14.118Z",
+        "hash": "a982344f2c7232fe"
+      }
+    },
+    {
+      "id": "create_arbelos_three_semicircles",
+      "title": "Arbelos Three Semicircles",
+      "prompt": "Построй арбелос из трех полуокружностей на одном диаметре.",
+      "hash": "f19f5f23071cc5bc",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T11:57:21.106Z",
+        "hash": "f19f5f23071cc5bc"
+      }
+    },
+    {
+      "id": "create_pappus_chain_start",
+      "title": "Pappus Chain Starter",
+      "prompt": "Построй начальную конфигурацию цепи Паппа: арбелос и две первые малые окружности между дугами.",
+      "hash": "1262d43c548352db",
+      "feedback": {
+        "rating": "fail",
+        "issues": {
+          "construction_error": true
+        },
+        "comment": "окружности Паппа построены неверно, внимательно прочитай определение и нужно придумать построение именно для вписывания окружности, чтобы она касалась краев",
+        "updated_at": "2026-05-11T11:59:02.393Z",
+        "hash": "1262d43c548352db"
+      }
+    }
+  ]
+}

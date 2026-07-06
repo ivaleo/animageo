@@ -1,0 +1,23 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T11:08:18.207597+00:00",
+  "case_id": "create_triangle_with_area_measure",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй треугольник ABC и добавь измерения площади и периметра.",
+  "expected": [
+    "uses Area and Perimeter measure commands",
+    "shows the triangle area as a value label",
+    "shows the perimeter as a static measurement label pending standalone measure labels"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(0, 0)\nB = Point(4, 0)\nC = Point(1, 3)\n\ntriangle, AB, BC, CA = Polygon(A, B, C)\n\nstyle(A, B, C, label_visible=True)\nstyle(triangle, stroke=\"color.main\", stroke_width_px=\"line_width.main\", fill=\"color.aux\", fill_opacity=0.15)\n\narea_measure = Area(triangle)\nperimeter_measure = Perimeter(triangle)\n\narea_val = area_measure.data.value\nperimeter_val = perimeter_measure.data.value\n\nstyle(triangle, label_visible=True, label_text=f\"S={area_val:.2f}\", label_mode=\"label_value\")\n\nstyle(AB, label_visible=True, label_text=f\"P={perimeter_val:.2f}\", label_mode=\"label_value\")",
+    "style": null,
+    "notes": [
+      "Perimeter value attached to side AB as a visible label because the current DSL has no standalone live text object for aggregate measurements.",
+      "Area value attached to the triangle polygon as a visible label."
+    ]
+  }
+}

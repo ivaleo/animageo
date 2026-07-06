@@ -1,0 +1,12 @@
+A = Point(-2.5, -1.7)
+B = Point(2.0, -1.7)
+D = Rotate(B, pi / 2, A)
+C = B + (D - A)
+square, AB, BC, CD, DA = Polygon(A, B, C, D)
+angle_A = Angle(D, A, B)
+angle_B = Angle(A, B, C)
+angle_C = Angle(B, C, D)
+angle_D = Angle(C, D, A)
+
+style(A, B, C, D, label_visible=True)
+style(angle_A, angle_B, angle_C, angle_D, right_angle_marker=True)

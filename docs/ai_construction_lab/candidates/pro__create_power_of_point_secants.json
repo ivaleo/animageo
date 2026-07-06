@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T09:35:27.124901+00:00",
+  "case_id": "create_power_of_point_secants",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Покажи из внешней точки P две секущие окружности и соответствующие отрезки.",
+  "expected": [
+    "constructs two secants from P",
+    "marks circle intersections",
+    "uses indexed labels"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Given circle with center O and external point P\nO = Point(0, 0)\nA = Point(2, 0)\ncircle = Circle(O, A)\nP = Point(5, 1)\n\n# First secant line through P intersecting circle at B and C\nB = Point(3, 1.5)\nline1 = Line(P, B)\nB, C = Intersect(line1, circle)\n\n# Second secant line through P intersecting circle at D and E\nD = Point(3, -0.5)\nline2 = Line(P, D)\nD, E = Intersect(line2, circle)\n\n# Draw visible segments: secant segments from P to circle intersection points\nPB = Segment(P, B)\nPC = Segment(P, C)\nPD = Segment(P, D)\nPE = Segment(P, E)\n\n# Style\nstyle(O, A, label_visible=False)\nstyle(circle, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(P, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(B, C, D, E, label_visible=True, fill=\"color.main\", size_px=\"point_size.main\")\nstyle(PB, PC, PD, PE, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nhide(line1, line2)",
+    "style": null,
+    "notes": [
+      "Secant lines are hidden; only the secant segments from P to the circle are shown.",
+      "Intersection points B, C, D, E are labeled.",
+      "Point P is highlighted as the external point."
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+A = Point(0, 2.1)
+B = Point(2.0, 0.65)
+pentagon, AB, BC, CD, DE, EA, C, D, E = Polygon(A, B, 5)
+AC = Segment(A, C)
+BD = Segment(B, D)
+CE = Segment(C, E)
+DA = Segment(D, A)
+EB = Segment(E, B)
+
+style(A, B, C, D, E, label_visible=True)
+style(AB, BC, CD, DE, EA, stroke="color.strong", stroke_width_px="line_width.bold", tick_count=1)
+style(AC, BD, CE, DA, EB, stroke="color.accent", stroke_width_px="line_width.main")

@@ -1,0 +1,25 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T08:36:42.457633+00:00",
+  "case_id": "create_simson_line",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй прямую Симсона для точки P на описанной окружности треугольника ABC.",
+  "expected": [
+    "chooses P on the circumcircle",
+    "drops perpendiculars to all side lines",
+    "draws line through the feet"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Triangle ABC\nA = Point(-3, -1)\nB = Point(3, -1)\nC = Point(0, 4)\n\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(A, B, C, label_visible=True)\n\n# Circumcircle of ABC\nperp_bis_AB = PerpendicularBisector(A, B)\nperp_bis_BC = PerpendicularBisector(B, C)\nO = Intersect(perp_bis_AB, perp_bis_BC)\ncircumcircle = Circle(O, A)\nstyle(circumcircle, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nhide(perp_bis_AB, perp_bis_BC)\n\n# Point P on circumcircle (choose a point on the circle)\nP = Rotate(A, 2.2, O)  # arbitrary angle to place P on the circle\nstyle(P, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\n\n# Simson line: feet of perpendiculars from P to the sides (or their extensions)\n# Side AB (line through A and B)\nline_AB = Line(A, B)\nfoot_AB = Intersect(PerpendicularLine(P, line_AB), line_AB)\n\n# Side BC\nline_BC = Line(B, C)\nfoot_BC = Intersect(PerpendicularLine(P, line_BC), line_BC)\n\n# Side CA\nline_CA = Line(C, A)\nfoot_CA = Intersect(PerpendicularLine(P, line_CA), line_CA)\n\n# Hide infinite lines used for construction\nhide(line_AB, line_BC, line_CA)\n\n# Draw the Simson line through two of the feet\nsimson = Line(foot_AB, foot_BC)\nstyle(simson, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n\n# Mark right angles at feet (optional but helpful)\nright_AB = Angle(A, foot_AB, P)\nright_BC = Angle(B, foot_BC, P)\nright_CA = Angle(C, foot_CA, P)\nstyle(right_AB, right_BC, right_CA, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\n\n# Show feet as points\nstyle(foot_AB, foot_BC, foot_CA, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=False)\n\n# Optionally draw perpendicular segments from P to feet (dashed)\nperp_AB = Segment(P, foot_AB)\nperp_BC = Segment(P, foot_BC)\nperp_CA = Segment(P, foot_CA)\nstyle(perp_AB, perp_BC, perp_CA, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"4 4\")",
+    "style": null,
+    "notes": [
+      "Point P is placed on the circumcircle by rotating A around O by an arbitrary angle (2.2 rad).",
+      "Feet of perpendiculars are constructed on the infinite lines containing the sides, which is correct for the Simson line even if feet lie on extensions.",
+      "Right-angle markers are added at the feet for clarity.",
+      "Perpendicular segments from P to the feet are drawn dashed as auxiliary lines."
+    ]
+  }
+}

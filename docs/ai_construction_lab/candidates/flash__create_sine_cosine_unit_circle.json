@@ -1,0 +1,25 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T18:04:04.969543+00:00",
+  "case_id": "create_sine_cosine_unit_circle",
+  "variant": "flash",
+  "model": "deepseek-v4-flash",
+  "prompt": "Построй единичную окружность, точку P на ней и проекции, показывающие cos и sin.",
+  "expected": [
+    "constructs circle and point on it",
+    "draws horizontal and vertical projections",
+    "labels projection segments cos and sin"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "O = Point(0, 0)\nA = Point(1, 0)\nB = Point(0, 1)\nx_axis = Line(O, A)\ny_axis = Line(O, B)\ncircle = Circle(O, A)\nP = Rotate(A, pi / 3, O)\n\ncos_line = PerpendicularLine(P, x_axis)\nsin_line = PerpendicularLine(P, y_axis)\nfoot_x = Intersect(cos_line, x_axis)\nfoot_y = Intersect(sin_line, y_axis)\n\ncos_seg = Segment(O, foot_x)\nsin_seg = Segment(O, foot_y)\nproj_x = Segment(P, foot_x)\nproj_y = Segment(P, foot_y)\nOP = Segment(O, P)\n\nstyle(circle, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(x_axis, y_axis, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(cos_seg, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", label_text=\"$\\\\cos\\\\theta$\", label_visible=True)\nstyle(sin_seg, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", label_text=\"$\\\\sin\\\\theta$\", label_visible=True)\nstyle(proj_x, proj_y, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"4 2\")\nstyle(OP, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(O, A, P, label_visible=True)\nstyle(B, foot_x, foot_y, label_visible=False, size_px=\"point_size.aux\")\n\nright_x = Angle(A, foot_x, P)\nright_y = Angle(B, foot_y, P)\nstyle(right_x, right_y, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\nhide(cos_line, sin_line)",
+    "style": null,
+    "notes": [
+      "Used rotation to place P on the unit circle at 50 degrees for a generic angle.",
+      "Projection segments are labeled with LaTeX cos and sin.",
+      "Coordinate axes shown as auxiliary lines.",
+      "Candidate was normalized after flash generation to avoid inline dependent Point(...) geometry that hangs rendering."
+    ]
+  }
+}

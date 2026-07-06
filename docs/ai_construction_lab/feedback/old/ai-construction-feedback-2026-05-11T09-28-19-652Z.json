@@ -1,0 +1,140 @@
+{
+  "schema": "animageo-ai-construction-lab-feedback/v1",
+  "exported_at": "2026-05-11T09:28:19.651Z",
+  "library_generated_at": "2026-05-11T09:02:02.635792+00:00",
+  "context": "../ai_construction_generation_context.md",
+  "cases": [
+    {
+      "id": "create_triangle_medians",
+      "title": "Triangle Medians And Centroid",
+      "prompt": "Построй равносторонний треугольник ABC, проведи все медианы и отметь их точку пересечения.",
+      "hash": "3ca973cb9e09e1ad",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "когда проводят медианы (и в целом строят середины отрезков) то отмечают равные отрезки засечками (причем разные отрезки разным кол-вом, например первые две половины одной засечкой, на другом отрезке две половины двумя засечками и тп, то есть нужно создавать отрезки, чтобы для них по сути только засечки использовать, подумай как лучше)",
+        "updated_at": "2026-05-11T09:27:32.877Z",
+        "hash": "3ca973cb9e09e1ad"
+      }
+    },
+    {
+      "id": "create_triangle_altitude",
+      "title": "Altitude From C",
+      "prompt": "Построй треугольник ABC и высоту из вершины C к стороне AB. Основание высоты обозначь H.",
+      "hash": "37e195f23094d24d",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "когда проводят высоту то обычно отмечают прямой угол при основании, чтобы показать что это не произвольный отрезок",
+        "updated_at": "2026-05-11T09:25:58.044Z",
+        "hash": "37e195f23094d24d"
+      }
+    },
+    {
+      "id": "create_angle_bisector",
+      "title": "Angle Bisector",
+      "prompt": "Построй треугольник ABC и биссектрису угла A до пересечения со стороной BC.",
+      "hash": "1cb54d075518d79a",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "Когда строят биссектрису чаще отмечают два угла, на которые биссектриса разбивает угол, причем у одного угла радиус дужки чуть больше, чтобы два равных угла не сливались визуально в один",
+        "updated_at": "2026-05-11T09:25:49.510Z",
+        "hash": "1cb54d075518d79a"
+      }
+    },
+    {
+      "id": "create_incircle",
+      "title": "Triangle Incircle",
+      "prompt": "Построй треугольник ABC, его вписанную окружность и центр этой окружности.",
+      "hash": "e2d46674a6807bcc",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T09:25:02.645Z",
+        "hash": "e2d46674a6807bcc"
+      }
+    },
+    {
+      "id": "create_tangents_from_point",
+      "title": "Tangents From External Point",
+      "prompt": "Построй окружность с центром O и внешнюю точку P. Проведи из P две касательные к окружности и отметь точки касания.",
+      "hash": "15ed7cfd7ea3cd5f",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "в именах/лейблах лучше импользовать нижние индексы (T_1, T_2)",
+        "updated_at": "2026-05-11T09:24:56.902Z",
+        "hash": "15ed7cfd7ea3cd5f"
+      }
+    },
+    {
+      "id": "create_arc_and_chord",
+      "title": "Arc And Chord",
+      "prompt": "Построй окружность, две точки P и Q на ней, хорду PQ и дугу PQ через верхнюю часть окружности.",
+      "hash": "2e55c590050480c0",
+      "feedback": {
+        "rating": "pass",
+        "issues": {
+          "construction_error": true
+        },
+        "comment": "только лучше стилистически убирать точку R от которой строится окружность, если точка незначимая",
+        "updated_at": "2026-05-11T09:23:25.403Z",
+        "hash": "2e55c590050480c0"
+      }
+    },
+    {
+      "id": "create_function_intersections",
+      "title": "Function Intersections",
+      "prompt": "Построй параболу y = 0.35x^2 - 1.2 и прямую y = 0.35x + 0.2, отметь точки их пересечения и соедини их отрезком.",
+      "hash": "da6f33e95f6afd2e",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T09:22:35.047Z",
+        "hash": "da6f33e95f6afd2e"
+      }
+    },
+    {
+      "id": "create_ellipse_axes",
+      "title": "Ellipse Axes",
+      "prompt": "Построй эллипс по двум фокусам F1, F2 и большой полуоси 3. Покажи его центр и оси.",
+      "hash": "538a43be1c50dda6",
+      "feedback": {
+        "rating": "pass",
+        "issues": {},
+        "comment": "",
+        "updated_at": "2026-05-11T09:28:15.577Z",
+        "hash": "538a43be1c50dda6"
+      }
+    },
+    {
+      "id": "create_square_diagonals",
+      "title": "Square Diagonals",
+      "prompt": "Построй квадрат ABCD, проведи диагонали и отметь их точку пересечения.",
+      "hash": "4e3fe1c082d7d07a",
+      "feedback": {
+        "rating": "unset",
+        "issues": {},
+        "comment": ""
+      }
+    },
+    {
+      "id": "create_chord_global_blue_style",
+      "title": "Chord With Global Blue Style",
+      "prompt": "Построй окружность с хордой AB и сделай общий спокойный синий стиль для всей конструкции.",
+      "hash": "feaf41b210d311e8",
+      "feedback": {
+        "rating": "unset",
+        "issues": {
+          "construction_error": true
+        },
+        "comment": "Проблема в том, что отрезок AB не является хордой в построенной окружности (точки не лежат на окружности), тут нужно учесть геометрические определения/свойства (это вообще в целом нужно учитывать, и накапливать какой-то багаж знаний), если AB - хорда, то окружность нужно строить так, чтобы A и B были на окружности (не по координатам, а именно из геометрических построений)\n",
+        "updated_at": "2026-05-11T09:20:30.085Z",
+        "hash": "feaf41b210d311e8"
+      }
+    }
+  ]
+}

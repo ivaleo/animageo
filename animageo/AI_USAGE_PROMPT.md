@@ -319,12 +319,15 @@ Derived/semantic:
 |---|---|
 | `Intersect(a, b)` / `(a, b, index=k)` | works for every pair: line/segment/ray/circle/arc/conic/function/implicit |
 | `Tangent(P, circle_or_conic)` | 1 tangent if P on the curve, else `t1, t2 = ...` |
+| `Tangent(line, conic)`, `Tangent(P, func)`, `Tangent(c1, c2)` | tangents parallel to a line; tangent to `y=f(x)` at `x(P)`; common tangents of two circles (up to `t1..t4`) |
 | `Polar(P, circle_or_conic)` | polar line |
-| `Centroid(poly)`, `Incircle(A, B, C)` | triangle helpers |
+| `Centroid(poly)`, `Incircle(A, B, C)`, `Trilinear(A, B, C, x, y, z)` | triangle helpers (`Trilinear` = point at trilinear coords `x:y:z`; `1,1,1` → incenter) |
 | `Center(circle_or_conic)`, `Radius(c)` | center point / radius measure |
 | `Rotate(P, angle, O)` | rotate P by angle (radians, CCW) around O; also rotates lines/vectors |
-| `Translate(obj, v)`, `Reflect(P, line)` / `Mirror(...)` | transforms; `Reflect(P, circle)` = inversion |
-| `Distance(A, B)`, `Length(seg)`, `Area(poly)`, `Perimeter(poly)` | measures (numeric proxies) |
+| `Translate(obj, v)`, `Reflect(P, line)` / `Mirror(...)`, `Dilate(obj, k, O)` | transforms; `Reflect(P, circle)` = inversion; `Dilate` = homothety (factor may be a slider) |
+| `ClosestPoint(path, P)` | nearest point on a line/segment/ray/circle |
+| `Distance(A, B)`, `Length(seg)`, `Area(poly)`, `Perimeter(poly)`, `Slope(line)` | measures (numeric proxies) |
+| `Direction(line)`, `UnitVector(v)`, `PerpendicularVector(v)`, `Dot(u, v)`, `Cross(u, v)` | vector helpers (`Cross` = 2D scalar) |
 | `AngleSize(P, V, Q)` | angle value without drawing a mark |
 | `Ellipse(F1, F2, a)`, `Hyperbola(F1, F2, a)`, `Parabola(F, directrix)` | conics from foci |
 | `Conic("x^2 + y^2 = 4")`, `Conic(P1..P5)` | from equation / five points |
@@ -687,6 +690,57 @@ self.play_keyframes({
 })
 ```
 
+Style tracks (v2): add `"version": 2` and per-keyframe `"styles"` to animate
+element styles between keyframes — colors (`stroke`/`fill`/`label_color`,
+hex only), opacities, `stroke_width_px`, `size_px`, `font_size_px`, arc/tick
+sizes, `label_offset_px`, `label_text`, and discrete props (`point_shape`,
+`label_anchor`, `label_visible`, `tick_count`, `z_index`). Values are
+the target state at that keyframe (carry-forward); `null` reverts to the
+element's pre-animation style. Styles may target any element by name, not
+just independents. Discrete props switch at the middle of the transition;
+colors blend perceptually (Oklab); `stroke_dash_ratio` lerps continuously
+between numbers and only snaps (at mid-transition) when one end is `null`.
+`label_text` is a discrete swap too — the label's text changes at
+mid-transition (like `label_visible`), it does not cross-fade or morph
+glyph-by-glyph. Colours must be hex (`#rrggbb`) to blend — a non-hex baseline
+(e.g. a named colour) snaps instead of blending. With `keyframe_snapshots`
+label auto-placement enabled, the pre-pass now applies each keyframe's
+`styles` (font/arc size, `label_visible`, …) before measuring label bboxes,
+so label positions track those style changes correctly.
+
+```python
+self.play_keyframes({"version": 2, "keyframes": [
+    {"t": 0, "values": {"x": 0},  "styles": {"c1": {"fill_opacity": 0.0}}},
+    {"t": 2, "values": {"x": 90}, "styles": {"c1": {"fill_opacity": 0.6,
+                                                    "stroke": "#d05456"}}},
+    {"t": 3, "styles": {"c1": {"stroke": None}}},
+]})
+```
+
+Visibility & effects (v2): per-keyframe `"visible": {name: bool}` is an
+absolute map (the element's visibility at that keyframe); `"show"`/`"hide"`
+arrays are v2 sugar that fold into it. Appearance/disappearance plays an
+entrance/exit effect timed INSIDE the keyframe interval, at its exact
+duration — v2 drops the legacy extra 0.4 s that v1 injects per show/hide
+batch. Set the effect per-keyframe via `"enter"`/`"exit"` maps
+(`{name: {"effect": ..., "duration": ..., "at": ...}}`, or a bare effect
+string). Entrance effects: `fade` (default), `none`, `create` (progressive
+stroke draw), `grow` (scale from center), `write` (progressive glyph reveal —
+text/labels only). Exit effects: `fade` (default), `none`, `uncreate`,
+`shrink`. A top-level `"defaults": {"easing":, "enter":, "exit":}` sets the
+fallback effect for keyframes that don't specify one (`write` is accepted in
+`defaults.enter`, same as per-keyframe `enter`; it stays rejected for
+`defaults.exit`/`exit` since it is an entrance-only effect).
+
+```python
+self.play_keyframes({"version": 2, "keyframes": [
+    {"t": 0, "visible": {"c1": False}},
+    {"t": 1.5, "visible": {"c1": True},
+     "enter": {"c1": {"effect": "create", "duration": 0.8}}},
+    {"t": 3, "visible": {"c1": False}, "exit": {"c1": "fade"}},
+]})
+```
+
 **What counts as animatable differs by origin — check
 `get_independent_elements()` first:**
 
@@ -711,7 +765,89 @@ self.play_keyframes({
   `{"tparam": radians, "direction": "short"|"cw"|"ccw"}`; point on
   segment/line `{"tparam": t}`; number/angle: float; boolean: bool.
 
-Easing: `linear`, `smooth` (default), `in`, `out`, `in_out`.
+Easing: `linear`, `smooth` (default), `in`, `out`, `in_out`, plus 12 more —
+the full 17-name set is a lossless port of the web preview's easing, so the
+same `"easing"` value renders identically in the web UI and the exported
+video. Evocative ones worth knowing: `ease_out_bounce`, `ease_out_elastic`,
+`ease_out_back` (springy overshoot), `rush_into`/`rush_from` (sharp
+accel/decel), plus `ease_in_sine`/`ease_out_sine`/`ease_in_out_sine`,
+`ease_in_cubic`/`ease_out_cubic`/`ease_in_out_cubic`, and `smootherstep`.
+
+`scene.get_element_states()` returns a read-only snapshot
+`{name: {type, visible, style}}` for every non-axis element — current
+visibility and resolved animatable style values (colors, opacities, sizes,
+label props). Symmetric to `get_independent_elements()`; handy for building a
+keyframe-state inspector UI or diffing state before/after a keyframe edit.
+
+**Construction reveal & labels (v2):** for "build up the whole figure in
+dependency order" scenes, `reveal_construction(lag=0.3, duration=0.5)` is a
+one-call macro — it walks every element in topological order, picks a
+sensible per-type entrance effect (points fade, lines/circles/curves
+`create`, text/labels `write`), staggers each element's start by `lag`
+seconds, and plays the generated v2 keyframes (or pass `play=False` to get
+the keyframes back without playing them, e.g. to inspect or splice into a
+larger sequence):
+
+```python
+self.reveal_construction(lag=0.3, duration=0.5)
+```
+
+Pass `effect="create"` (or any single `ENTER_EFFECTS` name) to force one
+effect for every element instead of the per-type default.
+
+```python
+self.reveal_construction(lag=0.3, duration=0.6, effect="create")
+```
+
+**Camera keyframes (v2 only):** `values["@camera"]` is a reserved
+pseudo-element — not a construction element — that animates the viewport via
+`{"center": [x, y], "width": w}` (either or both; carry-forward like any other
+value). This is a **cinematic** pan/zoom of `camera.frame`: geometry AND
+pixel-sized decorations (point radii, font sizes, stroke widths) scale
+together with the zoom — it is NOT GeoGebra's pixel-invariant `ZoomIn` (where
+points keep their on-screen size). `center`/`width` are in math coords
+(same units as the construction, not pixels). Using `@camera` under
+`"version": 1` (or with no version) raises `ValueError`.
+
+```python
+self.play_keyframes({"version": 2, "keyframes": [
+    {"t": 0, "values": {"@camera": {"center": [0, 0], "width": 14}}},
+    {"t": 2, "values": {"@camera": {"center": [1, 1], "width": 6}}},
+]})
+```
+
+**Emphasis events (v2 only):** per-keyframe `"events": [{...}]` play a
+one-shot, self-restoring emphasis on one or more targets inside the
+interval leading up to that keyframe — the scene is byte-identical once the
+event completes (nothing is left mutated in `elem.style` or the
+construction). Effects: `indicate` (a scale+colour pulse on the target,
+`scale` controls the pulse size), `flash` (radial flash lines at the
+target), `circumscribe` (a temporary box drawn around the target). Each
+event is `{"effect":, "targets": [names], "at":, "duration":}` plus optional
+`"color"`; `targets` is a list of element names, `at`/`duration` are seconds
+measured from the start of the keyframe interval (not the whole timeline).
+`passing_flash` is not available yet (rejected with a clear error).
+
+```python
+self.play_keyframes({"version": 2, "keyframes": [
+    {"t": 0},
+    {"t": 2, "events": [
+        {"effect": "indicate", "targets": ["B"], "at": 0.4, "duration": 0.6},
+        {"effect": "circumscribe", "targets": ["poly"], "at": 0.4, "duration": 0.6},
+    ]},
+]})
+```
+
+**Static single-frame preview:** `scene.apply_keyframes_at(keyframes_data, t)`
+places the scene at playhead time `t` without playing an animation — apply
+keyframe/style/camera state at exactly `t` (clamped to the sequence's time
+range), rebuild, and update the mobjects. Idempotent (safe to call repeatedly
+at different `t`). Useful for a server-side "render this timestamp as a still":
+
+```python
+scene.apply_keyframes_at(keyframes_json, t=1.25)
+scene.exportSVG("frame_at_1.25.svg")
+```
 
 ### 8.4 The moving-camera trap
 

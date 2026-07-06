@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T13:43:50.483347+00:00",
+  "case_id": "create_isosceles_trapezoid_angles",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй равнобедренную трапецию ABCD и отметь равные углы при каждом основании.",
+  "expected": [
+    "constructs isosceles trapezoid",
+    "marks equal legs",
+    "marks equal base angle pairs"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Isosceles trapezoid ABCD with AB || CD, AD = BC\n# Base AB longer, base CD shorter\nA = Point(-4, 0)\nB = Point(4, 0)\n# Choose a height and offset for the top base\nh = 3\noffset = 2\nD = Point(-2, h)\nC = Point(2, h)\n\n# Sides\nAB = Segment(A, B)\nBC = Segment(B, C)\nCD = Segment(C, D)\nDA = Segment(D, A)\n\n# Mark equal legs with same tick count\nstyle(DA, BC, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(DA, BC, tick_count=1)\n\n# Mark equal base angles\n# At base AB: angle DAB and angle CBA are equal\nang_DAB = Angle(D, A, B)\nang_CBA = Angle(C, B, A)\nstyle(ang_DAB, ang_CBA, arc_size_px=\"angle_radius.main\", tick_count=1)\n\n# At base CD: angle ADC and angle BCD are equal\nang_ADC = Angle(A, D, C)\nang_BCD = Angle(B, C, D)\nstyle(ang_ADC, ang_BCD, arc_size_px=\"angle_radius.main\", tick_count=2)\n\n# Labels\nstyle(A, B, C, D, label_visible=True)\nstyle(AB, CD, stroke=\"color.main\", stroke_width_px=\"line_width.main\")",
+    "style": null,
+    "notes": [
+      "Построена равнобедренная трапеция с основаниями AB и CD, боковые стороны AD и BC равны.",
+      "Равные углы при основании AB отмечены одной дугой, при основании CD — двумя дугами.",
+      "Боковые стороны отмечены одним штрихом для наглядности равенства."
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+A = Point(-3, -1.6)
+B = Point(3, -1.0)
+C = Point(-0.8, 2.4)
+
+tri, AB, BC, CA = Polygon(A, B, C)
+bis_A_line = AngularBisector(B, A, C)
+D = Intersect(bis_A_line, BC)
+bis_A = Segment(A, D)
+angle_BAD = Angle(B, A, D)
+angle_DAC = Angle(D, A, C)
+
+hide(bis_A_line)
+style(A, B, C, D, label_visible=True)
+style(bis_A, stroke="color.accent", stroke_width_px="line_width.bold")
+style(angle_BAD, tick_count=1, arc_size_px=22)
+style(angle_DAC, tick_count=1, arc_size_px=28)

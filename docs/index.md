@@ -17,6 +17,7 @@ AnimaGeo превращает геометрические конструкци�
 ## Справочники
 
 - [Справочник API](api.md) — методы сцены и конструкции
+- [Keyframe-анимации](keyframes.md) — JSON/timeline формат `play_keyframes`, v2 стили/видимость/камера/events
 - [Python DSL](python_dsl.md) — exec-движок для построения конструкций
 - [Система стилей](styles.md) — **главный** справочник по стилям, слоям и label placement
 - [Гибкий импорт из GeoGebra (ImportPolicy)](import_policies.md)

@@ -1,0 +1,20 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T08:08:46.718025+00:00",
+  "case_id": "create_equilateral_on_segment",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй равносторонний треугольник ABC на основании AB.",
+  "expected": [
+    "constructs C by rotating B around A by 60 degrees",
+    "marks equal sides",
+    "marks equal angles"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(0, 0)\nB = Point(4, 0)\ntri, AB, BC, CA, C = Polygon(A, B, 3)\nstyle(A, B, C, label_visible=True)\nstyle(tri, stroke=\"color.main\", stroke_width_px=\"line_width.main\", fill=\"color.aux\")\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")",
+    "style": null,
+    "notes": []
+  }
+}

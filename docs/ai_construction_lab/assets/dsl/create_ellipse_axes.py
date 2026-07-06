@@ -1,0 +1,11 @@
+F1 = Point(-1.5, 0)
+F2 = Point(1.5, 0)
+ellipse = Ellipse(F1, F2, 3)
+O = Center(ellipse)
+major_axis = MajorAxis(ellipse)
+minor_axis = MinorAxis(ellipse)
+
+style(F1, F2, O, label_visible=True)
+style(F1, label_text="$F_1$")
+style(F2, label_text="$F_2$")
+style(major_axis, minor_axis, stroke="color.accent", stroke_width_px="line_width.bold")

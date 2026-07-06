@@ -139,19 +139,31 @@ For DSL-only scenes (no `.ggb`) frame the view with
 ## Keyframe animation
 
 `get_independent_elements()` reports every animatable (free) element; feed a
-JSON keyframe sequence to `play_keyframes()`:
+JSON/Python keyframe sequence to `play_keyframes()`. Use `"version": 2` for the
+current timeline format:
 
 ```python
 scene.loadGGB('scene.ggb', style='style.json', export={'size': {'width': 800, 'height': 600}})
 independents = scene.get_independent_elements()   # send to a UI, or author by hand
 scene.play_keyframes({
+    "version": 2,
     "keyframes": [
         {"t": 0, "values": {"A": [0, 0], "x": 35, "D": {"tparam": 0.0}}},
-        {"t": 2, "values": {"A": [4, 4], "x": 110}, "show": ["line1"], "easing": "smooth"},
+        {"t": 2, "values": {"A": [4, 4], "x": 110},
+         "visible": {"line1": True},
+         "styles": {"line1": {"stroke": "#d05456", "stroke_width_px": 4}},
+         "enter": {"line1": "create"},
+         "events": [{"effect": "indicate", "targets": ["A"], "at": 0.4, "duration": 0.6}],
+         "easing": "smooth"},
         {"t": 4, "values": {"A": [0, 0], "x": 35}}
     ]
 })
 ```
+
+Keyframes v2 supports geometry/value tracks, style tracks, absolute visibility
+with entrance/exit effects, 17 easing names, `@camera` pan/zoom, one-shot
+emphasis events, `reveal_construction()`, and `apply_keyframes_at()` for static
+playhead previews. See [docs/keyframes.md](docs/keyframes.md).
 
 ## Automatic label placement
 
@@ -221,6 +233,7 @@ the label-placement preset — lives in [docs/styles.md](docs/styles.md).
 - [docs/quickstart.md](docs/quickstart.md) — getting started
 - [docs/architecture.md](docs/architecture.md) — pipeline & module map
 - [docs/api.md](docs/api.md) — scene / construction API reference
+- [docs/keyframes.md](docs/keyframes.md) — keyframe animation timeline format
 - [docs/python_dsl.md](docs/python_dsl.md) — the construction DSL
 - [docs/styles.md](docs/styles.md) — the style system (main reference)
 - [docs/import_policies.md](docs/import_policies.md) — configurable GGB import

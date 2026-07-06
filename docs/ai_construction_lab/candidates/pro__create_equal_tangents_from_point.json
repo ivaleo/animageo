@@ -1,0 +1,29 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T12:45:55.477158+00:00",
+  "case_id": "create_equal_tangents_from_point",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Из внешней точки P проведи две касательные к окружности и отметь, что отрезки касательных равны.",
+  "expected": [
+    "uses Tangent(P, circle)",
+    "shows finite tangent segments",
+    "marks PT1 and PT2 equal",
+    "marks radius-tangent right angles"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Given circle with center O and external point P\nO = Point(0, 0)\nA = Point(2, 0)\ncircle = Circle(O, A)\nP = Point(5, 2)\n\n# Construct tangents from P to the circle\nt1, t2 = Tangent(P, circle)\n\n# Find tangent points\nT1 = Intersect(t1, circle)\nT2 = Intersect(t2, circle)\n\n# Draw tangent segments\nPT1 = Segment(P, T1)\nPT2 = Segment(P, T2)\n\n# Draw radii to tangent points\nOT1 = Segment(O, T1)\nOT2 = Segment(O, T2)\n\n# Mark right angles at tangent points\nright1 = Angle(P, T1, O)\nright2 = Angle(P, T2, O)\n\n# Mark equal tangent segments\nstyle(PT1, PT2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", tick_count=1)\n\n# Style radii and right angles\nstyle(OT1, OT2, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(right1, right2, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\n\n# Hide infinite tangent lines\nhide(t1, t2)\n\n# Style points\nstyle(O, fill=\"color.main\", size_px=\"point_size.main\", label_visible=True)\nstyle(P, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\nstyle(T1, T2, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\n\n# Style circle\nstyle(circle, stroke=\"color.main\", stroke_width_px=\"line_width.main\")",
+    "style": null,
+    "notes": [
+      "Used Tangent(P, circle) to construct two tangent lines from external point P.",
+      "Derived tangent points T1, T2 by intersecting tangent lines with the circle.",
+      "Drew finite tangent segments PT1, PT2 and marked them equal with tick_count=1.",
+      "Added radii OT1, OT2 and right-angle markers at tangent points to show perpendicularity.",
+      "Hid infinite tangent lines after constructing segments.",
+      "Styled tangent segments with color.accent and bold width to emphasize equality.",
+      "Equal tangent segments use direct style(..., tick_count=1) kwargs; no ** style dict unpacking."
+    ]
+  }
+}

@@ -23,9 +23,15 @@ ray (linear t).
 """
 
 import logging
+import math
+import warnings
+from dataclasses import dataclass
+
 import numpy as np
 from .geo.lib_elements import Point, Line, Segment, Ray, Circle
 from .geo.lib_vars import Measure, AngleSize, Boolean
+from .style.animatable import normalize_style_value, style_kind
+from .style.colorspace import lerp_color, is_hex_color, normalize_hex
 
 logger = logging.getLogger(__name__)
 
@@ -51,13 +57,153 @@ def _ease_in_out(t):
         return 2 * t**2
     return 1 - 2 * (1 - t)**2
 
+
+def _clamp01(t):
+    return 0.0 if t < 0.0 else (1.0 if t > 1.0 else t)
+
+
+def _ease_smootherstep(t):
+    t = _clamp01(t)
+    return 6 * t**5 - 15 * t**4 + 10 * t**3
+
+
+def _ease_in_sine(t):
+    t = _clamp01(t)
+    return 1 - math.cos((t * math.pi) / 2)
+
+
+def _ease_out_sine(t):
+    t = _clamp01(t)
+    return math.sin((t * math.pi) / 2)
+
+
+def _ease_in_out_sine(t):
+    t = _clamp01(t)
+    return -(math.cos(math.pi * t) - 1) / 2
+
+
+def _ease_in_cubic(t):
+    t = _clamp01(t)
+    return t * t * t
+
+
+def _ease_out_cubic(t):
+    t = _clamp01(t)
+    return 1 - (1 - t) ** 3
+
+
+def _ease_in_out_cubic(t):
+    t = _clamp01(t)
+    return 4 * t**3 if t < 0.5 else 1 - (-2 * t + 2) ** 3 / 2
+
+
+def _manim_smooth_sigmoid(t, inflection=10.0):
+    # animageo_web manimSmooth (sigmoid) — used by rush_into/rush_from
+    error = 1 / (1 + math.exp(inflection / 2))
+    return max(0.0, min(1.0, (
+        1 / (1 + math.exp(-inflection * (t - 0.5))) - error
+    ) / (1 - 2 * error)))
+
+
+def _ease_rush_into(t):
+    t = _clamp01(t)
+    return 2 * _manim_smooth_sigmoid(t / 2)
+
+
+def _ease_rush_from(t):
+    t = _clamp01(t)
+    return 2 * _manim_smooth_sigmoid(t / 2 + 0.5) - 1
+
+
+def _ease_out_back(t):
+    t = _clamp01(t)
+    c1 = 1.70158
+    c3 = c1 + 1
+    return 1 + c3 * (t - 1) ** 3 + c1 * (t - 1) ** 2
+
+
+def _ease_out_elastic(t):
+    t = _clamp01(t)
+    if t == 0 or t == 1:
+        return t
+    c4 = (2 * math.pi) / 3
+    return 2 ** (-10 * t) * math.sin((t * 10 - 0.75) * c4) + 1
+
+
+def _ease_out_bounce(t):
+    t = _clamp01(t)
+    n1 = 7.5625
+    d1 = 2.75
+    if t < 1 / d1:
+        return n1 * t * t
+    if t < 2 / d1:
+        t -= 1.5 / d1
+        return n1 * t * t + 0.75
+    if t < 2.5 / d1:
+        t -= 2.25 / d1
+        return n1 * t * t + 0.9375
+    t -= 2.625 / d1
+    return n1 * t * t + 0.984375
+
+
 EASING_FUNCTIONS = {
     'linear': _ease_linear,
     'smooth': _ease_smooth,
     'in': _ease_in,
     'out': _ease_out,
     'in_out': _ease_in_out,
+    'smootherstep': _ease_smootherstep,
+    'ease_in_sine': _ease_in_sine,
+    'ease_out_sine': _ease_out_sine,
+    'ease_in_out_sine': _ease_in_out_sine,
+    'ease_in_cubic': _ease_in_cubic,
+    'ease_out_cubic': _ease_out_cubic,
+    'ease_in_out_cubic': _ease_in_out_cubic,
+    'rush_into': _ease_rush_into,
+    'rush_from': _ease_rush_from,
+    'ease_out_back': _ease_out_back,
+    'ease_out_elastic': _ease_out_elastic,
+    'ease_out_bounce': _ease_out_bounce,
 }
+
+#--------------------------------------------------------------------------
+# Visibility entrance/exit effects (v2)
+#--------------------------------------------------------------------------
+
+ENTER_EFFECTS = ('fade', 'none', 'create', 'grow', 'write')
+EXIT_EFFECTS = ('fade', 'none', 'uncreate', 'shrink')
+DEFAULT_EFFECT_DURATION = 0.4
+
+#--------------------------------------------------------------------------
+# Emphasis events (v2)
+#--------------------------------------------------------------------------
+
+EVENT_EFFECTS = ('indicate', 'flash', 'circumscribe')
+
+#--------------------------------------------------------------------------
+# @camera pseudo-element (v2)
+#--------------------------------------------------------------------------
+
+CAMERA_KEY = '@camera'
+
+
+@dataclass
+class EffectSpec:
+    name: str
+    kind: str        # 'fade' | 'none' | 'create' | 'grow' | 'uncreate' | 'shrink'
+    start: float     # seconds from interval start
+    duration: float
+    direction: str   # 'in' (entrance) | 'out' (exit)
+
+
+@dataclass
+class EventSpec:
+    effect: str
+    targets: list
+    start: float
+    duration: float
+    color: object = None      # hex str or None
+    scale: float = 1.2
 
 #--------------------------------------------------------------------------
 # Interpolators
@@ -132,6 +278,88 @@ class LabelOffsetInterpolator:
         return (1.0 - et) * self.start_offset + et * self.end_offset
 
 
+class StyleInterpolator:
+    """Interpolates one ``elem.style`` key between two keyframes.
+
+    Kind semantics (see ``style/animatable.py``): 'scalar' lerps floats,
+    'color' lerps hex colors in ``color_space`` (Oklab default), 'offset2'
+    lerps [x, y] pairs, 'dash' lerps when both endpoints are numbers and
+    snaps otherwise, 'discrete' snaps to the end value at eased progress
+    >= 0.5 (the CSS discrete rule — same convention as the 'bool'
+    Interpolator kind), 'text' (label_text) never lerps and snaps at eased
+    progress >= 0.5 like 'discrete'.
+    """
+
+    __slots__ = ('name', 'key', 'kind', 'start', 'end', 'easing', 'color_space')
+
+    def __init__(self, name, key, kind, start, end, easing=None,
+                 color_space='oklab'):
+        self.name = name
+        self.key = key
+        self.kind = kind
+        self.start = start
+        self.end = end
+        self.easing = easing or _ease_smooth
+        self.color_space = color_space
+
+    def at(self, t):
+        """Return the interpolated value at progress t in [0, 1]."""
+        et = self.easing(t)
+
+        if self.kind == 'scalar':
+            return (1 - et) * self.start + et * self.end
+
+        if self.kind == 'color':
+            return lerp_color(self.start, self.end, et, space=self.color_space)
+
+        if self.kind == 'offset2':
+            return [
+                (1 - et) * self.start[0] + et * self.end[0],
+                (1 - et) * self.start[1] + et * self.end[1],
+            ]
+
+        if self.kind == 'dash':
+            if (isinstance(self.start, (int, float))
+                    and isinstance(self.end, (int, float))):
+                return (1 - et) * self.start + et * self.end
+            return self.end if et >= 0.5 else self.start
+
+        if self.kind == 'text':
+            return self.end if et >= 0.5 else self.start
+
+        # 'discrete' — snap at eased half
+        return self.end if et >= 0.5 else self.start
+
+
+class CameraInterpolator:
+    """Interpolates the ``@camera`` pseudo-element between two keyframes.
+
+    ``start``/``end`` are partial ``{center?, width?}`` dicts (fields
+    absent from both endpoints stay absent in the result — the scene
+    treats an absent field as "keep the current frame value").
+    """
+    __slots__ = ('start', 'end', 'easing')
+
+    def __init__(self, start, end, easing=None):
+        self.start = start
+        self.end = end
+        self.easing = easing or _ease_smooth
+
+    def at(self, t):
+        et = self.easing(t)
+        out = {}
+        if 'center' in self.start and 'center' in self.end:
+            s, e = self.start['center'], self.end['center']
+            out['center'] = [(1 - et) * s[0] + et * e[0], (1 - et) * s[1] + et * e[1]]
+        elif 'center' in self.end:
+            out['center'] = list(self.end['center'])
+        if 'width' in self.start and 'width' in self.end:
+            out['width'] = (1 - et) * self.start['width'] + et * self.end['width']
+        elif 'width' in self.end:
+            out['width'] = self.end['width']
+        return out
+
+
 def _interpolate_angle(start, end, t, direction='short'):
     """Interpolate angle in radians, respecting direction."""
     TWO_PI = 2 * np.pi
@@ -156,16 +384,123 @@ def _interpolate_angle(start, end, t, direction='short'):
 # Keyframe data structures
 #--------------------------------------------------------------------------
 
+def _normalize_effect(name, spec, valid_effects, phase_kw):
+    """Normalize an enter/exit effect spec to {'effect','duration','at'}.
+
+    ``spec`` may be a bare effect string ('fade') or a dict. Validates the
+    effect name against ``valid_effects``.
+    """
+    if isinstance(spec, str):
+        spec = {'effect': spec}
+    if not isinstance(spec, dict):
+        raise ValueError(f"{phase_kw}['{name}'] must be an effect name or object, got {spec!r}")
+    effect = spec.get('effect', 'fade')
+    if effect not in valid_effects:
+        raise ValueError(
+            f"{phase_kw}['{name}']: unknown {phase_kw} effect '{effect}'; "
+            f"valid: {valid_effects}"
+        )
+    duration = float(spec.get('duration', DEFAULT_EFFECT_DURATION))
+    at = float(spec.get('at', 0.0))
+    return {'effect': effect, 'duration': duration, 'at': at}
+
+
+def _validate_default_effect(spec, valid_effects, phase_kw):
+    """Validate a top-level ``defaults.enter``/``defaults.exit`` spec.
+
+    Unlike ``_normalize_effect`` (per-keyframe specs, always resolved to a
+    complete ``{'effect', 'duration', 'at'}`` dict ready for playback),
+    top-level defaults are a settings template: only the fields the caller
+    actually provided are validated and stored, so ``defaults.enter`` echoes
+    back exactly what was configured (missing fields fall back to
+    ``DEFAULT_EFFECT_DURATION`` / ``at=0.0`` wherever a default is applied
+    downstream, not baked in here).
+    """
+    if isinstance(spec, str):
+        spec = {'effect': spec}
+    if not isinstance(spec, dict):
+        raise ValueError(f"defaults.{phase_kw} must be an effect name or object, got {spec!r}")
+    effect = spec.get('effect', 'fade')
+    if effect not in valid_effects:
+        raise ValueError(
+            f"defaults.{phase_kw}: unknown {phase_kw} effect '{effect}'; "
+            f"valid: {valid_effects}"
+        )
+    return {**spec, 'effect': effect}
+
+
+def _normalize_camera(spec, kf_index):
+    """Validate and normalize an ``@camera`` spec to ``{center?, width?}``."""
+    if not isinstance(spec, dict):
+        raise ValueError(f"Keyframe {kf_index}: '@camera' must be an object, got {spec!r}")
+    out = {}
+    if 'center' in spec:
+        c = spec['center']
+        if (not isinstance(c, (list, tuple)) or len(c) != 2
+                or any(isinstance(v, bool) or not isinstance(v, (int, float)) for v in c)):
+            raise ValueError(f"Keyframe {kf_index}: '@camera' center must be [x, y] numbers, got {c!r}")
+        out['center'] = [float(c[0]), float(c[1])]
+    if 'width' in spec:
+        w = spec['width']
+        if isinstance(w, bool) or not isinstance(w, (int, float)) or w <= 0:
+            raise ValueError(f"Keyframe {kf_index}: '@camera' width must be a positive number, got {w!r}")
+        out['width'] = float(w)
+    return out
+
+
+def _normalize_event(spec, kf_index, construction):
+    """Validate and normalize one per-keyframe ``events[]`` entry.
+
+    Rejects unknown effects, the not-yet-implemented ``passing_flash``, and
+    non-existent targets. Returns a plain dict (not ``EventSpec`` — the
+    interval-relative ``start``/``duration`` clamping happens later in
+    ``_build_intervals``, since this dict's ``at``/``duration`` are still
+    keyframe-relative).
+    """
+    if not isinstance(spec, dict):
+        raise ValueError(f"Keyframe {kf_index}: each event must be an object, got {spec!r}")
+    effect = spec.get('effect', 'indicate')
+    if effect == 'passing_flash':
+        raise ValueError(
+            f"Keyframe {kf_index}: 'passing_flash' event is not available yet")
+    if effect not in EVENT_EFFECTS:
+        raise ValueError(
+            f"Keyframe {kf_index}: unknown event effect '{effect}'; valid: {EVENT_EFFECTS}")
+    targets = spec.get('targets', [])
+    if not isinstance(targets, (list, tuple)) or not targets:
+        raise ValueError(f"Keyframe {kf_index}: event 'targets' must be a non-empty list")
+    for name in targets:
+        if construction.element(name) is None:
+            raise ValueError(f"Keyframe {kf_index}: event target '{name}' not found")
+    color = spec.get('color')
+    if color is not None:
+        color = normalize_hex(color)
+    return {
+        'effect': effect, 'targets': list(targets),
+        'at': float(spec.get('at', 0.0)), 'duration': float(spec.get('duration', 0.6)),
+        'color': color, 'scale': float(spec.get('scale', 1.2)),
+    }
+
+
 class Keyframe:
     """A single keyframe at time t."""
-    __slots__ = ('t', 'values', 'show', 'hide', 'easing_name')
+    __slots__ = ('t', 'values', 'show', 'hide', 'easing_name', 'styles',
+                 'visible', 'enter', 'exit', 'camera', 'events')
 
-    def __init__(self, t, values=None, show=None, hide=None, easing_name='smooth'):
+    def __init__(self, t, values=None, show=None, hide=None, easing_name='smooth',
+                 styles=None, visible=None, enter=None, exit=None, camera=None,
+                 events=None):
         self.t = float(t)
         self.values = values or {}     # name -> value (raw from JSON)
         self.show = show or []
         self.hide = hide or []
         self.easing_name = easing_name
+        self.styles = styles or {}     # name -> {style_key -> normalized value}
+        self.visible = visible or {}   # name -> bool (absolute)
+        self.enter = enter or {}       # name -> {'effect','duration','at'}
+        self.exit = exit or {}         # name -> {'effect','duration','at'}
+        self.camera = camera or {}     # {'center': [x, y], 'width': w} (partial)
+        self.events = events or []     # list of normalized event dicts
 
 
 class KeyframeInterval:
@@ -177,7 +512,8 @@ class KeyframeInterval:
     """
     __slots__ = ('start_t', 'end_t', 'duration', 'interpolators',
                  'show', 'hide', 'label_interps', 'dynamic_angle_params',
-                 'easing_name')
+                 'easing_name', 'style_interps', 'style_finalizers',
+                 'enter_effects', 'exit_effects', 'camera_interp', 'events')
 
     def __init__(self, start_t, end_t, interpolators, show=None, hide=None,
                  easing_name='smooth'):
@@ -190,16 +526,75 @@ class KeyframeInterval:
         self.easing_name = easing_name
         self.label_interps = []          # list[LabelOffsetInterpolator]
         self.dynamic_angle_params = {}   # dict[name, AngleParams]
+        self.style_interps = []          # list[StyleInterpolator]
+        self.style_finalizers = []       # ('set', name, key, value) | ('revert', name, key, had_explicit, explicit_val)
+        self.enter_effects = []          # list[EffectSpec]
+        self.exit_effects = []           # list[EffectSpec]
+        self.camera_interp = None        # Optional[CameraInterpolator]
+        self.events = []                 # list[EventSpec]
 
 
 class KeyframeSequence:
     """Parsed and validated sequence of keyframes ready for playback."""
 
-    def __init__(self, keyframes, intervals, element_info):
+    def __init__(self, keyframes, intervals, element_info, version=1, defaults=None):
         self.keyframes = keyframes           # List[Keyframe]
         self.intervals = intervals           # List[KeyframeInterval]
         self.element_info = element_info     # dict from get_independents()
+        self.version = version
+        self.defaults = defaults or {}        # {'easing', 'enter', 'exit'}
         self.label_layouts = None            # Optional[list[dict[name, LabelPlacement]]]
+        self.initial_visibility = {}         # dict[name, bool] from keyframe 0
+
+    def has_style_tracks(self):
+        """True if any keyframe carries a ``styles`` map."""
+        return any(kf.styles for kf in self.keyframes)
+
+    def has_visibility_effects(self):
+        return any(iv.enter_effects or iv.exit_effects for iv in self.intervals)
+
+    def has_events(self):
+        return any(iv.events for iv in self.intervals)
+
+    def bind_visibility(self, get_element=None):
+        """Compile per-interval enter/exit EffectSpec lists from carry-forward
+        visibility. Records keyframe-0 visibility in ``self.initial_visibility``.
+        """
+        DEFAULT_ENTER = self.defaults.get('enter', {'effect': 'fade', 'duration': DEFAULT_EFFECT_DURATION, 'at': 0.0})
+        DEFAULT_EXIT = self.defaults.get('exit', {'effect': 'fade', 'duration': DEFAULT_EFFECT_DURATION, 'at': 0.0})
+
+        self.initial_visibility = dict(self.keyframes[0].visible)
+        running = dict(self.keyframes[0].visible)
+
+        for i, interval in enumerate(self.intervals):
+            interval.enter_effects = []
+            interval.exit_effects = []
+            kf = self.keyframes[i + 1]
+            dur = interval.duration
+            for name, new_vis in kf.visible.items():
+                if name not in running:
+                    elem = get_element(name) if get_element is not None else None
+                    running[name] = bool(elem.visible) if elem is not None else True
+                prev = running.get(name)
+                running[name] = new_vis
+                if prev == new_vis:
+                    continue
+                if dur <= 0:
+                    continue
+                if new_vis:      # entrance
+                    spec = kf.enter.get(name, DEFAULT_ENTER)
+                    at = min(max(float(spec.get('at', 0.0)), 0.0), dur)
+                    edur = min(float(spec.get('duration', DEFAULT_EFFECT_DURATION)), dur - at)
+                    interval.enter_effects.append(EffectSpec(
+                        name=name, kind=spec['effect'], start=at,
+                        duration=max(edur, 0.0), direction='in'))
+                else:            # exit
+                    spec = kf.exit.get(name, DEFAULT_EXIT)
+                    at = min(max(float(spec.get('at', 0.0)), 0.0), dur)
+                    edur = min(float(spec.get('duration', DEFAULT_EFFECT_DURATION)), dur - at)
+                    interval.exit_effects.append(EffectSpec(
+                        name=name, kind=spec['effect'], start=at,
+                        duration=max(edur, 0.0), direction='out'))
 
     def attach_label_layouts(self, layouts):
         """Populate each interval with label interpolators from per-keyframe layouts.
@@ -242,6 +637,83 @@ class KeyframeSequence:
                     easing=easing_fn,
                 ))
 
+    def bind_style_tracks(self, get_element, resolve, color_space='oklab'):
+        """Compile per-keyframe ``styles`` into per-interval style tracks.
+
+        Args:
+            get_element: callable ``name -> Element | None``.
+            resolve: callable ``(elem, key) -> current resolved value | None``
+                (the scene passes the style resolver; keyframes.py stays
+                manim-free by taking it as an injected function).
+            color_space: 'oklab' | 'srgb' for color lerp.
+
+        MUST be called before the first keyframe's styles are applied:
+        baselines (revert targets and lazy track starts) are captured from
+        the pre-animation state. Re-binding replaces previous tracks.
+        """
+        baseline = {}   # (name, key) -> resolved value at sequence start
+        restore = {}    # (name, key) -> (had_explicit, explicit_val)
+        current = {}    # (name, key) -> tracked value along the timeline
+
+        def _ensure_baseline(name, key):
+            k = (name, key)
+            if k in baseline:
+                return True
+            elem = get_element(name)
+            if elem is None:
+                logger.warning(
+                    "bind_style_tracks: element '%s' not found — skipping "
+                    "style track '%s'", name, key,
+                )
+                return False
+            baseline[k] = resolve(elem, key)
+            restore[k] = (key in elem.style, elem.style.get(key))
+            return True
+
+        # Keyframe 0 styles are applied instantly before playback
+        # (_apply_keyframe_state); here they only seed the tracked value.
+        for name, props in self.keyframes[0].styles.items():
+            for key, value in props.items():
+                if not _ensure_baseline(name, key):
+                    continue
+                if value is not None:
+                    current[(name, key)] = value
+
+        for i, interval in enumerate(self.intervals):
+            kf_next = self.keyframes[i + 1]
+            easing_fn = EASING_FUNCTIONS[interval.easing_name]
+            interval.style_interps = []
+            interval.style_finalizers = []
+
+            for name, props in kf_next.styles.items():
+                for key, value in props.items():
+                    if not _ensure_baseline(name, key):
+                        continue
+                    k = (name, key)
+                    start = current.get(k, baseline[k])
+                    end = baseline[k] if value is None else value
+                    had_explicit, explicit_val = restore[k]
+
+                    if value is None:
+                        interval.style_finalizers.append(
+                            ('revert', name, key, had_explicit, explicit_val))
+                    else:
+                        interval.style_finalizers.append(
+                            ('set', name, key, end))
+
+                    if start != end:
+                        kind = style_kind(key)
+                        if start is None or end is None:
+                            kind = 'discrete'   # cannot lerp from/to nothing
+                        elif kind == 'color' and not (is_hex_color(start) and is_hex_color(end)):
+                            kind = 'discrete'   # non-hex colour (named/rgb) — snap instead of lerp
+                        interval.style_interps.append(StyleInterpolator(
+                            name=name, key=key, kind=kind,
+                            start=start, end=end, easing=easing_fn,
+                            color_space=color_space,
+                        ))
+                    current[k] = end
+
     @classmethod
     def from_json(cls, data, construction):
         """Parse keyframe JSON and validate against the construction.
@@ -260,6 +732,36 @@ class KeyframeSequence:
         if not raw_keyframes or len(raw_keyframes) < 2:
             raise ValueError("At least 2 keyframes are required")
 
+        version = data.get('version', 1)
+        if version not in (1, 2):
+            raise ValueError(
+                f"Unsupported keyframes JSON version {version!r}; expected 1 or 2"
+            )
+        if version == 1:
+            warnings.warn(
+                "keyframes JSON without '\"version\": 2' uses the deprecated v1 "
+                "schema. Add '\"version\": 2' to opt into the v2 schema "
+                "(per-keyframe 'styles'; future v2 visibility/timing semantics).",
+                DeprecationWarning, stacklevel=2,
+            )
+
+        raw_defaults = data.get('defaults', {})
+        defaults = {}
+        if raw_defaults:
+            if version < 2:
+                raise ValueError("'defaults' requires '\"version\": 2'")
+            defaults['easing'] = raw_defaults.get('easing', 'smooth')
+            if defaults['easing'] not in EASING_FUNCTIONS:
+                raise ValueError(
+                    f"defaults.easing: unknown easing '{defaults['easing']}', "
+                    f"available: {list(EASING_FUNCTIONS.keys())}")
+            if 'enter' in raw_defaults:
+                defaults['enter'] = _validate_default_effect(
+                    raw_defaults['enter'], ENTER_EFFECTS, 'enter')
+            if 'exit' in raw_defaults:
+                defaults['exit'] = _validate_default_effect(
+                    raw_defaults['exit'], EXIT_EFFECTS, 'exit')
+
         # Get independent elements from construction
         element_info = construction.get_independents()
 
@@ -269,10 +771,16 @@ class KeyframeSequence:
             if 't' not in kf_data:
                 raise ValueError(f"Keyframe {i}: missing 't' (time)")
 
-            values = kf_data.get('values', {})
+            values = dict(kf_data.get('values', {}))   # copy so we can pop @camera
+            camera = {}
+            if CAMERA_KEY in values:
+                if version < 2:
+                    raise ValueError(f"Keyframe {i}: '@camera' requires '\"version\": 2'")
+                camera = _normalize_camera(values.pop(CAMERA_KEY), i)
+
             show = kf_data.get('show', [])
             hide = kf_data.get('hide', [])
-            easing = kf_data.get('easing', 'smooth')
+            easing = kf_data.get('easing', defaults.get('easing', 'smooth'))
 
             if easing not in EASING_FUNCTIONS:
                 raise ValueError(f"Keyframe {i}: unknown easing '{easing}', "
@@ -291,12 +799,77 @@ class KeyframeSequence:
                 if construction.element(name) is None:
                     raise ValueError(f"Keyframe {i}: element '{name}' not found in construction")
 
+            raw_styles = kf_data.get('styles', {})
+            if raw_styles and version < 2:
+                raise ValueError(
+                    f"Keyframe {i}: 'styles' requires '\"version\": 2'"
+                )
+            styles = {}
+            for ename, props in raw_styles.items():
+                if construction.element(ename) is None:
+                    raise ValueError(
+                        f"Keyframe {i}: styles target '{ename}' not found in construction"
+                    )
+                if not isinstance(props, dict):
+                    raise ValueError(
+                        f"Keyframe {i}: styles['{ename}'] must be an object "
+                        f"{{style_key: value}}, got {props!r}"
+                    )
+                try:
+                    styles[ename] = {
+                        key: normalize_style_value(key, value)
+                        for key, value in props.items()
+                    }
+                except ValueError as e:
+                    raise ValueError(f"Keyframe {i}: styles['{ename}']: {e}") from None
+
+            raw_visible = kf_data.get('visible', {})
+            raw_enter = kf_data.get('enter', {})
+            raw_exit = kf_data.get('exit', {})
+            if (raw_visible or raw_enter or raw_exit) and version < 2:
+                raise ValueError(
+                    f"Keyframe {i}: 'visible'/'enter'/'exit' require '\"version\": 2'"
+                )
+            visible = {}
+            # show/hide sugar folds into the absolute visible map (v2)
+            for nm in show:
+                visible[nm] = True
+            for nm in hide:
+                visible[nm] = False
+            for nm, val in raw_visible.items():
+                visible[nm] = bool(val)
+            for nm in visible:
+                if construction.element(nm) is None:
+                    raise ValueError(
+                        f"Keyframe {i}: visibility target '{nm}' not found in construction"
+                    )
+            enter = {nm: _normalize_effect(nm, spec, ENTER_EFFECTS, 'enter')
+                     for nm, spec in raw_enter.items()}
+            exit_ = {nm: _normalize_effect(nm, spec, EXIT_EFFECTS, 'exit')
+                     for nm, spec in raw_exit.items()}
+            for nm in list(enter) + list(exit_):
+                if construction.element(nm) is None:
+                    raise ValueError(
+                        f"Keyframe {i}: enter/exit target '{nm}' not found in construction"
+                    )
+
+            raw_events = kf_data.get('events', [])
+            if raw_events and version < 2:
+                raise ValueError(f"Keyframe {i}: 'events' requires '\"version\": 2'")
+            events = [_normalize_event(ev, i, construction) for ev in raw_events]
+
             keyframes.append(Keyframe(
                 t=kf_data['t'],
                 values=values,
                 show=show,
                 hide=hide,
                 easing_name=easing,
+                styles=styles,
+                visible=visible,
+                enter=enter,
+                exit=exit_,
+                camera=camera,
+                events=events,
             ))
 
         # Sort by time
@@ -313,7 +886,7 @@ class KeyframeSequence:
         # Build intervals
         intervals = _build_intervals(keyframes, element_info, construction)
 
-        return cls(keyframes, intervals, element_info)
+        return cls(keyframes, intervals, element_info, version=version, defaults=defaults)
 
 
 # Interpolation kind per path constraint. Closed paths (circle, ellipse)
@@ -451,6 +1024,8 @@ def _build_intervals(keyframes, element_info, construction=None):
         info = element_info[name]
         current_values[name] = _parse_value(name, raw_value, info, construction)
 
+    running_camera = dict(keyframes[0].camera)
+
     for i in range(1, len(keyframes)):
         kf_prev = keyframes[i - 1]
         kf_next = keyframes[i]
@@ -499,16 +1074,57 @@ def _build_intervals(keyframes, element_info, construction=None):
             interpolators.append(interp)
             current_values[name] = (kind, end_val, direction)
 
-        intervals.append(KeyframeInterval(
+        interval = KeyframeInterval(
             start_t=kf_prev.t,
             end_t=kf_next.t,
             interpolators=interpolators,
             show=kf_next.show,
             hide=kf_next.hide,
             easing_name=kf_next.easing_name,
-        ))
+        )
+
+        if kf_next.camera:
+            camera_start = dict(running_camera)
+            running_camera.update(kf_next.camera)
+            interval.camera_interp = CameraInterpolator(
+                camera_start, dict(running_camera), easing_fn)
+
+        for ev in kf_next.events:
+            dur = interval.duration
+            if dur <= 0:
+                continue
+            at = min(max(ev['at'], 0.0), dur)
+            edur = min(ev['duration'], dur - at)
+            if edur <= 0:
+                continue
+            interval.events.append(EventSpec(
+                effect=ev['effect'], targets=ev['targets'], start=at,
+                duration=edur, color=ev['color'], scale=ev['scale']))
+
+        intervals.append(interval)
 
     return intervals
+
+
+def build_reveal_keyframes(names_in_order, type_effects=None, lag=0.3,
+                            duration=0.5, default_effect='fade'):
+    """Build a 2-keyframe v2 sequence that reveals *names_in_order* one by one,
+    staggered by *lag* seconds, each with its per-name effect (from
+    *type_effects*, else *default_effect*).
+    """
+    type_effects = type_effects or {}
+    names = list(names_in_order)
+    hidden = {n: False for n in names}
+    shown = {n: True for n in names}
+    enter = {}
+    for i, n in enumerate(names):
+        enter[n] = {'effect': type_effects.get(n, default_effect),
+                    'duration': float(duration), 'at': float(i * lag)}
+    total = (len(names) - 1) * lag + duration if names else duration
+    return {'version': 2, 'keyframes': [
+        {'t': 0, 'visible': hidden},
+        {'t': float(total), 'visible': shown, 'enter': enter},
+    ]}
 
 
 def _get_current_value(info):

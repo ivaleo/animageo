@@ -1,0 +1,21 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-12T10:46:33.049715+00:00",
+  "case_id": "create_triangle_altitude",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй треугольник ABC и высоту из вершины C к стороне AB. Основание высоты обозначь H.",
+  "expected": [
+    "constructs altitude perpendicular to AB",
+    "marks H",
+    "marks right angle",
+    "hides helper infinite lines"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(0, 0)\nB = Point(6, 0)\nC = Point(2, 5)\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nbase_line = Line(A, B)\nalt_line = PerpendicularLine(C, base_line)\nH = Intersect(alt_line, base_line)\nCH = Segment(C, H)\nstyle(CH, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nright_angle = Angle(A, H, C)\nstyle(right_angle, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\nhide(base_line, alt_line)\nstyle(H, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(A, B, C, label_visible=True, fill=\"color.strong\", size_px=\"point_size.main\")",
+    "style": null,
+    "notes": []
+  }
+}

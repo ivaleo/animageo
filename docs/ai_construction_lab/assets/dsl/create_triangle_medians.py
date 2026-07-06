@@ -1,0 +1,25 @@
+A = Point(-3, -2)
+B = Point(3, -2)
+C = Point(0, -2 + 3 * sqrt(3))
+
+tri, AB, BC, CA = Polygon(A, B, C)
+M_ab = Midpoint(A, B)
+M_bc = Midpoint(B, C)
+M_ca = Midpoint(C, A)
+
+median_A = Segment(A, M_bc)
+median_B = Segment(B, M_ca)
+median_C = Segment(C, M_ab)
+G = Intersect(median_A, median_B)
+
+AB_l = Segment(A, M_ab)
+AB_r = Segment(M_ab, B)
+BC_l = Segment(B, M_bc)
+BC_r = Segment(M_bc, C)
+CA_l = Segment(C, M_ca)
+CA_r = Segment(M_ca, A)
+
+style(A, B, C, G, label_visible=True)
+style(median_A, median_B, median_C, stroke="color.accent", stroke_width_px="line_width.bold")
+style(G, fill="color.accent", size_px="point_size.bold")
+style(AB_l, AB_r, BC_l, BC_r, CA_l, CA_r, stroke_width_px=0, tick_count=1)

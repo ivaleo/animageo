@@ -1,0 +1,26 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T09:24:25.247780+00:00",
+  "case_id": "create_tangent_chord_theorem",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Покажи касательную в точке A окружности, хорду AB и вписанный угол ACB, соответствующий углу между касательной и хордой.",
+  "expected": [
+    "constructs tangent at A",
+    "shows chord AB",
+    "marks equal tangent-chord and inscribed angles"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Given circle and points\nO = Point(0, 0)\nA = Point(2, 0)\nB = Point(-1.5, 1.5)\nC = Point(0.5, 2.2)\ncircle = Circle(O, A)\n\n# Chord AB\nAB = Segment(A, B)\n\n# Tangent at A\ntangent_line = Tangent(A, circle)\n\n# Inscribed angle ACB\nCA = Segment(C, A)\nCB = Segment(C, B)\nangle_ACB = Angle(A, C, B)\n\n# Angle between tangent and chord (at A)\n# The tangent line is infinite; we need a ray along the tangent for the angle.\n# Choose a point T on the tangent line away from A to define the ray.\n# Use a point on the tangent line: rotate A around O by 90 degrees to get a direction.\nT = Rotate(A, pi/2, O)\n# Ensure T lies on the tangent line (it does by construction).\nray_AT = Ray(A, T)\nangle_tangent_chord = Angle(B, A, T)\n\n# Styling\nstyle(circle, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(AB, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(CA, CB, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(tangent_line, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(ray_AT, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(angle_ACB, arc_size_px=\"angle_radius.main\", tick_count=1)\nstyle(angle_tangent_chord, arc_size_px=\"angle_radius.main\", tick_count=1)\n\n# Labels\nstyle(A, B, C, O, label_visible=True)\nstyle(angle_ACB, label_visible=True, label_text=\"$\\\\angle ACB$\")\nstyle(angle_tangent_chord, label_visible=True, label_text=\"$\\\\theta$\")\n\n# Hide helper point T\nhide(T)",
+    "style": null,
+    "notes": [
+      "Tangent at A is constructed using Tangent(A, circle).",
+      "Chord AB is drawn as a segment.",
+      "Inscribed angle ACB is marked with an arc.",
+      "Angle between tangent and chord is shown at A using a ray along the tangent; helper point T is hidden.",
+      "Labels for angles use LaTeX."
+    ]
+  }
+}

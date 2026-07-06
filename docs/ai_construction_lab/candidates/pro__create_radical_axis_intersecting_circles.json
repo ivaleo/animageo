@@ -1,0 +1,23 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T09:35:25.921160+00:00",
+  "case_id": "create_radical_axis_intersecting_circles",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй две пересекающиеся окружности и их радикальную ось.",
+  "expected": [
+    "uses two circle intersections",
+    "draws line through common points",
+    "shows relation to center line"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Two intersecting circles and their radical axis\n\n# Centers\nO1 = Point(-2, 0)\nO2 = Point(2, 0)\n\n# Radii chosen so circles intersect\nr1 = 3\nr2 = 3\n\n# Points on circles to define them\nP1 = Point(-2 + r1, 0)\nP2 = Point(2 + r2, 0)\n\n# Circles\nc1 = Circle(O1, P1)\nc2 = Circle(O2, P2)\n\n# Intersection points of the circles\nA, B = Intersect(c1, c2)\n\n# Radical axis: line through intersection points\nradical_axis = Line(A, B)\n\n# Style\nstyle(O1, O2, label_visible=True, fill=\"color.main\", size_px=\"point_size.main\")\nstyle(c1, c2, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(A, B, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\nstyle(radical_axis, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n\n# Hide helper points used only to define circles\nhide(P1, P2)",
+    "style": null,
+    "notes": [
+      "Circles are placed symmetrically with equal radii to guarantee two intersection points.",
+      "Radical axis is drawn as the line through the two intersection points."
+    ]
+  }
+}

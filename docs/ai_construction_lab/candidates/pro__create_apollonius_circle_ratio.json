@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T13:25:20.381466+00:00",
+  "case_id": "create_apollonius_circle_ratio",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй окружность Аполлония для точек A и B: множество точек P, для которых PA:PB = 2:1.",
+  "expected": [
+    "constructs A and B",
+    "draws Apollonius circle for ratio 2:1",
+    "shows one sample point P on the circle with segments PA and PB"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(-2, 0)\nB = Point(2, 0)\n\n# Internal division point M on AB with AM:MB = 2:1\nM = A + (2.0 / 3.0) * (B - A)\n\n# External division point N on line AB with AN:NB = 2:1 (external)\nN = A + 2.0 * (B - A)\n\n# Apollonius circle has diameter MN\nO = Midpoint(M, N)\ncircle = Circle(O, M)\n\n# Mark the given points and the circle\nstyle(A, B, fill=\"color.strong\", size_px=\"point_size.bold\", label_visible=True)\nstyle(circle, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n\n# Show the diameter points M and N as auxiliary\nstyle(M, N, fill=\"color.aux\", size_px=\"point_size.aux\", label_visible=True)\n\n# Add a generic point P on the circle to illustrate the ratio\nP = Rotate(M, pi / 3, O)\nstyle(P, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\n\n# Draw segments PA and PB\nPA = Segment(P, A)\nPB = Segment(P, B)\nstyle(PA, PB, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n\n# Mark the ratio with tick marks: PA gets 2 ticks, PB gets 1 tick\nstyle(PA, tick_count=2)\nstyle(PB, tick_count=1)\n\n# Label the ratio near P\nstyle(P, label_text=\"$P$\")",
+    "style": null,
+    "notes": [
+      "Apollonius circle constructed via internal and external division points M and N on AB with ratio 2:1.",
+      "A generic point P on the circle is shown with segments PA and PB, and tick marks (2 on PA, 1 on PB) to indicate the ratio.",
+      "M and N are shown as auxiliary points to explain the construction."
+    ]
+  }
+}

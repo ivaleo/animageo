@@ -1,0 +1,8 @@
+A = Point(-3, -2)
+B = Point(-1, 3)
+C = Point(2, 1)
+D = Point(4, -1)
+E = Point(0, -3)
+conic = Conic(A, B, C, D, E)
+style(A, B, C, D, E, label_visible=True, fill="color.accent", size_px="point_size.bold")
+style(conic, stroke="color.main", stroke_width_px="line_width.main")

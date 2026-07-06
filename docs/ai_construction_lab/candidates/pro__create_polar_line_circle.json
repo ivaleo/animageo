@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T09:41:13.632410+00:00",
+  "case_id": "create_polar_line_circle",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй полярную прямую внешней точки P относительно окружности и точки касания касательных.",
+  "expected": [
+    "uses Polar(P, circle)",
+    "confirms it through tangent contact points",
+    "shows tangent segments"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Given circle and external point\nO = Point(0, 0)\nA = Point(2, 0)\ncircle = Circle(O, A)\nP = Point(4, 3)\n\n# Tangents from P to the circle\nt1, t2 = Tangent(P, circle)\n\n# Points of tangency\nT1 = Intersect(t1, circle)\nT2 = Intersect(t2, circle)\n\n# Polar line (chord of contact)\npolar = Line(T1, T2)\n\n# Tangent segments\nPT1 = Segment(P, T1)\nPT2 = Segment(P, T2)\n\n# Radii to tangency points\nOT1 = Segment(O, T1)\nOT2 = Segment(O, T2)\n\n# Right angle markers at tangency points\nright1 = Angle(P, T1, O)\nright2 = Angle(P, T2, O)\n\n# Styling\nstyle(circle, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(O, fill=\"color.main\", size_px=\"point_size.main\", label_visible=True)\nstyle(P, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\nstyle(T1, T2, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True, label_text=[\"$T_1$\", \"$T_2$\"])\nstyle(PT1, PT2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(OT1, OT2, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(polar, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", stroke_dasharray=\"5,5\")\nstyle(right1, right2, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\nhide(t1, t2)",
+    "style": null,
+    "notes": [
+      "Tangent lines are hidden after deriving tangency points; only finite tangent segments are shown.",
+      "Polar line is drawn as the chord of contact T1T2 with a dashed accent style.",
+      "Right-angle markers are placed at tangency points to emphasize perpendicularity of radius and tangent."
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T14:01:40.185550+00:00",
+  "case_id": "create_excentral_touchpoint_hint",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй треугольник ABC и вневписанную окружность напротив вершины A с точкой касания к стороне BC.",
+  "expected": [
+    "constructs a visible A-excircle approximation from external angle bisectors",
+    "marks contact foot on BC",
+    "states limitation if exact excircle command is unavailable"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Triangle ABC\nA = Point(-3, 2)\nB = Point(-1, -2)\nC = Point(4, 1)\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\nstyle(A, B, C, label_visible=True)\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\n\n# Internal angle bisector at A\nbis_A = AngularBisector(B, A, C)\n\n# External angle bisector at B\nbis_B_int = AngularBisector(A, B, C)\next_B = PerpendicularLine(B, bis_B_int)\n\n# Excenter opposite A (intersection of internal bisector at A and external at B)\nI_A = Intersect(bis_A, ext_B)\nstyle(I_A, label_visible=True, label_text=\"$I_A$\", fill=\"color.accent\", size_px=\"point_size.bold\")\n\n# Tangency point on BC: drop perpendicular from I_A to line BC\nperp_BC = PerpendicularLine(I_A, BC)\nT_A = Intersect(perp_BC, BC)\nstyle(T_A, label_visible=True, label_text=\"$T_A$\", fill=\"color.accent\", size_px=\"point_size.bold\")\n\n# Excircle (center I_A, radius I_A T_A)\nexcircle = Circle(I_A, T_A)\nstyle(excircle, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n\n# Right angle marker at tangency\nright_angle = Angle(B, T_A, I_A)\nstyle(right_angle, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\n\n# Hide construction helpers\nhide(bis_A, bis_B_int, ext_B, perp_BC)",
+    "style": null,
+    "notes": [
+      "Used internal angle bisector at A and external angle bisector at B to construct excenter I_A opposite A.",
+      "Tangency point T_A on BC obtained by perpendicular from I_A to line BC.",
+      "Right angle marker shown at T_A between BC and radius I_A T_A."
+    ]
+  }
+}

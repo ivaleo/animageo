@@ -1,0 +1,26 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T10:08:34.496642+00:00",
+  "case_id": "create_ellipse_tangents_from_point",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй эллипс и две касательные из внешней точки P.",
+  "expected": [
+    "uses conic Tangent from external point",
+    "marks two tangent points",
+    "shows finite tangent segments"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Ellipse with two tangents from external point P\n\n# Ellipse: foci F1, F2, semi-major axis length 3\nF1 = Point(-2, 0)\nF2 = Point(2, 0)\nellipse = Ellipse(F1, F2, 3)\n\n# External point P\nP = Point(4, 2)\n\n# Tangents from P to ellipse\nt1, t2 = Tangent(P, ellipse)\n\n# Tangent points\nT1 = Intersect(t1, ellipse)\nT2 = Intersect(t2, ellipse)\n\n# Visible tangent segments\nPT1 = Segment(P, T1)\nPT2 = Segment(P, T2)\n\n# Hide infinite tangent lines\nhide(t1, t2)\n\n# Style\nstyle(ellipse, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(F1, F2, fill=\"color.main\", size_px=\"point_size.main\", label_visible=True)\nstyle(F1, label_text=\"$F_1$\")\nstyle(F2, label_text=\"$F_2$\")\nstyle(P, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\nstyle(T1, T2, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\nstyle(T1, label_text=\"$T_1$\")\nstyle(T2, label_text=\"$T_2$\")\nstyle(PT1, PT2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")",
+    "style": null,
+    "notes": [
+      "Ellipse defined by foci F1(-2,0), F2(2,0) and semi-major axis 3.",
+      "External point P at (4,2) chosen to give two real tangents.",
+      "Tangent points T1, T2 derived from intersection of tangent lines with ellipse.",
+      "Infinite tangent lines hidden; only finite segments PT1, PT2 shown.",
+      "Labels use subscript notation for foci and tangent points."
+    ]
+  }
+}

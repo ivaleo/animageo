@@ -1,0 +1,1520 @@
+{
+  "elements": [
+    {
+      "geometry": {
+        "coords": [
+          -4.0,
+          -1.0
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "point",
+        "label_offset_px": [
+          -23.0,
+          42.0
+        ],
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#1565c0",
+          "opacity": 0.0
+        },
+        "point_size": 5.0,
+        "point_style": 0,
+        "show_label": true,
+        "show_object": true
+      },
+      "ggb_style": {
+        "fill": "#1565c0",
+        "fill_opacity": 1.0,
+        "font_size_px": 16,
+        "label_color": "#1565c0",
+        "label_offset_px": [
+          -23.0,
+          -42.0
+        ],
+        "label_visible": true,
+        "point_shape": "circle",
+        "size_px": 10.0,
+        "stroke": "#000000",
+        "stroke_opacity": 1.0,
+        "stroke_width_px": 1.0
+      },
+      "label_visible": true,
+      "name": "A",
+      "type": "point",
+      "visible": true
+    },
+    {
+      "geometry": {
+        "coords": [
+          1.0,
+          -1.0
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "point",
+        "label_offset_px": [
+          5.0,
+          37.0
+        ],
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#1565c0",
+          "opacity": 0.0
+        },
+        "point_size": 5.0,
+        "point_style": 0,
+        "show_label": true,
+        "show_object": true
+      },
+      "ggb_style": {
+        "fill": "#1565c0",
+        "fill_opacity": 1.0,
+        "font_size_px": 16,
+        "label_color": "#1565c0",
+        "label_offset_px": [
+          5.0,
+          -37.0
+        ],
+        "label_visible": true,
+        "point_shape": "circle",
+        "size_px": 10.0,
+        "stroke": "#000000",
+        "stroke_opacity": 1.0,
+        "stroke_width_px": 1.0
+      },
+      "label_visible": true,
+      "name": "C",
+      "type": "point",
+      "visible": true
+    },
+    {
+      "geometry": {
+        "coords": [
+          -1.571327767984917,
+          0.6122003525430552
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "point",
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#1565c0",
+          "opacity": 0.0
+        },
+        "point_size": 5.0,
+        "point_style": 0,
+        "show_label": true,
+        "show_object": false
+      },
+      "ggb_style": {
+        "fill": "#1565c0",
+        "fill_opacity": 1.0,
+        "font_size_px": 16,
+        "label_color": "#1565c0",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": true,
+        "point_shape": "circle",
+        "size_px": 10.0,
+        "stroke": "#000000",
+        "stroke_opacity": 1.0,
+        "stroke_width_px": 1.0
+      },
+      "label_visible": true,
+      "name": "Q",
+      "type": "point",
+      "visible": false
+    },
+    {
+      "geometry": {
+        "coords": [
+          1.5854141369934378,
+          0.5148558885128857
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "point",
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#1565c0",
+          "opacity": 0.0
+        },
+        "point_size": 5.0,
+        "point_style": 0,
+        "show_label": true,
+        "show_object": false
+      },
+      "ggb_style": {
+        "fill": "#1565c0",
+        "fill_opacity": 1.0,
+        "font_size_px": 16,
+        "label_color": "#1565c0",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": true,
+        "point_shape": "circle",
+        "size_px": 10.0,
+        "stroke": "#000000",
+        "stroke_opacity": 1.0,
+        "stroke_width_px": 1.0
+      },
+      "label_visible": true,
+      "name": "R",
+      "type": "point",
+      "visible": false
+    },
+    {
+      "construction": {
+        "command": "Circle",
+        "inputs": [
+          "Q",
+          "R"
+        ],
+        "outputs": [
+          "q"
+        ]
+      },
+      "geometry": {
+        "center": [
+          -1.571327767984917,
+          0.6122003525430552
+        ],
+        "radius": 3.1582424541703085
+      },
+      "ggb_raw_summary": {
+        "elem_type": "conic",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": false
+      },
+      "ggb_style": {
+        "fill": "#6e6d73",
+        "fill_opacity": 0.0,
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#6e6d73",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "q",
+      "type": "circle",
+      "visible": false
+    },
+    {
+      "construction": {
+        "command": "Point",
+        "inputs": [
+          "q"
+        ],
+        "outputs": [
+          "B"
+        ]
+      },
+      "geometry": {
+        "coords": [
+          -3.0471976027905514,
+          3.4043865264996707
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "point",
+        "label_offset_px": [
+          -17.0,
+          -10.0
+        ],
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#1565c0",
+          "opacity": 0.0
+        },
+        "point_size": 5.0,
+        "point_style": 0,
+        "show_label": true,
+        "show_object": true
+      },
+      "ggb_style": {
+        "fill": "#1565c0",
+        "fill_opacity": 1.0,
+        "font_size_px": 16,
+        "label_color": "#1565c0",
+        "label_offset_px": [
+          -17.0,
+          10.0
+        ],
+        "label_visible": true,
+        "point_shape": "circle",
+        "size_px": 10.0,
+        "stroke": "#000000",
+        "stroke_opacity": 1.0,
+        "stroke_width_px": 1.0
+      },
+      "label_visible": true,
+      "name": "B",
+      "type": "point",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Polygon",
+        "inputs": [
+          "A",
+          "B",
+          "C"
+        ],
+        "outputs": [
+          "t1",
+          "c",
+          "a",
+          "b"
+        ]
+      },
+      "geometry": {
+        "vertex_count": 3,
+        "vertices": [
+          [
+            -4.0,
+            -1.0
+          ],
+          [
+            -3.0471976027905514,
+            3.4043865264996707
+          ],
+          [
+            1.0,
+            -1.0
+          ]
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "polygon",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.10000000149011612,
+          "hex": "#1565c0",
+          "opacity": 0.10000000149011612
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "fill": "#1565c0",
+        "fill_opacity": 0.10000000149011612,
+        "font_size_px": 16,
+        "label_color": "#1565c0",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#1565c0",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "t1",
+      "type": "polygon",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Polygon",
+        "inputs": [
+          "A",
+          "B",
+          "C"
+        ],
+        "outputs": [
+          "t1",
+          "c",
+          "a",
+          "b"
+        ]
+      },
+      "geometry": {
+        "endpoints": [
+          [
+            -4.0,
+            -1.0
+          ],
+          [
+            -3.0471976027905514,
+            3.4043865264996707
+          ]
+        ],
+        "length": 4.506268199179884
+      },
+      "ggb_raw_summary": {
+        "elem_type": "segment",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#1565c0",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#1565c0",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#1565c0",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "c",
+      "type": "segment",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Polygon",
+        "inputs": [
+          "A",
+          "B",
+          "C"
+        ],
+        "outputs": [
+          "t1",
+          "c",
+          "a",
+          "b"
+        ]
+      },
+      "geometry": {
+        "endpoints": [
+          [
+            -3.0471976027905514,
+            3.4043865264996707
+          ],
+          [
+            1.0,
+            -1.0
+          ]
+        ],
+        "length": 5.981507260786818
+      },
+      "ggb_raw_summary": {
+        "elem_type": "segment",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#1565c0",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#1565c0",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#1565c0",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "a",
+      "type": "segment",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Polygon",
+        "inputs": [
+          "A",
+          "B",
+          "C"
+        ],
+        "outputs": [
+          "t1",
+          "c",
+          "a",
+          "b"
+        ]
+      },
+      "geometry": {
+        "endpoints": [
+          [
+            1.0,
+            -1.0
+          ],
+          [
+            -4.0,
+            -1.0
+          ]
+        ],
+        "length": 5.0
+      },
+      "ggb_raw_summary": {
+        "elem_type": "segment",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#1565c0",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#1565c0",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#1565c0",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "b",
+      "type": "segment",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "AngularBisector",
+        "inputs": [
+          "C",
+          "A",
+          "B"
+        ],
+        "outputs": [
+          "f"
+        ]
+      },
+      "geometry": {
+        "direction": [
+          0.778279944869842,
+          0.6279174527064809
+        ],
+        "normal": [
+          -0.6279174527064809,
+          0.778279944869842
+        ],
+        "offset": 1.7333898659560816
+      },
+      "ggb_raw_summary": {
+        "elem_type": "line",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": false
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#6e6d73",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "f",
+      "type": "line",
+      "visible": false
+    },
+    {
+      "construction": {
+        "command": "AngularBisector",
+        "inputs": [
+          "B",
+          "C",
+          "A"
+        ],
+        "outputs": [
+          "g"
+        ]
+      },
+      "geometry": {
+        "direction": [
+          -0.9155922550265442,
+          0.40210797372771356
+        ],
+        "normal": [
+          -0.40210797372771356,
+          -0.9155922550265442
+        ],
+        "offset": 0.5134842812988306
+      },
+      "ggb_raw_summary": {
+        "elem_type": "line",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": false
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#6e6d73",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "g",
+      "type": "line",
+      "visible": false
+    },
+    {
+      "construction": {
+        "command": "Intersect",
+        "inputs": [
+          "f",
+          "g"
+        ],
+        "outputs": [
+          "D"
+        ]
+      },
+      "geometry": {
+        "coords": [
+          -2.2376195308034674,
+          0.42189126446347014
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "point",
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "point_size": 4.0,
+        "point_style": 0,
+        "show_label": true,
+        "show_object": false
+      },
+      "ggb_style": {
+        "fill": "#6e6d73",
+        "fill_opacity": 1.0,
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": true,
+        "point_shape": "circle",
+        "size_px": 8.0,
+        "stroke": "#000000",
+        "stroke_opacity": 1.0,
+        "stroke_width_px": 1.0
+      },
+      "label_visible": true,
+      "name": "D",
+      "type": "point",
+      "visible": false
+    },
+    {
+      "construction": {
+        "command": "OrthogonalLine",
+        "inputs": [
+          "D",
+          "b"
+        ],
+        "outputs": [
+          "h"
+        ]
+      },
+      "geometry": {
+        "direction": [
+          0.0,
+          -1.0
+        ],
+        "normal": [
+          1.0,
+          0.0
+        ],
+        "offset": -2.2376195308034674
+      },
+      "ggb_raw_summary": {
+        "elem_type": "line",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": false
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#6e6d73",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "h",
+      "type": "line",
+      "visible": false
+    },
+    {
+      "construction": {
+        "command": "Intersect",
+        "inputs": [
+          "h",
+          "b"
+        ],
+        "outputs": [
+          "J_1"
+        ]
+      },
+      "geometry": {
+        "coords": [
+          -2.2376195308034674,
+          -1.0
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "point",
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "point_size": 4.0,
+        "point_style": 0,
+        "show_label": false,
+        "show_object": false
+      },
+      "ggb_style": {
+        "fill": "#6e6d73",
+        "fill_opacity": 1.0,
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "point_shape": "circle",
+        "size_px": 8.0,
+        "stroke": "#000000",
+        "stroke_opacity": 1.0,
+        "stroke_width_px": 1.0
+      },
+      "label_visible": false,
+      "name": "J_1",
+      "type": "point",
+      "visible": false
+    },
+    {
+      "construction": {
+        "command": "Circle",
+        "inputs": [
+          "D",
+          "J_1"
+        ],
+        "outputs": [
+          "d"
+        ]
+      },
+      "geometry": {
+        "center": [
+          -2.2376195308034674,
+          0.42189126446347014
+        ],
+        "radius": 1.4218912644634703
+      },
+      "ggb_raw_summary": {
+        "elem_type": "conic",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#1565c0",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "fill": "#1565c0",
+        "fill_opacity": 0.0,
+        "font_size_px": 16,
+        "label_color": "#1565c0",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#1565c0",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "d",
+      "type": "circle",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Intersect",
+        "inputs": [
+          "d",
+          "c",
+          "1"
+        ],
+        "outputs": [
+          "M"
+        ]
+      },
+      "geometry": {
+        "coords": [
+          -3.627363427647033,
+          0.7225350223291318
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "point",
+        "label_offset_px": [
+          -34.0,
+          4.0
+        ],
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "point_size": 4.0,
+        "point_style": 0,
+        "show_label": true,
+        "show_object": true
+      },
+      "ggb_style": {
+        "fill": "#6e6d73",
+        "fill_opacity": 1.0,
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          -34.0,
+          -4.0
+        ],
+        "label_visible": true,
+        "point_shape": "circle",
+        "size_px": 8.0,
+        "stroke": "#000000",
+        "stroke_opacity": 1.0,
+        "stroke_width_px": 1.0
+      },
+      "label_visible": true,
+      "name": "M",
+      "type": "point",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Intersect",
+        "inputs": [
+          "d",
+          "a",
+          "1"
+        ],
+        "outputs": [
+          "K"
+        ]
+      },
+      "geometry": {
+        "coords": [
+          -1.1906328008188416,
+          1.3839689927129215
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "point",
+        "label_offset_px": [
+          8.0,
+          -5.0
+        ],
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "point_size": 4.0,
+        "point_style": 0,
+        "show_label": true,
+        "show_object": true
+      },
+      "ggb_style": {
+        "fill": "#6e6d73",
+        "fill_opacity": 1.0,
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          8.0,
+          5.0
+        ],
+        "label_visible": true,
+        "point_shape": "circle",
+        "size_px": 8.0,
+        "stroke": "#000000",
+        "stroke_opacity": 1.0,
+        "stroke_width_px": 1.0
+      },
+      "label_visible": true,
+      "name": "K",
+      "type": "point",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Segment",
+        "inputs": [
+          "M",
+          "K"
+        ],
+        "outputs": [
+          "i"
+        ]
+      },
+      "geometry": {
+        "endpoints": [
+          [
+            -3.627363427647033,
+            0.7225350223291318
+          ],
+          [
+            -1.1906328008188416,
+            1.3839689927129215
+          ]
+        ],
+        "length": 2.5249061457607036
+      },
+      "ggb_raw_summary": {
+        "elem_type": "segment",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#6e6d73",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "i",
+      "type": "segment",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Line",
+        "inputs": [
+          "M",
+          "K"
+        ],
+        "outputs": [
+          "l"
+        ]
+      },
+      "geometry": {
+        "direction": [
+          0.9650777043413837,
+          0.26196378486952154
+        ],
+        "normal": [
+          -0.26196378486952154,
+          0.9650777043413837
+        ],
+        "offset": 1.6475402932593464
+      },
+      "ggb_raw_summary": {
+        "elem_type": "line",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": false
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#6e6d73",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "l",
+      "type": "line",
+      "visible": false
+    },
+    {
+      "construction": {
+        "command": "Intersect",
+        "inputs": [
+          "g",
+          "l"
+        ],
+        "outputs": [
+          "E"
+        ]
+      },
+      "geometry": {
+        "coords": [
+          -3.1915458873229614,
+          0.8408347321475581
+        ]
+      },
+      "ggb_raw_summary": {
+        "elem_type": "point",
+        "label_offset_px": [
+          -1.0,
+          -5.0
+        ],
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "point_size": 4.0,
+        "point_style": 0,
+        "show_label": true,
+        "show_object": true
+      },
+      "ggb_style": {
+        "fill": "#6e6d73",
+        "fill_opacity": 1.0,
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          -1.0,
+          5.0
+        ],
+        "label_visible": true,
+        "point_shape": "circle",
+        "size_px": 8.0,
+        "stroke": "#000000",
+        "stroke_opacity": 1.0,
+        "stroke_width_px": 1.0
+      },
+      "label_visible": true,
+      "name": "E",
+      "type": "point",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Segment",
+        "inputs": [
+          "A",
+          "E"
+        ],
+        "outputs": [
+          "j"
+        ]
+      },
+      "geometry": {
+        "endpoints": [
+          [
+            -4.0,
+            -1.0
+          ],
+          [
+            -3.1915458873229614,
+            0.8408347321475581
+          ]
+        ],
+        "length": 2.010539868638568
+      },
+      "ggb_raw_summary": {
+        "elem_type": "segment",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 15,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#d32f2f",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#d32f2f",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#d32f2f",
+        "stroke_dash_ratio": 0.65,
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "j",
+      "type": "segment",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Segment",
+        "inputs": [
+          "E",
+          "C"
+        ],
+        "outputs": [
+          "k"
+        ]
+      },
+      "geometry": {
+        "endpoints": [
+          [
+            -3.1915458873229614,
+            0.8408347321475581
+          ],
+          [
+            1.0,
+            -1.0
+          ]
+        ],
+        "length": 4.57796127513272
+      },
+      "ggb_raw_summary": {
+        "elem_type": "segment",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 15,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#d32f2f",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#d32f2f",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#d32f2f",
+        "stroke_dash_ratio": 0.65,
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "k",
+      "type": "segment",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Angle",
+        "inputs": [
+          "E",
+          "C",
+          "A"
+        ],
+        "outputs": [
+          "α"
+        ]
+      },
+      "geometry": {
+        "end_angle": 3.141592653589793,
+        "side1": [
+          -4.191545887322961,
+          1.8408347321475582
+        ],
+        "side2": [
+          -5.0,
+          0.0
+        ],
+        "size_deg": 23.71002440057602,
+        "size_rad": 0.4138179915182465,
+        "start_angle": 2.7277746620715466,
+        "vertex": [
+          1.0,
+          -1.0
+        ]
+      },
+      "ggb_raw_summary": {
+        "angle_style": 1,
+        "arc_size": 35.0,
+        "elem_type": "angle",
+        "line_opacity": 153.0,
+        "line_thickness": 4.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.10000000149011612,
+          "hex": "#000000",
+          "opacity": 0.10000000149011612
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "angle_range": "minor",
+        "arc_size_px": 35.0,
+        "fill": "#000000",
+        "fill_opacity": 0.10000000149011612,
+        "font_size_px": 16,
+        "label_color": "#000000",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#000000",
+        "stroke_opacity": 0.6,
+        "stroke_width_px": 2.0
+      },
+      "label_visible": false,
+      "name": "α",
+      "type": "angle",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Angle",
+        "inputs": [
+          "K",
+          "C",
+          "E"
+        ],
+        "outputs": [
+          "β"
+        ]
+      },
+      "geometry": {
+        "end_angle": 2.7277746620715466,
+        "side1": [
+          -2.1906328008188414,
+          2.3839689927129215
+        ],
+        "side2": [
+          -4.191545887322961,
+          1.8408347321475582
+        ],
+        "size_deg": 23.71002440057602,
+        "size_rad": 0.4138179915182465,
+        "start_angle": 2.3139566705533,
+        "vertex": [
+          1.0,
+          -1.0
+        ]
+      },
+      "ggb_raw_summary": {
+        "angle_style": 1,
+        "arc_size": 30.0,
+        "elem_type": "angle",
+        "line_opacity": 153.0,
+        "line_thickness": 4.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.10000000149011612,
+          "hex": "#000000",
+          "opacity": 0.10000000149011612
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "angle_range": "minor",
+        "arc_size_px": 30.0,
+        "fill": "#000000",
+        "fill_opacity": 0.10000000149011612,
+        "font_size_px": 16,
+        "label_color": "#000000",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#000000",
+        "stroke_opacity": 0.6,
+        "stroke_width_px": 2.0
+      },
+      "label_visible": false,
+      "name": "β",
+      "type": "angle",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Angle",
+        "inputs": [
+          "A",
+          "E",
+          "C"
+        ],
+        "outputs": [
+          "γ"
+        ]
+      },
+      "geometry": {
+        "end_angle": -0.4138179915182467,
+        "side1": [
+          -0.8084541126770386,
+          -1.8408347321475582
+        ],
+        "side2": [
+          4.191545887322961,
+          -1.8408347321475582
+        ],
+        "size_deg": 90.00000000000001,
+        "size_rad": 1.570796326794897,
+        "start_angle": -1.9846143183131437,
+        "vertex": [
+          -3.1915458873229614,
+          0.8408347321475581
+        ]
+      },
+      "ggb_raw_summary": {
+        "angle_style": 1,
+        "arc_size": 30.0,
+        "elem_type": "angle",
+        "line_opacity": 153.0,
+        "line_thickness": 4.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.10000000149011612,
+          "hex": "#000000",
+          "opacity": 0.10000000149011612
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "angle_range": "minor",
+        "arc_size_px": 30.0,
+        "fill": "#000000",
+        "fill_opacity": 0.10000000149011612,
+        "font_size_px": 16,
+        "label_color": "#000000",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#000000",
+        "stroke_opacity": 0.6,
+        "stroke_width_px": 2.0
+      },
+      "label_visible": false,
+      "name": "γ",
+      "type": "angle",
+      "visible": true
+    },
+    {
+      "construction": {
+        "command": "Segment",
+        "inputs": [
+          "M",
+          "E"
+        ],
+        "outputs": [
+          "m"
+        ]
+      },
+      "geometry": {
+        "endpoints": [
+          [
+            -3.627363427647033,
+            0.7225350223291318
+          ],
+          [
+            -3.1915458873229614,
+            0.8408347321475581
+          ]
+        ],
+        "length": 0.45158803106066425
+      },
+      "ggb_raw_summary": {
+        "elem_type": "segment",
+        "line_opacity": 204.0,
+        "line_thickness": 5.0,
+        "line_type": 0,
+        "obj_color": {
+          "alpha": 0.0,
+          "hex": "#6e6d73",
+          "opacity": 0.0
+        },
+        "show_label": false,
+        "show_object": true
+      },
+      "ggb_style": {
+        "font_size_px": 16,
+        "label_color": "#6e6d73",
+        "label_offset_px": [
+          0,
+          0
+        ],
+        "label_visible": false,
+        "stroke": "#6e6d73",
+        "stroke_opacity": 0.8,
+        "stroke_width_px": 2.5
+      },
+      "label_visible": false,
+      "name": "m",
+      "type": "segment",
+      "visible": true
+    }
+  ],
+  "groups": {
+    "angles": [
+      "α",
+      "β",
+      "γ"
+    ],
+    "circles": [
+      "q",
+      "d"
+    ],
+    "lines": [
+      "f",
+      "g",
+      "h",
+      "l"
+    ],
+    "points": [
+      "A",
+      "C",
+      "Q",
+      "R",
+      "B",
+      "D",
+      "J_1",
+      "M",
+      "K",
+      "E"
+    ],
+    "polygons": [
+      "t1"
+    ],
+    "segments": [
+      "c",
+      "a",
+      "b",
+      "i",
+      "j",
+      "k",
+      "m"
+    ]
+  },
+  "schema": "animageo-construction-summary/v1",
+  "source": {
+    "kind": "ggb",
+    "name": "scene10.ggb",
+    "path": "examples/ai_style_generation_scene10/scene10.ggb"
+  },
+  "stats": {
+    "angle": 3,
+    "circle": 2,
+    "line": 4,
+    "point": 10,
+    "polygon": 1,
+    "segment": 7
+  },
+  "viewport": {
+    "fontSize": 16,
+    "ptUnit": 16.594519590594977,
+    "ptUnit_ggb": 71.90958489257824,
+    "ptXZero": 101.19081404445615,
+    "ptYZero": 70.3899399744141,
+    "size": [
+      150.0,
+      108.46153846153847
+    ]
+  },
+  "warnings": []
+}

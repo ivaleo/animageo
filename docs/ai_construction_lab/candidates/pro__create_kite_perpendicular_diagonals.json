@@ -1,0 +1,25 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T13:55:42.732244+00:00",
+  "case_id": "create_kite_perpendicular_diagonals",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй дельтоид ABCD и покажи, что его диагонали перпендикулярны.",
+  "expected": [
+    "constructs kite",
+    "draws both diagonals",
+    "marks their right angle intersection",
+    "marks adjacent equal side pairs"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Kite ABCD with AB = AD and CB = CD, showing perpendicular diagonals\n\n# Choose two opposite vertices on the symmetry axis first\nA = Point(-2, 0)\nC = Point(2, 0)\n\n# Symmetry axis AC\naxis = Line(A, C)\n\n# Choose one off-axis vertex\nB = Point(0, 2)\n\n# Reflect B across axis to get D, ensuring AB = AD and CB = CD\nD = Reflect(B, axis)\n\n# Build kite polygon\nkite, AB, BC, CD, DA = Polygon(A, B, C, D)\n\n# Diagonals\nAC = Segment(A, C)\nBD = Segment(B, D)\n\n# Intersection of diagonals\nE = Intersect(AC, BD)\n\n# Mark right angle at intersection\nright_angle = Angle(A, E, B)\n\n# Style the kite\nstyle(kite, fill=\"color.accent\", fill_opacity=0.15, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\n\n# Style diagonals\nstyle(AC, BD, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"4 2\")\n\n# Mark right angle\nstyle(right_angle, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\n\n# Label vertices\nstyle(A, B, C, D, label_visible=True)\n\n# Mark adjacent equal side pairs\nstyle(AB, DA, tick_count=1, tick_length_px=\"tick.main\")\nstyle(BC, CD, tick_count=2, tick_length_px=\"tick.main\")\n\n# Hide axis helper\nhide(axis)",
+    "style": null,
+    "notes": [
+      "Kite constructed via symmetry: AB = AD and CB = CD by reflection across AC.",
+      "Diagonals AC and BD intersect at E; right angle marked at E.",
+      "Symmetry axis AC is hidden after construction; only diagonals are shown."
+    ]
+  }
+}

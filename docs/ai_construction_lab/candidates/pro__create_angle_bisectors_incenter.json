@@ -1,0 +1,25 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T11:13:18.896679+00:00",
+  "case_id": "create_angle_bisectors_incenter",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй три биссектрисы треугольника и их точку пересечения.",
+  "expected": [
+    "constructs three angle bisectors",
+    "marks incenter",
+    "marks equal angle pairs for two vertices"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(-4, -2)\nB = Point(4, -1)\nC = Point(0, 4)\nstyle(A, B, C, label_visible=True)\n\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\n\nbis_A = AngularBisector(B, A, C)\nbis_B = AngularBisector(A, B, C)\nbis_C = AngularBisector(A, C, B)\n\nD = Intersect(bis_A, BC)\nE = Intersect(bis_B, CA)\nF = Intersect(bis_C, AB)\n\nAD = Segment(A, D)\nBE = Segment(B, E)\nCF = Segment(C, F)\nstyle(AD, BE, CF, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n\nI = Intersect(bis_A, bis_B)\nstyle(I, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True, label_text=\"$I$\")\n\nhide(bis_A, bis_B, bis_C)\n\nang1 = Angle(B, A, D)\nang2 = Angle(D, A, C)\nang3 = Angle(A, B, E)\nang4 = Angle(E, B, C)\nang5 = Angle(A, C, F)\nang6 = Angle(F, C, B)\nstyle(ang1, ang2, ang3, ang4, ang5, ang6, arc_size_px=\"angle_radius.main\", tick_count=1)",
+    "style": null,
+    "notes": [
+      "Построены три биссектрисы треугольника ABC как отрезки от вершин до противоположных сторон.",
+      "Точка пересечения биссектрис (инцентр) обозначена I.",
+      "Равные углы, образованные биссектрисами, отмечены одной дугой.",
+      "Вспомогательные линии биссектрис скрыты, оставлены только отрезки."
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+    "name": "brand_colors",
+    "presets": {
+        "color": {
+            "main": "#0066cc",
+            "light": "#e5efff",
+            "accent": "#cc3300",
+            "accent_light": "#ffe5d6"
+        },
+        "point_size": {
+            "main": 2.83
+        },
+        "line_width": {
+            "main": 1
+        }
+    },
+    "import": {
+        "policy": {
+            "stroke": "remap:{'#1565c0':'#0066cc', '#d32f2f':'#cc3300'}",
+            "fill": "remap:{'#1565c0':'#0066cc', '#d32f2f':'#cc3300'}",
+            "label_color": "remap:{'#1565c0':'#0066cc', '#d32f2f':'#cc3300'}"
+        }
+    },
+    "description": "Remap common GGB blue (#1565c0) to a brand palette."
+}

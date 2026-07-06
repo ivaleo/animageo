@@ -1,0 +1,16 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T14:29:38.674298+00:00",
+  "case_id": "manual_smoke_test_prompt_only_segment",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй отрезок AB и подпиши точки.",
+  "expected": [],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(0, 0)\nB = Point(4, 3)\nAB = Segment(A, B)\nstyle(A, B, label_visible=True)",
+    "style": null,
+    "notes": []
+  }
+}

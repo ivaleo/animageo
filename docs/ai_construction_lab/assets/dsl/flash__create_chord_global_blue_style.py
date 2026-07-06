@@ -1,0 +1,8 @@
+A = Point(-2, 1)
+B = Point(2, 1)
+O = Point(0, 0)
+circle = Circle(O, A)
+chord = Segment(A, B)
+style(A, B, label_visible=True)
+style(chord, stroke="color.main", stroke_width_px="line_width.main")
+style(circle, stroke="color.main", stroke_width_px="line_width.main")

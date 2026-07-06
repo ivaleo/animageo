@@ -1,0 +1,26 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T08:36:39.645640+00:00",
+  "case_id": "create_gergonne_point",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй вписанную окружность треугольника, точки касания и точку Жергонна.",
+  "expected": [
+    "constructs incircle and tangency points",
+    "draws cevians to touchpoints",
+    "marks their concurrence"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Triangle ABC\nA = Point(-4, -2)\nB = Point(5, -1)\nC = Point(0, 5)\nstyle(A, B, C, label_visible=True)\n\n# Triangle sides\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\n\n# Incircle\ninc = Incircle(A, B, C)\nstyle(inc, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n\n# Incenter\nI = Center(inc)\nstyle(I, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True, label_text=\"$I$\")\n\n# Touch points (feet of perpendiculars from I to sides)\nperp_AB = PerpendicularLine(I, AB)\nperp_BC = PerpendicularLine(I, BC)\nperp_CA = PerpendicularLine(I, CA)\n\nD = Intersect(perp_AB, AB)\nE = Intersect(perp_BC, BC)\nF = Intersect(perp_CA, CA)\n\nstyle(D, E, F, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\nstyle(D, label_text=\"$D$\")\nstyle(E, label_text=\"$E$\")\nstyle(F, label_text=\"$F$\")\n\n# Hide perpendicular helpers\nhide(perp_AB, perp_BC, perp_CA)\n\n# Right angle markers at touch points\nright_D = Angle(A, D, I)\nright_E = Angle(B, E, I)\nright_F = Angle(C, F, I)\nstyle(right_D, right_E, right_F, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\n\n# Gergonne point (intersection of lines from vertices to opposite touch points)\nline_AD = Line(A, D)\nline_BE = Line(B, E)\nline_CF = Line(C, F)\n\nGe = Intersect(line_AD, line_BE)\nstyle(Ge, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True, label_text=\"$Ge$\")\n\n# Hide construction lines for Gergonne point\nhide(line_AD, line_BE, line_CF)\n\n# Draw segments from vertices to touch points for visibility\nAD_seg = Segment(A, D)\nBE_seg = Segment(B, E)\nCF_seg = Segment(C, F)\nstyle(AD_seg, BE_seg, CF_seg, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"4 2\")",
+    "style": null,
+    "notes": [
+      "Incircle constructed via Incircle(A, B, C).",
+      "Touch points D, E, F are feet of perpendiculars from incenter I to sides.",
+      "Gergonne point Ge is intersection of lines AD, BE, CF.",
+      "Right angle markers added at touch points to show perpendicularity.",
+      "Vertex-to-touchpoint segments drawn dashed for clarity."
+    ]
+  }
+}

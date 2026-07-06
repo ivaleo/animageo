@@ -1,0 +1,8 @@
+A = Point(0, 0)
+B = Point(2, 1)
+C = Point(1, 3)
+circle = Circle(A, B, C)
+arc = CircumcircleArc(A, B, C)
+style(arc, stroke="color.accent", stroke_width_px="line_width.bold")
+style(circle, stroke="color.aux", stroke_width_px="line_width.aux")
+style(A, B, C, label_visible=True, fill="color.main", size_px="point_size.main")

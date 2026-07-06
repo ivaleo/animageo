@@ -1,0 +1,20 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T10:11:05.818090+00:00",
+  "case_id": "create_circle_sector_and_arc",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй сектор AOB окружности, выдели дугу AB и хорду AB.",
+  "expected": [
+    "uses CircleSector and CircleArc",
+    "shows radii, chord and arc",
+    "labels central angle"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "O = Point(0, 0)\nA = Point(2, 0)\nB = Rotate(A, 2 * pi / 3, O)\ncircle = Circle(O, A)\nsector = CircleSector(O, A, B)\narc_AB = CircleArc(O, A, B)\nchord_AB = Segment(A, B)\nstyle(sector, stroke=\"color.main\", stroke_width_px=\"line_width.main\", fill=\"color.aux\")\nstyle(arc_AB, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(chord_AB, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(O, A, B, label_visible=True, fill=\"color.main\", size_px=\"point_size.main\")\nhide(circle)",
+    "style": null,
+    "notes": []
+  }
+}

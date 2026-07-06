@@ -1,0 +1,25 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T12:52:51.229041+00:00",
+  "case_id": "create_chord_perpendicular_from_center",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй хорду AB окружности и перпендикуляр из центра O к хорде, покажи что он делит хорду пополам.",
+  "expected": [
+    "constructs chord endpoints on circle",
+    "draws perpendicular from center",
+    "marks midpoint equality and right angle"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Given circle with center O and chord AB\nO = Point(0, 0)\nA = Point(-2.1, 1.7)\ncircle = Circle(O, A)\nB = Rotate(A, 2.3, O)  # ensures B lies on the circle\n\n# Chord AB\nAB = Segment(A, B)\n\n# Perpendicular from O to chord AB\nperp_line = PerpendicularLine(O, AB)\nH = Intersect(perp_line, AB)\n\n# Show that H is the midpoint: mark equal halves\nAH = Segment(A, H)\nHB = Segment(H, B)\nstyle(AH, HB, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\", tick_count=1)\n\n# Right angle at H\nright_angle = Angle(A, H, O)\nstyle(right_angle, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\n\n# Style main objects\nstyle(circle, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(AB, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(O, fill=\"color.main\", size_px=\"point_size.main\", label_visible=True)\nstyle(A, B, fill=\"color.main\", size_px=\"point_size.main\", label_visible=True)\nstyle(H, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\n\n# Hide construction helpers\nhide(perp_line)",
+    "style": null,
+    "notes": [
+      "Point B is constructed by rotating A around O to guarantee it lies on the circle.",
+      "The perpendicular from O to AB is constructed and its foot H is shown.",
+      "Equal tick marks on AH and HB demonstrate that H is the midpoint.",
+      "A right-angle marker is placed at H to show the perpendicular relationship."
+    ]
+  }
+}

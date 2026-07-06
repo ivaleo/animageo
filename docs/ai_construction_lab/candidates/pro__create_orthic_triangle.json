@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T08:33:12.182986+00:00",
+  "case_id": "create_orthic_triangle",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй ортический треугольник остроугольного треугольника ABC.",
+  "expected": [
+    "constructs altitude feet",
+    "forms orthic triangle",
+    "marks perpendicularity at each foot"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Orthic triangle of acute triangle ABC\nA = Point(-3, 2)\nB = Point(3, -1)\nC = Point(0, 4)\n\n# Triangle sides\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\n\n# Altitude feet\nD = Intersect(PerpendicularLine(A, BC), BC)\nE = Intersect(PerpendicularLine(B, CA), CA)\nF = Intersect(PerpendicularLine(C, AB), AB)\n\n# Orthic triangle\northic, DE, EF, FD = Polygon(D, E, F)\n\n# Style main triangle\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(A, B, C, fill=\"color.main\", size_px=\"point_size.main\", label_visible=True)\n\n# Style orthic triangle\nstyle(orthic, fill=\"color.accent\", fill_opacity=0.15, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(D, E, F, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\n\n# Right angle markers at feet\nright_D = Angle(B, D, A)\nright_E = Angle(C, E, B)\nright_F = Angle(A, F, C)\nstyle(right_D, right_E, right_F, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\n\n# Hide altitude lines (keep only segments if needed, but feet are enough)\nhide(PerpendicularLine(A, BC), PerpendicularLine(B, CA), PerpendicularLine(C, AB))",
+    "style": null,
+    "notes": [
+      "Assumed acute triangle with generic coordinates to ensure feet lie on sides.",
+      "Altitude lines are hidden; only feet and orthic triangle are shown.",
+      "Right angle markers placed at feet to indicate perpendicularity."
+    ]
+  }
+}

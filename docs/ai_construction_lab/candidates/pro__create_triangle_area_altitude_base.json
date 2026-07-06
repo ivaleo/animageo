@@ -1,0 +1,21 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-12T07:50:19.569038+00:00",
+  "case_id": "create_triangle_area_altitude_base",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй треугольник с основанием AB и высотой CH, визуально выдели основание и высоту для формулы площади.",
+  "expected": [
+    "constructs altitude to AB",
+    "marks right angle at H",
+    "highlights base and height",
+    "does not add numeric text unless requested"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Triangle with base AB and altitude CH\nA = Point(-3, -1)\nB = Point(3, -1)\nC = Point(0, 3)\n\nAB = Segment(A, B)\nAC = Segment(A, C)\nBC = Segment(B, C)\n\n# Altitude from C to line AB\nline_AB = Line(A, B)\nalt_line = PerpendicularLine(C, line_AB)\nH = Intersect(alt_line, line_AB)\nCH = Segment(C, H)\n\n# Right angle marker at H\nright_angle = Angle(A, H, C)\n\n# Style: base and altitude highlighted\nstyle(AB, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(CH, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(AC, BC, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(right_angle, right_angle_marker=True, right_angle_size_px=\"angle_radius.right\")\n\n# Hide construction helpers\nhide(line_AB, alt_line)\n\n# Labels\nstyle(A, B, C, H, label_visible=True)\nstyle(CH, label_text=\"h\")\nstyle(AB, label_text=\"b\")",
+    "style": null,
+    "notes": []
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T14:04:40.961512+00:00",
+  "case_id": "create_spiral_similarity_center",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй две пересекающиеся окружности и точку их пересечения как центр спирального подобия для двух хорд.",
+  "expected": [
+    "constructs two intersecting circles",
+    "marks a shared intersection as center",
+    "draws corresponding chord pairs"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Two intersecting circles; their shared points come from Intersect(c1, c2)\nO1 = Point(-1.5, 0)\nO2 = Point(1.5, 0)\nseed = Point(0, 2)\nc1 = Circle(O1, seed)\nc2 = Circle(O2, seed)\nS, T = Intersect(c1, c2)\n\n# Chord in c1 through the shared point S\nQ1 = Rotate(T, 0.75, O1)\nline1 = Line(S, Q1)\nA, B = Intersect(line1, c1)\n\n# Corresponding chord in c2 through the same center S\nQ2 = Rotate(T, -0.75, O2)\nline2 = Line(S, Q2)\nC, D = Intersect(line2, c2)\n\nchord1 = Segment(A, B)\nchord2 = Segment(C, D)\ncommon_chord = Segment(S, T)\n\nstyle(c1, c2, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(chord1, chord2, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(common_chord, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(S, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True, label_text=\"$S$\")\nstyle(T, fill=\"color.aux\", size_px=\"point_size.main\", label_visible=True, label_text=\"$T$\")\nstyle(A, B, C, D, label_visible=True)\nhide(O1, O2, seed, Q1, Q2, line1, line2)",
+    "style": null,
+    "notes": [
+      "The shared points S and T are derived by Intersect(c1, c2).",
+      "Both displayed chord endpoints are obtained by intersecting lines through S with the corresponding circle.",
+      "This is a structural sketch of a spiral-similarity-center configuration, not a full proof."
+    ]
+  }
+}

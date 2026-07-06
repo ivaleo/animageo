@@ -1,0 +1,15 @@
+O = Point(0, 0)
+A = Point(4, 0)
+B = Rotate(A, 2.0943951023931953, O)  # 120 degrees
+C = Rotate(A, 1.0471975511965976, O)  # 60 degrees
+circle = Circle(O, A)
+central = Angle(A, O, B)
+inscribed = Angle(A, C, B)
+OA = Segment(O, A)
+OB = Segment(O, B)
+CA = Segment(C, A)
+CB = Segment(C, B)
+style(central, arc_size_px="angle_radius.main", label_visible=True, label_text="$2\\alpha$")
+style(inscribed, arc_size_px="angle_radius.bold", label_visible=True, label_text="$\\alpha$")
+style(OA, OB, CA, CB, stroke="color.main", stroke_width_px="line_width.main")
+style(A, B, C, O, label_visible=True)

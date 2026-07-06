@@ -1,0 +1,20 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T14:17:00.707445+00:00",
+  "case_id": "create_circle_annulus_radii",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй две концентрические окружности с центром O и покажи внутренний и внешний радиусы.",
+  "expected": [
+    "constructs two concentric circles",
+    "draws two radii",
+    "labels them with semantic names"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "O = Point(0, 0)\nA = Point(2, 0)\nB = Point(4, 0)\ninner = Circle(O, A)\nouter = Circle(O, B)\nr_in = Segment(O, A)\nr_out = Segment(O, B)\nstyle(inner, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(outer, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(r_in, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(r_out, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(O, label_visible=True, fill=\"color.strong\", size_px=\"point_size.bold\")\nstyle(A, label_visible=False, fill=\"color.aux\", size_px=\"point_size.aux\")\nstyle(B, label_visible=False, fill=\"color.aux\", size_px=\"point_size.aux\")\nstyle(r_in, label_visible=True, label_text=\"$r_{in}$\")\nstyle(r_out, label_visible=True, label_text=\"$r_{out}$\")",
+    "style": null,
+    "notes": []
+  }
+}

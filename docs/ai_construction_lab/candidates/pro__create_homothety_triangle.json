@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T09:47:43.899832+00:00",
+  "case_id": "create_homothety_triangle",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй образ треугольника ABC при гомотетии с центром O и коэффициентом 1.6.",
+  "expected": [
+    "constructs image vertices by vector arithmetic",
+    "preserves rays from center",
+    "labels homothetic image"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "# Free points\nA = Point(-3, 1)\nB = Point(1, -2)\nC = Point(2, 3)\nO = Point(0, 0)\n\n# Original triangle\nAB = Segment(A, B)\nBC = Segment(B, C)\nCA = Segment(C, A)\nstyle(AB, BC, CA, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(A, B, C, label_visible=True, fill=\"color.main\", size_px=\"point_size.main\")\nstyle(O, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\n\n# Homothety factor\nk = 1.6\n\n# Image points via dependent point arithmetic: P' = O + k*(P - O)\nA1 = Point(O.x + k * (A.x - O.x), O.y + k * (A.y - O.y))\nB1 = Point(O.x + k * (B.x - O.x), O.y + k * (B.y - O.y))\nC1 = Point(O.x + k * (C.x - O.x), O.y + k * (C.y - O.y))\n\n# Image triangle\nA1B1 = Segment(A1, B1)\nB1C1 = Segment(B1, C1)\nC1A1 = Segment(C1, A1)\nstyle(A1B1, B1C1, C1A1, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(A1, B1, C1, label_visible=True, fill=\"color.accent\", size_px=\"point_size.bold\")\n\n# Rays from center to show correspondence (auxiliary)\nOA = Ray(O, A)\nOB = Ray(O, B)\nOC = Ray(O, C)\nstyle(OA, OB, OC, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\", stroke_dasharray=\"4 4\")\n\n# Labels for image points\nstyle(A1, label_text=\"$A'$\")\nstyle(B1, label_text=\"$B'$\")\nstyle(C1, label_text=\"$C'$\")",
+    "style": null,
+    "notes": [
+      "Homothety is implemented via dependent point arithmetic because no dedicated Homothety factory exists in the current DSL.",
+      "Factor 1.6 is applied as O + 1.6*(P - O).",
+      "Rays OA, OB, OC are drawn as auxiliary dashed lines to show the correspondence."
+    ]
+  }
+}

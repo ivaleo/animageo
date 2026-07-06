@@ -1,0 +1,20 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T09:51:18.563315+00:00",
+  "case_id": "create_trapezoid_midline",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй трапецию ABCD и ее среднюю линию.",
+  "expected": [
+    "constructs side midpoints",
+    "draws trapezoid midline",
+    "marks equal halves"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(-4, 0)\nB = Point(4, 0)\nC = Point(2, 3)\nD = Point(-2, 3)\n\nAB = Segment(A, B)\nBC = Segment(B, C)\nCD = Segment(C, D)\nDA = Segment(D, A)\n\nM = Midpoint(A, D)\nN = Midpoint(B, C)\nMN = Segment(M, N)\n\nstyle(AB, CD, stroke=\"color.main\", stroke_width_px=\"line_width.main\")\nstyle(BC, DA, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")\nstyle(MN, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\nstyle(M, N, fill=\"color.accent\", size_px=\"point_size.bold\", label_visible=True)\nstyle(A, B, C, D, label_visible=True)",
+    "style": null,
+    "notes": []
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "animageo-ai-construction-lab-candidate/v1",
+  "generated_at": "2026-05-13T11:25:53.731317+00:00",
+  "case_id": "create_pappus_chain_start",
+  "variant": "pro",
+  "model": "deepseek-v4-pro",
+  "prompt": "Построй арбелос и первые две окружности цепи Паппа так, чтобы они касались соответствующих полуокружностей.",
+  "expected": [
+    "creates an arbelos reference",
+    "places the first two Pappus chain circles by the standard radius formula",
+    "does not use arbitrary approximate tangent circles"
+  ],
+  "response": {
+    "schema": "animageo-ai-construction-response/v1",
+    "mode": "create",
+    "construction_dsl": "A = Point(-3, 0)\nC = Point(-1, 0)\nB = Point(3, 0)\n\nouter = Semicircle(A, B)\nleft = Semicircle(A, C)\nright = Semicircle(C, B)\nAB = Segment(A, B)\nAC = Segment(A, C)\nCB = Segment(C, B)\n\ndiameter = 6.0\nbase_x = -3.0\nbase_y = 0.0\nratio = 1.0 / 3.0\n\nfor n in range(1, 3):\n    denom = n * n * (1 - ratio) * (1 - ratio) + ratio\n    r = diameter * ((1 - ratio) * ratio) / (2 * denom)\n    x = base_x + diameter * (ratio * (1 + ratio)) / (2 * denom)\n    y = base_y + 2 * n * r\n    O_n = Point(x, y, name=f\"O{n}\")\n    k_n = Circle(O_n, r, name=f\"k{n}\")\n    style(O_n, label_visible=True, label_text=f\"$O_{n}$\", fill=\"color.accent\", size_px=\"point_size.aux\")\n    style(k_n, stroke=\"color.accent\", stroke_width_px=\"line_width.bold\")\n\nstyle(A, B, C, label_visible=True)\nstyle(outer, left, right, stroke=\"color.aux\", stroke_width_px=\"line_width.bold\")\nstyle(AB, stroke=\"color.strong\", stroke_width_px=\"line_width.aux\")\nstyle(AC, CB, stroke=\"color.aux\", stroke_width_px=\"line_width.aux\")",
+    "style": null,
+    "notes": [
+      "Uses the standard Pappus-chain formula for n=1,2 in a normalized arbelos with AC/AB = 1/3, scaled to diameter 6.",
+      "The center height is y = 2*n*r, and the circle radius depends on n*n.",
+      "The arbelos baseline remains visible."
+    ]
+  }
+}
