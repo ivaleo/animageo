@@ -189,6 +189,13 @@ def convert_ggb_expr_to_python(constr, expr_str, expr_type=None):
     # Line(...), Distance(...), Vector(...), not snake_case functions.
     expr_str = expr_str.replace('[', '(').replace(']', ')')
 
+    # GeoGebra ``^`` is exponentiation; Python ``^`` is bitwise XOR. Translate
+    # so the exec'd DSL raises no ``unsupported operand type(s) for ^`` on real
+    # .ggb expressions like ``Circle[O, 5^(0.5) / 2]`` (radius = sqrt(5)/2).
+    # Mirrors the conic parser (lib_conic.py); ``^``/``**`` are both
+    # right-associative so operator semantics are preserved.
+    expr_str = expr_str.replace('^', '**')
+
     # Заменяем градусы на radians-valued AngleSize construction.
     # Examples from real .ggb XML: ``-γ``, ``4 * (α - 90°)``.
     pattern_deg = r'(?<![\w.])(-?\d+(?:\.\d+)?)°'
@@ -206,6 +213,32 @@ def is_simple_value(s):
     if isinstance(s, str) and s.isidentifier():
         return True
     return False
+
+
+def _element_types_by_label(constr_xelem: XElement) -> dict[str, str]:
+    return {
+        xelem.attrib["label"]: xelem.attrib["type"]
+        for xelem in constr_xelem
+        if xelem.tag == "element"
+        and "label" in xelem.attrib
+        and "type" in xelem.attrib
+    }
+
+
+def _numeric_parameter_values(constr: Construction) -> dict[str, float]:
+    values: dict[str, float] = {}
+    for var in constr.vars:
+        data = var.data
+        if isinstance(data, (int, float)):
+            values[var.name] = float(data)
+        elif isinstance(data, Measure) and data.dimension == 0:
+            values[var.name] = float(data.value)
+        elif isinstance(data, AngleSize):
+            values[var.name] = float(data.value)
+        elif isinstance(data, Boolean):
+            values[var.name] = float(data.value)
+    return values
+
 
 def get_kernel_decimals(ggb_path: str, default: int = 2) -> int:
     """Read the kernel ``<decimals val>`` rounding setting from a .ggb file.
@@ -325,6 +358,7 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
     conditions = {}  # element name -> <condition showObject="expr"> raw expression
     text_exprs = {}  # normalized name -> raw text <expression> exp, deferred to
                      # the following <element type="text"> which carries position/style
+    element_types = _element_types_by_label(constr_xelem)
 
     for xelem in constr_xelem:                    
         if xelem.tag == "element":                    
@@ -448,6 +482,10 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                 name = xelem.attrib['label']
                 expr = xelem.attrib['exp']
                 expr_type = xelem.attrib.get('type', None)
+                if expr_type is None:
+                    companion_type = element_types.get(name)
+                    if companion_type in ('function', 'implicitpoly', 'conic', 'line'):
+                        expr_type = companion_type
                 name_mapping[name] = constr.get_normalized_name(name)
 
                 # Free text object: a string-valued expression (no geometric
@@ -483,7 +521,10 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                     # no geometric data.
                     from ..geo.lib_function import Function as _Function
                     try:
-                        func_obj = _Function.from_string(expr)
+                        func_obj = _Function.from_string(
+                            converted_expr,
+                            parameters=_numeric_parameter_values(constr),
+                        )
                         constr.add(Element(name_mapping[name], func_obj, fixed=True))
                     except ValueError as fe:
                         logger.warning("Could not parse function '%s': %s", expr, fe)

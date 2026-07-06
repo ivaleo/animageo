@@ -82,8 +82,8 @@ python -m animageo scene.ggb -o anim.webm --keyframes keys.json --transparent
 python -m animageo scene.ggb --format mp4 -o anim.mp4 --keyframes keys.json
 ```
 
-- `--keyframes file.json` — keyframe sequence (see the keyframe docs). Without
-  it, a single frame is rendered.
+- `--keyframes file.json` — keyframe sequence (see
+  [docs/keyframes.md](keyframes.md)). Without it, a single frame is rendered.
 - `--fps`, `--transparent` — forwarded to manim.
 - `--quality {l,m,h,p,k}` — manim quality preset governing the render-track
   resolution/fps: `l`=854×480@15, `m`=1280×720@30, `h`=1920×1080@60,
@@ -93,10 +93,12 @@ python -m animageo scene.ggb --format mp4 -o anim.mp4 --keyframes keys.json
   `--export-size` controls the camera framing/aspect; the static vector track
   uses it for the canvas size directly.
 
-The keyframes JSON has the same format used by `scene.play_keyframes(...)`:
+The keyframes JSON has the same format used by `scene.play_keyframes(...)`.
+Use `"version": 2` for the current style/visibility/camera/events-capable
+timeline:
 
 ```json
-{"keyframes": [
+{"version": 2, "keyframes": [
   {"t": 0,   "values": {"A": [-4, -1]}},
   {"t": 1.5, "values": {"A": [-2, 2]}, "easing": "smooth"}
 ]}

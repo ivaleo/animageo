@@ -1,0 +1,155 @@
+{
+  "name": "highlight_longest_segment_and_triangle_angles",
+  "version": 1,
+  "presets": {
+    "color": {
+      "main": "#32404a",
+      "accent": "#e1533f",
+      "angle_fill": "#dcefff",
+      "angle_stroke": "#4a90a4",
+      "background": "#ffffff",
+      "label": "#334155",
+      "point_fill": "#ffffff",
+      "point_stroke": "#2b2b2b",
+      "thin_gray": "#9aa3ad",
+      "light": "#f6fafc",
+      "accent_light": "#ffe3df",
+      "strong": "#1f2933"
+    },
+    "point_size": {
+      "main": 2.4
+    },
+    "line_width": {
+      "main": 1.2,
+      "point_stroke": 0.95,
+      "angle": 0.7,
+      "thin": 0.8,
+      "accent": 2.4
+    },
+    "angle_radius": {
+      "main": 11,
+      "shift": 1.5,
+      "right": 9
+    },
+    "font_size": {
+      "main": 5.78,
+      "point_label": 5.78
+    }
+  },
+  "overlay": {
+    "per_type": {
+      "point": {
+        "size_px": "point_size.main",
+        "point_shape": "circle",
+        "fill": "color.point_fill",
+        "stroke": "color.point_stroke",
+        "stroke_width_px": "line_width.point_stroke",
+        "fill_opacity": 1,
+        "stroke_opacity": 1,
+        "label_color": "color.label",
+        "font_size_px": "font_size.point_label"
+      },
+      "segment": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1
+      },
+      "line": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1
+      },
+      "ray": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1
+      },
+      "vector": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1
+      },
+      "polygon": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1,
+        "fill_opacity": 0
+      },
+      "circle": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1,
+        "fill_opacity": 0
+      },
+      "arc": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1
+      },
+      "circlesector": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1
+      },
+      "conic": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1
+      },
+      "function": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1
+      },
+      "implicitcurve": {
+        "stroke": "color.main",
+        "stroke_width_px": "line_width.main",
+        "stroke_opacity": 1
+      },
+      "angle": {
+        "arc_size_px": "angle_radius.main",
+        "arc_shift_px": "angle_radius.shift",
+        "right_angle_size_px": "angle_radius.right",
+        "stroke": "color.angle_stroke",
+        "stroke_width_px": "line_width.angle",
+        "stroke_opacity": 1,
+        "fill": "color.angle_fill",
+        "fill_opacity": 1,
+        "auto_radius": true,
+        "font_size_px": "font_size.main"
+      }
+    },
+    "per_name": {
+      "a": {
+        "stroke": "color.accent",
+        "stroke_width_px": "line_width.accent",
+        "stroke_opacity": 1,
+        "z_index": 6
+      }
+    },
+    "angle_radius": {
+      "enabled": true,
+      "exp": 0.32,
+      "min_px": 7,
+      "max_arm_fraction": 0.55,
+      "apply_to_right": false
+    },
+    "label_placement": {
+      "enabled": true,
+      "distance_px": 4,
+      "padding_px": 1,
+      "angle_gap_arc_px": 2,
+      "angle_gap_sides_px": 2
+    }
+  },
+  "rendering": {
+    "background": "color.background",
+    "line_cap": "round",
+    "right_angle_joint": "miter",
+    "points_display": "auto",
+    "label_anchor": "BC"
+  },
+  "import": {
+    "enabled": true
+  }
+}

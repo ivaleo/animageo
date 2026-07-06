@@ -65,6 +65,20 @@ class TestExpressionConversion:
         result = ggb_parser.convert_ggb_expr_to_python(c, '4 * (α - 90°)')
         assert result == '4 * (α - AngleSize((90) * pi / 180))'
 
+    def test_convert_caret_power_to_python_power(self):
+        # GeoGebra uses ``^`` for exponentiation; Python ``^`` is bitwise XOR.
+        # Real .ggb radii like ``Circle[O, 5^(0.5) / 2]`` (= sqrt(5)/2) must
+        # translate to ``**`` or exec raises
+        # ``TypeError: unsupported operand type(s) for ^: 'int' and 'float'``.
+        c = Construction()
+        assert ggb_parser.convert_ggb_expr_to_python(c, '5^(0.5) / 2') == '5**(0.5) / 2'
+        assert (
+            ggb_parser.convert_ggb_expr_to_python(c, 'Circle[O, 5^(0.5) / 2]')
+            == 'Circle(O, 5**(0.5) / 2)'
+        )
+        # The converted string must be valid Python (no XOR TypeError).
+        assert eval(ggb_parser.convert_ggb_expr_to_python(c, '5^(0.5) / 2')) == 5 ** 0.5 / 2
+
     def test_is_simple_value(self):
         assert ggb_parser.is_simple_value('3.14')
         assert ggb_parser.is_simple_value('90°')

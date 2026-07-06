@@ -47,6 +47,10 @@ class TestTranslateIf:
         assert '(x, x > 0)' in r
         assert '(-x, True)' in r
 
+    def test_parenthesis_form_from_xml_converter(self):
+        r = _translate_if_to_piecewise("If(-1 <= x <= 1, x**(2))")
+        assert 'Piecewise' in r and 'x**(2)' in r
+
     def test_nested(self):
         r = _translate_if_to_piecewise("If[x > 0, If[x < 10, x, 10], 0]")
         assert r.count('Piecewise') == 2
@@ -93,6 +97,11 @@ class TestPiecewiseParse:
         assert f(0) == pytest.approx(0.0)
         assert f(1) == pytest.approx(1.0)
         assert np.isnan(f(5))
+
+    def test_if_parenthesis_form(self):
+        f = Function.from_string('m(x) = If(-1 <= x <= 1, x**(2))')
+        assert f(0.5) == pytest.approx(0.25)
+        assert np.isnan(f(2))
 
 
 # ── Asymptote rendering ───────────────────────────────────────────────

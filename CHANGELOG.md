@@ -5,6 +5,100 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] — 2026-07-06
+
+### Added
+
+- Public keyframe animation reference (`docs/keyframes.md`) and updated
+  README/API/quickstart/export documentation for the v2 timeline format:
+  style tracks, absolute visibility maps with entrance/exit effects, full
+  easing set, dependency-order construction reveal, camera keyframes,
+  emphasis events, and static playhead previews.
+
+- New GeoGebra-compatible commands: `Tangent(line, conic)` / `Tangent(P, func)`
+  / `Tangent(c1, c2)` (tangents parallel to a line; tangent to `y=f(x)` at
+  `x(P)`; common tangents of two circles), `Trilinear(A, B, C, x, y, z)`,
+  `Dilate(obj, k, O)` (homothety), `ClosestPoint(path, P)`, `Slope(line)`, and
+  the vector helpers `Direction(line)`, `UnitVector(v)`,
+  `PerpendicularVector(v)`, `Dot(u, v)`, `Cross(u, v)`.
+
+- Keyframe easing grew from 5 to the full 17-name set (`smootherstep`, sine
+  in/out/in_out, cubic in/out/in_out, `rush_into`/`rush_from`,
+  `ease_out_back`, `ease_out_elastic`, `ease_out_bounce`), a lossless port of
+  the web frontend's `applyEasingValue` — the same `"easing"` name renders
+  identically in the web preview and the exported video.
+- `AnimaGeoScene.get_element_states()` — a read-only per-element snapshot
+  `{name: {type, visible, style}}` (every non-axis element's type, current
+  visibility, and resolved animatable style values), symmetric to
+  `get_independent_elements()`, for the web keyframe-state inspector and
+  diffs.
+- Keyframes v2 (`"version": 2`): per-keyframe `styles` maps animate element
+  styles between keyframes — colors (Oklab-interpolated; `rendering.
+  color_interpolation: "srgb"` opt-out), opacities, pixel sizes,
+  `label_offset_px`, discrete props (snap at mid-transition), `null` = revert
+  to pre-animation style. Styles may target any element. v1 keyframe JSON
+  still plays byte-identical but is deprecated (DeprecationWarning).
+- `updateGeoElements` now carries `z_index` through `become()` so z-order
+  changes take effect without a remove/add cycle.
+- Keyframes v2: per-keyframe `visible` maps (absolute `{name: bool}`; `show`/
+  `hide` arrays are v2 sugar that fold into it) animate element
+  appearance/disappearance with entrance/exit effects — enter: `fade`
+  (default), `none`, `create` (progressive stroke draw), `grow` (scale from
+  center); exit: `fade` (default), `none`, `uncreate`, `shrink`. Effects are
+  set per-keyframe via `enter`/`exit` maps (`{name: {effect, duration, at}}`
+  or a bare effect string), with optional top-level `defaults` for
+  `easing`/`enter`/`exit`.
+- Keyframes v2 plays show/hide at exact interval duration — the legacy extra
+  0.4s injected per show/hide batch in v1 is dropped. v1 keeps the injected
+  0.4s (unchanged, deprecated).
+- `AnimaGeoScene.reveal_construction(lag, duration, effect, play)` — a macro
+  that stages a dependency-ordered, staggered reveal of the whole
+  construction, picking a sensible per-type entrance effect (points fade,
+  lines/circles/curves `create`, text/labels `write`) unless a single
+  `effect` is forced; returns the generated v2 keyframes and plays them
+  unless `play=False`.
+- `label_text` is now an animatable style key in keyframes v2 `styles` —
+  a discrete swap at mid-transition (like `label_visible`), not a
+  cross-fade or glyph-by-glyph morph.
+- `write` entrance effect: progressive glyph reveal for text/labels, usable
+  per-keyframe (`enter: {name: "write"}`) and in top-level `defaults.enter`.
+- Keyframe `keyframe_snapshots` label-placement pre-pass is now style-aware:
+  it applies each keyframe's `styles` (font/arc size, `label_visible`, …)
+  before measuring label bboxes, so label layouts stay correct for keyframes
+  that animate those properties.
+- Keyframes v2: `"@camera"` reserved pseudo-element in `values` animates the
+  viewport (`{"center": [x, y], "width": w}`) — a cinematic pan/zoom of
+  `camera.frame` where geometry and pixel-sized decorations scale together
+  with the zoom, unlike GeoGebra's pixel-invariant `ZoomIn`.
+- `AnimaGeoScene.apply_keyframes_at(keyframes_data, t)` — statically places
+  the scene at playhead time `t` (no animation), for a single-frame preview
+  (e.g. followed by `exportSVG`). Idempotent.
+- Keyframes v2: per-keyframe `"events"` play one-shot, self-restoring
+  emphasis on one or more targets — `indicate` (scale+colour pulse),
+  `flash` (radial flash lines), `circumscribe` (temporary box around the
+  target). Each event is `{effect, targets, at, duration, color?, scale?}`,
+  timed within the keyframe interval; the scene returns to its prior state
+  once the event completes. `passing_flash` is not available yet.
+
+### Changed
+
+- **Background resolution now honours the GeoGebra background as an opt-in
+  secondary source.** Priority: explicit style background → parsed GeoGebra
+  `<bgColor>` → white. Clearing a style's background (no concrete
+  `presets.color.background` / `rendering.background`) lets the construction's
+  own GeoGebra background show through instead of forcing white. The effective
+  colour is mirrored into `presets.color.background` so fills follow it.
+
+### Fixed
+
+- GeoGebra function expressions are now imported when the `<expression>` omits
+  `type="function"` but the companion `<element>` carries it. Function
+  expressions may reference numeric sliders/angles/booleans from the same
+  construction; those parameters are substituted before sampling.
+- GeoGebra `If(...)` function expressions produced by the XML converter now
+  parse as SymPy `Piecewise`, matching the existing `If[...]` support and
+  preventing piecewise functions from failing during rendering/export.
+
 ## [1.5.0] — 2026-07-04
 
 ### Added

@@ -2856,6 +2856,486 @@ def isogonal_conjugation_pppp(a, b, c, p):
     return Point(coords)
 
 
+def _trilinear_scalar(v):
+    """Coerce a trilinear ratio to ``float``.
+
+    Ratios usually arrive as literal numbers, but a named number reference
+    resolves to a ``Measure`` (or ``AngleSize``) whose value lives on
+    ``.value`` — accept both so slider-driven ratios work too.
+    """
+    return float(getattr(v, 'value', v))
+
+
+def trilinear_pppiii(a, b, c, x, y, z):
+    """Point with trilinear coordinates ``x : y : z`` w.r.t. triangle ABC.
+
+    GeoGebra ``Trilinear(A, B, C, x, y, z)``. Trilinears are converted to
+    barycentric weights by scaling each ratio with the length of the side
+    opposite the corresponding vertex (``sa = |BC|``, ``sb = |CA|``,
+    ``sc = |AB|``), then to Cartesian coordinates::
+
+        P = (sa·x·A + sb·y·B + sc·z·C) / (sa·x + sb·y + sc·z)
+
+    Sanity checks: ``1:1:1`` → incenter; ``1/sa:1/sb:1/sc`` → centroid;
+    ``cos A:cos B:cos C`` → circumcenter. Returns ``None`` for a degenerate
+    triangle or when the weights sum to zero (the point lies at infinity).
+    """
+    x = _trilinear_scalar(x)
+    y = _trilinear_scalar(y)
+    z = _trilinear_scalar(z)
+    ca, cb, cc = a.coords, b.coords, c.coords
+    area2 = abs((cb[0] - ca[0]) * (cc[1] - ca[1])
+                - (cb[1] - ca[1]) * (cc[0] - ca[0]))
+    if np.isclose(area2, 0.0):
+        return None                       # degenerate (collinear/coincident)
+    sa = float(np.linalg.norm(cb - cc))   # side opposite A
+    sb = float(np.linalg.norm(cc - ca))   # side opposite B
+    sc = float(np.linalg.norm(ca - cb))   # side opposite C
+    wa, wb, wc = sa * x, sb * y, sc * z
+    denom = wa + wb + wc
+    if np.isclose(denom, 0.0):
+        return None                       # point at infinity
+    return Point((wa * ca + wb * cb + wc * cc) / denom)
+
+
+# Trilinear ratios may also be named numbers (``Measure``/``AngleSize``) — e.g.
+# a slider driving an animation — so the dispatch suffix isn't always ``iii``.
+# Register every i/m combination for the three ratio slots, all sharing the
+# float implementation above (``_trilinear_scalar`` normalizes each argument).
+for _t_sfx in ('iim', 'imi', 'imm', 'mii', 'mim', 'mmi', 'mmm'):
+    globals()['trilinear_ppp' + _t_sfx] = trilinear_pppiii
+del _t_sfx
+
+
+# ── Tier A / Tier B GeoGebra commands ────────────────────────────────────
+#
+# Vector / scalar / point helpers with existing-type results. Semantics
+# verified against the GeoGebra manual (AffineRatio/CrossRatio/Direction/
+# UnitVector/PerpendicularVector/Conic-6-numbers examples). See
+# docs/archive/geogebra_command_audit.md → "план «лёгких» команд".
+
+def _num(v):
+    """Coerce a numeric argument to float (raw number or Measure/AngleSize)."""
+    return float(getattr(v, 'value', v))
+
+
+def _free_vector(d):
+    """A free Vector anchored at the origin with direction ``d``."""
+    return Vector(([0.0, 0.0], [float(d[0]), float(d[1])]))
+
+
+def _perp(d):
+    """Rotate a 2-vector by −90° (GeoGebra PerpendicularVector convention)."""
+    return np.array([d[1], -d[0]], dtype=float)
+
+
+def _unit(d):
+    """Unit vector along ``d``; ``None`` for a zero vector."""
+    n = float(np.linalg.norm(d))
+    return None if np.isclose(n, 0.0) else np.asarray(d, dtype=float) / n
+
+
+# ── A1: Slope(Line) ──
+def slope_l(line):
+    """Slope dy/dx of a line; ``None`` for a vertical line (undefined)."""
+    dx, dy = line.direction
+    if np.isclose(dx, 0.0):
+        return None
+    return Measure(float(dy / dx), 0)
+
+
+# ── A2: Direction(Line/Segment/Ray/Vector) → direction vector ──
+def direction_l(line):
+    # GeoGebra: direction vector (b, −a) of line a x + b y = c → line.direction.
+    return _free_vector(line.direction)
+
+
+def direction_r(ray):
+    return _free_vector(ray.direction)
+
+
+def direction_v(vec):
+    return _free_vector(vec.direction)
+
+
+def direction_s(seg):
+    # Segment direction keeps the segment's length (end − start).
+    return _free_vector(seg.end - seg.start)
+
+
+# ── A3: UnitVector(Vector/Line/Segment/Ray) → unit-length direction ──
+def unit_vector_l(line):
+    return _free_vector(line.direction)          # line.direction already unit
+
+
+def unit_vector_r(ray):
+    return _free_vector(ray.direction)
+
+
+def unit_vector_v(vec):
+    u = _unit(vec.direction)
+    return None if u is None else _free_vector(u)
+
+
+def unit_vector_s(seg):
+    u = _unit(seg.end - seg.start)
+    return None if u is None else _free_vector(u)
+
+
+# ── A4: PerpendicularVector → 90°-rotated direction, magnitude preserved ──
+def perpendicular_vector_v(vec):
+    return _free_vector(_perp(vec.direction))
+
+
+def perpendicular_vector_s(seg):
+    return _free_vector(_perp(seg.end - seg.start))   # same length as segment
+
+
+def perpendicular_vector_l(line):
+    return _free_vector(line.normal)             # GeoGebra (a, b); unit here
+
+
+# ── A5: UnitPerpendicularVector → normalized perpendicular ──
+def unit_perpendicular_vector_v(vec):
+    u = _unit(_perp(vec.direction))
+    return None if u is None else _free_vector(u)
+
+
+def unit_perpendicular_vector_s(seg):
+    u = _unit(_perp(seg.end - seg.start))
+    return None if u is None else _free_vector(u)
+
+
+def unit_perpendicular_vector_l(line):
+    return _free_vector(line.normal)             # normal already unit
+
+
+def unit_perpendicular_vector_r(ray):
+    return _free_vector(_perp(ray.direction))    # ray.direction already unit
+
+
+# ── A6: Dot / Cross of two vectors ──
+def dot_vv(v1, v2):
+    return Measure(float(np.dot(v1.direction, v2.direction)), 0)
+
+
+def cross_vv(v1, v2):
+    d1, d2 = v1.direction, v2.direction
+    return Measure(float(d1[0] * d2[1] - d1[1] * d2[0]), 0)
+
+
+# ── A7: AffineRatio(A, B, C) = (C − A)/(B − A) along the line ──
+def affine_ratio_ppp(a, b, c):
+    ab = b.coords - a.coords
+    denom = float(np.dot(ab, ab))
+    if np.isclose(denom, 0.0):
+        return None                              # A == B
+    return Measure(float(np.dot(c.coords - a.coords, ab) / denom), 0)
+
+
+# ── A8: CrossRatio(A, B, C, D) = AffineRatio(B,C,D) / AffineRatio(A,C,D) ──
+def cross_ratio_pppp(a, b, c, d):
+    r1 = affine_ratio_ppp(b, c, d)
+    r2 = affine_ratio_ppp(a, c, d)
+    if r1 is None or r2 is None or np.isclose(r2.value, 0.0):
+        return None
+    return Measure(r1.value / r2.value, 0)
+
+
+# ── A9: Midpoint(Conic) — GeoGebra name for the conic centre ──
+midpoint_K = center_K
+
+
+# ── A10: Conic(6 Numbers) ──
+def conic_iiiiii(a, b, c, d, e, f):
+    """GeoGebra ``Conic(a, b, c, d, e, f)``:
+    ``a x² + d x y + b y² + e x + f y + c = 0``.
+    """
+    return Conic.from_coeffs(
+        a=_num(a),   # x²
+        b=_num(d),   # xy
+        c=_num(b),   # y²
+        d=_num(e),   # x
+        e=_num(f),   # y
+        f=_num(c),   # constant
+    )
+
+
+# ── A11: Ray(Point, Vector) / Point(Point, Vector) ──
+def ray_pv(p, v):
+    return Ray(np.asarray(p.coords, dtype=float), v.direction)
+
+
+def point_pv(p, v):
+    return Point(p.coords + v.direction)
+
+
+# ── B1: ClosestPoint(Path, Point) → nearest point on the path ──
+def closest_point_lp(line, p):
+    n = line.normal                              # unit normal
+    return Point(p.coords - (float(np.dot(p.coords, n)) - line.offset) * n)
+
+
+def closest_point_sp(seg, p):
+    a, b = seg.endpoints
+    ab = b - a
+    denom = float(np.dot(ab, ab))
+    if np.isclose(denom, 0.0):
+        return Point(np.array(a, dtype=float))
+    t = float(np.dot(p.coords - a, ab) / denom)
+    t = max(0.0, min(1.0, t))                    # clamp to the segment
+    return Point(a + t * ab)
+
+
+def closest_point_rp(ray, p):
+    a = np.asarray(ray.start, dtype=float)
+    d = ray.direction
+    denom = float(np.dot(d, d))
+    if np.isclose(denom, 0.0):
+        return Point(a)
+    t = max(0.0, float(np.dot(p.coords - a, d) / denom))   # clamp to t ≥ 0
+    return Point(a + t * d)
+
+
+def closest_point_cp(circle, p):
+    c = circle.center
+    v = p.coords - c
+    nv = float(np.linalg.norm(v))
+    if np.isclose(nv, 0.0):
+        return Point(c + np.array([circle.radius, 0.0]))   # centre → arbitrary
+    return Point(c + circle.radius * v / nv)
+
+
+# ── B2: Dilate(Object, factor [, center]) — homothety ──
+def _dilate_coords(coords, r, center):
+    return center + r * (np.asarray(coords, dtype=float) - center)
+
+
+def dilate_pip(p, r, center):
+    return Point(_dilate_coords(p.coords, _num(r), center.coords))
+
+
+def dilate_pi(p, r):
+    return Point(_dilate_coords(p.coords, _num(r), np.zeros(2)))
+
+
+def dilate_sip(seg, r, center):
+    r, c = _num(r), center.coords
+    return Segment(_dilate_coords(seg.endpoints[0], r, c),
+                   _dilate_coords(seg.endpoints[1], r, c))
+
+
+def dilate_si(seg, r):
+    r = _num(r)
+    z = np.zeros(2)
+    return Segment(_dilate_coords(seg.endpoints[0], r, z),
+                   _dilate_coords(seg.endpoints[1], r, z))
+
+
+def dilate_cip(circle, r, center):
+    r = _num(r)
+    if np.isclose(r, 0.0):
+        return None                              # collapses to a point
+    return Circle(_dilate_coords(circle.center, r, center.coords),
+                  abs(r) * circle.radius)
+
+
+def dilate_ci(circle, r):
+    r = _num(r)
+    if np.isclose(r, 0.0):
+        return None
+    return Circle(_dilate_coords(circle.center, r, np.zeros(2)),
+                  abs(r) * circle.radius)
+
+
+def dilate_Pip(poly, r, center):
+    r, c = _num(r), center.coords
+    return Polygon([_dilate_coords(v, r, c) for v in poly.vertices])
+
+
+def dilate_Pi(poly, r):
+    r = _num(r)
+    z = np.zeros(2)
+    return Polygon([_dilate_coords(v, r, z) for v in poly.vertices])
+
+
+def dilate_lip(line, r, center):
+    # n·x = d maps to n·x = r·d + (1 − r)(n·center) under x ↦ c + r(x − c).
+    r = _num(r)
+    n = np.asarray(line.normal, dtype=float)
+    return Line(n, r * line.offset + (1.0 - r) * float(np.dot(n, center.coords)))
+
+
+def dilate_li(line, r):
+    r = _num(r)
+    n = np.asarray(line.normal, dtype=float)
+    return Line(n, r * line.offset)
+
+
+# A Measure factor (slider-driven dilation) is common; register the ``m``
+# variants of every factor slot, delegating to the float implementations.
+for _obj in ('p', 's', 'c', 'P', 'l'):
+    globals()['dilate_' + _obj + 'm'] = globals()['dilate_' + _obj + 'i']
+    globals()['dilate_' + _obj + 'mp'] = globals()['dilate_' + _obj + 'ip']
+del _obj
+
+
+# ── B3: Polar(Line, Conic) → pole point ──
+def polar_lK(line, conic):
+    """Pole of a line with respect to a conic: ``M⁻¹ · ℓ`` (homogeneous)."""
+    ell = np.array([line.normal[0], line.normal[1], -line.offset], dtype=float)
+    try:
+        pole = np.linalg.solve(conic.matrix, ell)
+    except np.linalg.LinAlgError:
+        return None                              # degenerate conic
+    if np.isclose(pole[2], 0.0):
+        return None                              # pole at infinity
+    return Point(pole[:2] / pole[2])
+
+
+def polar_Kl(conic, line):
+    return polar_lK(line, conic)
+
+
+# ── Tier C: Tangent(Line, Conic) / Tangent(Point|x, Function) ────────────
+
+def _adjugate3(m):
+    """Classical adjoint (adjugate) of a 3×3 matrix — the dual-conic matrix.
+
+    Defined even when ``m`` is singular (unlike ``det·inv``), keeping the
+    tangency test robust for near-degenerate conics.
+    """
+    cof = np.empty((3, 3))
+    for i in range(3):
+        for j in range(3):
+            minor = np.delete(np.delete(m, i, axis=0), j, axis=1)
+            cof[i, j] = ((-1) ** (i + j)) * float(np.linalg.det(minor))
+    return cof.T
+
+
+def tangent_lK(line, conic):
+    """Tangent line(s) to a conic parallel to a given line.
+
+    A line ``a x + b y + c = 0`` with the fixed direction ``(a, b)`` of the
+    given line is tangent to conic ``M`` iff ``ℓᵀ · adj(M) · ℓ = 0`` — a
+    quadratic in ``c``. Returns up to two parallel tangents (a single line, a
+    list of two, or ``None`` when that direction admits no real tangent).
+    """
+    a, b = float(line.normal[0]), float(line.normal[1])
+    ms = _adjugate3(conic.matrix)
+    qa = ms[2, 2]
+    qb = 2.0 * (ms[0, 2] * a + ms[1, 2] * b)
+    qc = ms[0, 0] * a * a + ms[1, 1] * b * b + 2.0 * ms[0, 1] * a * b
+
+    if np.isclose(qa, 0.0):
+        if np.isclose(qb, 0.0):
+            return None                       # no line of this direction is tangent
+        cs = [-qc / qb]
+    else:
+        disc = qb * qb - 4.0 * qa * qc
+        if disc < -1e-9:
+            return None                       # direction never tangent (e.g. secant-only)
+        root = float(np.sqrt(max(disc, 0.0)))
+        cs = [(-qb + root) / (2.0 * qa)]
+        if not np.isclose(root, 0.0):
+            cs.append((-qb - root) / (2.0 * qa))
+    lines = [Line(np.array([a, b]), -c) for c in cs]   # a x + b y = −c
+    return lines[0] if len(lines) == 1 else lines
+
+
+def tangent_Kl(conic, line):
+    return tangent_lK(line, conic)
+
+
+def _tangent_function(x0, func):
+    """Tangent line to ``y = f(x)`` at ``x = x0`` (through ``(x0, f(x0))``)."""
+    import sympy as sp
+    y0 = func(x0)
+    if y0 is None or not np.isfinite(y0):
+        return None                           # x0 outside the domain
+    try:
+        d_expr = sp.diff(func.expr, func.var)
+        d_call = sp.lambdify(func.var, d_expr,
+                             modules=['numpy', {'Abs': np.abs}])
+        slope = float(d_call(x0))
+    except (TypeError, ValueError, ZeroDivisionError, FloatingPointError):
+        return None
+    if not np.isfinite(slope):
+        return None                           # vertical tangent / non-differentiable
+    # y = slope·(x − x0) + y0  →  slope·x − y = slope·x0 − y0
+    return Line(np.array([slope, -1.0]), slope * x0 - y0)
+
+
+def tangent_pF(point, func):
+    return _tangent_function(float(point.coords[0]), func)
+
+
+def tangent_iF(x, func):
+    return _tangent_function(_num(x), func)
+
+
+tangent_mF = tangent_iF
+
+
+def _tangent_lines_point_circle(p, o, r):
+    """Tangent lines from point ``p`` to circle (centre ``o``, radius ``r``).
+
+    Returns 0/1/2 ``Line``s depending on whether ``p`` is inside / on /
+    outside the circle. The tangent points sit at angle ``±arccos(r/|p−o|)``
+    off the ``o→p`` direction; the line's normal is the radial direction there.
+    """
+    w = np.asarray(p, dtype=float) - o
+    dist = float(np.linalg.norm(w))
+    if dist < r - 1e-9:
+        return []                                   # p strictly inside
+    if np.isclose(dist, r):
+        n = w / dist                                # p on circle → tangent at p
+        return [Line(n, float(np.dot(n, o)) + r)]
+    gamma = float(np.arccos(np.clip(r / dist, -1.0, 1.0)))
+    base = float(np.arctan2(w[1], w[0]))
+    lines = []
+    for s in (+1.0, -1.0):
+        ang = base + s * gamma
+        n = np.array([np.cos(ang), np.sin(ang)])    # radial normal at tangent pt
+        lines.append(Line(n, float(np.dot(n, o)) + r))
+    return lines
+
+
+def tangent_cc(c1, c2):
+    """Common tangent lines of two circles (up to four).
+
+    External tangents come from the external homothety centre (parallel when
+    the radii are equal); internal tangents from the internal centre. Because
+    each reduces to tangents-from-a-point, degenerate configurations (nested,
+    tangent, overlapping) fall out via the point-in-circle count. Returns a
+    single line, a list, or ``None`` (concentric circles / no common tangent).
+    """
+    o1, r1 = np.asarray(c1.center, dtype=float), float(c1.radius)
+    o2, r2 = np.asarray(c2.center, dtype=float), float(c2.radius)
+    d_vec = o2 - o1
+    d = float(np.linalg.norm(d_vec))
+    if np.isclose(d, 0.0):
+        return None                                 # concentric
+
+    tangents = []
+    # External tangents.
+    if np.isclose(r1, r2):
+        u = d_vec / d
+        n = np.array([u[1], -u[0]])                 # unit normal ⊥ centre line
+        base = float(np.dot(n, o1))
+        tangents += [Line(n.copy(), base + r1), Line(n.copy(), base - r1)]
+    else:
+        e_center = (r2 * o1 - r1 * o2) / (r2 - r1)
+        tangents += _tangent_lines_point_circle(e_center, o1, r1)
+    # Internal tangents (internal homothety centre always exists; r1 + r2 > 0).
+    i_center = (r2 * o1 + r1 * o2) / (r1 + r2)
+    tangents += _tangent_lines_point_circle(i_center, o1, r1)
+
+    if not tangents:
+        return None
+    return tangents[0] if len(tangents) == 1 else tangents
+
+
 # ── Command registry ─────────────────────────────────────────────────────
 #
 # An explicit dict of ``{dispatch_name: impl}`` built once at module import

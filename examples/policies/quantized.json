@@ -1,0 +1,24 @@
+{
+    "name": "quantized",
+    "presets": {
+        "color": {
+            "main": "#1565c0",
+            "light": "#e3ecf7",
+            "accent": "#d32f2f",
+            "accent_light": "#f7dede"
+        },
+        "point_size": {
+            "main": 2.83
+        },
+        "line_width": {
+            "main": 1
+        }
+    },
+    "import": {
+        "policy": {
+            "stroke_width_px": "quantize:[1,2,4]",
+            "font_size_px": 14
+        }
+    },
+    "description": "Force line thicknesses into a small fixed set; unify font size."
+}

@@ -79,6 +79,34 @@ class MyScene(AnimaGeoScene):
         self.clearUpdater(t)
 ```
 
+## Keyframe-анимация
+
+Для сохранённых таймлайнов, веб-превью и повторяемого рендера используйте
+`play_keyframes()`. Сначала посмотрите, какие входы можно анимировать:
+
+```python
+independents = self.get_independent_elements()
+```
+
+Минимальный v2-таймлайн:
+
+```python
+self.play_keyframes({
+    "version": 2,
+    "keyframes": [
+        {"t": 0, "values": {"A": [0, 0], "x": 35}},
+        {"t": 2, "values": {"A": [4, 2], "x": 110},
+         "styles": {"a": {"stroke": "#d05456"}},
+         "visible": {"helper": False},
+         "easing": "smooth"},
+    ],
+})
+```
+
+V2 поддерживает анимацию стилей, видимости с эффектами, 17 easing-имен,
+`@camera`, events-акценты, `reveal_construction()` и статический preview через
+`apply_keyframes_at()`. Формат подробно описан в [docs/keyframes.md](keyframes.md).
+
 ## Управление видимостью
 
 ```python
