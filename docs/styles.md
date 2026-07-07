@@ -508,7 +508,7 @@ scene.element('sector').style['z_index_fill'] = 0.2   # только для Circ
 | Ключ | Тип | Default | Эффект |
 |---|---|---|---|
 | `size_px` | float (px) | `style.dot_size` | диаметр = `size_px / 2 / ptUnit` |
-| `point_shape` | enum-строка | `"circle"` | Форма: `"circle"`, `"square"`, `"triangle_up"`, `"triangle_down"`, `"triangle_left"`, `"triangle_right"`, `"cross"`, `"plus"`. См. раскладку GGB-пресетов в `docs/field_names.md` §3.3. |
+| `point_shape` | enum-строка | `"circle"` | Форма: `"circle"`, `"square"`, `"diamond"`, `"triangle_up"`, `"triangle_down"`, `"triangle_left"`, `"triangle_right"`, `"cross"`, `"plus"`. См. раскладку GGB-пресетов в `docs/field_names.md` §3.3. |
 
 ### Углы
 

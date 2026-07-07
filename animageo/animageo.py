@@ -74,6 +74,36 @@ def _validate_rendered_bounds_policy(value):
     return value
 
 
+def _source_bounds_px_from_config(value):
+    """Normalize an explicit rendered-bounds rectangle in source pixels."""
+    if value is None:
+        return None
+    if isinstance(value, dict):
+        keys = ('left', 'top', 'right', 'bottom')
+        if all(k in value for k in keys):
+            raw = [value[k] for k in keys]
+        else:
+            alt = ('sourceLeftPx', 'sourceTopPx', 'sourceRightPx', 'sourceBottomPx')
+            if not all(k in value for k in alt):
+                raise ValueError(
+                    "content.bounds must have left/top/right/bottom "
+                    "or sourceLeftPx/sourceTopPx/sourceRightPx/sourceBottomPx"
+                )
+            raw = [value[k] for k in alt]
+    elif isinstance(value, (list, tuple)) and len(value) == 4:
+        raw = list(value)
+    else:
+        raise ValueError("content.bounds must be [left, top, right, bottom] or an object")
+
+    try:
+        left, top, right, bottom = [float(v) for v in raw]
+    except (TypeError, ValueError):
+        raise ValueError("content.bounds values must be numbers") from None
+    if not all(math.isfinite(v) for v in (left, top, right, bottom)):
+        raise ValueError("content.bounds values must be finite")
+    return [left, top, right, bottom]
+
+
 def _style_path_for_geostyle(style):
     """Return the style input shape supported by GeoStyle."""
     if isinstance(style, StyleConfig):
@@ -252,7 +282,8 @@ class AnimaGeoScene(MovingCameraScene):
             [geo.Angle],
             [geo.Circle, geo.Arc, geo.Segment, geo.Vector, geo.Line, geo.Ray,
              geo.LocusCurve, geo.Conic, geo.Function, geo.ImplicitCurve],
-            [geo.Point]
+            [geo.Point],
+            [geo.Text],
         ]
 
         for el_types in element_types:
@@ -357,6 +388,42 @@ class AnimaGeoScene(MovingCameraScene):
             'sourceBottomPx': bottom_px,
             'boundsPaddingPx': padding_px,
             'boundsInfinitePolicy': infinite_policy,
+        })
+        return rendered_view
+
+    def _source_view_from_bounds_px(
+        self,
+        source_view,
+        bounds_px,
+        *,
+        padding_px=0,
+        infinite_policy='ignore',
+    ):
+        """Return a source_view from explicit source-pixel bounds."""
+        left_px, top_px, right_px, bottom_px = _source_bounds_px_from_config(bounds_px)
+        padding_px = max(float(padding_px or 0), 0.0)
+        left_px -= padding_px
+        top_px -= padding_px
+        right_px += padding_px
+        bottom_px += padding_px
+
+        xzero = float(source_view.get('ptXZero', 0))
+        yzero = float(source_view.get('ptYZero', 0))
+        width = max(right_px - left_px, 1.0)
+        height = max(bottom_px - top_px, 1.0)
+        rendered_view = dict(source_view)
+        rendered_view.update({
+            'ptWidth': width,
+            'ptHeight': height,
+            'ptXZero': xzero - left_px,
+            'ptYZero': yzero - top_px,
+            'sourceLeftPx': left_px,
+            'sourceTopPx': top_px,
+            'sourceRightPx': right_px,
+            'sourceBottomPx': bottom_px,
+            'boundsPaddingPx': padding_px,
+            'boundsInfinitePolicy': _validate_rendered_bounds_policy(infinite_policy),
+            'boundsSource': 'explicit',
         })
         return rendered_view
 
@@ -623,6 +690,7 @@ class AnimaGeoScene(MovingCameraScene):
 
         policy_applied = False
         source_view = dict(self.style.export)
+        self._export_source_view = dict(source_view)
         style_reference = getattr(self.style_config, 'reference', {})
         runtime_reference = _merge_reference(style_reference, reference)
         explicit_reference_size = size_from_config(_reference_size_from_config(runtime_reference))
@@ -673,14 +741,23 @@ class AnimaGeoScene(MovingCameraScene):
             content_opts = base_content_options
             if use_rendered_bounds:
                 self._set_camera_from_export(dict(source_view))
-                # Crop tight to the rendered bounds (no source-view expansion);
-                # content.padding is now a canvas-edge margin applied by the
-                # reference→export layout stage, not a source crop inset.
-                layout_source_view = self._rendered_bounds_source_view(
-                    source_view,
-                    padding_px=0,
-                    infinite_policy=base_content_options.get('infinite_policy', 'ignore'),
-                )
+                explicit_bounds = base_content_options.get('bounds')
+                if explicit_bounds is not None:
+                    layout_source_view = self._source_view_from_bounds_px(
+                        source_view,
+                        explicit_bounds,
+                        padding_px=0,
+                        infinite_policy=base_content_options.get('infinite_policy', 'ignore'),
+                    )
+                else:
+                    # Crop tight to the rendered bounds (no source-view expansion);
+                    # content.padding is now a canvas-edge margin applied by the
+                    # reference→export layout stage, not a source crop inset.
+                    layout_source_view = self._rendered_bounds_source_view(
+                        source_view,
+                        padding_px=0,
+                        infinite_policy=base_content_options.get('infinite_policy', 'ignore'),
+                    )
                 if explicit_reference_size is None:
                     reference_size = [
                         layout_source_view.get('ptWidth'),
@@ -1390,6 +1467,8 @@ class AnimaGeoScene(MovingCameraScene):
             etype = info['type']
             if etype == 'free_point':
                 raw[name] = list(info['coords'])
+            elif etype == 'free_text':
+                raw[name] = list(info['position'])
             elif etype == 'tparam_point':
                 t = info['tparam']
                 raw[name] = {
@@ -3248,6 +3327,13 @@ class AnimaGeoScene(MovingCameraScene):
                 color=col_s, fill_color=col_f, fill_opacity=op_f,
                 stroke_opacity=op_s, stroke_width=lw,
             ).move_to(pos).set_z_index(zz)
+        if shape == 'diamond':
+            side = radius * np.sqrt(2)
+            return Square(
+                side_length=side,
+                color=col_s, fill_color=col_f, fill_opacity=op_f,
+                stroke_opacity=op_s, stroke_width=lw,
+            ).rotate(PI / 4).move_to(pos).set_z_index(zz)
         if shape == 'triangle_up':
             return _scaled_triangle(pos, radius, 0, col_s, col_f, op_f, op_s, lw, zz)
         if shape == 'triangle_down':

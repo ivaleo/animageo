@@ -212,7 +212,7 @@ Fill
 
 Points
 - ``size_px`` (diameter, pixels)
-- ``point_shape`` ("circle"|"square"|"triangle_up"|"triangle_down"|
+- ``point_shape`` ("circle"|"square"|"diamond"|"triangle_up"|"triangle_down"|
                    "triangle_left"|"triangle_right"|"cross"|"plus")
 
 Angles

@@ -2,7 +2,7 @@
  * Canonical board state ↔ live JSXGraph objects.
  *
  * State is keyed by input name and self-describing per kind:
- *   point / glider → { x, y }
+ *   point / glider / text → { x, y }
  *   number / angle → number
  *   boolean        → boolean
  *
@@ -23,6 +23,7 @@ export function readInput(inp, obj) {
   switch (inp.kind) {
     case 'point':
     case 'glider':
+    case 'text':
       return { x: num(obj.X()), y: num(obj.Y()) };
     case 'number':
     case 'angle':
@@ -49,7 +50,8 @@ export function applyState(inputs, S, partial, board, engine) {
 function applyInput(inp, obj, value, engine) {
   switch (inp.kind) {
     case 'point':
-    case 'glider': {
+    case 'glider':
+    case 'text': {
       const x = value && typeof value === 'object' ? value.x : undefined;
       const y = value && typeof value === 'object' ? value.y : undefined;
       if (x != null && y != null && typeof obj.setPosition === 'function') {
@@ -73,7 +75,7 @@ function applyInput(inp, obj, value, engine) {
 export function initialState(inputs) {
   const st = {};
   for (const i of inputs) {
-    if (i.kind === 'point' || i.kind === 'glider') st[i.name] = { x: i.x, y: i.y };
+    if (i.kind === 'point' || i.kind === 'glider' || i.kind === 'text') st[i.name] = { x: i.x, y: i.y };
     else st[i.name] = i.value;
   }
   return st;

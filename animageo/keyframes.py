@@ -221,6 +221,7 @@ class Interpolator:
         #   'tparam_circle'    — angular t on a circle/ellipse (uses angle_direction)
         #   'tparam_linear'    — scalar t on segment/line/ray/parabola/locus/function
         #   'tparam_hyperbola' — (branch, t): branch snaps at 0.5, t lerps
+        #   'text_position'    — 2D coord lerp for free text objects
         #   'var' / 'bool'     — scalar var / boolean snap
         self.kind = kind
         self.start = start
@@ -242,7 +243,7 @@ class Interpolator:
         if self.kind == 'bool':
             return self.end if et >= 0.5 else self.start
 
-        if self.kind == 'point':
+        if self.kind in ('point', 'text_position'):
             return (1 - et) * self.start + et * self.end
 
         if self.kind == 'tparam_circle':
@@ -919,6 +920,11 @@ def _parse_value(name, raw_value, info, construction=None):
             raise ValueError(f"'{name}': free_point requires [x, y], got {raw_value}")
         return 'point', np.array(raw_value, dtype=float), None
 
+    if etype == 'free_text':
+        if not isinstance(raw_value, (list, tuple)) or len(raw_value) != 2:
+            raise ValueError(f"'{name}': free_text requires [x, y], got {raw_value}")
+        return 'text_position', np.array(raw_value, dtype=float), None
+
     if etype == 'tparam_point':
         constraint = info.get('constraint', 'line')
         kind = _tparam_kind(constraint)
@@ -974,6 +980,14 @@ def apply_parsed_value(construction, name, kind, val):
     """
     if kind == 'point':
         construction.update(name, Point(val))
+        return
+
+    if kind == 'text_position':
+        elem = construction.element(name)
+        data = getattr(elem, 'data', None) if elem is not None else None
+        if data is not None and hasattr(data, 'position'):
+            data.position = np.array(val, dtype=float)
+            _mark_var_outputs_dirty(construction, name)
         return
 
     if kind in ('tparam_circle', 'tparam_linear', 'tparam_hyperbola'):
@@ -1054,11 +1068,11 @@ def _build_intervals(keyframes, element_info, construction=None):
                 if b0 == b1 and np.isclose(t0, t1):
                     current_values[name] = (kind, end_val, direction)
                     continue
-            elif kind != 'bool' and kind != 'point':
+            elif kind != 'bool' and kind not in ('point', 'text_position'):
                 if np.isclose(start_val, end_val):
                     current_values[name] = (kind, end_val, direction)
                     continue
-            elif kind == 'point':
+            elif kind in ('point', 'text_position'):
                 if np.allclose(start_val, end_val):
                     current_values[name] = (kind, end_val, direction)
                     continue
@@ -1132,6 +1146,8 @@ def _get_current_value(info):
     etype = info['type']
     if etype == 'free_point':
         return np.array(info['coords'], dtype=float)
+    if etype == 'free_text':
+        return np.array(info['position'], dtype=float)
     if etype == 'tparam_point':
         t = info['tparam']
         if isinstance(t, (list, tuple)):

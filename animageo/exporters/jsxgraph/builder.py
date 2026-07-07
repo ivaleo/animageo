@@ -32,7 +32,10 @@ def _render_parent(p) -> str:
 
 logger = logging.getLogger(__name__)
 
-_DRAGGABLE = ("free_point", "tparam_point", "number", "measure", "angle", "boolean")
+_DRAGGABLE = (
+    "free_point", "tparam_point", "free_text",
+    "number", "measure", "angle", "boolean",
+)
 
 
 @dataclass
@@ -403,6 +406,32 @@ def _emit_free_inputs(ctx, independents, bbox, create, model):
             model.input_schema.append(
                 InputSpec(name=name, kind="point", x=float(x), y=float(y)))
             model.coverage.append((name, "input", "free point"))
+        elif t == "free_text" and elem is not None and isinstance(elem.data, Text):
+            text = elem.data
+            decimals = getattr(ctx.scene.geo, "ggb_decimals", 2)
+            content = resolve_text_string(ctx.scene.geo, text, decimals).replace("\xa0", " ")
+            if not content.strip():
+                model.coverage.append((name, "skip", "Text: empty"))
+                continue
+            x, y = info["position"][0], info["position"][1]
+            attrs = {
+                "anchorX": "left", "anchorY": "top",
+                "fixed": False, "highlight": False,
+                "strokeColor": _hex(ctx.resolve(elem, "label_color", default="#000000")),
+            }
+            off = ctx.resolve(elem, "label_offset_px", default=None)
+            if off:
+                attrs["offset"] = [float(off[0]), float(off[1])]
+            fs_px = ctx.resolve(elem, "font_size_px", default=16.0)
+            if fs_px:
+                attrs["fontSize"] = float(fs_px)
+            if text.is_latex:
+                attrs["useMathJax"] = True
+            el = create(name, "text", [ctx.num(x), ctx.num(y), json.dumps(content)], attrs)
+            el.kind = "text"
+            model.input_schema.append(
+                InputSpec(name=name, kind="text", x=float(x), y=float(y)))
+            model.coverage.append((name, "input", "free text"))
         elif t in ("number", "measure", "angle"):
             start = float(info["value"])
             lo, hi, step = info.get("min"), info.get("max"), info.get("step")

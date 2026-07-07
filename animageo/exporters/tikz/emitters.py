@@ -172,6 +172,15 @@ def _emit_marker(ctx, x, y, R, shape, opts, stroke_only):
             f"\\draw[{opts}] {_shift(-h, -h, x, y, ctx)} rectangle {_shift(h, h, x, y, ctx)};"
         )
         return
+    if shape == "diamond":
+        pts = [
+            _shift(0, R, x, y, ctx),
+            _shift(R, 0, x, y, ctx),
+            _shift(0, -R, x, y, ctx),
+            _shift(-R, 0, x, y, ctx),
+        ]
+        ctx.doc.line(f"\\draw[{opts}] {' -- '.join(pts)} -- cycle;")
+        return
     if shape in ("triangle_up", "triangle_down", "triangle_left", "triangle_right"):
         base = {"triangle_up": 90, "triangle_down": -90,
                 "triangle_left": 180, "triangle_right": 0}[shape]

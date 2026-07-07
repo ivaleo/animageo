@@ -17,6 +17,7 @@ from typing import Literal
 PointShape = Literal[
     "circle",
     "square",
+    "diamond",
     "triangle_up",
     "triangle_down",
     "triangle_left",
@@ -27,6 +28,7 @@ PointShape = Literal[
 POINT_SHAPES: tuple[str, ...] = (
     "circle",
     "square",
+    "diamond",
     "triangle_up",
     "triangle_down",
     "triangle_left",
@@ -71,7 +73,7 @@ INTERPOLATIONS: tuple[str, ...] = ("linear", "smooth")
 # Values marked ``<color>`` are placeholders filled in by the caller with the
 # element's GGB ``objColor`` hex.
 #
-# Sources: observed GGB behaviour and current point-shape renderer snapshots.
+# Source for numeric codes: GeoGebra EuclidianStyleConstants point-style constants.
 _GGB_POINT_STYLE_PATCHES: dict[int, dict[str, object]] = {
     # 0: filled disc with black outline (GGB default)
     0: {
@@ -97,16 +99,16 @@ _GGB_POINT_STYLE_PATCHES: dict[int, dict[str, object]] = {
         "fill_opacity": 1.0,
         "stroke_opacity": 0.0,
     },
-    # 4: filled square, no outline
+    # 4: filled diamond, no outline
     4: {
-        "point_shape": "square",
+        "point_shape": "diamond",
         "fill": "<color>",
         "fill_opacity": 1.0,
         "stroke_opacity": 0.0,
     },
-    # 5: open square (outline only)
+    # 5: open diamond (outline only)
     5: {
-        "point_shape": "square",
+        "point_shape": "diamond",
         "fill_opacity": 0.0,
         "stroke": "<color>",
         "stroke_width_px": 2.0,

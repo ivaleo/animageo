@@ -1,4 +1,4 @@
-"""Tests for point_shape rendering — all 8 shapes produce valid Mobjects."""
+"""Tests for point_shape rendering — all shapes produce valid Mobjects."""
 import pytest
 
 from manim import Circle, Square, VGroup
@@ -49,7 +49,7 @@ def _make_scene_with_point_shape(tmp_path, point_shape, size_px=6):
 
 class TestPointShapeRender:
     SHAPES = [
-        'circle', 'square', 'triangle_up', 'triangle_down',
+        'circle', 'square', 'diamond', 'triangle_up', 'triangle_down',
         'triangle_left', 'triangle_right', 'cross', 'plus',
     ]
 
@@ -86,3 +86,16 @@ class TestPointShapeRender:
             '#000000', '#000000', 1.0, 1.0, 1.0, 50,
         )
         assert isinstance(mobj, Circle)
+
+    def test_diamond_is_rotated_square(self):
+        """Diamond has vertices on axes, not an unrotated square's corners."""
+        mobj = AnimaGeoScene._make_point_mobject(
+            'diamond', [0, 0, 0], 1.0,
+            '#000000', '#000000', 1.0, 1.0, 1.0, 50,
+        )
+        assert isinstance(mobj, Square)
+        vertices = sorted(
+            (round(float(x), 6), round(float(y), 6))
+            for x, y, _ in mobj.get_vertices()
+        )
+        assert vertices == [(-1.0, 0.0), (-0.0, -1.0), (0.0, 1.0), (1.0, -0.0)]
