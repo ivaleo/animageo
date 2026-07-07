@@ -240,7 +240,7 @@ is not a drawable element type.
 ### Points
 
 - `size_px`: point diameter.
-- `point_shape`: `circle`, `square`, `triangle_up`, `triangle_down`,
+- `point_shape`: `circle`, `square`, `diamond`, `triangle_up`, `triangle_down`,
   `triangle_left`, `triangle_right`, `cross`, or `plus`.
 
 ### Angles
@@ -1018,7 +1018,7 @@ Good style JSON:
 
 ## Current Support And Gaps
 
-Current library version audited by this context: `1.2.3`.
+Current library version audited by this context: `1.6.1`.
 
 Already available:
 

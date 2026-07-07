@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.1] — 2026-07-07
+
+### Added
+
+- `content.bounds` for `source: "rendered_bounds"` exports, allowing callers to
+  provide an explicit source-pixel crop rectangle without re-measuring mobjects.
+- Free GeoGebra text objects are now independent inputs in construction
+  summaries/keyframes and JSXGraph specs; their positions can be animated and
+  restored through the web runtime state bridge.
+- Archived label-placement feedback comparison fixtures for regression work.
+
+### Fixed
+
+- GeoGebra `pointStyle` codes `4` and `5` now import as a rotated diamond
+  (`point_shape: "diamond"`) instead of an unrotated square, matching
+  GeoGebra's `POINT_STYLE_FILLED_DIAMOND` / `POINT_STYLE_EMPTY_DIAMOND`.
+- `addAllGeometry()` now includes text elements in the render pass.
+
 ## [1.6.0] — 2026-07-06
 
 ### Added

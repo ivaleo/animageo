@@ -236,6 +236,7 @@ def normalize_content_options(content: Mapping[str, Any] | None) -> dict:
             raw.get('infinite_policy', 'ignore'),
             INFINITE_POLICIES,
         ),
+        'bounds': raw.get('bounds'),
     }
 
 

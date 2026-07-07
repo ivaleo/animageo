@@ -21,7 +21,7 @@ import pytest
 # Import construction first — it resolves the lib_vars/lib_elements circular import
 from animageo.geo.construction import Construction
 from animageo.geo.lib_elements import (
-    Point, Line, Segment, Circle, Element,
+    Point, Line, Segment, Circle, Text, Element,
 )
 from animageo.geo.lib_vars import Var, Measure, AngleSize, Boolean
 from animageo.geo.lib_commands import Command
@@ -167,6 +167,16 @@ class TestGetIndependents:
         assert indeps['A']['type'] == 'free_point'
         assert indeps['A']['coords'] == [1.0, 2.0]
 
+    def test_free_text(self):
+        c = Construction()
+        c.add(Element('txt1', Text([('str', 'hello')], position=[1, 2])))
+        c.add(Element('A', Point([0, 0])))
+        c.add(Element('anchored', Text([('str', 'anchored')], anchor_point='A')))
+        indeps = c.get_independents()
+        assert indeps['txt1']['type'] == 'free_text'
+        assert indeps['txt1']['position'] == [1.0, 2.0]
+        assert 'anchored' not in indeps
+
     def test_excludes_dependent(self):
         c = Construction()
         c.add(Element('A', Point([0, 0])))
@@ -283,6 +293,21 @@ class TestKeyframeSequenceParsing:
         assert len(interps) == 1
         assert interps[0].kind == 'tparam_circle'
         assert interps[0].angle_direction == 'ccw'
+
+    def test_free_text_position_parsing(self):
+        c = _make_test_construction()
+        c.add(Element('txt1', Text([('str', 'hello')], position=[1, 2])))
+        data = {
+            'keyframes': [
+                {'t': 0, 'values': {'txt1': [1, 2]}},
+                {'t': 2, 'values': {'txt1': [5, 6]}},
+            ]
+        }
+        seq = KeyframeSequence.from_json(data, c)
+        interps = seq.intervals[0].interpolators
+        assert len(interps) == 1
+        assert interps[0].kind == 'text_position'
+        assert np.allclose(interps[0].at(0.5), [3, 4])
 
     def test_visibility_changes(self):
         c = _make_test_construction()
@@ -490,6 +515,14 @@ class TestIntegrationConstruction:
         apply_parsed_value(c, 'flag', 'bool', True)
 
         assert c.var('flag').data.value is True
+
+    def test_apply_parsed_value_updates_free_text_position(self):
+        c = Construction()
+        c.add(Element('txt1', Text([('str', 'hello')], position=[1, 2])))
+
+        apply_parsed_value(c, 'txt1', 'text_position', np.array([5.0, 6.0]))
+
+        assert np.allclose(c.element('txt1').data.position, [5, 6])
 
     def test_parse_and_apply_first_keyframe_value_to_construction(self):
         c = _make_test_construction()

@@ -164,6 +164,16 @@ class TestMoreEmitters:
         """)
         assert "rectangle" in s.exportTikZ()
 
+    def test_point_diamond_marker(self):
+        s = _framed_scene("""
+            A = Point(0, 0)
+            A.style.point_shape = 'diamond'
+        """)
+        tex = s.exportTikZ()
+        marker = next(line for line in tex.splitlines() if "-- cycle" in line)
+        assert "rectangle" not in marker
+        assert marker.count("shift=") == 4
+
     def test_point_cross_marker(self):
         s = _framed_scene("""
             A = Point(0, 0)

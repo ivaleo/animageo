@@ -117,7 +117,13 @@ export function createBoard(spec, container, opts = {}) {
     setStyle: (name, attrs) => {
       const o = S[name];
       if (o && typeof o.setAttribute === 'function') {
-        o.setAttribute(attrs || {});
+        const next = { ...(attrs || {}) };
+        const labelAttrs = next.label;
+        if (labelAttrs && o.label && typeof o.label.setAttribute === 'function') {
+          o.label.setAttribute(labelAttrs);
+          delete next.label;
+        }
+        if (Object.keys(next).length) o.setAttribute(next);
         board.update && board.update();
       }
     },

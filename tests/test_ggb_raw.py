@@ -13,6 +13,7 @@ import pytest
 
 from animageo.geo.construction import Construction
 from animageo.parsers import ggb_parser
+from animageo.style.enums import ggb_point_style_to_elem_style
 from animageo.style.ggb_resolver import resolve_ggb_style
 
 
@@ -134,3 +135,37 @@ class TestGgbResolverUnit:
     def test_segment_decoration_lines_unchanged(self):
         result = resolve_ggb_style({'elem_type': 'segment', 'decoration_lines': 2})
         assert result['tick_count'] == 2
+
+
+class TestGgbPointStyleMapping:
+    """Lock GeoGebra pointStyle codes to AnimaGeo point_shape names."""
+
+    def test_all_geogebra_point_style_codes(self):
+        expected = {
+            0: 'circle',
+            1: 'cross',
+            2: 'circle',
+            3: 'plus',
+            4: 'diamond',
+            5: 'diamond',
+            6: 'triangle_up',
+            7: 'triangle_down',
+            8: 'triangle_right',
+            9: 'triangle_left',
+            10: 'circle',
+        }
+        for code, shape in expected.items():
+            assert ggb_point_style_to_elem_style(code, '#123456')['point_shape'] == shape
+
+    def test_diamond_fill_and_outline_variants(self):
+        filled = ggb_point_style_to_elem_style(4, '#123456')
+        assert filled['point_shape'] == 'diamond'
+        assert filled['fill'] == '#123456'
+        assert filled['fill_opacity'] == 1.0
+        assert filled['stroke_opacity'] == 0.0
+
+        empty = ggb_point_style_to_elem_style(5, '#123456')
+        assert empty['point_shape'] == 'diamond'
+        assert empty['fill_opacity'] == 0.0
+        assert empty['stroke'] == '#123456'
+        assert empty['stroke_opacity'] == 1.0

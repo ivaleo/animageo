@@ -183,6 +183,34 @@ def test_rendered_bounds_anchor_places_measured_rect(monkeypatch):
     assert export['ptXZero'] == pytest.approx(60)
 
 
+def test_rendered_bounds_accepts_explicit_source_bounds(monkeypatch):
+    scene = _source_scene()
+    scene.geo.add(Element('A', Point(np.array([0, 0]))))
+
+    def fail_create_mobject(*args, **kwargs):
+        raise AssertionError("explicit bounds should not measure mobjects")
+
+    monkeypatch.setattr(scene, 'CreateMObject', fail_create_mobject)
+
+    scene.applyStyle(
+        content={
+            'source': 'rendered_bounds',
+            'bounds': {'left': 100, 'top': 10, 'right': 260, 'bottom': 110},
+        },
+        export={'size': [320, 200]},
+    )
+
+    export = scene.style.export
+    assert export['source_rect'] == 'rendered_bounds'
+    assert export['boundsSource'] == 'explicit'
+    assert export['sourceLeftPx'] == pytest.approx(100)
+    assert export['sourceTopPx'] == pytest.approx(10)
+    assert export['sourceRightPx'] == pytest.approx(260)
+    assert export['sourceBottomPx'] == pytest.approx(110)
+    assert export['referenceWidth'] == pytest.approx(160)
+    assert export['referenceHeight'] == pytest.approx(100)
+
+
 def test_angle_label_radius_uses_reference_scale_once(monkeypatch):
     scene = _source_scene()
     scene.applyStyle(export={'size': [1200, 600]})

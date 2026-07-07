@@ -56,7 +56,7 @@ class StyleProxy(dict):
 
     # ── Point-specific ───────────────────────────────────────────
     size_px: float                     # diameter in pixels
-    point_shape: str                   # 'circle', 'square', 'triangle_up',
+    point_shape: str                   # 'circle', 'square', 'diamond', 'triangle_up',
                                        # 'triangle_down', 'triangle_left',
                                        # 'triangle_right', 'cross', 'plus'
 

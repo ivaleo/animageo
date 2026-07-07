@@ -341,7 +341,7 @@ keyframe parser принимает только `'tparam'`.
 
 | Концепт | GGB XML | `elem.ggb_raw` | `elem.style` | JSON | manim kwarg | SVG |
 |---|---|---|---|---|---|---|
-| Форма точки | `<pointStyle val="0..10">` (жёстко связано с заливкой) | `point_style` (int) | `point_shape` (str enum) | `import.policy.point_shape`, `overlay.per_type.point.point_shape` | `_make_point_mobject` (8 форм: circle, square, triangle_\*, cross, plus) | зависит от формы |
+| Форма точки | `<pointStyle val="0..10">` (жёстко связано с заливкой) | `point_style` (int) | `point_shape` (str enum) | `import.policy.point_shape`, `overlay.per_type.point.point_shape` | `_make_point_mobject` (9 форм: circle, square, diamond, triangle_\*, cross, plus) | зависит от формы |
 
 GGB-код `point_style` раскладывается в три независимых оси (`point_shape`, `fill`/`fill_opacity`, `stroke`/`stroke_width_px`/`stroke_opacity`) через `style/enums.py:_GGB_POINT_STYLE_PATCHES`.
 
@@ -350,8 +350,8 @@ GGB-код `point_style` раскладывается в три независи
 | `0` (закрашенный, чёрный контур — дефолт) | `"circle"` | цвет | `#000000`, 1 px |
 | `2` (полый кружок) | `"circle"` | нет (`fill_opacity=0`) | цвет, 2 px |
 | `10` (закрашенный без контура) | `"circle"` | цвет | нет (`stroke_opacity=0`) |
-| `4` (закрашенный квадрат) | `"square"` | цвет | нет |
-| `5` (полый квадрат) | `"square"` | нет | цвет, 2 px |
+| `4` (закрашенный ромб) | `"diamond"` | цвет | нет |
+| `5` (полый ромб) | `"diamond"` | нет | цвет, 2 px |
 | `1` (×) | `"cross"` | нет | цвет, 2 px |
 | `3` (+) | `"plus"` | нет | цвет, 2 px |
 | `6`/`7`/`8`/`9` (▲/▼/▶/◀) | `"triangle_up"` / `"triangle_down"` / `"triangle_right"` / `"triangle_left"` | цвет | нет |
@@ -424,7 +424,7 @@ GGB-код `point_style` раскладывается в три независи
 
 | Тип | Значения | Где используется |
 |---|---|---|
-| `PointShape` | `"circle"`, `"square"`, `"triangle_up"`, `"triangle_down"`, `"triangle_left"`, `"triangle_right"`, `"cross"`, `"plus"` | `elem.style['point_shape']` |
+| `PointShape` | `"circle"`, `"square"`, `"diamond"`, `"triangle_up"`, `"triangle_down"`, `"triangle_left"`, `"triangle_right"`, `"cross"`, `"plus"` | `elem.style['point_shape']` |
 | `AngleRange` | `"minor"`, `"reflex"` | `elem.style['angle_range']` |
 | `TickStyle` | `"line"`, `"wave"` | `elem.style['tick_style']` |
 | `PointDisplay` | `"auto"`, `"only_labels"`, `"only_points"` | `rendering.points_display` |

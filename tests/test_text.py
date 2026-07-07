@@ -261,6 +261,14 @@ def test_render_empty_text_is_none(scene):
     assert mobj is None
 
 
+def test_add_all_geometry_includes_text(scene):
+    scene.geo.add(Element('txt1', Text([("str", "hello")], position=[1.0, 2.0])))
+
+    scene.addAllGeometry(show=True)
+
+    assert scene.mobject('txt1') is not None
+
+
 def test_render_full_static_ggb(scene):
     scene.loadGGB(os.path.join(FIXTURES, 'text_static.ggb'), generate_stubs=False)
     scene.applyStyle()
@@ -318,6 +326,22 @@ def test_jsxgraph_spec_emits_text_elements(scene):
     for t in texts:
         assert len(t['parents']) == 3
         assert isinstance(t['parents'][2], str)
+
+
+def test_jsxgraph_spec_free_text_is_input(scene):
+    import json as _json
+    scene.geo.add(Element('txt1', Text([("str", "move me")], position=[1.0, 2.0])))
+    scene.applyStyle()
+    scene.fitView(800, 600, padding=40)
+    data = _json.loads(scene.exportJSXGraph(output='spec'))
+    inp = next(i for i in data['inputs'] if i['name'] == 'txt1')
+    assert inp['kind'] == 'text'
+    assert inp['x'] == 1.0
+    assert inp['y'] == 2.0
+    elem = next(e for e in data['elements'] if e.get('name') == 'txt1')
+    assert elem['engine'] == 'text'
+    assert elem['role'] == 'input'
+    assert elem['attrs']['fixed'] is False
 
 
 def test_jsxgraph_spec_with_text_validates_schema(scene):

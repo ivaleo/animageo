@@ -489,7 +489,8 @@ class Construction:
         """Return dict of independent (animatable) elements with their types and values.
 
         Returns dict: name -> {type, value/coords/tparam, ...}
-        Types: 'free_point', 'tparam_point', 'number', 'measure', 'angle', 'boolean'
+        Types: 'free_point', 'tparam_point', 'free_text',
+        'number', 'measure', 'angle', 'boolean'
         """
         result = {}
         for name, st in self.state.items():
@@ -540,6 +541,19 @@ class Construction:
                     'constraint': constraint,
                     'tparam': list(tp) if isinstance(tp, (tuple, list)) else tp,
                     'coords': elem.data.coords.tolist()
+                }
+                continue
+
+            # Free text: a movable GeoGebra text object with literal position.
+            # Text anchored to a point follows that point and is not a separate
+            # keyframe input.
+            if (elem and isinstance(elem.data, Text)
+                    and elem.data.anchor_point is None
+                    and elem.data.position is not None
+                    and st['level'] == 0 and not st['input_commands']):
+                result[name] = {
+                    'type': 'free_text',
+                    'position': np.asarray(elem.data.position[:2], dtype=float).tolist()
                 }
                 continue
 

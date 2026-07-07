@@ -151,7 +151,7 @@ class InputSpec:
     ``change``/``commit`` signals."""
 
     name: str
-    kind: str                       # point | number | angle | boolean | glider
+    kind: str                       # point | number | angle | boolean | glider | text
     value: Any = None               # number/angle/boolean current value
     x: Optional[float] = None       # point/glider
     y: Optional[float] = None
