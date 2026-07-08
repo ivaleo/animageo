@@ -383,3 +383,56 @@ def test_element_prominence_scales_stroke_width_at_render():
 
     # ptUnit_style halved (50 -> 25) -> stroke width doubled vs nominal
     assert ctx.lw == pytest.approx(2 * STROKE_WIDTH_SCALE / 25)
+
+
+def _framed_scene():
+    """A 6x4 triangle inside a wider 12x9 MU viewport.
+
+    The viewport (source view) is wider than the geometry, so `rendered_bounds`
+    (tight crop) and `ggb_view` (whole viewport) frame the drawing at genuinely
+    different scales — the setup that exposes frame-dependent decoration sizing.
+    """
+    scene = AnimaGeoScene()
+    scene.putCode(
+        "A = Point(0, 0)\n"
+        "B = Point(6, 0)\n"
+        "C = Point(2, 4)\n"
+        "tri, AB, BC, CA = Polygon(A, B, C)\n"
+    )
+    scene.style.export.update({
+        'ptUnit': 40, 'ptWidth': 480, 'ptHeight': 360,
+        'ptXZero': 100, 'ptYZero': 300, 'ptUnit_ggb': 40,
+    })
+    return scene
+
+
+def test_decoration_scale_reference_is_frame_independent():
+    # «Кадр» must not change «Крупность»: with decoration_scale_source='reference'
+    # the decoration density resolves against the source view fit onto the
+    # reference canvas, so it is identical for rendered_bounds and ggb_view.
+    ref = dict(reference={'size': {'width': 480, 'height': 360}},
+               export={'size': {'width': 480, 'height': 360}})
+    rb = _framed_scene()
+    rb.applyStyle(content={'source': 'rendered_bounds',
+                           'decoration_scale_source': 'reference'}, **ref)
+    gv = _framed_scene()
+    gv.applyStyle(content={'source': 'ggb_view',
+                           'decoration_scale_source': 'reference'}, **ref)
+
+    assert rb.style.export['ptUnit_style'] == pytest.approx(
+        gv.style.export['ptUnit_style'])
+    # geometry (ptUnit) still tracks the frame — that IS the frame's job
+    assert rb.style.export['ptUnit'] != pytest.approx(gv.style.export['ptUnit'])
+
+
+def test_decoration_scale_frame_tracks_the_crop():
+    # Default basis ('frame'): the tight rendered_bounds crop resolves decorations
+    # at a higher density than the wide viewport — fitView relies on this.
+    ref = dict(reference={'size': {'width': 480, 'height': 360}},
+               export={'size': {'width': 480, 'height': 360}})
+    rb = _framed_scene()
+    rb.applyStyle(content={'source': 'rendered_bounds'}, **ref)
+    gv = _framed_scene()
+    gv.applyStyle(content={'source': 'ggb_view'}, **ref)
+
+    assert rb.style.export['ptUnit_style'] > gv.style.export['ptUnit_style']

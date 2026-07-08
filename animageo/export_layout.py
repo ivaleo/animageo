@@ -13,6 +13,16 @@ from typing import Any, Mapping, Sequence
 FIT_MODES = frozenset({'contain', 'cover', 'width', 'height', 'none', 'manual'})
 SOURCE_RECTS = frozenset({'source_view', 'ggb_view', 'rendered_bounds', 'reference'})
 INFINITE_POLICIES = frozenset({'ignore', 'clip'})
+# Basis for resolving decoration sizes (`ptUnit_style`):
+#   'frame'     — track the actual export crop (default). Decorations scale with
+#                 how the geometry is framed; a tight `rendered_bounds` crop makes
+#                 them look smaller relative to the drawing than a wide `ggb_view`.
+#                 `fitView` relies on this (its source view is the previous crop).
+#   'reference' — fit the full source view onto the reference canvas, independent
+#                 of the chosen «Кадр»/crop. Requires a STABLE source view (a real
+#                 viewport, applied once — not an iterative fit). Keeps decoration
+#                 prominence constant across content.source choices.
+DECORATION_SCALE_SOURCES = frozenset({'frame', 'reference'})
 ANCHORS = frozenset({
     'top_left', 'top', 'top_right',
     'left', 'center', 'right',
@@ -238,6 +248,11 @@ def normalize_content_options(content: Mapping[str, Any] | None) -> dict:
         ),
         'bounds': raw.get('bounds'),
         'prominence': _normalize_prominence(raw.get('prominence')),
+        'decoration_scale_source': _validate_choice(
+            'content.decoration_scale_source',
+            raw.get('decoration_scale_source', 'frame'),
+            DECORATION_SCALE_SOURCES,
+        ),
     }
 
 

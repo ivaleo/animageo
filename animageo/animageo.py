@@ -40,6 +40,7 @@ from .parsers.svg_parser import *
 from .parsers import ggb_parser
 from .keyframes import KeyframeSequence, apply_parsed_value
 from .render_config import configure_render, OUTPUT_FORMATS
+from .export_layout import compute_export_layout
 from .export_layout import compute_reference_export_layout
 from .export_layout import normalize_content_options
 from .export_layout import normalize_export_options
@@ -696,6 +697,12 @@ class AnimaGeoScene(MovingCameraScene):
         explicit_reference_size = size_from_config(_reference_size_from_config(runtime_reference))
         reference_size = explicit_reference_size or [source_view.get('ptWidth'), source_view.get('ptHeight')]
         reference_size = resolve_auto_size(reference_size, [source_view.get('ptWidth'), source_view.get('ptHeight')])
+        # Decoration density is a property of the *drawing on the style's reference
+        # canvas*, NOT of the crop: it must stay fixed when content.source (the
+        # «Кадр») changes. Preserve the style reference size + source view here,
+        # before rendered_bounds overwrites reference_size with the tight crop.
+        style_density_source_view = dict(source_view)
+        style_density_reference_size = list(reference_size)
 
         export_options = normalize_export_options(export)
         export_size = resolve_auto_size(
@@ -802,19 +809,47 @@ class AnimaGeoScene(MovingCameraScene):
             else:
                 _finalize_layout()
 
-        # «Element prominence» — a decoration-size multiplier. Everything above
-        # (layout, crop, autoPlaceLabels) ran at nominal prominence, so geometry
-        # (`ptUnit`), the crop and label positions are unaffected. Shrinking the
-        # style density (`ptUnit_style`) here — after the layout is frozen, before
-        # CreateMObject resolves sizes — scales points/strokes/label font/angle
-        # markers/ticks together, in place, independent of source and framing.
-        prominence = content_options.get('prominence', 1.0)
-        if prominence and prominence != 1.0:
-            export_dict = getattr(self.style, 'export', None)
-            if isinstance(export_dict, dict):
-                base = export_dict.get('ptUnit_style')
-                if base:
-                    export_dict['ptUnit_style'] = base / prominence
+        # Decoration density (`ptUnit_style`) is finalised here — after the layout,
+        # crop and autoPlaceLabels are frozen, before CreateMObject reads sizes.
+        #
+        # Framing-independence (opt-in via content.decoration_scale_source ==
+        # 'reference'): ggb_view/source_view/manual already size decorations against
+        # the full source view, but rendered_bounds sizes them against the *tight
+        # crop*, which makes «Крупность» depend on the frame. Re-base the
+        # rendered_bounds density on the style reference over the full source view
+        # so switching the «Кадр» no longer changes how large points/strokes/labels
+        # look relative to the drawing.
+        #
+        # Gated because it needs a STABLE source view: fitView() iterates
+        # applyStyle(rendered_bounds) where each pass's source view IS the previous
+        # pass's crop, so re-basing there would freeze decorations to a stale scale
+        # and break convergence. It stays on 'frame' (default) and keeps decorations
+        # tracking the tight fit; only the config-driven (web) path, which applies
+        # the real viewport exactly once, opts into 'reference'.
+        #
+        # «Element prominence» then divides that density, scaling all decorations
+        # together, in place — geometry, crop and label positions untouched.
+        prominence = content_options.get('prominence', 1.0) or 1.0
+        frame_independent = content_options.get('decoration_scale_source') == 'reference'
+        export_dict = getattr(self.style, 'export', None)
+        if isinstance(export_dict, dict):
+            base = export_dict.get('ptUnit_style')
+            if use_rendered_bounds and frame_independent:
+                try:
+                    density = compute_export_layout(
+                        style_density_source_view,
+                        export_size=style_density_reference_size,
+                        fit='contain',
+                        source_rect='source_view',
+                    ).ptUnit
+                except Exception:
+                    logger.debug("framing-independent density failed; keeping crop-based ptUnit_style", exc_info=True)
+                    density = None
+                if density:
+                    base = density
+            if base:
+                export_dict['ptUnit_style'] = base / prominence
+                if prominence != 1.0:
                     export_dict['elementProminence'] = prominence
 
         # ImportPolicy: GGB-only raw→import-style transforms
