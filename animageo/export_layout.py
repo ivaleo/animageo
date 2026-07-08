@@ -237,7 +237,26 @@ def normalize_content_options(content: Mapping[str, Any] | None) -> dict:
             INFINITE_POLICIES,
         ),
         'bounds': raw.get('bounds'),
+        'prominence': _normalize_prominence(raw.get('prominence')),
     }
+
+
+def _normalize_prominence(value: Any) -> float:
+    """«Element prominence» — a decoration-size multiplier applied at render time.
+
+    The layout, crop and label placement are computed at nominal prominence (1.0)
+    and stay unaffected; prominence only scales the density that decoration sizes
+    (points, strokes, label font, angle markers, ticks) resolve against, so the
+    whole size system scales together after the style resolves — independent of
+    the content source and framing. Defaults to 1.0; clamped to [0.01, 100].
+    """
+    try:
+        p = float(value)
+    except (TypeError, ValueError):
+        return 1.0
+    if not p > 0:
+        return 1.0
+    return min(100.0, max(0.01, p))
 
 
 def normalize_export_options(export: Mapping[str, Any] | None) -> dict:

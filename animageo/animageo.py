@@ -802,6 +802,21 @@ class AnimaGeoScene(MovingCameraScene):
             else:
                 _finalize_layout()
 
+        # «Element prominence» — a decoration-size multiplier. Everything above
+        # (layout, crop, autoPlaceLabels) ran at nominal prominence, so geometry
+        # (`ptUnit`), the crop and label positions are unaffected. Shrinking the
+        # style density (`ptUnit_style`) here — after the layout is frozen, before
+        # CreateMObject resolves sizes — scales points/strokes/label font/angle
+        # markers/ticks together, in place, independent of source and framing.
+        prominence = content_options.get('prominence', 1.0)
+        if prominence and prominence != 1.0:
+            export_dict = getattr(self.style, 'export', None)
+            if isinstance(export_dict, dict):
+                base = export_dict.get('ptUnit_style')
+                if base:
+                    export_dict['ptUnit_style'] = base / prominence
+                    export_dict['elementProminence'] = prominence
+
         # ImportPolicy: GGB-only raw→import-style transforms
         # (scale:/quantize:/remap:) layered into elem.ggb_style. Skipped for DSL-built
         # elements (empty ggb_raw). Cross-origin stylisation lives in

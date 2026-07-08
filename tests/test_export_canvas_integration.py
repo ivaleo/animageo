@@ -351,3 +351,35 @@ class TestFitView:
         scene = self._dsl_scene()
         with pytest.raises(ValueError):
             scene.fitView(800, 600, passes=0)
+
+
+def test_element_prominence_scales_style_scale_not_geometry():
+    scene = _source_scene()
+    scene.applyStyle(export={'size': [1200, 600]}, content={'prominence': 2.0})
+
+    # geometry px-per-unit unchanged; decoration density halved -> decorations 2x
+    assert scene.style.export['ptUnit'] == pytest.approx(200)
+    assert scene.style.export['ptUnit_style'] == pytest.approx(25)
+    assert scene.style.export['elementProminence'] == pytest.approx(2.0)
+
+
+def test_element_prominence_one_is_noop():
+    scene = _source_scene()
+    scene.applyStyle(export={'size': [1200, 600]}, content={'prominence': 1.0})
+
+    assert scene.style.export['ptUnit'] == pytest.approx(200)
+    assert scene.style.export['ptUnit_style'] == pytest.approx(50)
+    assert 'elementProminence' not in scene.style.export
+
+
+def test_element_prominence_scales_stroke_width_at_render():
+    scene = _source_scene()
+    scene.applyStyle(export={'size': [1200, 600]}, content={'prominence': 2.0})
+    scene.putCode("A = Point(0, 0)\n")
+    elem = scene.element('A')
+    elem.style['stroke_width_px'] = 2
+
+    ctx = scene._build_render_ctx(elem, z_auto=True)
+
+    # ptUnit_style halved (50 -> 25) -> stroke width doubled vs nominal
+    assert ctx.lw == pytest.approx(2 * STROKE_WIDTH_SCALE / 25)
