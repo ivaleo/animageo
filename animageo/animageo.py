@@ -337,6 +337,7 @@ class AnimaGeoScene(MovingCameraScene):
         *,
         padding_px=0,
         infinite_policy='ignore',
+        label_bounds='reserve',
     ):
         """Return a source_view based on rendered visible mobject bounds.
 
@@ -345,9 +346,51 @@ class AnimaGeoScene(MovingCameraScene):
         ``infinite_policy='ignore'`` skips ``Line``/``Ray`` objects so finite
         geometry drives the measured rectangle. ``'clip'`` measures them after
         clipping to the current source camera.
+
+        ``label_bounds`` controls whether point/element labels count toward the
+        crop. ``'reserve'`` (default) includes them so an outward-placed label
+        does not clip on export (the historical behaviour). ``'exclude'`` crops
+        to the geometry alone — a label above/beside the drawing no longer pushes
+        the frame out, at the cost of possibly clipping that label.
         """
         infinite_policy = _validate_rendered_bounds_policy(infinite_policy)
+        exclude_labels = (label_bounds == 'exclude')
         padding_px = max(float(padding_px or 0), 0.0)
+
+        def geometry_extent(mobj):
+            """(left, bottom, right, top) of *mobj*'s drawn geometry, excluding
+            label submobjects. Element mobjects are ``VGroup([geometry, label])``
+            (see ``ui.create_label``, which tags labels ``_animageo_is_label``);
+            measuring the group directly lets a label — e.g. a vertex label that
+            sits above the drawing — inflate the crop past the geometry. Framing
+            crops to the geometry alone; labels are placed within the resolved
+            scale afterwards."""
+            lefts, bottoms, rights, tops = [], [], [], []
+
+            def visit(node):
+                if getattr(node, '_animageo_is_label', False):
+                    return
+                subs = getattr(node, 'submobjects', None) or ()
+                if subs:
+                    for sub in subs:
+                        visit(sub)
+                    return
+                points = getattr(node, 'points', None)
+                if points is None or len(points) == 0:
+                    return
+                try:
+                    lefts.append(float(node.get_left()[0]))
+                    bottoms.append(float(node.get_bottom()[1]))
+                    rights.append(float(node.get_right()[0]))
+                    tops.append(float(node.get_top()[1]))
+                except Exception:
+                    return
+
+            visit(mobj)
+            if not lefts:
+                return None
+            return min(lefts), min(bottoms), max(rights), max(tops)
+
         bounds = [None, None, None, None]
         for elem in self.geo.elements:
             if not self._element_visible(elem):
@@ -357,10 +400,20 @@ class AnimaGeoScene(MovingCameraScene):
             mobj = self.CreateMObject(elem, z_auto=True)
             if mobj is None:
                 continue
-            bounds[0] = updateMin(bounds[0], float(mobj.get_left()[0]))
-            bounds[1] = updateMin(bounds[1], float(mobj.get_bottom()[1]))
-            bounds[2] = updateMax(bounds[2], float(mobj.get_right()[0]))
-            bounds[3] = updateMax(bounds[3], float(mobj.get_top()[1]))
+            if exclude_labels:
+                extent = geometry_extent(mobj)
+                if extent is None:
+                    continue
+                left, bottom, right, top = extent
+            else:
+                left = float(mobj.get_left()[0])
+                bottom = float(mobj.get_bottom()[1])
+                right = float(mobj.get_right()[0])
+                top = float(mobj.get_top()[1])
+            bounds[0] = updateMin(bounds[0], left)
+            bounds[1] = updateMin(bounds[1], bottom)
+            bounds[2] = updateMax(bounds[2], right)
+            bounds[3] = updateMax(bounds[3], top)
 
         if bounds[0] is None:
             return dict(source_view)
@@ -687,7 +740,16 @@ class AnimaGeoScene(MovingCameraScene):
             if import_enabled:
                 for elem in self.geo.elements:
                     if getattr(elem, 'ggb_raw', None):
-                        elem.ggb_style['font_size_px'] = ggb_font_px
+                        # Global GGB fontSize is only a *fallback* for elements the
+                        # import policy did not size: `setdefault`, never overwrite.
+                        # A plain assignment clobbered the faithful per-element font
+                        # (`ImportPolicy.resolve_overrides_only` → `font_size_px`),
+                        # and because this runs LAST only on the rendered_bounds path
+                        # (repeated `_finalize_layout`) but the import override runs
+                        # last on ggb_view/source_view/manual, label size ended up
+                        # depending on the «Кадр» — a point/stroke-free divergence
+                        # that made «Крупность» of labels jump when the frame changed.
+                        elem.ggb_style.setdefault('font_size_px', ggb_font_px)
 
         policy_applied = False
         source_view = dict(self.style.export)
@@ -764,6 +826,7 @@ class AnimaGeoScene(MovingCameraScene):
                         source_view,
                         padding_px=0,
                         infinite_policy=base_content_options.get('infinite_policy', 'ignore'),
+                        label_bounds=base_content_options.get('label_bounds', 'reserve'),
                     )
                 if explicit_reference_size is None:
                     reference_size = [
@@ -830,11 +893,23 @@ class AnimaGeoScene(MovingCameraScene):
         # «Element prominence» then divides that density, scaling all decorations
         # together, in place — geometry, crop and label positions untouched.
         prominence = content_options.get('prominence', 1.0) or 1.0
-        frame_independent = content_options.get('decoration_scale_source') == 'reference'
+        decoration_source = content_options.get('decoration_scale_source')
         export_dict = getattr(self.style, 'export', None)
         if isinstance(export_dict, dict):
             base = export_dict.get('ptUnit_style')
-            if use_rendered_bounds and frame_independent:
+            if decoration_source == 'output':
+                # Decorations are a FIXED OUTPUT size, controlled ONLY by
+                # «Крупность» (prominence) — the «Кадр» must scale the geometry
+                # alone. Anchor the density to the geometry's export zoom
+                # (`ptUnit`): then decoration_px = authored_px * ptUnit /
+                # ptUnit_style = authored_px * prominence, independent of how the
+                # frame is sized or typed. (Contrast 'reference', which fixes the
+                # decoration/geometry *proportion* and so lets absolute px grow as
+                # the frame zooms in.)
+                geom_zoom = export_dict.get('ptUnit')
+                if geom_zoom:
+                    base = geom_zoom
+            elif use_rendered_bounds and decoration_source == 'reference':
                 try:
                     density = compute_export_layout(
                         style_density_source_view,
