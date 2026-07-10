@@ -326,6 +326,11 @@ def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=D
         label = label_text if label_text is not None else elem.style.get('label_text', '$' + elem.name + '$')
         mobj = Tex(correctedLabel(label), color=col_label).set_z_index(zz_label).set(font_size=font_size, tex_template=RusTex)
 
+    # Tag so bounds measurement can tell a label apart from geometry (the label is
+    # a submobject of the element's VGroup). Used by rendered-bounds framing to
+    # crop to the geometry only, without letting a label inflate the extent.
+    mobj._animageo_is_label = True
+
     return _place_label(
         mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
         label_offset_px, auto_placed,

@@ -21,8 +21,20 @@ INFINITE_POLICIES = frozenset({'ignore', 'clip'})
 #   'reference' — fit the full source view onto the reference canvas, independent
 #                 of the chosen «Кадр»/crop. Requires a STABLE source view (a real
 #                 viewport, applied once — not an iterative fit). Keeps decoration
-#                 prominence constant across content.source choices.
-DECORATION_SCALE_SOURCES = frozenset({'frame', 'reference'})
+#                 *proportion* (relative to the drawing) constant across sources —
+#                 but absolute px still grow as a tighter frame zooms the geometry.
+#   'output'    — anchor decoration size to the geometry's export zoom (`ptUnit`),
+#                 so point/stroke/label pixels depend ONLY on prominence, never on
+#                 how the «Кадр» is sized or typed. Resizing the frame scales the
+#                 geometry alone; decorations hold their output-pixel size. This is
+#                 the "frame changes geometry, «Крупность» changes decorations" model.
+DECORATION_SCALE_SOURCES = frozenset({'frame', 'reference', 'output'})
+# Whether labels count toward a `rendered_bounds` crop:
+#   'reserve'  — include point/element labels so an outward-placed label does not
+#                clip on export (default; the historical behaviour).
+#   'exclude'  — crop to the geometry alone, so a label above/beside the drawing
+#                does not push the frame out (a label near the edge may clip).
+RENDERED_BOUNDS_LABEL_POLICIES = frozenset({'reserve', 'exclude'})
 ANCHORS = frozenset({
     'top_left', 'top', 'top_right',
     'left', 'center', 'right',
@@ -252,6 +264,11 @@ def normalize_content_options(content: Mapping[str, Any] | None) -> dict:
             'content.decoration_scale_source',
             raw.get('decoration_scale_source', 'frame'),
             DECORATION_SCALE_SOURCES,
+        ),
+        'label_bounds': _validate_choice(
+            'content.label_bounds',
+            raw.get('label_bounds', 'reserve'),
+            RENDERED_BOUNDS_LABEL_POLICIES,
         ),
     }
 
