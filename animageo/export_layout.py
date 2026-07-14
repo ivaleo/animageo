@@ -24,11 +24,17 @@ INFINITE_POLICIES = frozenset({'ignore', 'clip'})
 #                 *proportion* (relative to the drawing) constant across sources —
 #                 but absolute px still grow as a tighter frame zooms the geometry.
 #   'output'    — anchor decoration size to the geometry's export zoom (`ptUnit`),
-#                 so point/stroke/label pixels depend ONLY on prominence, never on
-#                 how the «Кадр» is sized or typed. Resizing the frame scales the
-#                 geometry alone; decorations hold their output-pixel size. This is
-#                 the "frame changes geometry, «Крупность» changes decorations" model.
-DECORATION_SCALE_SOURCES = frozenset({'frame', 'reference', 'output'})
+#                 so point/stroke/label pixels are a fixed OUTPUT size that depends
+#                 ONLY on prominence — never on how the «Кадр» is sized/typed nor on
+#                 the output resolution. "Exact style pixels" ("Пиксели вывода").
+#   'ggb'       — «Как в GeoGebra»: decorations keep the relative size they have in
+#                 the GeoGebra applet and scale UNIFORMLY with the output (a wider
+#                 canvas ⇒ proportionally bigger decorations), while the frame/crop
+#                 does not change them. ptUnit_style is anchored so
+#                 decoration_px = authored_px * (output_width / ggb_view_width) *
+#                 prominence — at the applet's own width that is exactly its px.
+#                 Needs the original GeoGebra source view width.
+DECORATION_SCALE_SOURCES = frozenset({'frame', 'reference', 'output', 'ggb'})
 # Whether labels count toward a `rendered_bounds` crop:
 #   'reserve'  — include point/element labels so an outward-placed label does not
 #                clip on export (default; the historical behaviour).
