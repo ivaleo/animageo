@@ -909,6 +909,22 @@ class AnimaGeoScene(MovingCameraScene):
                 geom_zoom = export_dict.get('ptUnit')
                 if geom_zoom:
                     base = geom_zoom
+            elif decoration_source == 'ggb':
+                # «Как в GeoGebra»: decorations keep the relative size they have in
+                # the applet and scale with the OUTPUT canvas, but not with the
+                # «Кадр»/crop. Anchor ptUnit_style to the geometry's export zoom
+                # scaled by (ggb_view_width / output_width); the export-zoom factor
+                # then cancels in decoration_px = authored * ptUnit / ptUnit_style,
+                # leaving authored * (output_width / ggb_view_width) * prominence —
+                # crop-independent, output-proportional, = applet px at that width.
+                geom_zoom = export_dict.get('ptUnit')
+                out_w = export_dict.get('ptWidth')
+                ggb_w = (style_density_source_view or {}).get('ptWidth')
+                try:
+                    if geom_zoom and out_w and ggb_w and float(out_w) > 0:
+                        base = float(geom_zoom) * float(ggb_w) / float(out_w)
+                except (TypeError, ValueError):
+                    pass
             elif use_rendered_bounds and decoration_source == 'reference':
                 try:
                     density = compute_export_layout(
