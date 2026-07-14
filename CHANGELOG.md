@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.2] — 2026-07-14
+
+### Added
+
+- **Native element prominence** (`content.prominence`) — a single decoration-size
+  multiplier applied at render time. The layout, crop and label placement are
+  computed at nominal prominence (1.0) and stay unaffected; prominence only
+  scales the density that decoration sizes (points/strokes/labels/markers) are
+  resolved against. Enables a «Крупность» control that never re-frames the drawing.
+- **Frame-independent decoration density** (`content.decoration_scale_source`):
+  - `frame` (default) — `ptUnit_style` tracks the actual export crop; `fitView`
+    relies on this for two-pass convergence.
+  - `reference` — re-base `rendered_bounds` density on the style reference over
+    the full source view, so decoration prominence stays constant across the «Кадр».
+  - `output` — anchor decoration size to the geometry's export zoom, so
+    point/stroke/label pixels are a fixed output size set only by prominence;
+    resizing or retyping the «Кадр» rescales geometry alone.
+  - `ggb` — «Как в GeoGebra»: decorations keep their relative applet size and
+    scale uniformly with the output canvas (not with the crop);
+    `decoration_px = authored_px × (output_width / ggb_view_width) × prominence`.
+- **Label-excluding crop** (`content.label_bounds='exclude'`) for
+  `rendered_bounds` — crop to the geometry only, ignoring outward-placed labels.
+  Default `reserve` keeps edge labels from clipping (unchanged behaviour).
+
+### Fixed
+
+- `apply_ggb_font_size` now `setdefault`s the global GeoGebra font onto imported
+  elements instead of overwriting each element's faithful per-element font, so
+  label size no longer flips with `content.source` (the «Кадр» type).
+
+All additions are opt-in; library defaults (`fitView`, `frame`/`reference`) are
+unchanged. Full suite: 1924 passed, 2 skipped.
+
 ## [1.6.1] — 2026-07-07
 
 ### Added
