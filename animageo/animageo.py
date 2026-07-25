@@ -32,7 +32,8 @@ from .labels import resolve_label_text, resolve_label_spec
 from .ui import (
     RusTex, correctedLabel, create_label, round_corners_vmobject,
     ShowText, NumberedFrame, FixedLabel, CustomArrowTip, LABEL_ANCHORS,
-    prewarm_decimal_glyphs, ValueLabel,
+    prewarm_decimal_glyphs, ValueLabel, install_cyrillic_tex_template,
+    textify_cyrillic,
 )
 from manim import *
 
@@ -234,6 +235,12 @@ class NamedValueTracker(ValueTracker):
 class AnimaGeoScene(MovingCameraScene):
     def __init__(self):
         super().__init__()
+        # Cyrillic-capable TeX template as the process-wide manim default, so
+        # no Tex path — ours, manim's own, future or degradational — can fall
+        # back to the stock template and die on "Unicode character … not set
+        # up". Idempotent; safe to run per scene (see ui.py for why this is
+        # NOT the Mobject.set_default footgun).
+        install_cyrillic_tex_template()
         self.geo = geo.Construction()
         self.style = GeoStyle()
         # New-style unified config. Always populated with builtin defaults so
@@ -3029,6 +3036,18 @@ class AnimaGeoScene(MovingCameraScene):
             return rendering.get('fast_value_labels', True) is not False
         return True
 
+    def _append_label(self, arr, elem, pos, ctx):
+        """Append the element's label to its mobject list, if one could be built.
+
+        ``_make_label`` returns None when the label's LaTeX cannot be compiled
+        even as plain text; the element is then drawn without it instead of
+        being dropped entirely.
+        """
+        label = self._make_label(elem, pos, ctx)
+        if label is not None:
+            arr.append(label)
+        return label
+
     def _make_label(self, elem, pos, ctx):
         """Shortcut for ``create_label`` wiring the ctx fields."""
         col_label = ctx.col_label
@@ -3042,6 +3061,8 @@ class AnimaGeoScene(MovingCameraScene):
             label_offset_px=ctx.label_offset_px, auto_placed=ctx.auto_placed,
             label_spec=ctx.label_spec, dynamic=ctx.label_dynamic,
         )
+        if label is None:
+            return None
         # P2-A: draw the leader connector (attach → anchor, scene MU) for a
         # displaced label. Thin, label-coloured, just under the text z-tier.
         leader = elem.style.get('_leader') if hasattr(elem, 'style') else None
@@ -3133,7 +3154,7 @@ class AnimaGeoScene(MovingCameraScene):
         arr = [fill_layer, stroke_layer]
         if ctx.has_label:
             center = np.mean(elem.data.vertices, axis=0)
-            arr.append(self._make_label(elem, [center[0], center[1], 0], ctx))
+            self._append_label(arr, elem, [center[0], center[1], 0], ctx)
         return VGroup(*arr, name=elem.name)
 
     def _render_angle(self, elem, ctx):
@@ -3233,7 +3254,7 @@ class AnimaGeoScene(MovingCameraScene):
         if ctx.has_label:
             r += ctx.label_roff
             label_pos = Angle(*lines, radius=r).point_from_proportion(0.5)
-            arr.append(self._make_label(elem, label_pos, ctx))
+            self._append_label(arr, elem, label_pos, ctx)
         return VGroup(*arr, name=elem.name)
 
     def _append_tick_marks(self, arr, p1, p2, m, normal, ctx):
@@ -3315,7 +3336,7 @@ class AnimaGeoScene(MovingCameraScene):
         self._append_tick_marks(arr, p1, p2, m, elem.data.normal, ctx)
 
         if ctx.has_label:
-            arr.append(self._make_label(elem, [m[0], m[1], 0], ctx))
+            self._append_label(arr, elem, [m[0], m[1], 0], ctx)
         return VGroup(*arr, name=elem.name)
 
     def _render_line(self, elem, ctx):
@@ -3343,7 +3364,7 @@ class AnimaGeoScene(MovingCameraScene):
             ).set_z_index(ctx.zz))
         if ctx.has_label:
             m = (p1 + p2) / 2
-            arr.append(self._make_label(elem, [m[0], m[1], 0], ctx))
+            self._append_label(arr, elem, [m[0], m[1], 0], ctx)
         return VGroup(*arr, name=elem.name)
 
     # Ray shares Line's clipping/rendering logic verbatim.
@@ -3377,7 +3398,7 @@ class AnimaGeoScene(MovingCameraScene):
         self._append_tick_marks(arr, p1, p2, m, normal, ctx)
 
         if ctx.has_label:
-            arr.append(self._make_label(elem, [m[0], m[1], 0], ctx))
+            self._append_label(arr, elem, [m[0], m[1], 0], ctx)
         return VGroup(*arr, name=elem.name)
 
     def _render_circle(self, elem, ctx):
@@ -3420,7 +3441,7 @@ class AnimaGeoScene(MovingCameraScene):
                 arc_center=c, radius=elem.data.radius + 0.7,
                 start_angle=a1, angle=a2 - a1,
             ).point_from_proportion(0.5)
-            arr.append(self._make_label(elem, label_pos, ctx))
+            self._append_label(arr, elem, label_pos, ctx)
         return VGroup(*arr, name=elem.name)
 
     def _render_circlesector(self, elem, ctx):
@@ -3444,7 +3465,7 @@ class AnimaGeoScene(MovingCameraScene):
             label_pos = c + elem.data.radius * 0.7 * np.array(
                 [np.cos(mid_angle), np.sin(mid_angle), 0],
             )
-            arr.append(self._make_label(elem, label_pos, ctx))
+            self._append_label(arr, elem, label_pos, ctx)
         return VGroup(*arr, name=elem.name)
 
     # ── Point shape helper ─────────────────────────────────────────────
@@ -3538,10 +3559,10 @@ class AnimaGeoScene(MovingCameraScene):
             arr[0].set_phantom(True)
 
         if ctx.has_label:
-            arr.append(self._make_label(elem, pos, ctx))
-            if style.rendering.get('points_display') == 'only_points':
-                arr[1].set_fill(opacity=0)
-                arr[1].set_phantom(True)
+            label = self._append_label(arr, elem, pos, ctx)
+            if label is not None and style.rendering.get('points_display') == 'only_points':
+                label.set_fill(opacity=0)
+                label.set_phantom(True)
 
         return VGroup(*arr, name=elem.name)
 
@@ -3779,6 +3800,10 @@ class AnimaGeoScene(MovingCameraScene):
         tex_str = geo.text_to_display_latex(self.geo, text, decimals)
         if not tex_str:
             return None
+        # Cyrillic inside the text's own ``$…$`` would compile to nothing —
+        # the T2A math alphabet has no Cyrillic glyphs. Text mode has them.
+        # Renderer-only: the TikZ/JSXGraph exporters keep the raw string.
+        tex_str = textify_cyrillic(tex_str)
 
         try:
             mobj = Tex(tex_str, color=ctx.col_label, tex_template=RusTex)

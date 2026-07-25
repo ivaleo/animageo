@@ -149,9 +149,12 @@ caps, tick decorations and angle-arc auto-sizing all follow the active style.
 - **Graceful degradation:** an element that fails to build or sample is skipped
   (logged at WARNING), exactly as in the SVG renderer — one bad element never
   aborts the export.
-- Cyrillic / Greek labels are emitted verbatim and require `fontenc`/`babel`
-  (auto-included in `standalone` mode; add them to your host preamble for
-  snippets).
+- Cyrillic / Greek labels require `fontenc`/`babel` (auto-included in
+  `standalone` mode; add them to your host preamble for snippets). Cyrillic
+  runs inside a label's `$…$` are emitted as `\text{…}`: the `T2A` *math*
+  alphabet has no Cyrillic glyphs, so a verbatim `\node {$Б$}` compiles
+  without error and prints nothing. Latin/Greek labels are emitted verbatim as
+  before.
 
 ## Verified coverage
 

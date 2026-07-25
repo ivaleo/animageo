@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.3] — 2026-07-25
+
+### Fixed
+
+- **Cyrillic labels no longer break rendering.** Two root causes fixed (see
+  `docs/gotchas.md`):
+  - `create_label` passed `tex_template=RusTex` via `.set(...)` **after** the
+    `Tex` constructor, so the label was actually compiled under manim's stock
+    (non-Cyrillic) template. Any visible Cyrillic label (e.g. a point named `Б`)
+    raised `LaTeX Error: Unicode character … not set up` and the whole element
+    (marker + label) was dropped. `tex_template` is now passed to the
+    constructor, and a Cyrillic-capable template (`RusTex`) is installed as the
+    global default once per scene via `ui.install_cyrillic_tex_template()`
+    (`config["tex_template"]`, not `set_default` — no partialmethod recursion
+    leak).
+  - **Cyrillic in math mode compiled to nothing.** `$Б$` under `T2A` produced
+    an empty box (the math alphabet has no Cyrillic glyphs); `$Б_1$` drew a lone
+    `1`, and text like `$БВ$` lost a chunk. Cyrillic runs inside `$…$` are now
+    moved to text mode via `geo.lib_elements.textify_cyrillic`
+    (`$Б$` → `$\text{Б}$`, braced under sub/superscripts), applied in
+    `correctedLabel`, `_render_text`, `ShowText`, and the TikZ exporter.
+- **Label-compile failures degrade gracefully.** `ui._compile_label_tex` now
+  falls back LaTeX → escaped plain-text → no-label instead of dropping the whole
+  element; `label_placement._measure_label_bbox` estimates the bbox when a label
+  can't be typeset, so auto-placement never aborts the render.
+
+### Notes
+
+- Latin/Greek/math labels are byte-for-byte unchanged. Labels with `\frac`,
+  `\angle`, `\triangle`, etc. now typeset under `RusTex` (as free texts and
+  value labels already did), fixing a small bbox mismatch with auto-placement.
+- JSXGraph export is unaffected (MathJax renders math-mode Cyrillic natively).
+
 ## [1.6.2] — 2026-07-14
 
 ### Added

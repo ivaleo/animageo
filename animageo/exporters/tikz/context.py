@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
+from ...geo.lib_elements import textify_cyrillic
 from ...labels import resolve_label_text
 from ...style.resolver import resolve as _resolve
 from .document import TikZDocument
@@ -45,7 +46,9 @@ class TikzContext:
         return _resolve(self.scene, elem, key, default=default)
 
     def label_text(self, elem) -> str:
-        return resolve_label_text(self.scene, elem)
+        # Cyrillic must leave math mode: ``\node {$Б$}`` compiles to an empty
+        # node under the T2A math alphabet this exporter's preamble sets up.
+        return textify_cyrillic(resolve_label_text(self.scene, elem))
 
     # ── unit conversions ─────────────────────────────────────────────────
     def size_pt(self, px: float) -> float:

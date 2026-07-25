@@ -3,6 +3,8 @@
 Each class stores geometric data and a style dict for rendering configuration.
 The Element wrapper associates a name and visibility state with any geometric object.
 """
+import re
+
 import numpy as np
 
 from .lib_vars import *
@@ -691,6 +693,37 @@ def latex_escape_text(s):
     """Escape LaTeX-special characters in plain text so it can be compiled as
     ``Tex`` / a TikZ node without breaking (``%``, ``&``, ``_``, ``#``, …)."""
     return ''.join(_LATEX_TEXT_SPECIALS.get(ch, ch) for ch in s)
+
+
+# Cyrillic in *math* mode is not an error — it is worse. Under T2A the math
+# alphabet has no Cyrillic glyphs, so ``$Б$`` compiles cleanly and draws
+# **nothing** (``$Б_1$`` showed a lone "1"; a sentence lost the whole ``$…$``
+# run). Verified for both the manim path (latex→dvisvgm) and TikZ (pdflatex).
+# Text mode has the glyphs. Directly under ``_``/``^`` the wrap is braced too:
+# ``A_\text{Б}`` would feed the script the bare ``\text`` token.
+_CYRILLIC_RUN_RE = re.compile(r'(?:(?<!\\)([_^]))?([Ѐ-ԯ]+)')
+_MATH_SEGMENT_RE = re.compile(r'(\$[^$]*\$)')
+
+
+def _wrap_cyrillic_runs(math_segment):
+    def wrap(m):
+        script, run = m.group(1), m.group(2)
+        text = r'\text{' + run + '}'
+        return script + '{' + text + '}' if script else text
+    return _CYRILLIC_RUN_RE.sub(wrap, math_segment)
+
+
+def textify_cyrillic(s):
+    """Typeset Cyrillic *inside math mode* as text: ``$Б$`` → ``$\\text{Б}$``.
+
+    Cyrillic already in text mode is left exactly as it is — it renders fine
+    there, and prose must not be chopped into ``\\mbox``es. Shared by the manim
+    renderer and the TikZ exporter (JSXGraph renders labels via MathJax, which
+    has Cyrillic in math and needs no rewriting).
+    """
+    parts = _MATH_SEGMENT_RE.split(s)
+    return ''.join(_wrap_cyrillic_runs(p) if p.startswith('$') else p
+                   for p in parts)
 
 
 def text_to_display_latex(construction, text, decimals):

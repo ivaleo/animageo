@@ -25,7 +25,9 @@ from ...geo.curve_sampling import (
     viewport_t_ranges_parabola,
 )
 from ...geo.lib_conic import ConicType
-from ...geo.lib_elements import resolve_text_position, text_to_display_latex
+from ...geo.lib_elements import (
+    resolve_text_position, text_to_display_latex, textify_cyrillic,
+)
 from ...label_placement import compute_effective_arc_size_px
 from .context import TikzContext
 from .document import fmt_num
@@ -571,7 +573,7 @@ def emit_text(ctx: TikzContext, elem, labels: List[str]) -> None:
     (offset) start point — mirrors ``AnimaGeoScene._render_text``."""
     text = elem.data
     decimals = getattr(ctx.scene.geo, "ggb_decimals", 2)
-    content = text_to_display_latex(ctx.scene.geo, text, decimals)
+    content = textify_cyrillic(text_to_display_latex(ctx.scene.geo, text, decimals))
     if not content:
         return
 

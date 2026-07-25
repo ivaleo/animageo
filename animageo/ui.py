@@ -3,6 +3,7 @@
 Provides reusable manim components used by AnimaGeoScene for rendering
 geometric labels, numbered frames, and custom visual elements.
 """
+import logging
 import re
 import numpy as np
 
@@ -12,7 +13,10 @@ from manim import (
     PI, ORIGIN, DOWN, LEFT, UP, RIGHT, DL, UL, DR, UR,
 )
 
+from .geo.lib_elements import latex_escape_text, textify_cyrillic
 from .style import hasParam
+
+logger = logging.getLogger(__name__)
 
 
 # ── Label anchor mapping ──────────────────────────────────────────────
@@ -90,6 +94,37 @@ RusTex = TexTemplate(
 """)
 
 
+def install_cyrillic_tex_template(force=False):
+    """Make :data:`RusTex` the process-wide default manim TeX template.
+
+    Manim's stock template has neither ``babel russian`` nor ``T2A`` font
+    encoding, so any ``Tex(...)`` built without an explicit ``tex_template``
+    dies on ``Unicode character Б (U+0411) not set up for use with LaTeX`` —
+    and the element that owned the label is swallowed whole. Relying on every
+    call site to remember ``tex_template=RusTex`` is a discipline, not an
+    invariant; setting the config default once closes the whole class.
+
+    A template the caller installed themselves is left alone (pass ``force``
+    to override) — only manim's stock default is replaced.
+
+    Idempotent and stateless: unlike ``Mobject.set_default`` this is a plain
+    assignment, so it accumulates no ``partialmethod`` chain no matter how
+    often it runs (see ``docs/gotchas.md``).
+
+    Returns:
+        True if :data:`RusTex` is the active default afterwards.
+    """
+    from manim import config
+
+    current = config.tex_template
+    if current is RusTex:
+        return True
+    if not force and current is not None and current != TexTemplate():
+        return False        # caller runs their own template — respect it
+    config.tex_template = RusTex
+    return True
+
+
 # ── Label utilities ────────────────────────────────────────────────────
 
 # Unicode ← TeX symbol mappings for label text
@@ -136,7 +171,18 @@ def correctedLabel(label):
     """Replace Unicode math symbols with their TeX equivalents in a label string."""
     for tex, unicode_char in _TEX_SYMBOLS.items():
         label = re.sub(re.escape(unicode_char), re.sub(r'\\', r'\\\\', tex), label)
-    return label
+    return _brace_nonascii_scripts(textify_cyrillic(label))
+
+
+# Any other stray non-ASCII character is more than one token under utf8/T2A, so
+# a bare ``A_∡`` makes LaTeX stop at "! Missing { inserted". Braces make it one
+# argument. ASCII scripts (``A_1``, ``x^2``, ``A_\alpha``) already are.
+_NONASCII_SCRIPT_RE = re.compile(r'(?<!\\)([_^])([^\x00-\x7F])')
+
+
+def _brace_nonascii_scripts(label):
+    """Wrap a non-ASCII sub/superscript argument in braces: ``A_∡`` → ``A_{∡}``."""
+    return _NONASCII_SCRIPT_RE.sub(r'\1{\2}', label)
 
 
 # ── Fast value labels (DecimalNumber-backed) ───────────────────────────
@@ -291,6 +337,39 @@ def _place_label(mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
     return mobj
 
 
+def _label_plain_text(label):
+    """Strip math delimiters and escape what is left, so a label whose LaTeX
+    does not compile can still be shown as readable plain text."""
+    return latex_escape_text(label.replace('$', '').strip())
+
+
+def _compile_label_tex(label, col_label, font_size, zz_label, name):
+    """Compile a label to ``Tex``, degrading rather than taking the element
+    down with it: proper LaTeX → escaped plain text → no label at all.
+
+    Mirrors the fallback ``_render_text`` already applies to free-text objects
+    (``animageo.py``), which point/angle/segment labels used to lack: a failed
+    label compile propagated out of ``CreateMObject`` and the marker vanished
+    together with its label.
+    """
+    try:
+        return (Tex(correctedLabel(label), color=col_label, tex_template=RusTex)
+                .set_z_index(zz_label).set(font_size=font_size))
+    except Exception as e:
+        logger.warning("Label '%s': LaTeX compile failed (%s); "
+                       "falling back to escaped plain text", name, e)
+
+    plain = _label_plain_text(label)
+    if plain:
+        try:
+            return (Tex(plain, color=col_label, tex_template=RusTex)
+                    .set_z_index(zz_label).set(font_size=font_size))
+        except Exception as e:
+            logger.warning("Label '%s': plain-text fallback failed too (%s); "
+                           "rendering the element without its label", name, e)
+    return None
+
+
 def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=DL,
                  ptUnit_ggb=None, anchor=None, ggb_font_px=None,
                  label_text=None, label_offset_px=None, auto_placed=None,
@@ -310,21 +389,35 @@ def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=D
             correction to compensate for GGB's text-field descender padding.
         label_spec: Optional ``LabelSpec`` enabling the fast value path.
         dynamic: Build a ``ValueLabel`` for value-bearing labels.
+
+    Returns:
+        The label mobject, or ``None`` when its LaTeX could not be compiled at
+        all — the caller then draws the element without a label rather than
+        losing the geometry too.
     """
     edge = _resolve_label_edge(elem, anchor, align_edge)
+    label = label_text if label_text is not None else elem.style.get('label_text', '$' + elem.name + '$')
+    name = getattr(elem, 'name', '?')
 
+    mobj = None
     if dynamic and label_spec is not None and label_spec.has_dynamic_value:
-        mobj = ValueLabel(
-            value=label_spec.value,
-            prefix_tex=label_spec.prefix_tex,
-            suffix_tex=label_spec.suffix_tex,
-            suffix_raised=label_spec.suffix_raised,
-            num_decimal_places=label_spec.num_decimal_places,
-            color=col_label, font_size=font_size, z_index=zz_label,
-        )
-    else:
-        label = label_text if label_text is not None else elem.style.get('label_text', '$' + elem.name + '$')
-        mobj = Tex(correctedLabel(label), color=col_label).set_z_index(zz_label).set(font_size=font_size, tex_template=RusTex)
+        try:
+            mobj = ValueLabel(
+                value=label_spec.value,
+                prefix_tex=label_spec.prefix_tex,
+                suffix_tex=label_spec.suffix_tex,
+                suffix_raised=label_spec.suffix_raised,
+                num_decimal_places=label_spec.num_decimal_places,
+                color=col_label, font_size=font_size, z_index=zz_label,
+            )
+        except Exception as e:
+            logger.warning("Label '%s': fast value label failed (%s); "
+                           "falling back to Tex", name, e)
+
+    if mobj is None:
+        mobj = _compile_label_tex(label, col_label, font_size, zz_label, name)
+    if mobj is None:
+        return None
 
     # Tag so bounds measurement can tell a label apart from geometry (the label is
     # a submobject of the element's VGroup). Used by rendered-bounds framing to
@@ -414,7 +507,7 @@ def ShowText(scene, header=None, body=None, pos=ORIGIN, width=None, numeration=N
         body = "\\begin{minipage}{" + str(width) + "}" + body + "\\end{minipage}"
 
     if header:
-        theader = Tex(header, font_size=37, tex_template=RusTex,
+        theader = Tex(textify_cyrillic(header), font_size=37, tex_template=RusTex,
                       color=scene.style.strong)
         theader.set_fill(color=scene.style.col)
         theader.move_to(pos, aligned_edge=LEFT + UP)
@@ -422,7 +515,7 @@ def ShowText(scene, header=None, body=None, pos=ORIGIN, width=None, numeration=N
         scene.play(FadeIn(theader))
 
     if body:
-        tbody = Tex(body, font_size=34, tex_template=RusTex,
+        tbody = Tex(textify_cyrillic(body), font_size=34, tex_template=RusTex,
                     color=scene.style.strong)
         tbody.move_to(pos, aligned_edge=LEFT + UP)
         scene.play(FadeIn(tbody, **kwargs))
