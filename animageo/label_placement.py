@@ -21,6 +21,7 @@ Public API:
 - ``clear_bbox_cache()`` — invalidate the Tex bbox measurement cache.
 """
 import logging
+import re
 import threading
 import numpy as np
 from dataclasses import dataclass, field
@@ -61,8 +62,27 @@ def clear_bbox_cache():
         _bbox_cache.clear()
 
 
+# Rough glyph metrics for the degraded path below, measured against RusTex:
+# a capital is ≈0.0075·font_size wide and ≈0.0077·font_size tall in scene MU.
+_EST_CHAR_W = 0.0075
+_EST_CAP_H = 0.0077
+_TEX_MARKUP_RE = re.compile(r'\\[A-Za-z]+|[${}^_\\]')
+
+
+def _estimate_label_bbox(label_text: str, font_size: float) -> tuple[float, float]:
+    """Approximate a label bbox without LaTeX, for when the compile fails."""
+    glyphs = max(len(_TEX_MARKUP_RE.sub('', label_text)), 1)
+    return (glyphs * _EST_CHAR_W * font_size, _EST_CAP_H * font_size)
+
+
 def _measure_label_bbox(label_text: str, font_size: float) -> tuple[float, float]:
-    """Return (width, height) of a Tex label in scene MU. Cached, thread-safe."""
+    """Return (width, height) of a Tex label in scene MU. Cached, thread-safe.
+
+    A label whose LaTeX does not compile falls back to an estimate: the layout
+    is then approximate, but auto-placement must not take the render down with
+    it (the renderer degrades the same label to plain text — see
+    ``ui._compile_label_tex``).
+    """
     from .ui import correctedLabel, RusTex
     # Template identity is part of the key so a future per-scene template
     # swap won't silently reuse the wrong bbox.
@@ -72,9 +92,14 @@ def _measure_label_bbox(label_text: str, font_size: float) -> tuple[float, float
     if hit is not None:
         return hit
     from manim import Tex
-    tex = Tex(correctedLabel(label_text), tex_template=RusTex)
-    tex.set(font_size=font_size)
-    dims = (float(tex.width), float(tex.height))
+    try:
+        tex = Tex(correctedLabel(label_text), tex_template=RusTex)
+        tex.set(font_size=font_size)
+        dims = (float(tex.width), float(tex.height))
+    except Exception as e:
+        logger.warning("Label %r: bbox measurement failed (%s); "
+                       "using an estimated size for placement", label_text, e)
+        dims = _estimate_label_bbox(label_text, font_size)
     with _bbox_lock:
         _bbox_cache[key] = dims
     return dims
