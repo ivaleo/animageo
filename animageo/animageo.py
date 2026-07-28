@@ -40,7 +40,7 @@ from manim import *
 from .parsers.svg_parser import *
 from .parsers import ggb_parser
 from .keyframes import KeyframeSequence, apply_parsed_value
-from .render_config import configure_render, OUTPUT_FORMATS
+from .render_config import configure_render, install_gif_palette_fix, OUTPUT_FORMATS
 from .export_layout import compute_export_layout
 from .export_layout import compute_reference_export_layout
 from .export_layout import normalize_content_options
@@ -241,6 +241,10 @@ class AnimaGeoScene(MovingCameraScene):
         # up". Idempotent; safe to run per scene (see ui.py for why this is
         # NOT the Mobject.set_default footgun).
         install_cyrillic_tex_template()
+        # GIF export: keep the adaptive palettegen palette (pal8) instead of
+        # manim's rgb8 (fixed 3-3-2 grid) which scrambles colors into
+        # yellow/green artifacts. Idempotent; see render_config.py.
+        install_gif_palette_fix()
         self.geo = geo.Construction()
         self.style = GeoStyle()
         # New-style unified config. Always populated with builtin defaults so
