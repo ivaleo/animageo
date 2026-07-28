@@ -70,6 +70,13 @@ class MyScene(AnimaGeoScene):
 For gradients/anti-aliased fills with a transparent background, prefer `webm`
 or `mov` over `gif`.
 
+GIF colours are near-faithful to the MP4 render: AnimaGeo patches manim's GIF
+writer (`install_gif_palette_fix`, installed automatically by
+`AnimaGeoScene`) to keep the adaptive per-scene palette. Stock manim
+0.19–0.21 declares the GIF stream as `rgb8` — a fixed 3-3-2 RGB grid — which
+discards the palette computed by `palettegen` and scrambles colours into
+yellow/green artifacts.
+
 ### CLI render track
 
 ```bash

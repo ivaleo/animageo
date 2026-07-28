@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.4] — 2026-07-28
+
+### Fixed
+
+- **GIF export no longer scrambles colours (yellow/green artifacts).** manim
+  0.19–0.21 builds GIFs through a `palettegen`/`paletteuse` filter graph —
+  pal8 frames carrying an adaptive 256-colour palette — but declares the
+  output stream as `pix_fmt "rgb8"`, a *fixed* 3-3-2 RGB grid, so the
+  adaptive palette was discarded at encode time: dark blue rendered as pure
+  yellow, fills broke into green/yellow dithered patches.
+  `render_config.install_gif_palette_fix()` (installed automatically by
+  `AnimaGeoScene.__init__`) wraps `SceneFileWriter.combine_files` so gif
+  output streams keep `pal8`. Measured on a real animated scene vs the MP4
+  render: mean per-pixel error 6.0 → 0.54 (of 255), p99 85 → 2, ~40 000
+  hue-shifted pixels per frame → ~0, file size ~4× smaller. Transparent GIFs
+  (already pal8) and all non-GIF renders are byte-unchanged; the wrap is a
+  no-op on manim versions that stop assigning `rgb8`.
+
 ## [1.6.3] — 2026-07-25
 
 ### Fixed
