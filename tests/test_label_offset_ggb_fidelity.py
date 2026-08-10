@@ -154,3 +154,126 @@ class TestBaselineAlignment:
         assert bottom_rel["Д"] < bottom_rel["А"] - 0.1 / GGB_SCALE, (
             "Д's tail should extend below the shared baseline"
         )
+
+
+# ── Part 2: auto-placement must not discard the manual side (TZ §5.3) ──
+
+import json
+
+
+def _autoplace_style(tmp_path, **lp_overrides):
+    """Style JSON enabling the web's recommended auto-placement preset."""
+    lp = {
+        "enabled": True,
+        "respect_current_position": True,
+        "respect_min_offset_px": 6.0,
+        "point_bisector": True,
+        "compact_labels": True,
+        "compact_max_push_px": 4,
+        "continuous_placement": True,
+        "continuous_steps": 72,
+        "canonicalize_anchor": True,
+        "declutter_labels": True,
+        "cluster_consistency": True,
+        "repair_iterations": 6,
+        "distance_px": 7,
+        "padding_px": 2,
+        "w_assoc": 3,
+        "viewport_clamp": True,
+    }
+    lp.update(lp_overrides)
+    path = tmp_path / "autoplace_style.json"
+    path.write_text(json.dumps({"overlay": {"label_placement": lp}}))
+    return str(path)
+
+
+def _visual_dir(scene, name):
+    """Unit direction of the label's visual centre relative to its point."""
+    elem = scene.element(name)
+    off = elem.style.get("label_offset_px")
+    assert off is not None, f"{name}: no placed offset"
+    v = np.array([float(off[0]), float(off[1])])
+    n = np.linalg.norm(v)
+    assert n > 1e-9, f"{name}: zero offset"
+    return v / n
+
+
+def _manual_visual_dir(scene, name):
+    """Unit direction the label visually had in the applet (GGB semantics):
+    raw offset + GGB base (4, 2*pointSize), y flipped to math-up."""
+    elem = scene.element(name)
+    raw = (getattr(elem, "ggb_raw", {}) or {})["label_offset_px"]
+    ps = float((getattr(elem, "ggb_raw", {}) or {}).get("point_size", 5.0))
+    v = np.array([raw[0] + 4.0, -raw[1] + 2.0 * ps])
+    return v / np.linalg.norm(v)
+
+
+class TestAutoplaceKeepsManualSide:
+    """TZ §5.3: with respect_current_position, a hand-placed point label must
+    stay on its manual side — not flip across the point (В/Б went bottom-left
+    → bottom-right; Е drifted 43° off its manual direction)."""
+
+    MAX_DEV_DEG = 30.0
+
+    def _assert_sides(self, scene, tag):
+        limit = np.cos(np.radians(self.MAX_DEV_DEG))
+        for name in ("В", "Б", "Е"):
+            got = _visual_dir(scene, name)
+            want = _manual_visual_dir(scene, name)
+            dev = np.degrees(np.arccos(np.clip(np.dot(got, want), -1, 1)))
+            assert float(np.dot(got, want)) >= limit, (
+                f"{tag}: {name} placed {dev:.0f}° away from its manual side "
+                f"(dir {got.round(2)} vs manual {want.round(2)})"
+            )
+
+    def test_single_placement_run(self, tmp_path):
+        scene = _load_scene(FIXTURE, style=_autoplace_style(tmp_path))
+        self._assert_sides(scene, "run 1")
+
+    def test_second_run_is_idempotent(self, tmp_path):
+        """The web loads a scene twice (rendered-bounds auto config); the second
+        placement pass must not lose the manual-intent signal recorded in
+        ggb_raw and re-solve from scratch."""
+        scene = _load_scene(FIXTURE, style=_autoplace_style(tmp_path))
+        scene.autoPlaceLabels()
+        self._assert_sides(scene, "run 2")
+
+
+class TestAutoplaceEvenness:
+    """TZ §5.1/5.2 (§6.4): with zeroed distances the point→label-bbox gap must
+    be near-uniform across the six points (was 7–13 px: the arc registered as
+    its FULL circle pushed В out, and Д's tail inflated its bbox)."""
+
+    def test_gap_spread_at_zero_distance(self, tmp_path):
+        style = _autoplace_style(
+            tmp_path, distance_px=0, padding_px=0,
+            geom_gap_px=0.0, angle_gap_arc_px=0, angle_gap_sides_px=2,
+        )
+        scene = _load_scene(FIXTURE, style=style)
+        pt_unit = float(scene.style.export.get("ptUnit_style")
+                        or scene.style.export.get("ptUnit"))
+        gaps = {}
+        for name in XML_OFFSETS:
+            left, bottom, right, top = _label_bbox(scene, name)
+            px, py = (float(c) for c in scene.element(name).data.coords[:2])
+            dx = max(left - px, 0.0, px - right)
+            dy = max(bottom - py, 0.0, py - top)
+            gaps[name] = (dx * dx + dy * dy) ** 0.5 * pt_unit
+        spread = max(gaps.values()) - min(gaps.values())
+        # ≤ 2 px per the TZ; +0.5 px slack for the solver's 1-px step grid.
+        assert spread <= 2.5, f"gap spread {spread:.1f}px: {gaps}"
+
+
+class TestArcObstacleIsNotFullCircle:
+    """The phantom part of an arc's circle must not act as an obstacle: В sits
+    at the arc's endpoint, and the label space past the endpoint is free."""
+
+    def test_arc_registers_as_polyline_segments(self):
+        from animageo import label_placement as lp
+
+        scene = _load_scene(FIXTURE)
+        segments, circles, arc_pts, seg_dashed, circ_dashed = (
+            lp._collect_obstacles(scene))
+        assert circles == [], "arc leaked into obstacles as a full circle"
+        # 5 straight segments (f, g, h, i, k) + the sampled arc polyline
+        assert len(segments) > 5, "arc polyline missing from segment obstacles"
