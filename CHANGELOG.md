@@ -27,6 +27,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Known follow-up: the TikZ/JSXGraph exporters still use the old label
   semantics for these labels.
 
+- **Manual labels keep their visual gap to the point when the font size
+  changes (size-invariant anchoring).** GGB anchors a label at its
+  left/baseline corner, so at a non-native кегль the glyphs grow up-right —
+  TOWARD the point for a label dragged left/below (В at 48px font swallowed
+  its point entirely). A manual label is now anchored by the PROJECTION of
+  its point onto the label's native (applet-size) bbox: the box's nearest
+  face/corner is pinned, so the gap is preserved exactly for every direction
+  around the point, and the label grows away from it. The projection onto a
+  convex box is 1-Lipschitz, so the anchor is a continuous function of the
+  offset — an animated offset (even one passing straight through the point)
+  moves the label without jumps, with no sector quantisation or hysteresis.
+  At the native font the scheme reduces to the exact applet placement, so
+  GGB fidelity is untouched. Guarded by an all-8-directions gap test and a
+  two-resolution continuity test (halving the animation step must halve the
+  largest per-step movement — a genuine jump would not shrink).
+
 - **Manual offsets keep their proportion to the glyphs at any render
   density.** In GGB both the label glyphs and the labelOffset are screen px,
   so their ratio survives any zoom. The GGB-faithful path initially divided
