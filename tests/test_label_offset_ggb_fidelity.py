@@ -277,3 +277,36 @@ class TestArcObstacleIsNotFullCircle:
         assert circles == [], "arc leaked into obstacles as a full circle"
         # 5 straight segments (f, g, h, i, k) + the sampled arc polyline
         assert len(segments) > 5, "arc polyline missing from segment obstacles"
+
+
+class TestOffsetDensityInvariance:
+    """Manual offsets must live in the same pixel space as the font.
+
+    GGB draws both the label glyphs and the labelOffset in screen px — their
+    proportion survives any zoom. The style-editor preview renders the source
+    view into a 480px reference (density 20.7 px/MU vs the applet's 50), and
+    dividing offsets by ptUnit_ggb shrank them with the FIGURE while the font
+    stayed at reference px: labels swallowed their offsets and sat on their
+    points. Offsets must divide by ptUnit_style, like every decoration px.
+    """
+
+    def test_offset_in_style_px_at_low_density(self, tmp_path):
+        style_path = tmp_path / "ref480.json"
+        style_path.write_text(json.dumps({
+            "reference": {"size": {"width": 480, "height": "auto"},
+                          "source": "source_view"},
+        }))
+        scene = _load_scene(FIXTURE, style=str(style_path))
+        u = float(scene.style.export.get("ptUnit_style"))
+        assert u < 25, f"reference did not downscale the view (ptUnit_style={u})"
+
+        for name in ("В", "Б"):
+            offx, offy = XML_OFFSETS[name]
+            left, bottom, _, _ = _label_bbox(scene, name)
+            px, py = (float(c) for c in scene.element(name).data.coords[:2])
+            got = ((left - px) * u, (bottom - py) * u)
+            want = (4.0 + offx, 2.0 * GGB_PS - offy)
+            assert got == pytest.approx(want, abs=1.0), (
+                f"{name}: label origin {got[0]:.1f},{got[1]:.1f} style-px from "
+                f"the point; applet proportion demands {want[0]:.1f},{want[1]:.1f}"
+            )
