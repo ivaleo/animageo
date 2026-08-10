@@ -310,3 +310,95 @@ class TestOffsetDensityInvariance:
                 f"{name}: label origin {got[0]:.1f},{got[1]:.1f} style-px from "
                 f"the point; applet proportion demands {want[0]:.1f},{want[1]:.1f}"
             )
+
+
+# ── Size-invariant anchoring: gap survives font changes, continuously ──
+
+def _font_style(tmp_path, font_px, tag=""):
+    path = tmp_path / f"font_{font_px}{tag}.json"
+    path.write_text(json.dumps(
+        {"overlay": {"per_type": {"point": {"font_size_px": font_px}}}}))
+    return str(path)
+
+
+def _point_label_gap_px(scene, name):
+    """Nearest distance point→label bbox in style px (0 = touching/overlap)."""
+    left, bottom, right, top = _label_bbox(scene, name)
+    px, py = (float(c) for c in scene.element(name).data.coords[:2])
+    dx = max(left - px, 0.0, px - right)
+    dy = max(bottom - py, 0.0, py - top)
+    u = float(scene.style.export.get("ptUnit_style")
+              or scene.style.export.get("ptUnit"))
+    return (dx * dx + dy * dy) ** 0.5 * u
+
+
+class TestSizeInvariantAnchoring:
+    """A manual label keeps its visual gap to the point when the font size
+    (кегль) changes: the label must grow AWAY from the point, anchored by the
+    side facing it — for every direction around the point, not just the
+    GGB-natural up-right one."""
+
+    # label_offset_px (math-up, style convention), ~40 px in all 8 sectors
+    DIRS = {
+        "E": (40, 0), "NE": (28, 28), "N": (0, 40), "NW": (-32, 28),
+        "W": (-44, 0), "SW": (-32, -28), "S": (0, -44), "SE": (28, -28),
+    }
+
+    @pytest.mark.parametrize("dname", sorted(DIRS))
+    def test_gap_survives_font_scaling(self, tmp_path, dname):
+        gaps = {}
+        for font in (16, 48):
+            scene = _load_scene(FIXTURE, style=_font_style(tmp_path, font, dname))
+            scene.element("В").style["label_offset_px"] = list(self.DIRS[dname])
+            gaps[font] = _point_label_gap_px(scene, "В")
+        assert gaps[16] > 3.0, f"{dname}: bad testcase, no native gap"
+        assert gaps[48] == pytest.approx(gaps[16], abs=1.5), (
+            f"{dname}: gap {gaps[16]:.1f}px at 16px font became "
+            f"{gaps[48]:.1f}px at 48px font"
+        )
+
+    def _label_center(self, scene, name):
+        left, bottom, right, top = _label_bbox(scene, name)
+        return np.array([(left + right) / 2.0, (bottom + top) / 2.0])
+
+    def _max_step(self, scene, name, offsets_fn, n):
+        u = float(scene.style.export.get("ptUnit_style"))
+        elem = scene.element(name)
+        centers = []
+        for k in range(n + 1):
+            elem.style["label_offset_px"] = offsets_fn(k / n)
+            centers.append(self._label_center(scene, name))
+        return max(float(np.linalg.norm(centers[i + 1] - centers[i])) * u
+                   for i in range(n))
+
+    def _assert_continuous(self, scene, offsets_fn):
+        """True continuity criterion: halving the animation step must halve the
+        largest per-step movement. A genuine jump (e.g. a quantized-anchor
+        flip at a sector boundary) keeps its size no matter how finely the
+        offset is interpolated; smooth motion — even lever-amplified while the
+        near face slides past the point — scales down linearly."""
+        coarse = self._max_step(scene, "В", offsets_fn, 48)
+        fine = self._max_step(scene, "В", offsets_fn, 96)
+        assert fine <= 0.65 * coarse + 0.3, (
+            f"jump detected: max step {coarse:.1f}px stays {fine:.1f}px "
+            f"after halving the animation step"
+        )
+
+    def test_orbit_animation_has_no_jumps(self, tmp_path):
+        """Sweeping the offset around the point at a non-native font must move
+        the label without discontinuities (all anchor sides are traversed)."""
+        scene = _load_scene(FIXTURE, style=_font_style(tmp_path, 48))
+        self._assert_continuous(
+            scene,
+            lambda t: [45.0 * np.cos(2 * np.pi * t),
+                       45.0 * np.sin(2 * np.pi * t)],
+        )
+
+    def test_pass_through_point_has_no_jumps(self, tmp_path):
+        """An offset animating THROUGH the anchor point (direction flips, the
+        point crosses the label bbox) must move the label smoothly too."""
+        scene = _load_scene(FIXTURE, style=_font_style(tmp_path, 48, "p"))
+        self._assert_continuous(
+            scene,
+            lambda t: [-60 + 120 * t - 4.0, -20 + 40 * t - 10.0],
+        )

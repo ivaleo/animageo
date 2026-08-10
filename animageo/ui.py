@@ -14,6 +14,7 @@ from manim import (
     DEFAULT_FONT_SIZE,
 )
 
+from .constants import GGB_FONT_SCALE
 from .geo.lib_elements import latex_escape_text, textify_cyrillic
 from .style import hasParam
 
@@ -368,15 +369,44 @@ def _place_label(mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
         if off is None and hasParam(elem.style, 'label_offset_px'):
             off = elem.style['label_offset_px']
         off = off if off is not None else (0.0, 0.0)
-        target = [
-            pos[0] + (ggb_manual_base_px[0] + float(off[0])) / scale,
-            pos[1] + (ggb_manual_base_px[1] + float(off[1])) / scale,
-            0.0,
-        ]
-        mobj.move_to(target, aligned_edge=DL)
+        # Left/baseline origin exactly as the applet showed it (native font).
+        origin = (pos[0] + (ggb_manual_base_px[0] + float(off[0])) / scale,
+                  pos[1] + (ggb_manual_base_px[1] + float(off[1])) / scale)
         depth = _label_baseline_depth_mu(mobj, font_size)
-        if depth:
-            mobj.shift([0.0, -depth, 0.0])
+        w = float(mobj.width)
+        h = float(mobj.height)
+
+        # Size-invariant anchoring: when the rendered font differs from the
+        # applet's, anchoring at left/baseline lets the glyphs grow TOWARD the
+        # point for labels dragged left/below (В at 48px swallowed its point).
+        # Instead the label is anchored by the spot facing the point, so it
+        # grows away and the visual gap survives any кегль. The anchor is the
+        # PROJECTION of the point onto the native bbox: for an outside point
+        # that pins the box's nearest face/corner, so the nearest distance is
+        # preserved EXACTLY under scaling; a projection onto a convex box is
+        # 1-Lipschitz in the box position, so an animated offset (including
+        # one passing straight through the point) moves the label without
+        # jumps — no sector quantisation, no hysteresis. At the native font
+        # the whole scheme reduces to the applet placement identically.
+        g_px = float(ggb_font_px) if ggb_font_px else 16.0
+        fs_px = (float(font_size) * float(ptUnit) / GGB_FONT_SCALE
+                 if font_size and ptUnit else g_px)
+        r = g_px / fs_px if fs_px > 1e-9 else 1.0
+        if w < 1e-9 or h < 1e-9:
+            mobj.move_to([origin[0], origin[1], 0.0], aligned_edge=DL)
+            if depth:
+                mobj.shift([0.0, -depth, 0.0])
+            return mobj
+
+        # The box the applet user saw: our metrics scaled to the native font.
+        w0, h0, depth0 = w * r, h * r, depth * r
+        left0, bottom0 = origin[0], origin[1] - depth0
+        ax = min(max(float(pos[0]), left0), left0 + w0)
+        ay = min(max(float(pos[1]), bottom0), bottom0 + h0)
+        fx = (ax - left0) / w0
+        fy = (ay - bottom0) / h0
+        # Place the rendered label so ITS (fx, fy) bbox point sits at (ax, ay).
+        mobj.move_to([ax + (0.5 - fx) * w, ay + (0.5 - fy) * h, 0.0])
         return mobj
 
     mobj.move_to(pos, aligned_edge=edge)
