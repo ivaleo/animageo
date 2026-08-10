@@ -24,9 +24,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `rendering.label_anchor` is bypassed. A label never dragged in GGB now
   also sits up-right of its point like the applet, instead of centred above
   it. Auto-placed labels and non-GGB scenes are unchanged.
-  Known follow-ups: the TikZ/JSXGraph exporters still use the old label
-  semantics for these labels, and the auto-placement evenness items of the
-  TZ (§5) are not part of this change.
+  Known follow-up: the TikZ/JSXGraph exporters still use the old label
+  semantics for these labels.
+
+- **Auto-placement respects the manual side of a point label** (TZ §5.3).
+  Three defects made a hand-placed label end up on the opposite side of its
+  point when auto-placement was on:
+  - an **arc/sector registered its FULL circle as an obstacle** («treat as
+    full circle for simplicity» — and `Arc`/`CircleSector` subclass `Circle`,
+    so the dedicated branch was unreachable): the phantom part of the circle
+    blocked visibly-empty space, and the solid-circle rescue kicked labels
+    across. Arcs now register as a polyline over their actual angular span
+    (sectors also add their two radii edges);
+  - **re-runs lost the user's intent**: the second placement pass (the web
+    loads a scene twice for its rendered-bounds auto-config) saw only the
+    first pass's `_auto_placed` offsets and re-solved from scratch. The
+    respect pass now recovers the original applet offset from `ggb_raw`, so
+    placement is idempotent;
+  - **`_recompact_pass` rotated respected labels** up to its 40° cone while
+    pulling them in. Labels pinned to a manual position now compact
+    radially only.
+  Plus: the sector-inference model now includes the GGB base
+  `(4, 2·pointSize)` for substantive imported offsets (matches the part-1
+  renderer), and gap-centring keeps the USER'S direction when the free gap
+  exceeds 270° (an arc terminus / near-endpoint has no meaningful "middle";
+  240°-corner centring — scene4 — is unchanged). Side effect: the
+  point→label gap at zero distance is now near-uniform (spread 6 px → 2 px,
+  TZ §6.4). Remaining §5.1 nuance: a descender's tail (Д, Щ) still counts
+  into the bbox when a label sits North of its point.
 
 ## [1.6.4] — 2026-07-28
 
