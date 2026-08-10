@@ -11,6 +11,7 @@ from manim import (
     TexTemplate, Tex, Text, VGroup, VMobject, Polygon, Circle,
     ArcBetweenPoints, ArrowTip, FadeIn, DecimalNumber,
     PI, ORIGIN, DOWN, LEFT, UP, RIGHT, DL, UL, DR, UR,
+    DEFAULT_FONT_SIZE,
 )
 
 from .geo.lib_elements import latex_escape_text, textify_cyrillic
@@ -314,9 +315,63 @@ def _resolve_label_edge(elem, anchor, align_edge):
     return align_edge
 
 
+_BASELINE_DEPTH_RATIO_CACHE = {}
+
+
+def _label_baseline_depth_mu(mobj, font_size):
+    """Distance the label's ink extends below its typographic baseline, in MU.
+
+    A Tex tight bbox ends at the lowest ink, not at the baseline, so glyphs
+    with descenders (Д, Щ, у, subscripts) would ride higher than their
+    neighbours when anchored by bbox bottom. The depth is measured once per
+    tex string by compiling it next to a baseline probe glyph ('.', zero
+    depth) in a single LaTeX run and cached as a ratio of the compile-time
+    font size. ValueLabel and probe failures fall back to 0 (bottom ==
+    baseline, exact for capital letters and digits).
+    """
+    tex_string = getattr(mobj, 'tex_string', None)
+    if not tex_string or not font_size:
+        return 0.0
+    ratio = _BASELINE_DEPTH_RATIO_CACHE.get(tex_string)
+    if ratio is None:
+        try:
+            probe = Tex(tex_string, ".", tex_template=RusTex)
+            baseline_y = float(probe[1].get_corner(DOWN)[1])
+            label_bottom = float(probe[0].get_corner(DOWN)[1])
+            ratio = max(baseline_y - label_bottom, 0.0) / DEFAULT_FONT_SIZE
+        except Exception:
+            logger.debug("baseline probe failed for %r", tex_string, exc_info=True)
+            ratio = 0.0
+        _BASELINE_DEPTH_RATIO_CACHE[tex_string] = ratio
+    return ratio * float(font_size)
+
+
 def _place_label(mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
-                 label_offset_px, auto_placed):
+                 label_offset_px, auto_placed, ggb_manual_base_px=None,
+                 font_size=None):
     """Apply anchor/offset/descender placement shared by Tex and ValueLabel."""
+    if ggb_manual_base_px is not None:
+        # GGB-faithful path for imported manual labels (docs/TZ-label-offset-
+        # ggb-fidelity.md): the applet draws a point label with its LEFT edge
+        # on the BASELINE at (x + 4, y − 2·pointSize) + labelOffset screen px,
+        # and the stored offset is relative to that base — so the style's
+        # aesthetic anchor and the descender fudge below must not apply here.
+        scale = ptUnit_ggb if ptUnit_ggb else ptUnit
+        off = label_offset_px
+        if off is None and hasParam(elem.style, 'label_offset_px'):
+            off = elem.style['label_offset_px']
+        off = off if off is not None else (0.0, 0.0)
+        target = [
+            pos[0] + (ggb_manual_base_px[0] + float(off[0])) / scale,
+            pos[1] + (ggb_manual_base_px[1] + float(off[1])) / scale,
+            0.0,
+        ]
+        mobj.move_to(target, aligned_edge=DL)
+        depth = _label_baseline_depth_mu(mobj, font_size)
+        if depth:
+            mobj.shift([0.0, -depth, 0.0])
+        return mobj
+
     mobj.move_to(pos, aligned_edge=edge)
     if label_offset_px is not None:
         scale = ptUnit_ggb if ptUnit_ggb else ptUnit
@@ -373,7 +428,7 @@ def _compile_label_tex(label, col_label, font_size, zz_label, name):
 def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=DL,
                  ptUnit_ggb=None, anchor=None, ggb_font_px=None,
                  label_text=None, label_offset_px=None, auto_placed=None,
-                 label_spec=None, dynamic=False):
+                 label_spec=None, dynamic=False, ggb_manual_base_px=None):
     """Create a label mobject for a geometric element.
 
     When ``dynamic`` is True and ``label_spec`` carries a live numeric value, a
@@ -389,6 +444,11 @@ def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=D
             correction to compensate for GGB's text-field descender padding.
         label_spec: Optional ``LabelSpec`` enabling the fast value path.
         dynamic: Build a ``ValueLabel`` for value-bearing labels.
+        ggb_manual_base_px: When set — ``(4, 2·pointSize)`` GGB base offset in
+            applet px — the label takes the GGB-faithful path: left edge on
+            the baseline at ``pos + (base + label_offset_px)/ptUnit_ggb``,
+            ignoring ``anchor``/``align_edge`` and the descender correction
+            (docs/TZ-label-offset-ggb-fidelity.md).
 
     Returns:
         The label mobject, or ``None`` when its LaTeX could not be compiled at
@@ -427,6 +487,7 @@ def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=D
     return _place_label(
         mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
         label_offset_px, auto_placed,
+        ggb_manual_base_px=ggb_manual_base_px, font_size=font_size,
     )
 
 

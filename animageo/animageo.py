@@ -2938,6 +2938,26 @@ class AnimaGeoScene(MovingCameraScene):
         lr_px = _resolve_style(self, elem, 'label_radial_offset_px', default=0.0)
         label_roff = float(lr_px) / ptUnit_style
 
+        # GGB-faithful base for imported manual point labels (docs/TZ-label-
+        # offset-ggb-fidelity.md): the applet anchors a point label 4 px right
+        # of the point and 2·pointSize px above it, then adds the stored
+        # labelOffset — left edge on the baseline. Applies only when neither
+        # the placement solver (_auto_placed) nor an explicit per-element/
+        # overlay/defaults anchor took over; the style-wide
+        # rendering.label_anchor is an aesthetic default and deliberately does
+        # NOT reach these labels (it enters ctx.label_anchor via `default=`
+        # above, so resolving with default=None isolates the explicit layers).
+        ggb_manual_base_px = None
+        if has_label and type(elem.data) == geo.Point and not auto_placed:
+            ggb_raw = getattr(elem, 'ggb_raw', None) or {}
+            explicit_anchor = _resolve_style(self, elem, 'label_anchor', default=None)
+            if ggb_raw and explicit_anchor is None:
+                try:
+                    ps_raw = float(ggb_raw.get('point_size', 5.0))
+                except (TypeError, ValueError):
+                    ps_raw = 5.0
+                ggb_manual_base_px = (4.0, 2.0 * ps_raw)
+
         dash = _resolve_style(self, elem, 'stroke_dash_ratio', default=None)
         cap = _resolve_style(
             self, elem, 'stroke_linecap',
@@ -3007,6 +3027,7 @@ class AnimaGeoScene(MovingCameraScene):
             label_text=label_text,
             label_offset_px=label_offset_px,
             auto_placed=auto_placed,
+            ggb_manual_base_px=ggb_manual_base_px,
             ggb_font_px=ggb_font_px,
             has_label=has_label,
             label_spec=label_spec,
@@ -3064,6 +3085,7 @@ class AnimaGeoScene(MovingCameraScene):
             ggb_font_px=ctx.ggb_font_px, label_text=ctx.label_text,
             label_offset_px=ctx.label_offset_px, auto_placed=ctx.auto_placed,
             label_spec=ctx.label_spec, dynamic=ctx.label_dynamic,
+            ggb_manual_base_px=ctx.ggb_manual_base_px,
         )
         if label is None:
             return None
