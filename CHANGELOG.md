@@ -27,6 +27,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Known follow-up: the TikZ/JSXGraph exporters still use the old label
   semantics for these labels.
 
+- **Manual offsets keep their proportion to the glyphs at any render
+  density.** In GGB both the label glyphs and the labelOffset are screen px,
+  so their ratio survives any zoom. The GGB-faithful path initially divided
+  offsets by ``ptUnit_ggb`` (figure space) while the font divides by
+  ``ptUnit_style`` (reference-canvas px): at low reference density (the
+  style-editor preview fits an 1160px view into a 480px canvas) offsets
+  shrank ×2.4 while glyphs did not, and labels sat on their points. Manual
+  offsets (and the GGB base) now divide by ``ptUnit_style`` — the same pixel
+  space as the font, matching how every other decoration px is imported.
+
 - **Auto-placement respects the manual side of a point label** (TZ §5.3).
   Three defects made a hand-placed label end up on the opposite side of its
   point when auto-placement was on:

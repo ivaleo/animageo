@@ -356,7 +356,14 @@ def _place_label(mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
         # on the BASELINE at (x + 4, y − 2·pointSize) + labelOffset screen px,
         # and the stored offset is relative to that base — so the style's
         # aesthetic anchor and the descender fudge below must not apply here.
-        scale = ptUnit_ggb if ptUnit_ggb else ptUnit
+        # Scale: ptUnit (= ptUnit_style at the call site), NOT ptUnit_ggb.
+        # In GGB both the glyphs and the offset are screen px — their
+        # proportion survives any zoom — so the offset must live in the same
+        # pixel space as the font. Dividing by ptUnit_ggb shrank offsets with
+        # the FIGURE while the font stayed at reference px; at low reference
+        # density (style-editor preview: 480px canvas for an 1160px view)
+        # labels swallowed their offsets and sat on their points.
+        scale = ptUnit
         off = label_offset_px
         if off is None and hasParam(elem.style, 'label_offset_px'):
             off = elem.style['label_offset_px']
