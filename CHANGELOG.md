@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **Manual GGB label offsets now reproduce the applet's label positions**
+  (`docs/TZ-label-offset-ggb-fidelity.md`). GeoGebra draws a point label with
+  its left edge on the baseline at `(x + 4, y − 2·pointSize) + labelOffset`
+  screen px — the stored offset is relative to that up-right base. The
+  renderer instead anchored the label by the style anchor (web styles: `BC`,
+  bottom-center) at the bare point centre plus an empirical `0.25·font`
+  lift, leaving every hand-aligned label ~9 px left and 6.5 px below its
+  applet position. Imported, non-auto-placed point labels without an explicit
+  element/overlay/defaults `label_anchor` now take a GGB-faithful path: base
+  `(4, 2·pointSize_raw)/ptUnit_ggb`, left-edge/baseline anchoring with a
+  per-label baseline-depth correction (measured against a `.` probe glyph in
+  the same LaTeX run, cached), no descender fudge, and the aesthetic
+  `rendering.label_anchor` is bypassed. A label never dragged in GGB now
+  also sits up-right of its point like the applet, instead of centred above
+  it. Auto-placed labels and non-GGB scenes are unchanged.
+  Known follow-ups: the TikZ/JSXGraph exporters still use the old label
+  semantics for these labels, and the auto-placement evenness items of the
+  TZ (§5) are not part of this change.
+
 ## [1.6.4] — 2026-07-28
 
 ### Fixed
