@@ -316,7 +316,7 @@ Define per-type/per-name rules (`per_type`, `per_name`) in `overlay`, not in `Im
 | `resolve(elem, defaults, ptUnit)` | `dict` | Full import-style dict (faithful baseline + overrides). Used for diagnostics/compatibility |
 | `resolve_overrides_only(elem, defaults, ptUnit)` | `dict` | Only the keys the policy actively overrides; `applyStyle` puts them into `elem.ggb_style` |
 
-A detailed cookbook for 12 scenarios: [docs/import_policies.md](import_policies.md).
+A detailed practical cookbook: [docs/import_policies.md](import_policies.md).
 Ready-made JSON presets: `examples/policies/*.json`.
 
 ---
@@ -534,7 +534,7 @@ viewport), O(grid_n²) work.
 
 Full guide: [docs/python_dsl.md](python_dsl.md). Below is a short summary.
 
-Exec-based engine. Any valid Python code works — loops, conditionals, functions, comprehensions, kwargs, tuple unpacking are all supported. The full set of ~74 factories is auto-discovered from `lib_commands.py`.
+Exec-based engine. Any valid Python code works — loops, conditionals, functions, comprehensions, kwargs, tuple unpacking are all supported. The current namespace exposes 99 auto-discovered command factories backed by 433 dispatch signatures from `lib_commands.py`.
 
 ```python
 # Points and basic constructions
@@ -626,7 +626,7 @@ X, Y    = Intersect(line, conic)       # intersect_Kl: quadratic
 A,B,C,D = Intersect(conic1, conic2)    # intersect_KK: pencil + cubic
 
 # Numeric (Function/ImplicitCurve):
-X       = Intersect(function, line)    # intersect_Fl: sympy.solve → brentq fallback
+X       = Intersect(function, line)    # intersect_Fl: sympy.solve → scan + bisection fallback
 J, K    = Intersect(function, conic)   # intersect_FK: 1D via substitution
 G, H    = Intersect(implicit, circle)  # intersect_IK: marching squares + Newton
 M, N    = Intersect(implicit, line)    # intersect_Il

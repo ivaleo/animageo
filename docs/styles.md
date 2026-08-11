@@ -715,7 +715,7 @@ Each field accepts: `None` (fallback), a literal (number/bool/list/dict/hex), a 
 | `label_text` | `<caption>` | `label_text` |
 | `angle_range` | `<angleStyle val>` | `angle_range` |
 | `tick_count` | `<decoration type>` | `tick_count` |
-| `font_size_px` | `<gui><font size>` | `font_size_px` |
+| `font_size_px` | literal / callable (`raw=None`) | `font_size_px` |
 | `stroke` | `<objColor>` as `obj_color.hex` | `stroke` |
 | `fill` | `<objColor>` as `obj_color.hex` | `fill` |
 | `fill_opacity` | `<objColor alpha>` as `obj_color.opacity` | `fill_opacity` |
@@ -1020,7 +1020,7 @@ Details in `docs/gotchas.md`. In brief:
 ## See also
 
 - [docs/api.md](api.md) — the full `AnimaGeoScene` method reference
-- [docs/import_policies.md](import_policies.md) — a cookbook with 12 `ImportPolicy` scenarios
+- [docs/import_policies.md](import_policies.md) — a practical `ImportPolicy` cookbook
 - [docs/gotchas.md](gotchas.md) — manim/Python/architecture pitfalls
 - [docs/architecture.md](architecture.md) — module and dependency overview
 - [docs/guide/05-styles.html](guide/05-styles.html) — the HTML version (styles) with interactive navigation, diagrams and previews; styles are part of the combined guide
