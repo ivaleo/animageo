@@ -5,6 +5,80 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **Manual GGB label offsets now reproduce the applet's label positions**
+  (`docs/TZ-label-offset-ggb-fidelity.md`). GeoGebra draws a point label with
+  its left edge on the baseline at `(x + 4, y − 2·pointSize) + labelOffset`
+  screen px — the stored offset is relative to that up-right base. The
+  renderer instead anchored the label by the style anchor (web styles: `BC`,
+  bottom-center) at the bare point centre plus an empirical `0.25·font`
+  lift, leaving every hand-aligned label ~9 px left and 6.5 px below its
+  applet position. Imported, non-auto-placed point labels without an explicit
+  element/overlay/defaults `label_anchor` now take a GGB-faithful path: base
+  `(4, 2·pointSize_raw)/ptUnit_ggb`, left-edge/baseline anchoring with a
+  per-label baseline-depth correction (measured against a `.` probe glyph in
+  the same LaTeX run, cached), no descender fudge, and the aesthetic
+  `rendering.label_anchor` is bypassed. A label never dragged in GGB now
+  also sits up-right of its point like the applet, instead of centred above
+  it. Auto-placed labels and non-GGB scenes are unchanged.
+  Known follow-up: the TikZ/JSXGraph exporters still use the old label
+  semantics for these labels.
+
+- **Manual labels keep their visual gap to the point when the font size
+  changes (size-invariant anchoring).** GGB anchors a label at its
+  left/baseline corner, so at a non-native кегль the glyphs grow up-right —
+  TOWARD the point for a label dragged left/below (В at 48px font swallowed
+  its point entirely). A manual label is now anchored by the PROJECTION of
+  its point onto the label's native (applet-size) bbox: the box's nearest
+  face/corner is pinned, so the gap is preserved exactly for every direction
+  around the point, and the label grows away from it. The projection onto a
+  convex box is 1-Lipschitz, so the anchor is a continuous function of the
+  offset — an animated offset (even one passing straight through the point)
+  moves the label without jumps, with no sector quantisation or hysteresis.
+  At the native font the scheme reduces to the exact applet placement, so
+  GGB fidelity is untouched. Guarded by an all-8-directions gap test and a
+  two-resolution continuity test (halving the animation step must halve the
+  largest per-step movement — a genuine jump would not shrink).
+
+- **Manual offsets keep their proportion to the glyphs at any render
+  density.** In GGB both the label glyphs and the labelOffset are screen px,
+  so their ratio survives any zoom. The GGB-faithful path initially divided
+  offsets by ``ptUnit_ggb`` (figure space) while the font divides by
+  ``ptUnit_style`` (reference-canvas px): at low reference density (the
+  style-editor preview fits an 1160px view into a 480px canvas) offsets
+  shrank ×2.4 while glyphs did not, and labels sat on their points. Manual
+  offsets (and the GGB base) now divide by ``ptUnit_style`` — the same pixel
+  space as the font, matching how every other decoration px is imported.
+
+- **Auto-placement respects the manual side of a point label** (TZ §5.3).
+  Three defects made a hand-placed label end up on the opposite side of its
+  point when auto-placement was on:
+  - an **arc/sector registered its FULL circle as an obstacle** («treat as
+    full circle for simplicity» — and `Arc`/`CircleSector` subclass `Circle`,
+    so the dedicated branch was unreachable): the phantom part of the circle
+    blocked visibly-empty space, and the solid-circle rescue kicked labels
+    across. Arcs now register as a polyline over their actual angular span
+    (sectors also add their two radii edges);
+  - **re-runs lost the user's intent**: the second placement pass (the web
+    loads a scene twice for its rendered-bounds auto-config) saw only the
+    first pass's `_auto_placed` offsets and re-solved from scratch. The
+    respect pass now recovers the original applet offset from `ggb_raw`, so
+    placement is idempotent;
+  - **`_recompact_pass` rotated respected labels** up to its 40° cone while
+    pulling them in. Labels pinned to a manual position now compact
+    radially only.
+  Plus: the sector-inference model now includes the GGB base
+  `(4, 2·pointSize)` for substantive imported offsets (matches the part-1
+  renderer), and gap-centring keeps the USER'S direction when the free gap
+  exceeds 270° (an arc terminus / near-endpoint has no meaningful "middle";
+  240°-corner centring — scene4 — is unchanged). Side effect: the
+  point→label gap at zero distance is now near-uniform (spread 6 px → 2 px,
+  TZ §6.4). Remaining §5.1 nuance: a descender's tail (Д, Щ) still counts
+  into the bbox when a label sits North of its point.
+
 ## [1.6.4] — 2026-07-28
 
 ### Fixed
