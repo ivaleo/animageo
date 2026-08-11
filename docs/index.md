@@ -12,7 +12,7 @@ built directly in the embedded Python DSL, without a GeoGebra file.
 
 - [Quickstart](quickstart.md) — installation, first render, CLI and code
 - [Architecture](architecture.md) — pipeline and module map
-- [../README.md](../README.md) — project overview and feature list
+- [Project README](https://github.com/ivaleo/animageo#readme) — overview and feature list
 
 ## Reference
 
@@ -36,12 +36,8 @@ built directly in the embedded Python DSL, without a GeoGebra file.
 - [JSON Schema for AI style JSON](ai_style_json_schema.json)
 - [Context for AI construction creation/editing](ai_construction_generation_context.md)
 
-## Interactive guide
-
-- [Guide (HTML)](guide/index.html) — 12 chapters: DSL, GeoGebra, styles, labels, curves, animation, export, recipes (currently in Russian; requires a local server — see [guide/README.md](guide/README.md) — and does not render on GitHub)
-
 ## Miscellaneous
 
 - [Gotchas and pitfalls](gotchas.md)
 - [Direction](roadmap.md)
-- [../CHANGELOG.md](../CHANGELOG.md) — release history
+- [Changelog](https://github.com/ivaleo/animageo/blob/main/CHANGELOG.md) — release history

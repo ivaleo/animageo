@@ -6,8 +6,8 @@ figures — a construction the user can drag, exposed through a clear
 signals/actions vocabulary in **construction terms** (element names + AnimaGeo
 kinds), not rendering-engine terms.
 
-See `docs/archive/jsxgraph_web_integration_audit.md` and
-`docs/archive/jsxgraph_web_integration_plan.md` for the design.
+See [the export-format guide](../docs/export_formats.md#interactive-jsxgraph)
+for the public Python-to-browser contract.
 
 ## Pipeline
 
@@ -37,32 +37,39 @@ project writes its own ~30-line adapter for its stack — examples in `adapters/
 
 ## Try it
 
+From the repository root, use the tracked sample construction:
+
 ```bash
-# 1) produce a spec from a construction
-python -m animageo examples/scene.ggb -o board.html   # quick self-contained page
-# or, for the data contract:
+# 1) Produce a self-contained interactive page.
+python -m animageo docs/guide/assets/ggb/sample_triangle.ggb \
+  -o /tmp/animageo-board.html
+
+# Or write the pure-data board contract without touching test fixtures.
 python - <<'PY'
+from pathlib import Path
 from animageo.animageo import AnimaGeoScene
-s = AnimaGeoScene(); s.loadGGB("examples/ex_general.ggb")
-open("web/runtime/test/fixtures/ex_general.board.json","w").write(s.exportJSXGraph(output="spec"))
+s = AnimaGeoScene()
+s.loadGGB("docs/guide/assets/ggb/sample_triangle.ggb", generate_stubs=False)
+Path("/tmp/sample-triangle.board.json").write_text(
+    s.exportJSXGraph(output="spec"), encoding="utf-8"
+)
 PY
 
-# 2) serve and open a demo
-cd web && python3 -m http.server 8000
-#   → http://localhost:8000/web-component/demo.html
-#   → http://localhost:8000/adapters/vanilla.html
+# 2) Serve the repository and open a demo.
+python3 -m http.server 8000
+#   → http://localhost:8000/web/web-component/demo.html
+#   → http://localhost:8000/web/adapters/vanilla.html
 
-# 3) run the JS tests (no extra deps)
-cd web/runtime && node --test
-cd web/web-component && node --test
+# 3) Run the JS tests (in another terminal, no extra dependencies).
+npm --prefix web/runtime test
+npm --prefix web/web-component test
 
-# 4) real-browser smoke against live JSXGraph (skips if no Chrome)
+# 4) Real-browser smoke against live JSXGraph (skips if no Chrome).
 node web/runtime/scripts/browser-smoke/run.mjs
 ```
 
 ## Status
 
-Phase 1 (spec contract) and Phase 2 (runtime) are done and tested; Phase 3 (web
-component + adapters) is in place. Phase 4 (visual parity: label placement, dash
-patterns, angle multi-arc, z-order; static-curve resampling on pan/zoom) is the
-next track — see the plan doc.
+The spec contract, runtime, web component, and adapter examples are implemented
+and tested. Static sampled curves do not yet resample on pan/zoom; the runtime
+README documents that limitation and the recommended re-export strategy.

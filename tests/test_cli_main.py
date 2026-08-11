@@ -87,6 +87,9 @@ class TestDriverTemplate:
                 f"unquoted placeholder {p} — must be !r-quoted"
             )
 
+    def test_cli_driver_does_not_write_ggb_stubs(self):
+        assert 'generate_stubs=False' in cli._DRIVER_TEMPLATE
+
 
 class TestParsePx:
     def test_default(self):
@@ -134,6 +137,24 @@ class TestFormatResolution:
         assert set(cli.ALL_FORMATS) == set(cli.STATIC_FORMATS) | set(cli.RENDER_FORMATS)
 
 
+class TestStyleResolution:
+    def test_packaged_preset_name(self):
+        path = cli._resolve_style_arg('default')
+        assert path.endswith('animageo/style/presets/default.json')
+        assert os.path.isfile(path)
+
+    def test_existing_style_file(self, tmp_path):
+        style = tmp_path / 'custom.json'
+        style.write_text('{}')
+        assert cli._resolve_style_arg(str(style)) == str(style)
+
+    def test_missing_style(self):
+        assert cli._resolve_style_arg('definitely_missing_style') is None
+
+    def test_omitted_style_keeps_empty_sentinel(self):
+        assert cli._resolve_style_arg(None) == ''
+
+
 class TestRenderDriverTemplate:
     """The render driver, like the static one, must embed user strings via
     repr() so a hostile filename cannot break out of the literal."""
@@ -163,6 +184,9 @@ class TestRenderDriverTemplate:
             assert p not in cli._RENDER_DRIVER_TEMPLATE, (
                 f"unquoted placeholder {p} — must be !r-quoted"
             )
+
+    def test_cli_render_driver_does_not_write_ggb_stubs(self):
+        assert 'generate_stubs=False' in cli._RENDER_DRIVER_TEMPLATE
 
 
 class TestCliNoManim:

@@ -1,7 +1,7 @@
 # Direction
 
-Open, forward-looking work. Shipped work lives in [`../CHANGELOG.md`](../CHANGELOG.md);
-the historical design record is in [`archive/`](archive/README.md).
+Open, forward-looking work. Shipped work lives in the
+[changelog](https://github.com/ivaleo/animageo/blob/main/CHANGELOG.md).
 
 ## Rendering & export
 
@@ -17,9 +17,8 @@ the historical design record is in [`archive/`](archive/README.md).
 
 ## GeoGebra coverage
 
-Most everyday commands are implemented (~291 dispatchable operations,
-see [`archive/geogebra_command_audit.md`](archive/geogebra_command_audit.md)
-for a point-in-time audit). Known gaps:
+Most everyday commands are implemented (433 dispatch signatures exposed
+through 99 auto-discovered DSL factories). Known gaps:
 
 - Exact/symbolic `Locus` and `LocusEquation` (current `Locus` is a sampled
   polyline).
@@ -52,8 +51,6 @@ Automatic placement has reached its target quality for solver-only layouts
 ## Distribution
 
 - Publish the JSXGraph web runtime (`web/runtime`, `web/web-component`) to npm.
-- A rendered documentation site (the HTML guide under `docs/guide/` is the
-  natural seed for it).
 
 Suggestions and contributions are welcome — see
-[`../CONTRIBUTING.md`](../CONTRIBUTING.md).
+[CONTRIBUTING.md](https://github.com/ivaleo/animageo/blob/main/CONTRIBUTING.md).

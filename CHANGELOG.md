@@ -7,15 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-08-11
+
 ### Changed
 
 - Public-release documentation and packaging overhaul: internal working
   materials removed from the repository, core docs translated to English,
   packaged style presets (`style='default'`, `book_*`) resolvable by bare
-  name, PyPI project URLs, `py.typed`, CI workflow.
+  name, PyPI project URLs, `py.typed`, CI and GitHub Pages workflows, and
+  corrected Apache-2.0 metadata for the source-distributed web packages.
 
 ### Fixed
 
+- The CLI accepts packaged style names such as `--style default` and no longer
+  writes `<construction>_stubs.pyi` beside input files during one-shot exports.
 - Auto-placement now treats collision clearance as a hard constraint when
   `respect_current_position` is enabled. If a manual GeoGebra offset lies on
   geometry or another label, the solver preserves its side as a preference
@@ -1396,7 +1401,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.6.5...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/ivaleo/animageo/compare/v1.6.5...v1.7.0
 [1.6.5]: https://github.com/ivaleo/animageo/compare/v1.6.4...v1.6.5
 [1.6.4]: https://github.com/ivaleo/animageo/compare/v1.6.3...v1.6.4
 [1.6.3]: https://github.com/ivaleo/animageo/compare/v1.6.2...v1.6.3

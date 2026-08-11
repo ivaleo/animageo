@@ -1,6 +1,6 @@
 # The AnimaGeo Style System — Complete Reference
 
-> A detailed guide to everything visual in AnimaGeo: the JSON schema, per-element keys, z-index, labels and automatic label placement, ImportPolicy, fonts, units, pixel invariance, and the differences between static and animated output. For an interactive walkthrough see `docs/guide/05-styles.html` (styles) and `docs/guide/06-labels.html` (labels) (Russian, interactive — requires a local server).
+> A detailed guide to everything visual in AnimaGeo: the JSON schema, per-element keys, z-index, labels and automatic label placement, ImportPolicy, fonts, units, pixel invariance, and the differences between static and animated output.
 
 ---
 
@@ -12,8 +12,6 @@
 | `docs/architecture.md` | A short architectural map: how GGB/DSL flow through `applyStyle`, `StyleConfig`, `ImportPolicy`, `StyleOverlay` and the renderer |
 | `docs/import_policies.md` | The GGB import/adaptation layer only: raw GGB values → `elem.ggb_style`, the `scale:` / `quantize:` / `remap:` DSL directives |
 | `docs/field_names.md` | Correspondence table: GGB XML → `elem.ggb_raw` → `elem.ggb_style` / `elem.style` → JSON/style layer → renderer |
-| `docs/guide/05-styles.html` | HTML style guide with examples |
-| `docs/guide/11-reference.html` | HTML reference for keys, API and the resolver |
 
 ## Layer concept
 
@@ -1023,6 +1021,5 @@ Details in `docs/gotchas.md`. In brief:
 - [docs/import_policies.md](import_policies.md) — a practical `ImportPolicy` cookbook
 - [docs/gotchas.md](gotchas.md) — manim/Python/architecture pitfalls
 - [docs/architecture.md](architecture.md) — module and dependency overview
-- [docs/guide/05-styles.html](guide/05-styles.html) — the HTML version (styles) with interactive navigation, diagrams and previews; styles are part of the combined guide
 - `animageo/style/schema.py` — the exhaustive JSON-schema docstring
 - `animageo/style/scaling.py` — all unit-conversion formulas in one file
