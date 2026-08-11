@@ -5,7 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/animageo)](https://pypi.org/project/animageo/)
 [![Tests](https://github.com/ivaleo/animageo/actions/workflows/tests.yml/badge.svg)](https://github.com/ivaleo/animageo/actions/workflows/tests.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/ivaleo/animageo/blob/main/LICENSE)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 
 AnimaGeo turns GeoGebra geometric constructions into high-quality figures and
 animations. It parses a `.ggb` file, rebuilds the dependency graph between
@@ -48,7 +48,7 @@ file required — and animate them by keyframes or by driving free variables.
 pip install --upgrade animageo
 ```
 
-Requires Python 3.10+. Core dependencies (`numpy`, `manim`, `pycairo`,
+Requires Python 3.11+. Core dependencies (`numpy`, `manim`, `pycairo`,
 `sympy`, `scipy`) are installed automatically. The JSXGraph web runtime under
 `web/` is a separate, optional JS package.
 

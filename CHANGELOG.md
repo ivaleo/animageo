@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   packaged style presets (`style='default'`, `book_*`) resolvable by bare
   name, PyPI project URLs, `py.typed`, CI and GitHub Pages workflows, and
   corrected Apache-2.0 metadata for the source-distributed web packages.
+- The declared Python floor is now 3.11, matching the mandatory
+  `manim>=0.20.1` dependency. The previous `>=3.10` metadata described an
+  installation that pip could not resolve.
 
 ### Fixed
 
