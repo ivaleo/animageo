@@ -1,21 +1,21 @@
-# Архитектура
+# Architecture
 
-Смежные документы:
+Related documents:
 
-- `docs/styles.md` — главный справочник по стилям и ответственности слоёв.
-- `docs/import_policies.md` — детали GGB import/adaptation и `ImportPolicy`.
-- `docs/field_names.md` — таблица GGB XML → `ggb_raw` → `ggb_style` / `elem.style` → JSON/render.
-- `docs/guide/index.html` — интерактивный HTML-гайд (стили в §5–§7, reference в §12).
+- `docs/styles.md` — the main style reference and layer-responsibility guide.
+- `docs/import_policies.md` — details of GGB import/adaptation and `ImportPolicy`.
+- `docs/field_names.md` — table of GGB XML → `ggb_raw` → `ggb_style` / `elem.style` → JSON/render.
+- `docs/guide/index.html` — interactive HTML guide, in Russian (styling topics in §5–§7, reference in §11). It must be served from a local web server — it does not render on GitHub.
 
-## Конвейер обработки
+## Processing pipeline
 
 ```
- .ggb файл (ZIP с XML)                     Python-DSL код (строка / .py)
+ .ggb file (ZIP with XML)                  Python DSL code (string / .py)
        |                                          |
        v                                          v
  ┌─────────────┐                         ┌────────────────┐
  │ ggb_parser  │────┐                    │ parsers/dsl/   │
- └─────────────┘    │                    │ (exec-engine)  │
+ └─────────────┘    │                    │ (exec engine)  │
                     │                    └────────┬───────┘
                     v                             v
  ┌──────────────────────────────────────────────────────┐
@@ -30,7 +30,7 @@
  ┌────────────────────────────────────────┐
  │ applyStyle                             │
  │   + GeoStyle     (scene export ctx)    │
- │   + StyleConfig  (new: builtin.json +  │
+ │   + StyleConfig  (builtin.json +       │
  │                    user JSON, merged)  │
  │   + ImportPolicy (GGB raw → ggb_style) │
  └──────┬─────────────────────────────────┘
@@ -52,69 +52,84 @@ v               v
    .svg           .mp4
 ```
 
-Парсер записывает в `elem.ggb_raw` сырые GGB-значения (`point_size`, `line_thickness`, `line_opacity`, `line_type`, `arc_size`, `label_offset_px`, `obj_color`, `fontPx`). `obj_color` хранит исходные `r/g/b/alpha` и удобные алиасы `hex` / `opacity`. Нормализованные visual keys складываются в `elem.ggb_style`; `ImportPolicy` решает, как raw-значения дополнительно адаптировать — «как в GGB», «фиксированное значение», callable, квантизация или remap. Resolver включает этот слой только при `import.enabled != false`.
+The parser records raw GGB values in `elem.ggb_raw` (`point_size`, `point_style`, `line_thickness`, `line_type`, `line_opacity`, `arc_size`, `label_offset_px`, `obj_color`, plus label/visibility flags such as `label_mode`, `label_caption`, `show_object`, `show_label`). `obj_color` stores the original `r/g/b/alpha` along with convenient `hex` / `opacity` aliases. Normalized visual keys go into `elem.ggb_style`; `ImportPolicy` decides how the raw values are further adapted — "as in GGB", a fixed value, a callable, quantization, or a remap. The resolver includes this layer only when `import.enabled != false`.
 
-### Стилевая подсистема: три слоя
+### Style subsystem: three layers
 
 ```
-Приоритет чтения (resolver.resolve(scene, elem, key)):
+Read priority (resolver.resolve(scene, elem, key)):
 
- 1. elem.style[key]              ← явные записи (DSL/API)
- 2. overlay.per_name[name][key]  ← точечный оверрайд
- 3. overlay.per_type[type][key]  ← оверрайд всех элементов типа
- 4. elem.ggb_style[key]          ← GGB import/adaptation, если включён
+ 1. elem.style[key]              ← explicit writes (DSL/API)
+ 2. overlay.per_name[name][key]  ← targeted override for one element
+ 3. overlay.per_type[type][key]  ← override for all elements of a type
+ 4. elem.ggb_style[key]          ← GGB import/adaptation, when enabled
  5. defaults.by_type[type][key]  ← per-type baseline (builtin.json + user JSON)
- 6. intrinsic geometry style     ← fallback классов геометрии
- 7. default= от вызывающего      ← hard fallback
+ 6. non-explicit elem.style[key] ← intrinsic fallback seeded by geometry classes
+ 7. caller-supplied default=     ← hard fallback
 ```
 
-Каждый слой имеет единственную ответственность:
+Each layer has a single responsibility:
 
-- **`DefaultsProfile`** — package-shipped `builtin.json` + user JSON (deep-merge). Per-type baseline в **пикселях** (`size_px`, `stroke_width_px`, `arc_size_px`, …). Никогда не пишет в `elem.style`.
-- **`StyleOverlay`** — `per_type` / `per_name` + автоматика (`angle_radius`, `label_placement`). Логически находится поверх GGB import и defaults; resolver читает overlay напрямую из `StyleConfig`.
-- **`GGBImportPolicy`** (тот самый `ImportPolicy`) — только GGB-трансформации: `scale:/quantize:/remap:` над `elem.ggb_raw`, результат в `elem.ggb_style`. DSL-элементы пропускаются (их raw пуст).
+- **`DefaultsProfile`** — package-shipped `builtin.json` + user JSON (deep merge). Per-type baseline in **pixels** (`size_px`, `stroke_width_px`, `arc_size_px`, …). Never writes into `elem.style`.
+- **`StyleOverlay`** — `per_type` / `per_name` + automation (`angle_radius`, `label_placement`). Logically sits above GGB import and defaults; the resolver reads the overlay directly from `StyleConfig`.
+- **`GGBImportPolicy`** (i.e. `ImportPolicy`) — GGB transforms only: `scale:/quantize:/remap:` over `elem.ggb_raw`, with the result stored in `elem.ggb_style`. DSL elements are skipped (their raw layer is empty).
 
-Юнит-контракт: каждый `*_px` ключ в `elem.style`, `elem.ggb_style` и `defaults.<type>` — **пиксели**. Рендерер делит на `ptUnit` при отрисовке. Ранее `GeoStyle.ang_rdefault / ang_rshift / ang_right / dot_size` проходили через `json_size_to_internal` × 0.02 и коллапсировали в доли пикселя для DSL-сцен — исправлено.
+Unit contract: every `*_px` key in `elem.style`, `elem.ggb_style`, and `defaults.<type>` is in **pixels**. The renderer divides by `ptUnit` at draw time. The legacy `GeoStyle.ang_rdefault / ang_rshift / ang_right / dot_size` fields are pixel-valued as well.
 
-## Модули
+## Modules
 
-| Модуль | Назначение | Строк |
-|--------|-----------|-------|
-| `animageo.py` | Сцена, анимации, `CreateMObject` (диспетчер + 13 `_render_<type>` + `_build_render_ctx` + `_renderer_for` + `_make_label`), `loadGGB`, ImportPolicy wiring | ~1820 |
-| `ui.py` | TeX-шаблон, labels, NumberedFrame, CustomArrowTip | ~350 |
-| `constants.py` | Z-index тиры (Z_FILL, Z_LINE, Z_POINT, Z_LABEL) и scaling-коэффициенты | ~25 |
-| `keyframes.py` | Keyframe-анимация: парсинг JSON, интерполяторы, easing, `LabelOffsetInterpolator` + `attach_label_layouts` | ~410 |
-| `label_placement.py` | Авто-раскладка: greedy + 8 кандидатов, `compute_label_layout` (pure), `apply_label_layout` (impure), `compute_angle_label_center`, `compute_effective_arc_size_px` (angle_radius), bbox LRU, EMA+hysteresis helpers | ~810 |
-| `_stubs.py` | Type stubs для IDE-автодополнения (не импортируется в runtime) | ~610 |
-| `style/__init__.py` | `GeoStyle` (scene-level контейнер: палитра, export params, render flags), цветовые утилиты, re-export констант/скейлинга | ~275 |
-| `style/config.py` | **Новый.** `StyleConfig` (top-level), `DefaultsProfile`, `StyleOverlay`, `deep_merge` для multi-file JSON-слияния | ~220 |
-| `style/resolver.py` | **Новый.** `resolve(scene, elem, key)` + `resolved_style(scene, elem)` + `trace(…)` для дебага цепочки | ~130 |
-| `style/builtin.json` | **Новый.** Package-shipped дефолты в пикселях per-type; загружается всегда, user JSON сливается сверху | — |
-| `style/schema.py` | Документация и валидация JSON-стилей + `import_policy`-секции (+ `overlay` в NEW_TOP_KEYS) | ~130 |
-| `style/scaling.py` | Именованные функции: GGB px ↔ JSON style ↔ internal units | ~115 |
-| `style/import_policy.py` | Dataclass `ImportPolicy` — GGB-only трансформации (`scale:`, `quantize:`, `remap:`) | ~235 |
-| `style/dsl.py` | Мини-DSL для JSON: `const:`, `scale:`, `quantize:`, `remap:` | ~100 |
-| `style/ggb_resolver.py` | `resolve_ggb_style(ggb_raw)` — воспроизводит GGB import-style слой для faithful-режима | ~100 |
-| `geo/construction.py` | Граф зависимостей, топологическая сортировка (Кан), rebuild, apply, `update_tparam`, `rename`, `add_and_build` | ~540 |
-| `geo/lib_elements.py` | Point, Line, Segment, Ray, Angle, Polygon, Circle, Arc, Vector (+ re-export Conic/Function/ImplicitCurve); человекочитаемые поля (`.coords`, `.center/.radius`, `.normal/.offset/.direction`, `.vertex/.size/.side1/.side2`, `.endpoints`, `.vertices`, …); `Element.__getattr__` пробрасывает в `.data` | ~530 |
-| `geo/lib_conic.py` | `Conic` (3×3 матрица `.matrix`), классификация по инвариантам, `as_ellipse/as_parabola/as_hyperbola/as_lines/as_point`, `Conic.from_string(equation)` | ~440 |
-| `geo/lib_function.py` | `Function` — явная `y = f(x)` (`.expr`, `.var`, `.source`), sympy-парсинг, `If[...]` → `Piecewise`, цепочки `a ≤ x ≤ b`, `natural_singularities`, lambdify | ~290 |
-| `geo/lib_implicit.py` | `ImplicitCurve` — произвольное `F(x, y) = 0` (`.expr`, `.var_x/.var_y`, `.source`), sympy-парсинг, lambdify на два аргумента | ~180 |
-| `geo/curve_sampling.py` | Viewport-aware адаптивный сэмплер + Liang–Barsky-клиппинг; аналитика t-диапазонов для параболы/гиперболы; marching squares для implicit-кривых | ~370 |
-| `geo/lib_commands.py` | 100+ геометрических операций, пересечения всех пар (включая numeric F/I), Conic-команды (Center/Focus/Vertex/Axes/Directrix/Polar/Tangent), Ellipse/Hyperbola/Parabola конструкторы, `function_T/conic_T/implicit_curve_T` для string-DSL | ~2200 |
-| `geo/lib_vars.py` | `Measure(value, dimension)`, `AngleSize`, `Boolean(value)` | ~100 |
-| `geo/utils.py` | is_number, is_angle_degrees, is_boolean | ~30 |
-| `parsers/ggb_parser.py` | Извлечение XML из .ggb, парсинг конструкций, заполнение `ggb_raw`; `<expression type="conic/line/function/implicitpoly">` со знаком `=`; expressions внутри пропускаются через `dsl.run` | ~660 |
-| `parsers/dsl/` | Python-DSL (exec-engine): `transform.py` (AST-rewriter, loop-scope, форма имён, forbid-list), `registrar.py` (`__reg__`/`__reg_loop__`/`__reg_tuple__` + ContextVar), `namespace.py` (FactoryDict с `__missing__` для ~74 автообнаруженных команд + math + `style/hide/show` helpers + forward-ref для `addVar`-переменных), `proxy.py` (ElementProxy с `__getattr__` в data и арифметикой `+/-/*/-/abs`), `sugar.py` (`f(x) = expr` pre-pass), `stub_gen.py` (`<scene>_stubs.pyi` после `loadGGB`). Entry: `dsl.run(constr, code)`, `with dsl.scope(c):`, `scene.putCode(code)`, `scene.loadCode(path)`. Стабы: `namespace.pyi`, `proxy.pyi`. | ~800 |
-| `dsl.py` + `dsl.pyi` | Super-module — `from animageo.dsl import *` даёт все фабрики и типы в IDE | ~100 |
-| `parsers/svg_parser.py` | Cairo-рендеринг manim-объектов в SVG | ~120 |
+| Module | Role |
+|--------|------|
+| `animageo.py` | Scene, animations, `CreateMObject` (dispatcher + per-type `_render_<type>` renderers + `_build_render_ctx` + `_renderer_for` + `_make_label`), `loadGGB`, ImportPolicy wiring |
+| `__main__.py` | CLI entry point (`python -m animageo file.ggb -o out.svg`): static vector track (svg/pdf/eps/tikz) and manim render track (png/gif/mp4/webm/mov, `--keyframes` for animation) |
+| `ui.py` | TeX templates, `create_label` (9-point anchors), `ValueLabel` (DecimalNumber-backed fast value labels) + `prewarm_decimal_glyphs`, `install_cyrillic_tex_template`, NumberedFrame, CustomArrowTip |
+| `labels.py` | Final label-text resolution: `resolve_label_text`, `resolve_label_spec` (structured `LabelSpec` for the fast value-label path), label modes (name/value/name+value) |
+| `constants.py` | Z-index tiers (Z_FILL, Z_LINE, Z_POINT, Z_LABEL) and scaling coefficients |
+| `keyframes.py` | Keyframe animation: JSON parsing, interpolators, easing, `LabelOffsetInterpolator` + `attach_label_layouts` |
+| `label_placement.py` | Auto label placement: greedy solver + 8 candidates, `compute_label_layout` (pure), `apply_label_layout` (impure), `compute_angle_label_center`, `compute_effective_arc_size_px` (angle_radius), bbox LRU cache, EMA+hysteresis helpers |
+| `export_layout.py` | Export canvas layout: `ExportLayout`, `compute_export_layout`, size/fit/anchor/padding normalization for export options |
+| `render_config.py` | `configure_render` (output format / fps / transparency) + GIF palette fix |
+| `logging_config.py` | `configure_logging` helper backing the CLI `--verbose` / `--quiet` / `--log-level` flags |
+| `style/__init__.py` | `GeoStyle` (scene-level container: palette, export params, render flags), color utilities, re-export of constants/scaling |
+| `style/config.py` | `StyleConfig` (top level), `DefaultsProfile`, `StyleOverlay`, `deep_merge` for multi-file JSON merging; `resolve_style_input` (maps a bare preset name to the packaged preset JSON path; paths/dicts pass through) + `available_style_presets` |
+| `style/presets/*.json` | Packaged style presets (`default`, `book_blue`, `book_green`, `book_purple`, `book_red`), selectable by name via `resolve_style_input` |
+| `style/resolver.py` | `resolve(scene, elem, key)` + `resolved_style(scene, elem)` + `trace(…)` for debugging the chain |
+| `style/builtin.json` | Package-shipped per-type defaults in pixels; always loaded, user JSON merges on top |
+| `style/schema.py` | Documentation and validation of JSON styles + `import_policy` sections (+ `overlay` in NEW_TOP_KEYS) |
+| `style/scaling.py` | Named conversion functions: GGB px ↔ JSON style ↔ internal units |
+| `style/import_policy.py` | `ImportPolicy` dataclass — GGB-only transforms (`scale:`, `quantize:`, `remap:`) |
+| `style/dsl.py` | Mini-DSL for JSON values: `const:`, `scale:`, `quantize:`, `remap:` |
+| `style/ggb_resolver.py` | `resolve_ggb_style(ggb_raw)` — reproduces the GGB import-style layer for faithful mode |
+| `style/animatable.py` | Registry of animatable `elem.style` keys for keyframes v2 style tracks (interpolation kind per key; manim-free) |
+| `style/colorspace.py` | sRGB ↔ Oklab conversion and color interpolation for keyframe style tracks (manim-free) |
+| `style/enums.py` | Style vocabularies (`Literal` aliases + runtime tuples) and the GGB `pointStyle` → shape/fill/stroke decomposition table |
+| `style/proxy.py` + `proxy.pyi` | `StyleProxy` — dict subclass with attribute-style access to `elem.style` and explicit-write tracking |
+| `geo/construction.py` | Dependency graph, topological sort (Kahn), rebuild, apply, `update_tparam`, `rename`, `add_and_build` |
+| `geo/lib_elements.py` | Point, Line, Segment, Ray, Angle, Polygon, Circle, Arc, Vector, LocusCurve, Text (+ re-export of Conic/Function/ImplicitCurve); human-readable fields (`.coords`, `.center/.radius`, `.normal/.offset/.direction`, `.vertex/.size/.side1/.side2`, `.endpoints`, `.vertices`, …); `Element.__getattr__` forwards to `.data` |
+| `geo/lib_conic.py` | `Conic` (3×3 matrix `.matrix`), invariant-based classification, `as_ellipse/as_parabola/as_hyperbola/as_lines/as_point`, `Conic.from_string(equation)` |
+| `geo/lib_function.py` | `Function` — explicit `y = f(x)` (`.expr`, `.var`, `.source`), sympy parsing, `If[...]` → `Piecewise`, chained `a ≤ x ≤ b`, `natural_singularities`, lambdify |
+| `geo/lib_implicit.py` | `ImplicitCurve` — arbitrary `F(x, y) = 0` (`.expr`, `.var_x/.var_y`, `.source`), sympy parsing, two-argument lambdify |
+| `geo/curve_sampling.py` | Viewport-aware adaptive sampler + Liang–Barsky clipping; analytic t-ranges for parabola/hyperbola; marching squares for implicit curves |
+| `geo/lib_commands.py` | Geometric operations (400+ dispatchable entries in `COMMAND_REGISTRY`): intersections for all pairs (including numeric F/I), Conic commands (Center/Focus/Vertex/Axes/Directrix/Polar/Tangent), Ellipse/Hyperbola/Parabola constructors, `function_T/conic_T/implicit_curve_T` for the string DSL |
+| `geo/lib_vars.py` | `Measure(value, dimension)`, `AngleSize`, `Boolean(value)` |
+| `geo/tparam.py` | Point ↔ curve-parameter (tparam) math for every path type; backend of `Construction.tparam_from_coords` and the keyframe system |
+| `geo/utils.py` | is_number, is_angle_degrees, is_boolean |
+| `parsers/ggb_parser.py` | XML extraction from .ggb, construction parsing, `ggb_raw` population; `<expression type="conic/line/function/implicitpoly">` with an `=` sign; expressions are routed through `dsl.run` internally |
+| `parsers/ggb_macro.py` | Custom-tool macro expansion: parses `geogebra_macro.xml` definitions and inlines macro calls into primitive commands before parsing (recursive expansion supported) |
+| `parsers/ggb_generator.py` | Generates .ggb archives from a Construction (GeoGebra XML serialisation + ZIP packaging) |
+| `parsers/dsl/` | Python DSL (exec engine): `transform.py` (AST rewriter, loop scoping, name shaping, forbid list), `registrar.py` (`__reg__`/`__reg_loop__`/`__reg_tuple__` + ContextVar), `namespace.py` (FactoryDict with `__missing__` for ~74 auto-discovered commands + math + `style/hide/show` helpers + forward refs for `addVar` variables), `proxy.py` (ElementProxy with `__getattr__` into data plus `+/-/*//`/`abs` arithmetic), `sugar.py` (`f(x) = expr` pre-pass), `stub_gen.py` (`<scene>_stubs.pyi` after `loadGGB`). Entry points: `dsl.run(constr, code)`, `with dsl.scope(c):`, `scene.putCode(code)`, `scene.loadCode(path)`. Stubs: `namespace.pyi`, `proxy.pyi`. |
+| `dsl.py` + `dsl.pyi` | Super-module — `from animageo.dsl import *` gives all factories and types in the IDE |
+| `parsers/svg_parser.py` | Cairo rendering of manim objects to SVG |
+| `exporters/tikz/` | Semantic TikZ export (`scene.exportTikZ`): walks drawable elements in z-order and emits native TikZ through the same style resolver as the renderer |
+| `exporters/jsxgraph/` | Interactive JSXGraph export (`scene.exportJSXGraph`): transpiles the construction graph into live `board.create` calls; outputs html/js/spec/json/moodle |
+| `exporters/construction_summary.py` | Compact JSON construction summary for AI style generation (`construction_to_ai_summary`, `write_ai_summary`) |
 
-## Система зависимостей
+## Dependency system
 
-Каждый элемент конструкции имеет **уровень** (level):
+Every element of a construction has a **level**:
 
-- **Level 0** --- свободные точки, заданные координатами
-- **Level N** --- элементы, зависящие от элементов уровня N-1
+- **Level 0** --- free points defined by coordinates
+- **Level N** --- elements depending on elements of level N-1
 
 ```
 Level 0:  A(0,0)   B(4,0)   C(0,3)
@@ -122,51 +137,51 @@ Level 1:  M = Midpoint(A, B)       s = Segment(A, B)
 Level 2:  h = Segment(C, M)
 ```
 
-При изменении элемента перестраиваются только те, кто от него зависит (ленивый rebuild).
+When an element changes, only its dependents are rebuilt (lazy rebuild).
 
-## Расстановка подписей
+## Label placement
 
-`label_placement.py` работает в трёх режимах:
+`label_placement.py` operates in three modes:
 
-**1. Статический one-shot** (`auto_place_labels(scene)` / `scene.autoPlaceLabels()`):
-- `compute_label_layout` (pure) собирает `LabelInfo` по всем видимым подписям, считает препятствия (segments, circles, point cloud), выбирает preferred direction для каждой подписи, запускает priority-ordered greedy solver по 8 кандидатам.
-- Возвращает `dict[name, LabelPlacement]` без мутаций.
-- `apply_label_layout` (impure) пишет результат в `elem.style['label_offset_px']` / `elem.style['label_anchor']` и перерендеривает сцену.
-- Tex bbox кэшируется по `(text, font_size)` — keyframe-снимки и per-frame пересчёт переиспользуют измерения.
+**1. Static one-shot** (`auto_place_labels(scene)` / `scene.autoPlaceLabels()`):
+- `compute_label_layout` (pure) collects `LabelInfo` for all visible labels, gathers obstacles (segments, circles, point cloud), picks a preferred direction for each label, and runs a priority-ordered greedy solver over 8 candidates.
+- Returns `dict[name, LabelPlacement]` without mutations.
+- `apply_label_layout` (impure) writes the result into `elem.style['label_offset_px']` / `elem.style['label_anchor']` and re-renders the scene.
+- The Tex bbox is cached by `(text, font_size)` — keyframe snapshots and per-frame recomputation reuse the measurements.
 
 **2. `play_keyframes` + `keyframe_snapshots=true`**:
-- Pre-pass: сохраняем `get_independents()` + visibility, проходим все keyframe (carry-forward values), на каждом вызываем `compute_label_layout`, собираем snapshots `list[dict[name, LabelPlacement]]`. Восстанавливаем состояние, делаем `rebuild(full=True)`.
-- Перед реальным playback вызывается `_apply_keyframe_state(seq.keyframes[0], seq.element_info)`: значения и `show`/`hide` первого keyframe пишутся в construction, выполняется `geo.rebuild()`, затем `updateGeoElements()` обновляет затронутые mobject-ы. Это делает первый rendered frame независимым от сохраненного `.ggb` state.
-- `KeyframeSequence.attach_label_layouts(layouts)` связывает снимки с интервалами: для `kind='static'` подписей создаёт `LabelOffsetInterpolator` (линейная или smooth интерполяция ggb-оффсета между снимками); для `kind='dynamic_angle'` — `AngleParams`, чтобы per-frame пересчитывать биссектрису.
-- В `_play_keyframe_interval.on_frame` label-pass идёт ПОСЛЕ `geo.rebuild()` (чтобы `ang.side1/.side2/.vertex` были свежие) и ДО `updateGeoElements()` — метки рендерятся в том же `mob.become(CreateMObject(elem))`, что и геометрия.
+- Pre-pass: save `get_independents()` + visibility, walk all keyframes (carry-forward values), call `compute_label_layout` at each one, collect snapshots `list[dict[name, LabelPlacement]]`. Restore the state, run `rebuild(full=True)`.
+- Before actual playback, `_apply_keyframe_state(seq.keyframes[0], seq.element_info)` is called: the first keyframe's values and `show`/`hide` are written into the construction, `geo.rebuild()` runs, then `updateGeoElements()` refreshes the affected mobjects. This makes the first rendered frame independent of the saved `.ggb` state.
+- `KeyframeSequence.attach_label_layouts(layouts)` binds the snapshots to intervals: for `kind='static'` labels it creates a `LabelOffsetInterpolator` (linear or smooth interpolation of the ggb offset between snapshots); for `kind='dynamic_angle'` — `AngleParams`, so the bisector is recomputed per frame.
+- In `_play_keyframe_interval.on_frame` the label pass runs AFTER `geo.rebuild()` (so `ang.side1/.side2/.vertex` are fresh) and BEFORE `updateGeoElements()` — labels render in the same `mob.become(CreateMObject(elem))` as the geometry.
 
-**3. `autoPlaceLabels(dynamic=True)` под `addUpdater`**:
-- Устанавливает `LabelTracker` (dict на сцене с `prev_offset`, `prev_anchor`, `anchor_flip_counter`, `angle_params`, `cfg`).
-- `updateVar` после `geo.rebuild()` + `updateGeoElements()` дёргает `_apply_dynamic_labels`:
-  - для dynamic-angle подписей — `compute_angle_label_center` без сглаживания (функция непрерывна сама по себе);
-  - для статических — EMA (`apply_ema_step`) на offset + Schmitt-trigger на якорь (`anchor_hysteresis_step`);
-  - троттлинг через `solver_every_n_frames`.
+**3. `autoPlaceLabels(dynamic=True)` under `addUpdater`**:
+- Installs a `LabelTracker` (a dict on the scene with `prev_offset`, `prev_anchor`, `anchor_flip_counter`, `angle_params`, `cfg`).
+- `updateVar` after `geo.rebuild()` + `updateGeoElements()` calls `_apply_dynamic_labels`:
+  - for dynamic-angle labels — `compute_angle_label_center` without smoothing (the function is continuous by itself);
+  - for static labels — EMA (`apply_ema_step`) on the offset + Schmitt trigger on the anchor (`anchor_hysteresis_step`);
+  - throttling via `solver_every_n_frames`.
 
-MC-канонизация (`canonicalize_anchor=true`) переписывает для каждой подписи `(anchor=A, offset=O_A) → (anchor='MC', offset=O_A - edge_A·halfExtent·ptUnit_ggb)`. Визуальный центр сохраняется, но якорь всегда один и тот же → интерполяция не даёт дискретных скачков при смене направления между keyframe. Off by default, чтобы не менять существующие snapshot-тесты.
+MC canonicalization (`canonicalize_anchor=true`) rewrites every label from `(anchor=A, offset=O_A)` to `(anchor='MC', offset=O_A - edge_A·halfExtent·ptUnit_ggb)`. The visual center is preserved, but the anchor is always the same → interpolation produces no discrete jumps when the direction changes between keyframes. Off by default so existing snapshot tests keep passing.
 
-**Угловая геометрия, учтённая в раскладке:**
+**Angle geometry taken into account by the layout:**
 
-- **Multi-arc:** подписи углов отодвигаются за внешнюю дужку при `elem.style['tick_count'] > 1` — эффективный радиус = `arc_size_px + (lines − 1) · ang_rshift`, та же формула используется рендером и раскладкой.
-- **Два независимых зазора:** `angle_gap_arc_px` (дуга → подпись) и `angle_gap_sides_px` (стороны угла → bbox подписи для узких углов). Удалённый `angle_gap_px` больше не читается.
-- **Авто-подбор радиуса дуги (`overlay.angle_radius`, default off):** `compute_effective_arc_size_px` общий для рендера (`animageo.py:CreateMObject`) и раскладки (`compute_label_layout` + `_collect_labels`). Формула `base · (pivot_rad / angle) ** exp`, зажатая в `[min_px, max_arm_fraction · min_arm_px]`. Подпись автоматически следует за скалированной дугой, т.к. источник числа один. Per-element escape: `elem.style['auto_radius'] = False`. Рендерер принимает `arc_size_px` через resolver; DSL-углы без explicit `elem.style['arc_size_px']` используют пиксельный путь через builtin default (17 px).
+- **Multi-arc:** angle labels move past the outermost arc when `elem.style['tick_count'] > 1` — effective radius = `arc_size_px + (lines − 1) · ang_rshift`, the same formula used by both the renderer and the layout.
+- **Two independent gaps:** `angle_gap_arc_px` (arc → label) and `angle_gap_sides_px` (angle sides → label bbox for narrow angles). The removed unified `angle_gap_px` key is no longer read.
+- **Automatic arc-radius scaling (`overlay.angle_radius`, default off):** `compute_effective_arc_size_px` is shared by the renderer (`animageo.py:CreateMObject`) and the layout (`compute_label_layout` + `_collect_labels`). Formula `base · (pivot_rad / angle) ** exp`, clamped to `[min_px, max_arm_fraction · min_arm_px]`. The label automatically follows the scaled arc because the number comes from a single source. Per-element escape: `elem.style['auto_radius'] = False`. The renderer takes `arc_size_px` through the resolver; DSL angles without an explicit `elem.style['arc_size_px']` use the pixel path via the builtin default (17 px).
 
-## Диспетчеризация команд
+## Command dispatch
 
-Функции в `lib_commands.py` именуются по шаблону:
+Functions in `lib_commands.py` are named by the pattern:
 
 ```
-{имя_команды}_{типы_аргументов}
+{command_name}_{argument_types}
 ```
 
-Сокращения типов:
+Type shortcuts:
 
-| Буква | Тип |
-|-------|-----|
+| Letter | Type |
+|--------|------|
 | `p` | Point |
 | `l` | Line |
 | `s` | Segment |
@@ -184,100 +199,100 @@ MC-канонизация (`canonicalize_anchor=true`) переписывает 
 | `K` | Conic |
 | `F` | Function |
 | `I` | ImplicitCurve |
-| `T` | str (DSL-литерал для строковых конструкторов) |
+| `T` | str (DSL literal for string-arg constructors) |
 
-Примеры: `midpoint_pp`, `intersect_lc`, `rotate_pAp`, `distance_pp`,
-`intersect_KK` (коника ∩ коника через pencil), `intersect_Kl` (коника ∩ прямая),
-`intersect_FK` (функция ∩ коника через подстановку), `intersect_II`
-(implicit ∩ implicit через marching squares + Newton), `center_K`,
+Examples: `midpoint_pp`, `intersect_lc`, `rotate_pAp`, `distance_pp`,
+`intersect_KK` (conic ∩ conic via the pencil method), `intersect_Kl` (conic ∩ line),
+`intersect_FK` (function ∩ conic via substitution), `intersect_II`
+(implicit ∩ implicit via marching squares + Newton), `center_K`,
 `focus_K`, `polar_pK`, `tangent_pK`, `ellipse_ppi`, `parabola_pl`,
-`conic_ppppp` (коника через 5 точек), `function_T` (Function("y = x²")).
+`conic_ppppp` (conic through 5 points), `function_T` (Function("y = x²")).
 
-Диспетчер (`Command.func()`) ищет функцию по имени в `globals()` модуля.
+The dispatcher (`Command.func()`) looks the name up in `COMMAND_REGISTRY`, populated from the module's functions at import time.
 
-## Кривые высокого порядка: Conic, Function, ImplicitCurve
+## Higher-order curves: Conic, Function, ImplicitCurve
 
-Три класса, покрывающие всё, что не сводится к линии/окружности/многоугольнику:
+Three classes covering everything that does not reduce to a line/circle/polygon:
 
 ```
 ┌───────────────────────────────────────────────────────────────────┐
 │ Conic (lib_conic.py)                                              │
-│   matrix ∈ ℝ³ˣ³ симметричная  — (x, y, 1)·matrix·(x, y, 1)ᵀ = 0   │
-│   Ленивая классификация по инвариантам det(matrix),               │
-│   det(matrix₃₃), rank → 9 подтипов (circle / ellipse / parabola / │
+│   matrix ∈ ℝ³ˣ³ symmetric  — (x, y, 1)·matrix·(x, y, 1)ᵀ = 0      │
+│   Lazy classification by the invariants det(matrix),              │
+│   det(matrix₃₃), rank → 9 subtypes (circle / ellipse / parabola / │
 │   hyperbola / intersecting_lines / parallel_lines / double_line / │
-│   point / empty). Каноническая параметризация через               │
-│   eigendecomposition matrix₃₃, разложение вырожденных через (±λ)  │
-│   eigenvectors.                                                   │
+│   point / empty). Canonical parametrization via                   │
+│   eigendecomposition of matrix₃₃; degenerate cases decomposed     │
+│   through (±λ) eigenvectors.                                      │
 └───────────────────────────────────────────────────────────────────┘
 
 ┌───────────────────────────────────────────────────────────────────┐
 │ Function (lib_function.py)                                        │
-│   sympy.Expr + свободная переменная; lambdify('numpy') один раз.  │
-│   Препроцессор GGB → sympy: `^ → **`, `≤/≥ → <=/>=`,              │
-│   цепочки `a ≤ x ≤ b → (a ≤ x) & (x ≤ b)`,                        │
+│   sympy.Expr + free variable; lambdify('numpy') exactly once.     │
+│   GGB → sympy preprocessor: `^ → **`, `≤/≥ → <=/>=`,              │
+│   chains `a ≤ x ≤ b → (a ≤ x) & (x ≤ b)`,                         │
 │   `If[cond, then [, else]] → Piecewise((then, cond), …)`.         │
-│   `natural_singularities` через `sympy.singularities`.            │
+│   `natural_singularities` via `sympy.singularities`.              │
 └───────────────────────────────────────────────────────────────────┘
 
 ┌───────────────────────────────────────────────────────────────────┐
 │ ImplicitCurve (lib_implicit.py)                                   │
-│   F(x, y) = 0 произвольной формы (полиномиальной или не).         │
-│   `LHS = RHS` преобразуется в `(LHS) − (RHS) = 0`.                │
-│   lambdify на два аргумента; NaN-безопасное вычисление.           │
+│   F(x, y) = 0 of arbitrary form (polynomial or not).              │
+│   `LHS = RHS` is normalized to `(LHS) − (RHS) = 0`.               │
+│   Two-argument lambdify; NaN-safe evaluation.                     │
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-## Рендеринг кривых и клиппинг по холсту
+## Curve rendering and viewport clipping
 
-Все три типа рендерятся через один общий слой в `curve_sampling.py`:
+All three types render through one shared layer in `curve_sampling.py`:
 
-- **`sample_parametric(func, t_range, viewport, ...)`** — адаптивный
-  сэмплер. Начинает с равномерной сетки в 32 точки; где шаг в scene MU
-  превышает `segment_mu` (по умолчанию `3 / ptUnit`, т. е. 3 пикселя),
-  вставляет середины длинных сегментов. **Hard cap** `max_samples=500`
-  per-mobject гарантирует отсутствие зависаний на патологических
-  выражениях. Клиппинг по viewport через **Liang–Barsky** с разрывом
-  полилинии при выходе из кадра.
+- **`sample_parametric(func, t_range, viewport, ...)`** — adaptive
+  sampler. Starts from a uniform 32-point grid; where the step in scene MU
+  exceeds `segment_mu` (default `3 / ptUnit`, i.e. 3 pixels), it inserts
+  midpoints into long segments. A **hard cap** of `max_samples=500`
+  per mobject guarantees no hangs on pathological expressions. Viewport
+  clipping via **Liang–Barsky**, breaking the polyline when it leaves
+  the frame.
 - **`viewport_t_ranges_parabola(...)` / `viewport_t_range_hyperbola_branch(...)`** —
-  аналитически сужают t-диапазон до пересечения с viewport в канонической
-  рамке коники. Парабола: `|u| ≤ 2·√(p·v_max)` (при `v_min > 0` — два
-  диапазона). Гипербола (по ветви): `|t| ≤ min(acosh(u_max/a), asinh(v_max/b))`.
-- **`marching_squares(F, viewport, grid_n=128)`** — классическая 16-случаев
-  для `ImplicitCurve`. O(grid_n²) работы, константа — никаких
-  зависаний. Линейная интерполяция зеросов на рёбрах клетки.
+  analytically narrow the t-range to the viewport intersection in the conic's
+  canonical frame. Parabola: `|u| ≤ 2·√(p·v_max)` (with `v_min > 0` — two
+  ranges). Hyperbola (per branch): `|t| ≤ min(acosh(u_max/a), asinh(v_max/b))`.
+- **`marching_squares(F, viewport, grid_n=128)`** — the classic 16-case
+  algorithm for `ImplicitCurve`. O(grid_n²) work, constant memory — no
+  hangs. Linear interpolation of zeros on cell edges.
 
-`CreateMObject` ветви:
+`CreateMObject` branches:
 
-| Тип | Стратегия | Комментарий |
-|-----|-----------|-------------|
-| `Conic (circle)` | `manim.Circle` с прямыми параметрами | замкнутый контур, заливка работает |
-| `Conic (ellipse)` | `manim.Ellipse` + `.rotate().move_to(...)` | замкнутый контур, заливка работает |
-| `Conic (parabola)` | `make_parabola_param` + `viewport_t_ranges_parabola` + `sample_parametric` | одна или две полилинии |
-| `Conic (hyperbola)` | `make_hyperbola_branch_param` × 2 ветви | каждая ветвь — полилиния |
-| `Conic (intersecting/parallel/double lines)` | `as_lines()` → `Line.get_endpoints(corners)` | переиспользует существующий рендер прямых |
+| Type | Strategy | Notes |
+|------|----------|-------|
+| `Conic (circle)` | `manim.Circle` with direct parameters | closed contour, fill works |
+| `Conic (ellipse)` | `manim.Ellipse` + `.rotate().move_to(...)` | closed contour, fill works |
+| `Conic (parabola)` | `make_parabola_param` + `viewport_t_ranges_parabola` + `sample_parametric` | one or two polylines |
+| `Conic (hyperbola)` | `make_hyperbola_branch_param` × 2 branches | each branch is a polyline |
+| `Conic (intersecting/parallel/double lines)` | `as_lines()` → `Line.get_endpoints(corners)` | reuses the existing line renderer |
 | `Conic (point)` | `manim.Dot` | — |
-| `Conic (empty)` | `None` | ничего не рисуется |
-| `Function` | `(t, f(t))` как parametric + разбиение по `natural_singularities` + `sample_parametric` | `y = 1/x` даёт две полилинии, `tan(x)` — несколько кусков между разрывами |
-| `ImplicitCurve` | `marching_squares` → список отрезков, каждый — `manim.Line` | лемнискаты, «сердца», тригонометрические узоры |
+| `Conic (empty)` | `None` | nothing is drawn |
+| `Function` | `(t, f(t))` as parametric + splitting at `natural_singularities` + `sample_parametric` | `y = 1/x` gives two polylines, `tan(x)` — several pieces between discontinuities |
+| `ImplicitCurve` | `marching_squares` → list of segments, each a `manim.Line` | lemniscates, "hearts", trigonometric patterns |
 
-## Пересечения
+## Intersections
 
-Реализованы все нетривиальные пары:
+All nontrivial pairs are implemented:
 
-| Пара | Метод | Функция |
-|------|-------|---------|
-| Conic ∩ Line | Подстановка параметризации прямой в `pᵀMp = 0` → квадратика | `intersect_Kl` |
-| Conic ∩ Conic | Pencil: `det(λM₁ + M₂) = 0` → кубическая → разложение λ·M₁+M₂ в пару прямых → `intersect_Kl` | `intersect_KK` |
-| Conic ∩ Circle | Circle → Conic адаптер + `intersect_KK` | `intersect_Kc` |
-| Conic ∩ Arc/Segment/Ray | `intersect_Kl` + фильтр по принадлежности | `intersect_KC`/`Ks`/`Kr` |
-| Function ∩ Line | Подстановка `y = f(x)` в уравнение прямой → 1D брент-поиск с sympy.solve fallback | `intersect_Fl` |
-| Function ∩ Conic | Подстановка → 1D: `pᵀ·M·p` при `p = (x, f(x), 1)` | `intersect_FK` |
+| Pair | Method | Function |
+|------|--------|----------|
+| Conic ∩ Line | Substitute the line parametrization into `pᵀMp = 0` → quadratic | `intersect_Kl` |
+| Conic ∩ Conic | Pencil: `det(λM₁ + M₂) = 0` → cubic → decompose λ·M₁+M₂ into a pair of lines → `intersect_Kl` | `intersect_KK` |
+| Conic ∩ Circle | Circle → Conic adapter + `intersect_KK` | `intersect_Kc` |
+| Conic ∩ Arc/Segment/Ray | `intersect_Kl` + membership filter | `intersect_KC`/`Ks`/`Kr` |
+| Function ∩ Line | Substitute `y = f(x)` into the line equation → 1D Brent search with sympy.solve fallback | `intersect_Fl` |
+| Function ∩ Conic | Substitution → 1D: `pᵀ·M·p` with `p = (x, f(x), 1)` | `intersect_FK` |
 | Function ∩ Circle | `_circle_to_conic` + FK | `intersect_Fc` |
 | Function ∩ Function | `f₁(x) − f₂(x) = 0` | `intersect_FF` |
-| ImplicitCurve ∩ Line/Segment/Ray | Подстановка параметризации прямой в F → 1D | `intersect_Il/Is/Ir` |
-| ImplicitCurve ∩ Conic/Circle/Function | Marching squares F₁ → вдоль каждого сегмента root-find F₂ → Newton-уточнение через `scipy.fsolve` | `intersect_IK/Ic/IF` |
-| ImplicitCurve ∩ ImplicitCurve | То же самое | `intersect_II` |
+| ImplicitCurve ∩ Line/Segment/Ray | Substitute the line parametrization into F → 1D | `intersect_Il/Is/Ir` |
+| ImplicitCurve ∩ Conic/Circle/Function | Marching squares of F₁ → root-find F₂ along each segment → Newton refinement via `scipy.fsolve` | `intersect_IK/Ic/IF` |
+| ImplicitCurve ∩ ImplicitCurve | Same approach | `intersect_II` |
 
-Все функции имеют `*i` index-варианты для `Intersect[..., n]` и
-обратные варианты (`_Kl`/`_lK`) для порядка аргументов.
+All functions have `*i` index variants for `Intersect[..., n]` and
+reversed-argument variants (`_Kl`/`_lK`).
