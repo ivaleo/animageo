@@ -81,7 +81,7 @@ make it readable).
 ## 2. Environment setup
 
 ```bash
-python3 -m venv venv               # Python 3.10–3.13; prefer 3.12/3.13.
+python3 -m venv venv               # Python 3.11–3.14; prefer 3.12/3.13.
 ./venv/bin/pip install animageo    # pulls numpy, manim, pycairo, sympy, scipy
 ./venv/bin/python -c "import animageo, manim; print('ok')"
 ```
