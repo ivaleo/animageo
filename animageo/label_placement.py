@@ -1817,6 +1817,16 @@ def _solve_greedy(labels, segments, circles, arc_pts, distance, padding, weights
                 result.append((lbl.name, cur_kept,
                                _nearest_dir_index(cur_kept - lbl.anchor)))
                 continue
+            # The manual position cannot be kept clear (e.g. the offset is
+            # collinear with an incident line, so the radial push never
+            # escapes it). Clearance is a hard constraint; respect is only a
+            # preference (TZ-label-offset-ggb-fidelity §5.3 addendum). Drop
+            # the position pin so the inertia term and the pinned recompact
+            # don't drag the label back onto the obstacle — the direction
+            # hints (preferred_dir/bisector_dir) stay as soft side bias for
+            # the full search below.
+            cur = None
+            lbl.current_center = None
 
         # FP-4/FP-7 (keep-direction): place along the single preferred direction
         # (bisector for vertices, else the canonical/density direction) and nudge
@@ -2211,6 +2221,69 @@ def _find_leader_target(anchor, lbl, segments, circles, arc_pts, placed,
                                           arc_pts, placed):
                 return c
     return None
+
+
+def _clearance_guard_pass(labels, result, segments, circles, arc_pts,
+                          distance, padding, ptUnit, *, geom_gap=0.0,
+                          max_push_px=26.0, ang_steps=72):
+    """Final hard-constraint sweep: no label sits on geometry when a free spot
+    is reachable (TZ-label-offset-ggb-fidelity §5.3 addendum).
+
+    Every earlier pass trades clearance against other goals — the inertia term
+    pulls a respected label back toward its manual position, and
+    ``_recompact_pass`` tolerates clipping a line INCIDENT to the label's own
+    point. Both are reasonable preferences, but users read a label lying on a
+    stroke as a defect ("подписи не должны налезать на линии"), so clearance
+    must win whenever it can: "не налезать" is a constraint, "уважать ручной
+    сдвиг" is a preference.
+
+    For each label that actually overlaps geometry, this searches outward from
+    its current position — nearest angle first, then increasing radius — for a
+    spot clear of ALL geometry and of the already-placed labels, and moves it
+    there. When nothing clear exists within ``max_push_px`` the label keeps its
+    position (graceful degradation: a dense node still gets its closest, least
+    bad placement rather than being flung away).
+    """
+    by_name = {lbl.name: lbl for lbl in labels}
+    step = 1.0 / ptUnit
+    cap = max_push_px / ptUnit
+    # Nearest-first angular offsets: 0, ±5°, ±10°, … full circle.
+    offs = sorted((-pi + 2 * pi * i / ang_steps for i in range(ang_steps)),
+                  key=abs)
+
+    for k in range(len(result)):
+        name, center, dir_idx = result[k]
+        lbl = by_name.get(name)
+        if lbl is None or lbl.fixed_center is not None:
+            continue      # angle labels own their bisector math
+        hw_p, hh_p = lbl.half_w + padding, lbl.half_h + padding
+        others = [(result[j][1], by_name[result[j][0]].half_w + padding,
+                   by_name[result[j][0]].half_h + padding)
+                  for j in range(len(result))
+                  if j != k and result[j][0] in by_name]
+        if not _candidate_has_overlap(center, hw_p, hh_p, segments, circles,
+                                      arc_pts, others, geom_gap):
+            continue      # already clear — the common case, nothing to do
+
+        a = np.asarray(lbl.anchor, dtype=float)[:2]
+        d_vec = np.asarray(center, dtype=float) - a
+        dist = float(np.linalg.norm(d_vec))
+        cur_ang = atan2(float(d_vec[1]), float(d_vec[0])) if dist > 1e-9 else 0.0
+        base = max(distance + lbl.margin, dist)
+        best = None
+        d = base
+        while d <= base + cap + 1e-9 and best is None:
+            for off in offs:
+                ang = cur_ang + off
+                c = np.array([a[0] + d * cos(ang), a[1] + d * sin(ang)])
+                if _candidate_has_overlap(c, hw_p, hh_p, segments, circles,
+                                          arc_pts, others, geom_gap):
+                    continue
+                best = c
+                break
+            d += step
+        if best is not None:
+            result[k] = (name, best, _nearest_dir_index(best - a))
 
 
 def _leader_layout_pass(scene, labels, result, segments, circles, arc_pts,
@@ -3029,6 +3102,16 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
                         max_push_px=compact_max_push,
                         seg_dashed=seg_dashed, circ_dashed=circ_dashed,
                         overlap_tol=overlap_tol_px / ptUnit)
+
+    # Respecting a manual position is a preference, while keeping labels clear
+    # of geometry and one another is a constraint.  Preference-driven repair and
+    # compaction passes may pull a label back onto an obstacle, so enforce the
+    # constraint once more at the end whenever manual positions participate.
+    # Only labels that actually overlap move, and only when a nearby clear spot
+    # is reachable.
+    if respect_current:
+        _clearance_guard_pass(labels, result, segments, circles, arc_pts,
+                              distance, padding, ptUnit, geom_gap=geom_gap)
 
     # P2-A: displace genuinely-stuck labels and record leader connectors. Runs
     # last (sees final positions). Default 'overplot' → no-op (byte-identical).
