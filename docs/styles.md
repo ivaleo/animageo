@@ -1,60 +1,60 @@
-# Система стилей AnimaGeo — полный справочник
+# The AnimaGeo Style System — Complete Reference
 
-> Подробный гайд по всем возможностям оформления в AnimaGeo: JSON-схема, per-element ключи, z-index, подписи, автораскладка, ImportPolicy, шрифты, единицы, pixel-invariance, отличия статики и анимации. Для интерактивного прохождения см. `docs/guide/05-styles.html` (стили) и `docs/guide/06-labels.html` (подписи).
+> A detailed guide to everything visual in AnimaGeo: the JSON schema, per-element keys, z-index, labels and automatic label placement, ImportPolicy, fonts, units, pixel invariance, and the differences between static and animated output. For an interactive walkthrough see `docs/guide/05-styles.html` (styles) and `docs/guide/06-labels.html` (labels) (Russian, interactive — requires a local server).
 
 ---
 
-## Где читать про стили
+## Where to read about styles
 
-| Документ | Когда читать |
+| Document | When to read it |
 |---|---|
-| `docs/styles.md` | Главный справочник по стилям: концепция слоёв, JSON-схема, resolver, единицы, overlay, rendering, import |
-| `docs/architecture.md` | Короткая архитектурная карта: как GGB/DSL проходят через `applyStyle`, `StyleConfig`, `ImportPolicy`, `StyleOverlay` и renderer |
-| `docs/import_policies.md` | Только слой GGB import/adaptation: raw GGB values → `elem.ggb_style`, DSL-директивы `scale:` / `quantize:` / `remap:` |
-| `docs/field_names.md` | Таблица соответствий: GGB XML → `elem.ggb_raw` → `elem.ggb_style` / `elem.style` → JSON/style layer → renderer |
-| `docs/guide/05-styles.html` | HTML-гайд по стилям с примерами |
-| `docs/guide/11-reference.html` | HTML-reference по ключам, API и resolver |
+| `docs/styles.md` | The main style reference: layer concept, JSON schema, resolver, units, overlay, rendering, import |
+| `docs/architecture.md` | A short architectural map: how GGB/DSL flow through `applyStyle`, `StyleConfig`, `ImportPolicy`, `StyleOverlay` and the renderer |
+| `docs/import_policies.md` | The GGB import/adaptation layer only: raw GGB values → `elem.ggb_style`, the `scale:` / `quantize:` / `remap:` DSL directives |
+| `docs/field_names.md` | Correspondence table: GGB XML → `elem.ggb_raw` → `elem.ggb_style` / `elem.style` → JSON/style layer → renderer |
+| `docs/guide/05-styles.html` | HTML style guide with examples |
+| `docs/guide/11-reference.html` | HTML reference for keys, API and the resolver |
 
-## Концепция слоёв
+## Layer concept
 
-Стили разделены по ответственности, а не по “месту, где удобнее записать ключ”:
+Styles are split by responsibility, not by "whichever place is most convenient to write the key in":
 
-| Слой | Ответственность | Что туда класть | Что туда не класть |
+| Layer | Responsibility | What belongs here | What does not |
 |---|---|---|---|
-| `presets` | Семантические токены | Цвета, размеры, толщины, font-size, tick/arrow presets | Правила выбора для конкретных объектов |
-| `defaults` | Базовый стиль типа элемента | “Все точки по умолчанию такие”, “все углы имеют такой arc radius” | Именные исключения, GGB-specific remap |
-| `import` | Адаптация GeoGebra | Маппинг GGB colors/point sizes/line widths, `ImportPolicy` для raw-derived значений | Проектную стилизацию по типам/именам |
-| `overlay` | Переопределения поверх импорта и DSL | `per_type`, `per_name`, auto angle radius, label placement | Разбор raw GGB значений |
-| `reference` | Эталонный холст стиля | reference width/height для preview и масштабируемого экспорта | Физический размер итогового файла |
-| `rendering` | Тонкие настройки вывода | line cap, background, z/layer behavior, global point display | Стили отдельных объектов и GGB remap |
-| `elem.ggb_style` | Нормализованный результат GGB import/adaptation | Адаптированные GGB colors/sizes/line types/labels | Ручные DSL/API-правки |
-| `elem.style` | Явная настройка конкретного элемента | Локальная правка из DSL/API | Глобальные правила проекта и raw GGB |
+| `presets` | Semantic tokens | Colors, sizes, widths, font sizes, tick/arrow presets | Selection rules for specific objects |
+| `defaults` | Per-type baseline style | "All points look like this by default", "all angles have this arc radius" | Named exceptions, GGB-specific remaps |
+| `import` | GeoGebra adaptation | Mapping of GGB colors/point sizes/line widths, `ImportPolicy` for raw-derived values | Project stylization by type/name |
+| `overlay` | Overrides on top of import and DSL | `per_type`, `per_name`, auto angle radius, label placement | Parsing of raw GGB values |
+| `reference` | Reference canvas of a style | Reference width/height for previews and scalable export | Physical size of the output file |
+| `rendering` | Fine-grained output settings | Line cap, background, z/layer behavior, global point display | Styles of individual objects and GGB remaps |
+| `elem.ggb_style` | Normalized result of GGB import/adaptation | Adapted GGB colors/sizes/line types/labels | Manual DSL/API edits |
+| `elem.style` | Explicit per-element settings | Local edits from DSL/API | Project-wide rules and raw GGB values |
 
-Короткое правило: **`import` отвечает “как прочитать GeoGebra”, `overlay` отвечает “как оформить проект”, `rendering` отвечает “как экспортировать/дорисовать”.**
-
----
-
-## Содержание
-
-1. [Быстрый обзор пайплайна](#1-быстрый-обзор-пайплайна)
-2. [Единицы и pixel-invariance](#2-единицы-и-pixel-invariance)
-3. [Холст, камера, экспорт](#3-холст-камера-экспорт)
-4. [JSON-схема стиля](#4-json-схема-стиля)
-5. [Z-index: слои рендеринга](#5-z-index-слои-рендеринга)
-6. [Per-element style: все ключи](#6-per-element-style-все-ключи)
-7. [Подписи и TeX](#7-подписи-и-tex)
-8. [Автоматическая расстановка подписей](#8-автоматическая-расстановка-подписей)
-9. [ImportPolicy: гибкий импорт из GeoGebra](#9-importpolicy-гибкий-импорт-из-geogebra)
-10. [Статика vs анимация](#10-статика-vs-анимация)
-11. [Keyframe-анимации и интерполяция подписей](#11-keyframe-анимации-и-интерполяция-подписей)
-12. [Batch-API: массовое изменение стилей](#12-batch-api-массовое-изменение-стилей)
-13. [Готовые пресеты](#13-готовые-пресеты)
-14. [Рецепты «как добиться X»](#14-рецепты-как-добиться-x)
-15. [Известные особенности и подводные камни](#15-известные-особенности-и-подводные-камни)
+The short rule: **`import` answers "how to read GeoGebra", `overlay` answers "how to style the project", `rendering` answers "how to export/finish the drawing".**
 
 ---
 
-## 1. Быстрый обзор пайплайна
+## Contents
+
+1. [Pipeline at a glance](#1-pipeline-at-a-glance)
+2. [Units and pixel invariance](#2-units-and-pixel-invariance)
+3. [Canvas, camera, export](#3-canvas-camera-export)
+4. [Style JSON schema](#4-style-json-schema)
+5. [Z-index: rendering layers](#5-z-index-rendering-layers)
+6. [Per-element style: all keys](#6-per-element-style-all-keys)
+7. [Labels and TeX](#7-labels-and-tex)
+8. [Automatic label placement](#8-automatic-label-placement)
+9. [ImportPolicy: flexible GeoGebra import](#9-importpolicy-flexible-geogebra-import)
+10. [Statics vs animation](#10-statics-vs-animation)
+11. [Keyframe animation and label interpolation](#11-keyframe-animation-and-label-interpolation)
+12. [Batch API: bulk style changes](#12-batch-api-bulk-style-changes)
+13. [Bundled presets](#13-bundled-presets)
+14. [Recipes: "how do I get X"](#14-recipes-how-do-i-get-x)
+15. [Known quirks and gotchas](#15-known-quirks-and-gotchas)
+
+---
+
+## 1. Pipeline at a glance
 
 ```
 .ggb → ggb_parser → Construction (Elements + ggb_raw + ggb_style)
@@ -66,7 +66,7 @@
                               ├─ StyleConfig (builtin.json + user JSON deep-merged)
                               │   ├─ presets
                               │   ├─ defaults.<type>     ← per-type baseline
-                              │   ├─ overlay.per_type    ← равенство GGB+DSL
+                              │   ├─ overlay.per_type    ← applies equally to GGB+DSL
                               │   ├─ overlay.per_name
                               │   ├─ overlay.angle_radius
                               │   └─ overlay.label_placement
@@ -84,141 +84,143 @@
                   SVG       MP4      Live-preview
 ```
 
-Каждый элемент несёт три блока стилевых данных:
+Every element carries three blocks of style data:
 
-| Источник | Когда заполняется | Что определяет |
+| Source | When it is populated | What it determines |
 |---|---|---|
-| `elem.ggb_raw` | `ggb_parser` | Сырые GGB-значения (`point_size`, `line_thickness`, `line_opacity`, `line_type`, `arc_size`, `label_offset_px`, `obj_color.hex` / `obj_color.opacity`) |
-| `elem.ggb_style` | `ggb_parser` + `applyStyle` import rules + `ImportPolicy` | Нормализованный GGB visual baseline. Resolver использует его только если `import.enabled` не `false`. |
-| `elem.style` | DSL/API-код, layout/keyframe helpers | Явные per-element записи. Выигрывает у overlay, GGB import и defaults. |
-| `scene.style_config` | `StyleConfig.load(style)` | Конфигурация `presets`, `defaults`, `overlay`, `rendering`, `reference`. Читается через `resolver.resolve()`. |
-| `GeoStyle` | `applyStyle` из JSON/dict | Scene-level контейнер для палитры, renderer flags и computed `export`. |
+| `elem.ggb_raw` | `ggb_parser` | Raw GGB values (`point_size`, `line_thickness`, `line_opacity`, `line_type`, `arc_size`, `label_offset_px`, `obj_color.hex` / `obj_color.opacity`) |
+| `elem.ggb_style` | `ggb_parser` + `applyStyle` import rules + `ImportPolicy` | The normalized GGB visual baseline. The resolver only reads it when `import.enabled` is not `false`. |
+| `elem.style` | DSL/API code, layout/keyframe helpers | Explicit per-element entries. Wins over overlay, GGB import and defaults. |
+| `scene.style_config` | `StyleConfig.load(style)` | The `presets`, `defaults`, `overlay`, `rendering`, `reference` configuration. Read through `resolver.resolve()`. |
+| `GeoStyle` | `applyStyle` from JSON/dict | Scene-level container for the palette, renderer flags and the computed `export`. |
 
-Рендер в `CreateMObject`, SVG/PNG/MP4 export и preview читают визуальные значения через `resolver.resolve()`. Поэтому GGB import, defaults, overlay и прямые DSL-записи проходят через один механизм.
+Rendering in `CreateMObject`, SVG/PNG/MP4 export and previews all read visual values through `resolver.resolve()`. GGB import, defaults, overlay and direct DSL writes therefore go through a single mechanism.
 
-### Цепочка приоритетов resolver
+### Resolver priority chain
 
-`resolver.resolve(scene, elem, key)` обходит слои сверху вниз и возвращает первый найденный:
+`resolver.resolve(scene, elem, key)` walks the layers top-down and returns the first hit:
 
 ```
-1. elem.style[key]                  ← явная DSL/API-запись
-2. overlay.per_name[name][key]      ← точечный оверрайд
-3. overlay.per_type[type][key]      ← по типу элемента
-4. elem.ggb_style[key]              ← GGB import/adaptation, если import.enabled != false
+1. elem.style[key]                  ← explicit DSL/API write
+2. overlay.per_name[name][key]      ← targeted override
+3. overlay.per_type[type][key]      ← by element type
+4. elem.ggb_style[key]              ← GGB import/adaptation, if import.enabled != false
 5. defaults.by_type[type][key]      ← builtin.json + user defaults (deep-merged)
-6. intrinsic geometry style         ← внутренние fallback-ключи классов геометрии
-7. default=… (аргумент вызова)      ← final fallback
+6. intrinsic geometry style         ← internal fallback keys of the geometry classes
+7. default=… (call argument)        ← final fallback
 ```
 
-**Инвариант**: overlay (per_type/per_name) выигрывает у GGB import/adaptation. Прямые пользовательские записи в `elem.style` считаются explicit и имеют максимальный приоритет. Overlay не материализуется в `elem.style`; рендерный путь читает его через resolver.
+**Invariant**: the overlay (per_type/per_name) wins over GGB import/adaptation. Direct user writes into `elem.style` count as explicit and have the highest priority. The overlay is never materialized into `elem.style`; the render path reads it through the resolver.
 
 ### `builtin.json`
 
-Package-shipped файл `animageo/style/builtin.json` содержит разумные pixel-unit дефолты для каждого типа элемента. Он **всегда** загружается первым, user JSON сливается сверху через глубокое слияние (`deep_merge`). Благодаря этому короткий пользовательский файл типа
+The package-shipped file `animageo/style/builtin.json` contains sensible pixel-unit defaults for every element type. It is **always** loaded first, and the user JSON is deep-merged on top (`deep_merge`). This makes a short user file like
 
 ```json
 {"defaults": {"point": {"size_px": 10}}}
 ```
 
-достаточен, чтобы переопределить точку, сохранив все остальные дефолты (цвета, толщины, углы, …).
+enough to override points while keeping all other defaults (colors, widths, angles, …).
 
-### DSL-элементы получают overlay
+### DSL elements get the overlay
 
-`ImportPolicy` работает только с raw-GGB значениями, поэтому DSL-элементы
-через него не стилизуются. Общие правила по типу/имени задаются в
-`overlay.per_type` / `overlay.per_name`; resolver читает такие правила
-лениво и одинаково для GGB и DSL.
+`ImportPolicy` operates only on raw GGB values, so DSL elements are not
+styled through it. Shared rules by type/name belong in
+`overlay.per_type` / `overlay.per_name`; the resolver reads such rules
+lazily and identically for GGB and DSL.
 
 ---
 
-## 2. Единицы и pixel-invariance
+## 2. Units and pixel invariance
 
-В проекте сосуществуют **три системы единиц**, и важно их не путать.
+**Three unit systems** coexist in the project, and it is important not to mix them up.
 
-| Пространство | Где живёт | Примеры |
+| Space | Where it lives | Examples |
 |---|---|---|
-| **GGB px** | `ggb_raw`, `elem.ggb_style['*_px']`, `elem.style['*_px']`, `defaults.<type>.*_px` | значения прямо из `.ggb`, import-layer, пользовательские стили, builtin.json |
-| **Canonical style px** | `style/*.json` (`presets`, `defaults.*`, `overlay.*`) | все визуальные размеры в пикселях |
-| **Internal / manim** | итоговые mobject-координаты и stroke widths | то, что рисуется |
+| **GGB px** | `ggb_raw`, `elem.ggb_style['*_px']`, `elem.style['*_px']`, `defaults.<type>.*_px` | Values straight from `.ggb`, the import layer, user styles, builtin.json |
+| **Canonical style px** | `style/*.json` (`presets`, `defaults.*`, `overlay.*`) | All visual sizes in pixels |
+| **Internal / manim** | Final mobject coordinates and stroke widths | What actually gets drawn |
 
-Конверсии централизованы в `animageo/style/scaling.py`:
+Conversions are centralized in `animageo/style/scaling.py`:
 
 ```python
 # GGB px → elem.ggb_style
 ggb_point_size_to_style(x)       = x * 2             # pointSize → size_px
 ggb_thickness_to_stroke_width(x) = x / 2             # thickness → stroke_width_px
 ggb_arc_size_px(x, right=False)  = x  (or x/√2)      # arcSize → arc_size_px
-ggb_label_offset_to_style(x, y)  = [x, -y]           # Y инвертируется (GGB-экран ↓ vs математика ↑)
+ggb_label_offset_to_style(x, y)  = [x, -y]           # Y is inverted (GGB screen ↓ vs math ↑)
 
 # render-time (resolved style → manim)
 stroke_width_to_manim(sw, ptUnit) = sw * 100 / ptUnit
 ggb_font_px_to_manim_fontsize(px, ptUnit) = px * 100 / ptUnit
 ```
 
-> **Phase 4 unit fix.** В canonical schema размеры в `presets`, `defaults.*` и `overlay.*` хранятся в пикселях, а рендерер делит их на `ptUnit` ровно один раз. Это убрало прежний double-scale, из-за которого дуги углов на DSL-сценах могли схлопываться до субпиксельного размера.
+> **Phase 4 unit fix.** In the canonical schema, sizes in `presets`, `defaults.*` and `overlay.*` are stored in pixels, and the renderer divides them by `ptUnit` exactly once. This removed the earlier double-scale that could collapse angle arcs on DSL scenes down to sub-pixel size.
 
-### Контракт pixel-invariance
+### The pixel-invariance contract
 
-**Все** видимые размеры — диаметры точек, толщины линий, размер шрифта, радиусы дужек углов, смещения подписей — хранятся в **пиксельных** единицах. Рендерер делит их на `ptUnit_style`, поэтому стиль считается относительно reference-холста и масштабируется вместе с reference-картинкой до физического `export.size`.
+**All** visible sizes — point diameters, line widths, font size, angle arc radii, label offsets — are stored in **pixel** units. The renderer divides them by `ptUnit_style`, so a style is computed relative to the reference canvas and scales together with the reference picture up to the physical `export.size`.
 
-`ptUnit_ggb` хранится отдельно: это оригинальный масштаб из `.ggb` (пикселей на GGB-единицу). Подписи масштабируются по нему, чтобы при малом холсте не отрывались от геометрии.
+`ptUnit_ggb` is stored separately: it is the original scale from the `.ggb` file (pixels per GGB unit). Labels are scaled by it so that on a small canvas they do not detach from the geometry.
 
 ### Removed input keys
 
-Исторические ключи `strich_len`, `strich_rshift`, `strich_width`,
+The historical keys `strich_len`, `strich_rshift`, `strich_width`,
 `arrow_height`, `arrow_width`, `label_r_offset`, `line_width`, `ang_width`,
-`ang_rdefault`, `ang_rshift`, `ang_right`, `font_size` больше не принимаются
-в style JSON. Используйте canonical поля (`tick_length_px`, `tick_shift_px`,
+`ang_rdefault`, `ang_rshift`, `ang_right`, `font_size` are no longer accepted
+in style JSON. Use the canonical fields (`tick_length_px`, `tick_shift_px`,
 `tick_width_px`, `arrow_length_px`, `label_radial_offset_px`,
 `stroke_width_px`, `arc_size_px`, `arc_shift_px`, `right_angle_size_px`,
 `font_size_px`).
 
 ---
 
-## 3. Холст, камера, экспорт
+## 3. Canvas, camera, export
 
-### Параметры экспорта
+### Export parameters
 
 ```python
 scene.style.export = {
-    'ptUnit':   ...,   # пикселей на manim-единицу в финальном export
-    'ptWidth':  ...,   # px — ширина холста
-    'ptHeight': ...,   # px — высота
-    'ptXZero':  ...,   # px — позиция origin (0,0) от левого края
-    'ptYZero':  ...,   # px — позиция origin от верхнего края
-    'ptUnit_style': ..., # reference-масштаб для визуальных *_px
+    'ptUnit':   ...,   # pixels per manim unit in the final export
+    'ptWidth':  ...,   # px — canvas width
+    'ptHeight': ...,   # px — canvas height
+    'ptXZero':  ...,   # px — position of the origin (0,0) from the left edge
+    'ptYZero':  ...,   # px — position of the origin from the top edge
+    'ptUnit_style': ..., # reference scale for visual *_px values
     'referenceWidth': ...,
     'referenceHeight': ...,
     'geometryScale': ..., # content -> reference
     'exportScale':   ..., # reference -> physical export
-    'ptUnit_ggb': ..., # оригинал ptUnit из .ggb (для pixel-invariant подписей)
-    'fontSize': ...,   # GGB-font-size (px) из XML gui.font
+    'ptUnit_ggb': ..., # original ptUnit from the .ggb (for pixel-invariant labels)
+    'fontSize': ...,   # GGB font size (px) from the XML gui.font
 }
 ```
 
-Современный layout разделяет три ответственности:
+The modern layout separates three responsibilities:
 
 ```python
 scene.loadGGB(
     'x.ggb',
-    style='style/default.json',
+    style='default',
     reference={'size': {'width': 300, 'height': 220}},  # runtime override
     content={'source': 'source_view', 'fit': 'contain'},
     export={'size': {'width': 1920, 'height': 1080}, 'fit': 'contain'},
 )
 ```
 
-- `reference` — эталонный холст, под который автор подбирал стиль. Обычно хранится в style JSON и переопределяется runtime-аргументом только при необходимости.
-- `content` — какую область конструкции положить на reference: `source_view`/`ggb_view` или `rendered_bounds`; здесь же `fit`, `padding`, `anchor`, `offset`, `infinite_policy`.
-- `export` — физический итоговый файл; это runtime-настройка, в style JSON не хранится.
-- `ptUnit_style` — масштаб reference-холста. Через него рендерятся `stroke_width_px`, `size_px`, `font_size_px`, `arc_size_px`, offsets и прочие визуальные пиксели.
-- `ptUnit` — масштаб финального export-холста. Его использует SVG/камера для размещения всей картинки.
-- `geometryScale` — во сколько раз content/source rect был уложен в reference.
-- `exportScale` / `contentScale` — во сколько раз физический файл увеличивает reference-картинку.
-- `content.source='rendered_bounds'` сначала строит видимые mobject-ы в исходном масштабе, измеряет их итоговые bounds вместе с подписями и вписывает уже этот прямоугольник. `content.padding` добавляет отступ в source-пикселях. Для `Line`/`Ray` дефолтная политика `content.infinite_policy='ignore'` исключает их из bounds; `'clip'` измеряет их после обрезки исходной камерой.
-- Неравномерный stretch не реализован: renderer по-прежнему использует один общий `ptUnit`.
+Bare preset names passed as `style=` (`default`, `book_blue`, `book_green`, `book_purple`, `book_red`) resolve to style files packaged with the library (see [§13](#13-bundled-presets)); any path or `.json` filename is loaded from disk as usual, and an on-disk file with the same name always wins over a packaged preset.
 
-Стиль может хранить эталон:
+- `reference` — the reference canvas the author designed the style for. Usually stored in the style JSON and overridden by the runtime argument only when needed.
+- `content` — which region of the construction to place onto the reference: `source_view`/`ggb_view` or `rendered_bounds`; also `fit`, `padding`, `anchor`, `offset`, `infinite_policy`.
+- `export` — the physical output file; this is a runtime setting and is not stored in style JSON.
+- `ptUnit_style` — the reference-canvas scale. `stroke_width_px`, `size_px`, `font_size_px`, `arc_size_px`, offsets and all other visual pixels render through it.
+- `ptUnit` — the scale of the final export canvas. The SVG/camera use it to place the whole picture.
+- `geometryScale` — how much the content/source rect was scaled to fit the reference.
+- `exportScale` / `contentScale` — how much the physical file magnifies the reference picture.
+- `content.source='rendered_bounds'` first builds the visible mobjects at the source scale, measures their final bounds including labels, and then fits that rectangle. `content.padding` adds a margin in source pixels. For `Line`/`Ray` the default policy `content.infinite_policy='ignore'` excludes them from the bounds; `'clip'` measures them after clipping by the source camera.
+- Non-uniform stretch is not implemented: the renderer still uses a single shared `ptUnit`.
+
+A style may store its reference:
 
 ```json
 {
@@ -229,22 +231,22 @@ scene.loadGGB(
 }
 ```
 
-`reference.source` принимает `manual`, `source_view` или `ggb_view` и служит
-описанием происхождения эталона в style JSON. Runtime-выбор области конструкции
-делается через `content.source`.
+`reference.source` accepts `manual`, `source_view` or `ggb_view` and serves as
+a description of where the reference came from in the style JSON. The runtime
+choice of the construction region is made through `content.source`.
 
-Полная таблица допустимых значений для runtime-блоков `style`, `reference`,
-`content` и `export` приведена в [docs/api.md](api.md).
+The full table of accepted values for the runtime blocks `style`, `reference`,
+`content` and `export` is given in [docs/api.md](api.md).
 
-`px_size` больше не является основной публичной моделью. Используйте
-`export={'size': {'width': w, 'height': h}}`; одну сторону можно задавать как
+`px_size` is no longer the primary public model. Use
+`export={'size': {'width': w, 'height': h}}`; one side may be given as
 `"auto"`.
 
 ---
 
-## 4. JSON-схема стиля
+## 4. Style JSON schema
 
-Полная документация — в docstring `animageo/style/schema.py`. Ниже — структура и все реально читаемые ключи.
+The full documentation lives in the docstring of `animageo/style/schema.py`. Below is the structure and every key that is actually read.
 
 ```json
 {
@@ -290,8 +292,8 @@ scene.loadGGB(
         "per_name": {
             "A": { "size_px": 99 }
         },
-        "angle_radius":    { /* см. §7 */ },
-        "label_placement": { /* см. §8 */ }
+        "angle_radius":    { /* see §8 */ },
+        "label_placement": { /* see §8 */ }
     },
 
     "rendering": {
@@ -308,145 +310,146 @@ scene.loadGGB(
         "colors":     { "#1565c0": "color.main", "#d32f2f": "color.accent" },
         "point_size": { "5": "point_size.main" },
         "line_width": { "5": "line_width.main" },
-        "policy":     { /* см. §9 */ }
+        "policy":     { /* see §9 */ }
     }
 }
 ```
 
-> **Секция `overlay`** (и её `per_type`/`per_name`) — место для стилизации, применяемой после импорта. Работает одинаково для GGB и DSL элементов. `overlay.angle_radius` и `overlay.label_placement` — единственная публичная локация для автоматизмов.
+> **The `overlay` section** (with its `per_type`/`per_name`) is the place for stylization applied after import. It works identically for GGB and DSL elements. `overlay.angle_radius` and `overlay.label_placement` are the only public location for the automation features.
 
 ### `presets` — semantic constants
 
-`presets` — реестр именованных смысловых констант. Имена `main`, `bold`,
-`aux` — только соглашение; пользователь может добавить любые имена
-(`construction`, `answer`, `hidden_helper`) и ссылаться на них из
-`defaults`, `overlay`, `rendering` и import-маппингов через
-`"<group>.<name>"`, например `"color.accent"` или `"line_width.bold"`.
+`presets` is a registry of named semantic constants. The names `main`, `bold`,
+`aux` are just a convention; users may add any names
+(`construction`, `answer`, `hidden_helper`) and reference them from
+`defaults`, `overlay`, `rendering` and the import mappings via
+`"<group>.<name>"`, e.g. `"color.accent"` or `"line_width.bold"`.
 
-### Основные группы presets
+### Main preset groups
 
-| Группа.ключ | Назначение | Единицы |
+| Group.key | Purpose | Units |
 |---|---|---|
-| `color.main` / `bold` / `aux` / `background` / `strong` | именованные цвета | hex |
-| `point_size.main` / `bold` / `aux` | диаметры точек (`size_px`) | style px |
-| `line_width.main` / `bold` / `aux` | толщины линий | style px |
-| `angle_radius.main` / `shift` / `right` | радиусы и сдвиги углов | px |
-| `tick.main` | структура `tick_length_px/tick_width_px/tick_shift_px` | px |
-| `arrow.main` | структура `arrow_length_px/arrow_width_px` | px |
-| `font_size.main` / `bold` / `aux` | размер шрифта | px |
+| `color.main` / `bold` / `aux` / `background` / `strong` | Named colors | hex |
+| `point_size.main` / `bold` / `aux` | Point diameters (`size_px`) | style px |
+| `line_width.main` / `bold` / `aux` | Line widths | style px |
+| `angle_radius.main` / `shift` / `right` | Angle radii and shifts | px |
+| `tick.main` | The `tick_length_px/tick_width_px/tick_shift_px` structure | px |
+| `arrow.main` | The `arrow_length_px/arrow_width_px` structure | px |
+| `font_size.main` / `bold` / `aux` | Font size | px |
 
 ### `defaults` — per-type baseline
 
-`defaults` больше не хранит сценовые `angle/tick/arrow/font` настройки.
-Это per-type baseline: `defaults.point`, `defaults.segment`, `defaults.angle`,
-и т.д. Обычно значения здесь — ссылки на `presets`.
+`defaults` no longer stores scene-level `angle/tick/arrow/font` settings.
+It is a per-type baseline: `defaults.point`, `defaults.segment`, `defaults.angle`,
+and so on. Values here are usually references into `presets`.
 
-Структурные presets подключаются через `$include`; локальные ключи в этом же
-type-блоке выигрывают у включённых значений. Старые
-`defaults.angle/tick/arrow/font` всё ещё принимаются loader'ом и нормализуются
-в semantic schema перед merge.
+Structural presets are pulled in via `$include`; local keys in the same
+type block win over the included values. The old
+`defaults.angle/tick/arrow/font` forms are still accepted by the loader and are
+normalized into the semantic schema before merging.
 
-### `rendering` — рендер-опции
+### `rendering` — render options
 
-| Ключ | Значения | Эффект |
+| Key | Values | Effect |
 |---|---|---|
-| `background` | hex или `color.*` | фон сцены: Manim camera/MP4 и SVG viewport |
-| `line_cap` | `"butt"` \| `"round"` \| `"square"` | окончания линий |
-| `right_angle_joint` | `"auto"` \| `"bevel"` \| `"miter"` \| `"round"` | соединение сторон прямого угла |
-| `polygon_boundary_layer` | `"top"` \| `null` | `"top"`: контур полигона всегда поверх заливки (`z_index=10`) |
-| `points_display` | `"auto"` \| `"only_labels"` \| `"only_points"` | `only_labels` скрывает точку, показывает подпись; `only_points` — наоборот |
-| `label_anchor` | `"TL"`/`"TC"`/`"TR"`/`"ML"`/`"MC"`/`"MR"`/`"BL"`/`"BC"`/`"BR"` | сценовый default-якорь подписей (если не задан per-element). Полная сетка — §7 |
-| `label_value_precision` | int | сценовая default-точность value-подписей |
+| `background` | hex or `color.*` | Scene background: Manim camera/MP4 and the SVG viewport |
+| `line_cap` | `"butt"` \| `"round"` \| `"square"` | Line endings |
+| `right_angle_joint` | `"auto"` \| `"bevel"` \| `"miter"` \| `"round"` | Joint of the right-angle marker's sides |
+| `polygon_boundary_layer` | `"top"` \| `null` | `"top"`: polygon outline always above the fill (`z_index=10`) |
+| `points_display` | `"auto"` \| `"only_labels"` \| `"only_points"` | `only_labels` hides the point and shows the label; `only_points` — the reverse |
+| `label_anchor` | `"TL"`/`"TC"`/`"TR"`/`"ML"`/`"MC"`/`"MR"`/`"BL"`/`"BC"`/`"BR"` | Scene-wide default label anchor (when not set per element). Full grid — §7 |
+| `label_value_precision` | int | Scene-wide default precision of value labels |
 
-`overlay.label_placement` и `overlay.angle_radius` читаются напрямую из
-`scene.style_config.overlay`; в `rendering` эти автоматизмы не допускаются.
+`overlay.label_placement` and `overlay.angle_radius` are read directly from
+`scene.style_config.overlay`; these automation features are not accepted under
+`rendering`.
 
-### `import` — маппинг значений GGB
+### `import` — mapping of GGB values
 
-По умолчанию применяется **поверх** распарсенных GGB-значений после базового
-парсинга. Если указать `"enabled": false`, геометрия и `elem.ggb_raw`
-сохраняются, но resolver пропускает `elem.ggb_style`, берёт baseline из
-`StyleConfig.defaults`, а `colors` / `point_size` / `line_width` /
-`policy` полностью пропускаются. После этого обычным порядком работают
-`overlay.per_type` / `overlay.per_name` и explicit DSL/Python-правки.
+By default this is applied **on top** of the parsed GGB values after basic
+parsing. If `"enabled": false` is set, the geometry and `elem.ggb_raw`
+are preserved, but the resolver skips `elem.ggb_style`, takes the baseline from
+`StyleConfig.defaults`, and `colors` / `point_size` / `line_width` /
+`policy` are skipped entirely. After that, `overlay.per_type` /
+`overlay.per_name` and explicit DSL/Python edits work in the usual order.
 
-**`enabled`**: bool, по умолчанию `true`.
+**`enabled`**: bool, default `true`.
 
-**`colors`**: dict вида `"#hex [opacity]" → "color_name|#hex [opacity]"`. Позволяет переопределить всю палитру конструкции одной строкой в стиле.
+**`colors`**: a dict of the form `"#hex [opacity]" → "color_name|#hex [opacity]"`. Lets you re-palette an entire construction with one line in the style.
 
 ```json
 "colors": {
-    "#1565c0":     "color.main",            // GGB-синий → color.main
-    "#1565c0 0.1": "color.light 1",         // тот же, но полупрозрачный → light с alpha=1
+    "#1565c0":     "color.main",            // GGB blue → color.main
+    "#1565c0 0.1": "color.light 1",         // same color but translucent → light with alpha=1
     "#d32f2f":     "color.accent",
-    "#000000 0.6": "#2581b5"          // можно и hex справа
+    "#000000 0.6": "#2581b5"          // a hex value on the right works too
 }
 ```
 
-Результат применения всегда нормализуется в два поля import-layer: цвет записывается в
-`elem.ggb_style["fill"]` / `elem.ggb_style["stroke"]` как `#rrggbb`, а opacity
-записывается в `fill_opacity` / `stroke_opacity` только если она явно указана
-в правой части mapping. Если target-opacity не задана, текущая opacity
-элемента сохраняется.
+The result of applying a mapping is always normalized into two import-layer fields: the color is written to
+`elem.ggb_style["fill"]` / `elem.ggb_style["stroke"]` as `#rrggbb`, and the opacity
+is written to `fill_opacity` / `stroke_opacity` only when it is explicitly given
+on the right-hand side of the mapping. If the target opacity is not given, the element's
+current opacity is preserved.
 
-Например, `"#1565c0 0.1": "color.accent 1"` даёт
-`fill = "#f15b5b"` и `fill_opacity = 1.0`; `"#1565c0 0.1": "color.accent"` заменит
-только цвет и оставит прежнюю `fill_opacity`.
+For example, `"#1565c0 0.1": "color.accent 1"` yields
+`fill = "#f15b5b"` and `fill_opacity = 1.0`; `"#1565c0 0.1": "color.accent"` replaces
+only the color and keeps the previous `fill_opacity`.
 
-**`line_width`**: маппинг толщин `"N": "line_width.*"` (например `"5": "line_width.main"` — GGB-толщина 5 → `line_width.main`).
+**`line_width`**: a thickness mapping `"N": "line_width.*"` (e.g. `"5": "line_width.main"` — GGB thickness 5 → `line_width.main`).
 
-**`point_size`**: то же для размеров точек.
+**`point_size`**: the same for point sizes.
 
-**`policy`**: см. §9.
+**`policy`**: see §9.
 
-### GGB Graphics View: сетка и оси
+### GGB Graphics View: grid and axes
 
-При `loadGGB()` парсер читает настройки `<euclidianView>` из `geogebra.xml`
-и сохраняет их в `scene.style.export`. Эти поля не являются style overlay для
-геометрических элементов: они описывают фон координатной области.
+During `loadGGB()` the parser reads the `<euclidianView>` settings from `geogebra.xml`
+and stores them in `scene.style.export`. These fields are not a style overlay for
+geometric elements: they describe the background of the coordinate area.
 
-| GGB XML | `style.export` | Использование |
+| GGB XML | `style.export` | Usage |
 |---|---|---|
-| `<evSettings axes>` | `showAxes` | Включает фоновую отрисовку осей |
-| `<evSettings grid>` | `showGrid` | Включает фоновую координатную сетку |
-| `<evSettings gridIsBold>` | `gridIsBold` | Делает линии сетки немного плотнее |
-| `<evSettings gridType>` | `gridType` | Сохраняется для совместимости; сейчас рендерится декартова сетка |
-| `<axesColor r g b>` | `axesColor` | Цвет осей, делений и чисел |
-| `<gridColor r g b>` | `gridColor` | Цвет линий сетки |
-| `<grid distX distY distTheta>` | `gridDistX`, `gridDistY`, `gridDistTheta` | Шаг сетки по X/Y; `distTheta` сохраняется для будущих polar/isometric режимов |
-| `<axis id="0|1" show>` | `axes.x.show`, `axes.y.show` | Видимость отдельной оси |
-| `<axis ... showNumbers>` | `axes.x.showNumbers`, `axes.y.showNumbers` | Числовые подписи делений |
-| `<axis ... tickDistance>` | `axes.x.tickDistance`, `axes.y.tickDistance` | Шаг делений оси |
-| `<axis ... axisCross positiveAxis>` | `axes.*.axisCross`, `axes.*.positiveAxis` | Сохраняется; полноценный crossing/positive-only рендер пока не включен |
+| `<evSettings axes>` | `showAxes` | Enables background axis drawing |
+| `<evSettings grid>` | `showGrid` | Enables the background coordinate grid |
+| `<evSettings gridIsBold>` | `gridIsBold` | Makes the grid lines slightly heavier |
+| `<evSettings gridType>` | `gridType` | Stored for compatibility; a Cartesian grid is rendered for now |
+| `<axesColor r g b>` | `axesColor` | Color of the axes, ticks and numbers |
+| `<gridColor r g b>` | `gridColor` | Color of the grid lines |
+| `<grid distX distY distTheta>` | `gridDistX`, `gridDistY`, `gridDistTheta` | Grid spacing along X/Y; `distTheta` is stored for future polar/isometric modes |
+| `<axis id="0|1" show>` | `axes.x.show`, `axes.y.show` | Visibility of an individual axis |
+| `<axis ... showNumbers>` | `axes.x.showNumbers`, `axes.y.showNumbers` | Numeric tick labels |
+| `<axis ... tickDistance>` | `axes.x.tickDistance`, `axes.y.tickDistance` | Axis tick spacing |
+| `<axis ... axisCross positiveAxis>` | `axes.*.axisCross`, `axes.*.positiveAxis` | Stored; full crossing/positive-only rendering is not enabled yet |
 
-`addAllGeometry()` перед геометрией добавляет `_coordinate_background`:
-сетка рисуется на `z_index=-20`, оси на `z_index=-10`, деления и числа на
-`z_index=-9`. Это отдельный фон, не служебные элементы `xAxis` / `yAxis`
-из `Construction`.
+`addAllGeometry()` adds `_coordinate_background` before the geometry:
+the grid is drawn at `z_index=-20`, the axes at `z_index=-10`, ticks and numbers at
+`z_index=-9`. This is a separate background, not the service elements `xAxis` / `yAxis`
+from `Construction`.
 
 ---
 
-## 5. Z-index: слои рендеринга
+## 5. Z-index: rendering layers
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│   Z_POINT  = 50     ← точки (самый верх)             │
-│   Z_LABEL  = 50     ← подписи на stroke-уровне       │
-│   Z_STROKE =  5     ← сегменты, штрихи, дуги-контур  │
-│   Z_LINE   =  4     ← линии, окружности              │
-│   Z_ANGLE  =  3     ← дуги углов                     │
-│   Z_FILL_LABEL = 0.1 ← подписи на fill-уровне        │
-│   Z_FILL   =  0.01  ← заливки полигонов/секторов     │
-│   Z_FILL_INNER = 0.001 ← зарезервированный нижний fill│
+│   Z_POINT  = 50     ← points (topmost)               │
+│   Z_LABEL  = 50     ← labels at stroke level         │
+│   Z_STROKE =  5     ← segments, ticks, arc outlines  │
+│   Z_LINE   =  4     ← lines, circles                 │
+│   Z_ANGLE  =  3     ← angle arcs                     │
+│   Z_FILL_LABEL = 0.1 ← labels at fill level          │
+│   Z_FILL   =  0.01  ← polygon/sector fills           │
+│   Z_FILL_INNER = 0.001 ← reserved bottom fill        │
 └──────────────────────────────────────────────────────┘
-             (ниже = дальше; выше = ближе к зрителю)
+             (lower = farther back; higher = closer to the viewer)
 ```
 
-### Автоматика
+### Automatic assignment
 
-При `z_auto=True` (`addAllGeometry`, `addGeoElement`) `CreateMObject` ставит z-index по типу элемента:
+With `z_auto=True` (`addAllGeometry`, `addGeoElement`) `CreateMObject` assigns the z-index by element type:
 
-| Тип | Основной слой | Fill | Label |
+| Type | Main layer | Fill | Label |
 |---|---|---|---|
 | `Point` | `Z_POINT` (50) | — | `Z_LABEL` (50) |
 | `Segment` / `Circle` / `Arc` / `Vector` | `Z_STROKE` (5) | — | `Z_LABEL` (50) |
@@ -454,111 +457,111 @@ type-блоке выигрывают у включённых значений. �
 | `Polygon` | `Z_FILL` (0.01) | — | `Z_FILL_LABEL` (0.1) |
 | `CircleSector` | `Z_FILL` (0.01) | `Z_FILL` (0.01) | `Z_FILL_LABEL` (0.1) |
 
-Stroke-overlay у полигона всегда ≥ `max(Z_STROKE, zz+0.1)` — контур поверх заливки. Если `rendering.polygon_boundary_layer = "top"`, сегменты-стороны полигона ставятся на `z_index=10` (поверх всего, кроме точек/подписей).
+A polygon's stroke overlay is always ≥ `max(Z_STROKE, zz+0.1)` — the outline stays above the fill. If `rendering.polygon_boundary_layer = "top"`, the polygon's side segments are placed at `z_index=10` (above everything except points/labels).
 
-Для стабильности MP4-анимаций AnimaGeo добавляет к каждому фактическому
-Manim `z_index` очень маленький tie-breaker по порядку элемента в конструкции
-(`construction_index × 1e-6`). Это не меняет уровни `fill`/`stroke`/`point`,
-но делает порядок внутри одного слоя детерминированным даже когда `Polygon`
-пересоздается через remove+add во время `updateGeoElements()`.
+For MP4 animation stability, AnimaGeo adds a very small tie-breaker to every actual
+Manim `z_index` based on the element's order in the construction
+(`construction_index × 1e-6`). This does not change the `fill`/`stroke`/`point` levels,
+but makes the order within a single layer deterministic even when a `Polygon`
+is recreated via remove+add during `updateGeoElements()`.
 
-### Явное переопределение
+### Explicit override
 
 ```python
-scene.element('poly').style['z_index'] = 100          # полигон — перекроет точки
-scene.element('sector').style['z_index_fill'] = 0.2   # только для CircleSector
+scene.element('poly').style['z_index'] = 100          # polygon above the points
+scene.element('sector').style['z_index_fill'] = 0.2   # CircleSector only
 ```
 
-Если ключ `z_index` задан явно — автоматика не активируется.
+If the `z_index` key is set explicitly, the automatic assignment does not kick in.
 
 ---
 
-## 6. Per-element style: все ключи
+## 6. Per-element style: all keys
 
-`elem.style` — обычный Python dict, который можно модифицировать на лету. Ниже — **исчерпывающий список** того, что реально читает рендер.
+`elem.style` is a plain Python dict that can be modified on the fly. Below is the **exhaustive list** of what the renderer actually reads.
 
-### Видимость
+### Visibility
 
-| Ключ | Тип | Default | Что делает |
+| Key | Type | Default | What it does |
 |---|---|---|---|
-| `elem.visible` (атрибут, не ключ) | bool | `True` | Полностью скрывает mobject |
-| `visible` | bool | `True` | GGB-«Show object»; читается через resolver |
-| `label_visible` | bool | зависит от элемента | Отрисовать подпись |
+| `elem.visible` (attribute, not a key) | bool | `True` | Hides the mobject entirely |
+| `visible` | bool | `True` | GGB "Show object"; read through the resolver |
+| `label_visible` | bool | Element-dependent | Draw the label |
 
-### Stroke (SVG-совместимые имена)
+### Stroke (SVG-compatible names)
 
-| Ключ | Тип | Default |
+| Key | Type | Default |
 |---|---|---|
 | `stroke` | hex | `style.strong` |
 | `stroke_width_px` | float (px) | `defaults.<type>.stroke_width_px` |
 | `stroke_opacity` | float 0..1 | `1` |
 | `stroke_dash_ratio` | float 0..1 \| None | None (solid) |
-| `stroke_linecap` | `"butt"`/`"round"`/`"square"` (`"auto"` также принимается runtime map) | `rendering.line_cap` |
+| `stroke_linecap` | `"butt"`/`"round"`/`"square"` (`"auto"` is also accepted by the runtime map) | `rendering.line_cap` |
 | `right_angle_joint` | `"auto"`/`"bevel"`/`"miter"`/`"round"` | `rendering.right_angle_joint` |
 
 ### Fill
 
-| Ключ | Тип | Default |
+| Key | Type | Default |
 |---|---|---|
-| `fill` | hex | `style.background` (для точек — `style.strong`) |
+| `fill` | hex | `style.background` (for points — `style.strong`) |
 | `fill_opacity` | float 0..1 | `1` |
 
-### Точки
+### Points
 
-| Ключ | Тип | Default | Эффект |
+| Key | Type | Default | Effect |
 |---|---|---|---|
-| `size_px` | float (px) | `style.dot_size` | диаметр = `size_px / 2 / ptUnit` |
-| `point_shape` | enum-строка | `"circle"` | Форма: `"circle"`, `"square"`, `"diamond"`, `"triangle_up"`, `"triangle_down"`, `"triangle_left"`, `"triangle_right"`, `"cross"`, `"plus"`. См. раскладку GGB-пресетов в `docs/field_names.md` §3.3. |
+| `size_px` | float (px) | `style.dot_size` | diameter = `size_px / 2 / ptUnit` |
+| `point_shape` | enum string | `"circle"` | Shape: `"circle"`, `"square"`, `"diamond"`, `"triangle_up"`, `"triangle_down"`, `"triangle_left"`, `"triangle_right"`, `"cross"`, `"plus"`. See the GGB preset mapping in `docs/field_names.md` §3.3. |
 
-### Углы
+### Angles
 
-| Ключ | Тип | Default | Эффект |
+| Key | Type | Default | Effect |
 |---|---|---|---|
-| `arc_size_px` | float (px) | `defaults.angle.arc_size_px` | Базовый радиус дуги |
-| `arc_shift_px` | float (px) | `defaults.angle.arc_shift_px` | Радиальный сдвиг между концентрическими дугами при `tick_count > 1` |
-| `angle_range` | `"minor"` \| `"reflex"` | из GGB | `"minor"` = меньший сектор (≤π), `"reflex"` = рефлекс (>π) |
-| `right_angle_marker` | bool | авто: `np.isclose(angle, π/2)` | Принудительно квадратная метка прямого угла |
-| `right_angle_size_px` | float (px) | `defaults.angle.right_angle_size_px` | Размер квадратного маркера прямого угла |
-| `tick_count` | int | 1 | Кратные дуги (двойная, тройная дужка) |
+| `arc_size_px` | float (px) | `defaults.angle.arc_size_px` | Base arc radius |
+| `arc_shift_px` | float (px) | `defaults.angle.arc_shift_px` | Radial shift between concentric arcs when `tick_count > 1` |
+| `angle_range` | `"minor"` \| `"reflex"` | From GGB | `"minor"` = the smaller sector (≤π), `"reflex"` = the reflex one (>π) |
+| `right_angle_marker` | bool | Auto: `np.isclose(angle, π/2)` | Force the square right-angle marker |
+| `right_angle_size_px` | float (px) | `defaults.angle.right_angle_size_px` | Size of the square right-angle marker |
+| `tick_count` | int | 1 | Multiple arcs (double, triple arc marks) |
 
-### Сегменты / векторы
+### Segments / vectors
 
-| Ключ | Тип | Default | Эффект |
+| Key | Type | Default | Effect |
 |---|---|---|---|
-| `tick_count` | int | нет (ключ может отсутствовать) | Число штрихов-меток на серединe |
-| `tick_style` | `"line"` \| `"wave"` | `"line"` | `"wave"` — волнистая пометка вместо прямых штрихов |
-| `tick_radius_px` | float | `tick_shift_px * 0.45` | Радиус скругления углов у `tick_style="wave"` |
+| `tick_count` | int | None (key may be absent) | Number of tick marks at the midpoint |
+| `tick_style` | `"line"` \| `"wave"` | `"line"` | `"wave"` — a wavy mark instead of straight ticks |
+| `tick_radius_px` | float | `tick_shift_px * 0.45` | Corner rounding radius for `tick_style="wave"` |
 
-### Подписи
+### Labels
 
-| Ключ | Тип | Default | Эффект |
+| Key | Type | Default | Effect |
 |---|---|---|---|
-| `label_text` | TeX-строка | `"$" + elem.name + "$"` | Отображаемый текст |
-| `label_mode` | `"label"` \| `"value"` \| `"label_value"` | `"label"` | Что показывать: подпись, вычисленное значение или `подпись = значение` |
-| `label_value_precision` | int | `1` | Число знаков после запятой для вычисленного значения |
-| `label_value_strip_zeros` | bool | `True` | Убирать хвостовые нули (`5.00` → `5`) |
-| `label_angle_unit` | `"degree"` \| `"radian"` | `"degree"` | Единица для значений углов |
-| `label_value_separator` | str | `" = "` | Разделитель в режиме `label_value` |
-| `label_color` | hex | `style.strong` | Цвет текста |
-| `label_anchor` | `"TL"`..`"BR"` | `rendering.label_anchor` \| `BL` | Какая часть bbox подписи садится в точку |
-| `label_offset_px` | `[x, y]` (GGB px) | `[0, 0]` | Смещение подписи после позиционирования; делится на `ptUnit_ggb` |
-| `font_size_px` | float (px) | `defaults.<type>.font_size_px` | Per-element перекрытие размера шрифта |
-| `label_radial_offset_px` | float (px) | `defaults.angle.label_radial_offset_px` (`0`) | Радиальный отступ подписи от геометрии (используется у углов) |
-| `label_placement_locked` | bool | `False` | Защита от автораскладки |
-| `_auto_placed` | bool | `False` (внутренний) | Ставит авто-layout; отключает GGB-descender-коррекцию в `create_label` |
+| `label_text` | TeX string | `"$" + elem.name + "$"` | Displayed text |
+| `label_mode` | `"label"` \| `"value"` \| `"label_value"` | `"label"` | What to show: the label, the computed value, or `label = value` |
+| `label_value_precision` | int | `1` | Number of decimal places for the computed value |
+| `label_value_strip_zeros` | bool | `True` | Strip trailing zeros (`5.00` → `5`) |
+| `label_angle_unit` | `"degree"` \| `"radian"` | `"degree"` | Unit for angle values |
+| `label_value_separator` | str | `" = "` | Separator in `label_value` mode |
+| `label_color` | hex | `style.strong` | Text color |
+| `label_anchor` | `"TL"`..`"BR"` | `rendering.label_anchor` \| `BL` | Which part of the label bbox lands on the anchor point |
+| `label_offset_px` | `[x, y]` (GGB px) | `[0, 0]` | Label offset after positioning; divided by `ptUnit_ggb` |
+| `font_size_px` | float (px) | `defaults.<type>.font_size_px` | Per-element font size override |
+| `label_radial_offset_px` | float (px) | `defaults.angle.label_radial_offset_px` (`0`) | Radial label offset from the geometry (used for angles) |
+| `label_placement_locked` | bool | `False` | Protects the label from auto-placement |
+| `_auto_placed` | bool | `False` (internal) | Set by the auto-layout; disables the GGB descender correction in `create_label` |
 
-### Z-index (см. §5)
+### Z-index (see §5)
 
-| Ключ | Тип | Default |
+| Key | Type | Default |
 |---|---|---|
-| `z_index` | float | по типу |
+| `z_index` | float | By type |
 | `z_index_fill` | float | `Z_FILL` |
 
 ---
 
-## 7. Подписи и TeX
+## 7. Labels and TeX
 
-### 9-точечный якорь
+### The 9-point anchor
 
 ```
     TL ── TC ── TR
@@ -568,107 +571,107 @@ scene.element('sector').style['z_index_fill'] = 0.2   # только для Circ
     BL ── BC ── BR
 ```
 
-Якорь задаётся в `elem.style['label_anchor']` или сценово в `rendering.label_anchor`. `MC` = «центр подписи в точке» (удобно для углов и взаимодействия с автораскладкой — см. `canonicalize_anchor`).
+The anchor is set in `elem.style['label_anchor']` or scene-wide in `rendering.label_anchor`. `MC` = "label centered on the point" (convenient for angles and for interaction with auto-placement — see `canonicalize_anchor`).
 
-GeoGebra по умолчанию использует `BL` (bottom-left = базовая линия для заглавных букв).
+GeoGebra uses `BL` by default (bottom-left = the baseline for capital letters).
 
-### TeX-шаблон RusTex
+### The RusTex TeX template
 
-`animageo/ui.py::RusTex` — `pdflatex` + `T2A`/`babel russian`/`utf8`, кастомная отрисовка дробей, `\angle` и `\triangle` в уменьшенном размере.
+`animageo/ui.py::RusTex` — `pdflatex` + `T2A`/`babel russian`/`utf8`, custom fraction rendering, `\angle` and `\triangle` at a reduced size.
 
-### Авто-замена Unicode → TeX
+### Automatic Unicode → TeX replacement
 
-`correctedLabel(label)` прогоняет текст через словарь из 96 замен (`·`→`\cdot`, `α`→`\alpha`, `△`→`\triangle`, …), что позволяет писать формулы обычным Unicode в label.
+`correctedLabel(label)` runs the text through a dictionary of 84 substitutions (`·`→`\cdot`, `α`→`\alpha`, `△`→`\triangle`, …), which lets you write formulas in labels using plain Unicode.
 
 ### GGB descender correction
 
-GGB-offset таргетится на низ поля ввода (включая descender padding). У TeX bbox тайтовый, поэтому подпись провисала бы ниже. `create_label` автоматически поднимает её на `ggb_font_px * 0.25 / ptUnit`, **если** `_auto_placed` не выставлен (у авто-размещённых offset-ы уже корректные).
+A GGB offset targets the bottom of the input box (including its descender padding). The TeX bbox is tight, so the label would sag below. `create_label` automatically raises it by `ggb_font_px * 0.25 / ptUnit`, **unless** `_auto_placed` is set (auto-placed labels already have correct offsets).
 
 ---
 
-## 8. Автоматическая расстановка подписей
+## 8. Automatic label placement
 
-Работает в трёх режимах: **статическая one-shot**, **keyframe-snapshot** (для `play_keyframes`) и **per-frame tracker** (для `addUpdater`).
+Works in three modes: **static one-shot**, **keyframe snapshots** (for `play_keyframes`), and a **per-frame tracker** (for `addUpdater`).
 
-### Статика — по умолчанию
+### Static — the default
 
 ```python
 scene.loadGGB(
     'x.ggb',
-    style='style/default.json',
+    style='default',
     export={'size': {'width': 800, 'height': 600}},
 )
 scene.autoPlaceLabels()
 scene.exportSVG('out.svg')
 ```
 
-Жадный решатель раскладывает подписи, минимизируя перекрытия. 8 кандидатов направлений (E/NE/N/NW/W/SW/S/SE); самые «трудные» подписи (мало свободных позиций) ставятся первыми.
+A greedy solver lays out the labels, minimizing overlaps. 8 candidate directions (E/NE/N/NW/W/SW/S/SE); the most "constrained" labels (fewest free positions) are placed first.
 
-### Параметры `overlay.label_placement`
+### `overlay.label_placement` parameters
 
-| Ключ | Default | Описание |
+| Key | Default | Description |
 |---|---|---|
-| `enabled` | `false` | Автоматический вызов `autoPlaceLabels()` в конце `loadGGB` |
-| `distance_px` | `6` | Базовое расстояние anchor→центр подписи, px |
-| `padding_px` | `2` | Зазор вокруг bbox при оценке перекрытий, px |
-| `angle_gap_arc_px` | `3` | Зазор между внешней дугой угла и подписью, px. Независим от зазора со сторонами |
-| `angle_gap_sides_px` | `3` | Зазор между сторонами угла и bbox подписи (для узких углов), px |
-| `w_anchor` | `1.0` | Вес penalty за отклонение от предпочтительного направления |
-| `w_label` | `10.0` | Вес перекрытия label×label |
-| `w_geom` | `8.0` | Вес перекрытия label×geometry |
-| `dynamic_angles` | `false` | Биссектрисы углов пересчитываются per-frame |
-| `keyframe_snapshots` | `false` | Раскладка считается на каждом keyframe; между ними интерполируется |
-| `canonicalize_anchor` | `false` | Переписывает все якоря в `MC` с компенсированным offset. Убирает скачки при интерполяции. **Ломает snapshot-тесты** (зафиксировавшие старые якоря) — by default off |
-| `interpolation` | `"linear"` | Easing для label offset между snapshot-ами: `linear` или `smooth` |
-| `ema_alpha` | `0.2` | Вес свежего решателя в EMA (0..1); меньше → плавнее, но медленнее сходится |
-| `anchor_flip_frames` | `6` | Schmitt-trigger: сколько подряд кадров решатель должен предлагать другой якорь |
-| `solver_every_n_frames` | `2` | Throttling: решатель дёргается раз в N кадров |
+| `enabled` | `false` | Automatically call `autoPlaceLabels()` at the end of `loadGGB` |
+| `distance_px` | `6` | Base distance anchor → label center, px |
+| `padding_px` | `2` | Margin around the bbox when checking overlaps, px |
+| `angle_gap_arc_px` | `3` | Gap between the angle's outer arc and its label, px. Independent of the sides gap |
+| `angle_gap_sides_px` | `3` | Gap between the angle's sides and the label bbox (for narrow angles), px |
+| `w_anchor` | `1.0` | Penalty weight for deviating from the preferred direction |
+| `w_label` | `10.0` | Weight for label×label overlap |
+| `w_geom` | `8.0` | Weight for label×geometry overlap |
+| `dynamic_angles` | `false` | Angle bisectors are recomputed per frame |
+| `keyframe_snapshots` | `false` | The layout is computed at each keyframe and interpolated in between |
+| `canonicalize_anchor` | `false` | Rewrites all anchors to `MC` with a compensating offset. Removes jumps during interpolation. Off by default: it rewrites recorded label anchors, so existing outputs shift |
+| `interpolation` | `"linear"` | Easing of label offsets between snapshots: `linear` or `smooth` |
+| `ema_alpha` | `0.2` | Weight of the fresh solver result in the EMA (0..1); smaller → smoother but slower to converge |
+| `anchor_flip_frames` | `6` | Schmitt trigger: how many consecutive frames the solver must propose a different anchor |
+| `solver_every_n_frames` | `2` | Throttling: the solver runs once every N frames |
 
-### Углы: аналитика вместо кандидатов
+### Angles: analytical placement instead of candidates
 
-Для Angle подпись всегда располагается на биссектрисе. Расстояние:
+For an Angle, the label is always placed on the bisector. The distance:
 
 ```
 dist = arc_radius_effective + max(half_w, half_h) + gap_arc
-# для узких углов дополнительно:
+# additionally, for narrow angles:
 dist ≥ (√(hw² + hh²) + gap_sides) / sin(half_angle)
 ```
 
-`arc_radius_effective` учитывает множественные дужки: при `elem.style['tick_count'] = N` внешний радиус равен `arc_size_px + (N - 1) * arc_shift_px`, так что подпись не наезжает на внешнюю дужку, даже если их несколько.
+`arc_radius_effective` accounts for multiple arcs: with `elem.style['tick_count'] = N` the outer radius is `arc_size_px + (N - 1) * arc_shift_px`, so the label never sits on the outermost arc even when there are several.
 
-`gap_arc` (`angle_gap_arc_px`) отвечает за зазор между дугой и подписью, а `gap_sides` (`angle_gap_sides_px`) — за зазор между подписью и сторонами угла (включается в clamp для узких углов). Обычно достаточно оставить значения по умолчанию; раздельные настройки нужны, например, когда угол очень острый и подпись нужно «утопить» ближе к дуге, не увеличивая общий отступ.
+`gap_arc` (`angle_gap_arc_px`) controls the clearance between the arc and the label, while `gap_sides` (`angle_gap_sides_px`) controls the clearance between the label and the angle's sides (it enters the clamp for narrow angles). The defaults are usually fine; separate settings are useful, for instance, when the angle is very acute and the label needs to be "sunk" closer to the arc without increasing the overall margin.
 
-Якорь всегда `MC`.
+The anchor is always `MC`.
 
-### Блокировка подписи вручную
+### Locking a label manually
 
 ```python
 scene.element('A').style['label_placement_locked'] = True
 scene.element('A').style['label_offset_px'] = [10, -5]
 ```
 
-### Динамика и keyframe-snapshot
+### Dynamics and keyframe snapshots
 
-См. §11.
+See §11.
 
-### Автоподбор радиуса дужки угла: `overlay.angle_radius`
+### Automatic angle-arc radius: `overlay.angle_radius`
 
-Когда угол узкий (малая мера), дужка при фиксированном `arc_size_px` визуально пропадает между двумя близкими сторонами. Включённый `angle_radius` масштабирует базовый радиус по формуле `base * (pivot / angle) ** exp`, а затем зажимает в `[min_px, max_arm_fraction · min(|v1|,|v2|) · ptUnit]`.
+When an angle is narrow (small measure), its arc at a fixed `arc_size_px` visually disappears between the two close sides. With `angle_radius` enabled, the base radius is scaled by `base * (pivot / angle) ** exp` and then clamped to `[min_px, max_arm_fraction · min(|v1|,|v2|) · ptUnit]`.
 
-Локация в JSON — `overlay.angle_radius`.
+The JSON location is `overlay.angle_radius`.
 
-| Ключ | Default | Описание |
+| Key | Default | Description |
 |---|---|---|
-| `enabled` | `false` | Опт-ин. Выключено по умолчанию, чтобы GGB-импорт оставался byte-for-byte faithful |
-| `exp` | `0.25` | Показатель `(pivot / angle)^exp`. `0` = без автоподбора |
-| `pivot_rad` | `π/2` | Мера, при которой масштаб = 1.0 (углы шире → меньше, уже → больше) |
-| `min_px` | `12` | Нижний порог радиуса в пикселях |
-| `max_arm_fraction` | `0.65` | Верхний порог как доля от длины короткой стороны |
-| `apply_to_right` | `false` | Применять ли clamps (min/max) к маркеру прямого угла |
+| `enabled` | `false` | Opt-in. Off by default so GGB import stays byte-for-byte faithful |
+| `exp` | `0.25` | The exponent in `(pivot / angle)^exp`. `0` = no auto-scaling |
+| `pivot_rad` | `π/2` | The measure at which scale = 1.0 (wider angles → smaller, narrower → larger) |
+| `min_px` | `12` | Lower floor on the radius, pixels |
+| `max_arm_fraction` | `0.65` | Upper cap as a fraction of the shorter arm's length |
+| `apply_to_right` | `false` | Whether to apply the clamps (min/max) to the right-angle marker |
 
-Per-element escape: `elem.style['auto_radius'] = False` — фиксирует `arc_size_px` для конкретного угла, даже если глобальный флаг включён.
+Per-element escape: `elem.style['auto_radius'] = False` pins `arc_size_px` for that specific angle even when the global flag is on.
 
-Подпись автоматически сдвигается за новый радиус: `_collect_labels` и рендер используют одну и ту же функцию `compute_effective_arc_size_px`, так что подпись всегда остаётся за пределами внешней дужки.
+The label automatically follows the new radius: `_collect_labels` and the renderer use the same `compute_effective_arc_size_px` function, so the label always stays beyond the outer arc.
 
 ```json
 "overlay": {
@@ -683,24 +686,24 @@ Per-element escape: `elem.style['auto_radius'] = False` — фиксирует `
 
 ---
 
-## 9. ImportPolicy: гибкий импорт из GeoGebra
+## 9. ImportPolicy: flexible GeoGebra import
 
-`ImportPolicy` контролирует, как значения из `.ggb` превращаются в `elem.ggb_style` при `loadGGB`. Полное cookbook — в `docs/import_policies.md`.
+`ImportPolicy` controls how values from a `.ggb` file become `elem.ggb_style` during `loadGGB`. The full cookbook is in `docs/import_policies.md`.
 
-### Где берётся
+### Where it comes from
 
-Приоритет (низший → высший):
+Priority (lowest → highest):
 
-1. Defaults: `ImportPolicy.faithful()` — как в GGB.
-2. `import.policy` внутри style JSON.
-3. `loadGGB(..., import_policy=...)` — явный аргумент.
-4. `setElementStyle()` — уже после загрузки.
+1. Defaults: `ImportPolicy.faithful()` — as in GGB.
+2. `import.policy` inside the style JSON.
+3. `loadGGB(..., import_policy=...)` — an explicit argument.
+4. `setElementStyle()` — after loading.
 
-### Поля
+### Fields
 
-Каждое принимает: `None` (fallback), литерал (число/bool/list/dict/hex), Python-callable `fn(raw, defaults, elem)`, или DSL-строку.
+Each field accepts: `None` (fallback), a literal (number/bool/list/dict/hex), a Python callable `fn(raw, defaults, elem)`, or a DSL string.
 
-| Поле ImportPolicy | GGB-источник | `elem.ggb_style` key |
+| ImportPolicy field | GGB source | `elem.ggb_style` key |
 |---|---|---|
 | `size_px` | `<pointSize val>` | `size_px` |
 | `stroke_width_px` | `<lineStyle thickness>` | `stroke_width_px` |
@@ -726,47 +729,47 @@ Per-element escape: `elem.style['auto_radius'] = False` — фиксирует `
 
 ### Mini-DSL
 
-| Директива | Эффект |
+| Directive | Effect |
 |---|---|
-| `"const:3"` | Фиксированное значение `3` |
-| `"scale:1.5"` | Умножить сырой GGB-ввод на `1.5` |
-| `"quantize:[1,2,4]"` | Снап к ближайшему элементу списка |
-| `"remap:{'#f00':'#c00'}"` | Lookup по словарю; miss → исходное |
-| `"match_element"` | Копировать stroke в label (sentinel) |
-| `"auto"` | Делегировать downstream-алгоритму (sentinel) |
+| `"const:3"` | The fixed value `3` |
+| `"scale:1.5"` | Multiply the raw GGB input by `1.5` |
+| `"quantize:[1,2,4]"` | Snap to the nearest list element |
+| `"remap:{'#f00':'#c00'}"` | Dictionary lookup; miss → original value |
+| `"match_element"` | Copy the stroke color into the label (sentinel) |
+| `"auto"` | Delegate to the downstream algorithm (sentinel) |
 
-### Горячая замена без парсинга
+### Hot-swap without reparsing
 
 ```python
 scene.reloadPolicy(ImportPolicy(size_px=5))
 ```
 
-Использует закешированные `elem.ggb_raw`, XML не перечитывается.
+Uses the cached `elem.ggb_raw`; the XML is not re-read.
 
 ---
 
-## 10. Статика vs анимация
+## 10. Statics vs animation
 
-| Аспект | Статика (SVG) | Анимация (MP4) |
+| Aspect | Static (SVG) | Animation (MP4) |
 |---|---|---|
-| **Подписи** | Одноразово `autoPlaceLabels()` | `keyframe_snapshots` + интерполяция offset, или per-frame tracker |
-| **Углы** | Биссектриса один раз | `dynamic_angles` → аналитический пересчёт каждый кадр |
-| **Z-index** | Читается на момент экспорта | Переустановка при `updateGeoElements`; равные слои стабилизируются tie-breaker по construction order |
-| **stroke_linecap** | Видим | Видим; `butt` даёт резкий конец, `round` — плавный |
-| **Шрифт** | GGB-descender-коррекция | Та же коррекция, но `_auto_placed=True` её отключает |
-| **ptUnit** | Фиксирован после `applyStyle` | Фиксирован; изменение камеры не пересчитывает |
+| **Labels** | One-shot `autoPlaceLabels()` | `keyframe_snapshots` + offset interpolation, or the per-frame tracker |
+| **Angles** | Bisector computed once | `dynamic_angles` → analytical recompute every frame |
+| **Z-index** | Read at export time | Reassigned during `updateGeoElements`; equal layers are stabilized by the construction-order tie-breaker |
+| **stroke_linecap** | Visible | Visible; `butt` gives a sharp end, `round` a smooth one |
+| **Font** | GGB descender correction | Same correction, but `_auto_placed=True` disables it |
+| **ptUnit** | Fixed after `applyStyle` | Fixed; camera changes do not recompute it |
 
-### Размер холста и анимация
+### Canvas size and animation
 
-При рендере MP4 manim использует `config.pixel_width/pixel_height`, а не `style.export.ptWidth`. `applyStyle` согласует камеру с export-размерами через соотношение сторон; если оно **не** совпадает с manim-холстом, активная часть укладывается по меньшей стороне.
+When rendering MP4, manim uses `config.pixel_width/pixel_height`, not `style.export.ptWidth`. `applyStyle` reconciles the camera with the export size via the aspect ratio; if it does **not** match the manim canvas, the active area is fitted along the smaller side.
 
-Для MP4 потребитель обязан явно согласовать Manim config с физическим размером экспорта: `config.pixel_width/config.pixel_height = export["size"]`. Библиотека не выбирает web-quality preset и не должна угадывать bitrate/fps; эти решения остаются на уровне приложения или сервиса.
+For MP4 the consumer must explicitly reconcile the Manim config with the physical export size: `config.pixel_width/config.pixel_height = export["size"]`. The library does not pick a web-quality preset and must not guess bitrate/fps; those decisions stay at the application or service level.
 
 ---
 
-## 11. Keyframe-анимации и интерполяция подписей
+## 11. Keyframe animation and label interpolation
 
-### JSON-формат
+### JSON format
 
 ```json
 {
@@ -780,24 +783,27 @@ scene.reloadPolicy(ImportPolicy(size_px=5))
 }
 ```
 
-### Типы independent-элементов
+### Independent element types
 
-| Type | JSON-формат | Интерполяция |
+| Type | JSON format | Interpolation |
 |---|---|---|
-| `free_point` | `[x, y]` | линейная по координатам |
-| `tparam_point` (circle) | `{"tparam": rad, "direction": "short"\|"cw"\|"ccw"}` | угловая |
-| `tparam_point` (segment/line) | `{"tparam": 0..1}` | линейная |
-| `number` / `measure` | `float` | линейная |
-| `angle` | `float` (rad) | линейная |
-| `boolean` | `true`/`false` | snap на t=0.5 |
+| `free_point` | `[x, y]` | Linear on coordinates |
+| `tparam_point` (circle) | `{"tparam": rad, "direction": "short"\|"cw"\|"ccw"}` | Angular |
+| `tparam_point` (segment/line) | `{"tparam": 0..1}` | Linear |
+| `number` / `measure` | `float` | Linear |
+| `angle` | `float` (rad) | Linear |
+| `boolean` | `true`/`false` | Snap at t=0.5 |
 
 ### Easing
 
-`linear`, `smooth` (default), `in`, `out`, `in_out`.
+`linear`, `smooth` (default), `smootherstep`, `in`, `out`, `in_out`,
+`ease_in_sine`, `ease_out_sine`, `ease_in_out_sine`, `ease_in_cubic`,
+`ease_out_cubic`, `ease_in_out_cubic`, `rush_into`, `rush_from`,
+`ease_out_back`, `ease_out_elastic`, `ease_out_bounce`.
 
-### Интеграция с автораскладкой
+### Integration with auto-placement
 
-Включите одновременно:
+Enable together:
 
 ```json
 "overlay": {
@@ -810,13 +816,13 @@ scene.reloadPolicy(ImportPolicy(size_px=5))
 }
 ```
 
-- `keyframe_snapshots` — pre-pass считает layout на каждом keyframe (со save/restore состояния), offset-ы между snapshot-ами интерполируются.
-- `dynamic_angles` — биссектрисы углов пересчитываются аналитически каждый кадр.
-- `canonicalize_anchor` — все static-якоря приводятся к `MC` с компенсацией, убирая дискретные скачки.
+- `keyframe_snapshots` — a pre-pass computes the layout at every keyframe (with state save/restore); offsets between snapshots are interpolated.
+- `dynamic_angles` — angle bisectors are recomputed analytically every frame.
+- `canonicalize_anchor` — all static anchors are converted to `MC` with compensation, removing discrete jumps.
 
-Без `keyframe_snapshots` или `autoPlaceLabels(dynamic=True)` флаг `dynamic_angles` **ничего не делает** (намеренно — интеграция явная).
+Without `keyframe_snapshots` or `autoPlaceLabels(dynamic=True)`, the `dynamic_angles` flag **does nothing** (deliberately — the integration is explicit).
 
-### Трекер через `addUpdater`
+### The `addUpdater` tracker
 
 ```python
 scene.loadGGB(
@@ -825,17 +831,17 @@ scene.loadGGB(
     export={'size': {'width': 800, 'height': 600}},
 )
 x = scene.addVar('x', 0)
-scene.autoPlaceLabels(dynamic=True)   # ставит LabelTracker
+scene.autoPlaceLabels(dynamic=True)   # installs the LabelTracker
 with scene.animating(x):
     scene.play(x.animate.set_value(1), run_time=3)
 scene.clearLabelTracker()
 ```
 
-EMA-сглаживание (`ema_alpha`) + Schmitt-trigger гистерезис якоря (`anchor_flip_frames`) предотвращают дрожание.
+EMA smoothing (`ema_alpha`) + Schmitt-trigger anchor hysteresis (`anchor_flip_frames`) prevent jitter.
 
 ---
 
-## 12. Batch-API: массовое изменение стилей
+## 12. Batch API: bulk style changes
 
 ### `setElementStyle`
 
@@ -846,7 +852,7 @@ scene.setElementStyle(['a', 'b', 'c'],
                       fill_opacity=0.5)
 ```
 
-Проходится по списку имён и пишет все пары в `elem.style`.
+Walks the list of names and writes every pair into `elem.style`.
 
 ### `setVisible`
 
@@ -854,7 +860,7 @@ scene.setElementStyle(['a', 'b', 'c'],
 scene.setVisible(['A', 'B', 'C'], False)
 ```
 
-### Context manager `animating`
+### The `animating` context manager
 
 ```python
 x = scene.addVar('x', 0)
@@ -862,64 +868,65 @@ with scene.animating(x):
     scene.play(x.animate.set_value(1), run_time=3)
 ```
 
-Эквивалентно `addUpdater` → `try/play/clearUpdater`.
+Equivalent to `addUpdater` → `try/play/clearUpdater`.
 
-### Анимационные хелперы
+### Animation helpers
 
-| Метод | Описание |
+| Method | Description |
 |---|---|
-| `Show(names, mode='Fade'\|'Create')` / `playShow` | Показать элементы |
-| `Hide(names)` / `playHide` | Скрыть |
-| `Shade(names)` / `playShade` | Затенить (меняет stroke/fill на `col_shade`) |
-| `Restore(names)` / `playRestore` | Восстановить из Shade |
-| `Update(names)` / `playUpdate` | FadeOut → пересоздать → FadeIn |
-| `UpdateAll()` | То же для всей сцены |
-| `ShowCreate(name)` | Create для линий, Fade для заливок и углов |
+| `Show(names, mode='Fade'\|'Create')` / `playShow` | Show elements |
+| `Hide(names)` / `playHide` | Hide |
+| `Shade(names)` / `playShade` | Dim (changes stroke/fill to `col_shade`) |
+| `Restore(names)` / `playRestore` | Restore from Shade |
+| `Update(names)` / `playUpdate` | FadeOut → recreate → FadeIn |
+| `UpdateAll()` | The same for the whole scene |
+| `ShowCreate(name)` | Create for lines, Fade for fills and angles |
 
 ---
 
-## 13. Готовые пресеты
+## 13. Bundled presets
+
+Five style presets ship inside the package (`animageo/style/presets/`). Pass a bare preset name as the `style=` argument and it resolves to the packaged JSON (`animageo/style/config.py::resolve_style_input`); an on-disk file with the same name always wins over a packaged preset.
 
 ```
-style/
-  default.json       Сине-красная палитра (базовая)
-  book_blue.json     Для печати, синий
-  book_blue2.json    Синий, вариант 2
-  book_blue6.json    Синий, вариант 6
-  book_blue15.json   Синий, вариант 15
-  book_red.json      Для печати, красный
-  book_purple.json   Для печати, фиолетовый
-  book_green.json    Для печати, зелёный
-  pandora.json       «Pandora»-палитра
-  style_auto.json    С включённой автораскладкой подписей
-  t5.json            Тестовый пресет
+default        Blue/red palette (baseline; same palette as book_blue)
+book_blue      Print-oriented, blue
+book_green     Print-oriented, green
+book_purple    Print-oriented, purple
+book_red       Print-oriented, red (blue accent)
 ```
+
+```python
+scene.loadGGB('x.ggb', style='book_green')
+```
+
+`available_style_presets()` in `animageo.style.config` returns the current list of packaged preset names.
 
 ---
 
-## 14. Рецепты «как добиться X»
+## 14. Recipes: "how do I get X"
 
-### Унификация всех подписей в один цвет и размер
+### Unify all labels to one color and size
 
 ```python
 ImportPolicy(font_size_px=14, label_color='#222222')
 ```
 
-### Точки одного размера
+### Points of one size
 
 ```python
 ImportPolicy(size_px=3)
 ```
 
-### Квантизация толщин
+### Quantize line widths
 
 ```python
 ImportPolicy(stroke_width_px='quantize:[1, 2, 4]')
 ```
 
-### Брендинг: замена палитры
+### Branding: swap the palette
 
-В JSON:
+In JSON:
 ```json
 "import": {
     "colors": {
@@ -929,47 +936,47 @@ ImportPolicy(stroke_width_px='quantize:[1, 2, 4]')
 }
 ```
 
-Или через `ImportPolicy`:
+Or via `ImportPolicy`:
 ```python
 ImportPolicy(stroke="remap:{'#1565c0':'#0066cc','#d32f2f':'#c04040'}")
 ```
 
-### Двойная дуга угла
+### A double angle arc
 
 ```python
 scene.element('α').style['tick_count'] = 2
-scene.element('α').style['arc_shift_px'] = 3  # на 3 px дальше
+scene.element('α').style['arc_shift_px'] = 3  # 3 px farther out
 ```
 
-### Полигон «поверх всего»
+### A polygon "above everything"
 
 ```json
 "rendering": { "polygon_boundary_layer": "top" }
 ```
 
-Или per-element: `scene.element('poly').style['z_index'] = 100`.
+Or per element: `scene.element('poly').style['z_index'] = 100`.
 
-### Скрыть все подписи
+### Hide all labels
 
 ```python
 ImportPolicy(label_visible=False)
 ```
 
-### Масштабируемый экспорт в 2×
+### Scalable 2× export
 
 ```python
 scene.loadGGB(
     'x.ggb',
-    style='style/default.json',
+    style='default',
     reference={'size': {'width': 800, 'height': 600}},
     export={'size': {'width': 1600, 'height': 1200}},
 )
 ```
 
-Геометрия и визуальные `*_px` размеры масштабируются в 2× относительно
-reference-холста [800, 600].
+The geometry and the visual `*_px` sizes are scaled 2× relative to the
+[800, 600] reference canvas.
 
-### Wave-штрихи на равных сторонах
+### Wave ticks on equal sides
 
 ```python
 scene.element('a').style['tick_count'] = 2
@@ -977,14 +984,14 @@ scene.element('a').style['tick_style'] = 'wave'
 scene.element('a').style['tick_radius_px'] = 1.5
 ```
 
-### Подпись сверху над точкой
+### A label above a point
 
 ```python
-scene.element('A').style['label_anchor'] = 'BC'  # bottom-center якорь = подпись выше точки
-scene.element('A').style['label_offset_px'] = [0, 10]      # на 10 px выше (положительный Y = вверх в math)
+scene.element('A').style['label_anchor'] = 'BC'  # bottom-center anchor = label above the point
+scene.element('A').style['label_offset_px'] = [0, 10]      # 10 px higher (positive Y = up in math coords)
 ```
 
-### Только подписи, без точек (диаграмма «буквы»)
+### Labels only, no points (a "letters" diagram)
 
 ```json
 "rendering": { "points_display": "only_labels" }
@@ -992,30 +999,30 @@ scene.element('A').style['label_offset_px'] = [0, 10]      # на 10 px выше
 
 ---
 
-## 15. Известные особенности и подводные камни
+## 15. Known quirks and gotchas
 
-Подробно — в `docs/gotchas.md`. Вкратце:
+Details in `docs/gotchas.md`. In brief:
 
-1. **`dynamic_angles=true` сам по себе ничего не делает** — нужен либо `keyframe_snapshots=true`, либо `autoPlaceLabels(dynamic=True)`. Это сознательно, чтобы флаг был дешёв в конфиге.
-2. **`canonicalize_anchor=true` ломает snapshot-тесты** — они записали старые якоря. По умолчанию off; включать только для плавной анимации.
-3. **TeX bbox-кэш — process-wide**. Ключ `(label_text, font_size)`, так что между сценами в одном процессе переиспользуется корректно. Ручные изменения `RusTex` требуют `clear_bbox_cache()`.
-4. **Polygon.become() глючит в manim** → `updateGeoElements` для полигонов работает через remove+add.
-   Layer-order при этом не должен плавать: фактические Manim `z_index`
-   получают микросдвиг по порядку элемента в конструкции.
-5. **Updater на анимируемом ValueTracker получает только start/end** — поэтому `play_keyframes` использует sentinel-Mobject.
-6. **`elem.ggb_raw` пусто у элементов из Python-DSL** — `ImportPolicy.resolve_overrides_only()` получит `raw=None`.
-7. **`right_angle_marker` auto-detect через `np.isclose(angle, π/2)`** — может ложно сработать на ~89.5°-91°; явно задавайте `right_angle_marker=True/False` если нужна точность.
-8. **`arc_size_px` перекрывает `r_offset`** — если оба заданы, `r_offset` игнорируется.
-9. **Removed visual fields are rejected.** Старые `line_width`, `font_size`, `strich_*`, `arrow_*`, `label_r_offset`, `ang_*` в style JSON отклоняются; используйте canonical `*_px` ключи.
+1. **`dynamic_angles=true` does nothing by itself** — you need either `keyframe_snapshots=true` or `autoPlaceLabels(dynamic=True)`. This is deliberate, so the flag is cheap to keep in a config.
+2. **`canonicalize_anchor=true` rewrites recorded label anchors**, so existing outputs shift. Off by default; enable it only for smooth animation.
+3. **The TeX bbox cache is process-wide.** The key is `(label_text, font_size)`, so it is reused correctly between scenes in one process. Manual changes to `RusTex` require `clear_bbox_cache()`.
+4. **`Polygon.become()` is buggy in manim** → `updateGeoElements` handles polygons via remove+add.
+   The layer order must not drift as a result: the actual Manim `z_index` values
+   get a micro-shift based on the element's order in the construction.
+5. **An updater on an animated ValueTracker only sees start/end** — which is why `play_keyframes` uses a sentinel Mobject.
+6. **`elem.ggb_raw` is empty for elements created via the Python DSL** — `ImportPolicy.resolve_overrides_only()` will receive `raw=None`.
+7. **`right_angle_marker` auto-detects via `np.isclose(angle, π/2)`** — it may falsely trigger around ~89.5°–91°; set `right_angle_marker=True/False` explicitly when precision matters.
+8. **`arc_size_px` overrides `r_offset`** — if both are set, `r_offset` is ignored.
+9. **Removed visual fields are rejected.** The old `line_width`, `font_size`, `strich_*`, `arrow_*`, `label_r_offset`, `ang_*` keys in style JSON are rejected; use the canonical `*_px` keys.
 
 ---
 
-## См. также
+## See also
 
-- [docs/api.md](api.md) — полный справочник методов `AnimaGeoScene`
-- [docs/import_policies.md](import_policies.md) — cookbook с 12 сценариями `ImportPolicy`
-- [docs/gotchas.md](gotchas.md) — подводные камни manim/Python/архитектуры
-- [docs/architecture.md](architecture.md) — обзор модулей и зависимостей
-- [docs/guide/05-styles.html](guide/05-styles.html) — HTML-версия (стили) с интерактивной навигацией, диаграммами и превью; стили объединены в общий guide
-- `animageo/style/schema.py` — исчерпывающий docstring JSON-схемы
-- `animageo/style/scaling.py` — все формулы конверсии единиц в одном файле
+- [docs/api.md](api.md) — the full `AnimaGeoScene` method reference
+- [docs/import_policies.md](import_policies.md) — a cookbook with 12 `ImportPolicy` scenarios
+- [docs/gotchas.md](gotchas.md) — manim/Python/architecture pitfalls
+- [docs/architecture.md](architecture.md) — module and dependency overview
+- [docs/guide/05-styles.html](guide/05-styles.html) — the HTML version (styles) with interactive navigation, diagrams and previews; styles are part of the combined guide
+- `animageo/style/schema.py` — the exhaustive JSON-schema docstring
+- `animageo/style/scaling.py` — all unit-conversion formulas in one file
