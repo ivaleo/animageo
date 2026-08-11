@@ -2,7 +2,10 @@ include CHANGELOG.md
 include README.md
 include LICENSE
 include NOTICE
+include CITATION.cff
+include CONTRIBUTING.md
 include pyproject.toml
+include animageo/py.typed
 recursive-include animageo *.pyi *.json *.md
 prune animageo/.claude
 prune tests

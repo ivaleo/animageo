@@ -268,7 +268,7 @@ Summary помогает модели:
   объектов через `scene.loadCode(...)`.
 
 Summary не предназначен для полного восстановления конструкции. Это prompt
-artifact, а не exchange-формат геометрии. Для второго этапа AI-пайплайна
-summary можно использовать как read-only контекст для patch-редактирования по
-именам; рабочий план описан в
-[ai_construction_generation_plan.md](ai_construction_generation_plan.md).
+artifact, а не exchange-формат геометрии. Для AI-создания и редактирования
+конструкций summary используется как read-only контекст для
+patch-редактирования по именам; см.
+[ai_construction_generation_context.md](ai_construction_generation_context.md).

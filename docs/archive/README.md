@@ -21,8 +21,8 @@ documentation start at [`../index.md`](../index.md).
 **Label placement**
 - `label_placement_research.md`, `label_placement_improvement_plan.md`,
   `label_placement_leader_lines_plan.md`, `label_autoplacement_plan.md`,
-  `label_placement_feedback_round1.md`, `label_placement_tz_round19.md`,
-  `label_placement_examples/` — the automatic label-placement effort
+  `label_placement_feedback_round1.md`, `label_placement_tz_round19.md` —
+  the automatic label-placement effort
 
 **Other features / fixes**
 - `dsl_intersect_index_keyword_plan.md` — indexed intersection keyword
@@ -31,8 +31,8 @@ documentation start at [`../index.md`](../index.md).
 - `TZ-conic-line-intersection-index-order.md`,
   `TZ-conic-locus-point-keyframe-animation.md`,
   `TZ-label-placement-angle-markers.md`,
-  `TZ-mathtex-set-default-recursion-leak.md` — shipped TZ specs
-- `superpowers/` — plan/spec artifacts for the above fixes
+  `TZ-mathtex-set-default-recursion-leak.md`,
+  `TZ-label-offset-ggb-fidelity.md` — shipped TZ specs
 
 **Audits**
 - `geogebra_command_audit.md` — point-in-time GeoGebra command coverage

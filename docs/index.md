@@ -35,9 +35,6 @@ AnimaGeo превращает геометрические конструкци�
 - [Контекст для AI-генерации стилей](ai_style_generation_context.md)
 - [JSON Schema для AI style JSON](ai_style_json_schema.json)
 - [Контекст для AI-создания/редактирования конструкций](ai_construction_generation_context.md)
-- [План AI-создания и редактирования конструкций](ai_construction_generation_plan.md)
-- [AI-usage: открытые вопросы](ai_usage_open_questions.md) — известные швы в API
-- [AI construction lab](ai_construction_lab/index.html) — HTML-библиотека prompt → DSL → SVG с ручной оценкой
 
 ## Интерактивный гайд
 
@@ -46,6 +43,5 @@ AnimaGeo превращает геометрические конструкци�
 ## Прочее
 
 - [Особенности и подводные камни](gotchas.md)
-- [Перспективы развития](roadmap.md)
+- [Направления развития](roadmap.md)
 - [../CHANGELOG.md](../CHANGELOG.md) — история релизов
-- [archive/](archive/) — исторические планы, аудиты и TZ по уже реализованным фичам
