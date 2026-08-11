@@ -78,7 +78,7 @@ callable `fn(raw, defaults, elem)`, or a string DSL directive. See
 | `label_value_separator` | literal / callable | `label_value_separator` |
 | `angle_range` | `<angleStyle val>` | `angle_range` |
 | `tick_count` | `<decoration type>` | `tick_count` |
-| `font_size_px` | `<gui><font size>` / literal | `font_size_px` |
+| `font_size_px` | literal / callable (`raw=None`) | `font_size_px` |
 | `stroke` | `<objColor>` as `obj_color.hex` | `stroke` |
 | `fill` | `<objColor>` as `obj_color.hex` | `fill` |
 | `fill_opacity` | `<objColor alpha>` as `obj_color.opacity` | `fill_opacity` |

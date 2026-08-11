@@ -105,7 +105,7 @@ Unit contract: every `*_px` key in `elem.style`, `elem.ggb_style`, and `defaults
 | `style/enums.py` | Style vocabularies (`Literal` aliases + runtime tuples) and the GGB `pointStyle` → shape/fill/stroke decomposition table |
 | `style/proxy.py` + `proxy.pyi` | `StyleProxy` — dict subclass with attribute-style access to `elem.style` and explicit-write tracking |
 | `geo/construction.py` | Dependency graph, topological sort (Kahn), rebuild, apply, `update_tparam`, `rename`, `add_and_build` |
-| `geo/lib_elements.py` | Point, Line, Segment, Ray, Angle, Polygon, Circle, Arc, Vector, LocusCurve, Text (+ re-export of Conic/Function/ImplicitCurve); human-readable fields (`.coords`, `.center/.radius`, `.normal/.offset/.direction`, `.vertex/.size/.side1/.side2`, `.endpoints`, `.vertices`, …); `Element.__getattr__` forwards to `.data` |
+| `geo/lib_elements.py` | Point, Line, Segment, Ray, Angle, Polygon, Circle, Arc, CircleSector, Vector, LocusCurve, Text (+ re-export of Conic/Function/ImplicitCurve); human-readable fields (`.coords`, `.center/.radius`, `.normal/.offset/.direction`, `.vertex/.size/.side1/.side2`, `.endpoints`, `.vertices`, …); `Element.__getattr__` forwards to `.data` |
 | `geo/lib_conic.py` | `Conic` (3×3 matrix `.matrix`), invariant-based classification, `as_ellipse/as_parabola/as_hyperbola/as_lines/as_point`, `Conic.from_string(equation)` |
 | `geo/lib_function.py` | `Function` — explicit `y = f(x)` (`.expr`, `.var`, `.source`), sympy parsing, `If[...]` → `Piecewise`, chained `a ≤ x ≤ b`, `natural_singularities`, lambdify |
 | `geo/lib_implicit.py` | `ImplicitCurve` — arbitrary `F(x, y) = 0` (`.expr`, `.var_x/.var_y`, `.source`), sympy parsing, two-argument lambdify |
@@ -117,7 +117,7 @@ Unit contract: every `*_px` key in `elem.style`, `elem.ggb_style`, and `defaults
 | `parsers/ggb_parser.py` | XML extraction from .ggb, construction parsing, `ggb_raw` population; `<expression type="conic/line/function/implicitpoly">` with an `=` sign; expressions are routed through `dsl.run` internally |
 | `parsers/ggb_macro.py` | Custom-tool macro expansion: parses `geogebra_macro.xml` definitions and inlines macro calls into primitive commands before parsing (recursive expansion supported) |
 | `parsers/ggb_generator.py` | Generates .ggb archives from a Construction (GeoGebra XML serialisation + ZIP packaging) |
-| `parsers/dsl/` | Python DSL (exec engine): `transform.py` (AST rewriter, loop scoping, name shaping, forbid list), `registrar.py` (`__reg__`/`__reg_loop__`/`__reg_tuple__` + ContextVar), `namespace.py` (FactoryDict with `__missing__` for ~74 auto-discovered commands + math + `style/hide/show` helpers + forward refs for `addVar` variables), `proxy.py` (ElementProxy with `__getattr__` into data plus `+/-/*//`/`abs` arithmetic), `sugar.py` (`f(x) = expr` pre-pass), `stub_gen.py` (`<scene>_stubs.pyi` after `loadGGB`). Entry points: `dsl.run(constr, code)`, `with dsl.scope(c):`, `scene.putCode(code)`, `scene.loadCode(path)`. Stubs: `namespace.pyi`, `proxy.pyi`. |
+| `parsers/dsl/` | Python DSL (exec engine): `transform.py` (AST rewriter, loop scoping, name shaping, forbid list), `registrar.py` (`__reg__`/`__reg_loop__`/`__reg_tuple__` + ContextVar), `namespace.py` (FactoryDict with `__missing__` for 99 auto-discovered command factories backed by 433 dispatch signatures + math + `style/hide/show` helpers + forward refs for `addVar` variables), `proxy.py` (ElementProxy with `__getattr__` into data plus `+/-/*//`/`abs` arithmetic), `sugar.py` (`f(x) = expr` pre-pass), `stub_gen.py` (`<scene>_stubs.pyi` after `loadGGB`). Entry points: `dsl.run(constr, code)`, `with dsl.scope(c):`, `scene.putCode(code)`, `scene.loadCode(path)`. Stubs: `namespace.pyi`, `proxy.pyi`. |
 | `dsl.py` + `dsl.pyi` | Super-module — `from animageo.dsl import *` gives all factories and types in the IDE |
 | `parsers/svg_parser.py` | Cairo rendering of manim objects to SVG |
 | `exporters/tikz/` | Semantic TikZ export (`scene.exportTikZ`): walks drawable elements in z-order and emits native TikZ through the same style resolver as the renderer |
@@ -286,7 +286,7 @@ All nontrivial pairs are implemented:
 | Conic ∩ Conic | Pencil: `det(λM₁ + M₂) = 0` → cubic → decompose λ·M₁+M₂ into a pair of lines → `intersect_Kl` | `intersect_KK` |
 | Conic ∩ Circle | Circle → Conic adapter + `intersect_KK` | `intersect_Kc` |
 | Conic ∩ Arc/Segment/Ray | `intersect_Kl` + membership filter | `intersect_KC`/`Ks`/`Kr` |
-| Function ∩ Line | Substitute `y = f(x)` into the line equation → 1D Brent search with sympy.solve fallback | `intersect_Fl` |
+| Function ∩ Line | Substitute `y = f(x)` into the line equation → `sympy.solve` first, then a sign-change scan with bisection fallback | `intersect_Fl` |
 | Function ∩ Conic | Substitution → 1D: `pᵀ·M·p` with `p = (x, f(x), 1)` | `intersect_FK` |
 | Function ∩ Circle | `_circle_to_conic` + FK | `intersect_Fc` |
 | Function ∩ Function | `f₁(x) − f₂(x) = 0` | `intersect_FF` |
