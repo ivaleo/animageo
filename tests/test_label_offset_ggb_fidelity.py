@@ -402,3 +402,128 @@ class TestSizeInvariantAnchoring:
             scene,
             lambda t: [-60 + 120 * t - 4.0, -20 + 40 * t - 10.0],
         )
+
+
+# ── Clearance beats respect (TZ §5.3 addendum) ─────────────────────────
+
+def _dragged_fixture(tmp_path):
+    """Fixture with А's label dragged down ALONG segment k toward Б, and Б's
+    dragged up along k toward А — the collinear case where a radial
+    clear-push can never escape the line."""
+    out = tmp_path / "dragged.ggb"
+    with zipfile.ZipFile(FIXTURE) as zin, zipfile.ZipFile(out, "w") as zout:
+        for item in zin.infolist():
+            data = zin.read(item.filename)
+            if item.filename == "geogebra.xml":
+                xml = data.decode()
+                xml = xml.replace('<labelOffset x="-6" y="-4"/>',
+                                  '<labelOffset x="45" y="80"/>', 1)
+                xml = xml.replace(
+                    '<labelOffset x="-11" y="34"/>\n\t<labelMode val="0"/>'
+                    '\n\t<animation step="0.1" type="1" playing="false"/>'
+                    '\n\t<pointSize val="5"/>\n\t<pointStyle val="0"/>'
+                    '\n\t<coords x="-2.3" y="-0.1" z="1"/>',
+                    '<labelOffset x="-55" y="-75"/>\n\t<labelMode val="0"/>'
+                    '\n\t<animation step="0.1" type="1" playing="false"/>'
+                    '\n\t<pointSize val="5"/>\n\t<pointStyle val="0"/>'
+                    '\n\t<coords x="-2.3" y="-0.1" z="1"/>', 1)
+                data = xml.encode()
+            zout.writestr(item, data)
+    return out
+
+
+def _segment_bbox_overlap_px(scene, name):
+    """Exact total segment length inside the label bbox, in style pixels."""
+    from animageo.geo import lib_elements as geo_mod
+    from animageo.label_placement import _segment_bbox_overlap
+
+    left, bottom, right, top = _label_bbox(scene, name)
+    cx, cy = (left + right) / 2, (bottom + top) / 2
+    half_w, half_h = (right - left) / 2, (top - bottom) / 2
+    u = float(scene.style.export.get("ptUnit_style")
+              or scene.style.export.get("ptUnit"))
+    overlap = 0.0
+    for elem in scene.geo.elements:
+        if not isinstance(elem.data, geo_mod.Segment):
+            continue
+        p1, p2 = elem.data.endpoints[0][:2], elem.data.endpoints[1][:2]
+        overlap += _segment_bbox_overlap(
+            p1, p2, cx, cy, half_w, half_h) * u
+    return overlap
+
+
+class TestClearanceBeatsRespect:
+    """«Не налезать на линии» is a hard constraint; «уважать ручной сдвиг»
+    is a preference. A manual position that cannot be kept without overlap
+    (dragged collinearly along the label's own segment) must yield: the
+    label is placed clear of geometry like an unrespected label."""
+
+    def test_collinear_dragged_labels_stay_clear_of_lines(self, tmp_path):
+        ggb = _dragged_fixture(tmp_path)
+        style = _autoplace_style(
+            tmp_path, distance_px=0, padding_px=0, geom_gap_px=0.0,
+            angle_gap_arc_px=0, angle_gap_sides_px=2,
+            w_anchor=0.5, w_label=10, w_geom=2,
+            compact_gap_px=1, overlap_tol_px=2.5,
+            label_gap_px=2.5, angle_marker_obstacle=True,
+            dashed_overlap_factor=0.3,
+            angle_label_max_arm_fraction=0.45,
+        )
+        scene = _load_scene(ggb, style=style)
+        for name in ("А", "Б"):
+            overlap = _segment_bbox_overlap_px(scene, name)
+            assert overlap <= 1e-6, (
+                f"{name}: {overlap:.1f}px of segment runs through the label "
+                "bbox although "
+                f"clear space exists — respect must yield to clearance"
+            )
+
+    def test_clear_manual_positions_still_respected(self, tmp_path):
+        """Control: the untouched fixture's В keeps its manual side (regression
+        guard that the clearance override does not disable respect)."""
+        style = _autoplace_style(tmp_path)
+        scene = _load_scene(FIXTURE, style=style)
+        got = _visual_dir(scene, "В")
+        want = _manual_visual_dir(scene, "В")
+        assert float(np.dot(got, want)) >= np.cos(np.radians(30.0))
+
+    def test_guard_leaves_an_already_clear_label_unchanged(self):
+        from animageo.label_placement import LabelInfo, _clearance_guard_pass
+
+        label = LabelInfo("A", np.array([0.0, 0.0]), 0.5, 0.25)
+        original = np.array([2.0, 2.0])
+        result = [("A", original.copy(), 1)]
+
+        _clearance_guard_pass(
+            [label], result,
+            [(np.array([-1.0, 0.0]), np.array([1.0, 0.0]))],
+            [], np.empty((0, 2)),
+            distance=0.0, padding=0.0, ptUnit=1.0,
+        )
+
+        assert np.array_equal(result[0][1], original)
+
+    def test_guard_separates_overlapping_labels(self):
+        from animageo.label_placement import (
+            LabelInfo, _bbox_overlap_area, _clearance_guard_pass,
+        )
+
+        labels = [
+            LabelInfo("A", np.array([0.0, 0.0]), 0.6, 0.4),
+            LabelInfo("B", np.array([2.0, 0.0]), 0.6, 0.4),
+        ]
+        result = [
+            ("A", np.array([1.0, 0.0]), 0),
+            ("B", np.array([1.0, 0.0]), 4),
+        ]
+
+        _clearance_guard_pass(
+            labels, result, [], [], np.empty((0, 2)),
+            distance=0.0, padding=0.0, ptUnit=1.0,
+        )
+
+        a, b = result[0][1], result[1][1]
+        assert _bbox_overlap_area(
+            a[0], a[1], labels[0].half_w, labels[0].half_h,
+            b[0], b[1], labels[1].half_w, labels[1].half_h,
+        ) == 0.0
