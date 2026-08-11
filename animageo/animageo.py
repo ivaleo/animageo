@@ -25,7 +25,7 @@ from .style.scaling import (
     stroke_width_to_manim,
 )
 from .style.import_policy import ImportPolicy
-from .style.config import StyleConfig
+from .style.config import StyleConfig, resolve_style_input
 from .style.resolver import resolve as _resolve_style
 from .style.colorspace import COLOR_SPACES
 from .labels import resolve_label_text, resolve_label_spec
@@ -635,6 +635,7 @@ class AnimaGeoScene(MovingCameraScene):
         ``export`` controls the final SVG/PNG/MP4 canvas. Construction
         coordinates and style dictionaries are not mutated by layout.
         """
+        style = resolve_style_input(style)
         style_path = _style_path_for_geostyle(style)
         if style_path == '':
             style_path = None

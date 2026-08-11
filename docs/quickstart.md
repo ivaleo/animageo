@@ -1,94 +1,101 @@
-# Быстрый старт
+# Quickstart
 
-## Установка
+## Installation
 
 ```bash
 pip install animageo
 ```
 
-Зависимости: `numpy`, `manim >= 0.20.1`, `pycairo`, `lark`.
+Core dependencies (`numpy`, `manim >= 0.20.1`, `pycairo`, `sympy`, `scipy`)
+are installed automatically. Rendering MP4/GIF additionally needs a working
+manim toolchain (ffmpeg, and a LaTeX install for text labels).
 
-## Минимальный пример
+## Minimal example
 
 ```python
 from animageo import *
 
 class MyScene(AnimaGeoScene):
     def construct(self):
-        # Загрузить конструкцию из GeoGebra
+        # Load a GeoGebra construction
         self.loadGGB('triangle.ggb',
-                     style='style/default.json',
+                     style='default',
                      export={'size': {'width': 800, 'height': 600}})
 
-        # Показать все элементы
+        # Show all elements
         self.wait(2)
 
-        # Экспортировать в SVG
+        # Export to SVG
         self.exportSVG('triangle.svg')
 ```
 
-Запуск:
+Run:
 
 ```bash
 manim my_scene.py MyScene -ql
 ```
 
-## Добавление своей геометрии
+Bare style names (`default`, `book_blue`, `book_green`, `book_purple`,
+`book_red`) resolve to presets shipped inside the package; a path to your own
+style JSON works too, and omitting `style` uses the builtin defaults.
 
-Используется exec-based Python DSL — полный Python (циклы, условия,
-функции, kwargs, comprehensions). Подробности — [docs/python_dsl.md](python_dsl.md).
+## Adding your own geometry
+
+Constructions are extended with an exec-based Python DSL — full Python
+(loops, conditionals, functions, kwargs, comprehensions). Details:
+[docs/python_dsl.md](python_dsl.md).
 
 ```python
 class MyScene(AnimaGeoScene):
     def construct(self):
-        self.loadGGB('scene.ggb', style='style/default.json',
+        self.loadGGB('scene.ggb', style='default',
                      export={'size': {'width': 800, 'height': 600}})
 
-        # Добавить элементы через Python DSL
+        # Add elements through the Python DSL
         self.putCode('''
             M = Midpoint(A, B)
             h = Segment(C, M)
 
-            # Python-конструкции тоже работают
+            # Python constructs work too
             for i in range(3):
-                p = Point(i, 0)          # создаст p, p_2, p_3
+                p = Point(i, 0)          # creates p, p_2, p_3
 
-            # Доступ к полям и стили
+            # Field access and styling
             M.style.stroke = '#ff0000'
-            x_val = A.x                  # координата как float
+            x_val = A.x                  # coordinate as float
         ''')
 
-        # Или загрузить из файла (файл .py рядом со сценой)
+        # Or load from a file (a .py file next to the scene)
         self.loadCode('extra_constructions.py')
 ```
 
-## Анимация с переменными
+## Animating with variables
 
 ```python
 class MyScene(AnimaGeoScene):
     def construct(self):
-        self.loadGGB('scene.ggb', style='style/default.json',
+        self.loadGGB('scene.ggb', style='default',
                      export={'size': {'width': 400, 'height': 400}})
 
-        # Создать переменную и привязать к конструкции
+        # Create a variable and bind it to the construction
         t = self.addVar('t', 0.0)
         self.addUpdater(t)
 
-        # Анимировать
+        # Animate
         self.play(t.animate.set_value(1.0), run_time=3)
         self.clearUpdater(t)
 ```
 
-## Keyframe-анимация
+## Keyframe animation
 
-Для сохранённых таймлайнов, веб-превью и повторяемого рендера используйте
-`play_keyframes()`. Сначала посмотрите, какие входы можно анимировать:
+For saved timelines, web previews, and repeatable renders use
+`play_keyframes()`. First check which inputs are animatable:
 
 ```python
 independents = self.get_independent_elements()
 ```
 
-Минимальный v2-таймлайн:
+A minimal v2 timeline:
 
 ```python
 self.play_keyframes({
@@ -103,63 +110,66 @@ self.play_keyframes({
 })
 ```
 
-V2 поддерживает анимацию стилей, видимости с эффектами, 17 easing-имен,
-`@camera`, events-акценты, `reveal_construction()` и статический preview через
-`apply_keyframes_at()`. Формат подробно описан в [docs/keyframes.md](keyframes.md).
+V2 supports style tracks, visibility with entrance/exit effects, 17 easing
+names, `@camera`, emphasis events, `reveal_construction()`, and static
+previews via `apply_keyframes_at()`. The format is fully described in
+[docs/keyframes.md](keyframes.md).
 
-## Управление видимостью
+## Controlling visibility
 
 ```python
-self.HideAll()                              # Скрыть все
-self.playShow(['A', 'B', 'C'])              # Показать точки
-self.playShow(['poly1'], mode='Create')     # Анимация построения
-self.playShade(['A', 'B'])                  # Затенить
-self.playRestore(['A', 'B'])                # Восстановить
+self.HideAll()                              # Hide everything
+self.playShow(['A', 'B', 'C'])              # Reveal points
+self.playShow(['poly1'], mode='Create')     # Construction animation
+self.playShade(['A', 'B'])                  # Dim
+self.playRestore(['A', 'B'])                # Restore
 ```
 
-## Коники, функции и неявные кривые
+## Conics, functions, and implicit curves
 
 ```python
 class MyScene(AnimaGeoScene):
     def construct(self):
-        self.applyStyle(style='style/default.json',
+        self.applyStyle(style='default',
                         export={'size': {'width': 800, 'height': 600}})
 
         self.putCode('''
-            # Коника из уравнения (тип определяется автоматически).
+            # A conic from an equation (type is classified automatically).
             g = Conic("x^2 + y^2 = 4")
 
-            # Функция через строковый конструктор.
+            # A function through the string constructor.
             f = Function("y = x^2 - 1")
 
-            # Или в краткой «sugar»-форме (препроцессор DSL перепишет).
+            # Or in the short "sugar" form (rewritten by the DSL preprocessor).
             h(x) = -abs(x) + 4
 
-            # Пересечения работают для любых типов.
+            # Intersections work across all types.
             A, B = Intersect(f, g)
 
-            # Команды коник в стиле GGB.
+            # GGB-style conic commands.
             O = Center(g)
             F1, F2 = Focus(g)
 
-            # Неявная кривая (marching squares).
+            # An implicit curve (marching squares).
             lemn = ImplicitCurve("(x^2 + y^2)^2 = 8 * (x^2 - y^2)")
         ''')
 
         self.exportSVG('conics.svg')
 ```
 
-Полный набор примеров — `examples/conics_functions/`.
+## Overriding styles
 
-## Подмена стилей
+Styling in AnimaGeo has three layers (see [docs/styles.md](styles.md)):
 
-Стилизация в AnimaGeo имеет три слоя (см. [docs/styles.md](styles.md)):
+1. **`defaults`** in the JSON (and the package-shipped `builtin.json`) —
+   per-type baselines in pixels. Works for both DSL and GGB elements.
+2. **`overlay.per_type` / `per_name`** — applied on top of the import,
+   also works everywhere.
+3. **`ImportPolicy`** (`loadGGB(..., import_policy=...)`) — specialized for
+   **raw-GGB transforms** (`scale:/quantize:/remap:`); has no effect on DSL
+   elements.
 
-1. **`defaults`** в JSON (и package-shipped `builtin.json`) — per-type baseline в пикселях. Работает и в DSL, и в GGB.
-2. **`overlay.per_type` / `per_name`** — поверх импорта, тоже работает везде.
-3. **`ImportPolicy`** (`loadGGB(..., import_policy=...)`) — специализирован под **raw-GGB трансформации** (`scale:/quantize:/remap:`); для DSL-элементов бесполезен.
-
-Пример унификации стилей через `overlay` (одинаково для GGB и DSL):
+Unifying styles through `overlay` (identical for GGB and DSL):
 
 ```json
 "overlay": {
@@ -171,30 +181,34 @@ class MyScene(AnimaGeoScene):
 }
 ```
 
-Альтернативно — через Python-API при загрузке GGB:
+Alternatively — through the Python API when loading a GGB file:
 
 ```python
 from animageo.style.import_policy import ImportPolicy
 
 scene.loadGGB(
     'scene.ggb',
-    style='style/default.json',
+    style='default',
     export={'size': {'width': 800, 'height': 600}},
     import_policy=ImportPolicy(
-        stroke_width_px='quantize:[1, 2, 4]',  # квантизация толщин GGB
-        label_color='#222222',                 # единый цвет подписей
+        stroke_width_px='quantize:[1, 2, 4]',  # bucket GGB thicknesses
+        label_color='#222222',                 # unified label color
     ),
 )
 ```
 
-Полный cookbook — [docs/import_policies.md](import_policies.md).
+The full cookbook: [docs/import_policies.md](import_policies.md).
 
-## Экспорт
+## Export
 
 ```python
-# SVG (через Cairo)
+# SVG (via Cairo)
 self.exportSVG('output.svg')
 
-# MP4 --- запускается через manim
+# TikZ for LaTeX / interactive JSXGraph
+self.exportTikZ('output.tex')
+self.exportJSXGraph('board.html')
+
+# MP4 --- rendered through manim
 # manim scene.py MyScene -qh
 ```

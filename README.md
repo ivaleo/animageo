@@ -3,6 +3,7 @@
 **GeoGebra → Python → Manim → SVG / MP4**
 
 [![PyPI](https://img.shields.io/pypi/v/animageo)](https://pypi.org/project/animageo/)
+[![Tests](https://github.com/ivaleo/animageo/actions/workflows/tests.yml/badge.svg)](https://github.com/ivaleo/animageo/actions/workflows/tests.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/ivaleo/animageo/blob/main/LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 
@@ -233,6 +234,12 @@ sizes. Minimal example:
 The full style reference — layers, every key, the `ImportPolicy` cookbook, and
 the label-placement preset — lives in [docs/styles.md](https://github.com/ivaleo/animageo/blob/main/docs/styles.md).
 
+## Examples
+
+- [examples/showcase/](https://github.com/ivaleo/animageo/tree/main/examples/showcase) — runnable scripts with their committed output
+- [examples/policies/](https://github.com/ivaleo/animageo/tree/main/examples/policies) — ready-made `ImportPolicy` presets
+- [examples/ai_style_generation_scene10/](https://github.com/ivaleo/animageo/tree/main/examples/ai_style_generation_scene10) — an end-to-end AI style-generation session
+
 ## Documentation
 
 - [docs/index.md](https://github.com/ivaleo/animageo/blob/main/docs/index.md) — documentation map
@@ -250,6 +257,10 @@ the label-placement preset — lives in [docs/styles.md](https://github.com/ival
 - [docs/gotchas.md](https://github.com/ivaleo/animageo/blob/main/docs/gotchas.md) — pitfalls & workarounds
 - [docs/roadmap.md](https://github.com/ivaleo/animageo/blob/main/docs/roadmap.md) — direction & open work
 - [CHANGELOG.md](https://github.com/ivaleo/animageo/blob/main/CHANGELOG.md) — release history
+
+Contributions are welcome — see
+[CONTRIBUTING.md](https://github.com/ivaleo/animageo/blob/main/CONTRIBUTING.md).
+For AI agents and LLM tooling: [llms.txt](https://github.com/ivaleo/animageo/blob/main/llms.txt).
 
 ## License
 

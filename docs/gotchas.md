@@ -1,333 +1,397 @@
-# Известные особенности и подводные камни
+# Known Pitfalls and Gotchas
 
-Файл фиксирует неочевидные особенности manim, Python и внутренней архитектуры animageo, обнаруженные при разработке и тестировании. Учитывать при развитии функционала.
+This file records non-obvious behaviors of manim, Python, and AnimaGeo internals
+discovered during development and testing. Keep them in mind when extending the
+library.
 
 ---
 
 ## manim
 
-### `Mobject.set_default` накапливает partialmethod-цепочку — нельзя звать в горячем пути
+### `Mobject.set_default` accumulates a partialmethod chain — never call it in a hot path
 
-**Обнаружено:** 2026-07-03, разбор RecursionError в animageo-web (см. `docs/archive/TZ-mathtex-set-default-recursion-leak.md`)
+Background: `docs/archive/TZ-mathtex-set-default-recursion-leak.md`.
 
-`cls.set_default(**kwargs)` в manim выполняет
-`cls.__init__ = partialmethod(cls.__init__, **kwargs)`. Чтение `cls.__init__`
-с класса проходит через дескриптор `partialmethod.__get__` и возвращает
-скомпилированную функцию `_method`, а не сам объект `partialmethod` — поэтому
-встроенное «сплющивание» вложенных partialmethod НЕ срабатывает, и каждый
-вызов добавляет новый слой обёртки. Вызов на каждый рендер (как раньше в
-`setStyle`) растил глубину цепочки линейно; после ~1000 вызовов в одном
-долгоживущем процессе (превью animageo-web, Celery-воркеры) любое
-конструирование `MathTex`/`Tex`/`Text` падало с `RecursionError`. Симптомы
-выглядели по-разному: молча выпадали точки и подписи (per-element recovery в
-`_render_*`), падал `autoPlaceLabels` (bbox-измерение через Tex), ломались
-value-подписи (`DecimalNumber` в manim 0.20 строит глифы через
-`mob_class=MathTex`).
+`cls.set_default(**kwargs)` in manim executes
+`cls.__init__ = partialmethod(cls.__init__, **kwargs)`. Reading `cls.__init__`
+from the class goes through the `partialmethod.__get__` descriptor and returns
+the compiled `_method` function, not the `partialmethod` object itself — so the
+built-in flattening of nested partialmethods never triggers, and every call
+adds another wrapper layer. Calling it on every render (as `setStyle` used to
+do) grows the chain depth linearly; after ~1000 calls in a single long-lived
+process, any construction of `MathTex`/`Tex`/`Text` fails with
+`RecursionError`. The symptoms look unrelated: points and labels silently
+disappear (per-element recovery in `_render_*`), `autoPlaceLabels` fails (bbox
+measurement goes through Tex), value labels break (`DecimalNumber` in manim
+0.20 builds glyphs via `mob_class=MathTex`).
 
-**Правила:**
+**Rules:**
 
-1. Не вызывать `set_default` в коде, исполняемом на каждый рендер. Из
-   `setStyle` он удалён; цвет подписей передаётся явно (`col_label` в
+1. Never call `set_default` in code executed on every render. It has been
+   removed from `setStyle`; label color is passed explicitly (`col_label` in
    `_build_render_ctx` → `create_label`).
-2. Если глобальный дефолт всё же нужен (скрипты, примеры) — ставить один раз
-   на процесс, либо делать вызов идемпотентным: сначала `cls.set_default()`
-   (сброс к `_original__init__`), затем `cls.set_default(color=...)`.
-3. `set_default()` без аргументов полностью восстанавливает оригинальный
-   `__init__` — этим пользуются тестовые фикстуры
+2. If a global default is genuinely needed (scripts, examples) — set it once
+   per process, or make the call idempotent: first `cls.set_default()` (reset
+   to `_original__init__`), then `cls.set_default(color=...)`.
+3. `set_default()` with no arguments fully restores the original `__init__` —
+   the test fixtures rely on this
    (`tests/test_mobject_default_leak.py`).
-4. У `Tex`, созданного с явным `color=`, верхний `get_fill_color()` может
-   вернуть `None` — фактический цвет глифов проверять по
+4. A `Tex` created with an explicit `color=` may return `None` from the
+   top-level `get_fill_color()` — check the actual glyph color via
    `family_members_with_points()`.
 
-### `tex_template` работает только в конструкторе — `.set(tex_template=…)` бесполезен
+### `tex_template` only works in the constructor — `.set(tex_template=…)` does nothing
 
-**Обнаружено:** 2026-07-25, разбор инцидента animageo-web (исчерпание пула БД)
+`Tex.__init__` compiles the LaTeX **immediately**: if `tex_template` is not
+passed as an argument, `config["tex_template"]` is used. Assigning it after the
+constructor — `Tex(s).set(font_size=…, tex_template=RusTex)` — merely stores an
+attribute on the already-compiled object and has **no effect** on the render.
+Labels used to be built exactly this way in `create_label`: the template looked
+like it was passed, but compilation ran under manim's stock non-Cyrillic
+template, and any Cyrillic label took the whole element down
+(`CreateMObject failed` → both the marker and the label vanished).
 
-`Tex.__init__` компилирует LaTeX **немедленно**: если `tex_template` не передан
-аргументом, берётся `config["tex_template"]`. Присвоение после конструктора —
-`Tex(s).set(font_size=…, tex_template=RusTex)` — лишь кладёт атрибут на уже
-скомпилированный объект и на рендер **не влияет**. Ровно так подписи и строились
-в `create_label`: шаблон выглядел переданным, а компиляция шла под стоковым
-не-кириллическим шаблоном manim, и любая кириллическая подпись роняла весь
-элемент (`CreateMObject failed` → пропадали и маркер, и подпись).
+**Rules:**
 
-**Правила:**
+1. `tex_template` is a constructor argument only.
+2. The Cyrillic-capable template is installed as the global default once at
+   scene initialization: `ui.install_cyrillic_tex_template()` (called from
+   `AnimaGeoScene.__init__`). This is NOT `Mobject.set_default` — it is a
+   plain idempotent assignment to `config.tex_template`, so no partialmethod
+   chain accumulates. A caller-installed (non-stock) template is left alone.
+3. A failed label compilation must not take the element down:
+   `ui._compile_label_tex` degrades LaTeX → escaped plain text → `None` (the
+   element is drawn without a label), and `_measure_label_bbox` estimates the
+   bbox in that case.
 
-1. `tex_template` — только аргумент конструктора.
-2. Кириллице-совместимый шаблон ставится глобальным дефолтом один раз при
-   инициализации сцены: `ui.install_cyrillic_tex_template()` (вызывается из
-   `AnimaGeoScene.__init__`). Это НЕ `Mobject.set_default` — обычное
-   идемпотентное присваивание `config.tex_template`, цепочка partialmethod не
-   накапливается. Чужой (не стоковый) шаблон функция не перетирает.
-3. Падение компиляции подписи не должно уносить элемент: `ui._compile_label_tex`
-   деградирует LaTeX → экранированный plain-text → `None` (элемент рисуется без
-   подписи), а `_measure_label_bbox` в этом случае оценивает габариты.
+### Cyrillic in math mode compiles to nothing
 
-### Кириллица в математическом режиме компилируется в пустоту
+This is worse than an error: `$Б$` under `T2A` compiles **successfully** and
+draws nothing — the math alphabet has no Cyrillic glyphs. Symptoms: a label
+`$Б_1$` showed a lone "1", and a chunk silently disappeared from the text
+`Отрезок $БВ$ равен`. Reproducible both in manim (latex→dvisvgm) and in the
+TikZ export (pdflatex).
 
-**Обнаружено:** 2026-07-25, там же
+**Rule:** wrap Cyrillic runs inside `$…$` in text mode —
+`geo.lib_elements.textify_cyrillic` (`$Б$` → `$\text{Б}$`; under a subscript
+also braced: `$A_{\text{Б}}$`, otherwise `_\text` would consume only the
+command). Applied in `correctedLabel`, `_render_text`, and TikZ
+(`TikzContext.label_text`, `emit_text`). Cyrillic already typed in text mode is
+left alone — it renders as-is. The JSXGraph export is unaffected: its labels go
+through MathJax, which does have Cyrillic in math mode.
 
-Это хуже ошибки: `$Б$` под `T2A` **успешно** компилируется и не рисует ничего —
-в математическом алфавите нет кириллических глифов. Симптомы: подпись `$Б_1$`
-показывала одинокую «1», а из текста `Отрезок $БВ$ равен` молча пропадал кусок.
-Воспроизводится и в manim (latex→dvisvgm), и в TikZ-экспорте (pdflatex).
+### Rendering an external scene script through the manim CLI
 
-**Правило:** кириллический прогон внутри `$…$` переводить в текстовый режим —
-`geo.lib_elements.textify_cyrillic` (`$Б$` → `$\text{Б}$`, под индексом ещё и в
-скобках: `$A_{\text{Б}}$`, иначе `_\text` съест только команду). Применяется в
-`correctedLabel`, `_render_text` и TikZ (`TikzContext.label_text`, `emit_text`).
-Кириллицу, уже набранную в текстовом режиме, не трогаем — она рендерится и так.
-JSXGraph-экспорт не затронут: подписи там идут через MathJax, у которого
-кириллица в математике есть.
-
-### Рендер внешней сцены AnimaGeo через Manim
-
-**Обнаружено:** 2026-05-03, при проверке `examples/21 -  Задача Феди про линзы/anima21.py`
-
-В рабочем окружении проекта команда `python3 -m manim ...` может попасть в
-Python без установленного `manim`. Надёжная команда для локального рендера
-примеров:
+`python3 -m manim ...` may resolve to a Python interpreter that does not have
+`manim` installed. A reliable command to render a standalone scene script
+locally:
 
 ```bash
-PYTHONPATH=/path/to/animageo manim anima21.py Scene21 -ql --format=png --media_dir /tmp/animageo_scene21_render
+PYTHONPATH=/path/to/animageo manim scene.py MyScene -ql --format=png --media_dir /tmp/animageo_render
 ```
 
-Если нужно запускать pytest/служебные проверки в том же окружении Manim,
-используйте Python 3.13 из Homebrew:
+If you need to run pytest or other checks against the same Python that has
+manim installed (Homebrew on macOS):
 
 ```bash
 /opt/homebrew/opt/python@3.13/bin/python3.13 -m pytest ...
 ```
 
-### Updater на анимируемом объекте не получает промежуточных значений
+### An updater on the animated object never sees intermediate values
 
-**Обнаружено:** 2026-04-14, при отладке `play_keyframes`
+If `add_updater(func)` is attached to the same `ValueTracker` that is animated
+via `.animate.set_value()`, then inside `func` a call to `mob.get_value()`
+(where `mob` is the parameter passed in by manim) returns only the initial and
+final values, never the intermediate ones. The reason: during an animation
+manim creates copies of the start/end states of the object and calls the
+updater on those copies, not on the interpolated original.
 
-Если `add_updater(func)` вызван на том же `ValueTracker`, который анимируется через `.animate.set_value()`, то внутри `func` вызов `mob.get_value()` (где `mob` — параметр, переданный manim'ом) возвращает только начальное и конечное значения, но никогда промежуточные. Причина — manim при анимации создаёт копии start/end состояний объекта и вызывает updater на этих копиях, а не на интерполированном оригинале.
+**Working approaches:**
 
-**Рабочие подходы:**
-
-1. **Sentinel-объект** (используется в `play_keyframes`): updater живёт на отдельном невидимом `Mobject`, а `ValueTracker` читается через замыкание:
+1. **Sentinel object** (used in `play_keyframes`): the updater lives on a
+   separate invisible `Mobject`, and the `ValueTracker` is read through a
+   closure:
    ```python
    progress = ValueTracker(0)
    sentinel = Mobject()
    def on_frame(mob):
-       t = progress.get_value()  # замыкание — читает оригинал
+       t = progress.get_value()  # closure — reads the original
        ...
    sentinel.add_updater(on_frame)
    self.add(progress, sentinel)
    self.play(progress.animate(...).set_value(1), ...)
    ```
 
-2. **Замыкание вместо параметра** (используется в `addUpdater`): updater на трекере, но внутри обращается к переменной из замыкания, а не к параметру `mob`:
+2. **Closure instead of the parameter** (used in `addUpdater`): the updater is
+   on the tracker, but it reads the closed-over variable, not the `mob`
+   parameter:
    ```python
    tracker.add_updater(lambda v, self=self: self.updateVar(tracker))
-   #                                                       ^^^^^^^ замыкание, не v
+   #                                                       ^^^^^^^ closure, not v
    ```
 
-**Не работает:**
+**Does not work:**
 ```python
 tracker.add_updater(lambda v: do_something(v.get_value()))
-#                              ^^^^^^^^^^^ v — копия, не оригинал
+#                              ^^^^^^^^^^^ v is a copy, not the original
 ```
 
-### Polygon не поддерживает become()
+### Polygon does not support become()
 
-В manim `become()` не корректно работает для `Polygon` (мерцание, неправильная анимация). Поэтому в `updateGeoElements` полигоны обрабатываются через remove + add, а не через `become()`. Это известная особенность manim, а не баг animageo.
+In manim, `become()` does not work correctly for `Polygon` (flicker, broken
+animation). `updateGeoElements` therefore handles polygons via remove + add
+rather than `become()`. This is a known manim behavior, not an AnimaGeo bug.
 
-Такой remove + add не должен менять порядок слоев: фактический Manim
-`z_index` дополнительно получает микросдвиг по порядку элемента в конструкции.
-Это сохраняет порядок внутри одного слоя (`Z_STROKE`, `Z_POINT` и т. п.) в
-статике и во время MP4-анимации.
+The remove + add must not change layer order: the effective manim `z_index`
+additionally gets a micro-offset based on the element's position in the
+construction. This preserves ordering within a single tier (`Z_STROKE`,
+`Z_POINT`, etc.) both in static renders and during MP4 animation.
 
 ---
 
-## Расстановка подписей
+## Label placement
 
-### `dynamic_angles=true` сам по себе ничего не делает
+### `dynamic_angles=true` does nothing by itself
 
-**Обнаружено:** 2026-04-17, при проектировании динамической раскладки
+The flag `overlay.label_placement.dynamic_angles=true` marks angles for
+bisector tracking, but something must actually call
+`compute_angle_label_center` every frame. Two supported ways to enable that:
 
-Флаг `overlay.label_placement.dynamic_angles=true` помечает углы для биссектрисного трекинга, но кто-то должен фактически вызывать `compute_angle_label_center` каждый кадр. Два легальных способа это включить:
+1. **`play_keyframes` with `keyframe_snapshots=true`** — `on_frame` triggers
+   the recomputation automatically.
+2. **`scene.autoPlaceLabels(dynamic=True)`** — installs a `LabelTracker`, and
+   `updateVar` (fired on every tracker change inside `addUpdater`) rewrites
+   the offsets.
 
-1. **`play_keyframes` с `keyframe_snapshots=true`** — on_frame вызывает пересчёт автоматически.
-2. **`scene.autoPlaceLabels(dynamic=True)`** — устанавливает `LabelTracker`, и `updateVar` (который дёргается на каждое изменение трекера внутри `addUpdater`) перезаписывает оффсеты.
+If only `dynamic_angles=true` is set, without either of the above, angles stay
+static as before. This is intentional: the option is cheap to enable in the
+config, while the cost of per-frame work is an explicit choice of integration
+point.
 
-Если включить только `dynamic_angles=true`, не дёрнув ни того, ни другого — углы статические, как раньше. Это сделано намеренно, чтобы опция была cheap to enable в конфиге, а стоимость per-frame работы была явным выбором точки интеграции.
+### MC canonicalization is off by default
 
-### MC-канонизация по умолчанию выключена
+`canonicalize_anchor=true` rewrites labels to `label_anchor='MC'` with a
+compensating offset. This eliminates anchor jumps during interpolation between
+keyframes, but breaks the snapshot tests in `test_loadggb_snapshot.py` — they
+pinned `label_anchor='BC'/'ML'/...` from the older solver. The default is
+therefore `false`; enable it only when smooth dynamics matter.
 
-**Обнаружено:** 2026-04-17, при проектировании
+### The Tex bbox cache is module-level, not per-scene
 
-`canonicalize_anchor=true` переписывает `label_anchor='MC'` с компенсирующим оффсетом. Это исключает прыжки якоря при интерполяции между keyframe, но ломает snapshot-тесты в `test_loadggb_snapshot.py` — они зафиксировали `label_anchor='BC'/'ML'/...` из старого решателя. Поэтому default — false; включать только когда нужна плавность динамики.
+`_bbox_cache` in `label_placement.py` is a process-wide dict keyed by
+`(label_text, font_size)`. When `font_size` changes in `GeoStyle` between two
+scenes in the same process, the cache is reused correctly (the key includes
+`font_size`). But if you swap the TeX template (`RusTex`) in memory by hand —
+call `clear_bbox_cache()`. `play_keyframes` does this automatically at the
+start of the snapshot pass.
 
-### Tex bbox кэш — модульный, не per-scene
+### `overlay.angle_radius` is off by default
 
-`_bbox_cache` в `label_placement.py` — process-wide dict, keyed по `(label_text, font_size)`. При смене font_size в GeoStyle между двумя сценами в одном процессе кэш переиспользуется корректно (ключ включает font_size). Но если вы меняете TeX-шаблон (`RusTex`) в памяти руками — вызовите `clear_bbox_cache()`. `play_keyframes` делает это автоматически в начале snapshot pass.
+`compute_effective_arc_size_px` (shared between the renderer and label
+placement) applies the `(pivot_rad / angle) ** exp` scaling + clamps only when
+`overlay.angle_radius.enabled=true`. The default is `false` — byte-for-byte
+GGB import is preserved and the snapshot tests keep passing.
 
-### `overlay.angle_radius` выключен по умолчанию
+Enable it deliberately: with `enabled=true` the visual size of every angle arc
+in the scene changes (narrow angles get bigger, wide ones smaller). For a
+targeted opt-out use the per-element escape:
+`elem.style['auto_radius'] = False`.
 
-**Обнаружено:** 2026-04-19, при внедрении авто-подбора радиуса дуг
+### `angle_gap_px` has been removed
 
-`compute_effective_arc_size_px` (shared между рендером и раскладкой подписей) применяет масштабирование `(pivot_rad / angle) ** exp` + clamps только когда `overlay.angle_radius.enabled=true`. Default `false` — байт-в-байт импорт из GGB сохраняется, snapshot-тесты не ломаются.
-
-Включать осознанно: при `enabled=true` визуальный размер дуг всех углов в сцене поменяется (узкие станут больше, широкие — меньше). Для точечного отключения используйте per-element escape: `elem.style['auto_radius'] = False`.
-
-### `angle_gap_px` удалён
-
-**Обновлено:** 2026-05-18, при удалении старых alias/fallback
-
-Ключ `overlay.label_placement.angle_gap_px` больше не читается. Используйте
-два явных ключа: `angle_gap_arc_px` для зазора дуга→подпись и
-`angle_gap_sides_px` для зазора стороны→bbox подписи.
+The key `overlay.label_placement.angle_gap_px` is no longer read. Use the two
+explicit keys instead: `angle_gap_arc_px` for the arc→label gap and
+`angle_gap_sides_px` for the sides→label-bbox gap.
 
 ---
 
 ## GeoGebra import
 
-### `Point(Conic)` должен сохранять параметр из XML-координат
+### `Point(Conic)` must preserve the parameter from the XML coordinates
 
-**Обнаружено:** 2026-05-03, на `examples/21 -  Задача Феди про линзы/scene21.ggb`
+GeoGebra can create a point on a conic with the command `Point(e)`, where `e`
+is a `Conic` (for example, a hyperbola). If the importer does not support
+`Point(Conic)`, such a point stays `data=None`, and all downstream commands
+(`Line`, `Intersect`, `Segment`, `Distance`, `CircumcircleArc`, `Angle`) break
+in a cascade.
 
-GeoGebra может создавать точку на конике командой `Point(e)`, где `e` —
-`Conic` (например, гипербола). Если импортёр не поддерживает `Point(Conic)`,
-такая точка остаётся `data=None`, а все downstream-команды (`Line`, `Intersect`,
-`Segment`, `Distance`, `CircumcircleArc`, `Angle`) ломаются каскадом.
+Fix: the `point_K` command builds the point on a
+circle/ellipse/hyperbola/parabola in the canonical parametrization, and the
+GGB parser computes `elem.tparam` from the `<element type="point">`
+coordinates. For a hyperbola the parameter is stored as `(branch, t)` to keep
+the branch GeoGebra selected.
 
-Фикс: команда `point_K` строит точку на circle/ellipse/hyperbola/parabola в
-канонической параметризации, а GGB-парсер вычисляет `elem.tparam` из
-координат `<element type="point">`. Для гиперболы параметр хранится как
-`(branch, t)`, чтобы сохранять выбранную GeoGebra ветвь.
+### `CircumcircleArc(A, M, B)` selects the arc through the middle point
 
-### `CircumcircleArc(A, M, B)` выбирает дугу через среднюю точку
+GeoGebra's rule: `CircumcircleArc(A, M, B)` builds the circular arc with
+endpoints `A` and `B` that passes through `M`. Relative to the chord `AB`, the
+selected arc must therefore lie on the same side of the line `AB` as `M`
+(unless `M` lies on the line itself).
 
-**Обнаружено:** 2026-05-03, на `examples/21 -  Задача Феди про линзы/scene21.ggb`
+A typical implementation mistake: `Arc` stores its range as an unwrapped
+interval `[angle_start, angle_end]` where `angle_end` may exceed `2π`, while
+the point being tested is computed via `np.angle(...)` in `[-π, π]`. These
+values cannot be compared directly: arcs crossing the zero angle start being
+wrongly classified as not containing their own middle point. Before comparing,
+the point's angle must be lifted into the same unwrapped interval.
 
-Правило GeoGebra: `CircumcircleArc(A, M, B)` строит дугу окружности с концами
-`A` и `B`, которая проходит через `M`. Поэтому относительно хорды `AB`
-выбранная дуга должна оказаться с той же стороны от прямой `AB`, что и `M`
-(если `M` не лежит на самой прямой).
+### Unicode names in GGB commands must remain direct references
 
-Типовая ошибка реализации: `Arc` хранит диапазон как развернутый интервал
-`[angle_start, angle_end]`, где `angle_end` может быть больше `2π`, а
-проверяемая точка вычисляется через `np.angle(...)` в диапазоне `[-π, π]`.
-Сравнивать эти значения напрямую нельзя: дуги, пересекающие нулевой угол,
-начинают ошибочно считаться не содержащими свою среднюю точку. Перед
-сравнением угол точки должен быть приведен в тот же развернутый интервал.
+GeoGebra freely uses names like `α` and `β` as labels. If "simple name" is
+tested with an ASCII regex, the command `Intersect(β, k, 1)` turns into an
+expression through a phantom variable (`_1 = β`), and when that resolution
+fails, downstream commands receive `None`.
 
-### Unicode-имена в GGB-командах должны оставаться прямыми ссылками
+Rule: after name normalization, `str.isidentifier()` is the systemic check for
+a simple Python/DSL identifier. Unicode labels must pass through as ordinary
+references to existing elements.
 
-**Обнаружено:** 2026-05-03, на `examples/17 - Два луча в угле/scene17.ggb`
+The same kind of construction can also use `Intersect(β, k, 1)` and
+`Intersect(β, l, 1)` where `β` is an arc and `k`/`l` are rays. AnimaGeo
+therefore supports not only `Arc ∩ Line` but also the indexed intersections
+`Arc ∩ Ray` / `Arc ∩ Segment`.
 
-GeoGebra нормально использует имена вроде `α` и `β` как labels. Если проверять
-"простое имя" ASCII-регуляркой, команда `Intersect(β, k, 1)` превращается в
-выражение через phantom-переменную (`_1 = β`), а при неудачном разрешении
-downstream-команды получают `None`.
+### `loadCode` may redefine GGB elements and must rebuild the graph
 
-Правило: после нормализации имени `str.isidentifier()` является системной
-проверкой простого Python/DSL-идентификатора. Unicode labels должны проходить
-как обычные ссылки на существующие элементы.
-
-В той же сцене GeoGebra использует `Intersect(β, k, 1)` и `Intersect(β, l, 1)`,
-где `β` — дуга, а `k/l` — лучи. Поэтому AnimaGeo поддерживает не только
-`Arc ∩ Line`, но и индексные пересечения `Arc ∩ Ray` / `Arc ∩ Segment`.
-
-### `loadCode` может переопределять GGB-элементы и обязан пересобрать граф
-
-**Обнаружено:** 2026-05-03, на `examples/17 - Два луча в угле/anima17.py`
-
-`anima17.py` загружает `.ggb`, затем выполняет `scene17.py`. В этом DSL-файле
-имя `E` используется повторно:
+A script may load a `.ggb` file and then execute a DSL file in which a name is
+reused:
 
 ```python
 E = Rotate(D + Vector(r2, 0), ang2 * deg, D)
 ```
 
-В исходном `.ggb` `E` было точкой `Intersect(β, k, 1)`, от которой зависел
-`m = Segment(B, E)`. После переопределения имени downstream-команды должны
-пересчитаться уже от нового `E`. Поэтому после `loadCode()` / `putCode()`
-нужен финальный `geo.rebuild(full=True)` перед `updateAllGeometry()`;
-иначе в рендер может попасть stale-геометрия старого `m`.
+If in the original `.ggb` the name `E` was a point `Intersect(β, k, 1)` on
+which `m = Segment(B, E)` depended, then after the name is redefined the
+downstream commands must be recomputed from the new `E`. That is why
+`loadCode()` / `putCode()` must be followed by a final
+`geo.rebuild(full=True)` before `updateAllGeometry()`; otherwise the render
+may pick up stale geometry of the old `m`.
 
 ## Python
 
-### Циклический импорт lib_elements ↔ lib_vars
+### Circular import between lib_elements and lib_vars
 
-`lib_elements.py` импортирует из `lib_vars.py` (`from .lib_vars import *`), а `lib_vars.py` импортирует из `lib_elements.py` (`from .lib_elements import Angle`). Этот циклический импорт разрешается корректно **только если `lib_vars` импортируется первым** (как это делает `construction.py`).
+`lib_elements.py` imports from `lib_vars.py` (`from .lib_vars import *`), and
+`lib_vars.py` imports from `lib_elements.py`
+(`from .lib_elements import Angle`). This circular import resolves correctly
+**only if `lib_vars` is imported first** (as `construction.py` does).
 
-Если в тестах или внешнем коде первым импортировать `lib_elements`, возникает `ImportError: cannot import name 'Angle' from partially initialized module`.
+If tests or external code import `lib_elements` first, the result is
+`ImportError: cannot import name 'Angle' from partially initialized module`.
 
-**Правило:** всегда импортировать `construction` (или `lib_vars`) до `lib_elements`:
+**Rule:** always import `construction` (or `lib_vars`) before `lib_elements`:
 ```python
-from animageo.geo.construction import Construction  # первым
-from animageo.geo.lib_elements import Point, Line   # потом
+from animageo.geo.construction import Construction  # first
+from animageo.geo.lib_elements import Point, Line   # then
 ```
 
-### ImportPolicy: DSL-строки парсятся в `__post_init__`, а не в resolve()
+### ImportPolicy: DSL strings are parsed in `__post_init__`, not in resolve()
 
-Раньше `parse_directive` вызывался только внутри `ImportPolicy.from_dict()`. Это приводило к тому, что `ImportPolicy(stroke_width_px='quantize:[1,3,6]')` хранил литеральную строку, и в `resolve_overrides_only` она уходила как значение `elem.style['stroke_width_px']` — дальше манимовская конвертация толщины ломалась (строка вместо числа → линии не отрисовывались).
+Previously `parse_directive` was called only inside `ImportPolicy.from_dict()`.
+As a result, `ImportPolicy(stroke_width_px='quantize:[1,3,6]')` stored the
+literal string, and in `resolve_overrides_only` it flowed into
+`elem.style['stroke_width_px']` as-is — the downstream manim thickness
+conversion then broke (a string instead of a number → lines were not drawn).
 
-Фикс (с апреля 2026): `__post_init__` в `ImportPolicy` прогоняет все поля через `parse_directive`, так что DSL-строки работают одинаково при загрузке из JSON и при прямой передаче в конструктор.
+Fix: `__post_init__` in `ImportPolicy` runs every field through
+`parse_directive`, so DSL strings work identically when loaded from JSON and
+when passed directly to the constructor.
 
-**Следствие:** если кто-то хочет передать литеральную строку, совпадающую с DSL-префиксом (маловероятно), её нужно оборачивать в callable: `ImportPolicy(label_color=lambda *_: 'scale:1.5_as_literal')`.
+**Consequence:** if someone genuinely needs to pass a literal string that
+happens to match a DSL prefix (unlikely), it must be wrapped in a callable:
+`ImportPolicy(label_color=lambda *_: 'scale:1.5_as_literal')`.
 
-### `elem.ggb_raw` отсутствует у элементов, созданных через Python DSL
+### `elem.ggb_raw` is absent on elements created via the Python DSL
 
-Поле `ggb_raw` заполняется только парсером `.ggb`. Для элементов, добавленных через `loadCode`/`putCode`, оно остаётся пустым dict. Поэтому `ImportPolicy` считается GGB-only слоем: raw-derived правила работают на импортированных элементах, а для DSL нет исходного GGB значения.
+The `ggb_raw` field is populated only by the `.ggb` parser. For elements added
+via `loadCode`/`putCode` it stays an empty dict. `ImportPolicy` is therefore a
+GGB-only layer: raw-derived rules work on imported elements, while DSL
+elements have no source GGB value.
 
-**Фикс (текущий рефакторинг):** типовые и именные правила вынесены в `StyleOverlay`. `scene.style_config.overlay.apply(scene)` вызывается автоматически в `addAllGeometry` и работает одинаково для GGB и DSL через `type(elem.data)`. Для стилизации поверх импорта (per_type/per_name + autoPlaceLabels) — задавайте `overlay` в JSON. `ImportPolicy` оставлен для raw-GGB трансформаций (`scale:`/`quantize:`/`remap:`).
+**Fix:** type-level and name-level rules were moved into `StyleOverlay`.
+`scene.style_config.overlay.apply(scene)` is called automatically in
+`addAllGeometry` and works identically for GGB and DSL via `type(elem.data)`.
+For styling on top of the import (per_type/per_name + autoPlaceLabels) —
+define `overlay` in JSON. `ImportPolicy` remains for raw-GGB transformations
+(`scale:`/`quantize:`/`remap:`).
 
-### Пре-Phase-4: angle/dot размеры в JSON умножались на 0.02 и коллапсировали
+### Legacy unit bug: JSON angle/dot sizes were multiplied by 0.02 and collapsed
 
-До перехода на canonical `*_px` поля часть scene-level размеров проходила через `json_size_to_internal` (× 0.02), а рендерер затем **ещё раз** делил на `ptUnit`. На обычном холсте это превращало нормальный радиус дуги в субпиксельный размер, и дуга могла схлопнуться в невидимую точку на DSL-сценах.
+Before the move to canonical `*_px` fields, some scene-level sizes went
+through `json_size_to_internal` (× 0.02), and the renderer then divided by
+`ptUnit` **again**. On a typical canvas this turned a normal arc radius into a
+sub-pixel size, and the arc could collapse into an invisible dot on DSL
+scenes.
 
-GGB-сцены не страдали, потому что парсер писал `arc_size_px` прямо в `elem.style` (минуя scene-level `ang_rdefault`). Поэтому баг выявился только на Python-DSL.
+GGB scenes were unaffected because the parser wrote `arc_size_px` straight
+into `elem.style` (bypassing the scene-level `ang_rdefault`). The bug
+therefore surfaced only through the Python DSL.
 
-**Фикс:** canonical schema хранит размеры как semantic `presets` (`angle_radius.*`, `point_size.*`, `tick.*`, `arrow.*`) и применяет их через per-type `defaults`. Все `*_px` значения интерпретируются как пиксели и конвертируются в render-time по целевому Manim-параметру: координатные размеры делятся на `ptUnit`, а `stroke_width`/`font_size` значения идут через Manim-шкалу `* 100 / ptUnit`. См. `tests/test_angle_units_regression.py`.
+**Fix:** the canonical schema stores sizes as semantic `presets`
+(`angle_radius.*`, `point_size.*`, `tick.*`, `arrow.*`) and applies them via
+per-type `defaults`. All `*_px` values are interpreted as pixels and converted
+at render time according to the target manim parameter: coordinate sizes are
+divided by `ptUnit`, while `stroke_width`/`font_size` values go through the
+manim scale `* 100 / ptUnit`. See `tests/test_angle_units_regression.py`.
 
-### `tick_width_px` — это stroke width, а не координатная длина
+### `tick_width_px` is a stroke width, not a coordinate length
 
-`tick_length_px`, `tick_shift_px` и `tick_radius_px` участвуют в геометрии tick-метки, поэтому рендерятся как координатные размеры: `px / ptUnit`.
+`tick_length_px`, `tick_shift_px`, and `tick_radius_px` participate in the
+tick mark's geometry, so they render as coordinate sizes: `px / ptUnit`.
 
-`tick_width_px` используется иначе: segment/vector tick передают его в Manim `Line(..., stroke_width=...)` или `VMobject.set_stroke(width=...)`. Это тот же unit system, что и `stroke_width_px`, поэтому правильная конвертация — `stroke_width_to_manim(tick_width_px, ptUnit)`, то есть `tick_width_px * 100 / ptUnit`. Деление только на `ptUnit` делает tick stroke в 100 раз тоньше при SVG/export render. См. `tests/test_style_config_integration.py::TestPixelInvariantDecorations`.
+`tick_width_px` is used differently: segment/vector ticks pass it into manim's
+`Line(..., stroke_width=...)` or `VMobject.set_stroke(width=...)`. That is the
+same unit system as `stroke_width_px`, so the correct conversion is
+`stroke_width_to_manim(tick_width_px, ptUnit)`, i.e.
+`tick_width_px * 100 / ptUnit`. Dividing by `ptUnit` alone makes the tick
+stroke 100× thinner in SVG/export renders. See
+`tests/test_style_config_integration.py::TestPixelInvariantDecorations`.
 
-### `python -m animageo` не должен тянуть Manim до проверки аргументов
+### `python -m animageo` must not import Manim before argument validation
 
-Обычный `import animageo` по-прежнему экспортирует Manim-backed API. Но CLI path (`python -m animageo file.ggb`) держится лёгким до проверки входных файлов, чтобы ошибки вроде missing file возвращались сразу и не инициализировали тяжёлый runtime.
+A regular `import animageo` still exports the Manim-backed API. But the CLI
+path (`python -m animageo file.ggb`) stays lightweight until the input files
+are validated, so that errors like a missing file are reported immediately
+without initializing the heavy runtime.
 
 ---
 
 ## Python DSL
 
-### `putCode`/`loadCode` — только exec-движок (short_parser удалён)
+### `putCode`/`loadCode` — exec engine only (short_parser removed)
 
-**Обнаружено:** 2026-04 (миграция)
+The DSL used to run through an AST walker (`short_parser.py`) that silently
+ignored loops, conditionals, `def`, and kwargs. After the migration,
+`short_parser.py` was deleted — only the exec engine (`parsers/dsl/`) remains.
+The `engine=` kwarg of `putCode`/`loadCode` was removed as well.
 
-До серии ревизий 2026-04 DSL работал через AST-walker (`short_parser.py`),
-который молча игнорировал циклы, условия, `def`, kwargs. После
-миграции `short_parser.py` удалён — используется только exec-движок
-(`parsers/dsl/`). `engine=` kwarg у `putCode`/`loadCode` тоже убран.
+If external code passed `engine='legacy'`, it now gets
+`TypeError: got unexpected keyword argument 'engine'`. Drop the kwarg.
 
-Если внешний код передавал `engine='legacy'` — он теперь даёт
-`TypeError: got unexpected keyword argument 'engine'`. Убирайте kwarg.
+### Forward references for lowercase names
 
-### Forward-ref для lowercase имён
+A common pattern in a scene script:
 
-**Обнаружено:** 2026-04, при миграции scene{N}.py в exec-движок
-
-Паттерн в anima.py:
 ```python
 self.loadGGB(...)                  # populates A, B, R, Q …
 self.loadCode('scene.py')          # scene.py references x
 self.addVar('x', 115)              # x gets its value AFTER loadCode
 ```
 
-Exec-движок поддерживает такой forward-reference для **lowercase** имён: `FactoryDict.__missing__` авто-создаёт Var-плейсхолдер с `data=None`, Command запоминает имя, резолвится при `rebuild`. Для uppercase — `Rotat` (опечатка от `Rotate`) поднимает ошибку в runtime, это специально для ловли опечаток.
+The exec engine supports this forward reference for **lowercase** names:
+`FactoryDict.__missing__` auto-creates a Var placeholder with `data=None`, the
+Command remembers the name, and it resolves during `rebuild`. For uppercase
+names — `Rotat` (a typo of `Rotate`) raises at runtime; this is deliberate, to
+catch typos.
 
-### Backward-compat алиасы полей удалены
+### Backward-compat field aliases removed
 
-**Обнаружено:** 2026-04, финальная ревизия именований
+The short/abstract names (`.a`, `.c`, `.n`, `.r`, `.v`, `.M`, `.b`, `.x`,
+`.dim`, `.angle`, `.original`, `.points`, `.end_points`, `.start_point`) were
+fully replaced by descriptive ones (`.coords`, `.center/.offset`, `.normal`,
+`.radius`, `.direction`, `.matrix`, `.value`, `.dimension`, `.tparam`,
+`.size`, `.source`, `.vertices`, `.endpoints`, `.start`). The aliases are gone
+— old code gets an `AttributeError`.
 
-Короткие/абстрактные имена (`.a`, `.c`, `.n`, `.r`, `.v`, `.M`, `.b`, `.x`, `.dim`, `.angle`, `.original`, `.points`, `.end_points`, `.start_point`) полностью заменены на человечные (`.coords`, `.center/.offset`, `.normal`, `.radius`, `.direction`, `.matrix`, `.value`, `.dimension`, `.tparam`, `.size`, `.source`, `.vertices`, `.endpoints`, `.start`). Алиасы сняты — старый код получает `AttributeError`.
-
-Полный список — [docs/field_names.md](field_names.md). JSON wire-format keyframe-анимации использует `tparam_point` и ключ `tparam`.
+The full list is in [docs/field_names.md](field_names.md). The JSON wire
+format of keyframe animation uses `tparam_point` and the `tparam` key.

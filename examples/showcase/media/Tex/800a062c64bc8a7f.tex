@@ -1,0 +1,56 @@
+\documentclass[preview]{standalone}
+
+\usepackage[english, russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\linespread{1.1}
+
+\usepackage{enumitem}
+
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+
+\newlist{mylist}{description}{1}
+\setlist[mylist]{
+    labelwidth=1.1em,
+    leftmargin=!,
+    align=left,
+    labelsep=0.5em,
+    format=\sffamily\bfseries,
+    before={\raggedright},
+    itemindent=0pt
+}
+
+
+\AtBeginDocument{
+	\DeclareMathSizes{9}{9}{7}{5}
+	\DeclareMathSizes{10}{10}{7}{5}
+}
+
+\renewcommand\frac[2]{\mathchoice%
+	{\dfrac{\mbox{\fontsize{9}{12}\selectfont\(#1\)}}{\mbox{\fontsize{9}{12}\selectfont\(#2\)}}}%
+	{\dfrac{\mbox{\fontsize{9}{12}\selectfont\(#1\)}}{\mbox{\fontsize{9}{12}\selectfont\(#2\)}}}%
+	{\dfrac{\mbox{\raisebox{-1.5pt}{\fontsize{6}{8}\selectfont\(#1\)}}}{\mbox{\raisebox{2.5pt}{\fontsize{6}{8}\selectfont\(#2\)}}}}%
+	{\dfrac{\mbox{\raisebox{-3pt}{\fontsize{5}{5}\selectfont\(#1\)}}}{\mbox{\raisebox{4pt}{\fontsize{5}{5}\selectfont\(#2\)}}}}}
+
+\medmuskip 4mu
+\thickmuskip 4mu
+
+\makeatother
+
+\AtBeginDocument{
+    \let\oldangle\angle
+    \def\angle{\mathbin{\text{\fontsize{0.8em}{0.8em}\selectfont\ensuremath\oldangle}}}
+    \let\oldtriangle\triangle
+    \def\triangle{\mathbin{\text{\fontsize{0.8em}{0.8em}\selectfont\ensuremath\oldtriangle}}}
+}
+
+\begin{document}
+\begin{center}
+\special{dvisvgm:raw <g id='unique000'>}$B$\special{dvisvgm:raw </g>}
+\end{center}
+\end{document}

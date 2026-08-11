@@ -464,6 +464,34 @@ Use `reference` when the user asks for a reusable style calibrated to a known
 canvas size. Do not put final SVG/MP4 dimensions in the style JSON; physical
 output belongs in the runtime `export` block.
 
+#### Runtime `content` options (not style JSON keys)
+
+Since library version 1.6.2 the runtime `content` block also accepts three
+decoration-scaling options. They are runtime API options like
+`content.source`; never emit them inside style JSON. If a request asks for
+this behavior, mention in `NOTES` that it is a runtime `content` option:
+
+- `content.prominence`: number, default `1.0` (clamped to `0.01..100`). A
+  single decoration-size multiplier applied at render time. Layout, crop, and
+  label placement are computed at nominal prominence (1.0) and stay
+  unaffected; prominence only scales the density that decoration sizes
+  (points, strokes, label fonts, markers) are resolved against.
+- `content.decoration_scale_source`: `frame` (default), `reference`,
+  `output`, or `ggb`. Controls the density decorations are resolved against:
+  `frame` tracks the actual export crop (`fitView` relies on this);
+  `reference` re-bases `rendered_bounds` density on the style reference over
+  the full source view, so decoration prominence stays constant across
+  framing choices; `output` anchors decoration size to the geometry's export
+  zoom, so decoration pixels are a fixed output size set only by prominence;
+  `ggb` scales decorations uniformly with the output canvas like the GeoGebra
+  applet (`decoration_px = authored_px × (output_width / ggb_view_width) ×
+  prominence`).
+- `content.label_bounds`: `reserve` (default) or `exclude`. With
+  `content.source = "rendered_bounds"`, `exclude` crops to the geometry only,
+  ignoring outward-placed labels; `reserve` keeps edge labels from clipping.
+
+All three are opt-in; the library defaults are unchanged.
+
 ### `rendering`
 
 Use for scene/export behavior, not object styling:
@@ -1018,7 +1046,7 @@ Good style JSON:
 
 ## Current Support And Gaps
 
-Current library version audited by this context: `1.6.1`.
+Current library version audited by this context: `1.6.5`.
 
 Already available:
 
@@ -1030,33 +1058,3 @@ Already available:
   `docs/ai_style_json_schema.json`.
 - Runtime style validation through `StyleConfig.load(...)` /
   `StyleConfig.from_dict(...)`.
-
-Remaining useful automation:
-
-1. Add style validation tooling.
-   - Proposed CLI:
-     `python -m animageo.style.validate style.json`.
-   - Validate against `docs/ai_style_json_schema.json`.
-   - Also load through `StyleConfig.from_dict()` to catch bad preset refs and
-     include cycles.
-
-2. Add an AI response normalizer.
-   - Accept either raw style JSON or a wrapper with `style`,
-     `python_dsl`, and `notes`.
-   - Strip Markdown fences, validate JSON, and save only the style object.
-
-3. Add a style dry-run report.
-   - Proposed API:
-     `scene.explainStyleResolution(element_names=None, keys=None)`.
-   - Use `animageo.style.resolver.trace()` to show which layer wins for each
-     key. This is valuable for debugging AI-generated styles.
-
-4. Add canonical prompt templates.
-   - Store this context plus a short "generation prompt" template in docs or
-     package data.
-   - Include a compact checklist and examples for common house styles.
-
-5. Add tests for AI-generated style fixtures.
-   - Keep a small corpus of natural-language requests and expected style JSON
-     properties.
-   - Validate generated styles against the schema and render smoke-test SVGs.

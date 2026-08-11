@@ -1,24 +1,23 @@
-# Справочник API
+# API Reference
 
 ## AnimaGeoScene
 
-Основной класс --- наследник `manim.MovingCameraScene`.
+The main class — a subclass of `manim.MovingCameraScene`.
 
-### Загрузка данных
+### Loading data
 
-| Метод | Описание |
+| Method | Description |
 |-------|----------|
-| `loadGGB(filepath, style=None, import_policy=None, debug=False, generate_stubs=True, strict=False, reference=None, content=None, export=None)` | Загрузить .ggb файл, применить стиль (опционально через `ImportPolicy`), отобразить геометрию. `style` принимает путь, dict или `StyleConfig`; `reference` задает эталонный холст; `content` размещает конструкцию на нем; `export` задает физический вывод. Unsupported GGB-команды в non-strict режиме попадают в `scene.geo.command_diagnostics` без cascade warning-шума; `strict=True` превращает root unsupported в ошибку. `generate_stubs=True` пишет `<basename>_stubs.pyi` рядом с .ggb |
-| `loadCode(filepath, debug=False, show=True)` | Загрузить Python-файл с DSL-кодом (exec-движок) |
-| `putCode(code, debug=False, show=True)` | Выполнить строку Python-кода как DSL (exec-движок; см. [docs/python_dsl.md](python_dsl.md)) |
-| `applyStyle(style=None, import_policy=None, reference=None, content=None, export=None)` | Применить стиль к текущей конструкции и пересчитать layout. Внутри: builtin + `style`, затем `reference -> content -> export` |
-| `fitView(width=800, height=600, *, padding=40, style=None, passes=2)` | Канонический фрейминг DSL-сцены: измеряет rendered bounds видимых элементов и укладывает их на холст `width×height` с полем `padding` px. Делает `passes` раундов `applyStyle(content='rendered_bounds')` + `updateAllGeometry()` (первый раунд выставляет масштаб пиксельных стилей, второй пере-меряет с уже правильными размерами точек/подписей). Без `style=` сохраняет текущий `style_config` сцены. Вызывать, пока нужные элементы видимы (до `HideAll()`); для анимаций закладывать запас `padding` под движение |
-| `applyOverlay()` | Совместимый no-op hook. Overlay больше не пишется в элементы; resolver читает `style_config.overlay.per_type` / `per_name` лениво |
-| `reloadPolicy(import_policy)` | Применить новую `ImportPolicy` без повторного парсинга XML (использует закешированные `elem.ggb_raw`). Действует только на GGB-элементы |
+| `loadGGB(filepath, style=None, import_policy=None, debug=False, generate_stubs=True, strict=False, reference=None, content=None, export=None)` | Load a .ggb file, apply a style (optionally through an `ImportPolicy`), and render the geometry. `style` accepts a path, dict or `StyleConfig`; `reference` sets the authoring reference canvas; `content` places the construction onto it; `export` sets the physical output. In non-strict mode unsupported GGB commands land in `scene.geo.command_diagnostics` without cascade warning noise; `strict=True` turns a root unsupported command into an error. `generate_stubs=True` writes `<basename>_stubs.pyi` next to the .ggb |
+| `loadCode(filepath, debug=False, show=True)` | Load a Python file with DSL code (exec engine) |
+| `putCode(code, debug=False, show=True)` | Execute a Python code string as DSL (exec engine; see [docs/python_dsl.md](python_dsl.md)) |
+| `applyStyle(style=None, import_policy=None, reference=None, content=None, export=None)` | Apply a style to the current construction and recompute the layout. Internally: builtin + `style`, then `reference -> content -> export` |
+| `fitView(width=800, height=600, *, padding=40, style=None, passes=2)` | Canonical framing for a DSL-built scene: measures the rendered bounds of visible elements and fits them onto a `width×height` canvas with a `padding` px margin. Runs `passes` rounds of `applyStyle(content='rendered_bounds')` + `updateAllGeometry()` (the first round establishes the scale for pixel-sized styles, the second re-measures with point/label sizes already correct). Without `style=` it keeps the scene's current `style_config`. Call it while the relevant elements are visible (before `HideAll()`); for animations leave extra `padding` headroom for the motion |
+| `reloadPolicy(import_policy)` | Apply a new `ImportPolicy` without re-parsing the XML (uses the cached `elem.ggb_raw`). Affects GGB elements only |
 
-Политика импорта — см. раздел `ImportPolicy` ниже и [docs/import_policies.md](import_policies.md).
+For the import policy, see the `ImportPolicy` section below and [docs/import_policies.md](import_policies.md).
 
-Unsupported-команды GeoGebra диагностируются структурированно:
+Unsupported GeoGebra commands are diagnosed in a structured way:
 
 ```python
 scene.loadGGB('scene.ggb', strict=False)
@@ -27,89 +26,89 @@ scene.geo.command_diagnostics
 #   'outputs': ['_3'], 'reason': 'unsupported_signature'}]
 ```
 
-Команды, которые получили `None` только из-за такого root unsupported, добавляются
-как `dependents` к исходному diagnostic и не логируются пачкой как независимые
-проблемы.
+Commands that received `None` only because of such a root unsupported command
+are added as `dependents` to the original diagnostic and are not logged in bulk
+as independent problems.
 
-### Параметры layout: `style`, `reference`, `content`, `export`
+### Layout parameters: `style`, `reference`, `content`, `export`
 
-`loadGGB(...)` и `applyStyle(...)` используют один и тот же pipeline:
+`loadGGB(...)` and `applyStyle(...)` share the same pipeline:
 `style/reference -> content -> export`.
 
-`style` задает визуальный стиль:
+`style` sets the visual style:
 
-| Значение | Поведение |
+| Value | Behavior |
 |---|---|
-| `None` | builtin-стиль без пользовательского JSON |
-| `str` / `PathLike` | путь к style JSON; грузится поверх builtin |
-| `dict` | style JSON передается напрямую |
-| `StyleConfig` | готовая конфигурация; используется ее `source` для совместимого `GeoStyle` и сама конфигурация для resolver |
+| `None` | builtin style without any user JSON |
+| `str` / `PathLike` | path to a style JSON, loaded on top of builtin. A bare preset name (`default`, `book_blue`, `book_green`, `book_purple`, `book_red`) resolves to the packaged preset via `animageo.style.config.resolve_style_input`; an existing on-disk file with the same name always wins |
+| `dict` | style JSON passed directly |
+| `StyleConfig` | a ready-made configuration; its `source` is used for the backward-compatible `GeoStyle` and the configuration itself for the resolver |
 
-`reference` задает эталонный холст, на котором стиль считается авторским:
+`reference` sets the reference canvas on which the style is considered authored:
 
-| Поле | Значения | Дефолт / смысл |
+| Field | Values | Default / meaning |
 |---|---|---|
-| `size` | `[width, height]` или `{"width": w, "height": h}`; каждая сторона — положительное число, `None` или `"auto"` | runtime override над `style.reference.size`; если не задано, берется исходный viewport конструкции |
-| `source` | `"manual"`, `"source_view"`, `"ggb_view"` | metadata в style JSON: откуда взят эталон. Саму область конструкции выбирает `content.source` |
+| `size` | `[width, height]` or `{"width": w, "height": h}`; each side is a positive number, `None` or `"auto"` | runtime override over `style.reference.size`; if unset, the construction's original viewport is used |
+| `source` | `"manual"`, `"source_view"`, `"ggb_view"` | metadata in the style JSON: where the reference came from. The actual construction area is selected by `content.source` |
 
-`content` описывает, какую область конструкции уложить в `reference`:
+`content` describes which area of the construction to fit into `reference`:
 
-| Поле | Значения | Дефолт / смысл |
+| Field | Values | Default / meaning |
 |---|---|---|
 | `source` | `"source_view"`, `"ggb_view"`, `"rendered_bounds"`; aliases: `"ggb"` -> `"ggb_view"`, `"bounds"` -> `"rendered_bounds"` | `"source_view"` |
 | `fit` | `"contain"`, `"cover"`, `"width"`, `"height"`, `"none"`, `"manual"` | `"contain"` |
-| `scale` | положительное число | только для `fit="manual"`; alias `manual_scale` |
+| `scale` | positive number | only for `fit="manual"`; alias `manual_scale` |
 | `anchor` | `"top_left"`, `"top"`, `"top_right"`, `"left"`, `"center"`, `"right"`, `"bottom_left"`, `"bottom"`, `"bottom_right"` | `"center"` |
-| `offset` | `[x, y]` в пикселях | дополнительный сдвиг после anchor |
-| `padding` | число >= 0 | отступ в source-пикселях для `source="rendered_bounds"`; alias `bounds_padding` |
-| `infinite_policy` | `"ignore"` или `"clip"` | `"ignore"`: `Line`/`Ray` не расширяют measured bounds; `"clip"`: они измеряются после обрезки текущей source-камерой |
+| `offset` | `[x, y]` in pixels | extra shift applied after the anchor |
+| `padding` | number >= 0 | margin in source pixels for `source="rendered_bounds"`; alias `bounds_padding` |
+| `infinite_policy` | `"ignore"` or `"clip"` | `"ignore"`: `Line`/`Ray` do not extend the measured bounds; `"clip"`: they are measured after clipping by the current source camera |
 
-`export` описывает физический выходной холст:
+`export` describes the physical output canvas:
 
-| Поле | Значения | Дефолт / смысл |
+| Field | Values | Default / meaning |
 |---|---|---|
-| `size` | `[width, height]` или `{"width": w, "height": h}`; одна сторона может быть `None`/`"auto"` | если не задано, размер равен `reference.size`; `[auto, auto]` недопустим |
+| `size` | `[width, height]` or `{"width": w, "height": h}`; one side may be `None`/`"auto"` | if unset, the size equals `reference.size`; `[auto, auto]` is not allowed |
 | `fit` | `"contain"`, `"cover"`, `"width"`, `"height"`, `"none"`, `"manual"` | `"contain"` |
-| `scale` | положительное число | только для `fit="manual"`; alias `manual_scale` |
-| `anchor` | те же 9 anchor-значений, что у `content.anchor` | `"center"` |
-| `offset` | `[x, y]` в пикселях | сдвиг reference-картинки внутри export-холста |
+| `scale` | positive number | only for `fit="manual"`; alias `manual_scale` |
+| `anchor` | the same 9 anchor values as `content.anchor` | `"center"` |
+| `offset` | `[x, y]` in pixels | shift of the reference picture inside the export canvas |
 
-При загрузке `.ggb` parser также переносит параметры `<euclidianView>` в
+When loading a `.ggb`, the parser also carries `<euclidianView>` parameters into
 `style.export`: `showAxes`, `showGrid`, `gridIsBold`, `gridType`,
 `axesColor`, `gridColor`, `gridDistX`, `gridDistY`, `gridDistTheta`,
-`axes.x` и `axes.y`. `addAllGeometry()` использует их для фонового слоя
-`_coordinate_background`: сетка рисуется под геометрией, оси и деления — над
-сеткой, но ниже всех объектов конструкции.
+`axes.x` and `axes.y`. `addAllGeometry()` uses them for the
+`_coordinate_background` layer: the grid is drawn under the geometry, axes and
+ticks above the grid but below all construction objects.
 
-### Переменные и обновление
+### Variables and updates
 
-| Метод | Описание |
+| Method | Description |
 |-------|----------|
-| `addVar(name, value)` | Создать анимируемую переменную, вернуть ValueTracker |
-| `addUpdater(tracker)` | Привязать ValueTracker к перестроению геометрии |
-| `clearUpdater(tracker)` | Отвязать ValueTracker |
-| `animating(tracker)` | Контекстный менеджер: addUpdater + yield + clearUpdater |
-| `updateAllGeometry()` | Перестроить все manim-объекты по текущей геометрии |
+| `addVar(name, value)` | Create an animatable variable, return a ValueTracker |
+| `addUpdater(tracker)` | Bind a ValueTracker to geometry rebuilds |
+| `clearUpdater(tracker)` | Unbind a ValueTracker |
+| `animating(tracker)` | Context manager: addUpdater + yield + clearUpdater |
+| `updateAllGeometry()` | Rebuild all manim objects from the current geometry |
 
-Пример `animating`:
+`animating` example:
 ```python
 x = self.addVar('x', 0)
 with self.animating(x):
     self.play(x.animate.set_value(1), run_time=3)
 ```
 
-### Анимации
+### Animations
 
-| Метод | Возвращает | Описание |
+| Method | Returns | Description |
 |-------|-----------|----------|
-| `Show(names, mode)` | `[Animation]` | Показать элементы. mode: `'Fade'` или `'Create'` |
-| `Hide(names)` | `[Animation]` | Скрыть элементы |
-| `Shade(names)` | `[Animation]` | Затенить элементы (серый цвет) |
-| `Restore(names)` | `[Animation]` | Восстановить из затенения |
-| `Update(names)` | `[Animation]` | Перерисовать элементы |
-| `UpdateAll()` | `[Animation]` | Перерисовать все элементы |
+| `Show(names, mode)` | `[Animation]` | Show elements. mode: `'Fade'` or `'Create'` |
+| `Hide(names)` | `[Animation]` | Hide elements |
+| `Shade(names)` | `[Animation]` | Shade elements (gray color) |
+| `Restore(names)` | `[Animation]` | Restore from shading |
+| `Update(names)` | `[Animation]` | Redraw elements |
+| `UpdateAll()` | `[Animation]` | Redraw all elements |
 
-Удобные обёртки с автозапуском `self.play(...)`:
+Convenience wrappers that auto-run `self.play(...)`:
 
 ```python
 self.playShow(['A', 'B', 'C'])
@@ -119,17 +118,17 @@ self.playRestore(['B', 'C'])
 self.playUpdate(['a', 'b'])
 ```
 
-### Keyframe-анимации
+### Keyframe animations
 
-| Метод | Описание |
+| Method | Description |
 |-------|----------|
-| `get_independent_elements()` | Вернуть анимируемые входы конструкции для `values`: свободные точки, точки на путях, числа/углы/booleans и переменные, созданные через `addVar()` |
-| `get_element_states()` | Вернуть `{name: {type, visible, style}}` для всех не-осевых элементов: текущая видимость и resolved animatable style values; удобно для UI keyframe-state inspector |
-| `play_keyframes(keyframes_data)` | Воспроизвести JSON/dict timeline. `"version": 2` включает style tracks, visibility/effects, camera keyframes и events; v1 без `version` оставлен для совместимости и deprecated |
-| `apply_keyframes_at(keyframes_data, t)` | Статически применить состояние timeline в момент `t` без `self.play(...)`; полезно для SVG/PNG preview одного кадра |
-| `reveal_construction(lag=0.3, duration=0.5, effect=None, play=True)` | Сгенерировать v2 timeline появления элементов в dependency order и сразу проиграть его; при `play=False` вернуть timeline dict |
+| `get_independent_elements()` | Return the animatable inputs of the construction for `values`: free points, points on paths, numbers/angles/booleans and variables created via `addVar()` |
+| `get_element_states()` | Return `{name: {type, visible, style}}` for all non-axis elements: current visibility and resolved animatable style values; convenient for a keyframe-state inspector UI |
+| `play_keyframes(keyframes_data)` | Play a JSON/dict timeline. `"version": 2` enables style tracks, visibility/effects, camera keyframes and events; v1 without `version` is kept for compatibility and deprecated |
+| `apply_keyframes_at(keyframes_data, t)` | Statically apply the timeline state at time `t` without `self.play(...)`; useful for a single-frame SVG/PNG preview |
+| `reveal_construction(lag=0.3, duration=0.5, effect=None, play=True)` | Generate a v2 timeline revealing elements in dependency order and play it immediately; with `play=False` return the timeline dict |
 
-Короткий пример:
+Short example:
 
 ```python
 self.play_keyframes({
@@ -145,35 +144,35 @@ self.play_keyframes({
 })
 ```
 
-Полный формат: [docs/keyframes.md](keyframes.md).
+Full format: [docs/keyframes.md](keyframes.md).
 
-### Пакетные операции
+### Batch operations
 
-| Метод | Описание |
+| Method | Description |
 |-------|----------|
-| `setElementStyle(names, **props)` | Установить стиль на нескольких элементах сразу |
-| `setVisible(names, visible)` | Установить видимость нескольких элементов |
+| `setElementStyle(names, *, update=True, **props)` | Set style properties on several elements at once |
+| `setVisible(names, visible, *, update=True)` | Set visibility on several elements |
 
 ```python
 self.setElementStyle(['a', 'b', 'c'], stroke='#ff0000', fill_opacity=0.5)
 self.setVisible(['A', 'B', 'C', 'D', 'E'], False)
 ```
 
-### Доступ к данным
+### Data access
 
-| Метод | Возвращает | Описание |
+| Method | Returns | Description |
 |-------|-----------|----------|
-| `element(name)` | `Element` | Элемент конструкции по имени |
-| `mobject(name)` | `Mobject` | Manim-объект по имени |
+| `element(name)` | `Element` | Construction element by name |
+| `mobject(name)` | `Mobject` | Manim object by name |
 
-### Расстановка подписей
+### Label placement
 
-| Метод | Описание |
+| Method | Description |
 |-------|----------|
-| `autoPlaceLabels(dynamic=False)` | Автоматически разложить подписи. `dynamic=True` устанавливает `LabelTracker` — последующие `addUpdater(...)` анимации будут пересчитывать раскладку на каждом кадре с EMA-сглаживанием и гистерезисом якоря |
-| `clearLabelTracker()` | Снять `LabelTracker`. Дальнейшие `updateVar` не будут дёргать per-frame решатель |
+| `autoPlaceLabels(dynamic=False)` | Automatically lay out labels. `dynamic=True` installs a `LabelTracker` — subsequent `addUpdater(...)` animations recompute the layout every frame with EMA smoothing and anchor hysteresis |
+| `clearLabelTracker()` | Remove the `LabelTracker`. Further `updateVar` calls will not invoke the per-frame solver |
 
-Статический вызов (легаси, one-shot — как было):
+Static invocation (legacy, one-shot — as before):
 
 ```python
 scene.loadGGB(
@@ -185,7 +184,7 @@ scene.autoPlaceLabels()
 scene.exportSVG('out.svg')
 ```
 
-Динамическая раскладка под `addUpdater`:
+Dynamic layout under `addUpdater`:
 
 ```python
 scene.loadGGB(
@@ -194,33 +193,38 @@ scene.loadGGB(
     export={'size': {'width': 800, 'height': 600}},
 )
 x = scene.addVar('x', 0)
-scene.autoPlaceLabels(dynamic=True)   # ставит LabelTracker
+scene.autoPlaceLabels(dynamic=True)   # installs the LabelTracker
 scene.addUpdater(x)
 scene.play(x.animate.set_value(1), run_time=3)
-# Углы следят за биссектрисой per-frame, остальные подписи плавно подтягиваются
-# к решателю через EMA. При canonicalize_anchor=True все якоря — 'MC', без прыжков.
+# Angles track their bisector per-frame; other labels smoothly converge to the
+# solver output via EMA. With canonicalize_anchor=True all anchors are 'MC',
+# with no jumps.
 scene.clearUpdater(x)
 scene.clearLabelTracker()
 ```
 
-Конфигурация — `overlay.label_placement` в JSON стиля (см. [docs/styles.md](styles.md)).
+Configuration lives in `overlay.label_placement` of the style JSON (see [docs/styles.md](styles.md)).
 
-`play_keyframes()` перед стартом playback применяет значения, v2 `visible` и
-legacy `show`/`hide` из первого keyframe, перестраивает геометрию и обновляет
-mobject-ы. Поэтому первый rendered frame соответствует keyframe `0`, даже если
-сохраненный `.ggb` был в другом editor-state. При `keyframe_snapshots=true`
-раскладка считается на каждом keyframe (pre-pass со save/restore состояния,
-включая v2 `styles`), между ними offset’ы интерполируются. Углы дополнительно
-трекаются per-frame аналитически, если `dynamic_angles=true`.
+Before playback starts, `play_keyframes()` applies the values, v2 `visible` and
+legacy `show`/`hide` from the first keyframe, rebuilds the geometry and updates
+the mobjects. So the first rendered frame matches keyframe `0` even if the
+saved `.ggb` was in a different editor state. With `keyframe_snapshots=true`
+the layout is computed at every keyframe (a pre-pass with state save/restore,
+including v2 `styles`), and offsets are interpolated in between. Angles are
+additionally tracked per-frame analytically when `dynamic_angles=true`.
 
-### Экспорт
+### Export
 
-| Метод | Описание |
+| Method | Description |
 |-------|----------|
-| `exportSVG(filepath)` | Экспортировать сцену в SVG через Cairo |
-| `exportStylePromptSummary(filepath=None, **kwargs)` | Экспортировать компактный JSON-summary конструкции для AI-генерации style JSON. Если `filepath` не указан, возвращает dict без записи файла. Формат: `animageo-construction-summary/v1`; см. [docs/construction_summary.md](construction_summary.md) |
+| `exportSVG(filepath)` | Export the scene to SVG via Cairo |
+| `exportPDF(filepath, *, dpi=96.0)` | Export the current frame as a single-page vector PDF. `dpi` governs the physical page size; the default (96) reproduces the on-screen SVG size, and the figure stays vector and can be rescaled with `\includegraphics[width=...]` in LaTeX |
+| `exportEPS(filepath, *, dpi=96.0)` | Export the current frame as vector EPS (Encapsulated PostScript). EPS has no transparency — semi-transparent fills are flattened (a warning is logged); use `exportPDF` to preserve opacity |
+| `exportTikZ(filepath=None, *, standalone=False, options=None, **kwargs)` | Export the construction as semantic, editable TikZ (native `\draw circle`/`ellipse`/`(a)--(b)`/`arc` primitives, real LaTeX `\node` labels, `\draw plot coordinates` for sampled curves). Returns the TikZ text; `filepath` optionally writes a `.tex` file. `standalone=True` wraps the picture in a compilable `\documentclass{standalone}` document. Pass either an `options=TikZOptions(...)` instance or keyword options (`dpi`, `clip`, `background`, `emit_font_size`, ...) — not both. See [docs/tikz_export.md](tikz_export.md) |
+| `exportJSXGraph(filepath=None, *, options=None, **kwargs)` | Export the construction as an interactive JSXGraph board. Transpiles the construction graph (not the rendered frame): free points become draggable, points on curves become gliders, numbers become sliders, and derived elements are recomputed live on drag. Commands with no native JSXGraph creator fall back to static geometry and are listed in a coverage report (logged at INFO). Returns the HTML/JS/JSON text; `filepath` optionally writes `.html`/`.js`/`.json`. Pass either `options=JSXGraphOptions(...)` or keyword options (`output="js"`, `mathjax=False`, `axis=False`, ...) — not both |
+| `exportStylePromptSummary(filepath=None, **kwargs)` | Export a compact JSON summary of the construction for AI style-JSON generation. If `filepath` is omitted, returns the dict without writing a file. Format: `animageo-construction-summary/v1`; see [docs/construction_summary.md](construction_summary.md) |
 
-Пример:
+Example:
 
 ```python
 scene.loadGGB(
@@ -231,413 +235,416 @@ scene.loadGGB(
 summary = scene.exportStylePromptSummary('scene.summary.json')
 ```
 
-Полезные параметры: `include_geometry`, `include_ggb_style`,
+Useful parameters: `include_geometry`, `include_ggb_style`,
 `include_style`, `include_resolved_style`, `include_axes`, `max_elements`,
 `style_keys`, `source`, `viewport`.
 
-### Вспомогательные
+### Utilities
 
-| Метод | Описание |
+| Method | Description |
 |-------|----------|
-| `addGrid(x_range, y_range)` | Добавить ручную координатную сетку |
-| `addCoordinateBackground()` | Добавить фоновую сетку/оси из GGB `<euclidianView>` |
-| `waitCut(msg)` | Пауза для видеомонтажа с визуальной меткой |
+| `addGrid(x_range, y_range)` | Add a manual coordinate grid |
+| `addCoordinateBackground()` | Add the background grid/axes from the GGB `<euclidianView>` |
+| `waitCut(msg)` | Pause for video editing with a visual marker |
 
 ---
 
 ## StyleConfig + resolver
 
-`scene.style_config` (`animageo.style.config.StyleConfig`) — трёхслойная конфигурация:
+`scene.style_config` (`animageo.style.config.StyleConfig`) is a three-layer configuration:
 
 ```python
 scene.style_config.presets      # dict — semantic constants (colors/sizes/structures)
-scene.style_config.defaults      # DefaultsProfile: per-type baseline в пикселях
-scene.style_config.overlay       # StyleOverlay: per_type/per_name + автоматика
-scene.style_config.rendering     # dict — low-level render-flags
+scene.style_config.defaults      # DefaultsProfile: per-type baseline in pixels
+scene.style_config.overlay       # StyleOverlay: per_type/per_name + automation
+scene.style_config.rendering     # dict — low-level render flags
 scene.style_config.reference     # dict — authoring reference canvas
 ```
 
-Загружается автоматически в `__init__` (builtin.json) и перезагружается в
-`applyStyle(style=...)` с deep-merge пользовательского JSON/dict сверху.
+It is loaded automatically in `__init__` (builtin.json) and reloaded in
+`applyStyle(style=...)` with the user JSON/dict deep-merged on top.
 
 ```python
 from animageo.style.config import StyleConfig
-cfg = StyleConfig.load('my_style.json')   # или StyleConfig.load() для builtin-only
+cfg = StyleConfig.load('my_style.json')   # or StyleConfig.load() for builtin-only
 cfg.defaults.get('point', 'size_px')       # → 6
 ```
 
-**Чтение значения стиля.** Вместо `elem.style.get(k, scene.style.X)` используйте единый resolver:
+**Reading a style value.** Instead of `elem.style.get(k, scene.style.X)`, use the unified resolver:
 
 ```python
 from animageo.style.resolver import resolve, resolved_style, trace
 
-resolve(scene, elem, 'size_px', default=6)   # → значение по цепочке приоритетов
-resolved_style(scene, elem)                  # → dict всех ключей (для дебага/снепшотов)
+resolve(scene, elem, 'size_px', default=6)   # → value along the priority chain
+resolved_style(scene, elem)                  # → dict of all keys (for debugging/snapshots)
 trace(scene, elem, 'size_px')                # → ('elem.style', 99) / ('ggb_style', 10) / …
 ```
 
-Цепочка приоритетов: `elem.style → overlay.per_name → overlay.per_type → elem.ggb_style → defaults.by_type → intrinsic geometry style → default=`. Если `import.enabled=false`, слой `elem.ggb_style` пропускается. Ссылки вида `"color.main"` / `"line_width.bold"` разрешаются автоматически.
+Priority chain: `elem.style → overlay.per_name → overlay.per_type → elem.ggb_style → defaults.by_type → intrinsic geometry style → default=`. If `import.enabled=false`, the `elem.ggb_style` layer is skipped. References such as `"color.main"` / `"line_width.bold"` are resolved automatically.
 
-`StyleOverlay.apply(scene)` / `scene.applyOverlay()` оставлены как совместимый hook. Overlay-правила не материализуются в `elem.style`; renderer читает их через resolver.
+`StyleOverlay` is configured through the `overlay` section of the style JSON
+(`per_type` / `per_name`). Overlay rules are never materialized into
+`elem.style`; the renderer reads them lazily through the resolver during
+`applyStyle` / `addAllGeometry`.
 
 ---
 
 ## ImportPolicy
 
-Dataclass из `animageo.style.import_policy`. Контролирует как значения из `.ggb` превращаются в `elem.ggb_style` при `loadGGB`. Поля принимают: `None` (fallback на base-режим), литерал, callable `fn(raw, defaults, elem)`, либо DSL-строку (`"const:"`, `"scale:"`, `"quantize:"`, `"remap:"`).
+Dataclass from `animageo.style.import_policy`. Controls how values from a `.ggb` become `elem.ggb_style` during `loadGGB`. Fields accept: `None` (fall back to the base mode), a literal, a callable `fn(raw, defaults, elem)`, or a DSL string (`"const:"`, `"scale:"`, `"quantize:"`, `"remap:"`).
 
-> **Специализация:** `ImportPolicy` сейчас рекомендуется для **raw-GGB трансформаций** (`scale:/quantize:/remap:`). Для стилизации применяемой одинаково к GGB и DSL — используйте `overlay.per_type` / `overlay.per_name` в JSON. См. [docs/import_policies.md](import_policies.md) и [docs/styles.md](styles.md).
+> **Specialization:** `ImportPolicy` is currently recommended for **raw-GGB transformations** (`scale:/quantize:/remap:`). For stylization applied uniformly to GGB and DSL, use `overlay.per_type` / `overlay.per_name` in JSON. See [docs/import_policies.md](import_policies.md) and [docs/styles.md](styles.md).
 
 ```python
 from animageo.style.import_policy import ImportPolicy
 
-ImportPolicy.faithful()                       # дефолт: как в GGB (backward compat)
-ImportPolicy.style_only()                     # всё из style.json, GGB игнорируется
-ImportPolicy.from_dict(cfg)                   # из JSON-словаря (напр. import.policy)
-ImportPolicy(size_px=3, font_size_px=14)   # явные overrides
-ImportPolicy(stroke_width_px='quantize:[1,2,4]')   # DSL-строка (работает и в Python API)
+ImportPolicy.faithful()                       # default: as in GGB (backward compat)
+ImportPolicy.style_only()                     # everything from style.json, GGB ignored
+ImportPolicy.from_dict(cfg)                   # from a JSON dict (e.g. import.policy)
+ImportPolicy(size_px=3, font_size_px=14)   # explicit overrides
+ImportPolicy(stroke_width_px='quantize:[1,2,4]')   # DSL string (works in the Python API too)
 ```
 
-**Поля:** `base`, `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_linecap`. `font_size` остаётся совместимым alias и нормализуется в `font_size_px`.
+**Fields:** `base`, `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_linecap`.
 
-Правила по типу/имени (`per_type`, `per_name`) задавайте в `overlay`, а не в `ImportPolicy`.
+Define per-type/per-name rules (`per_type`, `per_name`) in `overlay`, not in `ImportPolicy`.
 
-**Методы:**
+**Methods:**
 
-| Метод | Возвращает | Описание |
+| Method | Returns | Description |
 |-------|------------|----------|
-| `resolve(elem, defaults, ptUnit)` | `dict` | Полный import-style dict (faithful baseline + overrides). Используется для диагностики/совместимости |
-| `resolve_overrides_only(elem, defaults, ptUnit)` | `dict` | Только те ключи, которые политика активно переопределяет; `applyStyle` кладёт их в `elem.ggb_style` |
+| `resolve(elem, defaults, ptUnit)` | `dict` | Full import-style dict (faithful baseline + overrides). Used for diagnostics/compatibility |
+| `resolve_overrides_only(elem, defaults, ptUnit)` | `dict` | Only the keys the policy actively overrides; `applyStyle` puts them into `elem.ggb_style` |
 
-Подробный cookbook для 12 сценариев — [docs/import_policies.md](import_policies.md).
-Готовые JSON-пресеты — `examples/policies/*.json`.
+A detailed cookbook for 12 scenarios: [docs/import_policies.md](import_policies.md).
+Ready-made JSON presets: `examples/policies/*.json`.
 
 ---
 
 ## Construction
 
-Управление состоянием геометрической конструкции.
+Manages the state of the geometric construction.
 
-| Метод | Описание |
+| Method | Description |
 |-------|----------|
-| `add(obj)` | Добавить Element, Var или Command |
-| `update(name, data)` | Обновить данные элемента |
-| `element(name)` | Найти элемент по имени |
-| `var(name)` | Найти переменную по имени |
-| `objectByName(name)` | Найти Element или Var по имени |
-| `rebuild(debug, full)` | Перестроить конструкцию. `full=True` --- все команды |
-| `commandByElementName(name)` | Найти команду, создающую элемент |
-| `rename(old_name, new_name)` | Переименовать элемент + обновить все ссылки в commands + state |
-| `add_and_build(cmd)` | Добавить команду и сразу перестроить только её узел (eager-mode для DSL) |
-| `update_tparam(name, tparam)` | Обновить curve/locus-параметр constrained-точки (угол на окружности, линейный t на сегменте/прямой/луче) |
-| `get_independents()` | Вернуть dict независимых (анимируемых) элементов для keyframe UI |
+| `add(obj)` | Add an Element, Var or Command |
+| `update(name, data)` | Update an element's data |
+| `element(name)` | Find an element by name |
+| `var(name)` | Find a variable by name |
+| `objectByName(name)` | Find an Element or Var by name |
+| `rebuild(debug, full)` | Rebuild the construction. `full=True` --- all commands |
+| `commandByElementName(name)` | Find the command that creates an element |
+| `rename(old_name, new_name)` | Rename an element + update all references in commands + state |
+| `add_and_build(cmd)` | Add a command and immediately rebuild only its node (eager mode for the DSL) |
+| `update_tparam(name, tparam)` | Update the curve/locus parameter of a constrained point (angle on a circle, linear t on a segment/line/ray) |
+| `get_independents()` | Return a dict of independent (animatable) elements for a keyframe UI |
 
 ---
 
-## Геометрические элементы
+## Geometric elements
 
-Элементы дополнительно хранят `elem.ggb_raw` — словарь сырых GGB-значений (`point_size`, `line_thickness`, `line_opacity`, `line_type`, `arc_size`, `label_offset_px`, `obj_color` и т.д.). `obj_color` содержит исходные `r/g/b/alpha` и алиасы `hex` / `opacity`. Заполняется парсером и используется `ImportPolicy` и `reloadPolicy`.
+Elements additionally store `elem.ggb_raw` — a dict of raw GGB values (`point_size`, `line_thickness`, `line_opacity`, `line_type`, `arc_size`, `label_offset_px`, `obj_color`, etc.). `obj_color` holds the original `r/g/b/alpha` plus the `hex` / `opacity` aliases. It is populated by the parser and consumed by `ImportPolicy` and `reloadPolicy`.
 
-Полный список имён полей — см. [docs/field_names.md](field_names.md).
+For the full list of field names, see [docs/field_names.md](field_names.md).
 
 ### Point
 ```python
 p = Point([x, y])
 p.coords     # numpy array [x, y]
-p.x, p.y     # float — x- и y-координаты
+p.x, p.y     # float — x and y coordinates
 p.style      # StyleProxy{'label_visible': False, 'label_offset_px': [0.5, 0], 'z_index': 50}
 ```
 
 ### Line
 ```python
 l = Line(normal, offset)     # normal·x = offset
-l.normal     # единичный вектор нормали
-l.direction  # перпендикуляр к normal
-l.offset     # знаковое расстояние до начала координат
-l.contains(point_array)      # проверка принадлежности
+l.normal     # unit normal vector
+l.direction  # perpendicular to normal
+l.offset     # signed distance to the origin
+l.contains(point_array)      # membership test
 ```
 
-### Segment (наследует Line)
+### Segment (inherits Line)
 ```python
 s = Segment(p1_array, p2_array)
 s.endpoints  # [[x1,y1], [x2,y2]]
-s.start      # np.array[0] — первая точка
-s.end        # np.array[1] — вторая точка
+s.start      # np.array[0] — first point
+s.end        # np.array[1] — second point
 s.length     # float
 ```
 
-### Ray (наследует Line)
+### Ray (inherits Line)
 ```python
 r = Ray(start_point, direction_vec)
-r.start      # np.array — точка-начало луча
-r.direction  # np.array — направление (через Line)
+r.start      # np.array — origin point of the ray
+r.direction  # np.array — direction (via Line)
 ```
 
 ### Circle
 ```python
 c = Circle(center, radius)
-c.center         # np.array — центр
+c.center         # np.array — center
 c.radius         # float
 c.radius_squared # computed @property: radius²
 c.contains(point_array)
 ```
 
-### Arc, CircleSector (наследуют Circle)
+### Arc, CircleSector (inherit Circle)
 ```python
 a = Arc(center, radius, [angle_start, angle_end])
-a.angles        # [start, end] в радианах
-a.angle_start   # @property на angles[0]
-a.angle_end     # @property на angles[1]
+a.angles        # [start, end] in radians
+a.angle_start   # @property over angles[0]
+a.angle_end     # @property over angles[1]
 ```
 
 ### Angle
 ```python
 a = Angle(vertex_point, v1_vec, v2_vec)
-a.vertex        # np.array — вершина
-a.size          # float — величина в радианах
-a.value         # @property синоним для .size
-a.side1, a.side2 # векторы сторон
-a.arc_radius    # радиус рисуемой дуги
-a.start_angle   # угол от OX до side1 (радианы)
-a.end_angle     # угол от OX до side2
+a.vertex        # np.array — vertex
+a.size          # float — magnitude in radians
+a.value         # @property synonym for .size
+a.side1, a.side2 # side vectors
+a.arc_radius    # radius of the drawn arc
+a.start_angle   # angle from OX to side1 (radians)
+a.end_angle     # angle from OX to side2
 ```
 
 ### Polygon
 ```python
 p = Polygon([[x1, y1], [x2, y2], ...])
-p.vertices      # np.ndarray — массив вершин
+p.vertices      # np.ndarray — array of vertices
 ```
 
 ### Vector
 ```python
 v = Vector([[x1, y1], [x2, y2]])
-v.endpoints     # пара точек [start, end]
-v.start, v.end  # @property на endpoints[0/1]
+v.endpoints     # point pair [start, end]
+v.start, v.end  # @property over endpoints[0/1]
 v.direction     # end − start
 ```
 
 ### Measure, AngleSize, Boolean (lib_vars)
 ```python
-m = Measure(value, dimension=0)  # dimension: 0=скаляр, 1=длина, 2=площадь
+m = Measure(value, dimension=0)  # dimension: 0=scalar, 1=length, 2=area
 m.value, m.dimension
 
-a = AngleSize(value)             # value в радианах
+a = AngleSize(value)             # value in radians
 b = Boolean(True)
 b.value                          # True / False
 ```
 
 ### Conic
 
-Коника как 3×3 симметричная матрица. Покрывает окружность, эллипс,
-параболу, гиперболу и вырожденные случаи (пары прямых, точка, пустое).
+A conic as a 3×3 symmetric matrix. Covers the circle, ellipse,
+parabola, hyperbola and degenerate cases (line pairs, point, empty).
 
 ```python
 from animageo.geo.lib_elements import Conic
 from animageo.geo.lib_conic import ConicType
 
-# Четыре конструктора:
-c = Conic(matrix_3x3)                         # сырая матрица
-c = Conic.from_ggb_matrix(A0, A1, A2, A3, A4, A5)  # формат GGB <matrix>
+# Four constructors:
+c = Conic(matrix_3x3)                         # raw matrix
+c = Conic.from_ggb_matrix(A0, A1, A2, A3, A4, A5)  # GGB <matrix> format
 c = Conic.from_coeffs(a=1, c=1, f=-1)         # A·x² + B·x·y + C·y² + D·x + E·y + F
-c = Conic.from_string("x^2 + y^2 = 4")        # парсинг уравнения (sympy)
+c = Conic.from_string("x^2 + y^2 = 4")        # equation parsing (sympy)
 
-# Поля:
-c.matrix             # np.ndarray (3×3) — симметричная матрица
+# Fields:
+c.matrix             # np.ndarray (3×3) — symmetric matrix
 c.type               # ConicType.CIRCLE / ELLIPSE / PARABOLA / HYPERBOLA /
                      # INTERSECTING_LINES / PARALLEL_LINES / DOUBLE_LINE /
-                     # POINT / EMPTY  (ленивая, кешируется)
-c.kind               # @property синоним для .type
+                     # POINT / EMPTY  (lazy, cached)
+c.kind               # @property synonym for .type
 
-# Канонические параметры (None если не соответствует типу):
+# Canonical parameters (None if the type does not match):
 c.as_circle()        # (center: ndarray, radius: float)
 c.as_ellipse()       # {'center', 'semi_axes': (a, b), 'rotation'}
 c.as_parabola()      # {'vertex', 'axis', 'perp', 'focal_parameter'}
 c.as_hyperbola()     # {'center', 'semi_axes': (a, b), 'rotation'}
-c.as_lines()         # List[Line] для вырожденных (0, 1 или 2 линии)
-c.as_point()         # Point для POINT
+c.as_lines()         # List[Line] for degenerate cases (0, 1 or 2 lines)
+c.as_point()         # Point for POINT
 
-# Стандартный интерфейс элемента:
-c.evaluate(x, y)     # pᵀ·matrix·p — значение квадратичной формы в точке
-c.contains(pt)       # True если pt принадлежит конике
+# Standard element interface:
+c.evaluate(x, y)     # pᵀ·matrix·p — value of the quadratic form at a point
+c.contains(pt)       # True if pt lies on the conic
 c.translate(vec), c.scale(ratio)
-c.equivalent(other)  # матрицы пропорциональны
+c.equivalent(other)  # matrices are proportional
 ```
 
 ### Function
 
-Явная функция `y = f(x)` на основе sympy. Парсинг поддерживает GGB-форматы:
+An explicit function `y = f(x)` backed by sympy. Parsing supports the GGB forms:
 
 ```python
 from animageo.geo.lib_elements import Function
 
 f = Function.from_string('y = x^2 + 1')
 f = Function.from_string('f(x) = sin(x) + cos(2*x)')
-f = Function.from_string('i: y = -abs(x) + 4')        # GGB-префикс "label:"
+f = Function.from_string('i: y = -abs(x) + 4')        # GGB "label:" prefix
 f = Function.from_string('m(x) = If[-1 ≤ x ≤ 1, x^2]') # piecewise
 
-# Поля:
-f.expr                     # sympy-выражение RHS
-f.var                      # sympy Symbol (обычно x)
-f.source                   # исходная строка (для debug/repr)
-# @property: .expression, .variable, .callable — алиасы
+# Fields:
+f.expr                     # sympy expression of the RHS
+f.var                      # sympy Symbol (usually x)
+f.source                   # source string (for debug/repr)
+# @property: .expression, .variable, .callable — aliases
 
-f(2)                       # численно, через numpy lambdify (без sympy в горячем пути)
-f.natural_singularities    # [0.0] для 1/x, [] для полиномов — используется рендером
-                           # для разбиения x-диапазона в точках разрыва
-f.sample((-2, 2), n=100)   # (n, 2) массив точек
-f.translate([dx, dy])      # сдвиг графика
-f.contains([x, y])         # True если y == f(x)
+f(2)                       # numeric, via numpy lambdify (no sympy in the hot path)
+f.natural_singularities    # [0.0] for 1/x, [] for polynomials — used by the renderer
+                           # to split the x-range at discontinuities
+f.sample((-2, 2), n=100)   # (n, 2) array of points
+f.translate([dx, dy])      # shift the graph
+f.contains([x, y])         # True if y == f(x)
 ```
 
-Поддерживаемые формы выражения:
-- полиномиальные: `x^2 + 1`, `(x-3)^3`
-- тригонометрия: `sin(x)`, `cos(x)`, `tan(x)`
+Supported expression forms:
+- polynomial: `x^2 + 1`, `(x-3)^3`
+- trigonometry: `sin(x)`, `cos(x)`, `tan(x)`
 - `abs`, `sqrt`, `log`, `exp`, `ln`
-- `If[cond, then]` / `If[cond, then, else]` (рекурсивно, с поддержкой
-  Unicode `≤`, `≥`, `≠` и цепочек `-1 ≤ x ≤ 1`)
+- `If[cond, then]` / `If[cond, then, else]` (recursive, with support for
+  Unicode `≤`, `≥`, `≠` and chains `-1 ≤ x ≤ 1`)
 
 ### ImplicitCurve
 
-Произвольная неявная кривая `F(x, y) = 0`, когда явное `y = f(x)` или
-квадратичная форма не подходят.
+An arbitrary implicit curve `F(x, y) = 0`, for when an explicit `y = f(x)` or
+a quadratic form does not fit.
 
 ```python
 from animageo.geo.lib_elements import ImplicitCurve
 
-curve = ImplicitCurve.from_string("(x^2 + y^2)^2 = 8 * (x^2 - y^2)")  # лемниската
+curve = ImplicitCurve.from_string("(x^2 + y^2)^2 = 8 * (x^2 - y^2)")  # lemniscate
 curve = ImplicitCurve.from_string("sin(x) + cos(y) = 0.5")
 curve = ImplicitCurve.from_string("sqrt(-4*y) + sqrt(abs(x - 1)) = 5")
 
-# Поля:
-curve.expr                 # sympy-выражение F(x, y)
-curve.var_x, curve.var_y   # sympy Symbol для x и y
-curve.source               # исходная строка
+# Fields:
+curve.expr                 # sympy expression F(x, y)
+curve.var_x, curve.var_y   # sympy Symbol for x and y
+curve.source               # source string
 
-curve(x, y)                # скалярное или векторное вычисление
+curve(x, y)                # scalar or vectorized evaluation
 curve.contains([x, y])
 curve.translate([dx, dy]), curve.scale(ratio)
 ```
 
-Рендер через marching squares в `curve_sampling.py` (сетка 128×128 над
-viewport), O(grid_n²) работы.
+Rendered via marching squares in `curve_sampling.py` (a 128×128 grid over the
+viewport), O(grid_n²) work.
 
 ---
 
 ## Python DSL
 
-Полный гайд: [docs/python_dsl.md](python_dsl.md). Ниже — краткая сводка.
+Full guide: [docs/python_dsl.md](python_dsl.md). Below is a short summary.
 
-Exec-based движок. Любой валидный Python-код — поддерживаются циклы, условия, функции, comprehensions, kwargs, tuple-unpack. Полный список ~74 фабрик авто-обнаруживается из `lib_commands.py`.
+Exec-based engine. Any valid Python code works — loops, conditionals, functions, comprehensions, kwargs, tuple unpacking are all supported. The full set of ~74 factories is auto-discovered from `lib_commands.py`.
 
 ```python
-# Точки и базовые построения
+# Points and basic constructions
 A = Point(0, 0)
 B = Point(4, 0)
 M = Midpoint(A, B)
 s = Segment(A, B)
 
-# Tuple-unpack для команд с несколькими выходами
+# Tuple unpacking for multi-output commands
 p, s1, s2, s3 = Polygon(A, B, C)
 X, Y = Intersect(line1, circle1)
 
-# Арифметика — регистрирует Add/Sub/Mult/Div-команды
+# Arithmetic — registers Add/Sub/Mult/Div commands
 D = A + B
 v = B - A
 E = 2 * A
 neg = -A
 m = abs(x)
 
-# Циклы, условия, функции
+# Loops, conditionals, functions
 for i in range(3):
-    p = Point(i, 0)        # создаст p, p_2, p_3
+    p = Point(i, 0)        # creates p, p_2, p_3
 
 def triangle(prefix, side):
-    A = Point(0, 0, name=f'{prefix}_A')   # явное имя через kwarg
+    A = Point(0, 0, name=f'{prefix}_A')   # explicit name via kwarg
     B = Point(side, 0, name=f'{prefix}_B')
     return A, B
 
-# Доступ к полям (через прокси)
+# Field access (via proxy)
 x_val = A.x                # float
 ctr = circ.center          # np.array
 seg_len = s.length         # float
 
-# Стили атрибутом
+# Styles as attributes
 A.style.stroke = '#ff0000'
 A.style.size_px = 10
 ```
 
-### Кривые высокого порядка
+### Higher-order curves
 
 ```python
-# Строковые конструкторы:
+# String constructors:
 f = Function("y = x^2 + 1")
 g = Conic("x^2 + y^2 = 4")
 h = ImplicitCurve("sin(x) + cos(y) = 0.5")
 
-# DSL-сахар: натуральная запись функции (препроцессор перед AST):
+# DSL sugar: natural function notation (preprocessor before AST):
 #   name(var) = expr   →   name = Function("y = expr")
 f(x) = x^2 + 1
 g(t) = 2*t + 1            # → g = Function("y = 2*x + 1")
 
-# Геометрические конструкторы коник:
+# Geometric conic constructors:
 ell = Ellipse(F1, F2, 5)
 par = Parabola(F, directrix_line)
 conic5 = Conic(P1, P2, P3, P4, P5)
 ```
 
-### Команды коник (GGB)
+### Conic commands (GGB)
 
-Диспатчеруются на шорткат `K`, работают для всех подходящих `ConicType`:
+Dispatched on the `K` shortcut; they work for every applicable `ConicType`:
 
 ```python
-O          = Center(conic)                  # центр эллипса/гиперболы, вершина параболы
-F1, F2     = Focus(ellipse)                 # 2 точки для ellipse/hyperbola
-F          = Focus(parabola)                # 1 точка
-vs         = Vertex(conic)                  # 4 для эллипса, 2 для гиперболы, 1 для параболы
-ax1, ax2   = Axes(ellipse_or_hyperbola)     # большая и малая оси (Line)
+O          = Center(conic)                  # center of an ellipse/hyperbola, vertex of a parabola
+F1, F2     = Focus(ellipse)                 # 2 points for ellipse/hyperbola
+F          = Focus(parabola)                # 1 point
+vs         = Vertex(conic)                  # 4 for an ellipse, 2 for a hyperbola, 1 for a parabola
+ax1, ax2   = Axes(ellipse_or_hyperbola)     # major and minor axes (Line)
 d          = Directrix(parabola)
 d1, d2     = Directrix(ellipse_or_hyperbola)
 e          = Eccentricity(conic)            # Measure(value, dimension=0)
 c_lin      = LinearEccentricity(conic)      # Measure(value, dimension=1)
 coeffs     = Coefficients(conic)            # [A, B, C, D, E, F]
-P          = Point(conic)                   # точка на conic; GGB-импорт сохраняет параметр из XML-координат
+P          = Point(conic)                   # point on the conic; GGB import keeps the parameter from the XML coordinates
 
 polar_line = Polar(point, conic)            # pᵀ·matrix
-tangent    = Tangent(point_on_conic, conic) # одна касательная
-t1, t2     = Tangent(external_point, conic) # две касательных через pole-polar duality
+tangent    = Tangent(point_on_conic, conic) # one tangent
+t1, t2     = Tangent(external_point, conic) # two tangents via pole-polar duality
 ```
 
-### Пересечения
+### Intersections
 
-Все пары первоклассных элементов (Line/Segment/Ray/Circle/Arc/Conic/Function/
-ImplicitCurve) поддерживаются. Команда `Intersect` возвращает `Point` или
-список `Point`'ов (можно брать индексом):
+All pairs of first-class elements (Line/Segment/Ray/Circle/Arc/Conic/Function/
+ImplicitCurve) are supported. The `Intersect` command returns a `Point` or a
+list of `Point`s (indexable):
 
 ```python
-# Аналитически (Conic):
-X, Y    = Intersect(line, conic)       # intersect_Kl: квадратика
+# Analytic (Conic):
+X, Y    = Intersect(line, conic)       # intersect_Kl: quadratic
 A,B,C,D = Intersect(conic1, conic2)    # intersect_KK: pencil + cubic
 
-# Численно (Function/ImplicitCurve):
+# Numeric (Function/ImplicitCurve):
 X       = Intersect(function, line)    # intersect_Fl: sympy.solve → brentq fallback
-J, K    = Intersect(function, conic)   # intersect_FK: 1D через подстановку
+J, K    = Intersect(function, conic)   # intersect_FK: 1D via substitution
 G, H    = Intersect(implicit, circle)  # intersect_IK: marching squares + Newton
 M, N    = Intersect(implicit, line)    # intersect_Il
 
-# Индексный выбор (как в GGB):
-A = Intersect(conic, line, index=1)   # первая точка пересечения
-B = Intersect(conic, line, 2)         # вторая
+# Index selection (as in GGB):
+A = Intersect(conic, line, index=1)   # first intersection point
+B = Intersect(conic, line, 2)         # second
 ```
 
-Индекс всегда 1-based: `1, 2, ...`. Для multi-output порядок тот же:
-`P, Q = Intersect(a, b)` соответствует `P = Intersect(a, b, index=1)`
-и `Q = Intersect(a, b, index=2)`. Порядок пересечений стабилен и является
-частью контракта для DSL, `.ggb` import и export/JSXGraph. Для окружностей
-AnimaGeo применяет GeoGebra-like эвристику: точки, уже участвующие во
-входных объектах окружности/второго объекта, приоритетно сопоставляются с
-вычисленными пересечениями; остальные точки идут во внутреннем
-детерминированном порядке.
+The index is always 1-based: `1, 2, ...`. For multi-output the order is the
+same: `P, Q = Intersect(a, b)` corresponds to `P = Intersect(a, b, index=1)`
+and `Q = Intersect(a, b, index=2)`. The intersection order is stable and is
+part of the contract for the DSL, `.ggb` import and export/JSXGraph. For
+circles AnimaGeo applies a GeoGebra-like heuristic: points already
+participating in the input objects of the circle/second object are matched to
+the computed intersections first; the remaining points follow the internal
+deterministic order.
 
-Hard cap на численные методы гарантирует отсутствие зависаний: 1D
-сканы используют `n_samples=401` точек по диапазону `[-50, 50]`; 2D
-marching squares — `grid_n=128` × 128 клеток.
+A hard cap on the numeric methods guarantees no hangs: 1D scans use
+`n_samples=401` points over the range `[-50, 50]`; 2D marching squares uses a
+`grid_n=128` × 128 cell grid.

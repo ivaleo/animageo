@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.6.5] — 2026-08-11
+## [Unreleased]
+
+### Changed
+
+- Public-release documentation and packaging overhaul: internal working
+  materials removed from the repository, core docs translated to English,
+  packaged style presets (`style='default'`, `book_*`) resolvable by bare
+  name, PyPI project URLs, `py.typed`, CI workflow.
+
+## [1.6.5] - 2026-08-11
 
 ### Fixed
 
@@ -29,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Manual labels keep their visual gap to the point when the font size
   changes (size-invariant anchoring).** GGB anchors a label at its
-  left/baseline corner, so at a non-native кегль the glyphs grow up-right —
+  left/baseline corner, so at a non-native font size the glyphs grow up-right —
   TOWARD the point for a label dragged left/below (В at 48px font swallowed
   its point entirely). A manual label is now anchored by the PROJECTION of
   its point onto the label's native (applet-size) bbox: the box's nearest
@@ -47,8 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   density.** In GGB both the label glyphs and the labelOffset are screen px,
   so their ratio survives any zoom. The GGB-faithful path initially divided
   offsets by ``ptUnit_ggb`` (figure space) while the font divides by
-  ``ptUnit_style`` (reference-canvas px): at low reference density (the
-  style-editor preview fits an 1160px view into a 480px canvas) offsets
+  ``ptUnit_style`` (reference-canvas px): at low reference density (e.g. a
+  preview canvas fitting an 1160px view into 480px) offsets
   shrank ×2.4 while glyphs did not, and labels sat on their points. Manual
   offsets (and the GGB base) now divide by ``ptUnit_style`` — the same pixel
   space as the font, matching how every other decoration px is imported.
@@ -79,7 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   TZ §6.4). Remaining §5.1 nuance: a descender's tail (Д, Щ) still counts
   into the bbox when a label sits North of its point.
 
-## [1.6.4] — 2026-07-28
+## [1.6.4] - 2026-07-28
 
 ### Fixed
 
@@ -97,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (already pal8) and all non-GIF renders are byte-unchanged; the wrap is a
   no-op on manim versions that stop assigning `rgb8`.
 
-## [1.6.3] — 2026-07-25
+## [1.6.3] - 2026-07-25
 
 ### Fixed
 
@@ -130,7 +139,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   value labels already did), fixing a small bbox mismatch with auto-placement.
 - JSXGraph export is unaffected (MathJax renders math-mode Cyrillic natively).
 
-## [1.6.2] — 2026-07-14
+## [1.6.2] - 2026-07-14
 
 ### Added
 
@@ -138,16 +147,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   multiplier applied at render time. The layout, crop and label placement are
   computed at nominal prominence (1.0) and stay unaffected; prominence only
   scales the density that decoration sizes (points/strokes/labels/markers) are
-  resolved against. Enables a «Крупность» control that never re-frames the drawing.
+  resolved against. Enables a prominence ("decoration size") UI control that never re-frames the drawing.
 - **Frame-independent decoration density** (`content.decoration_scale_source`):
   - `frame` (default) — `ptUnit_style` tracks the actual export crop; `fitView`
     relies on this for two-pass convergence.
   - `reference` — re-base `rendered_bounds` density on the style reference over
-    the full source view, so decoration prominence stays constant across the «Кадр».
+    the full source view, so decoration prominence stays constant across framing choices.
   - `output` — anchor decoration size to the geometry's export zoom, so
     point/stroke/label pixels are a fixed output size set only by prominence;
-    resizing or retyping the «Кадр» rescales geometry alone.
-  - `ggb` — «Как в GeoGebra»: decorations keep their relative applet size and
+    reframing or resizing the view rescales geometry alone.
+  - `ggb` — GeoGebra-like: decorations keep their relative applet size and
     scale uniformly with the output canvas (not with the crop);
     `decoration_px = authored_px × (output_width / ggb_view_width) × prominence`.
 - **Label-excluding crop** (`content.label_bounds='exclude'`) for
@@ -158,12 +167,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `apply_ggb_font_size` now `setdefault`s the global GeoGebra font onto imported
   elements instead of overwriting each element's faithful per-element font, so
-  label size no longer flips with `content.source` (the «Кадр» type).
+  label size no longer flips with the `content.source` framing mode.
 
 All additions are opt-in; library defaults (`fitView`, `frame`/`reference`) are
 unchanged. Full suite: 1924 passed, 2 skipped.
 
-## [1.6.1] — 2026-07-07
+## [1.6.1] - 2026-07-07
 
 ### Added
 
@@ -181,7 +190,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   GeoGebra's `POINT_STYLE_FILLED_DIAMOND` / `POINT_STYLE_EMPTY_DIAMOND`.
 - `addAllGeometry()` now includes text elements in the render pass.
 
-## [1.6.0] — 2026-07-06
+## [1.6.0] - 2026-07-06
 
 ### Added
 
@@ -275,7 +284,13 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   parse as SymPy `Piecewise`, matching the existing `If[...]` support and
   preventing piecewise functions from failing during rendering/export.
 
-## [1.5.0] — 2026-07-04
+## [1.5.0] - 2026-07-04
+
+### Changed
+
+- **Relicensed MIT → Apache-2.0** as part of the initial public source release
+  (`LICENSE` + `NOTICE`; `pyproject.toml` `license = "Apache-2.0"`). All
+  releases from 1.5.0 on are Apache-2.0; 1.0.0–1.4.6 were published under MIT.
 
 ### Added
 
@@ -292,7 +307,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   - `_render_text` (top-left anchor, live dynamic resolution), TikZ `\node`,
     and a JSXGraph text creator + `animageo-board/v1` spec element.
 
-## [1.4.6] — 2026-07-04
+## [1.4.6] - 2026-07-04
 
 ### Changed
 
@@ -316,7 +331,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   intersections, avoiding selection of the already-known point when GeoGebra's
   second intersection is requested.
 
-## [1.4.5] — 2026-07-03
+## [1.4.5] - 2026-07-03
 
 ### Added
 
@@ -375,7 +390,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   itself uses one), and `applyStyle` logs a dict style's `name` instead of
   dumping the whole style dict into the INFO log.
 
-## [1.4.4] — 2026-07-03
+## [1.4.4] - 2026-07-03
 
 ### Added
 
@@ -433,7 +448,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   process-wide state corruption, not an element defect; the warning now says
   so instead of reading like a per-element failure.
 
-## [1.4.3] — 2026-06-30
+## [1.4.3] - 2026-06-30
 
 ### Fixed
 
@@ -449,7 +464,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   `_bisector_of_gap_nearest`), so a GGB offset hint can no longer pin a label
   onto the marker. Enabled in the recommended label-placement preset.
 
-## [1.4.2] — 2026-06-27
+## [1.4.2] - 2026-06-27
 
 ### Fixed
 
@@ -463,7 +478,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
 - Documented the z-index tie-breaker and the `Polygon` remove/add layer-order
   contract in the style guide and gotchas.
 
-## [1.4.1] — 2026-06-27
+## [1.4.1] - 2026-06-27
 
 ### Fixed
 
@@ -480,7 +495,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   indexed `Intersect(..., index=N)`, `.ggb` import, and export/JSXGraph paths
   must agree; `index` remains 1-based.
 
-## [1.4.0] — 2026-06-23
+## [1.4.0] - 2026-06-23
 
 ### Added
 
@@ -523,7 +538,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   (un-`enabled`) GGB import. Known limit: two *equal adjacent* angles still get
   ambiguous value labels (both show the same measure).
 
-## [1.3.4] — 2026-06-19
+## [1.3.4] - 2026-06-19
 
 ### Fixed
 
@@ -533,9 +548,9 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   other sources). Now it fits the content into the export canvas reduced by
   `padding` on every side and insets it by `padding` — an exact margin in
   output pixels, applied at the reference→export stage for all content sources.
-  `rendered_bounds` crops tight again. Used by the web "Отступ от краёв" control.
+  `rendered_bounds` crops tight again. Exposed to UIs as a padding control.
 
-## [1.3.3] — 2026-06-18
+## [1.3.3] - 2026-06-18
 
 ### Fixed
 
@@ -548,7 +563,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   from the vertex (it may then slightly overlap the near-parallel sides, which
   is preferable to flying away). Wide angles are unchanged.
 
-## [1.3.2] — 2026-06-18
+## [1.3.2] - 2026-06-18
 
 ### Fixed
 
@@ -571,7 +586,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   centrally in the style resolver, so the manim renderer and the TikZ/JSXGraph
   exporters stay consistent. Explicit/literal fill colours are unaffected.
 
-## [1.3.1] — 2026-06-13
+## [1.3.1] - 2026-06-13
 
 ### Fixed
 
@@ -586,7 +601,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   sources (`ggb_view`, `source_view`) and placement-disabled styles are unchanged.
   See `docs/archive/fix-rendered-bounds-label-clipping.md`.
 
-## [1.3.0] — 2026-06-01
+## [1.3.0] - 2026-06-01
 
 ### Added
 
@@ -790,7 +805,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   board, and an expanded export/reference covering every exporter, the web spec
   and the CLI.
 
-## [1.2.6] — 2026-05-24
+## [1.2.6] - 2026-05-24
 
 ### Changed
 
@@ -819,7 +834,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
 - Updated style/import-policy tests to assert the canonical API and removed
   legacy compatibility behavior.
 
-## [1.2.5] — 2026-05-24
+## [1.2.5] - 2026-05-24
 
 ### Fixed
 
@@ -827,7 +842,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   `euclidianView` and the correct `euclideanView` element emitted by current
   GeoGebra files.
 
-## [1.2.4] — 2026-05-17
+## [1.2.4] - 2026-05-17
 
 ### Added
 
@@ -840,7 +855,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
 - Unsupported command diagnostics are now summarized through structured
   logging instead of ad-hoc console output.
 
-## [1.2.3] — 2026-05-15
+## [1.2.3] - 2026-05-15
 
 ### Added
 
@@ -868,7 +883,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
 - Automatic label placement now clips line/ray obstacles to the current scene
   bounds and uses exact segment/bbox clipping instead of dense sampling.
 
-## [1.2.2] — 2026-05-09
+## [1.2.2] - 2026-05-09
 
 ### Added
 
@@ -912,7 +927,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   reference parsing, dict-based style loading, guide overlay examples, AI
   summary viewport metadata, label placement behavior, and migrated examples.
 
-## [1.2.1] — 2026-05-08
+## [1.2.1] - 2026-05-08
 
 ### Added
 
@@ -967,7 +982,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   construction-level parsed keyframe application, and scene-level
   first-keyframe state application.
 
-## [1.2.0] — 2026-05-06
+## [1.2.0] - 2026-05-06
 
 AI style-generation support release. This release adds a compact construction
 summary exporter, machine-checkable style schema, and LLM prompt context for
@@ -1044,7 +1059,7 @@ generating style JSON plus optional loadCode-compatible DSL.
 
 - Added coverage for construction summary export.
 
-## [1.1.1] — 2026-05-01
+## [1.1.1] - 2026-05-01
 
 Patch release for the resolver-based style architecture introduced in 1.1.0.
 This release separates GGB import data, project overlay rules, explicit
@@ -1111,7 +1126,7 @@ Python/DSL edits, and construction visibility into distinct layers.
 
 - Full suite: `1036 passed` with Manim Community `0.20.1`.
 
-## [1.1.0] — 2026-04-29
+## [1.1.0] - 2026-04-29
 
 Style-system release: semantic presets, per-type defaults, overlay parity for
 GGB and DSL scenes, and a rewritten style guide. This release completes the
@@ -1181,7 +1196,7 @@ normalization layer.
 
 - Full suite: `1013 passed` with Manim Community `0.19.0`.
 
-## [1.0.2] — 2026-04-24
+## [1.0.2] - 2026-04-24
 
 Security, correctness, dead-code cleanup and manim 0.20 compatibility pass.
 Driven by a full library audit; every item below has a regression test.
@@ -1276,10 +1291,10 @@ Driven by a full library audit; every item below has a regression test.
 
 ### Docs
 
-- ``docs/style_guide/assets/examples/src/anim_scenes.py`` (served download)
-  was using pre-1.0 API names (``show_label``, ``stroke_width``,
-  ``technic``, ``ggb_export.import_policy``); synced with the current
-  source in ``docs/style_guide/examples/``.
+- The HTML guide's downloadable example scene was using pre-1.0 API names
+  (``show_label``, ``stroke_width``, ``technic``,
+  ``ggb_export.import_policy``); synced with the current source (the guide
+  tree has since moved to ``docs/guide/``).
 - ``examples/main.py``: 15 SyntaxWarnings from invalid escape sequences
   (``'$...\circ...$'``) fixed with raw-string prefix.
 
@@ -1304,7 +1319,7 @@ Driven by a full library audit; every item below has a regression test.
 - Silenced the startup ``pytest-asyncio`` deprecation via
   ``[tool.pytest.ini_options]``.
 
-## [1.0.1] — 2026-04-24
+## [1.0.1] - 2026-04-24
 
 Patch release: reliability fixes in rendering and DSL re-definition.
 
@@ -1320,7 +1335,7 @@ Patch release: reliability fixes in rendering and DSL re-definition.
 - All 937 unit tests continue to pass.
 - No API surface changes.
 
-## [1.0.0] — 2026-04-23
+## [1.0.0] - 2026-04-23
 
 First stable release. Substantial rewrite of the style system, parsers, and geometry core, with three new element types and full animation/labeling pipelines.
 
@@ -1372,3 +1387,36 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`pyproject.toml`** is now the single source of truth; `setup.py` reduced to a one-line shim.
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
+
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.6.5...HEAD
+[1.6.5]: https://github.com/ivaleo/animageo/compare/v1.6.4...v1.6.5
+[1.6.4]: https://github.com/ivaleo/animageo/compare/v1.6.3...v1.6.4
+[1.6.3]: https://github.com/ivaleo/animageo/compare/v1.6.2...v1.6.3
+[1.6.2]: https://github.com/ivaleo/animageo/compare/v1.6.1...v1.6.2
+[1.6.1]: https://github.com/ivaleo/animageo/compare/v1.6.0...v1.6.1
+[1.6.0]: https://github.com/ivaleo/animageo/releases/tag/v1.6.0
+[1.5.0]: https://pypi.org/project/animageo/1.5.0/
+[1.4.6]: https://pypi.org/project/animageo/1.4.6/
+[1.4.5]: https://pypi.org/project/animageo/1.4.5/
+[1.4.4]: https://pypi.org/project/animageo/1.4.4/
+[1.4.3]: https://pypi.org/project/animageo/1.4.3/
+[1.4.2]: https://pypi.org/project/animageo/1.4.2/
+[1.4.1]: https://pypi.org/project/animageo/1.4.1/
+[1.4.0]: https://pypi.org/project/animageo/1.4.0/
+[1.3.4]: https://pypi.org/project/animageo/1.3.4/
+[1.3.3]: https://pypi.org/project/animageo/1.3.3/
+[1.3.2]: https://pypi.org/project/animageo/1.3.2/
+[1.3.1]: https://pypi.org/project/animageo/1.3.1/
+[1.3.0]: https://pypi.org/project/animageo/1.3.0/
+[1.2.6]: https://pypi.org/project/animageo/1.2.6/
+[1.2.5]: https://pypi.org/project/animageo/1.2.5/
+[1.2.4]: https://pypi.org/project/animageo/1.2.4/
+[1.2.3]: https://pypi.org/project/animageo/1.2.3/
+[1.2.2]: https://pypi.org/project/animageo/1.2.2/
+[1.2.1]: https://pypi.org/project/animageo/1.2.1/
+[1.2.0]: https://pypi.org/project/animageo/1.2.0/
+[1.1.1]: https://pypi.org/project/animageo/1.1.1/
+[1.1.0]: https://pypi.org/project/animageo/1.1.0/
+[1.0.2]: https://pypi.org/project/animageo/1.0.2/
+[1.0.1]: https://pypi.org/project/animageo/1.0.1/
+[1.0.0]: https://pypi.org/project/animageo/1.0.0/
