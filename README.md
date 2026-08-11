@@ -27,7 +27,8 @@ file required — and animate them by keyframes or by driving free variables.
 - **Faithful GeoGebra import** — points, lines, segments, rays, vectors,
   polygons, angles (incl. right-angle markers), circles, arcs, sectors, and
   first-class **conics, explicit functions, and implicit curves**, plus custom
-  tool (macro) expansion. ~291 dispatchable commands.
+  tool (macro) expansion. The DSL exposes 99 command factories backed by 433
+  type-specialized dispatch signatures.
 - **Pixel-invariant styling** — a JSON style system with layered defaults,
   per-type / per-name overlays, and a configurable GGB `ImportPolicy`.
 - **Automatic label placement** — an overlap-avoiding solver with static,
@@ -242,6 +243,7 @@ the label-placement preset — lives in [docs/styles.md](https://github.com/ival
 
 ## Documentation
 
+- [Documentation site](https://ivaleo.github.io/animageo/) — searchable rendered guides and API reference
 - [docs/index.md](https://github.com/ivaleo/animageo/blob/main/docs/index.md) — documentation map
 - [docs/quickstart.md](https://github.com/ivaleo/animageo/blob/main/docs/quickstart.md) — getting started
 - [docs/architecture.md](https://github.com/ivaleo/animageo/blob/main/docs/architecture.md) — pipeline & module map

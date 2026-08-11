@@ -1046,7 +1046,7 @@ Good style JSON:
 
 ## Current Support And Gaps
 
-Current library version audited by this context: `1.6.5`.
+Current library version audited by this context: `1.7.0`.
 
 Already available:
 

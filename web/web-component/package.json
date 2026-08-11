@@ -3,17 +3,35 @@
   "version": "0.1.0",
   "description": "<animageo-board> custom element — zero-framework embedding of AnimaGeo interactive geometry boards. Works in any framework or none.",
   "type": "module",
-  "main": "src/animageo-board.js",
-  "module": "src/animageo-board.js",
+  "main": "dist/animageo-board.js",
+  "module": "dist/animageo-board.js",
   "exports": {
-    ".": "./src/animageo-board.js"
+    ".": "./dist/animageo-board.js"
   },
-  "files": ["src", "README.md"],
+  "files": ["dist", "README.md", "LICENSE"],
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "build": "node scripts/build-package.mjs",
+    "prepack": "npm run build"
   },
   "keywords": ["web-component", "custom-element", "geometry", "jsxgraph", "animageo"],
-  "license": "MIT",
+  "license": "Apache-2.0",
+  "author": "Leonid Ivanov <leo.ivadev@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivaleo/animageo.git",
+    "directory": "web/web-component"
+  },
+  "homepage": "https://github.com/ivaleo/animageo/tree/main/web/web-component",
+  "bugs": {
+    "url": "https://github.com/ivaleo/animageo/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@animageo/runtime": "^0.1.0"
   },

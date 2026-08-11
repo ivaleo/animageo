@@ -23,6 +23,7 @@ import sys
 import tempfile
 
 from .logging_config import configure_logging, LOG_LEVELS
+from .style.config import resolve_style_input
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,7 @@ class Scene_(AnimaGeoScene):
             content={content!r},
             export={export!r},
             debug={debug!r},
+            generate_stubs=False,
         )
         {export_call}
 """
@@ -75,6 +77,7 @@ class Scene_(AnimaGeoScene):
             content={content!r},
             export={export!r},
             debug={debug!r},
+            generate_stubs=False,
         )
         {play_call}
 """
@@ -131,6 +134,22 @@ def _resolve_format(args):
     if fmt is None:
         fmt = 'svg'
     return fmt
+
+
+def _resolve_style_arg(raw):
+    """Resolve a CLI style argument to a usable absolute/package path.
+
+    Bare names such as ``default`` are allowed when they identify a packaged
+    preset. Other values must point to an existing file. ``None`` keeps the
+    historical empty-string sentinel used by the generated driver.
+    """
+    if not raw:
+        return ''
+    resolved = resolve_style_input(raw)
+    if resolved != raw:
+        return resolved
+    path = os.path.abspath(raw)
+    return path if os.path.isfile(path) else None
 
 
 def main():
@@ -195,7 +214,8 @@ def main():
                         choices=['clip', 'ignore'],
                         help='how rendered_bounds treats Line/Ray objects')
     parser.add_argument('-s', '--style', type=str, default=None,
-                        help='JSON file with style definitions')
+                        help='style JSON file or packaged preset name '
+                             '(default, book_blue, book_green, book_purple, book_red)')
     parser.add_argument('--log-level', type=str, default='WARNING',
                         choices=LOG_LEVELS,
                         help='logging level (default: WARNING)')
@@ -229,8 +249,8 @@ def main():
         logger.error('ggb file not found: %s', args.ggbfile)
         return 2
 
-    style_path = os.path.abspath(args.style) if args.style else ''
-    if args.style and not os.path.isfile(style_path):
+    style_path = _resolve_style_arg(args.style)
+    if style_path is None:
         logger.error('style file not found: %s', args.style)
         return 2
 
