@@ -625,12 +625,31 @@ def _collect_obstacles(scene, *, angle_marker_obstacle=False):
             if endpoints is not None:
                 segments.append((endpoints[0].copy(), endpoints[1].copy()))
                 seg_dashed.append(dashed)
+        elif isinstance(d, (geo.Arc, geo.CircleSector)):   # BEFORE Circle: both subclass it
+            # Register the ARC ITSELF, not its full circle: the phantom part of
+            # the circle blocked free space the reader sees as empty (В's label
+            # sat past the arc's endpoint, yet the solid-circle rescue kicked it
+            # to the other side — TZ-label-offset-ggb-fidelity §5.3). Sampled as
+            # a polyline over the actual angular span, like angle markers.
+            a_start, a_end = d.angles
+            span = (a_end - a_start) % (2 * pi)
+            if span < 1e-9:
+                circles.append((d.center[:2].copy(), d.radius))
+                circ_dashed.append(dashed)
+            else:
+                n = max(8, int(span / (pi / 12)))
+                pts = _sample_arc(d.center[:2], d.radius, a_start, span, n)
+                for k in range(len(pts) - 1):
+                    segments.append((pts[k], pts[k + 1]))
+                    seg_dashed.append(dashed)
+                if isinstance(d, geo.CircleSector):
+                    c2 = d.center[:2].copy()
+                    segments.append((c2, pts[0].copy()))
+                    seg_dashed.append(dashed)
+                    segments.append((c2.copy(), pts[-1].copy()))
+                    seg_dashed.append(dashed)
         elif isinstance(d, geo.Circle):
             circles.append((d.center[:2].copy(), d.radius))
-            circ_dashed.append(dashed)
-        elif isinstance(d, (geo.Arc, geo.CircleSector)):
-            a_start, a_end = d.angles
-            circles.append((d.center[:2].copy(), d.radius))  # treat as full circle for simplicity
             circ_dashed.append(dashed)
         elif isinstance(d, geo.Angle):
             if angle_marker_obstacle:
@@ -1449,6 +1468,12 @@ _ANCHOR_CENTER = {
 }
 
 
+def _unit_vec(v):
+    """Normalize a 2-vector; harmless fallback for a near-zero input."""
+    n = float(np.linalg.norm(v))
+    return v / n if n > 1e-9 else np.array([1.0, 0.0])
+
+
 def _label_visual_center_offset(off, anchor, half_w, half_h, ptUnit_ggb,
                                  descender_mu):
     """Visual glyph-CENTRE offset (scene MU) of a label whose raw ``off`` (GGB px)
@@ -1563,6 +1588,17 @@ def _bisector_of_gap_nearest(dirs, preferred,
     align = align_deg * pi / 180.0
     hug = hug_deg * pi / 180.0
     inside_chosen = ((pang - lo) % (2 * pi)) <= w   # GGB really in this wedge
+    # Open-point gate (TZ-label-offset-ggb-fidelity §5.3): centring makes sense
+    # while the gap still reads as a wedge/corner — scene4's 240° rhombus
+    # corners look right on the external bisector. But when the BLOCKED part
+    # spans < 90° (gap > 270°: an arc terminus, a near-endpoint) the point is
+    # essentially open and "the middle" is arbitrary — В's bottom-left label
+    # snapped to its 333°-gap centre and read as relocated. Keep the user's
+    # own direction there, clamped ``align`` off the edges.
+    if inside_chosen and w > 1.5 * pi:
+        rel = min(max((pang - lo) % (2 * pi), align), w - align)
+        mid = (lo + rel) % (2 * pi)
+        return np.array([cos(mid), sin(mid)])
     d_bis = abs((pang - mid + pi) % (2 * pi) - pi)
     edge_d = min(abs((pang - a + pi) % (2 * pi) - pi) for a in angs)
     if inside_chosen and d_bis > snap and edge_d < hug and w > 2 * align:
@@ -2345,11 +2381,16 @@ def _recompact_pass(labels, result, segments, circles, arc_pts, distance,
         # Phase 1 — COMPACT IN: nearest position (cone, ≥ base, ≤ current) that is
         # label-free and at most lightly clips a solid line INCIDENT to its own
         # point (P3). Pulls a label that overshot a dense node back CLOSE to it.
+        # A RESPECTED label (current_center pin = substantive manual position,
+        # TZ-label-offset-ggb-fidelity §5.3) may only move radially: the cone
+        # swung В's bottom-left label 40° across to bottom-right — trading the
+        # user's side for a marginally nearer spot defeats the respect contract.
+        label_offs = ((0.0,) if lbl.current_center is not None else cone_offs)
         best = np.asarray(center, dtype=float)
         d = base
         while d <= dist - step:
             hit = None
-            for off in cone_offs:
+            for off in label_offs:
                 a = cur_ang + off
                 c = np.array([a0 + d * cos(a), a1 + d * sin(a)])
                 if _ok(c, hw_p, hh_p, placed):
@@ -2769,24 +2810,54 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
     # that were produced by a previous auto-place pass (``_auto_placed``) — those
     # are not user intent and would lock the layout in over re-runs.
     if respect_current:
+        from .geo import lib_elements as geo
         ggb_font_px = scene.style.export.get('fontSize')
         for lbl in labels:
             if lbl.fixed_center is not None:
                 continue
             elem = scene.geo.element(lbl.name)
-            if elem is None or elem.style.get('_auto_placed'):
+            if elem is None:
                 continue
-            # Read through the resolver, not ``elem.style`` directly: GGB label
-            # offsets land in the style-config layer (per_name/defaults), not in
-            # ``elem.style`` — reading the latter silently ignored every imported
-            # manual position. ``_auto_placed`` (our own marker) stays on
-            # ``elem.style`` so re-runs don't pin a previous auto layout.
-            off = _resolve_style(scene, elem, 'label_offset_px', default=None)
+            ggb_raw = getattr(elem, 'ggb_raw', None) or {}
+            recovered = False
+            if elem.style.get('_auto_placed'):
+                # A previous placement pass overwrote the style offset and set
+                # our marker — but the user's ORIGINAL applet intent survives in
+                # ``ggb_raw``. Re-runs (the web loads a scene twice for its
+                # rendered-bounds auto-config; keyframe passes re-place too)
+                # must keep respecting it instead of re-solving from scratch —
+                # dropping it flipped В/Б to the opposite side on the second
+                # load (TZ-label-offset-ggb-fidelity §5.3).
+                raw = ggb_raw.get('label_offset_px')
+                if raw is None:
+                    continue
+                off = [float(raw[0]), -float(raw[1])]
+                recovered = True
+            else:
+                # Read through the resolver, not ``elem.style`` directly: GGB
+                # label offsets land in the style-config layer
+                # (per_name/defaults), not in ``elem.style`` — reading the
+                # latter silently ignored every imported manual position.
+                off = _resolve_style(scene, elem, 'label_offset_px', default=None)
             if off is None:
                 continue
             mag = (float(off[0]) ** 2 + float(off[1]) ** 2) ** 0.5
             if mag < 1e-6:
                 continue  # a truly zero offset carries no direction information
+            # GGB semantics for imported point labels: the offset is relative to
+            # the applet base (x + 4, y − 2·pointSize) up-right of the point,
+            # and the renderer honours that base (part 1 of the TZ). The visual
+            # position the user saw therefore includes the base — model it for
+            # SUBSTANTIVE offsets below. A tiny nudge keeps the raw-offset
+            # direction: it is an intent hint ("that way from the default"),
+            # which the base would otherwise drown (FP-4 semantics unchanged).
+            ggb_base = None
+            if isinstance(elem.data, geo.Point) and ggb_raw:
+                try:
+                    ps_raw = float(ggb_raw.get('point_size', 5.0))
+                except (TypeError, ValueError):
+                    ps_raw = 5.0
+                ggb_base = (4.0, 2.0 * ps_raw)
             # Sector preservation (FP-5/FP-7): bias the search toward the
             # ORIGINAL direction even for small/default GGB offsets, so the label
             # keeps its side of the feature when collision-free instead of being
@@ -2803,14 +2874,26 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
             # weak directional HINT; there the half-extent would swamp the nudge
             # (a 2px north nudge → up-right), so keep the raw offset direction.
             if mag >= respect_min_offset_px:
-                cur_anchor = _resolve_style(scene, elem, 'label_anchor', default=None)
-                desc_mu = (0.25 * ggb_font_px / ptUnit) if ggb_font_px else 0.0
+                if ggb_base is not None:
+                    # GGB-faithful labels render left-edge-on-baseline at
+                    # base + offset with no descender pad (TZ part 1) — model
+                    # exactly that. A recovered element carries the solver's
+                    # own 'MC' anchor in elem.style; the RAW offset is
+                    # 'BL'-semantic regardless.
+                    off_vis = [off[0] + ggb_base[0], off[1] + ggb_base[1]]
+                    cur_anchor = 'BL'
+                    desc_mu = 0.0
+                else:
+                    off_vis = off
+                    cur_anchor = _resolve_style(scene, elem, 'label_anchor', default=None)
+                    desc_mu = (0.25 * ggb_font_px / ptUnit) if ggb_font_px else 0.0
                 vis = _label_visual_center_offset(
-                    off, cur_anchor, lbl.half_w, lbl.half_h, ptUnit_ggb, desc_mu)
+                    off_vis, cur_anchor, lbl.half_w, lbl.half_h, ptUnit_ggb, desc_mu)
                 vmag = float(np.linalg.norm(vis))
-                unit = vis / vmag if vmag > 1e-9 else np.array([off[0], off[1]]) / mag
+                unit = (vis / vmag if vmag > 1e-9
+                        else _unit_vec(np.array([off[0], off[1]], dtype=float)))
             else:
-                unit = np.array([off[0], off[1]], dtype=float) / mag
+                unit = _unit_vec(np.array([off[0], off[1]], dtype=float))
             # At a vertex/crossing (≥2 incident edges) centre the label on the
             # bisector of the sector its VISUAL direction points into (clean,
             # symmetric, like auto), keeping the user's chosen part of the crossing.
