@@ -1,47 +1,47 @@
-# AnimaGeo — документация
+# AnimaGeo — Documentation
 
 **GeoGebra → Python → Manim → SVG / MP4**
 
-AnimaGeo превращает геометрические конструкции GeoGebra в качественные
-изображения и анимации: парсит `.ggb`, строит граф зависимостей между
-элементами, рендерит через manim и экспортирует в SVG (Cairo), PDF/EPS, TikZ,
-интерактивный JSXGraph или видео (MP4/GIF/WebM/PNG). Конструкции можно также
-строить напрямую на встроенном Python-DSL, без GeoGebra-файла.
+AnimaGeo turns GeoGebra geometric constructions into high-quality images and
+animations: it parses `.ggb` files, builds a dependency graph between
+elements, renders through manim, and exports to SVG (Cairo), PDF/EPS, TikZ,
+interactive JSXGraph, or video (MP4/GIF/WebM/PNG). Constructions can also be
+built directly in the embedded Python DSL, without a GeoGebra file.
 
-## Начало работы
+## Getting started
 
-- [Быстрый старт](quickstart.md) — установка, первый рендер, CLI и код
-- [Архитектура](architecture.md) — пайплайн и карта модулей
-- [../README.md](../README.md) — обзор проекта и возможностей
+- [Quickstart](quickstart.md) — installation, first render, CLI and code
+- [Architecture](architecture.md) — pipeline and module map
+- [../README.md](../README.md) — project overview and feature list
 
-## Справочники
+## Reference
 
-- [Справочник API](api.md) — методы сцены и конструкции
-- [Keyframe-анимации](keyframes.md) — JSON/timeline формат `play_keyframes`, v2 стили/видимость/камера/events
-- [Python DSL](python_dsl.md) — exec-движок для построения конструкций
-- [Система стилей](styles.md) — **главный** справочник по стилям, слоям и label placement
-- [Гибкий импорт из GeoGebra (ImportPolicy)](import_policies.md)
-- [Имена полей геометрических классов](field_names.md) — соответствия GGB XML / `ggb_raw` / `elem.style` / JSON / renderer
-- [Компактный summary конструкции](construction_summary.md) — JSON-summary для AI-стилизации
+- [API reference](api.md) — scene and construction methods
+- [Keyframe animation](keyframes.md) — JSON/timeline format for `play_keyframes`, v2 styles/visibility/camera/events
+- [Python DSL](python_dsl.md) — exec-based engine for building constructions
+- [Style system](styles.md) — the **primary** reference for styles, layers, and label placement
+- [Flexible GeoGebra import (ImportPolicy)](import_policies.md)
+- [Field names of the geometric classes](field_names.md) — mapping between GGB XML / `ggb_raw` / `elem.style` / JSON / renderer
+- [Compact construction summary](construction_summary.md) — JSON summary for AI-driven styling
 
-## Экспорт
+## Export
 
-- [Форматы экспорта](export_formats.md) — SVG / PDF / EPS / TikZ / JSXGraph / видео
-- [TikZ export](tikz_export.md) — семантический нативный TikZ для LaTeX
+- [Export formats](export_formats.md) — SVG / PDF / EPS / TikZ / JSXGraph / video
+- [TikZ export](tikz_export.md) — semantic native TikZ for LaTeX
 
-## Для AI-агентов
+## For AI agents
 
-- `animageo --ai-guide` / `animageo/AI_USAGE_PROMPT.md` — самодостаточный гайд для стороннего ИИ
-- [Контекст для AI-генерации стилей](ai_style_generation_context.md)
-- [JSON Schema для AI style JSON](ai_style_json_schema.json)
-- [Контекст для AI-создания/редактирования конструкций](ai_construction_generation_context.md)
+- `animageo --ai-guide` / `animageo/AI_USAGE_PROMPT.md` — self-sufficient guide for an external AI
+- [Context for AI style generation](ai_style_generation_context.md)
+- [JSON Schema for AI style JSON](ai_style_json_schema.json)
+- [Context for AI construction creation/editing](ai_construction_generation_context.md)
 
-## Интерактивный гайд
+## Interactive guide
 
-- [Гайд (HTML)](guide/index.html) — 10 глав: DSL, GeoGebra, стили, подписи, кривые, анимация, экспорт, рецепты
+- [Guide (HTML)](guide/index.html) — 12 chapters: DSL, GeoGebra, styles, labels, curves, animation, export, recipes (currently in Russian; requires a local server — see [guide/README.md](guide/README.md) — and does not render on GitHub)
 
-## Прочее
+## Miscellaneous
 
-- [Особенности и подводные камни](gotchas.md)
-- [Направления развития](roadmap.md)
-- [../CHANGELOG.md](../CHANGELOG.md) — история релизов
+- [Gotchas and pitfalls](gotchas.md)
+- [Direction](roadmap.md)
+- [../CHANGELOG.md](../CHANGELOG.md) — release history

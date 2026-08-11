@@ -1,0 +1,76 @@
+{
+    "name": "book_blue",
+    "version": 0.1,
+    "presets": {
+        "point_size": {
+            "main": 2.8346456692916,
+            "bold": 4.2519685039374,
+            "aux": 2.1259842519687
+        },
+        "line_width": {
+            "main": 1,
+            "bold": 1.5,
+            "aux": 0.75
+        },
+        "color": {
+            "main": "#4d87c6",
+            "light": "#d6e5f6",
+            "accent": "#f15b5b",
+            "accent_light": "#fdddd7",
+            "aux": "#b1b3b6",
+            "black": "#000000",
+            "white": "#ffffff"
+        },
+        "angle_radius": {
+            "main": 10,
+            "shift": 1.5,
+            "right": 10
+        },
+        "tick": {
+            "main": {
+                "tick_length_px": 6,
+                "tick_width_px": 1,
+                "tick_shift_px": 2
+            }
+        },
+        "arrow": {
+            "main": {
+                "arrow_length_px": 8,
+                "arrow_width_px": 5
+            }
+        },
+        "font_size": {
+            "main": 10.5
+        }
+    },
+    "defaults": {
+        "angle": {
+            "stroke_width_px": 0.75
+        }
+    },
+    "rendering": {
+        "line_cap": "butt",
+        "right_angle_joint": "round",
+        "polygon_boundary_layer": "top",
+        "points_display": "auto"
+    },
+    "import": {
+        "colors": {
+            "#1565c0": "presets.color.main",
+            "#1565c0 0.1": "presets.color.light 1",
+            "#d32f2f": "presets.color.accent",
+            "#d32f2f 0.1": "presets.color.accent_light 1",
+            "#616161": "#000000",
+            "#000000 0.6": "#2581b5",
+            "#000000 0.1": "presets.color.white 1",
+            "#1565c0 0": "presets.color.white 1",
+            "#d32f2f 0": "presets.color.white 1"
+        },
+        "point_size": {
+            "5": "presets.point_size.main"
+        },
+        "line_width": {
+            "5": "presets.line_width.main"
+        }
+    }
+}

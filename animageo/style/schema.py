@@ -127,7 +127,7 @@ JSON Style File Structure
             "width":  <float|"auto">,
             "height": <float|"auto">
         },
-        "source": "manual"|"source_view"
+        "source": "manual"|"source_view"|"ggb_view"
     },
 
     "rendering": {
