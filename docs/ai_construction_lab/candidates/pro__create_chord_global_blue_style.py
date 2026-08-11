@@ -1,7 +1,0 @@
-O = Point(0, 0)
-A = Point(-2.1, 1.7)
-B = Point(2.1, 1.7)
-circle = Circle(O, A)
-chord = Segment(A, B)
-style(circle, chord, stroke="color.main", stroke_width_px="line_width.main")
-style(A, B, label_visible=True, fill="color.main", size_px="point_size.main")

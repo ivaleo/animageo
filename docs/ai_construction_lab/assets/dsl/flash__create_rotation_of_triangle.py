@@ -1,8 +1,0 @@
-A1 = Rotate(A, 60, O)
-B1 = Rotate(B, 60, O)
-C1 = Rotate(C, 60, O)
-tri1, A1B1, B1C1, C1A1 = Polygon(A1, B1, C1)
-style(A1, label_visible=True, label_text="$A'$")
-style(B1, label_visible=True, label_text="$B'$")
-style(C1, label_visible=True, label_text="$C'$")
-style(tri1, stroke="color.accent", stroke_width_px="line_width.bold")

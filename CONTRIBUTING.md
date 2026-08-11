@@ -8,7 +8,7 @@ features, documentation, and example constructions are all welcome.
 AnimaGeo targets **Python 3.10+**.
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/ivaleo/animageo.git
 cd animageo
 python -m pip install -e ".[dev]"
 ```

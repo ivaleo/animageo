@@ -1,7 +1,0 @@
-A = Point(-3, 0)
-B = Point(3, 0)
-AB = Line(A, B)
-P = Point(0, 2)
-parallel = Line(P, AB)
-style(parallel, stroke="color.accent", stroke_width_px="line_width.bold")
-style(A, B, P, label_visible=True)

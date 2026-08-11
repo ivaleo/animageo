@@ -1,6 +1,0 @@
-O = Point(0, 0)
-A = Point(1, 0)
-circle = Circle(O, A)
-sin_curve = Function("sin(x)", -6.28, 6.28)
-P1, P2, P3, P4, P5, P6 = Intersect(sin_curve, circle)
-style(P1, P2, P3, P4, P5, P6, fill="color.accent", size_px="point_size.bold", label_visible=True)

@@ -1,7 +1,0 @@
-A = Point(-2, 0)
-B = Point(2, 0)
-O = Midpoint(A, B)
-circle = Circle(O, A)
-chord = Segment(A, B)
-style(A, B, label_visible=True)
-style(O, label_visible=False)

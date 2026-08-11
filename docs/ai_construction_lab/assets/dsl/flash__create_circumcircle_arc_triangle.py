@@ -1,7 +1,0 @@
-A = Point(-2, -1)
-B = Point(0, 2)
-C = Point(2, -1)
-circ = Circle(A, B, C)
-arc = CircumcircleArc(A, B, C)
-style(circ, stroke="color.aux", stroke_width_px="line_width.aux")
-style(arc, stroke="color.accent", stroke_width_px="line_width.bold")

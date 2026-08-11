@@ -3,7 +3,7 @@
 **GeoGebra → Python → Manim → SVG / MP4**
 
 [![PyPI](https://img.shields.io/pypi/v/animageo)](https://pypi.org/project/animageo/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/ivaleo/animageo/blob/main/LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 
 AnimaGeo turns GeoGebra geometric constructions into high-quality figures and
@@ -14,6 +14,12 @@ or animated video (MP4, GIF, WebM, PNG).
 
 You can also build constructions directly in a small Python DSL — no GeoGebra
 file required — and animate them by keyframes or by driving free variables.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ivaleo/animageo/main/docs/readme_assets/triangle.svg" width="420" alt="Triangle with altitude, right-angle marker and auto-placed labels — SVG exported from a .ggb file">
+  <img src="https://raw.githubusercontent.com/ivaleo/animageo/main/docs/readme_assets/triangle_keyframes.gif" width="420" alt="The same construction animated by a JSON keyframe timeline — the altitude and right-angle marker follow the moving vertex">
+</p>
+<p align="center"><sub>One <code>.ggb</code> file, two commands: <code>animageo triangle.ggb -o triangle.svg</code> · <code>animageo triangle.ggb -o anim.gif --keyframes <a href="https://github.com/ivaleo/animageo/blob/main/docs/readme_assets/triangle_keyframes.json">kf.json</a></code></sub></p>
 
 ## Features
 
@@ -133,8 +139,8 @@ manim 'scene.py' TestScene
 
 For DSL-only scenes (no `.ggb`) frame the view with
 `scene.fitView(width, height, padding=…)`. See
-[docs/python_dsl.md](docs/python_dsl.md) and
-[docs/api.md](docs/api.md).
+[docs/python_dsl.md](https://github.com/ivaleo/animageo/blob/main/docs/python_dsl.md) and
+[docs/api.md](https://github.com/ivaleo/animageo/blob/main/docs/api.md).
 
 ## Keyframe animation
 
@@ -163,7 +169,7 @@ scene.play_keyframes({
 Keyframes v2 supports geometry/value tracks, style tracks, absolute visibility
 with entrance/exit effects, 17 easing names, `@camera` pan/zoom, one-shot
 emphasis events, `reveal_construction()`, and `apply_keyframes_at()` for static
-playhead previews. See [docs/keyframes.md](docs/keyframes.md).
+playhead previews. See [docs/keyframes.md](https://github.com/ivaleo/animageo/blob/main/docs/keyframes.md).
 
 ## Automatic label placement
 
@@ -175,7 +181,7 @@ scene.exportSVG('scene.svg')
 
 Placement is opt-in per style file (`overlay.label_placement`); see the
 recommended preset and full parameter reference in
-[docs/styles.md](docs/styles.md).
+[docs/styles.md](https://github.com/ivaleo/animageo/blob/main/docs/styles.md).
 
 ## AI-agent usage
 
@@ -225,26 +231,26 @@ sizes. Minimal example:
 ```
 
 The full style reference — layers, every key, the `ImportPolicy` cookbook, and
-the label-placement preset — lives in [docs/styles.md](docs/styles.md).
+the label-placement preset — lives in [docs/styles.md](https://github.com/ivaleo/animageo/blob/main/docs/styles.md).
 
 ## Documentation
 
-- [docs/index.md](docs/index.md) — documentation map
-- [docs/quickstart.md](docs/quickstart.md) — getting started
-- [docs/architecture.md](docs/architecture.md) — pipeline & module map
-- [docs/api.md](docs/api.md) — scene / construction API reference
-- [docs/keyframes.md](docs/keyframes.md) — keyframe animation timeline format
-- [docs/python_dsl.md](docs/python_dsl.md) — the construction DSL
-- [docs/styles.md](docs/styles.md) — the style system (main reference)
-- [docs/import_policies.md](docs/import_policies.md) — configurable GGB import
-- [docs/field_names.md](docs/field_names.md) — field-name mapping across layers
-- [docs/export_formats.md](docs/export_formats.md) — SVG/PDF/EPS/TikZ/JSXGraph/video
-- [docs/tikz_export.md](docs/tikz_export.md) — TikZ export details
-- [docs/construction_summary.md](docs/construction_summary.md) — compact summary for AI styling
-- [docs/gotchas.md](docs/gotchas.md) — pitfalls & workarounds
-- [docs/roadmap.md](docs/roadmap.md) — direction & open work
-- [CHANGELOG.md](CHANGELOG.md) — release history
+- [docs/index.md](https://github.com/ivaleo/animageo/blob/main/docs/index.md) — documentation map
+- [docs/quickstart.md](https://github.com/ivaleo/animageo/blob/main/docs/quickstart.md) — getting started
+- [docs/architecture.md](https://github.com/ivaleo/animageo/blob/main/docs/architecture.md) — pipeline & module map
+- [docs/api.md](https://github.com/ivaleo/animageo/blob/main/docs/api.md) — scene / construction API reference
+- [docs/keyframes.md](https://github.com/ivaleo/animageo/blob/main/docs/keyframes.md) — keyframe animation timeline format
+- [docs/python_dsl.md](https://github.com/ivaleo/animageo/blob/main/docs/python_dsl.md) — the construction DSL
+- [docs/styles.md](https://github.com/ivaleo/animageo/blob/main/docs/styles.md) — the style system (main reference)
+- [docs/import_policies.md](https://github.com/ivaleo/animageo/blob/main/docs/import_policies.md) — configurable GGB import
+- [docs/field_names.md](https://github.com/ivaleo/animageo/blob/main/docs/field_names.md) — field-name mapping across layers
+- [docs/export_formats.md](https://github.com/ivaleo/animageo/blob/main/docs/export_formats.md) — SVG/PDF/EPS/TikZ/JSXGraph/video
+- [docs/tikz_export.md](https://github.com/ivaleo/animageo/blob/main/docs/tikz_export.md) — TikZ export details
+- [docs/construction_summary.md](https://github.com/ivaleo/animageo/blob/main/docs/construction_summary.md) — compact summary for AI styling
+- [docs/gotchas.md](https://github.com/ivaleo/animageo/blob/main/docs/gotchas.md) — pitfalls & workarounds
+- [docs/roadmap.md](https://github.com/ivaleo/animageo/blob/main/docs/roadmap.md) — direction & open work
+- [CHANGELOG.md](https://github.com/ivaleo/animageo/blob/main/CHANGELOG.md) — release history
 
 ## License
 
-Apache-2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE). Homepage: <https://animageo.ru/>
+Apache-2.0 — see [LICENSE](https://github.com/ivaleo/animageo/blob/main/LICENSE) and [NOTICE](https://github.com/ivaleo/animageo/blob/main/NOTICE). Homepage: <https://animageo.ru/>

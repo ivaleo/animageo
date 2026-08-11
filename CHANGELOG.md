@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Manual GGB label offsets now reproduce the applet's label positions**
-  (`docs/TZ-label-offset-ggb-fidelity.md`). GeoGebra draws a point label with
+  (`docs/archive/TZ-label-offset-ggb-fidelity.md`). GeoGebra draws a point label with
   its left edge on the baseline at `(x + 4, y − 2·pointSize) + labelOffset`
   screen px — the stored offset is relative to that up-right base. The
   renderer instead anchored the label by the style anchor (web styles: `BC`,

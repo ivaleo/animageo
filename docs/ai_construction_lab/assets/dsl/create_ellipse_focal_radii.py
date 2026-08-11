@@ -1,8 +1,0 @@
-F1 = Point(-3, 0)
-F2 = Point(3, 0)
-P = Point(0, 4)
-ell = Ellipse(F1, F2, P)
-r1 = Segment(P, F1)
-r2 = Segment(P, F2)
-style(F1, F2, P, label_visible=True)
-style(r1, r2, stroke="color.accent", stroke_width_px="line_width.bold")

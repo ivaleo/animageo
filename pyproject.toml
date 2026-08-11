@@ -13,6 +13,7 @@ readme = {file = "README.md", content-type = "text/markdown"}
 license = "Apache-2.0"
 keywords = ["geometry", "dynamic", "geogebra", "manim", "animation", "drawing", "svg", "mp4", "python"]
 classifiers = [
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Education",
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
@@ -24,7 +25,8 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Scientific/Engineering :: Visualization",
-    "Topic :: Multimedia :: Graphics"
+    "Topic :: Multimedia :: Graphics",
+    "Typing :: Typed"
 ]
 # Minimum 3.10 — uses PEP 604 union syntax (``str | Path``) and PEP 585
 # generic built-ins (``dict[str, X]``). No newer features used.
@@ -46,6 +48,10 @@ markers = [
 
 [project.urls]
 Homepage = "https://animageo.ru/"
+Repository = "https://github.com/ivaleo/animageo"
+Documentation = "https://github.com/ivaleo/animageo/tree/main/docs"
+Changelog = "https://github.com/ivaleo/animageo/blob/main/CHANGELOG.md"
+Issues = "https://github.com/ivaleo/animageo/issues"
 
 [project.scripts]
 animageo = "animageo.__main__:main"
@@ -66,6 +72,7 @@ exclude = ["tests*", "docs*", "examples*", "build*", "dist*"]
 animageo = [
     "*.md",
     "*.pyi",
+    "py.typed",
     "style/builtin.json",
     "style/*.pyi",
     "parsers/dsl/*.pyi",

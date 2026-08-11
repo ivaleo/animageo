@@ -1,6 +1,0 @@
-A = Point(-3, 0)
-B = Point(3, 0)
-lemniscate = ImplicitCurve("(x^2 + y^2)^2 - 9*(x^2 - y^2) = 0")
-line = Line(A, B)
-P1, P2, P3, P4 = Intersect(lemniscate, line)
-style(P1, P2, P3, P4, label_visible=True, fill="color.accent", size_px="point_size.bold")
