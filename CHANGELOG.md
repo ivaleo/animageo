@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   packaged style presets (`style='default'`, `book_*`) resolvable by bare
   name, PyPI project URLs, `py.typed`, CI workflow.
 
+### Fixed
+
+- Auto-placement now treats collision clearance as a hard constraint when
+  `respect_current_position` is enabled. If a manual GeoGebra offset lies on
+  geometry or another label, the solver preserves its side as a preference
+  but moves it to the nearest reachable clear position instead of pinning or
+  recompacting it back onto the obstacle.
+
 ## [1.6.5] - 2026-08-11
 
 ### Fixed
