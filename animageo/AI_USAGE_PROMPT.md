@@ -4,7 +4,9 @@ You are reading the technical guide for **animageo**, a Python library that
 turns geometric constructions into publication-quality SVG images and
 manim-rendered MP4 animations. This document is self-sufficient: follow it
 even if you have never seen the library before. Prefer it over guesses from
-training data — the API here was verified against the shipped version.
+training data — the API here was verified against the shipped version
+(**animageo 1.7.0**; the guide ships inside the package, so the installed
+copy always matches the installed version it came with).
 
 **Mental model.** AnimaGeo is "GeoGebra as code". You describe geometry as a
 *dependency graph* (a `Construction`): free points are inputs; everything
@@ -79,7 +81,7 @@ make it readable).
 ## 2. Environment setup
 
 ```bash
-python3 -m venv venv               # Python 3.10–3.13; prefer 3.12/3.13.
+python3 -m venv venv               # Python 3.11–3.14; prefer 3.12/3.13.
 ./venv/bin/pip install animageo    # pulls numpy, manim, pycairo, sympy, scipy
 ./venv/bin/python -c "import animageo, manim; print('ok')"
 ```
@@ -127,19 +129,6 @@ class Figure(AnimaGeoScene):
         self.exportSVG('figure.svg')
 
 Figure().construct()   # direct call is enough for static export
-```
-
-`fitView` exists since animageo 1.4.5. On 1.4.4 define the equivalent
-helper and call `fit_view(self, W, H)` instead:
-
-```python
-def fit_view(scene, w, h, padding=40, style=None):
-    kw = dict(style=style if style is not None else scene.style_config,
-              reference={"size": {"width": w, "height": h}},
-              content={"source": "rendered_bounds", "padding": padding},
-              export={"size": {"width": w, "height": h}})
-    scene.applyStyle(**kw); scene.updateAllGeometry()
-    scene.applyStyle(**kw); scene.updateAllGeometry()
 ```
 
 Run: `./venv/bin/python figure.py`. For a PNG preview of an SVG use
@@ -225,9 +214,8 @@ single most common failure. Symptoms → fix:
 - Giant letters and dots covering everything → you called `applyStyle` with
   `content={'source': 'rendered_bounds'}` but **without**
   `reference={'size': {...}}`, or you passed `reference={'size': [w, h]}`
-  (the list form is silently ignored in animageo ≤ 1.4.4 — always use the
-  dict form `{"size": {"width": w, "height": h}}`), or you forgot
-  `updateAllGeometry()` after `applyStyle`.
+  (always use the dict form `{"size": {"width": w, "height": h}}`), or you
+  forgot `updateAllGeometry()` after `applyStyle`.
 - Figure correct but small in a corner → you did one pass instead of two.
 
 Explicit viewport (alternative to auto-fit — full control, best when motion
@@ -983,3 +971,16 @@ them with `play_keyframes` or `animating()` + `play`. Everything — feet,
 midpoints, the circle — follows the vertices because the construction is a
 dependency graph. Remember §8.4: fit the view generously (or include the
 motion extremes) so the moving construction stays in frame.
+
+---
+
+## Further reading
+
+If you hit something this guide does not cover:
+
+- Source & full documentation: <https://github.com/ivaleo/animageo>
+  (`docs/index.md` is the map; `docs/api.md`, `docs/python_dsl.md`,
+  `docs/keyframes.md`, `docs/styles.md` are the main references).
+- Package index: <https://pypi.org/project/animageo/> (changelog:
+  <https://github.com/ivaleo/animageo/blob/main/CHANGELOG.md>).
+- Project homepage: <https://animageo.ru/>.

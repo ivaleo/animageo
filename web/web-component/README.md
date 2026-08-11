@@ -9,7 +9,8 @@ element methods.
 
 ```html
 <script type="module">
-  import '@animageo/web-component'; // registers <animageo-board>
+  import './vendor/animageo/web/web-component/src/animageo-board.js';
+  // registers <animageo-board>
 </script>
 
 <animageo-board id="b" spec="/board.json" debounce="50"
@@ -52,6 +53,6 @@ Custom elements work in every framework:
   element in the compiler options.
 - **Angular** — `CUSTOM_ELEMENTS_SCHEMA`, then `(animageo:change)`.
 
-See `examples/web/` for thin adapter templates.
+See [`web/adapters/`](../adapters) for thin adapter templates.
 
 `npm test` runs the suite (Node's built-in runner + a tiny DOM shim).

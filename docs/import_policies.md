@@ -6,14 +6,15 @@ GeoGebra values 1-to-1 (backward compatible). Override it to unify fonts,
 quantize thicknesses, remap colors, or do arbitrary per-element
 transformations.
 
-> **ImportPolicy специализирован под GGB-only трансформации.**
-> Для стилизации, применяемой одинаково к GGB и DSL-элементам —
-> `per_type` / `per_name` по типу или имени, автоматизмы
-> (`angle_radius`, `label_placement`) — используйте секцию `overlay` в
-> JSON (см. `docs/styles.md`, раздел «StyleConfig: три слоя»).
+> **ImportPolicy is specialized for GGB-only transformations.**
+> For stylization applied uniformly to GGB and DSL elements —
+> `per_type` / `per_name` rules by type or name, automation
+> (`angle_radius`, `label_placement`) — use the `overlay` section of the
+> style JSON (see `docs/styles.md`, the three-layer StyleConfig
+> architecture).
 >
-> Кратко: **`ImportPolicy` = raw-GGB трансформации** (`scale:/quantize:/remap:`).
-> **`overlay` = стилизация поверх импорта**, работает везде.
+> In short: **`ImportPolicy` = raw-GGB transformations** (`scale:/quantize:/remap:`).
+> **`overlay` = stylization on top of the import**, and it works everywhere.
 
 To disable the whole GGB visual import layer, use style JSON:
 
@@ -35,11 +36,15 @@ from animageo.style.import_policy import ImportPolicy
 scene = AnimaGeoScene()
 scene.loadGGB(
     'file.ggb',
-    style='style/default.json',
+    style='default',
     export={'size': {'width': 800, 'height': 600}},
     import_policy=ImportPolicy(font_size_px=14, label_color='#222222'),
 )
 ```
+
+`style=` accepts a bare preset name (`default`, `book_blue`, `book_green`,
+`book_purple`, `book_red`) resolving to a packaged preset, or a path to your
+own style JSON file.
 
 ## Configuration sources
 
@@ -73,7 +78,7 @@ callable `fn(raw, defaults, elem)`, or a string DSL directive. See
 | `label_value_separator` | literal / callable | `label_value_separator` |
 | `angle_range` | `<angleStyle val>` | `angle_range` |
 | `tick_count` | `<decoration type>` | `tick_count` |
-| `font_size_px` | `<gui><font size>` / literal | `font_size_px` |
+| `font_size_px` | literal / callable (`raw=None`) | `font_size_px` |
 | `stroke` | `<objColor>` as `obj_color.hex` | `stroke` |
 | `fill` | `<objColor>` as `obj_color.hex` | `fill` |
 | `fill_opacity` | `<objColor alpha>` as `obj_color.opacity` | `fill_opacity` |
@@ -89,20 +94,20 @@ Raw `obj_color` contains `r`, `g`, `b`, legacy `alpha`, plus normalized
 normalized GGB import baseline consumed by the resolver between `overlay` and
 `defaults`. Direct user edits still belong in `elem.style`.
 
-## Mini-DSL (строки)
+## Mini-DSL (string directives)
 
-| Директива | Значение |
+| Directive | Meaning |
 |---|---|
-| `"const:3"` | Фиксированное значение `3`. |
-| `"scale:1.5"` | Умножить сырой GGB-ввод на `1.5`. |
-| `"quantize:[1,2,4]"` | Снап к ближайшему элементу списка. |
-| `"remap:{'#f00':'#c00'}"` | Lookup по словарю; miss возвращает исходное. |
-| `"match_element"` | Копировать stroke в label (sentinel). |
-| `"auto"` | Делегировать решение downstream-алгоритму (sentinel). |
+| `"const:3"` | Fixed value `3`. |
+| `"scale:1.5"` | Multiply the raw GGB value by `1.5`. |
+| `"quantize:[1,2,4]"` | Snap to the nearest entry of the list. |
+| `"remap:{'#f00':'#c00'}"` | Dict lookup; a miss returns the original value. |
+| `"match_element"` | Copy the element's stroke color to its label (sentinel). |
+| `"auto"` | Delegate the decision to the downstream algorithm (sentinel). |
 
-Обычные строки вроде `"#000000"` проходят насквозь.
+Plain strings such as `"#000000"` pass through unchanged.
 
-DSL-строки одинаково работают и при загрузке из JSON (через `from_dict`), и при прямой передаче в Python-конструктор — `ImportPolicy(stroke_width_px='quantize:[1,2,4]')` эквивалентно соответствующей JSON-записи. Парсинг происходит в `__post_init__`. Полноценные лямбды всё равно доступны только из Python API.
+DSL strings behave identically whether loaded from JSON (via `from_dict`) or passed directly to the Python constructor — `ImportPolicy(stroke_width_px='quantize:[1,2,4]')` is equivalent to the corresponding JSON entry. Parsing happens in `__post_init__`. Full lambdas remain available only from the Python API.
 
 ## Project overrides
 
@@ -132,7 +137,7 @@ scene.loadGGB('file.ggb')
 scene.loadGGB(
     'file.ggb',
     import_policy=ImportPolicy.style_only(),
-    style='style/default.json',
+    style='default',
 )
 ```
 

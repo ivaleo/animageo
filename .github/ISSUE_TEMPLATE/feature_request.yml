@@ -1,0 +1,23 @@
+name: Feature request
+description: A missing GeoGebra command, export target, animation capability, or API
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What you are trying to do
+      description: Describe the figure or animation you want to produce, not only the API you have in mind.
+    validations:
+      required: true
+
+  - type: textarea
+    id: today
+    attributes:
+      label: What you do today
+      description: The current workaround, if any — and where it falls short.
+
+  - type: input
+    id: ggb
+    attributes:
+      label: GeoGebra equivalent
+      description: If GeoGebra already does this, name the command or tool (e.g. `LocusEquation`, `RadicalAxis`).

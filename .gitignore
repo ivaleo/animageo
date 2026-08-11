@@ -6,6 +6,7 @@ __pycache__/
 *.egg
 /dist/
 /build/
+/site/
 .eggs/
 
 # Environment & credentials
@@ -33,6 +34,7 @@ htmlcov/
 node_modules/
 web/runtime/scripts/browser-smoke/vendor/
 web/runtime/scripts/browser-smoke/screenshot.png
+/web/web-component/dist/
 
 # Deprecated/removed modules
 /_draw/
@@ -43,6 +45,7 @@ web/runtime/scripts/browser-smoke/screenshot.png
 # (not part of the distributed package)
 # --------------------------------------------------------
 /examples/*
+!/examples/showcase/
 /example/
 /data/
 /icons/
@@ -69,3 +72,13 @@ web/runtime/scripts/browser-smoke/screenshot.png
 *.clau[d]e/
 *CLAU?E.md
 .co[d]ex/
+.superpowers/
+
+# Internal working materials kept out of the public repo
+# (R&D benches, agent plans, internal specs — live on disk / private archive only)
+/docs/ai_construction_lab/
+/docs/superpowers/
+/docs/archive/superpowers/
+/docs/archive/label_placement_examples/
+/docs/ai_construction_generation_plan.md
+/docs/ai_usage_open_questions.md

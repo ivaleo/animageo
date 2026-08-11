@@ -1,0 +1,44 @@
+name: Bug report
+description: Something renders wrong, crashes, or behaves differently than documented
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you expected, and what you got instead. Attach the rendered output if it is a visual problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: |
+        The smallest thing that shows the problem — a DSL snippet, a script, a CLI command, and the `.ggb` / style JSON if they matter (drag files in to attach).
+      render: python
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: animageo version
+      description: "Output of: python -c \"import animageo; print(animageo.__version__)\""
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: Python, OS, manim
+      placeholder: "e.g. Python 3.13, macOS 15, manim 0.20.1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Traceback or log output
+      description: Run with `--log-level DEBUG` (CLI) or `configure_logging(level='DEBUG')` if the failure is silent.
+      render: text

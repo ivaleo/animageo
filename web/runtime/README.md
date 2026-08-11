@@ -10,19 +10,25 @@ No framework dependency. The spec is plain data (produced by Python:
 `AnimaGeoScene.exportJSXGraph(output="spec")`); this package turns it into a
 board and a handle.
 
-## Install
+## Use from source
 
-```bash
-npm i @animageo/runtime jsxgraph
+The ESM package lives in this repository and is not yet published to the npm
+registry. Clone AnimaGeo, then import `web/runtime/src/index.js` from your app
+or copy the small runtime directory into your project:
+
+```js
+import { createBoard } from './vendor/animageo-runtime/index.js';
 ```
 
-`jsxgraph` is a peer dependency. Load it however you like (bundler import or a
-`<script>`/CDN that defines the `JXG` global).
+`jsxgraph` is a peer dependency. Install it in the consuming project or load it
+from a `<script>`/CDN that defines the `JXG` global. The package metadata is
+ready for a future public npm release; until that release, no registry install
+command is advertised.
 
 ## Use
 
 ```js
-import { createBoard } from '@animageo/runtime';
+import { createBoard } from './vendor/animageo-runtime/index.js';
 
 const spec = await fetch('/board.json').then((r) => r.json()); // animageo-board/v1
 const handle = createBoard(spec, document.getElementById('box'));

@@ -5,10 +5,11 @@ features, documentation, and example constructions are all welcome.
 
 ## Development setup
 
-AnimaGeo targets **Python 3.10+**.
+AnimaGeo targets **Python 3.11+**, matching the minimum Python version of the
+supported Manim release line.
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/ivaleo/animageo.git
 cd animageo
 python -m pip install -e ".[dev]"
 ```

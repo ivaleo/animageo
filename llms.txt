@@ -1,0 +1,41 @@
+# AnimaGeo
+
+> A Python library that turns GeoGebra geometric constructions (`.ggb`) — or
+> constructions written directly in its Python DSL — into publication-quality
+> figures (SVG, PDF, EPS, TikZ, interactive JSXGraph) and animations
+> (MP4, GIF, WebM, PNG via manim). Constructions are dependency graphs: move a
+> free point and everything derived from it recomputes, which is what makes
+> animating a *construction* (rather than a drawing) possible.
+
+Install: `pip install animageo` (Python 3.11+). CLI: `animageo scene.ggb -o scene.svg`.
+
+If you are an AI agent generating animageo code, read the packaged agent guide
+FIRST — it is self-sufficient and verified against the shipped version:
+run `animageo --ai-guide`, or read AI_USAGE_PROMPT.md below.
+
+## Start here
+
+- [Agent guide](https://raw.githubusercontent.com/ivaleo/animageo/main/animageo/AI_USAGE_PROMPT.md): complete guide for AI agents — environment setup, canonical script skeletons for static SVG and MP4, the viewport/`fitView` recipe, verified DSL factory signatures, styling, animation, and a verification protocol
+- [README](https://raw.githubusercontent.com/ivaleo/animageo/main/README.md): overview, installation, CLI and Python usage
+- [Quickstart](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/quickstart.md): first render, DSL basics, keyframes, export
+- [Documentation map](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/index.md): index of all documentation
+
+## Reference
+
+- [API reference](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/api.md): `AnimaGeoScene` and `Construction` methods
+- [Python DSL](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/python_dsl.md): the construction language (factories, proxies, sugar forms)
+- [Keyframe animation](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/keyframes.md): the v2 timeline format — value/style/visibility tracks, easing, camera, emphasis events
+- [Style system](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/styles.md): layered JSON styling, pixel-invariant sizing, automatic label placement
+- [GeoGebra import policies](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/import_policies.md): configurable `.ggb` → style mapping
+- [Export formats](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/export_formats.md): SVG/PDF/EPS/TikZ/JSXGraph/video
+- [Architecture](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/architecture.md): pipeline and module map
+
+## Optional
+
+- [TikZ export](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/tikz_export.md): semantic native TikZ for LaTeX
+- [Construction summary](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/construction_summary.md): compact JSON summary of a construction, for LLM styling pipelines
+- [Style-generation context](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/ai_style_generation_context.md): prompt context for generating style JSON
+- [Construction-generation context](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/ai_construction_generation_context.md): prompt context for generating/editing constructions in the DSL
+- [Gotchas](https://raw.githubusercontent.com/ivaleo/animageo/main/docs/gotchas.md): pitfalls and workarounds
+- [Changelog](https://raw.githubusercontent.com/ivaleo/animageo/main/CHANGELOG.md): release history
+- [Source](https://github.com/ivaleo/animageo) · [PyPI](https://pypi.org/project/animageo/) · [Homepage](https://animageo.ru/)

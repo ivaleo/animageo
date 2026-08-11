@@ -1,25 +1,25 @@
-# Compact Construction Summary For AI
+# Compact construction summary for AI
 
-Формат `animageo-construction-summary/v1` предназначен для передачи
-геометрической конструкции в LLM без сырого `.ggb` XML. Он фиксирует только
-то, что обычно нужно для генерации style JSON: имена, типы, компактную
-геометрию, видимость, импортированный GGB-стиль, группы элементов и
-диагностику парсера.
+The `animageo-construction-summary/v1` format is designed for handing a
+geometric construction to an LLM without the raw `.ggb` XML. It captures only
+what is typically needed to generate a style JSON: names, types, compact
+geometry, visibility, the imported GGB style, element groups, and parser
+diagnostics.
 
-Основной сценарий:
+The main scenario:
 
 ```python
 scene.loadGGB("scene.ggb", style="base.json", export={"size": {"width": 800, "height": 600}})
 summary = scene.exportStylePromptSummary("scene.summary.json")
 ```
 
-Если файл не нужен:
+If you do not need a file:
 
 ```python
 summary = scene.exportStylePromptSummary()
 ```
 
-Низкоуровневый helper без Manim-сцены:
+Low-level helper without a Manim scene:
 
 ```python
 from animageo.exporters.construction_summary import construction_to_ai_summary
@@ -27,7 +27,7 @@ from animageo.exporters.construction_summary import construction_to_ai_summary
 summary = construction_to_ai_summary(construction)
 ```
 
-## Схема Верхнего Уровня
+## Top-level schema
 
 ```json
 {
@@ -60,23 +60,23 @@ summary = construction_to_ai_summary(construction)
 }
 ```
 
-Поля:
+Fields:
 
-| Поле | Назначение |
+| Field | Purpose |
 | --- | --- |
-| `schema` | Версия формата. Текущая: `animageo-construction-summary/v1` |
-| `source` | Источник конструкции: `ggb`, `dsl_file`, `dsl_inline`, `unknown` |
-| `viewport` | Размеры/масштаб экспорта, если известны |
-| `stats` | Количество экспортированных элементов по canonical type |
-| `elements` | Компактные записи элементов |
-| `groups` | Быстрые списки имён по типам |
-| `warnings` | `Construction.command_diagnostics`, если parser/rebuild нашли unsupported-команды |
-| `vars` | Числовые/булевы/угловые переменные, если есть |
-| `truncated` | Метаданные об усечении при `max_elements` |
+| `schema` | Format version. Current: `animageo-construction-summary/v1` |
+| `source` | Construction source: `ggb`, `dsl_file`, `dsl_inline`, `unknown` |
+| `viewport` | Export size/scale, when known |
+| `stats` | Count of exported elements per canonical type |
+| `elements` | Compact element records |
+| `groups` | Quick name lists per type |
+| `warnings` | `Construction.command_diagnostics`, when the parser/rebuild found unsupported commands |
+| `vars` | Numeric/boolean/angle variables, if any |
+| `truncated` | Truncation metadata when `max_elements` is used |
 
-По умолчанию скрытые служебные `xAxis` и `yAxis` не экспортируются.
+The hidden built-in `xAxis` and `yAxis` are not exported by default.
 
-## Запись Элемента
+## Element record
 
 ```json
 {
@@ -111,22 +111,22 @@ summary = construction_to_ai_summary(construction)
 }
 ```
 
-Общие поля элемента:
+Common element fields:
 
-| Поле | Назначение |
+| Field | Purpose |
 | --- | --- |
-| `name` | Имя элемента в AnimaGeo после нормализации GeoGebra-имени |
+| `name` | Element name in AnimaGeo after GeoGebra name normalization |
 | `type` | Canonical type: `point`, `segment`, `line`, `angle`, ... |
-| `visible` | Текущая видимость элемента |
-| `label_visible` | Видимость подписи, если известна из `ggb_style` или `style` |
-| `construction` | Команда, входы и выходы, если элемент создан командой |
-| `geometry` | Компактная геометрия, зависящая от типа |
-| `ggb_style` | Нормализованный импортированный visual layer |
-| `style` | Явные/intrinsic `elem.style`, только если включить `include_style=True` |
-| `resolved_style` | Итоговый стиль через resolver, только если включить `include_resolved_style=True` |
-| `ggb_raw_summary` | Малый allow-list raw GGB-атрибутов; не сырой XML |
+| `visible` | Current element visibility |
+| `label_visible` | Label visibility, when known from `ggb_style` or `style` |
+| `construction` | Command, inputs, and outputs, when the element was created by a command |
+| `geometry` | Compact geometry, type-dependent |
+| `ggb_style` | Normalized imported visual layer |
+| `style` | Explicit/intrinsic `elem.style`, only with `include_style=True` |
+| `resolved_style` | Effective style through the resolver, only with `include_resolved_style=True` |
+| `ggb_raw_summary` | Small allow-list of raw GGB attributes; not the raw XML |
 
-## Geometry Payloads
+## Geometry payloads
 
 `point`:
 
@@ -208,27 +208,27 @@ summary = construction_to_ai_summary(construction)
 { "source": "x^2+y^2=1", "expr": "x**2 + y**2 - 1", "var_x": "x", "var_y": "y" }
 ```
 
-## Параметры Экспортера
+## Exporter parameters
 
-`scene.exportStylePromptSummary(filepath=None, **kwargs)` возвращает dict и,
-если `filepath` указан, пишет JSON.
+`scene.exportStylePromptSummary(filepath=None, **kwargs)` returns a dict and,
+when `filepath` is given, writes the JSON.
 
-Поддерживаемые `kwargs`:
+Supported `kwargs`:
 
-| Параметр | Default | Описание |
+| Parameter | Default | Description |
 | --- | --- | --- |
-| `include_geometry` | `True` | Добавлять `geometry` |
-| `include_ggb_style` | `True` | Добавлять `ggb_style` |
-| `include_style` | `False` | Добавлять explicit/intrinsic `elem.style`; может быть шумно |
-| `include_resolved_style` | `False` | Добавлять итоговый стиль через resolver |
-| `include_axes` | `False` | Включать служебные `xAxis` / `yAxis` |
-| `max_elements` | `None` | Ограничить число элементов; остаток попадёт в `truncated` |
-| `style_keys` | встроенный allow-list | Ограничить ключи в style payloads |
-| `source` | из сцены | Переопределить `source` |
-| `viewport` | из `scene.style.export` | Переопределить `viewport` |
+| `include_geometry` | `True` | Include `geometry` payloads |
+| `include_ggb_style` | `True` | Include `ggb_style` |
+| `include_style` | `False` | Include explicit/intrinsic `elem.style`; can be noisy |
+| `include_resolved_style` | `False` | Include the effective style through the resolver |
+| `include_axes` | `False` | Include the built-in `xAxis` / `yAxis` |
+| `max_elements` | `None` | Cap the number of elements; the rest goes into `truncated` |
+| `style_keys` | built-in allow-list | Restrict the keys in style payloads |
+| `source` | from the scene | Override `source` |
+| `viewport` | from `scene.style.export` | Override `viewport` |
 
-Пример для большого `.ggb`, где LLM нужен только список объектов и импортный
-стиль, но не координаты:
+Example for a large `.ggb` where the LLM only needs the object list and the
+imported style, but not the coordinates:
 
 ```python
 summary = scene.exportStylePromptSummary(
@@ -238,7 +238,7 @@ summary = scene.exportStylePromptSummary(
 )
 ```
 
-Пример с итоговым стилем после текущего style JSON:
+Example with the effective style after the current style JSON:
 
 ```python
 summary = scene.exportStylePromptSummary(
@@ -247,28 +247,27 @@ summary = scene.exportStylePromptSummary(
 )
 ```
 
-## Как Использовать В AI-Пайплайне
+## Using the summary in an AI pipeline
 
-Для style-generation в запрос к модели обычно передаются:
+For style generation, a model request typically includes:
 
-1. Словесный запрос пользователя.
-2. Контекст генерации стилей (`docs/ai_style_generation_context.md` или его
-   копия в веб-сервисе).
-3. JSON Schema стиля (`docs/ai_style_json_schema.json`).
-4. Этот compact summary, если запрос зависит от конкретной конструкции.
-5. Инструкция по формату ответа: только JSON или JSON + AnimaGeo Python DSL
-   для `scene.loadCode(...)`.
+1. The user's verbal request.
+2. The style-generation context (`docs/ai_style_generation_context.md`).
+3. The style JSON Schema (`docs/ai_style_json_schema.json`).
+4. This compact summary, when the request depends on a specific construction.
+5. Response format instructions: JSON only, or JSON + AnimaGeo Python DSL
+   for `scene.loadCode(...)`.
 
-Summary помогает модели:
+The summary helps the model:
 
-- не придумывать имена элементов;
-- решать, писать ли правило в `overlay.per_type` или `overlay.per_name`;
-- видеть, какие GGB visual styles нужно перебить или сохранить;
-- предлагать AnimaGeo Python DSL для процедурной достилизации именованных
-  объектов через `scene.loadCode(...)`.
+- not invent element names;
+- decide whether a rule belongs in `overlay.per_type` or `overlay.per_name`;
+- see which GGB visual styles need to be overridden or preserved;
+- propose AnimaGeo Python DSL for procedural extra styling of named
+  objects via `scene.loadCode(...)`.
 
-Summary не предназначен для полного восстановления конструкции. Это prompt
-artifact, а не exchange-формат геометрии. Для второго этапа AI-пайплайна
-summary можно использовать как read-only контекст для patch-редактирования по
-именам; рабочий план описан в
-[ai_construction_generation_plan.md](ai_construction_generation_plan.md).
+The summary is not meant for a full reconstruction of the construction. It is
+a prompt artifact, not a geometry exchange format. For AI-driven creation and
+editing of constructions the summary serves as read-only context for
+name-based patch editing; see
+[ai_construction_generation_context.md](ai_construction_generation_context.md).

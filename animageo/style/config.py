@@ -44,10 +44,41 @@ __all__ = [
     'resolve_preset_ref',
     'deep_merge',
     'BUILTIN_STYLE_PATH',
+    'PRESETS_DIR',
+    'available_style_presets',
+    'resolve_style_input',
 ]
 
 
 BUILTIN_STYLE_PATH: Path = Path(__file__).parent / 'builtin.json'
+PRESETS_DIR: Path = Path(__file__).parent / 'presets'
+
+
+def available_style_presets() -> list:
+    """Names of the style presets shipped inside the package."""
+    return sorted(p.stem for p in PRESETS_DIR.glob('*.json'))
+
+
+def resolve_style_input(style):
+    """Resolve a bare preset name to the packaged preset JSON path.
+
+    ``style='default'`` (or any name from :func:`available_style_presets`)
+    maps to ``animageo/style/presets/<name>.json``. Anything else — ``None``,
+    dicts, :class:`StyleConfig`, existing file paths, strings containing a
+    path separator or ``.json`` suffix — passes through unchanged, so an
+    on-disk file with the same name always wins over a packaged preset.
+    """
+    if (
+        isinstance(style, str)
+        and style
+        and '/' not in style and '\\' not in style
+        and not style.endswith('.json')
+        and not Path(style).exists()
+    ):
+        preset = PRESETS_DIR / (style + '.json')
+        if preset.exists():
+            return str(preset)
+    return style
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────
@@ -158,6 +189,7 @@ class StyleConfig:
         """
         if isinstance(user_path, cls):
             return user_path
+        user_path = resolve_style_input(user_path)
         builtin = _read_json(BUILTIN_STYLE_PATH)
         if user_path is None:
             merged = builtin

@@ -8,12 +8,28 @@
   "exports": {
     ".": "./src/index.js"
   },
-  "files": ["src", "README.md"],
+  "files": ["src", "README.md", "LICENSE"],
   "scripts": {
     "test": "node --test"
   },
   "keywords": ["geometry", "jsxgraph", "interactive", "animageo", "svg"],
-  "license": "MIT",
+  "license": "Apache-2.0",
+  "author": "Leonid Ivanov <leo.ivadev@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivaleo/animageo.git",
+    "directory": "web/runtime"
+  },
+  "homepage": "https://github.com/ivaleo/animageo/tree/main/web/runtime",
+  "bugs": {
+    "url": "https://github.com/ivaleo/animageo/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "jsxgraph": ">=1.10.0"
   },
