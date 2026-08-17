@@ -22,6 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   by context-free external-agent runs (codex gpt-5.6-sol / gpt-5.5,
   DeepSeek v4-pro chat API): 9/9 tasks produced correct figures/animations
   with the shipped guide, plus a re-validation run against the revised one.
+- `AI_USAGE_PROMPT.md`: two fixes driven by a 10-case gallery re-validation —
+  §4 warns that unbounded curves (parabola/hyperbola/function/`Line`) break
+  `fitView` (the semantic core collapses to a few pixels) and prescribes an
+  explicit viewport or extent points; §9 adds mandatory numeric frame checks
+  for agents that cannot view images (a `to_px` mapping from
+  `scene.style.export`, on-canvas margins, minimum pixel distance between
+  key points, per-axis span share), with a matching troubleshooting row.
 
 ## [1.7.0] - 2026-08-11
 

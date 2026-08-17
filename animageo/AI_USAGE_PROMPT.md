@@ -260,6 +260,20 @@ With the explicit viewport, `applyStyle` comes *before* `putCode` and no
 second pass is needed. Choose `scale` so the construction spans ~70–85% of
 the canvas.
 
+**Unbounded curves break auto-fit.** When the scene's main object is
+unbounded — a parabola/hyperbola, a function graph, a full `Line` — `fitView`
+frames the *sampled extent of the curve*, and the semantic core (focus,
+vertex, directrix, an intersection) collapses into a few pixels (a verified
+failure mode: focus and vertex merge into one dot). For such scenes either:
+
+- use the **explicit viewport** above, choosing the window from the semantic
+  core (e.g. vertex ± a few focal lengths for a parabola), or
+- fit on extent points: add 2–4 visible `Point`s marking the window you
+  actually want, `fitView(...)`, then `hide(...)` them.
+
+Bounded figures with one helper line are fine — this applies when the
+unbounded object dominates the picture.
+
 When loading a **GeoGebra file** none of this is needed — the .ggb carries
 its own viewport:
 
@@ -902,6 +916,36 @@ values without playing an animation:
 `tracker.set_value(x); scene.updateVar(tracker)` rebuilds the geometry, then
 read the elements.
 
+**Numeric frame checks (mandatory if you cannot view images).** If you have
+no way to actually look at the rendered PNG, verify the framing numerically
+after `fitView`/`applyStyle` — the viewport mapping is readable from
+`scene.style.export`:
+
+```python
+exp = scene.style.export
+def to_px(xy):                     # math coords -> canvas pixels
+    return (exp['ptXZero'] + xy[0] * exp['ptUnit'],
+            exp['ptYZero'] - xy[1] * exp['ptUnit'])
+```
+
+Assert, for the *semantically key* points (named vertices, focus, vertex,
+touchpoints — not curve samples):
+
+1. every key point lands inside the canvas with a margin:
+   `pad <= px <= ptWidth - pad` (same for `py`, `pad` ≈ your padding);
+2. no two key points that must read as distinct are closer than ~10 px
+   (a verified failure: auto-fit on a parabola put focus and vertex < 3 px
+   apart — the figure was numerically correct and visually meaningless);
+3. the key points span a healthy share of the canvas: with
+   `sx = x_extent / ptWidth` and `sy = y_extent / ptHeight` of their
+   bounding box, expect `max(sx, sy)` ≈ 0.5–0.9 for a compact figure (for
+   scenes dominated by an unbounded curve, apply the check to the semantic
+   core and see §4).
+
+If a check fails, fix the framing (§4: explicit viewport or extent points)
+before exporting — do not report success on assertions about coordinates
+alone.
+
 Then extract and **look at** frames (take the MP4 path from manim's own
 output — the quality folder name, e.g. `480p15`/`600p15`, depends on your
 `config.pixel_*` values):
@@ -947,6 +991,7 @@ manim versions, which APIs you used, and any deviations or limitations.
 | `play_keyframes`: "'A' is not an independent element" | DSL points aren't keyframable by name → route coords through `addVar` vars (§8.3) |
 | Element appears instantly instead of animating | It was created visible — `putCode(..., show=False)` then `playShow` |
 | Moving object exits the frame | Static fit doesn't cover motion range (§8.4) |
+| Parabola/function fills the canvas, focus & vertex merge into one dot | Unbounded curve dominated `fitView` → explicit viewport or extent points (§4); catch it with the §9 numeric frame checks |
 | `manim: command not found` | Use `./venv/bin/manim`, or `./venv/bin/python -m manim` |
 | Render extremely slow with many value labels | Keep `rendering.fast_value_labels` on (default); avoid per-frame `Tex` label churn |
 
