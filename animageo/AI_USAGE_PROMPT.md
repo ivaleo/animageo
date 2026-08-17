@@ -24,6 +24,43 @@ Three layers you will touch:
    reveal elements with animations, animate variables, export.
 3. **Style JSON** — global visual policy (palette, sizes, label placement).
 
+## 0. Working principles
+
+Every rule in this guide is an instance of one of these. When you face a
+situation the guide does not cover, derive the answer from the principles —
+do not guess API details from training data.
+
+1. **Relations live in the graph, not in coordinates.** Anything the user
+   states as a property (point on circle, equal segments, perpendicular)
+   must hold *by construction*, so it survives any motion. Hand-picked
+   coordinates that merely look right are wrong.
+2. **One mathematical object = one drawable.** Don't draw the same thing
+   twice (polygon + its side segments); don't split one thing into pieces.
+3. **Native marks over manual drawing.** Angle arcs, right-angle boxes,
+   equality ticks, value labels are construction elements with style keys —
+   manual manim overlays don't update, export, or avoid labels.
+4. **Helpers are invisible in the result.** Every object you created only to
+   build another (helper lines, Thales circles, anchor points) is hidden.
+   Do a final sweep: everything visible must be meaningful to the user.
+5. **Frame first, then reveal.** `fitView` measures visible mobjects — call
+   it on the full static construction before `HideAll`/staged reveals, and
+   budget the frame for the whole motion range, not just t=0.
+6. **Sizing is ratios, not values.** On a ~800×600 canvas: line ~1.5–2 px,
+   point ≈ 4× line, font ≈ 2–2.5× point, angle arc ≈ 1.0–1.2× font. Scale
+   all families together; never one alone (§7 has the full table).
+7. **Labels are solved, not sprinkled.** Label what the user named; enable
+   the auto-placement preset for any labeled figure; pin individual
+   stragglers with `label_offset_px` + `label_placement_locked`.
+8. **Animate variables, not frames.** Route motion through `addVar`
+   trackers; the dependency graph moves everything downstream. Never
+   rewrite coordinates frame by frame.
+9. **Verify numerically, then visually.** Assert the requested relations in
+   the script; then look at rendered frames (first, middle, last) before
+   reporting success. A figure wrong in numbers cannot be right on screen.
+10. **The API is closed.** Unknown factory names raise; missing features are
+    built from primitives and reported. When unsure, run a two-point smoke
+    test, don't speculate.
+
 ---
 
 ## 1. Before you generate: what to clarify with the user
@@ -50,33 +87,19 @@ API mechanics (manual vs native angle ticks, how labels update, whether to
 use dependency variables): those are implementation details and should be
 handled correctly by the scene.
 
-Autonomous defaults for geometry animations:
+Autonomous defaults (beyond the §0 principles):
 
-- Use native construction objects and styling options, not custom manim
-  overlays, for mathematical marks. Angle arcs/ticks/right-angle boxes are
-  `Angle` elements with `tick_count`, `arc_size_px`, `arc_shift_px`, and
-  `right_angle_marker`.
-- Use a single drawable object for a single mathematical object. If the user
-  asks for a parallelogram/triangle/polygon to be drawn, animate the
-  `Polygon(...)` object as the outline; hide the returned side elements
-  unless they carry separate meaning.
-- If the user asks for equal angles or angle bisectors, show native equal
-  angle marks. Do not show textual angle labels unless the user explicitly
-  asks for angle names/values.
-- Keep all angle marks in one visual system within a figure: same stroke
-  color, fill color, opacity, and stroke width for ordinary and right
-  angles. Separate adjacent/double arcs with different `arc_size_px` and/or
-  `arc_shift_px` so the marks do not merge visually.
-- For labeled figures, enable automatic label placement and angle-radius
-  automation by default (§6/§7). For animations with motion, use dynamic
-  label placement (§8.2).
-- For moving constructions, drive coordinates or parameters through
-  `addVar` variables and `animating(...)`/`addUpdater(...)`. Do not manually
-  rewrite element coordinates frame by frame.
-
-Do not silently add theorem decorations the user didn't ask for (e.g. do not
-mark right angles unless a perpendicular is part of the request or needed to
-make it readable).
+- Equal angles / bisectors → native equal-angle marks (`tick_count`), not
+  textual angle labels, unless the user explicitly asks for names/values.
+- All angle marks in one figure share one visual system (same stroke/fill/
+  opacity/width for ordinary and right angles); adjacent arcs at a vertex
+  are separated by different `arc_size_px` (steps of 6–10 px) and, for
+  multi-tick classes, `arc_shift_px`.
+- Labeled figure → auto label placement + angle-radius automation on by
+  default (§6/§7); motion → dynamic placement (§8.2).
+- Do not silently add theorem decorations the user didn't ask for (e.g. no
+  right-angle marks unless a perpendicular is part of the request or needed
+  for readability).
 
 ## 2. Environment setup
 
@@ -381,24 +404,14 @@ a1 = Angle(B, A, D); a2 = Angle(D, A, C)
 style(a1, a2, tick_count=1)            # bisector evidence: two equal angles
 ```
 
-For adjacent angle marks at the same vertex (common with bisectors), separate
-the arcs natively instead of drawing custom marks. Use different
-`arc_size_px` values and, for multi-tick angle classes, `arc_shift_px` to
-increase the spacing between parallel arcs:
+Adjacent angle marks at one vertex (common with bisectors): same equality
+class = same `tick_count`; separate the arcs by `arc_size_px` steps of
+6–10 px, and widen multi-tick spacing with `arc_shift_px`:
 
 ```python
 a1 = Angle(B, A, E); a2 = Angle(E, A, D)
-b1 = Angle(C, B, E); b2 = Angle(E, B, A)
-ra = Angle(A, E, B)
-style(a1, a2, b1, b2, ra,
-      stroke="color.accent", fill="color.accent_light",
-      fill_opacity=0.35, stroke_width_px=2.2,
-      label_visible=False)
-style(a1, tick_count=1, arc_size_px=26)
-style(a2, tick_count=1, arc_size_px=34)
-style(b1, tick_count=2, arc_size_px=28, arc_shift_px=7)
-style(b2, tick_count=2, arc_size_px=38, arc_shift_px=7)
-style(ra, right_angle_marker=True)
+style(a1, a2, tick_count=1, label_visible=False)
+style(a1, arc_size_px=26); style(a2, arc_size_px=34)
 ```
 
 Keep ordinary angles and right angles in the same color/thickness system
@@ -462,24 +475,17 @@ with an opaque fill by default, punching a white hole in a polygon fill
 under it. For an outline-only circle set `style(circ, fill_opacity=0)`;
 for a translucent disc use `fill_opacity=0.2`.
 
-**Incircle touchpoints** (recipe): foot of the perpendicular from the
-center to each side line —
+**Touchpoint recipes** — both are instances of principle 1 (relations by
+construction) and principle 4 (hide the scaffolding):
 
-```python
-inc = Incircle(A, B, C)
-I = Center(inc)
-lab = Line(A, B)
-perp = PerpendicularLine(I, lab)
-T1 = Intersect(perp, lab)
-hide(lab, perp)
-```
-
-**Tangent points from an external point** (recipe): `t1, t2 = Tangent(P, c)`
-then `T1 = Intersect(t1, c)` works, but that line–circle intersection is a
-double root — numerically fragile if P animates. The robust classical form
-is the Thales circle: `thales = Circle(Midpoint(P, O), P)` then
-`T1, T2 = Intersect(c, thales)`, draw `Segment(P, T1)` / `Segment(P, T2)`,
-hide the helpers.
+- Incircle touchpoint = foot of the perpendicular from the incenter to the
+  side line: `T1 = Intersect(PerpendicularLine(I, lab), lab)` with
+  `lab = Line(A, B)` named first; hide `lab` and the perpendicular.
+- Tangent points from an external point: `Intersect(Tangent(P, c), c)` is a
+  double root — numerically fragile if P animates. The robust classical
+  form is the Thales circle: `thales = Circle(Midpoint(P, O), P)`, then
+  `T1, T2 = Intersect(c, thales)`; draw `Segment(P, T1)`/`Segment(P, T2)`,
+  hide the helpers.
 
 **Manual label nudge.** If one label lands badly, shift it:
 `style(T2, label_offset_px=[0, -14])` — pixels, x to the right, y **up**
@@ -496,16 +502,10 @@ keep the polygon only as a fill (`style(tri, fill="color.light",
 fill_opacity=0.3)`) with its own sides as the outline.
 
 If the polygon itself is the object being constructed/revealed, animate the
-returned polygon (`tri`, `quad`, ...) as one object with `mode='Create'`.
-Hide the returned side elements unless they are needed for labels/ticks or
-separate emphasis:
-
-```python
-quad, AB, BC, CD, DA = Polygon(A, B, C, D)
-hide(AB, BC, CD, DA)                  # avoid duplicate borders
-...
-self.playShow(['quad'], mode='Create')
-```
+returned polygon (`tri`, `quad`, ...) as one object with `mode='Create'`
+and hide the returned side elements (`hide(AB, BC, CD, DA)`) unless they
+are needed for labels/ticks or separate emphasis — otherwise you get
+duplicate borders and duplicate reveal animations.
 
 **Automatic label placement** — after fitting the view, one call declutters
 all labels: `scene.autoPlaceLabels()`. Treat this and the §7
@@ -570,6 +570,37 @@ scene.fitView(800, 600, style=STYLE)         # fit + apply in one call
 `fitView` keeps the scene's current style when `style=` is omitted, so you
 can also `applyStyle(style=STYLE, ...)` once and call plain
 `fitView(W, H)` afterwards.
+
+**Sizing principles (proportions, not absolute values).** All `*_px` sizes
+are pixels on the reference canvas (the W×H you pass to `fitView`), so what
+makes a figure comfortable is the ratios. For a ~800×600 reference canvas:
+
+| Family | main | Anchor ratio |
+|---|---|---|
+| `line_width` | 1.5–2 | base unit; bold ≈ 1.6×, aux ≈ 0.6× |
+| `point_size` | 6–8 | 3.5–4.5 × line width (≈1% of canvas width) |
+| `font_size` | 14–17 | 2–2.5 × point diameter |
+| `angle_radius` | 17–20 | 1.0–1.2 × font size; `right` ≈ 0.85 × main |
+
+- Keep the family ratios when changing anything: giant dots on thin lines,
+  arcs dwarfing their arms, or labels shouting over the figure are all
+  broken-ratio symptoms.
+- A figure that reads "small with huge dots" is a **framing** problem
+  (construction spans too little of the canvas — fix `fitView`/padding for
+  a 70–85% span), never a reason to inflate point sizes.
+- Video at 1920×1080: keep the reference canvas small (e.g. `W, H = 960,
+  540`) and let `config.pixel_*` scale the output; the preset above then
+  needs no changes.
+- Dense figure → step the label/point system down one notch (aux values);
+  sparse slide figure → scale everything up together rather than any one
+  family. One dial for that:
+  `applyStyle(content={'prominence': 1.25, ...})` multiplies every
+  decoration size (points, strokes, fonts, arcs) without touching geometry
+  or layout.
+- Narrow angles: don't hand-shrink `arc_size_px` per angle — the
+  `overlay.angle_radius` block in the starter style above auto-scales the
+  arc into the arms (`min_px`/`max_arm_fraction` clamps), and the label
+  solver tracks the resolved radius automatically.
 
 Per-type / per-name rules go in `overlay`:
 
@@ -652,6 +683,11 @@ with self.animating(t):                      # rebuilds construction every frame
 - Labels follow their elements. For dense scenes call
   `self.autoPlaceLabels(dynamic=True)` before the motion to re-solve label
   positions per frame (EMA-smoothed), and `self.clearLabelTracker()` after.
+  Even so, inspect the final frame: an angle's value label rides its
+  bisector and can end up crossed by a chord/radius in unlucky end
+  positions — pin that one label
+  (`label_offset_px=[...], label_placement_locked=True`) or end the motion
+  a few degrees away.
   Works with both `addUpdater(t)` and the `with self.animating(t):` wrapper
   (the latter is just addUpdater + clearUpdater). With the static solver enabled a label
   may re-resolve to the other side of its point between rebuilds during
@@ -914,63 +950,35 @@ manim versions, which APIs you used, and any deviations or limitations.
 | `manim: command not found` | Use `./venv/bin/manim`, or `./venv/bin/python -m manim` |
 | Render extremely slow with many value labels | Keep `rendering.fast_value_labels` on (default); avoid per-frame `Tex` label churn |
 
-## 11. Worked example — the user asks for a nine-point circle
+## 11. Worked sketch — the user asks for a nine-point circle
 
-Sketch of correct structure (medial points by `Midpoint`, feet by
-perpendicular+intersect with right-angle marks, Euler points as midpoints to
-the orthocenter, circle through three of the nine points):
+How the principles compose on a real request (structure, not a full
+listing):
 
 ```python
 self.putCode('''
-    A = Point(0, 0)
-    B = Point(7, 0)
-    C = Point(2.2, 4.6)
-    AB = Segment(A, B)
-    BC = Segment(B, C)
-    CA = Segment(C, A)
-
-    MA = Midpoint(B, C)
-    MB = Midpoint(C, A)
-    MC = Midpoint(A, B)
-
-    lAB = Line(A, B)
+    A = Point(0, 0); B = Point(7, 0); C = Point(2.2, 4.6)   # generic, nondegenerate
+    MA = Midpoint(B, C)                                     # ... MB, MC likewise
     lBC = Line(B, C)
-    lCA = Line(C, A)
     altA = PerpendicularLine(A, lBC)
-    altB = PerpendicularLine(B, lCA)
-    altC = PerpendicularLine(C, lAB)
-    HA = Intersect(altA, lBC)
-    HB = Intersect(altB, lCA)
-    HC = Intersect(altC, lAB)
-    segA = Segment(A, HA)
-    segB = Segment(B, HB)
-    segC = Segment(C, HC)
-    H = Intersect(altA, altB)
-
-    EA = Midpoint(A, H)
-    EB = Midpoint(B, H)
-    EC = Midpoint(C, H)
-
-    nine = Circle(MA, MB, MC)
-
+    HA = Intersect(altA, lBC)          # foot BY CONSTRUCTION (principle 1)
+    segA = Segment(A, HA)              # show the finite segment, not the line
+    H = Intersect(altA, altB)          # orthocenter; EA = Midpoint(A, H) ...
+    nine = Circle(MA, MB, MC)          # the result, through three of the nine
     raA = Angle(B, HA, A)
     style(raA, right_angle_marker=True)
     style(A, B, C, label_visible=True)
-    style(MA, MB, MC, fill="color.accent", size_px="point_size.bold")
     style(nine, stroke="color.accent", stroke_width_px="line_width.bold")
-    style(segA, segB, segC, stroke="color.aux", stroke_width_px="line_width.aux")
-    hide(lAB, lBC, lCA, altA, altB, altC)
+    hide(lBC, altA, altB)              # scaffolding sweep (principle 4)
 ''')
 ```
 
-Then: `fitView`, `autoPlaceLabels()`, `HideAll()`, staged `playShow`
-(triangle → altitudes with right-angle marks → midpoints → Euler points →
-the circle with `mode='Create'`), and finally vertex motion — route the
-moving vertices' coordinates through `addVar` variables (§8.3) and drive
-them with `play_keyframes` or `animating()` + `play`. Everything — feet,
-midpoints, the circle — follows the vertices because the construction is a
-dependency graph. Remember §8.4: fit the view generously (or include the
-motion extremes) so the moving construction stays in frame.
+Then: `fitView` → `autoPlaceLabels()` → `HideAll()` → staged `playShow` in
+dependency order (triangle → altitudes with right-angle marks → midpoints →
+Euler points → the circle with `mode='Create'`) → vertex motion routed
+through `addVar` variables (§8.3). Feet, midpoints and the circle all
+follow the vertices because the construction is a dependency graph. Fit the
+view generously (§8.4) so the motion stays in frame.
 
 ---
 

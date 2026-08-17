@@ -49,6 +49,7 @@ The short rule: **`import` answers "how to read GeoGebra", `overlay` answers "ho
 13. [Bundled presets](#13-bundled-presets)
 14. [Recipes: "how do I get X"](#14-recipes-how-do-i-get-x)
 15. [Known quirks and gotchas](#15-known-quirks-and-gotchas)
+16. [Sizing & proportions: values that look right](#16-sizing--proportions-values-that-look-right)
 
 ---
 
@@ -334,6 +335,9 @@ The full documentation lives in the docstring of `animageo/style/schema.py`. Bel
 | `tick.main` | The `tick_length_px/tick_width_px/tick_shift_px` structure | px |
 | `arrow.main` | The `arrow_length_px/arrow_width_px` structure | px |
 | `font_size.main` / `bold` / `aux` | Font size | px |
+
+Recommended values and the ratios that make a figure read comfortably are in
+[§16 Sizing & proportions](#16-sizing--proportions-values-that-look-right).
 
 ### `defaults` — per-type baseline
 
@@ -1012,6 +1016,103 @@ Details in `docs/gotchas.md`. In brief:
 7. **`right_angle_marker` auto-detects via `np.isclose(angle, π/2)`** — it may falsely trigger around ~89.5°–91°; set `right_angle_marker=True/False` explicitly when precision matters.
 8. **`arc_size_px` overrides `r_offset`** — if both are set, `r_offset` is ignored.
 9. **Removed visual fields are rejected.** The old `line_width`, `font_size`, `strich_*`, `arrow_*`, `label_r_offset`, `ang_*` keys in style JSON are rejected; use the canonical `*_px` keys.
+
+---
+
+## 16. Sizing & proportions: values that look right
+
+Every `*_px` size is resolution-independent (§2), so what makes a figure look
+"comfortable" is not the absolute numbers — it is (a) the **ratios between the
+size families** and (b) their size **relative to the reference canvas**. This
+section gives the calibrated ranges used by the shipped presets (builtin
+defaults, the AI-guide starter style, and the production Pandora style all sit
+inside them).
+
+### The ratio system
+
+Treat `line_width.main` as the base unit of visual weight. On a reference
+canvas around **800×600** the comfortable ranges are:
+
+| Family | `main` | `bold` | `aux` | Anchor ratio |
+|---|---|---|---|---|
+| `line_width` | 1.5–2 | ≈1.6× main (2.5–3.3) | ≈0.6× main (0.75–1.5) | base unit |
+| `point_size` (diameter) | 6–8 | 9–10 | 4–5 | **3.5–4.5 × line width** |
+| `font_size` | 14–17 | 16–20 | 12–14 | **2–2.5 × point diameter** |
+| `angle_radius` | 17–20 | 24 | 12 | **1.0–1.2 × font size**; `right` ≈ 0.8–0.9 × main; `shift` 1.5–3 |
+| `tick.tick_length_px` | 9–10 | — | — | 5–6 × line width |
+| `arrow.arrow_length_px` | 10–11 | — | — | 6–7 × line width |
+
+Relative to the canvas: a point diameter is ≈ **1% of the canvas width**, a
+label is ≈ **2.5–3% of the canvas height**. Keep the *ratios between families*
+fixed when you tweak any one of them — the classic "плохой чертёж" symptoms are
+exactly broken ratios:
+
+- **Giant dots on thin lines** — point/line ratio far above 4.5. Either grow
+  `line_width` or shrink `point_size`, not one alone.
+- **Angle arcs dwarfing the triangle** — the arc radius must stay visibly
+  shorter than the shortest arm it marks. If a construction has small angles or
+  short arms, don't hand-tune every `arc_size_px`: enable
+  `overlay.angle_radius` (auto-scaling with `min_px` / `max_arm_fraction`
+  clamps, §6) and let the renderer and label solver share the resolved radius.
+- **Labels shouting over the figure** — `font_size.main` above ~2.5× point
+  diameter starts to compete with the geometry. Step labels down (`aux`), not
+  the geometry up.
+- **Ticks/marks invisible** — tick length below ~5× line width disappears at
+  typical DPI; the builtin 9 px is already conservative, avoid going lower.
+
+### Scaling with the canvas
+
+The reference canvas is what `*_px` values are measured against (§2–3). Rules:
+
+1. **Prefer keeping the reference canvas in the 700–1000 px class** and raise
+   only the physical output (`export.size`, or `config.pixel_*` for manim
+   renders). The picture scales losslessly; no style change needed
+   (see "Scalable 2× export" in §14).
+2. If you *do* design for a different reference class (e.g. 1600×1200 posters),
+   scale **all** px families by the same factor — the canvas diagonal ratio is
+   a good multiplier (800×600 → 1600×1200 means ×2 on every px value).
+3. For 16:9 video use a 960×540 reference: its diagonal is ~10% larger than
+   800×600, so the same preset reads slightly finer — acceptable as is, or
+   multiply the px families by 1.1.
+4. **A figure that looks "мелко" with oversized dots is a framing problem, not
+   a style problem.** Decorations are pixel-fixed; only the geometry scales
+   with the viewport. If the construction spans a small share of the canvas,
+   fix the fit (`fitView` padding, target 70–85% span) before touching sizes.
+
+### One dial for everything: `prominence`
+
+`applyStyle(content={'prominence': k, ...})` multiplies **all** decoration
+sizes (points, strokes, fonts, arcs, ticks) by `k` in one move, without
+touching the geometry, crop or label layout — the right tool when a whole
+figure needs to read "larger" or "finer" while keeping its internal ratios:
+
+```python
+scene.applyStyle(
+    reference={'size': {'width': 800, 'height': 600}},
+    content={'source': 'rendered_bounds', 'padding': 40, 'prominence': 1.25},
+    export={'size': {'width': 800, 'height': 600}},
+)
+```
+
+Companion option `content.decoration_scale_source` controls what the
+decoration density is anchored to: `frame` (default — decorations track the
+fitted crop), `reference` (fixed decoration/geometry proportion across
+different crops), `output` (fixed *output-pixel* size regardless of zoom),
+`ggb` (GeoGebra-applet proportions). See
+[ai_style_generation_context.md](ai_style_generation_context.md) for the
+full semantics.
+
+### Density adjustments
+
+- **Dense figure** (many labeled points, crossing helpers): step the whole
+  label/point system down one notch (use `aux` values as `main`), enable the
+  recommended `overlay.label_placement` preset (§8), and consider a larger
+  reference canvas so the geometry gets more room.
+- **Sparse demo figure** (3–5 elements for a slide): `prominence` 1.2–1.4
+  reads better at a distance than bumping individual families.
+- **Adjacent angle marks at one vertex**: separate arcs by 6–10 px steps of
+  `arc_size_px` (plus `arc_shift_px` for multi-tick classes) — smaller steps
+  visually merge, larger ones read as unrelated arcs.
 
 ---
 

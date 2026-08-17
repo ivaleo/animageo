@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `docs/styles.md`: new §16 "Sizing & proportions" — the calibrated ratio
+  system between size families (line width / point size / font / angle
+  radius), canvas-scaling rules, the `content.prominence` dial and
+  `decoration_scale_source` modes, and density adjustments for dense/sparse
+  figures.
+- `AI_USAGE_PROMPT.md`: principles-first revision — a new §0 "Working
+  principles" (ten distilled rules the rest of the guide instantiates), a
+  sizing-principles block in §7 (ratios, framing-vs-style diagnosis,
+  `prominence`), compressed worked examples (§6 recipes, §11 sketch), and a
+  known-limit note on angle value labels after motion. Validated end-to-end
+  by context-free external-agent runs (codex gpt-5.6-sol / gpt-5.5,
+  DeepSeek v4-pro chat API): 9/9 tasks produced correct figures/animations
+  with the shipped guide, plus a re-validation run against the revised one.
+
 ## [1.7.0] - 2026-08-11
 
 ### Changed
