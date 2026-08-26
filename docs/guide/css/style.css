@@ -977,6 +977,22 @@ hr.spacer {
 .ex.interactive .btn.run.busy { opacity: 0.5; pointer-events: none; }
 .ex.interactive .btn[disabled] { opacity: 0.4; cursor: default; }
 
+/* Shown instead of Run/Reset once the guide discovers it's served
+ * statically (no render server behind /render) — see interactive.js
+ * enterStaticMode(). Informational, not an error: no warn colors. */
+.ex.interactive .ex-static-note {
+    flex: 0 0 auto;
+    margin-top: 8px;
+    padding: 6px 10px;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    color: var(--code-fg);
+    font-family: ui-monospace, monospace;
+    font-size: 10.5px;
+    line-height: 1.5;
+}
+
 /* Edit mode uses an overlay: a transparent <textarea> on top of a colored
  * <pre>. Both share identical metrics (position/padding/line-height/font)
  * so caret lines up with the highlighted text underneath. The background

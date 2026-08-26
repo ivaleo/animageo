@@ -19,8 +19,15 @@
     const ENDPOINT = (window.ANIMAGEO_RENDER_URL || '') + '/render';
     const STATUS_ENDPOINT = (window.ANIMAGEO_RENDER_URL || '') + '/';
 
+    // Shown once the guide discovers (via a failed /render call) that it is
+    // being read as static content — no local render server behind it, e.g.
+    // when published to docs.animageo.ru/guide/. See enterStaticMode().
+    const STATIC_NOTICE_TEXT =
+        'Интерактивный режим доступен при локальном запуске — см. README гайда.';
+
     let activeExample = null;
     let serverOnline = null;
+    let staticMode = false;
 
     // ── Python syntax highlighter ──────────────────────────────
     const PY_KEYWORDS = new Set([
@@ -588,6 +595,45 @@
         if (code) code.innerHTML = highlightPython(generateScaffold(ex, activeScaffoldMode(ex)));
     }
 
+    // ── Static-hosting degradation ──────────────────────────────
+    //
+    // On a real render server, POST /render either succeeds or returns a
+    // JSON {error} with a 4xx/5xx from the DSL actually failing to run —
+    // both are meaningful to the reader. When the guide is served as plain
+    // static files (no route at /render at all — GitHub Pages, file://),
+    // the request either throws (no listener) or comes back 404 (host
+    // serving its generic not-found page). Either signal means "there is
+    // no server here, and never will be for this page load" — so instead
+    // of surfacing that as a network error, we swap the Run/Reset controls
+    // for a one-line explanation, once, for every example on the page.
+    function applyStaticUI(ex) {
+        const codeEl = ex.querySelector('.ex-code');
+        if (!codeEl) return;
+        const toolbar = codeEl.querySelector('.ex-toolbar');
+        if (toolbar && ex.dataset.editing === '1') {
+            toolbar.innerHTML = '';
+            toolbar.appendChild(mkButton('Close', '', () => closeEditor(ex)));
+        }
+        if (ex.dataset.editing === '1' && !codeEl.querySelector('.ex-static-note')) {
+            const note = document.createElement('div');
+            note.className = 'ex-static-note';
+            note.textContent = STATIC_NOTICE_TEXT;
+            codeEl.appendChild(note);
+        }
+        ex.classList.remove('rendering', 'has-error');
+        const errEl = ex.querySelector('.ex-error');
+        if (errEl) errEl.textContent = '';
+    }
+
+    function enterStaticMode(ex) {
+        staticMode = true;
+        applyStaticUI(ex);
+        // The "start the local server" banner from checkServer() would be
+        // redundant with (and less specific than) the in-example note.
+        const banner = document.querySelector('.server-status');
+        if (banner) banner.classList.remove('visible');
+    }
+
     // ── Editor activation ───────────────────────────────────────
     function openEditor(ex) {
         if (activeExample && activeExample !== ex) closeEditor(activeExample);
@@ -658,23 +704,30 @@
         codeEl.appendChild(wrap);
 
         toolbar.innerHTML = '';
-        const runBtn = mkButton('Run', 'run', () => runEditor(ex));
-        const resetBtn = mkButton('Reset', '', () => {
-            ta.value = ex._originalCode;
-            syncHighlight();
-            ta.setSelectionRange(0, 0);
-            ta.scrollTop = 0;
-            ta.scrollLeft = 0;
-            bgPre.scrollTop = 0;
-            bgPre.scrollLeft = 0;
-            ta.focus({ preventScroll: true });
-        });
-        const closeBtn = mkButton('Close', '', () => closeEditor(ex));
-        toolbar.append(runBtn, resetBtn, closeBtn);
+        if (!staticMode) {
+            const runBtn = mkButton('Run', 'run', () => runEditor(ex));
+            const resetBtn = mkButton('Reset', '', () => {
+                ta.value = ex._originalCode;
+                syncHighlight();
+                ta.setSelectionRange(0, 0);
+                ta.scrollTop = 0;
+                ta.scrollLeft = 0;
+                bgPre.scrollTop = 0;
+                bgPre.scrollLeft = 0;
+                ta.focus({ preventScroll: true });
+            });
+            const closeBtn = mkButton('Close', '', () => closeEditor(ex));
+            toolbar.append(runBtn, resetBtn, closeBtn);
+        }
 
         ex.dataset.editing = '1';
         ex.classList.add('editing');
         activeExample = ex;
+
+        // Already known static (a previous example's Run already found no
+        // server) — this example gets the Close-only toolbar + note right
+        // away, no need to let the reader hit the same dead end again.
+        if (staticMode) applyStaticUI(ex);
 
         // Cursor at position 0, no page scroll, no internal textarea scroll
         ta.setSelectionRange(0, 0);
@@ -692,6 +745,8 @@
         const toolbar = codeEl.querySelector('.ex-toolbar');
         const wrap = codeEl.querySelector('.ex-editor-wrap');
         if (wrap) wrap.remove();
+        const note = codeEl.querySelector('.ex-static-note');
+        if (note) note.remove();
         if (pre) pre.style.display = '';
         toolbar.innerHTML = '';
         const editBtn = mkButton('Edit', '', () => openEditor(ex));
@@ -746,11 +801,11 @@
                 body: JSON.stringify(spec),
             });
         } catch (e) {
-            showError(ex, 'Сервер недоступен. Запустите render-сервер:\n  python3 docs/guide/server/serve.py');
+            // fetch() throws when nothing is listening at all (connection
+            // refused, blocked file:// origin, ...) — no server, ever.
             ex.classList.remove('rendering');
             runBtn.classList.remove('busy');
-            serverOnline = false;
-            updateServerBanner();
+            enterStaticMode(ex);
             return;
         }
 
@@ -758,6 +813,14 @@
         runBtn.classList.remove('busy');
 
         if (!response.ok) {
+            if (response.status === 404) {
+                // No route at /render at all — a real render server always
+                // has this route (it either renders or returns a JSON error
+                // with 400/500), so 404 means we're on a static host serving
+                // its generic not-found page instead.
+                enterStaticMode(ex);
+                return;
+            }
             let msg;
             try {
                 const j = await response.json();

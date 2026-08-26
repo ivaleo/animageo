@@ -28,6 +28,7 @@ jobs:
         run: |
           mkdocs build --strict
           cp llms.txt site/llms.txt
+          cp -r docs/guide site/guide
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
