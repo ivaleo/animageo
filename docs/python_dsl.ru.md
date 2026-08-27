@@ -1,0 +1,286 @@
+# Python DSL в AnimaGeo
+
+Обычное Python-окружение для создания геометрических конструкций. DSL-кодом
+может быть любой корректный код Python, а вызовы фабрик (`Point`, `Midpoint`,
+`Intersect`, …) одновременно выполняются и регистрируются в графе зависимостей
+`Construction`.
+
+> **Статус:** движок на основе `exec` — единственный движок DSL.
+>
+> Точки входа:
+>
+> - `scene.putCode(code)` / `scene.loadCode(filepath)`
+> - `scene.loadGGB(filepath)` — GGB → exec через `ggb_parser`
+> - `dsl.run(constr, code)` — прямой вызов
+> - `with dsl.scope(constr): ...` — привязка ContextVar для файлового режима
+
+## Содержание
+
+- [Быстрый старт](#quick-start)
+- [Синтаксис](#syntax)
+- [Фабрики](#factories)
+- [Имена элементов](#element-naming)
+- [Доступ к полям](#field-access)
+- [Стили](#styles)
+- [Что запрещено](#not-allowed)
+- [Что поддерживает exec-движок](#exec-support)
+- [Текущие ограничения](#limitations)
+
+## Быстрый старт {#quick-start}
+
+С отдельным объектом `Construction`:
+
+```python
+from animageo.geo.construction import Construction
+from animageo.parsers import dsl
+
+c = Construction()
+dsl.run(c, """
+    A = Point(0, 0)
+    B = Point(4, 0)
+    C = Point(0, 3)
+    p, s1, s2, s3 = Polygon(A, B, C)
+    M = Midpoint(A, B)
+    style(M, stroke='#ff0000', size=10)
+""")
+```
+
+Со сценой Manim (`AnimaGeoScene`):
+
+```python
+class MyScene(AnimaGeoScene):
+    def construct(self):
+        self.putCode("""
+            A = Point(0, 0)
+            B = Point(3, 4)
+            M = Midpoint(A, B)
+        """)
+        self.addAllGeometry(show=True)
+```
+
+Фабрики также можно импортировать напрямую в файле `.py`, чтобы получать
+подсказки IDE:
+
+```python
+from animageo.parsers.dsl.namespace import Point, Midpoint, style
+# Для прямых вызовов нужен активный Construction в ContextVar —
+# см. dsl.registrar.set_current_construction либо используйте
+# scene.putCode(code).
+```
+
+## Синтаксис {#syntax}
+
+Доступны все конструкции Python:
+
+```python
+# циклы
+for i in range(5):
+    p = Point(i, 0)            # создаёт p, p_2, p_3, p_4, p_5
+
+# условия
+for i in range(10):
+    if i % 2 == 0:
+        p = Point(i, 0)
+
+# функции
+def triangle(prefix, side):
+    A = Point(0, 0, name=f"{prefix}_A")
+    B = Point(side, 0, name=f"{prefix}_B")
+    C = Point(side/2, side*0.866, name=f"{prefix}_C")
+    return A, B, C
+
+triangle("t1", 3)
+triangle("t2", 5)
+
+# списковые включения тоже работают
+radii = [r for r in range(1, 6)]
+circles = [Circle(Point(0, 0, name=f"O_{i}"), r) for i, r in enumerate(radii)]
+
+# математика — import не нужен: функции и константы math
+# (pi, sqrt, …) доступны глобально в пространстве имён DSL
+A = Point(sqrt(2), pi/2)
+```
+
+## Фабрики {#factories}
+
+Любое имя в CamelCase, которому соответствует диспетчеризуемая функция в
+`animageo/geo/lib_commands.py`, автоматически становится фабрикой. Ручная
+регистрация не требуется.
+
+Основные фабрики:
+
+| Конструкторы | Команды |
+|---|---|
+| `Point`, `Line`, `Segment`, `Ray`, `Circle`, `Arc`, `CircleSector`, `Angle`, `Polygon`, `Vector`, `Conic`, `Function`, `ImplicitCurve` | `Midpoint`, `Distance`, `Length`, `Radius`, `Center`, `Vertex`, `Focus`, `Intersect`, `AreCollinear`, `Perpendicular`, `Parallel`, `Tangent`, `Polar`, … (всего 99 фабрик команд, которые диспетчеризуются в 433 сигнатуры для конкретных сочетаний типов аргументов в `COMMAND_REGISTRY`) |
+
+Неизвестное имя вызывает `NameError`: ошибка всегда явная и никогда не
+превращается в незаметную пустую операцию.
+
+## Имена элементов {#element-naming}
+
+### Из переменной слева
+
+```python
+A = Point(0, 0)        # элемент регистрируется как "A"
+```
+
+### В цикле — автоматическая уникализация
+
+```python
+for i in range(3):
+    p = Point(i, 0)    # элементы: p, p_2, p_3
+```
+
+### В функции — также с уникализацией
+
+Тело `def` считается областью цикла:
+
+```python
+def make():
+    A = Point(0, 0)
+    return A
+
+make()    # элемент: A
+make()    # элемент: A_2
+```
+
+### Явное имя через `name=`
+
+```python
+def triangle(prefix):
+    A = Point(0, 0, name=f"{prefix}_A")   # элемент: <prefix>_A
+    B = Point(1, 0, name=f"{prefix}_B")
+    return A, B
+```
+
+Если передан `name=`, а имя уже занято, возникает `ValueError`: тихого
+столкновения имён не будет. Python-переменная `A` всё равно привязывается к
+proxy-объекту.
+
+### Распаковка кортежа для команд с несколькими результатами
+
+```python
+a, b = Intersect(c, L)                    # две точки пересечения
+p, s1, s2, s3 = Polygon(A, B, C)          # многоугольник и три стороны
+```
+
+Трансформер добавляет в вызов `_outputs=N`, чтобы фабрика выделила нужное
+количество имён.
+
+Если нужна одна конкретная точка из нескольких пересечений, используйте индекс
+с единицы: `p = Intersect(c, L, index=1)` или позиционную форму
+`p = Intersect(c, L, 1)`.
+
+Порядок пересечений является частью публичного контракта. Первый элемент
+распакованного кортежа соответствует `Intersect(..., index=1)`, второй —
+`Intersect(..., index=2)` и так далее. Для окружностей применяется эвристика,
+похожая на GeoGebra: если окружность построена через уже известные точки, то
+совпавшие с ними точки пересечения идут первыми в порядке входов окружности;
+затем учитываются точки второго входного объекта, а оставшиеся пересечения
+сохраняют внутренний детерминированный порядок. Он должен совпадать при импорте
+`.ggb`, в Python DSL и в путях экспорта/JSXGraph.
+
+## Доступ к полям {#field-access}
+
+Через proxy-объект, который возвращает фабрика:
+
+```python
+A = Point(3, 4)
+print(A.x, A.y)           # 3.0, 4.0
+print(A.coords)           # [3., 4.]
+
+circ = Circle(Point(0, 0), 5)
+print(circ.center)        # [0., 0.]
+print(circ.radius)        # 5
+
+s = Segment(Point(0, 0), Point(3, 4))
+print(s.start, s.end, s.length)
+```
+
+Полный список приведён в разделе [Поля геометрических объектов](field_names.md).
+
+Чтение всегда отражает актуальное состояние: после любого `dsl.run` поля
+содержат текущие значения.
+
+## Стили {#styles}
+
+`elem.style` — это `StyleProxy`, унаследованный от `dict`. Одновременно
+работают оба варианта API.
+
+### Через атрибуты
+
+```python
+A = Point(3, 4)
+A.style.stroke = "#ff0000"
+A.style.size_px = 12
+A.style.label_visible = True
+```
+
+### Как словарь — прежний API сохранён
+
+```python
+A.style["stroke"] = "#ff0000"
+A.style.get("stroke", "black")
+"stroke" in A.style
+for k, v in A.style.items(): ...
+json.dumps(A.style)           # продолжает работать
+```
+
+### Групповые функции
+
+```python
+style(A, B, C, stroke="#f00", size=10)
+hide(A, B)
+show(C)
+```
+
+Отсутствующий атрибут возвращает `None`, а не `AttributeError`. Это повторяет
+семантику CSS: `if A.style.stroke:` означает «задан ли этот стиль?».
+
+## Что запрещено {#not-allowed}
+
+На этапе преобразования возникает `DSLSyntaxError` с номером строки и столбца:
+
+- `global x` / `nonlocal x`;
+- `A += expr` — составное присваивание;
+- `(A := expr)` — walrus-оператор;
+- `A: int = 5` — аннотированное присваивание со значением;
+- `A = B = expr` — цепочка присваиваний;
+- имя слева, начинающееся с подчёркивания: такие имена зарезервированы для
+  фантомных объектов.
+
+На этапе преобразования молча удаляются:
+
+- `import module` / `from module import name` — они могут оставаться в исходнике
+  для статического анализа IDE, но имя не привязывается во время выполнения.
+
+Во время выполнения вызывают `NameError`:
+
+- `open`, `eval`, `exec`, `__import__`, `compile` — этих функций нет в sandbox.
+
+## Что поддерживает exec-движок {#exec-support}
+
+- `for`, `if`, `while`, `def`, включения и lambda — как в Python;
+- `**kwargs` в фабриках: `Point(3, 4, name='A')`;
+- неизвестная команда в CamelCase → `NameError` с понятным сообщением;
+- повторное присваивание в той же области обновляет элемент, а в цикле или
+  `def` автоматически создаёт `name_2, name_3, …`;
+- доступ к полям через proxy: `A.x`, `A.y`, `circ.center`, `seg.length`;
+- стили как атрибуты: `A.style.stroke = '#f00'`;
+- f-строки, распаковка кортежей (`a, b = Intersect(c, l)`) и арифметика над
+  proxy (`A - B` создаёт команду `Sub`);
+- опережающие ссылки для имён со строчной буквы: `B = Rotate(R, x*deg, Q)`
+  работает, даже если `x` ещё не определена — значение можно позже передать
+  через `scene.addVar('x', 115)`.
+
+## Текущие ограничения {#limitations}
+
+- Стабы `.pyi` объявляют 86 сигнатур фабрик: 51 подробную типизированную и 35
+  общих `*args: Any`. Конструкторы элементов (`Point`, `Line`, …) отдельно
+  типизированы в `proxy.pyi`. Для редко используемых команд IDE может показать
+  `Any` вместо точного типа. Расширять список нужно в `namespace.pyi`; проверка
+  запускается командой `python3 -m animageo.parsers.dsl._regen_stubs`.
+- Sandbox блокирует `open`, `eval`, `exec`, `__import__`, `compile`: во время
+  выполнения возникает `NameError`. Верхнеуровневый `import` молча удаляется,
+  чтобы оставить возможность использовать IDE-стабы, но имя во время
+  выполнения не связывается.

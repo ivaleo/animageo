@@ -8,24 +8,28 @@ edit_uri: edit/main/docs/
 theme:
   name: material
   language: en
+  logo: assets/images/animageo-mark.svg
+  favicon: assets/images/animageo-mark.svg
+  font: false
   features:
-    - navigation.instant
     - navigation.sections
     - navigation.top
+    - navigation.footer
     - search.highlight
+    - search.suggest
     - content.code.copy
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: deep orange
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: amber
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
@@ -50,9 +54,50 @@ nav:
       - Style-generation context: ai_style_generation_context.md
       - Construction-generation context: ai_construction_generation_context.md
   - Direction: roadmap.md
+  - AnimaGeo.ru ↗: https://animageo.ru/
 
 plugins:
   - search
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      languages:
+        - locale: en
+          name: English
+          default: true
+          build: true
+        - locale: ru
+          name: Русский
+          build: true
+          site_name: AnimaGeo — Документация
+          site_description: Документация библиотеки AnimaGeo для Python
+          nav_translations:
+            Overview: Обзор
+            Getting started: Быстрый старт
+            Guides: Руководства
+            Python DSL: Python DSL
+            Styles: Стили
+            GeoGebra import policies: Правила импорта GeoGebra
+            Keyframe animation: Анимация по ключевым кадрам
+            Export formats: Форматы экспорта
+            TikZ export: Экспорт TikZ
+            Reference: Справочник
+            API: API
+            Geometry field names: Поля геометрических объектов
+            Construction summary: Сводка конструкции
+            Architecture: Архитектура
+            Gotchas: Особенности и ограничения
+            AI agents: Для AI-агентов
+            Style-generation context: Контекст генерации стилей
+            Construction-generation context: Контекст генерации конструкций
+            Direction: Развитие
+            AnimaGeo.ru ↗: AnimaGeo.ru ↗
+
+extra_css:
+  - assets/stylesheets/animageo.css
+
+copyright: AnimaGeo — open-source geometry rendering for Python
 
 markdown_extensions:
   - admonition

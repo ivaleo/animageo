@@ -49,7 +49,7 @@ The short rule: **`import` answers "how to read GeoGebra", `overlay` answers "ho
 13. [Bundled presets](#13-bundled-presets)
 14. [Recipes: "how do I get X"](#14-recipes-how-do-i-get-x)
 15. [Known quirks and gotchas](#15-known-quirks-and-gotchas)
-16. [Sizing & proportions: values that look right](#16-sizing--proportions-values-that-look-right)
+16. [Sizing & proportions: values that look right](#16-sizing-proportions-values-that-look-right)
 
 ---
 
@@ -337,7 +337,7 @@ The full documentation lives in the docstring of `animageo/style/schema.py`. Bel
 | `font_size.main` / `bold` / `aux` | Font size | px |
 
 Recommended values and the ratios that make a figure read comfortably are in
-[§16 Sizing & proportions](#16-sizing--proportions-values-that-look-right).
+[§16 Sizing & proportions](#16-sizing-proportions-values-that-look-right).
 
 ### `defaults` — per-type baseline
 
