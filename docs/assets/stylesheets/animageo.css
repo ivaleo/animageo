@@ -151,27 +151,36 @@ body {
 /* The main application uses two original raster marks and switches their
  * source with the resolved theme. Keep the same assets and behavior here. */
 .animageo-theme-logo {
+  position: relative;
   display: block;
   width: 1.55rem;
   height: 1.55rem;
 }
 
 .animageo-theme-logo__image {
+  position: absolute;
+  inset: 0;
+  display: block !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: contain;
+  opacity: 0;
+  visibility: hidden;
 }
 
-.animageo-theme-logo__image--dark {
-  display: none;
+.animageo-theme-logo__image--light {
+  opacity: 1;
+  visibility: visible;
 }
 
 [data-md-color-scheme="slate"] .animageo-theme-logo__image--light {
-  display: none;
+  opacity: 0;
+  visibility: hidden;
 }
 
 [data-md-color-scheme="slate"] .animageo-theme-logo__image--dark {
-  display: block;
+  opacity: 1;
+  visibility: visible;
 }
 
 .md-header__title {
