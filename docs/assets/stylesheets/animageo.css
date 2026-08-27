@@ -148,6 +148,32 @@ body {
   height: 1.55rem;
 }
 
+/* The main application uses two original raster marks and switches their
+ * source with the resolved theme. Keep the same assets and behavior here. */
+.animageo-theme-logo {
+  display: block;
+  width: 1.55rem;
+  height: 1.55rem;
+}
+
+.animageo-theme-logo__image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+.animageo-theme-logo__image--dark {
+  display: none;
+}
+
+[data-md-color-scheme="slate"] .animageo-theme-logo__image--light {
+  display: none;
+}
+
+[data-md-color-scheme="slate"] .animageo-theme-logo__image--dark {
+  display: block;
+}
+
 .md-header__title {
   font-weight: 600;
   letter-spacing: -0.02em;
