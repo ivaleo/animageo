@@ -59,6 +59,12 @@ def normalize_name(name):
     name = re.sub(r'{(\w+)}', r'\1', name)
     # Заменяем любые другие недопустимые символы на подчеркивание
     name = re.sub(r'[\']', "_Prime", name)
+    # GeoGebra permits labels that Python does not accept as identifiers
+    # (for example ``K°``).  The parser executes normalized expressions as
+    # Python DSL, so retain Unicode identifier characters and replace every
+    # other character with an underscore.  Prefixing with ``A`` lets us test
+    # continuation characters without rejecting digits or combining marks.
+    name = ''.join(char if f'A{char}'.isidentifier() else '_' for char in name)
     # Убедимся, что имя не начинается с цифры
     if name[0].isdigit():
         name = 'var_' + name

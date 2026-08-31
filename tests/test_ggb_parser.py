@@ -13,7 +13,7 @@ import pytest
 from animageo.geo.lib_elements import Point, Line, Segment, Circle, Element
 from animageo.geo.lib_vars import Var, Measure, AngleSize
 from animageo.geo.lib_commands import Command
-from animageo.geo.construction import Construction
+from animageo.geo.construction import Construction, normalize_name
 from animageo.parsers import ggb_parser
 
 EXAMPLES_DIR = os.path.join(os.path.dirname(__file__), '..', 'examples')
@@ -64,6 +64,27 @@ class TestExpressionConversion:
         c = Construction()
         result = ggb_parser.convert_ggb_expr_to_python(c, '4 * (α - 90°)')
         assert result == '4 * (α - AngleSize((90) * pi / 180))'
+
+    def test_convert_degree_suffixed_variable_to_angle_size(self):
+        c = Construction()
+        result = ggb_parser.convert_ggb_expr_to_python(c, 'K°')
+
+        assert result == 'AngleSize((K) * pi / 180)'
+        assert 'K°' not in c.name_mapping
+        assert c.name_mapping['K'] == 'K'
+        compile(f'_1 = {result}', '<ggb-expression>', 'exec')
+
+    def test_degree_sign_is_still_normalized_in_an_actual_object_name(self):
+        assert normalize_name('K°') == 'K_'
+
+    def test_compound_angle_expression_is_not_normalized_as_an_object_name(self):
+        c = Construction()
+        c.get_normalized_name('α_{2}')
+
+        result = ggb_parser.convert_ggb_expr_to_python(c, '4 * (α_{2} - 90°)')
+
+        assert result == '4 * (α_2 - AngleSize((90) * pi / 180))'
+        assert '4 * (α_{2} - 90°)' not in c.name_mapping
 
     def test_convert_caret_power_to_python_power(self):
         # GeoGebra uses ``^`` for exponentiation; Python ``^`` is bitwise XOR.

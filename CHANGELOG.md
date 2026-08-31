@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.3] - 2026-08-31
+
+### Fixed
+
+- A degree suffix on a numeric GeoGebra variable (for example `K°` in a
+  `Rotate` command) is parsed as an angle value rather than as part of an
+  object name. This completes the non-identifier handling introduced in 1.7.2
+  without breaking compound angle expressions.
+
+## [1.7.2] - 2026-08-31
+
+### Fixed
+
+- GeoGebra labels containing non-identifier suffixes such as the degree sign
+  (for example `K°`) are normalized consistently in element names and
+  expressions. They no longer leak invalid characters into generated Python
+  DSL or make thumbnail/export rendering fail.
+
 ## [1.7.1] - 2026-08-17
 
 ### Changed
@@ -1429,7 +1447,9 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.1...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.3...HEAD
+[1.7.3]: https://github.com/ivaleo/animageo/compare/v1.7.2...v1.7.3
+[1.7.2]: https://github.com/ivaleo/animageo/compare/v1.7.1...v1.7.2
 [1.7.1]: https://github.com/ivaleo/animageo/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/ivaleo/animageo/compare/v1.6.5...v1.7.0
 [1.6.5]: https://github.com/ivaleo/animageo/compare/v1.6.4...v1.6.5

@@ -143,7 +143,9 @@ def extract_identifiers(expression):
             identifiers.add(ident)
     
     # Также ищем идентификаторы с специальными символами, которые могут быть пропущены
-    special_pattern = r'[a-zA-Z_][a-zA-Z0-9_{}\'&°]*'
+    # The degree sign is a postfix unit in expressions (``K°`` means the
+    # numeric slider K measured in degrees), not part of the identifier.
+    special_pattern = r'[a-zA-Z_][a-zA-Z0-9_{}\'&]*'
     for match in re.finditer(special_pattern, expression):
         ident = match.group(0)
         # Исключаем чисто числовые значения и операторы
@@ -172,9 +174,17 @@ def convert_ggb_expr_to_python(constr, expr_str, expr_type=None):
         if identifier not in constr.name_mapping:
             constr.get_normalized_name(identifier)
     
-    # Заменяем все имена согласно name_mapping
-    for original, normalized in constr.name_mapping.items():
-        expr_str = re.sub(r'\b' + re.escape(original), normalized, expr_str)
+    # Заменяем все имена согласно name_mapping.  ``\b`` works only when the
+    # label ends in a word character; legal GeoGebra names such as ``K°`` do
+    # not, and used to leak the degree sign into the generated Python DSL.
+    # Longest-first also prevents a shorter mapped name from consuming the
+    # prefix of a longer one.
+    for original, normalized in sorted(
+        constr.name_mapping.items(), key=lambda item: len(item[0]), reverse=True,
+    ):
+        expr_str = re.sub(
+            rf'(?<!\w){re.escape(original)}(?!\w)', normalized, expr_str,
+        )
         
     # Проверяем, является ли выражение простым вектором в формате (x, y)
     vector_match = re.match(r'^\s*\(\s*([-\d.]+)\s*,\s*([-\d.]+)\s*\)\s*$', expr_str)
@@ -197,8 +207,10 @@ def convert_ggb_expr_to_python(constr, expr_str, expr_type=None):
     expr_str = expr_str.replace('^', '**')
 
     # Заменяем градусы на radians-valued AngleSize construction.
-    # Examples from real .ggb XML: ``-γ``, ``4 * (α - 90°)``.
-    pattern_deg = r'(?<![\w.])(-?\d+(?:\.\d+)?)°'
+    # The postfix may follow a literal (``90°``) or a numeric slider
+    # (``K°``).  The latter is common in Rotate commands and must not be
+    # mistaken for a GeoGebra object whose label literally contains ``°``.
+    pattern_deg = r'(?<![\w.])(-?(?:\d+(?:\.\d+)?|[^\W\d]\w*))°'
     expr_str = re.sub(pattern_deg, r'AngleSize((\1) * pi / 180)', expr_str)
     
     return expr_str
@@ -559,8 +571,19 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
             for i, inp in enumerate(inputs):
                 if is_number(inp) or is_angle_degrees(inp):
                     inputs[i] = inp 
-                else:
+                elif inp in constr.name_mapping:
+                    # References to already parsed GeoGebra objects may use
+                    # non-Python label characters (subscripts, primes, degree
+                    # signs), so resolve them through the established map.
+                    inputs[i] = constr.name_mapping[inp]
+                elif inp.isidentifier():
                     inputs[i] = constr.get_normalized_name(inp)
+                else:
+                    # Keep compound inputs intact.  Normalizing a whole
+                    # expression such as ``4 * (alpha - 90°)`` turns it into
+                    # an identifier-shaped string before the phantom-expression
+                    # pass below and silently drops the calculation.
+                    inputs[i] = inp
             
             # Обработка выражений во входных параметрах
             new_inputs = []
