@@ -607,7 +607,18 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                         logger.debug('Point FIXED by %s', inputs[0])
                     fixed_element = True
             
-                    input0 = constr.element(inputs[0]).data if constr.element(inputs[0]) else None
+                    # Resolve the path through the *rebound* input. When the
+                    # path has no name of its own GeoGebra writes it inline
+                    # ("Circle[A, 1 / 2]"), and the phantom pass above has
+                    # already parsed that expression into ``new_inputs[0]``.
+                    # Looking it up under the raw expression string finds
+                    # nothing, and the point then misses both its tparam and
+                    # its serialized <coords> (skipped as a plain command
+                    # output) — landing at the random angle ``point_c`` uses
+                    # when no tparam is given.
+                    path_ref = new_inputs[0] if new_inputs else inputs[0]
+                    path_elem = constr.element(path_ref)
+                    input0 = path_elem.data if path_elem else None
                     if isinstance(input0, (Circle, Line, Ray, Segment, Conic, LocusCurve, Function, Polygon)):
                         # ``Point(Polygon)`` is a point on the polygon boundary.
                         # animageo has no polygon-boundary tparam yet, so

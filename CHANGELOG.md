@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.4] - 2026-09-05
+
+### Fixed
+
+- A point on a path whose path is written inline keeps the position GeoGebra
+  saved for it. `Point(Circle(A, 1/2))` — a path that was never given a name of
+  its own — was looked up under its raw expression string, which resolves to
+  nothing. The point was then treated as an ordinary command output: its
+  serialized `<coords>` were skipped and no path parameter was derived, so it
+  landed at the arbitrary angle `point_c` falls back on when no parameter is
+  given (a random value in `[0, 1)` radians). Every load placed such a point
+  somewhere else, and the geometry built on it came out rotated by a different
+  amount each render. Named paths (`Point(c)`) were never affected.
+
 ## [1.7.3] - 2026-08-31
 
 ### Fixed
