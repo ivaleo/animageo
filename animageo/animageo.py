@@ -3037,14 +3037,18 @@ class AnimaGeoScene(MovingCameraScene):
         # default=None isolates the explicit layers).
         ggb_manual_base_px = None
         ggb_label_point = None
+        ggb_label_attach = None
         if has_label and not auto_placed:
             ggb_raw = getattr(elem, 'ggb_raw', None) or {}
             explicit_anchor = _resolve_style(self, elem, 'label_anchor', default=None)
             if ggb_raw and explicit_anchor is None:
-                from .label_anchor import ggb_label_anchor
+                from .label_anchor import ggb_label_anchor, nearest_point
                 spot = ggb_label_anchor(elem, self.geo, ptUnit_ggb=ptUnit_ggb)
                 if spot is not None:
                     ggb_label_point, ggb_manual_base_px = spot
+                    # where on the element the label sits scales with the figure
+                    ggb_label_attach = (
+                        lambda xy, _elem=elem: nearest_point(_elem, xy, self.geo))
 
         dash = _resolve_style(self, elem, 'stroke_dash_ratio', default=None)
         cap = _resolve_style(
@@ -3117,6 +3121,7 @@ class AnimaGeoScene(MovingCameraScene):
             auto_placed=auto_placed,
             ggb_manual_base_px=ggb_manual_base_px,
             ggb_label_point=ggb_label_point,
+            ggb_label_attach=ggb_label_attach,
             ggb_font_px=ggb_font_px,
             has_label=has_label,
             label_spec=label_spec,
@@ -3179,6 +3184,7 @@ class AnimaGeoScene(MovingCameraScene):
             label_offset_px=ctx.label_offset_px, auto_placed=ctx.auto_placed,
             label_spec=ctx.label_spec, dynamic=ctx.label_dynamic,
             ggb_manual_base_px=ctx.ggb_manual_base_px,
+            ggb_label_attach=ctx.ggb_label_attach,
         )
         if label is None:
             return None

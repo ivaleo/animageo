@@ -564,3 +564,37 @@ class TestLabelAnchorPerType:
         assert bottom_px == pytest.approx(ref["bottom"], abs=TYPES_TOL_PX), (
             f"{name}: baseline {bottom_px - ref['bottom']:+.1f} px from the applet"
         )
+
+
+def _label_center(scene, name):
+    mobj = scene.CreateMObject(scene.element(name), z_auto=True)
+    label = [m for m in mobj.get_family() if getattr(m, "_animageo_is_label", False)][0]
+    return np.array(label.get_center()[:2], dtype=float)
+
+
+class TestLabelKeepsItsPlaceOnTheFigure:
+    """An applet-placed label must stay next to the same PART of its element
+    when the export draws the figure at another scale than the applet did
+    (labels relatively 3× larger in a small preview). The offset used to live
+    wholly in font space, so a label parked near a segment's endpoint drifted
+    far past it (repro: «Хроматические числа», label «1» near A)."""
+
+    @pytest.mark.parametrize(
+        "name", ["s1", "s2", "v1", "v2", "r1", "r2", "c1", "e1", "arc1", "arc2", "sec1", "poly1", "poly2"],
+    )
+    def test_attachment_point_survives_a_scale_change(self, name):
+        from animageo.label_anchor import nearest_point
+
+        native = _load_scene(TYPES_FIXTURE.with_suffix(".ggb"))
+        elem = native.element(name)
+        attach_native = nearest_point(elem, _label_center(native, name), native.geo)
+
+        small = _load_scene(TYPES_FIXTURE.with_suffix(".ggb"))
+        ggb = small.style.export.get("ptUnit_ggb", small.style.export["ptUnit"])
+        small.style.export["ptUnit_style"] = ggb / 3.0     # labels 3× larger vs the figure
+        attach_small = nearest_point(small.element(name), _label_center(small, name), small.geo)
+
+        assert np.linalg.norm(attach_small - attach_native) < 3.0 / ggb, (
+            f"{name}: label moved along its element by "
+            f"{np.linalg.norm(attach_small - attach_native) * ggb:.1f} applet px"
+        )

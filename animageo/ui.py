@@ -349,7 +349,7 @@ def _label_baseline_depth_mu(mobj, font_size):
 
 def _place_label(mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
                  label_offset_px, auto_placed, ggb_manual_base_px=None,
-                 font_size=None):
+                 font_size=None, attach=None):
     """Apply anchor/offset/descender placement shared by Tex and ValueLabel."""
     if ggb_manual_base_px is not None:
         # GGB-faithful path for imported manual labels (docs/TZ-label-offset-
@@ -369,12 +369,36 @@ def _place_label(mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
         if off is None and hasParam(elem.style, 'label_offset_px'):
             off = elem.style['label_offset_px']
         off = off if off is not None else (0.0, 0.0)
-        # Left/baseline origin exactly as the applet showed it (native font).
-        origin = (pos[0] + (ggb_manual_base_px[0] + float(off[0])) / scale,
-                  pos[1] + (ggb_manual_base_px[1] + float(off[1])) / scale)
+        # Applet px from `pos` to the label's left/baseline, y up.
+        rel = (ggb_manual_base_px[0] + float(off[0]), ggb_manual_base_px[1] + float(off[1]))
         depth = _label_baseline_depth_mu(mobj, font_size)
         w = float(mobj.width)
         h = float(mobj.height)
+        g_px = float(ggb_font_px) if ggb_font_px else 16.0
+        fs_px = (float(font_size) * float(ptUnit) / GGB_FONT_SCALE
+                 if font_size and ptUnit else g_px)
+        r = g_px / fs_px if fs_px > 1e-9 else 1.0
+
+        # An element with extent: re-attach the label to the spot of the
+        # element nearest to where the APPLET drew it. That spot is geometry —
+        # it scales with the figure (ptUnit_ggb); only the rest of the offset
+        # stays in font space, as for a point label. Replayed wholly in font
+        # space, a label parked near a segment's endpoint drifted far past it
+        # whenever the export drew the figure at another scale than the applet.
+        # At the applet's own scale this is an identity.
+        if attach is not None and ptUnit_ggb:
+            g = float(ptUnit_ggb)
+            w0_px, h0_px, d0_px = w * r * scale, h * r * scale, depth * r * scale
+            center = (pos[0] + (rel[0] + w0_px / 2.0) / g,
+                      pos[1] + (rel[1] - d0_px + h0_px / 2.0) / g)
+            spot = attach(center)
+            if spot is not None:
+                rel = (rel[0] + (float(pos[0]) - float(spot[0])) * g,
+                       rel[1] + (float(pos[1]) - float(spot[1])) * g)
+                pos = [float(spot[0]), float(spot[1]), 0.0]
+
+        # Left/baseline origin exactly as the applet showed it (native font).
+        origin = (pos[0] + rel[0] / scale, pos[1] + rel[1] / scale)
 
         # Size-invariant anchoring: when the rendered font differs from the
         # applet's, anchoring at left/baseline lets the glyphs grow TOWARD the
@@ -388,10 +412,6 @@ def _place_label(mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
         # one passing straight through the point) moves the label without
         # jumps — no sector quantisation, no hysteresis. At the native font
         # the whole scheme reduces to the applet placement identically.
-        g_px = float(ggb_font_px) if ggb_font_px else 16.0
-        fs_px = (float(font_size) * float(ptUnit) / GGB_FONT_SCALE
-                 if font_size and ptUnit else g_px)
-        r = g_px / fs_px if fs_px > 1e-9 else 1.0
         if w < 1e-9 or h < 1e-9:
             mobj.move_to([origin[0], origin[1], 0.0], aligned_edge=DL)
             if depth:
@@ -465,7 +485,8 @@ def _compile_label_tex(label, col_label, font_size, zz_label, name):
 def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=DL,
                  ptUnit_ggb=None, anchor=None, ggb_font_px=None,
                  label_text=None, label_offset_px=None, auto_placed=None,
-                 label_spec=None, dynamic=False, ggb_manual_base_px=None):
+                 label_spec=None, dynamic=False, ggb_manual_base_px=None,
+                 ggb_label_attach=None):
     """Create a label mobject for a geometric element.
 
     When ``dynamic`` is True and ``label_spec`` carries a live numeric value, a
@@ -525,6 +546,7 @@ def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=D
         mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
         label_offset_px, auto_placed,
         ggb_manual_base_px=ggb_manual_base_px, font_size=font_size,
+        attach=ggb_label_attach,
     )
 
 

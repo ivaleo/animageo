@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.8] - 2026-09-21
+
+### Fixed
+
+- A label placed in GeoGebra stays next to the same part of its element when
+  the export draws the figure at another scale than the applet (a small preview
+  canvas makes labels relatively larger). The offset was replayed wholly in
+  font space — right for a point, which has no extent, but a label parked near
+  a segment's endpoint drifted far past it. Now an applet-placed label is
+  re-attached to the point of its element nearest to where the applet drew it
+  (`label_anchor.nearest_point`): that point scales with the figure, only the
+  remaining offset stays in font space, so the gap to the line survives any
+  font size. A label inside a region (polygon, sector, the inside of a circle
+  or an ellipse) is attached to its own spot of the region. At the applet's own
+  scale placement is unchanged; points are unaffected.
+
 ## [1.7.7] - 2026-09-21
 
 ### Fixed
@@ -1517,7 +1533,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.7...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.8...HEAD
+[1.7.8]: https://github.com/ivaleo/animageo/compare/v1.7.7...v1.7.8
 [1.7.7]: https://github.com/ivaleo/animageo/compare/v1.7.6...v1.7.7
 [1.7.6]: https://github.com/ivaleo/animageo/compare/v1.7.5...v1.7.6
 [1.7.5]: https://github.com/ivaleo/animageo/compare/v1.7.4...v1.7.5
