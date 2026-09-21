@@ -540,6 +540,35 @@ class TestScaleAdapter:
         s._effect_scale(mobj, 0.25)
         assert mobj.width < w_full * 0.5
 
+    @staticmethod
+    def _labelled_point():
+        """An element mobject shaped like ``_render_point``'s output:
+        ``VGroup(dot, label)`` with the label tagged by ``ui.create_label``."""
+        from manim import Circle, Square, VGroup
+        dot = Circle(radius=0.1).move_to([1.0, 1.0, 0]).set_fill(opacity=1)
+        label = Square(side_length=0.2).move_to([1.5, 1.4, 0])
+        label.set_fill(opacity=1).set_stroke(opacity=1)
+        label._animageo_is_label = True
+        return VGroup(dot, label), dot, label
+
+    def test_grow_keeps_a_labelled_point_in_place(self):
+        # Scaling the whole VGroup about its bbox centre dragged the dot
+        # towards its label: the point slid into place while growing.
+        s = _scene()
+        mobj, dot, _label = self._labelled_point()
+        s._effect_scale(mobj, 0.25)
+        assert dot.get_center()[:2] == pytest.approx([1.0, 1.0])
+        assert dot.width == pytest.approx(0.05)
+
+    def test_grow_fades_the_label_where_it_stands(self):
+        s = _scene()
+        mobj, _dot, label = self._labelled_point()
+        center, width = label.get_center().copy(), label.width
+        s._effect_scale(mobj, 0.25)
+        assert label.get_center()[:2] == pytest.approx(center[:2])
+        assert label.width == pytest.approx(width)
+        assert label.get_fill_opacity() == pytest.approx(0.25)
+
     def test_apply_effect_alpha_routes_grow(self):
         s = _scene()
         called = {}

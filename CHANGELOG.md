@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.5] - 2026-09-21
+
+### Fixed
+
+- The `grow` / `shrink` enter–exit effects keep a labelled element in place.
+  Element mobjects are `VGroup([geometry…, label])`, and the effect scaled the
+  whole group about its bounding-box centre, which sits between a point and its
+  label: the dot started off-position and slid into place while growing, and the
+  label shrank to nothing with it. The geometry now scales about its own centre,
+  and the label stays where it stands and fades instead.
+
 ## [1.7.4] - 2026-09-05
 
 ### Fixed
@@ -1461,7 +1472,9 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.3...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.5...HEAD
+[1.7.5]: https://github.com/ivaleo/animageo/compare/v1.7.4...v1.7.5
+[1.7.4]: https://github.com/ivaleo/animageo/compare/v1.7.3...v1.7.4
 [1.7.3]: https://github.com/ivaleo/animageo/compare/v1.7.2...v1.7.3
 [1.7.2]: https://github.com/ivaleo/animageo/compare/v1.7.1...v1.7.2
 [1.7.1]: https://github.com/ivaleo/animageo/compare/v1.7.0...v1.7.1

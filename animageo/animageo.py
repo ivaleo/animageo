@@ -2229,12 +2229,32 @@ class AnimaGeoScene(MovingCameraScene):
                     pass
 
     def _effect_scale(self, mobj, alpha):
-        """Scale *mobj* about its center by alpha (grow-from/shrink-to center)."""
+        """Grow-from / shrink-to the element's own centre by *alpha*.
+
+        Element mobjects are ``VGroup([geometry…, label])``. Scaling the whole
+        group about its bbox centre pulled a labelled point towards its label,
+        so the dot slid into place while growing. Scale the geometry about the
+        geometry's centre; the label stays where it stands and fades instead.
+        """
         factor = max(float(alpha), 1e-3)
-        try:
-            mobj.scale(factor, about_point=mobj.get_center())
-        except Exception:
-            pass
+        parts = list(getattr(mobj, 'submobjects', None) or [])
+        labels = [p for p in parts if getattr(p, '_animageo_is_label', False)]
+        if not labels:
+            try:
+                mobj.scale(factor, about_point=mobj.get_center())
+            except Exception:
+                pass
+            return
+        geometry = [p for p in parts if not getattr(p, '_animageo_is_label', False)]
+        if geometry:
+            try:
+                center = VGroup(*geometry).get_center()
+                for part in geometry:
+                    part.scale(factor, about_point=center)
+            except Exception:
+                pass
+        for label in labels:
+            self._effect_fade(label, alpha)
 
     def _effect_write(self, mobj, alpha):
         """Progressive glyph reveal (manim Write/AddTextLetterByLetter): show
