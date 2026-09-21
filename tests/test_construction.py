@@ -449,3 +449,31 @@ class TestTparamFromCoords:
     def test_unknown_name_returns_none(self):
         c = Construction()
         assert c.tparam_from_coords('nope', [0.0, 0.0]) is None
+
+
+class TestLateBuiltElementStyle:
+    """An element the parser created while undefined (GGB saved NaN coords —
+    e.g. an intersection of a circle that does not exist in the saved state)
+    got an empty style: no z_index, no label defaults. When a later rebuild
+    defined it, it rendered on the fill tier — a point UNDER the segments
+    through it (repro: «Хроматические числа», D and E under q, n, p)."""
+
+    def test_gets_its_type_defaults_when_first_built(self):
+        from animageo.constants import Z_POINT
+
+        c = Construction()
+        c.update('D', None)
+        c.update('D', Point([1, 2]))
+        style = c.element('D').style
+        assert style.get('z_index') == Z_POINT
+        assert style.get('label_visible') is False
+        assert not style.is_explicit('z_index')
+
+    def test_keeps_writes_made_while_undefined(self):
+        c = Construction()
+        c.update('D', None)
+        c.element('D').style['z_index'] = 7
+        c.update('D', Point([1, 2]))
+        style = c.element('D').style
+        assert style['z_index'] == 7
+        assert style.is_explicit('z_index')

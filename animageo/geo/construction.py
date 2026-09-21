@@ -70,6 +70,24 @@ def normalize_name(name):
         name = 'var_' + name
     return name
 
+def _seed_intrinsic_style(elem, data):
+    """Give an element built late the defaults its data type carries.
+
+    ``Element.__init__`` adopts ``data.style`` (z_index tier, label defaults)
+    only when the element is created WITH data. One created undefined — GGB
+    saved NaN coords for it — kept an empty style, so once a rebuild defined
+    it, it rendered on the fill tier: a point under the segments through it.
+    Missing keys only, so writes made meanwhile survive; set past the explicit
+    tracking, so they stay intrinsic defaults exactly as in ``__init__``.
+    """
+    defaults = getattr(data, 'style', None)
+    if not defaults:
+        return
+    for key, value in defaults.items():
+        if key not in elem.style:
+            dict.__setitem__(elem.style, key, value)
+
+
 class Construction:
     """Manages geometric construction state: elements, variables, commands, and their dependencies.
 
@@ -221,6 +239,8 @@ class Construction:
                             data = data.value
                     elif data is not None and obj.data is not None:
                         logger.warning("Construction.update('%s'): incompatible types %s != %s", name, type(obj.data).__name__, type(data).__name__)
+                if isinstance(obj, Element) and obj.data is None and data is not None:
+                    _seed_intrinsic_style(obj, data)
                 obj.data = data
                 self.state[name]['built'] = True
                 if log is not None: log[name] = True

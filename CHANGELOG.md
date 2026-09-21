@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.6] - 2026-09-21
+
+### Fixed
+
+- An element that is undefined in the loaded `.ggb` and becomes defined later
+  (during an animation, or after a DSL/value change) now draws on its own layer.
+  GeoGebra saves such an element with `NaN` coordinates — e.g. an intersection
+  with a circle that does not exist in the saved state — and the parser created
+  it without data, so it never received the defaults its type carries
+  (`z_index`, label defaults). Once a rebuild defined it, it rendered on the fill
+  tier: a point under the segments drawn through it. The first build now seeds
+  the missing type defaults as intrinsic (non-explicit) style keys; values
+  written while the element was undefined are kept.
+
 ## [1.7.5] - 2026-09-21
 
 ### Fixed
@@ -1472,7 +1486,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.5...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.6...HEAD
+[1.7.6]: https://github.com/ivaleo/animageo/compare/v1.7.5...v1.7.6
 [1.7.5]: https://github.com/ivaleo/animageo/compare/v1.7.4...v1.7.5
 [1.7.4]: https://github.com/ivaleo/animageo/compare/v1.7.3...v1.7.4
 [1.7.3]: https://github.com/ivaleo/animageo/compare/v1.7.2...v1.7.3
