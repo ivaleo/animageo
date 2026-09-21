@@ -527,3 +527,40 @@ class TestClearanceBeatsRespect:
             a[0], a[1], labels[0].half_w, labels[0].half_h,
             b[0], b[1], labels[1].half_w, labels[1].half_h,
         ) == 0.0
+
+
+
+TYPES_FIXTURE = Path(__file__).parent / "fixtures" / "label_anchor_types"
+TYPES_TOL_PX = 2.0   # ink vs ink: GeoGebra's glyph vs our Tex glyph
+
+
+def _types_ground_truth():
+    import json
+    return json.loads(TYPES_FIXTURE.with_suffix(".json").read_text())
+
+
+class TestLabelAnchorPerType:
+    """Every element type GeoGebra has a label rule for must put an
+    applet-placed label where the applet drew it. Ground truth: label ink
+    measured on the live GeoGebra applet (with and without labelOffset) —
+    not our own formulas. Repro: «Хроматические числа», the label «1» of
+    segment AB sat in the middle of the segment; circles drew no label."""
+
+    @pytest.mark.parametrize("name", sorted(_types_ground_truth()["labels_canvas_px"]))
+    def test_label_lands_where_geogebra_drew_it(self, name):
+        truth = _types_ground_truth()
+        view, ref = truth["view"], truth["labels_canvas_px"][name]
+        scene = _load_scene(TYPES_FIXTURE.with_suffix(".ggb"))
+        mobj = scene.CreateMObject(scene.element(name), z_auto=True)
+        assert mobj is not None, f"{name} did not render"
+        labels = [m for m in mobj.get_family() if getattr(m, "_animageo_is_label", False)]
+        assert labels, f"{name}: no label rendered"
+        label = labels[0]
+        left_px = (float(label.get_left()[0]) - view["xMin"]) / view["invXscale"]
+        bottom_px = view["height"] - (float(label.get_bottom()[1]) - view["yMin"]) / view["invYscale"]
+        assert left_px == pytest.approx(ref["left"], abs=TYPES_TOL_PX), (
+            f"{name}: left edge {left_px - ref['left']:+.1f} px from the applet"
+        )
+        assert bottom_px == pytest.approx(ref["bottom"], abs=TYPES_TOL_PX), (
+            f"{name}: baseline {bottom_px - ref['bottom']:+.1f} px from the applet"
+        )

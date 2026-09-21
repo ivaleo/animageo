@@ -1710,7 +1710,7 @@ class AnimaGeoScene(MovingCameraScene):
         if update_scene and touched:
             self.updateGeoElements(touched)
 
-    def _compute_keyframe_label_layouts(self, seq, cfg):
+    def _compute_keyframe_label_layouts(self, seq, cfg, indices=None):
         """Run ``compute_label_layout`` at every keyframe. Restores state after.
 
         Walks keyframes carrying-forward values and visibility (matching the
@@ -1750,7 +1750,7 @@ class AnimaGeoScene(MovingCameraScene):
         running_styles = {}
 
         layouts = []
-        for kf in seq.keyframes:
+        for kf_index, kf in enumerate(seq.keyframes):
             # Override with this keyframe's values
             for name, raw_value in kf.values.items():
                 running_raw[name] = raw_value
@@ -1793,6 +1793,10 @@ class AnimaGeoScene(MovingCameraScene):
                     if v is not None:
                         elem.style[k] = v
 
+            if indices is not None and kf_index not in indices:
+                # A single-frame preview needs only its interval's two ends.
+                layouts.append({})
+                continue
             self.geo.rebuild()
             layouts.append(compute_label_layout(
                 self, cfg=cfg, canonicalize=canonicalize,
@@ -1868,12 +1872,8 @@ class AnimaGeoScene(MovingCameraScene):
         if use_v2_visibility:
             seq.bind_visibility(get_element=self.geo.element)
 
-        cfg = self.style_config.overlay.label_placement
-        use_snapshots = bool(cfg.get('keyframe_snapshots', False))
-
-        if use_snapshots:
-            layouts = self._compute_keyframe_label_layouts(seq, cfg)
-            seq.attach_label_layouts(layouts)
+        layouts = self._bind_label_snapshots(seq)
+        use_snapshots = layouts is not None
 
         # Value-bearing labels animate via fast DecimalNumber-backed ValueLabels
         # for the whole sequence (no LaTeX recompile per frame, no engine swap
@@ -1913,6 +1913,47 @@ class AnimaGeoScene(MovingCameraScene):
                 self._play_keyframe_interval(interval)
                 self._finalize_style_interval(interval)
 
+    def _bind_label_snapshots(self, seq, indices=None):
+        """Auto-place labels at every keyframe and let them interpolate.
+
+        Snapshots ARE auto-placement, only sampled at keyframes, so they run
+        only when ``overlay.label_placement.enabled`` is on (and
+        ``keyframe_snapshots`` asks for them). With auto-placement off a
+        label keeps the offset the user gave it; the snapshots used to
+        override that and fly an applet-placed label off-frame.
+
+        Once attached, the snapshots own every label position: a keyframe's
+        own ``label_offset_px`` only fed the solver at that keyframe. As a
+        style track it fought the snapshot interpolators (both write the
+        offset) and, in an interval with no snapshot interpolator, put a
+        solver-placed label back to the raw applet offset — onto its line.
+
+        A label first placed at a LATER keyframe only ever receives offsets
+        from the interpolators, so it gets the snapshot's anchor and the
+        auto-placed flag up front — otherwise the renderer reads the solver's
+        offset as an applet labelOffset. ``indices`` limits the snapshots to
+        those keyframes (a single-frame preview needs only its interval).
+
+        Returns the per-keyframe layouts, or ``None`` when snapshots are off.
+        """
+        cfg = self.style_config.overlay.label_placement
+        if not (cfg.get('enabled', False) and cfg.get('keyframe_snapshots', False)):
+            return None
+        layouts = self._compute_keyframe_label_layouts(seq, cfg, indices=indices)
+        seq.attach_label_layouts(layouts)
+        seq.drop_style_key('label_offset_px')
+        flagged = set()
+        for layout in layouts:
+            for name, pl in (layout or {}).items():
+                if name in flagged:
+                    continue
+                flagged.add(name)
+                elem = self.geo.element(name)
+                if elem is not None:
+                    elem.style['label_anchor'] = pl.label_anchor
+                    elem.style['_auto_placed'] = True
+        return layouts
+
     def apply_keyframes_at(self, keyframes_data, t):
         """Statically place the scene at playhead time ``t`` (no animation) —
         for a single-frame preview (e.g. then exportSVG). Idempotent."""
@@ -1934,6 +1975,9 @@ class AnimaGeoScene(MovingCameraScene):
                 idx = i
                 break
         interval = seq.intervals[idx]
+        # Labels exactly as playback places them: the snapshots of this
+        # interval's two keyframes, interpolated (only these two are computed).
+        layouts = self._bind_label_snapshots(seq, indices={idx, idx + 1})
         self._apply_keyframe_state(kfs[idx], seq.element_info, update_scene=False)
         p = 0.0 if interval.duration <= 0 else (t - interval.start_t) / interval.duration
         touched = set()
@@ -1946,6 +1990,28 @@ class AnimaGeoScene(MovingCameraScene):
             updates[name] = updates.get(name, True)
         for name in self._apply_style_interps(interval, p):
             updates[name] = updates.get(name, True)
+        if layouts is not None:
+            from .label_placement import apply_label_layout, compute_angle_label_offset_px
+            if layouts[idx]:
+                apply_label_layout(self, layouts[idx], rerender=False)
+                for name in layouts[idx]:
+                    updates[name] = updates.get(name, True)
+            for li in interval.label_interps:
+                elem = self.geo.element(li.name)
+                if elem is None or not self._element_visible(elem):
+                    continue
+                ox, oy = li.at(p)
+                elem.style['label_offset_px'] = [float(ox), float(oy)]
+                updates[li.name] = updates.get(li.name, True)
+            ptUnit = _style_ptUnit(self.style)
+            ptUnit_ggb = self.style.export.get('ptUnit_ggb', ptUnit)
+            for name, ap in interval.dynamic_angle_params.items():
+                elem = self.geo.element(name)
+                if elem is None or not self._element_visible(elem):
+                    continue
+                elem.style['label_offset_px'] = list(
+                    compute_angle_label_offset_px(elem.data, ap, ptUnit, ptUnit_ggb))
+                updates[name] = updates.get(name, True)
         if interval.camera_interp:
             self._apply_camera(interval.camera_interp.at(p))
         self.updateGeoElements(updates)
@@ -2959,25 +3025,26 @@ class AnimaGeoScene(MovingCameraScene):
         lr_px = _resolve_style(self, elem, 'label_radial_offset_px', default=0.0)
         label_roff = float(lr_px) / ptUnit_style
 
-        # GGB-faithful base for imported manual point labels (docs/TZ-label-
-        # offset-ggb-fidelity.md): the applet anchors a point label 4 px right
-        # of the point and 2·pointSize px above it, then adds the stored
-        # labelOffset — left edge on the baseline. Applies only when neither
-        # the placement solver (_auto_placed) nor an explicit per-element/
-        # overlay/defaults anchor took over; the style-wide
-        # rendering.label_anchor is an aesthetic default and deliberately does
-        # NOT reach these labels (it enters ctx.label_anchor via `default=`
-        # above, so resolving with default=None isolates the explicit layers).
+        # GGB-faithful placement of imported manual labels (docs/TZ-label-
+        # offset-ggb-fidelity.md): the applet starts each label from a per-type
+        # base point (label_anchor.py — one rule table for every type it can
+        # reproduce), left edge on the baseline, then adds the stored
+        # labelOffset. Applies only when neither the placement solver
+        # (_auto_placed) nor an explicit per-element/overlay/defaults anchor
+        # took over; the style-wide rendering.label_anchor is an aesthetic
+        # default and deliberately does NOT reach these labels (it enters
+        # ctx.label_anchor via `default=` above, so resolving with
+        # default=None isolates the explicit layers).
         ggb_manual_base_px = None
-        if has_label and type(elem.data) == geo.Point and not auto_placed:
+        ggb_label_point = None
+        if has_label and not auto_placed:
             ggb_raw = getattr(elem, 'ggb_raw', None) or {}
             explicit_anchor = _resolve_style(self, elem, 'label_anchor', default=None)
             if ggb_raw and explicit_anchor is None:
-                try:
-                    ps_raw = float(ggb_raw.get('point_size', 5.0))
-                except (TypeError, ValueError):
-                    ps_raw = 5.0
-                ggb_manual_base_px = (4.0, 2.0 * ps_raw)
+                from .label_anchor import ggb_label_anchor
+                spot = ggb_label_anchor(elem, self.geo, ptUnit_ggb=ptUnit_ggb)
+                if spot is not None:
+                    ggb_label_point, ggb_manual_base_px = spot
 
         dash = _resolve_style(self, elem, 'stroke_dash_ratio', default=None)
         cap = _resolve_style(
@@ -3049,6 +3116,7 @@ class AnimaGeoScene(MovingCameraScene):
             label_offset_px=label_offset_px,
             auto_placed=auto_placed,
             ggb_manual_base_px=ggb_manual_base_px,
+            ggb_label_point=ggb_label_point,
             ggb_font_px=ggb_font_px,
             has_label=has_label,
             label_spec=label_spec,
@@ -3096,6 +3164,10 @@ class AnimaGeoScene(MovingCameraScene):
 
     def _make_label(self, elem, pos, ctx):
         """Shortcut for ``create_label`` wiring the ctx fields."""
+        if ctx.ggb_manual_base_px is not None and ctx.ggb_label_point is not None:
+            # An applet-placed label hangs off GeoGebra's own base point for
+            # this type, not off the renderer's generic label spot.
+            pos = [float(ctx.ggb_label_point[0]), float(ctx.ggb_label_point[1]), 0]
         col_label = ctx.col_label
         if self._label_contrast_mode() == 'auto':
             col_label = self._contrast_adjusted_label_color(
@@ -3466,7 +3538,13 @@ class AnimaGeoScene(MovingCameraScene):
                 num_dashes=int(2 * np.pi * elem.data.radius / 0.17),
                 dashed_ratio=ctx.dash,
             ).set_z_index(ctx.zz)
-        return VGroup(circ_fill, circ_stroke, name=elem.name)
+        arr = [circ_fill, circ_stroke]
+        if ctx.has_label:
+            # Circles drew no label at all. The applet-placed one hangs off
+            # GeoGebra's circle base (_make_label); a solver-placed one off
+            # the centre, the anchor label_placement._get_anchor uses.
+            self._append_label(arr, elem, c, ctx)
+        return VGroup(*arr, name=elem.name)
 
     def _render_arc(self, elem, ctx):
         c = [elem.data.center[0], elem.data.center[1], 0]
@@ -3746,6 +3824,10 @@ class AnimaGeoScene(MovingCameraScene):
 
         if not arr:
             return None
+        if ctx.has_label and ctx.ggb_label_point is not None:
+            # Ellipse/circle conics drew no label. Only the applet-placed one is
+            # reproducible: the placement solver has no anchor for conics.
+            self._append_label(arr, elem, [0.0, 0.0, 0], ctx)
         return VGroup(*arr, name=elem.name)
 
     def _render_function(self, elem, ctx):

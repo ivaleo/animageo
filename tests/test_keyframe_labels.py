@@ -118,8 +118,12 @@ class TestAttachLabelLayouts:
         assert interval.label_interps == []
         assert interval.dynamic_angle_params == {'alpha': ap_mock}
 
-    def test_missing_start_layout_skips_interp(self):
-        """Label absent at start keyframe → no interpolator for that interval."""
+    def test_label_appearing_in_interval_holds_its_end_placement(self):
+        """Label absent at the start keyframe (element or label hidden there)
+        → it appears already at its end-keyframe placement, held over the
+        whole interval. Skipping the interval left it at the unplaced default
+        — «1» of a segment appeared on the middle of the line and only jumped
+        aside at the next keyframe."""
         g = _mini_construction_two_points()
         data = {
             "keyframes": [
@@ -133,7 +137,11 @@ class TestAttachLabelLayouts:
             {'A': _FakeLabelPlacement((5.0, 3.0))},       # A appears at kf1
         ]
         seq.attach_label_layouts(layouts)
-        assert seq.intervals[0].label_interps == []
+        (li,) = seq.intervals[0].label_interps
+        assert li.name == 'A'
+        assert np.allclose(li.at(0.0), [5.0, 3.0])
+        assert np.allclose(li.at(0.5), [5.0, 3.0])
+        assert np.allclose(li.at(1.0), [5.0, 3.0])
 
     def test_length_mismatch_raises(self):
         g = _mini_construction_two_points()

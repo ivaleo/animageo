@@ -212,3 +212,80 @@ class TestRevealConstructionScene:
         seq = KeyframeSequence.from_json(kfs, s.geo)
         seq.bind_visibility(get_element=s.geo.element)
         assert seq.has_visibility_effects()
+
+
+class TestLabelSnapshotsFollowAutoPlacement:
+    """Keyframe label snapshots ARE auto-placement at keyframes. With
+    auto-placement off they must not run: the web backfills
+    ``keyframe_snapshots: true`` into every style, and the snapshots then
+    overrode the applet-placed offsets — a segment label flew off-frame
+    (repro: «Хроматические числа», label «1» of AB)."""
+
+    def _scene(self, enabled):
+        from animageo.animageo import AnimaGeoScene
+        s = AnimaGeoScene()
+        s.geo = _construction()
+        s.applyStyle({'overlay': {'label_placement': {
+            'enabled': enabled, 'keyframe_snapshots': True}}})
+        for e in s.geo.elements:
+            e.style['label_visible'] = True
+        return s
+
+    def _seq(self, s):
+        seq = KeyframeSequence.from_json(_v2([
+            {'t': 0, 'styles': {'M': {'label_offset_px': [0, 0]}}},
+            {'t': 1, 'styles': {'M': {'label_offset_px': [12, 6]}}},
+        ]), s.geo)
+        seq.bind_style_tracks(get_element=s.geo.element,
+                              resolve=lambda e, k: e.style.get(k))
+        return seq
+
+    def test_no_snapshots_when_auto_placement_is_off(self, monkeypatch):
+        import animageo.label_placement as lp_mod
+        s = self._scene(enabled=False)
+        seq = self._seq(s)
+        calls = []
+        monkeypatch.setattr(lp_mod, 'compute_label_layout',
+                            lambda *a, **k: calls.append(1) or {})
+        assert s._bind_label_snapshots(seq) is None
+        assert calls == []
+        # the applet-placed offsets keep animating through their style track
+        keys = {(si.name, si.key) for si in seq.intervals[0].style_interps}
+        assert ('M', 'label_offset_px') in keys
+
+    def test_snapshots_own_label_positions_when_auto_placement_is_on(self):
+        s = self._scene(enabled=True)
+        seq = self._seq(s)
+        layouts = s._bind_label_snapshots(seq)
+        assert layouts is not None and len(layouts) == 2
+        # The keyframes' own label_offset_px only fed the solver: as a style
+        # track it would fight the snapshots and, where no snapshot
+        # interpolator runs, put a solver-placed label back on its line.
+        for iv in seq.intervals:
+            assert all(si.key != 'label_offset_px' for si in iv.style_interps)
+            assert all(fin[2] != 'label_offset_px' for fin in iv.style_finalizers)
+
+    def test_still_frame_places_labels_like_playback(self):
+        """apply_keyframes_at (the web's «Точный кадр») must take label
+        positions from the same snapshots as playback — not from the manual
+        offset track, which put a solver-placed label onto its line."""
+        s = self._scene(enabled=True)
+        data = _v2([
+            {'t': 0, 'styles': {'M': {'label_offset_px': [0, 0]}}},
+            {'t': 1, 'styles': {'M': {'label_offset_px': [12, 6]}}},
+        ])
+        s.apply_keyframes_at(data, 0.5)
+        m = s.geo.element('M')
+        assert m.style.get('_auto_placed') is True
+        assert m.style.get('label_offset_px') != [6.0, 3.0]
+
+    def test_still_frame_keeps_manual_offsets_without_auto_placement(self):
+        s = self._scene(enabled=False)
+        data = _v2([
+            {'t': 0, 'styles': {'M': {'label_offset_px': [0, 0]}}},
+            {'t': 1, 'styles': {'M': {'label_offset_px': [12, 6]}}},
+        ])
+        s.apply_keyframes_at(data, 0.5)
+        m = s.geo.element('M')
+        assert not m.style.get('_auto_placed')
+        assert list(m.style.get('label_offset_px')) == pytest.approx([6.0, 3.0])

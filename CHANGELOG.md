@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.7] - 2026-09-21
+
+### Fixed
+
+- A label placed in GeoGebra lands where the applet drew it, for every element
+  type GeoGebra has a label rule for — segments, vectors, rays, polygons,
+  circles, ellipses, arcs and sectors, not only points. GeoGebra starts each
+  label from a per-type base point (a segment's midpoint plus 16 px along its
+  normal, a polygon's vertex average, a point on a circle's upper-left arc, …)
+  and adds the stored `labelOffset`; the renderer started every non-point label
+  from its own generic spot, so a segment label sat on the middle of its line.
+  The rules now live in one table (`animageo/label_anchor.py`, transcribed from
+  GeoGebra's `Draw*` classes) and are checked against label ink measured on the
+  live applet (`tests/fixtures/label_anchor_types.*`, ≤ 2 px). Lines keep their
+  previous placement — GeoGebra puts a line label relative to the applet window
+  border, which an export frame does not have — and angles keep their own logic.
+- Circles and ellipses draw their label; they drew none at all.
+- A label that becomes visible during an interval (its element or the label
+  itself hidden at the interval's start keyframe) appears already at its
+  auto-placed position instead of at the unplaced default for the whole
+  interval.
+- Keyframe label snapshots run only with auto-placement enabled
+  (`overlay.label_placement.enabled`). With it off they still ran whenever
+  `keyframe_snapshots` was set and overrode hand-placed label offsets.
+- With snapshots on, they own every label position: a keyframe's own
+  `label_offset_px` style track no longer fights the snapshot interpolators, and
+  a label first placed at a later keyframe gets the snapshot's anchor and
+  auto-placed flag, so its offset is read in the solver's convention.
+- `apply_keyframes_at` (single-frame preview) places labels from the same
+  keyframe snapshots as playback, computing only its interval's two.
+
 ## [1.7.6] - 2026-09-21
 
 ### Fixed
@@ -1486,7 +1517,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.6...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.7...HEAD
+[1.7.7]: https://github.com/ivaleo/animageo/compare/v1.7.6...v1.7.7
 [1.7.6]: https://github.com/ivaleo/animageo/compare/v1.7.5...v1.7.6
 [1.7.5]: https://github.com/ivaleo/animageo/compare/v1.7.4...v1.7.5
 [1.7.4]: https://github.com/ivaleo/animageo/compare/v1.7.3...v1.7.4

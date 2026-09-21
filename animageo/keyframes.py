@@ -626,17 +626,30 @@ class KeyframeSequence:
                     interval.dynamic_angle_params[name] = end_pl.angle_params
                     continue
                 start_pl = start_layout.get(name)
-                if start_pl is None:
-                    # Label wasn't placed at start keyframe (element hidden
-                    # at that keyframe). Skip interpolation — the label
-                    # appears at `show` time with its end-keyframe offset.
-                    continue
+                # Label not placed at the start keyframe (element or label
+                # hidden there): it appears during this interval, so it must
+                # appear already placed — hold the end-keyframe offset for the
+                # whole interval. Skipping left it at the unplaced default
+                # (a segment label on the middle of its line) until the next
+                # interval moved it.
+                start_offset = end_pl.offset_ggb if start_pl is None else start_pl.offset_ggb
                 interval.label_interps.append(LabelOffsetInterpolator(
                     name=name,
-                    start_offset=start_pl.offset_ggb,
+                    start_offset=start_offset,
                     end_offset=end_pl.offset_ggb,
                     easing=easing_fn,
                 ))
+
+    def drop_style_key(self, key):
+        """Remove every style track (interpolators and finalizers) for *key*.
+
+        For keys another mechanism owns during playback — label offsets once
+        keyframe label snapshots are attached."""
+        for interval in self.intervals:
+            interval.style_interps = [
+                si for si in getattr(interval, 'style_interps', []) if si.key != key]
+            interval.style_finalizers = [
+                fin for fin in getattr(interval, 'style_finalizers', []) if fin[2] != key]
 
     def bind_style_tracks(self, get_element, resolve, color_space='oklab'):
         """Compile per-keyframe ``styles`` into per-interval style tracks.
