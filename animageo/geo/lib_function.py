@@ -17,6 +17,7 @@ import numpy as np
 import sympy as sp
 
 from ..constants import Z_LINE
+from .safe_sympify import safe_sympify
 
 
 logger = logging.getLogger(__name__)
@@ -215,7 +216,7 @@ def parse_function_expression(
     text = _extract_rhs(text, var_name)
     var = sp.Symbol(var_name)
     try:
-        expr = sp.sympify(text, locals={var_name: var, **_SYMPY_FUNCS})
+        expr = safe_sympify(text, {var_name: var, **_SYMPY_FUNCS})
     except (sp.SympifyError, SyntaxError, TypeError) as e:
         raise ValueError(f"could not parse function expression {raw!r}: {e}")
     return expr, var
@@ -297,7 +298,9 @@ class Function:
                 if name == sym.name:
                     continue
                 try:
-                    subs[sp.Symbol(str(name))] = float(value)
+                    # A boolean stays a boolean: ``If(b, …)`` needs one.
+                    subs[sp.Symbol(str(name))] = (
+                        value if isinstance(value, bool) else float(value))
                 except (TypeError, ValueError):
                     continue
             if subs:

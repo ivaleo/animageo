@@ -17,6 +17,7 @@ from .lib_elements import *
 from .lib_conic import Conic, ConicType
 from .lib_function import Function
 from .lib_implicit import ImplicitCurve
+from .formula_params import bind_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -99,11 +100,20 @@ type_to_shortcut = {
     str             : 'T'   # for DSL string literals: Function("y = x^2"), Conic("..."), etc.
 }
 
+# Formula constructors take the formula text followed by any number of numeric
+# parameters (``Function("y = a*x^2", a)``); the count varies, so each base
+# dispatches to a single ``<base>_Tn`` implementation.
+_FORMULA_BASES = ('function', 'conic', 'implicit_curve', 'line')
+_FORMULA_PARAMS_RE = re.compile(r'^T[imAab]+$')
+_VARIADIC_DISPATCH = frozenset(f'{base}_Tn' for base in _FORMULA_BASES)
+
 def strFullCommand(name, params): # "Polygon", [Point, Point, int] -> "polygon_ppi"
-    if strCommand(name) == "polygon" and bool(re.match('^p*$', strParams(params))):
-        return strCommand(name)
-    else:
-        return f"{strCommand(name)}_{strParams(params)}"
+    command, shortcuts = strCommand(name), strParams(params)
+    if command == "polygon" and re.match('^p*$', shortcuts):
+        return command
+    if command in _FORMULA_BASES and _FORMULA_PARAMS_RE.match(shortcuts):
+        return f"{command}_Tn"
+    return f"{command}_{shortcuts}"
 
 def strParams(params): # [Point, Point, int] -> "ppi"
     for x in params:
@@ -2091,7 +2101,11 @@ def parabola_pl(focus, directrix):
     A[:2, :2] = np.column_stack([perp, axis_vec])
     A[:2, 2] = vertex
     A_inv = np.linalg.inv(A)
-    return Conic(A_inv.T @ M_canon @ A_inv)
+    parabola = Conic(A_inv.T @ M_canon @ A_inv)
+    # GeoGebra orients a Parabola(F, d) by the directrix normal ("avoid
+    # flip"); Point(parabola, t) travels accordingly (Conic.ggb_frame).
+    parabola.ggb_axis_hint = np.array(directrix.normal, dtype=float)
+    return parabola
 
 
 def parabola_ps(focus, segment):
@@ -2218,6 +2232,12 @@ def point_():
 def point_ii(x, y):
     return Point([x,y])
 
+def point_im(x, y):
+    """``(x, y)`` with a measure among the coordinates — ``(0, -Radius(c))``."""
+    return Point([_num(x), _num(y)])
+
+point_mi = point_mm = point_im
+
 def point_c(circle, tparam = None):
     """Point on a circle. ``tparam`` is the angle in radians."""
     return Point(circle.center + circle.radius * get_direction(tparam))
@@ -2283,6 +2303,79 @@ def point_F(function, tparam = None):
     if not np.isfinite(y):
         return None
     return Point([x, float(y)])
+
+def _ggb_path_t(t):
+    """GeoGebra ``Point(path, t)``: the number is a normalised path parameter
+    clamped to [0, 1] (``PathNormalizer.toParentPathParameter``)."""
+    return min(max(_num(t), 0.0), 1.0)
+
+
+def point_ci(circle, t):
+    """``Point(circle, t)``: GeoGebra maps ``t ∈ [0, 1]`` onto the angle
+    range [−π, π] measured from the +x axis."""
+    angle = -np.pi + 2.0 * np.pi * _ggb_path_t(t)
+    return Point(circle.center + circle.radius * get_direction(angle))
+
+
+def point_si(segment, t):
+    """``Point(segment, t)``: ``A + t·(B − A)`` with ``t`` clamped to [0, 1]."""
+    return Point(interpolate(segment.endpoints[0], segment.endpoints[1], _ggb_path_t(t)))
+
+
+def _ggb_inf(t):
+    """GeoGebra ``PathNormalizer.infFunction``: (−1, 1) → (−∞, ∞)."""
+    return t / (1.0 - abs(t)) if abs(t) < 1.0 else None
+
+
+def point_Ki(conic, t):
+    """``Point(conic, t)`` — the normalised parameter mapped onto the conic in
+    GeoGebra's own frame (``Conic.ggb_frame``): a circle/ellipse runs over the
+    angle −π … π from the first axis, a hyperbola over its right branch then
+    its left one, a parabola over ``(−∞, ∞)``. ``None`` at infinity and on
+    degenerate conics."""
+    frame = conic.ggb_frame()
+    if frame is None:
+        return None
+    tn = _ggb_path_t(t)
+    kind = frame['type']
+    if kind in ('circle', 'ellipse'):
+        a, b = frame['half_axes']
+        angle = -np.pi + 2.0 * np.pi * tn
+        u, v = a * np.cos(angle), b * np.sin(angle)
+    elif kind == 'hyperbola':
+        a, b = frame['half_axes']
+        tp = -1.0 + 4.0 * tn                     # right branch (−1, 1), left (1, 3)
+        left = tp > 1.0
+        s = _ggb_inf(tp - 2.0 if left else tp)
+        if s is None:
+            return None
+        u, v = a * np.cosh(s), b * np.sinh(s)
+        if left:
+            u = -u
+    else:                                        # parabola
+        s = _ggb_inf(2.0 * tn - 1.0)
+        if s is None:
+            return None
+        v = frame['p'] * s
+        u = v * s / 2.0
+    return Point(frame['center'] + u * frame['e0'] + v * frame['e1'])
+
+
+def point_Fiii(function, t, x_min, x_max):
+    """``Point(f, t)`` — GeoGebra maps ``t ∈ [0, 1]`` onto the x-range of the
+    view showing the graph (the parser passes the saved view's bounds),
+    narrowed to the function's explicit domain."""
+    lo, hi = float(x_min), float(x_max)
+    if function.explicit_domain is not None:
+        lo = max(lo, float(function.explicit_domain[0]))
+        hi = min(hi, float(function.explicit_domain[1]))
+    tn = _ggb_path_t(t)
+    return point_F(function, (1.0 - tn) * lo + tn * hi)
+
+
+point_Fmii = point_Fiii
+point_cm, point_sm, point_Km = point_ci, point_si, point_Ki
+
 
 def point_K(conic, tparam=None):
     """Point on a conic in its canonical parametrization."""
@@ -2512,6 +2605,12 @@ def vector_ii(x, y):
 def vector_vi(vec, mod):
     k = mod / np.linalg.norm(vec.direction)
     return Vector(vec.endpoints * k)
+
+def vector_v(vec):
+    """``Vector(<vector expression>)``: GeoGebra wraps a vector-valued
+    expression used as a command input — ``Translate(P, a*u)`` is saved as
+    ``Vector[(a * u)]``. The value is the vector itself."""
+    return Vector(np.array(vec.endpoints, dtype=float))
 
 # ── GeoGebra public-name aliases ──────────────────────────────────────
 #
@@ -2803,6 +2902,71 @@ def implicit_curve_T(expr_str):
     except ValueError as e:
         logger.warning("ImplicitCurve parse failed for %r: %s", expr_str, e)
         return None
+
+
+def function_Tn(expr_str, *params):
+    """Function whose formula mentions numbers: ``f(x) = a x²`` re-read with
+    the current ``a`` on every rebuild (see ``geo/formula_params.py``)."""
+    try:
+        return Function.from_string(
+            expr_str, parameters=bind_parameters(expr_str, 'function', params))
+    except ValueError as e:
+        logger.warning("Function parse failed for %r: %s", expr_str, e)
+        return None
+
+
+def conic_Tn(expr_str, *params):
+    try:
+        return Conic.from_string(
+            expr_str, parameters=bind_parameters(expr_str, 'conic', params))
+    except ValueError as e:
+        logger.warning("Conic parse failed for %r: %s", expr_str, e)
+        return None
+
+
+def implicit_curve_Tn(expr_str, *params):
+    try:
+        return ImplicitCurve.from_string(
+            expr_str, parameters=bind_parameters(expr_str, 'implicit', params))
+    except ValueError as e:
+        logger.warning("ImplicitCurve parse failed for %r: %s", expr_str, e)
+        return None
+
+
+def function_value_Fi(function, x):
+    """``f(x)`` inside an expression (GeoGebra ``(1, f(1))``). ``None`` where
+    the function is undefined, so the dependents become undefined too."""
+    try:
+        y = float(function(float(x)))
+    except (TypeError, ValueError):
+        return None
+    return y if np.isfinite(y) else None
+
+
+def function_value_Fm(function, m):
+    return function_value_Fi(function, m.value)
+
+
+def function_value_FA(function, angle_size):
+    return function_value_Fi(function, angle_size.value)
+
+
+def line_Tn(expr_str, *params):
+    """Line from an equation that mentions numbers (``g: y = a x + 1``).
+    ``None`` when the current values leave no line (``0 = 1``) or a curve."""
+    try:
+        conic = Conic.from_string(
+            expr_str, parameters=bind_parameters(expr_str, 'line', params))
+    except ValueError as e:
+        logger.warning("Line parse failed for %r: %s", expr_str, e)
+        return None
+    M = conic.matrix
+    if not np.allclose(M[:2, :2], 0.0):
+        return None
+    normal = np.array([2.0 * M[0, 2], 2.0 * M[1, 2]])
+    if np.allclose(normal, 0.0):
+        return None
+    return Line(normal, -M[2, 2])
 
 
 def locus_pp(dependent_point, mover_point):
@@ -3180,6 +3344,115 @@ for _obj in ('p', 's', 'c', 'P', 'l'):
 del _obj
 
 
+# ── Transformations of formula curves (Conic / Function / ImplicitCurve) ──
+# GeoGebra transforms conics and graphs like any other object; with a slider
+# as the factor (``Dilate(f, a, O)``) the image follows it on rebuild.
+
+def _copy_curve(curve):
+    if isinstance(curve, Function):
+        return Function(curve.expr, curve.var, source=curve.source,
+                        domain=curve.explicit_domain)
+    if isinstance(curve, ImplicitCurve):
+        return ImplicitCurve(curve.expr, curve.var_x, curve.var_y,
+                             source=curve.source)
+    return Conic(curve.matrix.copy())
+
+
+def _dilate_curve(curve, r, center):
+    """Homothety ``p ↦ c + r(p − c)`` of a curve; ``None`` for ``r = 0``
+    (the curve collapses to a point)."""
+    r = _num(r)
+    if np.isclose(r, 0.0):
+        return None
+    c = np.asarray(center, dtype=float)
+    out = _copy_curve(curve)
+    out.translate(-c)
+    out.scale(r)
+    out.translate(c)
+    if isinstance(out, Function) and curve.explicit_domain is not None:
+        lo, hi = (float(c[0] + r * (v - c[0])) for v in curve.explicit_domain)
+        out.explicit_domain = (min(lo, hi), max(lo, hi))
+    return out
+
+
+def _dilate_curve_about(curve, r, center):
+    return _dilate_curve(curve, r, center.coords)
+
+
+def _dilate_curve_origin(curve, r):
+    return _dilate_curve(curve, r, np.zeros(2))
+
+
+def _translate_curve(curve, vector):
+    d = np.asarray(vector.direction, dtype=float)
+    out = _copy_curve(curve)
+    out.translate(d)
+    if isinstance(out, Function) and curve.explicit_domain is not None:
+        lo, hi = curve.explicit_domain
+        out.explicit_domain = (lo + float(d[0]), hi + float(d[0]))
+    return out
+
+
+def _reflect_curve_in_point(curve, point):
+    return _dilate_curve(curve, -1.0, point.coords)
+
+
+for _obj in ('K', 'F', 'I'):
+    globals()['dilate_' + _obj + 'ip'] = _dilate_curve_about
+    globals()['dilate_' + _obj + 'mp'] = _dilate_curve_about
+    globals()['dilate_' + _obj + 'i'] = _dilate_curve_origin
+    globals()['dilate_' + _obj + 'm'] = _dilate_curve_origin
+    globals()['translate_' + _obj + 'v'] = _translate_curve
+    globals()['reflect_' + _obj + 'p'] = _reflect_curve_in_point
+del _obj
+
+
+def _conic_affine(conic, H):
+    """Image of ``conic`` under the affine point map ``p ↦ H·p`` (homogeneous
+    3×3): ``M' = H⁻ᵀ M H⁻¹``."""
+    H_inv = np.linalg.inv(H)
+    return Conic(H_inv.T @ conic.matrix @ H_inv)
+
+
+def _about(center, linear):
+    """Homogeneous matrix of ``p ↦ c + L(p − c)``."""
+    c = np.asarray(center, dtype=float)
+    H = np.eye(3)
+    H[:2, :2] = linear
+    H[:2, 2] = c - linear @ c
+    return H
+
+
+def _rotation(alpha):
+    ca, sa = np.cos(alpha), np.sin(alpha)
+    return np.array([[ca, -sa], [sa, ca]])
+
+
+def reflect_Kl(conic, line):
+    """Mirror image of a conic in a line (segment/ray: their carrier line)."""
+    n = np.asarray(line.normal, dtype=float)
+    return _conic_affine(conic, _about(n * line.offset, np.eye(2) - 2.0 * np.outer(n, n)))
+
+
+reflect_Ks = reflect_Kl
+
+
+def rotate_Kip(conic, alpha, center):
+    return _conic_affine(conic, _about(center.coords, _rotation(_num(alpha))))
+
+
+def rotate_KAp(conic, angle_size, center):
+    return rotate_Kip(conic, angle_size.value, center)
+
+
+def rotate_Ki(conic, alpha):
+    return _conic_affine(conic, _about(np.zeros(2), _rotation(_num(alpha))))
+
+
+def rotate_KA(conic, angle_size):
+    return rotate_Ki(conic, angle_size.value)
+
+
 # ── B3: Polar(Line, Conic) → pole point ──
 def polar_lK(line, conic):
     """Pole of a line with respect to a conic: ``M⁻¹ · ℓ`` (homogeneous)."""
@@ -3360,7 +3633,7 @@ def _build_command_registry():
         if not callable(obj) or name.startswith('_'):
             continue
         # Special no-suffix case for polygon(p, p, p, ...).
-        if name == 'polygon':
+        if name == 'polygon' or name in _VARIADIC_DISPATCH:
             registry[name] = obj
             continue
         if '_' not in name:

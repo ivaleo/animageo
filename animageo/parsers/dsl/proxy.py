@@ -134,6 +134,15 @@ class ElementProxy:
     def __neg__(self): return _unary(self, 'USub')
     def __abs__(self): return _unary(self, 'Abs')
 
+    def __call__(self, *args):
+        """``f(1)`` on a function proxy registers a ``FunctionValue``
+        command, so the value follows the function (and the numbers in its
+        formula) on rebuild — GeoGebra's ``P = (1, f(1))``."""
+        from ...geo.lib_function import Function
+        if not isinstance(self.data, Function) or len(args) != 1:
+            raise TypeError(f"'{self._name}' is not a function of one argument")
+        return _binop(self, args[0], 'FunctionValue')
+
 
 def _coerce(value):
     """Convert a proxy to its construction name; pass other values through."""

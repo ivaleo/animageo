@@ -30,6 +30,19 @@ class TestExpressionConversion:
         result = ggb_parser.replace_with_point('(3, 4)')
         assert 'Point' in result
 
+    def test_replace_with_point_nested_parentheses(self):
+        rp = ggb_parser.replace_with_point
+        assert rp('(0, 1 / ((4 * a)))') == 'Point(0, 1 / ((4 * a)))'
+        assert rp('(1, f(1))') == 'Point(1, f(1))'
+        assert rp('Segment[(0, 0), (x(A), 2)]') == 'Segment[Point(0, 0), Point(x(A), 2)]'
+        assert rp('((1, 2))') == '(Point(1, 2))'
+
+    def test_replace_with_point_leaves_non_pairs(self):
+        rp = ggb_parser.replace_with_point
+        for s in ('f(1, 2)', '(1 + 2)', '(1, 2, 3)', '(3; 30°)',
+                  'If[x < 1, (2), 3]', '(, 1)', '(1, 2'):
+            assert rp(s) == s
+
     def test_is_number(self):
         assert ggb_parser.is_number('3.14')
         assert ggb_parser.is_number('-2')

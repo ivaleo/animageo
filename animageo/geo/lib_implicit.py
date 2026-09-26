@@ -19,6 +19,7 @@ import numpy as np
 import sympy as sp
 
 from ..constants import Z_LINE
+from .safe_sympify import safe_sympify
 from .lib_function import (
     _normalize_expression, _strip_label_prefix, _SYMPY_FUNCS,
 )
@@ -56,7 +57,7 @@ def parse_implicit_expression(
     x = sp.Symbol('x')
     y = sp.Symbol('y')
     try:
-        expr = sp.sympify(text, locals={'x': x, 'y': y, **_SYMPY_FUNCS})
+        expr = safe_sympify(text, {'x': x, 'y': y, **_SYMPY_FUNCS})
     except (sp.SympifyError, SyntaxError, TypeError) as e:
         raise ValueError(f"could not parse implicit expression {raw!r}: {e}")
     return expr, x, y
@@ -119,8 +120,15 @@ class ImplicitCurve:
     def y_var(self): return self.var_y
 
     @classmethod
-    def from_string(cls, raw: str) -> 'ImplicitCurve':
+    def from_string(cls, raw: str, parameters=None) -> 'ImplicitCurve':
+        """``parameters`` maps other names in the expression to their
+        current values (``"x^3 + a y = 1"`` with ``{'a': 2}``)."""
         expr, sx, sy = parse_implicit_expression(raw)
+        if parameters:
+            expr = expr.subs({
+                sp.Symbol(str(k)): v if isinstance(v, bool) else float(v)
+                for k, v in parameters.items()
+            })
         return cls(expr, sx, sy, source=raw)
 
     # ── Evaluation ────────────────────────────────────────────────────

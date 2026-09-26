@@ -191,6 +191,9 @@ class Function(ElementProxy):
 
     def __init__(self, expression: str,
                  *, name: Optional[str] = ...) -> None: ...
+    def __call__(self, x: Any) -> Measure:
+        """``f(1)`` — the value at ``x``, live: it follows the function."""
+        ...
 
 
 class ImplicitCurve(ElementProxy):

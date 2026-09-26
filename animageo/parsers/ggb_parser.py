@@ -6,12 +6,17 @@ import ast
 import tempfile
 from zipfile import ZipFile
 
+import numpy as np
+
 logger = logging.getLogger(__name__)
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element as XElement
 
 from ..geo.construction import Construction
-from ..geo.lib_commands import Command
+from ..geo.lib_commands import Command, COMMAND_REGISTRY, strCommand
+from ..geo.formula_params import (
+    mentioned_numbers, numeric_var_values, parametric_inputs,
+)
 from ..geo.lib_vars import *
 from ..geo.lib_elements import *
 from ..geo.utils import is_number, is_angle_degrees
@@ -110,23 +115,62 @@ def get_xelems(ggb_path: str):
     finally:
         shutil.rmtree(tmp_dir, ignore_errors=True)
 
+def _matching_paren(s, open_index):
+    """Index of the ``)`` closing ``s[open_index]``, tracking ``()``/``[]``
+    nesting; ``None`` if unbalanced or closed by a ``]``."""
+    depth = 0
+    for i in range(open_index, len(s)):
+        ch = s[i]
+        if ch in '([':
+            depth += 1
+        elif ch in ')]':
+            depth -= 1
+            if depth == 0:
+                return i if ch == ')' else None
+    return None
+
+
+def _top_level_parts(s):
+    """Split ``s`` on the commas that are not nested in brackets."""
+    parts, depth, start = [], 0, 0
+    for i, ch in enumerate(s):
+        if ch in '([{':
+            depth += 1
+        elif ch in ')]}':
+            depth -= 1
+        elif ch == ',' and depth == 0:
+            parts.append(s[start:i])
+            start = i + 1
+    parts.append(s[start:])
+    return parts
+
+
 def replace_with_point(expr_str):
-    # Регулярное выражение для поиска нужных скобок
-    pattern = r'''
-        (?<!\w)           # Отрицательный просмотр назад: перед скобкой не должно быть символа слова
-        \(                # Открывающая круглая скобка
-        \s*               # Возможные пробелы после открывающей скобки
-        [^()\[\],]+       # Первый элемент (не содержит скобок, скобок GGB или запятых)
-        \s*               # Возможные пробелы
-        ,                 # Запятая, разделяющая элементы
-        \s*               # Возможные пробелы
-        [^()\[\],]+       # Второй элемент (не содержит скобок, скобок GGB или запятых)
-        \s*               # Возможные пробелы перед закрывающей скобкой
-        \)                # Закрывающая круглая скобка
-    '''
-    
-    # Замена: вставляем 'Point' перед найденными скобками
-    return re.sub(pattern, r'Point\g<0>', expr_str, flags=re.VERBOSE)
+    """Wrap every coordinate pair ``(a, b)`` in ``Point(...)``.
+
+    A pair is a ``(`` not preceded by a word character (call arguments such
+    as ``f(1, 2)`` stay intact) whose content has exactly two non-empty
+    top-level comma parts. The parts may hold brackets of their own —
+    ``(0, 1 / ((4 * a)))``, ``(1, f(1))`` — which the former single regular
+    expression could not express: such a pair stayed a bare tuple, and the
+    construction dropped the object. Pairs nested inside are wrapped too.
+    """
+    out, i = [], 0
+    while i < len(expr_str):
+        ch = expr_str[i]
+        if ch == '(' and not (i > 0 and re.match(r'\w', expr_str[i - 1])):
+            close = _matching_paren(expr_str, i)
+            if close is not None:
+                inner = expr_str[i + 1:close]
+                parts = _top_level_parts(inner)
+                is_pair = len(parts) == 2 and all(p.strip() for p in parts)
+                out.append(('Point(' if is_pair else '(')
+                           + replace_with_point(inner) + ')')
+                i = close + 1
+                continue
+        out.append(ch)
+        i += 1
+    return ''.join(out)
 
  # Функция для извлечения идентификаторов из выражения
 def extract_identifiers(expression):
@@ -238,18 +282,100 @@ def _element_types_by_label(constr_xelem: XElement) -> dict[str, str]:
 
 
 def _numeric_parameter_values(constr: Construction) -> dict[str, float]:
-    values: dict[str, float] = {}
-    for var in constr.vars:
-        data = var.data
-        if isinstance(data, (int, float)):
-            values[var.name] = float(data)
-        elif isinstance(data, Measure) and data.dimension == 0:
-            values[var.name] = float(data.value)
-        elif isinstance(data, AngleSize):
-            values[var.name] = float(data.value)
-        elif isinstance(data, Boolean):
-            values[var.name] = float(data.value)
-    return values
+    return numeric_var_values(constr)
+
+
+_FORMULA_COMMANDS = {'function': 'Function', 'conic': 'Conic',
+                     'line': 'Line', 'implicit': 'ImplicitCurve'}
+
+
+def _same_curve(a, b) -> bool:
+    if isinstance(a, Conic) and isinstance(b, Conic):
+        # Scale both matrices to unit max entry first: Conic.equivalent
+        # compares products with an absolute tolerance, under which two
+        # matrices with tiny entries would always look proportional.
+        sa, sb = np.max(np.abs(a.matrix)), np.max(np.abs(b.matrix))
+        if sa == 0 or sb == 0:
+            return sa == sb
+        return Conic(a.matrix / sa).equivalent(Conic(b.matrix / sb))
+    if isinstance(a, Line) and isinstance(b, Line):
+        sign = 1.0 if np.dot(a.normal, b.normal) >= 0 else -1.0
+        return bool(np.allclose(sign * a.normal, b.normal, atol=1e-7)
+                    and np.isclose(sign * a.offset, b.offset, atol=1e-7))
+    return False
+
+
+def _add_formula_command(constr, name, kind, expr, saved=None, debug=False) -> bool:
+    """Build a formula curve as a command on the numbers it mentions, so it
+    follows them on rebuild (``f(x) = a x²`` with ``a`` animated).
+
+    Returns False — the caller then keeps the frozen snapshot — when the
+    formula mentions no construction number, can't be evaluated, or
+    disagrees with the curve GeoGebra saved (``saved``: the conic from
+    ``<matrix>`` / the line from ``<coords>``).
+    """
+    # A formula that mentions no construction number keeps the old import
+    # path untouched: it isn't even parsed here.
+    if not mentioned_numbers(constr, expr):
+        return False
+    cmd_name = _FORMULA_COMMANDS[kind]
+    try:
+        params = parametric_inputs(constr, expr, kind)
+        if not params:
+            return False
+        values = numeric_var_values(constr)
+        impl = COMMAND_REGISTRY[f'{strCommand(cmd_name)}_Tn']
+        probe = impl(expr, *(values[p] for p in params))
+        if probe is None or (saved is not None and not _same_curve(probe, saved)):
+            return False
+    except Exception as e:           # never let a formula take the load down
+        logger.warning("Formula %r of '%s' kept as a snapshot: %s", expr, name, e)
+        return False
+    command = Command(cmd_name, [expr, *params], [name])
+    constr.add(command)
+    constr.apply(command, debug=debug)
+    return True
+
+
+_PATH_TYPES = (Circle, Arc, Segment, Line, Ray, Conic, Function, LocusCurve, Polygon)
+
+
+def _check_point_on_path(constr, name, source, coords_xelem) -> None:
+    """``Point(path, t)`` is rebuilt from our port of GeoGebra's path
+    parameter. If it disagrees with the position saved in the file, keep the
+    saved point (fixed) and record why — the static frame then matches the
+    applet, the point just won't follow ``t``."""
+    try:
+        x, y, z = (float(coords_xelem.attrib[k]) for k in ('x', 'y', 'z'))
+    except (AttributeError, KeyError, ValueError):
+        return
+    if z == 0 or not np.isfinite([x, y, z]).all():
+        return                                   # undefined in GeoGebra too
+    saved = np.array([x / z, y / z])
+    elem = constr.element(name)
+    built = getattr(elem, 'data', None)
+    if isinstance(built, Point) and np.allclose(built.coords, saved, rtol=1e-6, atol=1e-6):
+        return
+    if elem is None:
+        constr.add(Element(name, Point(saved), fixed=True))
+    else:
+        elem.data = Point(saved)
+        elem.fixed = True
+    constr.record_expression_diagnostic(
+        'parametric_dependency_frozen', name, source,
+        parameters=mentioned_numbers(constr, source), command='Point',
+        detail='the path parameter does not reproduce the saved position; '
+               'kept the saved point')
+
+
+def _note_frozen_formula(constr, name, expr, detail) -> None:
+    """A formula that mentions numbers but was imported as a snapshot will
+    not follow them — record it so a client can tell the user."""
+    mentioned = mentioned_numbers(constr, expr)
+    if mentioned:
+        constr.record_expression_diagnostic(
+            'parametric_dependency_frozen', name, expr,
+            parameters=mentioned, detail=detail)
 
 
 def get_kernel_decimals(ggb_path: str, default: int = 2) -> int:
@@ -364,10 +490,13 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
     # Tracks the locus (Circle/Line/Ray/Segment) the next Point is
     # constrained to; used to compute its ``tparam``.
     tparam_locus = None
+    # Output of a Point(path, t) command, checked against its saved <coords>.
+    verify_point = None
     name_mapping = {}
     style = {}
     raw = {}  # raw GGB values per element, for ImportPolicy (Phase 3+)
     conditions = {}  # element name -> <condition showObject="expr"> raw expression
+    formula_exprs = {}  # normalized name -> conic/line equation, deferred to its <element>
     text_exprs = {}  # normalized name -> raw text <expression> exp, deferred to
                      # the following <element type="text"> which carries position/style
     element_types = _element_types_by_label(constr_xelem)
@@ -490,6 +619,7 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
             continue
 
         if xelem.tag == "expression":
+            name = expr = None
             try:
                 name = xelem.attrib['label']
                 expr = xelem.attrib['exp']
@@ -525,6 +655,7 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                 if expr_type in ('conic', 'line'):
                     logger.debug("Deferred %s equation to element: %s",
                                  expr_type, expr)
+                    formula_exprs[name_mapping[name]] = converted_expr
                     continue
 
                 if expr_type == 'function':
@@ -532,12 +663,19 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                     # string — the companion <element> has only style,
                     # no geometric data.
                     from ..geo.lib_function import Function as _Function
+                    if _add_formula_command(constr, name_mapping[name], 'function',
+                                            converted_expr, debug=debug):
+                        xelems_left_to_pass = 1
+                        continue
                     try:
                         func_obj = _Function.from_string(
                             converted_expr,
                             parameters=_numeric_parameter_values(constr),
                         )
                         constr.add(Element(name_mapping[name], func_obj, fixed=True))
+                        _note_frozen_formula(
+                            constr, name_mapping[name], converted_expr,
+                            'formula imported as a snapshot at the current values')
                     except ValueError as fe:
                         logger.warning("Could not parse function '%s': %s", expr, fe)
                     xelems_left_to_pass = 1
@@ -545,9 +683,16 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
 
                 if expr_type == 'implicitpoly':
                     from ..geo.lib_implicit import ImplicitCurve as _Implicit
+                    if _add_formula_command(constr, name_mapping[name], 'implicit',
+                                            converted_expr, debug=debug):
+                        xelems_left_to_pass = 1
+                        continue
                     try:
                         imp = _Implicit.from_string(expr)
                         constr.add(Element(name_mapping[name], imp, fixed=True))
+                        _note_frozen_formula(
+                            constr, name_mapping[name], converted_expr,
+                            'formula imported as a snapshot at the current values')
                     except ValueError as ie:
                         logger.warning("Could not parse implicitpoly '%s': %s",
                                        expr, ie)
@@ -560,6 +705,12 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                 continue
             except Exception as e:
                 logger.debug("Expression parse error: %s", e)
+                if name is not None and expr is not None:
+                    # The object is then built from its saved coordinates (if
+                    # any) and will not follow what the expression refers to.
+                    constr.record_expression_diagnostic(
+                        'expression_parse_error', name_mapping.get(name, name), expr,
+                        parameters=mentioned_numbers(constr, expr), detail=str(e))
                 continue
         
         if xelem.tag == "command":            
@@ -597,6 +748,15 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                     _ggb_parse(constr, f"{temp_name} = {converted_expr}", debug=debug)
                     new_inputs.append(temp_name)
             
+            if comm_name == "Point" and len(new_inputs) == 2:
+                # Point(f, t) on a graph: GeoGebra maps t onto the x-range of
+                # the view, so the command carries the saved view's bounds.
+                path_elem = constr.element(new_inputs[0])
+                x_range = getattr(constr, 'ggb_view_x_range', None)
+                if (x_range is not None and path_elem is not None
+                        and isinstance(path_elem.data, Function)):
+                    new_inputs = new_inputs + [repr(x_range[0]), repr(x_range[1])]
+
             command = Command(comm_name, new_inputs, outputs)
             constr.add(command)
             constr.apply(command, debug = debug)
@@ -628,7 +788,13 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                         # and unblock segments that depend on it.
                         tparam_locus = input0
 
-            xelems_left_to_pass = len(outputs_raw) if not tparam_locus else 0
+            if comm_name == "Point" and len(inputs) == 2 and outputs:
+                path_elem = constr.element(new_inputs[0])
+                if path_elem is not None and isinstance(path_elem.data, _PATH_TYPES):
+                    verify_point = (outputs[0], f"Point[{', '.join(inputs)}]")
+
+            xelems_left_to_pass = (len(outputs_raw)
+                                   if not (tparam_locus or verify_point) else 0)
 
             continue
 
@@ -636,6 +802,11 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
 
         if xelem.tag == "element":
             name = name_mapping[xelem.attrib["label"]]
+            if (verify_point is not None and name == verify_point[0]
+                    and xelem.attrib["type"] == "point"):
+                _check_point_on_path(constr, name, verify_point[1], xelem.find("coords"))
+                verify_point = None
+                continue
             if xelem.attrib["type"] == "point":
                 coords = list(xelem.find("coords").attrib.values())
                 coords.pop(-1) #  removing z coordinate
@@ -693,6 +864,15 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                 except (KeyError, ValueError) as e:
                     logger.warning("Failed to parse conic matrix for '%s': %s", name, e)
                     continue
+                formula = formula_exprs.pop(name, None)
+                if formula is not None:
+                    if _add_formula_command(constr, name, 'conic', formula,
+                                            saved=conic, debug=debug):
+                        continue
+                    _note_frozen_formula(
+                        constr, name, formula,
+                        'kept the saved conic: the equation does not follow the '
+                        'numbers it mentions or does not reproduce the saved curve')
                 constr.add(Element(name, conic, fixed=True))
                 continue
             if xelem.attrib["type"] == "line":
@@ -715,7 +895,17 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                     continue
                 # GGB: a·x + b·y + c·z = 0 with z = 1.
                 # animageo Line: n·p = c_line, with n = (a, b), c_line = -c.
-                constr.add(Element(name, Line([a, b], -c), fixed=True))
+                line = Line([a, b], -c)
+                formula = formula_exprs.pop(name, None)
+                if formula is not None:
+                    if _add_formula_command(constr, name, 'line', formula,
+                                            saved=line, debug=debug):
+                        continue
+                    _note_frozen_formula(
+                        constr, name, formula,
+                        'kept the saved line: the equation does not follow the '
+                        'numbers it mentions or does not reproduce the saved line')
+                constr.add(Element(name, line, fixed=True))
                 continue
             if xelem.attrib["type"] == "text":
                 if constr.element(name) is not None:
@@ -888,6 +1078,25 @@ def parse_gui(view, gui_xelem: XElement, debug = False):
     if font_elem is not None:
         view['fontSize'] = int(font_elem.attrib.get('size', 16))
 
+def _view_x_range(view_xelem):
+    """x-range ``(x_min, x_max)`` of the saved graphics view, or ``None``.
+
+    GeoGebra measures ``Point(f, t)`` on a function graph over the x-range
+    of the view showing it (``GeoFunction.getMinParameter``)."""
+    if view_xelem is None:
+        return None
+    size, coords = view_xelem.find('size'), view_xelem.find('coordSystem')
+    try:
+        width = float(size.attrib['width'])
+        x_zero = float(coords.attrib['xZero'])
+        scale = float(coords.attrib['scale'])
+    except (AttributeError, KeyError, ValueError):
+        return None
+    if scale <= 0 or width <= 0:
+        return None
+    return (-x_zero / scale, (width - x_zero) / scale)
+
+
 def load(constr: Construction, view, ggb_path: str, debug = False, strict = False):
     logger.info("Loading GGB: %s", ggb_path)
     old_strict = getattr(constr, 'strict_unsupported', False)
@@ -896,6 +1105,7 @@ def load(constr: Construction, view, ggb_path: str, debug = False, strict = Fals
     constr.log_unsupported = bool(debug or strict)
     constr.ggb_decimals = get_kernel_decimals(ggb_path)
     constr_xelem, view_xelem, gui_xelem = get_xelems(ggb_path)
+    constr.ggb_view_x_range = _view_x_range(view_xelem)
     try:
         parse_constr(constr, constr_xelem, debug = debug)
         parse_view(view, view_xelem, debug = debug)

@@ -17,11 +17,13 @@ as_parabola, as_hyperbola, as_lines, as_point) are computed lazily and
 return only the geometric data needed for rendering and intersections —
 no curve sampling happens here.
 """
+import re
 from enum import Enum
 from typing import Optional, List
 import numpy as np
 
 from .lib_elements import Line, Point
+from .safe_sympify import safe_sympify
 from ..constants import Z_LINE
 
 
@@ -35,6 +37,54 @@ class ConicType(Enum):
     DOUBLE_LINE = 'double_line'                 # one real line, multiplicity 2
     POINT = 'point'                             # single real point (imaginary line pair)
     EMPTY = 'empty'                             # no real points (imaginary conic)
+
+
+def parse_conic_equation(equation: str):
+    """Parse ``LHS = RHS`` (or a bare ``F``) into ``(sympy_expr, x, y)`` with
+    the equation moved to one side. A ``label:`` prefix is tolerated."""
+    import sympy as sp
+
+    text = re.sub(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*:\s*', '', equation)
+    text = text.replace('^', '**')
+    if '=' in text:
+        lhs, rhs = text.split('=', 1)
+        text = f"({lhs.strip()}) - ({rhs.strip()})"
+    x = sp.Symbol('x')
+    y = sp.Symbol('y')
+    try:
+        expr = safe_sympify(text, {'x': x, 'y': y})
+    except (sp.SympifyError, SyntaxError, TypeError) as e:
+        raise ValueError(f"could not parse conic equation {equation!r}: {e}")
+    return expr, x, y
+
+
+# GeoGebra's Kernel.STANDARD_PRECISION, used by ggb_frame()'s zero tests.
+_GGB_EPS = 1e-8
+
+
+def _ggb_solve_quadratic(c, b, a):
+    """Roots of ``a x² + b x + c`` in GeoGebra's order
+    (``EquationSolver.solveQuadraticS``) — the order picks the first axis."""
+    eps = _GGB_EPS
+    if abs(a) < eps:
+        return [] if abs(b) < eps else [-c / b]
+    if abs(b) < eps * abs(a):
+        x2 = -c / a
+        if abs(x2) < eps:
+            return [0.0]
+        if x2 < 0:
+            return []
+        return [np.sqrt(x2), -np.sqrt(x2)]
+    d = b * b - 4.0 * a * c
+    if abs(d) < eps * b * b:
+        return [-b / (2.0 * a)]
+    if d < 0.0:
+        return []
+    d = np.sqrt(d)
+    if b < 0.0:
+        d = -d
+    q = (b + d) / -2.0
+    return [q / a, c / q]
 
 
 # Relative tolerance on entries of the scale-normalized matrix.
@@ -57,6 +107,9 @@ class Conic:
         self.style['z_index'] = Z_LINE
 
         self._type: Optional[ConicType] = None
+        # GeoGebra orients a Parabola(F, d) by the directrix normal; the
+        # constructor stores it here for ggb_frame().
+        self.ggb_axis_hint = None
 
     # ── Human-friendly accessor ──
     @property
@@ -88,7 +141,7 @@ class Conic:
         return cls(M)
 
     @classmethod
-    def from_string(cls, equation: str) -> 'Conic':
+    def from_string(cls, equation: str, parameters=None) -> 'Conic':
         """Parse a conic equation string into the matrix form.
 
         Accepts the GGB-style equation forms:
@@ -97,24 +150,29 @@ class Conic:
             "x^2 + 2·x·y + y^2 − 4 = 0"
             "g: x^2 + y^2 = 4"   (label prefix tolerated)
 
-        Raises ``ValueError`` if sympy can't parse the expression or the
-        expanded polynomial exceeds degree 2 (not a conic).
+        ``parameters`` maps other names in the equation to their current
+        values (``"y = a x^2"`` with ``{'a': 2}``).
+
+        Raises ``ValueError`` if sympy can't parse the expression, a name
+        other than ``x``/``y`` stays unbound, or the expanded polynomial
+        exceeds degree 2 (not a conic).
         """
-        import re as _re
         import sympy as sp
 
-        text = _re.sub(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*:\s*', '', equation)
-        text = text.replace('^', '**')
-        if '=' in text:
-            lhs, rhs = text.split('=', 1)
-            text = f"({lhs.strip()}) - ({rhs.strip()})"
-
-        x = sp.Symbol('x')
-        y = sp.Symbol('y')
-        try:
-            expr = sp.expand(sp.sympify(text, locals={'x': x, 'y': y}))
-        except (sp.SympifyError, SyntaxError, TypeError) as e:
-            raise ValueError(f"could not parse conic equation {equation!r}: {e}")
+        expr, x, y = parse_conic_equation(equation)
+        if parameters:
+            expr = expr.subs({
+                sp.Symbol(str(k)): float(v) for k, v in parameters.items()
+            })
+        unbound = expr.free_symbols - {x, y}
+        if unbound:
+            # Poly would silently treat them as coefficients, and their
+            # float() below would fall back to 0 — a wrong conic.
+            raise ValueError(
+                f"conic equation {equation!r} has unbound names "
+                f"{sorted(map(str, unbound))}"
+            )
+        expr = sp.expand(expr)
 
         try:
             poly = sp.Poly(expr, x, y)
@@ -164,6 +222,92 @@ class Conic:
         S = np.diag([1 / ratio, 1 / ratio, 1]).astype(float)
         self.matrix = S.T @ self.matrix @ S
         self._type = None
+
+    def ggb_frame(self):
+        """GeoGebra's own frame of this conic — the one its path parameter
+        (``Point(conic, t)``) is measured in.
+
+        Port of ``GeoConicND.classifyConic`` in the default non-continuous
+        mode: ``{'type', 'center', 'e0', 'e1', 'half_axes' | 'p'}`` where
+        ``center`` is the midpoint (the vertex for a parabola) and a point
+        with frame coordinates ``(u, v)`` is ``center + u·e0 + v·e1``.
+        Unlike :meth:`as_ellipse`, the first axis and its sign follow
+        GeoGebra (a tall ellipse gets ``e0 = (0, 1)``), and they depend on the
+        sign of the matrix as GeoGebra's do. ``None`` for degenerate conics.
+        """
+        M = self.matrix
+        A0, A1, A2 = float(M[0, 0]), float(M[1, 1]), float(M[2, 2])
+        A3, A4, A5 = float(M[0, 1]), float(M[0, 2]), float(M[1, 2])
+        if abs(A0 * A1 - A3 * A3) < _GGB_EPS:
+            return self._ggb_parabola_frame(A0, A1, A2, A3, A4, A5)
+
+        det_s = A0 * A1 - A3 * A3
+        if abs(A3) < _GGB_EPS:
+            ev = [A0, A1]
+            ex, ey = 1.0, 0.0
+        else:
+            ev = _ggb_solve_quadratic(det_s, -(A0 + A1), 1.0)
+            if not ev:
+                return None
+            if len(ev) == 1:
+                ev = [ev[0], ev[0]]
+            ex, ey = -A3, -ev[0] + A0
+        bx = (A3 * A5 - A1 * A4) / det_s
+        by = (A3 * A4 - A0 * A5) / det_s
+        beta = A4 * bx + A5 * by + A2
+        if abs(beta) < _GGB_EPS:
+            return None                          # single point / line pair
+        mu = [-ev[0] / beta, -ev[1] / beta]
+        if det_s < 0:
+            kind = 'hyperbola'
+            if mu[0] < 0:
+                mu = [mu[1], mu[0]]
+                ex, ey = -ey, ex
+            half_axes = (np.sqrt(1.0 / mu[0]), np.sqrt(-1.0 / mu[1]))
+        else:
+            if not (mu[0] > 0 and mu[1] > 0):
+                return None                      # empty
+            if abs(mu[0] / mu[1] - 1.0) < _GGB_EPS:
+                kind = 'circle'
+                ex, ey = 1.0, 0.0
+            else:
+                kind = 'ellipse'
+                if mu[0] > mu[1]:
+                    mu = [mu[1], mu[0]]
+                    ex, ey = -ey, ex
+            half_axes = (np.sqrt(1.0 / mu[0]), np.sqrt(1.0 / mu[1]))
+        e0 = np.array([ex, ey]) / np.hypot(ex, ey)
+        return {'type': kind, 'center': np.array([bx, by]), 'e0': e0,
+                'e1': np.array([-e0[1], e0[0]]), 'half_axes': half_axes}
+
+    def _ggb_parabola_frame(self, A0, A1, A2, A3, A4, A5):
+        if abs(A3) < _GGB_EPS:
+            if abs(A0) < _GGB_EPS:
+                if abs(A1) < _GGB_EPS:
+                    return None
+                lam, ex, ey = A1, 1.0, 0.0
+            else:
+                lam, ex, ey = A0, 0.0, 1.0
+        else:
+            lam = A0 + A1
+            length = np.hypot(A3, A0)
+            ex, ey = A3 / length, -A0 / length
+        hint = self.ggb_axis_hint
+        if hint is not None and ex * hint[0] + ey * hint[1] < 0:
+            ex, ey = -ex, -ey                    # GeoGebra's "avoid flip"
+        cx = A4 * ex + A5 * ey
+        cy = A5 * ex - A4 * ey
+        if abs(cx) < _GGB_EPS:
+            return None                          # line pair / empty
+        t2 = cy / lam
+        t1 = (cy * t2 - A2) / (2.0 * cx)
+        vertex = np.array([ey * t2 + ex * t1, ey * t1 - ex * t2])
+        e1 = np.array([-ey, ex])                 # set before the p-sign flip
+        p = -cx / lam
+        e0 = np.array([ex, ey])
+        if p < 0:
+            e0, p = -e0, -p
+        return {'type': 'parabola', 'center': vertex, 'e0': e0, 'e1': e1, 'p': p}
 
     def equivalent(self, other):
         """Two conics are equivalent iff their matrices are proportional."""

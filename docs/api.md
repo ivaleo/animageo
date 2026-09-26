@@ -30,6 +30,19 @@ Commands that received `None` only because of such a root unsupported command
 are added as `dependents` to the original diagnostic and are not logged in bulk
 as independent problems.
 
+Expressions get diagnostics of the same shape, with `command: 'Expression'`,
+the source `expression` and the construction numbers it mentions in
+`parameters`:
+
+| `reason` | Meaning |
+|---|---|
+| `parametric_dependency_frozen` | A formula mentions a number (slider) but was imported as a snapshot at the load-time values, so the object will not follow the number (e.g. `g(x) = f(x) + a`, or a conic equation that does not reproduce the curve GeoGebra saved — the saved curve is kept). Also a `Point(path, t)` (`command: 'Point'`) whose computed position disagrees with the saved one: the saved point is kept |
+| `expression_parse_error` | The expression could not be read; the object is built from its saved coordinates, if any, and does not follow what the expression refers to |
+
+A formula that mentions numbers is otherwise imported as a live dependency:
+`f(x) = a x²`, `p: y = a x²`, `g: y = a x + 1` and implicit curves are rebuilt
+from their formula with the current values whenever a number changes.
+
 ### Layout parameters: `style`, `reference`, `content`, `export`
 
 `loadGGB(...)` and `applyStyle(...)` share the same pipeline:

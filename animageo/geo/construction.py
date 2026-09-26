@@ -771,6 +771,28 @@ class Construction:
             self._unsupported_roots_by_output[output] = root_id
         return diagnostic
 
+    def record_expression_diagnostic(self, reason, output, expression,
+                                     parameters=None, detail=None,
+                                     command='Expression'):
+        """Record a problem with a parsed expression rather than a command —
+        e.g. a formula that mentions a slider but had to be imported as a
+        frozen snapshot. Same dict shape as the command diagnostics, so a
+        client can warn the user that the object will not follow the number.
+        """
+        diagnostic = {
+            'command': command,
+            'signature': [],
+            'outputs': [output],
+            'reason': reason,
+            'expression': expression,
+        }
+        if parameters:
+            diagnostic['parameters'] = list(parameters)
+        if detail:
+            diagnostic['detail'] = detail
+        self.command_diagnostics.append(diagnostic)
+        return diagnostic
+
     def _intersect_points_order(self, command_original, input_data):
         """Return GeoGebra-like point ordering hints for Intersect outputs.
 

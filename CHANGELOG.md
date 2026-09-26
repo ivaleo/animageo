@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.9] - 2026-09-26
+
+### Fixed
+
+- A graph or curve given by a formula with a slider follows the slider:
+  `f(x) = a x²`, `p: y = a x²`, `g: y = a x + 1` and implicit curves are rebuilt
+  from their formula with the current value whenever the number changes, so the
+  exact frame and the video move with the applet. They used to be imported as a
+  snapshot at the load-time value and stood still. A conic or line keeps the
+  curve GeoGebra saved if its equation does not reproduce it. In the DSL,
+  `f(x) = a*x^2` (and `Conic("…")`, `ImplicitCurve("…")`) follow `a` the same way;
+  before, the function kept an unbound symbol.
+- A point whose coordinates contain brackets, such as `F = (0, 1/(4a))` or
+  `P = (1, f(1))`, is built and follows the numbers in it. It used to vanish from
+  the scene (or stand still at its saved position).
+- `Translate(P, a*u)` — a vector expression as a command input — is built and
+  follows `a`; the translated object used to vanish.
+- `Dilate` of a function, conic or implicit curve (`Dilate(f, a, O)`) is
+  supported, together with `Translate` of these curves, `Reflect` in a point,
+  and `Reflect` in a line / `Rotate` of a conic.
+- `Point(path, t)` with a number — a point driven by a slider along a path — is
+  built with GeoGebra's parameter: `t` runs over `[0, 1]` (clamped). On a circle
+  or an ellipse it is the angle `−π … π` from the conic's first axis, chosen as
+  GeoGebra chooses it (a tall ellipse starts from its vertical axis); a
+  hyperbola is walked right branch first, then the left one; a parabola from one
+  end to the other, oriented like GeoGebra's (`Parabola(F, d)` follows the
+  directrix). On a segment `t` is the fraction from A to B, and on a function
+  graph it spans the x-range of the view saved in the file.
+- A formula may use any number of the construction, not only a slider: a
+  length or distance (`Radius(c)`, `Distance(A, B)`), an area, an angle object
+  (`Angle(A, B, C)`) or a checkbox (`If(b, x, -x)`); moving a point that such a
+  number depends on moves the graph. A point with a measure among its
+  coordinates, such as `(0, -Radius(c))`, is built too.
+- An object that still cannot follow the numbers it mentions is reported in
+  `command_diagnostics` (`parametric_dependency_frozen`,
+  `expression_parse_error`) instead of freezing silently. A `Point(path, t)`
+  whose computed position disagrees with the one saved in the file keeps the
+  saved position.
+
+### Security
+
+- Formula text from a `.ggb` file is no longer evaluated as Python: function,
+  conic, line and implicit-curve formulas are parsed with a restricted
+  namespace, and text that is not a formula (dunders, quotes, attribute access)
+  is refused. Before, a crafted file could run code when it was loaded.
+
 ## [1.7.8] - 2026-09-21
 
 ### Fixed
@@ -1533,7 +1579,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.8...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.9...HEAD
+[1.7.9]: https://github.com/ivaleo/animageo/compare/v1.7.8...v1.7.9
 [1.7.8]: https://github.com/ivaleo/animageo/compare/v1.7.7...v1.7.8
 [1.7.7]: https://github.com/ivaleo/animageo/compare/v1.7.6...v1.7.7
 [1.7.6]: https://github.com/ivaleo/animageo/compare/v1.7.5...v1.7.6
