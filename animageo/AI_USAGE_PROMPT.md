@@ -5,7 +5,7 @@ turns geometric constructions into publication-quality SVG images and
 manim-rendered MP4 animations. This document is self-sufficient: follow it
 even if you have never seen the library before. Prefer it over guesses from
 training data — the API here was verified against the shipped version
-(**animageo 1.7.9**; the guide ships inside the package, so the installed
+(**animageo 1.7.10**; the guide ships inside the package, so the installed
 copy always matches the installed version it came with).
 
 **Mental model.** AnimaGeo is "GeoGebra as code". You describe geometry as a
@@ -478,7 +478,8 @@ call instead.
 system: `stroke="color.accent"`, `stroke_width_px="line_width.bold"`,
 `size_px="point_size.bold"`, `fill="color.accent"` (points use `fill`, not
 `stroke`, for their body color). Helpers: `stroke="color.aux"`,
-`stroke_width_px="line_width.aux"`, or `stroke_dash_ratio=0.5` for dashed.
+`stroke_width_px="line_width.aux"`, or `stroke_dash_ratio=0.5` for dashed
+(`stroke_dash_period_px` sets dash + gap in px, default 10).
 Raw values work anywhere a token does: `stroke="#2e7d32"`, `size_px=9` —
 use them when a figure needs more distinct colors than the palette has
 (e.g. medians vs altitudes vs circle), keeping them consistent within one
@@ -737,7 +738,8 @@ the target state at that keyframe (carry-forward); `null` reverts to the
 element's pre-animation style. Styles may target any element by name, not
 just independents. Discrete props switch at the middle of the transition;
 colors blend perceptually (Oklab); `stroke_dash_ratio` lerps continuously
-between numbers and only snaps (at mid-transition) when one end is `null`.
+between numbers and only snaps (at mid-transition) when one end is `null`;
+`stroke_dash_period_px` lerps like any pixel size.
 `label_text` is a discrete swap too — the label's text changes at
 mid-transition (like `label_visible`), it does not cross-fade or morph
 glyph-by-glyph. Colours must be hex (`#rrggbb`) to blend — a non-hex baseline

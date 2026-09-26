@@ -344,6 +344,11 @@ class TestNewFieldOverrides:
         style = p.resolve(_FakeElem('L', {'elem_type': 'segment'}))
         assert style['stroke_linecap'] == 'round'
 
+    def test_stroke_dash_period_override(self):
+        p = ImportPolicy.from_dict({'stroke_dash_period_px': 14})
+        style = p.resolve(_FakeElem('L', {'elem_type': 'segment'}))
+        assert style['stroke_dash_period_px'] == 14
+
     def test_raw_derived_fields_can_be_overridden(self):
         p = ImportPolicy(
             visible=False,

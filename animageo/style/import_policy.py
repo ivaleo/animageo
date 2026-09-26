@@ -52,6 +52,7 @@ _FIELD_MAP: Dict[str, tuple] = {
     'point_shape':      ('point_style',     'point_shape'),   # int→string mapping in enums
     'stroke_opacity':   ('line_opacity',    'stroke_opacity'),
     'stroke_dash_ratio':('line_type',       'stroke_dash_ratio'),
+    'stroke_dash_period_px': (None,         'stroke_dash_period_px'),
     'stroke_linecap':   (None,              'stroke_linecap'),
 }
 
@@ -83,6 +84,7 @@ class ImportPolicy:
     point_shape:     Any = None
     stroke_opacity:  Any = None
     stroke_dash_ratio: Any = None
+    stroke_dash_period_px: Any = None
     stroke_linecap:  Any = None
 
     def __post_init__(self):

@@ -6,8 +6,10 @@ AnimaGeo and JSXGraph, so no unit conversion is needed.
 """
 from __future__ import annotations
 
+import math
 from typing import Any, Dict, Optional
 
+from ...dash import element_dash_px
 from .context import JsxContext, Raw
 
 
@@ -40,22 +42,32 @@ def _opacity(ctx: JsxContext, elem, key: str, default: float) -> float:
         return default
 
 
-# JSXGraph `dash` index by dash/line-width ratio, mirroring the TikZ exporter's
-# thresholds (animageo/exporters/tikz/style.py): dotted → 1, dashes → 3, loose
-# dashes → 4. (0 = solid; we omit the attr in that case.)
+# JSXGraph (1.10) has no free dash array: `dash` indexes the renderer's fixed
+# `dashArray` (px, with the default dashScale=false). Only the plain on/off
+# patterns are candidates — 5 [20,10,10,10] and 6 [20,5,10,5] are dash-dot
+# and would change the line's character. (0 = solid; the attr is omitted.)
+_JSX_DASHES = {1: (2.0, 2.0), 2: (5.0, 5.0), 3: (10.0, 10.0), 4: (20.0, 20.0)}
+
+
 def _dash_value(ctx: JsxContext, elem) -> Optional[int]:
-    ratio = ctx.resolve(elem, "stroke_dash_ratio", default=None)
-    if not ratio:
+    """Nearest JSXGraph dash index to the element's pattern in style px.
+
+    The pattern is the renderer's nominal one (``stroke_dash_ratio`` of
+    ``stroke_dash_period_px`` → ``rendering.dash_period_px`` → 10), in the same
+    px as ``strokeWidth``. Nearest = smallest log-distance on (dash, gap), so
+    0.65 of 10 px (6.5 / 3.5) maps to 2 ([5, 5]).
+    """
+    dash_px = element_dash_px(
+        ctx.scene, elem, resolve=lambda e, k, d=None: ctx.resolve(e, k, default=d))
+    if dash_px is None:
         return None
-    try:
-        r = float(ratio)
-    except (TypeError, ValueError):
-        return None
-    if r <= 2.5:
-        return 1   # dotted
-    if r <= 6.0:
-        return 3   # (medium) dashes
-    return 4       # big / loose dashes
+    on, off = dash_px
+
+    def dist(pattern):
+        a, b = pattern
+        return math.hypot(math.log(on / a), math.log(off / b))
+
+    return min(_JSX_DASHES, key=lambda i: dist(_JSX_DASHES[i]))
 
 
 # AnimaGeo z-index tiers → JSXGraph `layer` (0..9, higher = on top). Reproduces

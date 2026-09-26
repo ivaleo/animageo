@@ -10,6 +10,8 @@ import numpy as np
 from manim import ManimColor, VGroup, VMobject, constants
 from manim.utils.family import extract_mobject_family_members
 
+from ..dash import apply_cairo_dash
+
 CAIRO_LINE_WIDTH_MULTIPLE: float = 0.01
 
 # Default pixels-per-inch for vector PDF/EPS export. 96 dpi is the CSS pixel
@@ -159,7 +161,13 @@ def _apply_stroke(ctx: cairo.Context, vmobject: VMobject, style = None):
     }
     
     ctx.set_line_join(joint_map[vmobject.joint_type])
+    # A dashed stroke is one path with a dash pattern (animageo/dash.py):
+    # cairo writes it as a single <path stroke-dasharray=...> in SVG and a
+    # native dash in PDF/EPS. Reset afterwards so it never leaks.
+    dashed = apply_cairo_dash(ctx, vmobject)
     ctx.stroke_preserve()
+    if dashed:
+        ctx.set_dash([])
 
 def _apply_fill(ctx: cairo.Context, vmobject: VMobject, style = None):
     _set_cairo_context_color(ctx, vmobject.get_fill_rgbas(), vmobject)

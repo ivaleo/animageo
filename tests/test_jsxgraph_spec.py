@@ -167,25 +167,39 @@ class TestInputSchema:
 
 
 class TestDashMapping:
-    """Dash patterns map to JSXGraph dash indices (mirrors the TikZ thresholds),
-    instead of collapsing every dash to a single style."""
+    """The dash pattern in style px (ratio × period) maps to the nearest plain
+    JSXGraph dash index — 1:[2,2] 2:[5,5] 3:[10,10] 4:[20,20]. The ratio is a
+    0..1 share of the period, not a dash/width ratio: 0.65 of 10 px used to
+    collapse to dots (1)."""
 
-    def _dash_of(self, ratio):
+    def _dash_of(self, ratio, period=None, rendering=None):
         s = _scene("A=Point(0,0)\nB=Point(2,1)\nm=Segment(A,B)")
-        s.geo.element("m").style["stroke_dash_ratio"] = ratio
+        if rendering is not None:
+            s.style.rendering["dash_period_px"] = rendering
+        m = s.geo.element("m")
+        m.style["stroke_dash_ratio"] = ratio
+        if period is not None:
+            m.style["stroke_dash_period_px"] = period
         return _el(_spec(s), "m").get("attrs", {}).get("dash")
 
-    def test_dotted(self):
-        assert self._dash_of(2.0) == 1
+    def test_default_ggb_dash_is_not_dotted(self):
+        assert self._dash_of(0.65) == 2          # 6.5 / 3.5 px → [5, 5]
 
-    def test_dashed(self):
-        assert self._dash_of(5.0) == 3
+    def test_short_period_is_dotted(self):
+        assert self._dash_of(0.5, period=4) == 1  # 2 / 2 px
 
-    def test_loose_dashed(self):
-        assert self._dash_of(9.0) == 4
+    def test_period_20(self):
+        assert self._dash_of(0.5, period=20) == 3  # 10 / 10 px
+
+    def test_period_40(self):
+        assert self._dash_of(0.5, period=40) == 4  # 20 / 20 px
+
+    def test_rendering_period_is_the_fallback(self):
+        assert self._dash_of(0.5, rendering=40) == 4
 
     def test_solid_has_no_dash_attr(self):
         assert self._dash_of(0) is None
+        assert self._dash_of(1.0) is None
 
 
 class TestLayerMapping:

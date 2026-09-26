@@ -39,6 +39,7 @@ DEFAULT_STYLE_KEYS = (
     "stroke_width_px",
     "stroke_opacity",
     "stroke_dash_ratio",
+    "stroke_dash_period_px",
     "stroke_linecap",
     "fill",
     "fill_opacity",

@@ -318,7 +318,7 @@ ImportPolicy(size_px=3, font_size_px=14)   # explicit overrides
 ImportPolicy(stroke_width_px='quantize:[1,2,4]')   # DSL string (works in the Python API too)
 ```
 
-**Fields:** `base`, `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_linecap`.
+**Fields:** `base`, `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_dash_period_px`, `stroke_linecap`.
 
 Define per-type/per-name rules (`per_type`, `per_name`) in `overlay`, not in `ImportPolicy`.
 

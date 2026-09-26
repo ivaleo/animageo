@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.10] - 2026-09-26
+
+### Added
+
+- The dash period is set in style pixels: `stroke_dash_period_px` (per element,
+  in `overlay`, `defaults` and `import.policy`; animatable in keyframes) and the
+  style-wide `rendering.dash_period_px` (default 10). `stroke_dash_ratio` is the
+  dash's share of the period: 0.65 of 10 px draws 6.5 px dashes and 3.5 px gaps.
+
+### Changed
+
+- A dashed line is exported as one line with a dash pattern — `stroke-dasharray`
+  in SVG, a native dash in PDF and EPS — instead of a row of separate pieces, so
+  other editors can restyle it and the files are smaller. Video frames draw the
+  same pattern.
+- Dashes are sized like line widths: they follow the style's prominence and no
+  longer grow when the GeoGebra applet is zoomed in (a ×2 zoom used to double
+  every dash while the lines kept their width).
+- A segment, a vector or an arc starts and ends with a dash, and circles and
+  ellipses close without a seam; a ray's dashes start at its vertex. With round
+  or square line caps the visible dash keeps its nominal length.
+- A `stroke_dash_ratio` of 1 or more, or below 0, draws a solid line.
+
+### Fixed
+
+- Dashes are drawn on arcs, ellipses, parabolas, hyperbolas, function graphs,
+  implicit curves and loci; there they used to be ignored.
+- A dashed vector keeps its arrow tip.
+- Interactive export (JSXGraph and the `animageo-board/v1` spec): every dashed
+  line used to come out dotted; it now gets the nearest JSXGraph dash by its
+  length in pixels.
+- TikZ export draws the same dash as the picture, taken from the style's
+  period, instead of a fixed pattern.
+- A line-cap change made during an animation reaches the drawn line.
+
 ## [1.7.9] - 2026-09-26
 
 ### Fixed
@@ -1579,7 +1614,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.9...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.10...HEAD
+[1.7.10]: https://github.com/ivaleo/animageo/compare/v1.7.9...v1.7.10
 [1.7.9]: https://github.com/ivaleo/animageo/compare/v1.7.8...v1.7.9
 [1.7.8]: https://github.com/ivaleo/animageo/compare/v1.7.7...v1.7.8
 [1.7.7]: https://github.com/ivaleo/animageo/compare/v1.7.6...v1.7.7

@@ -242,7 +242,10 @@ elem.style / Python DSL = явные локальные правки
 - `stroke_width_px`: толщина линии, кривой, дуги.
 - `stroke_opacity`: `0..1`.
 - `stroke_dash_ratio`: `null` или число от `0` до `1`; не-`null` означает
-  пунктир.
+  пунктир (доля штриха в периоде).
+- `stroke_dash_period_px`: штрих + промежуток в px (по умолчанию
+  `rendering.dash_period_px`, 10). `0.65` при `10` даёт штрих 6.5 px и
+  промежуток 3.5 px.
 - `stroke_linecap`: `butt`, `round` или `square`.
 - `right_angle_joint`: `auto`, `bevel`, `miter` или `round`.
 
@@ -524,6 +527,7 @@ scene.loadGGB(
 
 - `background`: фон сцены.
 - `line_cap`: окончание линий по умолчанию.
+- `dash_period_px`: период пунктира по умолчанию в px (штрих + промежуток), `10`.
 - `right_angle_joint`: стиль соединения по умолчанию для маркеров прямого
   угла.
 - `polygon_boundary_layer`: `"top"`, чтобы рисовать стороны многоугольника
@@ -610,6 +614,7 @@ scene.loadGGB(
 - `point_shape`
 - `stroke_opacity`
 - `stroke_dash_ratio`
+- `stroke_dash_period_px`
 - `stroke_linecap`
 
 ## Как выбрать правильный слой

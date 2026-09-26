@@ -582,11 +582,8 @@ def _clipped_line_endpoints(scene, line_data):
 def _is_dashed(scene, elem) -> bool:
     """True when an element is rendered dashed (carries ``stroke_dash_ratio``).
     Used for P-DASHED: overlapping a dashed line is preferable to a solid one."""
-    r = _resolve_style(scene, elem, 'stroke_dash_ratio', default=None)
-    try:
-        return r is not None and float(r) > 0
-    except (TypeError, ValueError):
-        return False
+    from .dash import dash_ratio
+    return dash_ratio(_resolve_style(scene, elem, 'stroke_dash_ratio', default=None)) is not None
 
 
 def _collect_obstacles(scene, *, angle_marker_obstacle=False):

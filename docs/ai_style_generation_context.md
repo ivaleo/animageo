@@ -228,7 +228,10 @@ is not a drawable element type.
 - `stroke`: hex or preset reference.
 - `stroke_width_px`: line/curve/arc thickness.
 - `stroke_opacity`: `0..1`.
-- `stroke_dash_ratio`: `null` or number from `0` to `1`; non-null means dashed.
+- `stroke_dash_ratio`: `null` or number from `0` to `1`; non-null means dashed
+  (the dash's share of one period).
+- `stroke_dash_period_px`: dash + gap in px (default `rendering.dash_period_px`,
+  10). `0.65` of `10` draws 6.5 px dashes with 3.5 px gaps.
 - `stroke_linecap`: `butt`, `round`, or `square`.
 - `right_angle_joint`: `auto`, `bevel`, `miter`, or `round`.
 
@@ -498,6 +501,7 @@ Use for scene/export behavior, not object styling:
 
 - `background`: scene background.
 - `line_cap`: default line cap.
+- `dash_period_px`: default dash period in px (dash + gap), `10`.
 - `right_angle_joint`: default joint style for right-angle markers.
 - `polygon_boundary_layer`: `"top"` to draw polygon boundary segments above
   fills; otherwise `null`.
@@ -579,6 +583,7 @@ Policy fields:
 - `point_shape`
 - `stroke_opacity`
 - `stroke_dash_ratio`
+- `stroke_dash_period_px`
 - `stroke_linecap`
 
 ## Choosing The Right Layer

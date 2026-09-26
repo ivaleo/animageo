@@ -85,6 +85,7 @@ callable `fn(raw, defaults, elem)`, or a string DSL directive. See
 | `point_shape` | `<pointStyle val>` | `point_shape` |
 | `stroke_opacity` | `<lineStyle opacity>` | `stroke_opacity` |
 | `stroke_dash_ratio` | `<lineStyle type>` | `stroke_dash_ratio` |
+| `stroke_dash_period_px` | — | `stroke_dash_period_px` |
 | `stroke_linecap` | — | `stroke_linecap` |
 
 Raw `obj_color` contains `r`, `g`, `b`, legacy `alpha`, plus normalized

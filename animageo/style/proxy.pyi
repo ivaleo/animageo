@@ -44,6 +44,7 @@ class StyleProxy(dict):
     stroke_width_px: float             # line thickness, pixels
     stroke_opacity: float              # [0, 1]
     stroke_dash_ratio: float           # 0 = solid, 0 < x < 1 = dashed
+    stroke_dash_period_px: float       # dash + gap, px (default rendering.dash_period_px = 10)
     stroke_linecap: str                # 'butt', 'round', 'square'
     right_angle_joint: str             # 'auto', 'bevel', 'miter', 'round'
 

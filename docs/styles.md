@@ -298,6 +298,7 @@ The full documentation lives in the docstring of `animageo/style/schema.py`. Bel
     "rendering": {
         "background":             "color.background",
         "line_cap":               "butt",
+        "dash_period_px":         10,
         "right_angle_joint":      "round",
         "polygon_boundary_layer": "top",
         "points_display":         "auto",
@@ -356,6 +357,7 @@ normalized into the semantic schema before merging.
 |---|---|---|
 | `background` | hex or `color.*` | Scene background: Manim camera/MP4 and the SVG viewport |
 | `line_cap` | `"butt"` \| `"round"` \| `"square"` | Line endings |
+| `dash_period_px` | number > 0 (px), default `10` | Style-wide dash period (dash + gap) for elements without their own `stroke_dash_period_px` |
 | `right_angle_joint` | `"auto"` \| `"bevel"` \| `"miter"` \| `"round"` | Joint of the right-angle marker's sides |
 | `polygon_boundary_layer` | `"top"` \| `null` | `"top"`: polygon outline always above the fill (`z_index=10`) |
 | `points_display` | `"auto"` \| `"only_labels"` \| `"only_points"` | `only_labels` hides the point and shows the label; `only_points` — the reverse |
@@ -497,7 +499,8 @@ If the `z_index` key is set explicitly, the automatic assignment does not kick i
 | `stroke` | hex | `style.strong` |
 | `stroke_width_px` | float (px) | `defaults.<type>.stroke_width_px` |
 | `stroke_opacity` | float 0..1 | `1` |
-| `stroke_dash_ratio` | float 0..1 \| None | None (solid) |
+| `stroke_dash_ratio` | float 0..1 \| None | None (solid); the dash's share of one period, `0`/`None` or `>= 1` = solid |
+| `stroke_dash_period_px` | float (px) | `rendering.dash_period_px` (10) |
 | `stroke_linecap` | `"butt"`/`"round"`/`"square"` (`"auto"` is also accepted by the runtime map) | `rendering.line_cap` |
 | `right_angle_joint` | `"auto"`/`"bevel"`/`"miter"`/`"round"` | `rendering.right_angle_joint` |
 
@@ -724,6 +727,7 @@ Each field accepts: `None` (fallback), a literal (number/bool/list/dict/hex), a 
 | `point_shape` | `<pointStyle val>` | `point_shape` |
 | `stroke_opacity` | `<lineStyle opacity>` | `stroke_opacity` |
 | `stroke_dash_ratio` | `<lineStyle type>` | `stroke_dash_ratio` |
+| `stroke_dash_period_px` | — | `stroke_dash_period_px` |
 | `stroke_linecap` | — | `stroke_linecap` |
 
 `elem.ggb_raw['obj_color']` stores `r/g/b`, legacy `alpha`, plus normalized

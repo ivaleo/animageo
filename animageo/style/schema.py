@@ -132,6 +132,7 @@ JSON Style File Structure
 
     "rendering": {
         "line_cap":               "butt"|"round"|"square",
+        "dash_period_px":         <float>,        # default 10: dash + gap, px
         "background":             "color.background",
         "right_angle_joint":      "auto"|"bevel"|"miter"|"round",
         "polygon_boundary_layer": "top"|null,
@@ -180,6 +181,7 @@ JSON Style File Structure
             "point_shape":     <str|DSL-string>,
             "stroke_opacity":  <float|DSL-string>,
             "stroke_dash_ratio": <float|DSL-string>,
+            "stroke_dash_period_px": <float|DSL-string>,
             "stroke_linecap":  <str|DSL-string>
         }
     }
@@ -205,7 +207,13 @@ Visibility / labels
 
 Stroke (SVG-compatible)
 - ``stroke``, ``stroke_width_px``, ``stroke_opacity``,
-  ``stroke_dash_ratio``, ``stroke_linecap``
+  ``stroke_dash_ratio``, ``stroke_dash_period_px``, ``stroke_linecap``
+
+Dashes: ``stroke_dash_ratio`` is the dash's share of one period (``None``/``0``
+or ``>= 1`` = solid); ``stroke_dash_period_px`` is dash + gap in style pixels
+(same unit as ``stroke_width_px``; falls back to ``rendering.dash_period_px``,
+default 10). A 0.65 ratio at 10 px draws 6.5 px dashes and 3.5 px gaps. The
+dashed stroke stays one path (SVG ``stroke-dasharray``).
 
 Fill
 - ``fill``, ``fill_opacity``
@@ -284,6 +292,7 @@ IMPORT_POLICY_KEYS = frozenset({
     'point_shape',
     'stroke_opacity',
     'stroke_dash_ratio',
+    'stroke_dash_period_px',
     'stroke_linecap',
 })
 

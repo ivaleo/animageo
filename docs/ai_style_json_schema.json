@@ -173,6 +173,17 @@
         "line_cap": {
           "$ref": "#/$defs/lineCap"
         },
+        "dash_period_px": {
+          "anyOf": [
+            {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            {
+              "$ref": "#/$defs/ref"
+            }
+          ]
+        },
         "right_angle_joint": {
           "$ref": "#/$defs/rightAngleJoint"
         },
@@ -408,6 +419,9 @@
         "stroke_dash_ratio": {
           "$ref": "#/$defs/ratioOrRef"
         },
+        "stroke_dash_period_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
         "stroke_linecap": {
           "$ref": "#/$defs/lineCap"
         },
@@ -547,6 +561,9 @@
           "$ref": "#/$defs/policyValue"
         },
         "stroke_dash_ratio": {
+          "$ref": "#/$defs/policyValue"
+        },
+        "stroke_dash_period_px": {
           "$ref": "#/$defs/policyValue"
         },
         "stroke_linecap": {

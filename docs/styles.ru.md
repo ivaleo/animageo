@@ -344,6 +344,7 @@ scene.loadGGB(
     "rendering": {
         "background":             "color.background",
         "line_cap":               "butt",
+        "dash_period_px":         10,
         "right_angle_joint":      "round",
         "polygon_boundary_layer": "top",
         "points_display":         "auto",
@@ -406,6 +407,7 @@ scene.loadGGB(
 |---|---|---|
 | `background` | hex или `color.*` | Фон сцены: камера Manim и MP4, а также область просмотра SVG |
 | `line_cap` | `"butt"` \| `"round"` \| `"square"` | Окончания линий |
+| `dash_period_px` | число > 0 (px), по умолчанию `10` | Общий для стиля период пунктира (штрих + промежуток) для элементов без своего `stroke_dash_period_px` |
 | `right_angle_joint` | `"auto"` \| `"bevel"` \| `"miter"` \| `"round"` | Соединение сторон маркера прямого угла |
 | `polygon_boundary_layer` | `"top"` \| `null` | `"top"`: контур многоугольника всегда над заливкой (`z_index=10`) |
 | `points_display` | `"auto"` \| `"only_labels"` \| `"only_points"` | `only_labels` прячет точку и показывает подпись; `only_points` — наоборот |
@@ -555,7 +557,8 @@ scene.element('sector').style['z_index_fill'] = 0.2   # только для Circ
 | `stroke` | hex | `style.strong` |
 | `stroke_width_px` | float (px) | `defaults.<type>.stroke_width_px` |
 | `stroke_opacity` | float 0..1 | `1` |
-| `stroke_dash_ratio` | float 0..1 \| None | None (сплошная) |
+| `stroke_dash_ratio` | float 0..1 \| None | None (сплошная); доля штриха в периоде, `0`/`None` или `>= 1` — сплошная |
+| `stroke_dash_period_px` | float (px) | `rendering.dash_period_px` (10) |
 | `stroke_linecap` | `"butt"`/`"round"`/`"square"` (рантайм принимает и `"auto"`) | `rendering.line_cap` |
 | `right_angle_joint` | `"auto"`/`"bevel"`/`"miter"`/`"round"` | `rendering.right_angle_joint` |
 
@@ -812,6 +815,7 @@ DSL.
 | `point_shape` | `<pointStyle val>` | `point_shape` |
 | `stroke_opacity` | `<lineStyle opacity>` | `stroke_opacity` |
 | `stroke_dash_ratio` | `<lineStyle type>` | `stroke_dash_ratio` |
+| `stroke_dash_period_px` | — | `stroke_dash_period_px` |
 | `stroke_linecap` | — | `stroke_linecap` |
 
 В `elem.ggb_raw['obj_color']` хранятся `r/g/b`, устаревшая `alpha`, а также

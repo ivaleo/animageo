@@ -18,6 +18,11 @@ from .geo.curve_sampling import (
     make_parabola_param,
     make_hyperbola_branch_param,
     marching_squares,
+    stitch_segments,
+)
+from .dash import (
+    apply_cairo_dash, dash_pattern, dash_ratio, element_dash_px, get_dash,
+    path_length, rendering_dash_period_px, set_dash,
 )
 from .style import GeoStyle, isnan, getColorFromDict, updateMin, updateMax, hasParam, GGB_FONT_SCALE, Z_FILL, Z_FILL_LABEL, Z_ANGLE, Z_STROKE, Z_POINT, Z_LABEL, _is_concrete_color
 from .style.scaling import (
@@ -38,6 +43,7 @@ from .ui import (
 from manim import *
 
 from .parsers.svg_parser import *
+from .parsers.svg_parser import CAIRO_LINE_WIDTH_MULTIPLE
 from .parsers import ggb_parser
 from .keyframes import KeyframeSequence, apply_parsed_value
 from .render_config import configure_render, install_gif_palette_fix, OUTPUT_FORMATS
@@ -232,9 +238,29 @@ class NamedValueTracker(ValueTracker):
         super().__init__(value)
         self.name = name
 
+
+class DashCamera(MovingCamera):
+    """``MovingCamera`` that strokes a mobject's own dash pattern.
+
+    A dashed stroke is one path carrying an ``animageo.dash.DashPattern``
+    (in MU, the camera context's user space); manim's camera knows nothing
+    about it, so set the cairo dash around each stroke and reset it after.
+    """
+
+    def apply_stroke(self, ctx, vmobject, background=False):
+        dashed = apply_cairo_dash(ctx, vmobject)
+        try:
+            return super().apply_stroke(ctx, vmobject, background)
+        finally:
+            if dashed:
+                ctx.set_dash([])
+
+
 class AnimaGeoScene(MovingCameraScene):
     def __init__(self):
-        super().__init__()
+        # Video frames go through DashCamera: dashes are a stroke property,
+        # not a path cut into pieces, so the camera has to apply them.
+        super().__init__(camera_class=DashCamera)
         # Cyrillic-capable TeX template as the process-wide manim default, so
         # no Tex path — ours, manim's own, future or degradational — can fall
         # back to the stock template and die on "Unicode character … not set
@@ -528,10 +554,14 @@ class AnimaGeoScene(MovingCameraScene):
                 self.addOrdered(mobj_new)
             if not needRemove and not needAdd:
                 mobj.become(mobj_new)
-                # become() copies points/draw style but not z_index — carry it
-                # so z_index style changes (incl. keyframe tracks) take effect.
+                # become() copies points/draw style but not z_index, the cap
+                # or the dash pattern — carry them so style changes (incl.
+                # keyframe tracks, solid <-> dashed) take effect.
                 for sub_old, sub_new in zip(mobj.get_family(), mobj_new.get_family()):
                     sub_old.z_index = sub_new.z_index
+                    if hasattr(sub_new, 'cap_style'):
+                        sub_old.cap_style = sub_new.cap_style
+                    set_dash(sub_old, get_dash(sub_new))
 
     def addVar(self, name, value = 0):
         new_tracker = NamedValueTracker(name, value)
@@ -1837,6 +1867,15 @@ class AnimaGeoScene(MovingCameraScene):
 
         return layouts
 
+    def _style_track_baseline(self, elem, key):
+        """Resolved value a keyframe style track starts from / reverts to.
+
+        The dash period falls back to ``rendering.dash_period_px`` (the drawn
+        value), so an element without its own period still lerps from it.
+        """
+        default = rendering_dash_period_px(self) if key == 'stroke_dash_period_px' else None
+        return _resolve_style(self, elem, key, default=default)
+
     def play_keyframes(self, keyframes_data):
         """Play keyframe animation from JSON data or KeyframeSequence.
 
@@ -1864,7 +1903,7 @@ class AnimaGeoScene(MovingCameraScene):
                 )
             seq.bind_style_tracks(
                 get_element=self.geo.element,
-                resolve=lambda elem, key: _resolve_style(self, elem, key, default=None),
+                resolve=self._style_track_baseline,
                 color_space=color_space,
             )
 
@@ -1963,7 +2002,7 @@ class AnimaGeoScene(MovingCameraScene):
         if seq.has_style_tracks():
             cs = self.style.rendering.get('color_interpolation', 'oklab')
             seq.bind_style_tracks(get_element=self.geo.element,
-                                  resolve=lambda e, k: _resolve_style(self, e, k, default=None),
+                                  resolve=self._style_track_baseline,
                                   color_space=cs)
         seq.bind_visibility(get_element=self.geo.element)
         kfs = seq.keyframes
@@ -3050,7 +3089,11 @@ class AnimaGeoScene(MovingCameraScene):
                     ggb_label_attach = (
                         lambda xy, _elem=elem: nearest_point(_elem, xy, self.geo))
 
-        dash = _resolve_style(self, elem, 'stroke_dash_ratio', default=None)
+        # Dash: ratio + period in style px (animageo/dash.py). Like every other
+        # decoration the period becomes MU through ptUnit_style, so it follows
+        # the style prominence, not the zoom of the geometry.
+        dash = dash_ratio(_resolve_style(self, elem, 'stroke_dash_ratio', default=None))
+        dash_px = element_dash_px(self, elem) if dash is not None else None
         cap = _resolve_style(
             self, elem, 'stroke_linecap',
             default=style.rendering.get('line_cap', 'butt'),
@@ -3139,7 +3182,7 @@ class AnimaGeoScene(MovingCameraScene):
             arc_shift_px=arc_shift_px,
             right_angle_marker=right_angle_marker,
             auto_radius=auto_radius,
-            dash=dash, cap=cap, ra_joint=ra_joint,
+            dash=dash, dash_px=dash_px, cap=cap, ra_joint=ra_joint,
             zz=zz, zz_fill=zz_fill,
             zz_stroke=zz_stroke, zz_label=zz_label,
         )
@@ -3147,6 +3190,45 @@ class AnimaGeoScene(MovingCameraScene):
     def _renderer_for(self, elem):
         """Look up ``_render_<typename>`` on self, or None if no renderer."""
         return getattr(self, '_render_' + type(elem.data).__name__.lower(), None)
+
+    def _dash_stroke(self, vm, ctx, fit='none', *, phase_mu=0.0):
+        """Attach the element's dash pattern (``ctx.dash_px``) to stroke ``vm``.
+
+        The stroke stays one path; the pattern is fixed here in MU, so Create /
+        partial reveals uncover finished dashes. ``fit``: ``'ends'`` — open
+        path of finite length, a dash on both ends; ``'closed'`` — a whole
+        number of periods, no seam; ``'none'`` — the nominal pattern from the
+        path start (lines clipped by the viewport, sampled curves). Round and
+        square caps lengthen every dash by the line width; ``dash_pattern``
+        shortens the drawn dash so the visible one stays nominal.
+        """
+        if not ctx.dash_px:
+            return vm
+        on_px, off_px = ctx.dash_px
+        cap_extent = 0.0
+        if getattr(vm, 'cap_style', None) in (CapStyleType.ROUND, CapStyleType.SQUARE):
+            cap_extent = vm.get_stroke_width() * CAIRO_LINE_WIDTH_MULTIPLE
+        length = path_length(vm.points) if fit != 'none' else 0.0
+        set_dash(vm, dash_pattern(
+            length, on_px / ctx.ptUnit_style, off_px / ctx.ptUnit_style,
+            closed=(fit == 'closed'), fit_ends=(fit == 'ends'),
+            cap_extent_mu=cap_extent, phase_mu=phase_mu,
+        ))
+        return vm
+
+    def _curve_polyline(self, pts, ctx):
+        """Stroke-only VMobject through ``pts`` (sampled curves), dashed when
+        the element is: closed polylines get whole periods, open ones the
+        nominal pattern."""
+        pts_3d = [[float(p[0]), float(p[1]), 0] for p in pts]
+        vm = VMobject(
+            color=ctx.col_s, stroke_opacity=ctx.op_s,
+            stroke_width=ctx.lw, fill_opacity=0,
+        )
+        vm.set_points_as_corners(pts_3d)
+        vm.set_z_index(ctx.zz)
+        closed = len(pts_3d) > 2 and np.allclose(pts_3d[0], pts_3d[-1])
+        return self._dash_stroke(vm, ctx, 'closed' if closed else 'none')
 
     def _value_labels_fast(self):
         """Master switch for DecimalNumber-backed value labels (default on)."""
@@ -3444,19 +3526,11 @@ class AnimaGeoScene(MovingCameraScene):
         m = (p1 + p2) / 2
         arr = []
 
-        if ctx.dash:
-            arr.append(DashedLine(
-                [p1[0], p1[1], 0], [p2[0], p2[1], 0],
-                color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
-                cap_style=_CAP_MAP[ctx.cap],
-                dash_length=0.17, dashed_ratio=ctx.dash,
-            ).set_z_index(ctx.zz))
-        else:
-            arr.append(Line(
-                [p1[0], p1[1], 0], [p2[0], p2[1], 0],
-                color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
-                cap_style=_CAP_MAP[ctx.cap],
-            ).set_z_index(ctx.zz))
+        arr.append(self._dash_stroke(Line(
+            [p1[0], p1[1], 0], [p2[0], p2[1], 0],
+            color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
+            cap_style=_CAP_MAP[ctx.cap],
+        ).set_z_index(ctx.zz), ctx, 'ends'))
 
         self._append_tick_marks(arr, p1, p2, m, elem.data.normal, ctx)
 
@@ -3474,19 +3548,22 @@ class AnimaGeoScene(MovingCameraScene):
             return None
         p1, p2 = endpoints
         arr = []
-        if ctx.dash:
-            arr.append(DashedLine(
-                [p1[0], p1[1], 0], [p2[0], p2[1], 0],
-                color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
-                cap_style=_CAP_MAP[ctx.cap],
-                dash_length=0.17, dashed_ratio=ctx.dash,
-            ).set_z_index(ctx.zz))
-        else:
-            arr.append(Line(
-                [p1[0], p1[1], 0], [p2[0], p2[1], 0],
-                color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
-                cap_style=_CAP_MAP[ctx.cap],
-            ).set_z_index(ctx.zz))
+        phase = 0.0
+        if ctx.dash_px and isinstance(elem.data, geo.Ray):
+            # Dashes start at the vertex, also when the viewport clips it
+            # away: run the path away from the vertex and phase the pattern
+            # by the clipped-off distance.
+            d = np.asarray(elem.data.direction, dtype=float)
+            d = d / (np.linalg.norm(d) or 1.0)
+            s1, s2 = (float(np.dot(d, np.asarray(p) - elem.data.start)) for p in (p1, p2))
+            if s2 < s1:
+                p1, p2, s1 = p2, p1, s2
+            phase = max(0.0, s1)
+        arr.append(self._dash_stroke(Line(
+            [p1[0], p1[1], 0], [p2[0], p2[1], 0],
+            color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
+            cap_style=_CAP_MAP[ctx.cap],
+        ).set_z_index(ctx.zz), ctx, 'none', phase_mu=phase))
         if ctx.has_label:
             m = (p1 + p2) / 2
             self._append_label(arr, elem, [m[0], m[1], 0], ctx)
@@ -3501,23 +3578,17 @@ class AnimaGeoScene(MovingCameraScene):
         m = (p1 + p2) / 2
         arr = []
 
-        if ctx.dash:
-            arr.append(DashedLine(
-                [p1[0], p1[1], 0], [p2[0], p2[1], 0],
-                color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
-                cap_style=_CAP_MAP[ctx.cap],
-                dash_length=0.17, dashed_ratio=ctx.dash,
-            ).set_z_index(ctx.zz))
-        else:
-            arr.append(Arrow(
-                [p1[0], p1[1], 0], [p2[0], p2[1], 0],
-                buff=0, tip_shape=CustomArrowTip,
-                tip_style={'width': ctx.arrow_width,
-                           'height': ctx.arrow_height,
-                           'fill': ctx.col_s},
-                color=ctx.col_s, stroke_opacity=ctx.op_s,
-                stroke_width=ctx.lw, cap_style=_CAP_MAP[ctx.cap],
-            ).set_z_index(ctx.zz))
+        # A dashed vector keeps its tip: the pattern goes on the Arrow's own
+        # path (the stem); the tip is a separate, always solid submobject.
+        arr.append(self._dash_stroke(Arrow(
+            [p1[0], p1[1], 0], [p2[0], p2[1], 0],
+            buff=0, tip_shape=CustomArrowTip,
+            tip_style={'width': ctx.arrow_width,
+                       'height': ctx.arrow_height,
+                       'fill': ctx.col_s},
+            color=ctx.col_s, stroke_opacity=ctx.op_s,
+            stroke_width=ctx.lw, cap_style=_CAP_MAP[ctx.cap],
+        ).set_z_index(ctx.zz), ctx, 'ends'))
 
         normal = np.array([p1[1] - p2[1], p2[0] - p1[0]])
         self._append_tick_marks(arr, p1, p2, m, normal, ctx)
@@ -3538,12 +3609,7 @@ class AnimaGeoScene(MovingCameraScene):
             color=ctx.col_s, fill_opacity=0,
             stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
         ).set_z_index(ctx.zz)
-        if ctx.dash:
-            circ_stroke = DashedVMobject(
-                circ_stroke,
-                num_dashes=int(2 * np.pi * elem.data.radius / 0.17),
-                dashed_ratio=ctx.dash,
-            ).set_z_index(ctx.zz)
+        self._dash_stroke(circ_stroke, ctx, 'closed')
         arr = [circ_fill, circ_stroke]
         if ctx.has_label:
             # Circles drew no label at all. The applet-placed one hangs off
@@ -3561,11 +3627,13 @@ class AnimaGeoScene(MovingCameraScene):
                 start_angle=a1, angle=angle,
                 fill_color=ctx.col_f, fill_opacity=ctx.op_f,
                 stroke_width=0).set_z_index(ctx.zz_fill),
-            Arc(arc_center=c, radius=elem.data.radius,
-                start_angle=a1, angle=angle,
-                color=ctx.col_s, fill_opacity=0,
-                stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
-                cap_style=_CAP_MAP[ctx.cap]).set_z_index(ctx.zz),
+            self._dash_stroke(
+                Arc(arc_center=c, radius=elem.data.radius,
+                    start_angle=a1, angle=angle,
+                    color=ctx.col_s, fill_opacity=0,
+                    stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
+                    cap_style=_CAP_MAP[ctx.cap]).set_z_index(ctx.zz),
+                ctx, 'ends'),
         ]
         if ctx.has_label:
             label_pos = Arc(
@@ -3729,12 +3797,7 @@ class AnimaGeoScene(MovingCameraScene):
                     fill_opacity=ctx.op_f, stroke_opacity=ctx.op_s,
                     stroke_width=ctx.lw,
                 ).set_z_index(ctx.zz)
-                if ctx.dash:
-                    n_dashes = max(4, int(2 * np.pi * radius / 0.17))
-                    circ = DashedVMobject(
-                        circ, num_dashes=n_dashes, dashed_ratio=ctx.dash,
-                    ).set_z_index(ctx.zz)
-                arr.append(circ)
+                arr.append(self._dash_stroke(circ, ctx, 'closed'))
 
         elif ctype == ConicType.ELLIPSE:
             params = conic.as_ellipse()
@@ -3748,7 +3811,7 @@ class AnimaGeoScene(MovingCameraScene):
                     fill_opacity=ctx.op_f, stroke_opacity=ctx.op_s,
                     stroke_width=ctx.lw,
                 ).rotate(rot).move_to([float(cx), float(cy), 0]).set_z_index(ctx.zz)
-                arr.append(ell)
+                arr.append(self._dash_stroke(ell, ctx, 'closed'))
 
         elif ctype == ConicType.PARABOLA:
             params = conic.as_parabola()
@@ -3768,14 +3831,7 @@ class AnimaGeoScene(MovingCameraScene):
                     for poly in polys:
                         if len(poly) < 2:
                             continue
-                        pts_3d = [[float(p[0]), float(p[1]), 0] for p in poly]
-                        vm = VMobject(
-                            color=ctx.col_s, stroke_opacity=ctx.op_s,
-                            stroke_width=ctx.lw, fill_opacity=0,
-                        )
-                        vm.set_points_as_corners(pts_3d)
-                        vm.set_z_index(ctx.zz)
-                        arr.append(vm)
+                        arr.append(self._curve_polyline(poly, ctx))
 
         elif ctype == ConicType.HYPERBOLA:
             params = conic.as_hyperbola()
@@ -3802,14 +3858,7 @@ class AnimaGeoScene(MovingCameraScene):
                     for poly in polys:
                         if len(poly) < 2:
                             continue
-                        pts_3d = [[float(p[0]), float(p[1]), 0] for p in poly]
-                        vm = VMobject(
-                            color=ctx.col_s, stroke_opacity=ctx.op_s,
-                            stroke_width=ctx.lw, fill_opacity=0,
-                        )
-                        vm.set_points_as_corners(pts_3d)
-                        vm.set_z_index(ctx.zz)
-                        arr.append(vm)
+                        arr.append(self._curve_polyline(poly, ctx))
 
         elif ctype in (ConicType.INTERSECTING_LINES,
                        ConicType.PARALLEL_LINES,
@@ -3821,12 +3870,12 @@ class AnimaGeoScene(MovingCameraScene):
                 if endpoints is None:
                     continue
                 p1, p2 = endpoints
-                arr.append(Line(
+                arr.append(self._dash_stroke(Line(
                     [float(p1[0]), float(p1[1]), 0],
                     [float(p2[0]), float(p2[1]), 0],
                     color=ctx.col_s, stroke_opacity=ctx.op_s,
                     stroke_width=ctx.lw,
-                ).set_z_index(ctx.zz))
+                ).set_z_index(ctx.zz), ctx, 'none'))
 
         if not arr:
             return None
@@ -3875,14 +3924,7 @@ class AnimaGeoScene(MovingCameraScene):
             for poly in polys:
                 if len(poly) < 2:
                     continue
-                pts_3d = [[float(p[0]), float(p[1]), 0] for p in poly]
-                vm = VMobject(
-                    color=ctx.col_s, stroke_opacity=ctx.op_s,
-                    stroke_width=ctx.lw, fill_opacity=0,
-                )
-                vm.set_points_as_corners(pts_3d)
-                vm.set_z_index(ctx.zz)
-                arr.append(vm)
+                arr.append(self._curve_polyline(poly, ctx))
         if not arr:
             return None
         return VGroup(*arr, name=elem.name)
@@ -3893,6 +3935,13 @@ class AnimaGeoScene(MovingCameraScene):
         viewport = (left, bottom, right_x, top_y)
 
         segments = marching_squares(curve, viewport, grid_n=128)
+        if ctx.dash_px:
+            # A pattern restarts on every separate path: dash the stitched
+            # polylines, not the hundreds of cell-sized pieces (which would
+            # read as solid).
+            arr = [self._curve_polyline(poly, ctx)
+                   for poly in stitch_segments(segments) if len(poly) >= 2]
+            return VGroup(*arr, name=elem.name) if arr else None
         arr = []
         for seg in segments:
             if seg.shape[0] < 2:
@@ -3912,6 +3961,8 @@ class AnimaGeoScene(MovingCameraScene):
         locus = elem.data
         if len(locus.points) < 2:
             return None
+        if ctx.dash_px:
+            return VGroup(self._curve_polyline(locus.points, ctx), name=elem.name)
         pts_3d = [[float(p[0]), float(p[1]), 0] for p in locus.points]
         vm = VMobject(
             color=ctx.col_s, stroke_opacity=ctx.op_s,

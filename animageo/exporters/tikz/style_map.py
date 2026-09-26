@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
+from ...dash import dash_pattern, element_dash_px
 from .context import TikzContext
 from .document import fmt_num
 
@@ -21,9 +22,6 @@ ANCHOR_MAP = {
 
 # manim line-cap name → TikZ ``line cap=``.
 CAP_MAP = {"butt": "butt", "round": "round", "square": "rect", None: "butt"}
-
-# manim ``DashedLine.dash_length`` (MU). Used to derive a px-faithful pattern.
-_DASH_LENGTH_MU = 0.17
 
 
 def stroke_default(ctx: TikzContext) -> str:
@@ -41,22 +39,34 @@ def _opacity(value, fallback: float = 1.0) -> float:
         return fallback
 
 
-def dash_options(ctx: TikzContext, elem) -> Optional[str]:
-    """Return a ``dash pattern=...`` fragment, or ``None`` for a solid line."""
-    ratio = ctx.resolve(elem, "stroke_dash_ratio", default=None)
-    if not ratio:
+def dash_options(ctx: TikzContext, elem, *, width_px=None, cap=None) -> Optional[str]:
+    """Return a ``dash pattern=...`` fragment, or ``None`` for a solid line.
+
+    The renderer's nominal pattern: ``stroke_dash_ratio`` of the period in
+    style px (``stroke_dash_period_px`` → ``rendering.dash_period_px`` → 10),
+    sized like line widths (``size_pt``). With a round/square ``cap`` every
+    dash grows by the line width, so the drawn dash is shortened and phased
+    to keep the visible one nominal — as in the SVG. No fit to the path
+    length: TikZ starts the pattern at each path's start.
+    """
+    dash_px = element_dash_px(
+        ctx.scene, elem, resolve=lambda e, k, d=None: ctx.resolve(e, k, default=d))
+    if dash_px is None:
         return None
-    try:
-        ratio = float(ratio)
-    except (TypeError, ValueError):
-        return None
-    if ratio <= 0 or ratio >= 1:
-        return None
-    total_pt = ctx.size_pt(_DASH_LENGTH_MU * ctx.ptUnit_style)
-    on = total_pt * ratio
-    off = total_pt * (1.0 - ratio)
+    on_px, off_px = dash_px
+    cap_extent = 0.0
+    if cap in ("round", "square") and width_px:
+        try:
+            cap_extent = max(0.0, float(width_px))
+        except (TypeError, ValueError):
+            cap_extent = 0.0
+    pat = dash_pattern(0.0, ctx.size_pt(on_px), ctx.size_pt(off_px),
+                       cap_extent_mu=ctx.size_pt(cap_extent))
     p = ctx.opt.size_precision
-    return f"dash pattern=on {fmt_num(on, p)}pt off {fmt_num(off, p)}pt"
+    out = f"dash pattern=on {fmt_num(pat.on, p)}pt off {fmt_num(pat.off, p)}pt"
+    if pat.offset:
+        out += f", dash phase={fmt_num(pat.offset, p)}pt"
+    return out
 
 
 def stroke_options(
@@ -84,6 +94,7 @@ def stroke_options(
     lw_pt = ctx.size_pt(width_px or 0.0)
     opts.append(f"line width={fmt_num(lw_pt, ctx.opt.size_precision)}pt")
 
+    cap = None
     if with_cap:
         cap = ctx.resolve(elem, "stroke_linecap",
                           default=ctx.scene.style.rendering.get("line_cap", "butt"))
@@ -92,7 +103,7 @@ def stroke_options(
             opts.append(f"line cap={tikz_cap}")
 
     if with_dash:
-        d = dash_options(ctx, elem)
+        d = dash_options(ctx, elem, width_px=width_px, cap=cap)
         if d:
             opts.append(d)
 

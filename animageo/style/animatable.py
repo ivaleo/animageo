@@ -38,6 +38,7 @@ ANIMATABLE_STYLE_KEYS = {
     'arrow_length_px': SCALAR,
     'arrow_width_px': SCALAR,
     'label_radial_offset_px': SCALAR,
+    'stroke_dash_period_px': SCALAR,
     # colors
     'stroke': COLOR,
     'fill': COLOR,

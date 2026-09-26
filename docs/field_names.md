@@ -259,6 +259,7 @@ presets, but it is not a drawable element type.
 |---|---|---|
 | `background` | hex or `color.*` | background of the Manim camera, MP4, and SVG export |
 | `line_cap` | `butt` / `round` / `square` | default for `stroke_linecap` |
+| `dash_period_px` | number > 0 (px), default 10 | default for `stroke_dash_period_px` |
 | `right_angle_joint` | `auto` / `bevel` / `miter` / `round` | default for `right_angle_joint` of the right-angle marker |
 | `polygon_boundary_layer` | `top` / `null` | raises a polygon's side segments to `z_index=10` |
 | `points_display` | `auto` / `only_labels` / `only_points` | global point+label mode |
@@ -281,7 +282,7 @@ presets, but it is not a drawable element type.
 | `colors` | `{"#hex [opacity]": "preset-or-#hex [opacity]"}` | palette remap of GGB colors |
 | `point_size` | `{raw_or_style_size: value}` | remap of point size into `size_px` |
 | `line_width` | `{raw_or_style_width: value}` | remap of line thickness into `stroke_width_px` |
-| `policy` | `dict` | ImportPolicy fields: `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_linecap` |
+| `policy` | `dict` | ImportPolicy fields: `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_dash_period_px`, `stroke_linecap` |
 
 ### 3.1. Geometric sizes
 
@@ -302,7 +303,8 @@ presets, but it is not a drawable element type.
 |---|---|---|---|---|---|---|
 | Stroke color | `<objColor r,g,b>` (type-dependent) | `obj_color` | `stroke` | `color.*`, `import.colors`, `import.policy.stroke` | `color` | `stroke` |
 | Stroke opacity | `<lineStyle opacity>` | `line_opacity` | `stroke_opacity` | `import.colors` (with opacity), `import.policy.stroke_opacity` | `stroke_opacity` | `opacity` |
-| Dash (ratio) | `<lineStyle type>` (>0) | `line_type` | `stroke_dash_ratio` | `import.policy` (DSL) | `dashed_ratio=val, dash_length=0.17` | `stroke-dasharray` |
+| Dash (ratio) | `<lineStyle type>` (>0) | `line_type` | `stroke_dash_ratio` | `import.policy` (DSL) | dash pattern on the stroke (`animageo/dash.py`) | `stroke-dasharray` |
+| Dash period | — | — | `stroke_dash_period_px` | `rendering.dash_period_px` (10) | `/ ptUnit_style` → MU | `stroke-dasharray` |
 | Line caps | — | — | `stroke_linecap` | `rendering.line_cap` | `cap_style` | `stroke-linecap` |
 | Fill color | `<objColor>` (for angle/polygon/arc/conic/point) | `obj_color` | `fill` | `color.*`, `import.colors`, `import.policy.fill` | `fill_color` | `fill` |
 | Fill opacity | `<objColor alpha>` | `obj_color['alpha']` / `obj_color['opacity']` | `fill_opacity` | `import.colors` (with target opacity), `import.policy.fill_opacity` | `fill_opacity` | `fill-opacity` |
@@ -425,7 +427,7 @@ Defined in `animageo/style/enums.py` as `Literal` types + a runtime tuple for va
 | Dimensionless | `[0..1]` opacity, ratio | `stroke_opacity`, `fill_opacity`, `stroke_dash_ratio` |
 | Enumerations | strings | see Part 4 |
 
-**Pixel-invariance contract:** all `_px` values are stored as pixels but are converted according to the destination Manim parameter. Coordinate sizes (`size_px`, `arc_size_px`, `tick_length_px`, `tick_shift_px`, `tick_radius_px`, `arrow_*_px`, offsets) become MU via `/ ptUnit`. Thicknesses and fonts passed to Manim `stroke_width`, `set_stroke(width=...)`, or `font_size` go through the render scale `* 100 / ptUnit`: `stroke_width_px`, `tick_width_px`, `font_size_px`. This guarantees the same visual result at any canvas size.
+**Pixel-invariance contract:** all `_px` values are stored as pixels but are converted according to the destination Manim parameter. Coordinate sizes (`size_px`, `arc_size_px`, `tick_length_px`, `tick_shift_px`, `tick_radius_px`, `arrow_*_px`, `stroke_dash_period_px`, offsets) become MU via `/ ptUnit`. Thicknesses and fonts passed to Manim `stroke_width`, `set_stroke(width=...)`, or `font_size` go through the render scale `* 100 / ptUnit`: `stroke_width_px`, `tick_width_px`, `font_size_px`. This guarantees the same visual result at any canvas size.
 
 ### 5.2. Constants (`animageo/constants.py`)
 

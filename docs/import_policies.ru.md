@@ -85,6 +85,7 @@ scene.loadGGB(
 | `point_shape` | `<pointStyle val>` | `point_shape` |
 | `stroke_opacity` | `<lineStyle opacity>` | `stroke_opacity` |
 | `stroke_dash_ratio` | `<lineStyle type>` | `stroke_dash_ratio` |
+| `stroke_dash_period_px` | — | `stroke_dash_period_px` |
 | `stroke_linecap` | — | `stroke_linecap` |
 
 Исходный `obj_color` содержит `r`, `g`, `b`, устаревшее `alpha` и

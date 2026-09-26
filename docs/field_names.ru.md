@@ -259,6 +259,7 @@
 |---|---|---|
 | `background` | hex или `color.*` | фон камеры Manim, MP4 и экспорта SVG |
 | `line_cap` | `butt` / `round` / `square` | значение по умолчанию для `stroke_linecap` |
+| `dash_period_px` | число > 0 (px), по умолчанию 10 | значение по умолчанию для `stroke_dash_period_px` |
 | `right_angle_joint` | `auto` / `bevel` / `miter` / `round` | значение по умолчанию для `right_angle_joint` маркера прямого угла |
 | `polygon_boundary_layer` | `top` / `null` | поднимает стороны многоугольника на `z_index=10` |
 | `points_display` | `auto` / `only_labels` / `only_points` | глобальный режим отображения точек и подписей |
@@ -281,7 +282,7 @@
 | `colors` | `{"#hex [opacity]": "пресет-или-#hex [opacity]"}` | переназначение палитры цветов GGB |
 | `point_size` | `{сырой_или_стилевой_размер: значение}` | переназначение размера точки в `size_px` |
 | `line_width` | `{сырая_или_стилевая_толщина: значение}` | переназначение толщины линии в `stroke_width_px` |
-| `policy` | `dict` | поля ImportPolicy: `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_linecap` |
+| `policy` | `dict` | поля ImportPolicy: `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_dash_period_px`, `stroke_linecap` |
 
 ### 3.1. Геометрические размеры
 
@@ -302,7 +303,8 @@
 |---|---|---|---|---|---|---|
 | Цвет обводки | `<objColor r,g,b>` (зависит от типа) | `obj_color` | `stroke` | `color.*`, `import.colors`, `import.policy.stroke` | `color` | `stroke` |
 | Непрозрачность обводки | `<lineStyle opacity>` | `line_opacity` | `stroke_opacity` | `import.colors` (с непрозрачностью), `import.policy.stroke_opacity` | `stroke_opacity` | `opacity` |
-| Пунктир (соотношение) | `<lineStyle type>` (>0) | `line_type` | `stroke_dash_ratio` | `import.policy` (DSL) | `dashed_ratio=val, dash_length=0.17` | `stroke-dasharray` |
+| Пунктир (соотношение) | `<lineStyle type>` (>0) | `line_type` | `stroke_dash_ratio` | `import.policy` (DSL) | шаблон пунктира на штрихе (`animageo/dash.py`) | `stroke-dasharray` |
+| Период пунктира | — | — | `stroke_dash_period_px` | `rendering.dash_period_px` (10) | `/ ptUnit_style` → MU | `stroke-dasharray` |
 | Окончания линий | — | — | `stroke_linecap` | `rendering.line_cap` | `cap_style` | `stroke-linecap` |
 | Цвет заливки | `<objColor>` (для angle/polygon/arc/conic/point) | `obj_color` | `fill` | `color.*`, `import.colors`, `import.policy.fill` | `fill_color` | `fill` |
 | Непрозрачность заливки | `<objColor alpha>` | `obj_color['alpha']` / `obj_color['opacity']` | `fill_opacity` | `import.colors` (с целевой непрозрачностью), `import.policy.fill_opacity` | `fill_opacity` | `fill-opacity` |
@@ -425,7 +427,7 @@
 | Безразмерные | непрозрачность `[0..1]`, соотношение | `stroke_opacity`, `fill_opacity`, `stroke_dash_ratio` |
 | Перечисления | строки | см. часть 4 |
 
-**Контракт пиксельной инвариантности:** все значения `_px` хранятся в пикселях, но преобразуются в зависимости от целевого параметра Manim. Координатные размеры (`size_px`, `arc_size_px`, `tick_length_px`, `tick_shift_px`, `tick_radius_px`, `arrow_*_px`, смещения) переводятся в MU делением `/ ptUnit`. Толщины и шрифты, которые уходят в Manim через `stroke_width`, `set_stroke(width=...)` или `font_size`, проходят через масштаб рендера `* 100 / ptUnit`: это `stroke_width_px`, `tick_width_px`, `font_size_px`. Так гарантируется одинаковый визуальный результат при любом размере холста.
+**Контракт пиксельной инвариантности:** все значения `_px` хранятся в пикселях, но преобразуются в зависимости от целевого параметра Manim. Координатные размеры (`size_px`, `arc_size_px`, `tick_length_px`, `tick_shift_px`, `tick_radius_px`, `arrow_*_px`, `stroke_dash_period_px`, смещения) переводятся в MU делением `/ ptUnit`. Толщины и шрифты, которые уходят в Manim через `stroke_width`, `set_stroke(width=...)` или `font_size`, проходят через масштаб рендера `* 100 / ptUnit`: это `stroke_width_px`, `tick_width_px`, `font_size_px`. Так гарантируется одинаковый визуальный результат при любом размере холста.
 
 ### 5.2. Константы (`animageo/constants.py`)
 

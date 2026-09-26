@@ -519,9 +519,9 @@ class TestElementStyleFidelity:
         assert "offset:" not in line
 
     def test_dashed_stroke(self):
-        # A small dash/width ratio → JSXGraph's dotted style (1); the mapping
-        # mirrors the TikZ exporter's thresholds (see jsxgraph/style_map.py).
+        # 0.5 of the default 10 px period = 5 / 5 px → JSXGraph's [5, 5] (2);
+        # see TestDashMapping in test_jsxgraph_spec.py.
         js = _scene("A=Point(-2,0)\nB=Point(2,0)\nm=Segment(A,B)\n"
                     "m.style.stroke_dash_ratio=0.5").exportJSXGraph(output="js")
         line = next(l for l in js.splitlines() if 'S["m"]' in l)
-        assert "dash: 1" in line
+        assert "dash: 2" in line

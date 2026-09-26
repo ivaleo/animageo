@@ -523,3 +523,68 @@ def marching_squares(
                 segments.append(np.array([p1, p2], dtype=float))
 
     return segments
+
+
+def stitch_segments(
+    segments: Sequence[np.ndarray],
+    *,
+    tol: float = 1e-9,
+) -> List[np.ndarray]:
+    """Join ``marching_squares`` segments that share endpoints into polylines.
+
+    Neighbouring cells interpolate a shared edge from the same two corner
+    values, so shared endpoints coincide; ``tol`` (scene MU) only absorbs
+    rounding. Open chains are walked from their free ends first, then the
+    remaining closed loops. A closed loop repeats its first point at the end.
+
+    Returns a list of ``(n, 2)`` arrays (``n >= 2``). Needed for dashed
+    implicit curves: a pattern restarts on every separate path, so a curve
+    left as hundreds of cell-sized pieces would render solid.
+    """
+    segs = [np.asarray(s, dtype=float)[:2, :2] for s in segments
+            if s is not None and len(s) >= 2]
+    if not segs:
+        return []
+    scale = 1.0 / tol if tol > 0 else 1e9
+
+    def key(p):
+        return (int(round(p[0] * scale)), int(round(p[1] * scale)))
+
+    ends = {}   # endpoint key → list of (segment index, end 0/1)
+    for i, s in enumerate(segs):
+        for e in (0, 1):
+            ends.setdefault(key(s[e]), []).append((i, e))
+
+    used = [False] * len(segs)
+
+    def walk(i, e_start):
+        """Follow the chain starting at segment i entering from end e_start."""
+        pts = [segs[i][e_start], segs[i][1 - e_start]]
+        used[i] = True
+        cur_key = key(segs[i][1 - e_start])
+        while True:
+            nxt = None
+            for j, e in ends.get(cur_key, ()):
+                if not used[j]:
+                    nxt = (j, e)
+                    break
+            if nxt is None:
+                return pts
+            j, e = nxt
+            used[j] = True
+            pts.append(segs[j][1 - e])
+            cur_key = key(segs[j][1 - e])
+
+    polylines: List[np.ndarray] = []
+    # Open chains: start at endpoints touched by exactly one segment.
+    for k, members in ends.items():
+        if len(members) != 1:
+            continue
+        i, e = members[0]
+        if not used[i]:
+            polylines.append(np.array(walk(i, e)))
+    # What is left forms closed loops.
+    for i in range(len(segs)):
+        if not used[i]:
+            polylines.append(np.array(walk(i, 0)))
+    return polylines

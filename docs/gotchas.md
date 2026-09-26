@@ -149,6 +149,28 @@ construction. This preserves ordering within a single tier (`Z_STROKE`,
 
 ---
 
+### A dash is a stroke property — keep it on the mobject, not in the path
+
+Since 1.7.10 a dashed stroke is the solid case's single VMobject carrying an
+`animageo.dash.DashPattern` in the private attribute `_ag_dash` (MU, fixed when
+the mobject is built). Whoever strokes the path applies it: `svg_parser`
+(SVG/PDF/EPS) and `DashCamera`, the scene's video camera. Three traps:
+
+- manim's `Mobject.__getattr__` synthesises `get_*`/`set_*` names, so the
+  pattern is never exposed as `mobject.get_dash()`; use the module functions
+  `animageo.dash.get_dash(m)` / `set_dash(m, pattern)`.
+- `become()` copies points and colours but no custom attributes (nor
+  `cap_style`); `updateGeoElements` carries the pattern and the cap in the same
+  family loop as `z_index`. Any new `become()` path must do the same, or a
+  solid ↔ dashed change never reaches the drawn line.
+- cairo (and SVG) restart the pattern on every subpath. A curve drawn as many
+  small pieces reads as solid: `_render_implicitcurve` dashes the stitched
+  polylines (`curve_sampling.stitch_segments`), not the marching-squares cells.
+  Do not use manim's `DashedLine`/`DashedVMobject` — they cut the path into one
+  mobject per dash, which exports as a heap of `<path>` elements.
+
+---
+
 ## Label placement
 
 ### `dynamic_angles=true` does nothing by itself
