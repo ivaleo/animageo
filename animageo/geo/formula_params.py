@@ -13,6 +13,8 @@ current values on every rebuild. Producer (GGB parser, DSL) and consumer
 """
 import re
 
+import numpy as np
+
 from .formula_refs import reference_names
 from .lib_elements import Angle, Point, Vector
 from .lib_function import Function
@@ -71,10 +73,16 @@ def numeric_var_values(constr):
     return values
 
 
+# Commands compute with NumPy: ``AreCollinear`` gives ``np.bool_``, which is
+# not a ``bool`` — as a float, ``If(b, …)`` would get a number.
+_BOOLS = (bool, np.bool_)
+_NUMBERS = (int, float, np.integer, np.floating)
+
+
 def _number_value(data):
-    if isinstance(data, bool):
-        return data
-    if isinstance(data, (int, float)):
+    if isinstance(data, _BOOLS):
+        return bool(data)
+    if isinstance(data, _NUMBERS):
         return float(data)
     if isinstance(data, Boolean):
         return bool(data.value)
@@ -132,7 +140,7 @@ def _bound(value):
     if isinstance(value, Function):
         return value
     raw = getattr(value, 'value', value)
-    return raw if isinstance(raw, bool) else float(raw)
+    return bool(raw) if isinstance(raw, _BOOLS) else float(raw)
 
 
 # A name starts with a letter or ``_``: in ``2a`` it is ``a`` (a number

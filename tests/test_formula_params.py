@@ -139,3 +139,45 @@ class TestDslFormulas:
         c = Construction()
         with pytest.raises(TypeError):
             dsl.run(c, "A = Point(0, 0)\nv = A(1)\n")
+
+
+# ── 1.7.13: numpy values of construction objects ───────────────────────
+
+class TestNumpyValues:
+    """Commands compute with NumPy: ``AreCollinear`` gives ``np.bool_``."""
+
+    DSL = ('A = Point(0, 0)\nB = Point(1, 1)\nC = Point(2, 2)\n'
+           'b = AreCollinear(A, B, C)\n')
+
+    def _move_c_off_the_line(self, c):
+        apply_parsed_value(c, 'C', 'point', [2.0, 3.0])
+        c.rebuild()
+
+    def test_bound_boolean_stays_a_boolean(self):
+        from animageo.geo.lib_vars import Boolean
+        bound = bind_parameters('y = If(b, x, -x)', 'function', [Boolean(np.bool_(True))])
+        assert bound == {'b': True} and type(bound['b']) is bool
+
+    def test_numpy_scalars_are_numbers(self):
+        from animageo.geo.formula_params import numeric_var_values
+        c = Construction()
+        c.add(Var('i', np.int64(3))); c.add(Var('f', np.float32(0.5)))
+        c.add(Var('b', np.bool_(True)))
+        assert numeric_var_values(c) == {'i': 3.0, 'f': 0.5, 'b': True}
+
+    def test_dsl_function_with_a_command_boolean(self):
+        c = Construction()
+        dsl.run(c, self.DSL + 'f = Function("y = If(b, x, -x)")\n')
+        assert c.element('f').data(2.0) == pytest.approx(2.0)
+        self._move_c_off_the_line(c)
+        assert c.element('f').data(2.0) == pytest.approx(-2.0)
+
+    def test_dsl_conic_and_implicit_with_a_command_boolean(self):
+        c = Construction()
+        dsl.run(c, self.DSL + 'p = Conic("y = (b + 1) x^2")\n'
+                   'h = ImplicitCurve("x^3 + If(b, 1, 2) y = 1")\n')
+        assert c.element('p').data.evaluate(1.0, 2.0) == pytest.approx(0.0)
+        assert c.element('h').data(1.0, 0.0) == pytest.approx(0.0)
+        self._move_c_off_the_line(c)
+        assert c.element('p').data.evaluate(1.0, 1.0) == pytest.approx(0.0)
+        assert c.element('h').data(0.0, 0.5) == pytest.approx(0.0)

@@ -96,8 +96,8 @@ def substitute_references(expr, parameters):
     for name, value in parameters.items():
         if hasattr(value, 'expr') and hasattr(value, 'var'):
             funcs[str(name)] = value
-        elif isinstance(value, bool):
-            numbers[sp.Symbol(str(name))] = value
+        elif isinstance(value, (bool, np.bool_)):
+            numbers[sp.Symbol(str(name))] = bool(value)
         elif _is_pair(value):
             symbol = sp.Symbol(str(name))
             coords[XCOORD(symbol)] = sp.Float(float(value[0]))

@@ -200,7 +200,7 @@ class Conic:
         if parameters:
             # A polynomial has no use for a boolean: it counts as 0 / 1.
             expr = substitute_references(expr, {
-                k: float(v) if isinstance(v, bool) else v
+                k: float(v) if isinstance(v, (bool, np.bool_)) else v
                 for k, v in parameters.items()
             })
         unbound = unbound_references(expr, {x, y})
