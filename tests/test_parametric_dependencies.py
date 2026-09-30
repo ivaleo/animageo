@@ -125,15 +125,15 @@ def test_parametric_conic_survives_degenerate_value():
     assert k is not None and k.is_degenerate()
 
 
-def test_function_calling_other_function_stays_frozen_with_diagnostic():
+def test_function_calling_other_function_follows_the_number():
     body = (num('a', 1) + '<expression label="f" exp="f(x) = x^(2)"/>'
             '<element type="function" label="f">' + ST + '</element>'
             '<expression label="g" exp="g(x) = f(x) + a"/>'
             '<element type="function" label="g">' + ST + '</element>')
     c = load(body)
-    diags = [d for d in c.command_diagnostics if d['outputs'] == ['g']]
-    assert diags and diags[0]['reason'] == 'parametric_dependency_frozen'
-    assert diags[0]['parameters'] == ['a']
+    assert c.command_diagnostics == []
+    for v in (1.0, 3.0):
+        assert data_at(c, 'a', v, 'g')(2.0) == pytest.approx(4 + v)
 
 
 def test_function_without_parameters_unchanged():

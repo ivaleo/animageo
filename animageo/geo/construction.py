@@ -326,6 +326,12 @@ class Construction:
         
         while queue:
             current_name, current_level = queue.popleft()
+            # Without a cycle no level exceeds the number of objects; with one
+            # (a DSL line that redefines a name from itself, ``A =
+            # Midpoint(A, B)``) the levels would grow forever.
+            if current_level > len(self.state):
+                raise ValueError(
+                    f"dependency cycle through '{current_name}'")
             
             if self.state[current_name]['level'] < current_level:
                 self.state[current_name]['level'] = current_level

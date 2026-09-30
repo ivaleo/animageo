@@ -22,6 +22,9 @@ from enum import Enum
 from typing import Optional, List
 import numpy as np
 
+from .formula_refs import (
+    coordinate_calls, substitute_references, unbound_references,
+)
 from .lib_elements import Line, Point
 from .safe_sympify import safe_sympify
 from ..constants import Z_LINE
@@ -49,10 +52,11 @@ def parse_conic_equation(equation: str):
     if '=' in text:
         lhs, rhs = text.split('=', 1)
         text = f"({lhs.strip()}) - ({rhs.strip()})"
+    text, refs = coordinate_calls(text)
     x = sp.Symbol('x')
     y = sp.Symbol('y')
     try:
-        expr = safe_sympify(text, {'x': x, 'y': y})
+        expr = safe_sympify(text, {'x': x, 'y': y, **refs})
     except (sp.SympifyError, SyntaxError, TypeError) as e:
         raise ValueError(f"could not parse conic equation {equation!r}: {e}")
     return expr, x, y
@@ -151,7 +155,8 @@ class Conic:
             "g: x^2 + y^2 = 4"   (label prefix tolerated)
 
         ``parameters`` maps other names in the equation to their current
-        values (``"y = a x^2"`` with ``{'a': 2}``).
+        values (``"y = a x^2"`` with ``{'a': 2}``; a point's coordinate pair
+        for ``x(A)``/``y(A)``, see ``formula_refs``).
 
         Raises ``ValueError`` if sympy can't parse the expression, a name
         other than ``x``/``y`` stays unbound, or the expanded polynomial
@@ -161,16 +166,17 @@ class Conic:
 
         expr, x, y = parse_conic_equation(equation)
         if parameters:
-            expr = expr.subs({
-                sp.Symbol(str(k)): float(v) for k, v in parameters.items()
+            # A polynomial has no use for a boolean: it counts as 0 / 1.
+            expr = substitute_references(expr, {
+                k: float(v) if isinstance(v, bool) else v
+                for k, v in parameters.items()
             })
-        unbound = expr.free_symbols - {x, y}
+        unbound = unbound_references(expr, {x, y})
         if unbound:
             # Poly would silently treat them as coefficients, and their
             # float() below would fall back to 0 — a wrong conic.
             raise ValueError(
-                f"conic equation {equation!r} has unbound names "
-                f"{sorted(map(str, unbound))}"
+                f"conic equation {equation!r} has unbound names {unbound}"
             )
         expr = sp.expand(expr)
 

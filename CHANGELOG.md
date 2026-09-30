@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.11] - 2026-09-30
+
+### Fixed
+
+- A graph whose formula reads point coordinates is drawn and follows the points:
+  `g(t) = y(A) (t − x(B)) (t − x(C)) / … + …` (a Lagrange polynomial through
+  A, B, C) or `f(x) = x(A) + x` is rebuilt whenever a point moves. Such graphs
+  used to vanish from the preview and every export. `x(v)`, `y(v)` of a vector
+  work the same way, and so do conic, line and implicit equations
+  (`(x − x(A))² + (y − y(A))² = 4` follows `A`).
+- A function's variable is the one named on the left: `g(t) = t²` is the graph of
+  `t²`; it used to be read as a function of `x` with an unknown `t` and was not
+  drawn.
+- A function that calls another one, `f(t) = g(t) + k (t − x(A))`, is built and
+  follows `g`; it used to be dropped (or frozen at the load-time values).
+- A function or implicit curve that cannot be read is reported in
+  `command_diagnostics` (`expression_parse_error`) instead of only in the log.
+- A graph between two points, `f(x) = If(x(A) ≤ x ≤ x(B), x²)`, is built and
+  follows them.
+- In the DSL, `Function("y = x(A)*x")` and `f(x) = g(x) + 1` follow `A` and `g`
+  the same way.
+- A DSL line that defines a name from itself (`A = Midpoint(A, B)`,
+  `f = Function("y = f(x) + 1")`) raises a dependency-cycle error instead of
+  hanging.
+
+### Security
+
+- Functions calling functions are inlined only up to a size limit: a chain such
+  as `h_k(x) = h_{k−1}(sin x) + h_{k−1}(cos x)`, which doubles at every level,
+  is cut with an `expression_parse_error` diagnostic instead of stalling the
+  load of an uploaded file.
+
 ## [1.7.10] - 2026-09-26
 
 ### Added
@@ -1614,7 +1646,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.10...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.11...HEAD
+[1.7.11]: https://github.com/ivaleo/animageo/compare/v1.7.10...v1.7.11
 [1.7.10]: https://github.com/ivaleo/animageo/compare/v1.7.9...v1.7.10
 [1.7.9]: https://github.com/ivaleo/animageo/compare/v1.7.8...v1.7.9
 [1.7.8]: https://github.com/ivaleo/animageo/compare/v1.7.7...v1.7.8

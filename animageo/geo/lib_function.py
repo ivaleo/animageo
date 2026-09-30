@@ -17,6 +17,9 @@ import numpy as np
 import sympy as sp
 
 from ..constants import Z_LINE
+from .formula_refs import (
+    coordinate_calls, substitute_references, unbound_references,
+)
 from .safe_sympify import safe_sympify
 
 
@@ -39,8 +42,15 @@ _SYMPY_FUNCS = {
     'sin': sp.sin,  'cos': sp.cos,  'tan': sp.tan,
     'asin': sp.asin, 'acos': sp.acos, 'atan': sp.atan,
     'sinh': sp.sinh, 'cosh': sp.cosh, 'tanh': sp.tanh,
+    # GeoGebra and NumPy spellings of the same functions.
+    'arcsin': sp.asin, 'arccos': sp.acos, 'arctan': sp.atan,
+    'asinh': sp.asinh, 'acosh': sp.acosh, 'atanh': sp.atanh,
+    'arcsinh': sp.asinh, 'arccosh': sp.acosh, 'arctanh': sp.atanh,
+    'sgn': sp.sign, 'sign': sp.sign, 'ceil': sp.ceiling, 'floor': sp.floor,
     'exp': sp.exp,
     'log': sp.log, 'ln': sp.log,
+    'lg': lambda v: sp.log(v, 10), 'log10': lambda v: sp.log(v, 10),
+    'ld': lambda v: sp.log(v, 2), 'log2': lambda v: sp.log(v, 2),
     'pi': sp.pi, 'e': sp.E,
     'Piecewise': sp.Piecewise,
     'nan': sp.nan,
@@ -71,8 +81,13 @@ def _normalize_expression(s: str) -> str:
 #
 # The character classes deliberately exclude logical connectives and
 # brackets so the pattern stays within one relational subexpression.
+#
+# A coordinate ``xcoord(A)`` (see ``formula_refs``) is one operand:
+# ``x(A) ≤ x ≤ x(B)`` — a graph between two points.
+_CHAIN_OPERAND = r'(?:[xy]coord\(\s*\w+\s*\)|[^<>=&|(),])'
 _CHAIN_COMP_RE = re.compile(
-    r'([^<>=&|(),]+?)\s*(<=|>=|<|>)\s*([^<>=&|(),]+?)\s*(<=|>=|<|>)\s*([^<>=&|(),]+)'
+    rf'({_CHAIN_OPERAND}+?)\s*(<=|>=|<|>)\s*({_CHAIN_OPERAND}+?)\s*(<=|>=|<|>)'
+    rf'\s*({_CHAIN_OPERAND}+)'
 )
 
 
@@ -181,21 +196,19 @@ def _translate_if_to_piecewise(s: str) -> str:
     return ''.join(out)
 
 
-def _extract_rhs(expr_str: str, var_name: str) -> str:
-    """If ``expr_str`` is ``y = ...`` or ``f(x) = ...``, return just the RHS."""
+_DEFINITION_LHS_RE = re.compile(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*\(\s*([A-Za-z_]\w*)\s*\)\s*$')
+
+
+def _split_definition(expr_str: str) -> Tuple[str, Optional[str]]:
+    """``(rhs, variable)`` of ``y = ...`` / ``f(t) = ...`` / a bare ``...``;
+    ``variable`` is the one named on the left (``t``), else ``None``."""
     if '=' not in expr_str:
-        return expr_str
+        return expr_str, None
     lhs, rhs = expr_str.split('=', 1)
-    lhs_clean = lhs.strip()
-    # Common forms: "y", "f(x)", "name(x)".
-    if lhs_clean in ('y', var_name):
-        return rhs.strip()
-    if re.match(rf'^\s*[A-Za-z_][A-Za-z0-9_]*\s*\(\s*{re.escape(var_name)}\s*\)\s*$',
-                lhs_clean):
-        return rhs.strip()
-    # Fall back: take the right-hand side anyway — for expressions like
-    # "2*x = y", solving for the free var is the caller's problem.
-    return rhs.strip()
+    # For other left sides ("2*x = y") solving for the free var is the
+    # caller's problem: the right-hand side is taken anyway.
+    m = _DEFINITION_LHS_RE.match(lhs)
+    return rhs.strip(), (m.group(1) if m else None)
 
 
 def parse_function_expression(
@@ -207,18 +220,30 @@ def parse_function_expression(
       - ``"x^2 + 1"``
       - ``"y = x^2 + 1"``
       - ``"f(x) = sin(x)"``
+      - ``"g(t) = t^2"`` — the variable named on the left is renamed to
+        ``var_name``, so the result is ``x**2``
       - ``"i: y = -abs(x) + 4"`` (GGB label-prefixed)
 
-    Raises ``ValueError`` when sympy can't parse the RHS.
+    ``x(A)`` / ``y(A)`` are coordinates of ``A``, never the variable (see
+    ``formula_refs``). Raises ``ValueError`` when sympy can't parse the RHS.
     """
     text = _strip_label_prefix(raw)
+    text, refs = coordinate_calls(text)
     text = _normalize_expression(text)
-    text = _extract_rhs(text, var_name)
-    var = sp.Symbol(var_name)
+    text, lhs_var = _split_definition(text)
+    name = lhs_var or var_name
+    var = sp.Symbol(name)
     try:
-        expr = safe_sympify(text, {var_name: var, **_SYMPY_FUNCS})
+        expr = safe_sympify(text, {**_SYMPY_FUNCS, name: var, **refs})
     except (sp.SympifyError, SyntaxError, TypeError) as e:
         raise ValueError(f"could not parse function expression {raw!r}: {e}")
+    if name != var_name:
+        target = sp.Symbol(var_name)
+        if target in expr.free_symbols:
+            raise ValueError(
+                f"function expression {raw!r} of {name} also mentions {var_name}")
+        expr = expr.xreplace({var: target})
+        var = target
     return expr, var
 
 
@@ -293,18 +318,14 @@ class Function:
     ) -> 'Function':
         expr, sym = parse_function_expression(raw, var_name)
         if parameters:
-            subs = {}
-            for name, value in parameters.items():
-                if name == sym.name:
-                    continue
-                try:
-                    # A boolean stays a boolean: ``If(b, …)`` needs one.
-                    subs[sp.Symbol(str(name))] = (
-                        value if isinstance(value, bool) else float(value))
-                except (TypeError, ValueError):
-                    continue
-            if subs:
-                expr = expr.subs(subs)
+            # A boolean stays a boolean: ``If(b, …)`` needs one.
+            expr = substitute_references(
+                expr, {k: v for k, v in parameters.items() if str(k) != sym.name})
+        unbound = unbound_references(expr, {sym})
+        if unbound:
+            # lambdify would build a callable that fails on every call.
+            raise ValueError(
+                f"function expression {raw!r} has unbound names {unbound}")
         return cls(expr, sym, source=raw)
 
     # ── Evaluation ────────────────────────────────────────────────────

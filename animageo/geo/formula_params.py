@@ -1,18 +1,21 @@
-"""Numeric parameters of a formula-defined curve.
+"""Parameters of a formula-defined curve.
 
 A GeoGebra formula such as ``f(x) = a x²`` or ``p: y = a x²`` depends on the
-free numbers it mentions. The construction keeps that dependency as a command
-whose first input is the formula text and whose remaining inputs are the
-parameter names in sorted order — ``Function("y = a*x^2", a)`` — and the
-command implementation re-reads the formula with the current values on every
-rebuild. Producer (GGB parser, DSL) and consumer (``lib_commands.*_Tn``) both
-take the parameter order from :func:`formula_parameters`, so they cannot drift.
+free numbers it mentions; ``g(t) = y(A) (t − x(B))`` on the points whose
+coordinates it reads (and vectors: ``x(v)``); ``f(t) = g(t) + k`` on the
+function it calls. The construction keeps that dependency as a command whose
+first input is the formula text and whose remaining inputs are the parameter
+names in sorted order — ``Function("y = a*x^2", a)``, ``Function("…", A, B,
+g, k)`` — and the command implementation re-reads the formula with the
+current values on every rebuild. Producer (GGB parser, DSL) and consumer
+(``lib_commands.*_Tn``) both take the parameter order from
+:func:`formula_parameters`, so they cannot drift.
 """
 import re
 
-from sympy.core.function import AppliedUndef
-
-from .lib_elements import Angle
+from .formula_refs import reference_names
+from .lib_elements import Angle, Point, Vector
+from .lib_function import Function
 from .lib_vars import AngleSize, Boolean, Measure
 
 FORMULA_KINDS = ('function', 'conic', 'line', 'implicit')
@@ -35,19 +38,19 @@ def _parse(expr_str, kind):
 
 
 def formula_parameters(expr_str, kind):
-    """Sorted names of a formula's free symbols other than its own variables
-    (``x`` for a function, ``x, y`` otherwise).
+    """Sorted names a formula refers to other than its own variables (``x``
+    for a function, ``x, y`` otherwise): numbers, points and vectors read
+    through ``x()``/``y()``, functions it calls (``g(x) = f(x) + a`` →
+    ``['a', 'f']``).
 
-    ``None`` when the formula can't be read as a closed expression: a parse
-    error, or a call of an undefined function (``g(x) = f(x) + a``).
+    ``None`` when the formula can't be parsed or takes a coordinate of
+    something other than a name (``x(A + B)``).
     """
     try:
         expr, own = _parse(expr_str, kind)
     except ValueError:
         return None
-    if expr.atoms(AppliedUndef):
-        return None
-    return sorted(str(s) for s in expr.free_symbols - own)
+    return reference_names(expr, own)
 
 
 def numeric_var_values(constr):
@@ -79,14 +82,32 @@ def _number_value(data):
     return None
 
 
+def formula_objects(constr):
+    """``{name: data}`` for every construction object a formula can refer
+    to: the numbers of :func:`numeric_var_values`, points and vectors (read
+    through ``x()``/``y()``) and functions (called as ``g(x)``)."""
+    objects = numeric_var_values(constr)
+    for elem in constr.elements:
+        if isinstance(elem.data, (Point, Vector, Function)):
+            objects.setdefault(elem.name, elem.data)
+    return objects
+
+
+def formula_bindings(constr):
+    """``{name: value}`` of :func:`formula_objects` in the form the curve
+    parsers substitute (``Function.from_string(…, parameters=…)``)."""
+    return {name: _bound(data) for name, data in formula_objects(constr).items()}
+
+
 def parametric_inputs(constr, expr_str, kind):
     """Parameter names to append to a formula command, or ``None`` when the
-    formula mentions no construction number or a symbol that is not one."""
+    formula refers to nothing in the construction or to a name that is not
+    in it."""
     names = formula_parameters(expr_str, kind)
     if not names:
         return None
-    numeric = numeric_var_values(constr)
-    if not all(name in numeric for name in names):
+    objects = formula_objects(constr)
+    if not all(name in objects for name in names):
         return None
     return names
 
@@ -103,8 +124,21 @@ def bind_parameters(expr_str, kind, values):
 
 
 def _bound(value):
+    if isinstance(value, Point):
+        return (float(value.coords[0]), float(value.coords[1]))
+    if isinstance(value, Vector):
+        return (float(value.direction[0]), float(value.direction[1]))
+    if isinstance(value, Function):
+        return value
     raw = getattr(value, 'value', value)
     return raw if isinstance(raw, bool) else float(raw)
+
+
+def _mentioned(names, expr_str):
+    return sorted(
+        name for name in names
+        if re.search(rf'(?<!\w){re.escape(name)}(?!\w)', expr_str)
+    )
 
 
 def mentioned_numbers(constr, expr_str):
@@ -112,7 +146,10 @@ def mentioned_numbers(constr, expr_str):
 
     For diagnostics: works even when the formula does not parse.
     """
-    return sorted(
-        name for name in numeric_var_values(constr)
-        if re.search(rf'(?<!\w){re.escape(name)}(?!\w)', expr_str)
-    )
+    return _mentioned(numeric_var_values(constr), expr_str)
+
+
+def mentioned_objects(constr, expr_str):
+    """Like :func:`mentioned_numbers` for everything a formula can refer to
+    (:func:`formula_objects`) — numbers, points, vectors, functions."""
+    return _mentioned(formula_objects(constr), expr_str)

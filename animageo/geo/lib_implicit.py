@@ -19,6 +19,9 @@ import numpy as np
 import sympy as sp
 
 from ..constants import Z_LINE
+from .formula_refs import (
+    coordinate_calls, substitute_references, unbound_references,
+)
 from .safe_sympify import safe_sympify
 from .lib_function import (
     _normalize_expression, _strip_label_prefix, _SYMPY_FUNCS,
@@ -51,13 +54,14 @@ def parse_implicit_expression(
         - ``"sqrt(-4*y) + sqrt(abs(x - 1)) = 5"`` (GGB implicitpoly)
     """
     text = _strip_label_prefix(raw)
+    text, refs = coordinate_calls(text)
     text = _normalize_expression(text)
     text = _split_equation(text)
 
     x = sp.Symbol('x')
     y = sp.Symbol('y')
     try:
-        expr = safe_sympify(text, {'x': x, 'y': y, **_SYMPY_FUNCS})
+        expr = safe_sympify(text, {'x': x, 'y': y, **_SYMPY_FUNCS, **refs})
     except (sp.SympifyError, SyntaxError, TypeError) as e:
         raise ValueError(f"could not parse implicit expression {raw!r}: {e}")
     return expr, x, y
@@ -122,13 +126,16 @@ class ImplicitCurve:
     @classmethod
     def from_string(cls, raw: str, parameters=None) -> 'ImplicitCurve':
         """``parameters`` maps other names in the expression to their
-        current values (``"x^3 + a y = 1"`` with ``{'a': 2}``)."""
+        current values (``"x^3 + a y = 1"`` with ``{'a': 2}``; a point's
+        coordinate pair for ``x(A)``/``y(A)``, see ``formula_refs``)."""
         expr, sx, sy = parse_implicit_expression(raw)
         if parameters:
-            expr = expr.subs({
-                sp.Symbol(str(k)): v if isinstance(v, bool) else float(v)
-                for k, v in parameters.items()
-            })
+            expr = substitute_references(expr, parameters)
+        unbound = unbound_references(expr, {sx, sy})
+        if unbound:
+            # The contourer would find no curve and say nothing.
+            raise ValueError(
+                f"implicit expression {raw!r} has unbound names {unbound}")
         return cls(expr, sx, sy, source=raw)
 
     # ── Evaluation ────────────────────────────────────────────────────

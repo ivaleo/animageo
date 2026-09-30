@@ -35,8 +35,8 @@ class TestFormulaParameters:
     def test_no_parameters(self):
         assert formula_parameters('y = x**2', 'function') == []
 
-    def test_undefined_function_call_is_not_a_closed_formula(self):
-        assert formula_parameters('g(x) = f(x) + a', 'function') is None
+    def test_called_function_is_a_parameter(self):
+        assert formula_parameters('g(x) = f(x) + a', 'function') == ['a', 'f']
 
     def test_parse_error(self):
         assert formula_parameters('y = (', 'function') is None

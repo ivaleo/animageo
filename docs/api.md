@@ -31,17 +31,22 @@ are added as `dependents` to the original diagnostic and are not logged in bulk
 as independent problems.
 
 Expressions get diagnostics of the same shape, with `command: 'Expression'`,
-the source `expression` and the construction numbers it mentions in
-`parameters`:
+the source `expression` and the construction objects it refers to (numbers,
+points, functions) in `parameters`:
 
 | `reason` | Meaning |
 |---|---|
-| `parametric_dependency_frozen` | A formula mentions a number (slider) but was imported as a snapshot at the load-time values, so the object will not follow the number (e.g. `g(x) = f(x) + a`, or a conic equation that does not reproduce the curve GeoGebra saved — the saved curve is kept). Also a `Point(path, t)` (`command: 'Point'`) whose computed position disagrees with the saved one: the saved point is kept |
-| `expression_parse_error` | The expression could not be read; the object is built from its saved coordinates, if any, and does not follow what the expression refers to |
+| `parametric_dependency_frozen` | A formula mentions a number (slider) but was imported as a snapshot at the load-time values, so the object will not follow the number (e.g. a conic equation that does not reproduce the curve GeoGebra saved — the saved curve is kept). Also a `Point(path, t)` (`command: 'Point'`) whose computed position disagrees with the saved one: the saved point is kept |
+| `expression_parse_error` | The expression could not be read; the object is built from its saved coordinates, if any, and does not follow what the expression refers to. A function or implicit curve has no saved coordinates, so it is missing from the scene |
 
-A formula that mentions numbers is otherwise imported as a live dependency:
-`f(x) = a x²`, `p: y = a x²`, `g: y = a x + 1` and implicit curves are rebuilt
-from their formula with the current values whenever a number changes.
+A formula that refers to construction objects is otherwise imported as a live
+dependency: `f(x) = a x²`, `p: y = a x²`, `g: y = a x + 1` and implicit curves
+are rebuilt from their formula with the current values whenever a number
+changes. The same holds for point coordinates — `x(A)`, `y(A)` (and `x(v)`,
+`y(v)` of a vector) — and for other functions: `g(t) = y(A) (t − x(B)) + …`
+follows `A` and `B`, `f(t) = g(t) + k (t − x(A))` follows `g`, `k` and `A`.
+The function's variable is the one named on the left (`g(t) = t²`); `x(` right
+before a bracket is always a coordinate, never the variable.
 
 ### Layout parameters: `style`, `reference`, `content`, `export`
 

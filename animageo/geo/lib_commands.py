@@ -100,11 +100,13 @@ type_to_shortcut = {
     str             : 'T'   # for DSL string literals: Function("y = x^2"), Conic("..."), etc.
 }
 
-# Formula constructors take the formula text followed by any number of numeric
-# parameters (``Function("y = a*x^2", a)``); the count varies, so each base
-# dispatches to a single ``<base>_Tn`` implementation.
+# Formula constructors take the formula text followed by any number of
+# parameters — numbers, points and vectors read through ``x()``/``y()``,
+# functions it calls (``Function("y = a*x^2", a)``, ``Function("…", A, g)``);
+# the count varies, so each base dispatches to a single ``<base>_Tn``
+# implementation.
 _FORMULA_BASES = ('function', 'conic', 'implicit_curve', 'line')
-_FORMULA_PARAMS_RE = re.compile(r'^T[imAab]+$')
+_FORMULA_PARAMS_RE = re.compile(r'^T[imAabpvF]+$')
 _VARIADIC_DISPATCH = frozenset(f'{base}_Tn' for base in _FORMULA_BASES)
 
 def strFullCommand(name, params): # "Polygon", [Point, Point, int] -> "polygon_ppi"
@@ -2905,8 +2907,9 @@ def implicit_curve_T(expr_str):
 
 
 def function_Tn(expr_str, *params):
-    """Function whose formula mentions numbers: ``f(x) = a x²`` re-read with
-    the current ``a`` on every rebuild (see ``geo/formula_params.py``)."""
+    """Function whose formula refers to construction objects: ``f(x) = a x²``,
+    ``g(t) = y(A) t``, ``f(t) = g(t) + k`` re-read with the current values on
+    every rebuild (see ``geo/formula_params.py``)."""
     try:
         return Function.from_string(
             expr_str, parameters=bind_parameters(expr_str, 'function', params))

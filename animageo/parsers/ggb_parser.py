@@ -15,7 +15,8 @@ from xml.etree.ElementTree import Element as XElement
 from ..geo.construction import Construction
 from ..geo.lib_commands import Command, COMMAND_REGISTRY, strCommand
 from ..geo.formula_params import (
-    mentioned_numbers, numeric_var_values, parametric_inputs,
+    formula_bindings, formula_objects, formula_parameters, mentioned_numbers,
+    mentioned_objects, parametric_inputs,
 )
 from ..geo.lib_vars import *
 from ..geo.lib_elements import *
@@ -281,10 +282,6 @@ def _element_types_by_label(constr_xelem: XElement) -> dict[str, str]:
     }
 
 
-def _numeric_parameter_values(constr: Construction) -> dict[str, float]:
-    return numeric_var_values(constr)
-
-
 _FORMULA_COMMANDS = {'function': 'Function', 'conic': 'Conic',
                      'line': 'Line', 'implicit': 'ImplicitCurve'}
 
@@ -306,26 +303,28 @@ def _same_curve(a, b) -> bool:
 
 
 def _add_formula_command(constr, name, kind, expr, saved=None, debug=False) -> bool:
-    """Build a formula curve as a command on the numbers it mentions, so it
-    follows them on rebuild (``f(x) = a x²`` with ``a`` animated).
+    """Build a formula curve as a command on what it refers to — numbers,
+    points through ``x()``/``y()``, functions it calls — so it follows them
+    on rebuild (``f(x) = a x²`` with ``a`` animated, ``g(t) = y(A) t`` with
+    ``A`` dragged).
 
     Returns False — the caller then keeps the frozen snapshot — when the
-    formula mentions no construction number, can't be evaluated, or
+    formula mentions no construction object, can't be evaluated, or
     disagrees with the curve GeoGebra saved (``saved``: the conic from
     ``<matrix>`` / the line from ``<coords>``).
     """
-    # A formula that mentions no construction number keeps the old import
+    # A formula that mentions no construction object keeps the old import
     # path untouched: it isn't even parsed here.
-    if not mentioned_numbers(constr, expr):
+    if not mentioned_objects(constr, expr):
         return False
     cmd_name = _FORMULA_COMMANDS[kind]
     try:
         params = parametric_inputs(constr, expr, kind)
         if not params:
             return False
-        values = numeric_var_values(constr)
+        objects = formula_objects(constr)
         impl = COMMAND_REGISTRY[f'{strCommand(cmd_name)}_Tn']
-        probe = impl(expr, *(values[p] for p in params))
+        probe = impl(expr, *(objects[p] for p in params))
         if probe is None or (saved is not None and not _same_curve(probe, saved)):
             return False
     except Exception as e:           # never let a formula take the load down
@@ -368,10 +367,19 @@ def _check_point_on_path(constr, name, source, coords_xelem) -> None:
                'kept the saved point')
 
 
-def _note_frozen_formula(constr, name, expr, detail) -> None:
-    """A formula that mentions numbers but was imported as a snapshot will
-    not follow them — record it so a client can tell the user."""
-    mentioned = mentioned_numbers(constr, expr)
+def _formula_references(constr, expr, kind):
+    """Construction objects a formula refers to: as parsed when it parses
+    (the variable of ``g(t) = t²`` is not the slider ``t``), else by name."""
+    mentioned = mentioned_objects(constr, expr)
+    names = formula_parameters(expr, kind)
+    return mentioned if names is None else [n for n in mentioned if n in names]
+
+
+def _note_frozen_formula(constr, name, kind, expr, detail) -> None:
+    """A formula that refers to construction objects but was imported as a
+    snapshot will not follow them — record it so a client can tell the
+    user."""
+    mentioned = _formula_references(constr, expr, kind)
     if mentioned:
         constr.record_expression_diagnostic(
             'parametric_dependency_frozen', name, expr,
@@ -669,15 +677,18 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                         continue
                     try:
                         func_obj = _Function.from_string(
-                            converted_expr,
-                            parameters=_numeric_parameter_values(constr),
-                        )
+                            converted_expr, parameters=formula_bindings(constr))
                         constr.add(Element(name_mapping[name], func_obj, fixed=True))
                         _note_frozen_formula(
-                            constr, name_mapping[name], converted_expr,
+                            constr, name_mapping[name], 'function', converted_expr,
                             'formula imported as a snapshot at the current values')
                     except ValueError as fe:
                         logger.warning("Could not parse function '%s': %s", expr, fe)
+                        constr.record_expression_diagnostic(
+                            'expression_parse_error', name_mapping[name], expr,
+                            parameters=_formula_references(
+                                constr, converted_expr, 'function'),
+                            detail=str(fe))
                     xelems_left_to_pass = 1
                     continue
 
@@ -688,14 +699,20 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                         xelems_left_to_pass = 1
                         continue
                     try:
-                        imp = _Implicit.from_string(expr)
+                        imp = _Implicit.from_string(
+                            expr, parameters=formula_bindings(constr))
                         constr.add(Element(name_mapping[name], imp, fixed=True))
                         _note_frozen_formula(
-                            constr, name_mapping[name], converted_expr,
+                            constr, name_mapping[name], 'implicit', converted_expr,
                             'formula imported as a snapshot at the current values')
                     except ValueError as ie:
                         logger.warning("Could not parse implicitpoly '%s': %s",
                                        expr, ie)
+                        constr.record_expression_diagnostic(
+                            'expression_parse_error', name_mapping[name], expr,
+                            parameters=_formula_references(
+                                constr, converted_expr, 'implicit'),
+                            detail=str(ie))
                     xelems_left_to_pass = 1
                     continue
 
@@ -870,9 +887,9 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                                             saved=conic, debug=debug):
                         continue
                     _note_frozen_formula(
-                        constr, name, formula,
+                        constr, name, 'conic', formula,
                         'kept the saved conic: the equation does not follow the '
-                        'numbers it mentions or does not reproduce the saved curve')
+                        'objects it refers to or does not reproduce the saved curve')
                 constr.add(Element(name, conic, fixed=True))
                 continue
             if xelem.attrib["type"] == "line":
@@ -902,9 +919,9 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                                             saved=line, debug=debug):
                         continue
                     _note_frozen_formula(
-                        constr, name, formula,
+                        constr, name, 'line', formula,
                         'kept the saved line: the equation does not follow the '
-                        'numbers it mentions or does not reproduce the saved line')
+                        'objects it refers to or does not reproduce the saved line')
                 constr.add(Element(name, line, fixed=True))
                 continue
             if xelem.attrib["type"] == "text":
