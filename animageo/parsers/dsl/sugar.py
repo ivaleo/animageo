@@ -19,6 +19,8 @@ from __future__ import annotations
 
 import re
 
+from ...geo.safe_sympify import normalize_formula_text
+
 
 _FUNCTION_DEF_RE = re.compile(
     r'''^(\s*)                      # indent
@@ -62,7 +64,8 @@ def preprocess_dsl_sugar(code: str) -> str:
             continue
         indent, name, var, expr = m.group(1), m.group(2), m.group(3), m.group(4)
         if var != 'x':
-            expr = _rename_variable(expr, var)
+            # ``πt`` is two names once π is read (see normalize_formula_text).
+            expr = _rename_variable(normalize_formula_text(expr), var)
         expr_escaped = expr.replace('\\', '\\\\').replace('"', '\\"')
         out_lines.append(f'{indent}{name} = Function("y = {expr_escaped}")')
     return '\n'.join(out_lines) + ('\n' if code.endswith('\n') else '')

@@ -26,7 +26,9 @@ from .formula_refs import (
     coordinate_calls, substitute_references, unbound_references,
 )
 from .lib_elements import Line, Point
-from .safe_sympify import check_length, has_large_power, safe_sympify
+from .safe_sympify import (
+    check_length, has_large_power, normalize_formula_text, safe_sympify,
+)
 from ..constants import Z_LINE
 
 
@@ -48,7 +50,8 @@ def parse_conic_equation(equation: str):
     import sympy as sp
 
     check_length(equation)
-    text = re.sub(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*:\s*', '', equation)
+    text = normalize_formula_text(equation)
+    text = re.sub(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*:\s*', '', text)
     text = text.replace('^', '**')
     if '=' in text:
         lhs, rhs = text.split('=', 1)

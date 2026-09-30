@@ -20,7 +20,7 @@ from ..constants import Z_LINE
 from .formula_refs import (
     coordinate_calls, substitute_references, unbound_references,
 )
-from .safe_sympify import check_length, safe_sympify
+from .safe_sympify import check_length, normalize_formula_text, safe_sympify
 
 
 logger = logging.getLogger(__name__)
@@ -84,8 +84,9 @@ def _normalize_expression(s: str) -> str:
 # brackets so the pattern stays within one relational subexpression.
 #
 # A coordinate ``xcoord(A)`` (see ``formula_refs``) is one operand:
-# ``x(A) ≤ x ≤ x(B)`` — a graph between two points.
-_CHAIN_OPERAND = r'(?:[xy]coord\(\s*\w+\s*\)|[^<>=&|(),])'
+# ``x(A) ≤ x ≤ x(B)`` — a graph between two points; so is ``exp(1)``, the
+# ℯ of ``ℯ ≤ x ≤ 3`` (see ``normalize_formula_text``).
+_CHAIN_OPERAND = r'(?:[xy]coord\(\s*\w+\s*\)|exp\(1\)|[^<>=&|(),])'
 _CHAIN_COMP_RE = re.compile(
     rf'({_CHAIN_OPERAND}+?)\s*(<=|>=|<|>)\s*({_CHAIN_OPERAND}+?)\s*(<=|>=|<|>)'
     rf'\s*({_CHAIN_OPERAND}+)'
@@ -229,7 +230,7 @@ def parse_function_expression(
     ``formula_refs``). Raises ``ValueError`` when sympy can't parse the RHS.
     """
     check_length(raw)
-    text = _strip_label_prefix(raw)
+    text = _strip_label_prefix(normalize_formula_text(raw))
     text, refs = coordinate_calls(text)
     text = _normalize_expression(text)
     text, lhs_var = _split_definition(text)

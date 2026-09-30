@@ -17,6 +17,7 @@ from .formula_refs import reference_names
 from .lib_elements import Angle, Point, Vector
 from .lib_function import Function
 from .lib_vars import AngleSize, Boolean, Measure
+from .safe_sympify import normalize_formula_text
 
 FORMULA_KINDS = ('function', 'conic', 'line', 'implicit')
 
@@ -135,9 +136,10 @@ def _bound(value):
 
 
 def _mentioned(names, expr_str):
+    text = normalize_formula_text(expr_str)
     return sorted(
         name for name in names
-        if re.search(rf'(?<!\w){re.escape(name)}(?!\w)', expr_str)
+        if re.search(rf'(?<!\w){re.escape(name)}(?!\w)', text)
     )
 
 

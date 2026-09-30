@@ -20,6 +20,7 @@ from ..geo.formula_params import (
 )
 from ..geo.lib_vars import *
 from ..geo.lib_elements import *
+from ..geo.safe_sympify import normalize_formula_text
 from ..geo.utils import is_number, is_angle_degrees
 from ..geo.tparam import (
     get_tparam_from_point_and_circle,
@@ -210,7 +211,14 @@ def extract_identifiers(expression):
     excluded = python_keywords.union(math_functions)
     return identifiers - excluded
 
-def convert_ggb_expr_to_python(constr, expr_str, expr_type=None):    
+_FORMULA_EXPR_TYPES = ('function', 'implicitpoly', 'conic', 'line')
+
+
+def convert_ggb_expr_to_python(constr, expr_str, expr_type=None):
+    # A curve's formula (``π``, ``ℯ``, ``−``, ``·``…) is read the way the
+    # formula parsers read it before any name in it is looked for.
+    if expr_type in _FORMULA_EXPR_TYPES:
+        expr_str = normalize_formula_text(expr_str)
     # Извлекаем все идентификаторы из выражения
     identifiers = extract_identifiers(expr_str)
     

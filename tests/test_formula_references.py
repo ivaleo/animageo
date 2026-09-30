@@ -560,3 +560,70 @@ class TestConstantFormulas:
         move(c, 'A', (5, 1))
         assert c.element('f').data(0.0) == pytest.approx(5.0)
         assert c.element('g').data(1.0, 0.0) == pytest.approx(0.0)
+
+
+# ── 1.7.13: typographic characters ──────────────────────────────────────
+
+class TestTypographicCharacters:
+    """−, ·, ×, ÷, π and ℯ as GeoGebra shows and copies them."""
+
+    @pytest.mark.parametrize('text, x, expected', [
+        ('y = x − 1', 3.0, 2.0),
+        ('y = −x', 3.0, -3.0),
+        ('y = 2·x', 3.0, 6.0),
+        ('y = 2⋅x', 3.0, 6.0),
+        ('y = 2×x', 3.0, 6.0),
+        ('y = x ÷ 2', 3.0, 1.5),
+        ('y = π', 0.0, np.pi),
+        ('y = 2π', 0.0, 2 * np.pi),
+        ('y = πx', 2.0, 2 * np.pi),
+        ('y = 2πx', 1.0, 2 * np.pi),
+        ('y = sin(πx)', 0.5, 1.0),
+        ('y = sin(π/2 x)', 1.0, 1.0),
+        ('y = π(x + 1)', 1.0, 2 * np.pi),
+        ('y = x^π', 2.0, 2 ** np.pi),
+        ('y = ℯ', 0.0, np.e),
+        ('y = ℯ^x', 2.0, np.e ** 2),
+        ('y = 2ℯ', 0.0, 2 * np.e),
+        ('y = ℯx', 2.0, 2 * np.e),
+        ('y = ℯ^(−x²)'.replace('²', '^2'), 1.0, np.exp(-1)),
+        ('y = If(ℯ ≤ x ≤ 3, 1, 0)', 2.9, 1.0),
+    ])
+    def test_function(self, text, x, expected):
+        assert Function.from_string(text)(x) == pytest.approx(expected)
+
+    def test_names_next_to_pi_and_e_are_found(self):
+        assert formula_parameters('y = aπx − b', 'function') == ['a', 'b']
+        assert formula_parameters('y = x(A)·ℯ', 'function') == ['A']
+        assert formula_parameters('πx(A) = y', 'conic') == ['A']
+        f = Function.from_string('y = πx(A) − x', parameters={'A': (2, 0)})
+        assert f(1.0) == pytest.approx(2 * np.pi - 1)
+
+    def test_pi_and_e_are_constants_whatever_the_construction_names(self):
+        # In a conic ``e`` is an ordinary name, and ``pi``/``E`` can be
+        # construction objects: π and ℯ are still the constants.
+        k = Conic.from_string('y = e x^2 + ℯ', parameters={'e': 5})
+        assert k.evaluate(1.0, 5 + np.e) == pytest.approx(0.0, abs=1e-9)
+        f = Function.from_string('y = π x + E', parameters={'pi': 5, 'E': 1})
+        assert f(1.0) == pytest.approx(np.pi + 1)
+        assert formula_parameters('y = π x + ℯ', 'conic') == []
+
+    def test_conic_and_implicit(self):
+        circle = Conic.from_string('x^2 + y^2 = π')
+        assert circle.evaluate(np.sqrt(np.pi), 0.0) == pytest.approx(0.0, abs=1e-9)
+        assert Conic.from_string('y = 2·x − 1').evaluate(1.0, 1.0) == pytest.approx(0.0)
+        h = ImplicitCurve.from_string('x·y = ℯ')
+        assert h(1.0, np.e) == pytest.approx(0.0, abs=1e-9)
+
+    def test_ggb_formula_follows_its_number(self):
+        c = load(num('a', 1) + fn('f', 'f(x) = a·x − π'))
+        assert c.commandByElementName('f') is not None
+        apply_parsed_value(c, 'a', 'var', 3.0)
+        c.rebuild()
+        assert c.element('f').data(1.0) == pytest.approx(3 - np.pi)
+
+    def test_dsl(self):
+        c = Construction()
+        dsl.run(c, 'a = 2\nf(t) = a·πt − 1\ng = Conic("x^2 + y^2 = ℯ")\n')
+        assert c.element('f').data(1.0) == pytest.approx(2 * np.pi - 1)
+        assert c.element('g').data.evaluate(np.sqrt(np.e), 0.0) == pytest.approx(0.0, abs=1e-9)

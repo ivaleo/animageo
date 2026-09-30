@@ -76,6 +76,30 @@ def check_length(text):
         raise ValueError(f'formula longer than {MAX_LENGTH} characters')
 
 
+# Typographic characters GeoGebra shows (and a copied formula keeps). π and
+# ℯ become what means the constant in every parser — ``e`` is an ordinary
+# name in a conic, ``E`` may be a point — padded with spaces, so ``2π``,
+# ``πx``, ``sin(πx)``, ``2ℯ`` stay implicit products and ``πx(A)`` still
+# reads the coordinate of ``A``.
+_TYPOGRAPHIC = str.maketrans({
+    '−': '-',              # − minus sign
+    '·': '*',              # · middle dot
+    '⋅': '*',              # ⋅ dot operator
+    '×': '*',              # × multiplication sign
+    '÷': '/',              # ÷ division sign
+    'π': ' pi ',           # π
+    'ℯ': ' exp(1) ',       # ℯ
+})
+
+
+def normalize_formula_text(text):
+    """Formula text with typographic characters replaced by what the
+    parsers read. Every entry point that looks at formula text — the
+    parsers and the passes that find the names a formula mentions — calls
+    it before its first regular expression."""
+    return text.translate(_TYPOGRAPHIC)
+
+
 # The sympy functions a formula may call; the caller's ``local_dict`` adds
 # its own. Any other called name — ``k(x + 1)``, ``g(t)``, ``N(x)`` — is an
 # undefined function, i.e. an object of the construction, even where sympy
