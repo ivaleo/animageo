@@ -531,3 +531,32 @@ class TestEvaluationBounds:
     ])
     def test_ordinary_powers_and_factorials(self, text, x, expected):
         assert Function.from_string(text)(x) == pytest.approx(expected)
+
+
+# ── 1.7.13: a formula that is only a coordinate ─────────────────────────
+
+class TestConstantFormulas:
+    """A formula whose whole right side is a coordinate reduces to a number:
+    the substituted value must still be a sympy expression."""
+
+    def test_function_of_a_coordinate(self):
+        f = Function.from_string('y = x(A)', parameters={'A': (1, 2)})
+        assert f(5.0) == pytest.approx(1.0)
+        assert Function.from_string('y = y(A)', parameters={'A': (1, 2)})(0.0) == pytest.approx(2.0)
+
+    def test_conic_line_and_implicit_of_a_coordinate(self):
+        A = {'A': (1, 2)}
+        assert Conic.from_string('x = x(A)', parameters=A).evaluate(1.0, 7.0) == pytest.approx(0.0)
+        Conic.from_string('x(A) = 0', parameters=A)          # 1 = 0: no curve, no crash
+        assert ImplicitCurve.from_string('x - x(A)', parameters=A)(1.0, 3.0) == pytest.approx(0.0)
+        ImplicitCurve.from_string('x(A) = 0', parameters=A)
+        ImplicitCurve.from_string('x(A)', parameters=A)
+
+    def test_dsl_follows_the_point(self):
+        c = Construction()
+        dsl.run(c, 'A = Point(2, 3)\nf = Function("y = x(A)")\n'
+                   'g = ImplicitCurve("x = y(A)")\n')
+        assert c.element('f').data(0.0) == pytest.approx(2.0)
+        move(c, 'A', (5, 1))
+        assert c.element('f').data(0.0) == pytest.approx(5.0)
+        assert c.element('g').data(1.0, 0.0) == pytest.approx(0.0)

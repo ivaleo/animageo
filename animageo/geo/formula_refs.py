@@ -89,6 +89,9 @@ def substitute_references(expr, parameters):
     undefined outside ``g.explicit_domain``). A number written before a
     bracket, ``k(x + 1)``, is a product.
     """
+    # Values go in as sympy numbers: a formula that is only a reference
+    # (``y = x(A)``) becomes the value itself, and a Python float there has
+    # none of the expression methods the parsers call next.
     numbers, coords, funcs = {}, {}, {}
     for name, value in parameters.items():
         if hasattr(value, 'expr') and hasattr(value, 'var'):
@@ -97,11 +100,11 @@ def substitute_references(expr, parameters):
             numbers[sp.Symbol(str(name))] = value
         elif _is_pair(value):
             symbol = sp.Symbol(str(name))
-            coords[XCOORD(symbol)] = float(value[0])
-            coords[YCOORD(symbol)] = float(value[1])
+            coords[XCOORD(symbol)] = sp.Float(float(value[0]))
+            coords[YCOORD(symbol)] = sp.Float(float(value[1]))
         else:
             try:
-                numbers[sp.Symbol(str(name))] = float(value)
+                numbers[sp.Symbol(str(name))] = sp.Float(float(value))
             except (TypeError, ValueError):
                 continue
     try:
