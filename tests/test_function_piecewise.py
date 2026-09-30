@@ -170,3 +170,66 @@ class TestFunc5Piecewise:
         assert m.data(1) == pytest.approx(1.0)
         # Outside the condition — NaN.
         assert np.isnan(m.data(2.0))
+
+
+# ── 1.7.13: periodic singularities ───────────────────────────────────
+
+from animageo.geo.safe_sympify import MATH_FUNCTIONS
+
+_CALLS = {
+    'atan2': 'atan2(x, 1)', 'root': 'root(x, 3)', 'real_root': 'real_root(x, 3)',
+    'pow': 'pow(x, 2)', 'Max': 'Max(x, 1)', 'Min': 'Min(x, 1)',
+    'max': 'max(x, 1)', 'min': 'min(x, 1)',
+    'Piecewise': 'Piecewise((x, x > 0), (0, True))',
+}
+
+
+@pytest.mark.parametrize('name', sorted(MATH_FUNCTIONS))
+def test_every_math_function_of_x_parses_fast(name):
+    # tan, cot, sec, csc and their hyperbolic twins used to hang: sympy
+    # gives their singularities as an infinite set, which was iterated.
+    import time
+    start = time.perf_counter()
+    f = Function.from_string('y = ' + _CALLS.get(name, f'{name}(x)'))
+    assert time.perf_counter() - start < 1
+    assert all(np.isfinite(s) for s in f.natural_singularities)
+
+
+@pytest.mark.parametrize('text, expected', [
+    ('y = tan(x)', [-3 * np.pi / 2, -np.pi / 2, np.pi / 2, 3 * np.pi / 2]),
+    ('y = cot(x)', [-np.pi, 0.0, np.pi]),
+    ('y = sec(x)', [-3 * np.pi / 2, -np.pi / 2, np.pi / 2, 3 * np.pi / 2]),
+    ('y = csc(x)', [-np.pi, 0.0, np.pi]),
+    ('y = coth(x)', [0.0]),
+    ('y = csch(2x + 1)', [-0.5]),
+    ('y = tanh(x) + sech(x)', []),
+    ('y = tan(x)/x', [-3 * np.pi / 2, -np.pi / 2, 0.0, np.pi / 2, 3 * np.pi / 2]),
+    ('y = tan(πx)', [-4.5, -3.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, 3.5, 4.5]),
+])
+def test_periodic_singularities(text, expected):
+    sings = Function.from_string(text).natural_singularities
+    near = [s for s in sings if -5 < s < 5]
+    assert near == pytest.approx(expected, abs=1e-9)
+    assert sings == sorted(sings) and len(sings) < 5000
+
+
+class TestPeriodicAsymptotes:
+    @pytest.fixture
+    def scene(self, caplog):
+        from animageo.animageo import AnimaGeoScene
+        caplog.set_level(logging.WARNING, logger='animageo.animageo')
+        s = AnimaGeoScene()
+        s.camera.frame.set(width=10)
+        return s
+
+    @pytest.mark.parametrize('name', ['tan', 'cot', 'sec', 'csc'])
+    def test_split_at_every_asymptote(self, scene, caplog, name):
+        f = Function.from_string(f'y = {name}(x)')
+        mobj = scene.CreateMObject(Element('f', f), z_auto=True)
+        assert mobj is not None and len(mobj.submobjects) >= 3
+        inside = [s for s in f.natural_singularities if -4.9 < s < 4.9]
+        assert inside
+        for piece in mobj.submobjects:
+            xs = piece.points[:, 0]
+            assert not any(xs.min() < s < xs.max() for s in inside)
+        assert len(caplog.records) == 0

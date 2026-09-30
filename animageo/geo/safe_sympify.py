@@ -235,6 +235,21 @@ def _huge(arg):
     return arg.is_number and _magnitude(arg) == float('inf')
 
 
+_MAX_ROUND_DIGITS = 100
+
+
+def _round(value, digits=0):
+    """GeoGebra's ``round(x)`` / ``round(x, n)``: half up, and symbolic —
+    ``y = round(x)`` is a graph (Python's ``round`` refuses a symbol)."""
+    value, digits = sp.sympify(value), sp.sympify(digits)
+    if not digits.is_Integer or abs(digits) > _MAX_ROUND_DIGITS:
+        raise _Refused(f'round to {digits} digits')
+    if _huge(value):
+        raise _Refused(f'round({value}) too large')
+    scale = sp.Integer(10) ** digits
+    return sp.floor(value * scale + sp.Rational(1, 2)) / scale
+
+
 class _GuardPowers(ast.NodeTransformer):
     def visit_BinOp(self, node):
         self.generic_visit(node)
@@ -256,7 +271,7 @@ def _global_dict():
         namespace['__builtins__'] = {}
         # The builtins sympify would offer that a formula can mean.
         namespace.update(abs=builtins.abs, pow=_guarded_pow,
-                         round=builtins.round, max=sp.Max, min=sp.Min)
+                         round=_round, max=sp.Max, min=sp.Min)
         namespace = {name: _with_guard(value)
                      for name, value in namespace.items()}
         namespace[_POW] = _guarded_pow
@@ -277,7 +292,7 @@ def _with_guard(value):
                for fn in (sp.gamma, sp.factorial, sp.factorial2)},
             sp.exp: _guarded(sp.exp, _exponent_too_large),
             **{fn: _guarded(fn, _huge)
-               for fn in (sp.floor, sp.ceiling, sp.frac, builtins.round)},
+               for fn in (sp.floor, sp.ceiling, sp.frac)},
             **{fn: _guarded(fn, has_large_power)
                for fn in (sp.re, sp.im, sp.Abs, builtins.abs, sp.arg,
                           sp.conjugate, sp.sign)},

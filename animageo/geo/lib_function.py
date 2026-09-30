@@ -250,6 +250,55 @@ def parse_function_expression(
     return expr, var
 
 
+# A periodic function has infinitely many singularities: sympy gives those
+# of tan(x) as ``ImageSet(Lambda(n, 2nπ + π/2), Integers) ∪ …``, and
+# iterating that set never ends. Of each such family only the real members
+# within this distance of the origin are kept, at most _FAMILY_MEMBERS of
+# them (those of the smallest |n|).
+SINGULARITY_WINDOW = 1000.0
+_FAMILY_MEMBERS = 1000
+
+
+def real_singularities(sings) -> List[float]:
+    """Sorted finite real points of a sympy set of singularities: every
+    point of a finite set, the members of periodic families (ImageSets
+    over the integers) within :data:`SINGULARITY_WINDOW`; other sets — a
+    ``ConditionSet`` sympy could not solve — contribute nothing."""
+    values: List[complex] = []
+    for part in (sings.args if isinstance(sings, sp.Union) else (sings,)):
+        if isinstance(part, sp.FiniteSet):
+            for s in part.args:
+                try:
+                    values.append(complex(s))
+                except (TypeError, ValueError):
+                    continue
+        elif (isinstance(part, sp.ImageSet) and part.base_sets == (sp.S.Integers,)
+              and len(part.lamda.variables) == 1):
+            values.extend(_family_members(part.lamda))
+    out = sorted(
+        v.real for v in values
+        if abs(v.imag) <= 1e-9 and np.isfinite(v.real)
+        and abs(v.real) <= SINGULARITY_WINDOW
+    )
+    unique: List[float] = []
+    for v in out:
+        if not unique or v - unique[-1] > 1e-9 * max(1.0, abs(v)):
+            unique.append(float(v))
+    return unique
+
+
+def _family_members(lamda) -> List[complex]:
+    half = _FAMILY_MEMBERS // 2
+    ns = np.arange(-half, half + 1).astype(complex)
+    try:
+        f = sp.lambdify(lamda.variables[0], lamda.expr, modules='numpy')
+        with np.errstate(all='ignore'):
+            vals = np.broadcast_to(np.asarray(f(ns), dtype=complex), ns.shape)
+    except Exception:
+        return []
+    return list(vals)
+
+
 class Function:
     """Explicit y = f(x) curve.
 
@@ -370,23 +419,14 @@ class Function:
         """Return finite real x where the expression is undefined.
 
         Uses ``sympy.singularities`` and discards complex/infinite
-        values. Never raises — an opaque expression simply returns an
-        empty list.
+        values (see :func:`real_singularities` for periodic ones). Never
+        raises — an opaque expression simply returns an empty list.
         """
         try:
             sings = sp.singularities(self.expr, self.var)
         except Exception:
             return []
-        out: List[float] = []
-        for s in sings:
-            try:
-                v = complex(s)
-            except (TypeError, ValueError):
-                continue
-            if abs(v.imag) > 1e-9 or not np.isfinite(v.real):
-                continue
-            out.append(float(v.real))
-        return sorted(out)
+        return real_singularities(sings)
 
     # ── Standard element protocol ─────────────────────────────────────
 
