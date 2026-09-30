@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.13] - 2026-10-01
+
+### Added
+
+- A formula reads the typographic minus `−`, the multiplication signs `·` and
+  `×`, `÷`, `π` and `ℯ`, so a formula copied from a textbook or a web page
+  works as typed: `f(x) = 2πx − 1`, `y = ℯ^(−x^2)`, `x·y = 1`. `π` and `ℯ` are
+  the constants even where the construction has objects named `pi`, `e` or `E`.
+- In the DSL, `Line("y = 2x + 1")` builds a line from its equation, and
+  `a = 2` then `Line("y = a x + 1")` follows `a`, as in a GeoGebra file.
+  `Line(A, B)` and the other forms are unchanged.
+
+### Fixed
+
+- A formula that is only a coordinate of a point — `y = x(A)`, the line
+  `x = x(A)` — builds again; it failed since 1.7.11.
+- A graph of `tan`, `cot`, `sec`, `csc` or their hyperbolic counterparts no
+  longer hangs while its asymptotes are found; the graph still breaks at every
+  asymptote within |x| ≤ 1000.
+- In the DSL, a boolean computed by a command (`b = AreCollinear(A, B, C)`)
+  works in a formula again. A boolean is a condition in `If(b, x, -x)` and
+  counts as 0 or 1 elsewhere (`y = x + b`), in functions, implicit curves and
+  conics alike, from the DSL and from a GeoGebra checkbox.
+- A GeoGebra formula with a number right before a name, `f(x) = 2a x`, follows
+  the number `a`; it used to be imported as a fixed graph.
+- `round` rounds halves away from zero, as GeoGebra does (`round(2.5) = 3`,
+  `round(-2.5) = -3`), and `y = round(x)` is a graph.
+- In the DSL, a comment after `f(x) = …` is no longer read as part of the
+  formula.
+- The length limit of a formula (4000 characters) applies to the text after
+  `π` and `ℯ` are expanded, so a long run of them is refused at once.
+
+### Documentation
+
+- The documentation describes 1.7.12 and 1.7.13 throughout (formulas, labels
+  placed in GeoGebra, keyframe labels, dashes); references to design notes that
+  are not in the repository are removed from the code and the changelog.
+
 ## [1.7.12] - 2026-09-30
 
 ### Fixed
@@ -1678,7 +1716,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.12...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.13...HEAD
+[1.7.13]: https://github.com/ivaleo/animageo/compare/v1.7.12...v1.7.13
 [1.7.12]: https://github.com/ivaleo/animageo/compare/v1.7.11...v1.7.12
 [1.7.11]: https://github.com/ivaleo/animageo/compare/v1.7.10...v1.7.11
 [1.7.10]: https://github.com/ivaleo/animageo/compare/v1.7.9...v1.7.10
