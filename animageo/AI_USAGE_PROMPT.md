@@ -356,11 +356,11 @@ Derived/semantic:
 | `AngleSize(P, V, Q)` | angle value without drawing a mark |
 | `Ellipse(F1, F2, a)`, `Hyperbola(F1, F2, a)`, `Parabola(F, directrix)` | conics from foci |
 | `Conic("x^2 + y^2 = 4")`, `Conic(P1..P5)` | from equation / five points |
-| `Function("y = x^2 - 1")` or sugar `f(x) = x^2 - 1` | explicit function graph; a number defined earlier is a live parameter (`a = 1` then `f(x) = a*x^2` — animate `a`, the graph follows; same for `Conic("…")`/`ImplicitCurve("…")`); so are point coordinates `x(A)`, `y(A)` (`f(x) = y(A)*x` turns with `A`) and other functions (`h(x) = f(x) + 1`); `*` may be left out (`2x`, `k x`, `(x + 1)(x - 1)`); `f(3)` is the live value at x = 3 |
+| `Function("y = x^2 - 1")` or sugar `f(x) = x^2 - 1` | explicit function graph; a number defined earlier is a live parameter (`a = 1` then `f(x) = a*x^2` — animate `a`, the graph follows; same for `Conic("…")`/`ImplicitCurve("…")`/`Line("y = a*x + 1")`); so are point coordinates `x(A)`, `y(A)` (`f(x) = y(A)*x` turns with `A`) and other functions (`h(x) = f(x) + 1`); `*` may be left out (`2x`, `k x`, `(x + 1)(x - 1)`); `f(3)` is the live value at x = 3 |
 | `ImplicitCurve("(x^2+y^2)^2 = 8*(x^2-y^2)")` | implicit curve F(x,y)=0 |
 | `Focus(K)`, `Vertex(K)`, `Axes(K)`, `Directrix(K)`, `MajorAxis(K)`, `MinorAxis(K)`, `Eccentricity(K)` | conic anatomy (tuple-unpack where plural) |
 
-There is **no** dedicated homothety/dilation factory — use proxy arithmetic.
+Homothety: `Dilate(P, k, O)` (or proxy arithmetic `O + k*(P - O)`).
 Unknown factory names raise `NameError` — never invent commands; if
 something is missing, build it from primitives and note the substitution.
 
