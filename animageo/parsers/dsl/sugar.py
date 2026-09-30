@@ -28,7 +28,8 @@ _FUNCTION_DEF_RE = re.compile(
         \s*\(\s*
         ([A-Za-z_][A-Za-z0-9_]*)    # variable
         \s*\)\s*=\s*
-        (.+?)                       # expression (non-greedy)
+        ([^#]+?)                    # expression (non-greedy)
+        (\s*\#.*)?                  # a trailing comment, kept as is
         \s*$''',
     re.VERBOSE,
 )
@@ -63,9 +64,11 @@ def preprocess_dsl_sugar(code: str) -> str:
             out_lines.append(line)
             continue
         indent, name, var, expr = m.group(1), m.group(2), m.group(3), m.group(4)
+        comment = m.group(5) or ''
         if var != 'x':
             # ``πt`` is two names once π is read (see normalize_formula_text).
             expr = _rename_variable(normalize_formula_text(expr), var)
         expr_escaped = expr.replace('\\', '\\\\').replace('"', '\\"')
-        out_lines.append(f'{indent}{name} = Function("y = {expr_escaped}")')
+        out_lines.append(
+            f'{indent}{name} = Function("y = {expr_escaped}"){comment}')
     return '\n'.join(out_lines) + ('\n' if code.endswith('\n') else '')

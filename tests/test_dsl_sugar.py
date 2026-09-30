@@ -131,6 +131,18 @@ class TestFunctionSugar:
         out = preprocess_dsl_sugar(code)
         assert out.strip() == code.strip()
 
+    def test_trailing_comment_is_not_part_of_the_formula(self):
+        # The documented example: the comment used to end up in the
+        # formula text (and its quotes got the formula refused).
+        out = preprocess_dsl_sugar('f(x) = x^2 + 1   # f = Function("y = x^2 + 1")\n'
+                                   'g(t) = 2t + 1    # a function of t\n')
+        assert out == ('f = Function("y = x^2 + 1")   # f = Function("y = x^2 + 1")\n'
+                       'g = Function("y = 2x + 1")    # a function of t\n')
+        constr = Construction()
+        putCode(constr, out)
+        assert constr.element('f').data(2) == pytest.approx(5.0)
+        assert constr.element('g').data(2) == pytest.approx(5.0)
+
     def test_mixed_sugar_and_normal(self):
         constr = Construction()
         code = '''
