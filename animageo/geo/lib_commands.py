@@ -2879,6 +2879,7 @@ def sqrt_i(x): return float(np.sqrt(x))
 #     f = Function("y = x^2 + 1")
 #     g = Conic("x^2 + y^2 = 4")
 #     h = ImplicitCurve("sin(x) + cos(y) = 0.5")
+#     l = Line("y = 2x + 1")
 # The `str` type is registered as shortcut 'T', so these dispatch by
 # name as usual.
 
@@ -2903,6 +2904,28 @@ def implicit_curve_T(expr_str):
         return ImplicitCurve.from_string(expr_str)
     except ValueError as e:
         logger.warning("ImplicitCurve parse failed for %r: %s", expr_str, e)
+        return None
+
+
+def _formula_line(expr_str, parameters=None):
+    """Line from its equation (``y = 2x + 1``, ``x = 3``); ``None`` when
+    the equation, at the current values, is no line (``0 = 1``, a curve).
+    ``ValueError`` when it doesn't parse."""
+    conic = Conic.from_string(expr_str, parameters=parameters)
+    M = conic.matrix
+    if not np.allclose(M[:2, :2], 0.0):
+        return None
+    normal = np.array([2.0 * M[0, 2], 2.0 * M[1, 2]])
+    if np.allclose(normal, 0.0):
+        return None
+    return Line(normal, -M[2, 2])
+
+
+def line_T(expr_str):
+    try:
+        return _formula_line(expr_str)
+    except ValueError as e:
+        logger.warning("Line parse failed for %r: %s", expr_str, e)
         return None
 
 
@@ -2958,18 +2981,11 @@ def line_Tn(expr_str, *params):
     """Line from an equation that mentions numbers (``g: y = a x + 1``).
     ``None`` when the current values leave no line (``0 = 1``) or a curve."""
     try:
-        conic = Conic.from_string(
-            expr_str, parameters=bind_parameters(expr_str, 'line', params))
+        return _formula_line(
+            expr_str, bind_parameters(expr_str, 'line', params))
     except ValueError as e:
         logger.warning("Line parse failed for %r: %s", expr_str, e)
         return None
-    M = conic.matrix
-    if not np.allclose(M[:2, :2], 0.0):
-        return None
-    normal = np.array([2.0 * M[0, 2], 2.0 * M[1, 2]])
-    if np.allclose(normal, 0.0):
-        return None
-    return Line(normal, -M[2, 2])
 
 
 def locus_pp(dependent_point, mover_point):

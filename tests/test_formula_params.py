@@ -181,3 +181,50 @@ class TestNumpyValues:
         self._move_c_off_the_line(c)
         assert c.element('p').data.evaluate(1.0, 1.0) == pytest.approx(0.0)
         assert c.element('h').data(0.0, 0.5) == pytest.approx(0.0)
+
+
+# ── 1.7.13: a line from its equation in the DSL ────────────────────────
+
+def _on(line, *points):
+    return all(abs(float(np.dot(line.normal, p)) - line.offset) < 1e-9 for p in points)
+
+
+class TestDslLineFormula:
+    def test_line_from_an_equation(self):
+        from animageo.geo.lib_elements import Line
+        c = Construction()
+        dsl.run(c, 'g = Line("y = 2x + 1")\nh = Line("x = 3")\n')
+        g, h = c.element('g').data, c.element('h').data
+        assert isinstance(g, Line) and _on(g, (0, 1), (1, 3))
+        assert isinstance(h, Line) and _on(h, (3, 0), (3, 5))
+        assert c.commandByElementName('g').inputs == ['y = 2x + 1']
+
+    def test_line_follows_a_number(self):
+        c = Construction()
+        dsl.run(c, 'a = 2\ng = Line("y = a x + 1")\n')
+        assert c.commandByElementName('g').inputs == ['y = a x + 1', 'a']
+        assert _on(c.element('g').data, (1, 3))
+        apply_parsed_value(c, 'a', 'var', -1.0)
+        c.rebuild()
+        assert _on(c.element('g').data, (1, 0), (0, 1))
+
+    def test_line_follows_a_point(self):
+        c = Construction()
+        dsl.run(c, 'A = Point(2, 1)\ng = Line("x = x(A)")\n')
+        apply_parsed_value(c, 'A', 'point', [4.0, 1.0])
+        c.rebuild()
+        assert _on(c.element('g').data, (4, 0), (4, 7))
+
+    def test_curve_equation_is_no_line(self):
+        c = Construction()
+        dsl.run(c, 'g = Line("y = x^2")\n')
+        assert c.element('g').data is None
+
+    def test_other_line_signatures_unchanged(self):
+        from animageo.geo.lib_elements import Line
+        c = Construction()
+        dsl.run(c, 'A = Point(0, 0)\nB = Point(1, 1)\nC = Point(0, 2)\n'
+                   'g = Line(A, B)\nh = Line(C, g)\ns = Segment(A, C)\nk = Line(s)\n')
+        assert _on(c.element('g').data, (2, 2))
+        assert _on(c.element('h').data, (1, 3))
+        assert isinstance(c.element('k').data, Line) and _on(c.element('k').data, (0, 5))

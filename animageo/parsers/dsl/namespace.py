@@ -66,11 +66,13 @@ from .registrar import (
 _SHORTCUT_CHARS = frozenset("plrscCSavPimAbKLFIT")
 # Formula factories whose text may mention construction numbers:
 # ``Function("y = a*x^2")`` becomes ``Function("y = a*x^2", a)`` so the curve
-# follows ``a`` on rebuild (see ``geo/formula_params.py``).
+# follows ``a`` on rebuild (see ``geo/formula_params.py``). ``Line`` takes an
+# equation only as a string literal: ``Line(s)`` is the line through ``s``.
 _FORMULA_FACTORIES = {
     "Function": "function",
     "Conic": "conic",
     "ImplicitCurve": "implicit",
+    "Line": "line",
 }
 
 _SEMANTIC_KWARGS: dict[str, frozenset[str]] = {
@@ -158,8 +160,8 @@ def _make_factory(command_name: str):
                 f"{command_name}(_outputs={_outputs}): must be >= 1"
             )
         converted = [_coerce_arg(a) for a in normalized_args]
-        if (command_name in _FORMULA_FACTORIES and len(converted) == 1
-                and isinstance(converted[0], str)):
+        if (command_name in _FORMULA_FACTORIES and len(normalized_args) == 1
+                and isinstance(normalized_args[0], str)):
             params = parametric_inputs(
                 constr, converted[0], _FORMULA_FACTORIES[command_name])
             if params:
