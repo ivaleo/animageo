@@ -172,6 +172,19 @@ class TestNumpyValues:
         self._move_c_off_the_line(c)
         assert c.element('f').data(2.0) == pytest.approx(-2.0)
 
+    def test_a_boolean_is_0_or_1_in_arithmetic(self):
+        c = Construction()
+        dsl.run(c, self.DSL + 'f = Function("y = x + b")\n'
+                   'g = Function("y = If(b, x, -x) + b")\n'
+                   'h = ImplicitCurve("y = b")\n')
+        assert c.element('f').data(2.0) == pytest.approx(3.0)
+        assert c.element('g').data(2.0) == pytest.approx(3.0)
+        assert c.element('h').data(0.0, 1.0) == pytest.approx(0.0)
+        self._move_c_off_the_line(c)
+        assert c.element('f').data(2.0) == pytest.approx(2.0)
+        assert c.element('g').data(2.0) == pytest.approx(-2.0)
+        assert c.element('h').data(0.0, 0.0) == pytest.approx(0.0)
+
     def test_dsl_conic_and_implicit_with_a_command_boolean(self):
         c = Construction()
         dsl.run(c, self.DSL + 'p = Conic("y = (b + 1) x^2")\n'

@@ -524,7 +524,7 @@ Supported expression forms:
 - implicit products: `2x + 1`, `k x`, `(x + 1)(x - 1)`
 - `π`, `ℯ` and the typographic `−`, `·`, `×`, `÷`: `2πx`, `ℯ^x`, `x − 1`
 - names of the construction, bound through `parameters=`: numbers and
-  booleans, coordinates `x(A)`, `y(A)` of a point given as `(x, y)`, other
+  booleans (a condition in `If(b, …)`, 0 or 1 elsewhere), coordinates `x(A)`, `y(A)` of a point given as `(x, y)`, other
   functions (`g(x)`, given as a `Function`) — for example
   `Function.from_string('y = x(A) x', parameters={'A': (1, 2)})`
 

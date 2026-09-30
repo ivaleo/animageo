@@ -229,8 +229,10 @@ def parse_function_expression(
     ``x(A)`` / ``y(A)`` are coordinates of ``A``, never the variable (see
     ``formula_refs``). Raises ``ValueError`` when sympy can't parse the RHS.
     """
-    check_length(raw)
-    text = _strip_label_prefix(normalize_formula_text(raw))
+    # The length is checked after π → ` pi `, ℯ → ` exp(1) `: those grow the text.
+    text = normalize_formula_text(raw)
+    check_length(text)
+    text = _strip_label_prefix(text)
     text, refs = coordinate_calls(text)
     text = _normalize_expression(text)
     text, lhs_var = _split_definition(text)
@@ -370,7 +372,7 @@ class Function:
     ) -> 'Function':
         expr, sym = parse_function_expression(raw, var_name)
         if parameters:
-            # A boolean stays a boolean: ``If(b, …)`` needs one.
+            # A boolean is a condition in ``If(b, …)``, else 0 / 1.
             expr = substitute_references(
                 expr, {k: v for k, v in parameters.items() if str(k) != sym.name})
         unbound = unbound_references(expr, {sym})

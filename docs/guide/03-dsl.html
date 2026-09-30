@@ -475,7 +475,8 @@ s.style['label_text'] = f'{d:.1f}'   # «6.0»</code></pre>
 <code>k = 2</code>, затем <code>f(x) = k x^2</code> (знак <code>*</code> можно опустить).
 Формула хранит ссылку на <code>k</code> и пересчитывается при его изменении;
 <code>x(A)</code>, <code>y(A)</code> — координаты точки, логическое значение
-(<code>b = AreCollinear(A, B, C)</code>) работает в <code>If(b, x, -x)</code>.
+(<code>b = AreCollinear(A, B, C)</code>) — условие в <code>If(b, x, -x)</code>, а в
+арифметике считается как 0 или 1 (<code>y = x + b</code>).
 Уравнение прямой — тоже формула: <code>Line("y = k x + 1")</code>. <code>π</code> и
 <code>ℯ</code> пишутся как есть: <code>f(x) = sin(πx)</code>. Подробности синтаксиса — в §7.
 </div>

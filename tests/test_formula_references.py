@@ -629,6 +629,44 @@ class TestTypographicCharacters:
         assert c.element('g').data.evaluate(np.sqrt(np.e), 0.0) == pytest.approx(0.0, abs=1e-9)
 
 
+    def test_length_is_checked_after_normalisation(self):
+        # π → ` pi ` and ℯ → ` exp(1) ` grow the text; the limit has to see
+        # the grown text, or 4000 π's cost seconds in the regex passes.
+        import time
+        for parse in (Function.from_string, ImplicitCurve.from_string, Conic.from_string):
+            for ch in 'πℯ':
+                start = time.perf_counter()
+                with pytest.raises(ValueError, match='longer than'):
+                    parse('y = ' + ch * 1500)
+                assert time.perf_counter() - start < 1.0
+
+    def test_ggb_line_and_conic_follow_their_number(self):
+        pi = np.pi
+        line = ('<expression label="g" exp="y = a·x − π" type="line"/>'
+                '<element type="line" label="g">' + ST +
+                f'<coords x="1" y="-1" z="{-pi}"/></element>')
+        conic = ('<expression label="p" exp="y = a·x^(2) + π" type="conic"/>'
+                 '<element type="conic" label="p">' + ST +
+                 f'<matrix A0="-1" A1="0" A2="{-pi}" A3="0" A4="0" A5="0.5"/></element>')
+        c = load(num('a', 1) + line + conic)
+        assert c.commandByElementName('g') is not None
+        assert c.commandByElementName('p') is not None
+        apply_parsed_value(c, 'a', 'var', 3.0)
+        c.rebuild()
+        g, p = c.element('g').data, c.element('p').data
+        # y = 3x − π through (1, 3 − π); y = 3x² + π through (1, 3 + π).
+        assert np.dot(g.normal, [1.0, 3 - pi]) == pytest.approx(g.offset)
+        assert p.evaluate(1.0, 3 + pi) == pytest.approx(0.0, abs=1e-9)
+
+    def test_ggb_text_objects_are_not_formulas(self):
+        text = ('<expression label="t" exp="&quot;π·x − ℯ&quot;"/>'
+                '<element type="text" label="t"><show object="true" label="false"/>'
+                '<objColor r="0" g="0" b="0" alpha="0"/>'
+                '<startPoint x="0" y="0" z="1"/></element>')
+        c = load(text)
+        assert c.element('t').data.segments == [('str', 'π·x − ℯ')]
+
+
 class TestNumberBeforeAName:
     def test_ggb_formula_with_2a_follows_a(self):
         # ``2a`` is 2·a since 1.7.12; the import has to see ``a`` there too.

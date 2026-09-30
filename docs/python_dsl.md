@@ -135,7 +135,8 @@ the other forms build the line as before. An equation that is not a line
 A formula may refer to objects of the construction and then follows
 them: numbers and sliders, booleans, measures, angles, the
 coordinates of points and vectors (`x(A)`, `y(A)`), and other
-functions (`g(x)`):
+functions (`g(x)`). A boolean is a condition in `If(b, x, -x)` and
+counts as 0 or 1 elsewhere (`y = x + b`):
 
 ```python
 a = 2

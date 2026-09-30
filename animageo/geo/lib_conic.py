@@ -49,8 +49,9 @@ def parse_conic_equation(equation: str):
     the equation moved to one side. A ``label:`` prefix is tolerated."""
     import sympy as sp
 
-    check_length(equation)
+    # The length is checked after π → ` pi `, ℯ → ` exp(1) `: those grow the text.
     text = normalize_formula_text(equation)
+    check_length(text)
     text = re.sub(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*:\s*', '', text)
     text = text.replace('^', '**')
     if '=' in text:

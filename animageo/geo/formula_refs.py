@@ -115,6 +115,16 @@ def substitute_references(expr, parameters):
 
 def _substitute(expr, numbers, coords, funcs):
     factors = {str(k): v for k, v in numbers.items() if not isinstance(v, bool)}
+    flags = {k: v for k, v in numbers.items() if isinstance(v, bool)}
+    if flags:
+        # A boolean is a condition inside ``If(b, …)`` and 0 / 1 anywhere
+        # else (``y = x + b``), as in a conic.
+        truth = {k: sp.true if v else sp.false for k, v in flags.items()}
+        expr = expr.replace(
+            lambda e: isinstance(e, sp.Piecewise),
+            lambda e: sp.Piecewise(*[(v, c.xreplace(truth)) for v, c in e.args]),
+        )
+        numbers = {**numbers, **{k: sp.Integer(int(v)) for k, v in flags.items()}}
     if factors:
         expr = expr.replace(
             lambda e: (isinstance(e, AppliedUndef) and len(e.args) == 1

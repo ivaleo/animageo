@@ -53,8 +53,10 @@ def parse_implicit_expression(
         - ``"x**2 + y**2 = 1"`` (equation)
         - ``"sqrt(-4*y) + sqrt(abs(x - 1)) = 5"`` (GGB implicitpoly)
     """
-    check_length(raw)
-    text = _strip_label_prefix(normalize_formula_text(raw))
+    # The length is checked after π → ` pi `, ℯ → ` exp(1) `: those grow the text.
+    text = normalize_formula_text(raw)
+    check_length(text)
+    text = _strip_label_prefix(text)
     text, refs = coordinate_calls(text)
     text = _normalize_expression(text)
     text = _split_equation(text)
