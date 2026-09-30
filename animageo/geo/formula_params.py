@@ -135,12 +135,14 @@ def _bound(value):
     return raw if isinstance(raw, bool) else float(raw)
 
 
+# A name starts with a letter or ``_``: in ``2a`` it is ``a`` (a number
+# before a name is a product), in ``b2a`` it is ``b2a``.
+_NAME_RE = re.compile(r'[^\W\d]\w*')
+
+
 def _mentioned(names, expr_str):
-    text = normalize_formula_text(expr_str)
-    return sorted(
-        name for name in names
-        if re.search(rf'(?<!\w){re.escape(name)}(?!\w)', text)
-    )
+    words = set(_NAME_RE.findall(normalize_formula_text(expr_str)))
+    return sorted(name for name in names if name in words)
 
 
 def mentioned_numbers(constr, expr_str):

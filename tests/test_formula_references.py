@@ -627,3 +627,17 @@ class TestTypographicCharacters:
         dsl.run(c, 'a = 2\nf(t) = a·πt − 1\ng = Conic("x^2 + y^2 = ℯ")\n')
         assert c.element('f').data(1.0) == pytest.approx(2 * np.pi - 1)
         assert c.element('g').data.evaluate(np.sqrt(np.e), 0.0) == pytest.approx(0.0, abs=1e-9)
+
+
+class TestNumberBeforeAName:
+    def test_ggb_formula_with_2a_follows_a(self):
+        # ``2a`` is 2·a since 1.7.12; the import has to see ``a`` there too.
+        c = load(num('a', 1) + fn('f', 'f(x) = 2a x'))
+        apply_parsed_value(c, 'a', 'var', 3.0)
+        c.rebuild()
+        assert c.element('f').data(1.0) == pytest.approx(6.0)
+
+    def test_mentioned_names_are_whole_names(self):
+        from animageo.geo.formula_params import mentioned_numbers
+        c = load(num('a', 1) + num('b', 2))
+        assert mentioned_numbers(c, 'y = 2a x + ab + b2') == ['a']
