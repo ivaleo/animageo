@@ -239,7 +239,8 @@ _MAX_ROUND_DIGITS = 100
 
 
 def _round(value, digits=0):
-    """GeoGebra's ``round(x)`` / ``round(x, n)``: half up, and symbolic —
+    """``round(x)`` / ``round(x, n)`` as a formula means it: halves away
+    from zero (Python's ``round`` goes to even), and symbolic, so
     ``y = round(x)`` is a graph (Python's ``round`` refuses a symbol)."""
     value, digits = sp.sympify(value), sp.sympify(digits)
     if not digits.is_Integer or abs(digits) > _MAX_ROUND_DIGITS:
@@ -247,7 +248,8 @@ def _round(value, digits=0):
     if _huge(value):
         raise _Refused(f'round({value}) too large')
     scale = sp.Integer(10) ** digits
-    return sp.floor(value * scale + sp.Rational(1, 2)) / scale
+    return (sp.sign(value) * sp.floor(sp.Abs(value) * scale + sp.Rational(1, 2))
+            / scale)
 
 
 class _GuardPowers(ast.NodeTransformer):

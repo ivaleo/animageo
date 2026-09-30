@@ -173,7 +173,8 @@ Formula syntax:
   `frac`, `min`, `max`, `gamma`, `erf`, … — functions and implicit curves
   also take GeoGebra's spellings (`arcsin`, `sgn`, `ceil`, `lg`, `ld`) and
   `If(cond, a, b)`. Any other name a formula calls is an object of the
-  construction. `round(x)` rounds half up, as in GeoGebra.
+  construction. `round(x)` rounds halves away from zero: `round(2.5)` is 3,
+  `round(-2.5)` is −3.
 - `pi` and `π` are π, `ℯ` is Euler's number. `e` is Euler's number too in
   functions and implicit curves; in a conic or line equation it is an
   ordinary name — write `ℯ` or `exp(1)` there. `2π`, `πx`, `2ℯ` are

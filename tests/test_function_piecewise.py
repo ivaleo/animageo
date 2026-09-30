@@ -195,6 +195,15 @@ def test_every_math_function_of_x_parses_fast(name):
     assert all(np.isfinite(s) for s in f.natural_singularities)
 
 
+@pytest.mark.parametrize('text, x, expected', [
+    ('y = round(x)', 2.5, 3.0), ('y = round(x)', -2.5, -3.0),
+    ('y = round(x)', 2.4, 2.0), ('y = round(x, 1)', -0.25, -0.3),
+    ('y = round(2.5) + round(-0.5) + 0*x', 0.0, 2.0),
+])
+def test_round_is_a_graph_with_halves_away_from_zero(text, x, expected):
+    assert Function.from_string(text)(x) == pytest.approx(expected)
+
+
 @pytest.mark.parametrize('text, expected', [
     ('y = tan(x)', [-3 * np.pi / 2, -np.pi / 2, np.pi / 2, 3 * np.pi / 2]),
     ('y = cot(x)', [-np.pi, 0.0, np.pi]),
