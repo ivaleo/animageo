@@ -289,7 +289,7 @@ def real_singularities(sings) -> List[float]:
 
 def _family_members(lamda) -> List[complex]:
     half = _FAMILY_MEMBERS // 2
-    ns = np.arange(-half, half + 1).astype(complex)
+    ns = np.arange(-half, _FAMILY_MEMBERS - half).astype(complex)
     try:
         f = sp.lambdify(lamda.variables[0], lamda.expr, modules='numpy')
         with np.errstate(all='ignore'):
