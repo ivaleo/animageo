@@ -109,26 +109,31 @@ Key factories:
 
 | Constructors | Commands |
 |---|---|
-| `Point`, `Line`, `Segment`, `Ray`, `Circle`, `Arc`, `CircleSector`, `Angle`, `Polygon`, `Vector`, `Conic`, `Function`, `ImplicitCurve` | `Midpoint`, `Distance`, `Length`, `Radius`, `Center`, `Vertex`, `Focus`, `Intersect`, `AreCollinear`, `PerpendicularLine`, `Tangent`, `Polar`, `Rotate`, `Dilate`, … (100 command factories in total, dispatching to 476 type-specialized signatures in `COMMAND_REGISTRY` — one per argument-type combination) |
+| `Point`, `Line`, `Segment`, `Ray`, `Circle`, `Arc`, `CircleSector`, `Angle`, `Polygon`, `Vector`, `Conic`, `Function`, `ImplicitCurve` | `Midpoint`, `Distance`, `Length`, `Radius`, `Center`, `Vertex`, `Focus`, `Intersect`, `AreCollinear`, `PerpendicularLine`, `Tangent`, `Polar`, `Rotate`, `Dilate`, … (100 command factories in total, dispatching to 477 type-specialized signatures in `COMMAND_REGISTRY` — one per argument-type combination) |
 
 An unknown name raises a `NameError` — a clean failure, never a
 silent no-op.
 
 ## Formulas
 
-`Function`, `Conic` and `ImplicitCurve` take an equation as a string. A
-line `name(var) = expr` is shorthand for `Function`:
+`Function`, `Conic`, `ImplicitCurve` and `Line` take an equation as a
+string. A line `name(var) = expr` is shorthand for `Function`:
 
 ```python
 f = Function("y = x^2 + 1")
 c = Conic("x^2 + y^2 = 4")
 h = ImplicitCurve("x^3 + y^3 = 3x y")
+l = Line("y = 2x + 1")
 f(x) = x^2 + 1         # f = Function("y = x^2 + 1")
 g(t) = 2t + 1          # a function of t
 ```
 
+`Line` reads a string literal as an equation; `Line(A, B)`, `Line(s)` and
+the other forms build the line as before. An equation that is not a line
+(`Line("y = x^2")`) leaves the element undefined.
+
 A formula may refer to objects of the construction and then follows
-them: numbers and sliders, measures, angles, the
+them: numbers and sliders, booleans, measures, angles, the
 coordinates of points and vectors (`x(A)`, `y(A)`), and other
 functions (`g(x)`):
 
@@ -140,6 +145,9 @@ q = Function("y = x(A) + x")               # follows A
 g(x) = x^2
 r(x) = g(x - 2) + 1                        # follows g
 k = Conic("(x - x(A))^2 + (y - y(A))^2 = 4")
+m = Line("y = a x + 1")                    # follows a
+b = AreCollinear(A, Point(0, 0), Point(2, 6))
+s = Function("y = If(b, x, -x)")           # follows b
 ```
 
 Such a formula is stored as a command with the names it refers to
@@ -159,18 +167,22 @@ Formula syntax:
 - A number written before a bracket is a product: `k(x + 1)` is
   `k*(x + 1)`, unless the number is named like a math function —
   `gamma(x + 1)` is Γ(x + 1).
-- A formula calls only math functions: `sin`, `cos`, `tan`, `asin`,
-  `acos`, `atan`, `sinh`, `cosh`, `tanh`, `exp`, `log`, `ln`, `sqrt`, `cbrt`,
-  `root`, `abs`, `sign`, `floor`, `ceiling`, `frac`, `min`, `max`, `gamma`,
-  `erf`, … — functions and implicit curves also take GeoGebra's spellings
-  (`arcsin`, `sgn`, `ceil`, `lg`, `ld`) and `If(cond, a, b)`. Any other
-  name a formula calls is an object of the construction.
-- `pi` is π. `e` (and `ℯ`) is Euler's number in functions and implicit
-  curves; in a conic equation `e` is an ordinary name and `ℯ` is not
-  accepted. The character `π` is not recognised anywhere — write `pi`.
+- A formula calls only math functions: `sin`, `cos`, `tan`, `cot`, `sec`,
+  `csc`, `asin`, `acos`, `atan`, `sinh`, `cosh`, `tanh`, `exp`, `log`, `ln`,
+  `sqrt`, `cbrt`, `root`, `abs`, `sign`, `floor`, `ceiling`, `round`,
+  `frac`, `min`, `max`, `gamma`, `erf`, … — functions and implicit curves
+  also take GeoGebra's spellings (`arcsin`, `sgn`, `ceil`, `lg`, `ld`) and
+  `If(cond, a, b)`. Any other name a formula calls is an object of the
+  construction. `round(x)` rounds half up, as in GeoGebra.
+- `pi` and `π` are π, `ℯ` is Euler's number. `e` is Euler's number too in
+  functions and implicit curves; in a conic or line equation it is an
+  ordinary name — write `ℯ` or `exp(1)` there. `2π`, `πx`, `2ℯ` are
+  products, like `2x`.
+- Typographic characters are read as well: the minus sign `−`, `·`, `⋅`
+  and `×` for multiplication, `÷` for division.
 - A function that calls another one with a restricted domain is
   undefined wherever that one is.
-- A conic equation has to be a polynomial as written:
+- A conic or line equation has to be a polynomial as written:
   `(x^2 + x)/x = y` is not a conic.
 - Formula text is limited to 4000 characters, and a formula that asks
   for a huge exact computation (`7^(9^9)`, `(10^7)!`) is refused.

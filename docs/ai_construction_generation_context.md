@@ -1185,17 +1185,21 @@ coordinates that accidentally make the angle right.
   strings. Mark intersections with `Intersect` rather than approximating them by
   hand.
   Formula syntax in `Function("y = ...")`, `Conic("...")`,
-  `ImplicitCurve("...")` and `f(x) = ...` lines: `^` is a power and `*` may be
-  omitted (`2x`, `k x`, `2(x + 1)`, `(x + 1)(x - 1)`); `x(A)` and `y(A)` with no
-  space before the bracket are the coordinates of point `A`, so write
-  `x*(x + 1)` for a product with `x`; another function is called by name
-  (`h(x) = g(x) + 1`); the callable math functions are `sin`, `cos`, `tan`,
-  `asin`, `acos`, `atan`, `sqrt`, `exp`, `log`, `ln`, `abs`, `floor`,
-  `ceiling`, `min`, `max`, and similar — any other called name must be a
-  construction object; write `pi`, never `π`; `e` is Euler's number in
-  functions and implicit curves but an ordinary name in a conic equation. A
-  formula follows the numbers, points, and functions it names, so define them
-  before the formula. A conic equation must be a polynomial as written.
+  `ImplicitCurve("...")`, `Line("y = ...")` and `f(x) = ...` lines: `^` is a
+  power and `*` may be omitted (`2x`, `k x`, `2(x + 1)`, `(x + 1)(x - 1)`);
+  `x(A)` and `y(A)` with no space before the bracket are the coordinates of
+  point `A`, so write `x*(x + 1)` for a product with `x`; another function is
+  called by name (`h(x) = g(x) + 1`); the callable math functions are `sin`,
+  `cos`, `tan`, `cot`, `sec`, `csc`, `asin`, `acos`, `atan`, `sqrt`, `exp`,
+  `log`, `ln`, `abs`, `floor`, `ceiling`, `round`, `min`, `max`, and similar —
+  any other called name must be a construction object; `pi` and `π` are π and
+  `ℯ` is Euler's number everywhere (`2π`, `πx` are products); `e` is Euler's
+  number in functions and implicit curves but an ordinary name in a conic or
+  line equation; `−`, `·`, `×` and `÷` are read as `-`, `*`, `*` and `/`. A
+  formula follows the numbers, booleans, points, and functions it names, so
+  define them before the formula. A conic or line equation must be a
+  polynomial as written. `Line` reads only a string literal as an equation;
+  `Line(A, B)` and `Line(P, base_line)` build lines as usual.
   When multiple intersections are requested, tuple-unpack `Intersect(...)` into
   named point variables and style those points individually or as a named group.
 - For a circumcircle arc through three points, use `CircumcircleArc(A, B, C)`

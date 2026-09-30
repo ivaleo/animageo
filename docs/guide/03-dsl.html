@@ -474,7 +474,10 @@ s.style['label_text'] = f'{d:.1f}'   # «6.0»</code></pre>
 Числа построения можно использовать в формулах кривых:
 <code>k = 2</code>, затем <code>f(x) = k x^2</code> (знак <code>*</code> можно опустить).
 Формула хранит ссылку на <code>k</code> и пересчитывается при его изменении;
-<code>x(A)</code>, <code>y(A)</code> — координаты точки. Подробности синтаксиса — в §7.
+<code>x(A)</code>, <code>y(A)</code> — координаты точки, логическое значение
+(<code>b = AreCollinear(A, B, C)</code>) работает в <code>If(b, x, -x)</code>.
+Уравнение прямой — тоже формула: <code>Line("y = k x + 1")</code>. <code>π</code> и
+<code>ℯ</code> пишутся как есть: <code>f(x) = sin(πx)</code>. Подробности синтаксиса — в §7.
 </div>
 
 <h2 id="python-access">Доступ из Python</h2>
@@ -585,7 +588,7 @@ E = 2 * A                    # Mult(2, A)
 <tr><td><code>K</code></td><td><code>Conic</code></td></tr>
 <tr><td><code>F</code></td><td><code>Function</code></td></tr>
 <tr><td><code>I</code></td><td><code>ImplicitCurve</code></td></tr>
-<tr><td><code>T</code></td><td>строка (DSL-литерал, для <code>Conic("...")</code>)</td></tr>
+<tr><td><code>T</code></td><td>строка (DSL-литерал, для <code>Conic("...")</code>, <code>Line("...")</code>)</td></tr>
 </tbody>
 </table>
 

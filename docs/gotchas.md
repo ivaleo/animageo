@@ -312,9 +312,8 @@ may pick up stale geometry of the old `m`.
 
 ## Formulas
 
-These rules apply to function, conic and implicit-curve formulas, both from a
-`.ggb` file and in the DSL, and to line equations (those come only from a
-`.ggb` file: the DSL has no `Line("…")` formula).
+These rules apply to function, conic and implicit-curve formulas and to line
+equations, both from a `.ggb` file and in the DSL (`Line("y = 2x + 1")`).
 
 ### `x(A)` is a coordinate, `x (A)` is a product
 
@@ -323,13 +322,26 @@ x-coordinate, `2x(A)` twice that. `x(x + 1)` is therefore not `x·(x + 1)` —
 write `x (x + 1)` or `x*(x + 1)`. With a space, `x (A)` multiplies `x` by the
 point `A`, which is not a number, so the curve is not built.
 
-### `π` and `ℯ`
+### `π`, `ℯ` and typographic characters
 
-The character `π` is not recognised — write `pi`. `e` is Euler's number in
-functions and implicit curves, and `ℯ` reads as `e` there. In a conic or line
-equation `e` is an ordinary name (a number called `e`), and `ℯ` does not parse.
-In functions and implicit curves a number named `e` cannot be used: `e` is
-always Euler's number there.
+`π` and `pi` are π and `ℯ` is Euler's number in every formula, whatever the
+construction calls `pi`, `e` or `E`; `2π`, `πx`, `sin(πx)`, `2ℯ` are products,
+like `2x`. `e` is Euler's number only in functions and implicit curves: in a
+conic or line equation it is an ordinary name (a number called `e`) — write
+`ℯ` or `exp(1)` there. In functions and implicit curves a number named `e`
+cannot be used: `e` is always Euler's number there.
+
+The minus sign `−`, `·`, `⋅` and `×` for multiplication and `÷` for division
+are read as `-`, `*` and `/`, so a formula copied from GeoGebra's display
+parses as it is.
+
+### Asymptotes of periodic functions
+
+A graph is split where its formula is undefined, so no line joins the two
+sides of an asymptote. For a periodic function — `tan(x)`, `cot(x)`,
+`sec(2x)`, `csc(x − 1)` — those points are taken within 1000 units of the
+origin (at most 1000 of each period family); farther out, and where sympy
+cannot find them (`tan(x^2)`), the graph is drawn without the split.
 
 ### A number named like a math function
 

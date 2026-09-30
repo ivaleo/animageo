@@ -508,7 +508,8 @@ f.source                   # source string (for debug/repr)
 
 f(2)                       # numeric, via numpy lambdify (no sympy in the hot path)
 f.natural_singularities    # [0.0] for 1/x, [] for polynomials — used by the renderer
-                           # to split the x-range at discontinuities
+                           # to split the x-range at discontinuities; for a periodic
+                           # function (tan, sec, …) those within 1000 of the origin
 f.sample((-2, 2), n=100)   # (n, 2) array of points
 f.translate([dx, dy])      # shift the graph
 f.contains([x, y])         # True if y == f(x)
@@ -516,18 +517,19 @@ f.contains([x, y])         # True if y == f(x)
 
 Supported expression forms:
 - polynomial: `x^2 + 1`, `(x-3)^3`
-- trigonometry: `sin(x)`, `cos(x)`, `tan(x)`
-- `abs`, `sqrt`, `log`, `exp`, `ln`
+- trigonometry: `sin(x)`, `cos(x)`, `tan(x)`, `cot(x)`, `sec(x)`, `csc(x)`
+- `abs`, `sqrt`, `log`, `exp`, `ln`, `round`
 - `If[cond, then]` / `If[cond, then, else]` (recursive, with support for
   Unicode `≤`, `≥`, `≠` and chains `-1 ≤ x ≤ 1`)
 - implicit products: `2x + 1`, `k x`, `(x + 1)(x - 1)`
-- names of the construction, bound through `parameters=`: numbers,
-  coordinates `x(A)`, `y(A)` of a point given as `(x, y)`, other functions
-  (`g(x)`, given as a `Function`) — for example
+- `π`, `ℯ` and the typographic `−`, `·`, `×`, `÷`: `2πx`, `ℯ^x`, `x − 1`
+- names of the construction, bound through `parameters=`: numbers and
+  booleans, coordinates `x(A)`, `y(A)` of a point given as `(x, y)`, other
+  functions (`g(x)`, given as a `Function`) — for example
   `Function.from_string('y = x(A) x', parameters={'A': (1, 2)})`
 
-The full formula syntax (allowed math functions, `pi`/`e`, limits) is in
-[docs/python_dsl.md](python_dsl.md#formulas).
+The full formula syntax (allowed math functions, `pi`/`π`/`e`/`ℯ`, limits)
+is in [docs/python_dsl.md](python_dsl.md#formulas).
 
 ### ImplicitCurve
 
@@ -560,7 +562,7 @@ viewport), O(grid_n²) work.
 
 Full guide: [docs/python_dsl.md](python_dsl.md). Below is a short summary.
 
-Exec-based engine. Any valid Python code works — loops, conditionals, functions, comprehensions, kwargs, tuple unpacking are all supported. The current namespace exposes 100 auto-discovered command factories backed by 476 dispatch signatures from `lib_commands.py`.
+Exec-based engine. Any valid Python code works — loops, conditionals, functions, comprehensions, kwargs, tuple unpacking are all supported. The current namespace exposes 100 auto-discovered command factories backed by 477 dispatch signatures from `lib_commands.py`.
 
 ```python
 # Points and basic constructions
@@ -606,6 +608,7 @@ A.style.size_px = 10
 f = Function("y = x^2 + 1")
 g = Conic("x^2 + y^2 = 4")
 h = ImplicitCurve("sin(x) + cos(y) = 0.5")
+l = Line("y = 2x + 1")    # a string literal is an equation; Line(A, B) as before
 
 # DSL sugar: natural function notation (preprocessor before AST):
 #   name(var) = expr   →   name = Function("y = expr")
