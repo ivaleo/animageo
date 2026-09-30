@@ -4,8 +4,6 @@ Walks the construction graph (independents → interactive widgets; commands in
 topological order → live ``command_map`` creators, multi-output ``intersect``,
 or static fallback) and produces the list of ``board.create`` statements plus a
 coverage report.
-
-See ``docs/archive/jsxgraph_export_plan.md`` (§5/§8) for the design.
 """
 from __future__ import annotations
 

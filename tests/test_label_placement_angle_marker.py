@@ -2,8 +2,7 @@
 
 A point label whose anchor sits at an angle's vertex must not be steered into
 the sector where the angle marker (right-angle square / arc) is drawn — the
-marker would sit "in the line of sight" between the label and its point. See
-docs/archive/TZ-label-placement-angle-markers.md.
+marker would sit "in the line of sight" between the label and its point.
 
 All behaviour is gated behind ``angle_marker_obstacle`` (default False →
 byte-identical to the legacy coarse-arc approximation).

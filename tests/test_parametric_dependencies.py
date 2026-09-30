@@ -1,7 +1,6 @@
 """Objects that depend on a free number follow it after import.
 
-Acceptance for ``docs/TZ-export-parametric-dependencies.md``: in GeoGebra an
-object built from a number (a slider) is recomputed when the number changes.
+In GeoGebra an object built from a number (a slider) is recomputed when the number changes.
 After ``ggb_parser.load`` → ``apply_parsed_value(var)`` → ``rebuild()`` the
 same object must change in animageo too — otherwise the exact frame and the
 video stand still while the applet moves.

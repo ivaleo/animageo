@@ -6,7 +6,7 @@ goes through the partialmethod descriptor and returns the compiled _method
 function, so nested partialmethods never flatten. Repeated applyStyle calls
 therefore grew MathTex/Text/MarkupText.__init__ by one layer each, and after
 ~1000 renders in one long-lived process every label construction died with
-RecursionError (docs/archive/TZ-mathtex-set-default-recursion-leak.md).
+RecursionError.
 """
 import functools
 import logging

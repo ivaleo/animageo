@@ -3064,8 +3064,8 @@ class AnimaGeoScene(MovingCameraScene):
         lr_px = _resolve_style(self, elem, 'label_radial_offset_px', default=0.0)
         label_roff = float(lr_px) / ptUnit_style
 
-        # GGB-faithful placement of imported manual labels (docs/TZ-label-
-        # offset-ggb-fidelity.md): the applet starts each label from a per-type
+        # GGB-faithful placement of imported manual labels: the applet starts
+        # each label from a per-type
         # base point (label_anchor.py — one rule table for every type it can
         # reproduce), left edge on the baseline, then adds the stored
         # labelOffset. Applies only when neither the placement solver

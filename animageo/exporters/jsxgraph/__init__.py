@@ -1,4 +1,4 @@
-"""Interactive JSXGraph export (Phase 1). See docs/archive/jsxgraph_export_plan.md."""
+"""Interactive JSXGraph export (Phase 1)."""
 
 from .exporter import export_jsxgraph
 from .options import JSXGraphOptions

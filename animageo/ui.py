@@ -352,8 +352,8 @@ def _place_label(mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
                  font_size=None, attach=None):
     """Apply anchor/offset/descender placement shared by Tex and ValueLabel."""
     if ggb_manual_base_px is not None:
-        # GGB-faithful path for imported manual labels (docs/TZ-label-offset-
-        # ggb-fidelity.md): the applet draws a point label with its LEFT edge
+        # GGB-faithful path for imported manual labels: the applet draws a
+        # point label with its LEFT edge
         # on the BASELINE at (x + 4, y − 2·pointSize) + labelOffset screen px,
         # and the stored offset is relative to that base — so the style's
         # aesthetic anchor and the descender fudge below must not apply here.
@@ -505,8 +505,7 @@ def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=D
         ggb_manual_base_px: When set — ``(4, 2·pointSize)`` GGB base offset in
             applet px — the label takes the GGB-faithful path: left edge on
             the baseline at ``pos + (base + label_offset_px)/ptUnit_ggb``,
-            ignoring ``anchor``/``align_edge`` and the descender correction
-            (docs/TZ-label-offset-ggb-fidelity.md).
+            ignoring ``anchor``/``align_edge`` and the descender correction.
 
     Returns:
         The label mobject, or ``None`` when its LaTeX could not be compiled at

@@ -176,5 +176,4 @@ self.exportTikZ('fig.tex', options=opts)
 коник. Проверяется каждый параметр `TikZOptions` и smoke-компиляция через
 `pdflatex`, которая пропускается, если LaTeX не установлен.
 
-См. также: `docs/archive/tikz_export_plan.md` и
-`animageo/exporters/tikz/`.
+См. также: `animageo/exporters/tikz/`.

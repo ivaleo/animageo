@@ -206,7 +206,7 @@ ANGLE_LABEL_NARROW_MAX_FACTOR = 2.5
 # Rank per direction index (lower = more preferred). Direction indices match
 # _DIRECTIONS: 0=E, 1=NE(TR), 2=N(T), 3=NW(TL), 4=W(L), 5=SW(BL), 6=S(B),
 # 7=SE(BR). A fixed a-priori order is what makes placement read as a *system*
-# rather than chaos (docs/archive/label_placement_research.md §7). Off by default
+# rather than chaos. Off by default
 # (config 'position_priority' = None) so existing output is byte-for-byte
 # unchanged; enable + raise 'w_pref' to apply.
 #   classic     — Yoeli 1972: TR > TL > BR > BL > R > L > T > B
@@ -245,9 +245,8 @@ class LabelCostModel:
     """Candidate cost terms, decoupled from the solver (P0-C).
 
     Bundles the scoring so the greedy solver and the local-repair pass evaluate
-    candidates identically (the "scorer ⟂ solver" principle —
-    docs/archive/label_placement_research.md §6.3). Constructed with only ``weights`` +
-    ``padding`` it reproduces :func:`_score_candidate` exactly, so the default
+    candidates identically (the "scorer ⟂ solver" principle). Constructed with
+    only ``weights`` + ``padding`` it reproduces :func:`_score_candidate` exactly, so the default
     code path and all snapshots are unchanged. Optional terms activate only when
     configured:
 
@@ -626,7 +625,7 @@ def _collect_obstacles(scene, *, angle_marker_obstacle=False):
             # Register the ARC ITSELF, not its full circle: the phantom part of
             # the circle blocked free space the reader sees as empty (В's label
             # sat past the arc's endpoint, yet the solid-circle rescue kicked it
-            # to the other side — TZ-label-offset-ggb-fidelity §5.3). Sampled as
+            # to the other side). Sampled as
             # a polyline over the actual angular span, like angle markers.
             a_start, a_end = d.angles
             span = (a_end - a_start) % (2 * pi)
@@ -1585,7 +1584,7 @@ def _bisector_of_gap_nearest(dirs, preferred,
     align = align_deg * pi / 180.0
     hug = hug_deg * pi / 180.0
     inside_chosen = ((pang - lo) % (2 * pi)) <= w   # GGB really in this wedge
-    # Open-point gate (TZ-label-offset-ggb-fidelity §5.3): centring makes sense
+    # Open-point gate: centring makes sense
     # while the gap still reads as a wedge/corner — scene4's 240° rhombus
     # corners look right on the external bisector. But when the BLOCKED part
     # spans < 90° (gap > 270°: an arc terminus, a near-endpoint) the point is
@@ -1817,7 +1816,7 @@ def _solve_greedy(labels, segments, circles, arc_pts, distance, padding, weights
             # The manual position cannot be kept clear (e.g. the offset is
             # collinear with an incident line, so the radial push never
             # escapes it). Clearance is a hard constraint; respect is only a
-            # preference (TZ-label-offset-ggb-fidelity §5.3 addendum). Drop
+            # preference. Drop
             # the position pin so the inertia term and the pinned recompact
             # don't drag the label back onto the obstacle — the direction
             # hints (preferred_dir/bisector_dir) stay as soft side bias for
@@ -2224,7 +2223,7 @@ def _clearance_guard_pass(labels, result, segments, circles, arc_pts,
                           distance, padding, ptUnit, *, geom_gap=0.0,
                           max_push_px=26.0, ang_steps=72):
     """Final hard-constraint sweep: no label sits on geometry when a free spot
-    is reachable (TZ-label-offset-ggb-fidelity §5.3 addendum).
+    is reachable.
 
     Every earlier pass trades clearance against other goals — the inertia term
     pulls a respected label back toward its manual position, and
@@ -2451,8 +2450,8 @@ def _recompact_pass(labels, result, segments, circles, arc_pts, distance,
         # Phase 1 — COMPACT IN: nearest position (cone, ≥ base, ≤ current) that is
         # label-free and at most lightly clips a solid line INCIDENT to its own
         # point (P3). Pulls a label that overshot a dense node back CLOSE to it.
-        # A RESPECTED label (current_center pin = substantive manual position,
-        # TZ-label-offset-ggb-fidelity §5.3) may only move radially: the cone
+        # A RESPECTED label (current_center pin = substantive manual position)
+        # may only move radially: the cone
         # swung В's bottom-left label 40° across to bottom-right — trading the
         # user's side for a marginally nearer spot defeats the respect contract.
         label_offs = ((0.0,) if lbl.current_center is not None else cone_offs)
@@ -2622,7 +2621,7 @@ DEFAULT_CONFIG = {
     'w_geom': 8.0,
     # ── Phase-1 (P0) additions. All default to "off" so the computed layout is
     # byte-for-byte identical to the previous behaviour unless explicitly
-    # enabled. See docs/archive/label_placement_improvement_plan.md.
+    # enabled.
     'position_priority': None,      # None | 'classic' | 'perceptual' | 'geogebra'
     'w_pref': 0.0,                  # weight of the canonical position-preference term
     'soft_falloff_px': 0.0,        # >0 enables graded proximity penalty (px)
@@ -2681,7 +2680,7 @@ DEFAULT_CONFIG = {
     # obstacle at its rendered pixel radius AND exclude its wedge from the
     # point-label direction resolvers, so a vertex label is never steered into the
     # sector occupied by the marker. Off by default → byte-identical (legacy coarse
-    # arc approximation, no sector exclusion). See docs/archive/TZ-label-placement-angle-markers.md.
+    # arc approximation, no sector exclusion).
     'angle_marker_obstacle': False,
     # FP-3 — prefer placing point labels on the bisector of the widest free gap
     # between incident sides (symmetric, "outside" the figure). Off by default.
@@ -2762,7 +2761,7 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
         cfg.get('w_geom', DEFAULT_CONFIG['w_geom']),
     )
 
-    # Phase-1 (P0) options — see docs/archive/label_placement_improvement_plan.md.
+    # Phase-1 (P0) options.
     position_priority = cfg.get('position_priority', DEFAULT_CONFIG['position_priority'])
     w_pref = float(cfg.get('w_pref', DEFAULT_CONFIG['w_pref']) or 0.0)
     soft_falloff_px = float(cfg.get('soft_falloff_px', DEFAULT_CONFIG['soft_falloff_px']) or 0.0)
@@ -2897,7 +2896,7 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
                 # rendered-bounds auto-config; keyframe passes re-place too)
                 # must keep respecting it instead of re-solving from scratch —
                 # dropping it flipped В/Б to the opposite side on the second
-                # load (TZ-label-offset-ggb-fidelity §5.3).
+                # load.
                 raw = ggb_raw.get('label_offset_px')
                 if raw is None:
                     continue

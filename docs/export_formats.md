@@ -120,8 +120,7 @@ timeline:
 
 Unlike every other export (which serialise a rendered frame), this produces a
 **live, draggable** construction: drag free points / gliders / sliders and the
-dependent geometry recomputes in the browser. See
-`docs/archive/jsxgraph_export_plan.md` for the design and roadmap.
+dependent geometry recomputes in the browser.
 
 ```python
 scene.loadGGB("scene.ggb", style="style.json", export={"size": {"width": 800, "height": 600}})
@@ -207,7 +206,7 @@ The `web/` directory turns a spec into a live, draggable board with a clear
   `CustomEvent`s, actions as element methods.
 - `web/adapters/` — thin React / Vue / Svelte / vanilla templates.
 
-See `web/README.md`, `docs/archive/jsxgraph_web_integration_plan.md` and the audit doc.
+See `web/README.md`.
 
 ## Choosing a format
 

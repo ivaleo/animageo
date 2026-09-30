@@ -3078,8 +3078,7 @@ del _t_sfx
 #
 # Vector / scalar / point helpers with existing-type results. Semantics
 # verified against the GeoGebra manual (AffineRatio/CrossRatio/Direction/
-# UnitVector/PerpendicularVector/Conic-6-numbers examples). See
-# docs/archive/geogebra_command_audit.md → "план «лёгких» команд".
+# UnitVector/PerpendicularVector/Conic-6-numbers examples).
 
 def _num(v):
     """Coerce a numeric argument to float (raw number or Measure/AngleSize)."""

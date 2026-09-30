@@ -1,8 +1,7 @@
 """ShowText must not depend on manim class-level default colours.
 
-Part of the MathTex.set_default leak fix (docs/TZ-mathtex-set-default-
-recursion-leak.md): after the set_default calls are removed from
-AnimaGeoScene.setStyle, every Tex in the package must receive its colour
+Part of the MathTex.set_default leak fix: after the set_default calls are
+removed from AnimaGeoScene.setStyle, every Tex in the package must receive its colour
 explicitly. ShowText's body Tex was the only consumer of the class default
 (it rendered strong-coloured only because setStyle had previously mutated
 MathTex.__init__ globally).

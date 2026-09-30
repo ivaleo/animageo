@@ -1,5 +1,5 @@
 """Tests for GeoGebra free-text objects (Text element, value formatting,
-parsing, rendering, export). See docs/superpowers/specs/2026-07-04-ggb-free-text-design.md.
+parsing, rendering, export).
 """
 import os
 

@@ -1,6 +1,6 @@
 """Manual GGB label offsets must reproduce the applet's label positions.
 
-Spec: docs/TZ-label-offset-ggb-fidelity.md. GeoGebra draws a point label at
+GeoGebra draws a point label at
 ``(x + 4, y - 2*pointSize) + labelOffset`` in screen px (y down), where the
 position is the text's LEFT edge at its BASELINE. These tests check the
 renderer against that formula on a real .ggb captured from the bug report

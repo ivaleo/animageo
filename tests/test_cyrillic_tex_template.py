@@ -1,6 +1,6 @@
 """Cyrillic labels must survive every Tex path.
 
-Covers ``docs/archive/TZ-cyrillic-label-tex-template-fallback.md``:
+Covers:
 
 * **6.1** a Cyrillic label compiles even when a Tex path forgets to pass a
   Cyrillic-capable template explicitly (``RusTex`` becomes the process-wide
@@ -15,7 +15,7 @@ Covers ``docs/archive/TZ-cyrillic-label-tex-template-fallback.md``:
 * **6.4** the renderer and the auto-placer measure labels under the same
   template, so computed offsets match what is drawn.
 * **6.5** installing the global default is idempotent and accumulates no
-  process state (cf. TZ-mathtex-set-default-recursion-leak).
+  process state (cf. the MathTex.set_default recursion leak).
 
 Plus the second defect found while implementing: Cyrillic in *math* mode
 compiles without error and renders **nothing** (no glyphs in the T2A math

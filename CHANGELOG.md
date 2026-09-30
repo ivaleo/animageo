@@ -312,8 +312,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Manual GGB label offsets now reproduce the applet's label positions**
-  (`docs/archive/TZ-label-offset-ggb-fidelity.md`). GeoGebra draws a point label with
+- **Manual GGB label offsets now reproduce the applet's label positions.**
+  GeoGebra draws a point label with
   its left edge on the baseline at `(x + 4, y − 2·pointSize) + labelOffset`
   screen px — the stored offset is relative to that up-right base. The
   renderer instead anchored the label by the style anchor (web styles: `BC`,
@@ -893,7 +893,6 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   rendered-bounds crop *after* placement (a second measurement pass that picks up
   the placed offsets), so the canvas always contains the labels. Other content
   sources (`ggb_view`, `source_view`) and placement-disabled styles are unchanged.
-  See `docs/archive/fix-rendered-bounds-label-clipping.md`.
 
 ## [1.3.0] - 2026-06-01
 
@@ -932,8 +931,6 @@ unchanged. Full suite: 1924 passed, 2 skipped.
   - **`web/adapters/`**: thin React / Vue / Svelte / vanilla templates.
   - Tests: `tests/test_jsxgraph_spec.py` (Python) + `node --test` in each web
     package, including a cross-language contract test against real exported specs.
-  - Design: `docs/archive/jsxgraph_web_integration_audit.md`,
-    `docs/archive/jsxgraph_web_integration_plan.md`.
   - Verified end-to-end with a real headless-Chrome smoke against live JSXGraph
     (`web/runtime/scripts/browser-smoke/run.mjs`): a real exported spec builds,
     `setState` moves a point, `change`/`commit` fire on real drag events, and the
@@ -1046,8 +1043,7 @@ unchanged. Full suite: 1924 passed, 2 skipped.
     emitted as the JSXGraph label `offset` (near-zero offsets keep JSXGraph's
     own sensible default). Stroke/fill colour, width, opacity, dash, point
     size/shape and label colour already route through the shared style resolver.
-  - New package `animageo/exporters/jsxgraph/`; deep-dive plan in
-    `docs/archive/jsxgraph_export_plan.md`; tests in `tests/test_jsxgraph_export.py`.
+  - New package `animageo/exporters/jsxgraph/`; tests in `tests/test_jsxgraph_export.py`.
 
 ### Changed
 

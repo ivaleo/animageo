@@ -1,6 +1,6 @@
 """Configuration for JSXGraph export.
 
-Phase 1 defaults (see ``docs/archive/jsxgraph_export_plan.md`` §12): self-contained
+Phase 1 defaults: self-contained
 HTML, MathJax labels from CDN, static fallback + coverage report for any
 command without a live mapping.
 """

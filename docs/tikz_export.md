@@ -169,4 +169,4 @@ conic family incl. degenerate cases, functions incl. piecewise, implicit curves,
 loci, conic constructors) and every `TikZOptions` setting are checked, with a
 `pdflatex` compile smoke test (skipped when no LaTeX toolchain is present).
 
-See also: `docs/archive/tikz_export_plan.md` (design), `animageo/exporters/tikz/`.
+See also: `animageo/exporters/tikz/`.

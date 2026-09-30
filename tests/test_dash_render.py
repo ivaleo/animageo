@@ -1,6 +1,6 @@
 """Dashes as a stroke property: one path with a pattern in style pixels.
 
-Acceptance tests for docs/TZ-dash-pattern-px.md (1.7.10): the pattern follows
+Acceptance tests for the 1.7.10 dash pattern: the pattern follows
 ``ptUnit_style`` like line widths (not the zoom of the geometry), a dashed
 stroke exports as a single ``<path stroke-dasharray=…>``, it is fitted to
 finite paths, round caps keep the visible dash nominal, it survives

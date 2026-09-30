@@ -4,8 +4,6 @@ A tight ``content.source="rendered_bounds"`` crop is measured by
 ``applyStyle``; label auto-placement then shifts labels outward from the
 geometry. If the crop is frozen *before* placement (the original bug), labels
 of edge/corner elements end up outside the canvas and clip on export.
-
-See ``docs/archive/fix-rendered-bounds-label-clipping.md``.
 """
 import pytest
 

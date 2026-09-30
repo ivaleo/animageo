@@ -1,4 +1,4 @@
-"""Acceptance for docs/archive/TZ-conic-locus-point-keyframe-animation.md §5.
+"""Acceptance: animating a point on a conic or locus with keyframes.
 
 Real construction from https://animageo.ru/shared/tYwHUgEyock: D is a point
 on ellipse c; the visible hexagon/triangle geometry derives from A,B,C,D,G.

@@ -6,7 +6,7 @@ analogue of ``AnimaGeoScene._build_render_ctx``: style values are read through
 the same resolver the manim renderer uses, so GGB import / overlay / explicit
 ``elem.style`` all behave identically.
 
-Unit model (see ``docs/archive/tikz_export_plan.md``):
+Unit model:
 - coordinates are math units (MU); the picture sets ``x=y=ptUnit*cm_per_px`` cm.
 - "size" pixels (stroke width, point radius, font) map to absolute pt via
   ``px * (ptUnit/ptUnit_style) * pt_per_px`` — the same output-pixel size the

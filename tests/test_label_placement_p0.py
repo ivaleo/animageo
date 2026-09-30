@@ -3,7 +3,7 @@
 Covers: canonical position-preference orders, LabelCostModel (legacy-equivalence
 + preference + soft proximity terms), the shared overlap helper, the
 discrete-gradient-descent repair pass and the majority-anchor consistency pass.
-All pure-geometry (no manim). See docs/archive/label_placement_improvement_plan.md.
+All pure-geometry (no manim).
 """
 from types import SimpleNamespace
 
