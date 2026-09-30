@@ -10,8 +10,6 @@ library.
 
 ### `Mobject.set_default` accumulates a partialmethod chain — never call it in a hot path
 
-Background: `docs/archive/TZ-mathtex-set-default-recursion-leak.md`.
-
 `cls.set_default(**kwargs)` in manim executes
 `cls.__init__ = partialmethod(cls.__init__, **kwargs)`. Reading `cls.__init__`
 from the class goes through the `partialmethod.__get__` descriptor and returns
@@ -273,6 +271,27 @@ The same kind of construction can also use `Intersect(β, k, 1)` and
 therefore supports not only `Arc ∩ Line` but also the indexed intersections
 `Arc ∩ Ray` / `Arc ∩ Segment`.
 
+### Labels that are not identifiers, and the degree sign
+
+GeoGebra accepts labels that Python does not, such as `K°`. The name is
+normalised the same way in the element and in every expression that uses it:
+each character that cannot continue an identifier becomes `_` (`K°` → `K_`),
+`'` becomes `_Prime`, and a leading digit gets a `var_` prefix. A degree sign
+after a number or a numeric variable that is not such a label is an angle:
+`Rotate(A, K°, O)` with a slider `K` rotates by `K` degrees.
+
+### `Point(path, t)` takes GeoGebra's parameter, not `tparam`
+
+With a number `t`, `Point(path, t)` uses GeoGebra's normalised path
+parameter: `t` is clamped to `[0, 1]`; on a circle or an ellipse it maps to the
+angle `−π … π` from the first axis, on a segment to the fraction from A to B,
+on a function graph to the x-range of the view saved in the file. So
+`Point(c, 0.25)` on a circle centred at O is the bottom point, not the point
+at 0.25 rad. `update_tparam` and keyframe `tparam` values use AnimaGeo's own
+parameter (the angle in radians on a circle). On import, a `Point(path, t)`
+whose computed position differs from the saved one keeps the saved position
+and is reported as `parametric_dependency_frozen`.
+
 ### `loadCode` may redefine GGB elements and must rebuild the graph
 
 A script may load a `.ggb` file and then execute a DSL file in which a name is
@@ -288,6 +307,53 @@ downstream commands must be recomputed from the new `E`. That is why
 `loadCode()` / `putCode()` must be followed by a final
 `geo.rebuild(full=True)` before `updateAllGeometry()`; otherwise the render
 may pick up stale geometry of the old `m`.
+
+---
+
+## Formulas
+
+These rules apply to function, conic and implicit-curve formulas, both from a
+`.ggb` file and in the DSL, and to line equations (those come only from a
+`.ggb` file: the DSL has no `Line("…")` formula).
+
+### `x(A)` is a coordinate, `x (A)` is a product
+
+`x(` directly before a bracket always reads a coordinate: `x(A)` is A's
+x-coordinate, `2x(A)` twice that. `x(x + 1)` is therefore not `x·(x + 1)` —
+write `x (x + 1)` or `x*(x + 1)`. With a space, `x (A)` multiplies `x` by the
+point `A`, which is not a number, so the curve is not built.
+
+### `π` and `ℯ`
+
+The character `π` is not recognised — write `pi`. `e` is Euler's number in
+functions and implicit curves, and `ℯ` reads as `e` there. In a conic or line
+equation `e` is an ordinary name (a number called `e`), and `ℯ` does not parse.
+In functions and implicit curves a number named `e` cannot be used: `e` is
+always Euler's number there.
+
+### A number named like a math function
+
+`k(x + 1)` with a number `k` is the product `k·(x + 1)`, and numbers named
+`E`, `N`, `S`, `O`, `I` work as ordinary names. But a name that is a math
+function stays a call before a bracket: with a number `gamma`,
+`gamma(x + 1)` is Γ(x + 1). Write `gamma*(x + 1)`.
+
+### Other called names are construction objects
+
+A formula calls only math functions (`sin`, `sqrt`, `exp`, `log`, `abs`,
+`floor`, `gamma`, `erf`, …). Any other called name — `g(t)`, `foo(x)` — is an
+object of the construction, normally another function. If the construction has
+no such object, the curve is not built: the import records
+`expression_parse_error`, the DSL logs a warning.
+
+### Size limits
+
+Formula text is limited to 4000 characters. A formula that asks for a huge
+exact computation — `7^(9^9)`, `(10^7)!`, `exp(10^9 log(7))`, a conic of
+degree 10 000 — is refused, and so is a chain of functions that would inline
+into more than 2000 expression nodes; on import both are reported as
+`expression_parse_error`. Formulas are still evaluated exactly by sympy, so a
+service that parses uploaded files should keep a time limit on loading.
 
 ## Python
 
@@ -405,6 +471,11 @@ The exec engine supports this forward reference for **lowercase** names:
 Command remembers the name, and it resolves during `rebuild`. For uppercase
 names — `Rotat` (a typo of `Rotate`) raises at runtime; this is deliberate, to
 catch typos.
+
+Formula strings do not take forward references: the names inside
+`Function("y = a*x^2")` or `f(x) = a x^2` must already exist when the line
+runs. Otherwise the formula refers to nothing, and the element stays
+undefined even after `a` is added.
 
 ### Backward-compat field aliases removed
 

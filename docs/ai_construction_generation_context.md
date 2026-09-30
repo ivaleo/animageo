@@ -450,10 +450,16 @@ Polygon, Ray, Segment, Semicircle, Vector
 Derived geometry and construction commands:
 
 ```text
-AngularBisector, Axes, Center, Centroid, Directrix, Focus, Incircle,
-Intersect, IsogonalConjugation, LineBisector, MajorAxis, Midpoint, MinorAxis,
-OrthogonalLine, PerpendicularBisector, PerpendicularLine, Polar, Tangent,
-Vertex
+AngularBisector, Axes, Center, Centroid, ClosestPoint, Directrix, Focus,
+Incircle, Intersect, IsogonalConjugation, LineBisector, MajorAxis, Midpoint,
+MinorAxis, OrthogonalLine, PerpendicularBisector, PerpendicularLine, Polar,
+Tangent, Trilinear, Vertex
+```
+
+Vectors:
+
+```text
+Direction, PerpendicularVector, UnitPerpendicularVector, UnitVector
 ```
 
 Conics:
@@ -465,9 +471,9 @@ Ellipse, Hyperbola, Parabola
 Measurements and values:
 
 ```text
-AngleSize, Area, Circumference, Coefficients, Distance, Eccentricity, Length,
-LinearEccentricity, Perimeter, Radius, SemiMajorAxisLength,
-SemiMinorAxisLength, Value
+AffineRatio, AngleSize, Area, Circumference, Coefficients, Cross, CrossRatio,
+Distance, Dot, Eccentricity, FunctionValue, Length, LinearEccentricity,
+Perimeter, Radius, SemiMajorAxisLength, SemiMinorAxisLength, Slope, Value
 ```
 
 Predicates and proof-like values:
@@ -480,7 +486,7 @@ AreEqual, AreParallel, ArePerpendicular, ContainedBy, Equality, Prove, Touches
 Transformations:
 
 ```text
-Mirror, Reflect, Rotate, Translate
+Dilate, Mirror, Reflect, Rotate, Translate
 ```
 
 Arithmetic/runtime command factories:
@@ -513,7 +519,9 @@ Avoid nondeterministic point forms:
   `Point(arc)`, or similar point-on-object forms without an explicit geometric
   reason;
 - do not use two-argument parameter forms like `Point(circle, t)` in generated
-  static DSL; this dispatch surface is not reliable public AI output.
+  static DSL: `t` is GeoGebra's normalised path parameter (clamped to
+  `[0, 1]`; on a circle `t = 0` is the angle `−π`), which is easy to misread
+  as an angle and does not express a geometric relation.
 
 Preferred deterministic alternatives:
 
@@ -1141,10 +1149,11 @@ coordinates that accidentally make the angle right.
   with matching ticks.
 - Translation: use `Vector(P, Q)` and translate relevant objects with
   `Translate(object, vector)`.
-- Homothety/dilation currently has no dedicated public factory; use dependent
-  point arithmetic and explain this in `notes`. Prefer direct proxy arithmetic:
-  `A1 = O + k * (A - O)`, `B1 = O + k * (B - O)`. Do not rely on coordinate
-  fields such as `A.x`/`A.y` inside a new `Point(...)`.
+- Homothety/dilation: use `Dilate(object, k, center)`, e.g.
+  `A1 = Dilate(A, k, O)`; it also maps segments, lines, circles, polygons,
+  conics, functions, and implicit curves. For points, direct proxy arithmetic
+  `A1 = O + k * (A - O)` is equivalent. Do not rely on coordinate fields such
+  as `A.x`/`A.y` inside a new `Point(...)`.
 
 ### Conics And Functions
 
@@ -1175,6 +1184,18 @@ coordinates that accidentally make the angle right.
 - Functions and implicit curves should be created from explicit equation
   strings. Mark intersections with `Intersect` rather than approximating them by
   hand.
+  Formula syntax in `Function("y = ...")`, `Conic("...")`,
+  `ImplicitCurve("...")` and `f(x) = ...` lines: `^` is a power and `*` may be
+  omitted (`2x`, `k x`, `2(x + 1)`, `(x + 1)(x - 1)`); `x(A)` and `y(A)` with no
+  space before the bracket are the coordinates of point `A`, so write
+  `x*(x + 1)` for a product with `x`; another function is called by name
+  (`h(x) = g(x) + 1`); the callable math functions are `sin`, `cos`, `tan`,
+  `asin`, `acos`, `atan`, `sqrt`, `exp`, `log`, `ln`, `abs`, `floor`,
+  `ceiling`, `min`, `max`, and similar — any other called name must be a
+  construction object; write `pi`, never `π`; `e` is Euler's number in
+  functions and implicit curves but an ordinary name in a conic equation. A
+  formula follows the numbers, points, and functions it names, so define them
+  before the formula. A conic equation must be a polynomial as written.
   When multiple intersections are requested, tuple-unpack `Intersect(...)` into
   named point variables and style those points individually or as a named group.
 - For a circumcircle arc through three points, use `CircumcircleArc(A, B, C)`

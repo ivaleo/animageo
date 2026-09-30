@@ -363,6 +363,10 @@ normalized into the semantic schema before merging.
 | `points_display` | `"auto"` \| `"only_labels"` \| `"only_points"` | `only_labels` hides the point and shows the label; `only_points` — the reverse |
 | `label_anchor` | `"TL"`/`"TC"`/`"TR"`/`"ML"`/`"MC"`/`"MR"`/`"BL"`/`"BC"`/`"BR"` | Scene-wide default label anchor (when not set per element). Full grid — §7 |
 | `label_value_precision` | int | Scene-wide default precision of value labels |
+| `fast_value_labels` | bool, default `true` | During animation, value labels are drawn with cached digit glyphs instead of a LaTeX recompile per frame; `false` forces LaTeX. Static export always uses LaTeX |
+| `label_contrast` | `"off"` \| `"auto"`, default `"off"` | `"auto"` recolours a label that sits on a fill of similar luminance to a readable black or white |
+| `label_contrast_threshold` | float, default `0.35` | Luminance gap below which `label_contrast: "auto"` recolours |
+| `color_interpolation` | `"oklab"` \| `"srgb"`, default `"oklab"` | Color space for animated colors in keyframe style tracks |
 
 `overlay.label_placement` and `overlay.angle_radius` are read directly from
 `scene.style_config.overlay`; these automation features are not accepted under
@@ -478,6 +482,10 @@ scene.element('sector').style['z_index_fill'] = 0.2   # CircleSector only
 
 If the `z_index` key is set explicitly, the automatic assignment does not kick in.
 
+An element that is undefined in the loaded `.ggb` (NaN coordinates, e.g. an
+intersection that does not exist in the saved state) and becomes defined later
+keeps its type's layer and label defaults.
+
 ---
 
 ## 6. Per-element style: all keys
@@ -588,6 +596,38 @@ GeoGebra uses `BL` by default (bottom-left = the baseline for capital letters).
 
 `correctedLabel(label)` runs the text through a dictionary of 84 substitutions (`·`→`\cdot`, `α`→`\alpha`, `△`→`\triangle`, …), which lets you write formulas in labels using plain Unicode.
 
+### Labels placed in GeoGebra
+
+A label of a GGB element that has no explicit `label_anchor` (in the element's
+style, `overlay` or `defaults`) and is not auto-placed is positioned the way
+GeoGebra does it. GeoGebra starts from a base point that depends on the element
+type and adds the stored `labelOffset`:
+
+| Element | Base point |
+|---|---|
+| Point | 4 px right of and 2·point size above the point |
+| Segment | midpoint, 16 px along the normal |
+| Vector | midpoint, shifted sideways by a quarter of the arrow size |
+| Ray | midpoint of the vertex and the second point, shifted 16 px by the reflected direction `(uₓ, −u_y)` (GeoGebra's rule) |
+| Polygon | average of the vertices |
+| Circle, ellipse | point on the upper-left arc of the outline, 20 px inward |
+| Arc, sector | point of the arc at its middle, offset by (6, 6) px |
+| Line | no rule: keeps the general placement (GeoGebra measures from the applet window border) |
+| Angle | no rule: angles keep their own placement |
+
+The rules are in `animageo/label_anchor.py` (`ggb_label_anchor`). A scene-wide
+`rendering.label_anchor` does not apply to these labels; set `label_anchor` on
+the element (or enable auto-placement) to override.
+
+When the figure is exported at a different scale than the applet, the label is
+re-attached to the point of its element nearest to where the applet drew it
+(`label_anchor.nearest_point`; nothing is stored, it is recomputed from the
+offset on each render). That point scales with the figure and only the rest of
+the offset stays in font space, so the gap to the line holds at any font size.
+A label inside a region (polygon, sector, inside of a circle or ellipse) sticks
+to its own spot of the region. Points are unaffected. Circles and ellipses
+draw their labels like other elements.
+
 ### GGB descender correction
 
 A GGB offset targets the bottom of the input box (including its descender padding). The TeX bbox is tight, so the label would sag below. `create_label` automatically raises it by `ggb_font_px * 0.25 / ptUnit`, **unless** `_auto_placed` is set (auto-placed labels already have correct offsets).
@@ -625,7 +665,7 @@ A greedy solver lays out the labels, minimizing overlaps. 8 candidate directions
 | `w_label` | `10.0` | Weight for label×label overlap |
 | `w_geom` | `8.0` | Weight for label×geometry overlap |
 | `dynamic_angles` | `false` | Angle bisectors are recomputed per frame |
-| `keyframe_snapshots` | `false` | The layout is computed at each keyframe and interpolated in between |
+| `keyframe_snapshots` | `false` | The layout is computed at each keyframe and interpolated in between. Takes effect only with `enabled: true`; the snapshots then own every label position in `play_keyframes` (a keyframe `label_offset_px` track is ignored) |
 | `canonicalize_anchor` | `false` | Rewrites all anchors to `MC` with a compensating offset. Removes jumps during interpolation. Off by default: it rewrites recorded label anchors, so existing outputs shift |
 | `interpolation` | `"linear"` | Easing of label offsets between snapshots: `linear` or `smooth` |
 | `ema_alpha` | `0.2` | Weight of the fresh solver result in the EMA (0..1); smaller → smoother but slower to converge |
@@ -822,7 +862,7 @@ Enable together:
 }
 ```
 
-- `keyframe_snapshots` — a pre-pass computes the layout at every keyframe (with state save/restore); offsets between snapshots are interpolated.
+- `keyframe_snapshots` — (requires `enabled: true`) a pre-pass computes the layout at every keyframe (with state save/restore); offsets between snapshots are interpolated.
 - `dynamic_angles` — angle bisectors are recomputed analytically every frame.
 - `canonicalize_anchor` — all static anchors are converted to `MC` with compensation, removing discrete jumps.
 

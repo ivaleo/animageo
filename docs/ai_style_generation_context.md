@@ -218,6 +218,9 @@ is not a drawable element type.
 - `label_value_separator`: string, usually `" = "`.
 - `label_color`: hex or preset reference.
 - `label_anchor`: one of `TL`, `TC`, `TR`, `ML`, `MC`, `MR`, `BL`, `BC`, `BR`.
+  A GeoGebra label without an explicit `label_anchor` keeps GeoGebra's own
+  placement for its element type; setting `label_anchor` switches it to the
+  general placement.
 - `label_offset_px`: `[dx, dy]`.
 - `label_radial_offset_px`: radial offset for angle labels.
 - `label_placement_locked`: bool; prevents auto-placement from moving a label.
@@ -432,7 +435,8 @@ Use for automatic label layout. It can be enabled for static scenes:
 
 For animations, use:
 
-- `keyframe_snapshots: true` for keyframe animation label layout.
+- `keyframe_snapshots: true` for keyframe animation label layout; it works
+  only together with `enabled: true`.
 - `dynamic_angles: true` only together with keyframe snapshots or explicit
   dynamic auto-placement in Python.
 - `canonicalize_anchor: true` only when smooth label interpolation matters.
@@ -508,6 +512,11 @@ Use for scene/export behavior, not object styling:
 - `points_display`: `auto`, `only_labels`, or `only_points`.
 - `label_anchor`: default label anchor.
 - `label_value_precision`: scene-level default precision for value labels.
+- `fast_value_labels`: `true` (default); animated value labels skip the
+  per-frame LaTeX compile.
+- `label_contrast`: `off` (default) or `auto` (recolour labels on fills of
+  similar luminance); `label_contrast_threshold`: luminance gap, `0.35`.
+- `color_interpolation`: `oklab` (default) or `srgb`, for animated colors.
 
 Do not put point sizes, stroke widths, fill colors, font sizes, or tick
 parameters in `rendering`. Do not put `angle_radius` or `label_placement` in

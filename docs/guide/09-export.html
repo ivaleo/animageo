@@ -121,6 +121,11 @@ scene.exportPDF("figure.pdf", dpi=150)   # плотнее: меньше физи
 предупреждение). Для прозрачности используйте PDF или SVG.</li>
 </ul>
 
+<p>Пунктирная линия экспортируется одним путём с паттерном — <code>stroke-dasharray</code>
+в SVG, нативный dash в PDF/EPS, — а не рядом отдельных штрихов: её можно
+перекрасить в редакторе, файл меньше. Период задают <code>stroke_dash_period_px</code> /
+<code>rendering.dash_period_px</code> (§5).</p>
+
 <h3>Что происходит внутри SVG</h3>
 <ol>
 <li><code>exportSVG(path)</code> открывает Cairo SVG-context на файл.</li>
@@ -146,7 +151,7 @@ scene.exportTikZ("figure.tex", standalone=True)   # компилируемый �
 Cyrillic-ready преамбулой.</li>
 <li>Координаты — math-units; единица картинки <code>x=/y=</code> повторяет физический
 размер SVG, а fixed-size вещи (маркеры/толщины/шрифты) — в абсолютных <code>pt</code>.</li>
-<li>Цвета интернятся в <code>\definecolor</code>; переносятся прозрачности, dash-паттерны,
+<li>Цвета интернятся в <code>\definecolor</code>; переносятся прозрачности, dash-паттерны (штрих и промежуток берутся из периода стиля),
 торцы линий, штрихи, авто-радиус дуг, формы точек, z-порядок.</li>
 </ul>
 

@@ -258,7 +258,8 @@ style_auto.json    с включённой автораскладкой</code></
 <code>size_px</code>, <code>stroke_width_px</code>, <code>arc_size_px</code>,
 <code>stroke</code>, <code>fill</code>, <code>fill_opacity</code>,
 <code>stroke_opacity</code>, <code>label_color</code>, <code>font_size_px</code>,
-<code>point_shape</code>, <code>stroke_linecap</code>, <code>stroke_dash_ratio</code>.</p>
+<code>point_shape</code>, <code>stroke_linecap</code>, <code>stroke_dash_ratio</code>,
+<code>stroke_dash_period_px</code>.</p>
 
 <h2 id="overlay">overlay — стилизация поверх импорта</h2>
 
@@ -426,7 +427,8 @@ defaults, overlay, ImportPolicy.</p>
 <tr><td><code>stroke</code></td><td>hex-цвет</td><td>все линии и контуры</td></tr>
 <tr><td><code>stroke_width_px</code></td><td>число (pixel-invariant)</td><td>все линии и контуры</td></tr>
 <tr><td><code>stroke_opacity</code></td><td>0..1</td><td>все линии</td></tr>
-<tr><td><code>stroke_dash_ratio</code></td><td>0 (solid) или 0.3–1.0</td><td>сегменты, линии, лучи, <em>CIRCLE</em> (см. §7)</td></tr>
+<tr><td><code>stroke_dash_ratio</code></td><td>доля штриха в периоде: ≤ 0 или ≥ 1 — сплошная; обычно 0.3–0.9</td><td>все линии и контуры: сегменты, линии, лучи, векторы, дуги, окружности, коники, графики функций, неявные кривые (см. §7)</td></tr>
+<tr><td><code>stroke_dash_period_px</code></td><td>период штриха (штрих + промежуток) в px стиля; по умолчанию <code>rendering.dash_period_px</code> = 10</td><td>те же элементы</td></tr>
 <tr><td><code>stroke_linecap</code></td><td><code>butt</code>/<code>round</code>/<code>square</code></td><td>сегменты, линии, лучи</td></tr>
 <tr><td><code>fill</code></td><td>hex-цвет</td><td>полигоны, секторы, точки, углы</td></tr>
 <tr><td><code>fill_opacity</code></td><td>0..1</td><td>то же</td></tr>
@@ -503,6 +505,7 @@ s3 = Segment(E, F)
 s1.style.stroke_width_px = 0.75
 s2.style.stroke_width_px = 1.5
 s2.style.stroke_dash_ratio = 0.5
+s2.style.stroke_dash_period_px = 12   # штрих 6 px + промежуток 6 px
 s3.style.stroke_width_px = 3
 s3.style.stroke = '#f15b5b'</code></pre>
   </div>

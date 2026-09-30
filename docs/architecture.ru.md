@@ -80,10 +80,12 @@ v               v
 
 | Модуль | Роль |
 |--------|------|
-| `animageo.py` | Сцена, анимации, `CreateMObject` (диспетчер + рендереры `_render_<type>` по типам + `_build_render_ctx` + `_renderer_for` + `_make_label`), `loadGGB`, подключение ImportPolicy |
+| `animageo.py` | Сцена, анимации, `CreateMObject` (диспетчер + рендереры `_render_<type>` по типам + `_build_render_ctx` + `_renderer_for` + `_make_label`), `loadGGB`, подключение ImportPolicy, `DashCamera` (видеокамера, которая рисует пунктирные пути) |
 | `__main__.py` | Точка входа CLI (`python -m animageo file.ggb -o out.svg`): ветка статического вектора (svg/pdf/eps/tikz) и ветка рендера через manim (png/gif/mp4/webm/mov, `--keyframes` для анимации) |
 | `ui.py` | Шаблоны TeX, `create_label` (девять точек привязки), `ValueLabel` (быстрые числовые подписи на основе DecimalNumber) и `prewarm_decimal_glyphs`, `install_cyrillic_tex_template`, NumberedFrame, CustomArrowTip |
 | `labels.py` | Итоговое разрешение текста подписи: `resolve_label_text`, `resolve_label_spec` (структурированный `LabelSpec` для быстрой ветки числовых подписей), режимы подписи (имя / значение / имя + значение) |
+| `label_anchor.py` | Где GeoGebra ставит подпись для каждого типа элемента (без зависимости от manim): `ggb_label_anchor` (базовая точка апплета для точек, отрезков, векторов, лучей, многоугольников, окружностей, эллипсов, дуг и секторов, к которой прибавляется сохранённый `labelOffset`) и `nearest_point` (привязывает подпись, поставленную в апплете, к ближайшей точке её элемента, чтобы при любом масштабе экспорта она оставалась у той же части) |
+| `dash.py` | Пунктир как свойство штриха (без зависимости от manim): `DashPattern`, `set_dash` / `get_dash`, `element_dash_px` (штрих и промежуток в пикселях стиля из `stroke_dash_ratio` и `stroke_dash_period_px`; если период не задан, берётся `rendering.dash_period_px`, по умолчанию 10), `apply_cairo_dash`. Пунктирная линия — один путь со `stroke-dasharray`, а не ряд отдельных кусков |
 | `constants.py` | Уровни z-index (Z_FILL, Z_LINE, Z_POINT, Z_LABEL) и коэффициенты масштабирования |
 | `keyframes.py` | Анимация по ключевым кадрам: разбор JSON, интерполяторы, easing, `LabelOffsetInterpolator` и `attach_label_layouts` |
 | `label_placement.py` | Автоматическое размещение подписей: жадный решатель по 8 кандидатам, `compute_label_layout` (чистая функция), `apply_label_layout` (с побочными эффектами), `compute_angle_label_center`, `compute_effective_arc_size_px` (angle_radius), LRU-кэш bbox, помощники EMA и гистерезиса |
@@ -107,17 +109,20 @@ v               v
 | `geo/construction.py` | Граф зависимостей, топологическая сортировка (алгоритм Кана), пересборка, применение, `update_tparam`, `rename`, `add_and_build` |
 | `geo/lib_elements.py` | Point, Line, Segment, Ray, Angle, Polygon, Circle, Arc, CircleSector, Vector, LocusCurve, Text (плюс реэкспорт Conic/Function/ImplicitCurve); понятные человеку поля (`.coords`, `.center/.radius`, `.normal/.offset/.direction`, `.vertex/.size/.side1/.side2`, `.endpoints`, `.vertices`, …); `Element.__getattr__` перенаправляет обращения в `.data` |
 | `geo/lib_conic.py` | `Conic` (матрица 3×3 `.matrix`), классификация по инвариантам, `as_ellipse/as_parabola/as_hyperbola/as_lines/as_point`, `Conic.from_string(equation)` |
-| `geo/lib_function.py` | `Function` — явная зависимость `y = f(x)` (`.expr`, `.var`, `.source`), разбор через sympy, `If[...]` → `Piecewise`, цепочки `a ≤ x ≤ b`, `natural_singularities`, lambdify |
+| `geo/lib_function.py` | `Function` — явная зависимость `y = f(x)` (`.expr`, `.var`, `.source`), разбор через sympy, `If[...]` → `Piecewise`, цепочки `a ≤ x ≤ b`, `natural_singularities`, lambdify. Переменная — та, что названа слева (`g(t) = t²`) |
 | `geo/lib_implicit.py` | `ImplicitCurve` — произвольное `F(x, y) = 0` (`.expr`, `.var_x/.var_y`, `.source`), разбор через sympy, lambdify с двумя аргументами |
 | `geo/curve_sampling.py` | Адаптивная выборка с учётом области видимости и отсечение по Лианг — Барски; аналитические диапазоны t для параболы и гиперболы; marching squares для неявных кривых |
-| `geo/lib_commands.py` | Геометрические операции (более 400 записей в `COMMAND_REGISTRY`): пересечения всех пар (включая численные F/I), команды для кривых второго порядка (Center/Focus/Vertex/Axes/Directrix/Polar/Tangent), конструкторы Ellipse/Hyperbola/Parabola, `function_T/conic_T/implicit_curve_T` для строкового DSL |
+| `geo/lib_commands.py` | Геометрические операции (476 записей в `COMMAND_REGISTRY`): пересечения всех пар (включая численные F/I), команды для кривых второго порядка (Center/Focus/Vertex/Axes/Directrix/Polar/Tangent), конструкторы Ellipse/Hyperbola/Parabola, `Point(путь, t)` с параметром пути GeoGebra, `function_T/conic_T/implicit_curve_T` для строк формул и `function_Tn/conic_Tn/implicit_curve_Tn/line_Tn` для формул, ссылающихся на объекты конструкции |
+| `geo/formula_params.py` | От чего зависит формула: `formula_parameters` (имена, на которые она ссылается, по алфавиту — это порядок входов команды `*_Tn`), `formula_objects` / `formula_bindings` (объекты конструкции, доступные формуле: числа, измерения, углы, логические значения, точки, векторы, функции), `parametric_inputs`, `bind_parameters`, `mentioned_numbers` / `mentioned_objects` |
+| `geo/formula_refs.py` | Ссылки, отличные от чисел: `coordinate_calls` (`x(A)` / `y(A)` → вызовы координат), `reference_names`, `unbound_references`, `substitute_references` (подставляет текущие координаты и встраивает вызванные функции — вне своей области определения они не определены; число перед скобкой — произведение; встраивание ограничено `INLINE_LIMIT` узлами) |
+| `geo/safe_sympify.py` | `safe_sympify` — единственный путь текста формулы в sympy: без встроенных функций Python, отклоняет dunder-имена, кавычки и доступ к атрибутам, вставляет опущенный `*`, вызывает только математические функции — `MATH_FUNCTIONS` и имена, которые добавляет парсер, например `arcsin` (прочие вызываемые имена — объекты конструкции), отклоняет огромные точные вычисления, ограничивает текст `MAX_LENGTH` (4000) символами |
 | `geo/lib_vars.py` | `Measure(value, dimension)`, `AngleSize`, `Boolean(value)` |
 | `geo/tparam.py` | Математика перехода «точка ↔ параметр кривой» (tparam) для всех типов путей; основа `Construction.tparam_from_coords` и системы ключевых кадров |
 | `geo/utils.py` | is_number, is_angle_degrees, is_boolean |
-| `parsers/ggb_parser.py` | Извлечение XML из .ggb, разбор конструкции, заполнение `ggb_raw`; `<expression type="conic/line/function/implicitpoly">` со знаком `=`; выражения внутри проходят через `dsl.run` |
+| `parsers/ggb_parser.py` | Извлечение XML из .ggb, разбор конструкции, заполнение `ggb_raw`; `<expression type="conic/line/function/implicitpoly">` со знаком `=`; формула, ссылающаяся на объекты конструкции, становится командой `Function`/`Conic`/`Line`/`ImplicitCurve` (`_add_formula_command`); формула, которая не может за ними следовать, остаётся снимком (`parametric_dependency_frozen`), а нечитаемая попадает в `command_diagnostics` как `expression_parse_error`; выражения внутри проходят через `dsl.run` |
 | `parsers/ggb_macro.py` | Раскрытие макросов пользовательских инструментов: разбирает определения из `geogebra_macro.xml` и подставляет вызовы макросов примитивными командами перед разбором (поддерживается рекурсивное раскрытие) |
 | `parsers/ggb_generator.py` | Создаёт архивы .ggb из Construction (сериализация в XML GeoGebra плюс упаковка в ZIP) |
-| `parsers/dsl/` | Python DSL (движок exec): `transform.py` (переписывание AST, области видимости циклов, формирование имён, список запретов), `registrar.py` (`__reg__`/`__reg_loop__`/`__reg_tuple__` и ContextVar), `namespace.py` (FactoryDict с `__missing__` для 99 автоматически найденных фабрик команд поверх 433 сигнатур диспетчеризации, плюс математика, помощники `style/hide/show` и упреждающие ссылки на переменные `addVar`), `proxy.py` (ElementProxy с `__getattr__` в data и арифметикой `+/-/*//` и `abs`), `sugar.py` (предобработка `f(x) = expr`), `stub_gen.py` (`<scene>_stubs.pyi` после `loadGGB`). Точки входа: `dsl.run(constr, code)`, `with dsl.scope(c):`, `scene.putCode(code)`, `scene.loadCode(path)`. Заглушки: `namespace.pyi`, `proxy.pyi`. |
+| `parsers/dsl/` | Python DSL (движок exec): `transform.py` (переписывание AST, области видимости циклов, формирование имён, список запретов), `registrar.py` (`__reg__`/`__reg_loop__`/`__reg_tuple__` и ContextVar), `namespace.py` (FactoryDict с `__missing__` для 100 автоматически найденных фабрик команд поверх 476 сигнатур диспетчеризации, плюс математика, помощники `style/hide/show` и упреждающие ссылки на переменные `addVar`; к `Function`/`Conic`/`ImplicitCurve` дописываются имена, на которые ссылается формула), `proxy.py` (ElementProxy с `__getattr__` в data и арифметикой `+/-/*//` и `abs`), `sugar.py` (предобработка `f(x) = expr` / `g(t) = expr`), `stub_gen.py` (`<scene>_stubs.pyi` после `loadGGB`). Точки входа: `dsl.run(constr, code)`, `with dsl.scope(c):`, `scene.putCode(code)`, `scene.loadCode(path)`. Заглушки: `namespace.pyi`, `proxy.pyi`. |
 | `dsl.py` + `dsl.pyi` | Супермодуль — `from animageo.dsl import *` даёт в IDE все фабрики и типы |
 | `parsers/svg_parser.py` | Отрисовка объектов manim в SVG через Cairo |
 | `exporters/tikz/` | Семантический экспорт TikZ (`scene.exportTikZ`): обходит отрисовываемые элементы в порядке z и выдаёт нативный TikZ через тот же resolver стилей, что и рендерер |
@@ -138,6 +143,8 @@ v               v
 ```
 
 При изменении элемента пересобираются только зависящие от него (ленивая пересборка).
+Команда, зависящая от собственного результата (`A = Midpoint(A, B)` в DSL),
+вызывает `ValueError` о цикле зависимостей.
 
 ## Размещение подписей
 
@@ -192,6 +199,7 @@ v               v
 | `a` | Angle |
 | `v` | Vector |
 | `P` | Polygon |
+| `L` | LocusCurve |
 | `i` | int / float |
 | `m` | Measure |
 | `A` | AngleSize |
@@ -209,6 +217,13 @@ v               v
 `conic_ppppp` (кривая второго порядка по пяти точкам), `function_T` (Function("y = x²")).
 
 Диспетчер (`Command.func()`) ищет имя в `COMMAND_REGISTRY`, который заполняется функциями модуля во время импорта.
+
+Команды формул принимают переменное число входов: `Function`, `Conic`,
+`ImplicitCurve` и `Line` с текстом формулы и любым числом входов `i m A a b p v F`
+диспетчеризуются в одну реализацию `<base>_Tn` (`function_Tn`, `conic_Tn`,
+`implicit_curve_Tn`, `line_Tn`). Входы — имена, на которые ссылается формула, в
+порядке, который возвращает `formula_params.formula_parameters`, поэтому парсер
+GGB, DSL и реализация не могут разойтись.
 
 ## Кривые высших порядков: Conic, Function, ImplicitCurve
 
@@ -242,6 +257,25 @@ v               v
 │   Lambdify с двумя аргументами; вычисление, устойчивое к NaN.     │
 └───────────────────────────────────────────────────────────────────┘
 ```
+
+### Формулы, ссылающиеся на конструкцию
+
+Текст формулы из файла `.ggb` или DSL разбирается только через
+`safe_sympify`: ограниченное пространство имён без встроенных функций Python,
+неявные произведения (`2x`, `k x`, `(x + 1)(x - 1)`), вызовы только
+математических функций, защита от огромных точных вычислений и предел в 4000
+символов.
+
+Формула может ссылаться на объекты конструкции: числа (ползунки, измерения,
+углы, логические значения), координаты точек и векторов `x(A)`, `y(A)` и другие
+функции (`f(t) = g(t) + k`). `formula_parameters` перечисляет эти имена; парсер
+GGB и фабрики DSL дописывают их к команде — `Function("y = a*x^2", a)`, — а
+`*_Tn` перечитывает формулу при каждой пересборке через `substitute_references`
+(подставляются координаты, вызванные функции встраиваются). Поэтому кривая
+следует за объектами и в предпросмотре, и во всех экспортах. Коника или прямая,
+уравнение которой не воспроизводит сохранённую GeoGebra кривую, сохраняет эту
+кривую, а парсер записывает `parametric_dependency_frozen`; нечитаемый текст
+записывается как `expression_parse_error`.
 
 ## Отрисовка кривых и отсечение по области видимости
 

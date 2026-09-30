@@ -12,13 +12,13 @@ Open, forward-looking work. Shipped work lives in the
 - **In-memory input.** Accept `bytes`/`BytesIO` for `.ggb` and style JSON in
   addition to file paths.
 - **Snapshot tests for rendering.** The geometry core is well covered
-  (~985 tests); `CreateMObject`, SVG output, and the CLI still rely on manual
+  (~2,400 tests); `CreateMObject`, SVG output, and the CLI still rely on manual
   inspection. Golden-file snapshot tests would lock the visual output down.
 
 ## GeoGebra coverage
 
-Most everyday commands are implemented (433 dispatch signatures exposed
-through 99 auto-discovered DSL factories). Known gaps:
+Most everyday commands are implemented (476 dispatch signatures exposed
+through 100 auto-discovered DSL factories). Known gaps:
 
 - Exact/symbolic `Locus` and `LocusEquation` (current `Locus` is a sampled
   polyline).

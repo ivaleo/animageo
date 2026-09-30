@@ -470,6 +470,13 @@ s.style['label_text'] = f'{d:.1f}'   # «6.0»</code></pre>
 подробно в §6.
 </div>
 
+<div class="callout note">
+Числа построения можно использовать в формулах кривых:
+<code>k = 2</code>, затем <code>f(x) = k x^2</code> (знак <code>*</code> можно опустить).
+Формула хранит ссылку на <code>k</code> и пересчитывается при его изменении;
+<code>x(A)</code>, <code>y(A)</code> — координаты точки. Подробности синтаксиса — в §7.
+</div>
+
 <h2 id="python-access">Доступ из Python</h2>
 
 <p>После <code>putCode(...)</code> все имена из DSL живут в Construction.

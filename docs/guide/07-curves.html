@@ -64,9 +64,9 @@
 <table>
 <thead><tr><th>Тип</th><th>Что представляет</th><th>Как рисуется</th><th>fill</th><th>stroke_dash_ratio</th></tr></thead>
 <tbody>
-<tr><td><code>Conic</code></td><td>матрица 3×3; 9 ветвей (CIRCLE, ELLIPSE, PARABOLA, HYPERBOLA, 3× lines, POINT, EMPTY)</td><td>manim-примитив для замкнутых; адаптивный sampler + viewport-clip для парабол/гипербол</td><td>только CIRCLE, ELLIPSE</td><td>только CIRCLE</td></tr>
-<tr><td><code>Function</code></td><td>явная <code>y = f(x)</code>, sympy + numpy.lambdify</td><td>adaptive sampling с разделением по <em>natural_singularities</em></td><td>—</td><td>—</td></tr>
-<tr><td><code>ImplicitCurve</code></td><td>любое <code>F(x, y) = 0</code></td><td>marching squares 128×128 внутри viewport</td><td>—</td><td>—</td></tr>
+<tr><td><code>Conic</code></td><td>матрица 3×3; 9 ветвей (CIRCLE, ELLIPSE, PARABOLA, HYPERBOLA, 3× lines, POINT, EMPTY)</td><td>manim-примитив для замкнутых; адаптивный sampler + viewport-clip для парабол/гипербол</td><td>только CIRCLE, ELLIPSE</td><td>все ветви</td></tr>
+<tr><td><code>Function</code></td><td>явная <code>y = f(x)</code>, sympy + numpy.lambdify</td><td>adaptive sampling с разделением по <em>natural_singularities</em></td><td>—</td><td>да</td></tr>
+<tr><td><code>ImplicitCurve</code></td><td>любое <code>F(x, y) = 0</code></td><td>marching squares 128×128 внутри viewport</td><td>—</td><td>да</td></tr>
 </tbody>
 </table>
 
@@ -133,10 +133,10 @@ ell.style.stroke_width_px = 2.2</code></pre>
   </div>
 </div>
 
-<h3>Окружность: поддерживает stroke_dash_ratio</h3>
+<h3>Окружность: пунктир через stroke_dash_ratio</h3>
 
-<p>Для <code>CIRCLE</code>-ветви рендер использует <code>DashedVMobject</code>,
-поэтому работает пунктир — в отличие от остальных коник.</p>
+<p>Пунктир окружности, как и любой линии, рисуется одним контуром с паттерном
+(<code>stroke-dasharray</code> в SVG).</p>
 
 <div class="ex interactive wide"
      data-example='{"w": 520, "h": 340, "scale": 46, "auto_place": false}'>
@@ -157,11 +157,11 @@ c.style.stroke_dash_ratio = 0.5</code></pre>
   </div>
 </div>
 
-<div class="callout warn">
-<code>stroke_dash_ratio</code> работает <strong>только</strong> для
-<code>CIRCLE</code>-ветви Conic (через <code>DashedVMobject</code>).
-Parabola/Hyperbola рендерятся как polylines VMobject-ом напрямую — этот
-путь не применяет dash. То же касается Function и ImplicitCurve.
+<div class="callout note">
+<code>stroke_dash_ratio</code> — доля штриха в периоде; период задаёт
+<code>stroke_dash_period_px</code> (по умолчанию <code>rendering.dash_period_px</code> = 10 px).
+Пунктир рисуется на всех кривых: окружностях, эллипсах, параболах, гиперболах,
+графиках функций и неявных кривых; значение 1 и больше или меньше 0 даёт сплошную линию.
 </div>
 
 <h3>Парабола: viewport-clipping</h3>
@@ -258,8 +258,25 @@ f3(t) = sin(t) / t</code></pre>
 <li>Unicode-компараторы: <code>≤</code> → <code>&lt;=</code>, <code>≥</code> → <code>&gt;=</code>;</li>
 <li>Цепочки сравнений: <code>-1 ≤ x ≤ 1</code> → <code>(x ≥ -1) &amp; (x ≤ 1)</code>;</li>
 <li>GGB-конструкция <code>If[cond, then, else]</code> → <code>sympy.Piecewise</code> рекурсивно;</li>
-<li><code>abs(x)</code> и стандартные функции numpy/sympy.</li>
+<li><code>abs(x)</code> и математические функции (<code>sin</code>, <code>sqrt</code>,
+<code>exp</code>, <code>log</code>, <code>floor</code>, <code>gamma</code>, <code>erf</code>, …;
+полный список — <code>MATH_FUNCTIONS</code> в <code>geo/safe_sympify.py</code>).
+Любое другое вызываемое имя — объект построения;</li>
+<li>пропуск знака <code>*</code>: <code>2x</code>, <code>k x</code>, <code>2(x + 1)</code>,
+<code>(x + 1)(x - 1)</code>, <code>x (x + 1)</code>. Запись <code>x(A)</code> без пробела —
+координата точки <em>A</em>; <code>k(x + 1)</code> с числом <code>k</code> — произведение;</li>
+<li><code>x(A)</code>, <code>y(A)</code> — координаты точки (или вектора);</li>
+<li>вызов другой функции: <code>f(x) = g(x) + 1</code>; область определения <code>g</code>
+сохраняется — где <code>g</code> не определена, не определена и <code>f</code>.</li>
 </ul>
+
+<p>Переменная берётся из левой части: <code>g(t) = t^2</code> — график <code>t²</code>.
+Формула может упоминать числа построения — слайдеры, измерения, точки
+(<code>f(x) = a x^2</code>, <code>y(A) (x - x(B))</code>): график перестраивается
+при их изменении. То же работает для <code>Conic</code> и
+<code>ImplicitCurve</code>, а при импорте из GeoGebra — и для уравнений прямых (<code>(x - x(A))^2 + (y - y(A))^2 = 4</code> следует за
+<em>A</em>). Длина формулы — не более 4000 символов; формулы, требующие огромных
+вычислений (<code>7^(9^9)</code>, <code>(10^7)!</code>), отклоняются.</p>
 
 <p>После парсинга выражение один раз пропускается через
 <code>sympy.lambdify('numpy')</code>; дальше горячий путь — только numpy-вызовы,
@@ -453,7 +470,8 @@ F.style.stroke_width_px = 2.0</code></pre>
 <tr><td><code>stroke_width_px</code></td><td>float (px)</td><td><code>defaults.&lt;type&gt;.stroke_width_px</code></td><td>все</td><td>толщина; рендер: <code>× 100 / ptUnit</code></td></tr>
 <tr><td><code>stroke_opacity</code></td><td>0..1</td><td>1</td><td>все</td><td>прозрачность</td></tr>
 <tr><td><code>stroke_linecap</code></td><td>enum</td><td><code>rendering.line_cap</code></td><td>все</td><td><code>butt</code>/<code>round</code>/<code>square</code></td></tr>
-<tr><td><code>stroke_dash_ratio</code></td><td>0..1</td><td>None</td><td><strong>только CIRCLE-ветвь Conic</strong></td><td>пунктир через <code>DashedVMobject</code></td></tr>
+<tr><td><code>stroke_dash_ratio</code></td><td>0..1</td><td>None</td><td>все</td><td>доля штриха в периоде; ≤ 0 или ≥ 1 — сплошная</td></tr>
+<tr><td><code>stroke_dash_period_px</code></td><td>float (px)</td><td><code>rendering.dash_period_px</code> = 10</td><td>все</td><td>период: штрих + промежуток</td></tr>
 <tr><td><code>fill</code></td><td>hex</td><td><code>style.background</code></td><td><strong>только CIRCLE / ELLIPSE</strong></td><td>цвет заливки</td></tr>
 <tr><td><code>fill_opacity</code></td><td>0..1</td><td>1</td><td>только CIRCLE / ELLIPSE</td><td>прозрачность заливки</td></tr>
 <tr><td><code>z_index</code></td><td>float</td><td><code>Z_LINE = 4</code></td><td>все</td><td>перекрывает автоматику</td></tr>
@@ -488,12 +506,11 @@ F.style.stroke_width_px = 2.0</code></pre>
 
 <h2 id="gotchas">Особенности рендера</h2>
 
-<div class="callout warn">
-<strong>Пунктир — только у окружности.</strong> Parabola / Hyperbola / Function /
-ImplicitCurve рисуются как polylines VMobject; этот путь не применяет
-<code>DashedVMobject</code>. Для пунктирной функции — разрезать на
-чередующиеся куски через <code>If[...]</code> или использовать
-<code>ImplicitCurve</code> с периодическим <code>F</code>.
+<div class="callout">
+<strong>Пунктир у кривых.</strong> Параболы, гиперболы,
+графики функций и неявные кривые рисуются одной линией с паттерном
+(<code>stroke-dasharray</code> в SVG); период и долю штриха задают
+<code>stroke_dash_period_px</code> и <code>stroke_dash_ratio</code>.
 </div>
 
 <div class="callout warn">

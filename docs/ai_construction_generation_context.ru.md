@@ -478,10 +478,16 @@ Polygon, Ray, Segment, Semicircle, Vector
 Производная геометрия и команды построения:
 
 ```text
-AngularBisector, Axes, Center, Centroid, Directrix, Focus, Incircle,
-Intersect, IsogonalConjugation, LineBisector, MajorAxis, Midpoint, MinorAxis,
-OrthogonalLine, PerpendicularBisector, PerpendicularLine, Polar, Tangent,
-Vertex
+AngularBisector, Axes, Center, Centroid, ClosestPoint, Directrix, Focus,
+Incircle, Intersect, IsogonalConjugation, LineBisector, MajorAxis, Midpoint,
+MinorAxis, OrthogonalLine, PerpendicularBisector, PerpendicularLine, Polar,
+Tangent, Trilinear, Vertex
+```
+
+Векторы:
+
+```text
+Direction, PerpendicularVector, UnitPerpendicularVector, UnitVector
 ```
 
 Кривые второго порядка:
@@ -493,9 +499,9 @@ Ellipse, Hyperbola, Parabola
 Измерения и значения:
 
 ```text
-AngleSize, Area, Circumference, Coefficients, Distance, Eccentricity, Length,
-LinearEccentricity, Perimeter, Radius, SemiMajorAxisLength,
-SemiMinorAxisLength, Value
+AffineRatio, AngleSize, Area, Circumference, Coefficients, Cross, CrossRatio,
+Distance, Dot, Eccentricity, FunctionValue, Length, LinearEccentricity,
+Perimeter, Radius, SemiMajorAxisLength, SemiMinorAxisLength, Slope, Value
 ```
 
 Предикаты и значения для доказательств:
@@ -508,7 +514,7 @@ AreEqual, AreParallel, ArePerpendicular, ContainedBy, Equality, Prove, Touches
 Преобразования:
 
 ```text
-Mirror, Reflect, Rotate, Translate
+Dilate, Mirror, Reflect, Rotate, Translate
 ```
 
 Арифметические фабрики команд рантайма:
@@ -542,8 +548,9 @@ Abs, Add, Assign, Cos, CpxTo, Ctan, Div, Mult, Pow, Sin, Sqrt, Sub, Tan, USub
   `Point(ray)`, `Point(arc)` и подобные формы «точка на объекте» без явной
   геометрической причины;
 - не используйте двухаргументные параметрические формы вроде `Point(circle, t)`
-  в генерируемом статическом DSL; эта поверхность диспетчеризации не является
-  надёжным публичным результатом AI.
+  в генерируемом статическом DSL: `t` — нормированный параметр пути GeoGebra
+  (ограничен отрезком `[0, 1]`; на окружности `t = 0` — это угол `−π`), его
+  легко принять за угол, и он не выражает геометрического отношения.
 
 Предпочтительные детерминированные альтернативы:
 
@@ -1200,10 +1207,11 @@ CB = Segment(C, B)
   скопированный углы одинаковыми засечками.
 - Перенос: используйте `Vector(P, Q)` и переносите нужные объекты через
   `Translate(object, vector)`.
-- У гомотетии сейчас нет отдельной публичной фабрики; используйте арифметику
-  зависимых точек и объясните это в `notes`. Предпочитайте прямую арифметику
-  прокси: `A1 = O + k * (A - O)`, `B1 = O + k * (B - O)`. Не полагайтесь на
-  координатные поля вроде `A.x` и `A.y` внутри нового `Point(...)`.
+- Гомотетия: используйте `Dilate(object, k, center)`, например
+  `A1 = Dilate(A, k, O)`; она преобразует и отрезки, прямые, окружности,
+  многоугольники, кривые второго порядка, функции и неявные кривые. Для точек
+  равнозначна прямая арифметика прокси `A1 = O + k * (A - O)`. Не полагайтесь
+  на координатные поля вроде `A.x` и `A.y` внутри нового `Point(...)`.
 
 ### Кривые второго порядка и функции
 
@@ -1232,6 +1240,19 @@ CB = Segment(C, B)
   невырожденным выбором точек.
 - Функции и неявные кривые следует создавать из явных строк уравнений.
   Отмечайте пересечения через `Intersect`, а не приближайте их вручную.
+  Синтаксис формул в `Function("y = ...")`, `Conic("...")`,
+  `ImplicitCurve("...")` и строках `f(x) = ...`: `^` — степень, знак `*` можно
+  опускать (`2x`, `k x`, `2(x + 1)`, `(x + 1)(x - 1)`); `x(A)` и `y(A)` без
+  пробела перед скобкой — координаты точки `A`, поэтому произведение с `x`
+  пишите как `x*(x + 1)`; другую функцию вызывают по имени
+  (`h(x) = g(x) + 1`); вызывать можно математические функции `sin`, `cos`,
+  `tan`, `asin`, `acos`, `atan`, `sqrt`, `exp`, `log`, `ln`, `abs`, `floor`,
+  `ceiling`, `min`, `max` и подобные — любое другое вызываемое имя должно быть
+  объектом конструкции; пишите `pi`, а не `π`; `e` — число Эйлера в функциях и
+  неявных кривых, но обычное имя в уравнении коники. Формула следует за
+  числами, точками и функциями, которые в ней названы, поэтому определяйте их
+  до формулы. Уравнение коники должно быть многочленом в том виде, как
+  записано.
   Когда запрошено несколько пересечений, распакуйте `Intersect(...)` в
   именованные переменные точек и стилизуйте эти точки по отдельности или как
   именованную группу.

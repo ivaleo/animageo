@@ -303,6 +303,26 @@ self.play_keyframes({
   </div>
 </div>
 
+<h3>Keyframes v2: стили, видимость, эффекты</h3>
+
+<p>С <code>"version": 2</code> ключевой кадр может нести <code>styles</code> —
+целевое состояние стиля любого элемента (числа интерполируются, цвета — в Oklab,
+дискретные ключи переключаются на середине), в том числе <code>stroke_dash_period_px</code>
+и <code>stroke_dash_ratio</code>. Появление и исчезновение — эффекты внутри
+интервала (<code>enter</code>: <code>fade</code>, <code>create</code>, <code>grow</code>, <code>write</code>;
+<code>exit</code>: <code>fade</code>, <code>uncreate</code>, <code>shrink</code>). <code>grow</code> и
+<code>shrink</code> масштабируют геометрию вокруг её центра, а подпись остаётся на месте
+и плавно проявляется или гаснет.</p>
+
+<pre><code>{"version": 2, "keyframes": [
+  {"t": 0, "visible": {"c": false}, "styles": {"a": {"stroke_dash_period_px": 10}}},
+  {"t": 2, "visible": {"c": true}, "enter": {"c": {"effect": "grow", "duration": 0.8}},
+   "styles": {"a": {"stroke_dash_period_px": 20}}}
+]}</code></pre>
+
+<p>Полное описание (камера, события, поэтапное построение) —
+<a href="../keyframes.ru.md">docs/keyframes.ru.md</a>.</p>
+
 <h2 id="updater">addUpdater и ValueTracker</h2>
 
 <p>Для тонкого контроля — когда <code>play_keyframes</code> слишком
@@ -365,7 +385,7 @@ self.clearLabelTracker()</code></pre>
 <table>
 <thead><tr><th>Режим</th><th>Активируется</th><th>Подходит для</th></tr></thead>
 <tbody>
-<tr><td>Snapshot</td><td><code>overlay.label_placement.keyframe_snapshots=true</code></td><td><code>play_keyframes</code> — решатель запускается только на keyframes, offset между ними интерполируется.</td></tr>
+<tr><td>Snapshot</td><td><code>overlay.label_placement.enabled=true</code> + <code>keyframe_snapshots=true</code> (без <code>enabled</code> не работает и не трогает ручные смещения)</td><td><code>play_keyframes</code> — решатель запускается только на keyframes, offset между ними интерполируется.</td></tr>
 <tr><td>Dynamic tracker</td><td><code>autoPlaceLabels(dynamic=True)</code></td><td><code>addUpdater</code>-анимации — решатель каждые <em>N</em> кадров, EMA-сглаживание, hysteresis на якорях.</td></tr>
 <tr><td>Static frozen</td><td><code>autoPlaceLabels()</code></td><td>One-shot для SVG или если подписи не движутся.</td></tr>
 </tbody>

@@ -27,8 +27,12 @@ file required — and animate them by keyframes or by driving free variables.
 - **Faithful GeoGebra import** — points, lines, segments, rays, vectors,
   polygons, angles (incl. right-angle markers), circles, arcs, sectors, and
   first-class **conics, explicit functions, and implicit curves**, plus custom
-  tool (macro) expansion. The DSL exposes 99 command factories backed by 433
-  type-specialized dispatch signatures.
+  tool (macro) expansion. The DSL exposes 100 command factories backed by 476
+  type-specialized dispatch signatures. Formulas (functions, conics, lines,
+  implicit curves) follow sliders, measures, point coordinates and other
+  functions; anything that cannot be followed is reported in
+  `command_diagnostics`. GeoGebra-placed labels keep their position at any
+  export scale.
 - **Pixel-invariant styling** — a JSON style system with layered defaults,
   per-type / per-name overlays, and a configurable GGB `ImportPolicy`.
 - **Automatic label placement** — an overlap-avoiding solver with static,
@@ -38,7 +42,8 @@ file required — and animate them by keyframes or by driving free variables.
   value labels.
 - **Multiple export targets** — SVG/PDF/EPS (Cairo), native semantic **TikZ**
   for LaTeX, interactive **JSXGraph** (with a framework-agnostic web runtime),
-  and MP4/GIF/WebM/PNG via manim.
+  and MP4/GIF/WebM/PNG via manim. Dashed lines are exported as a single path
+  with a dash pattern (`stroke-dasharray` in SVG, a native dash in PDF/EPS).
 - **AI-agent friendly** — a self-sufficient usage guide ships in the package
   (`animageo --ai-guide`), plus compact construction summaries for LLM styling.
 

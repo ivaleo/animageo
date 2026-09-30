@@ -250,3 +250,7 @@ scene.reloadPolicy(ImportPolicy(size_px=5))
 - `label_offset` resolves via the same path, but note that GGB `y` is
   not inverted inside the callable — pass `[x, -y]` explicitly if you
   need math-coord offsets.
+- A `label_offset_px` (from GGB or from a policy) is added to GeoGebra's
+  per-element-type label base point (segment midpoint + 16 px along the normal,
+  polygon vertex average, …; see `docs/styles.md` §7), unless the element has
+  an explicit `label_anchor`.

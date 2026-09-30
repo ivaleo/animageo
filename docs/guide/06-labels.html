@@ -211,6 +211,14 @@ Q.style.label_offset_px = [14, 16]</code></pre>
 <p>Для углов — <em>аналитика</em> вместо 8 вариантов: подпись садится на
 биссектрису, отодвигается на <code>arc_r + half_label_size + gap_arc_px</code>.</p>
 
+<div class="callout note">
+Подпись, расставленная в GeoGebra, остаётся на месте аплета для каждого типа
+элемента — отрезков, векторов, лучей, полигонов, окружностей, эллипсов, дуг и
+секторов (правила — <code>animageo/label_anchor.py</code>). При экспорте в другом
+масштабе подпись остаётся привязанной к своей части элемента и не уезжает.
+Окружности и эллипсы рисуют подписи.
+</div>
+
 <h3>До и после</h3>
 
 <div class="ex-row">
@@ -290,7 +298,7 @@ scene.element('A').style['label_offset_px'] = [10, -5]
 <tr><td><code>w_label</code></td><td>10.0</td><td>Штраф за пересечение с другими подписями.</td></tr>
 <tr><td><code>w_geom</code></td><td>8.0</td><td>Штраф за пересечение с геометрией.</td></tr>
 <tr><td><code>dynamic_angles</code></td><td>false</td><td>Пересчитывать биссектрисы каждый кадр (нужен anim-режим, см. ниже).</td></tr>
-<tr><td><code>keyframe_snapshots</code></td><td>false</td><td>Для <code>play_keyframes</code>: snapshot на каждом keyframe + интерполяция.</td></tr>
+<tr><td><code>keyframe_snapshots</code></td><td>false</td><td>Для <code>play_keyframes</code>: snapshot на каждом keyframe + интерполяция. Работает только при <code>enabled=true</code>.</td></tr>
 <tr><td><code>canonicalize_anchor</code></td><td>false</td><td>Всё в <code>MC</code> — убирает дискретные скачки якоря между кадрами.</td></tr>
 <tr><td><code>interpolation</code></td><td><code>linear</code></td><td>Easing offset между snapshot-ами: <code>linear</code> / <code>smooth</code>.</td></tr>
 <tr><td><code>ema_alpha</code></td><td>0.2</td><td>Вес свежего решения в EMA (dynamic tracker).</td></tr>
@@ -301,7 +309,7 @@ scene.element('A').style['label_offset_px'] = [10, -5]
 
 <div class="callout warn">
 <code>dynamic_angles=true</code> <em>сам по себе</em> ничего не делает.
-Ему нужен один из активных режимов: <code>keyframe_snapshots=true</code> (для
+Ему нужен один из активных режимов: <code>keyframe_snapshots=true</code> вместе с <code>enabled=true</code> (для
 <code>play_keyframes</code>) или <code>autoPlaceLabels(dynamic=True)</code>
 (для <code>addUpdater</code>-анимаций). Это сделано сознательно: стоимость
 per-frame-вычислений должна быть явной.

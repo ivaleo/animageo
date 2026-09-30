@@ -479,7 +479,8 @@ system: `stroke="color.accent"`, `stroke_width_px="line_width.bold"`,
 `size_px="point_size.bold"`, `fill="color.accent"` (points use `fill`, not
 `stroke`, for their body color). Helpers: `stroke="color.aux"`,
 `stroke_width_px="line_width.aux"`, or `stroke_dash_ratio=0.5` for dashed
-(`stroke_dash_period_px` sets dash + gap in px, default 10).
+(`stroke_dash_period_px` sets dash + gap in style px; default `rendering.dash_period_px`, 10;
+SVG export writes one path with `stroke-dasharray`).
 Raw values work anywhere a token does: `stroke="#2e7d32"`, `size_px=9` —
 use them when a figure needs more distinct colors than the palette has
 (e.g. medians vs altitudes vs circle), keeping them consistent within one
@@ -508,7 +509,9 @@ construction) and principle 4 (hide the scaffolding):
 enabled (§7 preset or `autoPlaceLabels`), it **overrides** manual offsets —
 pin a hand-placed label with
 `style(T2, label_offset_px=[16, -4], label_placement_locked=True)`; the
-solver then leaves that one alone.
+solver then leaves that one alone. Labels of a loaded `.ggb` keep the place the
+GeoGebra applet gave them (next to the same part of the element, at any export
+scale) unless the solver is enabled.
 
 **Polygon vs explicit sides.** `Polygon(...)` draws boundary segments too.
 If individual sides carry different meaning (one side highlighted, sides

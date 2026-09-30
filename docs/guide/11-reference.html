@@ -101,6 +101,7 @@
 <tr><td><code>line_cap</code></td><td>enum</td><td><code>butt</code></td><td>окончания линий: <code>butt</code> / <code>round</code> / <code>square</code></td></tr>
 <tr><td><code>right_angle_joint</code></td><td>enum</td><td><code>auto</code></td><td><code>auto</code> / <code>bevel</code> / <code>miter</code> / <code>round</code></td></tr>
 <tr><td><code>polygon_boundary_layer</code></td><td>enum</td><td>null</td><td><code>top</code> = контур поверх заливки (<code>z_index=10</code>)</td></tr>
+<tr><td><code>dash_period_px</code></td><td>float</td><td>10</td><td>период пунктира (штрих + промежуток) в px стиля; перекрывается <code>stroke_dash_period_px</code></td></tr>
 <tr><td><code>points_display</code></td><td>enum</td><td><code>auto</code></td><td><code>auto</code> / <code>only_labels</code> / <code>only_points</code></td></tr>
 <tr><td><code>label_anchor</code></td><td>enum</td><td><code>BC</code></td><td>сценовый дефолт: <code>TL</code>..<code>BR</code></td></tr>
 <tr><td><code>scale_export</code></td><td>float</td><td>1</td><td>legacy-множитель <code>px_size</code>; для нового экспорта используйте <code>export_size/export_fit</code></td></tr>
@@ -195,6 +196,7 @@
 <tr><td><code>point_shape</code></td><td>str / DSL</td><td><code>&lt;pointStyle&gt;</code></td><td><code>point_shape</code></td></tr>
 <tr><td><code>stroke_opacity</code></td><td>float / DSL</td><td><code>&lt;lineStyle opacity&gt;</code></td><td><code>stroke_opacity</code></td></tr>
 <tr><td><code>stroke_dash_ratio</code></td><td>float / DSL</td><td><code>&lt;lineStyle type&gt;</code></td><td><code>stroke_dash_ratio</code></td></tr>
+<tr><td><code>stroke_dash_period_px</code></td><td>float / DSL</td><td>—</td><td><code>stroke_dash_period_px</code></td></tr>
 <tr><td><code>stroke_linecap</code></td><td>str / DSL</td><td>—</td><td><code>stroke_linecap</code></td></tr>
 </tbody>
 </table>
@@ -230,7 +232,8 @@
 <tr><td><code>stroke</code></td><td>hex</td><td><code>style.strong</code></td><td>цвет контура</td></tr>
 <tr><td><code>stroke_width_px</code></td><td>float (px)</td><td><code>defaults.&lt;type&gt;.stroke_width_px</code></td><td>толщина; рендер: <code>× 100 / ptUnit</code></td></tr>
 <tr><td><code>stroke_opacity</code></td><td>0..1</td><td>1</td><td>прозрачность</td></tr>
-<tr><td><code>stroke_dash_ratio</code></td><td>0..1 / null</td><td>null</td><td>пунктир (ratio)</td></tr>
+<tr><td><code>stroke_dash_ratio</code></td><td>0..1 / null</td><td>null</td><td>доля штриха в периоде (≤ 0 или ≥ 1 — сплошная)</td></tr>
+<tr><td><code>stroke_dash_period_px</code></td><td>float (px)</td><td><code>rendering.dash_period_px</code></td><td>период пунктира: штрих + промежуток</td></tr>
 <tr><td><code>stroke_linecap</code></td><td>enum</td><td><code>rendering.line_cap</code></td><td><code>butt</code>/<code>round</code>/<code>square</code></td></tr>
 </tbody>
 </table>
@@ -306,7 +309,8 @@
 <tr><td><code>stroke_width_px</code></td><td>float (px)</td><td><code>defaults.&lt;type&gt;.stroke_width_px</code></td><td>все</td></tr>
 <tr><td><code>stroke_opacity</code></td><td>0..1</td><td>1</td><td>все</td></tr>
 <tr><td><code>stroke_linecap</code></td><td>enum</td><td><code>rendering.line_cap</code></td><td>все</td></tr>
-<tr><td><code>stroke_dash_ratio</code></td><td>0..1</td><td>None</td><td>только <code>Conic(CIRCLE)</code></td></tr>
+<tr><td><code>stroke_dash_ratio</code></td><td>0..1</td><td>None</td><td>все</td></tr>
+<tr><td><code>stroke_dash_period_px</code></td><td>float (px)</td><td><code>rendering.dash_period_px</code></td><td>все</td></tr>
 <tr><td><code>fill</code></td><td>hex</td><td><code>style.background</code></td><td>только <code>Conic(CIRCLE|ELLIPSE)</code></td></tr>
 <tr><td><code>fill_opacity</code></td><td>0..1</td><td>1</td><td>только <code>Conic(CIRCLE|ELLIPSE)</code></td></tr>
 <tr><td><code>z_index</code></td><td>float</td><td><code>Z_LINE = 4</code></td><td>все</td></tr>

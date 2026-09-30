@@ -28,6 +28,11 @@ scene.exportPDF("figure.pdf", dpi=150)   # smaller physical page (denser)
   pixel maps to `72/dpi` pt. A 640×480 px canvas → 480×360 pt (≈ 6.67"×5") at 96
   dpi. The figure stays vector regardless — in LaTeX you rescale with
   `\includegraphics[width=\linewidth]{figure.pdf}`.
+- **Dashed lines stay editable.** A dashed line is written as one path with a
+  dash pattern — `stroke-dasharray` in SVG, a native dash in PDF and EPS —
+  not as a row of separate pieces. The period is set in style pixels
+  (`stroke_dash_period_px`, or `rendering.dash_period_px`, default 10;
+  `stroke_dash_ratio` is the dash's share of it).
 - **Text is outlines, not selectable text** (labels are rendered as Bézier
   curves, same as the SVG path). Fine for print; not searchable.
 - **EPS has no transparency.** Semi-transparent fills/strokes are flattened
@@ -168,7 +173,8 @@ python -m animageo scene.ggb --format jsxgraph -o board.html
 - **Element styles** (stroke/fill colour, width, opacity, dash, point
   size/shape, label colour, angle arc radius, and a deliberate label offset)
   are read through the same style resolver the SVG/PNG renderer uses, so a GGB
-  import, style overlay or explicit `elem.style` write all carry over.
+  import, style overlay or explicit `elem.style` write all carry over. A dash
+  maps to the nearest JSXGraph dash by its length in pixels.
 
 ### Declarative spec + framework-agnostic web runtime
 

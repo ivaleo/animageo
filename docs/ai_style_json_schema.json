@@ -207,6 +207,19 @@
               "$ref": "#/$defs/ref"
             }
           ]
+        },
+        "fast_value_labels": {
+          "type": "boolean"
+        },
+        "label_contrast": {
+          "enum": ["off", "auto"]
+        },
+        "label_contrast_threshold": {
+          "type": "number",
+          "minimum": 0
+        },
+        "color_interpolation": {
+          "enum": ["oklab", "srgb"]
         }
       }
     },

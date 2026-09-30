@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - The `*` may be left out of a formula: `f(x) = 2x + 1`, `k x`, `2(x + 1)`,
-  `(x + 1)(x − 1)`, `x (x + 1)` and `2x(A)` (twice A's x-coordinate) are read
+  `(x + 1)(x - 1)`, `x (x + 1)` and `2x(A)` (twice A's x-coordinate) are read
   as products, as GeoGebra reads them. `x(A)` with no space before the bracket
   is still A's x-coordinate, and `k(x + 1)` with a number `k` is a product.
 - A number or slider named like a mathematical constant or function — `E`, `N`,
@@ -48,15 +48,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - A graph whose formula reads point coordinates is drawn and follows the points:
-  `g(t) = y(A) (t − x(B)) (t − x(C)) / … + …` (a Lagrange polynomial through
+  `g(t) = y(A) (t - x(B)) (t - x(C)) / … + …` (a Lagrange polynomial through
   A, B, C) or `f(x) = x(A) + x` is rebuilt whenever a point moves. Such graphs
   used to vanish from the preview and every export. `x(v)`, `y(v)` of a vector
   work the same way, and so do conic, line and implicit equations
-  (`(x − x(A))² + (y − y(A))² = 4` follows `A`).
+  (`(x - x(A))^2 + (y - y(A))^2 = 4` follows `A`).
 - A function's variable is the one named on the left: `g(t) = t²` is the graph of
   `t²`; it used to be read as a function of `x` with an unknown `t` and was not
   drawn.
-- A function that calls another one, `f(t) = g(t) + k (t − x(A))`, is built and
+- A function that calls another one, `f(t) = g(t) + k (t - x(A))`, is built and
   follows `g`; it used to be dropped (or frozen at the load-time values).
 - A function or implicit curve that cannot be read is reported in
   `command_diagnostics` (`expression_parse_error`) instead of only in the log.

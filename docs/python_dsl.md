@@ -17,6 +17,7 @@ Python code works as DSL code, and factory calls (`Point`, `Midpoint`,
 - [Quick start](#quick-start)
 - [Syntax](#syntax)
 - [Factories](#factories)
+- [Formulas](#formulas)
 - [Element naming](#element-naming)
 - [Field access](#field-access)
 - [Styles](#styles)
@@ -108,10 +109,75 @@ Key factories:
 
 | Constructors | Commands |
 |---|---|
-| `Point`, `Line`, `Segment`, `Ray`, `Circle`, `Arc`, `CircleSector`, `Angle`, `Polygon`, `Vector`, `Conic`, `Function`, `ImplicitCurve` | `Midpoint`, `Distance`, `Length`, `Radius`, `Center`, `Vertex`, `Focus`, `Intersect`, `AreCollinear`, `Perpendicular`, `Parallel`, `Tangent`, `Polar`, … (99 command factories in total, dispatching to 433 type-specialized signatures in `COMMAND_REGISTRY` — one per argument-type combination) |
+| `Point`, `Line`, `Segment`, `Ray`, `Circle`, `Arc`, `CircleSector`, `Angle`, `Polygon`, `Vector`, `Conic`, `Function`, `ImplicitCurve` | `Midpoint`, `Distance`, `Length`, `Radius`, `Center`, `Vertex`, `Focus`, `Intersect`, `AreCollinear`, `PerpendicularLine`, `Tangent`, `Polar`, `Rotate`, `Dilate`, … (100 command factories in total, dispatching to 476 type-specialized signatures in `COMMAND_REGISTRY` — one per argument-type combination) |
 
 An unknown name raises a `NameError` — a clean failure, never a
 silent no-op.
+
+## Formulas
+
+`Function`, `Conic` and `ImplicitCurve` take an equation as a string. A
+line `name(var) = expr` is shorthand for `Function`:
+
+```python
+f = Function("y = x^2 + 1")
+c = Conic("x^2 + y^2 = 4")
+h = ImplicitCurve("x^3 + y^3 = 3x y")
+f(x) = x^2 + 1         # f = Function("y = x^2 + 1")
+g(t) = 2t + 1          # a function of t
+```
+
+A formula may refer to objects of the construction and then follows
+them: numbers and sliders, measures, angles, the
+coordinates of points and vectors (`x(A)`, `y(A)`), and other
+functions (`g(x)`):
+
+```python
+a = 2
+A = Point(1, 3)
+p(x) = a x^2                               # follows a
+q = Function("y = x(A) + x")               # follows A
+g(x) = x^2
+r(x) = g(x - 2) + 1                        # follows g
+k = Conic("(x - x(A))^2 + (y - y(A))^2 = 4")
+```
+
+Such a formula is stored as a command with the names it refers to
+appended — `Function("y = a x^2", a)` — and is re-read with their
+current values on every rebuild. The objects must exist before the
+formula is written; a name defined from itself
+(`f = Function("y = f(x) + 1")` for an existing `f`,
+`A = Midpoint(A, B)`) raises a dependency-cycle `ValueError`.
+
+Formula syntax:
+
+- `^` (or `**`) is a power. The `*` may be left out: `2x`, `k x`,
+  `2(x + 1)`, `(x + 1)(x - 1)`, `x (x + 1)`.
+- `x(A)` with no space before the bracket is A's x-coordinate, so
+  `x(x + 1)` is not a product — write `x (x + 1)` or `x*(x + 1)`.
+  `2x(A)` is twice A's x-coordinate.
+- A number written before a bracket is a product: `k(x + 1)` is
+  `k*(x + 1)`, unless the number is named like a math function —
+  `gamma(x + 1)` is Γ(x + 1).
+- A formula calls only math functions: `sin`, `cos`, `tan`, `asin`,
+  `acos`, `atan`, `sinh`, `cosh`, `tanh`, `exp`, `log`, `ln`, `sqrt`, `cbrt`,
+  `root`, `abs`, `sign`, `floor`, `ceiling`, `frac`, `min`, `max`, `gamma`,
+  `erf`, … — functions and implicit curves also take GeoGebra's spellings
+  (`arcsin`, `sgn`, `ceil`, `lg`, `ld`) and `If(cond, a, b)`. Any other
+  name a formula calls is an object of the construction.
+- `pi` is π. `e` (and `ℯ`) is Euler's number in functions and implicit
+  curves; in a conic equation `e` is an ordinary name and `ℯ` is not
+  accepted. The character `π` is not recognised anywhere — write `pi`.
+- A function that calls another one with a restricted domain is
+  undefined wherever that one is.
+- A conic equation has to be a polynomial as written:
+  `(x^2 + x)/x = y` is not a conic.
+- Formula text is limited to 4000 characters, and a formula that asks
+  for a huge exact computation (`7^(9^9)`, `(10^7)!`) is refused.
+
+A formula that cannot be read, or that names something the
+construction does not have, leaves its element undefined and logs a
+warning.
 
 ## Element naming
 
@@ -263,9 +329,14 @@ Silently dropped at transform time:
 - Styles as attributes: `A.style.stroke = '#f00'`
 - f-strings, tuple unpacking (`a, b = Intersect(c, l)`), arithmetic on
   proxies (`A - B` → a `Sub` command)
+- Function notation `f(x) = x^2 + 1`, `g(t) = 2t + 1` (see
+  [Formulas](#formulas))
 - Forward references for lowercase names: `B = Rotate(R, x*deg, Q)`
   works even if `x` is not defined yet (it will be supplied later by
-  `scene.addVar('x', 115)`)
+  `scene.addVar('x', 115)`). Formula strings are the exception: the
+  names in them must exist when the formula is written
+- A name defined from itself (`A = Midpoint(A, B)`) raises a
+  dependency-cycle `ValueError` instead of hanging
 
 ## Current limitations
 

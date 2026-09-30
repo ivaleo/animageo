@@ -70,7 +70,7 @@ Fields:
 | `stats` | Count of exported elements per canonical type |
 | `elements` | Compact element records |
 | `groups` | Quick name lists per type |
-| `warnings` | `Construction.command_diagnostics`, when the parser/rebuild found unsupported commands |
+| `warnings` | `Construction.command_diagnostics`, when the parser/rebuild found problems: unsupported commands, formulas that cannot be read (`expression_parse_error`), objects that cannot follow the numbers they mention (`parametric_dependency_frozen`) |
 | `vars` | Numeric/boolean/angle variables, if any |
 | `truncated` | Truncation metadata when `max_elements` is used |
 

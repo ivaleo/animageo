@@ -265,6 +265,10 @@
 | `points_display` | `auto` / `only_labels` / `only_points` | глобальный режим отображения точек и подписей |
 | `label_anchor` | `TL`..`BR` | якорь подписи по умолчанию для всей сцены |
 | `label_value_precision` | `int` | точность числовых подписей по умолчанию для всей сцены |
+| `fast_value_labels` | `bool`, по умолчанию `true` | анимированные подписи со значением используют кэшированные глифы цифр вместо LaTeX на каждом кадре |
+| `label_contrast` | `off` / `auto` | `auto` перекрашивает подписи на заливках близкой яркости |
+| `label_contrast_threshold` | `float`, по умолчанию 0.35 | разница яркости для `label_contrast: auto` |
+| `color_interpolation` | `oklab` / `srgb` | цветовое пространство анимации цветов в дорожках стиля ключевых кадров |
 
 `reference`:
 
@@ -282,7 +286,7 @@
 | `colors` | `{"#hex [opacity]": "пресет-или-#hex [opacity]"}` | переназначение палитры цветов GGB |
 | `point_size` | `{сырой_или_стилевой_размер: значение}` | переназначение размера точки в `size_px` |
 | `line_width` | `{сырая_или_стилевая_толщина: значение}` | переназначение толщины линии в `stroke_width_px` |
-| `policy` | `dict` | поля ImportPolicy: `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_dash_period_px`, `stroke_linecap` |
+| `policy` | `dict` | поля ImportPolicy: `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_dash_period_px`, `stroke_linecap` |
 
 ### 3.1. Геометрические размеры
 

@@ -80,10 +80,12 @@ Unit contract: every `*_px` key in `elem.style`, `elem.ggb_style`, and `defaults
 
 | Module | Role |
 |--------|------|
-| `animageo.py` | Scene, animations, `CreateMObject` (dispatcher + per-type `_render_<type>` renderers + `_build_render_ctx` + `_renderer_for` + `_make_label`), `loadGGB`, ImportPolicy wiring |
+| `animageo.py` | Scene, animations, `CreateMObject` (dispatcher + per-type `_render_<type>` renderers + `_build_render_ctx` + `_renderer_for` + `_make_label`), `loadGGB`, ImportPolicy wiring, `DashCamera` (the video camera that strokes dashed paths) |
 | `__main__.py` | CLI entry point (`python -m animageo file.ggb -o out.svg`): static vector track (svg/pdf/eps/tikz) and manim render track (png/gif/mp4/webm/mov, `--keyframes` for animation) |
 | `ui.py` | TeX templates, `create_label` (9-point anchors), `ValueLabel` (DecimalNumber-backed fast value labels) + `prewarm_decimal_glyphs`, `install_cyrillic_tex_template`, NumberedFrame, CustomArrowTip |
 | `labels.py` | Final label-text resolution: `resolve_label_text`, `resolve_label_spec` (structured `LabelSpec` for the fast value-label path), label modes (name/value/name+value) |
+| `label_anchor.py` | Where GeoGebra puts a label, per element type (manim-free): `ggb_label_anchor` (the applet's base point for points, segments, vectors, rays, polygons, circles, ellipses, arcs and sectors, to which the stored `labelOffset` is added) and `nearest_point` (re-attaches an applet-placed label to the nearest point of its element, so it stays next to the same part at any export scale) |
+| `dash.py` | Dash patterns as a stroke property (manim-free): `DashPattern`, `set_dash` / `get_dash`, `element_dash_px` (dash and gap in style pixels from `stroke_dash_ratio` and `stroke_dash_period_px`, which falls back to `rendering.dash_period_px`, default 10), `apply_cairo_dash`. A dashed line is one path with `stroke-dasharray`, not a row of pieces |
 | `constants.py` | Z-index tiers (Z_FILL, Z_LINE, Z_POINT, Z_LABEL) and scaling coefficients |
 | `keyframes.py` | Keyframe animation: JSON parsing, interpolators, easing, `LabelOffsetInterpolator` + `attach_label_layouts` |
 | `label_placement.py` | Auto label placement: greedy solver + 8 candidates, `compute_label_layout` (pure), `apply_label_layout` (impure), `compute_angle_label_center`, `compute_effective_arc_size_px` (angle_radius), bbox LRU cache, EMA+hysteresis helpers |
@@ -107,17 +109,20 @@ Unit contract: every `*_px` key in `elem.style`, `elem.ggb_style`, and `defaults
 | `geo/construction.py` | Dependency graph, topological sort (Kahn), rebuild, apply, `update_tparam`, `rename`, `add_and_build` |
 | `geo/lib_elements.py` | Point, Line, Segment, Ray, Angle, Polygon, Circle, Arc, CircleSector, Vector, LocusCurve, Text (+ re-export of Conic/Function/ImplicitCurve); human-readable fields (`.coords`, `.center/.radius`, `.normal/.offset/.direction`, `.vertex/.size/.side1/.side2`, `.endpoints`, `.vertices`, …); `Element.__getattr__` forwards to `.data` |
 | `geo/lib_conic.py` | `Conic` (3×3 matrix `.matrix`), invariant-based classification, `as_ellipse/as_parabola/as_hyperbola/as_lines/as_point`, `Conic.from_string(equation)` |
-| `geo/lib_function.py` | `Function` — explicit `y = f(x)` (`.expr`, `.var`, `.source`), sympy parsing, `If[...]` → `Piecewise`, chained `a ≤ x ≤ b`, `natural_singularities`, lambdify |
+| `geo/lib_function.py` | `Function` — explicit `y = f(x)` (`.expr`, `.var`, `.source`), sympy parsing, `If[...]` → `Piecewise`, chained `a ≤ x ≤ b`, `natural_singularities`, lambdify. The variable is the one named on the left (`g(t) = t²`) |
 | `geo/lib_implicit.py` | `ImplicitCurve` — arbitrary `F(x, y) = 0` (`.expr`, `.var_x/.var_y`, `.source`), sympy parsing, two-argument lambdify |
 | `geo/curve_sampling.py` | Viewport-aware adaptive sampler + Liang–Barsky clipping; analytic t-ranges for parabola/hyperbola; marching squares for implicit curves |
-| `geo/lib_commands.py` | Geometric operations (400+ dispatchable entries in `COMMAND_REGISTRY`): intersections for all pairs (including numeric F/I), Conic commands (Center/Focus/Vertex/Axes/Directrix/Polar/Tangent), Ellipse/Hyperbola/Parabola constructors, `function_T/conic_T/implicit_curve_T` for the string DSL |
+| `geo/lib_commands.py` | Geometric operations (476 dispatchable entries in `COMMAND_REGISTRY`): intersections for all pairs (including numeric F/I), Conic commands (Center/Focus/Vertex/Axes/Directrix/Polar/Tangent), Ellipse/Hyperbola/Parabola constructors, `Point(path, t)` with GeoGebra's path parameter, `function_T/conic_T/implicit_curve_T` for formula strings and `function_Tn/conic_Tn/implicit_curve_Tn/line_Tn` for formulas that refer to construction objects |
+| `geo/formula_params.py` | What a formula depends on: `formula_parameters` (the names it refers to, sorted — the input order of a `*_Tn` command), `formula_objects` / `formula_bindings` (construction objects a formula can use: numbers, measures, angles, booleans, points, vectors, functions), `parametric_inputs`, `bind_parameters`, `mentioned_numbers` / `mentioned_objects` |
+| `geo/formula_refs.py` | References other than numbers: `coordinate_calls` (`x(A)` / `y(A)` → coordinate calls), `reference_names`, `unbound_references`, `substitute_references` (puts in current coordinates and inlines called functions, undefined outside their domain; a number before a bracket is a product; inlining is capped at `INLINE_LIMIT` nodes) |
+| `geo/safe_sympify.py` | `safe_sympify` — the only way formula text reaches sympy: no Python builtins, refuses dunders/quotes/attribute access, inserts the `*` a formula may leave out, calls only math functions — `MATH_FUNCTIONS` and the names a parser adds, such as `arcsin` (other called names are construction objects), refuses huge exact computations, limits text to `MAX_LENGTH` (4000) characters |
 | `geo/lib_vars.py` | `Measure(value, dimension)`, `AngleSize`, `Boolean(value)` |
 | `geo/tparam.py` | Point ↔ curve-parameter (tparam) math for every path type; backend of `Construction.tparam_from_coords` and the keyframe system |
 | `geo/utils.py` | is_number, is_angle_degrees, is_boolean |
-| `parsers/ggb_parser.py` | XML extraction from .ggb, construction parsing, `ggb_raw` population; `<expression type="conic/line/function/implicitpoly">` with an `=` sign; expressions are routed through `dsl.run` internally |
+| `parsers/ggb_parser.py` | XML extraction from .ggb, construction parsing, `ggb_raw` population; `<expression type="conic/line/function/implicitpoly">` with an `=` sign; a formula that refers to construction objects becomes a `Function`/`Conic`/`Line`/`ImplicitCurve` command (`_add_formula_command`); one that cannot follow them is kept as a snapshot (`parametric_dependency_frozen`), one that cannot be read is reported as `expression_parse_error` in `command_diagnostics`; expressions are routed through `dsl.run` internally |
 | `parsers/ggb_macro.py` | Custom-tool macro expansion: parses `geogebra_macro.xml` definitions and inlines macro calls into primitive commands before parsing (recursive expansion supported) |
 | `parsers/ggb_generator.py` | Generates .ggb archives from a Construction (GeoGebra XML serialisation + ZIP packaging) |
-| `parsers/dsl/` | Python DSL (exec engine): `transform.py` (AST rewriter, loop scoping, name shaping, forbid list), `registrar.py` (`__reg__`/`__reg_loop__`/`__reg_tuple__` + ContextVar), `namespace.py` (FactoryDict with `__missing__` for 99 auto-discovered command factories backed by 433 dispatch signatures + math + `style/hide/show` helpers + forward refs for `addVar` variables), `proxy.py` (ElementProxy with `__getattr__` into data plus `+/-/*//`/`abs` arithmetic), `sugar.py` (`f(x) = expr` pre-pass), `stub_gen.py` (`<scene>_stubs.pyi` after `loadGGB`). Entry points: `dsl.run(constr, code)`, `with dsl.scope(c):`, `scene.putCode(code)`, `scene.loadCode(path)`. Stubs: `namespace.pyi`, `proxy.pyi`. |
+| `parsers/dsl/` | Python DSL (exec engine): `transform.py` (AST rewriter, loop scoping, name shaping, forbid list), `registrar.py` (`__reg__`/`__reg_loop__`/`__reg_tuple__` + ContextVar), `namespace.py` (FactoryDict with `__missing__` for 100 auto-discovered command factories backed by 476 dispatch signatures + math + `style/hide/show` helpers + forward refs for `addVar` variables; `Function`/`Conic`/`ImplicitCurve` get the names their formula refers to appended), `proxy.py` (ElementProxy with `__getattr__` into data plus `+/-/*//`/`abs` arithmetic), `sugar.py` (`f(x) = expr` / `g(t) = expr` pre-pass), `stub_gen.py` (`<scene>_stubs.pyi` after `loadGGB`). Entry points: `dsl.run(constr, code)`, `with dsl.scope(c):`, `scene.putCode(code)`, `scene.loadCode(path)`. Stubs: `namespace.pyi`, `proxy.pyi`. |
 | `dsl.py` + `dsl.pyi` | Super-module — `from animageo.dsl import *` gives all factories and types in the IDE |
 | `parsers/svg_parser.py` | Cairo rendering of manim objects to SVG |
 | `exporters/tikz/` | Semantic TikZ export (`scene.exportTikZ`): walks drawable elements in z-order and emits native TikZ through the same style resolver as the renderer |
@@ -138,6 +143,8 @@ Level 2:  h = Segment(C, M)
 ```
 
 When an element changes, only its dependents are rebuilt (lazy rebuild).
+A command that depends on its own output (`A = Midpoint(A, B)` in the DSL)
+raises a dependency-cycle `ValueError`.
 
 ## Label placement
 
@@ -192,6 +199,7 @@ Type shortcuts:
 | `a` | Angle |
 | `v` | Vector |
 | `P` | Polygon |
+| `L` | LocusCurve |
 | `i` | int / float |
 | `m` | Measure |
 | `A` | AngleSize |
@@ -209,6 +217,13 @@ Examples: `midpoint_pp`, `intersect_lc`, `rotate_pAp`, `distance_pp`,
 `conic_ppppp` (conic through 5 points), `function_T` (Function("y = x²")).
 
 The dispatcher (`Command.func()`) looks the name up in `COMMAND_REGISTRY`, populated from the module's functions at import time.
+
+Formula commands are variadic: `Function`, `Conic`, `ImplicitCurve` and
+`Line` with the formula text followed by any number of `i m A a b p v F`
+inputs dispatch to one `<base>_Tn` implementation (`function_Tn`,
+`conic_Tn`, `implicit_curve_Tn`, `line_Tn`). The inputs are the names the
+formula refers to, in the order `formula_params.formula_parameters`
+returns, so the GGB parser, the DSL and the implementation cannot drift.
 
 ## Higher-order curves: Conic, Function, ImplicitCurve
 
@@ -242,6 +257,25 @@ Three classes covering everything that does not reduce to a line/circle/polygon:
 │   Two-argument lambdify; NaN-safe evaluation.                     │
 └───────────────────────────────────────────────────────────────────┘
 ```
+
+### Formulas that refer to the construction
+
+Formula text from a `.ggb` file or the DSL is parsed only through
+`safe_sympify`: a restricted namespace without Python builtins, implicit
+products (`2x`, `k x`, `(x + 1)(x - 1)`), calls limited to math functions,
+guards against huge exact computations, and a 4000-character limit.
+
+A formula may refer to construction objects: numbers (sliders, measures,
+angles, booleans), point and vector coordinates `x(A)`, `y(A)`, and other
+functions (`f(t) = g(t) + k`). `formula_parameters` lists these names; the
+GGB parser and the DSL factories append them to the command —
+`Function("y = a*x^2", a)` — and `*_Tn` re-reads the formula on every
+rebuild through `substitute_references` (coordinates are put in, called
+functions are inlined). So the curve follows the objects in the preview and
+in every export. A conic or line whose equation does not reproduce the
+curve GeoGebra saved keeps the saved curve, and the parser records
+`parametric_dependency_frozen`; text that cannot be read is recorded as
+`expression_parse_error`.
 
 ## Curve rendering and viewport clipping
 

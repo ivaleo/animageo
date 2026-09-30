@@ -300,11 +300,10 @@ S().construct()</code></pre>
 </div>
 
 <div class="callout warn">
-<strong><code>stroke_dash_ratio</code> и <code>fill</code> работают у кривых лишь частично.</strong>
+<strong><code>fill</code> у кривых работает лишь частично.</strong>
 Только <code>Conic(CIRCLE|ELLIPSE)</code> читает <code>fill</code>/<code>fill_opacity</code>;
-<code>stroke_dash_ratio</code> — только у <code>CIRCLE</code>. Parabola, Hyperbola,
-Function и ImplicitCurve рисуются как polyline-VMobject и эти ключи
-игнорируют. См. §7.
+Parabola, Hyperbola, Function и ImplicitCurve заливку игнорируют.
+<code>stroke_dash_ratio</code> работает у всех кривых. См. §7.
 </div>
 
 <div class="callout warn">

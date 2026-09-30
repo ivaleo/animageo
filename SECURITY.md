@@ -22,8 +22,12 @@ Two entry points execute or evaluate their input by design:
 
 - **`scene.putCode()` / `scene.loadCode()`** run the DSL through Python's
   `exec` after an AST rewrite. The rewrite is not a security sandbox.
-- **`Function` / `Conic` / `ImplicitCurve` string constructors** parse
-  expressions with sympy.
+- **`Function` / `Conic` / `ImplicitCurve` string constructors** and the
+  formulas stored in a `.ggb` file are parsed with sympy. The text goes
+  through a restricted namespace (no attribute access, quotes or dunders),
+  is checked as an expression AST and evaluated without Python builtins, and
+  obviously huge computations are refused, but
+  the evaluation is still exact sympy, so keep a time limit on it.
 
 Do not pass code, expressions, or style JSON from untrusted sources into a
 process that holds anything you care about. If you build a service around

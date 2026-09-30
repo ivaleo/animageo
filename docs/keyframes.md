@@ -93,9 +93,38 @@ values snap. Discrete keys such as `label_visible`, `label_anchor`,
 `point_shape`, `tick_count`, `label_text`, and `z_index` switch halfway through
 the interval.
 
-When `overlay.label_placement.keyframe_snapshots=true`, the label-placement
-pre-pass applies each keyframe's styles before measuring labels, so animated
-font sizes, arc sizes, text, and visibility affect label layout.
+Animatable style keys:
+
+- numbers (interpolated): `stroke_opacity`, `fill_opacity`, `stroke_width_px`,
+  `stroke_dash_period_px`, `size_px`, `font_size_px`, `arc_size_px`,
+  `arc_shift_px`, `right_angle_size_px`, `tick_length_px`, `tick_width_px`,
+  `tick_shift_px`, `arrow_length_px`, `arrow_width_px`,
+  `label_radial_offset_px`
+- colors (interpolated): `stroke`, `fill`, `label_color`
+- `label_offset_px`: `[x, y]`, interpolated per component
+- `stroke_dash_ratio`: interpolated between numbers; switches when one side is
+  `None` (solid)
+- `label_text`: swaps halfway through the interval, never blended
+- switched halfway: `point_shape`, `stroke_linecap`, `tick_count`,
+  `tick_style`, `angle_range`, `right_angle_marker`, `label_anchor`,
+  `label_visible`, `label_mode`, `z_index`, `z_index_fill`
+
+Any other key raises an error.
+
+### Labels during keyframes
+
+Label layout snapshots run only when both `overlay.label_placement.enabled`
+and `overlay.label_placement.keyframe_snapshots` are `true`. The pre-pass
+applies each keyframe's styles before measuring labels, so animated font sizes,
+arc sizes, text, and visibility affect label layout.
+
+With snapshots on, they own every label position: a `label_offset_px` style
+track is ignored, so it does not fight the snapshot interpolation. A label that
+appears during an interval (its element or the label itself hidden at the
+start) is already at its auto-placed position. With placement off, labels keep
+their imported or hand-set offsets and snapshots do not run.
+`apply_keyframes_at()` places labels from the same snapshots (it computes only
+the two keyframes around the requested time).
 
 ## Visibility and effects
 
@@ -114,7 +143,8 @@ scene.play_keyframes({"version": 2, "keyframes": [
 Entrance effects: `fade`, `none`, `create`, `grow`, `write`. Exit effects:
 `fade`, `none`, `uncreate`, `shrink`. Effects run inside the keyframe interval
 at the requested duration; v2 does not add the legacy v1 0.4 second show/hide
-delay.
+delay. `grow` and `shrink` scale the element's geometry about its own centre;
+the label stays in place and fades instead of scaling.
 
 ## Construction reveal
 

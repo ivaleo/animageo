@@ -265,6 +265,10 @@ presets, but it is not a drawable element type.
 | `points_display` | `auto` / `only_labels` / `only_points` | global point+label mode |
 | `label_anchor` | `TL`..`BR` | scene-wide default label anchor |
 | `label_value_precision` | `int` | scene-wide default precision of value labels |
+| `fast_value_labels` | `bool`, default `true` | animated value labels use cached digit glyphs instead of LaTeX per frame |
+| `label_contrast` | `off` / `auto` | `auto` recolours labels on fills of similar luminance |
+| `label_contrast_threshold` | `float`, default 0.35 | luminance gap for `label_contrast: auto` |
+| `color_interpolation` | `oklab` / `srgb` | color space for animated colors in keyframe style tracks |
 
 `reference`:
 
@@ -282,7 +286,7 @@ presets, but it is not a drawable element type.
 | `colors` | `{"#hex [opacity]": "preset-or-#hex [opacity]"}` | palette remap of GGB colors |
 | `point_size` | `{raw_or_style_size: value}` | remap of point size into `size_px` |
 | `line_width` | `{raw_or_style_width: value}` | remap of line thickness into `stroke_width_px` |
-| `policy` | `dict` | ImportPolicy fields: `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_dash_period_px`, `stroke_linecap` |
+| `policy` | `dict` | ImportPolicy fields: `size_px`, `stroke_width_px`, `arc_size_px`, `label_offset_px`, `label_color`, `label_visible`, `visible`, `label_text`, `label_mode`, `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator`, `angle_range`, `tick_count`, `font_size_px`, `stroke`, `fill`, `fill_opacity`, `point_shape`, `stroke_opacity`, `stroke_dash_ratio`, `stroke_dash_period_px`, `stroke_linecap` |
 
 ### 3.1. Geometric sizes
 

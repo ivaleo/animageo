@@ -81,6 +81,34 @@ geogebra_thumbnail.png ← превью для файлового менедже
 <p>AnimaGeo читает всё необходимое и <em>ничего не пишет</em> в .ggb — это
 read-only импорт.</p>
 
+<h3>Формулы и числа при импорте</h3>
+
+<p>Формулы функций, коник, прямых и неявных кривых разбираются безопасным
+парсером (текст из файла проверяется как выражение и вычисляется без встроенных функций Python) и <em>следуют за числами
+построения</em>: слайдерами, измерениями (<code>Radius</code>, <code>Distance</code>,
+<code>Area</code>, <code>Angle</code>), флажками, координатами точек
+(<code>x(A)</code>, <code>y(A)</code>) и другими функциями. При изменении числа
+кривая перестраивается, поэтому кадр и видео двигаются вместе с аплетом.
+Коника или прямая сохраняют кривую из файла, если их уравнение её не воспроизводит.</p>
+
+<ul>
+<li><code>Point(path, t)</code> с числом <code>t</code> строится с параметром GeoGebra: <code>t</code> пробегает
+<code>[0, 1]</code> (с отсечением); на отрезке — доля от A к B, на окружности и
+эллипсе — угол <code>−π … π</code>, на графике функции — x-диапазон вида из файла.</li>
+<li>Скобки в координатах точки — <code>(0, 1/(4a))</code> — и векторные выражения во входах команд
+(<code>Translate(P, a*u)</code>) строятся и следуют за числами.</li>
+<li><code>Dilate</code>, <code>Translate</code> и <code>Reflect</code> относительно точки работают
+для функций, коник и неявных кривых; <code>Rotate</code> и <code>Reflect</code> относительно
+прямой — только для коник.</li>
+<li>Имена с суффиксом <code>°</code> (например <code>K°</code>) нормализуются; как числовая переменная
+в <code>Rotate</code> <code>K°</code> читается как угол.</li>
+</ul>
+
+<p>Объект, который не может следовать за числами, не «замерзает» молча, а
+попадает в <code>scene.geo.command_diagnostics</code> с причиной
+<code>parametric_dependency_frozen</code>; формула, которую не удалось прочитать, —
+с <code>expression_parse_error</code>.</p>
+
 <h2 id="loadggb">loadGGB</h2>
 
 <p>Самый короткий путь — загрузить файл и экспортировать:</p>
@@ -103,7 +131,7 @@ Scene().construct()</code></pre>
         px_size = None,            # [width, height] в пикселях
         import_policy = None,      # см. ImportPolicy ниже
         debug = False,             # подробный лог парсинга
-        generate_stubs = True,     # записать <basename>_stubs.pyi для IDE
+        generate_stubs = True,     # записать &lt;basename&gt;_stubs.pyi для IDE
         strict = False)            # unsupported-команды: diagnostics или ошибка</code></pre>
 
 <p><code>loadGGB</code> делает четыре вещи:</p>
@@ -185,7 +213,7 @@ GeoGebra-файла, — так читатель может открыть ег�
 <table>
 <thead><tr><th>Словарь</th><th>Когда заполняется</th><th>Что хранит</th></tr></thead>
 <tbody>
-<tr><td><code>elem.ggb_raw</code></td><td>в парсере, из XML</td><td>исходные значения: <code>point_size=5</code>, <code>line_thickness=3</code>, <code>arc_size=30</code>, <code>label_offset_px=(12, −14)</code>, <code>obj_color.hex='#1565c0'</code>, <code>obj_color.opacity=0.1</code></td></tr>
+<tr><td><code>elem.ggb_raw</code></td><td>в парсере, из XML</td><td>исходные значения: <code>point_size=5</code>, <code>line_thickness=3</code>, <code>arc_size=30</code>, <code>label_offset_px=(12, -14)</code>, <code>obj_color.hex='#1565c0'</code>, <code>obj_color.opacity=0.1</code></td></tr>
 <tr><td><code>elem.ggb_style</code></td><td>парсер + <code>applyStyle</code>/ImportPolicy</td><td>адаптированные GGB visual keys: <code>size_px</code>, <code>stroke_width_px</code>, <code>arc_size_px</code>, <code>label_offset_px</code>, <code>stroke</code>, <code>point_shape</code></td></tr>
 <tr><td><code>elem.style</code></td><td>DSL/API</td><td>явные per-element overrides, которые выигрывают у overlay, GGB import и defaults</td></tr>
 </tbody>

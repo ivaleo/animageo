@@ -131,6 +131,9 @@ manim renderer uses (GGB import → overlay → explicit `elem.style`):
 
 Z-order, colours (interned into `\definecolor`), opacities, dash patterns, line
 caps, tick decorations and angle-arc auto-sizing all follow the active style.
+A dash is the same as in the picture: its length comes from the style's dash
+period (`stroke_dash_period_px` / `rendering.dash_period_px`), not a fixed
+pattern.
 
 ## Notes & limitations
 

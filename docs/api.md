@@ -43,8 +43,8 @@ A formula that refers to construction objects is otherwise imported as a live
 dependency: `f(x) = a x²`, `p: y = a x²`, `g: y = a x + 1` and implicit curves
 are rebuilt from their formula with the current values whenever a number
 changes. The same holds for point coordinates — `x(A)`, `y(A)` (and `x(v)`,
-`y(v)` of a vector) — and for other functions: `g(t) = y(A) (t − x(B)) + …`
-follows `A` and `B`, `f(t) = g(t) + k (t − x(A))` follows `g`, `k` and `A`.
+`y(v)` of a vector) — and for other functions: `g(t) = y(A) (t - x(B)) + …`
+follows `A` and `B`, `f(t) = g(t) + k (t - x(A))` follows `g`, `k` and `A`.
 The function's variable is the one named on the left (`g(t) = t²`); `x(` right
 before a bracket is always a coordinate, never the variable.
 
@@ -520,6 +520,14 @@ Supported expression forms:
 - `abs`, `sqrt`, `log`, `exp`, `ln`
 - `If[cond, then]` / `If[cond, then, else]` (recursive, with support for
   Unicode `≤`, `≥`, `≠` and chains `-1 ≤ x ≤ 1`)
+- implicit products: `2x + 1`, `k x`, `(x + 1)(x - 1)`
+- names of the construction, bound through `parameters=`: numbers,
+  coordinates `x(A)`, `y(A)` of a point given as `(x, y)`, other functions
+  (`g(x)`, given as a `Function`) — for example
+  `Function.from_string('y = x(A) x', parameters={'A': (1, 2)})`
+
+The full formula syntax (allowed math functions, `pi`/`e`, limits) is in
+[docs/python_dsl.md](python_dsl.md#formulas).
 
 ### ImplicitCurve
 
@@ -552,7 +560,7 @@ viewport), O(grid_n²) work.
 
 Full guide: [docs/python_dsl.md](python_dsl.md). Below is a short summary.
 
-Exec-based engine. Any valid Python code works — loops, conditionals, functions, comprehensions, kwargs, tuple unpacking are all supported. The current namespace exposes 99 auto-discovered command factories backed by 433 dispatch signatures from `lib_commands.py`.
+Exec-based engine. Any valid Python code works — loops, conditionals, functions, comprehensions, kwargs, tuple unpacking are all supported. The current namespace exposes 100 auto-discovered command factories backed by 476 dispatch signatures from `lib_commands.py`.
 
 ```python
 # Points and basic constructions
