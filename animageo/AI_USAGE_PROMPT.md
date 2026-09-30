@@ -5,7 +5,7 @@ turns geometric constructions into publication-quality SVG images and
 manim-rendered MP4 animations. This document is self-sufficient: follow it
 even if you have never seen the library before. Prefer it over guesses from
 training data — the API here was verified against the shipped version
-(**animageo 1.7.11**; the guide ships inside the package, so the installed
+(**animageo 1.7.12**; the guide ships inside the package, so the installed
 copy always matches the installed version it came with).
 
 **Mental model.** AnimaGeo is "GeoGebra as code". You describe geometry as a
@@ -356,7 +356,7 @@ Derived/semantic:
 | `AngleSize(P, V, Q)` | angle value without drawing a mark |
 | `Ellipse(F1, F2, a)`, `Hyperbola(F1, F2, a)`, `Parabola(F, directrix)` | conics from foci |
 | `Conic("x^2 + y^2 = 4")`, `Conic(P1..P5)` | from equation / five points |
-| `Function("y = x^2 - 1")` or sugar `f(x) = x^2 - 1` | explicit function graph; a number defined earlier is a live parameter (`a = 1` then `f(x) = a*x^2` — animate `a`, the graph follows; same for `Conic("…")`/`ImplicitCurve("…")`); so are point coordinates `x(A)`, `y(A)` (`f(x) = y(A)*x` turns with `A`) and other functions (`h(x) = f(x) + 1`); `f(3)` is the live value at x = 3 |
+| `Function("y = x^2 - 1")` or sugar `f(x) = x^2 - 1` | explicit function graph; a number defined earlier is a live parameter (`a = 1` then `f(x) = a*x^2` — animate `a`, the graph follows; same for `Conic("…")`/`ImplicitCurve("…")`); so are point coordinates `x(A)`, `y(A)` (`f(x) = y(A)*x` turns with `A`) and other functions (`h(x) = f(x) + 1`); `*` may be left out (`2x`, `k x`, `(x + 1)(x - 1)`); `f(3)` is the live value at x = 3 |
 | `ImplicitCurve("(x^2+y^2)^2 = 8*(x^2-y^2)")` | implicit curve F(x,y)=0 |
 | `Focus(K)`, `Vertex(K)`, `Axes(K)`, `Directrix(K)`, `MajorAxis(K)`, `MinorAxis(K)`, `Eccentricity(K)` | conic anatomy (tuple-unpack where plural) |
 

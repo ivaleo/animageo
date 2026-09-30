@@ -26,7 +26,7 @@ from .formula_refs import (
     coordinate_calls, substitute_references, unbound_references,
 )
 from .lib_elements import Line, Point
-from .safe_sympify import safe_sympify
+from .safe_sympify import check_length, has_large_power, safe_sympify
 from ..constants import Z_LINE
 
 
@@ -47,6 +47,7 @@ def parse_conic_equation(equation: str):
     the equation moved to one side. A ``label:`` prefix is tolerated."""
     import sympy as sp
 
+    check_length(equation)
     text = re.sub(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*:\s*', '', equation)
     text = text.replace('^', '**')
     if '=' in text:
@@ -56,10 +57,38 @@ def parse_conic_equation(equation: str):
     x = sp.Symbol('x')
     y = sp.Symbol('y')
     try:
-        expr = safe_sympify(text, {'x': x, 'y': y, **refs})
+        expr = safe_sympify(text, {'x': x, 'y': y, 'pi': sp.pi, **refs})
     except (sp.SympifyError, SyntaxError, TypeError) as e:
         raise ValueError(f"could not parse conic equation {equation!r}: {e}")
     return expr, x, y
+
+
+# Terms above degree 2 may still cancel ((x + 1)^3 − x^3 …), so the
+# equation is expanded when its degree bound is at most this.
+_MAX_EXPAND_DEGREE = 6
+
+
+def _degree_bound(expr, gens):
+    """Upper bound on the total degree of ``expr`` in ``gens`` read off the
+    expression tree, without expanding; ``None`` when ``expr`` is not a
+    polynomial in them (a gen in a denominator, a root, ``sin(x)``)."""
+    if not expr.has(*gens):
+        return 0
+    if expr in gens:
+        return 1
+    if expr.is_Add or expr.is_Mul:
+        bounds = [_degree_bound(a, gens) for a in expr.args]
+        if None in bounds:
+            return None
+        return max(bounds) if expr.is_Add else sum(bounds)
+    if expr.is_Pow:
+        e = expr.exp
+        if not ((e.is_Integer or (e.is_Float and float(e).is_integer()))
+                and e >= 0):
+            return None
+        base = _degree_bound(expr.base, gens)
+        return None if base is None else base * int(e)
+    return None
 
 
 # GeoGebra's Kernel.STANDARD_PRECISION, used by ggb_frame()'s zero tests.
@@ -178,6 +207,19 @@ class Conic:
             raise ValueError(
                 f"conic equation {equation!r} has unbound names {unbound}"
             )
+        # Expanding (x + y)^10000 takes seconds and grows with the power
+        # (formula text is untrusted): bound the degree on the tree first.
+        bound = _degree_bound(expr, (x, y))
+        if bound is None:
+            raise ValueError(
+                f"conic equation {equation!r} is not polynomial in x, y")
+        if bound > _MAX_EXPAND_DEGREE:
+            raise ValueError(
+                f"conic equation {equation!r} has degree up to {bound}, "
+                "expected ≤ 2")
+        if has_large_power(expr):
+            raise ValueError(
+                f"conic equation {equation!r} has too large a power")
         expr = sp.expand(expr)
 
         try:

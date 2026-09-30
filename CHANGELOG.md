@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.12] - 2026-09-30
+
+### Fixed
+
+- The `*` may be left out of a formula: `f(x) = 2x + 1`, `k x`, `2(x + 1)`,
+  `(x + 1)(x − 1)`, `x (x + 1)` and `2x(A)` (twice A's x-coordinate) are read
+  as products, as GeoGebra reads them. `x(A)` with no space before the bracket
+  is still A's x-coordinate, and `k(x + 1)` with a number `k` is a product.
+- A number or slider named like a mathematical constant or function — `E`, `N`,
+  `S`, `O`, `I`, `gamma` — can be used in a formula (`f(x) = E x + gamma`,
+  `N(x + 1)`); such formulas used to fail to parse or, for `N(…)`, `S(…)`,
+  `O(…)`, silently mean something else.
+- A function that calls another one with a restricted domain,
+  `f(x) = g(x) + 1` or `g(g(x))`, is undefined wherever `g` is, instead of
+  extending `g`'s formula past its domain.
+- In the DSL, `g(t) = 2t + 1` and `g(t) = t(t + 1)` define functions of `t`.
+
+### Changed
+
+- A formula calls only mathematical functions (`sin`, `sqrt`, `exp`, `log`,
+  `abs`, `floor`, `gamma`, `erf`, …); any other name it calls is an object of the
+  construction. `(x^2 + x)/x = y` is no longer read as a conic (the conic
+  equation has to be a polynomial as written).
+
+### Security
+
+- A formula that asks for a huge exact computation is refused at once instead of
+  stalling the load of an uploaded file: powers and roots (`7^(9^9)`,
+  `root(7, 1/10^9)`, `sqrt` of a 30 000-bit number), factorials (`(10^7)!`),
+  `exp(10^9 log(7))`, `floor`/`round` of a number beyond 1e308, `re`/`im` of a
+  power with a huge exponent, and conic equations of too high a degree
+  (`(x + y)^10000 = 1`). Sympy's integer functions (`fibonacci`, `binomial`, …)
+  and number constructors (`Float(1, 10^9)`) are not callable, and formula text
+  is limited to 4000 characters. Formulas are still evaluated exactly by sympy,
+  so a service parsing uploaded files should keep a time limit on it.
+
 ## [1.7.11] - 2026-09-30
 
 ### Fixed
@@ -1646,7 +1682,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.11...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.12...HEAD
+[1.7.12]: https://github.com/ivaleo/animageo/compare/v1.7.11...v1.7.12
 [1.7.11]: https://github.com/ivaleo/animageo/compare/v1.7.10...v1.7.11
 [1.7.10]: https://github.com/ivaleo/animageo/compare/v1.7.9...v1.7.10
 [1.7.9]: https://github.com/ivaleo/animageo/compare/v1.7.8...v1.7.9

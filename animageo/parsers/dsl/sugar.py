@@ -32,6 +32,20 @@ _FUNCTION_DEF_RE = re.compile(
 )
 
 
+_NAME_RE = re.compile(r'[^\W\d]\w*')
+_OPEN_RE = re.compile(r'\s*\(')
+
+
+def _rename_variable(expr: str, var: str) -> str:
+    """``var`` → ``x`` as a whole name, also after a number (``2t``);
+    ``t(t + 1)`` becomes ``x*(x + 1)``, since ``x(`` reads a coordinate."""
+    def rename(m):
+        if m.group() != var:
+            return m.group()
+        return 'x*' if _OPEN_RE.match(expr, m.end()) else 'x'
+    return _NAME_RE.sub(rename, expr)
+
+
 def preprocess_dsl_sugar(code: str) -> str:
     """Rewrite ``name(var) = expr`` lines as ``name = Function("y = expr")``.
 
@@ -48,7 +62,7 @@ def preprocess_dsl_sugar(code: str) -> str:
             continue
         indent, name, var, expr = m.group(1), m.group(2), m.group(3), m.group(4)
         if var != 'x':
-            expr = re.sub(rf'\b{re.escape(var)}\b', 'x', expr)
+            expr = _rename_variable(expr, var)
         expr_escaped = expr.replace('\\', '\\\\').replace('"', '\\"')
         out_lines.append(f'{indent}{name} = Function("y = {expr_escaped}")')
     return '\n'.join(out_lines) + ('\n' if code.endswith('\n') else '')

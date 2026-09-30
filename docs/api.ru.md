@@ -607,6 +607,7 @@ h = ImplicitCurve("sin(x) + cos(y) = 0.5")
 #   name(var) = expr   →   name = Function("y = expr")
 f(x) = x^2 + 1
 g(t) = 2*t + 1            # → g = Function("y = 2*x + 1")
+k(x) = 2x (x - x(A))      # `*` можно опускать; x(A) — абсцисса точки A
 
 # Геометрические конструкторы кривых:
 ell = Ellipse(F1, F2, 5)

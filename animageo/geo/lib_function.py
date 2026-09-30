@@ -20,7 +20,7 @@ from ..constants import Z_LINE
 from .formula_refs import (
     coordinate_calls, substitute_references, unbound_references,
 )
-from .safe_sympify import safe_sympify
+from .safe_sympify import check_length, safe_sympify
 
 
 logger = logging.getLogger(__name__)
@@ -54,6 +54,7 @@ _SYMPY_FUNCS = {
     'pi': sp.pi, 'e': sp.E,
     'Piecewise': sp.Piecewise,
     'nan': sp.nan,
+    'true': sp.true, 'false': sp.false,
 }
 
 
@@ -227,6 +228,7 @@ def parse_function_expression(
     ``x(A)`` / ``y(A)`` are coordinates of ``A``, never the variable (see
     ``formula_refs``). Raises ``ValueError`` when sympy can't parse the RHS.
     """
+    check_length(raw)
     text = _strip_label_prefix(raw)
     text, refs = coordinate_calls(text)
     text = _normalize_expression(text)

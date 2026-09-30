@@ -331,3 +331,203 @@ def test_both_curves_are_drawn_in_the_svg(tmp_path):
     assert hidden.count('<show object="false" label="false"/>') == 2   # g, f
     assert {black, red} <= _stroke_colours(LAGRANGE_BODY, tmp_path, 'shown')
     assert not {black, red} & _stroke_colours(hidden, tmp_path, 'hidden')
+
+
+# ── 1.7.12: implicit products, sympy-named numbers, domains, conic degree ──
+
+class TestImplicitProducts:
+    @pytest.mark.parametrize('text, x, expected', [
+        ('y = 2x + 1', 3.0, 7.0),
+        ('y = 2 x', 3.0, 6.0),
+        ('y = 2(x + 1)', 1.0, 4.0),
+        ('y = (x + 1)(x - 1)', 3.0, 8.0),
+        ('y = x (x + 1)', 2.0, 6.0),
+        ('y = (x + 1) x', 2.0, 6.0),
+        ('y = 2.5x', 2.0, 5.0),
+        ('y = 1e2x', 2.0, 200.0),
+        ('y = sqrt(4)x', 3.0, 6.0),
+        ('g(t) = 3t^(2)', 2.0, 12.0),
+    ])
+    def test_function_text(self, text, x, expected):
+        assert Function.from_string(text)(x) == pytest.approx(expected)
+
+    def test_number_times_variable(self):
+        assert Function.from_string('y = k x', parameters={'k': 3})(2.0) == pytest.approx(6.0)
+
+    def test_number_before_a_bracket_is_a_product(self):
+        assert formula_parameters('y = k(x + 1)', 'function') == ['k']
+        f = Function.from_string('y = k(x + 1)', parameters={'k': 3})
+        assert f(1.0) == pytest.approx(6.0)
+
+    def test_coordinate_after_a_number(self):
+        f = Function.from_string('y = 2x(A) + x', parameters={'A': (3.0, 4.0)})
+        assert f(1.0) == pytest.approx(7.0)
+
+    def test_a_called_function_stays_a_call(self):
+        g = Function.from_string('y = x^2')
+        assert Function.from_string('y = g(x) + 1', parameters={'g': g})(3.0) == pytest.approx(10.0)
+        assert Function.from_string('y = sin(x)')(0.0) == pytest.approx(0.0)
+
+    def test_conic_and_implicit(self):
+        assert Conic.from_string('x^2 + 4y^2 = 4').equivalent(
+            Conic.from_string('x^2 + 4*y^2 = 4'))
+        h = ImplicitCurve.from_string('x^3 + 2x y = 1')
+        assert float(h(1.0, 0.0)) == pytest.approx(0.0)
+
+    def test_ggb_formula_follows_its_number_and_point(self):
+        c = load(num('k', 2) + pt('A', 1, 0) + fn('f', 'f(x) = k (x - x(A))'))
+        assert c.element('f').data(3.0) == pytest.approx(4.0)
+        move(c, 'A', (2, 0))
+        assert c.element('f').data(3.0) == pytest.approx(2.0)
+
+    def test_dsl_sugar(self):
+        c = Construction()
+        dsl.run(c, 'f(x) = 2x + 1\ng(t) = 2t + 1\nh(t) = t(t + 1)\n')
+        assert c.element('f').data(3.0) == pytest.approx(7.0)
+        assert c.element('g').data(3.0) == pytest.approx(7.0)
+        assert c.element('h').data(2.0) == pytest.approx(6.0)
+
+    def test_constant_before_a_bracket(self):
+        assert Function.from_string('y = pi(x + 1)')(0.0) == pytest.approx(np.pi)
+        assert Function.from_string('y = 2e(x + 1)')(0.0) == pytest.approx(2 * np.e)
+
+    def test_coordinate_of_an_expression_is_named_in_the_error(self):
+        with pytest.raises(ValueError, match=r"x\(x \+ 1\)"):
+            Function.from_string('y = 3x(x + 1)')
+
+
+class TestSympyNamedNumbers:
+    def test_parameters(self):
+        assert formula_parameters('y = E*x + gamma', 'function') == ['E', 'gamma']
+        assert formula_parameters('x^2 + y^2 = N', 'conic') == ['N']
+        assert formula_parameters('x^3 + S*y = 1', 'implicit') == ['S']
+        assert formula_parameters('y = 2gamma x', 'function') == ['gamma']
+
+    def test_ggb_numbers_named_like_sympy_objects(self):
+        c = load(num('E', 2) + num('gamma', 3) + fn('f', 'f(x) = E * x + gamma'))
+        assert c.element('f').data(1.0) == pytest.approx(5.0)
+        apply_parsed_value(c, 'E', 'var', 4.0)
+        c.rebuild()
+        assert c.element('f').data(1.0) == pytest.approx(7.0)
+
+    def test_number_named_like_a_sympy_function_before_a_bracket(self):
+        for name in ('N', 'S', 'O', 'Q', 'E'):
+            text = f'y = {name}(x + 1)'
+            assert formula_parameters(text, 'function') == [name]
+            f = Function.from_string(text, parameters={name: 3})
+            assert f(1.0) == pytest.approx(6.0), name
+
+    def test_conic_number_named_e(self):
+        c = load(num('e', 4) + '<expression label="c" exp="x^(2) + y^(2) = e" type="conic"/>'
+                 '<element type="conic" label="c">' + ST +
+                 '<matrix A0="1" A1="1" A2="-4" A3="0" A4="0" A5="0"/></element>')
+        assert c.element('c').data.equivalent(Conic.from_string('x^2 + y^2 = 4'))
+        apply_parsed_value(c, 'e', 'var', 9.0)
+        c.rebuild()
+        assert c.element('c').data.equivalent(Conic.from_string('x^2 + y^2 = 9'))
+
+    def test_constants_keep_their_meaning(self):
+        assert Function.from_string('y = pi + e*x')(1.0) == pytest.approx(np.pi + np.e)
+        assert Function.from_string('y = If(true, x, -x)')(2.0) == pytest.approx(2.0)
+        assert Conic.from_string('x^2 + y^2 = pi').equivalent(
+            Conic.from_string('x^2 + y^2 = 3.141592653589793'))
+
+
+class TestCalledFunctionDomain:
+    def test_domain_carries_over(self):
+        from animageo.geo.lib_commands import function_Tn
+        g = Function('y = x^2', domain=(-1.0, 1.0))
+        f = function_Tn('f(x) = g(x) + 1', g)
+        assert f(0.5) == pytest.approx(1.25)
+        assert np.isnan(f(2.0))
+
+    def test_nested_call_of_a_function_with_a_domain(self):
+        from animageo.geo.lib_commands import function_Tn
+        g = Function('y = x^2', domain=(-1.0, 1.0))
+        f = function_Tn('f(x) = g(g(x))', g)
+        assert f(0.5) == pytest.approx(0.0625)
+        assert np.isnan(f(2.0))
+
+    def test_domain_of_a_transformed_argument(self):
+        from animageo.geo.lib_commands import function_Tn
+        g = Function('y = x', domain=(0.0, 1.0))
+        f = function_Tn('f(x) = g(x - 5)', g)
+        assert f(5.5) == pytest.approx(0.5)
+        assert np.isnan(f(0.5))
+
+
+class TestConicDegreeBound:
+    def test_huge_power_is_refused_before_expanding(self):
+        import time
+        start = time.perf_counter()
+        with pytest.raises(ValueError, match='degree'):
+            Conic.from_string('(x + y)^(10000) = 1')
+        with pytest.raises(ValueError, match='degree'):
+            Conic.from_string('(x + y)^(10^400) = 1')
+        assert time.perf_counter() - start < 1
+
+    def test_cancelling_terms_still_make_a_conic(self):
+        conic = Conic.from_string('(x + 1)^(3) - x^(3) = y')
+        assert conic.equivalent(Conic.from_string('3x^2 + 3x + 1 = y'))
+
+    def test_not_polynomial(self):
+        with pytest.raises(ValueError, match='not polynomial'):
+            Conic.from_string('sin(x) = y')
+
+
+class TestEvaluationBounds:
+    """Parsing evaluates exactly; nothing in a formula may make it run long."""
+
+    @pytest.mark.parametrize('text', [
+        'y = x + 7^(9^9)',
+        'y = x + 7**(9**9)',
+        'y = x + pow(7, 9^9)',
+        'y = x + sqrt(10^9999)^(10^4)',
+        'y = x + (10^7)!',
+        'y = x + gamma(10^7)',
+        'y = x + root(7, 1/10^9)',
+        'y = x + real_root(7, 10^(-9))',
+        'y = x + exp(10^9 log(7))',
+        'y = x + E^(10^9 log(7))',
+        'y = x + floor(exp(10^9))',
+        'y = x + round(10^(10^4) sqrt(2))',
+        'y = x + frac(10^(10^4) sqrt(2))',
+        'y = x + re((sqrt(2) + I)^(10^4))',
+        'y = x + re((sqrt(2) + I)^(900) (sqrt(2) + I)^(900))',
+        'y = x + sqrt(7^11000 + 1)',
+        'y = x + (7^11000 + 1)^(1/2)',
+        'y = x + Float(1, 10^9)',
+        'y = x + factorial(10^7)',
+        'y = x + fibonacci(10^8)',
+        'y = x + binomial(10^8, 10^7)',
+        'y = x + ' + '1 + ' * 1200 + '1',
+    ])
+    def test_refused_fast(self, text):
+        import time
+        start = time.perf_counter()
+        with pytest.raises(ValueError):
+            Function.from_string(text)
+        assert time.perf_counter() - start < 1
+
+    def test_conic_power_refused_fast(self):
+        import time
+        start = time.perf_counter()
+        with pytest.raises(ValueError):
+            Conic.from_string('x^2 + y^2 = 7^(9^9)')
+        with pytest.raises(ValueError):
+            Conic.from_string('x^2 + y^2 = (1 + sqrt(2))^(900) (1 + sqrt(2))^(900)')
+        assert time.perf_counter() - start < 1
+
+    @pytest.mark.parametrize('text, x, expected', [
+        ('y = 2^10 x', 1.0, 1024.0),
+        ('y = 10^(-6) + x', 0.0, 1e-6),
+        ('y = pi^500 * 0 + x', 1.0, 1.0),
+        ('y = sqrt(2) x + exp(2) * 0', 1.0, np.sqrt(2)),
+        ('y = floor(7.5) + round(2.4) + abs(-3) + x', 0.0, 12.0),
+        ('y = gamma(x)', 5.0, 24.0),
+        ('y = pow(2, 3) x', 1.0, 8.0),
+        ('y = root(8, 3) x', 1.0, 2.0),
+        ('y = 3! x', 1.0, 6.0),
+    ])
+    def test_ordinary_powers_and_factorials(self, text, x, expected):
+        assert Function.from_string(text)(x) == pytest.approx(expected)

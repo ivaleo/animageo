@@ -22,7 +22,7 @@ from ..constants import Z_LINE
 from .formula_refs import (
     coordinate_calls, substitute_references, unbound_references,
 )
-from .safe_sympify import safe_sympify
+from .safe_sympify import check_length, safe_sympify
 from .lib_function import (
     _normalize_expression, _strip_label_prefix, _SYMPY_FUNCS,
 )
@@ -53,6 +53,7 @@ def parse_implicit_expression(
         - ``"x**2 + y**2 = 1"`` (equation)
         - ``"sqrt(-4*y) + sqrt(abs(x - 1)) = 5"`` (GGB implicitpoly)
     """
+    check_length(raw)
     text = _strip_label_prefix(raw)
     text, refs = coordinate_calls(text)
     text = _normalize_expression(text)

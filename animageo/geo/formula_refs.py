@@ -19,9 +19,11 @@ XCOORD = sp.Function('xcoord')
 YCOORD = sp.Function('ycoord')
 COORD_FUNCS = {'xcoord': XCOORD, 'ycoord': YCOORD}
 
-# ``x(`` right before the bracket; not ``max(``, ``2x(`` or ``a.x(``.
-_COORD_CALL_RE = re.compile(r'(?<![\w.])([xy])\(')
-_COORD_ARG_RE = re.compile(r'(?<![\w.])[xy]coord\(\s*([A-Za-z_]\w*)\s*\)')
+# ``x(`` right before the bracket, also after a number (``2x(A)``); not
+# ``max(``, ``a2x(`` or ``a.x(``.
+_COORD_CALL_RE = re.compile(
+    r'(?<![\w.])((?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)?([xy])\(')
+_COORD_ARG_RE = re.compile(r'(?<![A-Za-z_.])[xy]coord\(\s*([A-Za-z_]\w*)\s*\)')
 
 
 def coordinate_calls(text):
@@ -29,7 +31,8 @@ def coordinate_calls(text):
     ``ycoord(A)`` and ``names`` the parse namespace for them: the two call
     names plus every point they name as a plain symbol — ``O``, ``E``,
     ``N``, ``S`` would otherwise resolve to sympy objects."""
-    text = _COORD_CALL_RE.sub(lambda m: f'{m.group(1)}coord(', text)
+    text = _COORD_CALL_RE.sub(
+        lambda m: f'{m.group(1) or ""}{m.group(2)}coord(', text)
     names = {name: sp.Symbol(name) for name in _COORD_ARG_RE.findall(text)}
     return text, {**names, **COORD_FUNCS}
 
@@ -53,10 +56,15 @@ def reference_names(expr, own):
 def unbound_references(expr, own):
     """Names still unresolved after substitution — a curve can't be drawn
     while any remain. A call of a NumPy function (``hypot(x, 1)``) is bound:
-    the numeric callable (``lambdify('numpy')``) resolves it."""
+    the numeric callable (``lambdify('numpy')``) resolves it. A coordinate
+    of something other than a point, ``3x(x + 1)``, is shown as written."""
     names = {str(s) for s in expr.free_symbols - set(own)}
-    names |= {call.func.__name__ for call in expr.atoms(AppliedUndef)
-              if not callable(getattr(np, call.func.__name__, None))}
+    for call in expr.atoms(AppliedUndef):
+        fname = call.func.__name__
+        if fname in COORD_FUNCS:
+            names.add(f"{fname[0]}({', '.join(map(str, call.args))})")
+        elif not callable(getattr(np, fname, None)):
+            names.add(fname)
     return sorted(names)
 
 
@@ -77,7 +85,9 @@ def substitute_references(expr, parameters):
 
     ``parameters`` maps a name to a number or boolean, a coordinate pair (a
     point or vector, read through ``x()``/``y()``), or a function — anything
-    with ``expr`` and ``var`` (``g(t)`` becomes ``g.expr`` at ``t``).
+    with ``expr`` and ``var`` (``g(t)`` becomes ``g.expr`` at ``t``, and is
+    undefined outside ``g.explicit_domain``). A number written before a
+    bracket, ``k(x + 1)``, is a product.
     """
     numbers, coords, funcs = {}, {}, {}
     for name, value in parameters.items():
@@ -94,6 +104,20 @@ def substitute_references(expr, parameters):
                 numbers[sp.Symbol(str(name))] = float(value)
             except (TypeError, ValueError):
                 continue
+    try:
+        return _substitute(expr, numbers, coords, funcs)
+    except TypeError as e:          # sympy: comparison with nan / non-real
+        raise ValueError(f"formula cannot be evaluated: {e}") from e
+
+
+def _substitute(expr, numbers, coords, funcs):
+    factors = {str(k): v for k, v in numbers.items() if not isinstance(v, bool)}
+    if factors:
+        expr = expr.replace(
+            lambda e: (isinstance(e, AppliedUndef) and len(e.args) == 1
+                       and e.func.__name__ in factors),
+            lambda e: factors[e.func.__name__] * e.args[0],
+        )
     if funcs:
         size = _node_count(expr)
         for call in expr.atoms(AppliedUndef):
@@ -107,14 +131,25 @@ def substitute_references(expr, parameters):
         expr = expr.replace(
             lambda e: (isinstance(e, AppliedUndef) and len(e.args) == 1
                        and e.func.__name__ in funcs),
-            lambda e: funcs[e.func.__name__].expr.subs(
-                funcs[e.func.__name__].var, e.args[0]),
+            lambda e: _inline(funcs[e.func.__name__], e.args[0]),
         )
     if coords:
         expr = expr.xreplace(coords)
     if numbers:
         expr = expr.subs(numbers)
     return expr
+
+
+def _inline(func, arg):
+    body = func.expr.subs(func.var, arg)
+    domain = getattr(func, 'explicit_domain', None)
+    if domain is None:
+        return body
+    lo, hi = (float(v) for v in domain)
+    # nan (an argument outside an inner domain, g(g(x))) can't be compared;
+    # as oo it is outside this domain too.
+    at = arg.xreplace({sp.nan: sp.oo, sp.zoo: sp.oo})
+    return sp.Piecewise((body, (at >= lo) & (at <= hi)), (sp.nan, True))
 
 
 def _is_pair(value):
