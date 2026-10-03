@@ -1,4 +1,4 @@
-"""The ``animageo-construction/v1`` document: load, validate, dump, closure.
+"""The ``animageo-construction/v1`` document: load, validate, dump.
 
 ``load`` checks the structure (the rules of ``schema/construction.v1.schema.json``
 plus ``xmin < xmax``, ``ymin < ymax`` of ``viewDefaults.bounds``) without a
@@ -32,7 +32,6 @@ __all__ = [
     'dump',
     'dumps',
     'content_hash',
-    'closure',
     'iter_refs',
 ]
 
@@ -708,44 +707,3 @@ def validate(doc) -> list:
         issues.append(Issue('cycle', '/operations' + _pointer(op_id),
                             f'operation {op_id!r} depends on itself', operationId=op_id))
     return issues
-
-
-def closure(doc, ids, *, direction: str = 'down') -> list:
-    """Element IDs reachable from ``ids`` through the graph, ``ids`` included.
-
-    ``direction="down"``: the dependents (what has to go when ``ids`` go);
-    ``"up"``: the ancestors (what ``ids`` are built from). Sorted.
-    """
-    if direction not in ('down', 'up'):
-        raise ValueError("direction must be 'down' or 'up'")
-    doc = doc if isinstance(doc, NativeDocument) else as_document(doc)
-    seeds = [ids] if isinstance(ids, str) else list(ids)
-    for el_id in seeds:
-        if el_id not in doc.elements:
-            raise ValueError(f'unknown element {el_id!r}')
-    ops = doc.operations
-    produced: dict = {}
-    for el_id in doc.elements:
-        producer = bound_producer(doc, el_id)
-        if producer is not None:
-            produced.setdefault(producer, []).append(el_id)
-    if direction == 'down':
-        users: dict = {}
-        for op_id, op in ops.items():
-            for ref in _op_refs(op):
-                users.setdefault(ref, set()).add(op_id)
-        step = lambda el_id: [e for op_id in users.get(el_id, ()) for e in produced.get(op_id, ())]
-    else:
-        def step(el_id):
-            producer = bound_producer(doc, el_id)
-            if producer is None:
-                return []
-            return [r for r in _op_refs(ops[producer]) if r in doc.elements]
-    seen = set(seeds)
-    queue = list(seeds)
-    while queue:
-        for nxt in step(queue.pop()):
-            if nxt not in seen:
-                seen.add(nxt)
-                queue.append(nxt)
-    return sorted(seen)

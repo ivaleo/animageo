@@ -363,7 +363,8 @@ def test_json_schema_agrees():
 
 def test_closure():
     doc = native.load(triangle_doc())
-    assert native.closure(doc, 'A') == ['A', 'M', 'T', 'l', 'sAB']
+    # topological order: operations in Kahn order (ties by ID: op_M, op_T, op_l), elements by ID
+    assert native.closure(doc, 'A') == ['A', 'M', 'T', 'sAB', 'l']
     assert native.closure(doc, ['C']) == ['C', 'T', 'sAB']
     assert native.closure(doc, 'M', direction='up') == ['A', 'B', 'M']
     assert native.closure(doc, ['sAB', 'M'], direction='up') == ['A', 'B', 'C', 'M', 'sAB']

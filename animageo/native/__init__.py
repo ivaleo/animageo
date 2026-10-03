@@ -14,6 +14,8 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     native.check(doc).results                # {"<operationId>:<checkId>": "passed" | …}
     native.project(doc, "P", (x, y))         # path parameter of the nearest point of P's path
     native.dumps(doc), native.content_hash(doc)
+    native.closure(doc, ["A"])               # dependents in topological order
+    doc2, effects = native.delete(doc, ["A"])  # pure edits: delete, redefine, rename
 
 No module of this package imports manim, ``animageo.animageo`` or
 ``animageo.geo``.
@@ -26,7 +28,6 @@ from .document import (
     Issue,
     LoadError,
     NativeDocument,
-    closure,
     content_hash,
     dump,
     dumps,
@@ -35,6 +36,16 @@ from .document import (
 )
 from .kernel.checks import CheckReport, run_checks
 from .document import as_document, bound_producer
+from .edit import (
+    EditError,
+    EditResult,
+    closure,
+    delete,
+    dependencies,
+    free_inputs,
+    redefine,
+    rename,
+)
 from .kernel import paths as _paths
 from .kernel.evaluate import EVALUATED_FORMAT, Evaluated, producer_values
 from .kernel.evaluate import evaluate as _evaluate
@@ -46,6 +57,8 @@ __all__ = [
     'DOCUMENT_FORMAT',
     'EVALUATED_FORMAT',
     'CheckReport',
+    'EditError',
+    'EditResult',
     'Evaluated',
     'Issue',
     'LoadError',
@@ -56,12 +69,17 @@ __all__ = [
     'check',
     'closure',
     'content_hash',
+    'delete',
+    'dependencies',
     'dump',
     'dumps',
     'evaluate',
+    'free_inputs',
     'load',
     'project',
+    'redefine',
     'registry',
+    'rename',
     'run_checks',
     'signature_hash',
     'validate',
