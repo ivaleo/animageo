@@ -4,6 +4,7 @@ import math
 import pytest
 
 from animageo import native
+from animageo.native.kernel import evaluate as evaluate_mod
 from animageo.native.kernel import paths
 from animageo.native.kernel.paths import Frame, point_at, project
 from tests.native.conftest import DocBuilder, path_input, point_input
@@ -238,3 +239,58 @@ class TestNativeProject:
             native.project(doc, 'A', (0, 0))
         with pytest.raises(ValueError, match='unknown'):
             native.project(doc, 'ghost', (0, 0))
+
+
+# ── registry 1.2: frames of the new line producers ───────────────────────
+
+def l2_line_doc(kind, t):
+    b = DocBuilder('l2_frames', registry_version='1.2')
+    b.free('A', 1, 2).free('B', 5, 4).free('Q', 0, 6)
+    b.line('l', 'A', 'B')
+    {'parallel': lambda: b.parallel('p', 'Q', 'l'),
+     'perpendicular': lambda: b.perpendicular('p', 'Q', 'l'),
+     'bisector': lambda: b.perp_bisector('p', 'A', 'B'),
+     'angle': lambda: b.angle_bisector('p', 'A', 'Q', 'B')}[kind]()
+    return b.on_path('P', 'p', t).doc
+
+
+class TestL2Frames:
+    def test_mid_term(self):
+        assert paths._expr('mid(args.a, args.b)', {}, {'a': {'x': 1.0, 'y': 2.0}, 'b': [5.0, 8.0]}) == (3.0, 5.0)
+        assert paths._expr('mid(args.a, value.p) - args.a', {'p': [3.0, 0.0]}, {'a': [1.0, 2.0]}) == (1.0, -1.0)
+        nested = paths._expr('mid(mid(args.a, args.b), args.a)', {}, {'a': [1.0, 2.0], 'b': [5.0, 8.0]})
+        assert nested == (2.0, 3.5)
+        with pytest.raises(ValueError, match='frame'):
+            paths._expr('mid(args.a)', {}, {'a': [1.0, 2.0]})
+
+    @pytest.mark.parametrize('kind, origin', [
+        ('parallel', 'Q'), ('perpendicular', 'Q'), ('bisector', None), ('angle', 'Q'),
+    ])
+    def test_origin_of_the_frame(self, kind, origin):
+        ev = native.evaluate(l2_line_doc(kind, 0))
+        x, y = ev.elements['P']['value']['x'], ev.elements['P']['value']['y']
+        expected = (0.0, 6.0) if origin == 'Q' else (3.0, 3.0)
+        assert (x, y) == pytest.approx(expected, abs=1e-12)
+        doc = l2_line_doc(kind, 2.5)
+        line = native.evaluate(doc).elements['p']['value']
+        point = native.evaluate(doc).elements['P']['value']
+        assert point['x'] == pytest.approx(expected[0] + 2.5 * line['dir'][0], abs=1e-12)
+        assert point['y'] == pytest.approx(expected[1] + 2.5 * line['dir'][1], abs=1e-12)
+        assert native.check(doc).results['op_P:on_path'] == 'passed'
+
+    @pytest.mark.parametrize('kind', ['parallel', 'perpendicular', 'bisector', 'angle'])
+    def test_the_point_moves_with_the_definition(self, kind):
+        doc = l2_line_doc(kind, 1.5)
+        moves = {'A': point_input(-2, 1), 'B': point_input(4, -3), 'Q': point_input(2, 5)}
+        ev = native.evaluate(doc, inputs=moves)
+        loaded = native.load(doc)
+        ops = loaded.operations
+        f = paths.frame('line', ev.elements['p']['value'], ops['op_p']['op'],
+                        evaluate_mod.producer_values('p', loaded.elements, ops, ev.elements)[1])
+        x, y = ev.elements['P']['value']['x'], ev.elements['P']['value']['y']
+        assert paths.project(f, x, y, 1e-12) == pytest.approx(1.5, abs=1e-12)
+        if kind != 'bisector':
+            q = (2.0, 5.0)
+        else:
+            q = (1.0, -1.0)
+        assert f.origin == pytest.approx(q, abs=1e-12)

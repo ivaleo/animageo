@@ -6,6 +6,7 @@ A point on a path is ``P(t)`` in the frame of the path element:
   ``[min, max]`` when ``outside`` is ``clamp``; ``o`` and ``v`` come from
   ``frames[<producer op>]``, else ``frames["*"]``: a line through ``a`` and
   ``b`` has ``o = a``, ``v = b − a``, so the point moves with ``a`` and ``b``;
+  a perpendicular bisector has ``o = mid(a, b)``, ``v = dir``;
 - ``angle`` (circle): ``P = c + r·(cos t, sin t)``;
 - ``perimeter`` (polygon, ``n`` vertices ``V``): ``t' = t − n·floor(t/n)``,
   ``t' < 0 → t' + n``, ``t' ≥ n → 0``; ``k = floor(t')``, ``f = t' − k``,
@@ -50,7 +51,20 @@ def _xy(value) -> tuple:
 
 
 def _term(expr: str, value: dict, args: dict) -> tuple:
-    source, _, field = expr.strip().partition('.')
+    expr = expr.strip()
+    if expr.startswith('mid(') and expr.endswith(')'):
+        inner = expr[4:-1]
+        depth = 0
+        for i, ch in enumerate(inner):
+            depth += (ch == '(') - (ch == ')')
+            if ch == ',' and depth == 0:
+                break
+        else:
+            raise ValueError(f'mid() needs two terms in frame expression {expr!r}')
+        x1, y1 = _term(inner[:i], value, args)
+        x2, y2 = _term(inner[i + 1:], value, args)
+        return ((x1 + x2) / 2, (y1 + y2) / 2)
+    source, _, field = expr.partition('.')
     if source == 'value':
         return _xy(value[field])
     if source == 'args':
@@ -59,7 +73,8 @@ def _term(expr: str, value: dict, args: dict) -> tuple:
 
 
 def _expr(expr: str, value: dict, args: dict) -> tuple:
-    """``"<src>.<field>"`` or ``"<src>.<f> - <src>.<g>"``; ``src`` is ``value`` or ``args``."""
+    """A term or ``"<term> - <term>"``; a term is ``<src>.<field>`` (``src`` is
+    ``value`` or ``args``) or ``mid(<term>, <term>)``, ``((x1 + x2)/2, (y1 + y2)/2)``."""
     left, minus, right = expr.partition(' - ')
     x, y = _term(left, value, args)
     if not minus:
