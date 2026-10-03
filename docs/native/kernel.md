@@ -1,4 +1,4 @@
-# `animageo.native` — contract of the reference kernel (L0–L1)
+# `animageo.native` — contract of the reference kernel (L0–L2)
 
 `animageo.native` reads construction documents `animageo-construction/v1`,
 evaluates them, edits them and produces parity fixtures; with manim
@@ -23,7 +23,7 @@ Master schema: `animageo/native/schema/construction.v1.schema.json`
 {
   "format": "animageo-construction/v1",          required
   "documentId": ID,                              required
-  "operationRegistryVersion": "1.1",             required, "<major>.<minor>"
+  "operationRegistryVersion": "1.2",             required, "<major>.<minor>"
   "operations": {ID: Operation},                 required
   "elements":   {ID: Element},                   required
   "inputs":     {ID: Input},
@@ -45,6 +45,7 @@ Element   = {"id": ID, "type": type, "producer": {"operationId": ID, "slot": slo
              "displayName": string, "origin"?: object}
 Input     = {"kind": "point", "value": [x, y]}                         point.free
           | {"kind": "pathParameter", "value": t, "branch"?: -1 | 1}    point.on_path
+          | {"kind": "number", "value": v}                              number.free
 ```
 
 - `ID` matches `^[A-Za-z0-9_-]{1,64}$`; the product uses UUIDv4, fixtures use
@@ -60,7 +61,10 @@ Input     = {"kind": "point", "value": [x, y]}                         point.fre
   element without a usable value of its kind evaluates to `error/schema`
   (§5.2).
 - The operation `branch` stays `null` (or absent) for every operation of
-  registry 1.1: the output slot names the solution (§5.4).
+  registries 1.1 and 1.2: the output slot names the solution (§5.4).
+- `args` holds input slots and params (§4) alike. A `number` argument
+  (literal) is allowed in an input slot of type `number` (a radius) and is
+  the only kind a param takes.
 - Sections the library does not interpret — `appearance` (read by the
   renderer, §9), `styleBinding`, `timeline`, `exportDefaults`, `bindings`,
   `origin`, unknown keys — are kept as they are.
@@ -94,9 +98,9 @@ only on a structurally valid document.
 | `unknown_op` | warning | the op is not in the registry |
 | `newer_registry` | warning | `operationRegistryVersion` is newer than the library's (also replaces `unknown_op` then) |
 | `unknown_slot` | error | an argument or output slot the op does not declare (a repeat slot beyond the list length too) |
-| `missing_slot` | error | a declared input slot has no argument |
+| `missing_slot` | error | a declared input slot or a required param has no argument |
 | `dangling_ref` | error | a reference (argument or `inputs` key) to a missing element |
-| `type_mismatch` | error | argument kind (list vs ref), a list shorter than `min`, an element type that does not fit the slot, an element type that differs from its output slot type, an input kind that differs from the free kind (`point` for `point.free`, `pathParameter` for `point.on_path`) |
+| `type_mismatch` | error | argument kind (list vs ref), a list shorter than `min`, an element type that does not fit the slot, an element type that differs from its output slot type, a number literal in an input slot of another type, a param argument that is not a number literal, an input kind that differs from the free kind (`point` for `point.free`, `pathParameter` for `point.on_path`, `number` for `number.free`) |
 | `cycle` | error | the operation lies on a dependency cycle |
 | `input_not_free` | error | an input value for an element not produced by a free op |
 | `missing_input` | error | a free element without an input value |
@@ -120,12 +124,13 @@ The text `JSON.stringify` prints after object keys are sorted:
 table `animageo/native/parity/v1/canonical.json` is a list of
 `{"value", "canonical"}` pairs that both kernels must reproduce.
 
-## 4. Registry `ops/v1` (version 1.1)
+## 4. Registry `ops/v1` (version 1.2)
 
 `animageo/native/ops/v1/<group>.json` holds arrays of records:
 
 ```text
-{op, status, since, inputs: [{slot, type, list?, min?}], params: [], outputs: [{slot, type, repeat?}],
+{op, status, since, inputs: [{slot, type, list?, min?}], params: [{slot, type, unit, optional?, default?, text}],
+ outputs: [{slot, type, repeat?}],
  free?: {kind}, branch: null | {policy, slots, text}, undefined: [reason…], checks: [{id, text}],
  orientation, pathParam: null | "carrier/v1", stepKind, phrases: {ru}, math, signatureHash}
 ```
@@ -144,6 +149,15 @@ table `animageo/native/parity/v1/canonical.json` is a list of
 | `intersect.circle_circle` | 1.1 | `first, second: circular` → `first, second` | `circle_side` |
 | `intersect.other_than` | 1.1 | `first, second: curve, known: point` → `point` | `other_than` |
 | `point.on_path` | 1.1 | free `pathParameter`, `path: path` → `point` | — |
+| `point.projection` | 1.2 | `point: point, base: linear`; param `strict` → `foot` | — |
+| `line.parallel` | 1.2 | `point: point, base: linear` → `line` | — |
+| `line.perpendicular` | 1.2 | `point: point, base: linear` → `line` | — |
+| `line.perpendicular_bisector` | 1.2 | `a, b: point` → `line` | — |
+| `line.angle_bisector` | 1.2 | `a, vertex, b: point` → `line` | — |
+| `vector.by_points` | 1.2 | `a, b: point` → `vector` | — |
+| `circle.center_radius` | 1.2 | `center: point, radius: number` → `circle` | — |
+| `circle.three_points` | 1.2 | `a, b, c: point` → `circle`, `center: point` | — |
+| `number.free` | 1.2 | free `number`; params `min`, `max`, `step` → `number` | — |
 
 - A slot type may be a family (`_types.json` → `families`):
 
@@ -161,14 +175,23 @@ table `animageo/native/parity/v1/canonical.json` is a list of
   list (default false), min (default null)}], params: [{slot, type, unit
   (default null)}], outputs: [{slot, type, repeat (default null)}], free
   (default null), branch: branch.policy or null, orientation, pathParam}))`;
-  the hashes of the 1.0 records did not change in 1.1;
+  the hashes of the 1.0 records did not change in 1.1, nor those of the
+  1.0 and 1.1 records in 1.2 (a test pins them);
+- params (`type: "number"` only) are op settings written in `args` as
+  number literals: `optional` (default `false`) and `default` (a number or
+  absent) are outside the hash. An absent optional param reaches the
+  implementation as its `default`, or as nothing (`None`/`null`) without
+  one; whether a value is allowed (`strict ∈ {0, 1}`, `min ≤ max`) is the
+  op's decision, `undefined/invalid_parameter`. The registry check refuses a
+  param that is not a number, a non-numeric `default` and a required param
+  with a `default`;
 - `INDEX.json = {registryVersion, ops: {op: signatureHash}}`, written by
   `python -m animageo.native registry index` and checked by `--check`.
 
 Service catalogs:
 
 - `_types.json`: value fields and their kinds (`types`), `families`, path
-  frames (`paths`, `frameKinds`, §5.5) and `units`;
+  frames (`paths`, `frameKinds`, §5.5), `units` and `numberUnits` (§6);
 - `_reasons.json`: reason → state;
 - `_policies.json`: branch policies (`single`, `line_param_order`,
   `circle_side`, `other_than`, §5.4);
@@ -194,6 +217,8 @@ Record = {"state": "defined", "type", "value", "detail"?}
 | line | `{p: [x, y], dir: [x, y]}` — `p` the projection of the origin, `dir` unit, oriented by the definition |
 | circle | `{c: [x, y], r}` |
 | polygon | `{vertices: [[x, y], …], area}` — unsigned area |
+| vector | `{a: [x, y], b: [x, y], length}` — `a` the start, `b` the end; a zero vector is defined |
+| number | `{value, unit}` — `unit` one of `scalar`, `length`, `area`, `angle` (radians), `count` |
 
 A defined record carries `detail` only for a double root of a two-slot
 intersection: `{"multiplicity": 2}` in both slots (§5.4). Undefined records
@@ -205,8 +230,8 @@ and the like, as the op pages say.
 `S = max(w, h, D)`: `w = xmax − xmin`, `h = ymax − ymin` of `viewDefaults.bounds`
 (or `defaultBounds = [-10, -10, 10, 10]`); `D = hypot(pxmax − pxmin, pymax − pymin)`
 over the points of all free `point` elements with a valid input value after
-the case overrides (`D = 0` without any). Path parameters do not take part in
-`S`.
+the case overrides (`D = 0` without any). Path parameters and number inputs
+do not take part in `S`.
 
 | tolerance | value |
 |---|---|
@@ -239,7 +264,11 @@ order):
    list, a list shorter than `min`, an item that is not a ref →
    `error/type_mismatch`; each reference in order: missing element →
    `error/dangling_ref`, element type not fitting the slot type or family →
-   `error/type_mismatch`. The first problem found wins;
+   `error/type_mismatch`; a number literal is accepted in an input slot of
+   type `number` (it is the defined value `{value, unit: "scalar"}` and no
+   dependency) and is a `type_mismatch` elsewhere. Then each param in
+   registry order: absent and required → `error/schema`; not a number
+   literal → `error/type_mismatch`. The first problem found wins;
 4. a free op whose element has no usable input value of its kind →
    `error/schema`;
 5. **upstream**: among the input elements (registry slot order, list items in
@@ -253,7 +282,7 @@ order):
    and a `diagnostics` entry `{code: "internal", operationId, op, message}`.
 
 Every output slot is always computed; the elements bound to the op take
-their slots. An element left without a record (never in 1.1) is `error/schema`.
+their slots. An element left without a record (never in 1.1 or 1.2) is `error/schema`.
 
 ### 5.3 Checks
 
@@ -292,7 +321,7 @@ exactly at a segment end or at a ray origin is inside the part.
 
 `point.on_path` is free: its value comes from the input
 `{"kind": "pathParameter", "value": t, "branch"?: ±1}` (`branch` is reserved
-for two-branch paths of a later registry and ignored in 1.1). The parameter
+for two-branch paths of a later registry and ignored in 1.1 and 1.2). The parameter
 lives in the frame of the path's definition (`_types.json` → `paths`), so the
 point moves with the path:
 
@@ -301,6 +330,9 @@ point moves with the path:
 | segment | affine | `o = a`, `v = b − a` | clamped to `[0, 1]` | `0.5` |
 | line by `line.by_points` | affine | `o = a`, `v = b − a` (the producer's points) | any | `0.5` |
 | other line | affine | `o = p`, `v = dir` | any | `0.5` |
+| line by `line.parallel`, `line.perpendicular` | affine | `o = point`, `v = dir` | any | `0.5` |
+| line by `line.perpendicular_bisector` | affine | `o = mid(a, b)`, `v = dir` | any | `0.5` |
+| line by `line.angle_bisector` | affine | `o = vertex`, `v = dir` | any | `0.5` |
 | ray by `ray.by_points` | affine | `o = origin`, `v = through − origin` | `t < 0` → `0` | `0.5` |
 | other ray | affine | `o = origin`, `v = dir` | `t < 0` → `0` | `0.5` |
 | circle | angle | centre `c`, radius `r` | angle from +x | `π/4` |
@@ -314,7 +346,10 @@ point moves with the path:
 
 The frame of a path element comes from `frames[<producer op>]` (on the
 values of the producer's arguments) when its producer is listed there,
-otherwise from `frames["*"]` (on the element's own value).
+otherwise from `frames["*"]` (on the element's own value). A frame
+expression is a term or a difference `<term> - <term>`; a term is
+`<src>.<field>` (`src` is `value` or `args`) or `mid(<term>, <term>)`, the
+midpoint `((x1 + x2)/2, (y1 + y2)/2)`.
 
 `native.project(doc, id, (x, y), *, inputs=None) → t | None` is the inverse:
 the parameter of the nearest point of the path (`id` is the path or a
@@ -334,8 +369,11 @@ has its own `scale`.
 `fixtures verify` evaluates again and compares: `state`, `type`, `reason`,
 `cause`, `detail` exactly; numbers in values within `tol.parity` of the
 case's `scale` by the field kind of `_types.json` (`length`, `area`,
-`scalar`); arrays by length and item; check statuses exactly; the scale
-within `1e-9·S`.
+`scalar`); a field of kind `by_unit` (the `value` of a number) takes the
+kind of its unit (`numberUnits`: `scalar → scalar`, `length → length`,
+`area → area`, `angle → scalar`, `count → scalar`); fields the kinds do not
+list (the `unit` of a number) compare exactly; arrays by length and item;
+check statuses exactly; the scale within `1e-9·S`.
 
 **Near-degenerate inputs are refused.** Every degeneracy decision reports its
 decision value `m`, measured from the exact mathematical boundary, and the
@@ -349,14 +387,15 @@ so a fixture never depends on which side of `tol` a rounding error falls.
 (equal points, axis-parallel lines, an intersection exactly at a segment
 end) — is accepted.
 
-**Noise decisions** (`generator.noiseDecisions = ["known", "tangent"]`): for
-these, `|m| ≤ tol / 1e3` also counts as exactly on the threshold. Their
-values are the rounding noise of an exact construction — a tangent built as
-a tangent, a `known` point that is an intersection of the same pair — and
-cannot be made binary-exact. A noise value between `tol / 1e3` and `1e3·tol`
+**Noise decisions** (`generator.noiseDecisions = ["known", "tangent",
+"straight_angle"]`): for these, `|m| ≤ tol / 1e3` also counts as exactly on
+the threshold. Their values are the rounding noise of an exact construction
+— a tangent built as a tangent, a `known` point that is an intersection of
+the same pair, a straight angle of collinear points — and cannot be made
+binary-exact. A noise value between `tol / 1e3` and `1e3·tol`
 is still refused.
 
-Library set (`animageo/native/parity/v1/`, 31 scenes):
+Library set (`animageo/native/parity/v1/`, 41 scenes):
 
 - registry 1.0: `basic_points`, `segment_line`, `circle`, `intersect_lines`,
   `intersect_segments`, `polygon_triangle`, `polygon_quad`, `upstream_chain`,
@@ -370,7 +409,11 @@ Library set (`animageo/native/parity/v1/`, 31 scenes):
 - the other point: `other_than_line_circle`, `other_than_circles`,
   `other_than_tangent`, `other_than_absent`;
 - points on paths: `on_path_segment`, `on_path_line_ray`, `on_path_circle`,
-  `on_path_polygon`, `on_path_chain`.
+  `on_path_polygon`, `on_path_chain`;
+- registry 1.2: `projection`, `parallel_perpendicular`,
+  `perpendicular_bisector`, `angle_bisector`, `vector_points`,
+  `circle_center_radius`, `circle_three_points`, `number_free`,
+  `on_path_l2_lines`, `l2a1_chain`.
 
 At least three cases per op; degenerate cases with binary-exact inputs or a
 noise decision.
@@ -486,6 +529,12 @@ this rectangle.
   function runs the kernel implementation on the classic values.
   `rebuild(full=True)` therefore gives the values of `native.evaluate`
   bit for bit (tested on every fixture case).
+- A free number is a level-0 `Var` holding the kernel value (clamped to
+  `min`/`max`; `None` when undefined). Values convert by type: a vector is
+  a classic `Vector`; a number is a `float` (`scalar`), a `Measure` of
+  dimension 1 or 2 (`length`, `area`), an `AngleSize` (`angle`) or a
+  `Measure` of dimension 0 (`count`). Params and number literals are
+  constants of the command, not classic inputs.
 - Elements are created in the operation order of `evaluate` (Kahn, ties by
   operation ID; outputs by slot), as a DSL creates them line by line; the
   renderer breaks z-index ties by this order. Elements of structurally
@@ -545,7 +594,7 @@ the render in a scratch directory.
 ```text
 {"format": "animageo-render-report/v1",
  "documentId": "…",
- "kernel": {"library": "1.8.0a2", "registry": "1.1"},
+ "kernel": {"library": "1.8.1a1", "registry": "1.2"},
  "fmt": "svg",
  "canvas": {"width": W, "height": H, "unit": u, "origin": [ox, oy]},
  "elements": {"<elementId>": {"state": "defined" | "undefined" | "unsupported" | "error",
@@ -567,8 +616,10 @@ the render in a scratch directory.
       px = ox + u·x,   py = oy − u·y
 
 - `visible` is `true` when the element is drawn (defined and not hidden by
-  `appearance`); otherwise `box` and `label` are `null`.
-- `box` bounds the drawn element without its label; `label.box` bounds the
+  `appearance`); otherwise `box` and `label` are `null`. A number is never
+  drawn; a vector is drawn as an arrow.
+- `box` bounds the drawn element without its label (an arrow with its
+  shaft and its tip); `label.box` bounds the
   label (without its leader line); `label.anchor` is the point the label is
   attached to (the classic label attach spot, in px); `label.text` is the
   label source text (LaTeX for names).

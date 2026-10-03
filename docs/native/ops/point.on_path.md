@@ -29,6 +29,9 @@ point moves with the path (`ops/v1/_types.json` → `paths`):
 |---|---|---|---|
 | segment | affine | `o = a`, `v = b − a` | `t` clamped to `[0, 1]` |
 | line by `line.by_points` | affine | `o = a`, `v = b − a` (the producer's points) | any `t` |
+| line by `line.parallel`, `line.perpendicular` (1.2) | affine | `o = point`, `v = dir` | any `t` |
+| line by `line.perpendicular_bisector` (1.2) | affine | `o = mid(a, b) = ((ax + bx)/2, (ay + by)/2)`, `v = dir` | any `t` |
+| line by `line.angle_bisector` (1.2) | affine | `o = vertex`, `v = dir` | any `t` |
 | other line | affine | `o = p`, `v = dir` | any `t` |
 | ray by `ray.by_points` | affine | `o = origin`, `v = through − origin` | `t < 0` clamped to 0 |
 | other ray | affine | `o = origin`, `v = dir` | `t < 0` clamped to 0 |
