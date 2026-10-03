@@ -8,9 +8,12 @@ implementation (``IMPLEMENTATIONS``) on values converted from the classic
 data and converts the result back. ``rebuild(full=True)`` therefore gives the
 values of :func:`~animageo.native.evaluate` (the bridge identity test).
 
-Structurally broken operations (a cycle, an op not in the registry, argument
-errors, a free op without a valid input) get no command: their elements stay
-``None``. An undefined result is ``None`` as well.
+Elements are created in the order of the operations (Kahn's order of
+``evaluate``, ties by operation ID; outputs by slot), as a DSL creates them
+line by line; the renderer breaks z-index ties by this order. Structurally
+broken operations (a cycle, an op not in the registry, argument errors, a
+free op without a valid input) get no command: their elements, created last
+in ID order, stay ``None``. An undefined result is ``None`` as well.
 
 This module imports ``animageo.geo`` (and numpy) inside its functions only,
 so ``import animageo.native`` stays free of the classic code; ``animageo.geo``
@@ -319,14 +322,18 @@ def build_construction(doc, *, inputs=None, seed=None):
             free_value = values_in[outs[0]]
             construction.add(Element(tparam_of, Point([0.0, 0.0]), tparam=float(free_value['value'])))
             created.add(outs[0])
+        for el_id in outs:              # elements in construction order, as a DSL would create them
+            if el_id not in created:
+                construction.add(Element(names.by_id[el_id], None))
+                created.add(el_id)
         runner = _Runner(construction, op['op'], layout,
                          [elements[e]['producer']['slot'] for e in outs],
                          [elements[e]['type'] for e in outs], tol,
                          free_value=free_value, path_frame=path_frame, tparam_of=tparam_of)
         construction.add(NativeCommand(op['op'], input_names, [names.by_id[e] for e in outs], op_id, runner))
 
-    for el_id in sorted(elements):
-        if el_id not in created and construction.element(names.by_id[el_id]) is None:
+    for el_id in sorted(elements):      # elements of broken operations
+        if el_id not in created:
             construction.add(Element(names.by_id[el_id], None))
     return construction, names
 

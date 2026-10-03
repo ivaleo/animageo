@@ -1162,6 +1162,57 @@ class AnimaGeoScene(MovingCameraScene):
         if self.style_config.overlay.label_placement.get('enabled'):
             self.autoPlaceLabels()
 
+    def loadDocument(self, doc, style=None, import_policy=None,
+                     reference=None, content=None, export=None, *,
+                     inputs=None, debug=False):
+        """Load an ``animageo-construction/v1`` document (``animageo.native``).
+
+        The analogue of :meth:`loadGGB`: the source view comes from the
+        document's ``viewDefaults.bounds`` (``native.source_view``) instead of
+        the applet window, the construction from the bridge
+        (``animageo.native.kernel.bridge``: element ``e_<id>`` per document
+        element, ``self.native_names`` maps IDs and names), and
+        ``appearance`` (visibility, labels, style overrides) is applied before
+        :meth:`applyStyle`. ``inputs`` override free input values.
+        ``style``/``reference``/``content``/``export`` are as in
+        :meth:`loadGGB`. Issues of ``appearance`` are kept in
+        ``self.native_diagnostics``.
+        """
+        from .native.document import as_document
+        from .native.kernel.bridge import build_construction
+        from .native.rendering import appearance_plan, source_view
+
+        doc = as_document(doc)
+        self.resetScene()
+        view = source_view(doc)
+        # Replaces what an earlier .ggb left (background, fontSize); the source
+        # unit doubles as ptUnit_ggb, so label offsets are world units.
+        self.style.export = dict(view)
+        self.style.export['ptUnit_ggb'] = view['ptUnit']
+        construction, names = build_construction(doc, inputs=inputs)
+        self.geo = construction
+        self.native_names = names
+        self._construction_source = {'kind': 'native', 'documentId': doc.document_id}
+        construction.log_unsupported = bool(debug)
+        construction.rebuild(debug=debug, full=True)
+        plan, diagnostics = appearance_plan(doc, view['ptUnit'])
+        for el_id, entry in plan.items():
+            elem = construction.element(names.by_id[el_id])
+            elem.visible = entry['visible']
+            for key, value in entry['style'].items():
+                elem.style[key] = value
+        self.native_diagnostics = diagnostics
+        self.applyStyle(
+            style=style,
+            import_policy=import_policy,
+            reference=reference,
+            content=content,
+            export=export,
+        )
+        self.addAllGeometry(show=True)
+        if self.style_config.overlay.label_placement.get('enabled'):
+            self.autoPlaceLabels()
+
     def autoPlaceLabels(self, dynamic: bool = False):
         """Run automatic label placement to minimize overlaps.
 
@@ -3270,6 +3321,8 @@ class AnimaGeoScene(MovingCameraScene):
         )
         if label is None:
             return None
+        # The spot the label is attached to (scene units), for render reports.
+        label._animageo_label_anchor = (float(pos[0]), float(pos[1]))
         # P2-A: draw the leader connector (attach → anchor, scene MU) for a
         # displaced label. Thin, label-coloured, just under the text z-tier.
         leader = elem.style.get('_leader') if hasattr(elem, 'style') else None

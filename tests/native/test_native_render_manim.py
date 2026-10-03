@@ -1,0 +1,320 @@
+"""``native.render`` and ``AnimaGeoScene.loadDocument`` (needs manim and LaTeX)."""
+import math
+import re
+import struct
+from collections import Counter
+
+import pytest
+
+pytest.importorskip('manim')
+pytestmark = pytest.mark.manim
+
+from animageo import AnimaGeoScene, native  # noqa: E402
+from tests.native.conftest import DocBuilder, path_input, point_input  # noqa: E402
+
+BOUNDS = (-6, -4, 6, 4)
+
+
+def builder(doc_id, bounds=BOUNDS):
+    return DocBuilder(doc_id, registry_version='1.1', bounds=bounds)
+
+
+def no_labels(doc):
+    doc['appearance'] = {e: {'label': {'mode': 'none'}} for e in doc['elements']}
+    return doc
+
+
+def path_tags(svg_path):
+    with open(svg_path, encoding='utf-8') as fh:
+        return Counter(re.findall(r'<path[^>]*>', fh.read()))
+
+
+def to_px(report, x, y):
+    canvas = report['canvas']
+    return canvas['origin'][0] + canvas['unit'] * x, canvas['origin'][1] - canvas['unit'] * y
+
+
+def center(box):
+    return (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
+
+
+# ── report ───────────────────────────────────────────────────────────────
+
+def demo():
+    b = builder('render_demo')
+    b.free('A', -4, -2).free('B', 4, -2).free('C', 1, 3).free('F', 2, 2)
+    b.polygon('T', 'A', 'B', 'C', sides=[(1, 'a'), (2, 'b'), (3, 'c')])
+    b.midpoint('M', 'A', 'B').circle('k', 'M', 'C').on_path('P', 'k', 1.0)
+    b.circle('z', 'F', 'F')                                   # zero radius: undefined
+    b.doc['appearance'] = {'k': {'overrides': {'stroke': '#cc3333', 'bogus': 1}},
+                           'M': {'visible': False}}
+    return b.doc
+
+
+def test_svg_and_report(tmp_path):
+    doc = demo()
+    result = native.render(doc, out=tmp_path / 'a.svg')
+    assert result.fmt == 'svg' and result.path == str(tmp_path / 'a.svg')
+    text = (tmp_path / 'a.svg').read_text(encoding='utf-8')
+    report = result.report
+    assert report['format'] == 'animageo-render-report/v1'
+    assert report['documentId'] == 'render_demo'
+    assert report['kernel'] == {'library': native_version(), 'registry': native.__registry_version__}
+    assert report['canvas'] == {'width': 800, 'height': 533, 'unit': 800 / 12,
+                                'origin': [400.0, 4 * 800 / 12]}
+    assert f'width="{report["canvas"]["width"]}" height="{report["canvas"]["height"]}"' in text
+    assert set(report['elements']) == set(doc['elements'])
+    states = native.evaluate(doc).elements
+    for el_id, record in report['elements'].items():
+        assert record['state'] == states[el_id]['state']
+    # a point: its box is centred on its position, its name label is near it
+    a = report['elements']['A']
+    assert center(a['box']) == pytest.approx(to_px(report, -4, -2), abs=0.01)
+    assert a['label']['text'] == '$A$'
+    assert a['label']['anchor'] == pytest.approx(list(to_px(report, -4, -2)), abs=0.01)
+    assert math.dist(center(a['label']['box']), a['label']['anchor']) < 30
+    # the polygon spans its vertices; sides have no labels by default
+    (x0, y0), (x1, y1) = to_px(report, -4, 3), to_px(report, 4, -2)
+    assert report['elements']['T']['box'] == pytest.approx([x0, y0, x1, y1], abs=0.01)
+    assert report['elements']['a']['label'] is None
+    # hidden and undefined elements are not drawn
+    assert report['elements']['M'] == {'state': 'defined', 'visible': False, 'box': None, 'label': None}
+    assert report['elements']['z'] == {'state': 'undefined', 'visible': False, 'box': None, 'label': None}
+    # an override reaches the drawing; an unknown key is reported
+    assert 'stroke="rgb(80%, 20%, 20%)"' in text
+    assert report['diagnostics'] == [{'code': 'unknown_style_key', 'elementId': 'k', 'key': 'bogus'}]
+    assert report['overlaps'] == []
+
+
+def native_version():
+    import animageo
+    return animageo.__version__
+
+
+def test_png_and_pdf(tmp_path):
+    doc = demo()
+    png = native.render(doc, fmt='png', out=tmp_path / 'a.png', report=False)
+    assert png.report is None
+    data = (tmp_path / 'a.png').read_bytes()
+    assert data[:8] == b'\x89PNG\r\n\x1a\n'
+    assert struct.unpack('>II', data[16:24]) == (800, 533)
+    pdf = native.render(doc, fmt='pdf', out=tmp_path / 'a.pdf')
+    assert (tmp_path / 'a.pdf').read_bytes()[:5] == b'%PDF-'
+    assert pdf.report['canvas']['width'] == 800
+
+
+def test_temporary_output():
+    result = native.render(demo(), report=False)
+    try:
+        assert result.path.endswith('.svg')
+        with open(result.path, encoding='utf-8') as fh:
+            assert fh.read().lstrip().startswith('<?xml')
+    finally:
+        import os
+        os.unlink(result.path)
+
+
+def test_export_layout_and_inputs(tmp_path):
+    doc = demo()
+    layout = {'export': {'size': {'width': 400, 'height': 300}, 'fit': 'contain'}}
+    report = native.render(doc, export_layout=layout, out=tmp_path / 'b.svg',
+                           inputs={'A': point_input(-5, -3)}).report
+    canvas = report['canvas']
+    assert (canvas['width'], canvas['height']) == (400, 300)
+    assert canvas['unit'] == pytest.approx(400 / 12)
+    assert center(report['elements']['A']['box']) == pytest.approx(to_px(report, -5, -3), abs=0.01)
+    assert 'width="400" height="300"' in (tmp_path / 'b.svg').read_text(encoding='utf-8')
+
+
+def test_path_parameter_input_moves_the_point(tmp_path):
+    doc = demo()
+    first = native.render(doc, out=tmp_path / 'c.svg').report['elements']['P']['box']
+    second = native.render(doc, out=tmp_path / 'd.svg', inputs={'P': path_input(2.5)}).report
+    ev = native.evaluate(doc, inputs={'P': path_input(2.5)}).elements['P']['value']
+    assert center(second['elements']['P']['box']) == pytest.approx(to_px(second, ev['x'], ev['y']), abs=0.01)
+    assert center(first) != pytest.approx(center(second['elements']['P']['box']), abs=1)
+
+
+def test_label_offset_and_overlaps(tmp_path):
+    b = builder('labels')
+    b.free('A', 0, 0).free('B', 0.05, 0).free('C', 3, 0)
+    b.doc['appearance'] = {'C': {'label': {'mode': 'name', 'offsetWorld': [1.0, 0.5]}}}
+    report = native.render(b.doc, out=tmp_path / 'e.svg').report
+    assert report['overlaps'] == [['A', 'B']]
+    plain = native.render({**b.doc, 'appearance': {}}, out=tmp_path / 'f.svg').report
+    moved, still = report['elements']['C']['label']['box'], plain['elements']['C']['label']['box']
+    unit = report['canvas']['unit']
+    assert moved[0] - still[0] == pytest.approx(1.0 * unit, abs=0.5)
+    assert moved[1] - still[1] == pytest.approx(-0.5 * unit, abs=0.5)
+
+
+def test_value_and_caption_labels(tmp_path):
+    b = builder('values')
+    b.free('A', 0, 0).free('B', 3, 4).segment('s', 'A', 'B')
+    b.doc['appearance'] = {'s': {'label': {'mode': 'name_value'}},
+                           'B': {'label': {'mode': 'caption', 'text': '$B_1$'}}}
+    report = native.render(b.doc, out=tmp_path / 'g.svg').report
+    assert report['elements']['s']['label']['text'] == '$s = 5$'
+    assert report['elements']['B']['label']['text'] == '$B_1$'
+
+
+def test_style_config_dict_and_preset(tmp_path):
+    doc = demo()
+    native.render(doc, style_config='book_blue', out=tmp_path / 'h.svg', report=False)
+    native.render(doc, style_config={'presets': {'color': {'strong': '#123456'}}},
+                  out=tmp_path / 'i.svg', report=False)
+    assert 'rgb(7.058824%, 20.392157%, 33.72549%)' in (tmp_path / 'i.svg').read_text(encoding='utf-8')
+
+
+def test_load_document_on_a_scene():
+    scene = AnimaGeoScene()
+    doc = demo()
+    scene.loadDocument(doc)
+    names = scene.native_names
+    assert scene.geo.element(names.by_id['A']).data.coords.tolist() == [-4.0, -2.0]
+    assert scene.mobject(names.by_id['k']) is not None
+    assert scene.mobject(names.by_id['M']) is None
+    assert scene.style.export['ptUnit_ggb'] == native.source_view(doc)['ptUnit']
+    # loading again replaces the construction
+    b = builder('second')
+    b.free('Q', 1, 1)
+    scene.loadDocument(b.doc)
+    assert [e.name for e in scene.geo.elements if e.name.startswith('e_')] == ['e_Q']
+
+
+# ── same drawing as the classic DSL ──────────────────────────────────────
+#
+# The DSL code lists the objects in the order the bridge creates them
+# (Kahn's order of the operations, ties by operation ID): the renderer breaks
+# z-index ties by that order, and cairo merges a fill and a stroke drawn one
+# right after the other into one <path>.
+
+def dsl_svg(code, bounds, path):
+    from animageo.parsers import dsl
+    view_doc = builder('view', bounds).doc
+    view = native.source_view(view_doc)
+    scene = AnimaGeoScene()
+    scene.resetScene()
+    scene.style.export = dict(view)
+    scene.style.export['ptUnit_ggb'] = view['ptUnit']
+    dsl.run(scene.geo, code)
+    scene.geo.rebuild(full=True)
+    for elem in scene.geo.elements:
+        elem.style['label_visible'] = False
+    scene.applyStyle()
+    scene.addAllGeometry(show=True)
+    scene.exportSVG(str(path))
+    return path
+
+
+def pair_triangle():
+    b = builder('triangle')
+    b.free('A', -4, -2).free('B', 4, -2).free('C', 1, 3)
+    b.polygon('T', 'A', 'B', 'C', sides=[(1, 'a'), (2, 'b'), (3, 'c')])
+    return b.doc, 'A = Point(-4, -2)\nB = Point(4, -2)\nC = Point(1, 3)\nT, a, b, c = Polygon(A, B, C)\n'
+
+
+def pair_midpoints():
+    b = builder('midpoints')
+    b.free('A', -4, -2).free('B', 4, -1).free('C', 0, 3)
+    b.segment('s', 'A', 'B').segment('t', 'B', 'C').midpoint('M', 'A', 'B').midpoint('N', 'B', 'C')
+    b.segment('m', 'M', 'N')
+    return b.doc, ('A = Point(-4, -2)\nB = Point(4, -1)\nC = Point(0, 3)\nM = Midpoint(A, B)\n'
+                   'N = Midpoint(B, C)\nm = Segment(M, N)\ns = Segment(A, B)\nt = Segment(B, C)\n')
+
+
+def pair_line_ray():
+    b = builder('line_ray')
+    b.free('A', -3, -2).free('B', 2, 1).free('C', 0, 2).free('D', 1, -1)
+    b.line('l', 'A', 'B').ray('r', 'C', 'D')
+    return b.doc, ('A = Point(-3, -2)\nB = Point(2, 1)\nC = Point(0, 2)\nD = Point(1, -1)\n'
+                   'l = Line(A, B)\nr = Ray(C, D)\n')
+
+
+def pair_circle():
+    b = builder('circle')
+    b.free('O', 0.5, -0.5).free('R', 3, 1).circle('c', 'O', 'R').segment('s', 'O', 'R')
+    return b.doc, 'O = Point(0.5, -0.5)\nR = Point(3, 1)\nc = Circle(O, R)\ns = Segment(O, R)\n'
+
+
+def pair_line_line():
+    b = builder('line_line')
+    b.free('A', -4, -3).free('B', 3, 2).free('C', -4, 2).free('D', 4, -1)
+    b.line('l', 'A', 'B').line('m', 'C', 'D').intersect('X', 'l', 'm')
+    return b.doc, ('A = Point(-4, -3)\nB = Point(3, 2)\nC = Point(-4, 2)\nD = Point(4, -1)\n'
+                   'l = Line(A, B)\nm = Line(C, D)\nX = Intersect(l, m)\n')
+
+
+def pair_line_circle():
+    b = builder('line_circle')
+    b.free('A', -5, -1).free('B', 5, 1).free('O', 0, 0).free('R', 3, 0)
+    b.line('l', 'A', 'B').circle('c', 'O', 'R').line_circle('P', 'Q', 'l', 'c')
+    return b.doc, ('A = Point(-5, -1)\nB = Point(5, 1)\nO = Point(0, 0)\nR = Point(3, 0)\n'
+                   'c = Circle(O, R)\nl = Line(A, B)\nP, Q = Intersect(l, c)\n')
+
+
+def pair_circle_circle():
+    b = builder('circle_circle')
+    b.free('O', -1, 0).free('R', 2, 0).free('K', 1.5, 0.5).free('S', 1.5, 3)
+    b.circle('c', 'O', 'R').circle('k', 'K', 'S').circle_circle('P', 'Q', 'c', 'k')
+    return b.doc, ('K = Point(1.5, 0.5)\nO = Point(-1, 0)\nR = Point(2, 0)\nS = Point(1.5, 3)\n'
+                   'c = Circle(O, R)\nk = Circle(K, S)\nP, Q = Intersect(c, k)\n')
+
+
+def pair_other_point():
+    doc, code = pair_circle_circle()
+    b = builder('other_point')
+    b.doc.update({k: v for k, v in doc.items() if k in ('operations', 'elements', 'inputs')})
+    b.other_than('Z', 'c', 'k', 'P')
+    b.doc['appearance'] = {'Q': {'visible': False}}
+    return b.doc, code
+
+
+def pair_on_paths():
+    b = builder('on_paths')
+    b.free('A', -4, -2).free('B', 4, 1).free('O', 0, 0).free('R', 2, 2)
+    b.segment('s', 'A', 'B').circle('c', 'O', 'R').on_path('P', 's', 0.25).on_path('Q', 'c', 1.0)
+    values = native.evaluate(b.doc).elements
+    p, q = values['P']['value'], values['Q']['value']
+    return b.doc, ('A = Point(-4, -2)\nB = Point(4, 1)\nO = Point(0, 0)\nR = Point(2, 2)\n'
+                   f'c = Circle(O, R)\nQ = Point({q["x"]!r}, {q["y"]!r})\ns = Segment(A, B)\n'
+                   f'P = Point({p["x"]!r}, {p["y"]!r})\n')
+
+
+def pair_quad():
+    b = builder('quad')
+    b.free('A', -4, -3).free('B', 3, -2).free('C', 4, 2).free('D', -2, 3)
+    b.polygon('T', 'A', 'B', 'C', 'D', sides=[(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd')])
+    return b.doc, ('A = Point(-4, -3)\nB = Point(3, -2)\nC = Point(4, 2)\nD = Point(-2, 3)\n'
+                   'T, a, b, c, d = Polygon(A, B, C, D)\n')
+
+
+PAIRS = [pair_triangle, pair_midpoints, pair_line_ray, pair_circle, pair_line_line, pair_line_circle,
+         pair_circle_circle, pair_other_point, pair_on_paths, pair_quad]
+
+
+@pytest.mark.parametrize('pair', PAIRS, ids=[p.__name__[5:] for p in PAIRS])
+def test_same_paths_as_the_dsl(pair, tmp_path):
+    doc, code = pair()
+    appearance = doc.get('appearance', {})
+    no_labels(doc)
+    for el_id, entry in appearance.items():
+        doc['appearance'][el_id].update(entry)
+    native.render(doc, out=tmp_path / 'native.svg', report=False)
+    dsl_svg(code, BOUNDS, tmp_path / 'dsl.svg')
+    native_paths, dsl_paths = path_tags(tmp_path / 'native.svg'), path_tags(tmp_path / 'dsl.svg')
+    assert sum(native_paths.values()) > 0
+    assert native_paths == dsl_paths
+
+
+def test_cyrillic_labels(tmp_path):
+    b = builder('cyrillic')
+    b.free('A', 0, 0).free('B', 3, 0)
+    b.doc['elements']['A']['displayName'] = 'Б'
+    b.doc['appearance'] = {'B': {'label': {'mode': 'caption', 'text': 'точка $B$'}}}
+    report = native.render(b.doc, out=tmp_path / 'ru.svg').report
+    assert report['elements']['A']['label']['text'] == '$Б$'
+    assert report['elements']['B']['label']['text'] == 'точка $B$'
+    for el_id in 'AB':
+        box = report['elements'][el_id]['label']['box']
+        assert box[2] > box[0] and box[3] > box[1]

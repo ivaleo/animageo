@@ -102,6 +102,7 @@ def _resolved_imports(path):
 # (``import animageo.native`` never loads it).
 LAZY_ALLOWED = {
     'animageo/native/kernel/bridge.py': (GEO, 'numpy'),
+    'animageo/native/rendering.py': (CLASSIC, 'animageo.labels', 'cairosvg'),
 }
 
 

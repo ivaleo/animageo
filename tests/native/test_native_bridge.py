@@ -162,3 +162,10 @@ def test_a_moved_object_is_read_from_its_fields():
     obj = bridge.to_classic('point', {'x': 1.0, 'y': 2.0})
     obj.translate([1.0, 1.0])
     assert bridge.from_classic('point', obj) == {'x': 2.0, 'y': 3.0}
+
+
+def test_elements_follow_the_operation_order():
+    construction, names = bridge.build_construction(chain_doc())
+    order = [names.by_name[e.name] for e in construction.elements if e.name in names.by_name]
+    # Kahn's order of the operations, ties by operation ID; outputs by slot
+    assert order == ['A', 'O', 'R', 'c', 'P', 'l', 'X1', 'X2', 's', 'Q', 'M']

@@ -16,9 +16,11 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     native.dumps(doc), native.content_hash(doc)
     native.closure(doc, ["A"])               # dependents in topological order
     doc2, effects = native.delete(doc, ["A"])  # pure edits: delete, redefine, rename
+    native.render(doc, fmt="svg", out="a.svg")  # needs manim: RenderResult(path, fmt, report)
 
 No module of this package imports manim, ``animageo.animageo`` or
-``animageo.geo``.
+``animageo.geo`` at import time; the bridge (``kernel/bridge.py``) and
+:func:`render` load the classic code inside their functions.
 """
 from __future__ import annotations
 
@@ -50,6 +52,7 @@ from .kernel import paths as _paths
 from .kernel.evaluate import EVALUATED_FORMAT, Evaluated, producer_values
 from .kernel.evaluate import evaluate as _evaluate
 from .registry import REGISTRY_VERSION, Registry, registry, signature_hash
+from .rendering import RenderResult, render, source_view
 
 __registry_version__ = REGISTRY_VERSION
 
@@ -64,6 +67,7 @@ __all__ = [
     'LoadError',
     'NativeDocument',
     'Registry',
+    'RenderResult',
     '__registry_version__',
     'canonical_json',
     'check',
@@ -80,8 +84,10 @@ __all__ = [
     'redefine',
     'registry',
     'rename',
+    'render',
     'run_checks',
     'signature_hash',
+    'source_view',
     'validate',
 ]
 
