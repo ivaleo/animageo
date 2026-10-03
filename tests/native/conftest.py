@@ -21,14 +21,18 @@ def point_input(x, y):
     return {'kind': 'point', 'value': [x, y]}
 
 
+def path_input(t):
+    return {'kind': 'pathParameter', 'value': t}
+
+
 class DocBuilder:
     """Small builder of animageo-construction/v1 documents for tests."""
 
-    def __init__(self, document_id='doc', bounds=(-10, -10, 10, 10)):
+    def __init__(self, document_id='doc', bounds=(-10, -10, 10, 10), registry_version='1.0'):
         self.doc = {
             'format': 'animageo-construction/v1',
             'documentId': document_id,
-            'operationRegistryVersion': '1.0',
+            'operationRegistryVersion': registry_version,
             'operations': {},
             'elements': {},
             'inputs': {},
@@ -76,6 +80,30 @@ class DocBuilder:
     def intersect(self, el_id, first, second):
         return self.two('intersect.line_line', el_id, first, second, 'point',
                         slots=('first', 'second'))
+
+    def ray(self, el_id, origin, through):
+        return self.two('ray.by_points', el_id, origin, through, 'ray', slots=('origin', 'through'))
+
+    def line_circle(self, first_id, second_id, line, circle, op_id=None):
+        return self.op(op_id or f'op_{first_id}_{second_id}', 'intersect.line_circle',
+                       {'line': ref(line), 'circle': ref(circle)},
+                       [('first', first_id, 'point'), ('second', second_id, 'point')])
+
+    def circle_circle(self, first_id, second_id, first, second, op_id=None):
+        return self.op(op_id or f'op_{first_id}_{second_id}', 'intersect.circle_circle',
+                       {'first': ref(first), 'second': ref(second)},
+                       [('first', first_id, 'point'), ('second', second_id, 'point')])
+
+    def other_than(self, el_id, first, second, known):
+        return self.op('op_' + el_id, 'intersect.other_than',
+                       {'first': ref(first), 'second': ref(second), 'known': ref(known)},
+                       [('point', el_id, 'point')])
+
+    def on_path(self, el_id, path, t=None):
+        self.op('op_' + el_id, 'point.on_path', {'path': ref(path)}, [('point', el_id, 'point')])
+        if t is not None:
+            self.doc['inputs'][el_id] = path_input(t)
+        return self
 
     def polygon(self, el_id, *vertices, sides=()):
         outputs = [('polygon', el_id, 'polygon')]

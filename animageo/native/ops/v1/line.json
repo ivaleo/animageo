@@ -83,5 +83,50 @@
     },
     "math": "docs/native/ops/line.by_points.md",
     "signatureHash": "sha256:fcebec1d748517206963944a677642a99ed3277715db0b080587c3f92d4f1b6a"
+  },
+  {
+    "op": "ray.by_points",
+    "status": "stable",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "origin",
+        "type": "point"
+      },
+      {
+        "slot": "through",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "ray",
+        "type": "ray"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "origin",
+        "text": "the ray starts at origin: |origin of the ray - origin|"
+      },
+      {
+        "id": "through",
+        "text": "the ray passes through the point through: distance from through to the carrier line"
+      }
+    ],
+    "orientation": "origin_to_through",
+    "pathParam": null,
+    "stepKind": "ray",
+    "phrases": {
+      "ru": "{ray} — луч {origin}{through}"
+    },
+    "math": "docs/native/ops/ray.by_points.md",
+    "signatureHash": "sha256:799d3583f4263ffd7c7c9c71236851e44764de7e5136e02284c49fb4898bfa80"
   }
 ]

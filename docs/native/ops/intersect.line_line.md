@@ -1,10 +1,10 @@
 # `intersect.line_line` — intersection of two linear objects
 
-Registry 1.0 · group `intersect` · see [kernel.md](../kernel.md).
+Registry 1.0 (rays since 1.1) · group `intersect` · see [kernel.md](../kernel.md).
 
 | | |
 |---|---|
-| inputs | `first: linear`, `second: linear` (`linear` = `line` \| `segment`) |
+| inputs | `first: linear`, `second: linear` (`linear` = `line` \| `segment` \| `ray`) |
 | outputs | `point: point` |
 | undefined | `parallel`, `coincident`, `outside_part`, `zero_length`, `upstream` |
 | checks | `incident_both` |
@@ -14,6 +14,7 @@ Registry 1.0 · group `intersect` · see [kernel.md](../kernel.md).
 Each input is turned into a carrier `(p, dir, L)`, `first` before `second`:
 
 - `line {p, dir}` → `p`, `dir`, no `L`;
+- `ray {origin, dir}` → `p = origin`, `dir`, no `L`, a ray (registry 1.1);
 - `segment {a, b}`:
 
       dx = bx − ax
@@ -37,13 +38,20 @@ The first slot that fails decides the result.
     t = (wx·d2y − wy·d2x) / cr
     x = p1x + t·d1x
     y = p1y + t·d1y
-    for slot in (first, second), when the input is a segment:
-        s = (x − px)·dirx + (y − py)·diry    (its carrier)
-        if s < −tol.decide or s > L + tol.decide:
-            → undefined "outside_part", detail {"slot": slot}   (the first such slot)
+    for slot in (first, second):
+        when the input is a ray:
+            s = (x − px)·dirx + (y − py)·diry    (its carrier)
+            if s < −tol.decide:
+                → undefined "outside_part", detail {"slot": slot}
+        when the input is a segment:
+            s = (x − px)·dirx + (y − py)·diry    (its carrier)
+            if s < −tol.decide or s > L + tol.decide:
+                → undefined "outside_part", detail {"slot": slot}
+        (the first slot outside its part decides)
     point = {x, y}
 
-An intersection exactly at a segment end is inside the segment.
+An intersection exactly at a segment end or at the origin of a ray is inside
+the part.
 
 ## Degeneracy decisions
 
@@ -53,6 +61,7 @@ An intersection exactly at a segment end is inside the segment.
 | `parallel` | `cr` | `1e-10` (dimensionless) |
 | `coincident` (only when parallel) | `dist` | `tol.decide` (length) |
 | `outside_part` (per segment input, until the first outside) | `s` and `s − L` | `tol.decide` (length) |
+| `outside_part` (per ray input, until the first outside) | `s` | `tol.decide` (length) |
 
 ## Checks
 

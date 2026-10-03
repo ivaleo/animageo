@@ -42,5 +42,170 @@
     },
     "math": "docs/native/ops/intersect.line_line.md",
     "signatureHash": "sha256:be74b127f909906e8dfe346f7ad79043e483defde31d0aac29628ae550f925d2"
+  },
+  {
+    "op": "intersect.line_circle",
+    "status": "stable",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "line",
+        "type": "linear"
+      },
+      {
+        "slot": "circle",
+        "type": "circular"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "first",
+        "type": "point"
+      },
+      {
+        "slot": "second",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "line_param_order",
+      "slots": [
+        "first",
+        "second"
+      ],
+      "text": "first has the smaller parameter along the orientation of line; slots are fixed on the carrier before the part filter; a tangency fills both slots"
+    },
+    "undefined": [
+      "no_intersection",
+      "outside_part",
+      "zero_length",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "every point of the result lies on both inputs: the largest distance of a result point to the carrier line of a linear input or to the circle (| |X - c| - r |)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{first}, {second} — точки пересечения {line} и {circle}"
+    },
+    "math": "docs/native/ops/intersect.line_circle.md",
+    "signatureHash": "sha256:f02f846a64efd9254acce5e15862bd73b76e1da86dd91851d65720ef0cbdb8c8"
+  },
+  {
+    "op": "intersect.circle_circle",
+    "status": "stable",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "circular"
+      },
+      {
+        "slot": "second",
+        "type": "circular"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "first",
+        "type": "point"
+      },
+      {
+        "slot": "second",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "circle_side",
+      "slots": [
+        "first",
+        "second"
+      ],
+      "text": "first lies to the left of the directed segment from the centre of first to the centre of second; a tangency fills both slots"
+    },
+    "undefined": [
+      "no_intersection",
+      "concentric",
+      "coincident",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "every point of the result lies on both inputs: the largest distance of a result point to the carrier line of a linear input or to the circle (| |X - c| - r |)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{first}, {second} — точки пересечения {first} и {second}"
+    },
+    "math": "docs/native/ops/intersect.circle_circle.md",
+    "signatureHash": "sha256:aaf9cd94fe4397efd5334ab77080571b7bec01cd314cc8ee25ff781cbdbfb657"
+  },
+  {
+    "op": "intersect.other_than",
+    "status": "stable",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "curve"
+      },
+      {
+        "slot": "second",
+        "type": "curve"
+      },
+      {
+        "slot": "known",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "other_than",
+      "slots": [
+        "point"
+      ],
+      "text": "the solution of first and second other than known; tangency at known gives known"
+    },
+    "undefined": [
+      "branch_absent",
+      "no_intersection",
+      "parallel",
+      "coincident",
+      "concentric",
+      "outside_part",
+      "zero_length",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "every point of the result lies on both inputs: the largest distance of a result point to the carrier line of a linear input or to the circle (| |X - c| - r |)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{point} — вторая точка пересечения {first} и {second} (кроме {known})"
+    },
+    "math": "docs/native/ops/intersect.other_than.md",
+    "signatureHash": "sha256:2f4d6797ee18797329eccd116a221f147f701ae15d6da0892528cb553b9700cd"
   }
 ]

@@ -1,4 +1,4 @@
-"""``segment.by_points``, ``line.by_points`` (docs/native/ops/*.md)."""
+"""``segment.by_points``, ``line.by_points``, ``ray.by_points`` (docs/native/ops/*.md)."""
 from __future__ import annotations
 
 import math
@@ -31,3 +31,18 @@ def line(args, ctx):
     diry = dy / length
     k = ax * dirx + ay * diry
     return {'line': {'p': [ax - k * dirx, ay - k * diry], 'dir': [dirx, diry]}}
+
+
+@op('ray.by_points')
+def ray(args, ctx):
+    o = args['origin'].value
+    t = args['through'].value
+    ox, oy = o['x'], o['y']
+    dx = t['x'] - ox
+    dy = t['y'] - oy
+    length = math.hypot(dx, dy)
+    tol = ctx.tol.decide_length
+    ctx.decide('coincident_points', length, tol)
+    if length <= tol:
+        return {'ray': Undefined('coincident_points')}
+    return {'ray': {'origin': [ox, oy], 'dir': [dx / length, dy / length]}}

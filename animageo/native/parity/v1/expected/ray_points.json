@@ -1,0 +1,851 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ray_points",
+  "registry": "1.1",
+  "generatedBy": "animageo 1.8.0a1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ray_points",
+    "operationRegistryVersion": "1.1",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "ray.by_points",
+        "args": {
+          "origin": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "P"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "ray",
+            "elementId": "r"
+          }
+        ]
+      },
+      "op_m": {
+        "id": "op_m",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "m"
+          }
+        ]
+      },
+      "op_X": {
+        "id": "op_X",
+        "op": "intersect.line_line",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "r"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "m"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "X"
+          }
+        ]
+      },
+      "op_Y": {
+        "id": "op_Y",
+        "op": "intersect.line_line",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "m"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "r"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Y"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "r": {
+        "id": "r",
+        "type": "ray",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "ray"
+        },
+        "displayName": "r"
+      },
+      "m": {
+        "id": "m",
+        "type": "line",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "line"
+        },
+        "displayName": "m"
+      },
+      "X": {
+        "id": "X",
+        "type": "point",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "point"
+        },
+        "displayName": "X"
+      },
+      "Y": {
+        "id": "Y",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Y",
+          "slot": "point"
+        },
+        "displayName": "Y"
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "P": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          2,
+          -3
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          2,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "inside",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 3.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "Y": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_X:incident_both": "passed",
+        "op_Y:incident_both": "passed",
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed"
+      }
+    },
+    {
+      "name": "oblique",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            -1,
+            -2
+          ]
+        },
+        "P": {
+          "kind": "point",
+          "value": [
+            3,
+            1
+          ]
+        },
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            4
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            4,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 4.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -2.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 1.0
+          }
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.9999999999999996,
+            "y": 0.9999999999999996
+          }
+        },
+        "Y": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 1.0
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.9999999999999996,
+              2.0000000000000004
+            ],
+            "dir": [
+              0.7071067811865475,
+              -0.7071067811865475
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              -1.0,
+              -2.0
+            ],
+            "dir": [
+              0.8,
+              0.6
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_X:incident_both": "passed",
+        "op_Y:incident_both": "passed",
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed"
+      }
+    },
+    {
+      "name": "at_origin",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            -3
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            0,
+            3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 3.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "Y": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_X:incident_both": "passed",
+        "op_Y:incident_both": "passed",
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed"
+      }
+    },
+    {
+      "name": "behind_origin",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -2,
+            -3
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            -2,
+            3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 3.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "X": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "outside_part",
+          "detail": {
+            "slot": "first"
+          }
+        },
+        "Y": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "outside_part",
+          "detail": {
+            "slot": "second"
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -2.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed"
+      }
+    },
+    {
+      "name": "parallel",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            2
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            4,
+            2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 2.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "X": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "parallel"
+        },
+        "Y": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "parallel"
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              2.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed"
+      }
+    },
+    {
+      "name": "coincident_points",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 3.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "X": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "upstream",
+          "cause": "r"
+        },
+        "Y": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "upstream",
+          "cause": "r"
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "r": {
+          "state": "undefined",
+          "type": "ray",
+          "reason": "coincident_points"
+        }
+      },
+      "checks": {
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed"
+      }
+    }
+  ]
+}

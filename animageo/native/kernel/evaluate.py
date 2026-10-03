@@ -50,6 +50,7 @@ from .numeric import Tolerances, scene_scale, tolerances
 from .ops import IMPLEMENTATIONS, OpContext
 from .values import (
     STATE_RANK,
+    Detailed,
     Input,
     Undefined,
     defined_record,
@@ -285,6 +286,11 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
                                 'message': f'{type(exc).__name__}: {exc}'})
             settle(op_id, 'error', 'internal')
             continue
+        details = {}
+        for slot, value in list(result.items()):
+            if isinstance(value, Detailed):
+                result[slot] = value.value
+                details[slot] = value.detail
         all_defined = True
         for el_id in bound.get(op_id, ()):
             slot = elements[el_id]['producer']['slot']
@@ -299,7 +305,7 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
             elif not is_finite_value(value):
                 states[el_id] = state_record('undefined', type_, 'non_finite')
             else:
-                states[el_id] = defined_record(type_, value)
+                states[el_id] = defined_record(type_, value, details.get(slot))
         for value in result.values():
             if isinstance(value, Undefined) or not is_finite_value(value):
                 all_defined = False

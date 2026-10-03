@@ -4,6 +4,7 @@
 |-----------|------------------------------------------------|
 | point     | ``{x, y}``                                     |
 | segment   | ``{a: [x, y], b: [x, y], length}``             |
+| ray       | ``{origin: [x, y], dir: [x, y]}`` (``dir`` unit) |
 | line      | ``{p: [x, y], dir: [x, y]}`` (``dir`` unit)    |
 | circle    | ``{c: [x, y], r}``                             |
 | polygon   | ``{vertices: [[x, y], ...], area}``            |
@@ -15,6 +16,7 @@ from typing import NamedTuple
 
 __all__ = [
     'Undefined',
+    'Detailed',
     'Input',
     'STATE_RANK',
     'is_finite_value',
@@ -43,11 +45,21 @@ class Undefined:
         return f'Undefined({self.reason!r}, {self.detail!r})'
 
 
+class Detailed(NamedTuple):
+    """A defined op result slot with a ``detail`` (``{"multiplicity": 2}`` for
+    a double root); evaluation records it as ``detail`` of a defined element."""
+
+    value: dict
+    detail: dict
+
+
 class Input(NamedTuple):
-    """A resolved reference argument: element type and value."""
+    """A resolved reference argument: element type and value; ``frame`` is the
+    path frame of a ``path`` slot (``kernel/paths.py``), else ``None``."""
 
     type: str
     value: dict
+    frame: object = None
 
 
 def is_finite_value(value) -> bool:
@@ -60,8 +72,11 @@ def is_finite_value(value) -> bool:
     return True
 
 
-def defined_record(type_: str, value: dict) -> dict:
-    return {'state': 'defined', 'type': type_, 'value': value}
+def defined_record(type_: str, value: dict, detail: dict | None = None) -> dict:
+    out = {'state': 'defined', 'type': type_, 'value': value}
+    if detail is not None:
+        out['detail'] = detail
+    return out
 
 
 def state_record(state: str, type_: str, reason: str, *, cause: str | None = None,

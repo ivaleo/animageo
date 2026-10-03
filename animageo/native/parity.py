@@ -99,13 +99,20 @@ def check_scene(scene) -> None:
 
 
 def margin_problems(decisions, operations) -> list:
-    """Decisions too close to their threshold: ``0 < |m| < decisionMargin · tol``."""
+    """Decisions too close to their threshold: ``0 < |m| < decisionMargin · tol``.
+
+    For a noise decision (``_numeric.json`` ``generator.noiseDecisions``)
+    ``|m| <= tol / decisionMargin`` counts as exactly on the threshold.
+    """
     factor = decision_margin()
+    noise = set(registry().numeric['generator'].get('noiseDecisions', ()))
     problems = []
     for op_id, name, value, tol in decisions:
         if not math.isfinite(value):
             continue
         limit = factor * tol
+        if name in noise and abs(value) <= tol / factor:
+            continue
         if 0 < abs(value) < limit:
             op_name = operations.get(op_id, {}).get('op', '?')
             problems.append(

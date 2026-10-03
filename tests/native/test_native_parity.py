@@ -14,6 +14,12 @@ SCENES = sorted(p.name for p in SCENES_DIR.glob('*.json'))
 REQUIRED_SCENES = {
     'basic_points', 'segment_line', 'circle', 'intersect_lines', 'intersect_segments',
     'polygon_triangle', 'polygon_quad', 'upstream_chain', 'graph_errors',
+    # registry 1.1
+    'ray_points', 'ray_segment_cross', 'line_circle_order', 'line_circle_tangent', 'line_circle_miss',
+    'segment_circle_part', 'segment_circle_zero', 'ray_circle', 'circle_circle_sides',
+    'circle_circle_tangent_out', 'circle_circle_tangent_in', 'circle_circle_apart',
+    'circle_circle_concentric', 'other_than_line_circle', 'other_than_tangent', 'other_than_circles',
+    'other_than_absent',
 }
 
 
@@ -51,7 +57,7 @@ def test_fixture_shape():
     for name in SCENES:
         fixture = read_json(EXPECTED_DIR / name)
         assert list(fixture) == ['format', 'id', 'registry', 'generatedBy', 'document', 'cases']
-        assert fixture['registry'] == '1.0'
+        assert fixture['registry'] == native.__registry_version__
         assert fixture['generatedBy'] == 'animageo ' + native_version()
         assert fixture['document'] == read_json(SCENES_DIR / name)['document']
         elements = set(fixture['document']['elements'])
@@ -146,6 +152,52 @@ class TestRefusal:
         b.segment('s', 'A', 'B').line('m', 'C', 'D').intersect('X', 's', 'm')
         with pytest.raises(parity.ParityError, match='zero_length'):
             parity.generate_scene(scene(b.doc, {'name': 'near'}))
+
+    def _circle_and_line(self, y, registry_version='1.1'):
+        b = DocBuilder('near_tangent', registry_version=registry_version)
+        b.free('O', 0, 0).free('R', 0, 2).free('A', -3, y).free('B', 3, y)
+        return b.circle('c', 'O', 'R').line('l', 'A', 'B').line_circle('P', 'Q', 'l', 'c')
+
+    def test_tangent_line_circle(self):
+        with pytest.raises(parity.ParityError, match='tangent'):
+            parity.generate_scene(scene(self._circle_and_line(2 + 1e-8).doc, {'name': 'near'}))
+
+    def test_tangent_circle_circle(self):
+        b = DocBuilder('near_touch', registry_version='1.1')
+        b.free('O1', 0, 0).free('R1', 2, 0).free('O2', 3 + 1e-8, 0).free('R2', 4 + 1e-8, 0)
+        b.circle('c1', 'O1', 'R1').circle('c2', 'O2', 'R2').circle_circle('P', 'Q', 'c1', 'c2')
+        with pytest.raises(parity.ParityError, match='tangent'):
+            parity.generate_scene(scene(b.doc, {'name': 'near'}))
+
+    def test_concentric(self):
+        b = DocBuilder('near_concentric', registry_version='1.1')
+        b.free('O1', 0, 0).free('R1', 2, 0).free('O2', 1e-8, 0).free('R2', 3, 0)
+        b.circle('c1', 'O1', 'R1').circle('c2', 'O2', 'R2').circle_circle('P', 'Q', 'c1', 'c2')
+        with pytest.raises(parity.ParityError, match='concentric'):
+            parity.generate_scene(scene(b.doc, {'name': 'near'}))
+
+    def test_known(self):
+        # The known point K is 1e-8 off the intersection (3, 4): a near decision.
+        b = DocBuilder('near_known', registry_version='1.1')
+        b.free('O', 0, 0).free('R', 5, 0).free('A', -6, 4).free('B', 6, 4).free('K', 3 + 1e-8, 4)
+        b.circle('c', 'O', 'R').line('l', 'A', 'B').other_than('X', 'l', 'c', 'K')
+        with pytest.raises(parity.ParityError, match='known'):
+            parity.generate_scene(scene(b.doc, {'name': 'near'}))
+
+    def test_ray_outside_part(self):
+        b = DocBuilder('near_origin', registry_version='1.1')
+        b.free('O', 1e-8, 0).free('P', 4, 0).free('A', 0, -3).free('B', 0, 3)
+        b.ray('r', 'O', 'P').line('m', 'A', 'B').intersect('X', 'r', 'm')
+        with pytest.raises(parity.ParityError, match='outside_part'):
+            parity.generate_scene(scene(b.doc, {'name': 'near'}))
+
+    def test_rounding_noise_of_an_exact_tangency_is_accepted(self):
+        # Tangent at (3, 4) to the circle of radius 5: h - r is rounding noise.
+        b = DocBuilder('noise', registry_version='1.1')
+        b.free('O', 0, 0).free('R', 3, 4).free('A', 7, 1).free('B', -1, 7)
+        b.circle('c', 'O', 'R').line('l', 'A', 'B').line_circle('P', 'Q', 'l', 'c')
+        fixture = parity.generate_scene(scene(b.doc, {'name': 'oblique'}))
+        assert fixture['cases'][0]['expect']['P']['detail'] == {'multiplicity': 2}
 
     def test_a_refused_case_is_named(self):
         b = DocBuilder('two').free('A', 0, 0).free('B', 1, 0).line('l', 'A', 'B')

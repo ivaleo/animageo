@@ -45,7 +45,7 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.0'
+REGISTRY_VERSION = '1.1'
 
 _SERVICE_FILES = ('_types', '_policies', '_reasons', '_numeric')
 _INDEX_FILE = 'INDEX.json'
@@ -112,6 +112,7 @@ class Registry:
     reasons: dict
     numeric: dict
     index: dict = field(default_factory=dict)
+    paths: dict = field(default_factory=dict)
 
     def get(self, op: str):
         return self.ops.get(op)
@@ -195,6 +196,7 @@ def _load(directory) -> Registry:
         reasons=service['_reasons']['reasons'],
         numeric=service['_numeric'],
         index=index,
+        paths=service['_types'].get('paths', {}),
     )
 
 
@@ -218,7 +220,18 @@ def registry_problems(reg: Registry | None = None) -> list:
     reg = reg or registry()
     problems = []
     known_types = set(reg.types) | set(reg.families)
+    for family, members in reg.families.items():
+        for member in members:
+            if member not in reg.types:
+                problems.append(f'family {family!r}: unknown type {member!r}')
+    for type_ in reg.families.get('path', ()):
+        if type_ not in reg.paths:
+            problems.append(f'path type {type_!r} has no entry in _types.json paths')
+    ours = _version_tuple(reg.version)
     for op, record in reg.ops.items():
+        since = _version_tuple(record.get('since'))
+        if since is None or since > ours:
+            problems.append(f"{op}: since {record.get('since')!r} is not a registry version up to {reg.version}")
         stored = record.get('signatureHash')
         computed = signature_hash(record)
         if stored != computed:
@@ -237,6 +250,14 @@ def registry_problems(reg: Registry | None = None) -> list:
     if reg.index != index:
         problems.append('INDEX.json is out of date; run: python -m animageo.native registry index')
     return problems
+
+
+def _version_tuple(text):
+    try:
+        major, minor = str(text).split('.')
+        return int(major), int(minor)
+    except ValueError:
+        return None
 
 
 def _dump_json(data) -> str:

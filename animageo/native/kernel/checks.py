@@ -108,6 +108,20 @@ def _collinear(args, result, tol):
     return abs((mx - ax) * (by - ay) - (my - ay) * (bx - ax)) / length
 
 
+@register_check('ray.by_points', 'origin')
+def _ray_origin(args, result, tol):
+    ox, oy = _xy(args['origin'].value)
+    ray = result['ray']
+    return math.hypot(ray['origin'][0] - ox, ray['origin'][1] - oy)
+
+
+@register_check('ray.by_points', 'through')
+def _ray_through(args, result, tol):
+    x, y = _xy(args['through'].value)
+    ray = result['ray']
+    return abs((x - ray['origin'][0]) * ray['dir'][1] - (y - ray['origin'][1]) * ray['dir'][0])
+
+
 class _QuietContext:
     __slots__ = ('tol',)
 
@@ -129,6 +143,41 @@ def _incident_both(args, result, tol):
             return math.inf
         error = max(error, distance_to_carrier(x, y, c))
     return error
+
+
+def _distance_to_input(x, y, inp, ctx):
+    """Distance from ``(x, y)`` to a circle or to the carrier line of a linear input."""
+    if inp.type == 'circle':
+        v = inp.value
+        return abs(math.hypot(x - v['c'][0], y - v['c'][1]) - v['r'])
+    c = carrier(inp, ctx)
+    if isinstance(c, Undefined):
+        return math.inf
+    return distance_to_carrier(x, y, c)
+
+
+def _on_both(points, first, second, tol):
+    ctx = _QuietContext(tol)
+    error = 0.0
+    for point in points:
+        x, y = _xy(point)
+        error = max(error, _distance_to_input(x, y, first, ctx), _distance_to_input(x, y, second, ctx))
+    return error
+
+
+@register_check('intersect.line_circle', 'on_both')
+def _line_circle_on_both(args, result, tol):
+    return _on_both((result['first'], result['second']), args['line'], args['circle'], tol)
+
+
+@register_check('intersect.circle_circle', 'on_both')
+def _circle_circle_on_both(args, result, tol):
+    return _on_both((result['first'], result['second']), args['first'], args['second'], tol)
+
+
+@register_check('intersect.other_than', 'on_both')
+def _other_than_on_both(args, result, tol):
+    return _on_both((result['point'],), args['first'], args['second'], tol)
 
 
 @register_check('polygon.by_points', 'sides_match')

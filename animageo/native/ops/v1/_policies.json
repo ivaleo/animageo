@@ -1,3 +1,16 @@
 {
-  "policies": {}
+  "policies": {
+    "single": {
+      "text": "one solution in one slot; a record writes it as branch: null"
+    },
+    "line_param_order": {
+      "text": "slots follow the parameter along the orientation of the linear input on its carrier line, first is the smaller; slots are fixed on the carrier before the part filter; a double root fills both slots"
+    },
+    "circle_side": {
+      "text": "first lies to the left of the directed segment from the first centre to the second ((c2 - c1) x (X - c1) > 0), second to the right; a double root fills both slots"
+    },
+    "other_than": {
+      "text": "one slot: the solution of the base pair other than the explicit point argument known; tangency at known gives known; known not among the solutions gives branch_absent"
+    }
+  }
 }

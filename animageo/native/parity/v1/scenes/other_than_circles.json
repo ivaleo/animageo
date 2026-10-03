@@ -1,0 +1,302 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "other_than_circles",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "other_than_circles",
+    "operationRegistryVersion": "1.1",
+    "operations": {
+      "op_O1": {
+        "id": "op_O1",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O1"
+          }
+        ]
+      },
+      "op_O2": {
+        "id": "op_O2",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O2"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_c1": {
+        "id": "op_c1",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O1"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c1"
+          }
+        ]
+      },
+      "op_c2": {
+        "id": "op_c2",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O2"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c2"
+          }
+        ]
+      },
+      "op_X": {
+        "id": "op_X",
+        "op": "intersect.other_than",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c1"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "c2"
+          },
+          "known": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "X"
+          }
+        ]
+      },
+      "op_Y": {
+        "id": "op_Y",
+        "op": "intersect.other_than",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c2"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "c1"
+          },
+          "known": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Y"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O1": {
+        "id": "O1",
+        "type": "point",
+        "producer": {
+          "operationId": "op_O1",
+          "slot": "point"
+        },
+        "displayName": "O1"
+      },
+      "O2": {
+        "id": "O2",
+        "type": "point",
+        "producer": {
+          "operationId": "op_O2",
+          "slot": "point"
+        },
+        "displayName": "O2"
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "c1": {
+        "id": "c1",
+        "type": "circle",
+        "producer": {
+          "operationId": "op_c1",
+          "slot": "circle"
+        },
+        "displayName": "c1"
+      },
+      "c2": {
+        "id": "c2",
+        "type": "circle",
+        "producer": {
+          "operationId": "op_c2",
+          "slot": "circle"
+        },
+        "displayName": "c2"
+      },
+      "X": {
+        "id": "X",
+        "type": "point",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "point"
+        },
+        "displayName": "X"
+      },
+      "Y": {
+        "id": "Y",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Y",
+          "slot": "point"
+        },
+        "displayName": "Y"
+      }
+    },
+    "inputs": {
+      "O1": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "O2": {
+        "kind": "point",
+        "value": [
+          8,
+          0
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          4,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "symmetric"
+    },
+    {
+      "name": "vertical",
+      "inputs": {
+        "O2": {
+          "kind": "point",
+          "value": [
+            0,
+            8
+          ]
+        },
+        "A": {
+          "kind": "point",
+          "value": [
+            -3,
+            4
+          ]
+        }
+      }
+    },
+    {
+      "name": "general",
+      "inputs": {
+        "O1": {
+          "kind": "point",
+          "value": [
+            -1,
+            -2
+          ]
+        },
+        "O2": {
+          "kind": "point",
+          "value": [
+            3,
+            1
+          ]
+        },
+        "A": {
+          "kind": "point",
+          "value": [
+            2,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "name": "tangent",
+      "inputs": {
+        "O2": {
+          "kind": "point",
+          "value": [
+            8,
+            6
+          ]
+        }
+      }
+    },
+    {
+      "name": "concentric",
+      "inputs": {
+        "O2": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}

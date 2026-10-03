@@ -8,6 +8,10 @@
       "value": {"a": "length", "b": "length", "length": "length"},
       "text": "segment {a: [x, y], b: [x, y], length}; a and b in definition order"
     },
+    "ray": {
+      "value": {"origin": "length", "dir": "scalar"},
+      "text": "ray {origin: [x, y], dir: [x, y]}; dir is a unit vector from the origin towards the defining point"
+    },
     "line": {
       "value": {"p": "length", "dir": "scalar"},
       "text": "line {p: [x, y], dir: [x, y]}; p is the projection of the origin, dir is a unit vector oriented by the definition"
@@ -22,7 +26,46 @@
     }
   },
   "families": {
-    "linear": ["line", "segment"]
+    "linear": ["line", "segment", "ray"],
+    "circular": ["circle"],
+    "curve": ["line", "segment", "ray", "circle"],
+    "path": ["line", "segment", "ray", "circle", "polygon"]
+  },
+  "paths": {
+    "segment": {
+      "kind": "affine", "min": 0, "max": 1, "outside": "clamp", "default": 0.5,
+      "frames": {"*": {"origin": "value.a", "vector": "value.b - value.a"}},
+      "text": "P = a + t (b - a); t is clamped to [0, 1]"
+    },
+    "line": {
+      "kind": "affine", "min": null, "max": null, "outside": "none", "default": 0.5,
+      "frames": {
+        "line.by_points": {"origin": "args.a", "vector": "args.b - args.a"},
+        "*": {"origin": "value.p", "vector": "value.dir"}
+      },
+      "text": "P = o + t v in the frame of the producer: a line through a and b gives o = a, v = b - a"
+    },
+    "ray": {
+      "kind": "affine", "min": 0, "max": null, "outside": "clamp", "default": 0.5,
+      "frames": {
+        "ray.by_points": {"origin": "args.origin", "vector": "args.through - args.origin"},
+        "*": {"origin": "value.origin", "vector": "value.dir"}
+      },
+      "text": "P = o + t v in the frame of the producer; t < 0 is clamped to 0"
+    },
+    "circle": {
+      "kind": "angle", "min": 0, "max": "2pi", "outside": "wrap", "default": 0.7853981633974483,
+      "text": "P = c + r (cos t, sin t); t is the angle from +x; projections lie in [0, 2 pi)"
+    },
+    "polygon": {
+      "kind": "perimeter", "min": 0, "max": "n", "outside": "wrap", "default": 0.5,
+      "text": "t wraps to [0, n); k = floor(t) picks side side.(k + 1), the fraction t - k runs along it"
+    }
+  },
+  "frameKinds": {
+    "affine": "P = o + clamp(t) v; o and v come from frames[producer op], else frames[\"*\"]; min/max clamp t when outside is clamp",
+    "angle": "P = c + r (cos t, sin t), t used as given",
+    "perimeter": "t' = t - n floor(t / n), t' >= n gives 0; k = floor(t'), f = t' - k; P = V[k] + f (V[(k + 1) mod n] - V[k])"
   },
   "units": {
     "length": "coordinates and lengths; parity tolerance parity.length * S",
