@@ -81,3 +81,74 @@ def test_300_ops_with_checks_p95():
     print(f'\nnative.check: p95 {p95:.1f} ms ({len(report.results)} checks)')
     assert report.ok
     assert p95 <= THRESHOLD_MS, f'p95 {p95:.1f} ms > {THRESHOLD_MS:.0f} ms'
+
+
+def l1_mix_document(target_ops=300):
+    """Rays, line×circle, circle×circle, another point and points on paths,
+    about ``target_ops`` operations."""
+    b = DocBuilder('perf_l1', bounds=(-10, -10, 10, 10), registry_version='1.1')
+    points = []
+    for i in range(10):
+        angle = 2 * math.pi * i / 10
+        name = f'P{i}'
+        b.free(name, round(8 * math.cos(angle), 3), round(8 * math.sin(angle), 3))
+        points.append(name)
+    circles = []
+    step = 0
+    while len(b.doc['operations']) < target_ops:
+        s = str(step)
+        b.midpoint('M' + s, points[-1], points[-4])
+        b.circle('k' + s, 'M' + s, points[-7])
+        b.line('l' + s, points[-2], points[-9])
+        b.line_circle('A' + s, 'B' + s, 'l' + s, 'k' + s)
+        b.ray('r' + s, points[-3], 'M' + s)
+        b.on_path('U' + s, 'k' + s, 0.3 + step * 0.7)
+        b.on_path('V' + s, 'r' + s, 1.5)
+        if circles:
+            b.circle_circle('C' + s, 'D' + s, 'k' + s, circles[-1])
+            b.other_than('Z' + s, 'k' + s, circles[-1], 'C' + s)
+        circles.append('k' + s)
+        points.extend(['M' + s, 'U' + s, 'V' + s])
+        step += 1
+    return b.doc
+
+
+@pytest.mark.slow
+def test_l1_mix_p95():
+    doc = native.load(l1_mix_document())
+    n_ops = len(doc.operations)
+    assert n_ops >= 300
+    ev = native.evaluate(doc)
+    defined = sum(rec['state'] == 'defined' for rec in ev.elements.values())
+    ops = {op['op'] for op in doc.operations.values()}
+    assert {'intersect.line_circle', 'intersect.circle_circle', 'intersect.other_than',
+            'point.on_path', 'ray.by_points'} <= ops
+    assert defined >= 0.75 * len(ev.elements)
+    timings = []
+    for _ in range(RUNS):
+        start = time.perf_counter()
+        native.evaluate(doc)
+        timings.append((time.perf_counter() - start) * 1000)
+    p50 = percentile(timings, 0.50)
+    p95 = percentile(timings, 0.95)
+    print(f'\nnative.evaluate (L1 mix): {n_ops} ops, {defined}/{len(ev.elements)} defined, '
+          f'p50 {p50:.1f} ms, p95 {p95:.1f} ms, max {max(timings):.1f} ms ({RUNS} runs)')
+    assert p95 <= THRESHOLD_MS, f'p95 {p95:.1f} ms > {THRESHOLD_MS:.0f} ms'
+
+
+@pytest.mark.slow
+def test_l1_edits_p95():
+    doc = native.load(l1_mix_document())
+    first = sorted(e for e, el in doc.elements.items() if el['type'] == 'point')[:3]
+    timings = {'closure': [], 'delete': [], 'rename': []}
+    for _ in range(RUNS):
+        for name, call in (('closure', lambda: native.closure(doc, first)),
+                           ('delete', lambda: native.delete(doc, first[:1])),
+                           ('rename', lambda: native.rename(doc, 'M0', 'N_{1}'))):
+            start = time.perf_counter()
+            call()
+            timings[name].append((time.perf_counter() - start) * 1000)
+    line = ', '.join(f'{name} p95 {percentile(t, 0.95):.1f} ms' for name, t in timings.items())
+    print(f'\nnative edits (L1 mix, {len(doc.operations)} ops): {line}')
+    for name, t in timings.items():
+        assert percentile(t, 0.95) <= THRESHOLD_MS, name
