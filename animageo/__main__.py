@@ -1,5 +1,9 @@
 """CLI entry point: ``python -m animageo file.ggb -o out.svg``.
 
+A construction document (``animageo-construction/v1`` JSON, recognised by
+its ``format`` field) renders in process through ``animageo.native.render``
+to ``svg``, ``png`` or ``pdf`` with the same placement flags.
+
 Renders a GeoGebra ``.ggb`` file into one of two tracks:
 
 - **static vector** (``svg`` / ``pdf`` / ``eps`` / ``tikz``) — the construction
@@ -15,6 +19,7 @@ is chosen by ``--format`` or inferred from the output extension.
 """
 import argparse
 import glob
+import json
 import logging
 import os
 import shutil
@@ -152,6 +157,57 @@ def _resolve_style_arg(raw):
     return path if os.path.isfile(path) else None
 
 
+NATIVE_FORMATS = ("svg", "png", "pdf")
+
+
+def _read_document(path):
+    """The JSON object of a construction document at ``path``, else ``None``
+    (a ``.ggb`` is a zip archive; anything else is not a document)."""
+    try:
+        with open(path, 'rb') as fh:
+            head = fh.read(2)
+            if head == b'PK':
+                return None
+            fh.seek(0)
+            data = json.loads(fh.read().decode('utf-8'))
+    except (OSError, UnicodeDecodeError, ValueError):
+        return None
+    if isinstance(data, dict) and data.get('format') == 'animageo-construction/v1':
+        return data
+    return None
+
+
+def _render_document(doc, args, *, fmt, output, style_path, reference, content, export):
+    """Render a construction document in process; returns the exit code."""
+    if fmt not in NATIVE_FORMATS:
+        logger.error('a construction document renders to %s, not %s', '/'.join(NATIVE_FORMATS), fmt)
+        return 2
+    if args.keyframes:
+        logger.error('--keyframes is not supported for construction documents yet')
+        return 2
+    if fmt == 'pdf' and args.dpi != 96.0:
+        logger.warning('--dpi is ignored for construction documents (96 dpi)')
+    style = style_path or None
+    if args.style_from_document:
+        snapshot = (doc.get('styleBinding') or {}).get('configSnapshot')
+        if not isinstance(snapshot, dict):
+            logger.error('the document has no styleBinding.configSnapshot')
+            return 2
+        logger.warning('using styleBinding.configSnapshot as is: the web applies '
+                       'import.sources and migrations before rendering')
+        style = snapshot
+    from . import native
+    layout = {'reference': reference, 'content': content, 'export': export}
+    try:
+        result = native.render(doc, style_config=style, export_layout=layout,
+                               fmt=fmt, out=output, report=False)
+    except (ValueError, RuntimeError) as exc:   # LoadError is a ValueError
+        logger.error('%s', exc)
+        return 2
+    logger.info("%s file exported: '%s'", fmt.upper(), result.path)
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog='animageo',
@@ -159,7 +215,8 @@ def main():
                     'vector figure or animation.',
     )
     parser.add_argument('ggbfile', nargs='?', default=None,
-                        help='GeoGebra file to convert')
+                        help='GeoGebra file (.ggb) or construction document '
+                             '(animageo-construction/v1 .json) to convert')
     parser.add_argument('--ai-guide', action='store_true',
                         help='print the packaged AI agent usage guide '
                              '(AI_USAGE_PROMPT.md) and exit')
@@ -216,6 +273,9 @@ def main():
     parser.add_argument('-s', '--style', type=str, default=None,
                         help='style JSON file or packaged preset name '
                              '(default, book_blue, book_green, book_purple, book_red)')
+    parser.add_argument('--style-from-document', action='store_true',
+                        help='construction documents: use styleBinding.configSnapshot '
+                             'as the style (without the web import.sources)')
     parser.add_argument('--log-level', type=str, default='WARNING',
                         choices=LOG_LEVELS,
                         help='logging level (default: WARNING)')
@@ -253,6 +313,10 @@ def main():
     if style_path is None:
         logger.error('style file not found: %s', args.style)
         return 2
+    document = _read_document(ggbfile)
+    if args.style_from_document and (document is None or args.style):
+        logger.error('--style-from-document needs a construction document and no --style')
+        return 2
 
     keyframes_path = ''
     if args.keyframes:
@@ -263,7 +327,12 @@ def main():
 
     fmt = _resolve_format(args)
     ext = EXT_BY_FORMAT[fmt]
-    output = os.path.abspath(args.output) if args.output else ggbfile[:-4] + ext
+    if args.output:
+        output = os.path.abspath(args.output)
+    elif document is not None:
+        output = os.path.splitext(ggbfile)[0] + ext
+    else:
+        output = ggbfile[:-4] + ext
 
     reference_size = _parse_size(args.reference_size)
     export_size = _parse_size(args.export_size)
@@ -284,6 +353,10 @@ def main():
         'anchor': args.anchor,
         'offset': export_offset,
     }
+
+    if document is not None:
+        return _render_document(document, args, fmt=fmt, output=output, style_path=style_path,
+                                reference=reference, content=content, export=export)
 
     logger.debug('FROM:   %s', ggbfile)
     logger.debug('TO:     %s', output)

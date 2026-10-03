@@ -168,3 +168,18 @@ class TestRunningPackageMain:
     def test_classic_cli_unchanged(self, monkeypatch):
         self._set(monkeypatch, ['/usr/bin/animageo', 'scene.ggb'], ['python3', '/usr/bin/animageo', 'scene.ggb'])
         assert animageo._running_package_main()
+
+    def test_package_dash_m_with_a_document(self, monkeypatch):
+        self._set(monkeypatch, ['-m', 'doc.json', '-o', 'out.svg'],
+                  ['python3', '-m', 'animageo', 'doc.json', '-o', 'out.svg'])
+        assert animageo._running_package_main()
+        self._set(monkeypatch, ['-m'], ['python3', '-X', 'utf8', '-manimageo.__main__'])
+        assert animageo._running_package_main()
+
+    def test_a_json_argument_of_another_module_is_not_the_cli(self, monkeypatch):
+        # the web sandbox: python -m app.sandbox.dsl_entry --job job.json
+        self._set(monkeypatch, ['-m', '--job', 'job.json'],
+                  ['python3', '-m', 'app.sandbox.dsl_entry', '--job', 'job.json'])
+        assert not animageo._running_package_main()
+        self._set(monkeypatch, ['/srv/app/run.py', 'doc.json'], ['python3', '/srv/app/run.py', 'doc.json'])
+        assert not animageo._running_package_main()
