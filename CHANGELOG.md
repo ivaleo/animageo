@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.1a1] - 2026-10-03
+
+### Added
+
+- Registry 1.2 of `animageo.native`: the foot of a perpendicular from a point
+  to a line, segment or ray (`point.projection`; the param `strict: 1` keeps
+  the foot on the segment or ray itself), the parallel and the perpendicular
+  through a point, the perpendicular bisector, the angle bisector (into the
+  angle, numerically stable near a straight angle), a vector by two points,
+  a circle by its centre and a radius (a number element or a number written
+  in the document) and the circle through three points with its centre as a
+  separate output; `number.free`, a free number with optional `min`, `max`
+  and `step`.
+- Document contract: the number input `{"kind": "number", "value": v}`, op
+  params written as number literals in `args` (optional with a default, or
+  required), number literals in input slots of type `number`; the value
+  types `vector {a, b, length}` and `number {value, unit}`, compared in
+  parity fixtures by their unit. Points on the new lines keep their place
+  relative to the definition (the path frame of a perpendicular bisector
+  starts at the midpoint).
+- The document schema accepts a `workIntent` section (the problem text and
+  its source, what the assistant must not do, assumptions, a brief
+  revision) and `appearance.<id>.locked`; both are kept by load and dump,
+  covered by `content_hash` and ignored by evaluation and rendering. They
+  are additive: the format stays `animageo-construction/v1`.
+- The bridge and `native.render` draw vectors as arrows; numbers are not
+  drawn, and a free number is a classic `Var` holding the kernel value.
+- 10 new parity scenes (41 in all) with 45 cases for the new operations.
+
+### Changed
+
+- `animageo.native` evaluates documents of registry 1.2; documents of
+  registries 1.0 and 1.1 give the same results, the signature hashes of
+  their operations did not change and their expectations changed only in
+  `registry`.
+- The render report box of an arrow covers its shaft as well as its tip.
+- The fixture generator treats the rounding noise of a straight angle built
+  from collinear points as exact (`straight_angle` joins `noiseDecisions`).
+
 ### Fixed
 
 - `Circle(A, B, C)` through collinear or coincident points is undefined
@@ -1818,7 +1857,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.0a2...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.1a1...HEAD
+[1.8.1a1]: https://github.com/ivaleo/animageo/compare/v1.8.0a2...v1.8.1a1
 [1.8.0a2]: https://github.com/ivaleo/animageo/compare/v1.8.0a1...v1.8.0a2
 [1.8.0a1]: https://github.com/ivaleo/animageo/compare/v1.7.13...v1.8.0a1
 [1.7.13]: https://github.com/ivaleo/animageo/compare/v1.7.12...v1.7.13
