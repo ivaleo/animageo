@@ -49,6 +49,24 @@ print('LOADED', loaded)
     assert 'LOADED []' in proc.stdout
 
 
+def test_bridge_loads_geo_only_when_used():
+    code = _BLOCKER + f"""
+import json
+from animageo.native.kernel import bridge
+before = sorted(m for m in sys.modules if m.startswith({GEO!r}))
+with open('animageo/native/parity/v1/scenes/on_path_chain.json', encoding='utf-8') as fh:
+    construction, names = bridge.build_construction(json.load(fh)['document'])
+construction.rebuild(full=True)
+after = sorted(m for m in sys.modules if m == {BLOCKED!r} or m.startswith({BLOCKED!r} + '.') or m == {CLASSIC!r})
+print('BEFORE', before)
+print('AFTER', after, construction.element(names.by_id['M']).data is not None)
+"""
+    proc = _run(code)
+    assert proc.returncode == 0, proc.stderr
+    assert 'BEFORE []' in proc.stdout
+    assert 'AFTER [] True' in proc.stdout
+
+
 def test_geo_modules_import_on_their_own_without_manim():
     """``import animageo`` no longer loads the geo package when manim is
     missing; ``animageo.geo`` must still import in any module order."""
@@ -58,20 +76,33 @@ def test_geo_modules_import_on_their_own_without_manim():
 
 
 def _resolved_imports(path):
+    """``(module, lazy)`` of every import; ``lazy``: inside a function."""
     import ast
     parts = list(path.relative_to(REPO_ROOT).with_suffix('').parts)
     package = parts[:-1]  # the package of a module, or of an __init__.py itself
     tree = ast.parse(path.read_text(encoding='utf-8'))
+    lazy_nodes = set()
     for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            lazy_nodes.update(id(inner) for inner in ast.walk(node))
+    for node in ast.walk(tree):
+        lazy = id(node) in lazy_nodes
         if isinstance(node, ast.Import):
             for alias in node.names:
-                yield alias.name
+                yield alias.name, lazy
         elif isinstance(node, ast.ImportFrom):
             if node.level:
                 base = package[:len(package) - node.level + 1]
-                yield '.'.join(base + ([node.module] if node.module else []))
+                yield '.'.join(base + ([node.module] if node.module else [])), lazy
             else:
-                yield node.module
+                yield node.module, lazy
+
+
+# Modules that reach the classic code on purpose, inside functions only
+# (``import animageo.native`` never loads it).
+LAZY_ALLOWED = {
+    'animageo/native/kernel/bridge.py': (GEO, 'numpy'),
+}
 
 
 def test_native_modules_do_not_import_classic_code():
@@ -79,7 +110,10 @@ def test_native_modules_do_not_import_classic_code():
     package root for ``__version__``) or the standard library."""
     offenders = []
     for path in sorted((REPO_ROOT / 'animageo' / 'native').rglob('*.py')):
-        for name in _resolved_imports(path):
+        allowed = LAZY_ALLOWED.get(path.relative_to(REPO_ROOT).as_posix(), ())
+        for name, lazy in _resolved_imports(path):
+            if lazy and any(name == a or name.startswith(a + '.') for a in allowed):
+                continue
             top = name.split('.')[0]
             outside_native = top == 'animageo' and name != 'animageo' and not (
                 name == 'animageo.native' or name.startswith('animageo.native.'))
