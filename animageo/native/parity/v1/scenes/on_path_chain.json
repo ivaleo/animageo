@@ -1,0 +1,353 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "on_path_chain",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "on_path_chain",
+    "operationRegistryVersion": "1.1",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_R": {
+        "id": "op_R",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "R"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "R"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "P"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_M": {
+        "id": "op_M",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "O"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "M"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "P"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_T": {
+        "id": "op_T",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "l"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "T"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "R": {
+        "id": "R",
+        "type": "point",
+        "producer": {
+          "operationId": "op_R",
+          "slot": "point"
+        },
+        "displayName": "R"
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        },
+        "displayName": "c"
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        },
+        "displayName": "s"
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        },
+        "displayName": "Q"
+      },
+      "M": {
+        "id": "M",
+        "type": "point",
+        "producer": {
+          "operationId": "op_M",
+          "slot": "point"
+        },
+        "displayName": "M"
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        },
+        "displayName": "l"
+      },
+      "T": {
+        "id": "T",
+        "type": "point",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "point"
+        },
+        "displayName": "T"
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "R": {
+        "kind": "point",
+        "value": [
+          5,
+          0
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          -6,
+          0
+        ]
+      },
+      "P": {
+        "kind": "pathParameter",
+        "value": 1.5707963267948966
+      },
+      "Q": {
+        "kind": "pathParameter",
+        "value": 0.5
+      },
+      "T": {
+        "kind": "pathParameter",
+        "value": 2
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "default"
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "P": {
+          "kind": "pathParameter",
+          "value": 3.141592653589793
+        },
+        "Q": {
+          "kind": "pathParameter",
+          "value": 0.25
+        }
+      }
+    },
+    {
+      "name": "far",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -30,
+            10
+          ]
+        },
+        "T": {
+          "kind": "pathParameter",
+          "value": -1
+        }
+      }
+    },
+    {
+      "name": "zero_radius",
+      "inputs": {
+        "R": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}

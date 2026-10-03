@@ -324,9 +324,18 @@ class _Structure:
     def input_value(self, key, value, path):
         if not self.object(value, path, 'an input'):
             return
+        kind = value.get('kind')
+        if kind == 'pathParameter':
+            self.keys(value, path, 'a path parameter input', ('kind', 'value'), ('kind', 'value', 'branch'),
+                      elementId=key)
+            if 'value' in value and not _is_number(value['value']):
+                self.add(path + '/value', 'a path parameter must be a number', elementId=key)
+            if 'branch' in value and (not _is_number(value['branch']) or value['branch'] not in (-1, 1)):
+                self.add(path + '/branch', 'a path branch must be -1 or 1', elementId=key)
+            return
         self.keys(value, path, 'an input', ('kind', 'value'), ('kind', 'value'), elementId=key)
-        if 'kind' in value and value['kind'] != 'point':
-            self.add(path + '/kind', f"unknown input kind {value['kind']!r} (point)", elementId=key)
+        if 'kind' in value and kind != 'point':
+            self.add(path + '/kind', f'unknown input kind {kind!r} (point, pathParameter)', elementId=key)
         if 'value' in value:
             self.numbers(value['value'], path + '/value', 'a point value', 2)
 

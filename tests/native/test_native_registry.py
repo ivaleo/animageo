@@ -26,7 +26,8 @@ L0_OPS = {
     'point.free', 'segment.by_points', 'line.by_points', 'circle.center_point',
     'point.midpoint', 'intersect.line_line', 'polygon.by_points',
 }
-L1_OPS = {'ray.by_points', 'intersect.line_circle', 'intersect.circle_circle', 'intersect.other_than'}
+L1_OPS = {'ray.by_points', 'intersect.line_circle', 'intersect.circle_circle', 'intersect.other_than',
+          'point.on_path'}
 # Registry 1.1 extends 1.0: the L0 records and their hashes stay as they were.
 L0_HASHES = {
     'circle.center_point': 'sha256:f3b2e070e9310312708009adfc04cfd7411128d482a4b7522f7320af35ca9810',
@@ -78,6 +79,7 @@ def test_record_fields(op):
                               and branch['policy'] in registry().policies)
     if op in L0_OPS:
         assert branch is None and record['pathParam'] is None
+    assert (record['pathParam'] is not None) == (op == 'point.on_path')
     assert record['math'] == f'docs/native/ops/{op}.md'
     assert (REPO_ROOT / record['math']).is_file()
     assert set(record['phrases']) == {'ru'}
@@ -132,6 +134,10 @@ def test_contract_table():
         [('point', 'point', None)],
         ['branch_absent', 'no_intersection', 'parallel', 'coincident', 'concentric', 'outside_part',
          'zero_length', 'upstream'], ['on_both'], None)
+    assert summary('point.on_path') == (
+        [('path', 'path', False, None)], [('point', 'point', None)], ['upstream'], ['on_path'],
+        {'kind': 'pathParameter'})
+    assert reg.get('point.on_path')['pathParam'] == 'carrier/v1'
     branches = {op: reg.get(op)['branch'] for op in L1_OPS}
     assert branches['ray.by_points'] is None
     assert branches['intersect.line_circle']['policy'] == 'line_param_order'

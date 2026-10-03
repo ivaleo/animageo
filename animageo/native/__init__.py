@@ -12,6 +12,7 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     native.validate(doc)                     # [Issue]: schema, references, slot types, cycles
     ev = native.evaluate(doc)                # Evaluated; ev.to_dict() is animageo-evaluated/v1
     native.check(doc).results                # {"<operationId>:<checkId>": "passed" | …}
+    native.project(doc, "P", (x, y))         # path parameter of the nearest point of P's path
     native.dumps(doc), native.content_hash(doc)
 
 No module of this package imports manim, ``animageo.animageo`` or
@@ -33,7 +34,9 @@ from .document import (
     validate,
 )
 from .kernel.checks import CheckReport, run_checks
-from .kernel.evaluate import EVALUATED_FORMAT, Evaluated
+from .document import as_document, bound_producer
+from .kernel import paths as _paths
+from .kernel.evaluate import EVALUATED_FORMAT, Evaluated, producer_values
 from .kernel.evaluate import evaluate as _evaluate
 from .registry import REGISTRY_VERSION, Registry, registry, signature_hash
 
@@ -57,6 +60,7 @@ __all__ = [
     'dumps',
     'evaluate',
     'load',
+    'project',
     'registry',
     'run_checks',
     'signature_hash',
@@ -68,8 +72,9 @@ def evaluate(doc, *, inputs=None) -> Evaluated:
     """Values, states and reasons of every element of ``doc``.
 
     ``doc`` is a :class:`NativeDocument` or anything :func:`load` reads;
-    ``inputs`` (``{elementId: {"kind": "point", "value": [x, y]}}``) overrides
-    the document's input values of free elements.
+    ``inputs`` (``{elementId: {"kind": "point", "value": [x, y]}}`` or
+    ``{"kind": "pathParameter", "value": t}``) overrides the document's input
+    values of free elements.
     """
     return _evaluate(doc, inputs=inputs)
 
@@ -81,3 +86,36 @@ def check(doc, checks=None, *, inputs=None) -> CheckReport:
     check IDs. Each result is ``passed``, ``failed`` or ``inconclusive``.
     """
     return run_checks(_evaluate(doc, inputs=inputs), checks)
+
+
+def project(doc, element_id: str, xy, *, inputs=None) -> float | None:
+    """The path parameter of the point of a path nearest to ``xy``.
+
+    ``element_id`` is a path element (segment, ray, line, circle, polygon) or
+    a ``point.on_path`` point (then its path). The parameter is in the frame
+    ``point.on_path`` uses (``docs/native/ops/point.on_path.md``), so
+    ``{"kind": "pathParameter", "value": project(…)}`` puts the point there.
+    ``None`` when the path is not defined; ``ValueError`` when the element is
+    not a path.
+    """
+    doc = as_document(doc)
+    if element_id not in doc.elements:
+        raise ValueError(f'unknown element {element_id!r}')
+    path_id = element_id
+    producer = bound_producer(doc, element_id)
+    if producer is not None and doc.operations[producer]['op'] == 'point.on_path':
+        arg = doc.operations[producer]['args'].get('path') or {}
+        path_id = arg.get('elementId') if arg.get('kind') == 'ref' else None
+        if path_id not in doc.elements:
+            return None
+    type_ = doc.elements[path_id]['type']
+    if type_ not in registry().paths:
+        raise ValueError(f'element {path_id!r} is a {type_}, not a path')
+    x, y = (float(v) for v in xy)
+    ev = _evaluate(doc, inputs=inputs)
+    states = ev.elements
+    if states[path_id]['state'] != 'defined':
+        return None
+    producer_op, values = producer_values(path_id, doc.elements, doc.operations, states)
+    frame = _paths.frame(type_, states[path_id]['value'], producer_op, values)
+    return _paths.project(frame, x, y, ev.tolerances.decide_length)

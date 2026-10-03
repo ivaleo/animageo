@@ -69,5 +69,44 @@
     },
     "math": "docs/native/ops/point.midpoint.md",
     "signatureHash": "sha256:487dfc5d3ce9f32ebae3ee47bfc7a5d5127675a88b55c996af6b8133f028ade7"
+  },
+  {
+    "op": "point.on_path",
+    "status": "stable",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "path",
+        "type": "path"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "free": {
+      "kind": "pathParameter"
+    },
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_path",
+        "text": "the point lies on the path: distance from the point to the segment, ray, line, circle or polygon sides"
+      }
+    ],
+    "orientation": null,
+    "pathParam": "carrier/v1",
+    "stepKind": "point_on_path",
+    "phrases": {
+      "ru": "{point} — точка на {path}"
+    },
+    "math": "docs/native/ops/point.on_path.md",
+    "signatureHash": "sha256:6be50eade341c6f39273693152fcb25f733d8875492505670e76c12b38916a72"
   }
 ]

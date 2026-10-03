@@ -1,0 +1,507 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "on_path_segment",
+  "registry": "1.1",
+  "generatedBy": "animageo 1.8.0a2.dev0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "on_path_segment",
+    "operationRegistryVersion": "1.1",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        },
+        "displayName": "s"
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        },
+        "displayName": "Q"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -2
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          2
+        ]
+      },
+      "P": {
+        "kind": "pathParameter",
+        "value": 0.5
+      },
+      "Q": {
+        "kind": "pathParameter",
+        "value": 0.25
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "middle",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 2.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -1.0
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              4.0,
+              2.0
+            ],
+            "length": 8.94427190999916
+          }
+        }
+      },
+      "checks": {
+        "op_P:on_path": "passed",
+        "op_Q:on_path": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "ends",
+      "inputs": {
+        "P": {
+          "kind": "pathParameter",
+          "value": 0
+        },
+        "Q": {
+          "kind": "pathParameter",
+          "value": 1
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 2.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 2.0
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              4.0,
+              2.0
+            ],
+            "length": 8.94427190999916
+          }
+        }
+      },
+      "checks": {
+        "op_P:on_path": "passed",
+        "op_Q:on_path": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "clamped",
+      "inputs": {
+        "P": {
+          "kind": "pathParameter",
+          "value": -0.5
+        },
+        "Q": {
+          "kind": "pathParameter",
+          "value": 1.5
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 2.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 2.0
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              4.0,
+              2.0
+            ],
+            "length": 8.94427190999916
+          }
+        }
+      },
+      "checks": {
+        "op_P:on_path": "passed",
+        "op_Q:on_path": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -1,
+            3
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            5,
+            -3
+          ]
+        },
+        "P": {
+          "kind": "pathParameter",
+          "value": 0.75
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": -3.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.5,
+            "y": -1.5
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 1.5
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.0,
+              3.0
+            ],
+            "b": [
+              5.0,
+              -3.0
+            ],
+            "length": 8.48528137423857
+          }
+        }
+      },
+      "checks": {
+        "op_P:on_path": "passed",
+        "op_Q:on_path": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "zero_length",
+      "inputs": {
+        "B": {
+          "kind": "point",
+          "value": [
+            -4,
+            -2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              -4.0,
+              -2.0
+            ],
+            "length": 0.0
+          }
+        }
+      },
+      "checks": {
+        "op_P:on_path": "passed",
+        "op_Q:on_path": "passed",
+        "op_s:ends": "passed"
+      }
+    }
+  ]
+}

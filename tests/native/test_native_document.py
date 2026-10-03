@@ -291,6 +291,15 @@ def _invalid_documents():
     yield 'input value length', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'point', 'value': [1]}))
     yield 'input value type', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'point', 'value': ['1', 2]}))
     yield 'input extra key', variant(lambda d: d['inputs']['A'].__setitem__('x', 1))
+    yield 'path parameter not a number', variant(
+        lambda d: d['inputs'].__setitem__('A', {'kind': 'pathParameter', 'value': [0.5]}))
+    yield 'path parameter without value', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'pathParameter'}))
+    yield 'path parameter bool', variant(
+        lambda d: d['inputs'].__setitem__('A', {'kind': 'pathParameter', 'value': True}))
+    yield 'path branch 0', variant(
+        lambda d: d['inputs'].__setitem__('A', {'kind': 'pathParameter', 'value': 0.5, 'branch': 0}))
+    yield 'path parameter extra key', variant(
+        lambda d: d['inputs'].__setitem__('A', {'kind': 'pathParameter', 'value': 0.5, 'x': 1}))
     yield 'bounds length', variant(lambda d: d['viewDefaults'].__setitem__('bounds', [0, 0, 1]))
     yield 'timeline type', variant(lambda d: d.__setitem__('timeline', []))
     yield 'appearance type', variant(lambda d: d.__setitem__('appearance', []))
@@ -312,6 +321,12 @@ def _valid_documents():
     doc = copy.deepcopy(base)
     doc['operations']['op_M']['args']['a'] = {'kind': 'number', 'value': 2.5}
     yield 'number argument (graph issue, not schema)', doc
+    doc = copy.deepcopy(base)
+    doc['inputs']['A'] = {'kind': 'pathParameter', 'value': -2.5}
+    yield 'path parameter (graph issue, not schema)', doc
+    doc = copy.deepcopy(base)
+    doc['inputs']['A'] = {'kind': 'pathParameter', 'value': 7, 'branch': -1}
+    yield 'path parameter with branch', doc
     for path in sorted(SCENES_DIR.glob('*.json')):
         yield path.stem, read_json(path)['document']
 

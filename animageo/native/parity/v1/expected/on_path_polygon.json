@@ -1,0 +1,1124 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "on_path_polygon",
+  "registry": "1.1",
+  "generatedBy": "animageo 1.8.0a2.dev0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "on_path_polygon",
+    "operationRegistryVersion": "1.1",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "q"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "ab"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "bc"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "cd"
+          },
+          {
+            "slot": "side.4",
+            "elementId": "da"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_W": {
+        "id": "op_W",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "ab"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "W"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        },
+        "displayName": "C"
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        },
+        "displayName": "D"
+      },
+      "q": {
+        "id": "q",
+        "type": "polygon",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "polygon"
+        },
+        "displayName": "q"
+      },
+      "ab": {
+        "id": "ab",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "side.1"
+        },
+        "displayName": "ab"
+      },
+      "bc": {
+        "id": "bc",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "side.2"
+        },
+        "displayName": "bc"
+      },
+      "cd": {
+        "id": "cd",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "side.3"
+        },
+        "displayName": "cd"
+      },
+      "da": {
+        "id": "da",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "side.4"
+        },
+        "displayName": "da"
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        },
+        "displayName": "Q"
+      },
+      "W": {
+        "id": "W",
+        "type": "point",
+        "producer": {
+          "operationId": "op_W",
+          "slot": "point"
+        },
+        "displayName": "W"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -3
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          -3
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          3
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          -4,
+          3
+        ]
+      },
+      "P": {
+        "kind": "pathParameter",
+        "value": 0.5
+      },
+      "Q": {
+        "kind": "pathParameter",
+        "value": 2.25
+      },
+      "W": {
+        "kind": "pathParameter",
+        "value": 0.5
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "default",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": -3.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 3.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 3.0
+          }
+        },
+        "W": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -3.0
+          }
+        },
+        "ab": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              -3.0
+            ],
+            "length": 8.0
+          }
+        },
+        "bc": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              3.0
+            ],
+            "length": 6.0
+          }
+        },
+        "cd": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              3.0
+            ],
+            "b": [
+              -4.0,
+              3.0
+            ],
+            "length": 8.0
+          }
+        },
+        "da": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              3.0
+            ],
+            "b": [
+              -4.0,
+              -3.0
+            ],
+            "length": 6.0
+          }
+        },
+        "q": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -3.0
+              ],
+              [
+                4.0,
+                -3.0
+              ],
+              [
+                4.0,
+                3.0
+              ],
+              [
+                -4.0,
+                3.0
+              ]
+            ],
+            "area": 48.0
+          }
+        }
+      },
+      "checks": {
+        "op_P:on_path": "passed",
+        "op_Q:on_path": "passed",
+        "op_W:on_path": "passed",
+        "op_q:sides_match": "passed"
+      }
+    },
+    {
+      "name": "vertices",
+      "inputs": {
+        "P": {
+          "kind": "pathParameter",
+          "value": 0
+        },
+        "Q": {
+          "kind": "pathParameter",
+          "value": 3
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": -3.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 3.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 3.0
+          }
+        },
+        "W": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -3.0
+          }
+        },
+        "ab": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              -3.0
+            ],
+            "length": 8.0
+          }
+        },
+        "bc": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              3.0
+            ],
+            "length": 6.0
+          }
+        },
+        "cd": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              3.0
+            ],
+            "b": [
+              -4.0,
+              3.0
+            ],
+            "length": 8.0
+          }
+        },
+        "da": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              3.0
+            ],
+            "b": [
+              -4.0,
+              -3.0
+            ],
+            "length": 6.0
+          }
+        },
+        "q": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -3.0
+              ],
+              [
+                4.0,
+                -3.0
+              ],
+              [
+                4.0,
+                3.0
+              ],
+              [
+                -4.0,
+                3.0
+              ]
+            ],
+            "area": 48.0
+          }
+        }
+      },
+      "checks": {
+        "op_P:on_path": "passed",
+        "op_Q:on_path": "passed",
+        "op_W:on_path": "passed",
+        "op_q:sides_match": "passed"
+      }
+    },
+    {
+      "name": "wrap",
+      "inputs": {
+        "P": {
+          "kind": "pathParameter",
+          "value": 4
+        },
+        "Q": {
+          "kind": "pathParameter",
+          "value": 5.5
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": -3.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 3.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "W": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -3.0
+          }
+        },
+        "ab": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              -3.0
+            ],
+            "length": 8.0
+          }
+        },
+        "bc": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              3.0
+            ],
+            "length": 6.0
+          }
+        },
+        "cd": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              3.0
+            ],
+            "b": [
+              -4.0,
+              3.0
+            ],
+            "length": 8.0
+          }
+        },
+        "da": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              3.0
+            ],
+            "b": [
+              -4.0,
+              -3.0
+            ],
+            "length": 6.0
+          }
+        },
+        "q": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -3.0
+              ],
+              [
+                4.0,
+                -3.0
+              ],
+              [
+                4.0,
+                3.0
+              ],
+              [
+                -4.0,
+                3.0
+              ]
+            ],
+            "area": 48.0
+          }
+        }
+      },
+      "checks": {
+        "op_P:on_path": "passed",
+        "op_Q:on_path": "passed",
+        "op_W:on_path": "passed",
+        "op_q:sides_match": "passed"
+      }
+    },
+    {
+      "name": "negative",
+      "inputs": {
+        "P": {
+          "kind": "pathParameter",
+          "value": -0.5
+        },
+        "Q": {
+          "kind": "pathParameter",
+          "value": -4.75
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": -3.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 3.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 1.5
+          }
+        },
+        "W": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -3.0
+          }
+        },
+        "ab": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              -3.0
+            ],
+            "length": 8.0
+          }
+        },
+        "bc": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              3.0
+            ],
+            "length": 6.0
+          }
+        },
+        "cd": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              3.0
+            ],
+            "b": [
+              -4.0,
+              3.0
+            ],
+            "length": 8.0
+          }
+        },
+        "da": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              3.0
+            ],
+            "b": [
+              -4.0,
+              -3.0
+            ],
+            "length": 6.0
+          }
+        },
+        "q": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -3.0
+              ],
+              [
+                4.0,
+                -3.0
+              ],
+              [
+                4.0,
+                3.0
+              ],
+              [
+                -4.0,
+                3.0
+              ]
+            ],
+            "area": 48.0
+          }
+        }
+      },
+      "checks": {
+        "op_P:on_path": "passed",
+        "op_Q:on_path": "passed",
+        "op_W:on_path": "passed",
+        "op_q:sides_match": "passed"
+      }
+    },
+    {
+      "name": "triangle_like",
+      "inputs": {
+        "D": {
+          "kind": "point",
+          "value": [
+            4,
+            3
+          ]
+        },
+        "P": {
+          "kind": "pathParameter",
+          "value": 3.5
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": -3.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "W": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -3.0
+          }
+        },
+        "ab": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              -3.0
+            ],
+            "length": 8.0
+          }
+        },
+        "bc": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              3.0
+            ],
+            "length": 6.0
+          }
+        },
+        "cd": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              3.0
+            ],
+            "b": [
+              4.0,
+              3.0
+            ],
+            "length": 0.0
+          }
+        },
+        "da": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              3.0
+            ],
+            "b": [
+              -4.0,
+              -3.0
+            ],
+            "length": 10.0
+          }
+        },
+        "q": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -3.0
+              ],
+              [
+                4.0,
+                -3.0
+              ],
+              [
+                4.0,
+                3.0
+              ],
+              [
+                4.0,
+                3.0
+              ]
+            ],
+            "area": 24.0
+          }
+        }
+      },
+      "checks": {
+        "op_P:on_path": "passed",
+        "op_Q:on_path": "passed",
+        "op_W:on_path": "passed",
+        "op_q:sides_match": "passed"
+      }
+    }
+  ]
+}

@@ -146,3 +146,49 @@ def test_each_check_catches_a_wrong_value(monkeypatch, op_name, key, shift):
 def test_collinear_check_of_coincident_ends():
     b = DocBuilder('same').free('A', 2, 2).free('B', 2, 2).midpoint('M', 'A', 'B')
     assert native.check(b.doc).results == {'op_M:equidistant': 'passed', 'op_M:collinear': 'passed'}
+
+
+# ── registry 1.1 ─────────────────────────────────────────────────────────
+
+
+def l1_doc():
+    b = DocBuilder('checks_l1', registry_version='1.1')
+    b.free('O', 0, 0).free('R', 5, 0).free('A', -4, 3).free('B', 4, 3).free('O2', 8, 0).free('R2', 8, 5)
+    b.ray('r', 'A', 'B').circle('c', 'O', 'R').circle('c2', 'O2', 'R2').line('l', 'A', 'B')
+    b.line_circle('P1', 'P2', 'r', 'c').circle_circle('Q1', 'Q2', 'c', 'c2').other_than('X', 'l', 'c', 'A')
+    b.polygon('poly', 'A', 'B', 'O').on_path('T', 'poly', 1.5).on_path('U', 'r', 0.25)
+    return b.doc
+
+
+L1_KEYS = {'op_r:origin', 'op_r:through', 'op_P1_P2:on_both', 'op_Q1_Q2:on_both', 'op_X:on_both',
+           'op_T:on_path', 'op_U:on_path'}
+
+
+def test_l1_checks_pass_on_a_regular_scene():
+    report = native.check(l1_doc())
+    assert L1_KEYS <= set(report.results)
+    assert set(report.results.values()) == {'passed'}
+
+
+def test_l1_checks_skip_an_op_with_a_slot_outside_the_part():
+    # the ray from B away from A meets the circle once: P1 is outside the part
+    report = native.check(l1_doc(), inputs={'A': point_input(4, 3), 'B': point_input(8, 3)})
+    assert 'op_P1_P2:on_both' not in report.results
+
+
+def _moved(r, slot, dx=1.0):
+    return dict(r, **{slot: {'x': r[slot]['x'] + dx, 'y': r[slot]['y']}})
+
+
+@pytest.mark.parametrize('op_name, key, shift', [
+    ('ray.by_points', 'op_r:origin', lambda r: {'ray': dict(r['ray'], origin=[r['ray']['origin'][0] - 1, 3.0])}),
+    ('ray.by_points', 'op_r:through', lambda r: {'ray': dict(r['ray'], dir=[0.6, 0.8])}),
+    ('intersect.line_circle', 'op_P1_P2:on_both', lambda r: _moved(r, 'second', 0.5)),
+    ('intersect.circle_circle', 'op_Q1_Q2:on_both', lambda r: _moved(r, 'first')),
+    ('intersect.other_than', 'op_X:on_both', lambda r: _moved(r, 'point', -0.5)),
+    ('point.on_path', 'op_T:on_path', lambda r: {'point': {'x': r['point']['x'], 'y': r['point']['y'] + 0.5}}),
+    ('point.on_path', 'op_U:on_path', lambda r: {'point': {'x': r['point']['x'], 'y': r['point']['y'] + 0.5}}),
+])
+def test_each_l1_check_catches_a_wrong_value(monkeypatch, op_name, key, shift):
+    _patched(monkeypatch, op_name, shift)
+    assert native.check(l1_doc()).results[key] == 'failed'

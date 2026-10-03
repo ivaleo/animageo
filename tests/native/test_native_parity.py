@@ -19,7 +19,8 @@ REQUIRED_SCENES = {
     'segment_circle_part', 'segment_circle_zero', 'ray_circle', 'circle_circle_sides',
     'circle_circle_tangent_out', 'circle_circle_tangent_in', 'circle_circle_apart',
     'circle_circle_concentric', 'other_than_line_circle', 'other_than_tangent', 'other_than_circles',
-    'other_than_absent',
+    'other_than_absent', 'on_path_segment', 'on_path_line_ray', 'on_path_circle', 'on_path_polygon',
+    'on_path_chain',
 }
 
 

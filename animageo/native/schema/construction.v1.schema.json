@@ -294,20 +294,46 @@
       "additionalProperties": false
     },
     "inputValue": {
-      "type": "object",
-      "required": [
-        "kind",
-        "value"
-      ],
-      "properties": {
-        "kind": {
-          "const": "point"
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "value"
+          ],
+          "properties": {
+            "kind": {
+              "const": "point"
+            },
+            "value": {
+              "$ref": "#/$defs/point2"
+            }
+          },
+          "additionalProperties": false
         },
-        "value": {
-          "$ref": "#/$defs/point2"
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "value"
+          ],
+          "properties": {
+            "kind": {
+              "const": "pathParameter"
+            },
+            "value": {
+              "type": "number"
+            },
+            "branch": {
+              "enum": [
+                -1,
+                1
+              ]
+            }
+          },
+          "additionalProperties": false
         }
-      },
-      "additionalProperties": false
+      ]
     }
   }
 }

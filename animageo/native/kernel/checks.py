@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 
 from ..registry import registry
 from .ops.intersect import carrier, distance_to_carrier
+from .paths import distance_to_path
 from .values import Undefined
 
 __all__ = ['CHECKS', 'CheckReport', 'classify', 'register_check', 'run_checks']
@@ -178,6 +179,12 @@ def _circle_circle_on_both(args, result, tol):
 @register_check('intersect.other_than', 'on_both')
 def _other_than_on_both(args, result, tol):
     return _on_both((result['point'],), args['first'], args['second'], tol)
+
+
+@register_check('point.on_path', 'on_path')
+def _on_path(args, result, tol):
+    x, y = _xy(result['point'])
+    return distance_to_path(x, y, args['path'].type, args['path'].value)
 
 
 @register_check('polygon.by_points', 'sides_match')

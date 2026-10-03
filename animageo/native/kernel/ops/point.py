@@ -1,6 +1,7 @@
-"""``point.free``, ``point.midpoint`` (docs/native/ops/point.*.md)."""
+"""``point.free``, ``point.midpoint``, ``point.on_path`` (docs/native/ops/point.*.md)."""
 from __future__ import annotations
 
+from ..paths import frame, point_at
 from . import op
 
 
@@ -15,3 +16,10 @@ def midpoint(args, ctx):
     a = args['a'].value
     b = args['b'].value
     return {'point': {'x': (a['x'] + b['x']) / 2, 'y': (a['y'] + b['y']) / 2}}
+
+
+@op('point.on_path')
+def on_path(args, ctx):
+    path = args['path']
+    f = path.frame if path.frame is not None else frame(path.type, path.value)
+    return {'point': point_at(f, float(ctx.input['value']))}

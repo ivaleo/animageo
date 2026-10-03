@@ -46,6 +46,7 @@ from ..document import (
     op_dependencies,
 )
 from ..registry import REGISTRY_VERSION, registry
+from . import paths
 from .numeric import Tolerances, scene_scale, tolerances
 from .ops import IMPLEMENTATIONS, OpContext
 from .values import (
@@ -58,7 +59,7 @@ from .values import (
     state_record,
 )
 
-__all__ = ['EVALUATED_FORMAT', 'Evaluated', 'evaluate', 'check_inputs']
+__all__ = ['EVALUATED_FORMAT', 'Evaluated', 'evaluate', 'check_inputs', 'valid_input', 'producer_values']
 
 EVALUATED_FORMAT = 'animageo-evaluated/v1'
 
@@ -106,12 +107,37 @@ def _free_elements(doc: NativeDocument, reg) -> dict:
     return out
 
 
+def _finite(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+
+
 def _valid_point_input(value) -> bool:
     if not isinstance(value, dict) or value.get('kind') != 'point':
         return False
     xy = value.get('value')
-    return (isinstance(xy, (list, tuple)) and len(xy) == 2
-            and all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) for v in xy))
+    return isinstance(xy, (list, tuple)) and len(xy) == 2 and all(_finite(v) for v in xy)
+
+
+def _valid_path_input(value) -> bool:
+    if not isinstance(value, dict) or value.get('kind') != 'pathParameter':
+        return False
+    if not set(value) <= {'kind', 'value', 'branch'} or not _finite(value.get('value')):
+        return False
+    branch = value.get('branch', 1)
+    return _finite(branch) and branch in (-1, 1)
+
+
+_INPUT_VALIDATORS = {'point': _valid_point_input, 'pathParameter': _valid_path_input}
+_INPUT_SHAPES = {
+    'point': '{"kind": "point", "value": [x, y]} with finite numbers',
+    'pathParameter': '{"kind": "pathParameter", "value": t, "branch"?: -1 | 1} with a finite t',
+}
+
+
+def valid_input(kind: str, value) -> bool:
+    """Whether ``value`` is a usable input value of a free input of ``kind``."""
+    check = _INPUT_VALIDATORS.get(kind)
+    return check is not None and check(value)
 
 
 def check_inputs(doc: NativeDocument, inputs) -> dict:
@@ -127,10 +153,28 @@ def check_inputs(doc: NativeDocument, inputs) -> dict:
         kind = free.get(el_id)
         if kind is None:
             raise ValueError(f'element {el_id!r} is not a free input')
-        if kind != 'point' or not _valid_point_input(value):
-            raise ValueError(f'input of {el_id!r} must be {{"kind": "point", "value": [x, y]}} '
-                             'with finite numbers')
+        if not valid_input(kind, value):
+            raise ValueError(f'input of {el_id!r} must be {_INPUT_SHAPES.get(kind, kind)}')
     return dict(inputs)
+
+
+def producer_values(ref, elements, ops, states) -> tuple:
+    """``(producer op name, {slot: value | [value…]})`` of a defined element:
+    the values of the elements its producer's arguments reference."""
+    producer = ops[elements[ref]['producer']['operationId']]
+    values = {}
+    for slot, arg in producer['args'].items():
+        recs = [states.get(i) for i in iter_refs(arg)]
+        if not recs or not all(r is not None and r['state'] == 'defined' for r in recs):
+            continue
+        vals = [r['value'] for r in recs]
+        values[slot] = vals if arg.get('kind') == 'list' else vals[0]
+    return producer['op'], values
+
+
+def _path_frame(ref, elements, ops, states):
+    producer_op, values = producer_values(ref, elements, ops, states)
+    return paths.frame(elements[ref]['type'], states[ref]['value'], producer_op, values)
 
 
 def _order(op_ids, deps, cyclic) -> list:
@@ -258,7 +302,7 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
             targets = [e for e in bound.get(op_id, ())
                        if elements[e]['producer']['slot'] == record['outputs'][0]['slot']]
             free_input = values_in.get(targets[0]) if targets else None
-            if targets and not _valid_point_input(free_input):
+            if targets and not valid_input(record['free']['kind'], free_input):
                 settle(op_id, 'error', 'schema')
                 continue
             if not targets:
@@ -275,8 +319,13 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
             settle(op_id, worst[0], 'upstream', cause=worst[1])
             continue
         args = {}
+        path_slots = {item['slot'] for item in record['inputs'] if item['type'] == 'path'}
         for slot, is_list, ids in resolved:
-            items = [Input(elements[ref]['type'], states[ref]['value']) for ref in ids]
+            if slot in path_slots:
+                items = [Input(elements[ref]['type'], states[ref]['value'],
+                               _path_frame(ref, elements, ops, states)) for ref in ids]
+            else:
+                items = [Input(elements[ref]['type'], states[ref]['value']) for ref in ids]
             args[slot] = items if is_list else items[0]
         ctx = OpContext(tol, input=free_input, operation_id=op_id, decisions=_decisions)
         try:
