@@ -1,0 +1,116 @@
+{
+  "reasons": {
+    "upstream": {
+      "state": "inherited",
+      "text": "an input of the operation is not defined; the state is the worst state of the inputs, cause names the root element"
+    },
+    "no_intersection": {
+      "state": "undefined",
+      "text": "the objects have no common point"
+    },
+    "branch_absent": {
+      "state": "undefined",
+      "text": "fewer solutions than the slot number"
+    },
+    "outside_part": {
+      "state": "undefined",
+      "text": "the point of the slot lies outside the arc, segment, ray or sector"
+    },
+    "parallel": {
+      "state": "undefined",
+      "text": "the lines are parallel and distinct"
+    },
+    "coincident": {
+      "state": "undefined",
+      "text": "the objects coincide; there are infinitely many common points"
+    },
+    "concentric": {
+      "state": "undefined",
+      "text": "concentric circles of different radii"
+    },
+    "coincident_points": {
+      "state": "undefined",
+      "text": "distinct points are required"
+    },
+    "collinear_points": {
+      "state": "undefined",
+      "text": "a non-degenerate triangle is required"
+    },
+    "zero_length": {
+      "state": "undefined",
+      "text": "the direction of a zero-length segment or vector is required"
+    },
+    "nonpositive_radius": {
+      "state": "undefined",
+      "text": "the radius is not positive"
+    },
+    "point_inside": {
+      "state": "undefined",
+      "text": "a tangent from a point inside the circle or conic"
+    },
+    "not_on_curve": {
+      "state": "undefined",
+      "text": "the point has to lie on the curve"
+    },
+    "index_out_of_range": {
+      "state": "undefined",
+      "text": "the vertex or root number is out of range"
+    },
+    "out_of_domain": {
+      "state": "undefined",
+      "text": "the function value is outside its domain or complex"
+    },
+    "no_root_in_window": {
+      "state": "undefined",
+      "text": "no root or extremum found in the search window"
+    },
+    "non_finite": {
+      "state": "undefined",
+      "text": "the result contains NaN or an infinity (any operation)"
+    },
+    "invalid_parameter": {
+      "state": "undefined",
+      "text": "an input number is outside the allowed range"
+    },
+    "unknown_op": {
+      "state": "unsupported",
+      "text": "the operation is not in this registry version"
+    },
+    "unsupported_signature": {
+      "state": "unsupported",
+      "text": "the operation exists but this combination of input types is not implemented"
+    },
+    "newer_registry": {
+      "state": "unsupported",
+      "text": "the document needs a newer registry than this library"
+    },
+    "schema": {
+      "state": "error",
+      "text": "the document violates its schema"
+    },
+    "dangling_ref": {
+      "state": "error",
+      "text": "a reference to an element that does not exist"
+    },
+    "cycle": {
+      "state": "error",
+      "text": "a dependency cycle"
+    },
+    "type_mismatch": {
+      "state": "error",
+      "text": "the element type does not fit the slot"
+    },
+    "formula": {
+      "state": "error",
+      "text": "an expression outside the whitelist, depth or length"
+    },
+    "limit_exceeded": {
+      "state": "error",
+      "text": "a limit on elements, samples or time is exceeded"
+    },
+    "internal": {
+      "state": "error",
+      "text": "an exception in the implementation (any operation); see diagnostics"
+    }
+  }
+}

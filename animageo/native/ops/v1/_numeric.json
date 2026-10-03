@@ -1,0 +1,22 @@
+{
+  "defaultBounds": [-10, -10, 10, 10],
+  "scale": "S = max(w, h, D): w, h are the sizes of viewDefaults.bounds (or defaultBounds), D = hypot(xmax - xmin, ymax - ymin) over the free points of the case (0 without free points)",
+  "tolerances": {
+    "decide": {"length": 1e-10, "scalar": 1e-10},
+    "check": {"passed": 1e-9, "failed": 1e-6},
+    "parity": {"length": 1e-9, "area": 1e-9, "scalar": 1e-9}
+  },
+  "units": {
+    "decide.length": "times S",
+    "decide.scalar": "absolute",
+    "check.passed": "times S: error <= passed * S is passed",
+    "check.failed": "times S: error >= failed * S is failed, between is inconclusive",
+    "parity.length": "times S",
+    "parity.area": "times S^2",
+    "parity.scalar": "absolute"
+  },
+  "generator": {
+    "decisionMargin": 1000,
+    "rule": "refuse a case when a degeneracy decision value m satisfies 0 < |m| < decisionMargin * tol, tol being the decide tolerance of that decision"
+  }
+}

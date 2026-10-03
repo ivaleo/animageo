@@ -1,0 +1,32 @@
+{
+  "types": {
+    "point": {
+      "value": {"x": "length", "y": "length"},
+      "text": "point {x, y}"
+    },
+    "segment": {
+      "value": {"a": "length", "b": "length", "length": "length"},
+      "text": "segment {a: [x, y], b: [x, y], length}; a and b in definition order"
+    },
+    "line": {
+      "value": {"p": "length", "dir": "scalar"},
+      "text": "line {p: [x, y], dir: [x, y]}; p is the projection of the origin, dir is a unit vector oriented by the definition"
+    },
+    "circle": {
+      "value": {"c": "length", "r": "length"},
+      "text": "circle {c: [x, y], r}"
+    },
+    "polygon": {
+      "value": {"vertices": "length", "area": "area"},
+      "text": "polygon {vertices: [[x, y], ...], area}; area is unsigned"
+    }
+  },
+  "families": {
+    "linear": ["line", "segment"]
+  },
+  "units": {
+    "length": "coordinates and lengths; parity tolerance parity.length * S",
+    "area": "areas; parity tolerance parity.area * S^2",
+    "scalar": "dimensionless numbers (unit directions); parity tolerance parity.scalar"
+  }
+}

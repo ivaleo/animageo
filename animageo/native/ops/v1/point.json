@@ -1,0 +1,73 @@
+[
+  {
+    "op": "point.free",
+    "status": "stable",
+    "since": "1.0",
+    "inputs": [],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "free": {
+      "kind": "point"
+    },
+    "branch": null,
+    "undefined": [],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "free_point",
+    "phrases": {
+      "ru": "{point} — точка"
+    },
+    "math": "docs/native/ops/point.free.md",
+    "signatureHash": "sha256:8b74a96e3fc44081f156f70c28fd7ff0a313aa75c844bcf33a64077d8715bb63"
+  },
+  {
+    "op": "point.midpoint",
+    "status": "stable",
+    "since": "1.0",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "equidistant",
+        "text": "the midpoint is equidistant from a and b: | |a - m| - |m - b| |"
+      },
+      {
+        "id": "collinear",
+        "text": "the midpoint lies on the line ab: distance from m to the line ab (|m - a| when a = b)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "midpoint",
+    "phrases": {
+      "ru": "{point} — середина отрезка {a}{b}"
+    },
+    "math": "docs/native/ops/point.midpoint.md",
+    "signatureHash": "sha256:487dfc5d3ce9f32ebae3ee47bfc7a5d5127675a88b55c996af6b8133f028ade7"
+  }
+]

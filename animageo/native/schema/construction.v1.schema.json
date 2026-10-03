@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://animageo.ru/schema/animageo-construction/v1.json",
+  "title": "animageo-construction/v1",
+  "description": "Construction document read by animageo.native (L0 subset: ref, list and number arguments; point inputs). Sections the library does not interpret (appearance, styleBinding, timeline, exportDefaults, bindings, unknown top-level keys) are kept as is. One rule is checked by the library but cannot be written here: viewDefaults.bounds needs xmin < xmax and ymin < ymax.",
+  "type": "object",
+  "required": [
+    "format",
+    "documentId",
+    "operationRegistryVersion",
+    "operations",
+    "elements"
+  ],
+  "properties": {
+    "format": {
+      "const": "animageo-construction/v1"
+    },
+    "documentId": {
+      "$ref": "#/$defs/id"
+    },
+    "operationRegistryVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "operations": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/id"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/operation"
+      }
+    },
+    "elements": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/id"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/element"
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/id"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/inputValue"
+      }
+    },
+    "appearance": {
+      "type": "object"
+    },
+    "styleBinding": {
+      "type": "object"
+    },
+    "timeline": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "exportDefaults": {
+      "type": "object"
+    },
+    "viewDefaults": {
+      "type": "object",
+      "properties": {
+        "bounds": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        }
+      }
+    },
+    "bindings": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,64}$"
+    },
+    "slot": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+    },
+    "outputSlot": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*(\\.[1-9][0-9]*)?$"
+    },
+    "opName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+    },
+    "point2": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "argument": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "ref",
+            "list",
+            "number"
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/refArgument"
+        },
+        {
+          "$ref": "#/$defs/listArgument"
+        },
+        {
+          "$ref": "#/$defs/numberArgument"
+        }
+      ]
+    },
+    "refArgument": {
+      "type": "object",
+      "required": [
+        "kind",
+        "elementId"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ref"
+        },
+        "elementId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "additionalProperties": false
+    },
+    "listArgument": {
+      "type": "object",
+      "required": [
+        "kind",
+        "items"
+      ],
+      "properties": {
+        "kind": {
+          "const": "list"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/argument"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "numberArgument": {
+      "type": "object",
+      "required": [
+        "kind",
+        "value"
+      ],
+      "properties": {
+        "kind": {
+          "const": "number"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "operation": {
+      "type": "object",
+      "required": [
+        "id",
+        "op",
+        "args",
+        "outputs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "op": {
+          "$ref": "#/$defs/opName"
+        },
+        "args": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/slot"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/argument"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "slot",
+              "elementId"
+            ],
+            "properties": {
+              "slot": {
+                "$ref": "#/$defs/outputSlot"
+              },
+              "elementId": {
+                "$ref": "#/$defs/id"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "branch": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "policy",
+                "selector"
+              ],
+              "properties": {
+                "policy": {
+                  "type": "string"
+                },
+                "selector": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "element": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "producer",
+        "displayName"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "producer": {
+          "type": "object",
+          "required": [
+            "operationId",
+            "slot"
+          ],
+          "properties": {
+            "operationId": {
+              "$ref": "#/$defs/id"
+            },
+            "slot": {
+              "$ref": "#/$defs/outputSlot"
+            }
+          },
+          "additionalProperties": false
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "inputValue": {
+      "type": "object",
+      "required": [
+        "kind",
+        "value"
+      ],
+      "properties": {
+        "kind": {
+          "const": "point"
+        },
+        "value": {
+          "$ref": "#/$defs/point2"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

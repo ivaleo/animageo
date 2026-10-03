@@ -1,0 +1,298 @@
+[
+ {
+  "value": 0,
+  "canonical": "0"
+ },
+ {
+  "value": -0.0,
+  "canonical": "0"
+ },
+ {
+  "value": 1.0,
+  "canonical": "1"
+ },
+ {
+  "value": 100.0,
+  "canonical": "100"
+ },
+ {
+  "value": -1.5,
+  "canonical": "-1.5"
+ },
+ {
+  "value": 0.5,
+  "canonical": "0.5"
+ },
+ {
+  "value": 0.1,
+  "canonical": "0.1"
+ },
+ {
+  "value": 0.30000000000000004,
+  "canonical": "0.30000000000000004"
+ },
+ {
+  "value": 0.3333333333333333,
+  "canonical": "0.3333333333333333"
+ },
+ {
+  "value": 0.6666666666666666,
+  "canonical": "0.6666666666666666"
+ },
+ {
+  "value": -123.456,
+  "canonical": "-123.456"
+ },
+ {
+  "value": 4.35,
+  "canonical": "4.35"
+ },
+ {
+  "value": 1e-05,
+  "canonical": "0.00001"
+ },
+ {
+  "value": 1e-06,
+  "canonical": "0.000001"
+ },
+ {
+  "value": 1.234e-06,
+  "canonical": "0.000001234"
+ },
+ {
+  "value": 1e-07,
+  "canonical": "1e-7"
+ },
+ {
+  "value": 1.5e-06,
+  "canonical": "0.0000015"
+ },
+ {
+  "value": 5e-07,
+  "canonical": "5e-7"
+ },
+ {
+  "value": 1.25e-07,
+  "canonical": "1.25e-7"
+ },
+ {
+  "value": 2.5e-08,
+  "canonical": "2.5e-8"
+ },
+ {
+  "value": 1.23e-18,
+  "canonical": "1.23e-18"
+ },
+ {
+  "value": -1e-300,
+  "canonical": "-1e-300"
+ },
+ {
+  "value": 5e-324,
+  "canonical": "5e-324"
+ },
+ {
+  "value": 1e+20,
+  "canonical": "100000000000000000000"
+ },
+ {
+  "value": 123456789012345680000,
+  "canonical": "123456789012345680000"
+ },
+ {
+  "value": 1000000000000000000000,
+  "canonical": "1e+21"
+ },
+ {
+  "value": 1e+21,
+  "canonical": "1e+21"
+ },
+ {
+  "value": 1.5e+21,
+  "canonical": "1.5e+21"
+ },
+ {
+  "value": 1e+100,
+  "canonical": "1e+100"
+ },
+ {
+  "value": 1.7976931348623157e+308,
+  "canonical": "1.7976931348623157e+308"
+ },
+ {
+  "value": 123456789.125,
+  "canonical": "123456789.125"
+ },
+ {
+  "value": 9007199254740992,
+  "canonical": "9007199254740992"
+ },
+ {
+  "value": 9007199254740993,
+  "canonical": "9007199254740992"
+ },
+ {
+  "value": 9007199254740994,
+  "canonical": "9007199254740994"
+ },
+ {
+  "value": -2147483648,
+  "canonical": "-2147483648"
+ },
+ {
+  "value": 42,
+  "canonical": "42"
+ },
+ {
+  "value": "",
+  "canonical": "\"\""
+ },
+ {
+  "value": "A",
+  "canonical": "\"A\""
+ },
+ {
+  "value": "Привет, мир",
+  "canonical": "\"Привет, мир\""
+ },
+ {
+  "value": "ёЁ",
+  "canonical": "\"ёЁ\""
+ },
+ {
+  "value": "quote \" and backslash \\",
+  "canonical": "\"quote \\\" and backslash \\\\\""
+ },
+ {
+  "value": "/ slash",
+  "canonical": "\"/ slash\""
+ },
+ {
+  "value": "\u0000\u0001\b\f\n\r\t\u000b\u001f",
+  "canonical": "\"\\u0000\\u0001\\b\\f\\n\\r\\t\\u000b\\u001f\""
+ },
+ {
+  "value": " del",
+  "canonical": "\" del\""
+ },
+ {
+  "value": "  ",
+  "canonical": "\"  \""
+ },
+ {
+  "value": "😀",
+  "canonical": "\"😀\""
+ },
+ {
+  "value": "\ud800",
+  "canonical": "\"\\ud800\""
+ },
+ {
+  "value": true,
+  "canonical": "true"
+ },
+ {
+  "value": false,
+  "canonical": "false"
+ },
+ {
+  "value": null,
+  "canonical": "null"
+ },
+ {
+  "value": [],
+  "canonical": "[]"
+ },
+ {
+  "value": [
+   1,
+   "a",
+   null,
+   true,
+   0.1
+  ],
+  "canonical": "[1,\"a\",null,true,0.1]"
+ },
+ {
+  "value": [
+   [
+    [
+     -0.0
+    ]
+   ]
+  ],
+  "canonical": "[[[0]]]"
+ },
+ {
+  "value": {},
+  "canonical": "{}"
+ },
+ {
+  "value": {
+   "b": 1,
+   "a": 2
+  },
+  "canonical": "{\"a\":2,\"b\":1}"
+ },
+ {
+  "value": {
+   "Б": 1,
+   "A": 2,
+   "a": 3,
+   "_": 4,
+   "10": 5,
+   "9": 6,
+   "": 7
+  },
+  "canonical": "{\"\":7,\"10\":5,\"9\":6,\"A\":2,\"_\":4,\"a\":3,\"Б\":1}"
+ },
+ {
+  "value": {
+   "😀": 1,
+   "！": 2,
+   "z": 3
+  },
+  "canonical": "{\"z\":3,\"😀\":1,\"！\":2}"
+ },
+ {
+  "value": {
+   "outer": {
+    "z": [
+     1,
+     {
+      "y": 2,
+      "x": 1
+     }
+    ],
+    "a": "Ж"
+   },
+   "Ключ": 1.0,
+   "num": 1.5e-07
+  },
+  "canonical": "{\"num\":1.5e-7,\"outer\":{\"a\":\"Ж\",\"z\":[1,{\"x\":1,\"y\":2}]},\"Ключ\":1}"
+ },
+ {
+  "value": {
+   "format": "animageo-construction/v1",
+   "documentId": "doc",
+   "viewDefaults": {
+    "bounds": [
+     -10,
+     -7.5,
+     10,
+     7.5
+    ]
+   },
+   "inputs": {
+    "A": {
+     "value": [
+      0.1,
+      -2.0
+     ],
+     "kind": "point"
+    }
+   }
+  },
+  "canonical": "{\"documentId\":\"doc\",\"format\":\"animageo-construction/v1\",\"inputs\":{\"A\":{\"kind\":\"point\",\"value\":[0.1,-2]}},\"viewDefaults\":{\"bounds\":[-10,-7.5,10,7.5]}}"
+ }
+]

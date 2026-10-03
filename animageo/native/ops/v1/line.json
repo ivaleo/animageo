@@ -1,0 +1,87 @@
+[
+  {
+    "op": "segment.by_points",
+    "status": "stable",
+    "since": "1.0",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "segment",
+        "type": "segment"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "ends",
+        "text": "the ends of the segment are the inputs a and b"
+      }
+    ],
+    "orientation": "a_to_b",
+    "pathParam": null,
+    "stepKind": "segment",
+    "phrases": {
+      "ru": "{segment} — отрезок {a}{b}"
+    },
+    "math": "docs/native/ops/segment.by_points.md",
+    "signatureHash": "sha256:be1a52a14b19e85053b0533d3dd3d8a0b12a43b1f5969fafcbe12c79988dcc0d"
+  },
+  {
+    "op": "line.by_points",
+    "status": "stable",
+    "since": "1.0",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_a",
+        "text": "the line passes through a: distance from a to the line"
+      },
+      {
+        "id": "through_b",
+        "text": "the line passes through b: distance from b to the line"
+      }
+    ],
+    "orientation": "a_to_b",
+    "pathParam": null,
+    "stepKind": "line",
+    "phrases": {
+      "ru": "{line} — прямая {a}{b}"
+    },
+    "math": "docs/native/ops/line.by_points.md",
+    "signatureHash": "sha256:fcebec1d748517206963944a677642a99ed3277715db0b080587c3f92d4f1b6a"
+  }
+]

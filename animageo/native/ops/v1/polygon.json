@@ -1,0 +1,45 @@
+[
+  {
+    "op": "polygon.by_points",
+    "status": "stable",
+    "since": "1.0",
+    "inputs": [
+      {
+        "slot": "vertices",
+        "type": "point",
+        "list": true,
+        "min": 3
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "polygon",
+        "type": "polygon"
+      },
+      {
+        "slot": "side",
+        "type": "segment",
+        "repeat": "vertices"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "sides_match",
+        "text": "side i joins vertex i and vertex i + 1 (cyclically): the largest distance between side ends and vertices"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "polygon",
+    "phrases": {
+      "ru": "{polygon} — многоугольник {vertices}"
+    },
+    "math": "docs/native/ops/polygon.by_points.md",
+    "signatureHash": "sha256:4108d41bea24861a3d178199e4f71555531690b60bc98da2328da512209ea272"
+  }
+]

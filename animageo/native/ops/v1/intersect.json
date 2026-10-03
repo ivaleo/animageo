@@ -1,0 +1,46 @@
+[
+  {
+    "op": "intersect.line_line",
+    "status": "stable",
+    "since": "1.0",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "linear"
+      },
+      {
+        "slot": "second",
+        "type": "linear"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "parallel",
+      "coincident",
+      "outside_part",
+      "zero_length",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "incident_both",
+        "text": "the point lies on both carriers: the larger of the two distances to the carrier lines"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{point} — точка пересечения {first} и {second}"
+    },
+    "math": "docs/native/ops/intersect.line_line.md",
+    "signatureHash": "sha256:be74b127f909906e8dfe346f7ad79043e483defde31d0aac29628ae550f925d2"
+  }
+]
