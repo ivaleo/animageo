@@ -1,0 +1,765 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "polygon_triangle",
+  "registry": "1.0",
+  "generatedBy": "animageo 1.7.13",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "polygon_triangle",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_T": {
+        "id": "op_T",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "T"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "sAB"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "sBC"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "sCA"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        },
+        "displayName": "C"
+      },
+      "T": {
+        "id": "T",
+        "type": "polygon",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "polygon"
+        },
+        "displayName": "T"
+      },
+      "sAB": {
+        "id": "sAB",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "side.1"
+        },
+        "displayName": "sAB"
+      },
+      "sBC": {
+        "id": "sBC",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "side.2"
+        },
+        "displayName": "sBC"
+      },
+      "sCA": {
+        "id": "sCA",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "side.3"
+        },
+        "displayName": "sCA"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "right_ccw",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 3.0
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                4.0,
+                0.0
+              ],
+              [
+                0.0,
+                3.0
+              ]
+            ],
+            "area": 6.0
+          }
+        },
+        "sAB": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              4.0,
+              0.0
+            ],
+            "length": 4.0
+          }
+        },
+        "sBC": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              0.0
+            ],
+            "b": [
+              0.0,
+              3.0
+            ],
+            "length": 5.0
+          }
+        },
+        "sCA": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              3.0
+            ],
+            "b": [
+              0.0,
+              0.0
+            ],
+            "length": 3.0
+          }
+        }
+      },
+      "checks": {
+        "op_T:sides_match": "passed"
+      }
+    },
+    {
+      "name": "right_cw",
+      "inputs": {
+        "B": {
+          "kind": "point",
+          "value": [
+            0,
+            3
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            4,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 3.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                3.0
+              ],
+              [
+                4.0,
+                0.0
+              ]
+            ],
+            "area": 6.0
+          }
+        },
+        "sAB": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              0.0,
+              3.0
+            ],
+            "length": 3.0
+          }
+        },
+        "sBC": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              3.0
+            ],
+            "b": [
+              4.0,
+              0.0
+            ],
+            "length": 5.0
+          }
+        },
+        "sCA": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              0.0
+            ],
+            "b": [
+              0.0,
+              0.0
+            ],
+            "length": 4.0
+          }
+        }
+      },
+      "checks": {
+        "op_T:sides_match": "passed"
+      }
+    },
+    {
+      "name": "general",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -2.5,
+            1
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            3,
+            -2
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            1.5,
+            4.25
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.5,
+            "y": 1.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.5,
+            "y": 4.25
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -2.5,
+                1.0
+              ],
+              [
+                3.0,
+                -2.0
+              ],
+              [
+                1.5,
+                4.25
+              ]
+            ],
+            "area": 14.9375
+          }
+        },
+        "sAB": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.5,
+              1.0
+            ],
+            "b": [
+              3.0,
+              -2.0
+            ],
+            "length": 6.264982043070834
+          }
+        },
+        "sBC": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.0,
+              -2.0
+            ],
+            "b": [
+              1.5,
+              4.25
+            ],
+            "length": 6.427480066091221
+          }
+        },
+        "sCA": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.5,
+              4.25
+            ],
+            "b": [
+              -2.5,
+              1.0
+            ],
+            "length": 5.153882032022076
+          }
+        }
+      },
+      "checks": {
+        "op_T:sides_match": "passed"
+      }
+    },
+    {
+      "name": "collinear",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            1,
+            1
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            3,
+            3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 3.0
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ],
+              [
+                3.0,
+                3.0
+              ]
+            ],
+            "area": 0.0
+          }
+        },
+        "sAB": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              1.0,
+              1.0
+            ],
+            "length": 1.4142135623730951
+          }
+        },
+        "sBC": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              1.0
+            ],
+            "b": [
+              3.0,
+              3.0
+            ],
+            "length": 2.8284271247461903
+          }
+        },
+        "sCA": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.0,
+              3.0
+            ],
+            "b": [
+              0.0,
+              0.0
+            ],
+            "length": 4.242640687119285
+          }
+        }
+      },
+      "checks": {
+        "op_T:sides_match": "passed"
+      }
+    },
+    {
+      "name": "coincident_vertices",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            1,
+            1
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            1,
+            1
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            4,
+            5
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 5.0
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                1.0,
+                1.0
+              ],
+              [
+                1.0,
+                1.0
+              ],
+              [
+                4.0,
+                5.0
+              ]
+            ],
+            "area": 0.0
+          }
+        },
+        "sAB": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              1.0
+            ],
+            "b": [
+              1.0,
+              1.0
+            ],
+            "length": 0.0
+          }
+        },
+        "sBC": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              1.0
+            ],
+            "b": [
+              4.0,
+              5.0
+            ],
+            "length": 5.0
+          }
+        },
+        "sCA": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              5.0
+            ],
+            "b": [
+              1.0,
+              1.0
+            ],
+            "length": 5.0
+          }
+        }
+      },
+      "checks": {
+        "op_T:sides_match": "passed"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1278 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "graph_errors",
+  "registry": "1.0",
+  "generatedBy": "animageo 1.7.13",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "graph_errors",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_F": {
+        "id": "op_F",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "F"
+          }
+        ]
+      },
+      "op_sAB": {
+        "id": "op_sAB",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sAB"
+          }
+        ]
+      },
+      "op_lAB": {
+        "id": "op_lAB",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "lAB"
+          }
+        ]
+      },
+      "op_lCD": {
+        "id": "op_lCD",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "D"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "lCD"
+          }
+        ]
+      },
+      "op_X": {
+        "id": "op_X",
+        "op": "intersect.line_line",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "lAB"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "lCD"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "X"
+          }
+        ]
+      },
+      "op_sAG": {
+        "id": "op_sAG",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "ghost"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sAG"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "P"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_sPC": {
+        "id": "op_sPC",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sPC"
+          }
+        ]
+      },
+      "op_R": {
+        "id": "op_R",
+        "op": "point.reflect_magic",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "mirror": {
+            "kind": "ref",
+            "elementId": "lAB"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "R"
+          }
+        ]
+      },
+      "op_sRC": {
+        "id": "op_sRC",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "R"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sRC"
+          }
+        ]
+      },
+      "op_cBad": {
+        "id": "op_cBad",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "sAB"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "cBad"
+          }
+        ]
+      },
+      "op_sAC": {
+        "id": "op_sAC",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sAC"
+          }
+        ]
+      },
+      "op_mBad": {
+        "id": "op_mBad",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "mBad"
+          }
+        ]
+      },
+      "op_W": {
+        "id": "op_W",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "X"
+              },
+              {
+                "kind": "ref",
+                "elementId": "R"
+              },
+              {
+                "kind": "ref",
+                "elementId": "P"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "W"
+          }
+        ]
+      },
+      "op_W2": {
+        "id": "op_W2",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "X"
+              },
+              {
+                "kind": "ref",
+                "elementId": "R"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "W2"
+          }
+        ]
+      },
+      "op_W3": {
+        "id": "op_W3",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "X"
+              },
+              {
+                "kind": "ref",
+                "elementId": "A"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "W3"
+          }
+        ]
+      },
+      "op_sFA": {
+        "id": "op_sFA",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "F"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sFA"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        },
+        "displayName": "C"
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        },
+        "displayName": "D"
+      },
+      "F": {
+        "id": "F",
+        "type": "point",
+        "producer": {
+          "operationId": "op_F",
+          "slot": "point"
+        },
+        "displayName": "F"
+      },
+      "sAB": {
+        "id": "sAB",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_sAB",
+          "slot": "segment"
+        },
+        "displayName": "sAB"
+      },
+      "lAB": {
+        "id": "lAB",
+        "type": "line",
+        "producer": {
+          "operationId": "op_lAB",
+          "slot": "line"
+        },
+        "displayName": "lAB"
+      },
+      "lCD": {
+        "id": "lCD",
+        "type": "line",
+        "producer": {
+          "operationId": "op_lCD",
+          "slot": "line"
+        },
+        "displayName": "lCD"
+      },
+      "X": {
+        "id": "X",
+        "type": "point",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "point"
+        },
+        "displayName": "X"
+      },
+      "sAG": {
+        "id": "sAG",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_sAG",
+          "slot": "segment"
+        },
+        "displayName": "sAG"
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        },
+        "displayName": "Q"
+      },
+      "sPC": {
+        "id": "sPC",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_sPC",
+          "slot": "segment"
+        },
+        "displayName": "sPC"
+      },
+      "R": {
+        "id": "R",
+        "type": "point",
+        "producer": {
+          "operationId": "op_R",
+          "slot": "point"
+        },
+        "displayName": "R"
+      },
+      "sRC": {
+        "id": "sRC",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_sRC",
+          "slot": "segment"
+        },
+        "displayName": "sRC"
+      },
+      "cBad": {
+        "id": "cBad",
+        "type": "circle",
+        "producer": {
+          "operationId": "op_cBad",
+          "slot": "circle"
+        },
+        "displayName": "cBad"
+      },
+      "sAC": {
+        "id": "sAC",
+        "type": "line",
+        "producer": {
+          "operationId": "op_sAC",
+          "slot": "segment"
+        },
+        "displayName": "sAC"
+      },
+      "mBad": {
+        "id": "mBad",
+        "type": "point",
+        "producer": {
+          "operationId": "op_mBad",
+          "slot": "point"
+        },
+        "displayName": "mBad"
+      },
+      "W": {
+        "id": "W",
+        "type": "polygon",
+        "producer": {
+          "operationId": "op_W",
+          "slot": "polygon"
+        },
+        "displayName": "W"
+      },
+      "W2": {
+        "id": "W2",
+        "type": "polygon",
+        "producer": {
+          "operationId": "op_W2",
+          "slot": "polygon"
+        },
+        "displayName": "W2"
+      },
+      "W3": {
+        "id": "W3",
+        "type": "polygon",
+        "producer": {
+          "operationId": "op_W3",
+          "slot": "polygon"
+        },
+        "displayName": "W3"
+      },
+      "sFA": {
+        "id": "sFA",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_sFA",
+          "slot": "segment"
+        },
+        "displayName": "sFA"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          1,
+          3
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          2,
+          -2
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "default",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -2.0
+          }
+        },
+        "F": {
+          "state": "error",
+          "type": "point",
+          "reason": "schema"
+        },
+        "P": {
+          "state": "error",
+          "type": "point",
+          "reason": "cycle"
+        },
+        "Q": {
+          "state": "error",
+          "type": "point",
+          "reason": "cycle"
+        },
+        "R": {
+          "state": "unsupported",
+          "type": "point",
+          "reason": "unknown_op"
+        },
+        "W": {
+          "state": "error",
+          "type": "polygon",
+          "reason": "upstream",
+          "cause": "P"
+        },
+        "W2": {
+          "state": "unsupported",
+          "type": "polygon",
+          "reason": "upstream",
+          "cause": "R"
+        },
+        "W3": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                1.0,
+                3.0
+              ],
+              [
+                1.5999999999999999,
+                0.0
+              ],
+              [
+                0.0,
+                0.0
+              ]
+            ],
+            "area": 2.4
+          }
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.5999999999999999,
+            "y": 0.0
+          }
+        },
+        "cBad": {
+          "state": "error",
+          "type": "circle",
+          "reason": "type_mismatch"
+        },
+        "lAB": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "lCD": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.5384615384615383,
+              0.3076923076923075
+            ],
+            "dir": [
+              0.19611613513818404,
+              -0.9805806756909202
+            ]
+          }
+        },
+        "mBad": {
+          "state": "error",
+          "type": "point",
+          "reason": "schema"
+        },
+        "sAB": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              4.0,
+              0.0
+            ],
+            "length": 4.0
+          }
+        },
+        "sAC": {
+          "state": "error",
+          "type": "line",
+          "reason": "type_mismatch"
+        },
+        "sAG": {
+          "state": "error",
+          "type": "segment",
+          "reason": "dangling_ref"
+        },
+        "sFA": {
+          "state": "error",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "F"
+        },
+        "sPC": {
+          "state": "error",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "P"
+        },
+        "sRC": {
+          "state": "unsupported",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "R"
+        }
+      },
+      "checks": {
+        "op_W3:sides_match": "passed",
+        "op_X:incident_both": "passed",
+        "op_lAB:through_a": "passed",
+        "op_lAB:through_b": "passed",
+        "op_lCD:through_a": "passed",
+        "op_lCD:through_b": "passed",
+        "op_sAB:ends": "passed"
+      }
+    },
+    {
+      "name": "parallel_lines",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            1,
+            3
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            5,
+            3
+          ]
+        },
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            3.5
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            4,
+            3.5
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 3.5
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.5
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 3.0
+          }
+        },
+        "F": {
+          "state": "error",
+          "type": "point",
+          "reason": "schema"
+        },
+        "P": {
+          "state": "error",
+          "type": "point",
+          "reason": "cycle"
+        },
+        "Q": {
+          "state": "error",
+          "type": "point",
+          "reason": "cycle"
+        },
+        "R": {
+          "state": "unsupported",
+          "type": "point",
+          "reason": "unknown_op"
+        },
+        "W": {
+          "state": "error",
+          "type": "polygon",
+          "reason": "upstream",
+          "cause": "P"
+        },
+        "W2": {
+          "state": "unsupported",
+          "type": "polygon",
+          "reason": "upstream",
+          "cause": "R"
+        },
+        "W3": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "upstream",
+          "cause": "X"
+        },
+        "X": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "parallel"
+        },
+        "cBad": {
+          "state": "error",
+          "type": "circle",
+          "reason": "type_mismatch"
+        },
+        "lAB": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              3.5
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "lCD": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              3.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "mBad": {
+          "state": "error",
+          "type": "point",
+          "reason": "schema"
+        },
+        "sAB": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              3.5
+            ],
+            "b": [
+              4.0,
+              3.5
+            ],
+            "length": 4.0
+          }
+        },
+        "sAC": {
+          "state": "error",
+          "type": "line",
+          "reason": "type_mismatch"
+        },
+        "sAG": {
+          "state": "error",
+          "type": "segment",
+          "reason": "dangling_ref"
+        },
+        "sFA": {
+          "state": "error",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "F"
+        },
+        "sPC": {
+          "state": "error",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "P"
+        },
+        "sRC": {
+          "state": "unsupported",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "R"
+        }
+      },
+      "checks": {
+        "op_lAB:through_a": "passed",
+        "op_lAB:through_b": "passed",
+        "op_lCD:through_a": "passed",
+        "op_lCD:through_b": "passed",
+        "op_sAB:ends": "passed"
+      }
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -2,
+            -1
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            3,
+            1
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            4
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            2,
+            -3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -1.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 4.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -3.0
+          }
+        },
+        "F": {
+          "state": "error",
+          "type": "point",
+          "reason": "schema"
+        },
+        "P": {
+          "state": "error",
+          "type": "point",
+          "reason": "cycle"
+        },
+        "Q": {
+          "state": "error",
+          "type": "point",
+          "reason": "cycle"
+        },
+        "R": {
+          "state": "unsupported",
+          "type": "point",
+          "reason": "unknown_op"
+        },
+        "W": {
+          "state": "error",
+          "type": "polygon",
+          "reason": "upstream",
+          "cause": "P"
+        },
+        "W2": {
+          "state": "unsupported",
+          "type": "polygon",
+          "reason": "upstream",
+          "cause": "R"
+        },
+        "W3": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                0.0,
+                4.0
+              ],
+              [
+                1.0769230769230769,
+                0.23076923076923067
+              ],
+              [
+                -2.0,
+                -1.0
+              ]
+            ],
+            "area": 6.461538461538462
+          }
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0769230769230769,
+            "y": 0.23076923076923067
+          }
+        },
+        "cBad": {
+          "state": "error",
+          "type": "circle",
+          "reason": "type_mismatch"
+        },
+        "lAB": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.06896551724137945,
+              -0.1724137931034483
+            ],
+            "dir": [
+              0.9284766908852594,
+              0.3713906763541037
+            ]
+          }
+        },
+        "lCD": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.0566037735849056,
+              0.3018867924528301
+            ],
+            "dir": [
+              0.27472112789737807,
+              -0.9615239476408232
+            ]
+          }
+        },
+        "mBad": {
+          "state": "error",
+          "type": "point",
+          "reason": "schema"
+        },
+        "sAB": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.0,
+              -1.0
+            ],
+            "b": [
+              3.0,
+              1.0
+            ],
+            "length": 5.385164807134504
+          }
+        },
+        "sAC": {
+          "state": "error",
+          "type": "line",
+          "reason": "type_mismatch"
+        },
+        "sAG": {
+          "state": "error",
+          "type": "segment",
+          "reason": "dangling_ref"
+        },
+        "sFA": {
+          "state": "error",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "F"
+        },
+        "sPC": {
+          "state": "error",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "P"
+        },
+        "sRC": {
+          "state": "unsupported",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "R"
+        }
+      },
+      "checks": {
+        "op_W3:sides_match": "passed",
+        "op_X:incident_both": "passed",
+        "op_lAB:through_a": "passed",
+        "op_lAB:through_b": "passed",
+        "op_lCD:through_a": "passed",
+        "op_lCD:through_b": "passed",
+        "op_sAB:ends": "passed"
+      }
+    }
+  ]
+}

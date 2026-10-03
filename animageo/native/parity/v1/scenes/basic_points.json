@@ -1,0 +1,187 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "basic_points",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "basic_points",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_M": {
+        "id": "op_M",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "M"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "M": {
+        "id": "M",
+        "type": "point",
+        "producer": {
+          "operationId": "op_M",
+          "slot": "point"
+        },
+        "displayName": "M"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          2
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          5,
+          -3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "negative_fractions",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -3.5,
+            0.25
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            2.75,
+            -1.5
+          ]
+        }
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            2,
+            2
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            2,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "name": "decimal",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0.1,
+            0.2
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            0.3,
+            -0.7
+          ]
+        }
+      }
+    },
+    {
+      "name": "far_outside_view",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            1000,
+            -2000
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            3000,
+            500
+          ]
+        }
+      }
+    }
+  ]
+}

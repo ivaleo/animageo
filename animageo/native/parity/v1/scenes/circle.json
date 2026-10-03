@@ -1,0 +1,179 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "circle",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "circle",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "P"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        },
+        "displayName": "c"
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "P": {
+        "kind": "point",
+        "value": [
+          3,
+          4
+        ]
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "pythagorean"
+    },
+    {
+      "name": "offset",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            -2,
+            1.5
+          ]
+        },
+        "P": {
+          "kind": "point",
+          "value": [
+            1,
+            -2.5
+          ]
+        }
+      }
+    },
+    {
+      "name": "fractional",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            0.25,
+            -0.75
+          ]
+        },
+        "P": {
+          "kind": "point",
+          "value": [
+            1.5,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "name": "large",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            100,
+            -50
+          ]
+        },
+        "P": {
+          "kind": "point",
+          "value": [
+            -20,
+            40
+          ]
+        }
+      }
+    },
+    {
+      "name": "zero_radius",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            1,
+            1
+          ]
+        },
+        "P": {
+          "kind": "point",
+          "value": [
+            1,
+            1
+          ]
+        }
+      }
+    }
+  ]
+}

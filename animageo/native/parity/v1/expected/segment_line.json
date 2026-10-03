@@ -1,0 +1,570 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "segment_line",
+  "registry": "1.0",
+  "generatedBy": "animageo 1.7.13",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "segment_line",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_lBA": {
+        "id": "op_lBA",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "lBA"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        },
+        "displayName": "s"
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        },
+        "displayName": "l"
+      },
+      "lBA": {
+        "id": "lBA",
+        "type": "line",
+        "producer": {
+          "operationId": "op_lBA",
+          "slot": "line"
+        },
+        "displayName": "lBA"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          1
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          5
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 5.0
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.16000000000000003,
+              -0.11999999999999988
+            ],
+            "dir": [
+              0.6,
+              0.8
+            ]
+          }
+        },
+        "lBA": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.16000000000000014,
+              -0.120000000000001
+            ],
+            "dir": [
+              -0.6,
+              -0.8
+            ]
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              1.0
+            ],
+            "b": [
+              4.0,
+              5.0
+            ],
+            "length": 5.0
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_lBA:through_a": "passed",
+        "op_lBA:through_b": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "vertical",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            2,
+            -3
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            2,
+            4
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 4.0
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "lBA": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              -1.0
+            ]
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              2.0,
+              -3.0
+            ],
+            "b": [
+              2.0,
+              4.0
+            ],
+            "length": 7.0
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_lBA:through_a": "passed",
+        "op_lBA:through_b": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "horizontal_reversed",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            3,
+            1
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            -5,
+            1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 1.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -5.0,
+            "y": 1.0
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              1.0
+            ],
+            "dir": [
+              -1.0,
+              0.0
+            ]
+          }
+        },
+        "lBA": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              1.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.0,
+              1.0
+            ],
+            "b": [
+              -5.0,
+              1.0
+            ],
+            "length": 8.0
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_lBA:through_a": "passed",
+        "op_lBA:through_b": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "oblique",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -7,
+            2
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            9,
+            -6
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -7.0,
+            "y": 2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 9.0,
+            "y": -6.0
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.6000000000000005,
+              -1.1999999999999997
+            ],
+            "dir": [
+              0.8944271909999159,
+              -0.4472135954999579
+            ]
+          }
+        },
+        "lBA": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.5999999999999996,
+              -1.2000000000000002
+            ],
+            "dir": [
+              -0.8944271909999159,
+              0.4472135954999579
+            ]
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -7.0,
+              2.0
+            ],
+            "b": [
+              9.0,
+              -6.0
+            ],
+            "length": 17.88854381999832
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_lBA:through_a": "passed",
+        "op_lBA:through_b": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "coincident_points",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            2.5,
+            -1
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            2.5,
+            -1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.5,
+            "y": -1.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.5,
+            "y": -1.0
+          }
+        },
+        "l": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident_points"
+        },
+        "lBA": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident_points"
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              2.5,
+              -1.0
+            ],
+            "b": [
+              2.5,
+              -1.0
+            ],
+            "length": 0.0
+          }
+        }
+      },
+      "checks": {
+        "op_s:ends": "passed"
+      }
+    }
+  ]
+}

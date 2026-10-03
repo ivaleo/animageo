@@ -1,0 +1,303 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "polygon_quad",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "polygon_quad",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "Q"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "sAB"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "sCD"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        },
+        "displayName": "C"
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        },
+        "displayName": "D"
+      },
+      "Q": {
+        "id": "Q",
+        "type": "polygon",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "polygon"
+        },
+        "displayName": "Q"
+      },
+      "sAB": {
+        "id": "sAB",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "side.1"
+        },
+        "displayName": "sAB"
+      },
+      "sCD": {
+        "id": "sCD",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "side.3"
+        },
+        "displayName": "sCD"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          2,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          2,
+          2
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          0,
+          2
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "square"
+    },
+    {
+      "name": "dart_nonconvex",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            4,
+            2
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            4
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            1,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "name": "bowtie_selfintersecting",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            2,
+            2
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            2,
+            0
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            0,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "name": "general",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -3,
+            -1
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            2.5,
+            -2
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            4,
+            3
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            -1,
+            2.5
+          ]
+        }
+      }
+    }
+  ]
+}

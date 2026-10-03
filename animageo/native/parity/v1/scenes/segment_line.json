@@ -1,0 +1,245 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "segment_line",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "segment_line",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_lBA": {
+        "id": "op_lBA",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "lBA"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        },
+        "displayName": "s"
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        },
+        "displayName": "l"
+      },
+      "lBA": {
+        "id": "lBA",
+        "type": "line",
+        "producer": {
+          "operationId": "op_lBA",
+          "slot": "line"
+        },
+        "displayName": "lBA"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          1
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          5
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "vertical",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            2,
+            -3
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            2,
+            4
+          ]
+        }
+      }
+    },
+    {
+      "name": "horizontal_reversed",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            3,
+            1
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            -5,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "name": "oblique",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -7,
+            2
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            9,
+            -6
+          ]
+        }
+      }
+    },
+    {
+      "name": "coincident_points",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            2.5,
+            -1
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            2.5,
+            -1
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "circle",
+  "registry": "1.0",
+  "generatedBy": "animageo 1.7.13",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "circle",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "P"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        },
+        "displayName": "c"
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "P": {
+        "kind": "point",
+        "value": [
+          3,
+          4
+        ]
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "pythagorean",
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 4.0
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 5.0
+          }
+        }
+      },
+      "checks": {
+        "op_c:through_on_circle": "passed"
+      }
+    },
+    {
+      "name": "offset",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            -2,
+            1.5
+          ]
+        },
+        "P": {
+          "kind": "point",
+          "value": [
+            1,
+            -2.5
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 1.5
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.5
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              -2.0,
+              1.5
+            ],
+            "r": 5.0
+          }
+        }
+      },
+      "checks": {
+        "op_c:through_on_circle": "passed"
+      }
+    },
+    {
+      "name": "fractional",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            0.25,
+            -0.75
+          ]
+        },
+        "P": {
+          "kind": "point",
+          "value": [
+            1.5,
+            2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.25,
+            "y": -0.75
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.5,
+            "y": 2.0
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.25,
+              -0.75
+            ],
+            "r": 3.020761493398643
+          }
+        }
+      },
+      "checks": {
+        "op_c:through_on_circle": "passed"
+      }
+    },
+    {
+      "name": "large",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            100,
+            -50
+          ]
+        },
+        "P": {
+          "kind": "point",
+          "value": [
+            -20,
+            40
+          ]
+        }
+      },
+      "scale": 150.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 100.0,
+            "y": -50.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -20.0,
+            "y": 40.0
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              100.0,
+              -50.0
+            ],
+            "r": 150.0
+          }
+        }
+      },
+      "checks": {
+        "op_c:through_on_circle": "passed"
+      }
+    },
+    {
+      "name": "zero_radius",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            1,
+            1
+          ]
+        },
+        "P": {
+          "kind": "point",
+          "value": [
+            1,
+            1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "c": {
+          "state": "undefined",
+          "type": "circle",
+          "reason": "nonpositive_radius"
+        }
+      },
+      "checks": {}
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+"""Command line of ``animageo.native``::
+
+    python -m animageo.native fixtures generate <scenes…> -o <dir>
+    python -m animageo.native fixtures verify <fixtures…>
+    python -m animageo.native registry index [--check]
+    python -m animageo.native evaluate <doc.json> [--inputs case.json] [--canonical]
+    python -m animageo.native validate <doc.json>
+
+Exit codes: 0 success; 1 verify mismatches, validate issues (invalid JSON
+included), an out-of-date registry index or a refused scene; 2 an input that
+cannot be used (a missing file; for ``evaluate`` a document that does not load
+or bad ``--inputs``).
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+
+from .canonical import canonical_json
+from .document import LoadError, load, validate
+from .kernel.checks import run_checks
+from .kernel.evaluate import evaluate
+from .parity import ParityError, generate, verify
+from .registry import REGISTRY_VERSION, registry_problems, write_index
+
+
+def _out(text: str) -> None:
+    sys.stdout.write(text + '\n')
+
+
+def _err(text: str) -> None:
+    sys.stderr.write(text + '\n')
+
+
+def _library_version() -> str:
+    from .. import __version__
+    return __version__
+
+
+def _cmd_fixtures_generate(args) -> int:
+    try:
+        written = generate(args.scenes, args.out)
+    except ParityError as exc:
+        _err(f'refused: {exc}')
+        return 1
+    for path in written:
+        _out(f'wrote {path}')
+    return 0
+
+
+def _cmd_fixtures_verify(args) -> int:
+    files, cases, mismatches = verify(args.fixtures)
+    for line in mismatches:
+        _out(line)
+    _out(f'{files} fixtures, {cases} cases, {len(mismatches)} mismatches')
+    return 1 if mismatches else 0
+
+
+def _cmd_registry_index(args) -> int:
+    changed = write_index(check=args.check)
+    if args.check:
+        problems = [p for p in registry_problems() if 'INDEX.json' not in p]
+        for name in changed:
+            _out(f'out of date: {name}')
+        for problem in problems:
+            _out(problem)
+        if changed or problems:
+            _out('run: python -m animageo.native registry index')
+            return 1
+        _out(f'registry {REGISTRY_VERSION}: index is up to date')
+        return 0
+    for name in changed:
+        _out(f'updated {name}')
+    if not changed:
+        _out(f'registry {REGISTRY_VERSION}: nothing to update')
+    return 0
+
+
+def _read_inputs(path):
+    with open(path, encoding='utf-8') as fh:
+        data = json.load(fh)
+    if isinstance(data, dict) and isinstance(data.get('inputs'), dict) and 'kind' not in data:
+        return data['inputs']
+    return data
+
+
+def _cmd_evaluate(args) -> int:
+    try:
+        doc = load(args.document)
+        inputs = _read_inputs(args.inputs) if args.inputs else None
+        ev = evaluate(doc, inputs=inputs)
+    except LoadError as exc:
+        for issue in exc.issues:
+            _err(f'{issue.code} {issue.path or "/"}: {issue.message}')
+        return 2
+    except (OSError, ValueError) as exc:
+        _err(str(exc))
+        return 2
+    result = ev.to_dict()
+    if args.checks:
+        result['checks'] = run_checks(ev).results
+    if args.canonical:
+        _out(canonical_json(result))
+    else:
+        _out(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def _cmd_validate(args) -> int:
+    try:
+        doc = load(args.document, strict=False)
+    except LoadError as exc:
+        issues = exc.issues
+    except (OSError, ValueError) as exc:
+        _err(str(exc))
+        return 2
+    else:
+        issues = validate(doc)
+    if args.json:
+        _out(json.dumps([i.to_dict() for i in issues], ensure_ascii=False, indent=2))
+    else:
+        for issue in issues:
+            _out(f'{issue.severity} {issue.code} {issue.path or "/"}: {issue.message}')
+        _out(f'{len(issues)} issues')
+    return 1 if issues else 0
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog='python -m animageo.native',
+        description='animageo.native: construction documents, the reference kernel and parity fixtures.',
+    )
+    parser.add_argument('--version', action='version',
+                        version=f'animageo {_library_version()}, registry {REGISTRY_VERSION}')
+    sub = parser.add_subparsers(dest='command', required=True)
+
+    fixtures = sub.add_parser('fixtures', help='parity fixtures animageo-parity/v1')
+    fsub = fixtures.add_subparsers(dest='action', required=True)
+    gen = fsub.add_parser('generate', help='evaluate scenes and write fixtures with expectations')
+    gen.add_argument('scenes', nargs='+', help='scene files or directories of *.json')
+    gen.add_argument('-o', '--out', required=True, help='output directory')
+    gen.set_defaults(func=_cmd_fixtures_generate)
+    ver = fsub.add_parser('verify', help='re-evaluate fixtures and compare (exit 1 on mismatch)')
+    ver.add_argument('fixtures', nargs='+', help='fixture files or directories of *.json')
+    ver.set_defaults(func=_cmd_fixtures_verify)
+
+    reg = sub.add_parser('registry', help='operation registry ops/v1')
+    rsub = reg.add_subparsers(dest='action', required=True)
+    idx = rsub.add_parser('index', help='refresh signatureHash fields and INDEX.json')
+    idx.add_argument('--check', action='store_true', help='only check; exit 1 when out of date')
+    idx.set_defaults(func=_cmd_registry_index)
+
+    ev = sub.add_parser('evaluate', help='evaluate a document (animageo-evaluated/v1)')
+    ev.add_argument('document', help='animageo-construction/v1 JSON file')
+    ev.add_argument('--inputs', help='JSON file: {elementId: input} or a case {"inputs": {...}}')
+    ev.add_argument('--checks', action='store_true', help='add the check results')
+    ev.add_argument('--canonical', action='store_true', help='print canonical JSON')
+    ev.set_defaults(func=_cmd_evaluate)
+
+    va = sub.add_parser('validate', help='list the issues of a document (exit 1 if any)')
+    va.add_argument('document', help='animageo-construction/v1 JSON file')
+    va.add_argument('--json', action='store_true', help='print the issues as JSON')
+    va.set_defaults(func=_cmd_validate)
+    return parser
+
+
+def main(argv=None) -> int:
+    args = build_parser().parse_args(argv)
+    return args.func(args)
