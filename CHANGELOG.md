@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0a1] - 2026-10-03
+
+### Added
+
+- `animageo.native`, a new module that does not need manim: the construction
+  document `animageo-construction/v1` and a reference geometry kernel.
+  `native.load`, `validate`, `dump`, `dumps` and `content_hash` read and write
+  documents (a JSON Schema ships in `animageo/native/schema/`);
+  `native.evaluate` gives every element a value or a state (`defined`,
+  `undefined`, `unsupported`, `error`) with a reason, and an element that
+  depends on a broken one names the root cause; `native.check` runs the
+  mandatory checks of each operation (`passed`, `failed`, `inconclusive`).
+- The semantic operation registry `ops/v1` (registry version 1.0): free point,
+  midpoint, segment and line through two points, circle by center and point,
+  intersection of two lines or segments, polygon with its sides. Each record
+  has a signature hash; `INDEX.json` lists them. The formulas, tolerances and
+  degenerate cases are documented in `docs/native/`.
+- Canonical JSON (`native.canonical_json`): numbers are written as JavaScript
+  writes them, keys are sorted, so the same document gives the same bytes and
+  the same hash in Python and in a browser.
+- Parity fixtures `parity/v1`: nine scenes with expected values, states and
+  check results, and the command line
+  `python -m animageo.native fixtures generate|verify`, `registry index
+  [--check]`, `evaluate` and `validate`. The generator refuses inputs that lie
+  closer than 1000 decision tolerances to a degeneracy threshold.
+
+### Changed
+
+- `import animageo` skips the manim-backed API when manim cannot be found
+  (before, it started importing it and stopped at the missing manim), and
+  `python -m animageo.native` never imports it. `animageo.geo` now loads its
+  modules in a working order by itself, so `import animageo.geo.lib_elements`
+  still works without manim. With manim installed nothing changes; the
+  classic API is the same as in 1.7.13.
+
 ## [1.7.13] - 2026-10-01
 
 ### Added
@@ -1716,7 +1751,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.13...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.0a1...HEAD
+[1.8.0a1]: https://github.com/ivaleo/animageo/compare/v1.7.13...v1.8.0a1
 [1.7.13]: https://github.com/ivaleo/animageo/compare/v1.7.12...v1.7.13
 [1.7.12]: https://github.com/ivaleo/animageo/compare/v1.7.11...v1.7.12
 [1.7.11]: https://github.com/ivaleo/animageo/compare/v1.7.10...v1.7.11
