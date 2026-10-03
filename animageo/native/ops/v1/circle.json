@@ -39,5 +39,95 @@
     },
     "math": "docs/native/ops/circle.center_point.md",
     "signatureHash": "sha256:f3b2e070e9310312708009adfc04cfd7411128d482a4b7522f7320af35ca9810"
+  },
+  {
+    "op": "circle.center_radius",
+    "status": "stable",
+    "since": "1.2",
+    "inputs": [
+      {
+        "slot": "center",
+        "type": "point"
+      },
+      {
+        "slot": "radius",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "circle",
+        "type": "circle"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "nonpositive_radius",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "matches",
+        "text": "centre and radius are the inputs: max(|c - center|, |r - radius|)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "circle",
+    "phrases": {
+      "ru": "{circle} — окружность с центром {center} и радиусом {radius}"
+    },
+    "math": "docs/native/ops/circle.center_radius.md",
+    "signatureHash": "sha256:c3cf41fefb5b9675a41b3eb39298640a6651d988efef6865edd85f6462746349"
+  },
+  {
+    "op": "circle.three_points",
+    "status": "stable",
+    "since": "1.2",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "circle",
+        "type": "circle"
+      },
+      {
+        "slot": "center",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_all",
+        "text": "the circle passes through a, b and c and center is its centre: max of | |P - c| - r | and |center - c|"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "circumcircle",
+    "phrases": {
+      "ru": "{circle} — окружность через {a}, {b}, {c}; {center} — её центр"
+    },
+    "math": "docs/native/ops/circle.three_points.md",
+    "signatureHash": "sha256:143575451176f3a78d933062a88a75fa09836dab57dfedcc5c4d759a8d4b484b"
   }
 ]

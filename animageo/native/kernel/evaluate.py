@@ -6,11 +6,13 @@ Contract (``docs/native/kernel.md``), per operation in dependency order:
 2. not in the registry → ``unsupported/unknown_op`` (``newer_registry`` when
    the document's registry version is newer than the library's);
 3. argument check, slots in registry order: an argument slot the op does not
-   declare → ``error/schema``; then per declared slot: missing →
+   declare → ``error/schema``; then per declared input slot: missing →
    ``error/schema``, wrong argument kind or a list shorter than ``min`` →
-   ``error/type_mismatch``, each reference in order: missing element →
-   ``error/dangling_ref``, element type not fitting the slot →
-   ``error/type_mismatch``; a free operation without a valid input value →
+   ``error/type_mismatch`` (a ``number`` slot also takes a number literal),
+   each reference in order: missing element → ``error/dangling_ref``,
+   element type not fitting the slot → ``error/type_mismatch``; then per
+   param: not a number → ``error/type_mismatch``, a required one missing →
+   ``error/schema``; a free operation without a valid input value →
    ``error/schema``;
 4. an input not ``defined`` → the worst input state
    (``error > unsupported > undefined``), ``reason: upstream``, ``cause`` =
@@ -59,7 +61,8 @@ from .values import (
     state_record,
 )
 
-__all__ = ['EVALUATED_FORMAT', 'Evaluated', 'evaluate', 'check_inputs', 'valid_input', 'producer_values']
+__all__ = ['EVALUATED_FORMAT', 'Arguments', 'Evaluated', 'evaluate', 'check_inputs', 'valid_input',
+           'producer_values', 'number_literal']
 
 EVALUATED_FORMAT = 'animageo-evaluated/v1'
 
@@ -127,10 +130,18 @@ def _valid_path_input(value) -> bool:
     return _finite(branch) and branch in (-1, 1)
 
 
-_INPUT_VALIDATORS = {'point': _valid_point_input, 'pathParameter': _valid_path_input}
+def _valid_number_input(value) -> bool:
+    if not isinstance(value, dict) or value.get('kind') != 'number':
+        return False
+    return set(value) == {'kind', 'value'} and _finite(value.get('value'))
+
+
+_INPUT_VALIDATORS = {'point': _valid_point_input, 'pathParameter': _valid_path_input,
+                     'number': _valid_number_input}
 _INPUT_SHAPES = {
     'point': '{"kind": "point", "value": [x, y]} with finite numbers',
     'pathParameter': '{"kind": "pathParameter", "value": t, "branch"?: -1 | 1} with a finite t',
+    'number': '{"kind": "number", "value": v} with a finite v',
 }
 
 
@@ -199,19 +210,48 @@ def _order(op_ids, deps, cyclic) -> list:
     return order
 
 
+@dataclass
+class Arguments:
+    """The resolved arguments of a structurally valid call.
+
+    ``refs`` — ``[(slot, list?, [elementId…])]`` of the reference input
+    slots in registry order; ``literals`` — ``{slot: value}`` of number
+    literals in ``number`` input slots; ``params`` — ``{slot: float | None}``
+    of every declared param (the default, or ``None``, when absent).
+    """
+
+    refs: list
+    literals: dict
+    params: dict
+
+    def __iter__(self):           # ``for slot, is_list, ids in arguments`` reads the refs
+        return iter(self.refs)
+
+
 def _argument_status(op, record, doc, reg):
-    """``(state, reason)`` of a structurally broken call, else the resolved
-    argument list ``[(slot, list?, [elementId…])]`` in registry order."""
+    """``(state, reason)`` of a structurally broken call, else :class:`Arguments`.
+
+    Order: an undeclared argument slot → ``error/schema``; input slots in
+    registry order (missing → ``schema``, wrong kind or short list →
+    ``type_mismatch``, dangling reference → ``dangling_ref``, element type
+    not fitting → ``type_mismatch``; a ``number`` slot also takes a number
+    literal); then params in registry order (not a number → ``type_mismatch``,
+    a required one missing → ``schema``).
+    """
     args = op['args']
     declared = {item['slot'] for item in record['inputs']} | {item['slot'] for item in record['params']}
     for slot in args:
         if slot not in declared:
             return ('error', 'schema')
     resolved = []
+    literals = {}
     for item in record['inputs']:
         arg = args.get(item['slot'])
         if arg is None:
             return ('error', 'schema')
+        if not item.get('list') and item['type'] == 'number' and arg.get('kind') == 'number':
+            literals[item['slot']] = float(arg['value'])
+            continue
         if item.get('list'):
             if arg.get('kind') != 'list':
                 return ('error', 'type_mismatch')
@@ -231,7 +271,24 @@ def _argument_status(op, record, doc, reg):
                 return ('error', 'type_mismatch')
             ids.append(ref['elementId'])
         resolved.append((item['slot'], bool(item.get('list')), ids))
-    return resolved
+    params = {}
+    for item in record['params']:
+        arg = args.get(item['slot'])
+        if arg is None:
+            if not item.get('optional', False):
+                return ('error', 'schema')
+            default = item.get('default')
+            params[item['slot']] = None if default is None else float(default)
+            continue
+        if arg.get('kind') != 'number':
+            return ('error', 'type_mismatch')
+        params[item['slot']] = float(arg['value'])
+    return Arguments(resolved, literals, params)
+
+
+def number_literal(value: float) -> Input:
+    """A number literal argument as an op input (``unit: "scalar"``)."""
+    return Input('number', {'value': value, 'unit': 'scalar'})
 
 
 def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
@@ -308,7 +365,7 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
             if not targets:
                 continue
         worst = None
-        for _slot, _is_list, ids in resolved:
+        for _slot, _is_list, ids in resolved.refs:
             for ref in ids:
                 rec = states[ref]
                 if rec['state'] == 'defined':
@@ -318,9 +375,11 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
         if worst is not None:
             settle(op_id, worst[0], 'upstream', cause=worst[1])
             continue
-        args = {}
+        args = dict(resolved.params)
+        for slot, value in resolved.literals.items():
+            args[slot] = number_literal(value)
         path_slots = {item['slot'] for item in record['inputs'] if item['type'] == 'path'}
-        for slot, is_list, ids in resolved:
+        for slot, is_list, ids in resolved.refs:
             if slot in path_slots:
                 items = [Input(elements[ref]['type'], states[ref]['value'],
                                _path_frame(ref, elements, ops, states)) for ref in ids]

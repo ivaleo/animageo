@@ -23,8 +23,17 @@
     "polygon": {
       "value": {"vertices": "length", "area": "area"},
       "text": "polygon {vertices: [[x, y], ...], area}; area is unsigned"
+    },
+    "vector": {
+      "value": {"a": "length", "b": "length", "length": "length"},
+      "text": "vector {a: [x, y], b: [x, y], length}; a is the start, b the end; a zero vector is defined"
+    },
+    "number": {
+      "value": {"value": "by_unit"},
+      "text": "number {value, unit}; unit is one of numberUnits and compares exactly; angles in radians"
     }
   },
+  "numberUnits": {"scalar": "scalar", "length": "length", "area": "area", "angle": "scalar", "count": "scalar"},
   "families": {
     "linear": ["line", "segment", "ray"],
     "circular": ["circle"],
@@ -41,6 +50,10 @@
       "kind": "affine", "min": null, "max": null, "outside": "none", "default": 0.5,
       "frames": {
         "line.by_points": {"origin": "args.a", "vector": "args.b - args.a"},
+        "line.parallel": {"origin": "args.point", "vector": "value.dir"},
+        "line.perpendicular": {"origin": "args.point", "vector": "value.dir"},
+        "line.perpendicular_bisector": {"origin": "mid(args.a, args.b)", "vector": "value.dir"},
+        "line.angle_bisector": {"origin": "args.vertex", "vector": "value.dir"},
         "*": {"origin": "value.p", "vector": "value.dir"}
       },
       "text": "P = o + t v in the frame of the producer: a line through a and b gives o = a, v = b - a"
@@ -63,13 +76,15 @@
     }
   },
   "frameKinds": {
-    "affine": "P = o + clamp(t) v; o and v come from frames[producer op], else frames[\"*\"]; min/max clamp t when outside is clamp",
+    "affine": "P = o + clamp(t) v; o and v come from frames[producer op], else frames[\"*\"]; min/max clamp t when outside is clamp; a frame expression is a term or a difference of two terms, a term is <src>.<field> (src: value or args) or mid(<term>, <term>), the midpoint of two points",
     "angle": "P = c + r (cos t, sin t), t used as given",
     "perimeter": "t' = t - n floor(t / n), t' < 0 gives t' + n, t' >= n gives 0; k = floor(t'), f = t' - k; P = V[k] + f (V[(k + 1) mod n] - V[k])"
   },
   "units": {
     "length": "coordinates and lengths; parity tolerance parity.length * S",
     "area": "areas; parity tolerance parity.area * S^2",
-    "scalar": "dimensionless numbers (unit directions); parity tolerance parity.scalar"
+    "scalar": "dimensionless numbers (unit directions); parity tolerance parity.scalar",
+    "by_unit": "the field kind is numberUnits[value.unit] of the same value",
+    "exact": "a field absent from the value kinds of its type compares exactly"
   }
 }

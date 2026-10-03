@@ -1,0 +1,53 @@
+[
+  {
+    "op": "number.free",
+    "status": "stable",
+    "since": "1.2",
+    "inputs": [],
+    "params": [
+      {
+        "slot": "min",
+        "type": "number",
+        "unit": null,
+        "optional": true,
+        "text": "lower bound: a smaller input value is clamped to it"
+      },
+      {
+        "slot": "max",
+        "type": "number",
+        "unit": null,
+        "optional": true,
+        "text": "upper bound: a larger input value is clamped to it; min > max is invalid_parameter"
+      },
+      {
+        "slot": "step",
+        "type": "number",
+        "unit": null,
+        "optional": true,
+        "text": "slider step for the interface, > 0 (invalid_parameter otherwise); the value is not snapped"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "free": {
+      "kind": "number"
+    },
+    "branch": null,
+    "undefined": [
+      "invalid_parameter"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "number",
+    "phrases": {
+      "ru": "{number} — число"
+    },
+    "math": "docs/native/ops/number.free.md",
+    "signatureHash": "sha256:1b23a21461be5d9d3b96461a10823bfc46c347a8bc7da320cffa91e36bca6f2a"
+  }
+]

@@ -129,7 +129,7 @@ def test_version(capsys):
     with pytest.raises(SystemExit) as info:
         main(['--version'])
     assert info.value.code == 0
-    assert capsys.readouterr().out.strip() == f'animageo {animageo.__version__}, registry 1.1'
+    assert capsys.readouterr().out.strip() == f'animageo {animageo.__version__}, registry 1.2'
 
 
 def test_python_dash_m(doc_path):

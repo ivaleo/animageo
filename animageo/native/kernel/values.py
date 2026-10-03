@@ -8,6 +8,8 @@
 | line      | ``{p: [x, y], dir: [x, y]}`` (``dir`` unit)    |
 | circle    | ``{c: [x, y], r}``                             |
 | polygon   | ``{vertices: [[x, y], ...], area}``            |
+| vector    | ``{a: [x, y], b: [x, y], length}``             |
+| number    | ``{value, unit}`` (unit from ``numberUnits``)  |
 """
 from __future__ import annotations
 
@@ -110,9 +112,16 @@ def _compare(expected, actual, tol: float, path: str, out: list) -> None:
         out.append(f'{path}: expected {expected!r}, got {actual!r}')
 
 
-def compare_values(type_info: dict, expected: dict, actual: dict, tolerance, path: str = 'value') -> list:
+def compare_values(type_info: dict, expected: dict, actual: dict, tolerance, path: str = 'value', *,
+                   units: dict | None = None) -> list:
     """Differences of two encoded values; ``type_info`` is the ``_types.json``
-    entry, ``tolerance(kind)`` gives the parity tolerance of a field kind."""
+    entry, ``tolerance(kind)`` gives the parity tolerance of a field kind.
+
+    A field of kind ``by_unit`` takes the kind ``units[expected["unit"]]``
+    (``_types.json → numberUnits``; the registry's when ``units`` is
+    ``None``); a field without a kind, or a ``by_unit`` field of an unknown
+    unit, compares exactly.
+    """
     out: list = []
     if not isinstance(expected, dict) or not isinstance(actual, dict):
         if expected != actual:
@@ -124,6 +133,12 @@ def compare_values(type_info: dict, expected: dict, actual: dict, tolerance, pat
     kinds = type_info.get('value', {})
     for key in sorted(expected):
         kind = kinds.get(key)
+        if kind == 'by_unit':
+            if units is None:
+                from ..registry import registry
+                units = registry().number_units
+            unit = expected.get('unit')
+            kind = units.get(unit) if isinstance(unit, str) else None
         if kind is None:
             if expected[key] != actual[key]:
                 out.append(f'{path}.{key}: expected {expected[key]!r}, got {actual[key]!r}')

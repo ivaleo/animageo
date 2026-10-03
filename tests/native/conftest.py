@@ -25,6 +25,15 @@ def path_input(t):
     return {'kind': 'pathParameter', 'value': t}
 
 
+def number_input(v):
+    return {'kind': 'number', 'value': v}
+
+
+def num(v):
+    """A number literal argument (a param or a literal input)."""
+    return {'kind': 'number', 'value': v}
+
+
 class DocBuilder:
     """Small builder of animageo-construction/v1 documents for tests."""
 
@@ -104,6 +113,48 @@ class DocBuilder:
         if t is not None:
             self.doc['inputs'][el_id] = path_input(t)
         return self
+
+    # ── registry 1.2 ──
+    def number(self, el_id, value=None, **params):
+        args = {k: num(v) for k, v in params.items()}
+        self.op('op_' + el_id, 'number.free', args, [('number', el_id, 'number')])
+        if value is not None:
+            self.doc['inputs'][el_id] = number_input(value)
+        return self
+
+    def projection(self, el_id, point, base, strict=None):
+        args = {'point': ref(point), 'base': ref(base)}
+        if strict is not None:
+            args['strict'] = num(strict)
+        return self.op('op_' + el_id, 'point.projection', args, [('foot', el_id, 'point')])
+
+    def parallel(self, el_id, point, base):
+        return self.two('line.parallel', el_id, point, base, 'line', slots=('point', 'base'))
+
+    def perpendicular(self, el_id, point, base):
+        return self.two('line.perpendicular', el_id, point, base, 'line', slots=('point', 'base'))
+
+    def perp_bisector(self, el_id, a, b):
+        return self.two('line.perpendicular_bisector', el_id, a, b, 'line')
+
+    def angle_bisector(self, el_id, a, vertex, b):
+        return self.op('op_' + el_id, 'line.angle_bisector',
+                       {'a': ref(a), 'vertex': ref(vertex), 'b': ref(b)}, [('line', el_id, 'line')])
+
+    def vector(self, el_id, a, b):
+        return self.two('vector.by_points', el_id, a, b, 'vector')
+
+    def circle_radius(self, el_id, center, radius):
+        """``radius``: an element ID or a number (a literal)."""
+        r = ref(radius) if isinstance(radius, str) else num(radius)
+        return self.op('op_' + el_id, 'circle.center_radius', {'center': ref(center), 'radius': r},
+                       [('circle', el_id, 'circle')])
+
+    def circle3(self, el_id, a, b, c, center=None):
+        outputs = [('circle', el_id, 'circle')]
+        if center is not None:
+            outputs.append(('center', center, 'point'))
+        return self.op('op_' + el_id, 'circle.three_points', {'a': ref(a), 'b': ref(b), 'c': ref(c)}, outputs)
 
     def polygon(self, el_id, *vertices, sides=()):
         outputs = [('polygon', el_id, 'polygon')]

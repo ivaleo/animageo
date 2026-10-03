@@ -108,5 +108,61 @@
     },
     "math": "docs/native/ops/point.on_path.md",
     "signatureHash": "sha256:6be50eade341c6f39273693152fcb25f733d8875492505670e76c12b38916a72"
+  },
+  {
+    "op": "point.projection",
+    "status": "stable",
+    "since": "1.2",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "base",
+        "type": "linear"
+      }
+    ],
+    "params": [
+      {
+        "slot": "strict",
+        "type": "number",
+        "unit": null,
+        "optional": true,
+        "default": 0,
+        "text": "1: the foot must lie on the segment or ray itself (outside_part otherwise); 0: on the carrier line"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "foot",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "zero_length",
+      "outside_part",
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_carrier",
+        "text": "the foot lies on the carrier line of base: distance from the foot to it"
+      },
+      {
+        "id": "perpendicular",
+        "text": "point - foot is perpendicular to base: |(point - foot) . dir|"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "projection",
+    "phrases": {
+      "ru": "{foot} — основание перпендикуляра из {point} на {base}"
+    },
+    "math": "docs/native/ops/point.projection.md",
+    "signatureHash": "sha256:d335c0ed75eeb527edd741676e32473b0fc8e3a23b4a46a36a8575f2f2d1bba5"
   }
 ]

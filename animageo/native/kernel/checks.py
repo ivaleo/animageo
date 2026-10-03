@@ -202,6 +202,126 @@ def _sides_match(args, result, tol):
     return error
 
 
+# ── registry 1.2 ──
+
+def _line_of(result_line):
+    return result_line['p'], result_line['dir']
+
+
+def _base_carrier(args, tol):
+    return carrier(args['base'], _QuietContext(tol))
+
+
+@register_check('point.projection', 'on_carrier')
+def _projection_on_carrier(args, result, tol):
+    c = _base_carrier(args, tol)
+    if isinstance(c, Undefined):
+        return math.inf
+    return distance_to_carrier(*_xy(result['foot']), c)
+
+
+@register_check('point.projection', 'perpendicular')
+def _projection_perpendicular(args, result, tol):
+    c = _base_carrier(args, tol)
+    if isinstance(c, Undefined):
+        return math.inf
+    px, py = _xy(args['point'].value)
+    fx, fy = _xy(result['foot'])
+    return abs((px - fx) * c.dx + (py - fy) * c.dy)
+
+
+def _through_point(args, result, tol):
+    return _distance_to_line(*_xy(args['point'].value), result['line'])
+
+
+register_check('line.parallel', 'through_point')(_through_point)
+register_check('line.perpendicular', 'through_point')(_through_point)
+
+
+@register_check('line.parallel', 'parallel')
+def _parallel(args, result, tol):
+    c = _base_carrier(args, tol)
+    if isinstance(c, Undefined):
+        return math.inf
+    dx, dy = result['line']['dir']
+    return abs(dx * c.dy - dy * c.dx) * tol.scale
+
+
+@register_check('line.perpendicular', 'perpendicular')
+def _perpendicular(args, result, tol):
+    c = _base_carrier(args, tol)
+    if isinstance(c, Undefined):
+        return math.inf
+    dx, dy = result['line']['dir']
+    return abs(dx * c.dx + dy * c.dy) * tol.scale
+
+
+@register_check('line.perpendicular_bisector', 'through_midpoint')
+def _bisector_midpoint(args, result, tol):
+    ax, ay = _xy(args['a'].value)
+    bx, by = _xy(args['b'].value)
+    return _distance_to_line((ax + bx) / 2, (ay + by) / 2, result['line'])
+
+
+@register_check('line.perpendicular_bisector', 'perpendicular')
+def _bisector_perpendicular(args, result, tol):
+    ax, ay = _xy(args['a'].value)
+    bx, by = _xy(args['b'].value)
+    dx, dy = result['line']['dir']
+    return abs(dx * (bx - ax) + dy * (by - ay))
+
+
+@register_check('line.angle_bisector', 'through_vertex')
+def _angle_bisector_vertex(args, result, tol):
+    return _distance_to_line(*_xy(args['vertex'].value), result['line'])
+
+
+@register_check('line.angle_bisector', 'equal_angles')
+def _angle_bisector_equal(args, result, tol):
+    vx, vy = _xy(args['vertex'].value)
+    dx, dy = result['line']['dir']
+    cosines = []
+    for slot in ('a', 'b'):
+        x, y = _xy(args[slot].value)
+        length = math.hypot(x - vx, y - vy)
+        if length <= tol.decide_length:
+            return math.inf
+        cosines.append(((x - vx) * dx + (y - vy) * dy) / length)
+    return abs(cosines[0] - cosines[1]) * tol.scale
+
+
+@register_check('vector.by_points', 'ends')
+def _vector_ends(args, result, tol):
+    ax, ay = _xy(args['a'].value)
+    bx, by = _xy(args['b'].value)
+    vec = result['vector']
+    return max(math.hypot(vec['a'][0] - ax, vec['a'][1] - ay),
+               math.hypot(vec['b'][0] - bx, vec['b'][1] - by),
+               abs(vec['length'] - math.hypot(bx - ax, by - ay)))
+
+
+@register_check('circle.center_radius', 'matches')
+def _center_radius_matches(args, result, tol):
+    ox, oy = _xy(args['center'].value)
+    circle = result['circle']
+    return max(math.hypot(circle['c'][0] - ox, circle['c'][1] - oy),
+               abs(circle['r'] - args['radius'].value['value']))
+
+
+@register_check('circle.three_points', 'through_all')
+def _three_points_through_all(args, result, tol):
+    circle = result['circle']
+    cx, cy = circle['c']
+    error = 0.0
+    for slot in ('a', 'b', 'c'):
+        x, y = _xy(args[slot].value)
+        error = max(error, abs(math.hypot(x - cx, y - cy) - circle['r']))
+    if 'center' in result:
+        ox, oy = _xy(result['center'])
+        error = max(error, math.hypot(ox - cx, oy - cy))
+    return error
+
+
 def run_checks(evaluated, keys=None) -> CheckReport:
     """Run the registry checks over an :class:`~.evaluate.Evaluated` result.
 

@@ -28,7 +28,11 @@ L0_OPS = {
 }
 L1_OPS = {'ray.by_points', 'intersect.line_circle', 'intersect.circle_circle', 'intersect.other_than',
           'point.on_path'}
-# Registry 1.1 extends 1.0: the L0 records and their hashes stay as they were.
+L2A1_OPS = {'point.projection', 'line.parallel', 'line.perpendicular', 'line.perpendicular_bisector',
+            'line.angle_bisector', 'vector.by_points', 'circle.center_radius', 'circle.three_points',
+            'number.free'}
+ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS
+# Registries 1.1 and 1.2 extend 1.0: the L0 and L1 records and their hashes stay as they were.
 L0_HASHES = {
     'circle.center_point': 'sha256:f3b2e070e9310312708009adfc04cfd7411128d482a4b7522f7320af35ca9810',
     'intersect.line_line': 'sha256:be74b127f909906e8dfe346f7ad79043e483defde31d0aac29628ae550f925d2',
@@ -38,6 +42,13 @@ L0_HASHES = {
     'polygon.by_points': 'sha256:4108d41bea24861a3d178199e4f71555531690b60bc98da2328da512209ea272',
     'segment.by_points': 'sha256:be1a52a14b19e85053b0533d3dd3d8a0b12a43b1f5969fafcbe12c79988dcc0d',
 }
+L1_HASHES = {
+    'intersect.circle_circle': 'sha256:aaf9cd94fe4397efd5334ab77080571b7bec01cd314cc8ee25ff781cbdbfb657',
+    'intersect.line_circle': 'sha256:f02f846a64efd9254acce5e15862bd73b76e1da86dd91851d65720ef0cbdb8c8',
+    'intersect.other_than': 'sha256:2f4d6797ee18797329eccd116a221f147f701ae15d6da0892528cb553b9700cd',
+    'point.on_path': 'sha256:6be50eade341c6f39273693152fcb25f733d8875492505670e76c12b38916a72',
+    'ray.by_points': 'sha256:799d3583f4263ffd7c7c9c71236851e44764de7e5136e02284c49fb4898bfa80',
+}
 RECORD_FIELDS = {
     'op', 'status', 'since', 'inputs', 'params', 'outputs', 'branch', 'undefined', 'checks',
     'orientation', 'pathParam', 'stepKind', 'phrases', 'math', 'signatureHash',
@@ -45,15 +56,15 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.1'
-    assert registry().version == '1.1'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.1'
+    assert native.__registry_version__ == '1.2'
+    assert registry().version == '1.2'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.2'
 
 
 def test_ops_and_files():
     reg = registry()
-    assert set(reg.ops) == L0_OPS | L1_OPS
-    assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon'}
+    assert set(reg.ops) == ALL_OPS
+    assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
@@ -64,16 +75,25 @@ def test_l0_records_unchanged():
         assert reg.get(op)['signatureHash'] == digest
         assert reg.index['ops'][op] == digest
         assert reg.get(op)['since'] == '1.0'
-    for op in L1_OPS:
+    for op, digest in L1_HASHES.items():
+        assert reg.get(op)['signatureHash'] == digest
+        assert reg.index['ops'][op] == digest
         assert reg.get(op)['since'] == '1.1'
+    for op in L2A1_OPS:
+        assert reg.get(op)['since'] == '1.2'
 
 
-@pytest.mark.parametrize('op', sorted(L0_OPS | L1_OPS))
+@pytest.mark.parametrize('op', sorted(ALL_OPS))
 def test_record_fields(op):
     record = registry().get(op)
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free'}
     assert record['status'] == 'stable'
-    assert record['params'] == []
+    if op not in ('point.projection', 'number.free'):
+        assert record['params'] == []
+    for param in record['params']:
+        assert {'slot', 'type', 'unit', 'text'} <= set(param) <= {'slot', 'type', 'unit', 'optional',
+                                                                   'default', 'text'}
+        assert param['type'] == 'number'
     branch = record['branch']
     assert branch is None or (set(branch) >= {'policy', 'slots', 'text'}
                               and branch['policy'] in registry().policies)
@@ -154,6 +174,89 @@ def test_contract_table():
     assert reg.accepts('linear', 'ray') and not reg.accepts('circular', 'ray')
 
 
+def test_contract_table_l2a1():
+    """The slot table of the L2 plan (§3.1): inputs, params, outputs, reasons, checks."""
+    reg = registry()
+
+    def summary(op):
+        r = reg.get(op)
+        return ([(i['slot'], i['type']) for i in r['inputs']],
+                [(p['slot'], p.get('unit'), p.get('optional', False), p.get('default')) for p in r['params']],
+                [(o['slot'], o['type']) for o in r['outputs']],
+                r['undefined'], [c['id'] for c in r['checks']], r.get('free'), r['orientation'])
+
+    pl = [('point', 'point'), ('base', 'linear')]
+    assert summary('point.projection') == (
+        pl, [('strict', None, True, 0)], [('foot', 'point')],
+        ['zero_length', 'outside_part', 'invalid_parameter', 'upstream'], ['on_carrier', 'perpendicular'],
+        None, None)
+    assert summary('line.parallel') == (
+        pl, [], [('line', 'line')], ['zero_length', 'upstream'], ['through_point', 'parallel'], None,
+        'carrier_dir')
+    assert summary('line.perpendicular') == (
+        pl, [], [('line', 'line')], ['zero_length', 'upstream'], ['through_point', 'perpendicular'], None,
+        'carrier_dir_ccw90')
+    assert summary('line.perpendicular_bisector') == (
+        [('a', 'point'), ('b', 'point')], [], [('line', 'line')], ['coincident_points', 'upstream'],
+        ['through_midpoint', 'perpendicular'], None, 'ab_ccw90')
+    assert summary('line.angle_bisector') == (
+        [('a', 'point'), ('vertex', 'point'), ('b', 'point')], [], [('line', 'line')],
+        ['coincident_points', 'upstream'], ['through_vertex', 'equal_angles'], None, 'into_angle')
+    assert summary('vector.by_points') == (
+        [('a', 'point'), ('b', 'point')], [], [('vector', 'vector')], ['upstream'], ['ends'], None, 'a_to_b')
+    assert summary('circle.center_radius') == (
+        [('center', 'point'), ('radius', 'number')], [], [('circle', 'circle')],
+        ['nonpositive_radius', 'upstream'], ['matches'], None, None)
+    assert summary('circle.three_points') == (
+        [('a', 'point'), ('b', 'point'), ('c', 'point')], [], [('circle', 'circle'), ('center', 'point')],
+        ['collinear_points', 'upstream'], ['through_all'], None, None)
+    assert summary('number.free') == (
+        [], [('min', None, True, None), ('max', None, True, None), ('step', None, True, None)],
+        [('number', 'number')], ['invalid_parameter'], [], {'kind': 'number'}, None)
+    for op in L2A1_OPS:
+        assert reg.get(op)['branch'] is None
+        assert reg.get(op)['pathParam'] is None
+
+
+def test_l2a1_types_and_frames():
+    reg = registry()
+    assert reg.types['vector']['value'] == {'a': 'length', 'b': 'length', 'length': 'length'}
+    assert reg.types['number']['value'] == {'value': 'by_unit'}
+    assert reg.number_units == {'scalar': 'scalar', 'length': 'length', 'area': 'area', 'angle': 'scalar',
+                                'count': 'scalar'}
+    frames = reg.paths['line']['frames']
+    assert frames['line.parallel'] == {'origin': 'args.point', 'vector': 'value.dir'}
+    for op in L2A1_OPS:          # new ops keep input and output slot names apart (phrases)
+        record = reg.get(op)
+        assert not {i['slot'] for i in record['inputs'] + record['params']} & {o['slot'] for o in record['outputs']}, op
+    assert frames['line.perpendicular'] == {'origin': 'args.point', 'vector': 'value.dir'}
+    assert frames['line.perpendicular_bisector'] == {'origin': 'mid(args.a, args.b)', 'vector': 'value.dir'}
+    assert frames['line.angle_bisector'] == {'origin': 'args.vertex', 'vector': 'value.dir'}
+    for op in frames:
+        assert op == '*' or op in reg.ops
+
+
+def test_registry_problems_catch_bad_params(tmp_path):
+    copy_dir = tmp_path / 'v1'
+    shutil.copytree(OPS_DIR, copy_dir)
+    point = json.loads((copy_dir / 'point.json').read_text())
+    projection = next(r for r in point if r['op'] == 'point.projection')
+    projection['params'][0]['type'] = 'point'
+    del projection['params'][0]['optional']
+    (copy_dir / 'point.json').write_text(json.dumps(point))
+    number = json.loads((copy_dir / 'number.json').read_text())
+    number[0]['params'][0]['default'] = 'low'
+    number[0]['params'][1]['optional'] = False          # a required param without a default is fine
+    (copy_dir / 'number.json').write_text(json.dumps(number))
+    from animageo.native.registry import _load
+    problems = registry_problems(_load(copy_dir))
+    assert "point.projection: param 'strict' must have type 'number'" in problems
+    assert "point.projection: param 'strict' is required and has a default" in problems
+    assert "number.free: param 'min' default must be a number" in problems
+    assert not any("'max'" in p for p in problems)
+    assert any(p.startswith('INDEX.json') for p in problems)
+
+
 def test_types_and_policies_catalogs():
     reg = registry()
     assert reg.types['ray']['value'] == {'origin': 'length', 'dir': 'scalar'}
@@ -181,7 +284,7 @@ def test_registry_problems_catch_bad_catalogs(tmp_path):
     del types['paths']['ray']
     (copy_dir / '_types.json').write_text(json.dumps(types))
     line = json.loads((copy_dir / 'line.json').read_text())
-    line[-1]['since'] = '1.9'
+    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.9'
     (copy_dir / 'line.json').write_text(json.dumps(line))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))

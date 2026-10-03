@@ -15,7 +15,7 @@ path parameter — and nothing descriptive (phrases, checks, status, math)::
     signatureHash = "sha256:" + sha256(canonical({
         "op": op,
         "inputs":  [{"slot", "type", "list": bool = false, "min": int | null}],
-        "params":  [{"slot", "type", "unit": str | null}],
+        "params":  [{"slot", "type", "unit": str | null}],   # optional/default are outside
         "outputs": [{"slot", "type", "repeat": str | null}],
         "free": {...} | null,
         "branch": branch.policy | null,
@@ -45,7 +45,7 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.1'
+REGISTRY_VERSION = '1.2'
 
 _SERVICE_FILES = ('_types', '_policies', '_reasons', '_numeric')
 _INDEX_FILE = 'INDEX.json'
@@ -113,6 +113,7 @@ class Registry:
     numeric: dict
     index: dict = field(default_factory=dict)
     paths: dict = field(default_factory=dict)
+    number_units: dict = field(default_factory=dict)
 
     def get(self, op: str):
         return self.ops.get(op)
@@ -197,6 +198,7 @@ def _load(directory) -> Registry:
         numeric=service['_numeric'],
         index=index,
         paths=service['_types'].get('paths', {}),
+        number_units=service['_types'].get('numberUnits', {}),
     )
 
 
@@ -246,10 +248,26 @@ def registry_problems(reg: Registry | None = None) -> list:
         policy = branch.get('policy') if isinstance(branch, dict) else None
         if policy is not None and policy not in reg.policies:
             problems.append(f'{op}: unknown branch policy {policy!r}')
+        problems.extend(_param_problems(op, record))
     index = build_index(reg)
     if reg.index != index:
         problems.append('INDEX.json is out of date; run: python -m animageo.native registry index')
     return problems
+
+
+def _param_problems(op: str, record: dict) -> list:
+    """Params are numbers; an optional param may have a numeric default, a required one has none."""
+    out = []
+    for param in record.get('params', []):
+        slot = param['slot']
+        if param['type'] != 'number':
+            out.append(f"{op}: param {slot!r} must have type 'number'")
+        has_default = 'default' in param
+        if has_default and (isinstance(param['default'], bool) or not isinstance(param['default'], (int, float))):
+            out.append(f'{op}: param {slot!r} default must be a number')
+        if not param.get('optional', False) and has_default:
+            out.append(f'{op}: param {slot!r} is required and has a default')
+    return out
 
 
 def _version_tuple(text):

@@ -332,9 +332,14 @@ class _Structure:
             if 'branch' in value and (not _is_number(value['branch']) or value['branch'] not in (-1, 1)):
                 self.add(path + '/branch', 'a path branch must be -1 or 1', elementId=key)
             return
+        if kind == 'number':
+            self.keys(value, path, 'a number input', ('kind', 'value'), ('kind', 'value'), elementId=key)
+            if 'value' in value and not _is_number(value['value']):
+                self.add(path + '/value', 'a number input must be a number', elementId=key)
+            return
         self.keys(value, path, 'an input', ('kind', 'value'), ('kind', 'value'), elementId=key)
         if 'kind' in value and kind != 'point':
-            self.add(path + '/kind', f'unknown input kind {kind!r} (point, pathParameter)', elementId=key)
+            self.add(path + '/kind', f'unknown input kind {kind!r} (point, pathParameter, number)', elementId=key)
         if 'value' in value:
             self.numbers(value['value'], path + '/value', 'a point value', 2)
 
@@ -617,6 +622,8 @@ def validate(doc) -> list:
                                             operationId=op_id))
                     pairs = [(f'{spath}/items/{i}', r) for i, r in enumerate(refs)]
                 else:
+                    if item['type'] == 'number' and arg['kind'] == 'number':
+                        continue                       # a number literal
                     pairs = [(spath, arg)]
                 for rpath, ref in pairs:
                     if ref['kind'] != 'ref':
@@ -632,6 +639,17 @@ def validate(doc) -> list:
                                             f"{target['type']} {ref['elementId']!r} does not fit slot "
                                             f"{slot!r} ({item['type']})", operationId=op_id,
                                             elementId=ref['elementId']))
+            for item in record['params']:
+                slot = item['slot']
+                spath = path + '/args' + _pointer(slot)
+                arg = args.get(slot)
+                if arg is None:
+                    if not item.get('optional', False):
+                        issues.append(Issue('missing_slot', spath, f"{op['op']} needs parameter {slot!r}",
+                                            operationId=op_id))
+                elif arg['kind'] != 'number':
+                    issues.append(Issue('type_mismatch', spath, f'parameter {slot!r} must be a number',
+                                        operationId=op_id))
         else:
             for slot in sorted(args):
                 for ref in iter_refs(args[slot]):

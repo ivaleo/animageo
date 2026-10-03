@@ -128,5 +128,229 @@
     },
     "math": "docs/native/ops/ray.by_points.md",
     "signatureHash": "sha256:799d3583f4263ffd7c7c9c71236851e44764de7e5136e02284c49fb4898bfa80"
+  },
+  {
+    "op": "line.parallel",
+    "status": "stable",
+    "since": "1.2",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "base",
+        "type": "linear"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "zero_length",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_point",
+        "text": "the line passes through point: distance from point to the line"
+      },
+      {
+        "id": "parallel",
+        "text": "the line is parallel to base: |dir x base dir| S"
+      }
+    ],
+    "orientation": "carrier_dir",
+    "pathParam": null,
+    "stepKind": "parallel",
+    "phrases": {
+      "ru": "{line} — прямая через {point}, параллельная {base}"
+    },
+    "math": "docs/native/ops/line.parallel.md",
+    "signatureHash": "sha256:accc08e8e25d6d93e61db4b712bf57d6c04040f795e331cde964388b3824ad08"
+  },
+  {
+    "op": "line.perpendicular",
+    "status": "stable",
+    "since": "1.2",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "base",
+        "type": "linear"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "zero_length",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_point",
+        "text": "the line passes through point: distance from point to the line"
+      },
+      {
+        "id": "perpendicular",
+        "text": "the line is perpendicular to base: |dir . base dir| S"
+      }
+    ],
+    "orientation": "carrier_dir_ccw90",
+    "pathParam": null,
+    "stepKind": "perpendicular",
+    "phrases": {
+      "ru": "{line} — прямая через {point}, перпендикулярная {base}"
+    },
+    "math": "docs/native/ops/line.perpendicular.md",
+    "signatureHash": "sha256:31a8254ebc3e153ebf3ec03ca88a34b0f172ecadb6ca75458dda8b49a7da7c21"
+  },
+  {
+    "op": "line.perpendicular_bisector",
+    "status": "stable",
+    "since": "1.2",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_midpoint",
+        "text": "the line passes through the midpoint of ab: distance from it to the line"
+      },
+      {
+        "id": "perpendicular",
+        "text": "the line is perpendicular to ab: |dir . (b - a)|"
+      }
+    ],
+    "orientation": "ab_ccw90",
+    "pathParam": null,
+    "stepKind": "perpendicular_bisector",
+    "phrases": {
+      "ru": "{line} — серединный перпендикуляр к отрезку {a}{b}"
+    },
+    "math": "docs/native/ops/line.perpendicular_bisector.md",
+    "signatureHash": "sha256:9483c6abef4e1451223fc437f8fb971b767b2b71e0a9f9bdfc63f7d605da8d4b"
+  },
+  {
+    "op": "line.angle_bisector",
+    "status": "stable",
+    "since": "1.2",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "vertex",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_vertex",
+        "text": "the line passes through the vertex: distance from the vertex to the line"
+      },
+      {
+        "id": "equal_angles",
+        "text": "the line makes equal angles with both sides: |ua . dir - ub . dir| S"
+      }
+    ],
+    "orientation": "into_angle",
+    "pathParam": null,
+    "stepKind": "angle_bisector",
+    "phrases": {
+      "ru": "{line} — биссектриса угла {a}{vertex}{b}"
+    },
+    "math": "docs/native/ops/line.angle_bisector.md",
+    "signatureHash": "sha256:6ffd1703f1ee29ee4fb8c79821f0fec0ffe843603ddbcbc1e62b96e1d1bdc611"
+  },
+  {
+    "op": "vector.by_points",
+    "status": "stable",
+    "since": "1.2",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "vector",
+        "type": "vector"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "ends",
+        "text": "the ends of the vector are the inputs a and b and length is |b - a|"
+      }
+    ],
+    "orientation": "a_to_b",
+    "pathParam": null,
+    "stepKind": "vector",
+    "phrases": {
+      "ru": "{vector} — вектор {a}{b}"
+    },
+    "math": "docs/native/ops/vector.by_points.md",
+    "signatureHash": "sha256:7f2f4e4551fe968c3a7714fe613de1fc65218c5ad6dbc65e911f37d8e05aef11"
   }
 ]

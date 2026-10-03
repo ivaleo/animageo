@@ -18,7 +18,7 @@
   "generator": {
     "decisionMargin": 1000,
     "rule": "refuse a case when a degeneracy decision value m satisfies 0 < |m| < decisionMargin * tol, tol being the decide tolerance of that decision",
-    "noiseDecisions": ["known", "tangent"],
-    "noiseRule": "for a noise decision |m| <= tol / decisionMargin also counts as exactly on the threshold: the value is the rounding noise of an exact construction (a point on both curves, a tangent built as tangent)"
+    "noiseDecisions": ["known", "tangent", "straight_angle"],
+    "noiseRule": "for a noise decision |m| <= tol / decisionMargin also counts as exactly on the threshold: the value is the rounding noise of an exact construction (a point on both curves, a tangent built as tangent, a straight angle built from collinear points)"
   }
 }

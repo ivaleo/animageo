@@ -27,7 +27,7 @@ from typing import NamedTuple
 
 from ..registry import registry
 from . import paths
-from .evaluate import _argument_status, _order, valid_input
+from .evaluate import _argument_status, _order, number_literal, valid_input
 from .numeric import scene_scale, tolerances
 from .ops import IMPLEMENTATIONS, OpContext
 from .values import Detailed, Input, Undefined, is_finite_value
@@ -180,10 +180,11 @@ class _Runner:
     """The function of one :class:`NativeCommand`: classic inputs → kernel → classic outputs."""
 
     def __init__(self, construction, op_name, layout, out_slots, out_types, tol, *,
-                 free_value=None, path_frame=None, tparam_of=None):
+                 free_value=None, path_frame=None, tparam_of=None, constants=None):
         self.construction = construction
         self.op_name = op_name
         self.layout = layout              # [(slot, is_list, [element type…])]
+        self.constants = constants or {}  # params and number literals: {slot: float | None | Input}
         self.out_slots = out_slots
         self.out_types = out_types
         self.tol = tol
@@ -194,7 +195,7 @@ class _Runner:
 
     def __call__(self, *classic):
         none = [None] * len(self.out_slots)
-        args = {}
+        args = dict(self.constants)
         i = 0
         for slot, is_list, types in self.layout:
             items = []
@@ -302,13 +303,15 @@ def build_construction(doc, *, inputs=None, seed=None):
                 construction.add(Element(names.by_id[outs[0]], Point(value['value'])))
                 created.add(outs[0])
                 continue
-        layout = [(slot, is_list, [elements[r]['type'] for r in ids]) for slot, is_list, ids in resolved]
-        input_names = [names.by_id[r] for _slot, _is_list, ids in resolved for r in ids]
+        layout = [(slot, is_list, [elements[r]['type'] for r in ids]) for slot, is_list, ids in resolved.refs]
+        input_names = [names.by_id[r] for _slot, _is_list, ids in resolved.refs for r in ids]
+        constants = dict(resolved.params)
+        constants.update({slot: number_literal(v) for slot, v in resolved.literals.items()})
         path_frame = None
         tparam_of = None
         free_value = None
         if free is not None and free['kind'] == 'pathParameter':
-            path_id = resolved[0][2][0]
+            path_id = resolved.refs[0][2][0]
             path_op = ops[elements[path_id]['producer']['operationId']]
             producer_layout = []
             for slot, arg in path_op['args'].items():
@@ -329,7 +332,8 @@ def build_construction(doc, *, inputs=None, seed=None):
         runner = _Runner(construction, op['op'], layout,
                          [elements[e]['producer']['slot'] for e in outs],
                          [elements[e]['type'] for e in outs], tol,
-                         free_value=free_value, path_frame=path_frame, tparam_of=tparam_of)
+                         free_value=free_value, path_frame=path_frame, tparam_of=tparam_of,
+                         constants=constants)
         construction.add(NativeCommand(op['op'], input_names, [names.by_id[e] for e in outs], op_id, runner))
 
     for el_id in sorted(elements):      # elements of broken operations

@@ -287,7 +287,12 @@ def _invalid_documents():
     yield 'element extra key', variant(lambda d: d['elements']['M'].__setitem__('style', {}))
     yield 'producer extra key', variant(lambda d: d['elements']['M']['producer'].__setitem__('x', 1))
     yield 'origin not object', variant(lambda d: d['elements']['M'].__setitem__('origin', 'tool'))
-    yield 'input kind', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'number', 'value': 1}))
+    yield 'input kind', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'angle', 'value': 1}))
+    yield 'number input bool', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'number', 'value': True}))
+    yield 'number input array', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'number', 'value': [1]}))
+    yield 'number input without value', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'number'}))
+    yield 'number input extra key', variant(
+        lambda d: d['inputs'].__setitem__('A', {'kind': 'number', 'value': 1, 'unit': 'length'}))
     yield 'input value length', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'point', 'value': [1]}))
     yield 'input value type', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'point', 'value': ['1', 2]}))
     yield 'input extra key', variant(lambda d: d['inputs']['A'].__setitem__('x', 1))
@@ -327,6 +332,9 @@ def _valid_documents():
     doc = copy.deepcopy(base)
     doc['inputs']['A'] = {'kind': 'pathParameter', 'value': 7, 'branch': -1}
     yield 'path parameter with branch', doc
+    doc = copy.deepcopy(base)
+    doc['inputs']['A'] = {'kind': 'number', 'value': -2.5}
+    yield 'number input (graph issue, not schema)', doc
     for path in sorted(SCENES_DIR.glob('*.json')):
         yield path.stem, read_json(path)['document']
 

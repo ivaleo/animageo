@@ -48,4 +48,4 @@ class OpContext:
             self.decisions.append((self.operation_id, name, value, tol))
 
 
-from . import circle, intersect, line, point, polygon  # noqa: E402,F401  (registration)
+from . import circle, intersect, line, number, point, polygon  # noqa: E402,F401  (registration)
