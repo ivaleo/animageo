@@ -152,3 +152,65 @@ def test_l1_edits_p95():
     print(f'\nnative edits (L1 mix, {len(doc.operations)} ops): {line}')
     for name, t in timings.items():
         assert percentile(t, 0.95) <= THRESHOLD_MS, name
+
+
+def l2a1_mix_document(target_ops=300):
+    """The L1 mix with the operations of registry 1.2 woven in, about ``target_ops`` operations."""
+    b = DocBuilder('perf_l2a1', bounds=(-10, -10, 10, 10), registry_version='1.2')
+    points = []
+    for i in range(10):
+        angle = 2 * math.pi * i / 10
+        name = f'P{i}'
+        b.free(name, round(8 * math.cos(angle), 3), round(8 * math.sin(angle), 3))
+        points.append(name)
+    b.number('n', 1.5, min=0.5, max=3)
+    circles = []
+    step = 0
+    while len(b.doc['operations']) < target_ops:
+        s = str(step)
+        b.midpoint('M' + s, points[-1], points[-4])
+        b.circle3('k' + s, 'M' + s, points[-7], points[-9], center='O' + s)
+        b.segment('s' + s, points[-2], points[-9])
+        b.projection('H' + s, 'M' + s, 's' + s)
+        b.parallel('p' + s, points[-3], 's' + s).perpendicular('q' + s, 'H' + s, 's' + s)
+        b.perp_bisector('m' + s, points[-5], 'M' + s).angle_bisector('w' + s, points[-6], 'M' + s, points[-8])
+        b.line_circle('A' + s, 'B' + s, 'w' + s, 'k' + s)
+        b.vector('v' + s, 'O' + s, 'H' + s).circle_radius('c' + s, 'H' + s, 'n')
+        b.on_path('U' + s, 'm' + s, 0.5)
+        if circles:
+            b.circle_circle('C' + s, 'D' + s, 'k' + s, circles[-1])
+        circles.append('k' + s)
+        points.extend(['M' + s, 'H' + s, 'U' + s])
+        step += 1
+    return b.doc
+
+
+@pytest.mark.slow
+def test_l2a1_mix_p95():
+    doc = native.load(l2a1_mix_document())
+    n_ops = len(doc.operations)
+    assert n_ops >= 300
+    ev = native.evaluate(doc)
+    defined = sum(rec['state'] == 'defined' for rec in ev.elements.values())
+    ops = {op['op'] for op in doc.operations.values()}
+    assert {'point.projection', 'line.parallel', 'line.perpendicular', 'line.perpendicular_bisector',
+            'line.angle_bisector', 'vector.by_points', 'circle.center_radius', 'circle.three_points',
+            'number.free'} <= ops
+    assert defined >= 0.75 * len(ev.elements)
+    timings = []
+    for _ in range(RUNS):
+        start = time.perf_counter()
+        native.evaluate(doc)
+        timings.append((time.perf_counter() - start) * 1000)
+    p50 = percentile(timings, 0.50)
+    p95 = percentile(timings, 0.95)
+    print(f'\nnative.evaluate (L2 stage 1 mix): {n_ops} ops, {defined}/{len(ev.elements)} defined, '
+          f'p50 {p50:.1f} ms, p95 {p95:.1f} ms, max {max(timings):.1f} ms ({RUNS} runs)')
+    assert p95 <= THRESHOLD_MS, f'p95 {p95:.1f} ms > {THRESHOLD_MS:.0f} ms'
+    timings = []
+    for _ in range(RUNS):
+        start = time.perf_counter()
+        native.check(doc)
+        timings.append((time.perf_counter() - start) * 1000)
+    print(f'native.check (L2 stage 1 mix): p95 {percentile(timings, 0.95):.1f} ms')
+    assert percentile(timings, 0.95) <= THRESHOLD_MS
