@@ -65,7 +65,7 @@
   "frameKinds": {
     "affine": "P = o + clamp(t) v; o and v come from frames[producer op], else frames[\"*\"]; min/max clamp t when outside is clamp",
     "angle": "P = c + r (cos t, sin t), t used as given",
-    "perimeter": "t' = t - n floor(t / n), t' >= n gives 0; k = floor(t'), f = t' - k; P = V[k] + f (V[(k + 1) mod n] - V[k])"
+    "perimeter": "t' = t - n floor(t / n), t' < 0 gives t' + n, t' >= n gives 0; k = floor(t'), f = t' - k; P = V[k] + f (V[(k + 1) mod n] - V[k])"
   },
   "units": {
     "length": "coordinates and lengths; parity tolerance parity.length * S",
