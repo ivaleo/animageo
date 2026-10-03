@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `Circle(A, B, C)` through collinear or coincident points is undefined
+  without an error in the log (the centre was looked up on a missing
+  intersection).
+- `AngularBisector(A, B, C)` with `A` or `C` equal to the vertex `B` (up to
+  rounding, as in `Line(A, B)`) is undefined instead of a line made of NaN.
+
 ## [1.8.0a2] - 2026-10-03
 
 ### Added

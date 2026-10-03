@@ -208,8 +208,12 @@ def angular_bisector_ll(l1, l2):
 def angular_bisector_ppp(p1, p2, p3):
     v1 = p2.coords - p1.coords
     v2 = p2.coords - p3.coords
-    v1 /= np.linalg.norm(v1)
-    v2 /= np.linalg.norm(v2)
+    # A side of zero length (up to rounding, as in line_pp) has no direction.
+    scale = max(1.0, *(float(np.linalg.norm(p.coords)) for p in (p1, p2, p3)))
+    n1, n2 = float(np.linalg.norm(v1)), float(np.linalg.norm(v2))
+    if n1 <= 1e-12 * scale or n2 <= 1e-12 * scale: return None
+    v1 = v1 / n1
+    v2 = v2 / n2
     if np.dot(v1, v2) < 0: n = v1-v2
     else: n = vector_perp_rot(v1+v2)
     return Line(n, np.dot(p2.coords, n))
@@ -450,9 +454,12 @@ def circle_pp(center, passing_point):
     return _circle_or_none(center.coords, np.linalg.norm(center.coords - passing_point.coords))
 
 def circle_ppp(p1, p2, p3):
+    # Collinear or coincident points have no circle: undefined, not an error.
     axis1 = line_bisector_pp(p1, p2)
     axis2 = line_bisector_pp(p1, p3)
+    if axis1 is None or axis2 is None: return None
     center = intersect_ll(axis1, axis2)
+    if center is None: return None
     return circle_pp(center, p1)
 
 def circle_pm(p, m):
