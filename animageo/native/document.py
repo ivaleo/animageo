@@ -197,6 +197,14 @@ def _json_issues(value, path, out):
 # ── structure (mirror of construction.v1.schema.json) ───────────────────
 
 
+_WORK_INTENT_KEYS = ('condition', 'forbid', 'assumptions', 'briefRevision')
+_CONDITION_SOURCES = ('typed', 'photo', 'voice')
+_FORBID = ('solution', 'move_given', 'extra_points')
+_CONDITION_TEXT_MAX = 4000
+_ASSUMPTIONS_MAX = 10
+_ASSUMPTION_MAX = 200
+
+
 class _Structure:
     def __init__(self):
         self.issues = []
@@ -343,6 +351,48 @@ class _Structure:
         if 'value' in value:
             self.numbers(value['value'], path + '/value', 'a point value', 2)
 
+    def work_intent(self, intent, path):
+        if not self.object(intent, path, 'workIntent'):
+            return
+        self.keys(intent, path, 'workIntent', (), _WORK_INTENT_KEYS)
+        condition = intent.get('condition')
+        cpath = path + '/condition'
+        if 'condition' in intent and self.object(condition, cpath, 'condition'):
+            self.keys(condition, cpath, 'condition', ('text',), ('text', 'source', 'quote', 'mediaRef'))
+            for name in ('text', 'quote', 'mediaRef'):
+                if name in condition:
+                    self.string(condition[name], f'{cpath}/{name}', name)
+            text = condition.get('text')
+            if isinstance(text, str) and len(text) > _CONDITION_TEXT_MAX:
+                self.add(cpath + '/text', f'the condition text is longer than {_CONDITION_TEXT_MAX} characters')
+            if 'source' in condition and condition['source'] not in _CONDITION_SOURCES:
+                self.add(cpath + '/source', f"source must be one of {', '.join(_CONDITION_SOURCES)}")
+        forbid = intent.get('forbid')
+        if 'forbid' in intent:
+            if not isinstance(forbid, list):
+                self.add(path + '/forbid', 'forbid must be an array')
+            else:
+                for i, item in enumerate(forbid):
+                    if not isinstance(item, str) or item not in _FORBID:
+                        self.add(f'{path}/forbid/{i}', f"forbid items must be one of {', '.join(_FORBID)}")
+                if len(set(map(repr, forbid))) != len(forbid):
+                    self.add(path + '/forbid', 'forbid items must be unique')
+        assumptions = intent.get('assumptions')
+        if 'assumptions' in intent:
+            if not isinstance(assumptions, list):
+                self.add(path + '/assumptions', 'assumptions must be an array')
+            else:
+                if len(assumptions) > _ASSUMPTIONS_MAX:
+                    self.add(path + '/assumptions', f'at most {_ASSUMPTIONS_MAX} assumptions')
+                for i, item in enumerate(assumptions):
+                    ipath = f'{path}/assumptions/{i}'
+                    if self.string(item, ipath, 'an assumption') and len(item) > _ASSUMPTION_MAX:
+                        self.add(ipath, f'an assumption is longer than {_ASSUMPTION_MAX} characters')
+        if 'briefRevision' in intent:
+            value = intent['briefRevision']
+            if not (_is_number(value) and math.isfinite(value) and value == int(value) and value >= 0):
+                self.add(path + '/briefRevision', 'briefRevision must be a non-negative integer')
+
     def document(self, doc):
         self.keys(doc, '', 'the document', _REQUIRED)
         if 'format' in doc and doc['format'] != DOCUMENT_FORMAT:
@@ -366,6 +416,12 @@ class _Structure:
         for section in ('appearance', 'styleBinding', 'exportDefaults', 'bindings'):
             if section in doc:
                 self.object(doc[section], '/' + section, section)
+        if isinstance(doc.get('appearance'), dict):
+            for key, entry in doc['appearance'].items():
+                if isinstance(entry, dict) and 'locked' in entry and not isinstance(entry['locked'], bool):
+                    self.add('/appearance' + _pointer(key) + '/locked', 'locked must be a boolean')
+        if 'workIntent' in doc and doc['workIntent'] is not None:
+            self.work_intent(doc['workIntent'], '/workIntent')
         if 'timeline' in doc and doc['timeline'] is not None:
             self.object(doc['timeline'], '/timeline', 'timeline')
         view = doc.get('viewDefaults')

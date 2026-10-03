@@ -19,6 +19,15 @@ def triangle_doc():
     return b.doc
 
 
+WORK_INTENT = {
+    'condition': {'text': 'В треугольнике ABC проведена биссектриса AL.', 'source': 'photo',
+                  'quote': 'биссектриса AL', 'mediaRef': 'media_17'},
+    'forbid': ['solution', 'move_given'],
+    'assumptions': ['AB = AC'],
+    'briefRevision': 4,
+}
+
+
 def codes(issues):
     return sorted({i.code for i in issues})
 
@@ -109,6 +118,40 @@ class TestDump:
         assert native.content_hash(json.dumps(doc, indent=1)) == h
         doc['inputs']['A'] = point_input(0.5, 0)
         assert native.content_hash(doc) != h
+
+    def test_work_intent_and_locked_round_trip(self):
+        doc = triangle_doc()
+        doc['workIntent'] = copy.deepcopy(WORK_INTENT)
+        doc['appearance'] = {'A': {'locked': True}, 'B': {'locked': False, 'visible': True}}
+        loaded = native.load(doc)
+        assert native.validate(loaded) == []
+        assert native.dump(loaded) == doc
+        canonical = native.dumps(loaded)
+        assert json.loads(canonical)['workIntent'] == WORK_INTENT
+        assert native.dumps(native.load(canonical)) == canonical
+        plain = triangle_doc()
+        assert native.content_hash(doc) != native.content_hash(plain)
+        changed = copy.deepcopy(doc)
+        changed['workIntent']['briefRevision'] = 5
+        assert native.content_hash(changed) != native.content_hash(doc)
+        unlocked = copy.deepcopy(doc)
+        unlocked['appearance']['A']['locked'] = False
+        assert native.content_hash(unlocked) != native.content_hash(doc)
+
+    def test_work_intent_and_locked_do_not_change_evaluation(self):
+        doc = triangle_doc()
+        plain = native.evaluate(doc)
+        doc['workIntent'] = copy.deepcopy(WORK_INTENT)
+        doc['appearance'] = {'A': {'locked': True}}
+        result = native.evaluate(doc)
+        assert result.elements == plain.elements and result.scale == plain.scale
+
+    def test_bad_work_intent_is_a_schema_issue(self):
+        doc = triangle_doc()
+        doc['workIntent'] = {'forbid': ['answer']}
+        with pytest.raises(native.LoadError):
+            native.load(doc)
+        assert codes(native.validate(doc)) == ['schema']
 
     def test_dump_is_a_copy(self):
         loaded = native.load(triangle_doc())
@@ -308,6 +351,32 @@ def _invalid_documents():
     yield 'bounds length', variant(lambda d: d['viewDefaults'].__setitem__('bounds', [0, 0, 1]))
     yield 'timeline type', variant(lambda d: d.__setitem__('timeline', []))
     yield 'appearance type', variant(lambda d: d.__setitem__('appearance', []))
+    yield 'locked not bool', variant(lambda d: d.__setitem__('appearance', {'A': {'locked': 1}}))
+    yield 'locked string', variant(lambda d: d.__setitem__('appearance', {'A': {'locked': 'true'}}))
+
+    def intent(value):
+        return variant(lambda d: d.__setitem__('workIntent', value))
+
+    yield 'work intent type', intent([])
+    yield 'work intent extra key', intent({'purpose': 'lesson'})
+    yield 'condition without text', intent({'condition': {'source': 'typed'}})
+    yield 'condition text type', intent({'condition': {'text': 7}})
+    yield 'condition text too long', intent({'condition': {'text': 'x' * 4001}})
+    yield 'condition source', intent({'condition': {'text': 'a', 'source': 'scan'}})
+    yield 'condition extra key', intent({'condition': {'text': 'a', 'sourceRef': 'm1'}})
+    yield 'condition quote type', intent({'condition': {'text': 'a', 'quote': 1}})
+    yield 'condition media type', intent({'condition': {'text': 'a', 'mediaRef': None}})
+    yield 'forbid type', intent({'forbid': 'solution'})
+    yield 'forbid item', intent({'forbid': ['answer']})
+    yield 'forbid repeated', intent({'forbid': ['solution', 'solution']})
+    yield 'assumptions type', intent({'assumptions': 'AB = BC'})
+    yield 'assumption type', intent({'assumptions': [1]})
+    yield 'assumption too long', intent({'assumptions': ['x' * 201]})
+    yield 'too many assumptions', intent({'assumptions': ['a'] * 11})
+    yield 'brief revision fraction', intent({'briefRevision': 1.5})
+    yield 'brief revision negative', intent({'briefRevision': -1})
+    yield 'brief revision bool', intent({'briefRevision': True})
+    yield 'brief revision string', intent({'briefRevision': '2'})
 
 
 def _valid_documents():
@@ -335,6 +404,17 @@ def _valid_documents():
     doc = copy.deepcopy(base)
     doc['inputs']['A'] = {'kind': 'number', 'value': -2.5}
     yield 'number input (graph issue, not schema)', doc
+    doc = copy.deepcopy(base)
+    doc['appearance'] = {'A': {'locked': True, 'color': 'red'}, 'B': {'locked': False}, 'ghost': 'kept as is'}
+    yield 'appearance locked', doc
+    doc = copy.deepcopy(base)
+    doc['workIntent'] = WORK_INTENT
+    yield 'work intent', doc
+    for intent in ({}, None, {'condition': {'text': ''}}, {'forbid': [], 'assumptions': [], 'briefRevision': 0},
+                   {'condition': {'text': 'x' * 4000}, 'assumptions': ['y' * 200] * 10, 'briefRevision': 3.0}):
+        doc = copy.deepcopy(base)
+        doc['workIntent'] = intent
+        yield f'work intent {intent!r:.40}', doc
     for path in sorted(SCENES_DIR.glob('*.json')):
         yield path.stem, read_json(path)['document']
 

@@ -58,6 +58,11 @@ class TestAppearancePlan:
                                       'label_text': 'вершина'}
         assert plan['A'] == {'visible': False, 'style': {'display_name': 'A', 'label_visible': False}}
 
+    def test_locked_is_ignored(self):
+        locked, diagnostics = self.plan({'A': {'locked': True}, 's': {'locked': False}})
+        assert diagnostics == []
+        assert locked == self.plan({})[0]
+
     def test_a_name_label_needs_a_name(self):
         d = doc()
         d['elements']['A']['displayName'] = ''

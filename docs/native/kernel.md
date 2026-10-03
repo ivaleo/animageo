@@ -28,8 +28,14 @@ Master schema: `animageo/native/schema/construction.v1.schema.json`
   "elements":   {ID: Element},                   required
   "inputs":     {ID: Input},
   "viewDefaults": {"bounds": [xmin, ymin, xmax, ymax], …},
+  "workIntent": null | WorkIntent,
   "appearance", "styleBinding", "timeline", "exportDefaults", "bindings", any other key
 }
+WorkIntent = {"condition"?: {"text": string ≤ 4000, "source"?: "typed" | "photo" | "voice",
+                             "quote"?: string, "mediaRef"?: string},
+              "forbid"?: ["solution" | "move_given" | "extra_points", …]   unique,
+              "assumptions"?: [string ≤ 200, …]                          at most 10,
+              "briefRevision"?: integer ≥ 0}
 Operation = {"id": ID, "op": "group.name", "args": {slot: Argument},
              "outputs": [{"slot": slot, "elementId": ID}], "branch"?: null | {"policy", "selector"}}
 Argument  = {"kind": "ref", "elementId": ID}
@@ -58,6 +64,14 @@ Input     = {"kind": "point", "value": [x, y]}                         point.fre
 - Sections the library does not interpret — `appearance` (read by the
   renderer, §9), `styleBinding`, `timeline`, `exportDefaults`, `bindings`,
   `origin`, unknown keys — are kept as they are.
+- `workIntent` (the problem text, what the assistant must not do, the
+  assumptions; written by the web action `setWorkIntent`) has a fixed shape:
+  no other keys, string lengths in characters (code points). An entry of
+  `appearance` may carry `locked: boolean` («Закрепить»); other entry keys and
+  non-object entries stay free. Both are checked as structure, kept by
+  `load → dump`, covered by the canonical text and `content_hash`, and
+  ignored by evaluation and by the renderer. They joined v1 as additive
+  fields, so the format name does not change.
 
 `load(source, strict=True)` reads a dict, JSON text, bytes or a path; JSON
 text with `NaN`/`Infinity` or a repeated key is refused. Structural problems
