@@ -42,6 +42,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 markers = [
     "manim: requires the optional Manim render dependency",
+    "slow: timing and wheel-build tests (deselect with -m \"not slow\")",
 ]
 
 [project.urls]
@@ -75,5 +76,10 @@ animageo = [
     "style/presets/*.json",
     "style/*.pyi",
     "parsers/dsl/*.pyi",
-    "exporters/jsxgraph/board.schema.json"
+    "exporters/jsxgraph/board.schema.json",
+    "native/schema/*.json",
+    "native/ops/v1/*.json",
+    "native/parity/v1/*.json",
+    "native/parity/v1/scenes/*.json",
+    "native/parity/v1/expected/*.json"
 ]
