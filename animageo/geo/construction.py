@@ -1,3 +1,5 @@
+import copy as _copy
+import hashlib
 import logging
 import itertools
 import re
@@ -6,6 +8,7 @@ from collections import deque
 
 from .lib_vars import *
 from .lib_elements import *
+from .lib_elements import _COMMAND_RNG as lib_elements_rng
 from .lib_commands import *
 from .utils import is_number, is_angle_degrees, is_boolean, boolean
 
@@ -105,7 +108,13 @@ class Construction:
         phantoms: Dict of temporary variables for complex subexpressions
     """
 
-    def __init__(self):
+    def __init__(self, seed=DEFAULT_SEED):
+        # ``seed`` makes default positions (``Point()``, a point on a path
+        # without ``tparam``) reproducible: each command draws from its own
+        # generator seeded by ``seed`` and its output names, so a rebuild
+        # gives the same values. ``seed=None`` draws fresh entropy.
+        self.seed = seed
+        self.rng = np.random.default_rng(seed)
         self.phantoms = {}
         self.vars = []
         self.elements = [
@@ -647,10 +656,31 @@ class Construction:
 
     def copy(self, command):
         assert(isinstance(command, Command))
-        command_copy = Command(command.name, list(command.inputs).copy(), list(command.outputs).copy())
+        # A shallow copy keeps the subclass and its attributes (the
+        # ``operation_id`` of a native command); inputs and outputs are
+        # fresh lists because ``prepareInputs`` replaces names by objects.
+        command_copy = _copy.copy(command)
+        command_copy.inputs = list(command.inputs)
+        command_copy.outputs = list(command.outputs)
         return command_copy
 
+    def command_rng(self, command):
+        """The random generator of one command: ``default_rng([seed, h])``,
+        ``h`` = the first 8 bytes of ``sha256("\\0".join(output names))``."""
+        if self.seed is None:
+            return np.random.default_rng()
+        names = '\0'.join(getattr(o, 'name', str(o)) for o in command.outputs)
+        h = int.from_bytes(hashlib.sha256(names.encode('utf-8')).digest()[:8], 'big')
+        return np.random.default_rng([self.seed, h])
+
     def apply(self, command_original, debug = False, log = None):
+        token = lib_elements_rng.set(self.command_rng(command_original))
+        try:
+            return self._apply(command_original, debug=debug, log=log)
+        finally:
+            lib_elements_rng.reset(token)
+
+    def _apply(self, command_original, debug = False, log = None):
         command = self.copy(command_original)            
         self.prepareInputs(command)
         input_data = [obj.data if hasattr(obj,"data") else obj for obj in command.inputs]
@@ -713,6 +743,13 @@ class Construction:
                                 self.update(command.outputs[i], output_data[i], log = log)
                         else:
                             self.update(command.outputs[i], output_data[i], log = log)
+                # Outputs the result does not reach (a tangent intersection
+                # gives one point, no intersection none) are undefined now,
+                # not the values of the previous build.
+                for i in range(len(output_data), len(command.outputs)):
+                    obj = self.element(command.outputs[i])
+                    if obj is None or not obj.fixed:
+                        self.update(command.outputs[i], None, log = log)
             except Exception as e:
                 str_inputs = [obj.name if hasattr(obj,"name") else obj for obj in command_original.inputs]
                 logger.warning("Command '%s(%s)' failed: %s", f.__name__, str_inputs, e)

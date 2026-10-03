@@ -436,8 +436,18 @@ def centroid_P(polygon):
     
     return Point([Cx, Cy])
 
+def _circle_or_none(center, r):
+    """A circle, or None (undefined) for a radius that is not a positive number."""
+    try:
+        r = float(r)
+    except (TypeError, ValueError):
+        return None
+    if not np.isfinite(r) or r <= 0:
+        return None
+    return Circle(center, r)
+
 def circle_pp(center, passing_point):
-    return Circle(center.coords, np.linalg.norm(center.coords - passing_point.coords))
+    return _circle_or_none(center.coords, np.linalg.norm(center.coords - passing_point.coords))
 
 def circle_ppp(p1, p2, p3):
     axis1 = line_bisector_pp(p1, p2)
@@ -447,13 +457,13 @@ def circle_ppp(p1, p2, p3):
 
 def circle_pm(p, m):
     if m.dimension != 1: return None
-    return Circle(p.coords, m.value)
+    return _circle_or_none(p.coords, m.value)
 
 def circle_pi(p, i):
-    return Circle(p.coords, i)
+    return _circle_or_none(p.coords, i)
 
 def circle_ps(p, s):
-    return Circle(p.coords, s.length)
+    return _circle_or_none(p.coords, s.length)
 
 def contained_by_pc(point, by_circle):
     return Boolean(by_circle.contains(point.coords))
@@ -2147,7 +2157,9 @@ def line_pl(point, line):
     return Line(line.normal, np.dot(line.normal, point.coords))
 
 def line_pp(p1, p2):
-    if (p1.coords == p2.coords).all(): return None
+    # Coincident within rounding: |p1 - p2| <= 1e-12 * max(1, |p1|, |p2|).
+    scale = max(1.0, float(np.linalg.norm(p1.coords)), float(np.linalg.norm(p2.coords)))
+    if float(np.linalg.norm(p1.coords - p2.coords)) <= 1e-12 * scale: return None
     n = vector_perp_rot(p1.coords - p2.coords)
     return Line(n, np.dot(p1.coords, n))
 
@@ -2229,7 +2241,7 @@ def orthogonal_line_ps(point, segment):
     return orthogonal_line_pl(point, segment)
 
 def point_():
-    return Point(np.random.normal(size = 2))
+    return Point(current_rng().normal(size = 2))
 
 def point_ii(x, y):
     return Point([x,y])
@@ -2246,16 +2258,16 @@ def point_c(circle, tparam = None):
 
 def point_l(line, tparam = None):
     """Point on a line. ``tparam`` is the linear parameter along direction."""
-    return Point(line.offset * line.normal + line.direction * (tparam if tparam is not None else np.random.normal()) )
+    return Point(line.offset * line.normal + line.direction * (tparam if tparam is not None else current_rng().normal()) )
 
 def point_r(ray, tparam = None):
     """Point on a ray. ``tparam`` is distance along the ray direction."""
-    t = tparam if tparam is not None else np.random.random()
+    t = tparam if tparam is not None else current_rng().random()
     return Point(ray.start + ray.direction * max(0.0, float(t)))
 
 def point_s(segment, tparam = None):
     """Point on a segment. ``tparam`` is the linear parameter (0..1 for interior)."""
-    return Point(interpolate(segment.endpoints[0], segment.endpoints[1], tparam if tparam is not None else np.random.random()))
+    return Point(interpolate(segment.endpoints[0], segment.endpoints[1], tparam if tparam is not None else current_rng().random()))
 
 def point_C(arc, tparam = None):
     """Point on an arc. ``tparam`` is the absolute angle in radians."""

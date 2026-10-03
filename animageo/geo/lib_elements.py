@@ -3,6 +3,7 @@
 Each class stores geometric data and a style dict for rendering configuration.
 The Element wrapper associates a name and visibility state with any geometric object.
 """
+import contextvars
 import re
 
 import numpy as np
@@ -146,7 +147,26 @@ def cpx_to_a(cpx):
 def vector_perp_rot(vec):
     return np.array((vec[1], -vec[0]))
 def get_direction(alpha = None):
-    return cpx_to_a(np.exp((alpha if alpha is not None else np.random.random()) * 1j))
+    return cpx_to_a(np.exp((alpha if alpha is not None else current_rng().random()) * 1j))
+
+
+# ── Seeded randomness of default positions ────────────────────────────
+#
+# A command without a position (``Point()``, a point on a path without
+# ``tparam``) draws from ``current_rng()``: inside ``Construction.apply`` the
+# generator of that command (seeded by the construction seed and the output
+# names), elsewhere a module generator seeded with ``DEFAULT_SEED``. The same
+# scene gives the same values, and a rebuild does not move a random point.
+
+DEFAULT_SEED = 0
+_MODULE_RNG = np.random.default_rng(DEFAULT_SEED)
+_COMMAND_RNG = contextvars.ContextVar('animageo_command_rng', default=None)
+
+
+def current_rng():
+    """The random generator for default positions (see above)."""
+    rng = _COMMAND_RNG.get()
+    return rng if rng is not None else _MODULE_RNG
 def square_norm(x):
     return np.dot(x,x)
 def rotate_vec(vec, alpha):
@@ -193,6 +213,8 @@ class Line:
                 self.normal /= norm
                 self.offset /= norm
             self.direction = vector_perp_rot(self.normal)
+        else:
+            self.direction = np.zeros(2)
 
         self.style = StyleProxy()
 
@@ -235,7 +257,7 @@ class Line:
     def random_point(self, corners):
         endpoints = self.get_endpoints(corners)
         if endpoints is None: return self.normal*self.offset
-        return interpolate(endpoints[0], endpoints[1], np.random.random())
+        return interpolate(endpoints[0], endpoints[1], current_rng().random())
 
     def contains(self, x):
         return np.isclose(np.dot(x,self.normal), self.offset)
@@ -391,7 +413,8 @@ class Polygon:
 
 class Circle:
     def __init__(self, center, r):
-        assert(r > 0)
+        # A non-positive radius is not asserted here: the commands that
+        # build circles return None for it (an undefined element).
         self.center = np.array(center)
         self.radius = r
 

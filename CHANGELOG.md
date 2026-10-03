@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- An intersection that gives fewer points than it has outputs leaves the
+  missing outputs undefined: when a line touches a circle, the second point
+  disappears instead of staying where the previous build put it.
+- A circle with a zero or negative radius is undefined without an error in
+  the log (`Circle(O, O)`, `Circle(O, 0)`, a radius from a zero segment); the
+  `Circle` class no longer asserts a positive radius.
+- `Line(A, B)` with `A` and `B` equal up to rounding (`|A − B| ≤ 1e-12` of
+  their size) is undefined instead of a line in a random direction; a `Line`
+  with a zero normal has the direction `(0, 0)`.
+- Default positions are reproducible: a point on a circle, segment, line or
+  ray without a parameter gets the same place on every run and keeps it on a
+  rebuild. `Construction(seed=…)` sets the seed (0 by default, `None` for
+  fresh randomness).
+
 ## [1.8.0a1] - 2026-10-03
 
 ### Added

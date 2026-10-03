@@ -207,13 +207,11 @@ class TestCircle:
         assert c.radius == 5
         assert np.isclose(c.radius_squared, 25)
 
-    def test_zero_radius_raises(self):
-        with pytest.raises(AssertionError):
-            Circle([0, 0], 0)
-
-    def test_negative_radius_raises(self):
-        with pytest.raises(AssertionError):
-            Circle([0, 0], -1)
+    def test_nonpositive_radius_is_not_asserted(self):
+        # Since 1.8.0a2 the circle commands return None for r <= 0
+        # (tests/test_classic_fixes_l1.py); the class itself does not assert.
+        assert Circle([0, 0], 0).radius == 0
+        assert Circle([0, 0], -1).radius == -1
 
     def test_style_initialized(self):
         c = Circle([0, 0], 1)
