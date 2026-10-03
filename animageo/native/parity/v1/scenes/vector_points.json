@@ -1,0 +1,171 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "vector_points",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "vector_points",
+    "operationRegistryVersion": "1.2",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_v": {
+        "id": "op_v",
+        "op": "vector.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "v"
+          }
+        ]
+      },
+      "op_u": {
+        "id": "op_u",
+        "op": "vector.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "u"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "v": {
+        "id": "v",
+        "type": "vector",
+        "displayName": "v",
+        "producer": {
+          "operationId": "op_v",
+          "slot": "vector"
+        }
+      },
+      "u": {
+        "id": "u",
+        "type": "vector",
+        "displayName": "u",
+        "producer": {
+          "operationId": "op_u",
+          "slot": "vector"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          2
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          6
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "zero",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            1,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "name": "negative",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            3,
+            -1
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            -2,
+            -4
+          ]
+        }
+      }
+    }
+  ]
+}

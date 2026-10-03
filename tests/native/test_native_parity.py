@@ -21,6 +21,9 @@ REQUIRED_SCENES = {
     'circle_circle_concentric', 'other_than_line_circle', 'other_than_tangent', 'other_than_circles',
     'other_than_absent', 'on_path_segment', 'on_path_line_ray', 'on_path_circle', 'on_path_polygon',
     'on_path_chain',
+    # registry 1.2
+    'projection', 'parallel_perpendicular', 'perpendicular_bisector', 'angle_bisector', 'vector_points',
+    'circle_center_radius', 'circle_three_points', 'number_free', 'on_path_l2_lines', 'l2a1_chain',
 }
 
 

@@ -1,0 +1,355 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "parallel_perpendicular",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "parallel_perpendicular",
+    "operationRegistryVersion": "1.2",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "ray.by_points",
+        "args": {
+          "origin": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "ray",
+            "elementId": "r"
+          }
+        ]
+      },
+      "op_p": {
+        "id": "op_p",
+        "op": "line.parallel",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "l"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "p"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "line.perpendicular",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "l"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "q"
+          }
+        ]
+      },
+      "op_ps": {
+        "id": "op_ps",
+        "op": "line.parallel",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "ps"
+          }
+        ]
+      },
+      "op_qr": {
+        "id": "op_qr",
+        "op": "line.perpendicular",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "r"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "qr"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "ray",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "ray"
+        }
+      },
+      "p": {
+        "id": "p",
+        "type": "line",
+        "displayName": "p",
+        "producer": {
+          "operationId": "op_p",
+          "slot": "line"
+        }
+      },
+      "q": {
+        "id": "q",
+        "type": "line",
+        "displayName": "q",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "line"
+        }
+      },
+      "ps": {
+        "id": "ps",
+        "type": "line",
+        "displayName": "ps",
+        "producer": {
+          "operationId": "op_ps",
+          "slot": "line"
+        }
+      },
+      "qr": {
+        "id": "qr",
+        "type": "line",
+        "displayName": "qr",
+        "producer": {
+          "operationId": "op_qr",
+          "slot": "line"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -3,
+          -2
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          3,
+          1
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          4
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "point_on_carrier",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "vertical",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            2,
+            -3
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            2,
+            5
+          ]
+        }
+      }
+    },
+    {
+      "name": "zero_segment",
+      "inputs": {
+        "B": {
+          "kind": "point",
+          "value": [
+            -3,
+            -2
+          ]
+        }
+      }
+    }
+  ]
+}

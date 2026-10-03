@@ -1,0 +1,271 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "circle_center_radius",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "circle_center_radius",
+    "operationRegistryVersion": "1.2",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "r"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "number.free",
+        "args": {
+          "min": {
+            "kind": "number",
+            "value": 0.5
+          },
+          "max": {
+            "kind": "number",
+            "value": 4
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "k"
+          }
+        ]
+      },
+      "op_c1": {
+        "id": "op_c1",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c1"
+          }
+        ]
+      },
+      "op_c2": {
+        "id": "op_c2",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "ref",
+            "elementId": "r"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c2"
+          }
+        ]
+      },
+      "op_c3": {
+        "id": "op_c3",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "number",
+            "value": -1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c3"
+          }
+        ]
+      },
+      "op_c4": {
+        "id": "op_c4",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "ref",
+            "elementId": "k"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c4"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "number",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "number"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "number",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "number"
+        }
+      },
+      "c1": {
+        "id": "c1",
+        "type": "circle",
+        "displayName": "c1",
+        "producer": {
+          "operationId": "op_c1",
+          "slot": "circle"
+        }
+      },
+      "c2": {
+        "id": "c2",
+        "type": "circle",
+        "displayName": "c2",
+        "producer": {
+          "operationId": "op_c2",
+          "slot": "circle"
+        }
+      },
+      "c3": {
+        "id": "c3",
+        "type": "circle",
+        "displayName": "c3",
+        "producer": {
+          "operationId": "op_c3",
+          "slot": "circle"
+        }
+      },
+      "c4": {
+        "id": "c4",
+        "type": "circle",
+        "displayName": "c4",
+        "producer": {
+          "operationId": "op_c4",
+          "slot": "circle"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          1,
+          -1
+        ]
+      },
+      "r": {
+        "kind": "number",
+        "value": 2.5
+      },
+      "k": {
+        "kind": "number",
+        "value": 1
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "default"
+    },
+    {
+      "name": "zero_radius",
+      "inputs": {
+        "r": {
+          "kind": "number",
+          "value": 0
+        }
+      }
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            -4,
+            3
+          ]
+        },
+        "r": {
+          "kind": "number",
+          "value": 7.25
+        }
+      }
+    },
+    {
+      "name": "clamped_above",
+      "inputs": {
+        "k": {
+          "kind": "number",
+          "value": 9
+        }
+      }
+    },
+    {
+      "name": "clamped_below",
+      "inputs": {
+        "k": {
+          "kind": "number",
+          "value": -3
+        }
+      }
+    }
+  ]
+}

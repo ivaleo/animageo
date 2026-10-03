@@ -1,0 +1,401 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "projection",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "projection",
+    "operationRegistryVersion": "1.2",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "ray.by_points",
+        "args": {
+          "origin": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "ray",
+            "elementId": "r"
+          }
+        ]
+      },
+      "op_Hl": {
+        "id": "op_Hl",
+        "op": "point.projection",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "l"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "foot",
+            "elementId": "Hl"
+          }
+        ]
+      },
+      "op_Hs": {
+        "id": "op_Hs",
+        "op": "point.projection",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "foot",
+            "elementId": "Hs"
+          }
+        ]
+      },
+      "op_Hst": {
+        "id": "op_Hst",
+        "op": "point.projection",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "s"
+          },
+          "strict": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "foot",
+            "elementId": "Hst"
+          }
+        ]
+      },
+      "op_Hr": {
+        "id": "op_Hr",
+        "op": "point.projection",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "r"
+          },
+          "strict": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "foot",
+            "elementId": "Hr"
+          }
+        ]
+      },
+      "op_Hbad": {
+        "id": "op_Hbad",
+        "op": "point.projection",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "strict": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "foot",
+            "elementId": "Hbad"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "displayName": "P",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "ray",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "ray"
+        }
+      },
+      "Hl": {
+        "id": "Hl",
+        "type": "point",
+        "displayName": "Hl",
+        "producer": {
+          "operationId": "op_Hl",
+          "slot": "foot"
+        }
+      },
+      "Hs": {
+        "id": "Hs",
+        "type": "point",
+        "displayName": "Hs",
+        "producer": {
+          "operationId": "op_Hs",
+          "slot": "foot"
+        }
+      },
+      "Hst": {
+        "id": "Hst",
+        "type": "point",
+        "displayName": "Hst",
+        "producer": {
+          "operationId": "op_Hst",
+          "slot": "foot"
+        }
+      },
+      "Hr": {
+        "id": "Hr",
+        "type": "point",
+        "displayName": "Hr",
+        "producer": {
+          "operationId": "op_Hr",
+          "slot": "foot"
+        }
+      },
+      "Hbad": {
+        "id": "Hbad",
+        "type": "point",
+        "displayName": "Hbad",
+        "producer": {
+          "operationId": "op_Hbad",
+          "slot": "foot"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -1
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          3
+        ]
+      },
+      "P": {
+        "kind": "point",
+        "value": [
+          1,
+          5
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "inside"
+    },
+    {
+      "name": "beyond_end",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            8,
+            6
+          ]
+        }
+      }
+    },
+    {
+      "name": "behind_origin",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            -8,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "name": "on_carrier",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            0,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "name": "zero_segment",
+      "inputs": {
+        "B": {
+          "kind": "point",
+          "value": [
+            -4,
+            -1
+          ]
+        }
+      }
+    }
+  ]
+}

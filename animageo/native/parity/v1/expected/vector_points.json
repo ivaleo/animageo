@@ -1,0 +1,332 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "vector_points",
+  "registry": "1.2",
+  "generatedBy": "animageo 1.8.0a2",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "vector_points",
+    "operationRegistryVersion": "1.2",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_v": {
+        "id": "op_v",
+        "op": "vector.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "v"
+          }
+        ]
+      },
+      "op_u": {
+        "id": "op_u",
+        "op": "vector.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "u"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "v": {
+        "id": "v",
+        "type": "vector",
+        "displayName": "v",
+        "producer": {
+          "operationId": "op_v",
+          "slot": "vector"
+        }
+      },
+      "u": {
+        "id": "u",
+        "type": "vector",
+        "displayName": "u",
+        "producer": {
+          "operationId": "op_u",
+          "slot": "vector"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          2
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          6
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 6.0
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              4.0,
+              6.0
+            ],
+            "b": [
+              1.0,
+              2.0
+            ],
+            "length": 5.0
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              1.0,
+              2.0
+            ],
+            "b": [
+              4.0,
+              6.0
+            ],
+            "length": 5.0
+          }
+        }
+      },
+      "checks": {
+        "op_u:ends": "passed",
+        "op_v:ends": "passed"
+      }
+    },
+    {
+      "name": "zero",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            1,
+            2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              1.0,
+              2.0
+            ],
+            "b": [
+              1.0,
+              2.0
+            ],
+            "length": 0.0
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              1.0,
+              2.0
+            ],
+            "b": [
+              1.0,
+              2.0
+            ],
+            "length": 0.0
+          }
+        }
+      },
+      "checks": {
+        "op_u:ends": "passed",
+        "op_v:ends": "passed"
+      }
+    },
+    {
+      "name": "negative",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            3,
+            -1
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            -2,
+            -4
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -4.0
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -2.0,
+              -4.0
+            ],
+            "b": [
+              3.0,
+              -1.0
+            ],
+            "length": 5.830951894845301
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              -1.0
+            ],
+            "b": [
+              -2.0,
+              -4.0
+            ],
+            "length": 5.830951894845301
+          }
+        }
+      },
+      "checks": {
+        "op_u:ends": "passed",
+        "op_v:ends": "passed"
+      }
+    }
+  ]
+}

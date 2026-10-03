@@ -1,0 +1,161 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "perpendicular_bisector",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "perpendicular_bisector",
+    "operationRegistryVersion": "1.2",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_m": {
+        "id": "op_m",
+        "op": "line.perpendicular_bisector",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "m"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "m": {
+        "id": "m",
+        "type": "line",
+        "displayName": "m",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "line"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -3,
+          -1
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          5,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "vertical",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -2,
+            1
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            4,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "name": "swapped",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            5,
+            3
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            -3,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "B": {
+          "kind": "point",
+          "value": [
+            -3,
+            -1
+          ]
+        }
+      }
+    }
+  ]
+}
