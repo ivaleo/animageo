@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0a2] - 2026-10-03
+
+### Added
+
+- Registry 1.1 of `animageo.native`: a ray through two points, the
+  intersections of a line, segment or ray with a circle and of two circles,
+  "the other intersection point" (`intersect.other_than`, the explicit form of
+  GeoGebra's reordering by a known point) and a point on a path (segment,
+  line, ray, circle or polygon) given by a path parameter. Two-point
+  intersections keep each solution in its own output slot by a documented
+  rule, so a dragged point never swaps two elements and a vanished solution
+  leaves its slot undefined; a tangency fills both slots and says so
+  (`detail: {"multiplicity": 2}`). `intersect.line_line` accepts rays.
+  `native.project(doc, id, (x, y))` gives the path parameter of the nearest
+  point of a path.
+- Pure document edits: `native.closure`, `dependencies` and `free_inputs`
+  answer graph questions in topological order; `native.delete`, `redefine`
+  and `rename` return the new document and a JSON-ready list of what changed,
+  never change their input and refuse a broken result with
+  `native.EditError`.
+- `native.render(doc, style_config=…, export_layout=…, fmt="svg"|"png"|"pdf",
+  out=…)` draws a construction document with the same renderer, styles and
+  layout as a `.ggb` (`AnimaGeoScene.loadDocument`), applies the document's
+  `appearance` (visibility, labels, style overrides) and returns a report
+  `animageo-render-report/v1` with the pixel boxes of every element and
+  label by element ID and the overlapping labels. `native.source_view(doc)`
+  gives the source view of a document without manim.
+- `python -m animageo doc.json -o out.svg` renders a construction document
+  from the command line (SVG, PNG, PDF) with the usual placement and style
+  flags; `--style-from-document` takes the style snapshot stored in the
+  document.
+- 22 new parity scenes (31 in all) for rays, circle intersections, the other
+  point and points on paths; the fixture generator accepts the rounding noise
+  of exact tangents and known points (`noiseDecisions`).
+
+### Changed
+
+- `animageo.native` evaluates documents of registry 1.1; documents of
+  registry 1.0 give the same results and the signature hashes of the 1.0
+  operations did not change.
+- `python -m animageo` starts without loading the manim-backed API whatever
+  its arguments, as it did for a `.ggb` argument.
+
 ### Fixed
 
 - An intersection that gives fewer points than it has outputs leaves the
@@ -1767,7 +1810,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.0a1...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.0a2...HEAD
+[1.8.0a2]: https://github.com/ivaleo/animageo/compare/v1.8.0a1...v1.8.0a2
 [1.8.0a1]: https://github.com/ivaleo/animageo/compare/v1.7.13...v1.8.0a1
 [1.7.13]: https://github.com/ivaleo/animageo/compare/v1.7.12...v1.7.13
 [1.7.12]: https://github.com/ivaleo/animageo/compare/v1.7.11...v1.7.12
