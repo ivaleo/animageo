@@ -1197,8 +1197,9 @@ class AnimaGeoScene(MovingCameraScene):
         construction.rebuild(debug=debug, full=True)
         plan, diagnostics = appearance_plan(doc, view['ptUnit'])
         for el_id, entry in plan.items():
-            elem = construction.element(names.by_id[el_id])
-            elem.visible = entry['visible']
+            elem = construction.objectByName(names.by_id[el_id])
+            if isinstance(elem, geo.Element):   # a Var (free number) is not drawn
+                elem.visible = entry['visible']
             for key, value in entry['style'].items():
                 elem.style[key] = value
         self.native_diagnostics = diagnostics

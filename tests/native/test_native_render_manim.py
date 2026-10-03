@@ -289,8 +289,57 @@ def pair_quad():
                    'T, a, b, c, d = Polygon(A, B, C, D)\n')
 
 
+def builder2(doc_id, bounds=BOUNDS):
+    return DocBuilder(doc_id, registry_version='1.2', bounds=bounds)
+
+
+def pair_parallel_perpendicular():
+    b = builder2('parallel_perpendicular')
+    b.free('A', -4, -2).free('B', 3, 1).free('C', -1, 2)
+    b.line('l', 'A', 'B').parallel('p', 'C', 'l').perpendicular('q', 'C', 'l')
+    return b.doc, ('A = Point(-4, -2)\nB = Point(3, 1)\nC = Point(-1, 2)\nl = Line(A, B)\n'
+                   'p = Line(C, l)\nq = OrthogonalLine(C, l)\n')
+
+
+def pair_bisectors():
+    b = builder2('bisectors')
+    b.free('A', -3, -2).free('B', 4, -1).free('C', 0, 3)
+    b.perp_bisector('m', 'A', 'B').angle_bisector('w', 'B', 'A', 'C')
+    return b.doc, ('A = Point(-3, -2)\nB = Point(4, -1)\nC = Point(0, 3)\n'
+                   'm = PerpendicularBisector(A, B)\nw = AngularBisector(B, A, C)\n')
+
+
+def pair_vector():
+    b = builder2('vector')
+    b.free('A', -3, -2).free('B', 2, 2).vector('v', 'A', 'B')
+    return b.doc, 'A = Point(-3, -2)\nB = Point(2, 2)\nv = Vector(A, B)\n'
+
+
+def pair_circle_radius():
+    b = builder2('circle_radius')
+    b.free('O', -2, 0).free('K', 2, 1).number('r', 1.5).circle_radius('c', 'O', 2.5).circle_radius('k', 'K', 'r')
+    return b.doc, ('K = Point(2, 1)\nO = Point(-2, 0)\nc = Circle(O, 2.5)\nr = 1.5\nk = Circle(K, r)\n')
+
+
+def pair_circumcircle():
+    b = builder2('circumcircle')
+    b.free('A', -3, -2).free('B', 3, -1).free('C', 0, 2).circle3('k', 'A', 'B', 'C', center='O')
+    return b.doc, ('A = Point(-3, -2)\nB = Point(3, -1)\nC = Point(0, 2)\nk = Circle(A, B, C)\n'
+                   'O = Center(k)\n')
+
+
+def pair_projection():
+    b = builder2('projection')
+    b.free('A', -4, -1).free('B', 4, 1).free('P', 0, 3)
+    b.line('l', 'A', 'B').projection('H', 'P', 'l').segment('s', 'P', 'H')
+    return b.doc, ('A = Point(-4, -1)\nB = Point(4, 1)\nP = Point(0, 3)\nl = Line(A, B)\n'
+                   'H = ClosestPoint(l, P)\ns = Segment(P, H)\n')
+
+
 PAIRS = [pair_triangle, pair_midpoints, pair_line_ray, pair_circle, pair_line_line, pair_line_circle,
-         pair_circle_circle, pair_other_point, pair_on_paths, pair_quad]
+         pair_circle_circle, pair_other_point, pair_on_paths, pair_quad,
+         pair_parallel_perpendicular, pair_bisectors, pair_vector, pair_circle_radius, pair_circumcircle,
+         pair_projection]
 
 
 @pytest.mark.parametrize('pair', PAIRS, ids=[p.__name__[5:] for p in PAIRS])
@@ -318,3 +367,21 @@ def test_cyrillic_labels(tmp_path):
     for el_id in 'AB':
         box = report['elements'][el_id]['label']['box']
         assert box[2] > box[0] and box[3] > box[1]
+
+
+def test_vector_is_drawn_and_a_number_is_not(tmp_path):
+    b = builder2('l2_report')
+    b.free('A', -3, -2).free('B', 2, 2).vector('v', 'A', 'B').number('r', 2).circle_radius('c', 'A', 'r')
+    b.number('bad', 1, min=2, max=1)
+    report = native.render(b.doc, out=tmp_path / 'l2.svg').report
+    els = report['elements']
+    assert els['v']['visible'] and els['v']['box'] is not None and els['v']['label'] is None
+    assert els['c']['visible'] and els['c']['box'] is not None
+    for el_id in ('r', 'bad'):
+        assert els[el_id]['visible'] is False and els[el_id]['box'] is None and els[el_id]['label'] is None
+    assert els['bad']['state'] == 'undefined'
+    x0, y0 = to_px(report, -3, -2)
+    x1, y1 = to_px(report, 2, 2)
+    box = els['v']['box']
+    assert box[0] <= min(x0, x1) + 1 and box[2] >= max(x0, x1) - 1
+    assert box[1] <= min(y0, y1) + 1 and box[3] >= max(y0, y1) - 1

@@ -261,21 +261,28 @@ def _px_box(box, export) -> list:
 
 
 def _leaf_boxes(mobj, *, labels: bool):
-    """Bounding box (scene units) of the leaves of ``mobj`` inside (``labels``)
-    or outside a label; a label's leader line is not part of it."""
+    """Bounding box (scene units) of the points of ``mobj`` inside (``labels``)
+    or outside a label; a label's leader line is not part of it. A node's own
+    points outside a label count as well as its children's (an arrow's shaft
+    carries its tip); inside a label only the leaves count."""
     xs, ys = [], []
+
+    def add(points):
+        xs.extend(float(v) for v in points[:, 0])
+        ys.extend(float(v) for v in points[:, 1])
 
     def visit(node, inside):
         inside = inside or bool(getattr(node, '_animageo_is_label', False))
         subs = getattr(node, 'submobjects', None) or ()
+        points = getattr(node, 'points', None)
+        has_points = points is not None and len(points) > 0
         if subs:
             for sub in subs:
                 visit(sub, inside)
+            if has_points and not labels and not inside:
+                add(points)
             return
-        if inside != labels or (labels and type(node).__name__ == 'Line'):
-            return
-        points = getattr(node, 'points', None)
-        if points is None or len(points) == 0:
+        if inside != labels or (labels and type(node).__name__ == 'Line') or not has_points:
             return
         xs.extend((float(node.get_left()[0]), float(node.get_right()[0])))
         ys.extend((float(node.get_bottom()[1]), float(node.get_top()[1])))

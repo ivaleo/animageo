@@ -15,6 +15,13 @@ broken operations (a cycle, an op not in the registry, argument errors, a
 free op without a valid input) get no command: their elements, created last
 in ID order, stay ``None``. An undefined result is ``None`` as well.
 
+A free number (``number.free``) is a level-0 ``Var`` holding the kernel
+value (clamped to ``min``/``max``; ``None`` when undefined). Values convert
+by type: a vector is a classic ``Vector``; a number is a ``float``
+(``scalar``), a ``Measure`` of dimension 1 or 2 (``length``, ``area``), an
+``AngleSize`` (``angle``) or a ``Measure`` of dimension 0 (``count``). Params
+and number literals are constants of the command, not classic inputs.
+
 This module imports ``animageo.geo`` (and numpy) inside its functions only,
 so ``import animageo.native`` stays free of the classic code; ``animageo.geo``
 itself does not need manim.
@@ -71,7 +78,8 @@ def build_names(element_ids) -> Names:
 # ── value conversion ─────────────────────────────────────────────────────
 
 def _fingerprint(obj) -> tuple:
-    keys = ('coords', 'normal', 'offset', 'start', 'endpoints', 'center', 'radius', 'vertices')
+    keys = ('coords', 'normal', 'offset', 'start', 'endpoints', 'center', 'radius', 'vertices', 'value',
+            'dimension')
     out = []
     for key in keys:
         value = getattr(obj, key, None)
@@ -90,8 +98,12 @@ def to_classic(type_: str, value):
     """
     if value is None:
         return None
-    from ...geo.lib_elements import Circle, Line, Point, Polygon, Ray, Segment
+    from ...geo.lib_elements import Circle, Line, Point, Polygon, Ray, Segment, Vector
+    from ...geo.lib_vars import AngleSize, Measure
     import numpy as np
+
+    if type_ == 'number' and value['unit'] == 'scalar':
+        return float(value['value'])      # the data of a classic Var; a float carries no cache
 
     if type_ == 'point':
         obj = Point([value['x'], value['y']])
@@ -107,10 +119,22 @@ def to_classic(type_: str, value):
         obj = Circle(np.array(value['c'], dtype=float), value['r'])
     elif type_ == 'polygon':
         obj = Polygon(value['vertices'])
+    elif type_ == 'vector':
+        obj = Vector(np.array([value['a'], value['b']], dtype=float))
+    elif type_ == 'number':
+        unit = value['unit']
+        if unit == 'angle':
+            obj = AngleSize(float(value['value']))
+        else:
+            obj = Measure(float(value['value']), _MEASURE_DIMENSION.get(unit, 0))
     else:
         raise ValueError(f'no classic type for {type_!r}')
     obj._native = (_fingerprint(obj), value)
     return obj
+
+
+_MEASURE_DIMENSION = {'length': 1, 'area': 2}     # other units (count) as a dimensionless Measure
+_DIMENSION_UNIT = {0: 'scalar', 1: 'length', 2: 'area'}
 
 
 def _shoelace(pts) -> float:
@@ -146,6 +170,18 @@ def from_classic(type_: str, obj):
     if type_ == 'polygon':
         pts = [(float(x), float(y)) for x, y in obj.vertices]
         return {'vertices': [[x, y] for x, y in pts], 'area': _shoelace(pts)}
+    if type_ == 'vector':
+        (ax, ay), (bx, by) = (map(float, p) for p in obj.endpoints)
+        return {'a': [ax, ay], 'b': [bx, by], 'length': math.hypot(bx - ax, by - ay)}
+    if type_ == 'number':
+        from ...geo.lib_vars import AngleSize, Measure
+        if isinstance(obj, AngleSize):
+            return {'value': float(obj.value), 'unit': 'angle'}
+        if isinstance(obj, Measure):
+            return {'value': float(obj.value), 'unit': _DIMENSION_UNIT.get(obj.dimension, 'scalar')}
+        if isinstance(obj, (int, float)) and not isinstance(obj, bool):
+            return {'value': float(obj), 'unit': 'scalar'}
+        raise ValueError(f'no kernel number for {type(obj).__name__}')
     raise ValueError(f'no kernel type for {type_!r}')
 
 
@@ -245,6 +281,7 @@ def build_construction(doc, *, inputs=None, seed=None):
     """
     from ...geo.construction import Construction
     from ...geo.lib_elements import Element, Point
+    from ...geo.lib_vars import Var
     from ..document import as_document, bound_producer, cyclic_operations, iter_refs, op_dependencies
     from .evaluate import check_inputs
 
@@ -301,6 +338,15 @@ def build_construction(doc, *, inputs=None, seed=None):
                 continue
             if free['kind'] == 'point':
                 construction.add(Element(names.by_id[outs[0]], Point(value['value'])))
+                created.add(outs[0])
+                continue
+            if free['kind'] == 'number':     # a level-0 Var with the kernel value (clamped), None if undefined
+                result = IMPLEMENTATIONS[op['op']](dict(resolved.params), OpContext(tol, input=value))
+                number = result.get(elements[outs[0]]['producer']['slot'])
+                if isinstance(number, Detailed):
+                    number = number.value
+                defined = number is not None and not isinstance(number, Undefined) and is_finite_value(number)
+                construction.add(Var(names.by_id[outs[0]], to_classic('number', number) if defined else None))
                 created.add(outs[0])
                 continue
         layout = [(slot, is_list, [elements[r]['type'] for r in ids]) for slot, is_list, ids in resolved.refs]

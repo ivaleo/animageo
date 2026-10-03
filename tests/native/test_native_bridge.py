@@ -22,7 +22,7 @@ def values_of(construction, names, doc):
     doc = native.load(doc, strict=False)
     out = {}
     for el_id, el in doc.elements.items():
-        data = construction.element(names.by_id[el_id]).data
+        data = construction.objectByName(names.by_id[el_id]).data
         out[el_id] = None if data is None else bridge.from_classic(el['type'], data)
     return out
 
@@ -169,3 +169,64 @@ def test_elements_follow_the_operation_order():
     order = [names.by_name[e.name] for e in construction.elements if e.name in names.by_name]
     # Kahn's order of the operations, ties by operation ID; outputs by slot
     assert order == ['A', 'O', 'R', 'c', 'P', 'l', 'X1', 'X2', 's', 'Q', 'M']
+
+
+# ── registry 1.2 ─────────────────────────────────────────────────────────
+
+def l2_doc():
+    b = DocBuilder('bridge_l2', registry_version='1.2')
+    b.free('A', 0, 0).free('B', 6, 0).free('C', 1, 4).number('r', 2.5, min=0.5, max=4)
+    b.segment('s', 'B', 'C').projection('H', 'A', 's').parallel('p', 'A', 's').perpendicular('q', 'C', 's')
+    b.perp_bisector('m', 'A', 'B').angle_bisector('w', 'B', 'A', 'C').vector('v', 'A', 'C')
+    b.circle_radius('cr', 'H', 'r').circle_radius('c1', 'B', 1.5).circle3('cc', 'A', 'B', 'C', center='O')
+    b.on_path('P', 'm', 1.25).line_circle('X1', 'X2', 'w', 'cc')
+    return b.doc
+
+
+@pytest.mark.parametrize('inputs', [None, {'r': {'kind': 'number', 'value': 9}},
+                                    {'C': point_input(3, 0)}, {'r': {'kind': 'number', 'value': 0.1}}])
+def test_identity_l2(inputs):
+    doc = l2_doc()
+    _c, _n, got = bridge_values(doc, inputs)
+    assert native.canonical_json(got) == native.canonical_json(evaluated_values(doc, inputs))
+
+
+def test_a_free_number_is_a_var_with_the_kernel_value():
+    from animageo.geo.lib_vars import Var
+    construction, names, got = bridge_values(l2_doc(), {'r': {'kind': 'number', 'value': 9}})
+    var = construction.var(names.by_id['r'])
+    assert isinstance(var, Var) and var.data == 4.0               # clamped to max
+    assert got['r'] == {'value': 4.0, 'unit': 'scalar'}
+    assert got['cr']['r'] == 4.0
+    b = DocBuilder('bad', registry_version='1.2').free('O', 0, 0).number('r', 2, min=3, max=1)
+    b.circle_radius('c', 'O', 'r')
+    construction, names, got = bridge_values(b.doc)
+    assert construction.var(names.by_id['r']).data is None
+    assert got['r'] is None and got['c'] is None
+
+
+def test_l2_value_round_trip_without_the_cache():
+    values = {
+        'vector': {'a': [1.0, 2.0], 'b': [4.0, 6.0], 'length': 5.0},
+        'number': {'value': 2.5, 'unit': 'length'},
+    }
+    for type_, value in values.items():
+        obj = bridge.to_classic(type_, value)
+        assert bridge.from_classic(type_, obj) is value
+        del obj._native
+        assert native.canonical_json(bridge.from_classic(type_, obj)) == native.canonical_json(value), type_
+
+
+@pytest.mark.parametrize('unit, cls', [('scalar', float), ('length', 'Measure'), ('area', 'Measure'),
+                                       ('angle', 'AngleSize'), ('count', 'Measure')])
+def test_numbers_by_unit(unit, cls):
+    from animageo.geo import lib_vars
+    value = {'value': 3.0, 'unit': unit}
+    obj = bridge.to_classic('number', value)
+    assert isinstance(obj, cls if isinstance(cls, type) else getattr(lib_vars, cls))
+    assert bridge.from_classic('number', obj) == value
+    if unit != 'scalar':
+        del obj._native
+        expected = 'scalar' if unit == 'count' else unit
+        assert bridge.from_classic('number', obj) == {'value': 3.0, 'unit': expected}
+    assert bridge.from_classic('number', 2) == {'value': 2.0, 'unit': 'scalar'}
