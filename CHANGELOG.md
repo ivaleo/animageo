@@ -7,6 +7,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.1a2] - 2026-10-04
+
+### Added
+
+- Registry 1.3 of `animageo.native`: the angle by three points
+  (`angle.by_points`, counter-clockwise from the first side as GeoGebra's
+  `Angle(A, B, C)`; the value type `angle {vertex, a0, a1, size}` in
+  radians), the incircle of a triangle with its centre and the three touch
+  points (`circle.incircle`), and marks: equal segments and equal angles
+  with one to three ticks or arcs (`mark.equal_segments`,
+  `mark.equal_angles`, param `count`) and a right angle
+  (`mark.right_angle`); the value type `mark {kind, count}`. A mark is
+  defined whenever its arguments are; whether the claim holds is its check,
+  so a failed check is a warning and the mark stays drawn.
+- The bridge and `native.render` draw an angle as a classic angle (the arc
+  of a DSL `Angle`), a right-angle mark with the right-angle marker and an
+  equality mark as ticks or arcs on its targets (`tick_count`; an explicit
+  override wins, and of several marks on one target the first in ID order).
+  The render report box of an equality mark is the union of its drawn
+  targets.
+- `native.layout_labels(doc, …)` gives the label boxes of a document where
+  `native.render` would draw them, without manim or LaTeX: the anchor, the
+  offset in pixels and world units, the box, the leader, the labels and
+  points it overlaps, whether the solver placed it and whether it is
+  pinned. `place=True` runs the placement solver; a suggestion is kept by
+  pinning `appearance.label.offsetWorld` and `overrides.label_anchor`.
+  Labels are measured by setting their TeX with the metrics of the label
+  template's fonts (`animageo/native/labels/metrics.v1.json`, rebuilt by
+  `scripts/native/build_label_metrics.py`): on a corpus of 2000 labels the
+  boxes equal manim's `Tex` within 1 %. `backend="tex"` measures with manim
+  instead.
+- The render report lists the labels that enter the marker of a drawn
+  point, a label over its own point included (`pointOverlaps`,
+  `[labelId, pointId]`); the format stays `animageo-render-report/v1`.
+- Classic pieces usable without a scene: `label_placement.LayoutInput` (the
+  placement solver reads it in place of an `AnimaGeoScene`),
+  `label_placement.label_spot`, `label_size` and `ANCHOR_EDGES`;
+  `export_layout.static_export_dict` (the export dict `applyStyle`
+  computes) with `merge_reference`, `reference_size_from_config`,
+  `source_bounds_px_from_config`, `source_view_from_bounds_px` and
+  `rendered_view_from_bounds`; `geo.DRAW_ORDER` and `geo.is_drawn`;
+  `style.config.style_path_for_geostyle`. `correctedLabel` moved to
+  `animageo.labels` and is still importable from `animageo.ui`.
+- 8 new parity scenes (49 in all) for angles, marks and the incircle.
+
+### Changed
+
+- `animageo.native` evaluates documents of registry 1.3; documents of
+  registries 1.0–1.2 give the same results, the signature hashes of their
+  operations did not change and their expectations changed only in
+  `registry`. The fixture generator refuses cases near the jumps of an
+  angle's direction and size between `0` and `2π` (the decisions
+  `angle_wrap` and `zero_angle`, not noise decisions).
+- Point labels of a construction document clear their marker: a point
+  label that is not pinned and whose offset no style layer sets keeps
+  `size_px / 2 + point_gap_px` decoration pixels between the centre of the
+  point and the label box. Before, the anchor corner of the label sat on
+  the point and the label covered it. The rule applies to
+  `AnimaGeoScene.loadDocument` only (`native.render`, `python -m animageo
+  doc.json`); `.ggb` files and DSL scenes keep the classic offset.
+- The labels of elements a document does not draw (an undefined element,
+  an equality mark, a number) are hidden, so automatic placement no longer
+  avoids labels that are never drawn.
+
 ## [1.8.1a1] - 2026-10-03
 
 ### Added
@@ -1857,7 +1921,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.1a1...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.1a2...HEAD
+[1.8.1a2]: https://github.com/ivaleo/animageo/compare/v1.8.1a1...v1.8.1a2
 [1.8.1a1]: https://github.com/ivaleo/animageo/compare/v1.8.0a2...v1.8.1a1
 [1.8.0a2]: https://github.com/ivaleo/animageo/compare/v1.8.0a1...v1.8.0a2
 [1.8.0a1]: https://github.com/ivaleo/animageo/compare/v1.7.13...v1.8.0a1
