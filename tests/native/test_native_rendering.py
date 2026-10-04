@@ -137,6 +137,23 @@ def test_label_overlaps():
     assert rendering.label_overlaps(boxes, share=0.04) == [['A', 'B'], ['A', 'C'], ['B', 'C']]
 
 
+def test_undrawn_elements_have_no_label():
+    from animageo.native.kernel.bridge import build_construction
+    b = DocBuilder('undrawn', registry_version='1.3', bounds=(-6, -4, 6, 4))
+    b.free('A', 0, 0).free('B', 3, 0).free('C', 0, 3)
+    b.segment('a', 'A', 'B').segment('c', 'A', 'C').equal_segments('e', 'a', 'c')
+    b.circle('z', 'A', 'A').number('n', 2)
+    b.doc['appearance'] = {el_id: {'label': {'mode': 'name'}} for el_id in ('a', 'e', 'z', 'n')}
+    construction, names = build_construction(b.doc)
+    construction.rebuild(full=True)
+    plan, _ = rendering.appearance_plan(b.doc, 40.0)
+    assert all(plan[el_id]['style']['label_visible'] for el_id in ('a', 'e', 'z', 'n'))
+    rendering.apply_appearance(construction, names, plan)
+    shown = {el_id: construction.objectByName(names.by_id[el_id]).style['label_visible']
+             for el_id in ('A', 'a', 'e', 'z', 'n')}
+    assert shown == {'A': True, 'a': True, 'e': False, 'z': False, 'n': False}
+
+
 class TestArguments:
     @pytest.mark.parametrize('kwargs, error', [
         ({'fmt': 'mp4'}, NotImplementedError),

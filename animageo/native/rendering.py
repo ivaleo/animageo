@@ -51,6 +51,7 @@ __all__ = [
     'RENDER_FORMATS',
     'RenderResult',
     'appearance_plan',
+    'apply_appearance',
     'build_report',
     'label_overlaps',
     'mark_targets',
@@ -222,6 +223,27 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None) -> tuple:
             for target in targets.get(mark_id, ()):
                 plan[target]['style'].setdefault('tick_count', count)
     return plan, diagnostics
+
+
+def apply_appearance(construction, names, plan) -> None:
+    """Write an :func:`appearance_plan` into the classic elements of the
+    bridge (``AnimaGeoScene.loadDocument`` and ``layout_labels``).
+
+    Visibility (of drawn elements, not of a classic ``Var``) and the style
+    keys of each entry. An element the renderer does not draw (no value, an
+    equality mark, a number, a free number's ``Var``; ``geo.is_drawn``) gets
+    ``label_visible = False``: automatic placement would otherwise see a
+    label that is never drawn.
+    """
+    from ..geo import construction as geo
+    for el_id, entry in plan.items():
+        elem = construction.objectByName(names.by_id[el_id])
+        if isinstance(elem, geo.Element):
+            elem.visible = entry['visible']
+        for key, value in entry['style'].items():
+            elem.style[key] = value
+        if not isinstance(elem, geo.Element) or not geo.is_drawn(elem.data):
+            elem.style['label_visible'] = False
 
 
 @dataclass(frozen=True)

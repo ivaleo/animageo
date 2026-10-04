@@ -30,6 +30,24 @@ _CONIC_CONSTRAINTS = {
 
 """Construction state management: elements, variables, commands, dependency tracking."""
 
+# The renderer draws an element only when the type of its data is listed
+# here, group by group in this order (``AnimaGeoScene.addAllGeometry``).
+# Other data — a number, an equality mark of a native document, no value —
+# is not drawn.
+DRAW_ORDER = (
+    (CircleSector, Polygon),
+    (Angle,),
+    (Circle, Arc, Segment, Vector, Line, Ray, LocusCurve, Conic, Function, ImplicitCurve),
+    (Point,),
+    (Text,),
+)
+_DRAWN_TYPES = frozenset(t for group in DRAW_ORDER for t in group)
+
+
+def is_drawn(data) -> bool:
+    """True when the renderer draws an element with this data (exact type)."""
+    return type(data) in _DRAWN_TYPES
+
 
 class UnsupportedCommandError(RuntimeError):
     """Raised in strict mode when a command has no dispatch implementation."""

@@ -254,16 +254,7 @@ class AnimaGeoScene(MovingCameraScene):
             for el in self.geo.elements: el.visible = False
         self.addCoordinateBackground()
 
-        element_types = [
-            [geo.CircleSector, geo.Polygon],
-            [geo.Angle],
-            [geo.Circle, geo.Arc, geo.Segment, geo.Vector, geo.Line, geo.Ray,
-             geo.LocusCurve, geo.Conic, geo.Function, geo.ImplicitCurve],
-            [geo.Point],
-            [geo.Text],
-        ]
-
-        for el_types in element_types:
+        for el_types in geo.DRAW_ORDER:
             for el in self.geo.elements:
                 if type(el.data) in el_types: self.addGeoElement(el)
 
@@ -1069,7 +1060,7 @@ class AnimaGeoScene(MovingCameraScene):
         """
         from .native.document import as_document
         from .native.kernel.bridge import build_construction
-        from .native.rendering import appearance_plan, source_view
+        from .native.rendering import appearance_plan, apply_appearance, source_view
 
         doc = as_document(doc)
         self.resetScene()
@@ -1085,12 +1076,7 @@ class AnimaGeoScene(MovingCameraScene):
         construction.log_unsupported = bool(debug)
         construction.rebuild(debug=debug, full=True)
         plan, diagnostics = appearance_plan(doc, view['ptUnit'], inputs=inputs)
-        for el_id, entry in plan.items():
-            elem = construction.objectByName(names.by_id[el_id])
-            if isinstance(elem, geo.Element):   # a Var (free number) is not drawn
-                elem.visible = entry['visible']
-            for key, value in entry['style'].items():
-                elem.style[key] = value
+        apply_appearance(construction, names, plan)
         self.native_diagnostics = diagnostics
         self.applyStyle(
             style=style,
