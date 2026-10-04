@@ -5,6 +5,7 @@ evaluates them, edits them and produces parity fixtures; with manim
 installed it also renders them (§9). No module of the package imports manim
 or the classic modules (`animageo.animageo`, `animageo.geo`) at import time:
 the bridge and the renderer load the classic code inside their functions.
+Label layout (`native.layout_labels`, §9.7) works without manim.
 The browser kernel of the web app repeats §1–§8 in TypeScript; the
 per-operation formulas are in `docs/native/ops/<op>.md`. When the two kernels
 disagree, the library is right and the fixtures it generates are the
@@ -23,7 +24,7 @@ Master schema: `animageo/native/schema/construction.v1.schema.json`
 {
   "format": "animageo-construction/v1",          required
   "documentId": ID,                              required
-  "operationRegistryVersion": "1.2",             required, "<major>.<minor>"
+  "operationRegistryVersion": "1.3",             required, "<major>.<minor>"
   "operations": {ID: Operation},                 required
   "elements":   {ID: Element},                   required
   "inputs":     {ID: Input},
@@ -61,7 +62,7 @@ Input     = {"kind": "point", "value": [x, y]}                         point.fre
   element without a usable value of its kind evaluates to `error/schema`
   (§5.2).
 - The operation `branch` stays `null` (or absent) for every operation of
-  registries 1.1 and 1.2: the output slot names the solution (§5.4).
+  registries 1.1–1.3: the output slot names the solution (§5.4).
 - `args` holds input slots and params (§4) alike. A `number` argument
   (literal) is allowed in an input slot of type `number` (a radius) and is
   the only kind a param takes.
@@ -124,7 +125,7 @@ The text `JSON.stringify` prints after object keys are sorted:
 table `animageo/native/parity/v1/canonical.json` is a list of
 `{"value", "canonical"}` pairs that both kernels must reproduce.
 
-## 4. Registry `ops/v1` (version 1.2)
+## 4. Registry `ops/v1` (version 1.3)
 
 `animageo/native/ops/v1/<group>.json` holds arrays of records:
 
@@ -158,6 +159,11 @@ table `animageo/native/parity/v1/canonical.json` is a list of
 | `circle.center_radius` | 1.2 | `center: point, radius: number` → `circle` | — |
 | `circle.three_points` | 1.2 | `a, b, c: point` → `circle`, `center: point` | — |
 | `number.free` | 1.2 | free `number`; params `min`, `max`, `step` → `number` | — |
+| `angle.by_points` | 1.3 | `a, vertex, b: point` → `angle` | — |
+| `circle.incircle` | 1.3 | `a, b, c: point` → `circle`, `center`, `touch_a`, `touch_b`, `touch_c: point` | — |
+| `mark.equal_segments` | 1.3 | `segments: segment[] (min 2)`; param `count` → `mark` | — |
+| `mark.equal_angles` | 1.3 | `angles: angle[] (min 2)`; param `count` → `mark` | — |
+| `mark.right_angle` | 1.3 | `a, vertex, b: point` → `mark` | — |
 
 - A slot type may be a family (`_types.json` → `families`):
 
@@ -176,7 +182,8 @@ table `animageo/native/parity/v1/canonical.json` is a list of
   (default null)}], outputs: [{slot, type, repeat (default null)}], free
   (default null), branch: branch.policy or null, orientation, pathParam}))`;
   the hashes of the 1.0 records did not change in 1.1, nor those of the
-  1.0 and 1.1 records in 1.2 (a test pins them);
+  1.0 and 1.1 records in 1.2, nor those of the earlier records in 1.3
+  (a test pins them);
 - params (`type: "number"` only) are op settings written in `args` as
   number literals: `optional` (default `false`) and `default` (a number or
   absent) are outside the hash. An absent optional param reaches the
@@ -192,6 +199,10 @@ Service catalogs:
 
 - `_types.json`: value fields and their kinds (`types`), `families`, path
   frames (`paths`, `frameKinds`, §5.5), `units` and `numberUnits` (§6);
+  since 1.3 `markKinds` (mark kind → the operation that makes it; the
+  registry check refuses a kind whose operation has no `mark` output) and
+  `angles` (the normalisation of a direction, the convex measure and the
+  wrap of a difference of directions, §5);
 - `_reasons.json`: reason → state;
 - `_policies.json`: branch policies (`single`, `line_param_order`,
   `circle_side`, `other_than`, §5.4);
@@ -219,6 +230,20 @@ Record = {"state": "defined", "type", "value", "detail"?}
 | polygon | `{vertices: [[x, y], …], area}` — unsigned area |
 | vector | `{a: [x, y], b: [x, y], length}` — `a` the start, `b` the end; a zero vector is defined |
 | number | `{value, unit}` — `unit` one of `scalar`, `length`, `area`, `angle` (radians), `count` |
+| angle | `{vertex: [x, y], a0, a1, size}` — radians; `a0 ∈ [0, 2π)` the direction of the first side from `+x`, `size ∈ [0, 2π)` counter-clockwise from the first side to the second, `a1 = a0 + size` (not normalised) |
+| mark | `{kind, count}` — `kind` one of `markKinds` (`equal_segments`, `equal_angles`, `right_angle`), `count` an integer `1…3` (`1` for a right angle) |
+
+Angles (`_types.json → angles`): a direction is normalised by `θ =
+atan2(y, x)`, `θ < 0` gives `θ + 2π`, then `θ ≥ 2π` gives `0` and `−0`
+gives `0`; the convex measure is `m(size) = size` when `size ≤ π`, else
+`2π − size`; a difference of directions wraps into `[−π, π)`: `wrap(d) =
+d − 2π·floor((d + π) / 2π)`.
+
+A mark has no geometry of its own: it is the claim that its arguments are
+equal (or that the angle is right), drawn on the arguments (§9.3). It is
+defined whenever its arguments are and its `count` is valid; whether the
+claim holds is its check (§5.3), so a `failed` check is a warning and the
+mark stays defined.
 
 A defined record carries `detail` only for a double root of a two-slot
 intersection: `{"multiplicity": 2}` in both slots (§5.4). Undefined records
@@ -282,7 +307,7 @@ order):
    and a `diagnostics` entry `{code: "internal", operationId, op, message}`.
 
 Every output slot is always computed; the elements bound to the op take
-their slots. An element left without a record (never in 1.1 or 1.2) is `error/schema`.
+their slots. An element left without a record (never in 1.1–1.3) is `error/schema`.
 
 ### 5.3 Checks
 
@@ -291,7 +316,9 @@ whose every element (by `producer.operationId`) is `defined` gets its registry
 checks. A check measures an error `e ≥ 0` (a length) from the inputs and the
 full op result; `e ≤ 1e-9·S` → `passed`, `e ≥ 1e-6·S` → `failed`, otherwise
 (or non-finite `e`) → `inconclusive`. Report key: `"<operationId>:<checkId>"`.
-The formulas are in the op pages.
+The formulas are in the op pages. The check of a mark (`equal`, `right`) is
+the claim it draws: a `failed` status says the drawing no longer matches
+the claim; it does not change the mark's state.
 
 ### 5.4 Branches and slot policies
 
@@ -372,8 +399,11 @@ case's `scale` by the field kind of `_types.json` (`length`, `area`,
 `scalar`); a field of kind `by_unit` (the `value` of a number) takes the
 kind of its unit (`numberUnits`: `scalar → scalar`, `length → length`,
 `area → area`, `angle → scalar`, `count → scalar`); fields the kinds do not
-list (the `unit` of a number) compare exactly; arrays by length and item;
-check statuses exactly; the scale within `1e-9·S`.
+list (the `unit` of a number, the `kind` and `count` of a mark) compare
+exactly; arrays by length and item; check statuses exactly; the scale
+within `1e-9·S`. An angle compares its `vertex` as lengths and `a0`, `a1`,
+`size` as scalars: the generator keeps cases away from the jumps of `a0`
+and `size` between `0` and `2π` (below).
 
 **Near-degenerate inputs are refused.** Every degeneracy decision reports its
 decision value `m`, measured from the exact mathematical boundary, and the
@@ -393,9 +423,12 @@ the threshold. Their values are the rounding noise of an exact construction
 — a tangent built as a tangent, a `known` point that is an intersection of
 the same pair, a straight angle of collinear points — and cannot be made
 binary-exact. A noise value between `tol / 1e3` and `1e3·tol`
-is still refused.
+is still refused. The decisions `angle_wrap` and `zero_angle` of
+`angle.by_points` (registry 1.3) are not noise decisions: the value jumps
+across their boundaries, so a case near them is refused even when it is
+built exactly; only `m = 0` exactly is accepted.
 
-Library set (`animageo/native/parity/v1/`, 41 scenes):
+Library set (`animageo/native/parity/v1/`, 49 scenes):
 
 - registry 1.0: `basic_points`, `segment_line`, `circle`, `intersect_lines`,
   `intersect_segments`, `polygon_triangle`, `polygon_quad`, `upstream_chain`,
@@ -413,7 +446,10 @@ Library set (`animageo/native/parity/v1/`, 41 scenes):
 - registry 1.2: `projection`, `parallel_perpendicular`,
   `perpendicular_bisector`, `angle_bisector`, `vector_points`,
   `circle_center_radius`, `circle_three_points`, `number_free`,
-  `on_path_l2_lines`, `l2a1_chain`.
+  `on_path_l2_lines`, `l2a1_chain`;
+- registry 1.3: `angle_points`, `angle_zero_wrap`, `marks_equal_segments`,
+  `marks_equal_angles`, `marks_right_angle`, `incircle`,
+  `incircle_touch_chain`, `a3_chain` (marks both passed and failed).
 
 At least three cases per op; degenerate cases with binary-exact inputs or a
 noise decision.
@@ -498,7 +534,8 @@ Uniqueness compares `name_key`, where `_{x}` equals `_x`.
 `native.render` draws a document with the classic renderer: the bridge turns
 it into an `animageo.geo.Construction`, `AnimaGeoScene.loadDocument` lays it
 out and styles it exactly as `loadGGB` does a `.ggb`. It needs manim (and
-LaTeX for labels); `source_view` and the appearance mapping do not.
+LaTeX for labels); `source_view`, the appearance mapping and the label
+layout (§9.7) do not.
 
 ### 9.1 Source view
 
@@ -535,6 +572,19 @@ this rectangle.
   dimension 1 or 2 (`length`, `area`), an `AngleSize` (`angle`) or a
   `Measure` of dimension 0 (`count`). Params and number literals are
   constants of the command, not classic inputs.
+- An angle (registry 1.3) is a classic `Angle(vertex, side1, side2)`
+  carrying the kernel `size`; `angle.by_points` gives it the sides
+  `a − vertex` and `b − vertex` (the classic arc radius depends on their
+  lengths, so the arc is that of a DSL `Angle(A, B, C)`), other values unit
+  sides along `a0` and `a1`. A right-angle mark is a classic `Angle` of its
+  three points, drawn with the right-angle marker (§9.3); an equality mark
+  is a `NativeMark(kind, count)` with no geometry — the renderer draws its
+  ticks on the targets. Back to kernel values: a `NativeMark` gives
+  `{kind, count}`, the angle of a right-angle mark `{kind: "right_angle",
+  count: 1}`.
+- The renderer draws the classic types of `animageo.geo.DRAW_ORDER` (by
+  exact type, in that order of layers); a number, an equality mark and an
+  undefined element are not drawn (`geo.is_drawn`).
 - Elements are created in the operation order of `evaluate` (Kahn, ties by
   operation ID; outputs by slot), as a DSL creates them line by line; the
   renderer breaks z-index ties by this order. Elements of structurally
@@ -557,6 +607,39 @@ offsetWorld?}, overrides?}}`. Each element gets:
 - `overrides`: element style keys (stroke, fill, points, labels, ticks,
   arrows, angles, `z_index`, `z_index_fill`; the list is
   `rendering.APPEARANCE_STYLE_KEYS`). Other keys are not applied.
+
+Marks (registry 1.3, `native.appearance_plan`):
+
+- a visible, defined equality mark (`mark.equal_segments`,
+  `mark.equal_angles`) puts `tick_count = count` on its targets — the
+  elements of its list argument, in order (`rendering.mark_targets`). An
+  explicit `overrides.tick_count` of a target wins; of several marks on one
+  target, the first mark in ID order wins. A hidden or undefined mark puts
+  nothing;
+- a visible, defined right-angle mark gets `right_angle_marker = true`
+  unless its `overrides` set it.
+
+An element that is not drawn (§9.2: undefined, a number, an equality mark)
+has no label: it is neither drawn nor seen by automatic placement
+(`rendering.apply_appearance`).
+
+**Point labels clear their marker** (1.8.1a2, documents only). A point
+label that is neither pinned (`offsetWorld`) nor placed by the solver and
+whose offset no layer sets (no `overrides.label_offset_px`, no style
+`overlay` or element offset — only the point's built-in default) hangs off
+its marker: with `e` the edge vector of the label anchor (`BL` = `(−1,
+−1)`, `BC` = `(0, −1)`, `TR` = `(1, 1)`, …; the anchor is the element's
+`label_anchor`, else `rendering.label_anchor` of the given style, else
+`BL` — the built-in style sets none),
+
+    label_offset_px = −e / |e| · (size_px / 2 + point_gap_px) · ptUnit_ggb / ptUnit_style
+
+so the label box keeps `size_px / 2 + point_gap_px` decoration pixels
+(`point_gap_px` of `overlay.label_placement`, default `3`) between its
+nearest point and the centre of the point. `MC` (the box centred on the
+point) is left as it is. A `.ggb` and a DSL scene keep the classic offset
+(`[0.5, 0]` px from the anchor corner): the rule is switched on by
+`AnimaGeoScene.loadDocument` only (`scene.label_point_clearance`).
 
 Problems are reported, not raised, in `report.diagnostics`:
 `{code: "unknown_element", elementId}`, `{code: "bad_label_mode",
@@ -594,7 +677,7 @@ the render in a scratch directory.
 ```text
 {"format": "animageo-render-report/v1",
  "documentId": "…",
- "kernel": {"library": "1.8.1a1", "registry": "1.2"},
+ "kernel": {"library": "1.8.1a2", "registry": "1.3"},
  "fmt": "svg",
  "canvas": {"width": W, "height": H, "unit": u, "origin": [ox, oy]},
  "elements": {"<elementId>": {"state": "defined" | "undefined" | "unsupported" | "error",
@@ -603,6 +686,7 @@ the render in a scratch directory.
                               "label": {"box": [x0, y0, x1, y1], "anchor": [x, y] | null,
                                         "text": "$A$"} | null}},
  "overlaps": [["<elementId>", "<elementId>"], …],
+ "pointOverlaps": [["<labelId>", "<pointId>"], …],
  "diagnostics": [{"code": …, "elementId": …, …}]}
 ```
 
@@ -623,9 +707,19 @@ the render in a scratch directory.
   label (without its leader line); `label.anchor` is the point the label is
   attached to (the classic label attach spot, in px); `label.text` is the
   label source text (LaTeX for names).
+- An equality mark has no drawing of its own: its `box` is the union of
+  the boxes of its drawn targets (`null` when none is drawn, or the mark
+  is hidden or undefined) and its `label` is `null`. A right-angle mark is
+  drawn as an angle with the marker and reports its own box.
 - `overlaps` lists the label pairs whose box intersection is at least
   `0.15` of the smaller box's area, each pair sorted, the list sorted, all
   pairs (no cap).
+- `pointOverlaps` (1.8.1a2) lists the label boxes that enter the marker of
+  a drawn point, its own point included: `[labelId, pointId]`, the list
+  sorted. The marker is the circle inscribed in the point's `box` (centre
+  `c`, radius `r`); a box enters it when the squared distance from `c` to
+  the box is less than `r²`. A key added to the format: readers of
+  `overlaps` are not affected.
 - `diagnostics` are those of §9.3.
 
 ### 9.6 Command line
@@ -644,6 +738,85 @@ extension. `--style-from-document` uses `styleBinding.configSnapshot` as is
 cannot be combined with `--style`. `--keyframes` and video formats are
 refused, `--dpi` is ignored. Exit codes: `0` written, `2` a missing file, a
 document that does not load, an unusable flag or a render error.
+
+### 9.7 Label layout without manim (`native.layout_labels`)
+
+```text
+layout_labels(doc, ev=None, *, inputs=None, style_config=None, export_layout=None,
+              backend="metrics", place=None) -> {elementId: Entry}
+Entry = {"text": "$A$", "anchor": "BL", "point": [x, y],
+         "offsetPx": [dx, dy], "offsetWorld": [wx, wy],
+         "box": [x0, y0, x1, y1], "leader": [[x, y], [x, y]] | null,
+         "overlaps": [elementId, …], "pointOverlaps": [elementId, …],
+         "placed": bool, "locked": bool}
+```
+
+The labels of a document where `native.render` would draw them, for a
+readability check or a placement suggestion, without manim and LaTeX. The
+pipeline is that of the render up to the drawing: the bridge (§9.2), the
+appearance (§9.3, point labels clear of their markers included), the style
+and the export layout give the output canvas, and the classic placement
+solver (`label_placement.compute_label_layout`) runs on a
+`label_placement.LayoutInput` instead of a scene.
+
+- `style_config`, `export_layout` and `inputs` are those of `native.render`
+  (§9.4) with the same errors (`ValueError`); `ev` is an `Evaluated` of the
+  same inputs, computed when `null`.
+- `backend`: `metrics` measures a label by setting its TeX with the metrics
+  of the template's fonts (below); `tex` measures it with manim's `Tex`, as
+  the renderer does (`RuntimeError` without manim); another value is a
+  `ValueError`.
+- `place`: `null` follows the style (`overlay.label_placement.enabled`,
+  off in the built-in style: labels stay at their anchor and offset);
+  `true` places every label that is not pinned; `false` places none.
+- One entry per drawn element with a shown label (a hidden, undefined or
+  undrawn element has none), keys sorted. Pixels of the output as in the
+  render report (§9.5: y down, 3 decimals). `point` is the spot the label
+  hangs from (the point; for an angle the spot on its bisector); `anchor`
+  is the label anchor name (`TL` … `BR`, `MC`) in effect; `offsetPx` is the
+  offset of the anchor corner from `point` in output px (y down),
+  `offsetWorld` the same in world units (y up, 9 decimals); `box` is the
+  label box; `leader` the connector of a label the solver displaced
+  (`overlay.label_placement.label_overflow = "leader"`, off by default;
+  `null` otherwise); `placed` says the solver placed it; `locked` that it
+  is pinned.
+- `overlaps`: the other labels whose box covers at least `0.15` of the
+  smaller box; `pointOverlaps`: the drawn points whose marker the box
+  enters (§9.5), its own point included. Both sorted; they are the
+  report's `overlaps` and `pointOverlaps` read per label.
+- Nothing is written into the document. To keep a suggestion, the caller
+  pins it: `appearance.<id>.label.offsetWorld = offsetWorld` and
+  `appearance.<id>.overrides.label_anchor = anchor`; `native.render` then
+  draws the label at `box` (tested within `0.01` px) and `layout_labels`
+  reports it `locked`.
+- `export_layout.content.source = "rendered_bounds"`: the renderer crops to
+  the measured bounds of its drawing; here the crop is computed from the
+  geometry (point markers, segment and arrow ends, lines and rays clipped
+  to the frame unless `infinite_policy` is `ignore`, circles, polygons,
+  angle arcs) and the label boxes (unless `label_bounds = "exclude"`), in
+  the same two passes as the renderer when placement is on. The library
+  set of scenes gives the boxes of the render within `0.01` px; a drawing
+  whose stroke widths decide the crop may differ by a stroke width.
+
+**Label metrics.** `animageo/native/labels/metrics.v1.json`
+(`animageo-label-metrics/v1`) holds, for every font the label template
+(`ui.RusTex`) uses — math italic, roman, symbols and AMS symbols in text,
+script and scriptscript sizes, the T2A text font — the TFM metrics of each
+character (width, height, depth, italic correction, ligatures and kerns,
+font parameters) and the ink box of its outline, a few composite symbols
+(`\angle`, `\triangle`, `\neq`, …) measured whole, and the scale from TeX
+points to manim units. `labels/tex.py` sets a label with them by the rules
+of TeX (Appendix G of the TeXbook for scripts) and returns the ink box,
+which is what manim measures. It covers text mode with Latin, digits,
+Cyrillic and punctuation, and math mode with letters, digits, operators
+and relations with TeX's spacing, Greek, the symbols of the template's
+fonts, groups, sub- and superscripts, primes, `\text`, `\mbox`,
+`\mathrm` and math spaces. Anything else (`\frac`, `\sqrt`, accents,
+unknown commands) is estimated as the renderer estimates a label when
+LaTeX fails. On a seeded corpus of 2000 labels
+(`tests/native/label_corpus.py`) the boxes equal manim's within 1 %.
+`scripts/native/build_label_metrics.py` rebuilds the file from the TeX
+installation (manim, `latex`, `dvisvgm`, `kpsewhich`); `--check` compares.
 
 ## 10. Floating point and determinism
 
