@@ -1,12 +1,12 @@
 {
   "format": "animageo-parity/v1",
-  "id": "angle_bisector",
+  "id": "angle_zero_wrap",
   "registry": "1.3",
   "generatedBy": "animageo 1.8.1a1",
   "document": {
     "format": "animageo-construction/v1",
-    "documentId": "angle_bisector",
-    "operationRegistryVersion": "1.2",
+    "documentId": "angle_zero_wrap",
+    "operationRegistryVersion": "1.3",
     "operations": {
       "op_A": {
         "id": "op_A",
@@ -41,9 +41,9 @@
           }
         ]
       },
-      "op_w": {
-        "id": "op_w",
-        "op": "line.angle_bisector",
+      "op_g": {
+        "id": "op_g",
+        "op": "angle.by_points",
         "args": {
           "a": {
             "kind": "ref",
@@ -60,8 +60,32 @@
         },
         "outputs": [
           {
-            "slot": "line",
-            "elementId": "w"
+            "slot": "angle",
+            "elementId": "g"
+          }
+        ]
+      },
+      "op_h": {
+        "id": "op_h",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "h"
           }
         ]
       }
@@ -94,13 +118,22 @@
           "slot": "point"
         }
       },
-      "w": {
-        "id": "w",
-        "type": "line",
-        "displayName": "w",
+      "g": {
+        "id": "g",
+        "type": "angle",
+        "displayName": "g",
         "producer": {
-          "operationId": "op_w",
-          "slot": "line"
+          "operationId": "op_g",
+          "slot": "angle"
+        }
+      },
+      "h": {
+        "id": "h",
+        "type": "angle",
+        "displayName": "h",
+        "producer": {
+          "operationId": "op_h",
+          "slot": "angle"
         }
       }
     },
@@ -108,8 +141,8 @@
       "A": {
         "kind": "point",
         "value": [
-          4,
-          1
+          2,
+          0
         ]
       },
       "V": {
@@ -122,8 +155,8 @@
       "C": {
         "kind": "point",
         "value": [
-          1,
-          4
+          5,
+          0
         ]
       }
     },
@@ -138,23 +171,23 @@
   },
   "cases": [
     {
-      "name": "acute",
+      "name": "zero_on_x",
       "scale": 20.0,
       "expect": {
         "A": {
           "state": "defined",
           "type": "point",
           "value": {
-            "x": 4.0,
-            "y": 1.0
+            "x": 2.0,
+            "y": 0.0
           }
         },
         "C": {
           "state": "defined",
           "type": "point",
           "value": {
-            "x": 1.0,
-            "y": 4.0
+            "x": 5.0,
+            "y": 0.0
           }
         },
         "V": {
@@ -165,41 +198,122 @@
             "y": 0.0
           }
         },
-        "w": {
+        "g": {
           "state": "defined",
-          "type": "line",
+          "type": "angle",
           "value": {
-            "p": [
+            "vertex": [
               0.0,
               0.0
             ],
-            "dir": [
-              0.7071067811865476,
-              0.7071067811865476
-            ]
+            "a0": 0.0,
+            "a1": 0.0,
+            "size": 0.0
+          }
+        },
+        "h": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 0.0,
+            "a1": 0.0,
+            "size": 0.0
           }
         }
       },
       "checks": {
-        "op_w:through_vertex": "passed",
-        "op_w:equal_angles": "passed"
+        "op_g:sides": "passed",
+        "op_h:sides": "passed"
       }
     },
     {
-      "name": "right",
+      "name": "a0_zero_reflex",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            -3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -3.0
+          }
+        },
+        "V": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "g": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 0.0,
+            "a1": 4.71238898038469,
+            "size": 4.71238898038469
+          }
+        },
+        "h": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 4.71238898038469,
+            "a1": 6.283185307179586,
+            "size": 1.5707963267948966
+          }
+        }
+      },
+      "checks": {
+        "op_g:sides": "passed",
+        "op_h:sides": "passed"
+      }
+    },
+    {
+      "name": "zero_up",
       "inputs": {
         "A": {
           "kind": "point",
           "value": [
-            4,
-            0
+            0,
+            2
           ]
         },
         "C": {
           "kind": "point",
           "value": [
             0,
-            3
+            7
           ]
         }
       },
@@ -209,8 +323,8 @@
           "state": "defined",
           "type": "point",
           "value": {
-            "x": 4.0,
-            "y": 0.0
+            "x": 0.0,
+            "y": 2.0
           }
         },
         "C": {
@@ -218,7 +332,7 @@
           "type": "point",
           "value": {
             "x": 0.0,
-            "y": 3.0
+            "y": 7.0
           }
         },
         "V": {
@@ -229,119 +343,59 @@
             "y": 0.0
           }
         },
-        "w": {
+        "g": {
           "state": "defined",
-          "type": "line",
+          "type": "angle",
           "value": {
-            "p": [
+            "vertex": [
               0.0,
               0.0
             ],
-            "dir": [
-              0.7071067811865475,
-              0.7071067811865475
-            ]
+            "a0": 1.5707963267948966,
+            "a1": 1.5707963267948966,
+            "size": 0.0
+          }
+        },
+        "h": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 1.5707963267948966,
+            "a1": 1.5707963267948966,
+            "size": 0.0
           }
         }
       },
       "checks": {
-        "op_w:through_vertex": "passed",
-        "op_w:equal_angles": "passed"
+        "op_g:sides": "passed",
+        "op_h:sides": "passed"
       }
     },
     {
-      "name": "obtuse",
+      "name": "zero_minus_x",
       "inputs": {
         "A": {
-          "kind": "point",
-          "value": [
-            4,
-            0
-          ]
-        },
-        "C": {
-          "kind": "point",
-          "value": [
-            -3,
-            1
-          ]
-        }
-      },
-      "scale": 20.0,
-      "expect": {
-        "A": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 4.0,
-            "y": 0.0
-          }
-        },
-        "C": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": -3.0,
-            "y": 1.0
-          }
-        },
-        "V": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 0.0,
-            "y": 0.0
-          }
-        },
-        "w": {
-          "state": "defined",
-          "type": "line",
-          "value": {
-            "p": [
-              0.0,
-              0.0
-            ],
-            "dir": [
-              0.16018224300696723,
-              0.9870874576374967
-            ]
-          }
-        }
-      },
-      "checks": {
-        "op_w:through_vertex": "passed",
-        "op_w:equal_angles": "passed"
-      }
-    },
-    {
-      "name": "straight",
-      "inputs": {
-        "A": {
-          "kind": "point",
-          "value": [
-            4,
-            0
-          ]
-        },
-        "C": {
           "kind": "point",
           "value": [
             -2,
             0
           ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            -5,
+            0
+          ]
         }
       },
       "scale": 20.0,
       "expect": {
         "A": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 4.0,
-            "y": 0.0
-          }
-        },
-        "C": {
           "state": "defined",
           "type": "point",
           "value": {
@@ -349,68 +403,12 @@
             "y": 0.0
           }
         },
-        "V": {
+        "C": {
           "state": "defined",
           "type": "point",
           "value": {
-            "x": 0.0,
+            "x": -5.0,
             "y": 0.0
-          }
-        },
-        "w": {
-          "state": "defined",
-          "type": "line",
-          "value": {
-            "p": [
-              0.0,
-              0.0
-            ],
-            "dir": [
-              0.0,
-              1.0
-            ]
-          }
-        }
-      },
-      "checks": {
-        "op_w:through_vertex": "passed",
-        "op_w:equal_angles": "passed"
-      }
-    },
-    {
-      "name": "clockwise",
-      "inputs": {
-        "A": {
-          "kind": "point",
-          "value": [
-            1,
-            4
-          ]
-        },
-        "C": {
-          "kind": "point",
-          "value": [
-            4,
-            1
-          ]
-        }
-      },
-      "scale": 20.0,
-      "expect": {
-        "A": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 1.0,
-            "y": 4.0
-          }
-        },
-        "C": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 4.0,
-            "y": 1.0
           }
         },
         "V": {
@@ -421,98 +419,53 @@
             "y": 0.0
           }
         },
-        "w": {
+        "g": {
           "state": "defined",
-          "type": "line",
+          "type": "angle",
           "value": {
-            "p": [
+            "vertex": [
               0.0,
               0.0
             ],
-            "dir": [
-              0.7071067811865476,
-              0.7071067811865476
-            ]
+            "a0": 3.141592653589793,
+            "a1": 3.141592653589793,
+            "size": 0.0
+          }
+        },
+        "h": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 3.141592653589793,
+            "a1": 3.141592653589793,
+            "size": 0.0
           }
         }
       },
       "checks": {
-        "op_w:through_vertex": "passed",
-        "op_w:equal_angles": "passed"
+        "op_g:sides": "passed",
+        "op_h:sides": "passed"
       }
     },
     {
-      "name": "obtuse_clockwise",
-      "inputs": {
-        "A": {
-          "kind": "point",
-          "value": [
-            4,
-            0
-          ]
-        },
-        "C": {
-          "kind": "point",
-          "value": [
-            -3,
-            -1
-          ]
-        }
-      },
-      "scale": 20.0,
-      "expect": {
-        "A": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 4.0,
-            "y": 0.0
-          }
-        },
-        "C": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": -3.0,
-            "y": -1.0
-          }
-        },
-        "V": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 0.0,
-            "y": 0.0
-          }
-        },
-        "w": {
-          "state": "defined",
-          "type": "line",
-          "value": {
-            "p": [
-              0.0,
-              0.0
-            ],
-            "dir": [
-              0.16018224300696723,
-              -0.9870874576374967
-            ]
-          }
-        }
-      },
-      "checks": {
-        "op_w:through_vertex": "passed",
-        "op_w:equal_angles": "passed"
-      }
-    },
-    {
-      "name": "vertex_on_side",
+      "name": "full_turn_down",
       "inputs": {
         "A": {
           "kind": "point",
           "value": [
             0,
-            0
+            -2
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            -6
           ]
         }
       },
@@ -523,15 +476,15 @@
           "type": "point",
           "value": {
             "x": 0.0,
-            "y": 0.0
+            "y": -2.0
           }
         },
         "C": {
           "state": "defined",
           "type": "point",
           "value": {
-            "x": 1.0,
-            "y": 4.0
+            "x": 0.0,
+            "y": -6.0
           }
         },
         "V": {
@@ -542,13 +495,37 @@
             "y": 0.0
           }
         },
-        "w": {
-          "state": "undefined",
-          "type": "line",
-          "reason": "coincident_points"
+        "g": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 4.71238898038469,
+            "a1": 4.71238898038469,
+            "size": 0.0
+          }
+        },
+        "h": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 4.71238898038469,
+            "a1": 4.71238898038469,
+            "size": 0.0
+          }
         }
       },
-      "checks": {}
+      "checks": {
+        "op_g:sides": "passed",
+        "op_h:sides": "passed"
+      }
     }
   ]
 }

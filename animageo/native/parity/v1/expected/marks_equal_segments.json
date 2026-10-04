@@ -1,0 +1,843 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "marks_equal_segments",
+  "registry": "1.3",
+  "generatedBy": "animageo 1.8.1a1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "marks_equal_segments",
+    "operationRegistryVersion": "1.3",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "t"
+          }
+        ]
+      },
+      "op_u": {
+        "id": "op_u",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "u"
+          }
+        ]
+      },
+      "op_m1": {
+        "id": "op_m1",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "s"
+              },
+              {
+                "kind": "ref",
+                "elementId": "t"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m1"
+          }
+        ]
+      },
+      "op_m2": {
+        "id": "op_m2",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "s"
+              },
+              {
+                "kind": "ref",
+                "elementId": "t"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m2"
+          }
+        ]
+      },
+      "op_m3": {
+        "id": "op_m3",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "s"
+              },
+              {
+                "kind": "ref",
+                "elementId": "t"
+              },
+              {
+                "kind": "ref",
+                "elementId": "u"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m3"
+          }
+        ]
+      },
+      "op_m4": {
+        "id": "op_m4",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "s"
+              },
+              {
+                "kind": "ref",
+                "elementId": "t"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 4
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m4"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "t": {
+        "id": "t",
+        "type": "segment",
+        "displayName": "t",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "segment"
+        }
+      },
+      "u": {
+        "id": "u",
+        "type": "segment",
+        "displayName": "u",
+        "producer": {
+          "operationId": "op_u",
+          "slot": "segment"
+        }
+      },
+      "m1": {
+        "id": "m1",
+        "type": "mark",
+        "displayName": "m1",
+        "producer": {
+          "operationId": "op_m1",
+          "slot": "mark"
+        }
+      },
+      "m2": {
+        "id": "m2",
+        "type": "mark",
+        "displayName": "m2",
+        "producer": {
+          "operationId": "op_m2",
+          "slot": "mark"
+        }
+      },
+      "m3": {
+        "id": "m3",
+        "type": "mark",
+        "displayName": "m3",
+        "producer": {
+          "operationId": "op_m3",
+          "slot": "mark"
+        }
+      },
+      "m4": {
+        "id": "m4",
+        "type": "mark",
+        "displayName": "m4",
+        "producer": {
+          "operationId": "op_m4",
+          "slot": "mark"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          4
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          -3,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          3,
+          0
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "isosceles",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 4.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 0.0
+          }
+        },
+        "m1": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 1
+          }
+        },
+        "m2": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 2
+          }
+        },
+        "m3": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 3
+          }
+        },
+        "m4": {
+          "state": "undefined",
+          "type": "mark",
+          "reason": "invalid_parameter"
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              4.0
+            ],
+            "b": [
+              -3.0,
+              0.0
+            ],
+            "length": 5.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              4.0
+            ],
+            "b": [
+              3.0,
+              0.0
+            ],
+            "length": 5.0
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              0.0
+            ],
+            "b": [
+              3.0,
+              0.0
+            ],
+            "length": 6.0
+          }
+        }
+      },
+      "checks": {
+        "op_m1:equal": "passed",
+        "op_m2:equal": "passed",
+        "op_m3:equal": "failed",
+        "op_s:ends": "passed",
+        "op_t:ends": "passed",
+        "op_u:ends": "passed"
+      }
+    },
+    {
+      "name": "equilateral",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            5.196152422706632
+          ]
+        },
+        "Q": {
+          "kind": "point",
+          "value": [
+            -3,
+            0
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            3,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 5.196152422706632
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 0.0
+          }
+        },
+        "m1": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 1
+          }
+        },
+        "m2": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 2
+          }
+        },
+        "m3": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 3
+          }
+        },
+        "m4": {
+          "state": "undefined",
+          "type": "mark",
+          "reason": "invalid_parameter"
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              5.196152422706632
+            ],
+            "b": [
+              -3.0,
+              0.0
+            ],
+            "length": 6.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              5.196152422706632
+            ],
+            "b": [
+              3.0,
+              0.0
+            ],
+            "length": 6.0
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              0.0
+            ],
+            "b": [
+              3.0,
+              0.0
+            ],
+            "length": 6.0
+          }
+        }
+      },
+      "checks": {
+        "op_m1:equal": "passed",
+        "op_m2:equal": "passed",
+        "op_m3:equal": "passed",
+        "op_s:ends": "passed",
+        "op_t:ends": "passed",
+        "op_u:ends": "passed"
+      }
+    },
+    {
+      "name": "scalene",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            1,
+            5
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 5.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 0.0
+          }
+        },
+        "m1": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 1
+          }
+        },
+        "m2": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 2
+          }
+        },
+        "m3": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 3
+          }
+        },
+        "m4": {
+          "state": "undefined",
+          "type": "mark",
+          "reason": "invalid_parameter"
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              5.0
+            ],
+            "b": [
+              -3.0,
+              0.0
+            ],
+            "length": 6.4031242374328485
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              5.0
+            ],
+            "b": [
+              3.0,
+              0.0
+            ],
+            "length": 5.385164807134504
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              0.0
+            ],
+            "b": [
+              3.0,
+              0.0
+            ],
+            "length": 6.0
+          }
+        }
+      },
+      "checks": {
+        "op_m1:equal": "failed",
+        "op_m2:equal": "failed",
+        "op_m3:equal": "failed",
+        "op_s:ends": "passed",
+        "op_t:ends": "passed",
+        "op_u:ends": "passed"
+      }
+    },
+    {
+      "name": "degenerate",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -3,
+            0
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            -3,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 0.0
+          }
+        },
+        "m1": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 1
+          }
+        },
+        "m2": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 2
+          }
+        },
+        "m3": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_segments",
+            "count": 3
+          }
+        },
+        "m4": {
+          "state": "undefined",
+          "type": "mark",
+          "reason": "invalid_parameter"
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              0.0
+            ],
+            "b": [
+              -3.0,
+              0.0
+            ],
+            "length": 0.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              0.0
+            ],
+            "b": [
+              -3.0,
+              0.0
+            ],
+            "length": 0.0
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              0.0
+            ],
+            "b": [
+              -3.0,
+              0.0
+            ],
+            "length": 0.0
+          }
+        }
+      },
+      "checks": {
+        "op_m1:equal": "passed",
+        "op_m2:equal": "passed",
+        "op_m3:equal": "passed",
+        "op_s:ends": "passed",
+        "op_t:ends": "passed",
+        "op_u:ends": "passed"
+      }
+    }
+  ]
+}

@@ -1,12 +1,12 @@
 {
   "format": "animageo-parity/v1",
-  "id": "circle_three_points",
+  "id": "marks_right_angle",
   "registry": "1.3",
   "generatedBy": "animageo 1.8.1a1",
   "document": {
     "format": "animageo-construction/v1",
-    "documentId": "circle_three_points",
-    "operationRegistryVersion": "1.2",
+    "documentId": "marks_right_angle",
+    "operationRegistryVersion": "1.3",
     "operations": {
       "op_A": {
         "id": "op_A",
@@ -19,14 +19,14 @@
           }
         ]
       },
-      "op_B": {
-        "id": "op_B",
+      "op_V": {
+        "id": "op_V",
         "op": "point.free",
         "args": {},
         "outputs": [
           {
             "slot": "point",
-            "elementId": "B"
+            "elementId": "V"
           }
         ]
       },
@@ -41,31 +41,51 @@
           }
         ]
       },
-      "op_k": {
-        "id": "op_k",
-        "op": "circle.three_points",
+      "op_r": {
+        "id": "op_r",
+        "op": "mark.right_angle",
         "args": {
           "a": {
             "kind": "ref",
             "elementId": "A"
           },
-          "b": {
+          "vertex": {
             "kind": "ref",
-            "elementId": "B"
+            "elementId": "V"
           },
-          "c": {
+          "b": {
             "kind": "ref",
             "elementId": "C"
           }
         },
         "outputs": [
           {
-            "slot": "circle",
-            "elementId": "k"
+            "slot": "mark",
+            "elementId": "r"
+          }
+        ]
+      },
+      "op_g": {
+        "id": "op_g",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
           },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
           {
-            "slot": "center",
-            "elementId": "O"
+            "slot": "angle",
+            "elementId": "g"
           }
         ]
       }
@@ -80,12 +100,12 @@
           "slot": "point"
         }
       },
-      "B": {
-        "id": "B",
+      "V": {
+        "id": "V",
         "type": "point",
-        "displayName": "B",
+        "displayName": "V",
         "producer": {
-          "operationId": "op_B",
+          "operationId": "op_V",
           "slot": "point"
         }
       },
@@ -98,22 +118,22 @@
           "slot": "point"
         }
       },
-      "k": {
-        "id": "k",
-        "type": "circle",
-        "displayName": "k",
+      "r": {
+        "id": "r",
+        "type": "mark",
+        "displayName": "r",
         "producer": {
-          "operationId": "op_k",
-          "slot": "circle"
+          "operationId": "op_r",
+          "slot": "mark"
         }
       },
-      "O": {
-        "id": "O",
-        "type": "point",
-        "displayName": "O",
+      "g": {
+        "id": "g",
+        "type": "angle",
+        "displayName": "g",
         "producer": {
-          "operationId": "op_k",
-          "slot": "center"
+          "operationId": "op_g",
+          "slot": "angle"
         }
       }
     },
@@ -121,15 +141,15 @@
       "A": {
         "kind": "point",
         "value": [
-          -3,
-          -1
+          4,
+          1
         ]
       },
-      "B": {
+      "V": {
         "kind": "point",
         "value": [
-          4,
-          0
+          1,
+          1
         ]
       },
       "C": {
@@ -151,23 +171,15 @@
   },
   "cases": [
     {
-      "name": "general",
+      "name": "right",
       "scale": 20.0,
       "expect": {
         "A": {
           "state": "defined",
           "type": "point",
           "value": {
-            "x": -3.0,
-            "y": -1.0
-          }
-        },
-        "B": {
-          "state": "defined",
-          "type": "point",
-          "value": {
             "x": 4.0,
-            "y": 0.0
+            "y": 1.0
           }
         },
         "C": {
@@ -178,145 +190,201 @@
             "y": 5.0
           }
         },
-        "O": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 0.26315789473684204,
-            "y": 1.1578947368421053
-          }
-        },
-        "k": {
-          "state": "defined",
-          "type": "circle",
-          "value": {
-            "c": [
-              0.26315789473684204,
-              1.1578947368421053
-            ],
-            "r": 3.9121233545575014
-          }
-        }
-      },
-      "checks": {
-        "op_k:through_all": "passed"
-      }
-    },
-    {
-      "name": "right",
-      "inputs": {
-        "A": {
-          "kind": "point",
-          "value": [
-            0,
-            0
-          ]
-        },
-        "B": {
-          "kind": "point",
-          "value": [
-            4,
-            0
-          ]
-        },
-        "C": {
-          "kind": "point",
-          "value": [
-            0,
-            3
-          ]
-        }
-      },
-      "scale": 20.0,
-      "expect": {
-        "A": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 0.0,
-            "y": 0.0
-          }
-        },
-        "B": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 4.0,
-            "y": 0.0
-          }
-        },
-        "C": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 0.0,
-            "y": 3.0
-          }
-        },
-        "O": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 2.0,
-            "y": 1.5
-          }
-        },
-        "k": {
-          "state": "defined",
-          "type": "circle",
-          "value": {
-            "c": [
-              2.0,
-              1.5
-            ],
-            "r": 2.5
-          }
-        }
-      },
-      "checks": {
-        "op_k:through_all": "passed"
-      }
-    },
-    {
-      "name": "collinear",
-      "inputs": {
-        "A": {
-          "kind": "point",
-          "value": [
-            0,
-            0
-          ]
-        },
-        "B": {
-          "kind": "point",
-          "value": [
-            1,
-            1
-          ]
-        },
-        "C": {
-          "kind": "point",
-          "value": [
-            3,
-            3
-          ]
-        }
-      },
-      "scale": 20.0,
-      "expect": {
-        "A": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 0.0,
-            "y": 0.0
-          }
-        },
-        "B": {
+        "V": {
           "state": "defined",
           "type": "point",
           "value": {
             "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "g": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              1.0,
+              1.0
+            ],
+            "a0": 0.0,
+            "a1": 1.5707963267948966,
+            "size": 1.5707963267948966
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "right_angle",
+            "count": 1
+          }
+        }
+      },
+      "checks": {
+        "op_g:sides": "passed",
+        "op_r:right": "passed"
+      }
+    },
+    {
+      "name": "slanted",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            4,
+            5
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            -3,
+            4
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 5.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 4.0
+          }
+        },
+        "V": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "g": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              1.0,
+              1.0
+            ],
+            "a0": 0.9272952180016123,
+            "a1": 2.498091544796509,
+            "size": 1.5707963267948966
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "right_angle",
+            "count": 1
+          }
+        }
+      },
+      "checks": {
+        "op_g:sides": "passed",
+        "op_r:right": "passed"
+      }
+    },
+    {
+      "name": "clockwise",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            1,
+            5
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            4,
+            1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 5.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "V": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "g": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              1.0,
+              1.0
+            ],
+            "a0": 1.5707963267948966,
+            "a1": 6.283185307179586,
+            "size": 4.71238898038469
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "right_angle",
+            "count": 1
+          }
+        }
+      },
+      "checks": {
+        "op_g:sides": "passed",
+        "op_r:right": "passed"
+      }
+    },
+    {
+      "name": "acute",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            3,
+            4
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
             "y": 1.0
           }
         },
@@ -325,30 +393,52 @@
           "type": "point",
           "value": {
             "x": 3.0,
-            "y": 3.0
+            "y": 4.0
           }
         },
-        "O": {
-          "state": "undefined",
+        "V": {
+          "state": "defined",
           "type": "point",
-          "reason": "collinear_points"
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
         },
-        "k": {
-          "state": "undefined",
-          "type": "circle",
-          "reason": "collinear_points"
+        "g": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              1.0,
+              1.0
+            ],
+            "a0": 0.0,
+            "a1": 0.982793723247329,
+            "size": 0.982793723247329
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "right_angle",
+            "count": 1
+          }
         }
       },
-      "checks": {}
+      "checks": {
+        "op_g:sides": "passed",
+        "op_r:right": "failed"
+      }
     },
     {
-      "name": "two_coincide",
+      "name": "coincident",
       "inputs": {
-        "B": {
+        "C": {
           "kind": "point",
           "value": [
-            -3,
-            -1
+            1,
+            1
           ]
         }
       },
@@ -358,16 +448,8 @@
           "state": "defined",
           "type": "point",
           "value": {
-            "x": -3.0,
-            "y": -1.0
-          }
-        },
-        "B": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": -3.0,
-            "y": -1.0
+            "x": 4.0,
+            "y": 1.0
           }
         },
         "C": {
@@ -375,82 +457,26 @@
           "type": "point",
           "value": {
             "x": 1.0,
-            "y": 5.0
+            "y": 1.0
           }
         },
-        "O": {
-          "state": "undefined",
-          "type": "point",
-          "reason": "collinear_points"
-        },
-        "k": {
-          "state": "undefined",
-          "type": "circle",
-          "reason": "collinear_points"
-        }
-      },
-      "checks": {}
-    },
-    {
-      "name": "all_coincide",
-      "inputs": {
-        "A": {
-          "kind": "point",
-          "value": [
-            2,
-            2
-          ]
-        },
-        "B": {
-          "kind": "point",
-          "value": [
-            2,
-            2
-          ]
-        },
-        "C": {
-          "kind": "point",
-          "value": [
-            2,
-            2
-          ]
-        }
-      },
-      "scale": 20.0,
-      "expect": {
-        "A": {
+        "V": {
           "state": "defined",
           "type": "point",
           "value": {
-            "x": 2.0,
-            "y": 2.0
+            "x": 1.0,
+            "y": 1.0
           }
         },
-        "B": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 2.0,
-            "y": 2.0
-          }
-        },
-        "C": {
-          "state": "defined",
-          "type": "point",
-          "value": {
-            "x": 2.0,
-            "y": 2.0
-          }
-        },
-        "O": {
+        "g": {
           "state": "undefined",
-          "type": "point",
-          "reason": "collinear_points"
+          "type": "angle",
+          "reason": "coincident_points"
         },
-        "k": {
+        "r": {
           "state": "undefined",
-          "type": "circle",
-          "reason": "collinear_points"
+          "type": "mark",
+          "reason": "coincident_points"
         }
       },
       "checks": {}

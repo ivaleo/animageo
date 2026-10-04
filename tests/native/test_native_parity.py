@@ -24,6 +24,9 @@ REQUIRED_SCENES = {
     # registry 1.2
     'projection', 'parallel_perpendicular', 'perpendicular_bisector', 'angle_bisector', 'vector_points',
     'circle_center_radius', 'circle_three_points', 'number_free', 'on_path_l2_lines', 'l2a1_chain',
+    # registry 1.3
+    'angle_points', 'angle_zero_wrap', 'marks_equal_segments', 'marks_equal_angles', 'marks_right_angle',
+    'incircle', 'incircle_touch_chain', 'a3_chain',
 }
 
 
@@ -202,6 +205,29 @@ class TestRefusal:
         b.circle('c', 'O', 'R').line('l', 'A', 'B').line_circle('P', 'Q', 'l', 'c')
         fixture = parity.generate_scene(scene(b.doc, {'name': 'oblique'}))
         assert fixture['cases'][0]['expect']['P']['detail'] == {'multiplicity': 2}
+
+    def _angle(self, a, b):
+        bld = DocBuilder('near_angle', registry_version='1.3').free('V', 0, 0).free('A', *a).free('C', *b)
+        return bld.angle('g', 'A', 'V', 'C').doc
+
+    def test_angle_wrap(self):
+        # the side to A is 2.5e-9 rad above +x: a0 would jump to 2 pi just below it
+        with pytest.raises(parity.ParityError, match='angle_wrap'):
+            parity.generate_scene(scene(self._angle((4, 1e-8), (0, 3)), {'name': 'near'}))
+
+    def test_zero_angle(self):
+        with pytest.raises(parity.ParityError, match='zero_angle'):
+            parity.generate_scene(scene(self._angle((-4, 1), (-4, 1 + 1e-8)), {'name': 'near'}))
+
+    def test_exact_zero_angle_and_wrap_are_accepted(self):
+        fixture = parity.generate_scene(scene(self._angle((4, 0), (7, 0)), {'name': 'exact'}))
+        assert fixture['cases'][0]['expect']['g']['value'] == {'vertex': [0.0, 0.0], 'a0': 0.0, 'a1': 0.0,
+                                                               'size': 0.0}
+
+    def test_collinear_incircle(self):
+        b = DocBuilder('near_line', registry_version='1.3').free('A', 0, 0).free('B', 4, 0).free('C', 2, 1e-7)
+        with pytest.raises(parity.ParityError, match='collinear_points'):
+            parity.generate_scene(scene(b.incircle('k', 'A', 'B', 'C').doc, {'name': 'near'}))
 
     def test_a_refused_case_is_named(self):
         b = DocBuilder('two').free('A', 0, 0).free('B', 1, 0).line('l', 'A', 'B')
