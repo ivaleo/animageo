@@ -214,3 +214,50 @@ def test_l2a1_mix_p95():
         timings.append((time.perf_counter() - start) * 1000)
     print(f'native.check (L2 stage 1 mix): p95 {percentile(timings, 0.95):.1f} ms')
     assert percentile(timings, 0.95) <= THRESHOLD_MS
+
+
+def l2a2_mix_document(target_ops=300):
+    """The L2 stage 1 mix with angles, marks and incircles woven in, about ``target_ops`` operations."""
+    b = DocBuilder('perf_l2a2', bounds=(-10, -10, 10, 10), registry_version='1.3')
+    points = []
+    for i in range(10):
+        angle = 2 * math.pi * i / 10
+        name = f'P{i}'
+        b.free(name, round(8 * math.cos(angle), 3), round(8 * math.sin(angle), 3))
+        points.append(name)
+    step = 0
+    while len(b.doc['operations']) < target_ops:
+        s = str(step)
+        b.midpoint('M' + s, points[-1], points[-4])
+        b.incircle('k' + s, 'M' + s, points[-7], points[-9], center='I' + s, touches=('Ta' + s, 'Tb' + s))
+        b.segment('s' + s, points[-2], points[-9]).segment('t' + s, 'I' + s, 'Ta' + s)
+        b.segment('u' + s, 'I' + s, 'Tb' + s).equal_segments('e' + s, 't' + s, 'u' + s, count=2)
+        b.angle('g' + s, points[-3], 'M' + s, points[-6]).angle('h' + s, 'Ta' + s, 'I' + s, 'Tb' + s)
+        b.equal_angles('a' + s, 'g' + s, 'h' + s).right_mark('r' + s, 'I' + s, 'Ta' + s, 'M' + s)
+        b.projection('H' + s, 'M' + s, 's' + s).perpendicular('q' + s, 'H' + s, 's' + s)
+        points.extend(['M' + s, 'I' + s, 'H' + s])
+        step += 1
+    return b.doc
+
+
+@pytest.mark.slow
+def test_l2a2_mix_p95():
+    doc = native.load(l2a2_mix_document())
+    n_ops = len(doc.operations)
+    assert n_ops >= 300
+    ev = native.evaluate(doc)
+    defined = sum(rec['state'] == 'defined' for rec in ev.elements.values())
+    ops = {op['op'] for op in doc.operations.values()}
+    assert {'angle.by_points', 'mark.equal_segments', 'mark.equal_angles', 'mark.right_angle',
+            'circle.incircle'} <= ops
+    assert defined >= 0.75 * len(ev.elements)
+    for name, fn in (('evaluate', native.evaluate), ('check', native.check)):
+        timings = []
+        for _ in range(RUNS):
+            start = time.perf_counter()
+            fn(doc)
+            timings.append((time.perf_counter() - start) * 1000)
+        p95 = percentile(timings, 0.95)
+        print(f'\nnative.{name} (L2 stage 2 mix): {n_ops} ops, {defined}/{len(ev.elements)} defined, '
+              f'p50 {percentile(timings, 0.50):.1f} ms, p95 {p95:.1f} ms ({RUNS} runs)')
+        assert p95 <= THRESHOLD_MS, f'{name}: p95 {p95:.1f} ms > {THRESHOLD_MS:.0f} ms'

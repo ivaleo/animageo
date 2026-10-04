@@ -62,6 +62,44 @@ def test_l2a1_order_and_repetition_do_not_matter():
         assert native.check(doc, inputs=case).results == native.check(doc, inputs=case).results
 
 
+def l2a2_doc():
+    b = DocBuilder('determinism_l2a2', registry_version='1.3')
+    b.free('A', -4, -1).free('B', 4, 2).free('C', -1, 5).free('D', 3, -4)
+    b.segment('s', 'A', 'B').segment('t', 'C', 'D').segment('u', 'A', 'C')
+    b.angle('g', 'B', 'A', 'C').angle('h', 'A', 'D', 'C').angle('k', 'C', 'B', 'D')
+    b.equal_segments('es', 's', 't', 'u', count=2).equal_angles('ea', 'g', 'h', 'k', count=3)
+    b.right_mark('r', 'B', 'A', 'D').incircle('ic', 'A', 'B', 'C', center='I', touches=('T1', 'T2', 'T3'))
+    b.angle('gt', 'T1', 'I', 'T2').line('l', 'C', 'D').intersect('X', 'l', 's').angle('gx', 'A', 'X', 'C')
+    b.equal_segments('ex', 's', 't', count=4)
+    return b.doc
+
+
+def test_l2a2_order_and_repetition_do_not_matter():
+    doc = l2a2_doc()
+    rng = random.Random(SEED + 4)
+    cases = [{e: point_input(rng.uniform(-9, 9), rng.uniform(-9, 9)) for e in 'ABCD'} for _ in range(50)]
+    cases += [{'A': point_input(0, 0), 'B': point_input(4, 0), 'C': point_input(8, 0)},     # collinear
+              {'A': point_input(1, 1), 'B': point_input(1, 1)}]                             # coincident
+    in_order = [canonical(doc, c) for c in cases]
+    shuffled = list(range(len(cases)))
+    random.Random(SEED + 5).shuffle(shuffled)
+    by_shuffle = {i: canonical(doc, cases[i]) for i in shuffled}
+    assert [by_shuffle[i] for i in range(len(cases))] == in_order
+    for i in (0, 31, 51):
+        assert canonical(l2a2_doc(), cases[i]) == in_order[i]
+    states = {(e, r['state']) for c in cases for e, r in native.evaluate(doc, inputs=c).elements.items()}
+    for el_id in ('g', 'h', 'k', 'es', 'ea', 'r', 'ic', 'I', 'T1', 'gt', 'gx'):
+        assert (el_id, 'defined') in states, el_id
+    for el_id in ('ic', 'g', 'r', 'ex'):
+        assert (el_id, 'undefined') in states, el_id
+    statuses = set()
+    for case in cases[:20]:
+        first = native.check(doc, inputs=case).results
+        assert native.check(doc, inputs=case).results == first
+        statuses.update(first.values())
+    assert statuses == {'passed', 'failed'}         # the marks are warnings on random positions
+
+
 def positions(n=50):
     rng = random.Random(SEED)
     out = []
