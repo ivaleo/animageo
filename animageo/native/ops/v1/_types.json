@@ -31,7 +31,21 @@
     "number": {
       "value": {"value": "by_unit"},
       "text": "number {value, unit}; unit is one of numberUnits and compares exactly; angles in radians"
+    },
+    "angle": {
+      "value": {"vertex": "length", "a0": "scalar", "a1": "scalar", "size": "scalar"},
+      "text": "angle {vertex: [x, y], a0, a1, size} in radians; a0 in [0, 2 pi) is the direction of the first side from +x, size in [0, 2 pi) runs counterclockwise from the first side to the second, a1 = a0 + size"
+    },
+    "mark": {
+      "value": {},
+      "text": "mark {kind, count}; kind is one of markKinds, count an integer 1..3, both compare exactly; the geometry of a mark is that of its arguments"
     }
+  },
+  "markKinds": {"equal_segments": "mark.equal_segments", "equal_angles": "mark.equal_angles", "right_angle": "mark.right_angle"},
+  "angles": {
+    "normalize": "theta = atan2(y, x); theta < 0 gives theta + 2 pi; theta >= 2 pi gives 0; -0 gives 0",
+    "convex": "the convex measure of an angle is m(size) = size when size <= pi, else 2 pi - size",
+    "wrap": "a difference of directions wraps into [-pi, pi): wrap(d) = d - 2 pi floor((d + pi) / (2 pi))"
   },
   "numberUnits": {"scalar": "scalar", "length": "length", "area": "area", "angle": "scalar", "count": "scalar"},
   "families": {

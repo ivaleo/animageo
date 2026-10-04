@@ -32,7 +32,7 @@ def test_result_format():
     assert list(data) == ['format', 'documentId', 'kernel', 'scale', 'elements', 'diagnostics']
     assert data['format'] == 'animageo-evaluated/v1'
     assert data['documentId'] == 'chain'
-    assert data['kernel'] == {'library': native_version(), 'registry': '1.2'}
+    assert data['kernel'] == {'library': native_version(), 'registry': '1.3'}
     assert data['scale'] == 20.0
     assert list(data['elements']) == sorted(data['elements'])
     assert data['elements']['A'] == {'state': 'defined', 'type': 'point', 'value': {'x': -4.0, 'y': -1.0}}

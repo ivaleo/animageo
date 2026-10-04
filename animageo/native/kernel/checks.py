@@ -12,6 +12,7 @@ import math
 from dataclasses import dataclass, field
 
 from ..registry import registry
+from .ops.angle import angle_size, convex_measure, unit_sides, wrap_angle
 from .ops.intersect import carrier, distance_to_carrier
 from .paths import distance_to_path
 from .values import Undefined
@@ -320,6 +321,64 @@ def _three_points_through_all(args, result, tol):
         ox, oy = _xy(result['center'])
         error = max(error, math.hypot(ox - cx, oy - cy))
     return error
+
+
+# ── registry 1.3 ──
+
+@register_check('angle.by_points', 'sides')
+def _angle_sides(args, result, tol):
+    vx, vy = _xy(args['vertex'].value)
+    ang = result['angle']
+    error = math.hypot(ang['vertex'][0] - vx, ang['vertex'][1] - vy)
+    for slot, field_ in (('a', 'a0'), ('b', 'a1')):
+        x, y = _xy(args[slot].value)
+        if math.hypot(x - vx, y - vy) <= tol.decide_length:
+            return math.inf
+        theta = math.atan2(y - vy, x - vx)
+        error = max(error, abs(wrap_angle(ang[field_] - theta)) * tol.scale)
+    return error
+
+
+@register_check('mark.equal_segments', 'equal')
+def _equal_segments(args, result, tol):
+    lengths = [inp.value['length'] for inp in args['segments']]
+    return max(abs(length - lengths[0]) for length in lengths)
+
+
+@register_check('mark.equal_angles', 'equal')
+def _equal_angles(args, result, tol):
+    measures = [convex_measure(inp.value['size']) for inp in args['angles']]
+    return max(abs(m - measures[0]) for m in measures) * tol.scale
+
+
+@register_check('mark.right_angle', 'right')
+def _right_angle(args, result, tol):
+    sides = unit_sides(args['a'].value, args['vertex'].value, args['b'].value, _QuietContext(tol))
+    if isinstance(sides, Undefined):
+        return math.inf
+    return abs(convex_measure(angle_size(*sides)) - math.pi / 2) * tol.scale
+
+
+@register_check('circle.incircle', 'tangent_sides')
+def _incircle_tangent_sides(args, result, tol):
+    circle = result['circle']
+    cx, cy = circle['c']
+    r = circle['r']
+    error = 0.0
+    for p_slot, q_slot, touch_slot in (('b', 'c', 'touch_a'), ('c', 'a', 'touch_b'), ('a', 'b', 'touch_c')):
+        px, py = _xy(args[p_slot].value)
+        qx, qy = _xy(args[q_slot].value)
+        length = math.hypot(qx - px, qy - py)
+        if length <= tol.decide_length:
+            return math.inf
+        tx, ty = _xy(result[touch_slot])
+
+        def dist(x, y):
+            return abs((x - px) * (qy - py) - (y - py) * (qx - px)) / length
+
+        error = max(error, abs(dist(cx, cy) - r), dist(tx, ty), abs(math.hypot(tx - cx, ty - cy) - r))
+    ox, oy = _xy(result['center'])
+    return max(error, math.hypot(ox - cx, oy - cy))
 
 
 def run_checks(evaluated, keys=None) -> CheckReport:

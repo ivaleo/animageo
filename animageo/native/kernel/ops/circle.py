@@ -1,4 +1,5 @@
-"""``circle.center_point``, ``circle.center_radius``, ``circle.three_points`` (docs/native/ops/circle.*.md)."""
+"""``circle.center_point``, ``circle.center_radius``, ``circle.three_points``, ``circle.incircle``
+(docs/native/ops/circle.*.md)."""
 from __future__ import annotations
 
 import math
@@ -64,3 +65,43 @@ def three_points(args, ctx):
     ox = ax + ux
     oy = ay + uy
     return {'circle': {'c': [ox, oy], 'r': math.hypot(ux, uy)}, 'center': {'x': ox, 'y': oy}}
+
+
+INCIRCLE_SLOTS = ('circle', 'center', 'touch_a', 'touch_b', 'touch_c')
+
+
+@op('circle.incircle')
+def incircle(args, ctx):
+    a = args['a'].value
+    b = args['b'].value
+    c = args['c'].value
+    ax, ay = a['x'], a['y']
+    bx, by = b['x'], b['y']
+    cx, cy = c['x'], c['y']
+    la = math.hypot(bx - cx, by - cy)
+    lb = math.hypot(cx - ax, cy - ay)
+    lc = math.hypot(ax - bx, ay - by)
+    longest = max(la, lb, lc)
+    tol = ctx.tol.decide_length
+    ctx.decide('collinear_points', longest, tol)
+    if longest <= tol:
+        return dict.fromkeys(INCIRCLE_SLOTS, Undefined('collinear_points'))
+    cr = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
+    h = abs(cr) / longest
+    ctx.decide('collinear_points', h, tol)
+    if h <= tol:
+        return dict.fromkeys(INCIRCLE_SLOTS, Undefined('collinear_points'))
+    p = la + lb + lc
+    s = p / 2
+    ox = (la * ax + lb * bx + lc * cx) / p
+    oy = (la * ay + lb * by + lc * cy) / p
+    ta = (s - lb) / la
+    tb = (s - lc) / lb
+    tc = (s - la) / lc
+    return {
+        'circle': {'c': [ox, oy], 'r': abs(cr) / p},
+        'center': {'x': ox, 'y': oy},
+        'touch_a': {'x': bx + ta * (cx - bx), 'y': by + ta * (cy - by)},
+        'touch_b': {'x': cx + tb * (ax - cx), 'y': cy + tb * (ay - cy)},
+        'touch_c': {'x': ax + tc * (bx - ax), 'y': ay + tc * (by - ay)},
+    }

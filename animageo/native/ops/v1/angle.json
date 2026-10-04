@@ -1,0 +1,47 @@
+[
+  {
+    "op": "angle.by_points",
+    "status": "stable",
+    "since": "1.3",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "vertex",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "angle",
+        "type": "angle"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "sides",
+        "text": "the vertex and the sides match the points: max(|vertex - v|, |wrap(a0 - theta(a - v))| S, |wrap(a1 - theta(b - v))| S)"
+      }
+    ],
+    "orientation": "ccw_from_a",
+    "pathParam": null,
+    "stepKind": "angle",
+    "phrases": {
+      "ru": "{angle} — угол {a}{vertex}{b}"
+    },
+    "math": "docs/native/ops/angle.by_points.md",
+    "signatureHash": "sha256:6cff8a588d81eec06ee2b49dfdd3fd97f810f09a77d47ee7538efd69d8e19dd9"
+  }
+]

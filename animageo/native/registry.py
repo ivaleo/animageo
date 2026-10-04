@@ -45,7 +45,7 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.2'
+REGISTRY_VERSION = '1.3'
 
 _SERVICE_FILES = ('_types', '_policies', '_reasons', '_numeric')
 _INDEX_FILE = 'INDEX.json'
@@ -114,6 +114,7 @@ class Registry:
     index: dict = field(default_factory=dict)
     paths: dict = field(default_factory=dict)
     number_units: dict = field(default_factory=dict)
+    mark_kinds: dict = field(default_factory=dict)
 
     def get(self, op: str):
         return self.ops.get(op)
@@ -199,6 +200,7 @@ def _load(directory) -> Registry:
         index=index,
         paths=service['_types'].get('paths', {}),
         number_units=service['_types'].get('numberUnits', {}),
+        mark_kinds=service['_types'].get('markKinds', {}),
     )
 
 
@@ -249,6 +251,10 @@ def registry_problems(reg: Registry | None = None) -> list:
         if policy is not None and policy not in reg.policies:
             problems.append(f'{op}: unknown branch policy {policy!r}')
         problems.extend(_param_problems(op, record))
+    for kind, op in reg.mark_kinds.items():
+        record = reg.ops.get(op)
+        if record is None or not any(out['type'] == 'mark' for out in record.get('outputs', [])):
+            problems.append(f'mark kind {kind!r}: {op!r} is not an operation with a mark output')
     index = build_index(reg)
     if reg.index != index:
         problems.append('INDEX.json is out of date; run: python -m animageo.native registry index')

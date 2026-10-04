@@ -156,6 +156,35 @@ class DocBuilder:
             outputs.append(('center', center, 'point'))
         return self.op('op_' + el_id, 'circle.three_points', {'a': ref(a), 'b': ref(b), 'c': ref(c)}, outputs)
 
+    # ── registry 1.3 ──
+    def angle(self, el_id, a, vertex, b):
+        return self.op('op_' + el_id, 'angle.by_points', {'a': ref(a), 'vertex': ref(vertex), 'b': ref(b)},
+                       [('angle', el_id, 'angle')])
+
+    def equal_segments(self, el_id, *segments, count=None):
+        args = {'segments': ref_list(*segments)}
+        if count is not None:
+            args['count'] = num(count)
+        return self.op('op_' + el_id, 'mark.equal_segments', args, [('mark', el_id, 'mark')])
+
+    def equal_angles(self, el_id, *angles, count=None):
+        args = {'angles': ref_list(*angles)}
+        if count is not None:
+            args['count'] = num(count)
+        return self.op('op_' + el_id, 'mark.equal_angles', args, [('mark', el_id, 'mark')])
+
+    def right_mark(self, el_id, a, vertex, b):
+        return self.op('op_' + el_id, 'mark.right_angle', {'a': ref(a), 'vertex': ref(vertex), 'b': ref(b)},
+                       [('mark', el_id, 'mark')])
+
+    def incircle(self, el_id, a, b, c, center=None, touches=()):
+        """``touches``: element IDs of ``touch_a``, ``touch_b``, ``touch_c`` (fewer leaves the rest unbound)."""
+        outputs = [('circle', el_id, 'circle')]
+        if center is not None:
+            outputs.append(('center', center, 'point'))
+        outputs += [(slot, t, 'point') for slot, t in zip(('touch_a', 'touch_b', 'touch_c'), touches)]
+        return self.op('op_' + el_id, 'circle.incircle', {'a': ref(a), 'b': ref(b), 'c': ref(c)}, outputs)
+
     def polygon(self, el_id, *vertices, sides=()):
         outputs = [('polygon', el_id, 'polygon')]
         outputs += [(f'side.{i}', side_id, 'segment') for i, side_id in sides]

@@ -1,0 +1,143 @@
+[
+  {
+    "op": "mark.equal_segments",
+    "status": "stable",
+    "since": "1.3",
+    "inputs": [
+      {
+        "slot": "segments",
+        "type": "segment",
+        "list": true,
+        "min": 2
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 1,
+        "text": "number of ticks or arcs: 1, 2 or 3 (invalid_parameter otherwise)"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "mark",
+        "type": "mark"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "equal",
+        "text": "the segments have equal lengths: max |L_i - L_1|"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "mark",
+    "phrases": {
+      "ru": "{mark} — отметка равенства отрезков {segments}"
+    },
+    "math": "docs/native/ops/mark.equal_segments.md",
+    "signatureHash": "sha256:5ba6180e0246c4dc70cf392096184e1427760c4d9a39b6bb5842e3ddd4de668a"
+  },
+  {
+    "op": "mark.equal_angles",
+    "status": "stable",
+    "since": "1.3",
+    "inputs": [
+      {
+        "slot": "angles",
+        "type": "angle",
+        "list": true,
+        "min": 2
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 1,
+        "text": "number of ticks or arcs: 1, 2 or 3 (invalid_parameter otherwise)"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "mark",
+        "type": "mark"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "equal",
+        "text": "the angles have equal convex measures: max |m(size_i) - m(size_1)| S"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "mark",
+    "phrases": {
+      "ru": "{mark} — отметка равенства углов {angles}"
+    },
+    "math": "docs/native/ops/mark.equal_angles.md",
+    "signatureHash": "sha256:15ac3c04805733999d86b498aba04faeb02ca31705673802ea5f312016c9c2e3"
+  },
+  {
+    "op": "mark.right_angle",
+    "status": "stable",
+    "since": "1.3",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "vertex",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "mark",
+        "type": "mark"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "right",
+        "text": "the angle a vertex b is right: |m(size) - pi/2| S"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "mark",
+    "phrases": {
+      "ru": "{mark} — отметка прямого угла {a}{vertex}{b}"
+    },
+    "math": "docs/native/ops/mark.right_angle.md",
+    "signatureHash": "sha256:22f1e524869af7e1d61fa1e6481c78e08b9c2094cbafaa8b4f41d899eec89915"
+  }
+]

@@ -31,8 +31,9 @@ L1_OPS = {'ray.by_points', 'intersect.line_circle', 'intersect.circle_circle', '
 L2A1_OPS = {'point.projection', 'line.parallel', 'line.perpendicular', 'line.perpendicular_bisector',
             'line.angle_bisector', 'vector.by_points', 'circle.center_radius', 'circle.three_points',
             'number.free'}
-ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS
-# Registries 1.1 and 1.2 extend 1.0: the L0 and L1 records and their hashes stay as they were.
+L2A2_OPS = {'angle.by_points', 'mark.equal_segments', 'mark.equal_angles', 'mark.right_angle', 'circle.incircle'}
+ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS
+# Registries 1.1, 1.2 and 1.3 extend 1.0: earlier records and their hashes stay as they were.
 L0_HASHES = {
     'circle.center_point': 'sha256:f3b2e070e9310312708009adfc04cfd7411128d482a4b7522f7320af35ca9810',
     'intersect.line_line': 'sha256:be74b127f909906e8dfe346f7ad79043e483defde31d0aac29628ae550f925d2',
@@ -49,6 +50,17 @@ L1_HASHES = {
     'point.on_path': 'sha256:6be50eade341c6f39273693152fcb25f733d8875492505670e76c12b38916a72',
     'ray.by_points': 'sha256:799d3583f4263ffd7c7c9c71236851e44764de7e5136e02284c49fb4898bfa80',
 }
+L2A1_HASHES = {
+    'circle.center_radius': 'sha256:c3cf41fefb5b9675a41b3eb39298640a6651d988efef6865edd85f6462746349',
+    'circle.three_points': 'sha256:143575451176f3a78d933062a88a75fa09836dab57dfedcc5c4d759a8d4b484b',
+    'line.angle_bisector': 'sha256:6ffd1703f1ee29ee4fb8c79821f0fec0ffe843603ddbcbc1e62b96e1d1bdc611',
+    'line.parallel': 'sha256:accc08e8e25d6d93e61db4b712bf57d6c04040f795e331cde964388b3824ad08',
+    'line.perpendicular': 'sha256:31a8254ebc3e153ebf3ec03ca88a34b0f172ecadb6ca75458dda8b49a7da7c21',
+    'line.perpendicular_bisector': 'sha256:9483c6abef4e1451223fc437f8fb971b767b2b71e0a9f9bdfc63f7d605da8d4b',
+    'number.free': 'sha256:1b23a21461be5d9d3b96461a10823bfc46c347a8bc7da320cffa91e36bca6f2a',
+    'point.projection': 'sha256:d335c0ed75eeb527edd741676e32473b0fc8e3a23b4a46a36a8575f2f2d1bba5',
+    'vector.by_points': 'sha256:7f2f4e4551fe968c3a7714fe613de1fc65218c5ad6dbc65e911f37d8e05aef11',
+}
 RECORD_FIELDS = {
     'op', 'status', 'since', 'inputs', 'params', 'outputs', 'branch', 'undefined', 'checks',
     'orientation', 'pathParam', 'stepKind', 'phrases', 'math', 'signatureHash',
@@ -56,15 +68,15 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.2'
-    assert registry().version == '1.2'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.2'
+    assert native.__registry_version__ == '1.3'
+    assert registry().version == '1.3'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.3'
 
 
 def test_ops_and_files():
     reg = registry()
     assert set(reg.ops) == ALL_OPS
-    assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number'}
+    assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
@@ -79,8 +91,13 @@ def test_l0_records_unchanged():
         assert reg.get(op)['signatureHash'] == digest
         assert reg.index['ops'][op] == digest
         assert reg.get(op)['since'] == '1.1'
-    for op in L2A1_OPS:
+    for op, digest in L2A1_HASHES.items():
+        assert reg.get(op)['signatureHash'] == digest
+        assert reg.index['ops'][op] == digest
         assert reg.get(op)['since'] == '1.2'
+    assert set(L2A1_HASHES) == L2A1_OPS
+    for op in L2A2_OPS:
+        assert reg.get(op)['since'] == '1.3'
 
 
 @pytest.mark.parametrize('op', sorted(ALL_OPS))
@@ -88,7 +105,7 @@ def test_record_fields(op):
     record = registry().get(op)
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free'}
     assert record['status'] == 'stable'
-    if op not in ('point.projection', 'number.free'):
+    if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles'):
         assert record['params'] == []
     for param in record['params']:
         assert {'slot', 'type', 'unit', 'text'} <= set(param) <= {'slot', 'type', 'unit', 'optional',
@@ -234,6 +251,74 @@ def test_l2a1_types_and_frames():
     assert frames['line.angle_bisector'] == {'origin': 'args.vertex', 'vector': 'value.dir'}
     for op in frames:
         assert op == '*' or op in reg.ops
+
+
+def test_contract_table_l2a2():
+    """The slot table of the L2 plan (§4.1, registry 1.3)."""
+    reg = registry()
+
+    def summary(op):
+        r = reg.get(op)
+        return ([(i['slot'], i['type'], i.get('list', False), i.get('min')) for i in r['inputs']],
+                [(p['slot'], p.get('unit'), p.get('optional', False), p.get('default')) for p in r['params']],
+                [(o['slot'], o['type']) for o in r['outputs']],
+                r['undefined'], [c['id'] for c in r['checks']], r['orientation'], r['stepKind'])
+
+    avb = [('a', 'point', False, None), ('vertex', 'point', False, None), ('b', 'point', False, None)]
+    count = [('count', 'count', True, 1)]
+    assert summary('angle.by_points') == (
+        avb, [], [('angle', 'angle')], ['coincident_points', 'upstream'], ['sides'], 'ccw_from_a', 'angle')
+    assert summary('mark.equal_segments') == (
+        [('segments', 'segment', True, 2)], count, [('mark', 'mark')], ['invalid_parameter', 'upstream'],
+        ['equal'], None, 'mark')
+    assert summary('mark.equal_angles') == (
+        [('angles', 'angle', True, 2)], count, [('mark', 'mark')], ['invalid_parameter', 'upstream'],
+        ['equal'], None, 'mark')
+    assert summary('mark.right_angle') == (
+        avb, [], [('mark', 'mark')], ['coincident_points', 'upstream'], ['right'], None, 'mark')
+    assert summary('circle.incircle') == (
+        [('a', 'point', False, None), ('b', 'point', False, None), ('c', 'point', False, None)], [],
+        [('circle', 'circle'), ('center', 'point'), ('touch_a', 'point'), ('touch_b', 'point'),
+         ('touch_c', 'point')],
+        ['collinear_points', 'upstream'], ['tangent_sides'], None, 'incircle')
+    for op in L2A2_OPS:
+        record = reg.get(op)
+        assert record['branch'] is None and record['pathParam'] is None and 'free' not in record
+        assert not {i['slot'] for i in record['inputs'] + record['params']} & {o['slot'] for o in record['outputs']}, op
+
+
+def test_l2a2_types():
+    reg = registry()
+    assert reg.types['angle']['value'] == {'vertex': 'length', 'a0': 'scalar', 'a1': 'scalar', 'size': 'scalar'}
+    assert reg.types['mark']['value'] == {}
+    assert reg.mark_kinds == {'equal_segments': 'mark.equal_segments', 'equal_angles': 'mark.equal_angles',
+                              'right_angle': 'mark.right_angle'}
+    assert 'angle' not in reg.families['path'] and 'mark' not in reg.families['path']
+    from animageo.native.kernel.values import compare_values
+
+    def tol(kind):
+        return {'length': 1e-9, 'scalar': 1e-9}[kind]
+
+    a = {'vertex': [0.0, 0.0], 'a0': 0.0, 'a1': 1.0, 'size': 1.0}
+    assert compare_values(reg.types['angle'], a, dict(a, a0=1e-12), tol) == []
+    assert compare_values(reg.types['angle'], a, dict(a, size=1.1), tol)
+    m = {'kind': 'equal_segments', 'count': 1}
+    assert compare_values(reg.types['mark'], m, dict(m), tol) == []
+    assert compare_values(reg.types['mark'], m, dict(m, count=2), tol) == ["value.count: expected 1, got 2"]
+    assert compare_values(reg.types['mark'], m, dict(m, kind='equal_angles'), tol)
+
+
+def test_registry_problems_catch_bad_mark_kinds(tmp_path):
+    copy_dir = tmp_path / 'v1'
+    shutil.copytree(OPS_DIR, copy_dir)
+    types = json.loads((copy_dir / '_types.json').read_text())
+    types['markKinds']['arrow'] = 'mark.arrow'
+    types['markKinds']['angle'] = 'angle.by_points'
+    (copy_dir / '_types.json').write_text(json.dumps(types))
+    from animageo.native.registry import _load
+    problems = registry_problems(_load(copy_dir))
+    assert "mark kind 'arrow': 'mark.arrow' is not an operation with a mark output" in problems
+    assert "mark kind 'angle': 'angle.by_points' is not an operation with a mark output" in problems
 
 
 def test_registry_problems_catch_bad_params(tmp_path):
