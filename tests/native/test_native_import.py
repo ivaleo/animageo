@@ -49,6 +49,21 @@ print('LOADED', loaded)
     assert 'LOADED []' in proc.stdout
 
 
+def test_layout_labels_without_manim():
+    code = _BLOCKER + f"""
+import json
+import animageo.native as native
+with open('animageo/native/parity/v1/scenes/a3_chain.json', encoding='utf-8') as fh:
+    doc = json.load(fh)['document']
+out = native.layout_labels(doc, place=True, export_layout={{'content': {{'source': 'rendered_bounds'}}}})
+loaded = sorted(m for m in sys.modules if m == {BLOCKED!r} or m.startswith({BLOCKED!r} + '.') or m == {CLASSIC!r})
+print('LABELS', len(out), 'LOADED', loaded)
+"""
+    proc = _run(code)
+    assert proc.returncode == 0, proc.stderr
+    assert 'LOADED []' in proc.stdout and 'LABELS 0' not in proc.stdout
+
+
 def test_bridge_loads_geo_only_when_used():
     code = _BLOCKER + f"""
 import json
@@ -103,6 +118,9 @@ def _resolved_imports(path):
 LAZY_ALLOWED = {
     'animageo/native/kernel/bridge.py': (GEO, 'numpy'),
     'animageo/native/rendering.py': (CLASSIC, GEO, 'animageo.labels', 'cairosvg'),
+    # backend='tex' loads animageo.ui (manim) on purpose, inside a function
+    'animageo/native/labels/layout.py': (GEO, 'animageo.labels', 'animageo.label_placement', 'animageo.style',
+                                         'animageo.export_layout', 'animageo.ui', 'numpy'),
 }
 
 

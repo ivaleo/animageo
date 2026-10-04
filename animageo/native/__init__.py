@@ -17,10 +17,12 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     native.closure(doc, ["A"])               # dependents in topological order
     doc2, effects = native.delete(doc, ["A"])  # pure edits: delete, redefine, rename
     native.render(doc, fmt="svg", out="a.svg")  # needs manim: RenderResult(path, fmt, report)
+    native.layout_labels(doc)                # {id: {anchor, box, offsetWorld, …}} without manim
 
 No module of this package imports manim, ``animageo.animageo`` or
-``animageo.geo`` at import time; the bridge (``kernel/bridge.py``) and
-:func:`render` load the classic code inside their functions.
+``animageo.geo`` at import time; the bridge (``kernel/bridge.py``),
+:func:`render` and :func:`layout_labels` load the classic code inside their
+functions (:func:`layout_labels` never manim with ``backend="metrics"``).
 """
 from __future__ import annotations
 
@@ -52,6 +54,7 @@ from .kernel import paths as _paths
 from .kernel.evaluate import EVALUATED_FORMAT, Evaluated, producer_values
 from .kernel.evaluate import evaluate as _evaluate
 from .registry import REGISTRY_VERSION, Registry, registry, signature_hash
+from .labels import layout_labels
 from .rendering import RenderResult, render, source_view
 
 __registry_version__ = REGISTRY_VERSION
@@ -79,6 +82,7 @@ __all__ = [
     'dumps',
     'evaluate',
     'free_inputs',
+    'layout_labels',
     'load',
     'project',
     'redefine',
