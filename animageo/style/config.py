@@ -30,6 +30,7 @@ optional user JSON file on top — see :meth:`StyleConfig.load`.
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -257,6 +258,17 @@ class StyleConfig:
 
 
 # ── Internals ────────────────────────────────────────────────────────────
+
+def style_path_for_geostyle(style):
+    """The style input as ``GeoStyle`` takes it: a dict, a path string or ``None``."""
+    if isinstance(style, StyleConfig):
+        return style.source
+    if isinstance(style, dict):
+        return style
+    if isinstance(style, (str, os.PathLike)):
+        return str(style)
+    return None
+
 
 def _read_json(path) -> Dict[str, Any]:
     with open(path, 'r', encoding='utf-8') as f:

@@ -31,6 +31,7 @@ from .style.scaling import (
 )
 from .style.import_policy import ImportPolicy
 from .style.config import StyleConfig, resolve_style_input
+from .style.config import style_path_for_geostyle as _style_path_for_geostyle
 from .style.resolver import resolve as _resolve_style
 from .style.colorspace import COLOR_SPACES
 from .labels import resolve_label_text, resolve_label_spec
@@ -53,21 +54,16 @@ from .export_layout import normalize_content_options
 from .export_layout import normalize_export_options
 from .export_layout import resolve_auto_size
 from .export_layout import size_from_config
+from .export_layout import merge_reference as _merge_reference
+from .export_layout import reference_size_from_config as _reference_size_from_config
+from .export_layout import source_bounds_px_from_config as _source_bounds_px_from_config  # noqa: F401  (old name)
+from .export_layout import rendered_view_from_bounds, source_view_from_bounds_px
 
 import xml.etree.ElementTree as ET
 
 SQRT2 = np.sqrt(2)
 
 logger = logging.getLogger(__name__)
-
-
-def _reference_size_from_config(reference):
-    if not isinstance(reference, dict):
-        return None
-    size = size_from_config(reference.get('size'))
-    if size is None or size[0] is None or size[1] is None:
-        return None
-    return size
 
 
 def _style_ptUnit(style):
@@ -80,63 +76,6 @@ def _validate_rendered_bounds_policy(value):
     if value not in {'clip', 'ignore'}:
         raise ValueError("content.infinite_policy must be 'clip' or 'ignore'")
     return value
-
-
-def _source_bounds_px_from_config(value):
-    """Normalize an explicit rendered-bounds rectangle in source pixels."""
-    if value is None:
-        return None
-    if isinstance(value, dict):
-        keys = ('left', 'top', 'right', 'bottom')
-        if all(k in value for k in keys):
-            raw = [value[k] for k in keys]
-        else:
-            alt = ('sourceLeftPx', 'sourceTopPx', 'sourceRightPx', 'sourceBottomPx')
-            if not all(k in value for k in alt):
-                raise ValueError(
-                    "content.bounds must have left/top/right/bottom "
-                    "or sourceLeftPx/sourceTopPx/sourceRightPx/sourceBottomPx"
-                )
-            raw = [value[k] for k in alt]
-    elif isinstance(value, (list, tuple)) and len(value) == 4:
-        raw = list(value)
-    else:
-        raise ValueError("content.bounds must be [left, top, right, bottom] or an object")
-
-    try:
-        left, top, right, bottom = [float(v) for v in raw]
-    except (TypeError, ValueError):
-        raise ValueError("content.bounds values must be numbers") from None
-    if not all(math.isfinite(v) for v in (left, top, right, bottom)):
-        raise ValueError("content.bounds values must be finite")
-    return [left, top, right, bottom]
-
-
-def _style_path_for_geostyle(style):
-    """Return the style input shape supported by GeoStyle."""
-    if isinstance(style, StyleConfig):
-        return style.source
-    if isinstance(style, dict):
-        return style
-    if isinstance(style, (str, os.PathLike)):
-        return str(style)
-    return None
-
-
-def _merge_reference(style_reference, runtime_reference):
-    ref = {}
-    if isinstance(style_reference, dict):
-        ref.update(style_reference)
-    if isinstance(runtime_reference, dict):
-        merged_size = {}
-        if isinstance(ref.get('size'), dict):
-            merged_size.update(ref['size'])
-        if isinstance(runtime_reference.get('size'), dict):
-            merged_size.update(runtime_reference['size'])
-        ref.update(runtime_reference)
-        if merged_size:
-            ref['size'] = merged_size
-    return ref
 
 
 # Cap/joint lookups used by CreateMObject — lifted to module level so
@@ -452,35 +391,9 @@ class AnimaGeoScene(MovingCameraScene):
             bounds[2] = updateMax(bounds[2], right)
             bounds[3] = updateMax(bounds[3], top)
 
-        if bounds[0] is None:
-            return dict(source_view)
-
-        left_mu, bottom_mu, right_mu, top_mu = bounds
-        unit = float(source_view.get('ptUnit', 1))
-        xzero = float(source_view.get('ptXZero', 0))
-        yzero = float(source_view.get('ptYZero', 0))
-
-        left_px = xzero + left_mu * unit - padding_px
-        right_px = xzero + right_mu * unit + padding_px
-        top_px = yzero - top_mu * unit - padding_px
-        bottom_px = yzero - bottom_mu * unit + padding_px
-
-        width = max(right_px - left_px, 1.0)
-        height = max(bottom_px - top_px, 1.0)
-        rendered_view = dict(source_view)
-        rendered_view.update({
-            'ptWidth': width,
-            'ptHeight': height,
-            'ptXZero': xzero - left_px,
-            'ptYZero': yzero - top_px,
-            'sourceLeftPx': left_px,
-            'sourceTopPx': top_px,
-            'sourceRightPx': right_px,
-            'sourceBottomPx': bottom_px,
-            'boundsPaddingPx': padding_px,
-            'boundsInfinitePolicy': infinite_policy,
-        })
-        return rendered_view
+        return rendered_view_from_bounds(
+            source_view, None if bounds[0] is None else tuple(bounds),
+            padding_px=padding_px, infinite_policy=infinite_policy)
 
     def _source_view_from_bounds_px(
         self,
@@ -491,32 +404,8 @@ class AnimaGeoScene(MovingCameraScene):
         infinite_policy='ignore',
     ):
         """Return a source_view from explicit source-pixel bounds."""
-        left_px, top_px, right_px, bottom_px = _source_bounds_px_from_config(bounds_px)
-        padding_px = max(float(padding_px or 0), 0.0)
-        left_px -= padding_px
-        top_px -= padding_px
-        right_px += padding_px
-        bottom_px += padding_px
-
-        xzero = float(source_view.get('ptXZero', 0))
-        yzero = float(source_view.get('ptYZero', 0))
-        width = max(right_px - left_px, 1.0)
-        height = max(bottom_px - top_px, 1.0)
-        rendered_view = dict(source_view)
-        rendered_view.update({
-            'ptWidth': width,
-            'ptHeight': height,
-            'ptXZero': xzero - left_px,
-            'ptYZero': yzero - top_px,
-            'sourceLeftPx': left_px,
-            'sourceTopPx': top_px,
-            'sourceRightPx': right_px,
-            'sourceBottomPx': bottom_px,
-            'boundsPaddingPx': padding_px,
-            'boundsInfinitePolicy': _validate_rendered_bounds_policy(infinite_policy),
-            'boundsSource': 'explicit',
-        })
-        return rendered_view
+        return source_view_from_bounds_px(source_view, bounds_px, padding_px=padding_px,
+                                          infinite_policy=_validate_rendered_bounds_policy(infinite_policy))
 
     #пауза для обрезки видео + отображение ярлыка слева
     def waitCut(self, msg = None, **kwargs):

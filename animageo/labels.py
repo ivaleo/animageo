@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -353,3 +354,64 @@ def _math_wrap(text: str) -> str:
     if len(text) >= 2 and text[0] == "$" and text[-1] == "$":
         return text
     return "$" + text + "$"
+
+
+# ── Label TeX (shared by the manim renderer and the native label layout) ──
+
+# Unicode ← TeX symbol mappings for label text
+_TEX_SYMBOLS = {
+    '\\cdot': '·', '\\times': '×', '\\neq': '≠', '\\approx': '≈', '\\sim': '~',
+    '\\leqslant': '⩽', '\\geqslant': '⩾',
+    '\\degree': '°', '\\Rightarrow': '⇒', '\\Leftarrow': '⇐',
+    '\\rightarrow': '→', '\\to': '→', '\\gets': '←',
+    '\\mathbf': '∠', '\\triangle': '△', '\\perp': '⊥',
+    '\\parallel': '∥', '\\nparralel': '∦',
+    '\\in': '∈', '\\notin': '∉', '\\cap': '∩', '\\cup': '∪',
+    '\\subset': '⊂', '\\supset': '⊃', '\\subseteq': '⊆', '\\supseteq': '⊇',
+    '\\forall': '∀', '\\exists': '∃',
+    '\\Longleftrightarrow': '⟺', '\\Leftrightarrow': '⟺',
+    '\\pm': '±', '\\varnothing': '∅', '\\infty': '∞',
+    '\\mathrm A': 'Α', '\\alpha': 'α',
+    '\\mathrm B': 'Β', '\\beta': 'β',
+    '\\Gamma': 'Γ', '\\gamma': 'γ',
+    '\\Delta': 'Δ', '\\delta': 'δ',
+    '\\mathrm E': 'Ε', '\\varepsilon': 'ε',
+    '\\mathrm Z': 'Ζ', '\\zeta': 'ζ',
+    '\\mathrm H': 'Η', '\\eta': 'η',
+    '\\Theta': 'Θ', '\\theta': 'ϑ', '\\vartheta': 'ϑ',
+    '\\mathrm I': 'Ι', '\\iota': 'ι',
+    '\\mathrm K': 'Κ', '\\kappa': 'κ',
+    '\\Lambda': 'Λ', '\\lambda': 'λ',
+    '\\mathrm M': 'Μ', '\\mu': 'μ',
+    '\\mathrm N': 'Ν', '\\nu': 'ν',
+    '\\Xi': 'Ξ', '\\xi': 'ξ',
+    '\\mathrm O': 'Ο', '\\mathrm o': 'ο',
+    '\\Pi': 'Π', '\\pi': 'π', '\\varpi': 'ϖ',
+    '\\mathrm P': 'Ρ', '\\rho': 'ρ',
+    '\\Sigma': 'Σ', '\\sigma': 'σ', '\\varsigma': 'ς',
+    '\\mathrm T': 'Τ', '\\tau': 'τ',
+    '\\Upsilon': 'Υ', '\\upsilon': 'υ',
+    '\\Phi': 'Φ', '\\varphi': 'φ',
+    '\\mathrm X': 'Χ', '\\chi': 'χ',
+    '\\Psi': 'Ψ', '\\psi': 'ψ',
+    '\\Omega': 'Ω', '\\omega': 'ω',
+}
+
+
+def correctedLabel(label):
+    """Replace Unicode math symbols with their TeX equivalents in a label string."""
+    from .geo.lib_elements import textify_cyrillic
+    for tex, unicode_char in _TEX_SYMBOLS.items():
+        label = re.sub(re.escape(unicode_char), re.sub(r'\\', r'\\\\', tex), label)
+    return _brace_nonascii_scripts(textify_cyrillic(label))
+
+
+# Any other stray non-ASCII character is more than one token under utf8/T2A, so
+# a bare ``A_∡`` makes LaTeX stop at "! Missing { inserted". Braces make it one
+# argument. ASCII scripts (``A_1``, ``x^2``, ``A_\alpha``) already are.
+_NONASCII_SCRIPT_RE = re.compile(r'(?<!\\)([_^])([^\x00-\x7F])')
+
+
+def _brace_nonascii_scripts(label):
+    """Wrap a non-ASCII sub/superscript argument in braces: ``A_∡`` → ``A_{∡}``."""
+    return _NONASCII_SCRIPT_RE.sub(r'\1{\2}', label)

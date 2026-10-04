@@ -6,6 +6,7 @@ while resolving style pixel values against the original/reference scale.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence
 
@@ -344,6 +345,212 @@ def resolve_auto_size(size: Sequence[Any] | None, aspect_source: Sequence[float]
         w = _positive_float(w, 'size.width')
         h = _positive_float(h, 'size.height')
     return [w, h]
+
+
+def reference_size_from_config(reference) -> list | None:
+    """``[w, h]`` of ``reference.size`` when both are given, else ``None``."""
+    if not isinstance(reference, dict):
+        return None
+    size = size_from_config(reference.get('size'))
+    if size is None or size[0] is None or size[1] is None:
+        return None
+    return size
+
+
+def merge_reference(style_reference, runtime_reference) -> dict:
+    """The style's ``reference`` with the runtime one on top (``size`` merged by key)."""
+    ref = {}
+    if isinstance(style_reference, dict):
+        ref.update(style_reference)
+    if isinstance(runtime_reference, dict):
+        merged_size = {}
+        if isinstance(ref.get('size'), dict):
+            merged_size.update(ref['size'])
+        if isinstance(runtime_reference.get('size'), dict):
+            merged_size.update(runtime_reference['size'])
+        ref.update(runtime_reference)
+        if merged_size:
+            ref['size'] = merged_size
+    return ref
+
+
+def source_bounds_px_from_config(value) -> list | None:
+    """Normalize an explicit rendered-bounds rectangle in source pixels."""
+    if value is None:
+        return None
+    if isinstance(value, dict):
+        keys = ('left', 'top', 'right', 'bottom')
+        if all(k in value for k in keys):
+            raw = [value[k] for k in keys]
+        else:
+            alt = ('sourceLeftPx', 'sourceTopPx', 'sourceRightPx', 'sourceBottomPx')
+            if not all(k in value for k in alt):
+                raise ValueError(
+                    "content.bounds must have left/top/right/bottom "
+                    "or sourceLeftPx/sourceTopPx/sourceRightPx/sourceBottomPx"
+                )
+            raw = [value[k] for k in alt]
+    elif isinstance(value, (list, tuple)) and len(value) == 4:
+        raw = list(value)
+    else:
+        raise ValueError("content.bounds must be [left, top, right, bottom] or an object")
+
+    try:
+        left, top, right, bottom = [float(v) for v in raw]
+    except (TypeError, ValueError):
+        raise ValueError("content.bounds values must be numbers") from None
+    if not all(math.isfinite(v) for v in (left, top, right, bottom)):
+        raise ValueError("content.bounds values must be finite")
+    return [left, top, right, bottom]
+
+
+def source_view_from_bounds_px(source_view, bounds_px, *, padding_px=0,
+                               infinite_policy='ignore') -> dict:
+    """A source view cropped to explicit source-pixel bounds (``content.bounds``)."""
+    left_px, top_px, right_px, bottom_px = source_bounds_px_from_config(bounds_px)
+    padding_px = max(float(padding_px or 0), 0.0)
+    left_px -= padding_px
+    top_px -= padding_px
+    right_px += padding_px
+    bottom_px += padding_px
+
+    xzero = float(source_view.get('ptXZero', 0))
+    yzero = float(source_view.get('ptYZero', 0))
+    width = max(right_px - left_px, 1.0)
+    height = max(bottom_px - top_px, 1.0)
+    rendered_view = dict(source_view)
+    rendered_view.update({
+        'ptWidth': width,
+        'ptHeight': height,
+        'ptXZero': xzero - left_px,
+        'ptYZero': yzero - top_px,
+        'sourceLeftPx': left_px,
+        'sourceTopPx': top_px,
+        'sourceRightPx': right_px,
+        'sourceBottomPx': bottom_px,
+        'boundsPaddingPx': padding_px,
+        'boundsInfinitePolicy': _validate_choice('content.infinite_policy', infinite_policy,
+                                                 INFINITE_POLICIES),
+        'boundsSource': 'explicit',
+    })
+    return rendered_view
+
+
+def rendered_view_from_bounds(source_view, bounds, *, padding_px=0, infinite_policy='ignore') -> dict:
+    """A source view cropped to the drawing: ``bounds`` — ``(left, bottom,
+    right, top)`` in scene units of the drawing as measured (``None`` for an
+    empty drawing: the source view itself), ``padding_px`` source pixels
+    around it."""
+    if bounds is None:
+        return dict(source_view)
+    left_mu, bottom_mu, right_mu, top_mu = bounds
+    padding_px = max(float(padding_px or 0), 0.0)
+    unit = float(source_view.get('ptUnit', 1))
+    xzero = float(source_view.get('ptXZero', 0))
+    yzero = float(source_view.get('ptYZero', 0))
+
+    left_px = xzero + left_mu * unit - padding_px
+    right_px = xzero + right_mu * unit + padding_px
+    top_px = yzero - top_mu * unit - padding_px
+    bottom_px = yzero - bottom_mu * unit + padding_px
+
+    width = max(right_px - left_px, 1.0)
+    height = max(bottom_px - top_px, 1.0)
+    rendered_view = dict(source_view)
+    rendered_view.update({
+        'ptWidth': width,
+        'ptHeight': height,
+        'ptXZero': xzero - left_px,
+        'ptYZero': yzero - top_px,
+        'sourceLeftPx': left_px,
+        'sourceTopPx': top_px,
+        'sourceRightPx': right_px,
+        'sourceBottomPx': bottom_px,
+        'boundsPaddingPx': padding_px,
+        'boundsInfinitePolicy': infinite_policy,
+    })
+    return rendered_view
+
+
+def static_export_dict(source_view: Mapping[str, Any], *, style_reference=None, reference=None,
+                       content=None, export=None, rendered_view=None, decoration=True) -> dict:
+    """The export dict ``AnimaGeoScene.applyStyle`` leaves in ``scene.style.export``.
+
+    The same pipeline without a scene: the runtime ``reference`` over the
+    style's, ``content`` placed into the reference canvas, the ``export``
+    size, then the decoration density ``ptUnit_style`` (``prominence``,
+    ``decoration_scale_source``). For ``content.source == 'rendered_bounds'``
+    the caller measures the drawing and passes the cropped source view as
+    ``rendered_view`` (``source_view_from_bounds_px`` for explicit
+    ``content.bounds``); without it that source is a ``ValueError``.
+    ``decoration=False`` stops before ``ptUnit_style`` is re-based: the dict
+    ``applyStyle`` holds while it measures and places labels.
+    """
+    runtime_reference = merge_reference(style_reference, reference)
+    explicit_reference_size = size_from_config(reference_size_from_config(runtime_reference))
+    source_size = [source_view.get('ptWidth'), source_view.get('ptHeight')]
+    reference_size = resolve_auto_size(explicit_reference_size or source_size, source_size)
+    style_density_reference_size = list(reference_size)
+
+    export_options = normalize_export_options(export)
+    export_size = resolve_auto_size(size_from_config(export_options.get('size')), reference_size)
+    content_options = normalize_content_options(content)
+    use_rendered_bounds = content_options['source'] == 'rendered_bounds'
+
+    layout_source_view = source_view
+    if use_rendered_bounds:
+        if rendered_view is None:
+            raise ValueError("content.source 'rendered_bounds' needs the measured rendered_view")
+        layout_source_view = rendered_view
+        if explicit_reference_size is None:
+            reference_size = [rendered_view.get('ptWidth'), rendered_view.get('ptHeight')]
+
+    layout = compute_reference_export_layout(
+        layout_source_view,
+        reference_size=reference_size,
+        export_size=export_size,
+        content=content_options,
+        export=export_options,
+    )
+    out = dict(layout_source_view)
+    out.update(layout.to_export_dict())
+    out['reference'] = runtime_reference
+    if not decoration:
+        return out
+
+    prominence = content_options.get('prominence', 1.0) or 1.0
+    decoration_source = content_options.get('decoration_scale_source')
+    base = out.get('ptUnit_style')
+    if decoration_source == 'output':
+        geom_zoom = out.get('ptUnit')
+        if geom_zoom:
+            base = geom_zoom
+    elif decoration_source == 'ggb':
+        geom_zoom = out.get('ptUnit')
+        out_w = out.get('ptWidth')
+        ggb_w = source_view.get('ptWidth')
+        try:
+            if geom_zoom and out_w and ggb_w and float(out_w) > 0:
+                base = float(geom_zoom) * float(ggb_w) / float(out_w)
+        except (TypeError, ValueError):
+            pass
+    elif use_rendered_bounds and decoration_source == 'reference':
+        try:
+            density = compute_export_layout(
+                source_view,
+                export_size=style_density_reference_size,
+                fit='contain',
+                source_rect='source_view',
+            ).ptUnit
+        except Exception:
+            density = None
+        if density:
+            base = density
+    if base:
+        out['ptUnit_style'] = base / prominence
+        if prominence != 1.0:
+            out['elementProminence'] = prominence
+    return out
 
 
 def _validate_choice(name: str, value: str, choices: frozenset[str]) -> str:

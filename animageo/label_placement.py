@@ -19,6 +19,12 @@ Public API:
   updates during animation. The two gaps (arc-side vs angle-sides) live on
   ``angle_params`` so callers don't re-thread them frame-to-frame.
 - ``clear_bbox_cache()`` — invalidate the Tex bbox measurement cache.
+
+``scene`` is anything with ``geo``, ``style`` (its ``export``), ``style_config``
+and optionally ``_get_scene_bounds`` and ``measure_label``: a manim
+``AnimaGeoScene`` or a :class:`LayoutInput` (no manim; ``animageo.native``
+lays labels out of a document this way). The module itself imports manim only
+to measure a label with ``Tex`` when the input brings no measurer.
 """
 import logging
 import re
@@ -26,12 +32,58 @@ import threading
 import numpy as np
 from dataclasses import dataclass, field
 from math import pi, cos, sin, atan2, sqrt
-from typing import Optional
+from typing import Any, Callable, Optional
 
 from .style.resolver import resolve as _resolve_style
 from .labels import resolve_label_text
 
 logger = logging.getLogger(__name__)
+
+
+# The 9-point label anchors as ``(x, y)`` signs of the bbox point placed at the
+# target: the manim-free twin of ``ui.LABEL_ANCHORS`` (UL, UP, … as 2D).
+ANCHOR_EDGES = {
+    'TL': (-1.0, 1.0), 'TC': (0.0, 1.0), 'TR': (1.0, 1.0),
+    'ML': (-1.0, 0.0), 'MC': (0.0, 0.0), 'MR': (1.0, 0.0),
+    'BL': (-1.0, -1.0), 'BC': (0.0, -1.0), 'BR': (1.0, -1.0),
+}
+
+
+@dataclass
+class LayoutInput:
+    """What :func:`compute_label_layout` reads, without a manim scene (spec §9.3).
+
+    ``geo`` — the construction (``elements``, ``element(name)``,
+    ``name_mapping``); ``style`` — an object with ``export`` (``ptUnit``,
+    ``ptUnit_style``, ``ptUnit_ggb``, … as ``scene.style.export``);
+    ``style_config`` — the ``StyleConfig`` the style resolver reads;
+    ``bounds`` — ``(left, bottom, right, top)`` of the camera frame in scene
+    units (``None``: lines and rays get no clipped anchor and
+    ``viewport_clamp`` does nothing); ``measure_label`` — ``(label_text,
+    font_size) → (width, height)`` in scene units, ``font_size`` a manim font
+    size (``None``: the manim ``Tex`` measurement of the classic renderer).
+    """
+
+    geo: Any
+    style: Any
+    style_config: Any
+    bounds: Optional[tuple] = None
+    measure_label: Optional[Callable] = None
+
+    def _get_scene_bounds(self, padding=0.1):
+        if self.bounds is None:
+            raise ValueError('LayoutInput has no frame bounds')
+        left, bottom, right, top = self.bounds
+        return (left - padding, bottom - padding, right + padding, top + padding)
+
+    @classmethod
+    def from_scene(cls, scene, measure_label=None) -> 'LayoutInput':
+        """The input of a loaded manim scene (its camera frame as ``bounds``)."""
+        try:
+            bounds = tuple(scene._get_scene_bounds(padding=0))
+        except Exception:
+            bounds = None
+        return cls(scene.geo, scene.style, scene.style_config, bounds, measure_label)
 
 
 def _style_ptUnit(style):
@@ -83,7 +135,8 @@ def _measure_label_bbox(label_text: str, font_size: float) -> tuple[float, float
     it (the renderer degrades the same label to plain text — see
     ``ui._compile_label_tex``).
     """
-    from .ui import correctedLabel, RusTex
+    from .labels import correctedLabel
+    from .ui import RusTex
     # Template identity is part of the key so a future per-scene template
     # swap won't silently reuse the wrong bbox.
     key = (label_text, float(font_size), id(RusTex))
@@ -1231,13 +1284,81 @@ def _angle_render_label_radius_px(
     return float(right_px) / sqrt(2)
 
 
+def label_size(scene, elem) -> tuple:
+    """``(width, height)`` in scene MU of the label of ``elem``: its text
+    (``resolve_label_text``) at the renderer's size
+    (``font_size_px · GGB_FONT_SCALE / ptUnit_style``), measured by
+    ``scene.measure_label`` or with ``Tex``."""
+    from .constants import GGB_FONT_SCALE
+    ptUnit = _style_ptUnit(scene.style)
+    measure = getattr(scene, 'measure_label', None) or _measure_label_bbox
+    # Match the renderer: label size is the canonical pixel-unit
+    # ``font_size_px`` resolved through the style layers.
+    fs_px = _resolve_style(scene, elem, 'font_size_px', default=14.0)
+    font_px = fs_px * GGB_FONT_SCALE / ptUnit
+    return measure(resolve_label_text(scene, elem), font_px)
+
+
+def _angle_label_params(scene, elem, hw, hh, gap_arc_px=3, gap_sides_px=3) -> AngleParams:
+    """``AngleParams`` of an angle label as drawn: the outer arc (or the
+    right-angle square) it must clear and the renderer's base radius."""
+    ptUnit = _style_ptUnit(scene.style)
+    ang_rshift_px = scene.style_config.defaults.get('angle', 'arc_shift_px', 0.0)
+    angle_range = _resolve_style(scene, elem, 'angle_range', default='minor') or 'minor'
+    base_arc_px = _resolve_style(scene, elem, 'arc_size_px', default=30)
+    base_arc = compute_effective_arc_size_px(
+        elem, elem.data, scene.style, base_px=base_arc_px,
+        angle_range=angle_range,
+        auto_radius=_resolve_style(scene, elem, 'auto_radius', default=True),
+    )
+    lines = int(_resolve_style(scene, elem, 'tick_count', default=1) or 1)
+    outer_arc_px = _angle_effective_arc_r_px(base_arc, lines, ang_rshift_px)
+    render_r_px = _angle_render_label_radius_px(
+        scene, elem, base_arc, outer_arc_px, angle_range,
+    )
+    # The label target (arc_r_px) must hug the marker that's actually
+    # drawn. For a right angle that's the square marker, whose outer
+    # corner sits at ``right_angle_size_px`` (== render_r_px * sqrt(2)) —
+    # NOT the non-right arc radius. Using outer_arc_px here detaches the
+    # label and floats it out at the phantom arc distance whenever
+    # right_angle_size_px differs from arc_size_px (or auto-radius has
+    # enlarged the arc). Mirrors the right-mark test in _render_angle /
+    # _angle_render_label_radius_px.
+    effective_angle = _effective_render_angle(elem.data.size, angle_range)
+    right_mark = _resolve_style(scene, elem, 'right_angle_marker', default=None)
+    if right_mark is None:
+        right_mark = bool(np.isclose(effective_angle, pi / 2))
+    target_arc_px = (render_r_px * sqrt(2)) if right_mark else outer_arc_px
+    label_radial_offset_px = _resolve_style(
+        scene, elem, 'label_radial_offset_px', default=0.0,
+    )
+    return AngleParams(
+        arc_r_px=target_arc_px,
+        half_w=hw,
+        half_h=hh,
+        gap_arc_px=gap_arc_px,
+        gap_sides_px=gap_sides_px,
+        angle_range=angle_range,
+        render_r_px=float(render_r_px) + float(label_radial_offset_px or 0.0),
+    )
+
+
+def label_spot(scene, elem):
+    """The point (scene MU, 2D) the renderer hangs the label of ``elem``
+    from, before ``label_offset_px`` and the anchor: :func:`_get_anchor`, and
+    for an angle the middle of its marker at the label radius."""
+    from .geo import lib_elements as geo
+    if isinstance(elem.data, geo.Angle):
+        ap = _angle_label_params(scene, elem, 0.0, 0.0)
+        return compute_angle_label_base_center(elem.data, ap, _style_ptUnit(scene.style))
+    return _get_anchor(elem, scene)
+
+
 def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px=0.0):
     """Collect LabelInfo for all visible elements with label_visible=True."""
     from .geo import lib_elements as geo
 
     ptUnit = _style_ptUnit(scene.style)
-    ang_rshift_px = scene.style_config.defaults.get('angle', 'arc_shift_px', 0.0)
-    scene_style = scene.style
 
     labels = []
     for elem in scene.geo.elements:
@@ -1247,13 +1368,7 @@ def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px
         if _resolve_style(scene, elem, 'label_placement_locked', default=False):
             continue
 
-        label_text = resolve_label_text(scene, elem)
-        # Match the renderer: label size is the canonical pixel-unit
-        # ``font_size_px`` resolved through the style layers.
-        fs_px = _resolve_style(scene, elem, 'font_size_px', default=14.0)
-        from .constants import GGB_FONT_SCALE
-        font_px = fs_px * GGB_FONT_SCALE / ptUnit
-        tex_w, tex_h = _measure_label_bbox(label_text, font_px)
+        tex_w, tex_h = label_size(scene, elem)
         hw = tex_w / 2
         hh = tex_h / 2
 
@@ -1272,49 +1387,12 @@ def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px
             # Angle labels: exact position along bisector, past the arc.
             # Delegate to the extracted pure helper so the math stays in one
             # place and can be reused per-frame during animation.
-            anchor_pt = _get_anchor(elem, scene)
-            angle_range = _resolve_style(scene, elem, 'angle_range', default='minor') or 'minor'
-            base_arc_px = _resolve_style(scene, elem, 'arc_size_px', default=30)
-            base_arc = compute_effective_arc_size_px(
-                elem, elem.data, scene_style, base_px=base_arc_px,
-                angle_range=angle_range,
-                auto_radius=_resolve_style(scene, elem, 'auto_radius', default=True),
-            )
-            lines = int(_resolve_style(scene, elem, 'tick_count', default=1) or 1)
-            outer_arc_px = _angle_effective_arc_r_px(base_arc, lines, ang_rshift_px)
-            render_r_px = _angle_render_label_radius_px(
-                scene, elem, base_arc, outer_arc_px, angle_range,
-            )
-            # The label target (arc_r_px) must hug the marker that's actually
-            # drawn. For a right angle that's the square marker, whose outer
-            # corner sits at ``right_angle_size_px`` (== render_r_px * sqrt(2)) —
-            # NOT the non-right arc radius. Using outer_arc_px here detaches the
-            # label and floats it out at the phantom arc distance whenever
-            # right_angle_size_px differs from arc_size_px (or auto-radius has
-            # enlarged the arc). Mirrors the right-mark test in _render_angle /
-            # _angle_render_label_radius_px.
-            effective_angle = _effective_render_angle(elem.data.size, angle_range)
-            right_mark = _resolve_style(scene, elem, 'right_angle_marker', default=None)
-            if right_mark is None:
-                right_mark = bool(np.isclose(effective_angle, pi / 2))
-            target_arc_px = (render_r_px * sqrt(2)) if right_mark else outer_arc_px
-            label_radial_offset_px = _resolve_style(
-                scene, elem, 'label_radial_offset_px', default=0.0,
-            )
-            ap = AngleParams(
-                arc_r_px=target_arc_px,
-                half_w=hw,
-                half_h=hh,
-                gap_arc_px=gap_arc_px,
-                gap_sides_px=gap_sides_px,
-                angle_range=angle_range,
-                render_r_px=float(render_r_px) + float(label_radial_offset_px or 0.0),
-            )
+            ap = _angle_label_params(scene, elem, hw, hh, gap_arc_px, gap_sides_px)
             fc = compute_angle_label_center(elem.data, ap, ptUnit)
 
             labels.append(LabelInfo(
                 name=elem.name,
-                anchor=anchor_pt,
+                anchor=_get_anchor(elem, scene),
                 half_w=hw,
                 half_h=hh,
                 fixed_center=fc,
@@ -2729,7 +2807,9 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
     for per-frame updates in animation-driven flows.
 
     Args:
-        scene: AnimaGeoScene instance (read-only access to ``geo``/``style``).
+        scene: AnimaGeoScene instance or :class:`LayoutInput` (read-only
+            access to ``geo``/``style``/``style_config``; labels are measured
+            by its ``measure_label`` when it has one).
         cfg: optional override for ``overlay.label_placement`` config dict.
             When ``None``, read from ``scene.style_config.overlay``.
         canonicalize: when ``True``, rewrite every non-angle placement to use
@@ -3198,8 +3278,7 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
                 # + O_A / ptUnit_ggb. Setting anchor=MC gives visual_center =
                 # pos + O_mc / ptUnit_ggb, so O_mc = O_A - edge_A * halfExtent
                 # * ptUnit_ggb (all per-axis).
-                from .ui import LABEL_ANCHORS
-                edge = LABEL_ANCHORS[label_anchor]  # 3D manim vector
+                edge = ANCHOR_EDGES[label_anchor]
                 offset_ggb = (
                     offset_ggb[0] - float(edge[0]) * lbl.half_w * ptUnit_ggb,
                     offset_ggb[1] - float(edge[1]) * lbl.half_h * ptUnit_ggb,
