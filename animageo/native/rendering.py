@@ -27,6 +27,12 @@ of the output, for PDF px at 96 dpi; the y axis points down)::
      "diagnostics": [{"code": …, "elementId": …, …}]}
 
     px = ox + u·x,  py = oy − u·y
+
+An equality mark (``mark.equal_segments``, ``mark.equal_angles``) has no
+drawing of its own: its ``box`` is the union of the boxes of its drawn
+targets (``null`` when none is drawn, the mark is hidden or undefined), its
+``label`` is ``null``. A right-angle mark is drawn as an angle with the
+right-angle marker and reports its own box.
 """
 from __future__ import annotations
 
@@ -47,6 +53,7 @@ __all__ = [
     'appearance_plan',
     'build_report',
     'label_overlaps',
+    'mark_targets',
     'render',
     'source_view',
 ]
@@ -109,7 +116,29 @@ def _finite_pair(value) -> bool:
                     for v in value))
 
 
-def appearance_plan(doc, unit: float) -> tuple:
+EQUALITY_MARKS = ('mark.equal_segments', 'mark.equal_angles')
+
+
+def mark_targets(doc) -> dict:
+    """``{markId: [targetId, …]}`` of the elements bound to an equality mark
+    (``mark.equal_segments``, ``mark.equal_angles``): the elements of its list
+    argument in order (a right-angle mark draws itself and is not listed)."""
+    from .document import bound_producer, iter_refs
+    doc = as_document(doc)
+    out = {}
+    for el_id in sorted(doc.elements):
+        if doc.elements[el_id].get('type') != 'mark':
+            continue
+        producer = bound_producer(doc, el_id)
+        op = doc.operations.get(producer) if producer is not None else None
+        if op is None or op.get('op') not in EQUALITY_MARKS:
+            continue
+        out[el_id] = [r for arg in op.get('args', {}).values() if isinstance(arg, dict) and arg.get('kind') == 'list'
+                      for r in iter_refs(arg) if r in doc.elements]
+    return out
+
+
+def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None) -> tuple:
     """``({elementId: {"visible": bool, "style": {key: value}}}, diagnostics)``.
 
     Every element gets an entry. ``label.mode`` defaults to ``name`` for a
@@ -117,6 +146,14 @@ def appearance_plan(doc, unit: float) -> tuple:
     ``displayName``. ``offsetWorld`` (world units) becomes ``label_offset_px``
     at the source ``unit`` (y up) and locks the label against automatic
     placement. ``overrides`` set :data:`APPEARANCE_STYLE_KEYS` only.
+
+    Marks (registry 1.3): a visible, defined equality mark sets
+    ``tick_count = count`` on its targets (:func:`mark_targets`) — an
+    explicit ``overrides.tick_count`` of a target wins, and of several marks
+    on one target the first in ID order wins; a visible, defined right-angle
+    mark gets ``right_angle_marker = True`` unless overridden. Definedness
+    comes from ``evaluated`` (an ``Evaluated``) or a fresh ``evaluate`` with
+    ``inputs``.
     """
     doc = as_document(doc)
     appearance = doc.data.get('appearance')
@@ -168,6 +205,22 @@ def appearance_plan(doc, unit: float) -> tuple:
                 else:
                     diagnostics.append({'code': 'unknown_style_key', 'elementId': el_id, 'key': key})
         plan[el_id] = {'visible': visible if isinstance(visible, bool) else True, 'style': style}
+    marks = sorted(el_id for el_id, el in doc.elements.items() if el.get('type') == 'mark')
+    if marks:
+        if evaluated is None:
+            from .kernel.evaluate import evaluate
+            evaluated = evaluate(doc, inputs=inputs)
+        targets = mark_targets(doc)
+        for mark_id in marks:
+            record = evaluated.elements.get(mark_id, {})
+            if record.get('state') != 'defined' or not plan[mark_id]['visible']:
+                continue
+            kind, count = record['value']['kind'], record['value']['count']
+            if kind == 'right_angle':
+                plan[mark_id]['style'].setdefault('right_angle_marker', True)
+                continue
+            for target in targets.get(mark_id, ()):
+                plan[target]['style'].setdefault('tick_count', count)
     return plan, diagnostics
 
 
@@ -358,6 +411,14 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
                                    'text': resolve_label_text(scene, elem)}
                 label_boxes[el_id] = record['label']['box']
         elements[el_id] = record
+    for mark_id, targets in mark_targets(doc).items():
+        record = elements[mark_id]
+        elem = scene.geo.element(names.by_id[mark_id])
+        shown = record['state'] == 'defined' and elem is not None and bool(getattr(elem, 'visible', True))
+        boxes = [elements[t]['box'] for t in targets if shown and elements[t]['box'] is not None]
+        record['visible'] = bool(boxes)
+        record['box'] = [min(b[0] for b in boxes), min(b[1] for b in boxes),
+                         max(b[2] for b in boxes), max(b[3] for b in boxes)] if boxes else None
     return {
         'format': REPORT_FORMAT,
         'documentId': doc.document_id,

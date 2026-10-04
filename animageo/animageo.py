@@ -1195,7 +1195,7 @@ class AnimaGeoScene(MovingCameraScene):
         self._construction_source = {'kind': 'native', 'documentId': doc.document_id}
         construction.log_unsupported = bool(debug)
         construction.rebuild(debug=debug, full=True)
-        plan, diagnostics = appearance_plan(doc, view['ptUnit'])
+        plan, diagnostics = appearance_plan(doc, view['ptUnit'], inputs=inputs)
         for el_id, entry in plan.items():
             elem = construction.objectByName(names.by_id[el_id])
             if isinstance(elem, geo.Element):   # a Var (free number) is not drawn

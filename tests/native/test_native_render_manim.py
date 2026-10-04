@@ -189,7 +189,8 @@ def test_load_document_on_a_scene():
 # z-index ties by that order, and cairo merges a fill and a stroke drawn one
 # right after the other into one <path>.
 
-def dsl_svg(code, bounds, path):
+def dsl_svg(code, bounds, path, style=None):
+    """Draw DSL ``code``; ``style``: ``{name: {key: value}}`` written to the elements."""
     from animageo.parsers import dsl
     view_doc = builder('view', bounds).doc
     view = native.source_view(view_doc)
@@ -201,6 +202,9 @@ def dsl_svg(code, bounds, path):
     scene.geo.rebuild(full=True)
     for elem in scene.geo.elements:
         elem.style['label_visible'] = False
+    for name, keys in (style or {}).items():
+        for key, value in keys.items():
+            scene.geo.element(name).style[key] = value
     scene.applyStyle()
     scene.addAllGeometry(show=True)
     scene.exportSVG(str(path))
@@ -336,21 +340,64 @@ def pair_projection():
                    'H = ClosestPoint(l, P)\ns = Segment(P, H)\n')
 
 
+def builder3(doc_id, bounds=BOUNDS):
+    return DocBuilder(doc_id, registry_version='1.3', bounds=bounds)
+
+
+def pair_angles():
+    b = builder3('angles')
+    b.free('A', -4, -2).free('B', 3, -1).free('C', 0, 3)
+    b.angle('g', 'B', 'A', 'C').angle('h', 'A', 'B', 'C').angle('k', 'A', 'C', 'B')
+    return b.doc, ('A = Point(-4, -2)\nB = Point(3, -1)\nC = Point(0, 3)\ng = Angle(B, A, C)\n'
+                   'h = Angle(A, B, C)\nk = Angle(A, C, B)\n')
+
+
+def pair_incircle():
+    b = builder3('incircle')
+    b.free('A', -4, -3).free('B', 4, -2).free('C', 0, 3)
+    b.incircle('k', 'A', 'B', 'C', center='I', touches=('T1', 'T2', 'T3'))
+    values = native.evaluate(b.doc).elements
+
+    def lit(el_id):
+        v = values[el_id]['value']
+        return f'Point({v["x"]!r}, {v["y"]!r})'
+    return b.doc, ('A = Point(-4, -3)\nB = Point(4, -2)\nC = Point(0, 3)\n'
+                   f'I = {lit("I")}\nk = Incircle(A, B, C)\nT1 = {lit("T1")}\nT2 = {lit("T2")}\n'
+                   f'T3 = {lit("T3")}\n')
+
+
+def pair_equal_marks():
+    b = builder3('equal_marks')
+    b.free('A', -4, -2).free('B', 4, -2).free('C', 0, 3)
+    b.segment('s', 'A', 'C').segment('t', 'B', 'C').angle('g', 'B', 'A', 'C').angle('h', 'C', 'B', 'A')
+    b.equal_segments('m', 's', 't', count=2).equal_angles('n', 'g', 'h', count=3)
+    return b.doc, ('A = Point(-4, -2)\nB = Point(4, -2)\nC = Point(0, 3)\ng = Angle(B, A, C)\n'
+                   'h = Angle(C, B, A)\ns = Segment(A, C)\nt = Segment(B, C)\n'), \
+        {'s': {'tick_count': 2}, 't': {'tick_count': 2}, 'g': {'tick_count': 3}, 'h': {'tick_count': 3}}
+
+
+def pair_right_angle():
+    b = builder3('right_angle')
+    b.free('A', -1, -1).free('B', 3, 1).free('C', -3, 3).right_mark('r', 'B', 'A', 'C')
+    return b.doc, 'A = Point(-1, -1)\nB = Point(3, 1)\nC = Point(-3, 3)\nr = Angle(B, A, C)\n', \
+        {'r': {'right_angle_marker': True}}
+
+
 PAIRS = [pair_triangle, pair_midpoints, pair_line_ray, pair_circle, pair_line_line, pair_line_circle,
          pair_circle_circle, pair_other_point, pair_on_paths, pair_quad,
          pair_parallel_perpendicular, pair_bisectors, pair_vector, pair_circle_radius, pair_circumcircle,
-         pair_projection]
+         pair_projection, pair_angles, pair_incircle, pair_equal_marks, pair_right_angle]
 
 
 @pytest.mark.parametrize('pair', PAIRS, ids=[p.__name__[5:] for p in PAIRS])
 def test_same_paths_as_the_dsl(pair, tmp_path):
-    doc, code = pair()
+    doc, code, *style = pair()
     appearance = doc.get('appearance', {})
     no_labels(doc)
     for el_id, entry in appearance.items():
         doc['appearance'][el_id].update(entry)
     native.render(doc, out=tmp_path / 'native.svg', report=False)
-    dsl_svg(code, BOUNDS, tmp_path / 'dsl.svg')
+    dsl_svg(code, BOUNDS, tmp_path / 'dsl.svg', style[0] if style else None)
     native_paths, dsl_paths = path_tags(tmp_path / 'native.svg'), path_tags(tmp_path / 'dsl.svg')
     assert sum(native_paths.values()) > 0
     assert native_paths == dsl_paths
@@ -385,3 +432,30 @@ def test_vector_is_drawn_and_a_number_is_not(tmp_path):
     box = els['v']['box']
     assert box[0] <= min(x0, x1) + 1 and box[2] >= max(x0, x1) - 1
     assert box[1] <= min(y0, y1) + 1 and box[3] >= max(y0, y1) - 1
+
+
+def test_marks_in_the_report(tmp_path):
+    b = builder3('marks_report')
+    b.free('A', -4, -2).free('B', 4, -2).free('C', 0, 3)
+    b.segment('s', 'A', 'C').segment('t', 'B', 'C').angle('g', 'B', 'A', 'C').angle('h', 'C', 'B', 'A')
+    b.equal_segments('m', 's', 't', count=2).equal_angles('n', 'g', 'h', count=3)
+    b.right_mark('r', 'B', 'A', 'C')                      # not a right angle: the marker is forced
+    doc = b.doc
+    report = native.render(doc, out=tmp_path / 'm.svg').report
+    els = report['elements']
+    s, t, m = els['s']['box'], els['t']['box'], els['m']['box']
+    assert m == [min(s[0], t[0]), min(s[1], t[1]), max(s[2], t[2]), max(s[3], t[3])]
+    assert els['m']['visible'] and els['m']['label'] is None
+    assert els['n']['visible'] and els['n']['box'] is not None
+    assert els['r']['visible'] and els['r']['box'] is not None and els['r']['label'] is None
+    # hidden or undefined: no ticks, no box
+    hidden = native.render(doc | {'appearance': {'m': {'visible': False}}}, out=tmp_path / 'h.svg').report
+    assert hidden['elements']['m'] == {'state': 'defined', 'visible': False, 'box': None, 'label': None}
+    gone = native.render(doc, out=tmp_path / 'u.svg', inputs={'B': point_input(-4, -2)}).report
+    assert gone['elements']['n']['state'] == 'undefined'
+    assert gone['elements']['n']['visible'] is False and gone['elements']['n']['box'] is None
+    assert gone['elements']['r']['visible'] is False
+    with open(tmp_path / 'h.svg', encoding='utf-8') as fh:
+        hidden_paths = len(re.findall(r'<path', fh.read()))
+    with open(tmp_path / 'm.svg', encoding='utf-8') as fh:
+        assert len(re.findall(r'<path', fh.read())) == hidden_paths + 4     # 2 ticks on each of s, t

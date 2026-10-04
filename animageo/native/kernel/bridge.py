@@ -22,6 +22,14 @@ by type: a vector is a classic ``Vector``; a number is a ``float``
 ``AngleSize`` (``angle``) or a ``Measure`` of dimension 0 (``count``). Params
 and number literals are constants of the command, not classic inputs.
 
+An angle is a classic ``Angle(vertex, side1, side2)`` carrying the kernel
+``size``; ``angle.by_points`` gives it the sides ``a − vertex`` and
+``b − vertex`` (the classic arc radius depends on their lengths), other
+values unit sides along ``a0`` and ``a1``. A right-angle mark is a classic
+``Angle`` of its three points (drawn with the right-angle marker, see
+``native.appearance_plan``); an equality mark is a :class:`NativeMark` —
+no geometry of its own, the renderer draws its ticks on the targets.
+
 This module imports ``animageo.geo`` (and numpy) inside its functions only,
 so ``import animageo.native`` stays free of the classic code; ``animageo.geo``
 itself does not need manim.
@@ -39,7 +47,7 @@ from .numeric import scene_scale, tolerances
 from .ops import IMPLEMENTATIONS, OpContext
 from .values import Detailed, Input, Undefined, is_finite_value
 
-__all__ = ['Names', 'build_construction', 'classic_name', 'to_classic', 'from_classic']
+__all__ = ['Names', 'NativeMark', 'build_construction', 'classic_name', 'to_classic', 'from_classic']
 
 _UUID_RE = re.compile(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')
 
@@ -77,28 +85,48 @@ def build_names(element_ids) -> Names:
 
 # ── value conversion ─────────────────────────────────────────────────────
 
+class NativeMark:
+    """Classic data of an equality mark (``mark.equal_segments``,
+    ``mark.equal_angles``): its ``kind`` and ``count`` only. It has no
+    geometry and no renderer — ``addAllGeometry`` skips it; the appearance
+    plan puts ``tick_count`` on the marked segments and angles."""
+
+    def __init__(self, kind: str, count: int):
+        self.kind = kind
+        self.count = count
+
+    def __repr__(self):
+        return f'NativeMark({self.kind}, {self.count})'
+
+
 def _fingerprint(obj) -> tuple:
     keys = ('coords', 'normal', 'offset', 'start', 'endpoints', 'center', 'radius', 'vertices', 'value',
-            'dimension')
+            'dimension', 'vertex', 'side1', 'side2', 'kind', 'count')
     out = []
     for key in keys:
         value = getattr(obj, key, None)
-        if value is not None:
+        if isinstance(value, str):
+            out.append((key, value))
+        elif value is not None:
             out.append((key, value.tobytes() if hasattr(value, 'tobytes') else float(value)))
     return tuple(out)
 
 
-def to_classic(type_: str, value):
+def to_classic(type_: str, value, *, sides=None):
     """A kernel value as a classic data object (``None`` for no value).
 
     The kernel value is cached on the object (``_native``) with a
     fingerprint of its classic fields, so a downstream kernel op reads the
     exact kernel value back (a line's ``p`` is not recomputed from the
     classic normal and offset) unless the object was moved since.
+
+    ``sides``: ``(side1, side2)`` vectors of an ``angle`` (default: unit
+    vectors along ``a0`` and ``a1``), or ``(vertex, side1, side2)`` of a
+    ``right_angle`` mark (without them the mark is a :class:`NativeMark`).
     """
     if value is None:
         return None
-    from ...geo.lib_elements import Circle, Line, Point, Polygon, Ray, Segment, Vector
+    from ...geo.lib_elements import Angle, Circle, Line, Point, Polygon, Ray, Segment, Vector
     from ...geo.lib_vars import AngleSize, Measure
     import numpy as np
 
@@ -121,6 +149,20 @@ def to_classic(type_: str, value):
         obj = Polygon(value['vertices'])
     elif type_ == 'vector':
         obj = Vector(np.array([value['a'], value['b']], dtype=float))
+    elif type_ == 'angle':
+        if sides is None:
+            a0, a1 = value['a0'], value['a1']
+            sides = ((math.cos(a0), math.sin(a0)), (math.cos(a1), math.sin(a1)))
+        obj = Angle(np.array(value['vertex'], dtype=float), np.array(sides[0], dtype=float),
+                    np.array(sides[1], dtype=float))
+        obj.size = float(value['size'])                 # the kernel size, not the classic difference
+        obj.end_angle = obj.start_angle + obj.size
+    elif type_ == 'mark':
+        if value['kind'] == 'right_angle' and sides is not None:
+            vertex, side1, side2 = (np.array(v, dtype=float) for v in sides)
+            obj = Angle(vertex, side1, side2)
+        else:
+            obj = NativeMark(value['kind'], int(value['count']))
     elif type_ == 'number':
         unit = value['unit']
         if unit == 'angle':
@@ -173,6 +215,20 @@ def from_classic(type_: str, obj):
     if type_ == 'vector':
         (ax, ay), (bx, by) = (map(float, p) for p in obj.endpoints)
         return {'a': [ax, ay], 'b': [bx, by], 'length': math.hypot(bx - ax, by - ay)}
+    if type_ == 'angle':
+        from .ops.angle import angle_size, normalize_angle
+        (s1x, s1y), (s2x, s2y) = (map(float, v) for v in (obj.side1, obj.side2))
+        l1, l2 = math.hypot(s1x, s1y), math.hypot(s2x, s2y)
+        if l1 == 0 or l2 == 0:
+            return None
+        ua, ub = (s1x / l1, s1y / l1), (s2x / l2, s2y / l2)
+        a0 = normalize_angle(math.atan2(ua[1], ua[0]))
+        size = angle_size(ua, ub)
+        return {'vertex': [float(v) for v in obj.vertex], 'a0': a0, 'a1': a0 + size, 'size': size}
+    if type_ == 'mark':
+        if isinstance(obj, NativeMark):
+            return {'kind': obj.kind, 'count': int(obj.count)}
+        return {'kind': 'right_angle', 'count': 1}     # a classic Angle drawn as a right-angle mark
     if type_ == 'number':
         from ...geo.lib_vars import AngleSize, Measure
         if isinstance(obj, AngleSize):
@@ -270,8 +326,20 @@ class _Runner:
             if value is None or isinstance(value, Undefined) or not is_finite_value(value):
                 out.append(None)
             else:
-                out.append(to_classic(type_, value))
+                out.append(to_classic(type_, value, sides=_classic_sides(self.op_name, type_, args)))
         return out
+
+
+def _classic_sides(op_name, type_, args):
+    """The ``sides`` of :func:`to_classic` from the producer's arguments."""
+    if op_name not in ('angle.by_points', 'mark.right_angle'):
+        return None
+    v = args['vertex'].value
+    side1 = (args['a'].value['x'] - v['x'], args['a'].value['y'] - v['y'])
+    side2 = (args['b'].value['x'] - v['x'], args['b'].value['y'] - v['y'])
+    if type_ == 'angle':
+        return side1, side2
+    return (v['x'], v['y']), side1, side2
 
 
 def build_construction(doc, *, inputs=None, seed=None):

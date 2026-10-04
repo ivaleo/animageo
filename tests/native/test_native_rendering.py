@@ -87,6 +87,49 @@ class TestAppearancePlan:
         ]
 
 
+class TestMarksInThePlan:
+    def doc(self):
+        b = DocBuilder('marks', registry_version='1.3')
+        b.free('A', 0, 0).free('B', 4, 0).free('C', 0, 3).free('D', 4, 3)
+        b.segment('s', 'A', 'B').segment('t', 'C', 'D').segment('u', 'A', 'C')
+        b.angle('g', 'B', 'A', 'C').angle('h', 'C', 'D', 'B')
+        b.equal_segments('m1', 's', 't', count=2).equal_segments('m2', 't', 'u', count=3)
+        b.equal_angles('ma', 'g', 'h').right_mark('r', 'B', 'A', 'C')
+        return b.doc
+
+    def test_targets(self):
+        assert rendering.mark_targets(self.doc()) == {'m1': ['s', 't'], 'm2': ['t', 'u'], 'ma': ['g', 'h']}
+
+    def test_tick_counts_and_the_right_marker(self):
+        plan, diagnostics = rendering.appearance_plan(self.doc(), 40.0)
+        assert diagnostics == []
+        ticks = {e: plan[e]['style'].get('tick_count') for e in ('s', 't', 'u', 'g', 'h')}
+        assert ticks == {'s': 2, 't': 2, 'u': 3, 'g': 1, 'h': 1}      # t: the first mark in ID order wins
+        assert plan['r']['style']['right_angle_marker'] is True
+        for mark in ('m1', 'm2', 'ma', 'r'):
+            assert plan[mark]['style']['label_visible'] is False
+        assert 'tick_count' not in plan['m1']['style']
+
+    def test_an_override_wins_and_a_hidden_mark_draws_nothing(self):
+        d = self.doc()
+        d['appearance'] = {'t': {'overrides': {'tick_count': 0}}, 'm2': {'visible': False},
+                           'r': {'overrides': {'right_angle_marker': False}}}
+        plan, _ = rendering.appearance_plan(d, 40.0)
+        assert plan['t']['style']['tick_count'] == 0
+        assert 'tick_count' not in plan['u']['style']
+        assert plan['r']['style']['right_angle_marker'] is False
+
+    def test_an_undefined_mark_draws_nothing(self):
+        d = self.doc()
+        plan, _ = rendering.appearance_plan(d, 40.0, inputs={'B': point_input(0, 0)})
+        # B = A: the angle g and the right mark are undefined, m1 still marks s and t
+        assert 'right_angle_marker' not in plan['r']['style']
+        assert 'tick_count' not in plan['g']['style'] and 'tick_count' not in plan['h']['style']
+        assert plan['s']['style']['tick_count'] == 2
+        ev = native.evaluate(d, inputs={'B': point_input(0, 0)})
+        assert rendering.appearance_plan(d, 40.0, evaluated=ev) == (plan, [])
+
+
 def test_label_overlaps():
     boxes = {'A': [0, 0, 10, 10], 'B': [8, 8, 18, 18], 'C': [5, 5, 15, 15], 'D': [100, 0, 101, 1]}
     # A∩B = 4 < 0.15·100; A∩C = 25; B∩C = 49

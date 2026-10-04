@@ -1,5 +1,7 @@
 """Bridge identity: a document built as a classic construction gives the
 values of ``native.evaluate`` (no manim needed: ``animageo.geo`` is plain numpy)."""
+import math
+
 import pytest
 
 from animageo import native
@@ -230,3 +232,65 @@ def test_numbers_by_unit(unit, cls):
         expected = 'scalar' if unit == 'count' else unit
         assert bridge.from_classic('number', obj) == {'value': 3.0, 'unit': expected}
     assert bridge.from_classic('number', 2) == {'value': 2.0, 'unit': 'scalar'}
+
+
+# ── registry 1.3 ─────────────────────────────────────────────────────────
+
+def a3_doc():
+    b = DocBuilder('bridge_a3', registry_version='1.3')
+    b.free('A', 0, 0).free('B', 6, 0).free('C', 1, 4)
+    b.segment('s', 'A', 'B').segment('t', 'A', 'C').angle('g', 'B', 'A', 'C').angle('h', 'C', 'B', 'A')
+    b.equal_segments('es', 's', 't', count=2).equal_angles('ea', 'g', 'h', count=3).right_mark('r', 'B', 'A', 'C')
+    b.incircle('k', 'A', 'B', 'C', center='I', touches=('T1', 'T2', 'T3')).angle('gt', 'T2', 'I', 'T3')
+    return b.doc
+
+
+@pytest.mark.parametrize('inputs', [None, {'C': point_input(0, 6)}, {'C': point_input(3, 0)},
+                                    {'B': point_input(0, 0)}])
+def test_identity_a3(inputs):
+    doc = a3_doc()
+    _c, _n, got = bridge_values(doc, inputs)
+    assert native.canonical_json(got) == native.canonical_json(evaluated_values(doc, inputs))
+
+
+def test_classic_data_of_angles_and_marks():
+    from animageo.geo.lib_elements import Angle
+    construction, names, got = bridge_values(a3_doc())
+    data = {el_id: construction.objectByName(names.by_id[el_id]).data for el_id in ('g', 'es', 'ea', 'r')}
+    g = data['g']
+    assert isinstance(g, Angle) and g.size == got['g']['size']
+    # angle.by_points keeps the real sides: the classic arc radius depends on their lengths
+    assert list(g.side1) == [6.0, 0.0] and list(g.side2) == [1.0, 4.0] and list(g.vertex) == [0.0, 0.0]
+    assert isinstance(data['es'], bridge.NativeMark) and (data['es'].kind, data['es'].count) == ('equal_segments', 2)
+    assert (data['ea'].kind, data['ea'].count) == ('equal_angles', 3)
+    r = data['r']
+    assert isinstance(r, Angle) and list(r.side1) == [6.0, 0.0] and list(r.side2) == [1.0, 4.0]
+    assert got['r'] == {'kind': 'right_angle', 'count': 1}
+
+
+def test_angle_and_mark_round_trip_without_the_cache():
+    import math
+    value = {'vertex': [1.0, 2.0], 'a0': 5.5, 'a1': 5.5 + 1.25, 'size': 1.25}
+    obj = bridge.to_classic('angle', value)
+    assert bridge.from_classic('angle', obj) is value
+    del obj._native
+    back = bridge.from_classic('angle', obj)       # recomputed from unit sides: equal up to rounding
+    assert back['vertex'] == value['vertex']
+    assert all(math.isclose(back[k], value[k], abs_tol=1e-14) for k in ('a0', 'a1', 'size'))
+    assert obj.size == 1.25
+    for value in ({'kind': 'equal_segments', 'count': 2}, {'kind': 'equal_angles', 'count': 1},
+                  {'kind': 'right_angle', 'count': 1}):
+        obj = bridge.to_classic('mark', value)
+        assert isinstance(obj, bridge.NativeMark)
+        del obj._native
+        assert bridge.from_classic('mark', obj) == value
+    right = bridge.to_classic('mark', {'kind': 'right_angle', 'count': 1}, sides=((0, 0), (2, 0), (0, 3)))
+    del right._native
+    assert bridge.from_classic('mark', right) == {'kind': 'right_angle', 'count': 1}
+
+
+def test_a_moved_angle_is_read_from_its_fields():
+    obj = bridge.to_classic('angle', {'vertex': [0.0, 0.0], 'a0': 0.0, 'a1': 1.0, 'size': 1.0}, sides=((2, 0), (0, 2)))
+    obj.translate([1.0, 1.0])
+    back = bridge.from_classic('angle', obj)
+    assert back['vertex'] == [1.0, 1.0] and back['size'] == math.pi / 2
