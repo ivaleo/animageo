@@ -61,7 +61,9 @@ class LayoutInput:
     units (``None``: lines and rays get no clipped anchor and
     ``viewport_clamp`` does nothing); ``measure_label`` — ``(label_text,
     font_size) → (width, height)`` in scene units, ``font_size`` a manim font
-    size (``None``: the manim ``Tex`` measurement of the classic renderer).
+    size (``None``: the manim ``Tex`` measurement of the classic renderer);
+    ``label_point_clearance`` — as the scene attribute of that name
+    (:func:`point_label_clearance`).
     """
 
     geo: Any
@@ -69,6 +71,7 @@ class LayoutInput:
     style_config: Any
     bounds: Optional[tuple] = None
     measure_label: Optional[Callable] = None
+    label_point_clearance: bool = False
 
     def _get_scene_bounds(self, padding=0.1):
         if self.bounds is None:
@@ -83,7 +86,57 @@ class LayoutInput:
             bounds = tuple(scene._get_scene_bounds(padding=0))
         except Exception:
             bounds = None
-        return cls(scene.geo, scene.style, scene.style_config, bounds, measure_label)
+        return cls(scene.geo, scene.style, scene.style_config, bounds, measure_label,
+                   bool(getattr(scene, 'label_point_clearance', False)))
+
+
+# GeoStyle.dot_size: the renderer's point size when no style layer has size_px.
+DOT_SIZE_PX = 2.8346456692916
+
+
+def point_label_clearance(scene, elem, anchor=None) -> Optional[list]:
+    """``label_offset_px`` that hangs the label of a point clear of its marker,
+    or ``None`` when the label keeps its own.
+
+    Only for a scene with ``label_point_clearance`` (``loadDocument``: a
+    native document has no applet label positions; the classic paths keep
+    the intrinsic ``[0.5, 0]``). Applies to a point label that is neither
+    placed by the solver (``_auto_placed``) nor pinned
+    (``label_placement_locked``) and whose offset comes from no element or
+    style layer (``trace`` source ``intrinsic.style`` or ``missing``). The
+    anchor corner of the box (``anchor`` or the element's ``label_anchor``,
+    ``BL`` by default as ``ui.create_label``) moves away from the point along
+    the corner's direction by the marker radius plus ``point_gap_px`` of
+    ``overlay.label_placement``, so the box clears that circle; ``MC`` (the
+    centre on the point) is left as it is. In ``ptUnit_ggb`` pixels, as the
+    renderer divides ``label_offset_px``.
+    """
+    from .geo import lib_elements as geo
+    from .style.resolver import trace
+    if not getattr(scene, 'label_point_clearance', False) or not isinstance(elem.data, geo.Point):
+        return None
+    if elem.style.get('_auto_placed') or _resolve_style(scene, elem, 'label_placement_locked', default=False):
+        return None
+    if trace(scene, elem, 'label_offset_px')[0] not in ('intrinsic.style', 'missing'):
+        return None
+    if anchor is None:
+        anchor = elem.style.get('label_anchor')
+    if isinstance(anchor, str):
+        edge = ANCHOR_EDGES.get(anchor, ANCHOR_EDGES['BL'])
+    elif anchor is not None:
+        edge = (float(anchor[0]), float(anchor[1]))
+    else:
+        edge = ANCHOR_EDGES['BL']
+    norm = sqrt(edge[0] * edge[0] + edge[1] * edge[1])
+    if norm == 0:
+        return None
+    ptUnit = _style_ptUnit(scene.style)
+    scale = scene.style.export.get('ptUnit_ggb') or ptUnit
+    size = float(_resolve_style(scene, elem, 'size_px', default=DOT_SIZE_PX) or 0.0)
+    gap = float(_overlay_label_placement_config(scene).get(
+        'point_gap_px', DEFAULT_CONFIG['point_gap_px']) or 0.0)
+    reach = (size / 2 + gap) / ptUnit * scale
+    return [-edge[0] / norm * reach, -edge[1] / norm * reach]
 
 
 def _style_ptUnit(style):

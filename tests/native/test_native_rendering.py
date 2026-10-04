@@ -137,6 +137,43 @@ def test_label_overlaps():
     assert rendering.label_overlaps(boxes, share=0.04) == [['A', 'B'], ['A', 'C'], ['B', 'C']]
 
 
+def _all_pairs(boxes, share=rendering.OVERLAP_SHARE):
+    ids, pairs = sorted(boxes), []
+    for i, a in enumerate(ids):
+        ax0, ay0, ax1, ay1 = boxes[a]
+        for b in ids[i + 1:]:
+            bx0, by0, bx1, by1 = boxes[b]
+            smaller = min((ax1 - ax0) * (ay1 - ay0), (bx1 - bx0) * (by1 - by0))
+            dx, dy = min(ax1, bx1) - max(ax0, bx0), min(ay1, by1) - max(ay0, by0)
+            if smaller > 0 and dx > 0 and dy > 0 and dx * dy >= share * smaller:
+                pairs.append([a, b])
+    return pairs
+
+
+def test_label_overlaps_sweep_finds_every_pair():
+    import random
+    rng = random.Random(11)
+    for _ in range(200):
+        boxes = {}
+        for i in range(rng.randint(0, 30)):
+            x, y = rng.uniform(0, 200), rng.uniform(0, 200)
+            boxes[f'L{rng.randint(0, 99)}_{i}'] = [x, y, x + rng.uniform(0, 40), y + rng.uniform(0, 20)]
+        assert rendering.label_overlaps(boxes) == _all_pairs(boxes)
+
+
+def test_label_point_overlaps():
+    points = {'A': (0.0, 0.0, 2.0), 'B': (20.0, 0.0, 2.0), 'C': (50.0, 50.0, 0.0)}
+    labels = {'A': [1.0, 1.0, 9.0, 6.0],            # its corner inside A's marker
+              'B': [23.0, -3.0, 30.0, 3.0],         # 3 px right of B: clear (r = 2)
+              'C': [45.0, 45.0, 55.0, 55.0],        # over C, whose marker has no radius
+              'D': [-1.0, -1.0, 21.0, 1.0]}         # across A and B
+    assert rendering.label_point_overlaps(labels, points) == [['A', 'A'], ['D', 'A'], ['D', 'B']]
+    assert rendering.label_point_overlaps(labels, {}) == []
+    assert rendering.label_point_overlaps({}, points) == []
+    # touching the circle is not entering it
+    assert rendering.label_point_overlaps({'E': [2.0, -1.0, 5.0, 1.0]}, points) == []
+
+
 def test_undrawn_elements_have_no_label():
     from animageo.native.kernel.bridge import build_construction
     b = DocBuilder('undrawn', registry_version='1.3', bounds=(-6, -4, 6, 4))

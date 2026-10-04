@@ -10,6 +10,7 @@ pytest.importorskip('manim')
 pytestmark = pytest.mark.manim
 
 from animageo import AnimaGeoScene, native  # noqa: E402
+from animageo.label_placement import DEFAULT_CONFIG  # noqa: E402
 from tests.native.conftest import DocBuilder, path_input, point_input  # noqa: E402
 
 BOUNDS = (-6, -4, 6, 4)
@@ -141,11 +142,43 @@ def test_label_offset_and_overlaps(tmp_path):
     b.doc['appearance'] = {'C': {'label': {'mode': 'name', 'offsetWorld': [1.0, 0.5]}}}
     report = native.render(b.doc, out=tmp_path / 'e.svg').report
     assert report['overlaps'] == [['A', 'B']]
-    plain = native.render({**b.doc, 'appearance': {}}, out=tmp_path / 'f.svg').report
-    moved, still = report['elements']['C']['label']['box'], plain['elements']['C']['label']['box']
+    # a pinned offset (world units) moves the bottom-left corner off the point;
+    # an unpinned point label hangs clear of its marker (1.8.1a2)
+    moved = report['elements']['C']['label']['box']
+    px, py = to_px(report, 3, 0)
     unit = report['canvas']['unit']
-    assert moved[0] - still[0] == pytest.approx(1.0 * unit, abs=0.5)
-    assert moved[1] - still[1] == pytest.approx(-0.5 * unit, abs=0.5)
+    assert moved[0] == pytest.approx(px + 1.0 * unit, abs=0.5)
+    assert moved[3] == pytest.approx(py - 0.5 * unit, abs=0.5)
+    plain = native.render({**b.doc, 'appearance': {}}, out=tmp_path / 'f.svg').report
+    still = plain['elements']['C']['label']['box']
+    assert still[0] > px and still[3] < py
+    assert not [pair for pair in plain['pointOverlaps'] if pair[0] == pair[1]]
+
+
+def test_point_labels_do_not_cover_their_points(tmp_path):
+    b = builder('points')
+    b.free('A', -4, -2).free('B', 4, -2).free('C', 1, 3).segment('s', 'A', 'B')
+    report = native.render(b.doc, out=tmp_path / 'q.svg').report
+    assert report['pointOverlaps'] == []
+    for el_id in 'ABC':
+        record = report['elements'][el_id]
+        x0, y0, x1, y1 = record['box']
+        cx, cy, r = (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2
+        lx0, ly0, lx1, ly1 = record['label']['box']
+        gap = math.hypot(cx - min(max(cx, lx0), lx1), cy - min(max(cy, ly0), ly1))
+        assert gap >= r + DEFAULT_CONFIG['point_gap_px'] - 0.05, el_id
+    # a label centred on its point is reported
+    b.doc['appearance'] = {'A': {'overrides': {'label_anchor': 'MC'}}}
+    assert native.render(b.doc, out=tmp_path / 'r.svg').report['pointOverlaps'] == [['A', 'A']]
+
+
+def test_classic_scenes_keep_their_point_labels():
+    scene = AnimaGeoScene()
+    assert scene.label_point_clearance is False
+    scene.loadDocument(demo())
+    assert scene.label_point_clearance is True
+    scene.resetScene()
+    assert scene.label_point_clearance is False
 
 
 def test_value_and_caption_labels(tmp_path):

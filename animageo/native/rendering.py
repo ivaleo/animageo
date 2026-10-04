@@ -24,6 +24,7 @@ of the output, for PDF px at 96 dpi; the y axis points down)::
                            "box": [x0, y0, x1, y1] | null,
                            "label": {"box": […], "anchor": [x, y], "text": "$A$"} | null}},
      "overlaps": [["<id>", "<id>"], …],
+     "pointOverlaps": [["<labelId>", "<pointId>"], …],
      "diagnostics": [{"code": …, "elementId": …, …}]}
 
     px = ox + u·x,  py = oy − u·y
@@ -33,6 +34,11 @@ drawing of its own: its ``box`` is the union of the boxes of its drawn
 targets (``null`` when none is drawn, the mark is hidden or undefined), its
 ``label`` is ``null``. A right-angle mark is drawn as an angle with the
 right-angle marker and reports its own box.
+
+``overlaps``: pairs of label boxes whose intersection is at least 15 % of
+the smaller one; ``pointOverlaps`` (1.8.1a2): a label box entering the
+marker of a drawn point (its own point included) — the circle inscribed in
+the point's ``box``.
 """
 from __future__ import annotations
 
@@ -54,6 +60,7 @@ __all__ = [
     'apply_appearance',
     'build_report',
     'label_overlaps',
+    'label_point_overlaps',
     'mark_targets',
     'render',
     'source_view',
@@ -381,13 +388,15 @@ def _label_node(mobj):
 def label_overlaps(boxes: dict, share: float = OVERLAP_SHARE) -> list:
     """Pairs of label boxes ``[x0, y0, x1, y1]`` whose intersection is at
     least ``share`` of the smaller one's area, sorted by ID."""
-    ids = sorted(boxes)
+    ids = sorted(boxes, key=lambda k: (boxes[k][0], k))       # sweep along x
     pairs = []
     for i, a in enumerate(ids):
         ax0, ay0, ax1, ay1 = boxes[a]
         area_a = max(0.0, ax1 - ax0) * max(0.0, ay1 - ay0)
         for b in ids[i + 1:]:
             bx0, by0, bx1, by1 = boxes[b]
+            if bx0 >= ax1:
+                break
             area_b = max(0.0, bx1 - bx0) * max(0.0, by1 - by0)
             smaller = min(area_a, area_b)
             if smaller <= 0:
@@ -395,7 +404,29 @@ def label_overlaps(boxes: dict, share: float = OVERLAP_SHARE) -> list:
             dx = min(ax1, bx1) - max(ax0, bx0)
             dy = min(ay1, by1) - max(ay0, by0)
             if dx > 0 and dy > 0 and dx * dy >= share * smaller:
-                pairs.append([a, b])
+                pairs.append(sorted((a, b)))
+    return sorted(pairs)
+
+
+def label_point_overlaps(label_boxes: dict, points: dict) -> list:
+    """Pairs ``[labelId, pointId]`` of a label box ``[x0, y0, x1, y1]`` that
+    enters the marker of a drawn point (``{pointId: (cx, cy, r)}``, the same
+    pixels), the label's own point included; sorted by ID."""
+    import bisect
+    order = sorted(points, key=lambda k: (points[k][0], k))
+    xs = [points[k][0] for k in order]
+    reach = max((points[k][2] for k in order), default=0.0)
+    pairs = []
+    for label_id in sorted(label_boxes):
+        x0, y0, x1, y1 = label_boxes[label_id]
+        hits = []
+        for j in range(bisect.bisect_left(xs, x0 - reach), bisect.bisect_right(xs, x1 + reach)):
+            cx, cy, r = points[order[j]]
+            dx = cx - min(max(cx, x0), x1)
+            dy = cy - min(max(cy, y0), y1)
+            if r > 0 and dx * dx + dy * dy < r * r:
+                hits.append(order[j])
+        pairs.extend([label_id, p] for p in sorted(hits))
     return pairs
 
 
@@ -412,6 +443,8 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
     by_name = {getattr(m, 'name', None): m for m in scene.mobjects}
     elements = {}
     label_boxes = {}
+    markers = {}
+    from ..geo import construction as geo
     for el_id in sorted(doc.elements):
         name = names.by_id[el_id]
         elem = scene.geo.element(name)
@@ -420,6 +453,9 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
         if mobj is not None:
             box = _leaf_boxes(mobj, labels=False)
             record['box'] = _px_box(box, export) if box is not None else None
+            if box is not None and isinstance(getattr(elem, 'data', None), geo.Point):
+                x0, y0, x1, y1 = record['box']
+                markers[el_id] = ((x0 + x1) / 2, (y0 + y1) / 2, min(x1 - x0, y1 - y0) / 2)
             node = _label_node(mobj)
             label_box = _leaf_boxes(mobj, labels=True) if node is not None else None
             if label_box is not None:
@@ -451,5 +487,6 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
                    'origin': [float(export['ptXZero']), float(export['ptYZero'])]},
         'elements': elements,
         'overlaps': label_overlaps(label_boxes),
+        'pointOverlaps': label_point_overlaps(label_boxes, markers),
         'diagnostics': list(getattr(scene, 'native_diagnostics', [])),
     }

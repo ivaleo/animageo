@@ -220,6 +220,9 @@ class AnimaGeoScene(MovingCameraScene):
         self._styles_back = {}
         self._shade_mobjects = {}
         self._construction_source = {'kind': 'unknown'}
+        # loadDocument: unplaced point labels clear their marker
+        # (label_placement.point_label_clearance)
+        self.label_point_clearance = False
 
         self.cuts = 0
         self._label_tracker = None  # Set by autoPlaceLabels(dynamic=True)
@@ -977,6 +980,7 @@ class AnimaGeoScene(MovingCameraScene):
         self.geo = geo.Construction()
         self._label_tracker = None
         self._construction_source = {'kind': 'unknown'}
+        self.label_point_clearance = False
         try:
             self.clear()  # manim Scene.clear() — drop accumulated mobjects
         except Exception:
@@ -1073,6 +1077,7 @@ class AnimaGeoScene(MovingCameraScene):
         self.geo = construction
         self.native_names = names
         self._construction_source = {'kind': 'native', 'documentId': doc.document_id}
+        self.label_point_clearance = True
         construction.log_unsupported = bool(debug)
         construction.rebuild(debug=debug, full=True)
         plan, diagnostics = appearance_plan(doc, view['ptUnit'], inputs=inputs)
@@ -2988,6 +2993,11 @@ class AnimaGeoScene(MovingCameraScene):
         )
         label_offset_px = _resolve_style(self, elem, 'label_offset_px', default=None)
         auto_placed = bool(elem.style.get('_auto_placed'))
+        if has_label and getattr(self, 'label_point_clearance', False):
+            from .label_placement import point_label_clearance
+            cleared = point_label_clearance(self, elem, label_anchor)
+            if cleared is not None:
+                label_offset_px = cleared
         lr_px = _resolve_style(self, elem, 'label_radial_offset_px', default=0.0)
         label_roff = float(lr_px) / ptUnit_style
 
