@@ -1,6 +1,7 @@
 """1.9.0a2: budgets of plan L3 §6 and determinism of §7 for conditions,
 the general case and automatic marks."""
 import copy
+import gc
 import json
 import math
 import random
@@ -33,12 +34,20 @@ def _doc_of_300():
 
 
 def _p95(fn, runs=20):
+    """p95 of ``runs`` calls with the garbage collector off, as ``timeit``
+    does: a full collection costs as much as everything else in the process
+    (with manim loaded, ≈ 50 ms), not the code measured."""
     fn()
     times = []
-    for _ in range(runs):
-        start = time.perf_counter()
-        fn()
-        times.append(time.perf_counter() - start)
+    gc.collect()
+    gc.disable()
+    try:
+        for _ in range(runs):
+            start = time.perf_counter()
+            fn()
+            times.append(time.perf_counter() - start)
+    finally:
+        gc.enable()
     times.sort()
     return times[max(0, math.ceil(0.95 * runs) - 1)]
 
@@ -47,9 +56,8 @@ def _p95(fn, runs=20):
 def test_apply_marks_and_general_case_on_300_operations_within_budget():
     """Plan L3 §6 on 300 operations: ``apply_condition`` 30 ms (the web
     passes the evaluation it has; the result is evaluated inside; measured
-    p95 ≈ 22 ms without a garbage collection), ``auto_marks`` 5 ms per
-    source (≈ 2.7 ms), the general case of 50 trials 500 ms (≈ 350 ms);
-    a margin of 2 for a busy machine."""
+    p95 ≈ 22 ms), ``auto_marks`` 5 ms per source (≈ 2.7 ms), the general
+    case of 50 trials 500 ms (≈ 350 ms); a margin of 2 for a busy machine."""
     doc = _doc_of_300()
     assert len(doc.operations) > 300
     ev = native.evaluate(doc)
