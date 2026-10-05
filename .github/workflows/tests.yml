@@ -38,7 +38,15 @@ jobs:
         run: python -m animageo.parsers.dsl._regen_stubs --check
 
       - name: Run tests
-        run: python -m pytest tests/ -q
+        run: python -m pytest tests/ -q -m "not fuzz"
+
+      # Hostile and random input of the importers: 10³ random cases per run,
+      # new seeds every run (a failure names its seed; ANIMAGEO_FUZZ_SEED
+      # reproduces it).
+      - name: Fuzz
+        env:
+          ANIMAGEO_FUZZ_SEED: ${{ github.run_number }}000
+        run: python -m pytest tests/ -q -m fuzz
 
   web:
     runs-on: ubuntu-latest

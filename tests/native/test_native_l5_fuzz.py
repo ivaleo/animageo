@@ -10,12 +10,15 @@ hang (every case runs under a deadline).
 There is no hypothesis here: the random cases come from
 ``random.Random(seed)``, a failure names its seed and is reproduced by it.
 The deliberate cases run with the quick suite; the random series are also
-``slow`` (``-m "slow or fuzz"`` runs them).
+``slow`` (``-m "slow or fuzz"`` runs them): 10³ cases per run, from
+``ANIMAGEO_FUZZ_SEED`` (default 0; CI passes its run number).
 """
 from __future__ import annotations
 
 import contextlib
 import io
+import math
+import os
 import random
 import signal
 import time
@@ -617,7 +620,18 @@ def _mutated_text(seed: int) -> bytes:
     return ggb_bytes(xml=bytes(xml))
 
 
-SEEDS = range(150)
+# 1.11.0rc1: 10³ random cases per run (three series of ``FUZZ_CASES / 3``
+# seeds). CI starts the seeds at its run number (``ANIMAGEO_FUZZ_SEED``), so
+# every run tries new cases; a failure names its seed, the variable
+# reproduces it.
+FUZZ_CASES = int(os.environ.get('ANIMAGEO_FUZZ_CASES', '1000'))
+FUZZ_SEED = int(os.environ.get('ANIMAGEO_FUZZ_SEED', '0'))
+SEEDS = range(FUZZ_SEED, FUZZ_SEED + math.ceil(FUZZ_CASES / 3))
+
+
+def test_a_run_has_a_thousand_random_cases():
+    assert 3 * len(SEEDS) >= FUZZ_CASES
+    assert FUZZ_CASES >= 1000 or 'ANIMAGEO_FUZZ_CASES' in os.environ
 
 
 @pytest.mark.slow

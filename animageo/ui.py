@@ -17,6 +17,10 @@ from manim import (
 from .constants import GGB_FONT_SCALE
 from .geo.lib_elements import latex_escape_text, textify_cyrillic
 from .style import hasParam
+from . import _tex_security
+
+# every Tex of a label compiles with -no-shell-escape (1.11.0rc1)
+_tex_security.install()
 
 logger = logging.getLogger(__name__)
 
