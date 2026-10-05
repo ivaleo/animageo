@@ -73,6 +73,12 @@ document element of no report entry would be needed). GeoGebra writes
 `sqrt(a)`, `sin(a)` and `2a`, which the classic parser does not take
 (`parse_error`); `Sqrt(a)`, `Sin(a)` and `2*a` translate.
 
+A point given by coordinates that are objects of the file (`P = (A1, B1)`)
+was a free point at its saved place — it lost the dependency on the numbers,
+a false `editable`. It is `picture`, `unsupported_signature` until L4 brings
+the ops of points by coordinates; `Point(0.3, 0.2)` of literals (and of the
+DSL, which passes the values of its variables) stays a free point.
+
 `AngleBisector` — the name of the GeoGebra interface some files carry — is
 `AngularBisector` for the import (`ggb.COMMAND_SYNONYMS`,
 `native.has("convert.command_synonyms")`); the classic `loadGGB` reads the

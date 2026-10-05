@@ -479,6 +479,13 @@ class _Builder:
             self.free_number(outs[0], recs[0], value, angle=row['free'] == 'angle')
             return
         if 'free' in row:
+            # a DSL Point(0.3, 0.2): a free point when its coordinates are literals (the DSL passes the
+            # values of its variables); coordinates given by objects of a .ggb ((A1, B1)) would lose the
+            # dependency — the ops of points by coordinates come with L4 (1.10.0a3)
+            if any(isinstance(arg, str) and self.is_object(arg)
+                   and getattr(self.records.get(arg), 'status', None) != 'constant' for arg in inputs):
+                raise _Untranslated('unsupported_signature', NOTE_DETAILS[
+                    'a point by coordinates or a fixed path parameter given by numbers'])
             data = self.data_of(outs[0])
             xy = self.ctx.free_points.get(outs[0])
             if xy is None and isinstance(data, self._Point):

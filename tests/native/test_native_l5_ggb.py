@@ -473,6 +473,22 @@ def test_angle_bisector_is_angular_bisector(tmp_path):
     assert [c.name for c in constr.commands] == ['AngleBisector', 'AngularBisector']
 
 
+def test_a_point_by_numbers_of_objects_is_not_editable():
+    """``P = (A1, B1)``: a free point at the saved place would lose the
+    dependency on the numbers — not editable until L4 brings the ops of
+    points by coordinates (1.10.0a3; it was a false ``editable``)."""
+    body = (_numeric('a', 3.0) + _numeric('b', 6.0) + expression('P', '(a, b)') + point('P', 3.0, 6.0)
+            + expression('Q', '(1, 2)') + point('Q', 1.0, 2.0) + command('Midpoint', ['P', 'Q'], ['M'])
+            + point('M', 2.0, 4.0))
+    _, rep = _import(ggb_bytes(body))
+    e = _by_name(rep)
+    assert (e['P']['category'], e['P']['reason'], e['P']['detail']) == (
+        'picture', 'unsupported_signature', 'точка задана числами (координаты или параметр на пути)')
+    assert e['P']['depends_on'] == ['a', 'b']
+    assert (e['M']['category'], e['M']['reason']) == ('picture', 'depends_on_unsupported')
+    assert e['Q']['category'] == e['a']['category'] == e['b']['category'] == 'editable'
+
+
 def test_seq_and_steps_from_breakpoints():
     body = (point('A', 0.0, 0.0, extra='<breakpoint val="true"/>') + point('B', 4.0, 0.0)
             + command('Segment', ['A', 'B'], ['s'])
