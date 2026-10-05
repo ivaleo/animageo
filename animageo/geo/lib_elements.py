@@ -494,7 +494,22 @@ class CircleSector(Circle):
         return "CircleSector(c=({}  {}) r={} angles={})".format(self.center[0], self.center[1], self.radius, self.angles)
 
     def contains(self, x):
-        pass
+        """On the boundary of the sector: its arc, or a radius to an end of
+        the arc (the centre included). 1.8.1; was not implemented."""
+        x = np.asarray(x, dtype=float)
+        if Arc.contains(self, x):
+            return True
+        d = x - self.center
+        dist = float(np.linalg.norm(d))
+        if np.isclose(dist, 0.0):
+            return True
+        if dist > self.radius and not np.isclose(dist, self.radius):
+            return False
+        for a in self.angles[:2]:
+            u = np.array([np.cos(a), np.sin(a)])
+            if np.isclose(float(d[0] * u[1] - d[1] * u[0]), 0.0) and float(np.dot(d, u)) > 0:
+                return True
+        return False
 
 class Vector:
     def __init__(self, end_points):

@@ -50,6 +50,9 @@ class Command:
         impl = COMMAND_REGISTRY.get(fname)
         if impl is not None:
             return impl
+        impl = signature_alias(self.name, self.inputs)
+        if impl is not None:
+            return impl
         # Loud failure: a command name that survives construction but has
         # no implementation dispatch almost always means a typo in a DSL
         # script (``Intersect(A, B)`` against unexpected types) or a new
@@ -197,6 +200,9 @@ def angle_size_ppp(p1, p2, p3):
 
 def angular_bisector_ll(l1, l2):
     x = intersect_ll(l1, l2)
+    # Parallel (or coincident) lines have no crossing: no bisectors, as in
+    # GeoGebra (1.8.1; was an AttributeError inside the command).
+    if x is None: return None
     n1, n2 = l1.normal, l2.normal
     if np.dot(n1, n2) > 0: n = n1 + n2
     else: n = n1 - n2
@@ -717,7 +723,19 @@ def intersect_CCi(arc1, arc2, index, points_order=None):
     return res_by_index(res, index, points_order)
 
 def intersect_Sl(sector, line):
-    return intersect_Cl(Arc(sector.center, sector.radius, sector.angles), line)
+    """The points of the boundary of the sector on the line: on its arc
+    first, then on the radii to the start and to the end of the arc; a point
+    already found (an end of the arc, the centre) is not repeated. Before
+    1.8.1 only the arc was intersected."""
+    points = list(intersect_Cl(Arc(sector.center, sector.radius, sector.angles), line) or [])
+    for a in sector.angles[:2]:
+        end = sector.center + sector.radius * np.array([np.cos(a), np.sin(a)])
+        if np.allclose(end, sector.center):
+            continue
+        p = intersect_ls(line, Segment(np.array(sector.center, dtype=float), end))
+        if p is not None and not any(np.allclose(p.coords, q.coords) for q in points):
+            points.append(p)
+    return points or None
 
 def intersect_lS(line, sector):
     return intersect_Sl(sector, line)
@@ -2547,7 +2565,10 @@ def rotate_pip(point, angle_value, by_point):
     return Point(by_point.coords + rotate_vec(point.coords - by_point.coords, angle_value))
 
 def rotate_vAp(vec, angle_size, by_point):
-    return Vector([vec.endpoints[0], vec.endpoints[0] + rotate_vec(vec.direction, angle_size.value)])
+    # Both ends turn about the centre (1.8.1; the centre used to be ignored
+    # and the vector turned about its own start).
+    c = by_point.coords
+    return Vector([c + rotate_vec(e - c, angle_size.value) for e in vec.endpoints])
 
 def rotate_vap(vec, angle, by_point):
     return rotate_vAp(vec, AngleSize(angle.value), by_point)
@@ -2577,7 +2598,12 @@ def semicircle_pp(p1, p2):
 
 def tangent_pc(point, circle):
     polar = polar_pc(point, circle)
+    if polar is None: return None
     intersections = intersect_lc(polar, circle)
+    # A point inside the circle has no tangent (GeoGebra: undefined); before
+    # 1.8.1 its polar came out as the "tangent". On the circle the polar is
+    # the tangent at the point.
+    if intersections is None: return None
     if isinstance(intersections, Iterable) and not isinstance(intersections, str) and len(intersections) == 2:
         return [line_pp(point, x) for x in intersections]
     else: return polar
@@ -2624,8 +2650,11 @@ def vector_ii(x, y):
     return Vector(([0, 0], [x, y]))
 
 def vector_vi(vec, mod):
+    # From the start of the vector, along it, of length ``mod`` (1.8.1; the
+    # ends used to be scaled from the origin).
     k = mod / np.linalg.norm(vec.direction)
-    return Vector(vec.endpoints * k)
+    start = np.array(vec.endpoints[0], dtype=float)
+    return Vector([start, start + k * vec.direction])
 
 def vector_v(vec):
     """``Vector(<vector expression>)``: GeoGebra wraps a vector-valued
@@ -3703,6 +3732,83 @@ def _build_command_registry():
 
 
 COMMAND_REGISTRY: dict = _build_command_registry()
+
+
+# ── Signature aliases (1.8.1) ─────────────────────────────────────────────
+#
+# The dispatcher picks an implementation by the exact types of the inputs,
+# so a segment was not a line and a circle was not a conic: no slope of a
+# segment, no tangents to a circle parallel to a line, and a circle given by
+# its equation (a Conic) missed the commands of circles. When the exact
+# signature has no implementation, ``signature_alias`` tries, as GeoGebra
+# reads them:
+#
+# - a segment or a ray as its carrier line, only for the commands below
+#   where every line input is a carrier (for ``Mirror``/``Reflect`` only the
+#   axis, the last input — the object keeps its type);
+# - a circle as a conic;
+# - a conic that is a circle as a circle.
+#
+# Only signatures without an implementation get an alias, so no classic
+# result changes. The aliases are not in COMMAND_REGISTRY (stubs and
+# ``list_commands`` list the implementations).
+
+_CARRIER_LINE_BASES = frozenset({
+    'slope', 'are_parallel', 'are_perpendicular', 'are_concurrent', 'angular_bisector',
+    'tangent', 'polar', 'line', 'orthogonal_line', 'perpendicular_line',
+})
+_AXIS_LINE_BASES = frozenset({'mirror', 'reflect'})
+
+
+def _circle_as_conic(circle):
+    cx, cy = (float(v) for v in circle.center)
+    r = float(circle.radius)
+    return Conic.from_coeffs(1.0, 0.0, 1.0, -2.0 * cx, -2.0 * cy, cx * cx + cy * cy - r * r)
+
+
+def _conic_as_circle(conic):
+    found = conic.as_circle()
+    return None if found is None else Circle(found[0], found[1])
+
+
+def signature_alias(name, inputs):
+    """An implementation of ``name`` for ``inputs`` through the aliases
+    above, wrapped to convert the inputs it reads differently; ``None`` when
+    no alias has one."""
+    import itertools
+
+    command = strCommand(name)
+    codes = [type_to_shortcut.get(type(x)) for x in inputs]
+    if None in codes or not codes:
+        return None
+    options = []
+    for i, (code, x) in enumerate(zip(codes, inputs)):
+        opts = [(code, None)]
+        if code in 'sr' and (command in _CARRIER_LINE_BASES
+                             or (command in _AXIS_LINE_BASES and i == len(codes) - 1)):
+            opts.append(('l', None))
+        elif code == 'c':
+            opts.append(('K', _circle_as_conic))
+        elif code == 'K' and isinstance(x, Conic) and x.as_circle() is not None:
+            opts.append(('c', _conic_as_circle))
+        options.append(opts)
+    for combo in itertools.product(*options):
+        if all(c == code for (c, _), code in zip(combo, codes)):
+            continue
+        impl = COMMAND_REGISTRY.get(f"{command}_{''.join(c for c, _ in combo)}")
+        if impl is None:
+            continue
+        converts = [conv for _, conv in combo]
+        if not any(converts):
+            return impl
+
+        def aliased(*args, _impl=impl, _converts=converts):
+            head = [a if conv is None else conv(a) for a, conv in zip(args, _converts)]
+            return _impl(*head, *args[len(_converts):])
+
+        aliased.__name__ = impl.__name__
+        return aliased
+    return None
 
 
 def list_commands() -> list[str]:

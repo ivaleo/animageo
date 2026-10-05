@@ -17,6 +17,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `sector.on_circle`, `collinear_points` of `sector.three_points`); a test
   now asks every reason of every operation to be reached by that
   operation.
+- Classic dispatcher: signature aliases. When a command has no
+  implementation for the exact input types, a segment or a ray stands for
+  its carrier line (`Slope`, `AreParallel`, `ArePerpendicular`,
+  `AreConcurrent`, `AngleBisector`, `Tangent`, `Polar`, `Line`,
+  `OrthogonalLine`, `PerpendicularLine`, and the axis of `Mirror` /
+  `Reflect`), a circle stands for a conic, and a conic that is a circle (a
+  circle given by its equation) for a circle. So `Slope(s)` of a segment,
+  `Tangent(l, c)` (tangents to a circle parallel to a line) and
+  `Mirror(A, x² + y² = 4)` now build; signatures that had an
+  implementation are untouched. `lib_commands.signature_alias`.
+- Style defaults for `locuscurve` (`style/builtin.json`): a locus gets the
+  stroke colour and width of the other curves instead of the renderer
+  fallbacks.
+
+### Fixed
+
+- `Tangent(A, c)` from a point inside the circle is undefined, as in
+  GeoGebra; it used to give the polar of the point as a "tangent". On the
+  circle it is still the tangent at the point.
+- `Vector(v, k)` (`vector_vi`) runs from the start of `v`; the ends used to
+  be scaled from the origin.
+- `Rotate(v, α, O)` of a vector turns both ends about `O`; the centre used
+  to be ignored (the vector turned about its own start).
+- `CircleSector.contains` (it returned `None`): a point is on a sector when
+  it is on its arc or on one of its two radii; `Intersect` filters with a
+  sector now work.
+- `Intersect(line, sector)` also finds the points on the two radii of the
+  sector (after those on the arc, without repeating a shared point); it
+  used to intersect the arc only.
+- `AngleBisector(l1, l2)` of parallel or coincident lines is undefined
+  without an error in the log (it raised inside the command).
 
 ## [1.8.1a5] - 2026-10-05
 
