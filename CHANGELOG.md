@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.1a4] - 2026-10-05
+
 ### Added
 
 - «Команды»: the warning `ambiguous_name`. When the name of an element also
@@ -2037,7 +2039,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.1a3...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.1a4...HEAD
+[1.8.1a4]: https://github.com/ivaleo/animageo/compare/v1.8.1a3...v1.8.1a4
 [1.8.1a3]: https://github.com/ivaleo/animageo/compare/v1.8.1a2...v1.8.1a3
 [1.8.1a2]: https://github.com/ivaleo/animageo/compare/v1.8.1a1...v1.8.1a2
 [1.8.1a1]: https://github.com/ivaleo/animageo/compare/v1.8.0a2...v1.8.1a1
