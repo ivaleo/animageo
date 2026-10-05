@@ -168,52 +168,12 @@ def test_cli_does_not_import_classic_modules():
     assert not [m for m in imported if m.split('.')[0] == BLOCKED or m == CLASSIC or m.startswith(GEO)]
 
 
-class TestRunningPackageMain:
-    def _set(self, monkeypatch, argv, orig_argv):
-        monkeypatch.setattr(sys, 'argv', argv)
-        monkeypatch.setattr(sys, 'orig_argv', orig_argv, raising=False)
-
-    def test_native_dash_m_while_locating(self, monkeypatch):
-        self._set(monkeypatch, ['-m', 'registry', 'index'],
-                  ['python3', '-m', 'animageo.native', 'registry', 'index'])
-        assert animageo._running_package_main()
-
-    def test_native_dash_m_with_interpreter_options(self, monkeypatch):
-        self._set(monkeypatch, ['-m'], ['python3', '-X', 'importtime', '-B', '-m', 'animageo.native.cli'])
-        assert animageo._running_package_main()
-
-    def test_native_main_path(self, monkeypatch):
-        self._set(monkeypatch, ['/x/site-packages/animageo/native/__main__.py', 'validate', 'd.json'],
-                  ['python3', '-m', 'animageo.native', 'validate', 'd.json'])
-        assert animageo._running_package_main()
-
-    def test_other_module_is_not_native(self, monkeypatch):
-        self._set(monkeypatch, ['-m', '-q'], ['python3', '-m', 'pytest', '-q'])
-        assert not animageo._running_package_main()
-
-    def test_script_arguments_are_not_interpreter_options(self, monkeypatch):
-        self._set(monkeypatch, ['script.py', '-m', 'animageo.native'],
-                  ['python3', 'script.py', '-m', 'animageo.native'])
-        assert not animageo._running_package_main()
-        self._set(monkeypatch, ['-c', '-m', 'animageo.native'],
-                  ['python3', '-c', 'pass', '-m', 'animageo.native'])
-        assert not animageo._running_package_main()
-
-    def test_classic_cli_unchanged(self, monkeypatch):
-        self._set(monkeypatch, ['/usr/bin/animageo', 'scene.ggb'], ['python3', '/usr/bin/animageo', 'scene.ggb'])
-        assert animageo._running_package_main()
-
-    def test_package_dash_m_with_a_document(self, monkeypatch):
-        self._set(monkeypatch, ['-m', 'doc.json', '-o', 'out.svg'],
-                  ['python3', '-m', 'animageo', 'doc.json', '-o', 'out.svg'])
-        assert animageo._running_package_main()
-        self._set(monkeypatch, ['-m'], ['python3', '-X', 'utf8', '-manimageo.__main__'])
-        assert animageo._running_package_main()
-
-    def test_a_json_argument_of_another_module_is_not_the_cli(self, monkeypatch):
-        # the web sandbox: python -m app.sandbox.dsl_entry --job job.json
-        self._set(monkeypatch, ['-m', '--job', 'job.json'],
-                  ['python3', '-m', 'app.sandbox.dsl_entry', '--job', 'job.json'])
-        assert not animageo._running_package_main()
-        self._set(monkeypatch, ['/srv/app/run.py', 'doc.json'], ['python3', '/srv/app/run.py', 'doc.json'])
-        assert not animageo._running_package_main()
+def test_package_import_loads_nothing_heavy():
+    # 1.11.0rc1: ``import animageo`` is lazy (PEP 562); the command-line
+    # sniffing of 1.10 (``_running_package_main``) is gone with the eager
+    # import — ``tests/test_lazy_import.py`` covers the rest
+    proc = _run(f"import animageo, sys\nprint('LOADED', sorted(m for m in sys.modules "
+                f"if m.split('.')[0] == {BLOCKED!r} or m == {CLASSIC!r}))")
+    assert proc.returncode == 0, proc.stderr
+    assert 'LOADED []' in proc.stdout
+    assert not hasattr(animageo, '_running_package_main')
