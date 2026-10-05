@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0a4] - 2026-10-05
+
+The fourth part of the native kernel stage L3: time by element ID — a
+timeline sampled without the classic code, the document at time t, video
+from a document and the construction step by step.
+
+### Added
+
+- `animageo/easing.py`: the easing functions of the keyframe JSON as a leaf
+  module (pure math); `animageo.native` samples timelines with them.
+- `native.sample_timeline(doc, timeline, t) → {t, inputs, visible}`: keyframes
+  v2 with element IDs as keys; points `[x, y]`, points on a path
+  `{"tparam", "direction": short | long | cw | ccw}` (wrapping on a circle,
+  a polygon and a sector), numbers; values and visibility carry forward (the
+  formula of the web's visibility parity fixture); IDs not in the document
+  are skipped.
+- `native.evaluate(doc, t=…, timeline=…)`: the document at time t with
+  `ev.t` and `ev.visible` (`to_dict()` adds `t` and `visible` only then).
+- `native.timeline_to_bridge(doc, timeline)`: the classic keyframe JSON of
+  the bridge scene (`e_<hex>` names, unwrapped path parameters, numbers
+  clamped to their range); the classic playback matches the native sample
+  on segment, ray, line, circle, polygon, arc, sector and polyline.
+- `native.render(…, t=…, timeline=…)`: the frame at time t for the static
+  formats, the report gains `t` and `visible`; `fmt` `mp4`, `gif`, `webm`,
+  `mov` — the video of a timeline (`ValueError("timeline_required")`
+  without one), `video={fps, quality}`.
+- `native.steps_timeline(doc, *, lag=0.3, duration=0.5, pause=0.6,
+  effects=None, start=0.0) → StepsTimeline(keyframes, steps, duration)`: the
+  steps of `native.steps` one after another, effects by element type.
+- Fixtures `animageo-timeline/v1` (`parity/v1/timeline`, 27 cases;
+  `python -m animageo.native fixtures timeline [--check]`); the steps
+  fixtures carry `expect.timeline`; CLI `steps`, `describe`, `timeline`;
+  `native.has`: `timeline`, `steps_timeline`, `render.t`, `render.video`.
+- `docs/native/timeline.md`.
+
+### Changed
+
+- `keyframes.py` imports the easing functions from `animageo/easing.py`
+  (bitwise the same values; the old names stay importable).
+- `native.render` refuses `t` or `timeline` alone and a video without a
+  timeline with `ValueError` (was `NotImplementedError` for all of them).
+
 ## [1.9.0a3] - 2026-10-05
 
 The third part of the native kernel stage L3: «Команды» take conditions,
