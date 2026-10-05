@@ -18,6 +18,8 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     doc2, effects = native.delete(doc, ["A"])  # pure edits: delete, redefine, rename
     native.render(doc, fmt="svg", out="a.svg")  # needs manim: RenderResult(path, fmt, report)
     native.layout_labels(doc)                # {id: {anchor, box, offsetWorld, …}} without manim
+    native.parse_commands(text)              # «Команды» → ParseResult(document, effects, lines, issues)
+    native.print_commands(doc).text          # document → «Команды» (docs/native/commands.md)
 
 No module of this package imports manim, ``animageo.animageo`` or
 ``animageo.geo`` at import time; the bridge (``kernel/bridge.py``),
@@ -55,6 +57,7 @@ from .kernel.evaluate import EVALUATED_FORMAT, Evaluated, producer_values
 from .kernel.evaluate import evaluate as _evaluate
 from .registry import REGISTRY_VERSION, Registry, registry, signature_hash
 from .labels import layout_labels
+from .commands import parse_commands, print_commands
 from .rendering import RenderResult, render, source_view
 
 __registry_version__ = REGISTRY_VERSION
@@ -84,6 +87,8 @@ __all__ = [
     'free_inputs',
     'layout_labels',
     'load',
+    'parse_commands',
+    'print_commands',
     'project',
     'redefine',
     'registry',
