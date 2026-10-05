@@ -78,7 +78,8 @@ from .timeline import StepsTimeline, sample_timeline, steps_timeline, timeline_t
 # feature instead of comparing versions.
 FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles',
             'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values',
-            'commands.conditions', 'commands.steps', 'timeline', 'steps_timeline', 'render.t', 'render.video')
+            'commands.conditions', 'commands.steps', 'timeline', 'steps_timeline', 'render.t', 'render.video',
+            'render.frame')
 
 
 def has(feature: str) -> bool:
@@ -91,7 +92,8 @@ def has(feature: str) -> bool:
     and the print order by steps; stage 4: ``timeline`` — keyframes by ID,
     ``sample_timeline``, ``evaluate(t, timeline)``, ``timeline_to_bridge``;
     ``steps_timeline``; ``render.t`` — ``render(t=…, timeline=…)``;
-    ``render.video`` — ``mp4``, ``gif``, ``webm``, ``mov``)."""
+    ``render.video`` — ``mp4``, ``gif``, ``webm``, ``mov``; 1.9.0a5: ``render.frame`` —
+    ``render(fmt="png", video=…)``, the frame through the camera of the video)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION

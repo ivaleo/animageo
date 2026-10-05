@@ -67,39 +67,113 @@ def test_twenty_frames():
     assert sum(len(json.loads(p.read_text(encoding='utf-8'))['frames']) for p in FRAMES) == 20
 
 
+def test_png_frame_through_the_video_camera(tmp_path):
+    """1.9.0a5: ``render(fmt="png", video=…)`` draws with the manim camera of
+    the video at its pixel size; without ``video`` a PNG is cairosvg."""
+    from PIL import Image
+    doc = triangle_document()
+    st = native.steps_timeline(doc)
+    low = native.render(doc, fmt='png', out=tmp_path / 'low.png', t=st.duration, timeline=st.keyframes,
+                        video={'quality': 'low'})
+    assert Image.open(low.path).size == (400, 266)
+    assert low.report['video'] == {'quality': 'low', 'width': 400, 'height': 266}
+    assert low.report['t'] == st.duration and low.report['visible']['m'] is True
+    plain = native.render(doc, fmt='png', out=tmp_path / 'plain.png', t=st.duration, timeline=st.keyframes)
+    assert 'video' not in plain.report
+    assert plain.report['elements'] == low.report['elements']
+    with pytest.raises(ValueError):
+        native.render(doc, fmt='png', video={'quality': 'huge'})
+
+
+def _h264_floor(still_png, tmp_path):
+    """Pixels off by more than 16/255 between a still and the same still
+    through H.264 as manim encodes (libx264, crf 23, yuv420p): the error of
+    the codec alone."""
+    enc = tmp_path / (still_png.stem + '.h264.mp4')
+    back = tmp_path / (still_png.stem + '.h264.png')
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(still_png), '-c:v', 'libx264', '-crf', '23',
+                    '-pix_fmt', 'yuv420p', str(enc)], check=True)
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(enc), '-vframes', '1', str(back)], check=True)
+    return _metrics(back, still_png)[1]
+
+
 @pytest.mark.slow
 @needs_ffmpeg
 @pytest.mark.parametrize('path', FRAMES, ids=lambda p: p.stem)
 def test_mp4_frame_matches_render_at_time(tmp_path, path):
     """``tests/native/frames/*.json`` (20 frames, plan L3 §5.5): the frame
-    ``n`` of the MP4 against ``render(t=n/fps, fmt="png")``.
+    ``n`` of the MP4 against ``render(t=n/fps, fmt="png", video=…)`` — the
+    still drawn by the camera of the video (1.9.0a5).
 
-    Measured (1.9.0a4): PSNR 29.6–46 dB, at most 1.23 % of pixels off by
-    more than 16/255. The steps frames (44–46 dB, ≤ 0.06 %) and the first
-    frames of the number scene (41–43 dB) meet the metric of the plan
-    (≥ 40 dB, ≤ 0.1 %); the others do not — filled polygons and sectors,
-    lines and labels are rasterised differently (cairosvg of the SVG against
-    the manim camera and h264). The time matches: the frame ``n`` peaks at
-    ``t = n/fps``, a shift of half a frame drops to 20–23 dB. The plan's
-    metric is the gate of 1.9.0 (remainder of stage 4). Guarded here:
-    ≥ 28 dB, ≤ 3 %, and a frame is closer to ``render`` at its own ``t``
-    than at the other frames of the file.
+    Measured (1.9.0a5): PSNR 45.7 dB – ∞ on all 20 frames; 17 frames have
+    ≤ 0.1 % of pixels off by more than 16/255, three (``paths`` 3 and 5,
+    ``number`` 19) have 0.100–0.134 %, below the error of H.264 at manim's
+    crf 23 on the same still (0.17–0.37 %): what is left is the codec, not
+    the frame. Before (cairosvg of the SVG, 1.9.0a4): 29.6–46 dB, ≤ 1.23 %.
+    Guarded: ≥ 40 dB; ≤ 0.1 % or not more than the codec alone; a frame is
+    closer to ``render`` at its own ``t`` than at the other frames of the file.
     """
     case = json.loads(path.read_text(encoding='utf-8'))
     doc, timeline, fps = case['document'], case['timeline'], case['fps']
-    video = native.render(doc, fmt='mp4', out=tmp_path / 'v.mp4', timeline=timeline,
-                          video={'fps': fps, 'quality': case['quality']})
+    quality = {'fps': fps, 'quality': case['quality']}
+    video = native.render(doc, fmt='mp4', out=tmp_path / 'v.mp4', timeline=timeline, video=quality)
     assert video.report['video']['fps'] == fps
-    stills = {n: native.render(doc, fmt='png', out=tmp_path / f's{n}.png', t=n / fps, timeline=timeline).path
+    stills = {n: Path(native.render(doc, fmt='png', out=tmp_path / f's{n}.png', t=n / fps, timeline=timeline,
+                                    video=quality).path)
               for n in case['frames']}
     for n in case['frames']:
         frame = _frames(tmp_path / 'v.mp4', fps, n)
         psnr, bad = _metrics(frame, stills[n])
-        assert psnr >= 28 and bad <= 0.03, (n, psnr, bad)
+        assert psnr >= 40, (n, psnr, bad)
+        assert bad <= 0.001 or bad <= _h264_floor(stills[n], tmp_path), (n, psnr, bad)
         for m, other in stills.items():
             if m != n:
                 psnr_other, _bad = _metrics(frame, other)
                 assert psnr >= psnr_other or abs(psnr - psnr_other) < 0.05, (n, m, psnr, psnr_other)
+
+
+STYLED = {'version': 2, 'keyframes': [
+    {'t': 0, 'values': {'A': [0, 0], '@camera': {'center': [0, 0], 'width': 14}}},
+    {'t': 1, 'values': {'A': [1, -1], '@camera': {'center': [1, 0.5], 'width': 10}},
+     'styles': {'m': {'stroke': '#ff0000', 'stroke_width_px': 6}}, 'easing': 'linear'},
+    {'t': 2, 'values': {'A': [1, -1]}, 'styles': {'t': {'fill': '#00aa00', 'fill_opacity': 0.5}}},
+]}
+
+
+def test_styles_and_camera_at_time(tmp_path):
+    """1.9.0a5: ``render(t)`` applies ``styles`` and ``@camera`` of the
+    timeline as the playback leaves them (held after their keyframe)."""
+    from animageo.native.rendering import timeline_extras
+    doc = triangle_document()
+    extras = timeline_extras(doc, STYLED)
+    assert [sorted(kf) for kf in extras['keyframes']] == [['t', 'values'], ['easing', 'styles', 't', 'values'],
+                                                         ['styles', 't']]
+    assert timeline_extras(doc, MOVE) is None
+    plain = native.render(doc, fmt='svg', out=tmp_path / 'plain.svg', t=1.5, timeline=MOVE).path
+    styled = native.render(doc, fmt='svg', out=tmp_path / 'styled.svg', t=1.5, timeline=STYLED).path
+    text = Path(styled).read_text(encoding='utf-8').lower()
+    assert 'rgb(100%, 0%, 0%)' in text or '#ff0000' in text or 'rgb(255,0,0)' in text
+    assert Path(plain).read_text(encoding='utf-8') != Path(styled).read_text(encoding='utf-8')
+
+
+@pytest.mark.slow
+@needs_ffmpeg
+def test_mp4_frame_with_styles_and_camera(tmp_path):
+    """The MP4 of a timeline with ``styles`` and ``@camera`` against
+    ``render(t, fmt="png", video=…)``. Measured (1.9.0a5): 38.5–53 dB, the
+    rest is H.264 on red-on-green edges (≤ the codec alone on the same
+    still); without the styles and the camera of the earlier keyframe the
+    frame at t = 1.5 was 18 dB."""
+    doc = triangle_document()
+    quality = {'fps': 10, 'quality': 'medium'}
+    native.render(doc, fmt='mp4', out=tmp_path / 'v.mp4', timeline=STYLED, video=quality)
+    for n in (0, 5, 10, 15, 19):
+        frame = _frames(tmp_path / 'v.mp4', 10, n)
+        still = Path(native.render(doc, fmt='png', out=tmp_path / f's{n}.png', t=n / 10, timeline=STYLED,
+                                   video=quality).path)
+        psnr, bad = _metrics(frame, still)
+        assert psnr >= 36, (n, psnr, bad)
+        assert bad <= 0.001 or bad <= _h264_floor(still, tmp_path), (n, psnr, bad)
 
 
 @pytest.mark.slow

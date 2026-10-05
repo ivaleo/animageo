@@ -117,8 +117,10 @@ def _resolved_imports(path):
 # (``import animageo.native`` never loads it).
 LAZY_ALLOWED = {
     'animageo/native/kernel/bridge.py': (GEO, 'numpy'),
-    # 1.9.0a4: video — manim (tempconfig) and render_config inside _render_video
-    'animageo/native/rendering.py': (CLASSIC, GEO, 'animageo.labels', 'cairosvg', BLOCKED, 'animageo.render_config'),
+    # 1.9.0a4: video — manim (tempconfig) and render_config inside _render_video;
+    # 1.9.0a5: styles and @camera at t — the classic KeyframeSequence inside _apply_extras
+    'animageo/native/rendering.py': (CLASSIC, GEO, 'animageo.labels', 'cairosvg', BLOCKED, 'animageo.render_config',
+                                     'animageo.keyframes'),
     # backend='tex' loads animageo.ui (manim) on purpose, inside a function
     'animageo/native/labels/layout.py': (GEO, 'animageo.labels', 'animageo.label_placement', 'animageo.style',
                                          'animageo.export_layout', 'animageo.ui', 'numpy'),

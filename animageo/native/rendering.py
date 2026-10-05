@@ -389,6 +389,14 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
     ``production`` — 0.5, 1, 1.5, 2 times the canvas in pixels); the
     report of a video is short: ``video`` ``{fps, quality, width, height,
     duration}``, and ``t``/``visible`` of the last keyframe.
+
+    1.9.0a5: ``fmt="png"`` with ``video`` — the frame as the video draws it:
+    the manim camera of the video (its pixel size, ``quality``; ``fps`` is
+    checked and not used) instead of cairosvg of the SVG; with ``t`` and
+    ``timeline`` it is the frame of the video at ``t`` (an MP4 frame matches
+    it at ≥ 45 dB, docs/native/timeline.md §3). The report gains ``video``
+    ``{quality, width, height}``; its boxes stay in pixels of the canvas.
+    Without ``video`` a PNG is cairosvg of the SVG, as before.
     """
     if fmt not in RENDER_FORMATS:
         raise NotImplementedError(f'format {fmt!r}: native.render writes {", ".join(RENDER_FORMATS)}')
@@ -400,8 +408,11 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         if timeline is None:
             raise ValueError('timeline_required')
         return _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report, _check_video(video))
+    frame_size = None
     if video is not None:
-        raise ValueError('video applies to mp4, gif, webm and mov only')
+        if fmt != 'png':
+            raise ValueError('video applies to mp4, gif, webm, mov and png (a video frame) only')
+        frame_size = _video_size(doc, layout, _check_video(video))
     sample = None
     if t is not None or timeline is not None:
         if t is None or timeline is None:
@@ -419,11 +430,14 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         os.close(fd)
     out = os.path.abspath(os.fspath(out))
 
-    scene = AnimaGeoScene()
-    scene.loadDocument(doc, style=style_config, inputs=inputs,
-                       reference=layout.get('reference'), content=layout.get('content'),
-                       export=layout.get('export'))
-    if fmt == 'svg':
+    extras = timeline_extras(doc, timeline) if sample is not None else None
+    if frame_size is not None:
+        scene = _camera_png(AnimaGeoScene, doc, style_config, inputs, layout, frame_size, out, extras, t)
+    else:
+        scene = _load(AnimaGeoScene, doc, style_config, inputs, layout, extras, t)
+    if frame_size is not None:
+        pass  # written by _camera_png
+    elif fmt == 'svg':
         scene.exportSVG(out)
     elif fmt == 'pdf':
         scene.exportPDF(out)
@@ -444,6 +458,8 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         finally:
             os.unlink(svg_path)
     body = build_report(scene, doc, fmt=fmt, inputs=inputs) if report else None
+    if body is not None and frame_size is not None:
+        body['video'] = {'quality': frame_size[2], 'width': frame_size[0], 'height': frame_size[1]}
     if body is not None and sample is not None:
         body['t'] = sample['t']
         body['visible'] = sample['visible']
@@ -452,6 +468,99 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
 
 def _even(v: float) -> int:
     return max(2, int(round(v / 2.0)) * 2)
+
+
+def _video_size(doc, layout, video) -> tuple:
+    """``(width, height, quality)`` of a video frame: the canvas (``export``
+    of the layout, else the source view) times ``VIDEO_QUALITY``, even."""
+    export = (layout.get('export') or {}) if isinstance(layout.get('export'), dict) else {}
+    view = source_view(doc)
+    scale = VIDEO_QUALITY[video['quality']]
+    return (_even(float(export.get('ptWidth', view['ptWidth'])) * scale),
+            _even(float(export.get('ptHeight', view['ptHeight'])) * scale), video['quality'])
+
+
+def timeline_extras(doc, timeline):
+    """The ``styles`` and ``@camera`` of ``timeline`` as a classic keyframe
+    JSON v2 (names of the bridge, ``easing`` and ``defaults`` kept; values,
+    visibility, effects and events dropped), or ``None`` when it has neither
+    (``render(t)``, 1.9.0a5)."""
+    from .timeline import timeline_to_bridge
+    bridge = timeline_to_bridge(doc, timeline)
+    keyframes, found = [], False
+    for kf in bridge['keyframes']:
+        item = {'t': kf['t']}
+        camera = (kf.get('values') or {}).get('@camera')
+        if camera is not None:
+            item['values'] = {'@camera': camera}
+            found = True
+        if kf.get('styles'):
+            item['styles'] = kf['styles']
+            found = True
+        if 'easing' in kf:
+            item['easing'] = kf['easing']
+        keyframes.append(item)
+    if not found or len(keyframes) < 2:
+        return None
+    out = {'version': 2, 'keyframes': keyframes}
+    if bridge.get('defaults'):
+        out['defaults'] = bridge['defaults']
+    return out
+
+
+def _apply_extras(scene, extras, t) -> None:
+    """Write the styles and the camera of ``extras`` at time ``t`` into a
+    loaded scene as the playback leaves them: every interval before the one
+    containing ``t`` played to its end (style interpolators at 1, their
+    finalizers, camera at 1), then the classic style and camera
+    interpolators of that interval at its progress."""
+    from ..keyframes import KeyframeSequence
+    seq = KeyframeSequence.from_json(extras, scene.geo)
+    if seq.has_style_tracks():
+        seq.bind_style_tracks(get_element=scene.geo.element, resolve=scene._style_track_baseline,
+                              color_space=scene.style.rendering.get('color_interpolation', 'oklab'))
+    kfs = seq.keyframes
+    t = max(kfs[0].t, min(float(t), kfs[-1].t))
+    index = next((i for i, iv in enumerate(seq.intervals) if iv.start_t <= t <= iv.end_t), 0)
+    for done in seq.intervals[:index]:
+        touched = scene._apply_style_interps(done, 1.0)
+        if touched:
+            scene.updateGeoElements({name: True for name in touched})
+        scene._finalize_style_interval(done)
+        if done.camera_interp:
+            scene._apply_camera(done.camera_interp.at(1.0))
+    interval = seq.intervals[index]
+    p = 0.0 if interval.duration <= 0 else (t - interval.start_t) / interval.duration
+    updates = {name: True for name in scene._apply_style_interps(interval, p)}
+    if interval.camera_interp:
+        scene._apply_camera(interval.camera_interp.at(p))
+    if updates:
+        scene.updateGeoElements(updates)
+
+
+def _load(scene_class, doc, style_config, inputs, layout, extras, t):
+    scene = scene_class()
+    scene.loadDocument(doc, style=style_config, inputs=inputs,
+                       reference=layout.get('reference'), content=layout.get('content'),
+                       export=layout.get('export'))
+    if extras is not None:
+        _apply_extras(scene, extras, t)
+    return scene
+
+
+def _camera_png(scene_class, doc, style_config, inputs, layout, size, out, extras=None, t=None):
+    """Write the frame of ``doc`` as the manim camera of the video draws it
+    (``render(fmt="png", video=…)``, 1.9.0a5): a scene loaded under the
+    pixel size of the video, one ``update_frame``, the camera image; returns
+    the scene (for the report)."""
+    from manim import tempconfig
+    width, height, _quality = size
+    with tempconfig({'pixel_width': width, 'pixel_height': height, 'disable_caching': True,
+                     'verbosity': 'ERROR', 'progress_bar': 'none', 'write_to_movie': False}):
+        frame = _load(scene_class, doc, style_config, inputs, layout, extras, t)
+        frame.renderer.update_frame(frame, ignore_skipping=True)
+        frame.renderer.camera.get_image().convert('RGBA').save(out, format='PNG')
+    return frame
 
 
 def _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report, video) -> RenderResult:
@@ -471,11 +580,7 @@ def _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report,
         fd, out = tempfile.mkstemp(prefix='animageo_', suffix='.' + fmt)
         os.close(fd)
     out = os.path.abspath(os.fspath(out))
-    export = (layout.get('export') or {}) if isinstance(layout.get('export'), dict) else {}
-    view = source_view(doc)
-    scale = VIDEO_QUALITY[video['quality']]
-    width = _even(float(export.get('ptWidth', view['ptWidth'])) * scale)
-    height = _even(float(export.get('ptHeight', view['ptHeight'])) * scale)
+    width, height, _quality = _video_size(doc, layout, video)
 
     class NativeTimelineScene(AnimaGeoScene):
         def construct(self):

@@ -432,7 +432,7 @@ def test_cli_steps_describe_timeline(tmp_path, capsys):
 
 
 def test_has_stage_four_features():
-    for feature in ('timeline', 'steps_timeline', 'render.t', 'render.video'):
+    for feature in ('timeline', 'steps_timeline', 'render.t', 'render.video', 'render.frame'):
         assert native.has(feature)
 
 
@@ -443,3 +443,48 @@ def test_render_video_needs_a_timeline():
         native.render(triangle_document(), fmt='svg', t=1.0)
     with pytest.raises(ValueError):
         native.render(triangle_document(), fmt='svg', video={'fps': 10})
+
+
+def _octagon_doc():
+    """A point on an 8-gon (period 8 > 2π) and on a circle: a single interval
+    can shift a polygon point by |d| ≥ 2π."""
+    from animageo.native.timeline_fixtures import _Doc, _ref
+    d = _Doc('timeline_octagon')
+    names = [f'V{i}' for i in range(8)]
+    for i, name in enumerate(names):
+        a = 2 * math.pi * i / 8
+        d.free(name, 3 * math.cos(a), 3 * math.sin(a))
+    d.op('polygon.by_points', {'vertices': {'kind': 'list', 'items': [_ref(n) for n in names]}},
+         [('polygon', 'q8', 'polygon')])
+    d.op('circle.center_point', {'center': _ref('V0'), 'through': _ref('V1')}, [('circle', 'c', 'circle')])
+    d.on('P8', 'q8', 0.5).on('Pc', 'c', 0.5)
+    return native.load(d.doc)
+
+
+@pytest.mark.parametrize('a, b, direction, shift', [
+    (0.5, 1.0, 'long', -7.5), (1.0, 0.5, 'long', 7.5), (0.5, 7.5, 'ccw', 7.0), (7.5, 0.5, 'cw', -7.0),
+    (0.5, 7.0, 'short', -1.5),
+])
+def test_polygon_unwraps_beyond_two_pi(a, b, direction, shift):
+    """1.9.0a5 (remainder of stage 4): a polygon point shifted by |d| ≥ 2π in
+    one interval — the period is the number of vertices, the classic path of
+    a polygon is ``unknown`` (linear), so the bridge plays it as the kernel
+    samples it, and the shift accumulates over keyframes (2·|d| > 4π)."""
+    doc = _octagon_doc()
+    tm = timeline(kf(0, values={'P8': {'tparam': a}, 'Pc': {'tparam': 0.5}}),
+                  kf(1, values={'P8': {'tparam': b, 'direction': direction},
+                                'Pc': {'tparam': 6.0, 'direction': 'ccw'}}, easing='linear'),
+                  kf(2, values={'P8': {'tparam': a, 'direction': direction}}, easing='smooth'))
+    assert _value(native.sample_timeline(doc, tm, 1), 'P8') == pytest.approx(a + shift, abs=1e-12)
+    bridge = native.timeline_to_bridge(doc, tm)
+    from animageo.native.kernel.bridge import build_names
+    name = build_names(doc.elements).by_id['P8']
+    tparams = [kf_['values'][name]['tparam'] for kf_ in bridge['keyframes'] if name in kf_.get('values', {})]
+    assert abs(tparams[1] - tparams[0]) == pytest.approx(abs(shift), abs=1e-12)
+    for t in (0.0, 0.25, 0.5, 1.0, 1.5, 2.0):
+        construction, names = _classic_at(doc, bridge, t)
+        for el_id in ('P8', 'Pc'):
+            x, y = (float(v) for v in construction.element(names.by_id[el_id]).data.coords[:2])
+            value = native.evaluate(doc, t=t, timeline=tm).elements[el_id]['value']
+            nx, ny = (value['x'], value['y']) if isinstance(value, dict) else value
+            assert (x, y) == pytest.approx((nx, ny), abs=1e-9), (el_id, t)
