@@ -37,6 +37,8 @@ REQUIRED_SCENES = {
     'l2a5_distance', 'l2a5_polygon_angles', 'l2a5_translate', 'l2a5_rotate', 'l2a5_reflect_line',
     'l2a5_reflect_point', 'l2a5_dilate', 'l2a5_number_expression', 'l2a5_text',
     'l2a5_nearest',
+    # 1.8.1: the reasons no other scene reaches
+    'l2_reasons',
 }
 
 
@@ -116,6 +118,22 @@ def test_every_reason_is_covered():
     for op, record in native.registry().ops.items():
         assert set(record['undefined']) <= seen, op
     assert {'dangling_ref', 'cycle', 'unknown_op', 'type_mismatch', 'schema'} <= seen
+
+
+def test_every_reason_of_every_op_is_covered():
+    seen = {}
+    for name in SCENES:
+        fixture = read_json(EXPECTED_DIR / name)
+        ops = fixture['document']['operations']
+        elements = fixture['document']['elements']
+        for case in fixture['cases']:
+            for e, rec in case['expect'].items():
+                if rec['state'] != 'defined' and e in elements:
+                    op = ops[elements[e]['producer']['operationId']]['op']
+                    seen.setdefault(op, set()).add(rec['reason'])
+    missing = {op: sorted(set(record['undefined']) - {'upstream'} - seen.get(op, set()))
+               for op, record in native.registry().ops.items()}
+    assert {op: m for op, m in missing.items() if m} == {}
 
 
 def test_every_case_has_its_own_scale():

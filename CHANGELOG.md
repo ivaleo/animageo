@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Parity scene `l2_reasons`: the undefined reasons of registry 1.2–1.4
+  operations that no other scene reached (`parallel` and `zero_length` of
+  `intersect.line_sector`, `coincident`, `concentric` and `zero_length` of
+  `intersect.nearest`, `zero_length` of `line.perpendicular`,
+  `invalid_parameter` of `polygon.regular_center`, `coincident_points` of
+  `sector.on_circle`, `collinear_points` of `sector.three_points`); a test
+  now asks every reason of every operation to be reached by that
+  operation.
+
 ## [1.8.1a5] - 2026-10-05
 
 ### Added
