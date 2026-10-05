@@ -1,4 +1,4 @@
-# «Команды» — the text form of a construction document (L2)
+# «Команды» — the text form of a construction document (L2, L3)
 
 `animageo/native/commands/` turns text in the «Команды» notation into an
 `animageo-construction/v1` document and back. It is the reference for the web
@@ -25,7 +25,7 @@ native.parse_commands(edited_text, base=result.document)   # edit mode (§8)
 ```text
 parse_commands(text, *, lexicon=None, base=None, id_factory=None, document_id=None) -> ParseResult
 print_commands(doc, *, lexicon=None) -> PrintResult
-ParseResult(document, effects, lines, issues)
+ParseResult(document, effects, lines, issues, conditionRequests, queries)   # §12
 PrintResult(text, lines, issues)
 CommandIssue(code, line, column, message, severity, hint=None)    # .to_dict()
 default_lexicon() -> dict           lexicon_problems(data) -> [str]
@@ -33,6 +33,8 @@ lexicon_hash(data) -> "sha256:…"    Lexicon(data)  # raises LexiconError(probl
 next_name(type, taken) -> str       polygon_side_names(vertices, taken) -> [str]
 format_number(x) -> str             is_helper(doc_data, op_id) -> bool
 time_ordered_id() -> str
+apply_condition_requests(doc, requests, *, id_factory=None, marks=True) -> RequestsResult   # §12
+printable_document(doc) -> dict    # §12
 ```
 
 `parse_commands` and `print_commands` are also exported from
@@ -64,7 +66,7 @@ time_ordered_id() -> str
   `elementIds` are the outputs of the line's operation.
 - A line with an error is skipped: `issues` gets the error, and the document
   is built from the other lines. `issues` also holds the warnings
-  `comment_dropped` (§2.2) and `ambiguous_name` (§3) and is sorted by line
+  `ambiguous_name` (§3) and is sorted by line
   and column.
 - `effects` uses the shape of the edits in kernel.md §8. A new document
   lists everything under `added`.
@@ -116,9 +118,9 @@ number ::= [ "+" | "-" ] NUMBER
   ниже, в строке 5»).
 - `°` turns a literal into radians: `(v · π) / 180`, i.e.
   `v * math.pi / 180.0`.
-- A comment, or a line that is only a comment, gives the warning
-  `comment_dropped`. Comments are not kept in the document (web decision
-  №17).
+- From 1.9.0a3 a comment is a step caption (web decision №17, §12.4): a
+  comment at the end of a line is the `text` of its step, a line that is
+  only a comment opens an explicit group. `comment_dropped` is gone.
 
 ### 2.3 Outside the subset
 
@@ -127,7 +129,7 @@ The following are refused with `forbidden` and the message «… будет по
 
 | input | example |
 |---|---|
-| conditions and checks | `Условие(…)`, `Проверить(…)`, a top-level `≠ ∥ ⟂ ∈` |
+| a bare statement | a top-level `≠ ∥ ⟂ ∈` (it goes into `Условие(…)` or `Проверить(…)`, §12) |
 | equations | `x = 3`, `y = 2x + 1`, two `=` on a line |
 | functions | `f(x) = …` |
 | inequalities | a top-level `< > ≤ ≥` |
@@ -449,7 +451,8 @@ line keeps the operation it names).
 | `ambiguous_pair` | error | a pair or `∠ABC` splits more than one way |
 | `name_taken` | error | a name on the left belongs to another element, or repeats |
 | `invalid_name` | error | a name on the left breaks the `rename` grammar |
-| `comment_dropped` | warning | a comment (§2.2) |
+| `unprintable_condition` | warning | a condition the printer cannot say (1.9.0a3) |
+| `unsupported_condition`, `receiver_not_free`, `receiver_is_ancestor`, `too_many_conditions` | error | an `Условие(…)` line (§12.2) |
 | `ambiguous_name` | warning | a name on the left also reads as two names of points of the document; the name means the element (§3). The printer gives the same warning |
 | `unprintable_pair`, `unprintable_params`, `unprintable_operation` | warning | printer only (§6.4) |
 
@@ -594,7 +597,7 @@ python -m animageo.native commands print <doc.json> [--lexicon <file>]
   `-o` is required; the web passes its generated lexicon and its
   `fixtures/commands/`. `--check` compares instead of writing (ignoring
   `generatedBy`) and exits 1 with a hint when the set is out of date.
-- **`parse`** prints `{document, effects, lines, issues}` as JSON and the
+- **`parse`** prints `{document, effects, lines, issues, conditionRequests, queries}` as JSON and the
   issues on stderr. It exits 1 when there are errors.
 - **`print`** prints the text and the warnings on stderr. It accepts a
   document or a parity scene (`animageo-parity/v1`).
@@ -619,3 +622,149 @@ python -m animageo.native commands print <doc.json> [--lexicon <file>]
   line comes back unchanged.
 - Re-parsing the text of a document with unbound outputs in the middle binds
   them (§6.3).
+
+## 12. Conditions, checks and steps (1.9.0a3, plan L3 §4)
+
+### 12.1 Grammar
+
+```text
+line      ::= … | "Условие" "(" statement [ "," "двигать" point ] ")"
+            | "Проверить" "(" statement ")" | CheckCommand "(" args ")"
+            | "Отношение" "(" obj "," obj ")"
+statement ::= expr ("=" | "≠") expr | obj ("∥" | "⟂") obj | point "∈" obj
+            | obj "касается" obj | CheckCommand "(" args ")"
+expr      ::= + − · / ^ (right-associative), unary minus, ( … ), numbers with "°",
+              "π", "|" obj "|", "∠" ABC, "∠" α, "√" atom, sqrt sin cos tan … "(" … ")",
+              names of numbers and angles
+obj       ::= the name of an element | a pair of points (AB)
+```
+
+- The words come from the lexicon: `keywords` (`condition`, `check`,
+  `move`, `touches`, `not`, `near`, plus `given` «Дано» and `relation`
+  «Отношение» of 1.9.0a3); the first word of a key prints. Without a
+  lexicon (`parse_line(tokens, n)`) `Условие` stays `forbidden` as in 1.8.
+- Check commands are lexicon entries with `check` (a statement kind) in
+  place of `op`: `ПроверкаПараллельности`/`AreParallel` (`parallel`),
+  `ПроверкаПерпендикулярности`/`ArePerpendicular`, `ПроверкаКасания`/
+  `IsTangent`, `ПроверкаПринадлежности`/`IsOnPath` (`on`),
+  `ПроверкаКоллинеарности`/`AreCollinear`, `ПроверкаКонцикличности`/
+  `AreConcyclic`, `ПроверкаКонкурентности`/`AreConcurrent`,
+  `ПроверкаРавенства`/`AreCongruent` (`congruent`),
+  `ПроверкаСовпадения`/`AreEqual` (`coincident`). A line of one reads as
+  `Проверить(…)`; a check name may not be a command name.
+- A name of an element wins over a pair (as in arguments); `A = B` of two
+  points is `coincident`; a bare segment name in an expression is
+  `type_mismatch` with the hint `|s|`. The statement is checked by
+  `statement_problems` (`type_mismatch`).
+- `около A` stays `forbidden` (W2 №8).
+
+### 12.2 The parse result
+
+`ParseResult(document, effects, lines, issues, conditionRequests, queries)`:
+
+- `Проверить(…)` — a `conditions[]` entry `{id: "c<n>", seq, mode: "check",
+  statement}` (the smallest free `n`; `seq` — after the largest of the
+  document), and a line `{line, operationIds: [], elementIds: [],
+  conditionId}`.
+- `Условие(…)` — a request `{line, kind, statement, receiver}`; `receiver`
+  is the one of `двигать`, else the default (plan §3.5) — the parse judges
+  it on the document without the conditions of the text applied (edit mode:
+  `printable_document`, §12.3). Errors without values: `unsupported_condition`
+  (no recipe, or none moves the named point), `receiver_not_free`,
+  `receiver_is_ancestor`, `too_many_conditions` (constraints plus the
+  requests and the kept conditions on the receiver), `ambiguous_pair`;
+  `no_intersection_now` only when applied.
+- `Отношение(a, b)` — `{line, kind: "relation", a, b}` in `queries`
+  (`native.relation` answers it); nothing goes into the document.
+- `apply_condition_requests(doc, requests, *, id_factory=None, marks=True)
+  → RequestsResult(document, results)` carries the requests out in order
+  (computational: the sandbox; the browser — the TS copy): `apply` —
+  `apply_condition` with `source: "command"` and the receiver; `release` —
+  `release_condition` at the current position; `replace` — both or neither;
+  `move` — the receiver's parameter becomes the projection of `point` onto
+  its place (a receiver on two places has no freedom). A refused request
+  changes nothing; `results` — `[{line, kind, conditionId, refusal}]`.
+
+### 12.3 The printer
+
+- `printable_document(doc)`: each receiver of a construct condition is
+  defined by its `receiverOrigin` (ID and `seq` kept), the places of
+  conditions and the automatic marks (`origin.kind = "auto"`, helpers
+  included) are gone, and so are the construct conditions and the
+  `condition` steps. Lines are printed from it.
+- Order: the steps of `native.steps` of that document; inside a step — its
+  operation order (order key, then ID). For a document without `seq`,
+  `steps` and conditions the order is the 1.8 one.
+- An explicit `given`/`group` step with a `title` or with ≥ 2 printed
+  operations gets a heading `# <title>` (no title: `# Дано` for `given`, `#`
+  for a group); its `text` goes to the end of its first line (`  # text`).
+  After a group with a heading, a blank line closes it before the next
+  printed line that is not a heading.
+- `Условие(…)` and `Проверить(…)` go right after the step where their last
+  participant is made (a condition with a participant that is not printed —
+  at the end), among themselves by `seq`, then ID. `двигать X` is printed
+  when the receiver is not the default one on the printable document.
+- Printer lines get `{line, operationIds: [], elementIds: [], conditionId}`
+  for condition lines; headings and blank lines have no entry.
+
+**Properties** (tests on every scene and fixture document):
+`parse(print(doc), base=doc)` ≡ `doc` byte for byte, without requests;
+`parse(print(doc))` + `apply_condition_requests` ≡ `doc` by structure and
+conditions, inputs equal but for the parameters of receivers (a release
+keeps the current position).
+
+### 12.4 Steps from comments
+
+- A line that is only a comment opens an explicit group: its text is the
+  `title` (`# Дано`/`# Given` — kind `given`, no title; a bare `#` — no
+  title). The group lasts to the next comment line or a blank line.
+- A comment at the end of a line is the `text` of the step of its operation
+  (inside a group — the group's text; several are joined with `; `); outside
+  a group the operation becomes an explicit one-operation step.
+- A line's hidden pairs join its group (the first group that uses them).
+  Condition and check lines inside a group do not join it. A group without
+  operations is dropped. IDs: `s<n>` (the smallest free), in edit mode the
+  ID of the base step that holds the group's first operation.
+- Edit mode: when the text shows the same groups as `print(base)` (titles,
+  texts, printed operations), the steps of `base` stay as they are
+  (`given`/`group` kind, hidden operations, one-operation steps without a
+  caption); otherwise they are rebuilt from the text.
+- `apply_condition` takes the receiver's operation out of its explicit step
+  (it goes to the condition's step; staying would make the steps cyclic).
+
+### 12.5 Edit mode with conditions
+
+- The places of the base's conditions and its automatic marks have no
+  lines and stay. A receiver's line is its `receiverOrigin` line: typed back
+  unchanged — the condition's realization stays; a changed point literal —
+  a `move` request and the new `receiverOrigin` in every condition of that
+  receiver (the operation stays); another definition — an ordinary
+  redefinition (`redefine` around conditions).
+- An `Условие` line matches a base construct condition by the statement
+  with element IDs (and the receiver, when `двигать` is written): unchanged —
+  kept, no request; otherwise `replace` of an unmatched base condition with
+  the same receiver, else with the same statement, else `apply`; a base
+  condition without a line — `release` (requests go releases first, then by
+  line). An `Условие` line with an error keeps one unmatched condition (in
+  print order) from release.
+- `Проверить` lines match base check entries by statement; unmatched base
+  checks are removed, new ones added. `effects` lists `conditions` under
+  `added`/`removed`/`modified` when they change.
+
+### 12.6 Lexicon and fixtures
+
+- The default lexicon names every op of the registry but `number.expression`
+  and `text.free` (registry 1.4 ops got names of the matrix: `Площадь`,
+  `Касательная`, `Поворот`, `ЛучПодУглом`, …), plus the check commands and
+  `keywords`.
+- Fixtures of L3 (`animageo/native/commands/fixtures_l3.py`):
+  `parse_l2a4` (two cases per 1.4 op), `conditions` (13 recipes × 3),
+  `condition_errors`, `checks` (each statement kind × 2, check commands,
+  queries), `comment_steps`, `print_order` (steps and `seq`),
+  `edit_conditions`. A base may hold conditions (parsed, then its requests
+  carried out); `expect` adds `conditions`, `steps`, `conditionRequests`,
+  `queries` (IDs as names, operations as `@<index>`) and `afterRequests`
+  (`print`, `results` with the refusal code and the recipe). 246 cases in
+  7 files (458 in all). The cases are written with the default names;
+  `localize` renames commands, check commands and keywords for another
+  lexicon (`commands fixtures --lexicon`).
