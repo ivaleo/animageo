@@ -1056,8 +1056,9 @@ class AnimaGeoScene(MovingCameraScene):
         the applet window, the construction from the bridge
         (``animageo.native.kernel.bridge``: element ``e_<id>`` per document
         element, ``self.native_names`` maps IDs and names), and
-        ``appearance`` (visibility, labels, style overrides) is applied before
-        :meth:`applyStyle`. ``inputs`` override free input values.
+        ``appearance`` (visibility, labels, roles from the style's ``roles``
+        section, style overrides) is applied before :meth:`applyStyle`.
+        ``inputs`` override free input values.
         ``style``/``reference``/``content``/``export`` are as in
         :meth:`loadGGB`. Issues of ``appearance`` are kept in
         ``self.native_diagnostics``.
@@ -1080,7 +1081,9 @@ class AnimaGeoScene(MovingCameraScene):
         self.label_point_clearance = True
         construction.log_unsupported = bool(debug)
         construction.rebuild(debug=debug, full=True)
-        plan, diagnostics = appearance_plan(doc, view['ptUnit'], inputs=inputs)
+        from .style.config import StyleConfig
+        roles = StyleConfig.load(style).source.get('roles')     # appearance.<id>.role (1.9.0a1)
+        plan, diagnostics = appearance_plan(doc, view['ptUnit'], inputs=inputs, roles=roles)
         apply_appearance(construction, names, plan)
         self.native_diagnostics = diagnostics
         self.applyStyle(

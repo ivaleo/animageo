@@ -296,7 +296,7 @@ def layout_labels(doc, ev=None, *, inputs=None, style_config=None, export_layout
     view['ptUnit_ggb'] = view['ptUnit']     # offsets in world units, as loadDocument
     construction, names = build_construction(doc, inputs=inputs)
     construction.rebuild(full=True)
-    plan, _ = appearance_plan(doc, view['ptUnit'], inputs=inputs, evaluated=ev)
+    plan, _ = appearance_plan(doc, view['ptUnit'], inputs=inputs, evaluated=ev, roles=cfg.source.get('roles'))
     apply_appearance(construction, names, plan)
 
     def scene(export, camera=None):

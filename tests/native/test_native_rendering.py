@@ -194,7 +194,7 @@ def test_undrawn_elements_have_no_label():
 class TestArguments:
     @pytest.mark.parametrize('kwargs, error', [
         ({'fmt': 'mp4'}, NotImplementedError),
-        ({'fmt': 'eps'}, NotImplementedError),
+        ({'fmt': 'gif'}, NotImplementedError),
         ({'t': 1.0}, NotImplementedError),
         ({'timeline': {}}, NotImplementedError),
         ({'export_layout': {'export': {}, 'size': [1, 1]}}, ValueError),

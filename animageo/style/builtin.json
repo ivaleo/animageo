@@ -263,6 +263,14 @@
         }
     },
 
+    "roles": {
+        "_comment": "Style roles of a native document (appearance.<id>.role, 1.9.0a1); 'point' holds the keys of a point. Mirror of animageo.style.schema.ROLE_DEFAULTS.",
+        "given": {"stroke": "presets.color.main", "point": {"fill": "presets.color.strong"}},
+        "aux": {"stroke": "presets.color.aux", "stroke_width_px": "presets.line_width.aux", "stroke_dash_ratio": 0.5,
+                "point": {"size_px": "presets.point_size.aux"}},
+        "sought": {"stroke": "presets.color.accent", "stroke_width_px": "presets.line_width.bold",
+                   "point": {"fill": "presets.color.accent", "size_px": "presets.point_size.bold"}}
+    },
     "rendering": {
         "background":             "presets.color.background",
         "line_cap":               "butt",

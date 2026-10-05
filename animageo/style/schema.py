@@ -256,7 +256,19 @@ Positioning / layering
 from __future__ import annotations
 
 
-NEW_TOP_KEYS = frozenset({'presets', 'defaults', 'reference', 'rendering', 'import', 'overlay'})
+NEW_TOP_KEYS = frozenset({'presets', 'defaults', 'reference', 'rendering', 'import', 'overlay', 'roles'})
+
+# Style roles of a native document (``appearance.<id>.role``, animageo 1.9.0a1;
+# web spec «Роли объектов» §3). Mirrored by the ``roles`` section of
+# builtin.json (a test keeps the two equal). The keys of a role apply to
+# every drawn element but a point; ``point`` holds the keys of a point.
+ROLE_DEFAULTS = {
+    'given': {'stroke': 'presets.color.main', 'point': {'fill': 'presets.color.strong'}},
+    'aux': {'stroke': 'presets.color.aux', 'stroke_width_px': 'presets.line_width.aux', 'stroke_dash_ratio': 0.5,
+            'point': {'size_px': 'presets.point_size.aux'}},
+    'sought': {'stroke': 'presets.color.accent', 'stroke_width_px': 'presets.line_width.bold',
+               'point': {'fill': 'presets.color.accent', 'size_px': 'presets.point_size.bold'}},
+}
 REMOVED_TOP_KEYS = frozenset({'style', 'technic', 'ggb_export', 'palette'})
 AUTOMATION_RENDERING_KEYS = frozenset({'angle_radius', 'label_placement'})
 REMOVED_RENDERING_KEYS = frozenset({'scale_export'})

@@ -1,4 +1,4 @@
-"""Render a document to SVG, PNG or PDF (``native.render``) and its report.
+"""Render a document to SVG, PNG, PDF, EPS or TikZ (``native.render``) and its report.
 
 The construction is built by the bridge (``kernel/bridge.py``) as a classic
 ``animageo.geo.Construction`` and drawn by ``AnimaGeoScene.loadDocument`` —
@@ -29,6 +29,10 @@ of the output, for PDF px at 96 dpi; the y axis points down)::
 
     px = ox + u·x,  py = oy − u·y
 
+1.9.0a1: ``elements.<id>.role`` — the role of ``appearance`` (given, aux,
+sought) when the element has one; a ``locus`` reports the box of its
+defined samples.
+
 An equality mark (``mark.equal_segments``, ``mark.equal_angles``) has no
 drawing of its own: its ``box`` is the union of the boxes of its drawn
 targets (``null`` when none is drawn, the mark is hidden or undefined), its
@@ -47,7 +51,7 @@ import os
 import tempfile
 from dataclasses import dataclass
 
-from .document import as_document
+from .document import ROLES, as_document
 from .kernel.numeric import default_bounds
 
 __all__ = [
@@ -58,6 +62,7 @@ __all__ = [
     'RenderResult',
     'appearance_plan',
     'apply_appearance',
+    'role_style',
     'build_report',
     'label_overlaps',
     'label_point_overlaps',
@@ -67,7 +72,7 @@ __all__ = [
 ]
 
 REPORT_FORMAT = 'animageo-render-report/v1'
-RENDER_FORMATS = ('svg', 'png', 'pdf')
+RENDER_FORMATS = ('svg', 'png', 'pdf', 'eps', 'tikz', 'tex')
 LAYOUT_KEYS = ('reference', 'content', 'export')
 SOURCE_WIDTH = 800.0
 OVERLAP_SHARE = 0.15
@@ -146,7 +151,20 @@ def mark_targets(doc) -> dict:
     return out
 
 
-def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None) -> tuple:
+def role_style(roles, role: str, type_: str) -> dict:
+    """The style keys of ``role`` for an element of ``type_`` from a style's
+    ``roles`` section (``{}`` when the section or the role is absent): the
+    ``point`` keys for a point, the other keys for any other element."""
+    entry = roles.get(role) if isinstance(roles, dict) else None
+    if not isinstance(entry, dict):
+        return {}
+    if type_ == 'point':
+        keys = entry.get('point')
+        return dict(keys) if isinstance(keys, dict) else {}
+    return {k: v for k, v in entry.items() if k != 'point' and not k.startswith('_')}
+
+
+def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None) -> tuple:
     """``({elementId: {"visible": bool, "style": {key: value}}}, diagnostics)``.
 
     Every element gets an entry. ``label.mode`` defaults to ``name`` for a
@@ -154,6 +172,11 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None) -> tuple:
     ``displayName``. ``offsetWorld`` (world units) becomes ``label_offset_px``
     at the source ``unit`` (y up) and locks the label against automatic
     placement. ``overrides`` set :data:`APPEARANCE_STYLE_KEYS` only.
+
+    Roles (1.9.0a1): ``role`` (given, aux, sought) puts the keys of
+    ``roles[role]`` (the style's ``roles`` section, :func:`role_style`)
+    under the ``overrides``; token references stay for the resolver. An
+    unknown role or no ``roles`` leaves the element as it is.
 
     Marks (registry 1.3): a visible, defined equality mark sets
     ``tick_count = count`` on its targets (:func:`mark_targets`) — an
@@ -205,6 +228,14 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None) -> tuple:
                 style['label_placement_locked'] = True
             else:
                 diagnostics.append({'code': 'bad_label_offset', 'elementId': el_id})
+        role = entry.get('role')
+        if isinstance(role, str):
+            for key, value in sorted(role_style(roles, role, el.get('type')).items()):
+                if key in APPEARANCE_STYLE_KEYS:
+                    style[key] = value
+                else:
+                    diagnostics.append({'code': 'unknown_style_key', 'elementId': el_id, 'key': key,
+                                        'role': role})
         overrides = entry.get('overrides')
         if isinstance(overrides, dict):
             for key in sorted(overrides):
@@ -282,8 +313,10 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
     file path, a packaged preset name or ``None`` (built-in);
     ``styleBinding`` of the document is not read. ``export_layout``: the
     placement keyword arguments of ``loadGGB`` — ``{reference?, content?,
-    export?}``. ``fmt``: ``svg``, ``png`` (SVG rasterised by cairosvg) or
-    ``pdf`` (96 dpi). ``t`` and ``timeline`` are not supported yet.
+    export?}``. ``fmt``: ``svg``, ``png`` (SVG rasterised by cairosvg),
+    ``pdf`` (96 dpi), ``eps`` (``exportEPS``), ``tikz`` (a ``tikzpicture``
+    to include, ``exportTikZ(standalone=False)``) or ``tex`` (a compilable
+    standalone document). ``t`` and ``timeline`` are not supported yet.
     """
     if fmt not in RENDER_FORMATS:
         raise NotImplementedError(f'format {fmt!r}: native.render writes {", ".join(RENDER_FORMATS)}')
@@ -302,7 +335,7 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         raise
 
     if out is None:
-        fd, out = tempfile.mkstemp(prefix='animageo_', suffix='.' + fmt)
+        fd, out = tempfile.mkstemp(prefix='animageo_', suffix='.' + ('tex' if fmt == 'tikz' else fmt))
         os.close(fd)
     out = os.path.abspath(os.fspath(out))
 
@@ -314,6 +347,10 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         scene.exportSVG(out)
     elif fmt == 'pdf':
         scene.exportPDF(out)
+    elif fmt == 'eps':
+        scene.exportEPS(out)
+    elif fmt in ('tikz', 'tex'):
+        scene.exportTikZ(out, standalone=(fmt == 'tex'))
     else:
         try:
             import cairosvg
@@ -430,6 +467,15 @@ def label_point_overlaps(label_boxes: dict, points: dict) -> list:
     return pairs
 
 
+def _locus_box(value):
+    pts = [p for p in value['points'] if p is not None]
+    if not pts:
+        return None
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    return min(xs), min(ys), max(xs), max(ys)
+
+
 def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
     """The ``animageo-render-report/v1`` of a scene loaded by ``loadDocument``."""
     from .. import __version__
@@ -441,6 +487,10 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
     names = scene.native_names
     states = evaluate(doc, inputs=inputs).elements
     by_name = {getattr(m, 'name', None): m for m in scene.mobjects}
+    appearance = doc.data.get('appearance')
+    appearance = appearance if isinstance(appearance, dict) else {}
+    roles_of = {el_id: entry['role'] for el_id, entry in appearance.items()
+                if isinstance(entry, dict) and entry.get('role') in ROLES}
     elements = {}
     label_boxes = {}
     markers = {}
@@ -450,8 +500,13 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
         elem = scene.geo.element(name)
         mobj = by_name.get(name)
         record = {'state': states[el_id]['state'], 'visible': mobj is not None, 'box': None, 'label': None}
+        role = roles_of.get(el_id)
+        if role is not None:
+            record['role'] = role
         if mobj is not None:
             box = _leaf_boxes(mobj, labels=False)
+            if states[el_id]['state'] == 'defined' and states[el_id]['type'] == 'locus':
+                box = _locus_box(states[el_id]['value'])
             record['box'] = _px_box(box, export) if box is not None else None
             if box is not None and isinstance(getattr(elem, 'data', None), geo.Point):
                 x0, y0, x1, y1 = record['box']
