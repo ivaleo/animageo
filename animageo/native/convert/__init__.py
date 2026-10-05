@@ -222,6 +222,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     with _quiet():
         constr, parse_errors = _classic_parse(root, macro_root, sc)
     from ...geo.construction import normalize_name
+    from ...parsers.ggb_parser import split_text_parts
     labels = {i['label'] for i in infos}
     norm = {}
     for info in infos:
@@ -331,7 +332,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
             deps = [d for d in deps if d not in ('text',)]
         value = ggb_value(info, point_of)
         if t == 'text' and value is not None:
-            value.update(text_extras(info, by_label, point_of, sc['view'], sc.get('decimals'), classic_of))
+            value.update(text_extras(info, by_label, point_of, sc['view'], sc.get('decimals'), classic_of,
+                                     split_text_parts))
         placeable = t in PLACEABLE and value is not None and (value.get('value') is not None or t == 'text') \
             and (t != 'segment' or value['kind'] == 'segment')
         e = {'name': label, 'info': info, 'depends_on': deps, 'free': False, 'value_check': 'not_checked',

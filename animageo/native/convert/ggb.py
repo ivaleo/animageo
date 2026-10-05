@@ -385,7 +385,7 @@ def screen_to_world(view, x, y):
 TEXT_INSERTS = {'point': 'point', 'numeric': 'number', 'angle': 'angle', 'segment': 'length', 'polygon': 'area'}
 
 
-def text_extras(info: dict, by_label: dict, point_of, view, decimals, classic_of=None) -> dict:
+def text_extras(info: dict, by_label: dict, point_of, view, decimals, classic_of=None, split=None) -> dict:
     """The anchor and the ``text.free`` template of a text (1.10.0a2,
     ``has("import_report.text_template")``), keys of its ``ggb_value``:
 
@@ -400,7 +400,8 @@ def text_extras(info: dict, by_label: dict, point_of, view, decimals, classic_of
       (degrees), ``length`` (of a segment), ``area`` (of a polygon);
       ``shown`` — the text as the file shows it, from the saved values
       (the length of a side of a polygon from the classic object,
-      ``classic_of(label)``)."""
+      ``classic_of(label)``). ``split`` — the classic ``split_text_parts``
+      (``from_ggb`` passes it: this module does not import the classic)."""
     out = {}
     if info.get('start') is None:
         ref = (info.get('start_ref') or '').strip()
@@ -413,13 +414,12 @@ def text_extras(info: dict, by_label: dict, point_of, view, decimals, classic_of
             p = screen_to_world(view, *info['screen'])
             if p is not None:
                 out['anchor'], out['screen'] = p, True
-    if info.get('command') != 'Expression' or not info.get('inputs'):
+    if info.get('command') != 'Expression' or not info.get('inputs') or split is None:
         return out
-    from ...parsers.ggb_parser import split_text_parts
     from ..expr.template import format_value, template_problems
     pieces, shown, refs, index = [], [], [], {}
     places = 2 if decimals is None or not 0 <= decimals <= 10 else int(decimals)
-    for kind, piece in split_text_parts(info['inputs'][0]):
+    for kind, piece in split(info['inputs'][0]):
         if kind == 'str':
             pieces.append(piece.replace('{', '{{').replace('}', '}}'))
             if shown is not None:
