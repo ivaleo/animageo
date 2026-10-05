@@ -24,10 +24,10 @@ ray (linear t).
 
 import logging
 import math
-import warnings
 from dataclasses import dataclass
 
 import numpy as np
+from . import _deprecation
 from .geo.lib_elements import Point, Line, Segment, Ray, Circle
 from .geo.lib_vars import Measure, AngleSize, Boolean
 from .style.animatable import normalize_style_value, style_kind
@@ -632,12 +632,8 @@ class KeyframeSequence:
                 f"Unsupported keyframes JSON version {version!r}; expected 1 or 2"
             )
         if version == 1:
-            warnings.warn(
-                "keyframes JSON without '\"version\": 2' uses the deprecated v1 "
-                "schema. Add '\"version\": 2' to opt into the v2 schema "
-                "(per-keyframe 'styles'; future v2 visibility/timing semantics).",
-                DeprecationWarning, stacklevel=2,
-            )
+            # the text is in animageo/_deprecation.py (docs/native/deprecations.md)
+            _deprecation.warn('keyframes JSON v1', stacklevel=2)
 
         raw_defaults = data.get('defaults', {})
         defaults = {}
