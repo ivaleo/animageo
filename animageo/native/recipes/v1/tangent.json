@@ -1,0 +1,50 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "tangent",
+  "priority": 12,
+  "condition": {
+    "kind": "tangent",
+    "pattern": {
+      "kind": "tangent",
+      "a": {
+        "pair": [
+          "P",
+          "X"
+        ]
+      },
+      "b": {
+        "ref": "W"
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "P": "point",
+    "W": "circle"
+  },
+  "template": [
+    {
+      "op": "line.tangents_from_point",
+      "args": {
+        "point": "P",
+        "circle": "W"
+      },
+      "outputs": {
+        "tangent.1|tangent.2": "$t"
+      },
+      "nearest": "X"
+    },
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "$t"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на касательной из {P} к {W}"
+  }
+}

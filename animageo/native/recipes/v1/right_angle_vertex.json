@@ -1,0 +1,56 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "right_angle.vertex",
+  "priority": 8,
+  "condition": {
+    "kind": "eq",
+    "pattern": {
+      "kind": "eq",
+      "left": {
+        "angle": [
+          {
+            "ref": "A"
+          },
+          {
+            "ref": "X"
+          },
+          {
+            "ref": "B"
+          }
+        ]
+      },
+      "right": {
+        "deg": 90
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "A": "point",
+    "B": "point"
+  },
+  "template": [
+    {
+      "op": "circle.diameter",
+      "args": {
+        "a": "A",
+        "b": "B"
+      },
+      "outputs": {
+        "circle": "$c"
+      }
+    },
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "$c"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на окружности с диаметром {A}{B}: ∠{A}{X}{B} = 90°"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "perpendicular",
+  "priority": 7,
+  "condition": {
+    "kind": "perpendicular",
+    "pattern": {
+      "kind": "perpendicular",
+      "a": {
+        "pair": [
+          "A",
+          "B"
+        ]
+      },
+      "b": {
+        "pair": [
+          "C",
+          "X"
+        ]
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "A": "point",
+    "B": "point",
+    "C": "point"
+  },
+  "template": [
+    {
+      "op": "line.by_points",
+      "args": {
+        "a": "A",
+        "b": "B"
+      },
+      "outputs": {
+        "line": "$l"
+      }
+    },
+    {
+      "op": "line.perpendicular",
+      "args": {
+        "point": "C",
+        "base": "$l"
+      },
+      "outputs": {
+        "line": "$p"
+      }
+    },
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "$p"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на прямой через {C}, перпендикулярной {A}{B}"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "equal_length.free",
+  "priority": 5,
+  "condition": {
+    "kind": "eq",
+    "pattern": {
+      "kind": "eq",
+      "left": {
+        "len": {
+          "pair": [
+            "A",
+            "B"
+          ]
+        }
+      },
+      "right": {
+        "len": {
+          "pair": [
+            "C",
+            "X"
+          ]
+        }
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "A": "point",
+    "B": "point",
+    "C": "point"
+  },
+  "template": [
+    {
+      "op": "segment.by_points",
+      "args": {
+        "a": "A",
+        "b": "B"
+      },
+      "outputs": {
+        "segment": "$s"
+      }
+    },
+    {
+      "op": "circle.center_segment",
+      "args": {
+        "center": "C",
+        "radius": "$s"
+      },
+      "outputs": {
+        "circle": "$c"
+      }
+    },
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "$c"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на окружности с центром {C} радиуса |{A}{B}|"
+  }
+}

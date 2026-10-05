@@ -1,0 +1,35 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "on_object",
+  "priority": 1,
+  "condition": {
+    "kind": "on",
+    "pattern": {
+      "kind": "on",
+      "point": {
+        "ref": "X"
+      },
+      "object": {
+        "ref": "W"
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "W": "path"
+  },
+  "template": [
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "W"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на {W}"
+  }
+}

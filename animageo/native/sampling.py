@@ -11,8 +11,8 @@ web reproduces every trial bit for bit (docs/native/conditions.md §4).
    ``point`` — ``p + r_k·(ρ cos φ, ρ sin φ)``, ``ρ = √uniform()``,
    ``φ = 2π·uniform()``, ``r_k = 0.5·S·k/trials``, clamped to
    ``viewDefaults.bounds``; ``pathParameter`` — uniform over the range of
-   the path, a line or a ray ``t + (2·uniform() − 1)·S/|v|`` (a ray not below
-   ``0``); ``number`` — uniform in ``[min, max]``, without both
+   the path, a line or a ray ``t + (2·uniform() − 1)·S/|v|`` (on a ray a
+   value below ``0`` is reflected: ``−t``); ``number`` — uniform in ``[min, max]``, without both
    ``v·(1 + uniform() − 0.5)``; ``angle`` — ``2π·uniform()``. An input
    without a value draws nothing.
 4. Result: ``failed`` when a trial fails (the counterexample is the first:
@@ -72,7 +72,7 @@ def trial_inputs(specs, values_in, rng, k, trials, scale, bounds) -> dict:
                 unit = info.get('unit') or 1.0
                 t = current['value'] + (2 * u - 1) * scale / unit
                 if lo is not None and t < lo:
-                    t = lo
+                    t = lo + (lo - t)          # a ray reflects at its origin (no trial at the vertex)
             value = {'kind': 'pathParameter', 'value': t}
             if 'branch' in current:
                 value['branch'] = current['branch']

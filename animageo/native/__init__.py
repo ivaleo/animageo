@@ -66,11 +66,13 @@ from .steps import Step, StepError, assign_seq, steps, steps_merge, steps_split
 from .describe import describe
 from .conditions import measure_statement, relation, statement_checks, statement_problems
 from .sampling import check_general
+from .conditions.apply import (ConditionResult, Refusal, apply_condition, condition_candidates, release_condition,
+                               shape_conditions)
 
 # Features of this library by stage of plan L3 (``has``): the web asks for a
 # feature instead of comparing versions.
 FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles',
-            'check.general')
+            'check.general', 'conditions', 'apply_condition')
 
 
 def has(feature: str) -> bool:
@@ -123,6 +125,12 @@ __all__ = [
     'describe',
     'has',
     'check_general',
+    'ConditionResult',
+    'Refusal',
+    'apply_condition',
+    'condition_candidates',
+    'release_condition',
+    'shape_conditions',
     'measure_statement',
     'relation',
     'statement_checks',

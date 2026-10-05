@@ -1,0 +1,53 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "length.value",
+  "priority": 3,
+  "condition": {
+    "kind": "eq",
+    "pattern": {
+      "kind": "eq",
+      "left": {
+        "len": {
+          "pair": [
+            "A",
+            "X"
+          ]
+        }
+      },
+      "right": {
+        "value": "V"
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "A": "point",
+    "V": "positive"
+  },
+  "template": [
+    {
+      "op": "circle.center_radius",
+      "args": {
+        "center": "A",
+        "radius": {
+          "value": "V"
+        }
+      },
+      "outputs": {
+        "circle": "$c"
+      }
+    },
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "$c"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на окружности с центром {A} радиуса {V}: |{A}{X}| = {V}"
+  }
+}

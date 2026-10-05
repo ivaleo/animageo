@@ -1,0 +1,65 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "angle.value",
+  "priority": 10,
+  "condition": {
+    "kind": "eq",
+    "pattern": {
+      "kind": "eq",
+      "left": {
+        "angle": [
+          {
+            "ref": "A"
+          },
+          {
+            "ref": "B"
+          },
+          {
+            "ref": "X"
+          }
+        ]
+      },
+      "right": {
+        "deg": "D"
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "A": "point",
+    "B": "point",
+    "D": "angle_degrees"
+  },
+  "template": [
+    {
+      "op": "ray.at_angle",
+      "args": {
+        "vertex": "B",
+        "a": "A",
+        "size": {
+          "signed_degrees": "D",
+          "side": [
+            "A",
+            "B",
+            "X"
+          ]
+        }
+      },
+      "outputs": {
+        "ray": "$r"
+      }
+    },
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "$r"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на луче из {B}, повёрнутом от {B}{A} на {D}°"
+  }
+}

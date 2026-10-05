@@ -1,0 +1,49 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "on_line",
+  "priority": 2,
+  "condition": {
+    "kind": "on",
+    "pattern": {
+      "kind": "on",
+      "point": {
+        "ref": "X"
+      },
+      "object": {
+        "pair": [
+          "A",
+          "B"
+        ]
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "A": "point",
+    "B": "point"
+  },
+  "template": [
+    {
+      "op": "line.by_points",
+      "args": {
+        "a": "A",
+        "b": "B"
+      },
+      "outputs": {
+        "line": "$l"
+      }
+    },
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "$l"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на прямой {A}{B}"
+  }
+}

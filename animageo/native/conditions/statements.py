@@ -350,6 +350,8 @@ def _to_ast(doc, ev, node, refs, tol):
         arg = node['angle']
         if isinstance(arg, list):
             a, b, c = (_point(ev, x['ref']) for x in arg)
+            if min(math.hypot(a[0] - b[0], a[1] - b[1]), math.hypot(c[0] - b[0], c[1] - b[1])) <= tol.decide_length:
+                raise rel._Inconclusive('coincident_points')
             refs.append(_convex_angle(a, b, c))
         else:
             refs.append(float(_value(ev, arg['ref'])['size']))

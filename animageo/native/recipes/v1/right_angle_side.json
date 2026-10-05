@@ -1,0 +1,66 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "right_angle.side",
+  "priority": 9,
+  "condition": {
+    "kind": "eq",
+    "pattern": {
+      "kind": "eq",
+      "left": {
+        "angle": [
+          {
+            "ref": "A"
+          },
+          {
+            "ref": "C"
+          },
+          {
+            "ref": "X"
+          }
+        ]
+      },
+      "right": {
+        "deg": 90
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "A": "point",
+    "C": "point"
+  },
+  "template": [
+    {
+      "op": "line.by_points",
+      "args": {
+        "a": "C",
+        "b": "A"
+      },
+      "outputs": {
+        "line": "$l"
+      }
+    },
+    {
+      "op": "line.perpendicular",
+      "args": {
+        "point": "C",
+        "base": "$l"
+      },
+      "outputs": {
+        "line": "$p"
+      }
+    },
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "$p"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на перпендикуляре к {C}{A} в точке {C}: ∠{A}{C}{X} = 90°"
+  }
+}

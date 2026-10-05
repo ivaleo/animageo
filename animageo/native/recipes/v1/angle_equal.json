@@ -1,0 +1,108 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "angle.equal",
+  "priority": 11,
+  "condition": {
+    "kind": "eq",
+    "pattern": {
+      "kind": "eq",
+      "left": {
+        "angle": [
+          {
+            "ref": "A"
+          },
+          {
+            "ref": "B"
+          },
+          {
+            "ref": "C"
+          }
+        ]
+      },
+      "right": {
+        "angle": [
+          {
+            "ref": "D"
+          },
+          {
+            "ref": "E"
+          },
+          {
+            "ref": "X"
+          }
+        ]
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "A": "point",
+    "B": "point",
+    "C": "point",
+    "D": "point",
+    "E": "point"
+  },
+  "template": [
+    {
+      "op": "angle.by_points",
+      "args": {
+        "a": "A",
+        "vertex": "B",
+        "b": "C"
+      },
+      "outputs": {
+        "angle": "$g"
+      }
+    },
+    {
+      "op": "measure.angle",
+      "args": {
+        "angle": "$g"
+      },
+      "outputs": {
+        "number": "$m"
+      }
+    },
+    {
+      "op": "number.expression",
+      "args": {
+        "expr": {
+          "signed_convex": [
+            "D",
+            "E",
+            "X"
+          ]
+        },
+        "refs": [
+          "$m"
+        ]
+      },
+      "outputs": {
+        "number": "$n"
+      }
+    },
+    {
+      "op": "ray.at_angle",
+      "args": {
+        "vertex": "E",
+        "a": "D",
+        "size": "$n"
+      },
+      "outputs": {
+        "ray": "$r"
+      }
+    },
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "$r"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на луче из {E}, повёрнутом от {E}{D} на ∠{A}{B}{C}"
+  }
+}

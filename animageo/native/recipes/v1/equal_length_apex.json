@@ -1,0 +1,56 @@
+{
+  "format": "animageo-recipe/v1",
+  "recipe": "equal_length.apex",
+  "priority": 13,
+  "condition": {
+    "kind": "eq",
+    "pattern": {
+      "kind": "eq",
+      "left": {
+        "len": {
+          "pair": [
+            "X",
+            "A"
+          ]
+        }
+      },
+      "right": {
+        "len": {
+          "pair": [
+            "X",
+            "B"
+          ]
+        }
+      }
+    }
+  },
+  "receiver": "X",
+  "requires": {
+    "X": "point",
+    "A": "point",
+    "B": "point"
+  },
+  "template": [
+    {
+      "op": "line.perpendicular_bisector",
+      "args": {
+        "a": "A",
+        "b": "B"
+      },
+      "outputs": {
+        "line": "$m"
+      }
+    },
+    {
+      "redefine": "X",
+      "op": "point.on_path",
+      "args": {
+        "path": "$m"
+      }
+    }
+  ],
+  "check": "statement",
+  "phrase": {
+    "ru": "{X} на серединном перпендикуляре к {A}{B}: |{X}{A}| = |{X}{B}|"
+  }
+}

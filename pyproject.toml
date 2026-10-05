@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "animageo"
-version = "1.9.0a2.dev0"
+version = "1.9.0a2.dev1"
 authors = [
     {name = "Leonid Ivanov", email = "leo.ivadev@gmail.com"}
 ]
@@ -86,5 +86,10 @@ animageo = [
     "native/parity/v1/expected/*.json",
     "native/parity/v1/commands/*.json",
     "native/parity/v1/steps/*.json",
-    "native/phrases/*.json"
+    "native/phrases/*.json",
+    "native/recipes/v1/*.json",
+    "native/marks/*.json",
+    "native/parity/v1/recipes/*.json",
+    "native/parity/v1/general/*.json",
+    "native/parity/v1/marks/*.json"
 ]
