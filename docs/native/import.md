@@ -203,3 +203,14 @@ python -m animageo.native convert map [--check]
 `from-ggb`: exit 0 (`partial`, even with objects that do not translate), 1 —
 `strict` with objects that are not editable, 2 — a refused or missing file.
 Without `--namespace` the IDs come from the sha256 of the file.
+
+## 8. Deliberate files (1.10.0a2)
+
+The deliberate files `tests/native/import/synthetic/*.ggb` (21: 3D, CAS,
+spreadsheet cells, scripts and a button, lists, a macro, breakpoints, a DTD,
+a zip without `geogebra.xml`, pictures only, texts, a function and its
+closure, an expression argument, dropped effects, a random point, styles,
+user-interface objects, regular polygons) are the output of
+`tests/native/ggb_synth.py` (`python -m tests.native.ggb_synth` rewrites
+them; a test compares them entry by entry); each shows what it is for
+(`test_native_l5_corpus.py`).
