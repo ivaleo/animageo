@@ -372,7 +372,7 @@ def test_steps_timeline_acceptance_on_parity_scenes(path):
 @pytest.mark.slow
 def test_steps_timeline_within_budget():
     """Plan L3 §6: ``steps_timeline`` on 300 operations ≤ 10 ms (p95,
-    measured ≈ 2 ms); a margin of 2."""
+    measured ≈ 7 ms on a busy machine, ``steps`` itself ≈ 5 ms); a margin of 2."""
     from tests.native.test_native_l3a2_budgets import _doc_of_300, _p95
     doc = _doc_of_300()
     assert len(doc.operations) >= 300

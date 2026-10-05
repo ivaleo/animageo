@@ -9,7 +9,8 @@ Label layout (`native.layout_labels`, §9.7) works without manim.
 The text form of a document, «Команды» (`native.parse_commands`,
 `native.print_commands`), is in `docs/native/commands.md`; the expressions of
 `number.expression` (AST v1, `animageo.native.expr`) are in
-`docs/native/expr.md`.
+`docs/native/expr.md`; time by element ID (`sample_timeline`, `render(t)`,
+video, `steps_timeline`) is in `docs/native/timeline.md`.
 The browser kernel of the web app repeats §1–§8 in TypeScript; the
 per-operation formulas are in `docs/native/ops/<op>.md`. When the two kernels
 disagree, the library is right and the fixtures it generates are the
@@ -615,6 +616,8 @@ python -m animageo.native registry index [--check]             # exit 1 when out
 python -m animageo.native evaluate <doc.json> [--inputs case.json] [--checks] [--canonical]
 python -m animageo.native validate <doc.json> [--json]          # exit 1 when there are issues
 python -m animageo.native commands fixtures|parse|print …       # «Команды», commands.md §10
+python -m animageo.native fixtures timeline [--check]           # animageo-timeline/v1, timeline.md §5
+python -m animageo.native steps|describe|timeline <doc.json> …  # timeline.md §5
 ```
 
 Exit codes: `0` success; `1` a verify mismatch, an issue found by `validate`
@@ -1100,7 +1103,8 @@ agree on these fields. `native.steps`, `steps_merge`, `steps_split` and
 generatedBy, document, expect: {steps: [{id, kind, title?, text?,
 operationIds, elementIds, auxElementIds}], describe: [line…], timeline:
 null}}` (`parity/v1/steps`, all scenes); `fixtures verify` compares them
-exactly.
+exactly. 1.9.0a4: `timeline` is `steps_timeline(doc).to_dict()`
+(`docs/native/timeline.md` §4).
 
 ## 12. Stage L3, part 2 (animageo 1.9.0a2)
 
@@ -1133,3 +1137,24 @@ Conditions, the general case and automatic marks: the contract is
   `animageo-marks/v1` (`fixtures conditions`), 17 scenes `recipe_*`,
   `shape_*`; `native.has`: `check.general`, `conditions`, `apply_condition`,
   `auto_marks`, `describe.values`.
+
+## 13. Stage L3, part 4 (animageo 1.9.0a4)
+
+Time by element ID: the contract is `docs/native/timeline.md`. In short:
+
+- `animageo/easing.py` — the easing functions of `keyframes.py` (a leaf
+  module, bitwise the same values); `animageo.native` may import it at
+  module level.
+- A timeline is the keyframe JSON v2 with element IDs as keys;
+  `sample_timeline(doc, timeline, t) → {t, inputs, visible}` (values carry
+  forward, path parameters with `short | long | cw | ccw` on wrapping
+  paths, visibility carried forward); `evaluate(doc, t=…, timeline=…)` adds
+  `ev.t` and `ev.visible`.
+- `timeline_to_bridge` — IDs → `e_<hex>`, unwrapped `tparam`;
+  `render(t=…, timeline=…)` for static formats, `mp4`, `gif`, `webm`,
+  `mov` with `video={fps, quality}` (`ValueError("timeline_required")`).
+- `steps_timeline(doc, *, lag, duration, pause, effects, start) →
+  StepsTimeline(keyframes, steps, duration)`.
+- Fixtures `animageo-timeline/v1` (`fixtures timeline`); the steps fixtures
+  carry `expect.timeline`; CLI `steps`, `describe`, `timeline`;
+  `native.has`: `timeline`, `steps_timeline`, `render.t`, `render.video`.
