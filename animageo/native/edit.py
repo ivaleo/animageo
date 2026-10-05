@@ -16,6 +16,7 @@ created. A refused edit raises :class:`EditError` with its issues.
 from __future__ import annotations
 
 import copy
+import json
 import unicodedata
 from typing import NamedTuple
 
@@ -63,6 +64,12 @@ class EditResult(NamedTuple):
 
     document: NativeDocument
     effects: dict
+
+
+def json_copy(data):
+    """A deep copy of JSON data (a document): faster than ``copy.deepcopy``;
+    floats round-trip exactly, tuples become lists."""
+    return json.loads(json.dumps(data))
 
 
 def _effects() -> dict:
@@ -265,7 +272,7 @@ def _delete(doc, ids, *, mode: str = 'element') -> EditResult:
                              if o.get('elementId') in doc.elements)
         seeds = seeds + extra
     gone = _reach(doc, seeds, 'down')
-    data = copy.deepcopy(doc.data)
+    data = json_copy(doc.data)
     effects = _effects()
     _remove_elements(data, gone, effects)
     return EditResult(NativeDocument(data), _finish(effects))
@@ -374,7 +381,7 @@ def _redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> E
     new_inputs = dict(inputs or {})
     free = record.get('free')
     free_slot = record['outputs'][0]['slot'] if free is not None else None
-    data = copy.deepcopy(doc.data)
+    data = json_copy(doc.data)
     effects = _effects()
     for el_id, slot, _type in pairs:
         if free is not None and slot == free_slot:
@@ -429,7 +436,8 @@ def _redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> E
 
     result = load(data, strict=False)
     after = validate(result)
-    new_errors = _issue_keys(after) - _issue_keys(validate(doc))
+    after_keys = _issue_keys(after)
+    new_errors = after_keys - _issue_keys(validate(doc)) if after_keys else set()   # the old document only when needed
     if new_errors:
         raise EditError([i for i in after if (i.code, i.path, i.elementId, i.operationId) in new_errors])
     return EditResult(result, _finish(effects))
@@ -519,7 +527,7 @@ def rename(doc, element_id: str, display_name: str) -> EditResult:
         if other_id != element_id and isinstance(other, str) and name_key(other) == key:
             _fail('duplicate_name', f'{display_name!r} is already the name of {other_id!r}', path,
                   elementId=element_id)
-    data = copy.deepcopy(doc.data)
+    data = json_copy(doc.data)
     effects = _effects()
     if data['elements'][element_id].get('displayName') != display_name:
         data['elements'][element_id]['displayName'] = display_name

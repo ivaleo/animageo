@@ -363,8 +363,9 @@ def _classes(data, ev, kind) -> list:
     return out
 
 
-def _count(data, ev, kind, value, warnings) -> int:
-    classes = _classes(data, ev, kind)
+def _count(data, ev, kind, value, warnings, made=()) -> int:
+    """``made``: ``(kind, count, value)`` of the marks of this call (not in ``ev``)."""
+    classes = _classes(data, ev, kind) + [(c, v) for k, c, v in made if k == kind and v is not None]
     if value is not None:
         for count, other in classes:
             if abs(other - value) <= ev.tolerances.check_passed:
@@ -411,8 +412,10 @@ def _build(doc, sources, ev, id_factory):
     from ..kernel.evaluate import evaluate
     doc = as_document(doc)
     ev = ev if ev is not None else evaluate(doc)
-    data = copy.deepcopy(doc.data)
+    from ..edit import json_copy
+    data = json_copy(doc.data)
     builder = _Builder(data, ev, id_factory)
+    made: list = []
     warnings: list = []
     suppressed = _suppressed(data)
     for source in sources:
@@ -439,7 +442,9 @@ def _build(doc, sources, ev, id_factory):
                         seg = builder.add('segment.by_points', {'a': _ref(p), 'b': _ref(q)}, 'segment', 'segment',
                                           f'aux_{source}', source, True)
                     segments.append(seg)
-                count = _count(data, ev, 'equal_segments', _length(ev, *spec[0]), warnings)
+                value = _length(ev, *spec[0])
+                count = _count(data, ev, 'equal_segments', value, warnings, made)
+                made.append(('equal_segments', count, value))
                 builder.add('mark.equal_segments', {'segments': {'kind': 'list', 'items': [_ref(s) for s in segments]},
                                                     'count': {'kind': 'number', 'value': count}},
                             'mark', 'mark', hint, source, False)
@@ -461,13 +466,13 @@ def _build(doc, sources, ev, id_factory):
                     angles.append(builder.add('angle.by_points', dict(zip(('a', 'vertex', 'b'),
                                                                            map(_ref, _oriented(ev, *t)))),
                                               'angle', 'angle', f'aux_{source}', source, True))
-                count = _count(data, ev, 'equal_angles',
-                               None if _convex(ev, *spec[0]) is None else _convex(ev, *spec[0]) * ev.scale, warnings)
+                convex = _convex(ev, *spec[0])
+                value = None if convex is None else convex * ev.scale
+                count = _count(data, ev, 'equal_angles', value, warnings, made)
+                made.append(('equal_angles', count, value))
                 builder.add('mark.equal_angles', {'angles': {'kind': 'list', 'items': [_ref(x) for x in angles]},
                                                   'count': {'kind': 'number', 'value': count}},
                             'mark', 'mark', hint, source, False)
-            ev = evaluate(NativeDocument(data))
-            builder.ev = ev
     return data, builder, warnings
 
 

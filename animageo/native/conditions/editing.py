@@ -22,7 +22,7 @@ from __future__ import annotations
 import copy
 
 from ..document import Issue, NativeDocument, bound_producer, iter_refs
-from ..edit import EditError, EditResult, _delete, _effects, _finish, _redefine, closure
+from ..edit import EditError, EditResult, _delete, _effects, _finish, _reach, _redefine, json_copy
 from ..registry import registry
 from .statements import statement_elements
 from .validate import condition_list
@@ -62,7 +62,7 @@ def _owned(doc, cids, keep=()) -> list:
 
 
 def _without(doc, cids) -> NativeDocument:
-    data = copy.deepcopy(doc.data)
+    data = json_copy(doc.data)
     data['conditions'] = [c for c in data['conditions'] if not (isinstance(c, dict) and c.get('id') in cids)]
     if not data['conditions']:
         del data['conditions']
@@ -189,7 +189,7 @@ def redefine_with_conditions(doc, op_id, new_op, *, slot_map=None, inputs=None) 
         receiver = cond.get('receiver')
         if cond.get('mode') != 'construct' or receiver not in cur.elements:
             continue
-        below = set(closure(cur, [receiver], direction='down')) - {receiver}
+        below = _reach(cur, [receiver], 'down') - {receiver}
         if below & _participants(cond):
             issues.append(Issue('condition_cycle', f'/conditions/{i}',
                                 f"receiver {receiver!r} of condition {cond.get('id')!r} would be built on its own "

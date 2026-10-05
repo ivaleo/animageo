@@ -14,7 +14,7 @@ from typing import NamedTuple
 
 from ..document import NativeDocument, as_document, bound_producer, iter_refs, validate
 from ..edit import _delete as delete
-from ..edit import _effects, _finish, closure
+from ..edit import _effects, _finish, _reach, json_copy
 from ..edit import _redefine as redefine
 from ..registry import registry
 from ..steps import order_key
@@ -26,6 +26,7 @@ __all__ = ['Refusal', 'ConditionResult', 'apply_condition', 'release_condition',
            'shape_conditions', 'SHAPES']
 
 FREE_OPS = ('point.free', 'point.on_path')
+
 
 
 class Refusal(NamedTuple):
@@ -62,7 +63,7 @@ def _status(doc, el_id, participants) -> str:
     constrained = any(c.get('mode') == 'construct' and c.get('receiver') == el_id for c in condition_list(doc))
     if op is None or (op['op'] not in FREE_OPS and not constrained):
         return 'not_free'
-    below = set(closure(doc, [el_id], direction='down')) - {el_id}
+    below = _reach(doc, [el_id], 'down') - {el_id}
     if below & (set(participants) - {el_id}):
         return 'ancestor'
     return 'ok'
@@ -102,7 +103,7 @@ def _make_free_options(doc, participants) -> list:
         _op_id, op = _producer_op(doc, el_id)
         if op is None or op['op'] == 'point.free':
             continue
-        below = set(closure(doc, [el_id], direction='down')) - {el_id}
+        below = _reach(doc, [el_id], 'down') - {el_id}
         if below & (set(participants) - {el_id}):
             continue
         out.append(el_id)
@@ -206,7 +207,7 @@ def _place_ops(doc, recipe, binds, cid, ids, ev):
     """``(data with the places, made {"$name": elementId}, place op IDs)``."""
     from ..kernel.evaluate import evaluate
     reg = registry()
-    data = copy.deepcopy(doc.data)
+    data = json_copy(doc.data)
     made: dict = {}
     op_ids = []
     seq = _max_seq(data)
@@ -220,7 +221,7 @@ def _place_ops(doc, recipe, binds, cid, ids, ev):
             chosen = slots[0]
             if len(slots) > 1:
                 # the slot nearest to the receiver now, fixed from then on
-                probe = copy.deepcopy(data)
+                probe = json_copy(data)
                 probe_ids = {s: f'__probe_{i}' for i, s in enumerate(slots)}
                 probe['operations'][op_id] = {'id': op_id, 'op': step['op'], 'args': args,
                                               'outputs': [{'slot': s, 'elementId': probe_ids[s]} for s in slots]}
@@ -396,7 +397,7 @@ def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, 
         if best is None:
             return _refuse(doc, 'no_intersection_now', 'the places of the point do not meet now', list(_ESCAPE))
         result = best[1]
-    new_data = copy.deepcopy(result.document.data)
+    new_data = json_copy(result.document.data)
     entry = {'id': cid, 'seq': _max_seq(new_data) + 1, 'mode': 'construct', 'statement': copy.deepcopy(statement),
              'receiver': receiver, 'recipe': recipe['recipe'], 'operationIds': place_ops + [rop_id]}
     previous = [c for c in condition_list(doc) if c.get('mode') == 'construct' and c.get('receiver') == receiver]
@@ -444,7 +445,7 @@ def release_condition(doc, condition_id, *, ev=None) -> ConditionResult:
     cond = next((c for c in conditions if c.get('id') == condition_id), None)
     if cond is None:
         raise ValueError(f'unknown condition {condition_id!r}')
-    data = copy.deepcopy(doc.data)
+    data = json_copy(doc.data)
     data['conditions'] = [c for c in data['conditions'] if not (isinstance(c, dict) and c.get('id') == condition_id)]
     if not data['conditions']:
         del data['conditions']
@@ -491,7 +492,7 @@ def release_condition(doc, condition_id, *, ev=None) -> ConditionResult:
         staged = removed.document
         for key, ids in removed.effects['removed'].items():
             effects['removed'][key] = list(effects['removed'].get(key, [])) + list(ids)
-    data = copy.deepcopy(staged.data)
+    data = json_copy(staged.data)
     marks = data.get('suppressedMarks')
     if isinstance(marks, list):
         data['suppressedMarks'] = [m for m in marks if not (isinstance(m, dict) and m.get('source') == condition_id)]
