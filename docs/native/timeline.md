@@ -123,7 +123,12 @@ leaves them — every interval before the one containing `t` played to its
 end (classic style interpolators at 1, their finalizers, the camera at 1),
 then the style and camera interpolators of that interval at its progress
 (the colour space of `rendering.color_interpolation`). A style set at a
-keyframe is held after it, as in the video. `sample_timeline` stays
+keyframe is held after it, as in the video. The camera moves the frame
+of the manim camera: it shows in the video-camera PNG below (and the
+video); the vector exports (SVG, PDF, EPS, TikZ) and the cairosvg PNG draw
+the export frame of the style and ignore it, as the classic `exportSVG`
+after `apply_keyframes_at` does (the report stays in the export frame too).
+`sample_timeline` stays
 `{t, inputs, visible}`: styles and the camera are classic state (colour
 interpolation, baselines from the resolved style), not inputs of the
 kernel, so they are applied by the renderer, not sampled.

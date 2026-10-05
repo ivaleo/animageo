@@ -1,5 +1,6 @@
 """1.9.0a4: ``render(t=…, timeline=…)``, the report at time t and video
 formats (plan L3 §5.3, §5.5); needs manim, ffmpeg for the video."""
+import copy
 import json
 import shutil
 import subprocess
@@ -154,6 +155,12 @@ def test_styles_and_camera_at_time(tmp_path):
     text = Path(styled).read_text(encoding='utf-8').lower()
     assert 'rgb(100%, 0%, 0%)' in text or '#ff0000' in text or 'rgb(255,0,0)' in text
     assert Path(plain).read_text(encoding='utf-8') != Path(styled).read_text(encoding='utf-8')
+    # @camera moves the manim camera only: the SVG keeps the export frame
+    still = copy.deepcopy(STYLED)
+    for item in still['keyframes']:
+        item.get('values', {}).pop('@camera', None)
+    no_camera = native.render(doc, fmt='svg', out=tmp_path / 'still.svg', t=1.5, timeline=still).path
+    assert Path(no_camera).read_text(encoding='utf-8') == Path(styled).read_text(encoding='utf-8')
 
 
 @pytest.mark.slow
