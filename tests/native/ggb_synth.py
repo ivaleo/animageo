@@ -253,6 +253,13 @@ def _synthetic() -> dict:
                               + _text('t2', '"$S = \\frac{1}{2} a \\cdot h_a, \\; n \\ge 2$"',
                                       '<startPoint x="0" y="5" z="1"/>', latex=True)
                               + _text('t3', '"n = " + n', '<startPoint x="0" y="4" z="1"/>'))),
+        'command_synonym': (
+            'the bisector of an angle by the name of the interface (AngleBisector) and by the internal one',
+            lambda: ggb_bytes(point('A', 1.0, 0.0) + point('B', 0.0, 0.0) + point('C', 0.0, 1.0)
+                              + command('AngleBisector', ['A', 'B', 'C'], ['g'])
+                              + element('line', 'g', extra='<coords x="-1" y="1" z="0"/>')
+                              + command('AngularBisector', ['A', 'B', 'C'], ['h'])
+                              + element('line', 'h', extra='<coords x="-1" y="1" z="0"/>'))),
     }
 
 

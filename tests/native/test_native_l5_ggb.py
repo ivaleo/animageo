@@ -422,6 +422,10 @@ def test_an_expression_argument_is_not_carried():
     assert sorted(el['type'] for el in doc['elements'].values()) == ['number', 'number', 'point', 'point']
 
 
+def _op_of(doc, entry):
+    return doc['operations'][doc['elements'][entry['native_ids'][0]]['producer']['operationId']]
+
+
 def test_a_fixed_latex_text_refers_to_nothing():
     """The names inside the string literals of a text are not references
     (1.10.0a3): a fixed LaTeX text whose formula has ``a`` and ``n`` has no
@@ -444,6 +448,29 @@ def test_a_fixed_latex_text_refers_to_nothing():
     t = _by_name(rep)['t']
     assert t['depends_on'] == ['t_{AB}'] and t['ggb_value']['refs'] == [{'ggb_name': 't_{AB}', 'as': 'number'}]
     assert native.has('import_report.text_literals')
+
+
+def test_angle_bisector_is_angular_bisector(tmp_path):
+    """``AngleBisector`` — the name of the interface of GeoGebra — is
+    ``AngularBisector`` for the import (1.10.0a3); the classic ``loadGGB``
+    reads the file as it is."""
+    from animageo.geo.construction import Construction
+    from animageo.parsers import ggb_parser
+    from tests.native.ggb_synth import SYNTHETIC
+    path = tmp_path / 'bisector.ggb'
+    path.write_bytes(SYNTHETIC['command_synonym'][1]())
+    doc, rep = _import(path)
+    e = _by_name(rep)
+    g, h = e['g'], e['h']
+    assert (g['category'], g['command'], g['signature']) == (h['category'], h['command'], h['signature']) == (
+        'editable', 'AngularBisector', 'angular_bisector_ppp')
+    assert _op_of(doc, g)['op'] == _op_of(doc, h)['op']
+    assert g['native_value'] == h['native_value'] and g['value_check'] == 'passed'
+    assert native.has('convert.command_synonyms')
+    constr = Construction()
+    constr.strict_unsupported = constr.log_unsupported = False
+    ggb_parser.load(constr, {}, str(path))
+    assert [c.name for c in constr.commands] == ['AngleBisector', 'AngularBisector']
 
 
 def test_seq_and_steps_from_breakpoints():

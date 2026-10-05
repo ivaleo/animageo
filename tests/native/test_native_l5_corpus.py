@@ -43,6 +43,7 @@ PURPOSE = {
     'ui_objects': {'tf': ('unsupported', 'ui_object'), 'cb': ('unsupported', 'ui_object'), 'n': ('editable', None)},
     'regular_polygon': {'poly1': ('editable', None), 'poly2': ('unsupported', 'unsupported_signature')},
     'latex_texts': {'n': ('editable', None), 't2': ('picture', 'latex_macros'), 't3': ('picture', 'fixed_text')},
+    'command_synonym': {'all': 'editable'},
 }
 
 

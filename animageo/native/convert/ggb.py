@@ -26,7 +26,8 @@ import zlib
 from dataclasses import dataclass, field
 from xml.etree import ElementTree
 
-__all__ = ['ImportRefused', 'LIMITS', 'GgbFile', 'read_ggb', 'scan', 'DEFAULT_JS']
+__all__ = ['ImportRefused', 'LIMITS', 'GgbFile', 'read_ggb', 'scan', 'DEFAULT_JS', 'COMMAND_SYNONYMS',
+           'canonical_commands']
 
 LIMITS = {
     'file_bytes': 20 * 1024 * 1024,
@@ -57,6 +58,9 @@ COMMANDS_3D = frozenset({'Sphere', 'Plane', 'Pyramid', 'Prism', 'Cube', 'Cone', 
                          'Octahedron', 'Dodecahedron', 'Icosahedron', 'Net', 'Surface', 'PerpendicularPlane',
                          'PlaneBisector', 'Point3D'})
 PLACEABLE = ('point', 'segment', 'polygon', 'text')
+# a name of a command of the interface of GeoGebra → the internal name its XML has and the classic parser
+# knows (1.10.0a3): GeoGebra itself writes the internal one, a hand-made file may not
+COMMAND_SYNONYMS = {'AngleBisector': 'AngularBisector'}
 
 
 class ImportRefused(Exception):
@@ -175,6 +179,16 @@ def parse_xml(data: bytes, *, depth: int = 64):
             raise ImportRefused('ggb_invalid', f'вложенность XML больше {depth}')
         stack.extend((child, d + 1) for child in node)
     return root
+
+
+def canonical_commands(root) -> None:
+    """Rename in place every ``<command>`` of :data:`COMMAND_SYNONYMS` in the
+    parsed XML (``geogebra.xml`` or ``geogebra_macro.xml``) — the import only;
+    the classic ``loadGGB`` reads the file as it is."""
+    for node in root.iter('command'):
+        name = node.attrib.get('name')
+        if name in COMMAND_SYNONYMS:
+            node.attrib['name'] = COMMAND_SYNONYMS[name]
 
 
 def _float(v):

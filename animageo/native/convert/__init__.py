@@ -179,8 +179,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     from .. import content_hash
     from ... import __version__
     from ..registry import REGISTRY_VERSION
-    from .ggb import (COMMANDS_3D, DEFAULT_JS, PLACEABLE, TYPES_3D, TYPES_FORMULA, TYPES_UI, ggb_value, parse_xml,
-                      read_ggb, scan, text_extras, view_bounds)
+    from .ggb import (COMMANDS_3D, DEFAULT_JS, PLACEABLE, TYPES_3D, TYPES_FORMULA, TYPES_UI, canonical_commands,
+                      ggb_value, parse_xml, read_ggb, scan, text_extras, view_bounds)
     from .ggb_expr import names_in
     from ..document import iter_refs
     from .keys import make_id
@@ -192,6 +192,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     lim.update(limits or {})
     f = read_ggb(path_or_bytes, name=name, limits=lim)
     root = parse_xml(f.xml, depth=lim['depth'])
+    canonical_commands(root)
     sc = scan(root)
     infos = sc['elements']
     if len(infos) > lim['objects']:
@@ -201,6 +202,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         raise ImportRefused('ggb_invalid', f'имя объекта длиннее {lim["label_chars"]} символов: '
                                            f'{long_label[:40]}…')
     macro_root = parse_xml(f.macro_xml, depth=lim['depth']) if f.macro_xml else None
+    if macro_root is not None:
+        canonical_commands(macro_root)
     macro_names = set()
     if macro_root is not None:
         macro_names = {m.attrib.get('cmdName') for m in macro_root.iter('macro') if m.attrib.get('cmdName')}

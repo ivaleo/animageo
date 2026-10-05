@@ -73,6 +73,11 @@ document element of no report entry would be needed). GeoGebra writes
 `sqrt(a)`, `sin(a)` and `2a`, which the classic parser does not take
 (`parse_error`); `Sqrt(a)`, `Sin(a)` and `2*a` translate.
 
+`AngleBisector` — the name of the GeoGebra interface some files carry — is
+`AngularBisector` for the import (`ggb.COMMAND_SYNONYMS`,
+`native.has("convert.command_synonyms")`); the classic `loadGGB` reads the
+file as it is.
+
 Every op and free row has three cases in `tests/native/test_native_l5_convert.py`
 (1.10.0a2): the general one, another configuration (the next variant of
 each input — for a `byValue` row the classic outputs meet the slots in
