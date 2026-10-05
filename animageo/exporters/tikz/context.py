@@ -65,8 +65,30 @@ class TikzContext:
 
     # ── geometry ─────────────────────────────────────────────────────────
     def viewport(self):
-        """(left, bottom, right, top) of the export canvas in MU."""
+        """(left, bottom, right, top) of the camera frame in MU: lines and
+        sampled curves are drawn across it (it contains the export canvas)."""
         return self.scene._get_scene_bounds(padding=0)
+
+    @property
+    def exact_frame(self) -> bool:
+        """Whether the picture is the export canvas (``TikZOptions.frame``)."""
+        if self.opt.frame is not None:
+            return self.opt.frame == "export"
+        return bool(getattr(self.scene, "export_frame_exact", False))
+
+    def frame(self):
+        """(left, bottom, right, top) in MU of the picture: the clip, the
+        background and the bounding box. With :attr:`exact_frame` — the export
+        canvas of the scene, the integer pixel size SVG, PDF and EPS take
+        (``int(ptWidth)`` × ``int(ptHeight)`` from ``(ptXZero, ptYZero)``);
+        otherwise the camera frame (:meth:`viewport`)."""
+        if not self.exact_frame:
+            return self.viewport()
+        export = self.scene.style.export
+        unit = float(export["ptUnit"])
+        ox, oy = float(export["ptXZero"]), float(export["ptYZero"])
+        width, height = int(export["ptWidth"]), int(export["ptHeight"])
+        return (-ox / unit, (oy - height) / unit, (width - ox) / unit, oy / unit)
 
     def is_visible(self, elem) -> bool:
         return self.scene._element_visible(elem)

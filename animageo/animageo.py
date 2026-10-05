@@ -223,6 +223,9 @@ class AnimaGeoScene(MovingCameraScene):
         # loadDocument: unplaced point labels clear their marker
         # (label_placement.point_label_clearance)
         self.label_point_clearance = False
+        # loadDocument: the TikZ picture is the export canvas, not the camera
+        # frame (exporters.tikz.TikZOptions.frame)
+        self.export_frame_exact = False
 
         self.cuts = 0
         self._label_tracker = None  # Set by autoPlaceLabels(dynamic=True)
@@ -981,6 +984,7 @@ class AnimaGeoScene(MovingCameraScene):
         self._label_tracker = None
         self._construction_source = {'kind': 'unknown'}
         self.label_point_clearance = False
+        self.export_frame_exact = False
         try:
             self.clear()  # manim Scene.clear() — drop accumulated mobjects
         except Exception:
@@ -1061,7 +1065,8 @@ class AnimaGeoScene(MovingCameraScene):
         ``inputs`` override free input values.
         ``style``/``reference``/``content``/``export`` are as in
         :meth:`loadGGB`. Issues of ``appearance`` are kept in
-        ``self.native_diagnostics``.
+        ``self.native_diagnostics``. The TikZ picture of such a scene is the
+        export canvas (``export_frame_exact``, 1.10.0a2), as SVG and PDF.
         """
         from .native.document import as_document
         from .native.kernel.bridge import build_construction
@@ -1079,6 +1084,7 @@ class AnimaGeoScene(MovingCameraScene):
         self.native_names = names
         self._construction_source = {'kind': 'native', 'documentId': doc.document_id}
         self.label_point_clearance = True
+        self.export_frame_exact = True
         construction.log_unsupported = bool(debug)
         construction.rebuild(debug=debug, full=True)
         from .style.config import StyleConfig

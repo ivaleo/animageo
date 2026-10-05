@@ -15,6 +15,7 @@ from typing import Optional
 # pixel equals a TeX "big point" (bp = 1/72 in) closely enough that
 # ``pt_per_px = 72/96 = 0.75`` reproduces the on-screen look in print.
 DEFAULT_DPI: float = 96.0
+FRAMES = (None, "export", "camera")
 
 
 @dataclass(frozen=True)
@@ -41,6 +42,13 @@ class TikZOptions:
         standalone_preamble: Override the standalone preamble (advanced). When
             ``None`` a default Cyrillic-capable preamble is used.
         comment_header: Emit a ``% AnimaGeo TikZ export`` header comment.
+        frame: The rectangle of the picture — the clip, the background and,
+            for ``"export"``, the bounding box. ``"export"``: the export
+            canvas, the frame of SVG/PNG/PDF/EPS of the same layout;
+            ``"camera"``: the manim camera frame (16:9, it contains the
+            canvas). ``None`` (default): ``"export"`` for a document scene
+            (``loadDocument``, ``native.render``), ``"camera"`` otherwise —
+            the classic output is unchanged.
     """
 
     standalone: bool = False
@@ -53,6 +61,11 @@ class TikZOptions:
     indent: str = "  "
     standalone_preamble: Optional[str] = None
     comment_header: bool = True
+    frame: Optional[str] = None
+
+    def __post_init__(self):
+        if self.frame not in FRAMES:
+            raise ValueError(f"frame must be one of {FRAMES}, got {self.frame!r}")
 
     @property
     def cm_per_px(self) -> float:

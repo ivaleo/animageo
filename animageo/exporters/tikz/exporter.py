@@ -62,8 +62,11 @@ def export_tikz(
     ctx = TikzContext(scene, options, doc)
     doc.picture_options = _picture_options(ctx)
 
-    left, bottom, right, top = ctx.viewport()
+    left, bottom, right, top = ctx.frame()
     rect = f"{doc.coord(left, bottom)} rectangle {doc.coord(right, top)}"
+    if ctx.exact_frame:
+        # the picture is the export canvas: labels past it do not grow the page
+        doc.line(f"\\useasboundingbox {rect};")
 
     bg = _background_color(ctx)
     if bg is not None:

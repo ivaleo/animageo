@@ -1090,6 +1090,16 @@ agree on these fields. `native.steps`, `steps_merge`, `steps_split` and
 - `native.render(fmt=…)`: `eps` (`exportEPS`), `tikz` (`exportTikZ`,
   `standalone=False`), `tex` (`standalone=True`), besides `svg`, `png`,
   `pdf`.
+- The TikZ/TeX frame (1.10.0a2, `has("render.tikz_frame")`): the clip, the
+  background and the `\useasboundingbox` of the `tikzpicture` are the export
+  canvas of the same `export_layout` — `canvas.width × canvas.height` pixels
+  of the report from the pixel `(0, 0)`, the frame of SVG, PNG, PDF and EPS
+  (one pixel is `ptUnit·2.54/96` cm of the picture unit, so a compiled TeX
+  page is the PDF page). Lines and sampled curves are still drawn across the
+  camera frame and cut by the clip. Before, the clip was the manim camera
+  frame (16:9): the height was right, the width was not. The classic
+  `exportTikZ` keeps the camera frame unless asked
+  (`TikZOptions(frame="export")`).
 - Roles: `appearance.<id>.role` puts the keys of the style's `roles.<role>`
   (a point takes `roles.<role>.point`) under `appearance.overrides`; token
   references are resolved by the style resolver. The defaults

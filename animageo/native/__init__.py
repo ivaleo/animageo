@@ -82,7 +82,8 @@ from .convert import ConvertError, ImportRefused, from_construction, from_ggb
 FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles',
             'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values',
             'commands.conditions', 'commands.steps', 'timeline', 'steps_timeline', 'render.t', 'render.video',
-            'render.frame', 'from_ggb', 'from_construction', 'import_report.v1', 'appearance.hatch')
+            'render.frame', 'from_ggb', 'from_construction', 'import_report.v1', 'appearance.hatch',
+            'render.tikz_frame')
 
 
 def has(feature: str) -> bool:
@@ -100,7 +101,8 @@ def has(feature: str) -> bool:
     kernel stage L5, 1.10.0a1: ``from_ggb``, ``from_construction``,
     ``import_report.v1`` — the import of ``.ggb`` and of the classic graph;
     1.10.0a2: ``appearance.hatch`` — ``fill_pattern`` and ``hatch_*`` in
-    ``appearance.overrides``)."""
+    ``appearance.overrides``; ``render.tikz_frame`` — the clip and the
+    bounding box of TikZ/TeX are the export canvas of SVG)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION
