@@ -41,9 +41,41 @@ from ..labels import geogebra_label_mode_to_style
 def _ggb_parse(constr, code, debug=False):
     """Thin wrapper around ``dsl.run`` so the two call sites below
     stay readable. Lazy-imports to avoid a module-load cycle (``dsl``
-    imports ``lib_commands`` which indirectly loads this module)."""
+    imports ``lib_commands`` which indirectly loads this module).
+
+    The code is built from the expressions of a ``.ggb`` — untrusted input —
+    so it is checked first (:func:`_check_ggb_code`)."""
     from .dsl import run as _dsl_run
+    _check_ggb_code(code)
     _dsl_run(constr, code, debug=debug)
+
+
+_GGB_CODE_FORBIDDEN = (ast.Lambda, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.ListComp,
+                       ast.SetComp, ast.DictComp, ast.GeneratorExp, ast.Import, ast.ImportFrom, ast.Global,
+                       ast.Nonlocal, ast.Await, ast.Yield, ast.YieldFrom, ast.NamedExpr)
+
+
+def _check_ggb_code(code: str) -> None:
+    """A GeoGebra expression converted to Python is one assignment of an
+    expression: no attribute or name with a double underscore (``().__class__…``
+    reaches ``object.__subclasses__``), no private attribute, no lambda,
+    comprehension or definition. Raises ``ValueError`` — the callers record
+    it as ``expression_parse_error`` (the object keeps its saved value)."""
+    from .dsl.sugar import preprocess_dsl_sugar
+    import textwrap
+    try:
+        tree = ast.parse(preprocess_dsl_sugar(textwrap.dedent(code)))
+    except SyntaxError:
+        return                      # ``dsl.run`` reports it the usual way
+    if len(tree.body) != 1 or not isinstance(tree.body[0], ast.Assign):
+        raise ValueError('GeoGebra expression: one assignment expected')
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Attribute) and node.attr.startswith('_'):
+            raise ValueError(f'GeoGebra expression: attribute {node.attr!r} is not allowed')
+        if isinstance(node, ast.Name) and node.id.startswith('__'):
+            raise ValueError(f'GeoGebra expression: name {node.id!r} is not allowed')
+        if isinstance(node, _GGB_CODE_FORBIDDEN):
+            raise ValueError(f'GeoGebra expression: {type(node).__name__} is not allowed')
 
 
 temp_path = None  # created dynamically per call
