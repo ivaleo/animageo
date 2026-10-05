@@ -227,8 +227,62 @@ def _tangent(items, tol):
     return abs(abs((cx - px) * dy - (cy - py) * dx) - r)
 
 
+def _coincident(items, tol):
+    _need(items, {'point'}, count=2)
+    (x1, y1), (x2, y2) = _xy(items[0][1]), _xy(items[1][1])
+    return math.hypot(x2 - x1, y2 - y1)
+
+
+def _polygon_spread(p, q):
+    """The largest difference of the pairwise distances of the vertices
+    ``p`` and ``q`` (same count), matched as given."""
+    n = len(p)
+    worst = 0.0
+    for i in range(n):
+        for j in range(i + 1, n):
+            dp = math.hypot(p[j][0] - p[i][0], p[j][1] - p[i][1])
+            dq = math.hypot(q[j][0] - q[i][0], q[j][1] - q[i][1])
+            worst = max(worst, abs(dp - dq))
+    return worst
+
+
+NOT_CONGRUENT = 1e300     # polygons of different vertex counts: failed, not inconclusive
+
+
+def _congruent(items, tol):
+    """Segments and vectors — lengths; angles — sizes (×S); circles — radii;
+    polygons — the same vertex count and the least, over the ``2n``
+    matchings (shifts and the reflection), of the largest difference of the
+    pairwise distances (1.9.0a2)."""
+    if len(items) != 2:
+        raise _Unsupported('arity')
+    (t1, v1), (t2, v2) = items
+    lengths = {'segment', 'vector'}
+    if t1 in lengths and t2 in lengths:
+        return abs(v1['length'] - v2['length'])
+    if t1 == 'angle' and t2 == 'angle':
+        return abs(v1['size'] - v2['size']) * tol.scale
+    circular = {'circle'}
+    if t1 in circular and t2 in circular:
+        return abs(v1['r'] - v2['r'])
+    if t1 == 'polygon' and t2 == 'polygon':
+        p, q = [tuple(v) for v in v1['vertices']], [tuple(v) for v in v2['vertices']]
+        if len(p) != len(q):
+            return NOT_CONGRUENT
+        n = len(q)
+        best = math.inf
+        for order in (q, q[::-1]):
+            for shift in range(n):
+                best = min(best, _polygon_spread(p, order[shift:] + order[:shift]))
+        return best
+    raise _Unsupported('type')
+
+
 PREDICATES = {
     'incident': _incident,
+    'on_object': _incident,
+    'coincident': _coincident,
+    'congruent': _congruent,
     'parallel': _parallel,
     'perpendicular': _perpendicular,
     'equal_length': _equal_length,

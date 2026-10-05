@@ -64,10 +64,13 @@ from .commands import parse_commands, print_commands
 from .rendering import RenderResult, render, source_view
 from .steps import Step, StepError, assign_seq, steps, steps_merge, steps_split
 from .describe import describe
+from .conditions import measure_statement, relation, statement_checks, statement_problems
+from .sampling import check_general
 
 # Features of this library by stage of plan L3 (``has``): the web asks for a
 # feature instead of comparing versions.
-FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles')
+FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles',
+            'check.general')
 
 
 def has(feature: str) -> bool:
@@ -119,6 +122,11 @@ __all__ = [
     'assign_seq',
     'describe',
     'has',
+    'check_general',
+    'measure_statement',
+    'relation',
+    'statement_checks',
+    'statement_problems',
     'steps',
     'steps_merge',
     'steps_split',

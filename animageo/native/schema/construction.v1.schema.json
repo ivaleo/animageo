@@ -85,6 +85,18 @@
           },
           "minItems": 4,
           "maxItems": 4
+        },
+        "autoMarks": {
+          "type": "object",
+          "properties": {
+            "rightAngles": {
+              "type": "boolean"
+            },
+            "equalities": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
         }
       }
     },
@@ -99,6 +111,18 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/step"
+      }
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/condition"
+      }
+    },
+    "suppressedMarks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/suppressedMark"
       }
     }
   },
@@ -525,6 +549,97 @@
           "items": {
             "$ref": "#/$defs/id"
           }
+        }
+      },
+      "additionalProperties": false
+    },
+    "condition": {
+      "type": "object",
+      "required": [
+        "id",
+        "mode",
+        "statement"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mode": {
+          "enum": [
+            "construct",
+            "check"
+          ]
+        },
+        "statement": {
+          "type": "object"
+        },
+        "receiver": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recipe": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "operationIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "receiverOrigin": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "source": {
+          "enum": [
+            "panel",
+            "command",
+            "sketch",
+            "assistant",
+            "shape",
+            "tool"
+          ]
+        },
+        "shapeId": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "suppressedMark": {
+      "type": "object",
+      "required": [
+        "source",
+        "kind"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "type": "string"
         }
       },
       "additionalProperties": false

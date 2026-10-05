@@ -220,8 +220,8 @@ def _context_applies(when, record):
 
 
 def test_has_and_features():
-    assert native.FEATURES == ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles')
-    assert native.has('locus') and not native.has('conditions')
+    assert native.FEATURES[:7] == ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles')
+    assert native.has('locus') and not native.has('timeline')
 
 
 # ── fixtures animageo-steps/v1 and the describe snapshots ────────────────

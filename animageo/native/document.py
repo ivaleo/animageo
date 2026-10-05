@@ -49,6 +49,9 @@ VERSION_RE = re.compile(r'^[0-9]+\.[0-9]+$')
 _REQUIRED = ('format', 'documentId', 'operationRegistryVersion', 'operations', 'elements')
 STEP_KINDS = ('given', 'group', 'condition')     # explicit steps of a document (1.9.0a1)
 ROLES = ('given', 'aux', 'sought')               # appearance.<id>.role (1.9.0a1)
+CONDITION_MODES = ('construct', 'check')                                         # conditions[] (1.9.0a2)
+CONDITION_SOURCES = ('panel', 'command', 'sketch', 'assistant', 'shape', 'tool')
+MARK_KINDS = ('right_angle', 'equal_segments', 'equal_angles')                  # suppressedMarks[].kind
 
 
 @dataclass(frozen=True)
@@ -438,6 +441,56 @@ class _Structure:
                     for k, op_id in enumerate(ids):
                         self.string(op_id, f'{spath}/operationIds/{k}', 'an operation ID', ID_RE)
 
+    def conditions(self, conditions, path):
+        if not isinstance(conditions, list):
+            self.add(path, 'conditions must be an array')
+            return
+        for i, cond in enumerate(conditions):
+            cpath = f'{path}/{i}'
+            if not self.object(cond, cpath, 'a condition'):
+                continue
+            self.keys(cond, cpath, 'a condition', ('id', 'mode', 'statement'),
+                      ('id', 'seq', 'mode', 'statement', 'receiver', 'recipe', 'operationIds', 'receiverOrigin',
+                       'source', 'shapeId'))
+            if 'id' in cond:
+                self.string(cond['id'], cpath + '/id', 'id', ID_RE)
+            if 'seq' in cond:
+                seq = cond['seq']
+                if isinstance(seq, bool) or not isinstance(seq, int) or seq < 1:
+                    self.add(cpath + '/seq', 'seq must be an integer >= 1')
+            if 'mode' in cond and cond['mode'] not in CONDITION_MODES:
+                self.add(cpath + '/mode', f'mode must be one of {", ".join(CONDITION_MODES)}')
+            if 'statement' in cond:
+                self.object(cond['statement'], cpath + '/statement', 'statement')
+            for name, pattern in (('receiver', ID_RE), ('recipe', None), ('shapeId', ID_RE)):
+                if cond.get(name) is not None:
+                    self.string(cond[name], f'{cpath}/{name}', name, pattern)
+            if cond.get('receiverOrigin') is not None:
+                self.object(cond['receiverOrigin'], cpath + '/receiverOrigin', 'receiverOrigin')
+            if 'source' in cond and cond['source'] not in CONDITION_SOURCES:
+                self.add(cpath + '/source', f'source must be one of {", ".join(CONDITION_SOURCES)}')
+            ids = cond.get('operationIds')
+            if 'operationIds' in cond:
+                if not isinstance(ids, list):
+                    self.add(cpath + '/operationIds', 'operationIds must be an array')
+                else:
+                    for k, op_id in enumerate(ids):
+                        self.string(op_id, f'{cpath}/operationIds/{k}', 'an operation ID', ID_RE)
+
+    def suppressed_marks(self, marks, path):
+        if not isinstance(marks, list):
+            self.add(path, 'suppressedMarks must be an array')
+            return
+        for i, mark in enumerate(marks):
+            mpath = f'{path}/{i}'
+            if not self.object(mark, mpath, 'a suppressed mark'):
+                continue
+            self.keys(mark, mpath, 'a suppressed mark', ('source', 'kind'), ('source', 'kind'))
+            if 'source' in mark:
+                self.string(mark['source'], mpath + '/source', 'source', ID_RE)
+            if 'kind' in mark:
+                self.string(mark['kind'], mpath + '/kind', 'kind')
+
     def document(self, doc):
         self.keys(doc, '', 'the document', _REQUIRED)
         if 'format' in doc and doc['format'] != DOCUMENT_FORMAT:
@@ -469,11 +522,22 @@ class _Structure:
                     self.add('/appearance' + _pointer(key) + '/role', 'role must be a string')
         if 'steps' in doc:
             self.steps(doc['steps'], '/steps')
+        if 'conditions' in doc:
+            self.conditions(doc['conditions'], '/conditions')
+        if 'suppressedMarks' in doc:
+            self.suppressed_marks(doc['suppressedMarks'], '/suppressedMarks')
         if 'workIntent' in doc and doc['workIntent'] is not None:
             self.work_intent(doc['workIntent'], '/workIntent')
         if 'timeline' in doc and doc['timeline'] is not None:
             self.object(doc['timeline'], '/timeline', 'timeline')
         view = doc.get('viewDefaults')
+        if isinstance(view, dict) and 'autoMarks' in view:
+            marks = view['autoMarks']
+            if self.object(marks, '/viewDefaults/autoMarks', 'autoMarks'):
+                self.keys(marks, '/viewDefaults/autoMarks', 'autoMarks', (), ('rightAngles', 'equalities'))
+                for key in ('rightAngles', 'equalities'):
+                    if key in marks and not isinstance(marks[key], bool):
+                        self.add('/viewDefaults/autoMarks/' + key, f'{key} must be a boolean')
         if 'viewDefaults' in doc and self.object(view, '/viewDefaults', 'viewDefaults') and 'bounds' in view:
             bounds = view['bounds']
             if self.numbers(bounds, '/viewDefaults/bounds', 'bounds', 4):
@@ -872,4 +936,9 @@ def validate(doc) -> list:
     if 'steps' in doc.data:
         from .steps import step_issues
         issues.extend(step_issues(doc, check_cycle=not cyclic))
+    if any(k in doc.data for k in ('conditions', 'suppressedMarks')) or \
+            any(isinstance(el, dict) and isinstance(el.get('origin'), dict) and el['origin'].get('kind') == 'auto'
+                for el in elements.values()):
+        from .conditions.validate import condition_issues
+        issues.extend(condition_issues(doc))
     return issues
