@@ -1,0 +1,376 @@
+[
+  {
+    "op": "triangle.altitude",
+    "status": "stable",
+    "since": "1.5",
+    "inputs": [
+      {
+        "slot": "vertex",
+        "type": "point"
+      },
+      {
+        "slot": "side",
+        "type": "linear",
+        "ends": true
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "altitude",
+        "type": "segment"
+      },
+      {
+        "slot": "foot",
+        "type": "point"
+      },
+      {
+        "slot": "extension",
+        "type": "segment"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "zero_length",
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "perpendicular",
+        "text": "vertex - foot is perpendicular to the side carrier: |(vertex - foot) . d|"
+      },
+      {
+        "id": "on_carrier",
+        "text": "the foot lies on the side carrier: distance from the foot to it"
+      }
+    ],
+    "orientation": "vertex_to_foot",
+    "pathParam": null,
+    "stepKind": "altitude",
+    "phrases": {
+      "ru": "{altitude} — высота из {vertex} на {side}; {foot} — её основание; {extension} — продолжение стороны до основания"
+    },
+    "math": "docs/native/ops/triangle.altitude.md",
+    "signatureHash": "sha256:89682cb1b93e5cf0e6cc2a3aa65647b7bcdb3b4b0fcbaa8bc02dda1e814e903c"
+  },
+  {
+    "op": "triangle.median",
+    "status": "stable",
+    "since": "1.5",
+    "inputs": [
+      {
+        "slot": "vertex",
+        "type": "point"
+      },
+      {
+        "slot": "side",
+        "type": "segment"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "median",
+        "type": "segment"
+      },
+      {
+        "slot": "midpoint",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "zero_length",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "midpoint",
+        "text": "midpoint is the middle of the side: | |midpoint - a| - |b - midpoint| |"
+      }
+    ],
+    "orientation": "vertex_to_midpoint",
+    "pathParam": null,
+    "stepKind": "median",
+    "phrases": {
+      "ru": "{median} — медиана из {vertex} к {side}; {midpoint} — середина стороны"
+    },
+    "math": "docs/native/ops/triangle.median.md",
+    "signatureHash": "sha256:c425bcddb91881124985940e8d7a0bb4ecf7f9d22e2a8e76d80f6245bd24d21d"
+  },
+  {
+    "op": "triangle.bisector",
+    "status": "stable",
+    "since": "1.5",
+    "inputs": [
+      {
+        "slot": "vertex",
+        "type": "point"
+      },
+      {
+        "slot": "side",
+        "type": "segment"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "bisector",
+        "type": "segment"
+      },
+      {
+        "slot": "foot",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "collinear_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "equal_angles",
+        "text": "the bisector halves the angle at vertex: |m(B V L) - m(L V C)| S (convex measures)"
+      },
+      {
+        "id": "on_side",
+        "text": "the foot lies on the side: distance from the foot to the segment"
+      }
+    ],
+    "orientation": "vertex_to_foot",
+    "pathParam": null,
+    "stepKind": "bisector",
+    "phrases": {
+      "ru": "{bisector} — биссектриса из {vertex} к {side}; {foot} — её основание"
+    },
+    "math": "docs/native/ops/triangle.bisector.md",
+    "signatureHash": "sha256:8948173089746c28d14855f75f1b0332e82f330380c82100010b134599735a59"
+  },
+  {
+    "op": "triangle.centroid",
+    "status": "stable",
+    "since": "1.5",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "medians",
+        "text": "the point lies on the medians from a and b: max distance to the lines a mid(b, c) and b mid(c, a)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "centroid",
+    "phrases": {
+      "ru": "{point} — точка пересечения медиан треугольника {a}{b}{c}"
+    },
+    "math": "docs/native/ops/triangle.centroid.md",
+    "signatureHash": "sha256:8886459aed7e1d4522bfedc79a85df4690521eae3b17ced5ca37efa91258a2fa"
+  },
+  {
+    "op": "triangle.incenter",
+    "status": "stable",
+    "since": "1.5",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "equidistant_sides",
+        "text": "the point is equidistant from the side lines: max minus min of the three distances"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "incenter",
+    "phrases": {
+      "ru": "{point} — центр вписанной окружности треугольника {a}{b}{c}"
+    },
+    "math": "docs/native/ops/triangle.incenter.md",
+    "signatureHash": "sha256:e72161477ef4adce85ad95d07f21768abd9e1fa0ae7f7b6749d603c97ce4e643"
+  },
+  {
+    "op": "triangle.circumcenter",
+    "status": "stable",
+    "since": "1.5",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "equidistant",
+        "text": "the point is equidistant from the vertices: max minus min of |P - a|, |P - b|, |P - c|"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "circumcenter",
+    "phrases": {
+      "ru": "{point} — центр описанной окружности треугольника {a}{b}{c}"
+    },
+    "math": "docs/native/ops/triangle.circumcenter.md",
+    "signatureHash": "sha256:91efe1f8a625d0d920ed5fc6967658275a325ef7c274f35ec9c646d23a725686"
+  },
+  {
+    "op": "triangle.orthocenter",
+    "status": "stable",
+    "since": "1.5",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "perpendicular",
+        "text": "H - a is perpendicular to c - b, and so on: max over the vertices of |(H - a) . (c - b)| / |c - b|"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "orthocenter",
+    "phrases": {
+      "ru": "{point} — точка пересечения высот треугольника {a}{b}{c}"
+    },
+    "math": "docs/native/ops/triangle.orthocenter.md",
+    "signatureHash": "sha256:35b4854d8ca761ecd6f92827d0cbc6a3f9a7b4713a21f45488022f519e92e247"
+  },
+  {
+    "op": "triangle.excenters",
+    "status": "stable",
+    "since": "1.5",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "center",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "equidistant_lines",
+        "text": "the centre is equidistant from the lines bc, ca, ab: max minus min of the three distances"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "excenter",
+    "phrases": {
+      "ru": "{center} — центр вневписанной окружности треугольника {a}{b}{c}, касающейся стороны {b}{c}"
+    },
+    "math": "docs/native/ops/triangle.excenters.md",
+    "signatureHash": "sha256:a88f7a6c350cf922c26ab870d4338bfb602f0ffb04ae55dfadbdd5863a49f952"
+  }
+]

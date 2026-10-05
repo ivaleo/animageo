@@ -1,0 +1,220 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "triangle_bisector",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "triangle_bisector",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_w": {
+        "id": "op_w",
+        "op": "triangle.bisector",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "side": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "bisector",
+            "elementId": "w"
+          },
+          {
+            "slot": "foot",
+            "elementId": "L"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "w": {
+        "id": "w",
+        "type": "segment",
+        "displayName": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "bisector"
+        }
+      },
+      "L": {
+        "id": "L",
+        "type": "point",
+        "displayName": "L",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "foot"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          3
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "obtuse",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -1,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "name": "isosceles",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            2,
+            3
+          ]
+        }
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "collinear",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            6,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}

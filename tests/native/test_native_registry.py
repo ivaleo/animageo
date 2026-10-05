@@ -49,7 +49,10 @@ L2A5_OPS = {
     'transform.translate', 'transform.rotate', 'transform.reflect_line', 'transform.reflect_point',
     'transform.dilate', 'text.free', 'intersect.nearest',
 }
-ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS
+L3A1_OPS = {'triangle.altitude', 'triangle.median', 'triangle.bisector', 'triangle.centroid',
+            'triangle.incenter', 'triangle.circumcenter', 'triangle.orthocenter', 'triangle.excenters',
+            'locus.of_point'}
+ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS
 # Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were
 # (1.4 is frozen since 1.8.1; new operations go to 1.5).
 L0_HASHES = {
@@ -145,16 +148,16 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.4'
-    assert registry().version == '1.4'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.4'
+    assert native.__registry_version__ == '1.5'
+    assert registry().version == '1.5'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.5'
 
 
 def test_ops_and_files():
     reg = registry()
     assert set(reg.ops) == ALL_OPS
     assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark',
-                               'arc', 'measure', 'transform', 'text'}
+                               'arc', 'measure', 'transform', 'text', 'triangle', 'locus'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
@@ -283,6 +286,7 @@ def test_contract_table():
         'figure': ['point', 'line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'polyline'],
         'transformable': ['point', 'segment', 'ray', 'line', 'vector', 'circle', 'arc', 'sector', 'polygon'],
         'insertable': ['number', 'point'],
+        'locus_driver': ['point', 'number'],      # registry 1.5
     }
     assert reg.accepts('linear', 'ray') and not reg.accepts('circular', 'ray')
 
@@ -549,4 +553,7 @@ def test_reasons_catalog_states():
     assert {reasons[r]['state'] for r in ('schema', 'dangling_ref', 'cycle', 'type_mismatch', 'internal')} == {'error'}
     for op in registry().ops.values():
         for reason in op['undefined']:
+            if reason == 'unsupported_signature':          # registry 1.5: locus.of_point
+                assert reasons[reason]['state'] == 'unsupported'
+                continue
             assert reasons[reason]['state'] in ('undefined', 'inherited')

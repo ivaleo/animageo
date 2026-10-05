@@ -26,6 +26,15 @@
     {"name": "Угол", "aliases": ["Angle"], "op": "angle.by_points"},
     {"name": "ОтметкаРавныхОтрезков", "aliases": [], "op": "mark.equal_segments"},
     {"name": "ОтметкаРавныхУглов", "aliases": [], "op": "mark.equal_angles"},
-    {"name": "ПрямойУгол", "aliases": [], "op": "mark.right_angle"}
-  ]
+    {"name": "ПрямойУгол", "aliases": [], "op": "mark.right_angle"},
+    {"name": "Высота", "aliases": ["Altitude"], "op": "triangle.altitude"},
+    {"name": "Медиана", "aliases": ["Median"], "op": "triangle.median"},
+    {"name": "Биссектриса", "aliases": ["AngleBisector"], "op": "triangle.bisector"},
+    {"name": "ТочкаПересеченияМедиан", "aliases": ["Центроид", "Centroid"], "op": "triangle.centroid"},
+    {"name": "Инцентр", "aliases": ["ЦентрВписанной", "Incenter"], "op": "triangle.incenter"},
+    {"name": "ЦентрОписанной", "aliases": ["Circumcenter"], "op": "triangle.circumcenter"},
+    {"name": "Ортоцентр", "aliases": ["Orthocenter"], "op": "triangle.orthocenter"},
+    {"name": "ЦентрВневписанной", "aliases": ["Excenter"], "op": "triangle.excenters"},
+    {"name": "ГМТ", "aliases": ["Локус", "Locus"], "op": "locus.of_point"}
+]
 }

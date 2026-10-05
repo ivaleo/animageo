@@ -1,0 +1,369 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "triangle_bitwise",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "triangle_bitwise",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "circle.incircle",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "k"
+          },
+          {
+            "slot": "center",
+            "elementId": "Ik"
+          }
+        ]
+      },
+      "op_I": {
+        "id": "op_I",
+        "op": "triangle.incenter",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "I"
+          }
+        ]
+      },
+      "op_o": {
+        "id": "op_o",
+        "op": "circle.three_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "o"
+          },
+          {
+            "slot": "center",
+            "elementId": "Oo"
+          }
+        ]
+      },
+      "op_O": {
+        "id": "op_O",
+        "op": "triangle.circumcenter",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_e": {
+        "id": "op_e",
+        "op": "circle.excircle",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "e"
+          },
+          {
+            "slot": "center",
+            "elementId": "Je"
+          }
+        ]
+      },
+      "op_J": {
+        "id": "op_J",
+        "op": "triangle.excenters",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "center",
+            "elementId": "J"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "circle",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "circle"
+        }
+      },
+      "Ik": {
+        "id": "Ik",
+        "type": "point",
+        "displayName": "Ik",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "center"
+        }
+      },
+      "I": {
+        "id": "I",
+        "type": "point",
+        "displayName": "I",
+        "producer": {
+          "operationId": "op_I",
+          "slot": "point"
+        }
+      },
+      "o": {
+        "id": "o",
+        "type": "circle",
+        "displayName": "o",
+        "producer": {
+          "operationId": "op_o",
+          "slot": "circle"
+        }
+      },
+      "Oo": {
+        "id": "Oo",
+        "type": "point",
+        "displayName": "Oo",
+        "producer": {
+          "operationId": "op_o",
+          "slot": "center"
+        }
+      },
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "e": {
+        "id": "e",
+        "type": "circle",
+        "displayName": "e",
+        "producer": {
+          "operationId": "op_e",
+          "slot": "circle"
+        }
+      },
+      "Je": {
+        "id": "Je",
+        "type": "point",
+        "displayName": "Je",
+        "producer": {
+          "operationId": "op_e",
+          "slot": "center"
+        }
+      },
+      "J": {
+        "id": "J",
+        "type": "point",
+        "displayName": "J",
+        "producer": {
+          "operationId": "op_J",
+          "slot": "center"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0.3,
+          2.7
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          -1.1,
+          -0.4
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          3.9,
+          0.2
+        ]
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "thin",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            1.7,
+            0.45
+          ]
+        }
+      }
+    },
+    {
+      "name": "wide",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            7.3,
+            5.1
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            -6.2,
+            1.3
+          ]
+        }
+      }
+    }
+  ]
+}

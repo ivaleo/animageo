@@ -177,6 +177,38 @@ _OPS = [
         ('right_angle_named', P3 + 'r = {mark.right_angle}(B, A, C)', None),
         ('right_angle_count_free', P3 + '{mark.right_angle}(A, B, C)\n{mark.right_angle}(B, C, A)', None),
     ]),
+    ('parse_triangle', [                    # registry 1.5 (L3 stage 1)
+        ('altitude_pair', P3 + 'h = {triangle.altitude}(C, AB)', None),
+        ('altitude_named', P3 + 'h, H = {triangle.altitude}(A, BC)', None),
+        ('altitude_segment', P3 + 's = {segment.by_points}(B, C)\nh, H, e = {triangle.altitude:alias}(A, s)', None),
+        ('median_pair', P3 + 'm = {triangle.median}(A, BC)', None),
+        ('median_named', P3 + 'm, M = {triangle.median}(B, CA)', None),
+        ('median_alias', P3 + 's = {segment.by_points}(A, B)\nm = {triangle.median:alias}(C, s)', None),
+        ('bisector_pair', P3 + 'l = {triangle.bisector}(A, BC)', None),
+        ('bisector_named', P3 + 'l, L = {triangle.bisector}(B, CA)', None),
+        ('bisector_segment', P3 + 's = {segment.by_points}(A, B)\nl = {triangle.bisector}(C, s)', None),
+        ('centroid', P3 + 'G = {triangle.centroid}(A, B, C)', None),
+        ('centroid_alias', P3 + 'G = {triangle.centroid:alias}(B, C, A)', None),
+        ('centroid_unnamed', P3 + '{triangle.centroid}(A, B, C)', None),
+        ('incenter', P3 + 'I = {triangle.incenter}(A, B, C)', None),
+        ('incenter_alias', P3 + 'I = {triangle.incenter:alias}(C, A, B)', None),
+        ('incenter_unnamed', P3 + '{triangle.incenter}(A, B, C)', None),
+        ('circumcenter', P3 + 'O = {triangle.circumcenter}(A, B, C)', None),
+        ('circumcenter_alias', P3 + 'O = {triangle.circumcenter:alias}(B, C, A)', None),
+        ('circumcenter_unnamed', P3 + '{triangle.circumcenter}(A, B, C)', None),
+        ('orthocenter', P3 + 'H = {triangle.orthocenter}(A, B, C)', None),
+        ('orthocenter_alias', P3 + 'H = {triangle.orthocenter:alias}(C, A, B)', None),
+        ('orthocenter_unnamed', P3 + '{triangle.orthocenter}(A, B, C)', None),
+        ('excenter', P3 + 'J = {triangle.excenters}(A, B, C)', None),
+        ('excenter_alias', P3 + 'J = {triangle.excenters:alias}(B, C, A)', None),
+        ('excenter_unnamed', P3 + '{triangle.excenters}(C, A, B)', None),
+        ('locus_segment', P3 + 'P = {point.on_path}(AB, 0.25)\nM = {point.midpoint}(C, P)\n'
+                          'g = {locus.of_point}(M, P)', None),
+        ('locus_circle', P3 + 'c = {circle.center_point}(A, B)\nP = {point.on_path}(c, 1)\n'
+                         'M = {point.midpoint}(C, P)\ng = {locus.of_point:alias}(M, P)', None),
+        ('locus_slider', P3 + 'k = {number.free}(1, 0, 3)\nd = {circle.center_radius}(A, k)\n'
+                         'P, Q = {intersect.line_circle}(AB, d)\n{locus.of_point}(Q, k)', None),
+    ]),
 ]
 
 _SYNTAX = [

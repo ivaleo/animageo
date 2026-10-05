@@ -64,8 +64,8 @@ from .values import (
     state_record,
 )
 
-__all__ = ['EVALUATED_FORMAT', 'Arguments', 'Evaluated', 'evaluate', 'check_inputs', 'valid_input',
-           'producer_values', 'number_literal']
+__all__ = ['EVALUATED_FORMAT', 'Arguments', 'Evaluated', 'GraphScope', 'evaluate', 'check_inputs', 'valid_input',
+           'producer_values', 'number_literal', 'build_args', 'undefined_state']
 
 EVALUATED_FORMAT = 'animageo-evaluated/v1'
 
@@ -202,6 +202,76 @@ def _path_frame(ref, elements, ops, states):
     return paths.frame(elements[ref]['type'], states[ref]['value'], producer_op, values)
 
 
+def side_end_slots(type_: str, producer_op: str):
+    """``(slot_a, slot_b)`` of the producer arguments that are the two defining
+    points of a line or ray: a path frame ``o = args.<slot_a>``,
+    ``v = args.<slot_b> − args.<slot_a>`` (``line.by_points``: ``a``, ``b``;
+    ``ray.by_points``: ``origin``, ``through``), else ``None``."""
+    if type_ == 'segment':
+        return None
+    spec = registry().paths.get(type_) or {}
+    rule = (spec.get('frames') or {}).get(producer_op)
+    if rule is None:
+        return None
+    first, minus, second = rule['vector'].partition(' - ')
+    if not minus or rule['origin'] != second or not first.startswith('args.') or not second.startswith('args.'):
+        return None
+    return second[len('args.'):], first[len('args.'):]
+
+
+def _side_ends(ref, elements, ops, states):
+    """The two defining points ``((ax, ay), (bx, by))`` of a defined line or
+    ray (registry 1.5, an input with ``ends`` in its record), by
+    :func:`side_end_slots`, else ``None``. A segment carries its ends in its
+    value."""
+    type_ = elements[ref]['type']
+    if type_ == 'segment':
+        return None
+    producer_op, values = producer_values(ref, elements, ops, states)
+    slots = side_end_slots(type_, producer_op)
+    if slots is None:
+        return None
+    a = values.get(slots[0])
+    b = values.get(slots[1])
+    if not isinstance(a, dict) or not isinstance(b, dict):
+        return None
+    return (a['x'], a['y']), (b['x'], b['y'])
+
+
+def build_args(record, resolved, elements, ops, states) -> dict:
+    """The implementation arguments of a call whose inputs are all defined:
+    params, number literals, ``expr``/``template`` arguments and the input
+    values (a ``path`` slot with its frame, an ``ends`` slot with
+    :func:`_side_ends`)."""
+    args = dict(resolved.params)
+    for slot, value in resolved.literals.items():
+        args[slot] = number_literal(value)
+    for slot, ast in resolved.exprs.items():
+        args[slot] = Input('expr', ast)
+    for slot, text in resolved.templates.items():
+        args[slot] = Input('template', text)
+    path_slots = {item['slot'] for item in record['inputs'] if item['type'] == 'path'}
+    end_slots = {item['slot'] for item in record['inputs'] if item.get('ends')}
+    for slot, is_list, ids in resolved.refs:
+        if slot in path_slots:
+            items = [Input(elements[ref]['type'], states[ref]['value'],
+                           _path_frame(ref, elements, ops, states)) for ref in ids]
+        elif slot in end_slots:
+            items = [Input(elements[ref]['type'], states[ref]['value'],
+                           _side_ends(ref, elements, ops, states)) for ref in ids]
+        else:
+            items = [Input(elements[ref]['type'], states[ref]['value']) for ref in ids]
+        args[slot] = items if is_list else items[0]
+    return args
+
+
+def undefined_state(reg, reason: str) -> str:
+    """The state of an undefined result: ``unsupported`` for a reason whose
+    catalog state is ``unsupported`` (``unsupported_signature``), else
+    ``undefined``."""
+    return 'unsupported' if (reg.reasons.get(reason) or {}).get('state') == 'unsupported' else 'undefined'
+
+
 def _order(op_ids, deps, cyclic) -> list:
     """Kahn's order, ties by operation ID; cycle members wait for nothing."""
     users = {op_id: [] for op_id in op_ids}
@@ -222,6 +292,35 @@ def _order(op_ids, deps, cyclic) -> list:
             if indegree[user] == 0:
                 heapq.heappush(heap, user)
     return order
+
+
+# Operations that read the graph besides their arguments (``OpContext.scope``).
+GRAPH_OPS = frozenset({'locus.of_point'})
+
+# Slots that may be undefined without skipping the checks of their operation
+# (registry 1.5): the extension of an altitude is absent in every acute
+# triangle, the checks use the altitude and the foot only.
+CHECK_OPTIONAL_SLOTS = {'triangle.altitude': frozenset({'extension'})}
+
+
+@dataclass
+class GraphScope:
+    """What a graph operation (``locus.of_point``) sees: the document, the
+    states computed so far (read only), the input values, the bound elements,
+    the operation dependencies and order, the tolerances and the decision
+    log of the evaluation."""
+
+    doc: object
+    reg: object
+    operation_id: str
+    resolved: object
+    states: dict
+    values_in: dict
+    bound: dict
+    deps: dict
+    order: list
+    tol: object
+    decisions: object = None
 
 
 @dataclass
@@ -377,7 +476,8 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
         for el_id in bound.get(op_id, ()):
             states[el_id] = state_record(state, elements[el_id]['type'], reason, cause=cause, detail=detail)
 
-    for op_id in _order(list(ops), deps, cyclic):
+    order = _order(list(ops), deps, cyclic)
+    for op_id in order:
         op = ops[op_id]
         if op_id in cyclic:
             settle(op_id, 'error', 'cycle')
@@ -413,22 +513,12 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
         if worst is not None:
             settle(op_id, worst[0], 'upstream', cause=worst[1])
             continue
-        args = dict(resolved.params)
-        for slot, value in resolved.literals.items():
-            args[slot] = number_literal(value)
-        for slot, ast in resolved.exprs.items():
-            args[slot] = Input('expr', ast)
-        for slot, text in resolved.templates.items():
-            args[slot] = Input('template', text)
-        path_slots = {item['slot'] for item in record['inputs'] if item['type'] == 'path'}
-        for slot, is_list, ids in resolved.refs:
-            if slot in path_slots:
-                items = [Input(elements[ref]['type'], states[ref]['value'],
-                               _path_frame(ref, elements, ops, states)) for ref in ids]
-            else:
-                items = [Input(elements[ref]['type'], states[ref]['value']) for ref in ids]
-            args[slot] = items if is_list else items[0]
-        ctx = OpContext(tol, input=free_input, operation_id=op_id, decisions=_decisions)
+        args = build_args(record, resolved, elements, ops, states)
+        scope = None
+        if op['op'] in GRAPH_OPS:
+            scope = GraphScope(doc, reg, op_id, resolved, states, values_in, bound, deps, order, tol,
+                               _decisions)
+        ctx = OpContext(tol, input=free_input, operation_id=op_id, decisions=_decisions, scope=scope)
         try:
             result = IMPLEMENTATIONS[op['op']](args, ctx)
         except Exception as exc:  # an implementation bug must not stop the evaluation
@@ -447,7 +537,8 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
             value = result.get(slot)
             type_ = elements[el_id]['type']
             if isinstance(value, Undefined):
-                states[el_id] = state_record('undefined', type_, value.reason, detail=value.detail)
+                states[el_id] = state_record(undefined_state(reg, value.reason), type_, value.reason,
+                                             detail=value.detail)
             elif value is None:
                 diagnostics.append({'code': 'internal', 'operationId': op_id, 'op': op['op'],
                                     'message': f'no value for slot {slot!r}'})
@@ -456,7 +547,10 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
                 states[el_id] = state_record('undefined', type_, 'non_finite')
             else:
                 states[el_id] = defined_record(type_, value, details.get(slot))
-        for value in result.values():
+        optional = CHECK_OPTIONAL_SLOTS.get(op['op'], ())
+        for slot, value in result.items():
+            if slot in optional and isinstance(value, Undefined):
+                continue
             if isinstance(value, Undefined) or not is_finite_value(value):
                 all_defined = False
                 break
@@ -470,7 +564,11 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
     # Checks need an op that ran and whose every claimed element is defined.
     for el_id, el in elements.items():
         if states[el_id]['state'] != 'defined':
-            computed.pop(el['producer']['operationId'], None)
+            op_id = el['producer']['operationId']
+            optional = CHECK_OPTIONAL_SLOTS.get(ops[op_id]['op'], ()) if op_id in ops else ()
+            if el['producer']['slot'] in optional and states[el_id]['state'] == 'undefined':
+                continue
+            computed.pop(op_id, None)
 
     return Evaluated(
         document_id=doc.document_id,

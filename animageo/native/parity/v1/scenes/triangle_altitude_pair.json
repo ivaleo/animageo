@@ -1,0 +1,226 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "triangle_altitude_pair",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "triangle_altitude_pair",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_BC": {
+        "id": "op_BC",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "BC"
+          }
+        ]
+      },
+      "op_h": {
+        "id": "op_h",
+        "op": "triangle.altitude",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "side": {
+            "kind": "ref",
+            "elementId": "BC"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "altitude",
+            "elementId": "h"
+          },
+          {
+            "slot": "foot",
+            "elementId": "H"
+          },
+          {
+            "slot": "extension",
+            "elementId": "x"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "BC": {
+        "id": "BC",
+        "type": "line",
+        "displayName": "",
+        "producer": {
+          "operationId": "op_BC",
+          "slot": "line"
+        }
+      },
+      "h": {
+        "id": "h",
+        "type": "segment",
+        "displayName": "h",
+        "producer": {
+          "operationId": "op_h",
+          "slot": "altitude"
+        }
+      },
+      "H": {
+        "id": "H",
+        "type": "point",
+        "displayName": "H",
+        "producer": {
+          "operationId": "op_h",
+          "slot": "foot"
+        }
+      },
+      "x": {
+        "id": "x",
+        "type": "segment",
+        "displayName": "x",
+        "producer": {
+          "operationId": "op_h",
+          "slot": "extension"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          3
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      }
+    },
+    "appearance": {
+      "BC": {
+        "visible": false
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "acute"
+    },
+    {
+      "name": "beyond_b",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -1.5,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "name": "beyond_c",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            5.5,
+            -2
+          ]
+        }
+      }
+    },
+    {
+      "name": "right_at_c",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            4,
+            2.5
+          ]
+        }
+      }
+    }
+  ]
+}

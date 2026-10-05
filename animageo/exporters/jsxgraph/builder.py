@@ -828,6 +828,8 @@ def _curve_polylines(ctx, elem):
     viewport = (left, bottom, right, top)
 
     if t == "LocusCurve":
+        if getattr(d, "breaks", None):     # a native locus with gaps: one polyline per run
+            return [[(p[0], p[1]) for p in run] for run in d.runs() if len(run) >= 2]
         pts = list(getattr(d, "points", []))
         return [[(p[0], p[1]) for p in pts]] if len(pts) >= 2 else []
     if t in ("Arc", "CircleSector"):

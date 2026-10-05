@@ -921,6 +921,157 @@ def _polygon_angles_interior(args, result, tol):
     return err
 
 
+# ---- registry 1.5 -------------------------------------------------------------
+
+
+def _line_distance_pq(x, y, px, py, qx, qy):
+    """Distance from ``(x, y)`` to the line through ``p`` and ``q`` (``inf`` for ``p = q``)."""
+    length = math.hypot(qx - px, qy - py)
+    if length == 0:
+        return math.inf
+    return abs((x - px) * (qy - py) - (y - py) * (qx - px)) / length
+
+
+def _segment_distance(x, y, ax, ay, bx, by):
+    dx = bx - ax
+    dy = by - ay
+    l2 = dx * dx + dy * dy
+    t = 0.0 if l2 == 0 else max(0.0, min(1.0, ((x - ax) * dx + (y - ay) * dy) / l2))
+    return math.hypot(x - (ax + t * dx), y - (ay + t * dy))
+
+
+@register_check('triangle.altitude', 'perpendicular')
+def _altitude_perpendicular(args, result, tol):
+    c = carrier(args['side'], _QuietContext(tol))
+    if isinstance(c, Undefined):
+        return math.inf
+    vx, vy = _xy(args['vertex'].value)
+    hx, hy = _xy(result['foot'])
+    return abs((vx - hx) * c.dx + (vy - hy) * c.dy)
+
+
+@register_check('triangle.altitude', 'on_carrier')
+def _altitude_on_carrier(args, result, tol):
+    c = carrier(args['side'], _QuietContext(tol))
+    if isinstance(c, Undefined):
+        return math.inf
+    return distance_to_carrier(*_xy(result['foot']), c)
+
+
+@register_check('triangle.median', 'midpoint')
+def _median_midpoint(args, result, tol):
+    seg = args['side'].value
+    mx, my = _xy(result['midpoint'])
+    return abs(math.hypot(mx - seg['a'][0], my - seg['a'][1]) - math.hypot(seg['b'][0] - mx, seg['b'][1] - my))
+
+
+@register_check('triangle.bisector', 'equal_angles')
+def _bisector_equal_angles(args, result, tol):
+    v = args['vertex'].value
+    seg = args['side'].value
+    foot = result['foot']
+    b = {'x': seg['a'][0], 'y': seg['a'][1]}
+    c = {'x': seg['b'][0], 'y': seg['b'][1]}
+    ctx = _QuietContext(tol)
+    first = unit_sides(b, v, foot, ctx)
+    second = unit_sides(foot, v, c, ctx)
+    if isinstance(first, Undefined) or isinstance(second, Undefined):
+        return math.inf
+    m1 = convex_measure(angle_size(*first))
+    m2 = convex_measure(angle_size(*second))
+    return abs(m1 - m2) * tol.scale
+
+
+@register_check('triangle.bisector', 'on_side')
+def _bisector_on_side(args, result, tol):
+    seg = args['side'].value
+    fx, fy = _xy(result['foot'])
+    return _segment_distance(fx, fy, seg['a'][0], seg['a'][1], seg['b'][0], seg['b'][1])
+
+
+def _abc(args):
+    return _xy(args['a'].value), _xy(args['b'].value), _xy(args['c'].value)
+
+
+@register_check('triangle.centroid', 'medians')
+def _centroid_medians(args, result, tol):
+    (ax, ay), (bx, by), (cx, cy) = _abc(args)
+    gx, gy = _xy(result['point'])
+    d1 = _line_distance_pq(gx, gy, ax, ay, (bx + cx) / 2, (by + cy) / 2)
+    d2 = _line_distance_pq(gx, gy, bx, by, (cx + ax) / 2, (cy + ay) / 2)
+    if math.isinf(d1) or math.isinf(d2):       # a degenerate triangle: G is the mean of the vertices
+        return math.hypot(gx - (ax + bx + cx) / 3, gy - (ay + by + cy) / 3)
+    return max(d1, d2)
+
+
+def _spread(values):
+    return max(values) - min(values)
+
+
+def _side_line_distances(args, x, y):
+    (ax, ay), (bx, by), (cx, cy) = _abc(args)
+    return [_line_distance_pq(x, y, bx, by, cx, cy), _line_distance_pq(x, y, cx, cy, ax, ay),
+            _line_distance_pq(x, y, ax, ay, bx, by)]
+
+
+@register_check('triangle.incenter', 'equidistant_sides')
+def _incenter_equidistant(args, result, tol):
+    return _spread(_side_line_distances(args, *_xy(result['point'])))
+
+
+@register_check('triangle.circumcenter', 'equidistant')
+def _circumcenter_equidistant(args, result, tol):
+    px, py = _xy(result['point'])
+    return _spread([math.hypot(px - x, py - y) for x, y in _abc(args)])
+
+
+@register_check('triangle.orthocenter', 'perpendicular')
+def _orthocenter_perpendicular(args, result, tol):
+    hx, hy = _xy(result['point'])
+    pts = _abc(args)
+    error = 0.0
+    for i in range(3):
+        (px, py), (qx, qy), (rx, ry) = pts[i], pts[(i + 1) % 3], pts[(i + 2) % 3]
+        length = math.hypot(rx - qx, ry - qy)
+        if length == 0:
+            return math.inf
+        error = max(error, abs((hx - px) * (rx - qx) + (hy - py) * (ry - qy)) / length)
+    return error
+
+
+@register_check('triangle.excenters', 'equidistant_lines')
+def _excenter_equidistant(args, result, tol):
+    return _spread(_side_line_distances(args, *_xy(result['center'])))
+
+
+@register_check('locus.of_point', 'on_trace')
+def _locus_on_trace(args, result, tol):
+    """Four samples (``k = 0, N/4, N/2, 3N/4``) against a full evaluation of
+    the document with the mover input at ``t_k``."""
+    from .evaluate import _free_elements, evaluate, valid_input
+    from .ops.locus import sample_parameters
+    from ..registry import registry as _registry
+    doc, mover_id, kind, values_in = args['$locus']
+    locus = result['locus']
+    n = len(locus['points'])
+    ts = sample_parameters(locus['range'][0], locus['range'][1], locus['closed'], n)
+    free = _free_elements(doc, _registry())
+    base = {e: v for e, v in values_in.items() if e in free and valid_input(free[e], v)}
+    trace_id = args['$trace']
+    error = 0.0
+    for k in (0, n // 4, n // 2, (3 * n) // 4):
+        inputs = dict(base)
+        inputs[mover_id] = {'kind': kind, 'value': ts[k]}
+        record = evaluate(doc, inputs=inputs).elements[trace_id]
+        sample = locus['points'][k]
+        if record['state'] != 'defined' or sample is None:
+            if (record['state'] == 'defined') != (sample is not None):
+                return math.inf
+            continue
+        error = max(error, math.hypot(record['value']['x'] - sample[0], record['value']['y'] - sample[1]))
+    return error
+
+
 def run_checks(evaluated, keys=None) -> CheckReport:
     """Run the registry checks over an :class:`~.evaluate.Evaluated` result.
 

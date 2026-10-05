@@ -39,6 +39,10 @@ REQUIRED_SCENES = {
     'l2a5_nearest',
     # 1.8.1: the reasons no other scene reaches
     'l2_reasons',
+    # registry 1.5 (1.9.0a1)
+    'triangle_altitude', 'triangle_altitude_pair', 'triangle_median', 'triangle_bisector',
+    'triangle_centers', 'triangle_excenters', 'triangle_bitwise', 'triangle_chain', 'locus_segment',
+    'locus_circle', 'locus_polygon', 'locus_line_window', 'locus_undefined', 'locus_number',
 }
 
 

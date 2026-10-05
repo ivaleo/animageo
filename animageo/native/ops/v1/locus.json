@@ -1,0 +1,45 @@
+[
+  {
+    "op": "locus.of_point",
+    "status": "stable",
+    "since": "1.5",
+    "inputs": [
+      {
+        "slot": "trace",
+        "type": "point"
+      },
+      {
+        "slot": "mover",
+        "type": "locus_driver"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "locus",
+        "type": "locus"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "unsupported_signature",
+      "not_dependent",
+      "empty_range",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_trace",
+        "text": "sampled: the defined samples at k = 0, N/4, N/2, 3N/4 repeat the trace evaluated with the mover at t_k: max distance"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "locus",
+    "phrases": {
+      "ru": "{locus} — геометрическое место точек {trace} при движении {mover}"
+    },
+    "math": "docs/native/ops/locus.of_point.md",
+    "signatureHash": "sha256:9c8bcc1eb0d5c74546855b4b573922cb44209c0393e3f9b442e78d0851bf4f07"
+  }
+]

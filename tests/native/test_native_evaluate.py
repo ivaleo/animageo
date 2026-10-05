@@ -32,7 +32,7 @@ def test_result_format():
     assert list(data) == ['format', 'documentId', 'kernel', 'scale', 'elements', 'diagnostics']
     assert data['format'] == 'animageo-evaluated/v1'
     assert data['documentId'] == 'chain'
-    assert data['kernel'] == {'library': native_version(), 'registry': '1.4'}
+    assert data['kernel'] == {'library': native_version(), 'registry': '1.5'}
     assert data['scale'] == 20.0
     assert list(data['elements']) == sorted(data['elements'])
     assert data['elements']['A'] == {'state': 'defined', 'type': 'point', 'value': {'x': -4.0, 'y': -1.0}}
@@ -115,7 +115,7 @@ class TestGraphErrors:
     def test_newer_registry(self):
         b = DocBuilder('new').free('A', 0, 0).free('B', 1, 1)
         b.op('op_R', 'point.magic', {'p': ref('A')}, [('point', 'R', 'point')]).midpoint('M', 'A', 'B')
-        b.doc['operationRegistryVersion'] = '1.5'
+        b.doc['operationRegistryVersion'] = '1.6'
         s = states(native.evaluate(b.doc))
         assert s['R'] == 'unsupported/newer_registry'
         assert s['M'] == 'defined'

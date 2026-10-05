@@ -33,19 +33,22 @@ class OpContext:
     length, a cross product, a segment parameter minus an end) and ``tol``
     the decide tolerance it is compared with. Evaluation ignores the reports;
     the fixture generator uses them to refuse near-degenerate cases.
+    ``scope`` — the graph of the evaluation for an operation that reads more
+    than its arguments (registry 1.5: ``locus.of_point``), else ``None``.
     """
 
-    __slots__ = ('tol', 'input', 'operation_id', 'decisions')
+    __slots__ = ('tol', 'input', 'operation_id', 'decisions', 'scope')
 
-    def __init__(self, tol, *, input=None, operation_id=None, decisions=None):
+    def __init__(self, tol, *, input=None, operation_id=None, decisions=None, scope=None):
         self.tol = tol
         self.input = input
         self.operation_id = operation_id
         self.decisions = decisions
+        self.scope = scope
 
     def decide(self, name: str, value: float, tol: float) -> None:
         if self.decisions is not None:
             self.decisions.append((self.operation_id, name, value, tol))
 
 
-from . import angle, arc, circle, intersect, line, mark, measure, number, point, polygon, text, transform  # noqa: E402,F401,E501  (registration)
+from . import angle, arc, circle, intersect, line, locus, mark, measure, number, point, polygon, text, transform, triangle  # noqa: E402,F401,E501  (registration)

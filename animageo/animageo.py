@@ -3950,6 +3950,19 @@ class AnimaGeoScene(MovingCameraScene):
 
     def _render_locuscurve(self, elem, ctx):
         locus = elem.data
+        if getattr(locus, 'breaks', None):      # a native locus with gaps: one polyline per run
+            parts = []
+            for run in locus.runs():
+                if len(run) < 2:
+                    continue
+                if ctx.dash_px:
+                    parts.append(self._curve_polyline(run, ctx))
+                    continue
+                vm = VMobject(color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw, fill_opacity=0)
+                vm.set_points_as_corners([[float(p[0]), float(p[1]), 0] for p in run])
+                vm.set_z_index(ctx.zz)
+                parts.append(vm)
+            return VGroup(*parts, name=elem.name) if parts else None
         if len(locus.points) < 2:
             return None
         if ctx.dash_px:

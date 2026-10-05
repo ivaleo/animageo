@@ -1,0 +1,991 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "triangle_chain",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "triangle_chain",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_BC": {
+        "id": "op_BC",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "BC"
+          }
+        ]
+      },
+      "op_CA": {
+        "id": "op_CA",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "CA"
+          }
+        ]
+      },
+      "op_ha": {
+        "id": "op_ha",
+        "op": "triangle.altitude",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "side": {
+            "kind": "ref",
+            "elementId": "BC"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "altitude",
+            "elementId": "ha"
+          },
+          {
+            "slot": "foot",
+            "elementId": "Ha"
+          }
+        ]
+      },
+      "op_hb": {
+        "id": "op_hb",
+        "op": "triangle.altitude",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "side": {
+            "kind": "ref",
+            "elementId": "CA"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "altitude",
+            "elementId": "hb"
+          },
+          {
+            "slot": "foot",
+            "elementId": "Hb"
+          }
+        ]
+      },
+      "op_X": {
+        "id": "op_X",
+        "op": "intersect.line_line",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "ha"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "hb"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "X"
+          }
+        ]
+      },
+      "op_H": {
+        "id": "op_H",
+        "op": "triangle.orthocenter",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "H"
+          }
+        ]
+      },
+      "op_u": {
+        "id": "op_u",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "H"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "u"
+          }
+        ]
+      },
+      "op_w": {
+        "id": "op_w",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "X"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "H"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "w"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "BC": {
+        "id": "BC",
+        "type": "line",
+        "displayName": "",
+        "producer": {
+          "operationId": "op_BC",
+          "slot": "line"
+        }
+      },
+      "CA": {
+        "id": "CA",
+        "type": "line",
+        "displayName": "",
+        "producer": {
+          "operationId": "op_CA",
+          "slot": "line"
+        }
+      },
+      "ha": {
+        "id": "ha",
+        "type": "segment",
+        "displayName": "ha",
+        "producer": {
+          "operationId": "op_ha",
+          "slot": "altitude"
+        }
+      },
+      "Ha": {
+        "id": "Ha",
+        "type": "point",
+        "displayName": "Ha",
+        "producer": {
+          "operationId": "op_ha",
+          "slot": "foot"
+        }
+      },
+      "hb": {
+        "id": "hb",
+        "type": "segment",
+        "displayName": "hb",
+        "producer": {
+          "operationId": "op_hb",
+          "slot": "altitude"
+        }
+      },
+      "Hb": {
+        "id": "Hb",
+        "type": "point",
+        "displayName": "Hb",
+        "producer": {
+          "operationId": "op_hb",
+          "slot": "foot"
+        }
+      },
+      "X": {
+        "id": "X",
+        "type": "point",
+        "displayName": "X",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "point"
+        }
+      },
+      "H": {
+        "id": "H",
+        "type": "point",
+        "displayName": "H",
+        "producer": {
+          "operationId": "op_H",
+          "slot": "point"
+        }
+      },
+      "u": {
+        "id": "u",
+        "type": "segment",
+        "displayName": "u",
+        "producer": {
+          "operationId": "op_u",
+          "slot": "segment"
+        }
+      },
+      "w": {
+        "id": "w",
+        "type": "segment",
+        "displayName": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "segment"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          3
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      }
+    },
+    "appearance": {
+      "BC": {
+        "visible": false
+      },
+      "CA": {
+        "visible": false
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "acute",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 3.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "BC": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "CA": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.9999999999999996,
+              2.0000000000000004
+            ],
+            "dir": [
+              -0.7071067811865476,
+              0.7071067811865476
+            ]
+          }
+        },
+        "H": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "Ha": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          }
+        },
+        "Hb": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.9999999999999998,
+            "y": 2.0
+          }
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "ha": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              3.0
+            ],
+            "b": [
+              1.0,
+              0.0
+            ],
+            "length": 3.0
+          }
+        },
+        "hb": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              1.9999999999999998,
+              2.0
+            ],
+            "length": 2.82842712474619
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              3.0
+            ],
+            "b": [
+              1.0,
+              1.0
+            ],
+            "length": 2.0
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              1.0
+            ],
+            "b": [
+              1.0,
+              1.0
+            ],
+            "length": 0.0
+          }
+        }
+      },
+      "checks": {
+        "op_BC:through_a": "passed",
+        "op_BC:through_b": "passed",
+        "op_CA:through_a": "passed",
+        "op_CA:through_b": "passed",
+        "op_H:perpendicular": "passed",
+        "op_X:incident_both": "passed",
+        "op_ha:perpendicular": "passed",
+        "op_ha:on_carrier": "passed",
+        "op_hb:perpendicular": "passed",
+        "op_hb:on_carrier": "passed",
+        "op_u:ends": "passed",
+        "op_w:ends": "passed"
+      }
+    },
+    {
+      "name": "acute_tall",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            1.5,
+            5
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.5,
+            "y": 5.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "BC": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "CA": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              3.2,
+              1.5999999999999999
+            ],
+            "dir": [
+              -0.4472135954999579,
+              0.8944271909999159
+            ]
+          }
+        },
+        "H": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.5,
+            "y": 0.75
+          }
+        },
+        "Ha": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.5,
+            "y": 0.0
+          }
+        },
+        "Hb": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.2,
+            "y": 1.6
+          }
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.5,
+            "y": 0.75
+          }
+        },
+        "ha": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.5,
+              5.0
+            ],
+            "b": [
+              1.5,
+              0.0
+            ],
+            "length": 5.0
+          }
+        },
+        "hb": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              3.2,
+              1.6
+            ],
+            "length": 3.577708763999664
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.5,
+              5.0
+            ],
+            "b": [
+              1.5,
+              0.75
+            ],
+            "length": 4.25
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.5,
+              0.75
+            ],
+            "b": [
+              1.5,
+              0.75
+            ],
+            "length": 0.0
+          }
+        }
+      },
+      "checks": {
+        "op_BC:through_a": "passed",
+        "op_BC:through_b": "passed",
+        "op_CA:through_a": "passed",
+        "op_CA:through_b": "passed",
+        "op_H:perpendicular": "passed",
+        "op_X:incident_both": "passed",
+        "op_ha:perpendicular": "passed",
+        "op_ha:on_carrier": "passed",
+        "op_hb:perpendicular": "passed",
+        "op_hb:on_carrier": "passed",
+        "op_u:ends": "passed",
+        "op_w:ends": "passed"
+      }
+    },
+    {
+      "name": "obtuse_outside",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -1,
+            1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 1.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "BC": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "CA": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.1538461538461533,
+              0.7692307692307694
+            ],
+            "dir": [
+              -0.9805806756909202,
+              0.19611613513818404
+            ]
+          }
+        },
+        "H": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -5.0
+          }
+        },
+        "Ha": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 0.0
+          }
+        },
+        "Hb": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.15384615384615388,
+            "y": 0.7692307692307693
+          }
+        },
+        "X": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "outside_part",
+          "detail": {
+            "slot": "first"
+          }
+        },
+        "ha": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.0,
+              1.0
+            ],
+            "b": [
+              -1.0,
+              0.0
+            ],
+            "length": 1.0
+          }
+        },
+        "hb": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              0.15384615384615388,
+              0.7692307692307693
+            ],
+            "length": 0.7844645405527362
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.0,
+              1.0
+            ],
+            "b": [
+              -1.0,
+              -5.0
+            ],
+            "length": 6.0
+          }
+        },
+        "w": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "X"
+        }
+      },
+      "checks": {
+        "op_BC:through_a": "passed",
+        "op_BC:through_b": "passed",
+        "op_CA:through_a": "passed",
+        "op_CA:through_b": "passed",
+        "op_H:perpendicular": "passed",
+        "op_ha:perpendicular": "passed",
+        "op_ha:on_carrier": "passed",
+        "op_hb:perpendicular": "passed",
+        "op_hb:on_carrier": "passed",
+        "op_u:ends": "passed"
+      }
+    },
+    {
+      "name": "degenerate",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            2,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "BC": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "CA": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              -1.0,
+              0.0
+            ]
+          }
+        },
+        "H": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "collinear_points"
+        },
+        "Ha": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "Hb": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "X": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "upstream",
+          "cause": "ha"
+        },
+        "ha": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "zero_length"
+        },
+        "hb": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "zero_length"
+        },
+        "u": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "H"
+        },
+        "w": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "ha"
+        }
+      },
+      "checks": {
+        "op_BC:through_a": "passed",
+        "op_BC:through_b": "passed",
+        "op_CA:through_a": "passed",
+        "op_CA:through_b": "passed"
+      }
+    }
+  ]
+}

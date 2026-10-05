@@ -540,15 +540,28 @@ class Vector:
         return np.isclose(self.direction, other.direction).all()
 
 class LocusCurve:
-    """Sampled numeric locus represented as an ordered polyline."""
+    """Sampled numeric locus represented as an ordered polyline.
 
-    def __init__(self, points):
+    ``breaks`` (optional): the indices in ``points`` where a new run starts —
+    the curve is drawn as one polyline per run (a native ``locus`` with gaps
+    where the traced point is not defined). Without breaks it is one polyline.
+    """
+
+    def __init__(self, points, breaks=None):
         pts = np.array(points, dtype=float)
         if pts.ndim == 1:
             pts = pts.reshape((-1, 2))
         self.points = pts
+        self.breaks = sorted(int(i) for i in breaks) if breaks else None
         self.style = StyleProxy()
         self.style['z_index'] = Z_LINE
+
+    def runs(self):
+        """The polylines to draw: ``[points]`` without breaks, else one per run."""
+        if not self.breaks:
+            return [self.points]
+        bounds = [0] + [i for i in self.breaks if 0 < i < len(self.points)] + [len(self.points)]
+        return [self.points[a:b] for a, b in zip(bounds, bounds[1:]) if b > a]
 
     def __repr__(self):
         return f"LocusCurve(n={len(self.points)})"

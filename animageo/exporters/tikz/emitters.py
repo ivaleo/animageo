@@ -604,6 +604,11 @@ def emit_implicitcurve(ctx: TikzContext, elem, labels: List[str]) -> None:
 
 
 def emit_locuscurve(ctx: TikzContext, elem, labels: List[str]) -> None:
+    if getattr(elem.data, "breaks", None):     # a native locus with gaps: one polyline per run
+        opts = stroke_options(ctx, elem)
+        for run in elem.data.runs():
+            _polyline(ctx, opts, run)
+        return
     if len(elem.data.points) < 2:
         return
     _polyline(ctx, stroke_options(ctx, elem), elem.data.points)

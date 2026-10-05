@@ -40,6 +40,15 @@ A text (``text.free``, 1.4 a5) is a classic ``Text`` with one literal
 segment — the filled template — and its top-left corner at the anchor; an
 ``expr`` tree or a template is a constant of the command, like a param.
 
+Registry 1.5: an altitude on a line or ray side receives the side's two
+defining points (``ends`` input, see ``evaluate.side_end_slots``) as extra
+classic inputs. A ``locus`` (``locus.of_point``) is a classic ``LocusCurve``
+of its defined samples with ``breaks`` where a neighbour is ``null`` or two
+neighbours are more than ``0.25·S`` apart (a closed locus joins its last
+sample to the first); its command evaluates the document with the current
+free inputs of the construction (the kernel samples a subgraph, the
+construction has no notion of it).
+
 This module imports ``animageo.geo`` (and numpy) inside its functions only,
 so ``import animageo.native`` stays free of the classic code; ``animageo.geo``
 itself does not need manim.
@@ -52,7 +61,7 @@ from typing import NamedTuple
 
 from ..registry import FREE_INPUT_DEFAULTS, free_slot, registry
 from . import paths
-from .evaluate import _argument_status, _order, number_literal, valid_input
+from .evaluate import _argument_status, _order, number_literal, side_end_slots, valid_input
 from .numeric import scene_scale, tolerances
 from .ops import IMPLEMENTATIONS, OpContext
 from .values import Detailed, Input, Undefined, is_finite_value
@@ -124,7 +133,36 @@ def _fingerprint(obj) -> tuple:
     return tuple(out)
 
 
-def to_classic(type_: str, value, *, sides=None):
+LOCUS_GAP = 0.25     # a locus line breaks between samples farther apart than LOCUS_GAP·S
+
+
+def locus_runs(value, scale: float):
+    """``(points, breaks)`` of a kernel ``locus`` for drawing: the defined
+    samples in order and the indices where a new run starts (a neighbour is
+    ``null`` or farther than ``LOCUS_GAP·scale``); a closed locus whose first
+    and last samples are defined and near repeats the first at the end.
+    ``breaks`` is empty for one run."""
+    gap = LOCUS_GAP * scale
+    samples = value['points']
+    points: list = []
+    breaks: list = []
+    prev = None
+    for p in samples:
+        if p is None:
+            prev = None
+            continue
+        if points and (prev is None or math.hypot(p[0] - prev[0], p[1] - prev[1]) > gap):
+            breaks.append(len(points))
+        points.append([float(p[0]), float(p[1])])
+        prev = p
+    first, last = (samples[0], samples[-1]) if samples else (None, None)
+    if value.get('closed') and first is not None and last is not None and len(points) > 1 \
+            and math.hypot(first[0] - last[0], first[1] - last[1]) <= gap:
+        points.append([float(first[0]), float(first[1])])
+    return points, breaks
+
+
+def to_classic(type_: str, value, *, sides=None, scale=None):
     """A kernel value as a classic data object (``None`` for no value).
 
     The kernel value is cached on the object (``_native``) with a
@@ -135,6 +173,7 @@ def to_classic(type_: str, value, *, sides=None):
     ``sides``: ``(side1, side2)`` vectors of an ``angle`` (default: unit
     vectors along ``a0`` and ``a1``), or ``(vertex, side1, side2)`` of a
     ``right_angle`` mark (without them the mark is a :class:`NativeMark`).
+    ``scale``: the scene scale ``S`` of a ``locus`` (its break distance).
     """
     if value is None:
         return None
@@ -166,6 +205,11 @@ def to_classic(type_: str, value, *, sides=None):
         obj.angles = [float(value['a0']), float(value['a1'])]     # the kernel angles (a full arc stays full)
     elif type_ == 'polyline':
         obj = LocusCurve(value['vertices'])
+    elif type_ == 'locus':
+        points, breaks = locus_runs(value, 1.0 if scale is None else float(scale))
+        if not points:
+            return None
+        obj = LocusCurve(points, breaks=breaks or None)
     elif type_ == 'vector':
         obj = Vector(np.array([value['a'], value['b']], dtype=float))
     elif type_ == 'angle':
@@ -247,6 +291,9 @@ def from_classic(type_: str, obj):
         for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
             length = length + math.hypot(x1 - x0, y1 - y0)
         return {'vertices': [[x, y] for x, y in pts], 'length': length}
+    if type_ == 'locus':     # a moved curve: its points as an open locus of the same samples
+        pts = [[float(x), float(y)] for x, y in obj.points]
+        return {'points': pts, 'range': [0.0, float(max(len(pts) - 1, 0))], 'closed': False}
     if type_ == 'angle':
         from .ops.angle import angle_size, normalize_angle
         (s1x, s1y), (s2x, s2y) = (map(float, v) for v in (obj.side1, obj.side2))
@@ -307,7 +354,8 @@ class _Runner:
     """The function of one :class:`NativeCommand`: classic inputs → kernel → classic outputs."""
 
     def __init__(self, construction, op_name, layout, out_slots, out_types, tol, *,
-                 free_value=None, path_frame=None, tparam_of=None, constants=None, free_input=None):
+                 free_value=None, path_frame=None, tparam_of=None, constants=None, free_input=None,
+                 end_slots=()):
         self.construction = construction
         self.op_name = op_name
         self.layout = layout              # [(slot, is_list, [element type…])]
@@ -319,6 +367,7 @@ class _Runner:
         self.path_frame = path_frame      # (producer op, [(slot, is_list, [type…])]) of the path
         self.tparam_of = tparam_of        # classic name of the on_path output
         self.free_input = free_input      # a free angle input: the document's (or default) input value
+        self.end_slots = end_slots        # slots whose side gets the two defining points (registry 1.5)
         self.__name__ = op_name
 
     def __call__(self, *classic):
@@ -353,6 +402,12 @@ class _Runner:
             if t is None:
                 t = self.free_value['value']
             input_value = {'kind': 'pathParameter', 'value': float(t)}
+        for slot in self.end_slots:
+            a, b = (from_classic('point', classic[i + k]) for k in range(2))
+            i += 2
+            side = args[slot]
+            frame = ((a['x'], a['y']), (b['x'], b['y'])) if a is not None and b is not None else None
+            args[slot] = Input(side.type, side.value, frame)
         result = IMPLEMENTATIONS[self.op_name](args, OpContext(self.tol, input=input_value))
         out = []
         for slot, type_ in zip(self.out_slots, self.out_types):
@@ -364,6 +419,47 @@ class _Runner:
             else:
                 out.append(to_classic(type_, value, sides=_classic_sides(self.op_name, type_, args)))
         return out
+
+
+class _LocusRunner:
+    """The function of a ``locus.of_point`` command: the document evaluated with
+    the current free inputs of the construction, its locus as a classic
+    ``LocusCurve`` (or ``None``)."""
+
+    def __init__(self, construction, doc, names, values_in, element_id, free_ids):
+        self.construction = construction
+        self.doc = doc
+        self.names = names
+        self.values_in = values_in
+        self.element_id = element_id
+        self.free_ids = free_ids          # [(element ID, input kind)] of the free operations
+        self.__name__ = 'locus.of_point'
+
+    def _inputs(self):
+        inputs = {}
+        for el_id, kind in self.free_ids:
+            element = self.construction.objectByName(self.names.by_id[el_id])
+            data = getattr(element, 'data', None)
+            if kind == 'point' and data is not None:
+                value = from_classic('point', data)
+                inputs[el_id] = {'kind': 'point', 'value': [value['x'], value['y']]}
+            elif kind == 'number' and isinstance(data, (int, float)) and not isinstance(data, bool):
+                inputs[el_id] = {'kind': 'number', 'value': float(data)}
+            elif kind == 'pathParameter' and getattr(element, 'tparam', None) is not None:
+                inputs[el_id] = {'kind': 'pathParameter', 'value': float(element.tparam)}
+            elif el_id in self.values_in:
+                inputs[el_id] = self.values_in[el_id]
+        return inputs
+
+    def __call__(self, *classic):
+        from .evaluate import evaluate
+        if any(c is None for c in classic):
+            return [None]
+        ev = evaluate(self.doc, inputs=self._inputs())
+        record = ev.elements[self.element_id]
+        if record['state'] != 'defined':
+            return [None]
+        return [to_classic('locus', record['value'], scale=ev.tolerances.scale)]
 
 
 def _classic_sides(op_name, type_, args):
@@ -419,6 +515,15 @@ def build_construction(doc, *, inputs=None, seed=None):
         if out_type is not None and out_type == elements[el_id]['type']:
             bound.setdefault(producer, []).append(el_id)
 
+    free_ids = []                       # the free inputs a locus command reads back from the construction
+    for op_id in sorted(bound):
+        free = reg.get(ops[op_id]['op']).get('free')
+        if free is None:
+            continue
+        for el_id in bound[op_id]:
+            if elements[el_id]['producer']['slot'] == free_slot(reg.get(ops[op_id]['op'])):
+                free_ids.append((el_id, free['kind']))
+
     created = set()
     deps = op_dependencies(doc)
     cyclic = cyclic_operations(deps)
@@ -460,6 +565,13 @@ def build_construction(doc, *, inputs=None, seed=None):
                 continue
         layout = [(slot, is_list, [elements[r]['type'] for r in ids]) for slot, is_list, ids in resolved.refs]
         input_names = [names.by_id[r] for _slot, _is_list, ids in resolved.refs for r in ids]
+        if op['op'] == 'locus.of_point':
+            for el_id in outs:
+                construction.add(Element(names.by_id[el_id], None))
+                created.add(el_id)
+            runner = _LocusRunner(construction, doc, names, values_in, outs[0], free_ids)
+            construction.add(NativeCommand(op['op'], input_names, [names.by_id[e] for e in outs], op_id, runner))
+            continue
         constants = dict(resolved.params)
         constants.update({slot: number_literal(v) for slot, v in resolved.literals.items()})
         constants.update({slot: Input('expr', ast) for slot, ast in resolved.exprs.items()})
@@ -483,6 +595,21 @@ def build_construction(doc, *, inputs=None, seed=None):
             free_value = values_in[outs[0]]
             construction.add(Element(tparam_of, Point([0.0, 0.0]), tparam=float(free_value['value'])))
             created.add(outs[0])
+        end_slots = []
+        for item in record['inputs']:
+            if not item.get('ends'):
+                continue
+            ids = next((ids for slot, is_list, ids in resolved.refs if slot == item['slot'] and not is_list), None)
+            if not ids:
+                continue
+            side_op = ops[elements[ids[0]]['producer']['operationId']]
+            slots = side_end_slots(elements[ids[0]]['type'], side_op['op'])
+            if slots is None:
+                continue
+            ends = [[r for r in iter_refs(side_op['args'].get(s) or {}) if r in elements] for s in slots]
+            if all(len(e) == 1 and elements[e[0]]['type'] == 'point' for e in ends):
+                end_slots.append(item['slot'])
+                input_names += [names.by_id[e[0]] for e in ends]
         for el_id in outs:              # elements in construction order, as a DSL would create them
             if el_id not in created:
                 construction.add(Element(names.by_id[el_id], None))
@@ -491,7 +618,7 @@ def build_construction(doc, *, inputs=None, seed=None):
                          [elements[e]['producer']['slot'] for e in outs],
                          [elements[e]['type'] for e in outs], tol,
                          free_value=free_value, path_frame=path_frame, tparam_of=tparam_of,
-                         constants=constants, free_input=free_input)
+                         constants=constants, free_input=free_input, end_slots=end_slots)
         construction.add(NativeCommand(op['op'], input_names, [names.by_id[e] for e in outs], op_id, runner))
 
     for el_id in sorted(elements):      # elements of broken operations

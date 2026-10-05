@@ -1,0 +1,487 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "locus_undefined",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "locus_undefined",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_R": {
+        "id": "op_R",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "R"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "R"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_v": {
+        "id": "op_v",
+        "op": "line.perpendicular",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "v"
+          }
+        ]
+      },
+      "op_X": {
+        "id": "op_X",
+        "op": "intersect.line_circle",
+        "args": {
+          "line": {
+            "kind": "ref",
+            "elementId": "v"
+          },
+          "circle": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "X"
+          },
+          {
+            "slot": "second",
+            "elementId": "Y"
+          }
+        ]
+      },
+      "op_g": {
+        "id": "op_g",
+        "op": "locus.of_point",
+        "args": {
+          "trace": {
+            "kind": "ref",
+            "elementId": "Y"
+          },
+          "mover": {
+            "kind": "ref",
+            "elementId": "P"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "locus",
+            "elementId": "g"
+          }
+        ]
+      },
+      "op_f": {
+        "id": "op_f",
+        "op": "locus.of_point",
+        "args": {
+          "trace": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "mover": {
+            "kind": "ref",
+            "elementId": "R"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "locus",
+            "elementId": "f"
+          }
+        ]
+      },
+      "op_n": {
+        "id": "op_n",
+        "op": "locus.of_point",
+        "args": {
+          "trace": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "mover": {
+            "kind": "ref",
+            "elementId": "P"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "locus",
+            "elementId": "n"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "k"
+          }
+        ]
+      },
+      "op_W": {
+        "id": "op_W",
+        "op": "point.divide",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "m": {
+            "kind": "ref",
+            "elementId": "k"
+          },
+          "n": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "W"
+          }
+        ]
+      },
+      "op_u": {
+        "id": "op_u",
+        "op": "locus.of_point",
+        "args": {
+          "trace": {
+            "kind": "ref",
+            "elementId": "W"
+          },
+          "mover": {
+            "kind": "ref",
+            "elementId": "k"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "locus",
+            "elementId": "u"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "R": {
+        "id": "R",
+        "type": "point",
+        "displayName": "R",
+        "producer": {
+          "operationId": "op_R",
+          "slot": "point"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "displayName": "P",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        }
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "displayName": "c",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        }
+      },
+      "v": {
+        "id": "v",
+        "type": "line",
+        "displayName": "v",
+        "producer": {
+          "operationId": "op_v",
+          "slot": "line"
+        }
+      },
+      "X": {
+        "id": "X",
+        "type": "point",
+        "displayName": "X",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "first"
+        }
+      },
+      "Y": {
+        "id": "Y",
+        "type": "point",
+        "displayName": "Y",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "second"
+        }
+      },
+      "g": {
+        "id": "g",
+        "type": "locus",
+        "displayName": "g",
+        "producer": {
+          "operationId": "op_g",
+          "slot": "locus"
+        }
+      },
+      "f": {
+        "id": "f",
+        "type": "locus",
+        "displayName": "f",
+        "producer": {
+          "operationId": "op_f",
+          "slot": "locus"
+        }
+      },
+      "n": {
+        "id": "n",
+        "type": "locus",
+        "displayName": "n",
+        "producer": {
+          "operationId": "op_n",
+          "slot": "locus"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "number",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "number"
+        }
+      },
+      "W": {
+        "id": "W",
+        "type": "point",
+        "displayName": "W",
+        "producer": {
+          "operationId": "op_W",
+          "slot": "point"
+        }
+      },
+      "u": {
+        "id": "u",
+        "type": "locus",
+        "displayName": "u",
+        "producer": {
+          "operationId": "op_u",
+          "slot": "locus"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "R": {
+        "kind": "point",
+        "value": [
+          2,
+          0
+        ]
+      },
+      "P": {
+        "kind": "pathParameter",
+        "value": 0.5
+      },
+      "k": {
+        "kind": "number",
+        "value": 1
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "nulls"
+    },
+    {
+      "name": "nulls_small",
+      "inputs": {
+        "R": {
+          "kind": "point",
+          "value": [
+            1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "upstream",
+      "inputs": {
+        "B": {
+          "kind": "point",
+          "value": [
+            -4,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}
