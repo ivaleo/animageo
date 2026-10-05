@@ -241,3 +241,15 @@ of 3000 objects (the limit; groups of a triangle with its midpoints, medians,
 centroid, a circle, a perpendicular and the medial triangle, all editable)
 imports in 4.0 s against the budget of 30 s; `from_construction` of a scene
 of 300 operations takes 0.1 s against 1 s.
+
+Style witness (`test_native_l5_style_witness.py`, `slow`, manim): ten files
+(the six real ones and four deliberate) are drawn by the classic `loadGGB`
+and by `native.render` of the document with `ggb_style` as
+`appearance.overrides`; the objects that do not translate are hidden in the
+classic drawing. The SVGs are compared by features, not pixels: the multiset
+of strokes (colour, width in pixels, opacity, dash) and fills (colour,
+opacity) of the paths is the same. The witness found that a shape without
+fill (alpha 0) lost its fill keys and was drawn with the default fill of the
+style; `ggb_style` now carries `fill_opacity` 0, and
+`test_native_l5_ggb.py` compares `ggb_style` with the classic
+`elem.ggb_style` key for key.
