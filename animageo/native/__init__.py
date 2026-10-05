@@ -83,7 +83,7 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values',
             'commands.conditions', 'commands.steps', 'timeline', 'steps_timeline', 'render.t', 'render.video',
             'render.frame', 'from_ggb', 'from_construction', 'import_report.v1', 'appearance.hatch',
-            'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document')
+            'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document', 'convert.formula')
 
 
 def has(feature: str) -> bool:
@@ -106,7 +106,8 @@ def has(feature: str) -> bool:
     — :func:`delete` drops the operations it removes from ``steps`` and the
     elements from ``bindings.legacyNames``; ``from_ggb.empty_document`` —
     ``from_ggb(empty_document=True)`` returns a document without operations
-    instead of ``None``)."""
+    instead of ``None``; ``convert.formula`` — the arithmetic of numbers of a
+    ``.ggb`` or a DSL scene is ``number.expression``, ``dsl_map`` version 2)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION

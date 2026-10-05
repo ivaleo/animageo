@@ -1,6 +1,6 @@
 {
  "format": "animageo-dsl-map/v1",
- "mapVersion": 1,
+ "mapVersion": 2,
  "registry": "1.5",
  "commands": {
   "abs_i": {
@@ -8,40 +8,99 @@
    "ggb": [
     "Abs"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "fn": "abs",
+    "args": [
+     {
+      "input": 0
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "abs_m": {
    "factory": "Abs",
    "ggb": [
     "Abs"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "fn": "abs",
+    "args": [
+     {
+      "input": 0
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "add_ii": {
    "factory": "Add",
    "ggb": [
     "Add"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "+",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "add_mi": {
    "factory": "Add",
    "ggb": [
     "Add"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "+",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "add_mm": {
    "factory": "Add",
    "ggb": [
     "Add"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "+",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "add_ms": {
    "factory": "Add",
@@ -49,7 +108,7 @@
     "Add"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "add_pp": {
    "factory": "Add",
@@ -57,7 +116,7 @@
     "Add"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "add_pv": {
    "factory": "Add",
@@ -65,7 +124,7 @@
     "Add"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "add_ss": {
    "factory": "Add",
@@ -73,7 +132,7 @@
     "Add"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "add_vp": {
    "factory": "Add",
@@ -81,7 +140,7 @@
     "Add"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "add_vv": {
    "factory": "Add",
@@ -89,7 +148,7 @@
     "Add"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "affine_ratio_ppp": {
    "factory": "AffineRatio",
@@ -119,7 +178,7 @@
     "AngleSize"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "angle_size_i": {
    "factory": "AngleSize",
@@ -137,7 +196,7 @@
     "AngleSize"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "angular_bisector_ll": {
    "factory": "AngularBisector",
@@ -392,8 +451,13 @@
    "ggb": [
     "Assign"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "input": 0
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "assign_p": {
    "factory": "Assign",
@@ -401,7 +465,7 @@
     "Assign"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "assign_v": {
    "factory": "Assign",
@@ -409,7 +473,7 @@
     "Assign"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "axes_K": {
    "factory": "Axes",
@@ -842,8 +906,18 @@
    "ggb": [
     "Cos"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "fn": "cos",
+    "args": [
+     {
+      "input": 0
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "cpx_to_a": {
    "factory": "CpxTo",
@@ -851,7 +925,7 @@
     "CpxTo"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "cross_ratio_pppp": {
    "factory": "CrossRatio",
@@ -859,7 +933,7 @@
     "CrossRatio"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "cross_vv": {
    "factory": "Cross",
@@ -867,15 +941,33 @@
     "Cross"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "ctan_i": {
    "factory": "Ctan",
    "ggb": [
     "Ctan"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "/",
+    "args": [
+     {
+      "num": 1
+     },
+     {
+      "fn": "tan",
+      "args": [
+       {
+        "input": 0
+       }
+      ]
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "dilate_Fi": {
    "factory": "Dilate",
@@ -1394,31 +1486,70 @@
     "Div"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "div_ii": {
    "factory": "Div",
    "ggb": [
     "Div"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "/",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "div_mi": {
    "factory": "Div",
    "ggb": [
     "Div"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "/",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "div_mm": {
    "factory": "Div",
    "ggb": [
     "Div"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "/",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "div_ms": {
    "factory": "Div",
@@ -1426,7 +1557,7 @@
     "Div"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "div_pi": {
    "factory": "Div",
@@ -1434,7 +1565,7 @@
     "Div"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "div_si": {
    "factory": "Div",
@@ -1442,7 +1573,7 @@
     "Div"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "div_sm": {
    "factory": "Div",
@@ -1450,7 +1581,7 @@
     "Div"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "div_ss": {
    "factory": "Div",
@@ -1458,7 +1589,7 @@
     "Div"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "div_vi": {
    "factory": "Div",
@@ -1466,7 +1597,7 @@
     "Div"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "dot_vv": {
    "factory": "Dot",
@@ -1474,7 +1605,7 @@
     "Dot"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "eccentricity_K": {
    "factory": "Eccentricity",
@@ -3280,7 +3411,7 @@
     "Mult"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "mult_iA": {
    "factory": "Mult",
@@ -3288,23 +3419,49 @@
     "Mult"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "mult_ii": {
    "factory": "Mult",
    "ggb": [
     "Mult"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "*",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "mult_im": {
    "factory": "Mult",
    "ggb": [
     "Mult"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "*",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "mult_ip": {
    "factory": "Mult",
@@ -3312,7 +3469,7 @@
     "Mult"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "mult_is": {
    "factory": "Mult",
@@ -3320,7 +3477,7 @@
     "Mult"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "mult_iv": {
    "factory": "Mult",
@@ -3328,23 +3485,49 @@
     "Mult"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "mult_mi": {
    "factory": "Mult",
    "ggb": [
     "Mult"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "*",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "mult_mm": {
    "factory": "Mult",
    "ggb": [
     "Mult"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "*",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "mult_ms": {
    "factory": "Mult",
@@ -3352,7 +3535,7 @@
     "Mult"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "mult_pi": {
    "factory": "Mult",
@@ -3360,7 +3543,7 @@
     "Mult"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "mult_sm": {
    "factory": "Mult",
@@ -3368,7 +3551,7 @@
     "Mult"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "mult_ss": {
    "factory": "Mult",
@@ -3376,7 +3559,7 @@
     "Mult"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "mult_vi": {
    "factory": "Mult",
@@ -3384,7 +3567,7 @@
     "Mult"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "orthogonal_line_pl": {
    "factory": "OrthogonalLine",
@@ -3860,16 +4043,42 @@
    "ggb": [
     "Pow"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "^",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "pow_mi": {
    "factory": "Pow",
    "ggb": [
     "Pow"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "^",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "pow_si": {
    "factory": "Pow",
@@ -3877,7 +4086,7 @@
     "Pow"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "prove_b": {
    "factory": "Prove",
@@ -4268,8 +4477,18 @@
    "ggb": [
     "Sin"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "fn": "sin",
+    "args": [
+     {
+      "input": 0
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "slope_l": {
    "factory": "Slope",
@@ -4283,8 +4502,18 @@
    "ggb": [
     "Sqrt"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "fn": "sqrt",
+    "args": [
+     {
+      "input": 0
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "sub_AA": {
    "factory": "Sub",
@@ -4292,7 +4521,7 @@
     "Sub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "sub_Aa": {
    "factory": "Sub",
@@ -4300,7 +4529,7 @@
     "Sub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "sub_aA": {
    "factory": "Sub",
@@ -4308,23 +4537,49 @@
     "Sub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "sub_ii": {
    "factory": "Sub",
    "ggb": [
     "Sub"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "-",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "sub_mm": {
    "factory": "Sub",
    "ggb": [
     "Sub"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "-",
+    "args": [
+     {
+      "input": 0
+     },
+     {
+      "input": 1
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "sub_ms": {
    "factory": "Sub",
@@ -4332,7 +4587,7 @@
     "Sub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "sub_pp": {
    "factory": "Sub",
@@ -4340,7 +4595,7 @@
     "Sub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "sub_pv": {
    "factory": "Sub",
@@ -4348,7 +4603,7 @@
     "Sub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "sub_sm": {
    "factory": "Sub",
@@ -4356,7 +4611,7 @@
     "Sub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "sub_ss": {
    "factory": "Sub",
@@ -4364,7 +4619,7 @@
     "Sub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "sub_vv": {
    "factory": "Sub",
@@ -4372,15 +4627,25 @@
     "Sub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "tan_i": {
    "factory": "Tan",
    "ggb": [
     "Tan"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "fn": "tan",
+    "args": [
+     {
+      "input": 0
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "tangent_Kl": {
    "factory": "Tangent",
@@ -4640,7 +4905,7 @@
     "USub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "u_sub_a": {
    "factory": "USub",
@@ -4648,23 +4913,43 @@
     "USub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "u_sub_i": {
    "factory": "USub",
    "ggb": [
     "USub"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "neg",
+    "args": [
+     {
+      "input": 0
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "u_sub_m": {
    "factory": "USub",
    "ggb": [
     "USub"
    ],
-   "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "op": "number.expression",
+   "formula": {
+    "op": "neg",
+    "args": [
+     {
+      "input": 0
+     }
+    ]
+   },
+   "outputs": [
+    "number"
+   ]
   },
   "u_sub_p": {
    "factory": "USub",
@@ -4672,7 +4957,7 @@
     "USub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "u_sub_v": {
    "factory": "USub",
@@ -4680,7 +4965,7 @@
     "USub"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "unit_perpendicular_vector_l": {
    "factory": "UnitPerpendicularVector",
@@ -4744,7 +5029,7 @@
     "Value"
    ],
    "unmapped": "formula_unsupported",
-   "note": "arithmetic of values (number.expression is not built from it)"
+   "note": "arithmetic of points, vectors, angles or segments (number.expression takes numbers only)"
   },
   "vector_ii": {
    "factory": "Vector",
@@ -4813,7 +5098,6 @@
   "measure.angle": "no classic command builds it",
   "measure.polygon_angles": "no classic command builds it",
   "number.angle": "free element: an angle size without a command (GGB angle value, DSL AngleSize Var)",
-  "number.expression": "arithmetic of values is formula_unsupported (no expr tree from classic commands)",
   "number.free": "free element: a number without a command (GGB numeric, DSL Var)",
   "point.at_distance": "no classic command builds it",
   "point.divide": "no classic command builds it",

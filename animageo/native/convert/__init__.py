@@ -240,7 +240,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         for o in d.get('outputs', []):
             diag_outputs.setdefault(o, d)
     built_by_command = {str(getattr(o, 'name', o)) for cmd in constr.commands for o in cmd.outputs}
-    ctx = Context(namespace=ns, prefix='ggb', mode=mode, display=display, bounds=view_bounds(sc['view']))
+    ctx = Context(namespace=ns, prefix='ggb', mode=mode, display=display, bounds=view_bounds(sc['view']),
+                  inline_formulas=True)
     ctx.xml_types = {i['label']: i['type'] for i in infos}
     for label in sc['outputs']:
         if label not in labels:
@@ -363,13 +364,24 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
             e['value_check'] = rec.value_check
             e['native_ids'] = list(rec.native_ids)
         entries.append(e)
-    categorize(entries)
     doc = tr.document
 
     def refs_of(nid):
         el = doc['elements'].get(nid)
         op = doc['operations'].get(el['producer']['operationId']) if el else None
         return [r for arg in (op or {}).get('args', {}).values() if isinstance(arg, dict) for r in iter_refs(arg)]
+    owned = {nid for e in entries for nid in e['native_ids']}
+    for e in entries:
+        if e['status'] == 'translated' and e['info'].get('command') not in macro_names and any(
+                r not in owned for nid in e['native_ids'] for r in refs_of(nid)):
+            # an argument is a command or a formula of no object (a phantom): the document would need
+            # an element no entry carries — not carried, as an expression argument
+            exprs = [x for x in e['info'].get('inputs', []) if x not in labels]
+            e['status'], e['reason'] = 'untranslated', 'formula_unsupported'
+            e['detail'] = ('в выражении есть команда, которой нет в формулах'
+                           if e['info'].get('command') == 'Expression' or not exprs
+                           else f'аргумент задан выражением: {exprs[0]}')
+    categorize(entries)
     settle(entries, refs_of)
     keep = {nid for e in entries if e['category'] in ('editable', 'differs') for nid in e['native_ids']}
     # an editable/differs element produced together with a dropped one keeps only its own element

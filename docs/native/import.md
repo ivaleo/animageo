@@ -37,6 +37,13 @@ A row per classic dispatch key (`strFullCommand`: `midpoint_pp`,
   from the value;
 - a free row `{free: "point" | "angle", value}` — `Point(x, y)` and
   `AngleSize(0.7)` of the DSL with literal arguments;
+- a formula row `{factory, ggb, op: "number.expression", formula, outputs:
+  ["number"]}` (1.10.0a2, `mapVersion` 2) — `formula` is an AST v1 tree
+  (`docs/native/expr.md`) where `{"input": i}` stands for classic input `i`:
+  a number of the document becomes `{"ref": k}` of `refs`, a constant
+  `{"num": v}`; `from_ggb` puts the formula of a nested arithmetic expression
+  into the formula that uses it (`d = (c - 7)^2 / 4` is one
+  `number.expression` with the reference `c`);
 - an unmapped row `{unmapped: reason, note?}` — the reason of the report
   (`no_registry_op`, `formula_unsupported`, `unsupported_signature`); the
   note is English for the table, the report shows a Russian `detail`
@@ -54,22 +61,39 @@ L4; arithmetic of values — `formula_unsupported`; predicates (`AreParallel`,
 …) — `no_registry_op`; intersections with conics, points by numbers —
 `unsupported_signature`.
 
+1.10.0a2 (`native.has("convert.formula")`): the arithmetic of numbers and
+measures — 24 keys (`+ - * / ^`, the opposite, `Abs`, `Sqrt`, `Sin`, `Cos`,
+`Tan`, `Ctan`, a copy) — is `number.expression`. The other 46 keys of
+arithmetic stay `formula_unsupported`: they compute with points, vectors,
+angles or segments (`number.expression` takes numbers only and gives a
+number, not an angle). An argument that is an expression with no object of
+its own — `Circle(A, r/2)`, `Circle(A, Distance(A, B))`, a command inside
+a formula — is `formula_unsupported` with the expression in `detail` (a
+document element of no report entry would be needed). GeoGebra writes
+`sqrt(a)`, `sin(a)` and `2a`, which the classic parser does not take
+(`parse_error`); `Sqrt(a)`, `Sin(a)` and `2*a` translate.
+
 Every op and free row has three cases in `tests/native/test_native_l5_convert.py`
 (1.10.0a2): the general one, another configuration (the next variant of
 each input — for a `byValue` row the classic outputs meet the slots in
 another order, for an indexed row it is the other output) and a degenerate
 one (well-formed inputs in a degenerate configuration: coincident or
 collinear points, parallel lines, a tangency, a zero factor or vector).
-Eight rows have no degenerate configuration the classic can reach, with
+Fourteen rows have no degenerate configuration the classic can reach, with
 the reason (`NO_DEGENERACY`: a circle of radius 0 and a line through one
 point are undefined in the classic; a free point; a locus is never
-compared). In 31 degenerate configurations the classic and the kernel
+compared; a sum, a difference, the opposite, a copy, the sine and the cosine
+are defined for every number). The 24 formula rows have the same three
+cases (a division by zero, the root of a negative number, …). In 35
+degenerate configurations the classic and the kernel
 disagree — at a tangency the classic gives one point and the kernel a
 double one; a zero factor, a zero vector of a ray, a regular polygon on
 coincident points, a semicircle on coincident points, a point on a ray of
 zero length are point-like in the classic and undefined in the kernel; the
 bisectors of parallel lines are undefined in the classic, the kernel gives
-the midline; a flat polygon has a centroid in the classic only. They are
+the midline; a flat polygon has a centroid in the classic only; the classic
+keeps the dimension of a measure (a length plus an area, a length plus a
+number, a cube of a length are undefined there), the kernel has none. They are
 `differs`, never `editable` (`DEGENERATE_DIFFERS`).
 
 ## 2. Keys and IDs

@@ -107,15 +107,19 @@ _KIND_OF_TYPE = {'point': 'point', 'segment': 'segment', 'vector': 'vector', 'li
 def classic_report_value(type_: str, data):
     """The value of a classic data object in report form (through the bridge's
     ``from_classic``); ``{"kind", "value": None}`` — undefined in the classic
-    (an intersection that does not exist); ``None`` when the kind has no form."""
+    (an intersection that does not exist, a number that is ``nan`` or
+    infinite); ``None`` when the kind has no form."""
     if data is None:
         kind = _KIND_OF_TYPE.get(type_)
         return {'kind': kind, 'value': None} if kind else None
     try:
         from ..kernel.bridge import from_classic
-        return native_report_value(type_, from_classic(type_, data))
+        out = native_report_value(type_, from_classic(type_, data))
     except Exception:       # noqa: BLE001 — a classic object of another kind: no value
         return None
+    if out is not None and out['kind'] in ('number', 'angle') and not math.isfinite(out['value']):
+        return {'kind': out['kind'], 'value': None}      # nan, inf: no value, as an undefined one of the kernel
+    return out
 
 
 def _dist(p, q) -> float:

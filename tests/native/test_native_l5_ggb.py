@@ -290,6 +290,55 @@ def test_a_second_definition_of_a_name_is_a_warning():
     assert dup == ['A', 'M', 't1']
 
 
+def _numeric(label, value, exp=None):
+    return (expression(label, exp) if exp else '') + element('numeric', label, extra=f'<value val="{value!r}"/>')
+
+
+def test_arithmetic_of_numbers_is_editable():
+    """``c = a + b``, ``d = (c - 7)^2 / 4``, ``h = r / 2`` of a distance:
+    ``number.expression`` with the inputs as ``refs`` (1.10.0a2); the saved
+    value is checked. (``sqrt(a)``, ``sin(a)`` and ``2a`` as GeoGebra writes
+    them are not parsed by the classic parser: ``parse_error``.)"""
+    body = (_numeric('a', 2.0) + _numeric('b', 3.0) + _numeric('c', 5.0, 'a + b')
+            + _numeric('d', 1.0, '(c - 7)^2 / 4')
+            + point('A', 0.0, 0.0) + point('B', 3.0, 0.0) + command('Distance', ['A', 'B'], ['r'])
+            + _numeric('r', 3.0) + _numeric('h', 1.5, 'r / 2') + _numeric('w', 7.0, 'a * b'))
+    doc, rep = _import(ggb_bytes(body))
+    e = _by_name(rep)
+    assert {n: (x['category'], x.get('reason')) for n, x in e.items()} == {
+        n: ('editable', None) for n in ('a', 'b', 'c', 'd', 'A', 'B', 'r', 'h')} | {'w': ('differs', 'value_mismatch')}
+    op = doc['operations'][doc['elements'][e['c']['native_ids'][0]]['producer']['operationId']]
+    assert op['op'] == 'number.expression'
+    assert [r['elementId'] for r in op['args']['refs']['items']] == [e['a']['native_ids'][0], e['b']['native_ids'][0]]
+    loaded = native.load(doc)
+    moved = native.evaluate(loaded, inputs={e['a']['native_ids'][0]: {'kind': 'number', 'value': 4.0}})
+    assert moved.elements[e['c']['native_ids'][0]]['value']['value'] == pytest.approx(7.0)
+    assert native.has('convert.formula')
+
+
+def test_an_expression_argument_is_not_carried():
+    """A command or a formula inside an argument has no object of its own:
+    ``formula_unsupported`` with the expression in ``detail``; the parts of an
+    arithmetic expression go into one formula (1.10.0a2)."""
+    circle = lambda label, r: element('conic', label, extra=f'<matrix A0="1" A1="1" A2="{-r * r!r}" A3="0" A4="0" A5="0"/>')
+    body = (_numeric('r', 2.0) + point('A', 0.0, 0.0) + point('B', 3.0, 0.0)
+            + command('Circle', ['A', 'r/2'], ['c']) + circle('c', 1.0)
+            + command('Circle', ['A', 'Distance(A, B)'], ['k']) + circle('k', 3.0)
+            + _numeric('d', 9.25, 'Distance(A, B) + (r - 7)^2 / 4')
+            + _numeric('m', 6.25, '(r - 7)^2 / 4'))
+    doc, rep = _import(ggb_bytes(body))
+    e = _by_name(rep)
+    assert {n: (e[n]['category'], e[n]['reason'], e[n].get('detail')) for n in ('c', 'k')} == {
+        'c': ('unsupported', 'formula_unsupported', 'аргумент задан выражением: r/2'),
+        'k': ('unsupported', 'formula_unsupported', 'аргумент задан выражением: Distance(A, B)')}
+    assert (e['d']['category'], e['d']['reason']) == ('unsupported', 'formula_unsupported')
+    assert e['m']['category'] == 'editable'
+    op = doc['operations'][doc['elements'][e['m']['native_ids'][0]]['producer']['operationId']]
+    assert op['args']['expr']['ast'] == {'op': '/', 'args': [
+        {'op': '^', 'args': [{'op': '-', 'args': [{'ref': 0}, {'num': 7.0}]}, {'num': 2.0}]}, {'num': 4.0}]}
+    assert sorted(el['type'] for el in doc['elements'].values()) == ['number', 'number', 'point', 'point']
+
+
 def test_seq_and_steps_from_breakpoints():
     body = (point('A', 0.0, 0.0, extra='<breakpoint val="true"/>') + point('B', 4.0, 0.0)
             + command('Segment', ['A', 'B'], ['s'])

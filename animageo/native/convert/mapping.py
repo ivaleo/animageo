@@ -15,6 +15,11 @@ is one of:
   ``{"pattern": "polygon_sides" | "regular"}``; ``index`` — the classic input
   holding the output number (``base`` 1); ``input: "pathParameter"`` — the
   op is a free point on a path whose parameter is projected from the value;
+- a formula row ``{factory, ggb, op: "number.expression", formula, outputs}``
+  (1.10.0a2, ``mapVersion`` 2): ``formula`` is an AST v1 tree
+  (``docs/native/expr.md``) whose ``{"input": i}`` nodes stand for the
+  classic inputs — a number of the document becomes a ``refs`` item, a
+  constant a ``num``;
 - a free row ``{factory, ggb, free, value}`` (a DSL ``Point(x, y)``);
 - an unmapped row ``{factory, ggb, unmapped: reason, note?}``.
 
@@ -75,6 +80,37 @@ def _op_slots(op: dict) -> tuple[set, set]:
     return ins, outs
 
 
+def _formula_problems(key: str, row: dict) -> list:
+    """Problems of a formula row: the op, the outputs, the inputs it names and
+    the tree with every input as a number."""
+    from ..expr.validate import problems
+    out = []
+    if row.get('op') != 'number.expression':
+        out.append('a formula row builds number.expression')
+    if row.get('outputs') != ['number'] or 'args' in row:
+        out.append('a formula row has outputs ["number"] and no args')
+    arity = len(key.rpartition('_')[2])
+    bad = []
+
+    def fill(tpl):
+        if not isinstance(tpl, dict):
+            bad.append(repr(tpl))
+            return {'num': 1.0}
+        if 'input' in tpl:
+            i = tpl['input']
+            if not (isinstance(i, int) and not isinstance(i, bool) and 0 <= i < arity) or len(tpl) != 1:
+                bad.append(f'input {i!r} of {arity}')
+            return {'num': 1.0}
+        if isinstance(tpl.get('args'), list):
+            return {**tpl, 'args': [fill(a) for a in tpl['args']]}
+        return tpl
+
+    ast = fill(row.get('formula'))
+    out += [f'formula: {b}' for b in bad]
+    out += [f'formula {pointer or "/"}: {message}' for pointer, message in problems(ast, 0)]
+    return out
+
+
 def _slot_ok(slot: str, outs: set, repeated: set) -> bool:
     if slot in outs:
         return True
@@ -128,6 +164,9 @@ def map_problems(data: dict | None = None, *, classic_keys=None, seed: dict | No
             out.append(f'{key}: op {row["op"]} not in the registry')
             continue
         used.add(row['op'])
+        if 'formula' in row:
+            out.extend(f'{key}: {p}' for p in _formula_problems(key, row))
+            continue
         ins, outs = _op_slots(op)
         repeated = {s['slot'] for s in op.get('outputs', ()) if s.get('repeat')}
         args = row.get('args')

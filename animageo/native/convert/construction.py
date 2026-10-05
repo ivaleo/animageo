@@ -92,6 +92,7 @@ class Context:
     appearance: dict = field(default_factory=dict)    # classic name → appearance entry
     bounds: list | None = None
     origin_of: object = None
+    inline_formulas: bool = False                     # a phantom formula goes into the formula that uses it
 
 
 @dataclass
@@ -115,7 +116,8 @@ def _num(v):
 NOTE_DETAILS = {
     'coordinates, conics and functions: the ops come with stage L4':
         'коники, функции и координаты пока не переносятся в редактируемый чертёж',
-    'arithmetic of values (number.expression is not built from it)': 'вычисление по значениям пока не переносится',
+    'arithmetic of points, vectors, angles or segments (number.expression takes numbers only)':
+        'вычисление с точками, векторами, углами или отрезками пока не переносится',
     'a check or a boolean, not a construction': 'проверка или логическое значение, а не построение',
     'the registry intersects lines, circles and sectors only': 'пересекаются только прямые, окружности и дуги',
     'this kind of object or argument is not transformed by the op': 'такой объект или аргумент операция не принимает',
@@ -334,6 +336,66 @@ class _Builder:
             raise _Untranslated('formula_unsupported', f'аргумент {inp!r}')
         return _num(value)
 
+    def phantom_formula(self, inp):
+        """``(ast, refs)`` of the ``number.expression`` of phantom ``inp`` when
+        ``ctx.inline_formulas`` (``from_ggb``: an arithmetic expression of a
+        ``.ggb`` is one formula, its parts are no objects), else ``None``."""
+        if not (self.ctx.inline_formulas and isinstance(inp, str) and KeyMaker.is_phantom(inp)):
+            return None
+        eid = self.element_of.get(inp)
+        el = self.doc['elements'].get(eid) if eid else None
+        op = self.doc['operations'].get(el['producer']['operationId']) if el else None
+        if op is None or op['op'] != 'number.expression':
+            return None
+        return op['args']['expr']['ast'], op['args']['refs']['items']
+
+    def formula_args(self, template, inputs):
+        """The ``expr`` and ``refs`` of ``number.expression`` from the formula of a
+        row: ``{"input": i}`` becomes ``{"ref": k}`` of the element of input ``i``
+        (a number of the document, one ``refs`` item per element), ``{"num": v}``
+        of a constant input or the formula of a phantom input
+        (:meth:`phantom_formula`)."""
+        from ..expr.validate import problems
+        refs: list = []
+        index: dict = {}
+
+        def ref_to(arg):
+            eid = arg['elementId']
+            if self.doc['elements'][eid]['type'] != 'number':
+                raise _Untranslated('unsupported_signature', 'аргумент вычисления — не число')
+            if eid not in index:
+                index[eid] = len(refs)
+                refs.append(arg)
+            return {'ref': index[eid]}
+
+        def inlined(ast, items):
+            if 'ref' in ast:
+                return ref_to(items[ast['ref']])
+            if 'args' in ast:
+                return {**{k: v for k, v in ast.items() if k != 'args'}, 'args': [inlined(a, items) for a in ast['args']]}
+            return dict(ast)
+
+        def node(tpl):
+            if 'input' in tpl:
+                i = tpl['input']
+                if i >= len(inputs):
+                    raise _Untranslated('unsupported_signature', 'не хватает аргументов')
+                phantom = self.phantom_formula(inputs[i])
+                if phantom is not None:
+                    return inlined(*phantom)
+                arg = self.arg_for(inputs[i], 'refs', set())
+                if arg['kind'] == 'number':
+                    return {'num': arg['value']}
+                return ref_to(arg)
+            if 'args' in tpl:
+                return {**{k: v for k, v in tpl.items() if k != 'args'}, 'args': [node(a) for a in tpl['args']]}
+            return dict(tpl)
+
+        ast = node(template)
+        if problems(ast, len(refs)):
+            raise _Untranslated('formula_unsupported', 'выражение выходит за пределы формул (expr.md §2)')
+        return {'expr': {'kind': 'expr', 'ast': ast}, 'refs': {'kind': 'list', 'items': refs}}
+
     def segment_ends(self, inp):
         eid = self.element_of.get(inp) if isinstance(inp, str) else None
         if eid is None:
@@ -429,8 +491,10 @@ class _Builder:
         record = self.reg.ops[op_name]
         params = {p['slot'] for p in record.get('params', ())}
         args = {}
-        spec = row['args']
-        if isinstance(spec, dict):
+        spec = row.get('args', [])
+        if 'formula' in row:
+            args = self.formula_args(row['formula'], inputs)
+        elif isinstance(spec, dict):
             args[spec['variadic']] = {'kind': 'list', 'items': [self.arg_for(i, spec['variadic'], params)
                                                                 for i in inputs]}
         else:

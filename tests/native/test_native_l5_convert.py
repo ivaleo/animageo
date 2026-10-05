@@ -118,6 +118,10 @@ OVERRIDE = {
     'tangent_pci': 'X = Tangent(Point(6, 1), Circle(Point(1, 1), 2.5), 2)',
     'polygon_ppi': 'X = Polygon(Point(0, 0), Point(1, 0), 5)',
     'locus_pp': 'k = Circle(Point(0, 0), 2)\nM = Point(k)\nT = Midpoint(M, Point(3, 0))\nX = Locus(T, M)',
+    # the classic np.abs of an int is an int64 the classic cannot keep (undefined): a float
+    'abs_i': 'X = Abs(-2.5)',
+    # the classic adds a number to a dimensionless measure only (a ratio of lengths)
+    'add_mi': 'X = Add(Div(Distance(Point(0, 0), Point(1.5, 0)), Distance(Point(1, 1), Point(3, 2))), 2)',
 }
 # a locus is a curve: its value is not compared (decision 12 — differs, value_unchecked)
 UNCHECKED_ROWS = {'locus_pp'}
@@ -209,6 +213,9 @@ OTHER = {
     'tangent_pci': 'X = Tangent(Point(-3, 4), Circle(Point(0, 0), 2), 2)',
     'polygon_ppi': 'X = Polygon(Point(2, 1), Point(-1, 0), 7)',
     'locus_pp': 'k = Circle(Point(1, 1), 3)\nM = Point(k)\nT = Midpoint(M, Point(-2, 0))\nX = Locus(T, M)',
+    'abs_i': 'X = Abs(3.5)',
+    'add_mi': 'X = Add(Div(Distance(Point(1, 1), Point(3, 2)), Distance(Point(0, 0), Point(1.5, 0))), -3)',
+    'pow_mi': 'X = Pow(Distance(Point(1, 1), Point(3, 2)), 2)',     # the classic squares a measure only
 }
 # the rows outside the generator: (general, another configuration)
 OWN_SCENES = {
@@ -231,8 +238,28 @@ _ZM = 'Distance(Point(2, 2), Point(2, 2))'
 _TOUCH = 'Point(-5, 2), Point(5, 2)'                                  # a line touching _K at (0, 2)
 _FAR = 'Line(Point(-5, 9), Point(5, 9))'
 _PAR = 'Point(0, 2), Point(4, 2)'                                     # parallel to _LX
+_D = 'Distance(Point(0, 0), Point(1.5, 0))'
 
 DEGENERATE = {
+    # arithmetic (number.expression, 1.10.0a2): a zero, a pole, a domain, the dimension guard of the classic
+    'abs_i': 'X = Abs(0.0)',
+    'abs_m': f'X = Abs({_ZM})',
+    'add_mi': f'X = Add({_D}, 2)',
+    'add_mm': f'X = Add({_D}, Area({_TRI}))',
+    'ctan_i': 'X = Ctan(0)',
+    'div_ii': 'X = Div(2, 0)',
+    'div_mi': f'X = Div({_D}, 0)',
+    'div_mm': f'X = Div({_D}, {_ZM})',
+    'mult_ii': 'X = Mult(0, 3)',
+    'mult_im': f'X = Mult(2, {_ZM})',
+    'mult_mi': f'X = Mult({_ZM}, 2)',
+    'mult_mm': f'X = Mult({_ZM}, {_D})',
+    'pow_ii': 'X = Pow(0, -1)',
+    'pow_mi': f'X = Pow({_D}, 3)',
+    'sqrt_i': 'X = Sqrt(-1)',
+    'sub_mm': f'X = Sub({_D}, Area({_TRI}))',
+    'tan_i': 'X = Tan(1.5707963267948966)',
+    'u_sub_m': f'X = USub({_ZM})',
     'angle_ppp': 'X = Angle(Point(4, 1), Point(4, 1), Point(1, 3))',
     'angle_size_i': 'X = AngleSize(0)',
     'angular_bisector_ll': f'X1, X2 = AngularBisector({_LX}, Line({_PAR}))',
@@ -378,6 +405,12 @@ NO_DEGENERACY = {
     'point_l': 'a line through two coincident points is undefined in the classic, so Point(line) never gets one',
     'point_ii': 'a free point has no degenerate configuration',
     'locus_pp': 'a locus is never compared (decision 12): differs with value_unchecked in every configuration',
+    'add_ii': 'a sum of two numbers is defined for every pair',
+    'sub_ii': 'a difference of two numbers is defined for every pair',
+    'u_sub_i': 'the opposite of a number is defined for every number',
+    'assign_i': 'a copy of a number is defined for every number',
+    'sin_i': 'the sine is defined for every number',
+    'cos_i': 'the cosine is defined for every number',
 }
 # Degenerate configurations where the classic and the kernel disagree. They are
 # reported as differs — never editable — so «zero falsely editable» holds:
@@ -393,6 +426,9 @@ DEGENERATE_DIFFERS = {
     'intersect_cl', 'intersect_cli', 'intersect_cr', 'intersect_cri', 'intersect_cs', 'intersect_csi',
     'intersect_lc', 'intersect_lci', 'intersect_rc', 'intersect_rci', 'intersect_sc', 'intersect_sci',
     'point_r', 'polygon_ppi', 'ray_pp', 'ray_pv', 'semicircle_pp', 'tangent_pc', 'tangent_pci',
+    # the classic keeps the dimension of a measure: a sum of a length and an area, a length
+    # plus a number, a cube of a length are undefined there; the kernel has no dimension
+    'add_mi', 'add_mm', 'pow_mi', 'sub_mm',
 }
 
 
@@ -447,3 +483,48 @@ def test_every_row_on_a_degenerate_configuration(key):
         assert (e['category'] == 'editable') == (e['value_check'] == 'passed'), e
     differs = any(e['category'] == 'differs' for e in outs)
     assert differs == (key in DEGENERATE_DIFFERS), outs
+
+
+# ── arithmetic of numbers: number.expression (item 9 of stage 3, 1.10.0a2) ──
+
+FORMULA_ROWS = {'abs_i', 'abs_m', 'add_ii', 'add_mi', 'add_mm', 'assign_i', 'cos_i', 'ctan_i', 'div_ii', 'div_mi',
+                'div_mm', 'mult_ii', 'mult_im', 'mult_mi', 'mult_mm', 'pow_ii', 'pow_mi', 'sin_i', 'sqrt_i',
+                'sub_ii', 'sub_mm', 'tan_i', 'u_sub_i', 'u_sub_m'}
+
+
+def test_arithmetic_of_numbers_is_a_number_expression():
+    rows = dsl_map_rows()
+    assert {k for k, r in rows.items() if r.get('op') == 'number.expression'} == FORMULA_ROWS
+    assert all('formula' in rows[k] for k in FORMULA_ROWS)
+    left = {k for k, r in rows.items() if r.get('unmapped') == 'formula_unsupported'}
+    assert len(left) == 70 - len(FORMULA_ROWS)
+    assert all(set(k.rpartition('_')[2]) & set('psvAa') for k in left), left
+
+
+def dsl_map_rows():
+    from animageo.native.convert import dsl_map
+    return dsl_map().commands
+
+
+def test_a_formula_refers_to_its_inputs():
+    code = 'r = Distance(Point(0, 0), Point(3, 0))\nX = Mult(r, 2)\nY = Mult(Sqrt(X), USub(r))'
+    doc, rep = native.from_construction(_constr(code), id_namespace=NS, mode='partial')
+    e = _by_name(rep)
+    assert all(x['category'] == 'editable' for x in rep['elements'])
+    x_op = doc['operations'][doc['elements'][e['X']['native_ids'][0]]['producer']['operationId']]
+    assert x_op['op'] == 'number.expression'
+    assert x_op['args']['expr'] == {'kind': 'expr', 'ast': {'op': '*', 'args': [{'ref': 0}, {'num': 2.0}]}}
+    assert x_op['args']['refs'] == {'kind': 'list', 'items': [{'kind': 'ref', 'elementId': e['r']['native_ids'][0]}]}
+    loaded = native.load(doc)
+    ev = native.evaluate(loaded)
+    assert ev.elements[e['Y']['native_ids'][0]]['value']['value'] == pytest.approx(-3 * 6 ** 0.5)
+    # the formula follows its input: move the end of the distance
+    ends = [eid for eid, inp in doc['inputs'].items() if inp['kind'] == 'point']
+    moved = native.evaluate(loaded, inputs={ends[1]: {'kind': 'point', 'value': [5.0, 0.0]}})
+    assert moved.elements[e['X']['native_ids'][0]]['value']['value'] == pytest.approx(10.0)
+
+
+def test_a_formula_past_the_limits_is_not_translated():
+    doc, rep = native.from_construction(_constr('X = Pow(2, 100)'), id_namespace=NS, mode='partial')
+    e = _by_name(rep)['X']
+    assert (e['category'], e['reason']) == ('unsupported', 'formula_unsupported')

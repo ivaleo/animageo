@@ -13,9 +13,13 @@ is to be revisited.
   `formula_unsupported` (arithmetic of values: `number.expression` is not
   built from classic commands), 41 `unsupported_signature` (the op exists, the
   argument kinds do not: intersections with conics, points by numbers).
+  1.10.0a2: 24 of the 70 — the arithmetic of numbers and measures — are
+  formula rows of `number.expression` (`mapVersion` 2, `docs/native/import.md`
+  §1); 46 stay `formula_unsupported` (points, vectors, angles, segments).
 - 38 registry ops have no classic key (`opsWithoutClassic`): marks, triangle
   centres and lines the classic has no command for, `text.free`,
-  `number.expression`, the free inputs.
+  `number.expression`, the free inputs (37 in 1.10.0a2: `number.expression`
+  has formula rows).
 - The web seed (60 GGB command names of `headless/translate.py`) is fully
   covered by the rows (`map_problems(seed=…) == []`).
 - The classic parser on what it does not know: an unknown command — a
