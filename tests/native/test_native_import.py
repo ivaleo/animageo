@@ -124,6 +124,11 @@ LAZY_ALLOWED = {
     # backend='tex' loads animageo.ui (manim) on purpose, inside a function
     'animageo/native/labels/layout.py': (GEO, 'animageo.labels', 'animageo.label_placement', 'animageo.style',
                                          'animageo.export_layout', 'animageo.ui', 'numpy'),
+    # 1.10.0a1 (L5): the translator reads the classic graph and runs the classic .ggb parser inside its functions
+    'animageo/native/convert/__init__.py': (GEO, 'animageo.parsers'),
+    'animageo/native/convert/construction.py': (GEO,),
+    'animageo/native/convert/mapping.py': (GEO,),
+    'animageo/native/convert/style.py': ('animageo.style',),
 }
 
 

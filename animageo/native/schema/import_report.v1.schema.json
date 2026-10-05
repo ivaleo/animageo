@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://animageo.ru/schema/import_report.v1.json",
+  "title": "animageo.import_report v1",
+  "description": "Report of the .ggb import (animageo.native.from_ggb): what became editable, what is only a picture, what is not supported (with its closure) and what was carried over with a difference. Master copy; it is the draft of the web (plan W6, section 0, item 1) with additions only (mapVersion, warnings, signature, detail, delta, label, ggb_style, hidden, layer, dropped names, more reasons, the dynamic_color kind), except one rule: a translated dependent object whose value cannot be checked is differs with value_check not_checked and reason value_unchecked (decision 12). Every object of the file is in exactly one entry of elements; the rules not written here (the summary counts the entries, depends_on names entries, closure is exactly the dependents of unsupported objects, a native element belongs to one object, native_ids of editable and differs are in the candidate document) are checked by animageo.native.convert.report_problems.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "library", "registry", "source", "summary", "elements", "dropped", "document_hash"],
+  "properties": {
+    "format": {"const": "animageo.import_report"},
+    "version": {"const": 1},
+    "library": {"type": "string", "minLength": 1, "maxLength": 40, "description": "version of animageo that made the report"},
+    "registry": {"type": "string", "minLength": 1, "maxLength": 16, "description": "operation registry version of the candidate document"},
+    "mapVersion": {"type": "integer", "minimum": 1, "description": "version of the GGB command → operation table (convert/dsl_map.json)"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "size", "sha256", "objects"],
+      "properties": {
+        "name": {"type": "string", "maxLength": 255},
+        "size": {"type": "integer", "minimum": 0},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "ggb_version": {"type": ["string", "null"], "maxLength": 40},
+        "app": {"type": ["string", "null"], "maxLength": 40, "description": "classic | geometry | graphing | 3d | …"},
+        "objects": {"type": "integer", "minimum": 0, "maximum": 3000}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["editable", "picture", "unsupported", "closure", "differs"],
+      "properties": {
+        "editable": {"type": "integer", "minimum": 0},
+        "picture": {"type": "integer", "minimum": 0},
+        "unsupported": {"type": "integer", "minimum": 0},
+        "closure": {"type": "integer", "minimum": 0},
+        "differs": {"type": "integer", "minimum": 0}
+      }
+    },
+    "elements": {
+      "type": "array",
+      "maxItems": 3000,
+      "items": {"$ref": "#/$defs/element"}
+    },
+    "dropped": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "count"],
+        "properties": {
+          "kind": {"enum": ["script", "animation", "conditional_visibility", "dynamic_color", "layers", "3d", "spreadsheet", "cas", "image"]},
+          "count": {"type": "integer", "minimum": 1},
+          "names": {"type": "array", "maxItems": 50, "items": {"type": "string", "minLength": 1, "maxLength": 200}, "description": "objects that carried it (the first 50); none — a file-level item (global script, CAS cell)"}
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code"],
+        "properties": {
+          "code": {"type": "string", "minLength": 1, "maxLength": 60},
+          "ggb_name": {"type": "string", "minLength": 1, "maxLength": 200},
+          "detail": {"type": "string", "maxLength": 500}
+        }
+      }
+    },
+    "document_hash": {"type": ["string", "null"], "maxLength": 80, "description": "content_hash of the candidate document; null — no candidate (nothing to carry over)"}
+  },
+  "$defs": {
+    "element": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ggb_name", "ggb_type", "category", "native_ids", "depends_on", "value_check"],
+      "properties": {
+        "ggb_name": {"type": "string", "minLength": 1, "maxLength": 200},
+        "ggb_type": {"type": "string", "minLength": 1, "maxLength": 40},
+        "command": {"type": ["string", "null"], "maxLength": 80, "description": "GGB command name; none — a free object or an expression"},
+        "signature": {"type": "string", "minLength": 1, "maxLength": 80, "description": "classic signature key of the command (midpoint_pp, …)"},
+        "description": {"type": ["string", "null"], "maxLength": 300, "description": "caption of the «Все объекты» row (in Russian); filled by the web"},
+        "category": {"enum": ["editable", "picture", "unsupported", "closure", "differs"]},
+        "reason": {
+          "enum": [
+            null, "no_registry_op", "random_point", "formula_unsupported", "dynamic_topology", "style_only",
+            "script", "3d", "cas", "spreadsheet", "latex_macros", "fixed_text", "web_capability_missing",
+            "depends_on_unsupported", "value_mismatch", "image", "unsupported_signature", "list", "macro",
+            "ui_object", "parse_error", "slot_ambiguous", "value_unchecked"
+          ]
+        },
+        "detail": {"type": "string", "maxLength": 300, "description": "what exactly is missing (in Russian)"},
+        "native_ids": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 80}, "uniqueItems": true},
+        "depends_on": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 200}, "uniqueItems": true},
+        "value_check": {"enum": ["passed", "failed", "not_checked"]},
+        "ggb_value": {"description": "value from the GGB XML: {kind: point, value: [x, y]}, {kind: number|angle, value} (an angle in radians; range minor | reflex — GGB shows it within 0–180° or 180–360°, native keeps the counter-clockwise size), {kind: line, value: [a, b, c]} (normalised coefficients, also of a ray and of a segment not between two points), {kind: segment, value: [[x, y], [x, y]]} (a segment between two points), {kind: circle, value: {center, radius}} (also of an arc and a sector), {kind: conic, value: [A0…A5]}, {kind: polygon, value: [[x, y], …]}, {kind: text, text, anchor: [x, y] | null}"},
+        "native_value": {"description": "value computed by native.evaluate in the same report form"},
+        "delta": {"type": ["number", "null"], "minimum": 0, "description": "distance between ggb_value and native_value (differs)"},
+        "label": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["visible", "mode"],
+          "properties": {
+            "visible": {"type": "boolean"},
+            "mode": {"enum": ["none", "name", "value", "name_value", "caption"]},
+            "caption": {"type": "string", "maxLength": 500}
+          }
+        },
+        "ggb_style": {"type": "object", "description": "keys of appearance.overrides converted from the GGB style (colours 6-digit hex); the document does not carry them"},
+        "hidden": {"const": true, "description": "the object is hidden in GGB (the document carries appearance.visible = false)"},
+        "layer": {"type": "integer", "description": "GGB layer other than 0 (dropped: layers)"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"category": {"enum": ["unsupported", "closure"]}}},
+          "then": {"required": ["reason"], "properties": {"reason": {"type": "string"}, "native_ids": {"maxItems": 0}}}
+        },
+        {
+          "if": {"properties": {"category": {"const": "closure"}}},
+          "then": {"properties": {"depends_on": {"minItems": 1}}}
+        },
+        {
+          "if": {"properties": {"category": {"enum": ["editable", "differs"]}}},
+          "then": {"properties": {"native_ids": {"minItems": 1}}}
+        },
+        {
+          "if": {"properties": {"category": {"const": "differs"}}},
+          "then": {"required": ["reason"], "properties": {"value_check": {"enum": ["failed", "not_checked"]}}}
+        },
+        {
+          "if": {"properties": {"category": {"const": "differs"}, "value_check": {"const": "not_checked"}}},
+          "then": {"properties": {"reason": {"const": "value_unchecked"}}}
+        },
+        {
+          "if": {"properties": {"category": {"const": "editable"}}},
+          "then": {"properties": {"value_check": {"enum": ["passed", "not_checked"]}}}
+        }
+      ]
+    }
+  }
+}

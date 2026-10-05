@@ -1,0 +1,4841 @@
+{
+ "format": "animageo-dsl-map/v1",
+ "mapVersion": 1,
+ "registry": "1.5",
+ "commands": {
+  "abs_i": {
+   "factory": "Abs",
+   "ggb": [
+    "Abs"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "abs_m": {
+   "factory": "Abs",
+   "ggb": [
+    "Abs"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "add_ii": {
+   "factory": "Add",
+   "ggb": [
+    "Add"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "add_mi": {
+   "factory": "Add",
+   "ggb": [
+    "Add"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "add_mm": {
+   "factory": "Add",
+   "ggb": [
+    "Add"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "add_ms": {
+   "factory": "Add",
+   "ggb": [
+    "Add"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "add_pp": {
+   "factory": "Add",
+   "ggb": [
+    "Add"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "add_pv": {
+   "factory": "Add",
+   "ggb": [
+    "Add"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "add_ss": {
+   "factory": "Add",
+   "ggb": [
+    "Add"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "add_vp": {
+   "factory": "Add",
+   "ggb": [
+    "Add"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "add_vv": {
+   "factory": "Add",
+   "ggb": [
+    "Add"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "affine_ratio_ppp": {
+   "factory": "AffineRatio",
+   "ggb": [
+    "AffineRatio"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "angle_ppp": {
+   "factory": "Angle",
+   "ggb": [
+    "Angle"
+   ],
+   "op": "angle.by_points",
+   "args": [
+    "a",
+    "vertex",
+    "b"
+   ],
+   "outputs": [
+    "angle"
+   ]
+  },
+  "angle_size_A": {
+   "factory": "AngleSize",
+   "ggb": [
+    "AngleSize"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "angle_size_i": {
+   "factory": "AngleSize",
+   "ggb": [
+    "AngleSize"
+   ],
+   "free": "angle",
+   "value": [
+    0
+   ]
+  },
+  "angle_size_ppp": {
+   "factory": "AngleSize",
+   "ggb": [
+    "AngleSize"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "angular_bisector_ll": {
+   "factory": "AngularBisector",
+   "ggb": [
+    "AngularBisector",
+    "AngleBisector"
+   ],
+   "op": "line.angle_bisectors_of_lines",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": {
+    "byValue": [
+     "internal",
+     "external"
+    ]
+   }
+  },
+  "angular_bisector_ppp": {
+   "factory": "AngularBisector",
+   "ggb": [
+    "AngularBisector",
+    "AngleBisector"
+   ],
+   "op": "line.angle_bisector",
+   "args": [
+    "a",
+    "vertex",
+    "b"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "angular_bisector_ss": {
+   "factory": "AngularBisector",
+   "ggb": [
+    "AngularBisector",
+    "AngleBisector"
+   ],
+   "op": "line.angle_bisectors_of_lines",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": {
+    "byValue": [
+     "internal",
+     "external"
+    ]
+   }
+  },
+  "arc_cpp": {
+   "factory": "Arc",
+   "ggb": [
+    "Arc"
+   ],
+   "op": "arc.on_circle",
+   "args": [
+    "circle",
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "arc"
+   ]
+  },
+  "are_collinear_ppp": {
+   "factory": "AreCollinear",
+   "ggb": [
+    "AreCollinear"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_complementary_aa": {
+   "factory": "AreComplementary",
+   "ggb": [
+    "AreComplementary"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_concurrent_lll": {
+   "factory": "AreConcurrent",
+   "ggb": [
+    "AreConcurrent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_concyclic_pppp": {
+   "factory": "AreConcyclic",
+   "ggb": [
+    "AreConcyclic"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_congruent_aa": {
+   "factory": "AreCongruent",
+   "ggb": [
+    "AreCongruent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_congruent_ss": {
+   "factory": "AreCongruent",
+   "ggb": [
+    "AreCongruent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_equal_mi": {
+   "factory": "AreEqual",
+   "ggb": [
+    "AreEqual"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_equal_mm": {
+   "factory": "AreEqual",
+   "ggb": [
+    "AreEqual"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_equal_pp": {
+   "factory": "AreEqual",
+   "ggb": [
+    "AreEqual"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_parallel_ll": {
+   "factory": "AreParallel",
+   "ggb": [
+    "AreParallel"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_parallel_ls": {
+   "factory": "AreParallel",
+   "ggb": [
+    "AreParallel"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_parallel_rr": {
+   "factory": "AreParallel",
+   "ggb": [
+    "AreParallel"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_parallel_sl": {
+   "factory": "AreParallel",
+   "ggb": [
+    "AreParallel"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_parallel_ss": {
+   "factory": "AreParallel",
+   "ggb": [
+    "AreParallel"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_perpendicular_ll": {
+   "factory": "ArePerpendicular",
+   "ggb": [
+    "ArePerpendicular"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_perpendicular_lr": {
+   "factory": "ArePerpendicular",
+   "ggb": [
+    "ArePerpendicular"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_perpendicular_ls": {
+   "factory": "ArePerpendicular",
+   "ggb": [
+    "ArePerpendicular"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_perpendicular_rl": {
+   "factory": "ArePerpendicular",
+   "ggb": [
+    "ArePerpendicular"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_perpendicular_sl": {
+   "factory": "ArePerpendicular",
+   "ggb": [
+    "ArePerpendicular"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "are_perpendicular_ss": {
+   "factory": "ArePerpendicular",
+   "ggb": [
+    "ArePerpendicular"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "area_K": {
+   "factory": "Area",
+   "ggb": [
+    "Area"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "area_P": {
+   "factory": "Area",
+   "ggb": [
+    "Area"
+   ],
+   "op": "measure.area",
+   "args": [
+    "of"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "assign_i": {
+   "factory": "Assign",
+   "ggb": [
+    "Assign"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "assign_p": {
+   "factory": "Assign",
+   "ggb": [
+    "Assign"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "assign_v": {
+   "factory": "Assign",
+   "ggb": [
+    "Assign"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "axes_K": {
+   "factory": "Axes",
+   "ggb": [
+    "Axes"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "center_K": {
+   "factory": "Center",
+   "ggb": [
+    "Center"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "center_c": {
+   "factory": "Center",
+   "ggb": [
+    "Center"
+   ],
+   "op": "point.center",
+   "args": [
+    "of"
+   ],
+   "outputs": [
+    "center"
+   ]
+  },
+  "centroid_P": {
+   "factory": "Centroid",
+   "ggb": [
+    "Centroid"
+   ],
+   "op": "polygon.centroid",
+   "args": [
+    "polygon"
+   ],
+   "outputs": [
+    "centroid"
+   ]
+  },
+  "circle_arc_ppp": {
+   "factory": "CircleArc",
+   "ggb": [
+    "CircleArc"
+   ],
+   "op": "arc.center_two_points",
+   "args": [
+    "center",
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "arc"
+   ]
+  },
+  "circle_pi": {
+   "factory": "Circle",
+   "ggb": [
+    "Circle"
+   ],
+   "op": "circle.center_radius",
+   "args": [
+    "center",
+    "radius"
+   ],
+   "outputs": [
+    "circle"
+   ]
+  },
+  "circle_pm": {
+   "factory": "Circle",
+   "ggb": [
+    "Circle"
+   ],
+   "op": "circle.center_radius",
+   "args": [
+    "center",
+    "radius"
+   ],
+   "outputs": [
+    "circle"
+   ]
+  },
+  "circle_pp": {
+   "factory": "Circle",
+   "ggb": [
+    "Circle"
+   ],
+   "op": "circle.center_point",
+   "args": [
+    "center",
+    "through"
+   ],
+   "outputs": [
+    "circle"
+   ]
+  },
+  "circle_ppp": {
+   "factory": "Circle",
+   "ggb": [
+    "Circle"
+   ],
+   "op": "circle.three_points",
+   "args": [
+    "a",
+    "b",
+    "c"
+   ],
+   "outputs": [
+    "circle"
+   ]
+  },
+  "circle_ps": {
+   "factory": "Circle",
+   "ggb": [
+    "Circle"
+   ],
+   "op": "circle.center_segment",
+   "args": [
+    "center",
+    "radius"
+   ],
+   "outputs": [
+    "circle"
+   ]
+  },
+  "circle_sector_ppA": {
+   "factory": "CircleSector",
+   "ggb": [
+    "CircleSector"
+   ],
+   "op": "sector.from_angle",
+   "args": [
+    "center",
+    "a",
+    "size"
+   ],
+   "outputs": [
+    "sector"
+   ]
+  },
+  "circle_sector_ppi": {
+   "factory": "CircleSector",
+   "ggb": [
+    "CircleSector"
+   ],
+   "op": "sector.from_angle",
+   "args": [
+    "center",
+    "a",
+    "size"
+   ],
+   "outputs": [
+    "sector"
+   ]
+  },
+  "circle_sector_ppp": {
+   "factory": "CircleSector",
+   "ggb": [
+    "CircleSector"
+   ],
+   "op": "sector.center_two_points",
+   "args": [
+    "center",
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "sector"
+   ]
+  },
+  "circular_arc_ppp": {
+   "factory": "CircularArc",
+   "ggb": [
+    "CircularArc"
+   ],
+   "op": "arc.center_two_points",
+   "args": [
+    "center",
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "arc"
+   ]
+  },
+  "circular_sector_ppA": {
+   "factory": "CircularSector",
+   "ggb": [
+    "CircularSector"
+   ],
+   "op": "sector.from_angle",
+   "args": [
+    "center",
+    "a",
+    "size"
+   ],
+   "outputs": [
+    "sector"
+   ]
+  },
+  "circular_sector_ppi": {
+   "factory": "CircularSector",
+   "ggb": [
+    "CircularSector"
+   ],
+   "op": "sector.from_angle",
+   "args": [
+    "center",
+    "a",
+    "size"
+   ],
+   "outputs": [
+    "sector"
+   ]
+  },
+  "circular_sector_ppp": {
+   "factory": "CircularSector",
+   "ggb": [
+    "CircularSector"
+   ],
+   "op": "sector.center_two_points",
+   "args": [
+    "center",
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "sector"
+   ]
+  },
+  "circumcircle_arc_ppp": {
+   "factory": "CircumcircleArc",
+   "ggb": [
+    "CircumcircleArc"
+   ],
+   "op": "arc.three_points",
+   "args": [
+    "a",
+    "b",
+    "c"
+   ],
+   "outputs": [
+    "arc"
+   ]
+  },
+  "circumcircle_sector_ppp": {
+   "factory": "CircumcircleSector",
+   "ggb": [
+    "CircumcircleSector"
+   ],
+   "op": "sector.three_points",
+   "args": [
+    "a",
+    "b",
+    "c"
+   ],
+   "outputs": [
+    "sector"
+   ]
+  },
+  "circumcircular_arc_ppp": {
+   "factory": "CircumcircularArc",
+   "ggb": [
+    "CircumcircularArc"
+   ],
+   "op": "arc.three_points",
+   "args": [
+    "a",
+    "b",
+    "c"
+   ],
+   "outputs": [
+    "arc"
+   ]
+  },
+  "circumcircular_sector_ppp": {
+   "factory": "CircumcircularSector",
+   "ggb": [
+    "CircumcircularSector"
+   ],
+   "op": "sector.three_points",
+   "args": [
+    "a",
+    "b",
+    "c"
+   ],
+   "outputs": [
+    "sector"
+   ]
+  },
+  "circumference_K": {
+   "factory": "Circumference",
+   "ggb": [
+    "Circumference"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "circumference_c": {
+   "factory": "Circumference",
+   "ggb": [
+    "Circumference"
+   ],
+   "op": "measure.circumference",
+   "args": [
+    "circle"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "closest_point_cp": {
+   "factory": "ClosestPoint",
+   "ggb": [
+    "ClosestPoint"
+   ],
+   "op": "point.closest",
+   "args": [
+    "path",
+    "point"
+   ],
+   "outputs": [
+    "foot"
+   ]
+  },
+  "closest_point_lp": {
+   "factory": "ClosestPoint",
+   "ggb": [
+    "ClosestPoint"
+   ],
+   "op": "point.closest",
+   "args": [
+    "path",
+    "point"
+   ],
+   "outputs": [
+    "foot"
+   ]
+  },
+  "closest_point_rp": {
+   "factory": "ClosestPoint",
+   "ggb": [
+    "ClosestPoint"
+   ],
+   "op": "point.closest",
+   "args": [
+    "path",
+    "point"
+   ],
+   "outputs": [
+    "foot"
+   ]
+  },
+  "closest_point_sp": {
+   "factory": "ClosestPoint",
+   "ggb": [
+    "ClosestPoint"
+   ],
+   "op": "point.closest",
+   "args": [
+    "path",
+    "point"
+   ],
+   "outputs": [
+    "foot"
+   ]
+  },
+  "coefficients_K": {
+   "factory": "Coefficients",
+   "ggb": [
+    "Coefficients"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "conic_T": {
+   "factory": "Conic",
+   "ggb": [
+    "Conic"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "conic_Tn": {
+   "factory": "Conic",
+   "ggb": [
+    "Conic"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "conic_iiiiii": {
+   "factory": "Conic",
+   "ggb": [
+    "Conic"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "conic_ppppp": {
+   "factory": "Conic",
+   "ggb": [
+    "Conic"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "contained_by_pc": {
+   "factory": "ContainedBy",
+   "ggb": [
+    "ContainedBy"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "contained_by_pl": {
+   "factory": "ContainedBy",
+   "ggb": [
+    "ContainedBy"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "cos_i": {
+   "factory": "Cos",
+   "ggb": [
+    "Cos"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "cpx_to_a": {
+   "factory": "CpxTo",
+   "ggb": [
+    "CpxTo"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "cross_ratio_pppp": {
+   "factory": "CrossRatio",
+   "ggb": [
+    "CrossRatio"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "cross_vv": {
+   "factory": "Cross",
+   "ggb": [
+    "Cross"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "ctan_i": {
+   "factory": "Ctan",
+   "ggb": [
+    "Ctan"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "dilate_Fi": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Fip": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Fm": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Fmp": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Ii": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Iip": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Im": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Imp": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Ki": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Kip": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Km": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Kmp": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "dilate_Pi": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "dilate_Pip": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "op": "transform.dilate",
+   "args": [
+    "obj",
+    "factor",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "dilate_Pm": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "dilate_Pmp": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "op": "transform.dilate",
+   "args": [
+    "obj",
+    "factor",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "dilate_ci": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "dilate_cip": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "op": "transform.dilate",
+   "args": [
+    "obj",
+    "factor",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "dilate_cm": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "dilate_cmp": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "op": "transform.dilate",
+   "args": [
+    "obj",
+    "factor",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "dilate_li": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "dilate_lip": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "op": "transform.dilate",
+   "args": [
+    "obj",
+    "factor",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "dilate_lm": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "dilate_lmp": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "op": "transform.dilate",
+   "args": [
+    "obj",
+    "factor",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "dilate_pi": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "dilate_pip": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "op": "transform.dilate",
+   "args": [
+    "obj",
+    "factor",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "dilate_pm": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "dilate_pmp": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "op": "transform.dilate",
+   "args": [
+    "obj",
+    "factor",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "dilate_si": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "dilate_sip": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "op": "transform.dilate",
+   "args": [
+    "obj",
+    "factor",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "dilate_sm": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "dilate_smp": {
+   "factory": "Dilate",
+   "ggb": [
+    "Dilate"
+   ],
+   "op": "transform.dilate",
+   "args": [
+    "obj",
+    "factor",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "direction_l": {
+   "factory": "Direction",
+   "ggb": [
+    "Direction"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "direction_r": {
+   "factory": "Direction",
+   "ggb": [
+    "Direction"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "direction_s": {
+   "factory": "Direction",
+   "ggb": [
+    "Direction"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "direction_v": {
+   "factory": "Direction",
+   "ggb": [
+    "Direction"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "directrix_K": {
+   "factory": "Directrix",
+   "ggb": [
+    "Directrix"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "distance_Kp": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "distance_cp": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "op": "measure.distance",
+   "args": [
+    "to",
+    "point"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "distance_ll": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "distance_lp": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "op": "measure.distance",
+   "args": [
+    "to",
+    "point"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "distance_pK": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "distance_pc": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "op": "measure.distance",
+   "args": [
+    "point",
+    "to"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "distance_pl": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "op": "measure.distance",
+   "args": [
+    "point",
+    "to"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "distance_pp": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "op": "measure.distance",
+   "args": [
+    "point",
+    "to"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "distance_pr": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "op": "measure.distance",
+   "args": [
+    "point",
+    "to"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "distance_ps": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "op": "measure.distance",
+   "args": [
+    "point",
+    "to"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "distance_rp": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "op": "measure.distance",
+   "args": [
+    "to",
+    "point"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "distance_sp": {
+   "factory": "Distance",
+   "ggb": [
+    "Distance"
+   ],
+   "op": "measure.distance",
+   "args": [
+    "to",
+    "point"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "div_Ai": {
+   "factory": "Div",
+   "ggb": [
+    "Div"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "div_ii": {
+   "factory": "Div",
+   "ggb": [
+    "Div"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "div_mi": {
+   "factory": "Div",
+   "ggb": [
+    "Div"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "div_mm": {
+   "factory": "Div",
+   "ggb": [
+    "Div"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "div_ms": {
+   "factory": "Div",
+   "ggb": [
+    "Div"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "div_pi": {
+   "factory": "Div",
+   "ggb": [
+    "Div"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "div_si": {
+   "factory": "Div",
+   "ggb": [
+    "Div"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "div_sm": {
+   "factory": "Div",
+   "ggb": [
+    "Div"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "div_ss": {
+   "factory": "Div",
+   "ggb": [
+    "Div"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "div_vi": {
+   "factory": "Div",
+   "ggb": [
+    "Div"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "dot_vv": {
+   "factory": "Dot",
+   "ggb": [
+    "Dot"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "eccentricity_K": {
+   "factory": "Eccentricity",
+   "ggb": [
+    "Eccentricity"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "ellipse_ppi": {
+   "factory": "Ellipse",
+   "ggb": [
+    "Ellipse"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "ellipse_ppm": {
+   "factory": "Ellipse",
+   "ggb": [
+    "Ellipse"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "ellipse_ppp": {
+   "factory": "Ellipse",
+   "ggb": [
+    "Ellipse"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "equality_PP": {
+   "factory": "Equality",
+   "ggb": [
+    "Equality"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "equality_Pm": {
+   "factory": "Equality",
+   "ggb": [
+    "Equality"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "equality_aa": {
+   "factory": "Equality",
+   "ggb": [
+    "Equality"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "equality_mi": {
+   "factory": "Equality",
+   "ggb": [
+    "Equality"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "equality_mm": {
+   "factory": "Equality",
+   "ggb": [
+    "Equality"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "equality_ms": {
+   "factory": "Equality",
+   "ggb": [
+    "Equality"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "equality_pp": {
+   "factory": "Equality",
+   "ggb": [
+    "Equality"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "equality_si": {
+   "factory": "Equality",
+   "ggb": [
+    "Equality"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "equality_sm": {
+   "factory": "Equality",
+   "ggb": [
+    "Equality"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "equality_ss": {
+   "factory": "Equality",
+   "ggb": [
+    "Equality"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "focus_K": {
+   "factory": "Focus",
+   "ggb": [
+    "Focus"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "function_T": {
+   "factory": "Function",
+   "ggb": [
+    "Function"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "function_Tn": {
+   "factory": "Function",
+   "ggb": [
+    "Function"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "function_value_FA": {
+   "factory": "FunctionValue",
+   "ggb": [
+    "FunctionValue"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "function_value_Fi": {
+   "factory": "FunctionValue",
+   "ggb": [
+    "FunctionValue"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "function_value_Fm": {
+   "factory": "FunctionValue",
+   "ggb": [
+    "FunctionValue"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "hyperbola_ppi": {
+   "factory": "Hyperbola",
+   "ggb": [
+    "Hyperbola"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "hyperbola_ppm": {
+   "factory": "Hyperbola",
+   "ggb": [
+    "Hyperbola"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "hyperbola_ppp": {
+   "factory": "Hyperbola",
+   "ggb": [
+    "Hyperbola"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "implicit_curve_T": {
+   "factory": "ImplicitCurve",
+   "ggb": [
+    "ImplicitCurve"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "implicit_curve_Tn": {
+   "factory": "ImplicitCurve",
+   "ggb": [
+    "ImplicitCurve"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "incircle_ppp": {
+   "factory": "Incircle",
+   "ggb": [
+    "Incircle"
+   ],
+   "op": "circle.incircle",
+   "args": [
+    "a",
+    "b",
+    "c"
+   ],
+   "outputs": [
+    "circle"
+   ]
+  },
+  "intersect_CC": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_CCi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_CK": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_CKi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Cc": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_Cci": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_Cl": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_Cli": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_Cr": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_Cri": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_Cs": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_Csi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_FF": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_FFi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_FI": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_FIi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_FK": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_FKi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Fc": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Fci": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Fl": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Fli": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Fr": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Fri": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Fs": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Fsi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_IF": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_IFi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_II": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_IIi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_IK": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_IKi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Ic": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Ici": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Il": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Ili": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Ir": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Iri": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Is": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Isi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_KC": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_KCi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_KF": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_KFi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_KI": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_KIi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_KK": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_KKi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Kc": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Kci": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Kl": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Kli": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Kr": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Kri": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Ks": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Ksi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_Sl": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_sector",
+   "args": [
+    "sector",
+    "line"
+   ],
+   "outputs": {
+    "byValue": [
+     "arc.1",
+     "arc.2",
+     "side.1",
+     "side.2"
+    ]
+   }
+  },
+  "intersect_Sli": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_sector",
+   "args": [
+    "sector",
+    "line",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "arc.1",
+     "arc.2",
+     "side.1",
+     "side.2"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
+  },
+  "intersect_cC": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_cCi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_cF": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_cFi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_cI": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_cIi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_cK": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_cKi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_cc": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.circle_circle",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
+  },
+  "intersect_cci": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.circle_circle",
+   "args": [
+    "first",
+    "second",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
+  },
+  "intersect_cl": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "circle",
+    "line"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
+  },
+  "intersect_cli": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "circle",
+    "line",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
+  },
+  "intersect_cr": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "circle",
+    "line"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
+  },
+  "intersect_cri": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "circle",
+    "line",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
+  },
+  "intersect_cs": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "circle",
+    "line"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
+  },
+  "intersect_csi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "circle",
+    "line",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
+  },
+  "intersect_lC": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_lCi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_lF": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_lFi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_lI": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_lIi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_lK": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_lKi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_lS": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_sector",
+   "args": [
+    "line",
+    "sector"
+   ],
+   "outputs": {
+    "byValue": [
+     "arc.1",
+     "arc.2",
+     "side.1",
+     "side.2"
+    ]
+   }
+  },
+  "intersect_lSi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_sector",
+   "args": [
+    "line",
+    "sector",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "arc.1",
+     "arc.2",
+     "side.1",
+     "side.2"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
+  },
+  "intersect_lc": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "line",
+    "circle"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
+  },
+  "intersect_lci": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "line",
+    "circle",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
+  },
+  "intersect_ll": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_line",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "intersect_lr": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_line",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "intersect_ls": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_line",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "intersect_rC": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_rCi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_rF": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_rFi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_rI": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_rIi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_rK": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_rKi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_rc": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "line",
+    "circle"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
+  },
+  "intersect_rci": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "line",
+    "circle",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
+  },
+  "intersect_rl": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_line",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "intersect_rr": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_line",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "intersect_rs": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_line",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "intersect_sC": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_sCi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "the registry intersects lines, circles and sectors only"
+  },
+  "intersect_sF": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_sFi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_sI": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_sIi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_sK": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_sKi": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "intersect_sc": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "line",
+    "circle"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
+  },
+  "intersect_sci": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_circle",
+   "args": [
+    "line",
+    "circle",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
+  },
+  "intersect_sl": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_line",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "intersect_sr": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_line",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "intersect_ss": {
+   "factory": "Intersect",
+   "ggb": [
+    "Intersect"
+   ],
+   "op": "intersect.line_line",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "isogonal_conjugation_pppp": {
+   "factory": "IsogonalConjugation",
+   "ggb": [
+    "IsogonalConjugation"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "length_C": {
+   "factory": "Length",
+   "ggb": [
+    "Length"
+   ],
+   "op": "measure.length",
+   "args": [
+    "of"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "length_c": {
+   "factory": "Length",
+   "ggb": [
+    "Length"
+   ],
+   "op": "measure.circumference",
+   "args": [
+    "circle"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "length_s": {
+   "factory": "Length",
+   "ggb": [
+    "Length"
+   ],
+   "op": "measure.length",
+   "args": [
+    "of"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "length_v": {
+   "factory": "Length",
+   "ggb": [
+    "Length"
+   ],
+   "op": "measure.length",
+   "args": [
+    "of"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "line_T": {
+   "factory": "Line",
+   "ggb": [
+    "Line"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "line_Tn": {
+   "factory": "Line",
+   "ggb": [
+    "Line"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "line_bisector_pp": {
+   "factory": "LineBisector",
+   "ggb": [
+    "LineBisector"
+   ],
+   "op": "line.perpendicular_bisector",
+   "args": [
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "line_bisector_s": {
+   "factory": "LineBisector",
+   "ggb": [
+    "LineBisector"
+   ],
+   "op": "line.perpendicular_bisector",
+   "args": [
+    {
+     "ends": [
+      "a",
+      "b"
+     ]
+    }
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "line_pl": {
+   "factory": "Line",
+   "ggb": [
+    "Line"
+   ],
+   "op": "line.parallel",
+   "args": [
+    "point",
+    "base"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "line_pp": {
+   "factory": "Line",
+   "ggb": [
+    "Line"
+   ],
+   "op": "line.by_points",
+   "args": [
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "line_pr": {
+   "factory": "Line",
+   "ggb": [
+    "Line"
+   ],
+   "op": "line.parallel",
+   "args": [
+    "point",
+    "base"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "line_ps": {
+   "factory": "Line",
+   "ggb": [
+    "Line"
+   ],
+   "op": "line.parallel",
+   "args": [
+    "point",
+    "base"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "line_pv": {
+   "factory": "Line",
+   "ggb": [
+    "Line"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "line_s": {
+   "factory": "Line",
+   "ggb": [
+    "Line"
+   ],
+   "op": "line.by_points",
+   "args": [
+    {
+     "ends": [
+      "a",
+      "b"
+     ]
+    }
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "linear_eccentricity_K": {
+   "factory": "LinearEccentricity",
+   "ggb": [
+    "LinearEccentricity"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "locus_pp": {
+   "factory": "Locus",
+   "ggb": [
+    "Locus"
+   ],
+   "op": "locus.of_point",
+   "args": [
+    "trace",
+    "mover"
+   ],
+   "outputs": [
+    "locus"
+   ]
+  },
+  "major_axis_K": {
+   "factory": "MajorAxis",
+   "ggb": [
+    "MajorAxis"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "midpoint_K": {
+   "factory": "Midpoint",
+   "ggb": [
+    "Midpoint"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "midpoint_pp": {
+   "factory": "Midpoint",
+   "ggb": [
+    "Midpoint"
+   ],
+   "op": "point.midpoint",
+   "args": [
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "midpoint_s": {
+   "factory": "Midpoint",
+   "ggb": [
+    "Midpoint"
+   ],
+   "op": "point.midpoint",
+   "args": [
+    {
+     "ends": [
+      "a",
+      "b"
+     ]
+    }
+   ],
+   "outputs": [
+    "point"
+   ]
+  },
+  "minor_axis_K": {
+   "factory": "MinorAxis",
+   "ggb": [
+    "MinorAxis"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "mirror_cc": {
+   "factory": "Mirror",
+   "ggb": [
+    "Mirror"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "mirror_cl": {
+   "factory": "Mirror",
+   "ggb": [
+    "Mirror"
+   ],
+   "op": "transform.reflect_line",
+   "args": [
+    "obj",
+    "line"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "mirror_cp": {
+   "factory": "Mirror",
+   "ggb": [
+    "Mirror"
+   ],
+   "op": "transform.reflect_point",
+   "args": [
+    "obj",
+    "point"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "mirror_ll": {
+   "factory": "Mirror",
+   "ggb": [
+    "Mirror"
+   ],
+   "op": "transform.reflect_line",
+   "args": [
+    "obj",
+    "line"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "mirror_lp": {
+   "factory": "Mirror",
+   "ggb": [
+    "Mirror"
+   ],
+   "op": "transform.reflect_point",
+   "args": [
+    "obj",
+    "point"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "mirror_ls": {
+   "factory": "Mirror",
+   "ggb": [
+    "Mirror"
+   ],
+   "op": "transform.reflect_line",
+   "args": [
+    "obj",
+    "line"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "mirror_pc": {
+   "factory": "Mirror",
+   "ggb": [
+    "Mirror"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "mirror_pl": {
+   "factory": "Mirror",
+   "ggb": [
+    "Mirror"
+   ],
+   "op": "transform.reflect_line",
+   "args": [
+    "obj",
+    "line"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "mirror_pp": {
+   "factory": "Mirror",
+   "ggb": [
+    "Mirror"
+   ],
+   "op": "transform.reflect_point",
+   "args": [
+    "obj",
+    "point"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "mirror_ps": {
+   "factory": "Mirror",
+   "ggb": [
+    "Mirror"
+   ],
+   "op": "transform.reflect_line",
+   "args": [
+    "obj",
+    "line"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "mult_Ai": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_iA": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_ii": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_im": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_ip": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_is": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_iv": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_mi": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_mm": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_ms": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_pi": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_sm": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_ss": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "mult_vi": {
+   "factory": "Mult",
+   "ggb": [
+    "Mult"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "orthogonal_line_pl": {
+   "factory": "OrthogonalLine",
+   "ggb": [
+    "OrthogonalLine"
+   ],
+   "op": "line.perpendicular",
+   "args": [
+    "point",
+    "base"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "orthogonal_line_pr": {
+   "factory": "OrthogonalLine",
+   "ggb": [
+    "OrthogonalLine"
+   ],
+   "op": "line.perpendicular",
+   "args": [
+    "point",
+    "base"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "orthogonal_line_ps": {
+   "factory": "OrthogonalLine",
+   "ggb": [
+    "OrthogonalLine"
+   ],
+   "op": "line.perpendicular",
+   "args": [
+    "point",
+    "base"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "parabola_pl": {
+   "factory": "Parabola",
+   "ggb": [
+    "Parabola"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "parabola_pr": {
+   "factory": "Parabola",
+   "ggb": [
+    "Parabola"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "parabola_ps": {
+   "factory": "Parabola",
+   "ggb": [
+    "Parabola"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "perimeter_P": {
+   "factory": "Perimeter",
+   "ggb": [
+    "Perimeter"
+   ],
+   "op": "measure.perimeter",
+   "args": [
+    "of"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "perpendicular_bisector_pp": {
+   "factory": "PerpendicularBisector",
+   "ggb": [
+    "PerpendicularBisector"
+   ],
+   "op": "line.perpendicular_bisector",
+   "args": [
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "perpendicular_bisector_s": {
+   "factory": "PerpendicularBisector",
+   "ggb": [
+    "PerpendicularBisector"
+   ],
+   "op": "line.perpendicular_bisector",
+   "args": [
+    {
+     "ends": [
+      "a",
+      "b"
+     ]
+    }
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "perpendicular_line_pl": {
+   "factory": "PerpendicularLine",
+   "ggb": [
+    "PerpendicularLine"
+   ],
+   "op": "line.perpendicular",
+   "args": [
+    "point",
+    "base"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "perpendicular_line_pr": {
+   "factory": "PerpendicularLine",
+   "ggb": [
+    "PerpendicularLine"
+   ],
+   "op": "line.perpendicular",
+   "args": [
+    "point",
+    "base"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "perpendicular_line_ps": {
+   "factory": "PerpendicularLine",
+   "ggb": [
+    "PerpendicularLine"
+   ],
+   "op": "line.perpendicular",
+   "args": [
+    "point",
+    "base"
+   ],
+   "outputs": [
+    "line"
+   ]
+  },
+  "perpendicular_vector_l": {
+   "factory": "PerpendicularVector",
+   "ggb": [
+    "PerpendicularVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "perpendicular_vector_s": {
+   "factory": "PerpendicularVector",
+   "ggb": [
+    "PerpendicularVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "perpendicular_vector_v": {
+   "factory": "PerpendicularVector",
+   "ggb": [
+    "PerpendicularVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "point_C": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "op": "point.on_path",
+   "args": [
+    "path"
+   ],
+   "outputs": [
+    "point"
+   ],
+   "input": "pathParameter"
+  },
+  "point_F": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "point_Fiii": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "point_Fmii": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "point_K": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "point_Ki": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "point_Km": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "point_L": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "point_P": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "op": "point.on_path",
+   "args": [
+    "path"
+   ],
+   "outputs": [
+    "point"
+   ],
+   "input": "pathParameter"
+  },
+  "point_S": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "point_c": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "op": "point.on_path",
+   "args": [
+    "path"
+   ],
+   "outputs": [
+    "point"
+   ],
+   "input": "pathParameter"
+  },
+  "point_ci": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "a point by coordinates or a fixed path parameter given by numbers"
+  },
+  "point_cm": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "a point by coordinates or a fixed path parameter given by numbers"
+  },
+  "point_ii": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "free": "point",
+   "value": [
+    0,
+    1
+   ]
+  },
+  "point_im": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "a point by coordinates or a fixed path parameter given by numbers"
+  },
+  "point_l": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "op": "point.on_path",
+   "args": [
+    "path"
+   ],
+   "outputs": [
+    "point"
+   ],
+   "input": "pathParameter"
+  },
+  "point_mi": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "a point by coordinates or a fixed path parameter given by numbers"
+  },
+  "point_mm": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "a point by coordinates or a fixed path parameter given by numbers"
+  },
+  "point_pv": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "op": "transform.translate",
+   "args": [
+    "obj",
+    "vector"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "point_r": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "op": "point.on_path",
+   "args": [
+    "path"
+   ],
+   "outputs": [
+    "point"
+   ],
+   "input": "pathParameter"
+  },
+  "point_s": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "op": "point.on_path",
+   "args": [
+    "path"
+   ],
+   "outputs": [
+    "point"
+   ],
+   "input": "pathParameter"
+  },
+  "point_si": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "a point by coordinates or a fixed path parameter given by numbers"
+  },
+  "point_sm": {
+   "factory": "Point",
+   "ggb": [
+    "Point"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "a point by coordinates or a fixed path parameter given by numbers"
+  },
+  "polar_Kl": {
+   "factory": "Polar",
+   "ggb": [
+    "Polar"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "polar_Kp": {
+   "factory": "Polar",
+   "ggb": [
+    "Polar"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "polar_lK": {
+   "factory": "Polar",
+   "ggb": [
+    "Polar"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "polar_pK": {
+   "factory": "Polar",
+   "ggb": [
+    "Polar"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "polar_pc": {
+   "factory": "Polar",
+   "ggb": [
+    "Polar"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "polygon": {
+   "factory": "Polygon",
+   "ggb": [
+    "Polygon"
+   ],
+   "op": "polygon.by_points",
+   "args": {
+    "variadic": "vertices"
+   },
+   "outputs": {
+    "pattern": "polygon_sides"
+   }
+  },
+  "polygon_ppi": {
+   "factory": "Polygon",
+   "ggb": [
+    "Polygon"
+   ],
+   "op": "polygon.regular",
+   "args": [
+    "a",
+    "b",
+    "n"
+   ],
+   "outputs": {
+    "pattern": "regular"
+   }
+  },
+  "pow_ii": {
+   "factory": "Pow",
+   "ggb": [
+    "Pow"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "pow_mi": {
+   "factory": "Pow",
+   "ggb": [
+    "Pow"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "pow_si": {
+   "factory": "Pow",
+   "ggb": [
+    "Pow"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "prove_b": {
+   "factory": "Prove",
+   "ggb": [
+    "Prove"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "radius_K": {
+   "factory": "Radius",
+   "ggb": [
+    "Radius"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "radius_c": {
+   "factory": "Radius",
+   "ggb": [
+    "Radius"
+   ],
+   "op": "measure.radius",
+   "args": [
+    "of"
+   ],
+   "outputs": [
+    "number"
+   ]
+  },
+  "ray_pp": {
+   "factory": "Ray",
+   "ggb": [
+    "Ray"
+   ],
+   "op": "ray.by_points",
+   "args": [
+    "origin",
+    "through"
+   ],
+   "outputs": [
+    "ray"
+   ]
+  },
+  "ray_pv": {
+   "factory": "Ray",
+   "ggb": [
+    "Ray"
+   ],
+   "op": "ray.by_vector",
+   "args": [
+    "origin",
+    "vector"
+   ],
+   "outputs": [
+    "ray"
+   ]
+  },
+  "reflect_Fp": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "reflect_Ip": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "reflect_Kl": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "reflect_Kp": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "reflect_Ks": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "reflect_cc": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "reflect_cl": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "op": "transform.reflect_line",
+   "args": [
+    "obj",
+    "line"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "reflect_cp": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "op": "transform.reflect_point",
+   "args": [
+    "obj",
+    "point"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "reflect_ll": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "op": "transform.reflect_line",
+   "args": [
+    "obj",
+    "line"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "reflect_lp": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "op": "transform.reflect_point",
+   "args": [
+    "obj",
+    "point"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "reflect_ls": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "op": "transform.reflect_line",
+   "args": [
+    "obj",
+    "line"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "reflect_pc": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "reflect_pl": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "op": "transform.reflect_line",
+   "args": [
+    "obj",
+    "line"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "reflect_pp": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "op": "transform.reflect_point",
+   "args": [
+    "obj",
+    "point"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "reflect_ps": {
+   "factory": "Reflect",
+   "ggb": [
+    "Reflect"
+   ],
+   "op": "transform.reflect_line",
+   "args": [
+    "obj",
+    "line"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "rotate_KA": {
+   "factory": "Rotate",
+   "ggb": [
+    "Rotate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "rotate_KAp": {
+   "factory": "Rotate",
+   "ggb": [
+    "Rotate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "rotate_Ki": {
+   "factory": "Rotate",
+   "ggb": [
+    "Rotate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "rotate_Kip": {
+   "factory": "Rotate",
+   "ggb": [
+    "Rotate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "rotate_lAp": {
+   "factory": "Rotate",
+   "ggb": [
+    "Rotate"
+   ],
+   "op": "transform.rotate",
+   "args": [
+    "obj",
+    "angle",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "rotate_pAp": {
+   "factory": "Rotate",
+   "ggb": [
+    "Rotate"
+   ],
+   "op": "transform.rotate",
+   "args": [
+    "obj",
+    "angle",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "rotate_pap": {
+   "factory": "Rotate",
+   "ggb": [
+    "Rotate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "rotate_pip": {
+   "factory": "Rotate",
+   "ggb": [
+    "Rotate"
+   ],
+   "op": "transform.rotate",
+   "args": [
+    "obj",
+    "angle",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "rotate_vAp": {
+   "factory": "Rotate",
+   "ggb": [
+    "Rotate"
+   ],
+   "op": "transform.rotate",
+   "args": [
+    "obj",
+    "angle",
+    "center"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "rotate_vap": {
+   "factory": "Rotate",
+   "ggb": [
+    "Rotate"
+   ],
+   "unmapped": "unsupported_signature",
+   "note": "this kind of object or argument is not transformed by the op"
+  },
+  "segment_pp": {
+   "factory": "Segment",
+   "ggb": [
+    "Segment"
+   ],
+   "op": "segment.by_points",
+   "args": [
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "segment"
+   ]
+  },
+  "segment_pv": {
+   "factory": "Segment",
+   "ggb": [
+    "Segment"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "semi_major_axis_length_K": {
+   "factory": "SemiMajorAxisLength",
+   "ggb": [
+    "SemiMajorAxisLength"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "semi_minor_axis_length_K": {
+   "factory": "SemiMinorAxisLength",
+   "ggb": [
+    "SemiMinorAxisLength"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "semicircle_pp": {
+   "factory": "Semicircle",
+   "ggb": [
+    "Semicircle"
+   ],
+   "op": "arc.semicircle",
+   "args": [
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "arc"
+   ]
+  },
+  "sin_i": {
+   "factory": "Sin",
+   "ggb": [
+    "Sin"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "slope_l": {
+   "factory": "Slope",
+   "ggb": [
+    "Slope"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "sqrt_i": {
+   "factory": "Sqrt",
+   "ggb": [
+    "Sqrt"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_AA": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_Aa": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_aA": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_ii": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_mm": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_ms": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_pp": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_pv": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_sm": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_ss": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "sub_vv": {
+   "factory": "Sub",
+   "ggb": [
+    "Sub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "tan_i": {
+   "factory": "Tan",
+   "ggb": [
+    "Tan"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "tangent_Kl": {
+   "factory": "Tangent",
+   "ggb": [
+    "Tangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "tangent_Kp": {
+   "factory": "Tangent",
+   "ggb": [
+    "Tangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "tangent_cc": {
+   "factory": "Tangent",
+   "ggb": [
+    "Tangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "common tangents of two circles have no op"
+  },
+  "tangent_iF": {
+   "factory": "Tangent",
+   "ggb": [
+    "Tangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "tangent_lK": {
+   "factory": "Tangent",
+   "ggb": [
+    "Tangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "tangent_mF": {
+   "factory": "Tangent",
+   "ggb": [
+    "Tangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "tangent_pF": {
+   "factory": "Tangent",
+   "ggb": [
+    "Tangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "tangent_pK": {
+   "factory": "Tangent",
+   "ggb": [
+    "Tangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "tangent_pc": {
+   "factory": "Tangent",
+   "ggb": [
+    "Tangent"
+   ],
+   "op": "line.tangents_from_point",
+   "args": [
+    "point",
+    "circle"
+   ],
+   "outputs": {
+    "byValue": [
+     "tangent.1",
+     "tangent.2"
+    ]
+   }
+  },
+  "tangent_pci": {
+   "factory": "Tangent",
+   "ggb": [
+    "Tangent"
+   ],
+   "op": "line.tangents_from_point",
+   "args": [
+    "point",
+    "circle",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "tangent.1",
+     "tangent.2"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
+  },
+  "touches_cc": {
+   "factory": "Touches",
+   "ggb": [
+    "Touches",
+    "IsTangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "touches_cl": {
+   "factory": "Touches",
+   "ggb": [
+    "Touches",
+    "IsTangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "touches_lc": {
+   "factory": "Touches",
+   "ggb": [
+    "Touches",
+    "IsTangent"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "a check or a boolean, not a construction"
+  },
+  "translate_Fv": {
+   "factory": "Translate",
+   "ggb": [
+    "Translate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "translate_Iv": {
+   "factory": "Translate",
+   "ggb": [
+    "Translate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "translate_Kv": {
+   "factory": "Translate",
+   "ggb": [
+    "Translate"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  },
+  "translate_cv": {
+   "factory": "Translate",
+   "ggb": [
+    "Translate"
+   ],
+   "op": "transform.translate",
+   "args": [
+    "obj",
+    "vector"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "translate_pv": {
+   "factory": "Translate",
+   "ggb": [
+    "Translate"
+   ],
+   "op": "transform.translate",
+   "args": [
+    "obj",
+    "vector"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "translate_sv": {
+   "factory": "Translate",
+   "ggb": [
+    "Translate"
+   ],
+   "op": "transform.translate",
+   "args": [
+    "obj",
+    "vector"
+   ],
+   "outputs": [
+    "image"
+   ]
+  },
+  "trilinear_pppiii": {
+   "factory": "Trilinear",
+   "ggb": [
+    "Trilinear"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "trilinear_pppiim": {
+   "factory": "Trilinear",
+   "ggb": [
+    "Trilinear"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "trilinear_pppimi": {
+   "factory": "Trilinear",
+   "ggb": [
+    "Trilinear"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "trilinear_pppimm": {
+   "factory": "Trilinear",
+   "ggb": [
+    "Trilinear"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "trilinear_pppmii": {
+   "factory": "Trilinear",
+   "ggb": [
+    "Trilinear"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "trilinear_pppmim": {
+   "factory": "Trilinear",
+   "ggb": [
+    "Trilinear"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "trilinear_pppmmi": {
+   "factory": "Trilinear",
+   "ggb": [
+    "Trilinear"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "trilinear_pppmmm": {
+   "factory": "Trilinear",
+   "ggb": [
+    "Trilinear"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "u_sub_A": {
+   "factory": "USub",
+   "ggb": [
+    "USub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "u_sub_a": {
+   "factory": "USub",
+   "ggb": [
+    "USub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "u_sub_i": {
+   "factory": "USub",
+   "ggb": [
+    "USub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "u_sub_m": {
+   "factory": "USub",
+   "ggb": [
+    "USub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "u_sub_p": {
+   "factory": "USub",
+   "ggb": [
+    "USub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "u_sub_v": {
+   "factory": "USub",
+   "ggb": [
+    "USub"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "unit_perpendicular_vector_l": {
+   "factory": "UnitPerpendicularVector",
+   "ggb": [
+    "UnitPerpendicularVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "unit_perpendicular_vector_r": {
+   "factory": "UnitPerpendicularVector",
+   "ggb": [
+    "UnitPerpendicularVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "unit_perpendicular_vector_s": {
+   "factory": "UnitPerpendicularVector",
+   "ggb": [
+    "UnitPerpendicularVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "unit_perpendicular_vector_v": {
+   "factory": "UnitPerpendicularVector",
+   "ggb": [
+    "UnitPerpendicularVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "unit_vector_l": {
+   "factory": "UnitVector",
+   "ggb": [
+    "UnitVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "unit_vector_r": {
+   "factory": "UnitVector",
+   "ggb": [
+    "UnitVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "unit_vector_s": {
+   "factory": "UnitVector",
+   "ggb": [
+    "UnitVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "unit_vector_v": {
+   "factory": "UnitVector",
+   "ggb": [
+    "UnitVector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "value_A": {
+   "factory": "Value",
+   "ggb": [
+    "Value"
+   ],
+   "unmapped": "formula_unsupported",
+   "note": "arithmetic of values (number.expression is not built from it)"
+  },
+  "vector_ii": {
+   "factory": "Vector",
+   "ggb": [
+    "Vector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "vector_p": {
+   "factory": "Vector",
+   "ggb": [
+    "Vector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "vector_pp": {
+   "factory": "Vector",
+   "ggb": [
+    "Vector"
+   ],
+   "op": "vector.by_points",
+   "args": [
+    "a",
+    "b"
+   ],
+   "outputs": [
+    "vector"
+   ]
+  },
+  "vector_v": {
+   "factory": "Vector",
+   "ggb": [
+    "Vector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "vector_vi": {
+   "factory": "Vector",
+   "ggb": [
+    "Vector"
+   ],
+   "unmapped": "no_registry_op"
+  },
+  "vertex_K": {
+   "factory": "Vertex",
+   "ggb": [
+    "Vertex"
+   ],
+   "unmapped": "no_registry_op",
+   "note": "coordinates, conics and functions: the ops come with stage L4"
+  }
+ },
+ "opsWithoutClassic": {
+  "angle.between_lines": "no classic Angle(line, line) dispatch key",
+  "angle.between_vectors": "no classic Angle(vector, vector) dispatch key",
+  "angle.by_size": "classic Angle(A, B, α) is not a dispatch key",
+  "circle.diameter": "no classic command builds it",
+  "circle.excircle": "no classic command builds it",
+  "intersect.nearest": "no classic command builds it",
+  "intersect.other_than": "no classic command builds it",
+  "line.external_bisector": "no classic command builds it",
+  "line.tangent_at": "no classic command builds it",
+  "mark.equal_angles": "marks are not classic commands (GGB decoration is style)",
+  "mark.equal_segments": "marks are not classic commands (GGB decoration is style)",
+  "mark.right_angle": "marks are not classic commands (GGB decoration is style)",
+  "measure.angle": "no classic command builds it",
+  "measure.polygon_angles": "no classic command builds it",
+  "number.angle": "free element: an angle size without a command (GGB angle value, DSL AngleSize Var)",
+  "number.expression": "arithmetic of values is formula_unsupported (no expr tree from classic commands)",
+  "number.free": "free element: a number without a command (GGB numeric, DSL Var)",
+  "point.at_distance": "no classic command builds it",
+  "point.divide": "no classic command builds it",
+  "point.free": "free element: a point without a command (GGB <element type=\"point\">, DSL Point(x, y) → point_ii free row)",
+  "point.projection": "no classic command builds it",
+  "polygon.parallelogram": "no classic command builds it",
+  "polygon.regular_center": "no classic command builds it",
+  "polygon.vertex": "GGB Vertex(polygon, k) has no classic dispatch key",
+  "polyline.by_points": "no classic command builds it",
+  "ray.at_angle": "no classic command builds it",
+  "sector.on_circle": "no classic command builds it",
+  "segment.from_point_length": "no classic command builds it",
+  "segment.midline": "no classic command builds it",
+  "text.free": "texts go to the import report as picture (ggb_value text), the web places them",
+  "triangle.altitude": "no classic command builds it",
+  "triangle.bisector": "no classic command builds it",
+  "triangle.centroid": "no classic command builds it",
+  "triangle.circumcenter": "no classic command builds it",
+  "triangle.excenters": "no classic command builds it",
+  "triangle.incenter": "no classic command builds it",
+  "triangle.median": "no classic command builds it",
+  "triangle.orthocenter": "no classic command builds it"
+ },
+ "seedDropped": {}
+}

@@ -25,6 +25,8 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     native.sample_timeline(doc, timeline, t) # {t, inputs, visible} by ID (docs/native/timeline.md)
     native.evaluate(doc, t=1.5, timeline=tl) # the document at time t, ev.visible
     native.steps_timeline(doc)               # StepsTimeline(keyframes, steps, duration)
+    native.from_ggb("a.ggb", id_namespace=ns)   # (document | None, import_report.v1) (docs/native/import.md)
+    native.from_construction(constr, id_namespace=ns)  # classic Construction → (document | None, report)
 
 No module of this package imports manim, ``animageo.animageo`` or
 ``animageo.geo`` at import time; the bridge (``kernel/bridge.py``),
@@ -73,13 +75,14 @@ from .conditions.apply import (ConditionResult, Refusal, apply_condition, condit
                                shape_conditions)
 from .conditions.marks import AutoMarks, add_auto_marks, auto_marks, auto_sources
 from .timeline import StepsTimeline, sample_timeline, steps_timeline, timeline_to_bridge
+from .convert import ConvertError, ImportRefused, from_construction, from_ggb
 
 # Features of this library by stage of plan L3 (``has``): the web asks for a
 # feature instead of comparing versions.
 FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles',
             'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values',
             'commands.conditions', 'commands.steps', 'timeline', 'steps_timeline', 'render.t', 'render.video',
-            'render.frame')
+            'render.frame', 'from_ggb', 'from_construction', 'import_report.v1')
 
 
 def has(feature: str) -> bool:
@@ -93,7 +96,9 @@ def has(feature: str) -> bool:
     ``sample_timeline``, ``evaluate(t, timeline)``, ``timeline_to_bridge``;
     ``steps_timeline``; ``render.t`` — ``render(t=…, timeline=…)``;
     ``render.video`` — ``mp4``, ``gif``, ``webm``, ``mov``; 1.9.0a5: ``render.frame`` —
-    ``render(fmt="png", video=…)``, the frame through the camera of the video)."""
+    ``render(fmt="png", video=…)``, the frame through the camera of the video;
+    kernel stage L5, 1.10.0a1: ``from_ggb``, ``from_construction``,
+    ``import_report.v1`` — the import of ``.ggb`` and of the classic graph)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION
@@ -102,10 +107,12 @@ __all__ = [
     'DOCUMENT_FORMAT',
     'EVALUATED_FORMAT',
     'CheckReport',
+    'ConvertError',
     'EditError',
     'EditResult',
     'Evaluated',
     'FEATURES',
+    'ImportRefused',
     'Issue',
     'LoadError',
     'NativeDocument',
@@ -122,6 +129,8 @@ __all__ = [
     'dumps',
     'evaluate',
     'free_inputs',
+    'from_construction',
+    'from_ggb',
     'layout_labels',
     'load',
     'parse_commands',
