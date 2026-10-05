@@ -7,7 +7,9 @@ web decides whether to take the colours of GeoGebra (decision 8). The
 conversions are those of the classic ``loadGGB`` (``ggb_parser.parse_constr``
 → ``elem.ggb_style``): thickness / 2 px, point size × 2 px, a dashed line
 style → ``stroke_dash_ratio`` 0.65, the point style through
-``ggb_point_style_to_elem_style``. Colours are 6-digit hex only.
+``ggb_point_style_to_elem_style``, the fill of a polygon, angle, conic or arc
+with its alpha — 0 as well (1.10.0a2: the shape stays without fill instead of
+taking the default fill of the style). Colours are 6-digit hex only.
 """
 from __future__ import annotations
 
@@ -32,7 +34,7 @@ def ggb_style(info: dict) -> dict:
         hx = _hex(color['rgb'])
         out['label_color'] = hx
         alpha = color.get('alpha')
-        if type_ in _FILLED and alpha is not None and alpha > 0:
+        if type_ in _FILLED and alpha is not None:     # alpha 0 too: no fill, not the default one
             out['fill'] = hx
             out['fill_opacity'] = round(float(alpha), 6)
         if type_ == 'point':

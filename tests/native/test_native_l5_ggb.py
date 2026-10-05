@@ -234,6 +234,45 @@ def test_style_and_labels():
     assert all('overrides' not in a for a in app.values())
 
 
+# the keys of ggb_style and the classic elem.ggb_style they come from
+STYLE_KEYS = ('fill', 'fill_opacity', 'stroke', 'stroke_opacity', 'stroke_width_px', 'stroke_dash_ratio',
+              'size_px', 'point_shape', 'label_color', 'tick_count', 'angle_range')
+
+
+@pytest.mark.parametrize('rel', REAL_FILES + sorted(f'tests/native/import/synthetic/{n}.ggb' for n in (
+    'triangle_editable', 'intersections', 'style_labels', 'dropped_effects', 'macro', 'regular_polygon')))
+def test_ggb_style_is_that_of_the_classic(rel):
+    """``ggb_style`` is what the classic ``loadGGB`` puts in ``elem.ggb_style``,
+    key for key — a shape without fill too (alpha 0: ``fill_opacity`` 0, not
+    the default fill of the style; 1.10.0a2)."""
+    from animageo.geo.construction import Construction
+    from animageo.parsers import ggb_parser
+    _, rep = from_ggb(str(REPO_ROOT / rel), id_namespace=NS)
+    constr = Construction()
+    constr.strict_unsupported = constr.log_unsupported = False
+    ggb_parser.load(constr, {}, str(REPO_ROOT / rel))
+    compared = 0
+    for e in rep['elements']:
+        el = constr.element(e['ggb_name'])
+        if el is None or e['category'] not in ('editable', 'differs'):
+            continue
+        classic = {k: el.ggb_style[k] for k in STYLE_KEYS if k in el.ggb_style}
+        assert set(e.get('ggb_style', {})) == set(classic), e['ggb_name']
+        for key, value in classic.items():
+            assert e['ggb_style'][key] == (pytest.approx(value, abs=1e-6) if isinstance(value, float) else value), \
+                (e['ggb_name'], key)
+        compared += 1
+    assert compared >= 3
+
+
+def test_a_shape_without_fill_keeps_a_zero_fill():
+    body = (point('A', 0.0, 0.0) + point('B', 3.0, 0.0)
+            + command('Circle', ['A', 'B'], ['k']) + element('conic', 'k', alpha=0.0, extra=line_style() + CIRCLE_R3))
+    _, rep = _import(ggb_bytes(body))
+    assert _by_name(rep)['k']['ggb_style']['fill_opacity'] == 0.0
+    assert _by_name(rep)['k']['ggb_style']['fill'] == '#1565c0'
+
+
 def test_seq_and_steps_from_breakpoints():
     body = (point('A', 0.0, 0.0, extra='<breakpoint val="true"/>') + point('B', 4.0, 0.0)
             + command('Segment', ['A', 'B'], ['s'])
