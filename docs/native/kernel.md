@@ -156,6 +156,17 @@ hash and may become `stable`); a new operation or a changed signature goes to
 registry 1.5. Registry 1.5 (animageo 1.9.0a1) adds the operations of a
 triangle and the locus (§11).
 
+**Registry 1.5 is the 1.0 contract** (animageo 1.11.0rc1;
+`tests/native/test_registry_frozen_1_0.py`, snapshot
+`tests/native/registry_frozen_1_0.json`): while the version is 1.5 no record
+and no catalog entry (`_types`, `_policies`, `_reasons`, `_numeric`)
+changes and nothing is added. An operation is never removed (it may become
+`deprecated` with a new registry version); its signature never changes (a
+new operation instead); any other change of a record needs a new registry
+version and the record's `since` set to it; a new operation has `since`
+above 1.5; a catalog entry is never removed, and a changed or new one needs
+a new registry version. `beta` may become `stable` at any time.
+
 `animageo/native/ops/v1/<group>.json` holds arrays of records:
 
 ```text
