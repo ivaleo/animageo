@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.1] - 2026-10-05
+
+The final release of the native kernel stage L2 (registry 1.4).
+
+### Changed
+
+- Registry 1.4 of `animageo.native` is frozen: the 76 records of 1.0–1.4
+  and their `signatureHash` stay as they are (a test pins the hashes of the
+  50 records of 1.4, as it did for 1.0–1.3); a new operation or a changed
+  signature goes to registry 1.5. `beta` (`ray.by_vector`,
+  `angle.between_vectors`, `intersect.nearest`) is a status outside the
+  hash and may become `stable`. `docs/native/kernel.md` §4.
+- Parity fixtures: 87 scenes (with the web's, 124 subject scenes; at least
+  3 cases for every operation), all undefined reasons of every operation
+  reached; the fixtures of «Команды» changed in the version label only.
+
 ### Added
 
 - Parity scene `l2_reasons`: the undefined reasons of registry 1.2–1.4
@@ -2163,7 +2179,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.1a5...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.1...HEAD
+[1.8.1]: https://github.com/ivaleo/animageo/compare/v1.8.1a5...v1.8.1
 [1.8.1a5]: https://github.com/ivaleo/animageo/compare/v1.8.1a4...v1.8.1a5
 [1.8.1a4]: https://github.com/ivaleo/animageo/compare/v1.8.1a3...v1.8.1a4
 [1.8.1a3]: https://github.com/ivaleo/animageo/compare/v1.8.1a2...v1.8.1a3

@@ -147,6 +147,11 @@ table `animageo/native/parity/v1/canonical.json` is a list of
 
 ## 4. Registry `ops/v1` (version 1.4)
 
+Registry 1.4 is frozen since animageo 1.8.1: the records of 1.0–1.4 and their
+`signatureHash` stay as they are (`beta` is a descriptive status outside the
+hash and may become `stable`); a new operation or a changed signature goes to
+registry 1.5.
+
 `animageo/native/ops/v1/<group>.json` holds arrays of records:
 
 ```text

@@ -50,7 +50,8 @@ L2A5_OPS = {
     'transform.dilate', 'text.free', 'intersect.nearest',
 }
 ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS
-# Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were.
+# Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were
+# (1.4 is frozen since 1.8.1; new operations go to 1.5).
 L0_HASHES = {
     'circle.center_point': 'sha256:f3b2e070e9310312708009adfc04cfd7411128d482a4b7522f7320af35ca9810',
     'intersect.line_line': 'sha256:be74b127f909906e8dfe346f7ad79043e483defde31d0aac29628ae550f925d2',
@@ -84,6 +85,58 @@ L2A2_HASHES = {
     'mark.equal_angles': 'sha256:15ac3c04805733999d86b498aba04faeb02ca31705673802ea5f312016c9c2e3',
     'mark.equal_segments': 'sha256:5ba6180e0246c4dc70cf392096184e1427760c4d9a39b6bb5842e3ddd4de668a',
     'mark.right_angle': 'sha256:22f1e524869af7e1d61fa1e6481c78e08b9c2094cbafaa8b4f41d899eec89915',
+}
+REGISTRY_1_4_HASHES = {     # frozen at 1.8.1: 1.4 records keep their signatures
+    'angle.between_lines': 'sha256:49c323bdc7ada36c6509d2670557366148fe31536756072c4183dce14c57b477',
+    'angle.between_vectors': 'sha256:7d8ff7320a48bbbe7f67a7fc0d8bb0db452df0e13ca934c52ae8aeaef9ab49b0',
+    'angle.by_size': 'sha256:f1a36b488adcc0c581a38fb64da94b56df9a93d59864035638606ed7bdc039fd',
+    'arc.center_two_points': 'sha256:fe5c2ff513657d24f8d5c23b0350d5fd25a3a3ee99b40e7a51125981d153306c',
+    'arc.on_circle': 'sha256:2c1cfcb60333d073d18d3bc2fc73eaef0ce2eef56fe79fafe46eb4dbaaef2f14',
+    'arc.semicircle': 'sha256:8bc2859513e8f02f7dee2c714b0fd7fae95c8227fdf895cb3db78577b662109f',
+    'arc.three_points': 'sha256:12a2819007e70894b76cf8325598773cafae7520491816dfb746ffaf8b9c6ce3',
+    'circle.center_segment': 'sha256:21b82f041d85dfed482669b22866afd82a6f2facc04e4f8bce5c18fd0e5b0e09',
+    'circle.diameter': 'sha256:817a9e20bff4b4e28d9e874d2837251143757910216934e664196805ae11acd2',
+    'circle.excircle': 'sha256:5be3ce87c71c4854792c68651eb54442966ec7fe3b28048459632b48a8a7995d',
+    'intersect.line_sector': 'sha256:ad6efcd2b4fdeda63f3caf448501fc287dbe8b322a2d289b6244db1d7293d268',
+    'intersect.nearest': 'sha256:ed8cbe159e5f9027d5c19caee8752dc360a3e7ed7db0ce30a722e182b92d2d31',
+    'line.angle_bisectors_of_lines': 'sha256:8a6a02030d83530ee0f45d054a1fd512e3a7310a38520c67f2e3b86f92a0594d',
+    'line.external_bisector': 'sha256:1fe1079ea7947fb9f7ab15c6bf323a7ed82f6ff13239b4aae6248c8822f08396',
+    'line.tangent_at': 'sha256:8771ad63c25fe30cc2583be47fdb2efeffd06c2d19d639f950f2df3373a62fc4',
+    'line.tangents_from_point': 'sha256:a8cdf3c712f75b4d1f523964c08a2539656d6b3e79332ba63995ea9950470d96',
+    'measure.angle': 'sha256:e8ff36ab632de7060019fe69dfc281ba8c5cab20044a8d37e86671d69490335a',
+    'measure.area': 'sha256:81324352795e06c3eb4fb4982bfe5e1c78145bc3c108a69085512e24836d40c9',
+    'measure.circumference': 'sha256:6d9768f2b07d4731cc5a97e4e42b457d1db301e3ce43d3c0f3b1a7aefa3594c3',
+    'measure.distance': 'sha256:b0c3e912246fcf3b36af5973475fbd309fd618e27f4800b1d25395ae5dbdd31b',
+    'measure.length': 'sha256:71e6c3f9a86a8e38c882cff862f5f3dbb876569d37564638249f7fec3fddccbb',
+    'measure.perimeter': 'sha256:1cf84b1d544f82ed7e58f5b40ba168fc649733175267decee9ddd6ddf0e629d1',
+    'measure.polygon_angles': 'sha256:6d7a2465d42a5eff438911e19e7a7aaf352a45023a353c8518da7fad046118ba',
+    'measure.radius': 'sha256:526084d283c6395fbb56ef37bdb68c8fdd9dbfa6397a7e28a36d1d72c18b493f',
+    'number.angle': 'sha256:6417bcd5a01b1a097a59cd8c2aa44625023021db8a73cd495d57f4dbb756d7fa',
+    'number.expression': 'sha256:505399eccb4aa57b83b582daf2430cec60b49bbfefe864ef30e6d27f4429fb9f',
+    'point.at_distance': 'sha256:502a94cc805fd807497a7b5a5e5b63088dec178422408840a2f754d98c861fa3',
+    'point.center': 'sha256:72226b6a4de7942d76e49ef33880d34ffe0c316aa9b787bdbaba3d12a0163935',
+    'point.closest': 'sha256:75d52848e5699863005a819907c866fc141483bf50ecc12e42e5b349e88b07c5',
+    'point.divide': 'sha256:fff526a27a4a155d9b6b7bf7d215e2f6baa4b37d24388e7c1974d28b7795c658',
+    'polygon.centroid': 'sha256:1a703d97f6bd189c8f26c5385f3f11ee41d5a428073953f839d3950dbd7852b9',
+    'polygon.parallelogram': 'sha256:9ee1be1cad9009c5c2a8da20e14cff2e71efc5a0f3b60c301ed7fba44943542b',
+    'polygon.regular': 'sha256:2c9af541f175d1738c7162459a2941a4ca096647a7b342fc4d585bf4a4b11f8b',
+    'polygon.regular_center': 'sha256:39c88056bb4d27c7a26f54b680288d1c06f826b6058bbeee6366a67987556435',
+    'polygon.vertex': 'sha256:5d74370516697dfbd62126e6659523a248fe88b874896186cf89ce5f8c48f220',
+    'polyline.by_points': 'sha256:8ee4d2f1dc0a83f5ff59a8736f126a236fa76bdc0865298933b6ba565be878f8',
+    'ray.at_angle': 'sha256:64d4eb3af97414f105e7e5c8f175879e8ee29f402854167dcc46590883132b97',
+    'ray.by_vector': 'sha256:9aa590570a7ee603f99405de5fe4c091cf834393919953c3f1a14d3ce205a564',
+    'sector.center_two_points': 'sha256:58986571fdbcd9eddab49953e4a193238c6d8117e2cacef44cf08645db5bdf82',
+    'sector.from_angle': 'sha256:af62c00bcc05471271c977be722e4987688cef687c75901a9835b7796bb758e5',
+    'sector.on_circle': 'sha256:308f1afd6b02ad3aa4dd3d0cffcbfe1e74babfab0cc45e3011c1f81c1f7dea2a',
+    'sector.three_points': 'sha256:2fdda62dfe0677041ed81fef9b2bba3ad8e3e9ffee4ae48428365277fb134cd7',
+    'segment.from_point_length': 'sha256:3104127cfff0fa3a18cd94422a8f5ee37437dbf024dd2e3aeac1b9f6d8eb7d88',
+    'segment.midline': 'sha256:f9080853fc77c5cc00a537bf594f03c540fc03671e77400a704223f1b336c394',
+    'text.free': 'sha256:1ac2a20404ba190ff963202c85848dc3b23aa4890ff43279ab432e9fb7c1715c',
+    'transform.dilate': 'sha256:2c469c8abed13e3c25b1494495f263784ae27d5825fa5eae0d7e06a791dc1f4e',
+    'transform.reflect_line': 'sha256:bae523d182d4d7d6e304b20fe4042cc2afe9c3f79ee1f4b077f6ac10efec6374',
+    'transform.reflect_point': 'sha256:265a56c8c8e12e887db5b35995c0c45027499dbc1574f62c4aab6efaed15f0fc',
+    'transform.rotate': 'sha256:d4217dff3414aeeb04e23551a999a3fac706e6a9ed716dd7210bdb922086c1bc',
+    'transform.translate': 'sha256:e01e8feba29536aed49dc73897abff38588d4fb4b302abfd1555ef0ee4abc06f',
 }
 RECORD_FIELDS = {
     'op', 'status', 'since', 'inputs', 'params', 'outputs', 'branch', 'undefined', 'checks',
@@ -126,7 +179,10 @@ def test_l0_records_unchanged():
         assert reg.index['ops'][op] == digest
         assert reg.get(op)['since'] == '1.3'
     assert set(L2A2_HASHES) == L2A2_OPS
-    for op in L2A4_OPS | L2A5_OPS:
+    assert set(REGISTRY_1_4_HASHES) == L2A4_OPS | L2A5_OPS
+    for op, digest in REGISTRY_1_4_HASHES.items():
+        assert reg.get(op)['signatureHash'] == digest
+        assert reg.index['ops'][op] == digest
         assert reg.get(op)['since'] == '1.4'
 
 
