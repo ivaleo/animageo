@@ -35,6 +35,12 @@ classic `format_number`):
 - a number with `unit: "angle"`: `(v · 180) / π` by the same rule, then `°`;
 - a point: `(x, y)`, each coordinate by the number rule.
 
+`Number.prototype.toFixed` of JavaScript is not this rule: on an exact tie
+it takes the larger magnitude (`(0.125).toFixed(2)` is `0.13`,
+`(-2.5).toFixed(0)` is `-3`). A TypeScript kernel rounds the exact value
+itself, for example in `BigInt`: `v = m · 2^e` with integers `m`, `e`, then
+`m · 10^decimals · 2^e` rounded half to even.
+
 ## Value
 
     if decimals is not a whole number in [0, 10]:   → "invalid_parameter"
