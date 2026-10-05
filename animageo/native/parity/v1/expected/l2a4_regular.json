@@ -1,0 +1,2370 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_regular",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a4.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_regular",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_tri": {
+        "id": "op_tri",
+        "op": "polygon.regular",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "n": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "tri"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "tris1"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "tris2"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "tris3"
+          },
+          {
+            "slot": "vertex.1",
+            "elementId": "triv1"
+          },
+          {
+            "slot": "vertex.2",
+            "elementId": "triv2"
+          },
+          {
+            "slot": "vertex.3",
+            "elementId": "triv3"
+          }
+        ]
+      },
+      "op_pen": {
+        "id": "op_pen",
+        "op": "polygon.regular",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "n": {
+            "kind": "number",
+            "value": 5
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "pen"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "pens1"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "pens2"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "pens3"
+          },
+          {
+            "slot": "side.4",
+            "elementId": "pens4"
+          },
+          {
+            "slot": "side.5",
+            "elementId": "pens5"
+          },
+          {
+            "slot": "vertex.1",
+            "elementId": "penv1"
+          },
+          {
+            "slot": "vertex.2",
+            "elementId": "penv2"
+          },
+          {
+            "slot": "vertex.3",
+            "elementId": "penv3"
+          },
+          {
+            "slot": "vertex.4",
+            "elementId": "penv4"
+          },
+          {
+            "slot": "vertex.5",
+            "elementId": "penv5"
+          }
+        ]
+      },
+      "op_hexc": {
+        "id": "op_hexc",
+        "op": "polygon.regular_center",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "n": {
+            "kind": "number",
+            "value": 6
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "hexc"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "hexcs1"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "hexcs2"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "hexcs3"
+          },
+          {
+            "slot": "side.4",
+            "elementId": "hexcs4"
+          },
+          {
+            "slot": "side.5",
+            "elementId": "hexcs5"
+          },
+          {
+            "slot": "side.6",
+            "elementId": "hexcs6"
+          },
+          {
+            "slot": "vertex.1",
+            "elementId": "hexcv1"
+          },
+          {
+            "slot": "vertex.2",
+            "elementId": "hexcv2"
+          },
+          {
+            "slot": "vertex.3",
+            "elementId": "hexcv3"
+          },
+          {
+            "slot": "vertex.4",
+            "elementId": "hexcv4"
+          },
+          {
+            "slot": "vertex.5",
+            "elementId": "hexcv5"
+          },
+          {
+            "slot": "vertex.6",
+            "elementId": "hexcv6"
+          }
+        ]
+      },
+      "op_two": {
+        "id": "op_two",
+        "op": "polygon.regular",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "n": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "two"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "twos1"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "twos2"
+          },
+          {
+            "slot": "vertex.1",
+            "elementId": "twov1"
+          },
+          {
+            "slot": "vertex.2",
+            "elementId": "twov2"
+          }
+        ]
+      },
+      "op_frac": {
+        "id": "op_frac",
+        "op": "polygon.regular",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "n": {
+            "kind": "number",
+            "value": 2.5
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "frac"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "tri": {
+        "id": "tri",
+        "type": "polygon",
+        "displayName": "tri",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "polygon"
+        }
+      },
+      "tris1": {
+        "id": "tris1",
+        "type": "segment",
+        "displayName": "tris1",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "side.1"
+        }
+      },
+      "tris2": {
+        "id": "tris2",
+        "type": "segment",
+        "displayName": "tris2",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "side.2"
+        }
+      },
+      "tris3": {
+        "id": "tris3",
+        "type": "segment",
+        "displayName": "tris3",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "side.3"
+        }
+      },
+      "triv1": {
+        "id": "triv1",
+        "type": "point",
+        "displayName": "triv1",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "vertex.1"
+        }
+      },
+      "triv2": {
+        "id": "triv2",
+        "type": "point",
+        "displayName": "triv2",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "vertex.2"
+        }
+      },
+      "triv3": {
+        "id": "triv3",
+        "type": "point",
+        "displayName": "triv3",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "vertex.3"
+        }
+      },
+      "pen": {
+        "id": "pen",
+        "type": "polygon",
+        "displayName": "pen",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "polygon"
+        }
+      },
+      "pens1": {
+        "id": "pens1",
+        "type": "segment",
+        "displayName": "pens1",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "side.1"
+        }
+      },
+      "pens2": {
+        "id": "pens2",
+        "type": "segment",
+        "displayName": "pens2",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "side.2"
+        }
+      },
+      "pens3": {
+        "id": "pens3",
+        "type": "segment",
+        "displayName": "pens3",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "side.3"
+        }
+      },
+      "pens4": {
+        "id": "pens4",
+        "type": "segment",
+        "displayName": "pens4",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "side.4"
+        }
+      },
+      "pens5": {
+        "id": "pens5",
+        "type": "segment",
+        "displayName": "pens5",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "side.5"
+        }
+      },
+      "penv1": {
+        "id": "penv1",
+        "type": "point",
+        "displayName": "penv1",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "vertex.1"
+        }
+      },
+      "penv2": {
+        "id": "penv2",
+        "type": "point",
+        "displayName": "penv2",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "vertex.2"
+        }
+      },
+      "penv3": {
+        "id": "penv3",
+        "type": "point",
+        "displayName": "penv3",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "vertex.3"
+        }
+      },
+      "penv4": {
+        "id": "penv4",
+        "type": "point",
+        "displayName": "penv4",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "vertex.4"
+        }
+      },
+      "penv5": {
+        "id": "penv5",
+        "type": "point",
+        "displayName": "penv5",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "vertex.5"
+        }
+      },
+      "hexc": {
+        "id": "hexc",
+        "type": "polygon",
+        "displayName": "hexc",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "polygon"
+        }
+      },
+      "hexcs1": {
+        "id": "hexcs1",
+        "type": "segment",
+        "displayName": "hexcs1",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.1"
+        }
+      },
+      "hexcs2": {
+        "id": "hexcs2",
+        "type": "segment",
+        "displayName": "hexcs2",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.2"
+        }
+      },
+      "hexcs3": {
+        "id": "hexcs3",
+        "type": "segment",
+        "displayName": "hexcs3",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.3"
+        }
+      },
+      "hexcs4": {
+        "id": "hexcs4",
+        "type": "segment",
+        "displayName": "hexcs4",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.4"
+        }
+      },
+      "hexcs5": {
+        "id": "hexcs5",
+        "type": "segment",
+        "displayName": "hexcs5",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.5"
+        }
+      },
+      "hexcs6": {
+        "id": "hexcs6",
+        "type": "segment",
+        "displayName": "hexcs6",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.6"
+        }
+      },
+      "hexcv1": {
+        "id": "hexcv1",
+        "type": "point",
+        "displayName": "hexcv1",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.1"
+        }
+      },
+      "hexcv2": {
+        "id": "hexcv2",
+        "type": "point",
+        "displayName": "hexcv2",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.2"
+        }
+      },
+      "hexcv3": {
+        "id": "hexcv3",
+        "type": "point",
+        "displayName": "hexcv3",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.3"
+        }
+      },
+      "hexcv4": {
+        "id": "hexcv4",
+        "type": "point",
+        "displayName": "hexcv4",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.4"
+        }
+      },
+      "hexcv5": {
+        "id": "hexcv5",
+        "type": "point",
+        "displayName": "hexcv5",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.5"
+        }
+      },
+      "hexcv6": {
+        "id": "hexcv6",
+        "type": "point",
+        "displayName": "hexcv6",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.6"
+        }
+      },
+      "two": {
+        "id": "two",
+        "type": "polygon",
+        "displayName": "two",
+        "producer": {
+          "operationId": "op_two",
+          "slot": "polygon"
+        }
+      },
+      "twos1": {
+        "id": "twos1",
+        "type": "segment",
+        "displayName": "twos1",
+        "producer": {
+          "operationId": "op_two",
+          "slot": "side.1"
+        }
+      },
+      "twos2": {
+        "id": "twos2",
+        "type": "segment",
+        "displayName": "twos2",
+        "producer": {
+          "operationId": "op_two",
+          "slot": "side.2"
+        }
+      },
+      "twov1": {
+        "id": "twov1",
+        "type": "point",
+        "displayName": "twov1",
+        "producer": {
+          "operationId": "op_two",
+          "slot": "vertex.1"
+        }
+      },
+      "twov2": {
+        "id": "twov2",
+        "type": "point",
+        "displayName": "twov2",
+        "producer": {
+          "operationId": "op_two",
+          "slot": "vertex.2"
+        }
+      },
+      "frac": {
+        "id": "frac",
+        "type": "polygon",
+        "displayName": "frac",
+        "producer": {
+          "operationId": "op_frac",
+          "slot": "polygon"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -2,
+          -2
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          2,
+          -2
+        ]
+      },
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          1
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 1.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -2.0
+          }
+        },
+        "frac": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "invalid_parameter"
+        },
+        "hexc": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -2.0,
+                -2.0
+              ],
+              [
+                1.5980762113533158,
+                -2.2320508075688776
+              ],
+              [
+                3.5980762113533156,
+                0.7679491924311219
+              ],
+              [
+                2.0000000000000004,
+                4.0
+              ],
+              [
+                -1.5980762113533142,
+                4.2320508075688785
+              ],
+              [
+                -3.598076211353316,
+                1.2320508075688767
+              ]
+            ],
+            "area": 33.77499074759311
+          }
+        },
+        "hexcs1": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.0,
+              -2.0
+            ],
+            "b": [
+              1.5980762113533158,
+              -2.2320508075688776
+            ],
+            "length": 3.6055512754639896
+          }
+        },
+        "hexcs2": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.5980762113533158,
+              -2.2320508075688776
+            ],
+            "b": [
+              3.5980762113533156,
+              0.7679491924311219
+            ],
+            "length": 3.6055512754639887
+          }
+        },
+        "hexcs3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.5980762113533156,
+              0.7679491924311219
+            ],
+            "b": [
+              2.0000000000000004,
+              4.0
+            ],
+            "length": 3.6055512754639896
+          }
+        },
+        "hexcs4": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              2.0000000000000004,
+              4.0
+            ],
+            "b": [
+              -1.5980762113533142,
+              4.2320508075688785
+            ],
+            "length": 3.6055512754639882
+          }
+        },
+        "hexcs5": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.5980762113533142,
+              4.2320508075688785
+            ],
+            "b": [
+              -3.598076211353316,
+              1.2320508075688767
+            ],
+            "length": 3.605551275463992
+          }
+        },
+        "hexcs6": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.598076211353316,
+              1.2320508075688767
+            ],
+            "b": [
+              -2.0,
+              -2.0
+            ],
+            "length": 3.6055512754639887
+          }
+        },
+        "hexcv1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "hexcv2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.5980762113533158,
+            "y": -2.2320508075688776
+          }
+        },
+        "hexcv3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.5980762113533156,
+            "y": 0.7679491924311219
+          }
+        },
+        "hexcv4": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0000000000000004,
+            "y": 4.0
+          }
+        },
+        "hexcv5": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.5980762113533142,
+            "y": 4.2320508075688785
+          }
+        },
+        "hexcv6": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.598076211353316,
+            "y": 1.2320508075688767
+          }
+        },
+        "pen": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -2.0,
+                -2.0
+              ],
+              [
+                2.0,
+                -2.0
+              ],
+              [
+                3.23606797749979,
+                1.804226065180614
+              ],
+              [
+                4.440892098500626e-16,
+                4.155367074350507
+              ],
+              [
+                -3.2360679774997894,
+                1.804226065180615
+              ]
+            ],
+            "area": 27.52763840942347
+          }
+        },
+        "pens1": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.0,
+              -2.0
+            ],
+            "b": [
+              2.0,
+              -2.0
+            ],
+            "length": 4.0
+          }
+        },
+        "pens2": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              2.0,
+              -2.0
+            ],
+            "b": [
+              3.23606797749979,
+              1.804226065180614
+            ],
+            "length": 3.9999999999999996
+          }
+        },
+        "pens3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.23606797749979,
+              1.804226065180614
+            ],
+            "b": [
+              4.440892098500626e-16,
+              4.155367074350507
+            ],
+            "length": 4.0
+          }
+        },
+        "pens4": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.440892098500626e-16,
+              4.155367074350507
+            ],
+            "b": [
+              -3.2360679774997894,
+              1.804226065180615
+            ],
+            "length": 4.0
+          }
+        },
+        "pens5": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.2360679774997894,
+              1.804226065180615
+            ],
+            "b": [
+              -2.0,
+              -2.0
+            ],
+            "length": 4.000000000000001
+          }
+        },
+        "penv1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "penv2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -2.0
+          }
+        },
+        "penv3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.23606797749979,
+            "y": 1.804226065180614
+          }
+        },
+        "penv4": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.440892098500626e-16,
+            "y": 4.155367074350507
+          }
+        },
+        "penv5": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.2360679774997894,
+            "y": 1.804226065180615
+          }
+        },
+        "tri": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -2.0,
+                -2.0
+              ],
+              [
+                2.0,
+                -2.0
+              ],
+              [
+                8.881784197001252e-16,
+                1.4641016151377553
+              ]
+            ],
+            "area": 6.9282032302755105
+          }
+        },
+        "tris1": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.0,
+              -2.0
+            ],
+            "b": [
+              2.0,
+              -2.0
+            ],
+            "length": 4.0
+          }
+        },
+        "tris2": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              2.0,
+              -2.0
+            ],
+            "b": [
+              8.881784197001252e-16,
+              1.4641016151377553
+            ],
+            "length": 4.0
+          }
+        },
+        "tris3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              8.881784197001252e-16,
+              1.4641016151377553
+            ],
+            "b": [
+              -2.0,
+              -2.0
+            ],
+            "length": 4.000000000000001
+          }
+        },
+        "triv1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "triv2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -2.0
+          }
+        },
+        "triv3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 8.881784197001252e-16,
+            "y": 1.4641016151377553
+          }
+        },
+        "two": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "invalid_parameter"
+        },
+        "twos1": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "invalid_parameter"
+        },
+        "twos2": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "invalid_parameter"
+        },
+        "twov1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "invalid_parameter"
+        },
+        "twov2": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "invalid_parameter"
+        }
+      },
+      "checks": {
+        "op_hexc:regular": "passed",
+        "op_pen:regular": "passed",
+        "op_tri:regular": "passed"
+      }
+    },
+    {
+      "name": "turned",
+      "inputs": {
+        "Q": {
+          "kind": "point",
+          "value": [
+            -1,
+            3
+          ]
+        },
+        "O": {
+          "kind": "point",
+          "value": [
+            3,
+            2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 3.0
+          }
+        },
+        "frac": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "invalid_parameter"
+        },
+        "hexc": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -2.0,
+                -2.0
+              ],
+              [
+                3.964101615137754,
+                -4.330127018922193
+              ],
+              [
+                8.964101615137753,
+                -0.33012701892219454
+              ],
+              [
+                8.0,
+                5.999999999999999
+              ],
+              [
+                2.0358983848622483,
+                8.330127018922195
+              ],
+              [
+                -2.964101615137755,
+                4.330127018922193
+              ]
+            ],
+            "area": 106.52112466548596
+          }
+        },
+        "hexcs1": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.0,
+              -2.0
+            ],
+            "b": [
+              3.964101615137754,
+              -4.330127018922193
+            ],
+            "length": 6.403124237432848
+          }
+        },
+        "hexcs2": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.964101615137754,
+              -4.330127018922193
+            ],
+            "b": [
+              8.964101615137753,
+              -0.33012701892219454
+            ],
+            "length": 6.403124237432848
+          }
+        },
+        "hexcs3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              8.964101615137753,
+              -0.33012701892219454
+            ],
+            "b": [
+              8.0,
+              5.999999999999999
+            ],
+            "length": 6.4031242374328485
+          }
+        },
+        "hexcs4": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              8.0,
+              5.999999999999999
+            ],
+            "b": [
+              2.0358983848622483,
+              8.330127018922195
+            ],
+            "length": 6.403124237432847
+          }
+        },
+        "hexcs5": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              2.0358983848622483,
+              8.330127018922195
+            ],
+            "b": [
+              -2.964101615137755,
+              4.330127018922193
+            ],
+            "length": 6.403124237432853
+          }
+        },
+        "hexcs6": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.964101615137755,
+              4.330127018922193
+            ],
+            "b": [
+              -2.0,
+              -2.0
+            ],
+            "length": 6.4031242374328485
+          }
+        },
+        "hexcv1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "hexcv2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.964101615137754,
+            "y": -4.330127018922193
+          }
+        },
+        "hexcv3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 8.964101615137753,
+            "y": -0.33012701892219454
+          }
+        },
+        "hexcv4": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 8.0,
+            "y": 5.999999999999999
+          }
+        },
+        "hexcv5": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0358983848622483,
+            "y": 8.330127018922195
+          }
+        },
+        "hexcv6": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.964101615137755,
+            "y": 4.330127018922193
+          }
+        },
+        "pen": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -2.0,
+                -2.0
+              ],
+              [
+                -1.0,
+                3.0
+              ],
+              [
+                -5.446265587100821,
+                5.49614148816989
+              ],
+              [
+                -9.194208842938135,
+                2.038841768587627
+              ],
+              [
+                -7.0642995758507166,
+                -2.5940284555795836
+              ]
+            ],
+            "area": 44.73241241531315
+          }
+        },
+        "pens1": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.0,
+              -2.0
+            ],
+            "b": [
+              -1.0,
+              3.0
+            ],
+            "length": 5.0990195135927845
+          }
+        },
+        "pens2": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.0,
+              3.0
+            ],
+            "b": [
+              -5.446265587100821,
+              5.49614148816989
+            ],
+            "length": 5.0990195135927845
+          }
+        },
+        "pens3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -5.446265587100821,
+              5.49614148816989
+            ],
+            "b": [
+              -9.194208842938135,
+              2.038841768587627
+            ],
+            "length": 5.099019513592785
+          }
+        },
+        "pens4": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -9.194208842938135,
+              2.038841768587627
+            ],
+            "b": [
+              -7.0642995758507166,
+              -2.5940284555795836
+            ],
+            "length": 5.099019513592785
+          }
+        },
+        "pens5": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -7.0642995758507166,
+              -2.5940284555795836
+            ],
+            "b": [
+              -2.0,
+              -2.0
+            ],
+            "length": 5.099019513592786
+          }
+        },
+        "penv1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "penv2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 3.0
+          }
+        },
+        "penv3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -5.446265587100821,
+            "y": 5.49614148816989
+          }
+        },
+        "penv4": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -9.194208842938135,
+            "y": 2.038841768587627
+          }
+        },
+        "penv5": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -7.0642995758507166,
+            "y": -2.5940284555795836
+          }
+        },
+        "tri": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -2.0,
+                -2.0
+              ],
+              [
+                -1.0,
+                3.0
+              ],
+              [
+                -5.830127018922193,
+                1.3660254037844402
+              ]
+            ],
+            "area": 11.258330249197702
+          }
+        },
+        "tris1": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.0,
+              -2.0
+            ],
+            "b": [
+              -1.0,
+              3.0
+            ],
+            "length": 5.0990195135927845
+          }
+        },
+        "tris2": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.0,
+              3.0
+            ],
+            "b": [
+              -5.830127018922193,
+              1.3660254037844402
+            ],
+            "length": 5.099019513592784
+          }
+        },
+        "tris3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -5.830127018922193,
+              1.3660254037844402
+            ],
+            "b": [
+              -2.0,
+              -2.0
+            ],
+            "length": 5.099019513592785
+          }
+        },
+        "triv1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "triv2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 3.0
+          }
+        },
+        "triv3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -5.830127018922193,
+            "y": 1.3660254037844402
+          }
+        },
+        "two": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "invalid_parameter"
+        },
+        "twos1": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "invalid_parameter"
+        },
+        "twos2": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "invalid_parameter"
+        },
+        "twov1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "invalid_parameter"
+        },
+        "twov2": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "invalid_parameter"
+        }
+      },
+      "checks": {
+        "op_hexc:regular": "passed",
+        "op_pen:regular": "passed",
+        "op_tri:regular": "passed"
+      }
+    },
+    {
+      "name": "clockwise",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            3,
+            1
+          ]
+        },
+        "Q": {
+          "kind": "point",
+          "value": [
+            -3,
+            1
+          ]
+        },
+        "O": {
+          "kind": "point",
+          "value": [
+            0,
+            -2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 1.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 1.0
+          }
+        },
+        "frac": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "invalid_parameter"
+        },
+        "hexc": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                3.0,
+                1.0
+              ],
+              [
+                -1.0980762113533156,
+                2.0980762113533165
+              ],
+              [
+                -4.098076211353315,
+                -0.9019237886466833
+              ],
+              [
+                -3.0000000000000004,
+                -5.0
+              ],
+              [
+                1.0980762113533138,
+                -6.098076211353316
+              ],
+              [
+                4.098076211353316,
+                -3.0980762113533156
+              ]
+            ],
+            "area": 46.76537180435969
+          }
+        },
+        "hexcs1": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.0,
+              1.0
+            ],
+            "b": [
+              -1.0980762113533156,
+              2.0980762113533165
+            ],
+            "length": 4.242640687119286
+          }
+        },
+        "hexcs2": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.0980762113533156,
+              2.0980762113533165
+            ],
+            "b": [
+              -4.098076211353315,
+              -0.9019237886466833
+            ],
+            "length": 4.242640687119285
+          }
+        },
+        "hexcs3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.098076211353315,
+              -0.9019237886466833
+            ],
+            "b": [
+              -3.0000000000000004,
+              -5.0
+            ],
+            "length": 4.242640687119286
+          }
+        },
+        "hexcs4": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0000000000000004,
+              -5.0
+            ],
+            "b": [
+              1.0980762113533138,
+              -6.098076211353316
+            ],
+            "length": 4.242640687119284
+          }
+        },
+        "hexcs5": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0980762113533138,
+              -6.098076211353316
+            ],
+            "b": [
+              4.098076211353316,
+              -3.0980762113533156
+            ],
+            "length": 4.242640687119287
+          }
+        },
+        "hexcs6": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.098076211353316,
+              -3.0980762113533156
+            ],
+            "b": [
+              3.0,
+              1.0
+            ],
+            "length": 4.242640687119286
+          }
+        },
+        "hexcv1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 1.0
+          }
+        },
+        "hexcv2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0980762113533156,
+            "y": 2.0980762113533165
+          }
+        },
+        "hexcv3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.098076211353315,
+            "y": -0.9019237886466833
+          }
+        },
+        "hexcv4": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0000000000000004,
+            "y": -5.0
+          }
+        },
+        "hexcv5": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0980762113533138,
+            "y": -6.098076211353316
+          }
+        },
+        "hexcv6": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.098076211353316,
+            "y": -3.0980762113533156
+          }
+        },
+        "pen": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                3.0,
+                1.0
+              ],
+              [
+                -3.0,
+                1.0
+              ],
+              [
+                -4.854101966249685,
+                -4.706339097770922
+              ],
+              [
+                -8.881784197001252e-16,
+                -8.233050611525762
+              ],
+              [
+                4.854101966249685,
+                -4.706339097770923
+              ]
+            ],
+            "area": 61.937186421202824
+          }
+        },
+        "pens1": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.0,
+              1.0
+            ],
+            "b": [
+              -3.0,
+              1.0
+            ],
+            "length": 6.0
+          }
+        },
+        "pens2": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              1.0
+            ],
+            "b": [
+              -4.854101966249685,
+              -4.706339097770922
+            ],
+            "length": 6.000000000000001
+          }
+        },
+        "pens3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.854101966249685,
+              -4.706339097770922
+            ],
+            "b": [
+              -8.881784197001252e-16,
+              -8.233050611525762
+            ],
+            "length": 6.0
+          }
+        },
+        "pens4": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -8.881784197001252e-16,
+              -8.233050611525762
+            ],
+            "b": [
+              4.854101966249685,
+              -4.706339097770923
+            ],
+            "length": 6.000000000000001
+          }
+        },
+        "pens5": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.854101966249685,
+              -4.706339097770923
+            ],
+            "b": [
+              3.0,
+              1.0
+            ],
+            "length": 6.000000000000001
+          }
+        },
+        "penv1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 1.0
+          }
+        },
+        "penv2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 1.0
+          }
+        },
+        "penv3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.854101966249685,
+            "y": -4.706339097770922
+          }
+        },
+        "penv4": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -8.881784197001252e-16,
+            "y": -8.233050611525762
+          }
+        },
+        "penv5": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.854101966249685,
+            "y": -4.706339097770923
+          }
+        },
+        "tri": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                3.0,
+                1.0
+              ],
+              [
+                -3.0,
+                1.0
+              ],
+              [
+                -1.3322676295501878e-15,
+                -4.196152422706632
+              ]
+            ],
+            "area": 15.588457268119896
+          }
+        },
+        "tris1": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.0,
+              1.0
+            ],
+            "b": [
+              -3.0,
+              1.0
+            ],
+            "length": 6.0
+          }
+        },
+        "tris2": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              1.0
+            ],
+            "b": [
+              -1.3322676295501878e-15,
+              -4.196152422706632
+            ],
+            "length": 5.999999999999999
+          }
+        },
+        "tris3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.3322676295501878e-15,
+              -4.196152422706632
+            ],
+            "b": [
+              3.0,
+              1.0
+            ],
+            "length": 6.000000000000001
+          }
+        },
+        "triv1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 1.0
+          }
+        },
+        "triv2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 1.0
+          }
+        },
+        "triv3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.3322676295501878e-15,
+            "y": -4.196152422706632
+          }
+        },
+        "two": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "invalid_parameter"
+        },
+        "twos1": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "invalid_parameter"
+        },
+        "twos2": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "invalid_parameter"
+        },
+        "twov1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "invalid_parameter"
+        },
+        "twov2": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "invalid_parameter"
+        }
+      },
+      "checks": {
+        "op_hexc:regular": "passed",
+        "op_pen:regular": "passed",
+        "op_tri:regular": "passed"
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "Q": {
+          "kind": "point",
+          "value": [
+            -2,
+            -2
+          ]
+        },
+        "O": {
+          "kind": "point",
+          "value": [
+            -2,
+            -2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.0
+          }
+        },
+        "frac": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "invalid_parameter"
+        },
+        "hexc": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "coincident_points"
+        },
+        "hexcs1": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "hexcs2": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "hexcs3": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "hexcs4": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "hexcs5": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "hexcs6": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "hexcv1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "hexcv2": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "hexcv3": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "hexcv4": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "hexcv5": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "hexcv6": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "pen": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "coincident_points"
+        },
+        "pens1": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "pens2": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "pens3": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "pens4": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "pens5": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "penv1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "penv2": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "penv3": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "penv4": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "penv5": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "tri": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "coincident_points"
+        },
+        "tris1": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "tris2": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "tris3": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "coincident_points"
+        },
+        "triv1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "triv2": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "triv3": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "two": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "invalid_parameter"
+        },
+        "twos1": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "invalid_parameter"
+        },
+        "twos2": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "invalid_parameter"
+        },
+        "twov1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "invalid_parameter"
+        },
+        "twov2": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "invalid_parameter"
+        }
+      },
+      "checks": {}
+    }
+  ]
+}

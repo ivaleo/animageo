@@ -1,0 +1,254 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_tangents",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_tangents",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_R": {
+        "id": "op_R",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "R"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "R"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "line.tangents_from_point",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "circle": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "tangent.1",
+            "elementId": "t1"
+          },
+          {
+            "slot": "tangent.2",
+            "elementId": "t2"
+          },
+          {
+            "slot": "touch.1",
+            "elementId": "T1"
+          },
+          {
+            "slot": "touch.2",
+            "elementId": "T2"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "R": {
+        "id": "R",
+        "type": "point",
+        "displayName": "R",
+        "producer": {
+          "operationId": "op_R",
+          "slot": "point"
+        }
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "displayName": "P",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        }
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "displayName": "c",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        }
+      },
+      "t1": {
+        "id": "t1",
+        "type": "line",
+        "displayName": "t1",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "tangent.1"
+        }
+      },
+      "t2": {
+        "id": "t2",
+        "type": "line",
+        "displayName": "t2",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "tangent.2"
+        }
+      },
+      "T1": {
+        "id": "T1",
+        "type": "point",
+        "displayName": "T1",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "touch.1"
+        }
+      },
+      "T2": {
+        "id": "T2",
+        "type": "point",
+        "displayName": "T2",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "touch.2"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "R": {
+        "kind": "point",
+        "value": [
+          3,
+          0
+        ]
+      },
+      "P": {
+        "kind": "point",
+        "value": [
+          2,
+          6
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "outside"
+    },
+    {
+      "name": "far_left",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            -9,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "name": "on_circle",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            0,
+            3
+          ]
+        }
+      }
+    },
+    {
+      "name": "inside",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "name": "centre",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}

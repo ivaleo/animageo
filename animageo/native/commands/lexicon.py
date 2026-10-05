@@ -15,7 +15,7 @@ says how many leading positions are required; by default every position up
 to the last one that cannot be left out (an input slot, a required param,
 a ``$input`` without a default — the ``point`` input has none, a
 ``pathParameter`` defaults to the path's ``default``, a ``number`` to the
-op's ``min`` or ``0``).
+op's ``min`` or ``0``, an ``angle`` to ``0``).
 
 Names compare without case and without whitespace (``Серединный
 перпендикуляр`` is ``СерединныйПерпендикуляр``). A registry operation ID
@@ -34,7 +34,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..canonical import canonical_json, sha256_of
-from ..registry import registry
+from ..registry import FREE_INPUT_DEFAULTS, registry
 
 __all__ = [
     'INPUT',
@@ -132,6 +132,8 @@ def _input_default(record: dict):
     if kind == 'number':
         param = next((p for p in record.get('params', ()) if p['slot'] == 'min'), None)
         return True, None if param is not None else 0.0
+    if kind in FREE_INPUT_DEFAULTS:
+        return True, FREE_INPUT_DEFAULTS[kind]['value']
     return False, None
 
 

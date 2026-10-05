@@ -190,5 +190,144 @@
     },
     "math": "docs/native/ops/circle.incircle.md",
     "signatureHash": "sha256:34708fea4fe868318bd751e18738c0e9281810946593126bfca83f0ab0a47ee6"
+  },
+  {
+    "op": "circle.diameter",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "circle",
+        "type": "circle"
+      },
+      {
+        "slot": "center",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_ends",
+        "text": "the circle passes through a and b: max | |a - c| - r |, | |b - c| - r |"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "circle",
+    "phrases": {
+      "ru": "{circle} — окружность с диаметром {a}{b}; {center} — её центр"
+    },
+    "math": "docs/native/ops/circle.diameter.md",
+    "signatureHash": "sha256:817a9e20bff4b4e28d9e874d2837251143757910216934e664196805ae11acd2"
+  },
+  {
+    "op": "circle.center_segment",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "center",
+        "type": "point"
+      },
+      {
+        "slot": "radius",
+        "type": "segment"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "circle",
+        "type": "circle"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "nonpositive_radius",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "matches",
+        "text": "centre and radius: max(|c - center|, |r - |radius||)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "circle",
+    "phrases": {
+      "ru": "{circle} — окружность с центром {center} и радиусом {radius}"
+    },
+    "math": "docs/native/ops/circle.center_segment.md",
+    "signatureHash": "sha256:21b82f041d85dfed482669b22866afd82a6f2facc04e4f8bce5c18fd0e5b0e09"
+  },
+  {
+    "op": "circle.excircle",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "circle",
+        "type": "circle"
+      },
+      {
+        "slot": "center",
+        "type": "point"
+      },
+      {
+        "slot": "touch",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "tangent_sides",
+        "text": "the circle touches the three side lines: max |dist(center, side line) - r|, and the touch point lies on b c at distance r"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "excircle",
+    "phrases": {
+      "ru": "{circle} — вневписанная окружность треугольника {a}{b}{c}, касающаяся стороны {b}{c}; {center} — её центр; {touch} — точка касания"
+    },
+    "math": "docs/native/ops/circle.excircle.md",
+    "signatureHash": "sha256:5be3ce87c71c4854792c68651eb54442966ec7fe3b28048459632b48a8a7995d"
   }
 ]

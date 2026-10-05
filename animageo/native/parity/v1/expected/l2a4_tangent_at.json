@@ -1,0 +1,542 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_tangent_at",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a4.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_tangent_at",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_R": {
+        "id": "op_R",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "R"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "R"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_T": {
+        "id": "op_T",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "T"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "line.tangent_at",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "T"
+          },
+          "circle": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "t"
+          }
+        ]
+      },
+      "op_u": {
+        "id": "op_u",
+        "op": "line.tangent_at",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "circle": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "u"
+          }
+        ]
+      },
+      "op_w": {
+        "id": "op_w",
+        "op": "line.tangent_at",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "R"
+          },
+          "circle": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "w"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "R": {
+        "id": "R",
+        "type": "point",
+        "displayName": "R",
+        "producer": {
+          "operationId": "op_R",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "displayName": "c",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        }
+      },
+      "T": {
+        "id": "T",
+        "type": "point",
+        "displayName": "T",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "point"
+        }
+      },
+      "t": {
+        "id": "t",
+        "type": "line",
+        "displayName": "t",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "line"
+        }
+      },
+      "u": {
+        "id": "u",
+        "type": "line",
+        "displayName": "u",
+        "producer": {
+          "operationId": "op_u",
+          "slot": "line"
+        }
+      },
+      "w": {
+        "id": "w",
+        "type": "line",
+        "displayName": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "line"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          1,
+          1
+        ]
+      },
+      "R": {
+        "kind": "point",
+        "value": [
+          4,
+          5
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          7,
+          2
+        ]
+      },
+      "T": {
+        "kind": "pathParameter",
+        "value": 1.0
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 7.0,
+            "y": 2.0
+          }
+        },
+        "R": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 5.0
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.701511529340699,
+            "y": 5.207354924039483
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              1.0
+            ],
+            "r": 5.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              3.4480868244799683,
+              5.370077055725895
+            ],
+            "dir": [
+              -0.8414709848078965,
+              0.5403023058681398
+            ]
+          }
+        },
+        "u": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "not_on_curve"
+        },
+        "w": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              3.84,
+              5.12
+            ],
+            "dir": [
+              -0.8,
+              0.6
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_T:on_path": "passed",
+        "op_c:through_on_circle": "passed",
+        "op_t:tangent": "passed",
+        "op_w:tangent": "passed"
+      }
+    },
+    {
+      "name": "other_point",
+      "inputs": {
+        "T": {
+          "kind": "pathParameter",
+          "value": 4.0
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 7.0,
+            "y": 2.0
+          }
+        },
+        "R": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 5.0
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.2682181043180596,
+            "y": -2.7840124765396412
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              1.0
+            ],
+            "r": 5.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -2.346288997910676,
+              -2.7165833363236436
+            ],
+            "dir": [
+              0.7568024953079282,
+              -0.6536436208636119
+            ]
+          }
+        },
+        "u": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "not_on_curve"
+        },
+        "w": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              3.84,
+              5.12
+            ],
+            "dir": [
+              -0.8,
+              0.6
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_T:on_path": "passed",
+        "op_c:through_on_circle": "passed",
+        "op_t:tangent": "passed",
+        "op_w:tangent": "passed"
+      }
+    },
+    {
+      "name": "q_on_circle",
+      "inputs": {
+        "Q": {
+          "kind": "point",
+          "value": [
+            6,
+            1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 6.0,
+            "y": 1.0
+          }
+        },
+        "R": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 5.0
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.701511529340699,
+            "y": 5.207354924039483
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              1.0
+            ],
+            "r": 5.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              3.4480868244799683,
+              5.370077055725895
+            ],
+            "dir": [
+              -0.8414709848078965,
+              0.5403023058681398
+            ]
+          }
+        },
+        "u": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              6.0,
+              0.0
+            ],
+            "dir": [
+              -0.0,
+              1.0
+            ]
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              3.84,
+              5.12
+            ],
+            "dir": [
+              -0.8,
+              0.6
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_T:on_path": "passed",
+        "op_c:through_on_circle": "passed",
+        "op_t:tangent": "passed",
+        "op_u:tangent": "passed",
+        "op_w:tangent": "passed"
+      }
+    }
+  ]
+}

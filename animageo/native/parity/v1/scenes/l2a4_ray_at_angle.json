@@ -1,0 +1,215 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_ray_at_angle",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_ray_at_angle",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_V": {
+        "id": "op_V",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "V"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_alpha": {
+        "id": "op_alpha",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "alpha"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "ray.at_angle",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "size": {
+            "kind": "ref",
+            "elementId": "alpha"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "ray",
+            "elementId": "r"
+          },
+          {
+            "slot": "point",
+            "elementId": "Ap"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "ray.at_angle",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "size": {
+            "kind": "number",
+            "value": -1.5707963267948966
+          }
+        },
+        "outputs": [
+          {
+            "slot": "ray",
+            "elementId": "q"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "V": {
+        "id": "V",
+        "type": "point",
+        "displayName": "V",
+        "producer": {
+          "operationId": "op_V",
+          "slot": "point"
+        }
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "alpha": {
+        "id": "alpha",
+        "type": "number",
+        "displayName": "alpha",
+        "producer": {
+          "operationId": "op_alpha",
+          "slot": "number"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "ray",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "ray"
+        }
+      },
+      "Ap": {
+        "id": "Ap",
+        "type": "point",
+        "displayName": "Ap",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "point"
+        }
+      },
+      "q": {
+        "id": "q",
+        "type": "ray",
+        "displayName": "q",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "ray"
+        }
+      }
+    },
+    "inputs": {
+      "V": {
+        "kind": "point",
+        "value": [
+          -1,
+          -1
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "alpha": {
+        "kind": "number",
+        "value": 0.9
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "positive"
+    },
+    {
+      "name": "negative",
+      "inputs": {
+        "alpha": {
+          "kind": "number",
+          "value": -2.5
+        }
+      }
+    },
+    {
+      "name": "large",
+      "inputs": {
+        "alpha": {
+          "kind": "number",
+          "value": 7.5
+        }
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -1,
+            -1
+          ]
+        }
+      }
+    }
+  ]
+}

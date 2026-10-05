@@ -1,0 +1,224 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_polyline",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_polyline",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_w": {
+        "id": "op_w",
+        "op": "polyline.by_points",
+        "args": {
+          "points": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "Q"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polyline",
+            "elementId": "w"
+          }
+        ]
+      },
+      "op_v": {
+        "id": "op_v",
+        "op": "polyline.by_points",
+        "args": {
+          "points": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polyline",
+            "elementId": "v"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "w": {
+        "id": "w",
+        "type": "polyline",
+        "displayName": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "polyline"
+        }
+      },
+      "v": {
+        "id": "v",
+        "type": "polyline",
+        "displayName": "v",
+        "producer": {
+          "operationId": "op_v",
+          "slot": "polyline"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -2
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          0,
+          3
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          3,
+          -1
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          5,
+          4
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "repeated_point",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            3
+          ]
+        }
+      }
+    }
+  ]
+}

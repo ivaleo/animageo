@@ -1,0 +1,534 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_midline",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a4.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_midline",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_ab": {
+        "id": "op_ab",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "ab"
+          }
+        ]
+      },
+      "op_ac": {
+        "id": "op_ac",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "ac"
+          }
+        ]
+      },
+      "op_m": {
+        "id": "op_m",
+        "op": "segment.midline",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "ab"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "ac"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "m"
+          },
+          {
+            "slot": "mid.1",
+            "elementId": "M1"
+          },
+          {
+            "slot": "mid.2",
+            "elementId": "M2"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "ab": {
+        "id": "ab",
+        "type": "segment",
+        "displayName": "ab",
+        "producer": {
+          "operationId": "op_ab",
+          "slot": "segment"
+        }
+      },
+      "ac": {
+        "id": "ac",
+        "type": "segment",
+        "displayName": "ac",
+        "producer": {
+          "operationId": "op_ac",
+          "slot": "segment"
+        }
+      },
+      "m": {
+        "id": "m",
+        "type": "segment",
+        "displayName": "m",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "segment"
+        }
+      },
+      "M1": {
+        "id": "M1",
+        "type": "point",
+        "displayName": "M1",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "mid.1"
+        }
+      },
+      "M2": {
+        "id": "M2",
+        "type": "point",
+        "displayName": "M2",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "mid.2"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -2
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          4,
+          -3
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          1,
+          4
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 4.0
+          }
+        },
+        "M1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -2.5
+          }
+        },
+        "M2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.5,
+            "y": 1.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": -3.0
+          }
+        },
+        "ab": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              4.0,
+              -3.0
+            ],
+            "length": 8.06225774829855
+          }
+        },
+        "ac": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              1.0,
+              4.0
+            ],
+            "length": 7.810249675906654
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              -2.5
+            ],
+            "b": [
+              -1.5,
+              1.0
+            ],
+            "length": 3.8078865529319543
+          }
+        }
+      },
+      "checks": {
+        "op_ab:ends": "passed",
+        "op_ac:ends": "passed",
+        "op_m:midpoints": "passed"
+      }
+    },
+    {
+      "name": "flat",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            8,
+            -4
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 8.0,
+            "y": -4.0
+          }
+        },
+        "M1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -2.5
+          }
+        },
+        "M2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": -3.0
+          }
+        },
+        "ab": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              4.0,
+              -3.0
+            ],
+            "length": 8.06225774829855
+          }
+        },
+        "ac": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              8.0,
+              -4.0
+            ],
+            "length": 12.165525060596439
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              -2.5
+            ],
+            "b": [
+              2.0,
+              -3.0
+            ],
+            "length": 2.0615528128088303
+          }
+        }
+      },
+      "checks": {
+        "op_ab:ends": "passed",
+        "op_ac:ends": "passed",
+        "op_m:midpoints": "passed"
+      }
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            2,
+            5
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            -5,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 5.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -5.0,
+            "y": 0.0
+          }
+        },
+        "M1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 1.0
+          }
+        },
+        "M2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.5,
+            "y": 2.5
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": -3.0
+          }
+        },
+        "ab": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              2.0,
+              5.0
+            ],
+            "b": [
+              4.0,
+              -3.0
+            ],
+            "length": 8.246211251235321
+          }
+        },
+        "ac": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              2.0,
+              5.0
+            ],
+            "b": [
+              -5.0,
+              0.0
+            ],
+            "length": 8.602325267042627
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.0,
+              1.0
+            ],
+            "b": [
+              -1.5,
+              2.5
+            ],
+            "length": 4.743416490252569
+          }
+        }
+      },
+      "checks": {
+        "op_ab:ends": "passed",
+        "op_ac:ends": "passed",
+        "op_m:midpoints": "passed"
+      }
+    }
+  ]
+}

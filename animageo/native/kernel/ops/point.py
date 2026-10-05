@@ -1,7 +1,10 @@
-"""``point.free``, ``point.midpoint``, ``point.on_path``, ``point.projection`` (docs/native/ops/point.*.md)."""
+"""``point.free``, ``point.midpoint``, ``point.on_path``, ``point.projection``; registry 1.4:
+``point.divide``, ``point.center``, ``point.closest``, ``point.at_distance`` (docs/native/ops/point.*.md)."""
 from __future__ import annotations
 
-from ..paths import frame, point_at
+import math
+
+from ..paths import frame, point_at, project
 from ..values import Undefined
 from . import op
 from .intersect import carrier
@@ -46,3 +49,53 @@ def projection(args, ctx):
         if t < -tol or (c.length is not None and t > c.length + tol):
             return {'foot': Undefined('outside_part', {'slot': 'base'})}
     return {'foot': foot}
+
+
+@op('point.divide')
+def divide(args, ctx):
+    a = args['a'].value
+    b = args['b'].value
+    m = args['m'].value['value']
+    n = args['n'].value['value']
+    s = m + n
+    tol_s = ctx.tol.decide_scalar
+    ctx.decide('invalid_parameter', m, tol_s)
+    ctx.decide('invalid_parameter', n, tol_s)
+    ctx.decide('invalid_parameter', s, tol_s)
+    if m < -tol_s or n < -tol_s or s <= tol_s:
+        return {'point': Undefined('invalid_parameter')}
+    return {'point': {'x': (n * a['x'] + m * b['x']) / s, 'y': (n * a['y'] + m * b['y']) / s}}
+
+
+@op('point.center')
+def center(args, ctx):
+    c = args['of'].value['c']
+    return {'center': {'x': c[0], 'y': c[1]}}
+
+
+@op('point.closest')
+def closest(args, ctx):
+    path = args['path']
+    p = args['point'].value
+    f = path.frame if path.frame is not None else frame(path.type, path.value)
+    t = project(f, p['x'], p['y'], ctx.tol.decide_length)
+    return {'foot': point_at(f, t)}
+
+
+@op('point.at_distance')
+def at_distance(args, ctx):
+    a = args['a'].value
+    b = args['b'].value
+    ax, ay = a['x'], a['y']
+    vx = b['x'] - ax
+    vy = b['y'] - ay
+    length = math.hypot(vx, vy)
+    tol = ctx.tol.decide_length
+    ctx.decide('coincident_points', length, tol)
+    if length <= tol:
+        none = Undefined('coincident_points')
+        return {'point': none, 'segment': none}
+    d = args['distance'].value['value']
+    px = ax + d * (vx / length)
+    py = ay + d * (vy / length)
+    return {'point': {'x': px, 'y': py}, 'segment': {'a': [ax, ay], 'b': [px, py], 'length': abs(d)}}

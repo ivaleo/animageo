@@ -1,0 +1,388 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_polyline",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a4.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_polyline",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_w": {
+        "id": "op_w",
+        "op": "polyline.by_points",
+        "args": {
+          "points": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "Q"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polyline",
+            "elementId": "w"
+          }
+        ]
+      },
+      "op_v": {
+        "id": "op_v",
+        "op": "polyline.by_points",
+        "args": {
+          "points": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polyline",
+            "elementId": "v"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "w": {
+        "id": "w",
+        "type": "polyline",
+        "displayName": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "polyline"
+        }
+      },
+      "v": {
+        "id": "v",
+        "type": "polyline",
+        "displayName": "v",
+        "producer": {
+          "operationId": "op_v",
+          "slot": "polyline"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -2
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          0,
+          3
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          3,
+          -1
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          5,
+          4
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -1.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 4.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 3.0
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                5.0,
+                4.0
+              ]
+            ],
+            "length": 10.816653826391969
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                0.0,
+                3.0
+              ],
+              [
+                3.0,
+                -1.0
+              ],
+              [
+                5.0,
+                4.0
+              ]
+            ],
+            "length": 16.788289044567353
+          }
+        }
+      },
+      "checks": {
+        "op_v:vertices": "passed",
+        "op_w:vertices": "passed"
+      }
+    },
+    {
+      "name": "repeated_point",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 4.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 3.0
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                5.0,
+                4.0
+              ]
+            ],
+            "length": 10.816653826391969
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                0.0,
+                3.0
+              ],
+              [
+                0.0,
+                3.0
+              ],
+              [
+                5.0,
+                4.0
+              ]
+            ],
+            "length": 11.502143751025633
+          }
+        }
+      },
+      "checks": {
+        "op_v:vertices": "passed",
+        "op_w:vertices": "passed"
+      }
+    }
+  ]
+}

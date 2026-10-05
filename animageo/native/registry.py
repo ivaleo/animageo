@@ -36,6 +36,10 @@ from .canonical import sha256_of
 
 __all__ = [
     'REGISTRY_VERSION',
+    'REPEAT_MAX',
+    'FREE_INPUT_DEFAULTS',
+    'free_slot',
+    'repeat_count',
     'Registry',
     'registry',
     'signature',
@@ -45,11 +49,35 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.3'
+REGISTRY_VERSION = '1.4'
+REPEAT_MAX = 100
+# A free input of these kinds is optional: absent from ``inputs``, it takes this value.
+FREE_INPUT_DEFAULTS = {'angle': {'kind': 'angle', 'value': 0.0}}
 
 _SERVICE_FILES = ('_types', '_policies', '_reasons', '_numeric')
 _INDEX_FILE = 'INDEX.json'
 _REPEAT_SLOT = re.compile(r'^(?P<base>[A-Za-z_][A-Za-z0-9_]*)\.(?P<index>[1-9][0-9]*)$')
+
+
+def free_slot(record: dict):
+    """The output slot of a free operation whose element holds the input
+    (its first output), or ``None`` for an operation that is not free."""
+    if record.get('free') is None or not record.get('outputs'):
+        return None
+    return record['outputs'][0]['slot']
+
+
+def repeat_count(value) -> int:
+    """Slots of an output repeated by a param: ``round(value)`` when ``value``
+    is a whole number in ``[1, REPEAT_MAX]``, else ``0``."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return 0
+    if value != value or value in (float('inf'), float('-inf')):
+        return 0
+    k = round(value)
+    if abs(value - k) > 1e-9 or k < 1 or k > REPEAT_MAX:
+        return 0
+    return int(k)
 
 
 def _ops_dir():
@@ -130,7 +158,9 @@ class Registry:
 
         A ``repeat`` output ``side`` over the list input ``vertices`` declares
         the slots ``side.1`` … ``side.N``, ``N`` being the number of items of
-        ``args['vertices']`` (any positive index when ``args`` is not given).
+        ``args['vertices']`` (any positive index when ``args`` is not given);
+        a ``repeat`` naming a param ``n`` declares :func:`repeat_count` of its
+        value (the default when absent).
         """
         for out in record.get('outputs', []):
             repeat = out.get('repeat')
@@ -143,12 +173,23 @@ class Registry:
                 continue
             if args is None:
                 return out['type']
-            arg = args.get(repeat)
-            if isinstance(arg, dict) and arg.get('kind') == 'list' and isinstance(arg.get('items'), list):
-                if int(match.group('index')) <= len(arg['items']):
-                    return out['type']
+            if int(match.group('index')) <= self._repeat_count(record, repeat, args):
+                return out['type']
             return None
         return None
+
+    @staticmethod
+    def _repeat_count(record: dict, repeat: str, args: dict) -> int:
+        for param in record.get('params', []):
+            if param['slot'] == repeat:
+                arg = args.get(repeat)
+                if isinstance(arg, dict) and arg.get('kind') == 'number':
+                    return repeat_count(arg.get('value'))
+                return repeat_count(param.get('default')) if arg is None else 0
+        arg = args.get(repeat)
+        if isinstance(arg, dict) and arg.get('kind') == 'list' and isinstance(arg.get('items'), list):
+            return len(arg['items'])
+        return 0
 
     def output_slots(self, record: dict, args: dict) -> list:
         """All output slots of ``record`` for ``args``, in canonical order."""
@@ -158,8 +199,7 @@ class Registry:
             if repeat is None:
                 slots.append(out['slot'])
                 continue
-            arg = args.get(repeat)
-            count = len(arg['items']) if isinstance(arg, dict) and isinstance(arg.get('items'), list) else 0
+            count = self._repeat_count(record, repeat, args)
             slots.extend(f"{out['slot']}.{i}" for i in range(1, count + 1))
         return slots
 

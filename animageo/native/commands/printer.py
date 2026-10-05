@@ -16,7 +16,7 @@ from typing import NamedTuple
 from ..document import as_document, bound_producer, cyclic_operations, iter_refs, op_dependencies
 from ..edit import name_key
 from ..kernel.evaluate import _order
-from ..registry import registry
+from ..registry import FREE_INPUT_DEFAULTS, registry
 from .build import HELPER_OPS, helper_key, is_helper, pair_op
 from .issues import CommandIssue, LineError, ambiguous_name
 from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, Lexicon
@@ -176,6 +176,8 @@ class _Printer:
         el = next((o.get('elementId') for o in op.get('outputs') or ()
                    if o.get('slot') == record['outputs'][0]['slot']), None)
         value = self.doc.inputs.get(el) if el is not None else None
+        if value is None and el is not None:
+            value = FREE_INPUT_DEFAULTS.get(free['kind'])     # an absent angle input is 0
         if not isinstance(value, dict) or value.get('kind') != free['kind']:
             return None
         return value.get('value')

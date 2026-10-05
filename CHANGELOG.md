@@ -15,8 +15,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and `print_commands` both flag it, once, at the name on the left of the
   line that defines it, at the same line and column.
 - `naming.json` has a `keys` section: raw names with their `name_key`.
+- Registry 1.4 of `animageo.native` (30 operations, `docs/native/ops/`):
+  - value types `arc` and `sector` (`{c, r, a0, a1}`, counter-clockwise,
+    `a0 ∈ [0, 2π)`, `a1 ∈ [a0, a0 + 2π]`) and `polyline`
+    (`{vertices, length}`); families `circular` and `curve` take an arc,
+    `path` takes an arc, a sector and a polyline; new families `round`
+    (circle, arc, sector) and `vertexed` (segment, polyline, polygon);
+  - points: `point.divide` (ratio `m : n`), `point.center`,
+    `point.closest`, `point.at_distance`, `polygon.vertex`;
+  - lines: `line.angle_bisectors_of_lines`, `line.external_bisector`,
+    `ray.at_angle`, `ray.by_vector` (beta), `line.tangents_from_point`,
+    `line.tangent_at`, `segment.from_point_length`, `segment.midline`,
+    `polyline.by_points`;
+  - circles, arcs and sectors: `circle.diameter`, `circle.center_segment`,
+    `circle.excircle`, `arc.center_two_points`, `arc.three_points`,
+    `arc.semicircle`, `arc.on_circle`, `sector.center_two_points`,
+    `sector.from_angle`, `sector.three_points`, `sector.on_circle`;
+  - polygons: `polygon.regular` and `polygon.regular_center` (the side and
+    vertex slots repeat by the param `n`), `polygon.parallelogram`,
+    `polygon.centroid`;
+  - `intersect.line_sector` with four fixed slots;
+  - slot policies `tangent_side`, `bisector_kind`, `vertex_index` and
+    `sector_sides`; mandatory checks for every new operation.
+- The free input kind `angle` (`{"kind": "angle", "value": radians}`, the
+  direction of `segment.from_point_length`). It may be absent and is `0`
+  then; the input of a free operation belongs to the element of its first
+  output slot.
+- Path frames of an arc (`t ∈ [0, 1]`, clamped), a sector (`t` wraps into
+  `[0, 3)`: the arc, then the radius to the centre and back) and a polyline
+  (`t ∈ [0, n − 1]`, clamped), with `project` and `distance_to_path`.
+- The bridge draws an arc as a classic `Arc`, a sector as a
+  `CircleSector` and a polyline as a `LocusCurve`.
+- 22 parity scenes `l2a4_*` (71 in all, 328 cases).
 
 ### Changed
+
+- An arc in `intersect.line_circle`, `intersect.circle_circle` and
+  `intersect.other_than` is intersected as its carrier circle; then a
+  solution off the arc leaves its slot `undefined/outside_part` with the
+  arc's argument slot in `detail`.
+- `validate`: `missing_input` no longer applies to an absent `angle` input
+  or to the other outputs of a free operation; an input for an output other
+  than the first is `input_not_free`.
+- «Команды»: the operations of registry 1.4 have no Russian names yet and
+  are printed by their IDs (`segment.from_point_length(A, 5, 0.6)`); the
+  angle input prints as its last argument and defaults to `0`.
 
 - `docs/native/commands.md` states that clients must give time-ordered IDs:
   the printer orders independent lines by operation ID.

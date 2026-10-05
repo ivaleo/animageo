@@ -1,0 +1,491 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_arc_filter",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_arc_filter",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_L1": {
+        "id": "op_L1",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "L1"
+          }
+        ]
+      },
+      "op_L2": {
+        "id": "op_L2",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "L2"
+          }
+        ]
+      },
+      "op_O2": {
+        "id": "op_O2",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O2"
+          }
+        ]
+      },
+      "op_R2": {
+        "id": "op_R2",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "R2"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "arc.center_two_points",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "arc",
+            "elementId": "k"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "L1"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "L2"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_X1_X2": {
+        "id": "op_X1_X2",
+        "op": "intersect.line_circle",
+        "args": {
+          "line": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "circle": {
+            "kind": "ref",
+            "elementId": "k"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "X1"
+          },
+          {
+            "slot": "second",
+            "elementId": "X2"
+          }
+        ]
+      },
+      "op_c2": {
+        "id": "op_c2",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O2"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "R2"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c2"
+          }
+        ]
+      },
+      "op_Y1_Y2": {
+        "id": "op_Y1_Y2",
+        "op": "intersect.circle_circle",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "k"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "c2"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "Y1"
+          },
+          {
+            "slot": "second",
+            "elementId": "Y2"
+          }
+        ]
+      },
+      "op_Z": {
+        "id": "op_Z",
+        "op": "intersect.other_than",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c2"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "k"
+          },
+          "known": {
+            "kind": "ref",
+            "elementId": "Y1"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Z"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "L1": {
+        "id": "L1",
+        "type": "point",
+        "displayName": "L1",
+        "producer": {
+          "operationId": "op_L1",
+          "slot": "point"
+        }
+      },
+      "L2": {
+        "id": "L2",
+        "type": "point",
+        "displayName": "L2",
+        "producer": {
+          "operationId": "op_L2",
+          "slot": "point"
+        }
+      },
+      "O2": {
+        "id": "O2",
+        "type": "point",
+        "displayName": "O2",
+        "producer": {
+          "operationId": "op_O2",
+          "slot": "point"
+        }
+      },
+      "R2": {
+        "id": "R2",
+        "type": "point",
+        "displayName": "R2",
+        "producer": {
+          "operationId": "op_R2",
+          "slot": "point"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "arc",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "arc"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "X1": {
+        "id": "X1",
+        "type": "point",
+        "displayName": "X1",
+        "producer": {
+          "operationId": "op_X1_X2",
+          "slot": "first"
+        }
+      },
+      "X2": {
+        "id": "X2",
+        "type": "point",
+        "displayName": "X2",
+        "producer": {
+          "operationId": "op_X1_X2",
+          "slot": "second"
+        }
+      },
+      "c2": {
+        "id": "c2",
+        "type": "circle",
+        "displayName": "c2",
+        "producer": {
+          "operationId": "op_c2",
+          "slot": "circle"
+        }
+      },
+      "Y1": {
+        "id": "Y1",
+        "type": "point",
+        "displayName": "Y1",
+        "producer": {
+          "operationId": "op_Y1_Y2",
+          "slot": "first"
+        }
+      },
+      "Y2": {
+        "id": "Y2",
+        "type": "point",
+        "displayName": "Y2",
+        "producer": {
+          "operationId": "op_Y1_Y2",
+          "slot": "second"
+        }
+      },
+      "Z": {
+        "id": "Z",
+        "type": "point",
+        "displayName": "Z",
+        "producer": {
+          "operationId": "op_Z",
+          "slot": "point"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          0,
+          4
+        ]
+      },
+      "L1": {
+        "kind": "point",
+        "value": [
+          -5,
+          1
+        ]
+      },
+      "L2": {
+        "kind": "point",
+        "value": [
+          5,
+          2
+        ]
+      },
+      "O2": {
+        "kind": "point",
+        "value": [
+          3,
+          3
+        ]
+      },
+      "R2": {
+        "kind": "point",
+        "value": [
+          3,
+          7
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "both_on_arc",
+      "inputs": {
+        "L1": {
+          "kind": "point",
+          "value": [
+            4,
+            1
+          ]
+        },
+        "L2": {
+          "kind": "point",
+          "value": [
+            1,
+            4
+          ]
+        },
+        "O2": {
+          "kind": "point",
+          "value": [
+            4,
+            4
+          ]
+        },
+        "R2": {
+          "kind": "point",
+          "value": [
+            4,
+            7
+          ]
+        }
+      }
+    },
+    {
+      "name": "none_on_arc",
+      "inputs": {
+        "L1": {
+          "kind": "point",
+          "value": [
+            -5,
+            -1
+          ]
+        },
+        "L2": {
+          "kind": "point",
+          "value": [
+            5,
+            -2
+          ]
+        },
+        "O2": {
+          "kind": "point",
+          "value": [
+            -3,
+            -3
+          ]
+        },
+        "R2": {
+          "kind": "point",
+          "value": [
+            -3,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}

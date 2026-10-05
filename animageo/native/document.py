@@ -20,7 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .canonical import canonical_json, sha256_of
-from .registry import REGISTRY_VERSION, registry
+from .registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, free_slot, registry
 
 __all__ = [
     'DOCUMENT_FORMAT',
@@ -340,14 +340,17 @@ class _Structure:
             if 'branch' in value and (not _is_number(value['branch']) or value['branch'] not in (-1, 1)):
                 self.add(path + '/branch', 'a path branch must be -1 or 1', elementId=key)
             return
-        if kind == 'number':
-            self.keys(value, path, 'a number input', ('kind', 'value'), ('kind', 'value'), elementId=key)
+        if kind in ('number', 'angle'):
+            self.keys(value, path, f'a{"n" if kind == "angle" else ""} {kind} input', ('kind', 'value'),
+                      ('kind', 'value'), elementId=key)
             if 'value' in value and not _is_number(value['value']):
-                self.add(path + '/value', 'a number input must be a number', elementId=key)
+                self.add(path + '/value', f'a{"n" if kind == "angle" else ""} {kind} input must be a number',
+                         elementId=key)
             return
         self.keys(value, path, 'an input', ('kind', 'value'), ('kind', 'value'), elementId=key)
         if 'kind' in value and kind != 'point':
-            self.add(path + '/kind', f'unknown input kind {kind!r} (point, pathParameter, number)', elementId=key)
+            self.add(path + '/kind', f'unknown input kind {kind!r} (point, pathParameter, number, angle)',
+                     elementId=key)
         if 'value' in value:
             self.numbers(value['value'], path + '/value', 'a point value', 2)
 
@@ -758,7 +761,8 @@ def validate(doc) -> list:
             issues.append(Issue('type_mismatch', path + '/type',
                                 f"slot {prod['slot']!r} of {op['op']} produces {out_type}, not {el['type']}",
                                 elementId=el_id, operationId=prod['operationId']))
-        if record.get('free') is not None and el_id not in inputs:
+        if record.get('free') is not None and el_id not in inputs and prod['slot'] == free_slot(record) \
+                and record['free']['kind'] not in FREE_INPUT_DEFAULTS:
             issues.append(Issue('missing_input', '/inputs' + _pointer(el_id),
                                 f'free element {el_id!r} has no input value', elementId=el_id))
 
@@ -770,6 +774,8 @@ def validate(doc) -> list:
         producer = bound_producer(doc, el_id)
         record = reg.get(ops[producer]['op']) if producer is not None else None
         free = record.get('free') if record is not None else None
+        if free is not None and elements[el_id]['producer']['slot'] != free_slot(record):
+            free = None             # only the element of the first output slot holds the input
         if free is None:
             issues.append(Issue('input_not_free', path, f'element {el_id!r} is not a free input',
                                 elementId=el_id))

@@ -352,5 +352,401 @@
     },
     "math": "docs/native/ops/vector.by_points.md",
     "signatureHash": "sha256:7f2f4e4551fe968c3a7714fe613de1fc65218c5ad6dbc65e911f37d8e05aef11"
+  },
+  {
+    "op": "line.angle_bisectors_of_lines",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "linear"
+      },
+      {
+        "slot": "second",
+        "type": "linear"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "internal",
+        "type": "line"
+      },
+      {
+        "slot": "external",
+        "type": "line"
+      }
+    ],
+    "branch": {
+      "policy": "bisector_kind",
+      "slots": [
+        "internal",
+        "external"
+      ],
+      "text": "internal has direction normalize(d1 + d2), external is internal turned by +90 degrees; parallel lines give the midline in the slot whose direction sum is not zero"
+    },
+    "undefined": [
+      "zero_length",
+      "parallel",
+      "coincident",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "equal_angles",
+        "text": "the lines bisect the angles: max(|d1 . i - d2 . i|, |d1 . e + d2 . e|) * S over the defined slots"
+      }
+    ],
+    "orientation": "d1_plus_d2",
+    "pathParam": null,
+    "stepKind": "angle_bisector",
+    "phrases": {
+      "ru": "{internal}, {external} — биссектрисы углов между {first} и {second}"
+    },
+    "math": "docs/native/ops/line.angle_bisectors_of_lines.md",
+    "signatureHash": "sha256:8a6a02030d83530ee0f45d054a1fd512e3a7310a38520c67f2e3b86f92a0594d"
+  },
+  {
+    "op": "line.external_bisector",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "vertex",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_vertex",
+        "text": "the line passes through the vertex: distance from it to the line"
+      },
+      {
+        "id": "equal_angles",
+        "text": "the line bisects the adjacent angle: |ua . e + ub . e| * S"
+      }
+    ],
+    "orientation": "into_angle_ccw90",
+    "pathParam": null,
+    "stepKind": "external_bisector",
+    "phrases": {
+      "ru": "{line} — внешняя биссектриса угла {a}{vertex}{b}"
+    },
+    "math": "docs/native/ops/line.external_bisector.md",
+    "signatureHash": "sha256:1fe1079ea7947fb9f7ab15c6bf323a7ed82f6ff13239b4aae6248c8822f08396"
+  },
+  {
+    "op": "ray.at_angle",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "vertex",
+        "type": "point"
+      },
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "size",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "ray",
+        "type": "ray"
+      },
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "angle",
+        "text": "the ray turns the side vertex a by size counterclockwise: |wrap(angle(point - vertex) - angle(a - vertex) - size)| * S, and | |point - vertex| - |a - vertex| |"
+      }
+    ],
+    "orientation": "rotated_side",
+    "pathParam": null,
+    "stepKind": "ray_at_angle",
+    "phrases": {
+      "ru": "{ray} — луч из {vertex} под углом {size} к {vertex}{a}; {point} — образ {a}"
+    },
+    "math": "docs/native/ops/ray.at_angle.md",
+    "signatureHash": "sha256:64d4eb3af97414f105e7e5c8f175879e8ee29f402854167dcc46590883132b97"
+  },
+  {
+    "op": "ray.by_vector",
+    "status": "beta",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "origin",
+        "type": "point"
+      },
+      {
+        "slot": "vector",
+        "type": "vector"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "ray",
+        "type": "ray"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "zero_length",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "parallel",
+        "text": "the ray has the direction of the vector: |dir x v| / |v| * S"
+      }
+    ],
+    "orientation": "vector_dir",
+    "pathParam": null,
+    "stepKind": "ray",
+    "phrases": {
+      "ru": "{ray} — луч из {origin} по направлению {vector}"
+    },
+    "math": "docs/native/ops/ray.by_vector.md",
+    "signatureHash": "sha256:9aa590570a7ee603f99405de5fe4c091cf834393919953c3f1a14d3ce205a564"
+  },
+  {
+    "op": "line.tangents_from_point",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "circle",
+        "type": "circle"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "tangent.1",
+        "type": "line"
+      },
+      {
+        "slot": "tangent.2",
+        "type": "line"
+      },
+      {
+        "slot": "touch.1",
+        "type": "point"
+      },
+      {
+        "slot": "touch.2",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "tangent_side",
+      "slots": [
+        "tangent.1",
+        "tangent.2",
+        "touch.1",
+        "touch.2"
+      ],
+      "text": "tangent.1 and touch.1 lie to the left of the ray from the point to the centre; a point on the circle fills both slots (multiplicity 2)"
+    },
+    "undefined": [
+      "point_inside",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "tangent",
+        "text": "each line touches the circle: | dist(c, tangent.i) - r | and | |touch.i - c| - r |"
+      },
+      {
+        "id": "through_point",
+        "text": "each line passes through the point: distance from it to tangent.i"
+      }
+    ],
+    "orientation": "point_to_touch",
+    "pathParam": null,
+    "stepKind": "tangent",
+    "phrases": {
+      "ru": "{tangent.1}, {tangent.2} — касательные из {point} к {circle}; {touch.1}, {touch.2} — точки касания"
+    },
+    "math": "docs/native/ops/line.tangents_from_point.md",
+    "signatureHash": "sha256:a8cdf3c712f75b4d1f523964c08a2539656d6b3e79332ba63995ea9950470d96"
+  },
+  {
+    "op": "line.tangent_at",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "circle",
+        "type": "circle"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "not_on_curve",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "tangent",
+        "text": "the line touches the circle at the point: | dist(c, line) - r | and the distance from the point to the line"
+      }
+    ],
+    "orientation": "circle_ccw",
+    "pathParam": null,
+    "stepKind": "tangent",
+    "phrases": {
+      "ru": "{line} — касательная к {circle} в точке {point}"
+    },
+    "math": "docs/native/ops/line.tangent_at.md",
+    "signatureHash": "sha256:8771ad63c25fe30cc2583be47fdb2efeffd06c2d19d639f950f2df3373a62fc4"
+  },
+  {
+    "op": "segment.from_point_length",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "start",
+        "type": "point"
+      },
+      {
+        "slot": "length",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "segment",
+        "type": "segment"
+      },
+      {
+        "slot": "end",
+        "type": "point"
+      }
+    ],
+    "free": {
+      "kind": "angle"
+    },
+    "branch": null,
+    "undefined": [
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "length",
+        "text": "the segment starts at start and has the given length: | |end - start| - length | and |segment.a - start|"
+      }
+    ],
+    "orientation": "a_to_b",
+    "pathParam": null,
+    "stepKind": "segment",
+    "phrases": {
+      "ru": "{segment} — отрезок длины {length} из {start}; {end} — его конец"
+    },
+    "math": "docs/native/ops/segment.from_point_length.md",
+    "signatureHash": "sha256:3104127cfff0fa3a18cd94422a8f5ee37437dbf024dd2e3aeac1b9f6d8eb7d88"
+  },
+  {
+    "op": "segment.midline",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "segment"
+      },
+      {
+        "slot": "second",
+        "type": "segment"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "segment",
+        "type": "segment"
+      },
+      {
+        "slot": "mid.1",
+        "type": "point"
+      },
+      {
+        "slot": "mid.2",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "midpoints",
+        "text": "the ends are the midpoints of first and second: the largest distance"
+      }
+    ],
+    "orientation": "a_to_b",
+    "pathParam": null,
+    "stepKind": "midline",
+    "phrases": {
+      "ru": "{segment} — средняя линия, соединяющая середины {first} и {second}"
+    },
+    "math": "docs/native/ops/segment.midline.md",
+    "signatureHash": "sha256:f9080853fc77c5cc00a537bf594f03c540fc03671e77400a704223f1b336c394"
   }
 ]

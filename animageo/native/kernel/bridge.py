@@ -15,6 +15,12 @@ broken operations (a cycle, an op not in the registry, argument errors, a
 free op without a valid input) get no command: their elements, created last
 in ID order, stay ``None``. An undefined result is ``None`` as well.
 
+Registry 1.4: an arc is a classic ``Arc`` and a sector a ``CircleSector``
+whose ``angles`` are the kernel ``[a0, a1]`` as they are (a full arc keeps
+``a1 = a0 + 2π``); a polyline is a ``LocusCurve`` of its vertices. A free
+``angle`` input (``segment.from_point_length``) is a constant of the
+command: the input of the element of the first output slot, ``0`` when absent.
+
 A free number (``number.free``) is a level-0 ``Var`` holding the kernel
 value (clamped to ``min``/``max``; ``None`` when undefined). Values convert
 by type: a vector is a classic ``Vector``; a number is a ``float``
@@ -40,7 +46,7 @@ import math
 import re
 from typing import NamedTuple
 
-from ..registry import registry
+from ..registry import FREE_INPUT_DEFAULTS, free_slot, registry
 from . import paths
 from .evaluate import _argument_status, _order, number_literal, valid_input
 from .numeric import scene_scale, tolerances
@@ -101,12 +107,14 @@ class NativeMark:
 
 def _fingerprint(obj) -> tuple:
     keys = ('coords', 'normal', 'offset', 'start', 'endpoints', 'center', 'radius', 'vertices', 'value',
-            'dimension', 'vertex', 'side1', 'side2', 'kind', 'count')
+            'dimension', 'vertex', 'side1', 'side2', 'kind', 'count', 'angles', 'points')
     out = []
     for key in keys:
         value = getattr(obj, key, None)
         if isinstance(value, str):
             out.append((key, value))
+        elif isinstance(value, (list, tuple)):
+            out.append((key, tuple(float(v) for v in value)))
         elif value is not None:
             out.append((key, value.tobytes() if hasattr(value, 'tobytes') else float(value)))
     return tuple(out)
@@ -126,7 +134,8 @@ def to_classic(type_: str, value, *, sides=None):
     """
     if value is None:
         return None
-    from ...geo.lib_elements import Angle, Circle, Line, Point, Polygon, Ray, Segment, Vector
+    from ...geo.lib_elements import Angle, Arc, Circle, CircleSector, Line, LocusCurve, Point, Polygon, Ray, \
+        Segment, Vector
     from ...geo.lib_vars import AngleSize, Measure
     import numpy as np
 
@@ -147,6 +156,12 @@ def to_classic(type_: str, value, *, sides=None):
         obj = Circle(np.array(value['c'], dtype=float), value['r'])
     elif type_ == 'polygon':
         obj = Polygon(value['vertices'])
+    elif type_ in ('arc', 'sector'):
+        cls = Arc if type_ == 'arc' else CircleSector
+        obj = cls(np.array(value['c'], dtype=float), value['r'], [value['a0'], value['a1']])
+        obj.angles = [float(value['a0']), float(value['a1'])]     # the kernel angles (a full arc stays full)
+    elif type_ == 'polyline':
+        obj = LocusCurve(value['vertices'])
     elif type_ == 'vector':
         obj = Vector(np.array([value['a'], value['b']], dtype=float))
     elif type_ == 'angle':
@@ -215,6 +230,17 @@ def from_classic(type_: str, obj):
     if type_ == 'vector':
         (ax, ay), (bx, by) = (map(float, p) for p in obj.endpoints)
         return {'a': [ax, ay], 'b': [bx, by], 'length': math.hypot(bx - ax, by - ay)}
+    if type_ in ('arc', 'sector'):
+        from .ops.angle import TWO_PI, normalize_angle
+        a0 = normalize_angle(float(obj.angles[0]))
+        sweep = min(max(float(obj.angles[1]) - float(obj.angles[0]), 0.0), TWO_PI)
+        return {'c': [float(v) for v in obj.center], 'r': float(obj.radius), 'a0': a0, 'a1': a0 + sweep}
+    if type_ == 'polyline':
+        pts = [(float(x), float(y)) for x, y in obj.points]
+        length = 0.0
+        for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+            length = length + math.hypot(x1 - x0, y1 - y0)
+        return {'vertices': [[x, y] for x, y in pts], 'length': length}
     if type_ == 'angle':
         from .ops.angle import angle_size, normalize_angle
         (s1x, s1y), (s2x, s2y) = (map(float, v) for v in (obj.side1, obj.side2))
@@ -272,7 +298,7 @@ class _Runner:
     """The function of one :class:`NativeCommand`: classic inputs → kernel → classic outputs."""
 
     def __init__(self, construction, op_name, layout, out_slots, out_types, tol, *,
-                 free_value=None, path_frame=None, tparam_of=None, constants=None):
+                 free_value=None, path_frame=None, tparam_of=None, constants=None, free_input=None):
         self.construction = construction
         self.op_name = op_name
         self.layout = layout              # [(slot, is_list, [element type…])]
@@ -283,6 +309,7 @@ class _Runner:
         self.free_value = free_value      # point.on_path: the document's input value
         self.path_frame = path_frame      # (producer op, [(slot, is_list, [type…])]) of the path
         self.tparam_of = tparam_of        # classic name of the on_path output
+        self.free_input = free_input      # a free angle input: the document's (or default) input value
         self.__name__ = op_name
 
     def __call__(self, *classic):
@@ -298,7 +325,7 @@ class _Runner:
                     return none
                 items.append(Input(type_, value))
             args[slot] = items if is_list else items[0]
-        input_value = None
+        input_value = self.free_input
         if self.path_frame is not None:
             producer_op, producer_layout = self.path_frame
             values = {}
@@ -401,7 +428,12 @@ def build_construction(doc, *, inputs=None, seed=None):
             continue
         free = record.get('free')
         if free is not None:
-            value = values_in.get(outs[0])
+            holders = [e for e in outs if elements[e]['producer']['slot'] == free_slot(record)]
+            if not holders:
+                continue
+            value = values_in.get(holders[0])
+            if value is None:
+                value = FREE_INPUT_DEFAULTS.get(free['kind'])
             if not valid_input(free['kind'], value):
                 continue
             if free['kind'] == 'point':
@@ -424,6 +456,7 @@ def build_construction(doc, *, inputs=None, seed=None):
         path_frame = None
         tparam_of = None
         free_value = None
+        free_input = value if free is not None and free['kind'] == 'angle' else None
         if free is not None and free['kind'] == 'pathParameter':
             path_id = resolved.refs[0][2][0]
             path_op = ops[elements[path_id]['producer']['operationId']]
@@ -447,7 +480,7 @@ def build_construction(doc, *, inputs=None, seed=None):
                          [elements[e]['producer']['slot'] for e in outs],
                          [elements[e]['type'] for e in outs], tol,
                          free_value=free_value, path_frame=path_frame, tparam_of=tparam_of,
-                         constants=constants)
+                         constants=constants, free_input=free_input)
         construction.add(NativeCommand(op['op'], input_names, [names.by_id[e] for e in outs], op_id, runner))
 
     for el_id in sorted(elements):      # elements of broken operations

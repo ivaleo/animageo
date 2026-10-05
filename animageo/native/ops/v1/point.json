@@ -164,5 +164,179 @@
     },
     "math": "docs/native/ops/point.projection.md",
     "signatureHash": "sha256:d335c0ed75eeb527edd741676e32473b0fc8e3a23b4a46a36a8575f2f2d1bba5"
+  },
+  {
+    "op": "point.divide",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "m",
+        "type": "number"
+      },
+      {
+        "slot": "n",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "ratio",
+        "text": "AP : PB = m : n: |n (P - a) - m (b - P)| / (m + n)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "divide",
+    "phrases": {
+      "ru": "{point} — точка, делящая отрезок {a}{b} в отношении {m} : {n}"
+    },
+    "math": "docs/native/ops/point.divide.md",
+    "signatureHash": "sha256:fff526a27a4a155d9b6b7bf7d215e2f6baa4b37d24388e7c1974d28b7795c658"
+  },
+  {
+    "op": "point.center",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "of",
+        "type": "round"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "center",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "matches",
+        "text": "the point is the centre of the circle, arc or sector: |center - c|"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "center",
+    "phrases": {
+      "ru": "{center} — центр {of}"
+    },
+    "math": "docs/native/ops/point.center.md",
+    "signatureHash": "sha256:72226b6a4de7942d76e49ef33880d34ffe0c316aa9b787bdbaba3d12a0163935"
+  },
+  {
+    "op": "point.closest",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "path",
+        "type": "path"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "foot",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_path",
+        "text": "the point lies on the path: distance from it to the path part"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "closest_point",
+    "phrases": {
+      "ru": "{foot} — ближайшая к {point} точка {path}"
+    },
+    "math": "docs/native/ops/point.closest.md",
+    "signatureHash": "sha256:75d52848e5699863005a819907c866fc141483bf50ecc12e42e5b349e88b07c5"
+  },
+  {
+    "op": "point.at_distance",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "distance",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "segment",
+        "type": "segment"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "distance",
+        "text": "the point is at the given distance from a on the ray a b: | |P - a| - |distance| | and the distance from P to the line a b"
+      }
+    ],
+    "orientation": "a_to_b",
+    "pathParam": null,
+    "stepKind": "point_at_distance",
+    "phrases": {
+      "ru": "{point} — точка на луче {a}{b} на расстоянии {distance} от {a}; {segment} — отрезок до неё"
+    },
+    "math": "docs/native/ops/point.at_distance.md",
+    "signatureHash": "sha256:502a94cc805fd807497a7b5a5e5b63088dec178422408840a2f754d98c861fa3"
   }
 ]

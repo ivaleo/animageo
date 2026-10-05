@@ -1,0 +1,449 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_ray_by_vector",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a4.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_ray_by_vector",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_v": {
+        "id": "op_v",
+        "op": "vector.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "v"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "ray.by_vector",
+        "args": {
+          "origin": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "vector": {
+            "kind": "ref",
+            "elementId": "v"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "ray",
+            "elementId": "r"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "v": {
+        "id": "v",
+        "type": "vector",
+        "displayName": "v",
+        "producer": {
+          "operationId": "op_v",
+          "slot": "vector"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "ray",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "ray"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          1,
+          2
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          -2,
+          -1
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          2,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -1.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 3.0
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              1.0,
+              2.0
+            ],
+            "dir": [
+              0.7071067811865475,
+              0.7071067811865475
+            ]
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -2.0,
+              -1.0
+            ],
+            "b": [
+              2.0,
+              3.0
+            ],
+            "length": 5.656854249492381
+          }
+        }
+      },
+      "checks": {
+        "op_r:parallel": "passed",
+        "op_v:ends": "passed"
+      }
+    },
+    {
+      "name": "reversed",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            5,
+            0
+          ]
+        },
+        "Q": {
+          "kind": "point",
+          "value": [
+            -1,
+            1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 0.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 1.0
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              1.0,
+              2.0
+            ],
+            "dir": [
+              -0.9863939238321437,
+              0.1643989873053573
+            ]
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              5.0,
+              0.0
+            ],
+            "b": [
+              -1.0,
+              1.0
+            ],
+            "length": 6.082762530298219
+          }
+        }
+      },
+      "checks": {
+        "op_r:parallel": "passed",
+        "op_v:ends": "passed"
+      }
+    },
+    {
+      "name": "vertical",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            -3
+          ]
+        },
+        "Q": {
+          "kind": "point",
+          "value": [
+            0,
+            2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -3.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 2.0
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              1.0,
+              2.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              -3.0
+            ],
+            "b": [
+              0.0,
+              2.0
+            ],
+            "length": 5.0
+          }
+        }
+      },
+      "checks": {
+        "op_r:parallel": "passed",
+        "op_v:ends": "passed"
+      }
+    },
+    {
+      "name": "zero",
+      "inputs": {
+        "Q": {
+          "kind": "point",
+          "value": [
+            -2,
+            -1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -1.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -1.0
+          }
+        },
+        "r": {
+          "state": "undefined",
+          "type": "ray",
+          "reason": "zero_length"
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -2.0,
+              -1.0
+            ],
+            "b": [
+              -2.0,
+              -1.0
+            ],
+            "length": 0.0
+          }
+        }
+      },
+      "checks": {
+        "op_v:ends": "passed"
+      }
+    }
+  ]
+}

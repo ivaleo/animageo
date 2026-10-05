@@ -13,7 +13,8 @@ Contract (``docs/native/kernel.md``), per operation in dependency order:
    element type not fitting the slot → ``error/type_mismatch``; then per
    param: not a number → ``error/type_mismatch``, a required one missing →
    ``error/schema``; a free operation without a valid input value →
-   ``error/schema``;
+   ``error/schema`` (the input is the value of the element of its first
+   output slot; an ``angle`` input may be absent and defaults to ``0``);
 4. an input not ``defined`` → the worst input state
    (``error > unsupported > undefined``), ``reason: upstream``, ``cause`` =
    that input's ``cause`` or its ID; ties go to the first input in registry
@@ -47,7 +48,7 @@ from ..document import (
     iter_refs,
     op_dependencies,
 )
-from ..registry import REGISTRY_VERSION, registry
+from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, free_slot, registry
 from . import paths
 from .numeric import Tolerances, scene_scale, tolerances
 from .ops import IMPLEMENTATIONS, OpContext
@@ -98,14 +99,16 @@ class Evaluated:
 
 
 def _free_elements(doc: NativeDocument, reg) -> dict:
-    """``{elementId: free kind}`` for elements bound to a free operation."""
+    """``{elementId: free kind}`` for the elements holding the input of a free
+    operation (bound to its first output slot)."""
     out = {}
     for el_id in doc.elements:
         producer = bound_producer(doc, el_id)
         if producer is None:
             continue
         record = reg.get(doc.operations[producer]['op'])
-        if record is not None and record.get('free') is not None:
+        if record is not None and record.get('free') is not None and \
+                doc.elements[el_id]['producer']['slot'] == free_slot(record):
             out[el_id] = record['free']['kind']
     return out
 
@@ -136,12 +139,21 @@ def _valid_number_input(value) -> bool:
     return set(value) == {'kind', 'value'} and _finite(value.get('value'))
 
 
+def _valid_angle_input(value) -> bool:
+    if not isinstance(value, dict) or value.get('kind') != 'angle':
+        return False
+    return set(value) == {'kind', 'value'} and _finite(value.get('value'))
+
+
 _INPUT_VALIDATORS = {'point': _valid_point_input, 'pathParameter': _valid_path_input,
-                     'number': _valid_number_input}
+                     'number': _valid_number_input, 'angle': _valid_angle_input}
+# A free input of these kinds may be absent from ``inputs``: it takes this value.
+INPUT_DEFAULTS = FREE_INPUT_DEFAULTS
 _INPUT_SHAPES = {
     'point': '{"kind": "point", "value": [x, y]} with finite numbers',
     'pathParameter': '{"kind": "pathParameter", "value": t, "branch"?: -1 | 1} with a finite t',
     'number': '{"kind": "number", "value": v} with a finite v',
+    'angle': '{"kind": "angle", "value": radians} with a finite value',
 }
 
 
@@ -359,6 +371,8 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
             targets = [e for e in bound.get(op_id, ())
                        if elements[e]['producer']['slot'] == record['outputs'][0]['slot']]
             free_input = values_in.get(targets[0]) if targets else None
+            if free_input is None:
+                free_input = INPUT_DEFAULTS.get(record['free']['kind'])
             if targets and not valid_input(record['free']['kind'], free_input):
                 settle(op_id, 'error', 'schema')
                 continue

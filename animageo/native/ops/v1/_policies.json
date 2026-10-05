@@ -11,6 +11,18 @@
     },
     "other_than": {
       "text": "one slot: the solution of the base pair other than the explicit point argument known; tangency at known gives known; known not among the solutions gives branch_absent"
+    },
+    "tangent_side": {
+      "text": "tangents from a point: tangent.1 and touch.1 lie to the left of the ray from the point to the centre, tangent.2 and touch.2 to the right; a point on the circle fills both slots with the tangent at it (multiplicity 2), directions continuous with the outside case; a point inside gives point_inside"
+    },
+    "bisector_kind": {
+      "text": "bisectors of two lines: internal has direction normalize(d1 + d2), external is internal turned by +90 degrees; for parallel lines the slot whose direction sum is not zero is the midline, the other is parallel (coincident for one line)"
+    },
+    "vertex_index": {
+      "text": "a polygon and its parts: polygon, side.i from vertex.i to vertex.(i + 1) (side.n closes), vertex.k, counted from one; an image keeps vertex.k as the image of vertex.k without normalizing the orientation"
+    },
+    "sector_sides": {
+      "text": "line and sector: arc.1, arc.2 lie on the arc in the order of the line parameter (slots fixed on the carrier circle before the part filters), side.1 on the radius from c to S0, side.2 on the radius from c to S1"
     }
   }
 }

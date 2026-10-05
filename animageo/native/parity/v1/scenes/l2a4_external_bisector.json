@@ -1,0 +1,218 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_external_bisector",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_external_bisector",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_V": {
+        "id": "op_V",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "V"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_e": {
+        "id": "op_e",
+        "op": "line.external_bisector",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "e"
+          }
+        ]
+      },
+      "op_i": {
+        "id": "op_i",
+        "op": "line.angle_bisector",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "i"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "V": {
+        "id": "V",
+        "type": "point",
+        "displayName": "V",
+        "producer": {
+          "operationId": "op_V",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "e": {
+        "id": "e",
+        "type": "line",
+        "displayName": "e",
+        "producer": {
+          "operationId": "op_e",
+          "slot": "line"
+        }
+      },
+      "i": {
+        "id": "i",
+        "type": "line",
+        "displayName": "i",
+        "producer": {
+          "operationId": "op_i",
+          "slot": "line"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          4,
+          1
+        ]
+      },
+      "V": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          -1,
+          5
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "obtuse",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            -5,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "name": "right",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            3,
+            0
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,761 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_on_path_arcs",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a4.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_on_path_arcs",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "arc.center_two_points",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "arc",
+            "elementId": "k"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "sector.center_two_points",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "t"
+          }
+        ]
+      },
+      "op_w": {
+        "id": "op_w",
+        "op": "polyline.by_points",
+        "args": {
+          "points": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "Q"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polyline",
+            "elementId": "w"
+          }
+        ]
+      },
+      "op_P1": {
+        "id": "op_P1",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "k"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P1"
+          }
+        ]
+      },
+      "op_P2": {
+        "id": "op_P2",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "t"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P2"
+          }
+        ]
+      },
+      "op_P3": {
+        "id": "op_P3",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "t"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P3"
+          }
+        ]
+      },
+      "op_P4": {
+        "id": "op_P4",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "w"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P4"
+          }
+        ]
+      },
+      "op_P5": {
+        "id": "op_P5",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "k"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P5"
+          }
+        ]
+      },
+      "op_P6": {
+        "id": "op_P6",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "t"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P6"
+          }
+        ]
+      },
+      "op_P7": {
+        "id": "op_P7",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "w"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P7"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "arc",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "arc"
+        }
+      },
+      "t": {
+        "id": "t",
+        "type": "sector",
+        "displayName": "t",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "sector"
+        }
+      },
+      "w": {
+        "id": "w",
+        "type": "polyline",
+        "displayName": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "polyline"
+        }
+      },
+      "P1": {
+        "id": "P1",
+        "type": "point",
+        "displayName": "P1",
+        "producer": {
+          "operationId": "op_P1",
+          "slot": "point"
+        }
+      },
+      "P2": {
+        "id": "P2",
+        "type": "point",
+        "displayName": "P2",
+        "producer": {
+          "operationId": "op_P2",
+          "slot": "point"
+        }
+      },
+      "P3": {
+        "id": "P3",
+        "type": "point",
+        "displayName": "P3",
+        "producer": {
+          "operationId": "op_P3",
+          "slot": "point"
+        }
+      },
+      "P4": {
+        "id": "P4",
+        "type": "point",
+        "displayName": "P4",
+        "producer": {
+          "operationId": "op_P4",
+          "slot": "point"
+        }
+      },
+      "P5": {
+        "id": "P5",
+        "type": "point",
+        "displayName": "P5",
+        "producer": {
+          "operationId": "op_P5",
+          "slot": "point"
+        }
+      },
+      "P6": {
+        "id": "P6",
+        "type": "point",
+        "displayName": "P6",
+        "producer": {
+          "operationId": "op_P6",
+          "slot": "point"
+        }
+      },
+      "P7": {
+        "id": "P7",
+        "type": "point",
+        "displayName": "P7",
+        "producer": {
+          "operationId": "op_P7",
+          "slot": "point"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          -2,
+          3
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          3,
+          -3
+        ]
+      },
+      "P1": {
+        "kind": "pathParameter",
+        "value": 0.25
+      },
+      "P2": {
+        "kind": "pathParameter",
+        "value": 1.5
+      },
+      "P3": {
+        "kind": "pathParameter",
+        "value": 2.5
+      },
+      "P4": {
+        "kind": "pathParameter",
+        "value": 1.5
+      },
+      "P5": {
+        "kind": "pathParameter",
+        "value": 1.7
+      },
+      "P6": {
+        "kind": "pathParameter",
+        "value": -0.5
+      },
+      "P7": {
+        "kind": "pathParameter",
+        "value": 5
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.4314520839225184,
+            "y": 2.055513706046205
+          }
+        },
+        "P2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.1094003924504579,
+            "y": 1.6641005886756877
+          }
+        },
+        "P3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "P4": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 0.0
+          }
+        },
+        "P5": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.2188007849009157,
+            "y": 3.3282011773513753
+          }
+        },
+        "P6": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "P7": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 3.0
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "arc",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 4.0,
+            "a0": 0.0,
+            "a1": 2.158798930342464
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 4.0,
+            "a0": 0.0,
+            "a1": 2.158798930342464
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                4.0,
+                0.0
+              ],
+              [
+                -2.0,
+                3.0
+              ],
+              [
+                3.0,
+                -3.0
+              ]
+            ],
+            "length": 14.518453608406023
+          }
+        }
+      },
+      "checks": {
+        "op_P1:on_path": "passed",
+        "op_P2:on_path": "passed",
+        "op_P3:on_path": "passed",
+        "op_P4:on_path": "passed",
+        "op_P5:on_path": "passed",
+        "op_P6:on_path": "passed",
+        "op_P7:on_path": "passed",
+        "op_k:ends": "passed",
+        "op_t:ends": "passed",
+        "op_w:vertices": "passed"
+      }
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "Q": {
+          "kind": "point",
+          "value": [
+            0,
+            -4
+          ]
+        },
+        "P1": {
+          "kind": "pathParameter",
+          "value": 0.0
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "P2": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.6739403974420594e-16,
+            "y": -2.0
+          }
+        },
+        "P3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "P4": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.5,
+            "y": -3.5
+          }
+        },
+        "P5": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -7.347880794884119e-16,
+            "y": -4.0
+          }
+        },
+        "P6": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "P7": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -4.0
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "arc",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 4.0,
+            "a0": 0.0,
+            "a1": 4.71238898038469
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 4.0,
+            "a0": 0.0,
+            "a1": 4.71238898038469
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                4.0,
+                0.0
+              ],
+              [
+                0.0,
+                -4.0
+              ],
+              [
+                3.0,
+                -3.0
+              ]
+            ],
+            "length": 8.81913190966076
+          }
+        }
+      },
+      "checks": {
+        "op_P1:on_path": "passed",
+        "op_P2:on_path": "passed",
+        "op_P3:on_path": "passed",
+        "op_P4:on_path": "passed",
+        "op_P5:on_path": "passed",
+        "op_P6:on_path": "passed",
+        "op_P7:on_path": "passed",
+        "op_k:ends": "passed",
+        "op_t:ends": "passed",
+        "op_w:vertices": "passed"
+      }
+    }
+  ]
+}

@@ -1,0 +1,366 @@
+[
+  {
+    "op": "arc.center_two_points",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "center",
+        "type": "point"
+      },
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "arc",
+        "type": "arc"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "ends",
+        "text": "the arc starts at a and ends on the ray center b: max(|start - a|, distance from the end to the ray)"
+      }
+    ],
+    "orientation": "ccw",
+    "pathParam": null,
+    "stepKind": "arc",
+    "phrases": {
+      "ru": "{arc} — дуга с центром {center} от {a} до луча {center}{b}"
+    },
+    "math": "docs/native/ops/arc.center_two_points.md",
+    "signatureHash": "sha256:fe5c2ff513657d24f8d5c23b0350d5fd25a3a3ee99b40e7a51125981d153306c"
+  },
+  {
+    "op": "arc.three_points",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "arc",
+        "type": "arc"
+      },
+      {
+        "slot": "center",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_all",
+        "text": "the arc passes through a, b and c: max distance from them to the arc"
+      }
+    ],
+    "orientation": "ccw",
+    "pathParam": null,
+    "stepKind": "arc",
+    "phrases": {
+      "ru": "{arc} — дуга {a}{b}{c}; {center} — её центр"
+    },
+    "math": "docs/native/ops/arc.three_points.md",
+    "signatureHash": "sha256:12a2819007e70894b76cf8325598773cafae7520491816dfb746ffaf8b9c6ce3"
+  },
+  {
+    "op": "arc.semicircle",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "arc",
+        "type": "arc"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "ends",
+        "text": "a half circle on a b to the left of a b: max(|end - a|, |start - b|, |r - |b - a| / 2|)"
+      }
+    ],
+    "orientation": "ccw",
+    "pathParam": null,
+    "stepKind": "arc",
+    "phrases": {
+      "ru": "{arc} — полуокружность на {a}{b}"
+    },
+    "math": "docs/native/ops/arc.semicircle.md",
+    "signatureHash": "sha256:8bc2859513e8f02f7dee2c714b0fd7fae95c8227fdf895cb3db78577b662109f"
+  },
+  {
+    "op": "arc.on_circle",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "circle",
+        "type": "circle"
+      },
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "arc",
+        "type": "arc"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "ends",
+        "text": "the arc of the circle from the ray c a to the ray c b: distances from its ends to the rays"
+      }
+    ],
+    "orientation": "ccw",
+    "pathParam": null,
+    "stepKind": "arc",
+    "phrases": {
+      "ru": "{arc} — дуга {circle} от {a} до {b}"
+    },
+    "math": "docs/native/ops/arc.on_circle.md",
+    "signatureHash": "sha256:2c1cfcb60333d073d18d3bc2fc73eaef0ce2eef56fe79fafe46eb4dbaaef2f14"
+  },
+  {
+    "op": "sector.center_two_points",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "center",
+        "type": "point"
+      },
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "sector",
+        "type": "sector"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "ends",
+        "text": "the arc of the sector starts at a and ends on the ray center b"
+      }
+    ],
+    "orientation": "ccw",
+    "pathParam": null,
+    "stepKind": "sector",
+    "phrases": {
+      "ru": "{sector} — сектор с центром {center} от {a} до луча {center}{b}"
+    },
+    "math": "docs/native/ops/sector.center_two_points.md",
+    "signatureHash": "sha256:58986571fdbcd9eddab49953e4a193238c6d8117e2cacef44cf08645db5bdf82"
+  },
+  {
+    "op": "sector.from_angle",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "center",
+        "type": "point"
+      },
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "size",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "sector",
+        "type": "sector"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "ends",
+        "text": "the sector starts or ends at a and spans min(|size|, 2 pi): the largest deviation"
+      }
+    ],
+    "orientation": "ccw",
+    "pathParam": null,
+    "stepKind": "sector",
+    "phrases": {
+      "ru": "{sector} — сектор с центром {center} от {a} с углом {size}"
+    },
+    "math": "docs/native/ops/sector.from_angle.md",
+    "signatureHash": "sha256:af62c00bcc05471271c977be722e4987688cef687c75901a9835b7796bb758e5"
+  },
+  {
+    "op": "sector.three_points",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "sector",
+        "type": "sector"
+      },
+      {
+        "slot": "center",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_all",
+        "text": "the arc of the sector passes through a, b and c"
+      }
+    ],
+    "orientation": "ccw",
+    "pathParam": null,
+    "stepKind": "sector",
+    "phrases": {
+      "ru": "{sector} — сектор по дуге {a}{b}{c}; {center} — его центр"
+    },
+    "math": "docs/native/ops/sector.three_points.md",
+    "signatureHash": "sha256:2fdda62dfe0677041ed81fef9b2bba3ad8e3e9ffee4ae48428365277fb134cd7"
+  },
+  {
+    "op": "sector.on_circle",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "circle",
+        "type": "circle"
+      },
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "sector",
+        "type": "sector"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "ends",
+        "text": "the sector of the circle from the ray c a to the ray c b"
+      }
+    ],
+    "orientation": "ccw",
+    "pathParam": null,
+    "stepKind": "sector",
+    "phrases": {
+      "ru": "{sector} — сектор {circle} от {a} до {b}"
+    },
+    "math": "docs/native/ops/sector.on_circle.md",
+    "signatureHash": "sha256:308f1afd6b02ad3aa4dd3d0cffcbfe1e74babfab0cc45e3011c1f81c1f7dea2a"
+  }
+]

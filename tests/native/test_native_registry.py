@@ -32,8 +32,18 @@ L2A1_OPS = {'point.projection', 'line.parallel', 'line.perpendicular', 'line.per
             'line.angle_bisector', 'vector.by_points', 'circle.center_radius', 'circle.three_points',
             'number.free'}
 L2A2_OPS = {'angle.by_points', 'mark.equal_segments', 'mark.equal_angles', 'mark.right_angle', 'circle.incircle'}
-ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS
-# Registries 1.1, 1.2 and 1.3 extend 1.0: earlier records and their hashes stay as they were.
+L2A4_OPS = {
+    'point.divide', 'point.center', 'point.closest', 'point.at_distance', 'polygon.vertex',
+    'line.angle_bisectors_of_lines', 'line.external_bisector', 'ray.at_angle', 'ray.by_vector',
+    'line.tangents_from_point', 'line.tangent_at', 'segment.from_point_length', 'segment.midline',
+    'polyline.by_points', 'circle.diameter', 'circle.center_segment', 'circle.excircle',
+    'arc.center_two_points', 'arc.three_points', 'arc.semicircle', 'arc.on_circle',
+    'sector.center_two_points', 'sector.from_angle', 'sector.three_points', 'sector.on_circle',
+    'polygon.regular', 'polygon.regular_center', 'polygon.parallelogram', 'polygon.centroid',
+    'intersect.line_sector',
+}
+ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS
+# Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were.
 L0_HASHES = {
     'circle.center_point': 'sha256:f3b2e070e9310312708009adfc04cfd7411128d482a4b7522f7320af35ca9810',
     'intersect.line_line': 'sha256:be74b127f909906e8dfe346f7ad79043e483defde31d0aac29628ae550f925d2',
@@ -61,6 +71,13 @@ L2A1_HASHES = {
     'point.projection': 'sha256:d335c0ed75eeb527edd741676e32473b0fc8e3a23b4a46a36a8575f2f2d1bba5',
     'vector.by_points': 'sha256:7f2f4e4551fe968c3a7714fe613de1fc65218c5ad6dbc65e911f37d8e05aef11',
 }
+L2A2_HASHES = {
+    'angle.by_points': 'sha256:6cff8a588d81eec06ee2b49dfdd3fd97f810f09a77d47ee7538efd69d8e19dd9',
+    'circle.incircle': 'sha256:34708fea4fe868318bd751e18738c0e9281810946593126bfca83f0ab0a47ee6',
+    'mark.equal_angles': 'sha256:15ac3c04805733999d86b498aba04faeb02ca31705673802ea5f312016c9c2e3',
+    'mark.equal_segments': 'sha256:5ba6180e0246c4dc70cf392096184e1427760c4d9a39b6bb5842e3ddd4de668a',
+    'mark.right_angle': 'sha256:22f1e524869af7e1d61fa1e6481c78e08b9c2094cbafaa8b4f41d899eec89915',
+}
 RECORD_FIELDS = {
     'op', 'status', 'since', 'inputs', 'params', 'outputs', 'branch', 'undefined', 'checks',
     'orientation', 'pathParam', 'stepKind', 'phrases', 'math', 'signatureHash',
@@ -68,15 +85,16 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.3'
-    assert registry().version == '1.3'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.3'
+    assert native.__registry_version__ == '1.4'
+    assert registry().version == '1.4'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.4'
 
 
 def test_ops_and_files():
     reg = registry()
     assert set(reg.ops) == ALL_OPS
-    assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark'}
+    assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark',
+                               'arc'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
@@ -96,16 +114,22 @@ def test_l0_records_unchanged():
         assert reg.index['ops'][op] == digest
         assert reg.get(op)['since'] == '1.2'
     assert set(L2A1_HASHES) == L2A1_OPS
-    for op in L2A2_OPS:
+    for op, digest in L2A2_HASHES.items():
+        assert reg.get(op)['signatureHash'] == digest
+        assert reg.index['ops'][op] == digest
         assert reg.get(op)['since'] == '1.3'
+    assert set(L2A2_HASHES) == L2A2_OPS
+    for op in L2A4_OPS:
+        assert reg.get(op)['since'] == '1.4'
 
 
 @pytest.mark.parametrize('op', sorted(ALL_OPS))
 def test_record_fields(op):
     record = registry().get(op)
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free'}
-    assert record['status'] == 'stable'
-    if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles'):
+    assert record['status'] == ('beta' if op == 'ray.by_vector' else 'stable')
+    if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
+                  'polygon.vertex', 'polygon.regular', 'polygon.regular_center'):
         assert record['params'] == []
     for param in record['params']:
         assert {'slot', 'type', 'unit', 'text'} <= set(param) <= {'slot', 'type', 'unit', 'optional',
@@ -182,11 +206,13 @@ def test_contract_table():
     assert branches['intersect.circle_circle']['policy'] == 'circle_side'
     assert branches['intersect.other_than']['policy'] == 'other_than'
     assert branches['intersect.other_than']['slots'] == ['point']
-    assert reg.families == {
+    assert reg.families == {     # registry 1.4 adds arc, sector, polyline and two families
         'linear': ['line', 'segment', 'ray'],
-        'circular': ['circle'],
-        'curve': ['line', 'segment', 'ray', 'circle'],
-        'path': ['line', 'segment', 'ray', 'circle', 'polygon'],
+        'circular': ['circle', 'arc'],
+        'curve': ['line', 'segment', 'ray', 'circle', 'arc'],
+        'path': ['line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'polyline'],
+        'round': ['circle', 'arc', 'sector'],
+        'vertexed': ['segment', 'polyline', 'polygon'],
     }
     assert reg.accepts('linear', 'ray') and not reg.accepts('circular', 'ray')
 
@@ -345,9 +371,11 @@ def test_registry_problems_catch_bad_params(tmp_path):
 def test_types_and_policies_catalogs():
     reg = registry()
     assert reg.types['ray']['value'] == {'origin': 'length', 'dir': 'scalar'}
-    assert set(reg.policies) == {'single', 'line_param_order', 'circle_side', 'other_than'}
+    assert set(reg.policies) == {'single', 'line_param_order', 'circle_side', 'other_than',
+                                 'tangent_side', 'bisector_kind', 'vertex_index', 'sector_sides'}
     assert set(reg.paths) == set(reg.families['path'])
-    kinds = {'segment': 'affine', 'line': 'affine', 'ray': 'affine', 'circle': 'angle', 'polygon': 'perimeter'}
+    kinds = {'segment': 'affine', 'line': 'affine', 'ray': 'affine', 'circle': 'angle', 'polygon': 'perimeter',
+             'arc': 'arc', 'sector': 'sector', 'polyline': 'polyline'}
     assert {t: reg.paths[t]['kind'] for t in reg.paths} == kinds
     assert reg.paths['segment']['default'] == 0.5 and reg.paths['line']['default'] == 0.5
     assert reg.paths['circle']['default'] == math.pi / 4
@@ -365,7 +393,7 @@ def test_registry_problems_catch_bad_catalogs(tmp_path):
     copy_dir = tmp_path / 'v1'
     shutil.copytree(OPS_DIR, copy_dir)
     types = json.loads((copy_dir / '_types.json').read_text())
-    types['families']['path'].append('arc')
+    types['families']['path'].append('spiral')
     del types['paths']['ray']
     (copy_dir / '_types.json').write_text(json.dumps(types))
     line = json.loads((copy_dir / 'line.json').read_text())
@@ -373,7 +401,7 @@ def test_registry_problems_catch_bad_catalogs(tmp_path):
     (copy_dir / 'line.json').write_text(json.dumps(line))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
-    assert "family 'path': unknown type 'arc'" in problems
+    assert "family 'path': unknown type 'spiral'" in problems
     assert "path type 'ray' has no entry in _types.json paths" in problems
     assert any(p.startswith("ray.by_points: since '1.9'") for p in problems)
 

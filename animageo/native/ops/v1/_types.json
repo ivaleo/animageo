@@ -39,6 +39,18 @@
     "mark": {
       "value": {},
       "text": "mark {kind, count}; kind is one of markKinds, count an integer 1..3, both compare exactly; the geometry of a mark is that of its arguments"
+    },
+    "arc": {
+      "value": {"c": "length", "r": "length", "a0": "scalar", "a1": "scalar"},
+      "text": "arc {c: [x, y], r, a0, a1} in radians; counterclockwise from a0 to a1, a0 in [0, 2 pi), a1 in [a0, a0 + 2 pi]; a zero sweep is defined"
+    },
+    "sector": {
+      "value": {"c": "length", "r": "length", "a0": "scalar", "a1": "scalar"},
+      "text": "sector {c: [x, y], r, a0, a1}: the region bounded by the arc {c, r, a0, a1} and the radii to its ends; a1 = a0 + 2 pi is the full disc"
+    },
+    "polyline": {
+      "value": {"vertices": "length", "length": "length"},
+      "text": "polyline {vertices: [[x, y], ...], length}; at least two vertices in definition order, length is the sum of the links"
     }
   },
   "markKinds": {"equal_segments": "mark.equal_segments", "equal_angles": "mark.equal_angles", "right_angle": "mark.right_angle"},
@@ -50,9 +62,11 @@
   "numberUnits": {"scalar": "scalar", "length": "length", "area": "area", "angle": "scalar", "count": "scalar"},
   "families": {
     "linear": ["line", "segment", "ray"],
-    "circular": ["circle"],
-    "curve": ["line", "segment", "ray", "circle"],
-    "path": ["line", "segment", "ray", "circle", "polygon"]
+    "circular": ["circle", "arc"],
+    "curve": ["line", "segment", "ray", "circle", "arc"],
+    "path": ["line", "segment", "ray", "circle", "polygon", "arc", "sector", "polyline"],
+    "round": ["circle", "arc", "sector"],
+    "vertexed": ["segment", "polyline", "polygon"]
   },
   "paths": {
     "segment": {
@@ -68,6 +82,9 @@
         "line.perpendicular": {"origin": "args.point", "vector": "value.dir"},
         "line.perpendicular_bisector": {"origin": "mid(args.a, args.b)", "vector": "value.dir"},
         "line.angle_bisector": {"origin": "args.vertex", "vector": "value.dir"},
+        "line.external_bisector": {"origin": "args.vertex", "vector": "value.dir"},
+        "line.tangents_from_point": {"origin": "args.point", "vector": "value.dir"},
+        "line.tangent_at": {"origin": "args.point", "vector": "value.dir"},
         "*": {"origin": "value.p", "vector": "value.dir"}
       },
       "text": "P = o + t v in the frame of the producer: a line through a and b gives o = a, v = b - a"
@@ -76,6 +93,7 @@
       "kind": "affine", "min": 0, "max": null, "outside": "clamp", "default": 0.5,
       "frames": {
         "ray.by_points": {"origin": "args.origin", "vector": "args.through - args.origin"},
+        "ray.at_angle": {"origin": "args.vertex", "vector": "value.dir"},
         "*": {"origin": "value.origin", "vector": "value.dir"}
       },
       "text": "P = o + t v in the frame of the producer; t < 0 is clamped to 0"
@@ -87,12 +105,27 @@
     "polygon": {
       "kind": "perimeter", "min": 0, "max": "n", "outside": "wrap", "default": 0.5,
       "text": "t wraps to [0, n); k = floor(t) picks side side.(k + 1), the fraction t - k runs along it"
+    },
+    "arc": {
+      "kind": "arc", "min": 0, "max": 1, "outside": "clamp", "default": 0.5,
+      "text": "P = c + r (cos phi, sin phi), phi = a0 + t (a1 - a0); t is the fraction of the arc, clamped to [0, 1]"
+    },
+    "sector": {
+      "kind": "sector", "min": 0, "max": 3, "outside": "wrap", "default": 0.5,
+      "text": "t wraps to [0, 3): [0, 1] the arc as for arc, [1, 2] the radius from S1 to c, [2, 3) the radius from c to S0, S_i = c + r (cos a_i, sin a_i)"
+    },
+    "polyline": {
+      "kind": "polyline", "min": 0, "max": "n - 1", "outside": "clamp", "default": 0.5,
+      "text": "t is clamped to [0, n - 1]; k = floor(t) picks the link from vertex k + 1 to vertex k + 2 (the last link at t = n - 1), the fraction t - k runs along it"
     }
   },
   "frameKinds": {
     "affine": "P = o + clamp(t) v; o and v come from frames[producer op], else frames[\"*\"]; min/max clamp t when outside is clamp; a frame expression is a term or a difference of two terms, a term is <src>.<field> (src: value or args) or mid(<term>, <term>), the midpoint of two points",
     "angle": "P = c + r (cos t, sin t), t used as given",
-    "perimeter": "t' = t - n floor(t / n), t' < 0 gives t' + n, t' >= n gives 0; k = floor(t'), f = t' - k; P = V[k] + f (V[(k + 1) mod n] - V[k])"
+    "perimeter": "t' = t - n floor(t / n), t' < 0 gives t' + n, t' >= n gives 0; k = floor(t'), f = t' - k; P = V[k] + f (V[(k + 1) mod n] - V[k])",
+    "arc": "t' = clamp(t, 0, 1); phi = a0 + t' (a1 - a0); P = c + r (cos phi, sin phi)",
+    "sector": "t' = t - 3 floor(t / 3), t' < 0 gives t' + 3, t' >= 3 gives 0; t' <= 1: the arc at t'; 1 < t' <= 2: P = S1 + (t' - 1)(c - S1); t' > 2: P = c + (t' - 2)(S0 - c)",
+    "polyline": "t' = clamp(t, 0, n - 1); k = min(floor(t'), n - 2), f = t' - k; P = V[k] + f (V[k + 1] - V[k])"
   },
   "units": {
     "length": "coordinates and lengths; parity tolerance parity.length * S",

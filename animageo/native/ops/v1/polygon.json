@@ -41,5 +41,334 @@
     },
     "math": "docs/native/ops/polygon.by_points.md",
     "signatureHash": "sha256:4108d41bea24861a3d178199e4f71555531690b60bc98da2328da512209ea272"
+  },
+  {
+    "op": "polygon.vertex",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "of",
+        "type": "vertexed"
+      }
+    ],
+    "params": [
+      {
+        "slot": "k",
+        "type": "number",
+        "unit": "count",
+        "text": "vertex number from 1; not a whole number or < 1 is invalid_parameter, beyond the last vertex index_out_of_range"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "vertex",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "invalid_parameter",
+      "index_out_of_range",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "matches",
+        "text": "the point is vertex k of the input: distance to it"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "vertex",
+    "phrases": {
+      "ru": "{vertex} — вершина номер {k} {of}"
+    },
+    "math": "docs/native/ops/polygon.vertex.md",
+    "signatureHash": "sha256:5d74370516697dfbd62126e6659523a248fe88b874896186cf89ce5f8c48f220"
+  },
+  {
+    "op": "polygon.regular",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [
+      {
+        "slot": "n",
+        "type": "number",
+        "unit": "count",
+        "text": "number of vertices, a whole number 3..100 (invalid_parameter otherwise)"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "polygon",
+        "type": "polygon"
+      },
+      {
+        "slot": "side",
+        "type": "segment",
+        "repeat": "n"
+      },
+      {
+        "slot": "vertex",
+        "type": "point",
+        "repeat": "n"
+      }
+    ],
+    "branch": {
+      "policy": "vertex_index",
+      "slots": [
+        "polygon",
+        "side",
+        "vertex"
+      ],
+      "text": "vertex.1 = a, vertex.2 = b, then counterclockwise (the centre lies to the left of a b); side.i joins vertex.i and vertex.(i + 1)"
+    },
+    "undefined": [
+      "coincident_points",
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "regular",
+        "text": "all sides equal |b - a| and all vertices equidistant from the centre: the largest deviation"
+      }
+    ],
+    "orientation": "ccw",
+    "pathParam": null,
+    "stepKind": "regular_polygon",
+    "phrases": {
+      "ru": "{polygon} — правильный многоугольник со стороной {a}{b}"
+    },
+    "math": "docs/native/ops/polygon.regular.md",
+    "signatureHash": "sha256:2c9af541f175d1738c7162459a2941a4ca096647a7b342fc4d585bf4a4b11f8b"
+  },
+  {
+    "op": "polygon.regular_center",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "center",
+        "type": "point"
+      },
+      {
+        "slot": "a",
+        "type": "point"
+      }
+    ],
+    "params": [
+      {
+        "slot": "n",
+        "type": "number",
+        "unit": "count",
+        "text": "number of vertices, a whole number 3..100 (invalid_parameter otherwise)"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "polygon",
+        "type": "polygon"
+      },
+      {
+        "slot": "side",
+        "type": "segment",
+        "repeat": "n"
+      },
+      {
+        "slot": "vertex",
+        "type": "point",
+        "repeat": "n"
+      }
+    ],
+    "branch": {
+      "policy": "vertex_index",
+      "slots": [
+        "polygon",
+        "side",
+        "vertex"
+      ],
+      "text": "vertex.1 = a, then counterclockwise around the centre; side.i joins vertex.i and vertex.(i + 1)"
+    },
+    "undefined": [
+      "coincident_points",
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "regular",
+        "text": "all sides equal and all vertices at |a - center| from the centre: the largest deviation"
+      }
+    ],
+    "orientation": "ccw",
+    "pathParam": null,
+    "stepKind": "regular_polygon",
+    "phrases": {
+      "ru": "{polygon} — правильный многоугольник с центром {center} и вершиной {a}"
+    },
+    "math": "docs/native/ops/polygon.regular_center.md",
+    "signatureHash": "sha256:39c88056bb4d27c7a26f54b680288d1c06f826b6058bbeee6366a67987556435"
+  },
+  {
+    "op": "polygon.parallelogram",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "polygon",
+        "type": "polygon"
+      },
+      {
+        "slot": "side.1",
+        "type": "segment"
+      },
+      {
+        "slot": "side.2",
+        "type": "segment"
+      },
+      {
+        "slot": "side.3",
+        "type": "segment"
+      },
+      {
+        "slot": "side.4",
+        "type": "segment"
+      },
+      {
+        "slot": "vertex",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "vertex_index",
+      "slots": [
+        "polygon",
+        "side.1",
+        "side.2",
+        "side.3",
+        "side.4",
+        "vertex"
+      ],
+      "text": "vertices a, b, c, D = a + c - b in this order; side.i joins vertex i and vertex i + 1; vertex is D"
+    },
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "parallel_sides",
+        "text": "opposite sides are parallel: max(|AB x DC|, |BC x AD|) / max(|AB|, |BC|)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "parallelogram",
+    "phrases": {
+      "ru": "{polygon} — параллелограмм {a}{b}{c}{vertex}"
+    },
+    "math": "docs/native/ops/polygon.parallelogram.md",
+    "signatureHash": "sha256:9ee1be1cad9009c5c2a8da20e14cff2e71efc5a0f3b60c301ed7fba44943542b"
+  },
+  {
+    "op": "polygon.centroid",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "polygon",
+        "type": "polygon"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "centroid",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "balance",
+        "text": "the point is the centre of mass of the region: |sum cross_i (g_i - centroid)| / |2A|"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "centroid",
+    "phrases": {
+      "ru": "{centroid} — центр масс {polygon}"
+    },
+    "math": "docs/native/ops/polygon.centroid.md",
+    "signatureHash": "sha256:1a703d97f6bd189c8f26c5385f3f11ee41d5a428073953f839d3950dbd7852b9"
+  },
+  {
+    "op": "polyline.by_points",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "points",
+        "type": "point",
+        "list": true,
+        "min": 2
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "polyline",
+        "type": "polyline"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "vertices",
+        "text": "the vertices are the input points in order: the largest distance"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "polyline",
+    "phrases": {
+      "ru": "{polyline} — ломаная {points}"
+    },
+    "math": "docs/native/ops/polyline.by_points.md",
+    "signatureHash": "sha256:8ee4d2f1dc0a83f5ff59a8736f126a236fa76bdc0865298933b6ba565be878f8"
   }
 ]

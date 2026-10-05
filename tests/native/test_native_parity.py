@@ -27,6 +27,11 @@ REQUIRED_SCENES = {
     # registry 1.3
     'angle_points', 'angle_zero_wrap', 'marks_equal_segments', 'marks_equal_angles', 'marks_right_angle',
     'incircle', 'incircle_touch_chain', 'a3_chain',
+    # registry 1.4
+    'l2a4_divide', 'l2a4_center', 'l2a4_closest', 'l2a4_at_distance', 'l2a4_vertex', 'l2a4_bisectors_lines',
+    'l2a4_external_bisector', 'l2a4_ray_at_angle', 'l2a4_ray_by_vector', 'l2a4_tangents', 'l2a4_tangent_at',
+    'l2a4_segment_length', 'l2a4_midline', 'l2a4_polyline', 'l2a4_circles', 'l2a4_arcs', 'l2a4_sectors',
+    'l2a4_on_path_arcs', 'l2a4_regular', 'l2a4_parallelogram', 'l2a4_line_sector', 'l2a4_arc_filter',
 }
 
 

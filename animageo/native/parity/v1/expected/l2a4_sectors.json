@@ -1,0 +1,1039 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_sectors",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a4.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_sectors",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_R": {
+        "id": "op_R",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "R"
+          }
+        ]
+      },
+      "op_alpha": {
+        "id": "op_alpha",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "alpha"
+          }
+        ]
+      },
+      "op_a": {
+        "id": "op_a",
+        "op": "sector.center_two_points",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "s1"
+          }
+        ]
+      },
+      "op_b": {
+        "id": "op_b",
+        "op": "sector.three_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "s2"
+          },
+          {
+            "slot": "center",
+            "elementId": "K"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "sector.from_angle",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "size": {
+            "kind": "ref",
+            "elementId": "alpha"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "s3"
+          }
+        ]
+      },
+      "op_cc": {
+        "id": "op_cc",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "R"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "cc"
+          }
+        ]
+      },
+      "op_e": {
+        "id": "op_e",
+        "op": "sector.on_circle",
+        "args": {
+          "circle": {
+            "kind": "ref",
+            "elementId": "cc"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "s4"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "R": {
+        "id": "R",
+        "type": "point",
+        "displayName": "R",
+        "producer": {
+          "operationId": "op_R",
+          "slot": "point"
+        }
+      },
+      "alpha": {
+        "id": "alpha",
+        "type": "number",
+        "displayName": "alpha",
+        "producer": {
+          "operationId": "op_alpha",
+          "slot": "number"
+        }
+      },
+      "s1": {
+        "id": "s1",
+        "type": "sector",
+        "displayName": "s1",
+        "producer": {
+          "operationId": "op_a",
+          "slot": "sector"
+        }
+      },
+      "s2": {
+        "id": "s2",
+        "type": "sector",
+        "displayName": "s2",
+        "producer": {
+          "operationId": "op_b",
+          "slot": "sector"
+        }
+      },
+      "K": {
+        "id": "K",
+        "type": "point",
+        "displayName": "K",
+        "producer": {
+          "operationId": "op_b",
+          "slot": "center"
+        }
+      },
+      "s3": {
+        "id": "s3",
+        "type": "sector",
+        "displayName": "s3",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "sector"
+        }
+      },
+      "cc": {
+        "id": "cc",
+        "type": "circle",
+        "displayName": "cc",
+        "producer": {
+          "operationId": "op_cc",
+          "slot": "circle"
+        }
+      },
+      "s4": {
+        "id": "s4",
+        "type": "sector",
+        "displayName": "s4",
+        "producer": {
+          "operationId": "op_e",
+          "slot": "sector"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          1,
+          0
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          5,
+          1
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          -1,
+          4
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          -4
+        ]
+      },
+      "R": {
+        "kind": "point",
+        "value": [
+          4,
+          3
+        ]
+      },
+      "alpha": {
+        "kind": "number",
+        "value": 1.2
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -4.0
+          }
+        },
+        "K": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.833333333333333,
+            "y": 0.16666666666666663
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 4.0
+          }
+        },
+        "R": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "alpha": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.2,
+            "unit": "scalar"
+          }
+        },
+        "cc": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.242640687119285
+          }
+        },
+        "s1": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.123105625617661,
+            "a0": 0.24497866312686414,
+            "a1": 2.0344439357957027
+          }
+        },
+        "s2": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              0.833333333333333,
+              0.16666666666666663
+            ],
+            "r": 4.249182927993988,
+            "a0": 0.19739555984988075,
+            "a1": 4.514993420534809
+          }
+        },
+        "s3": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.123105625617661,
+            "a0": 0.24497866312686414,
+            "a1": 1.4449786631268642
+          }
+        },
+        "s4": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.242640687119285,
+            "a0": 4.4674103172578254,
+            "a1": 8.31762924297529
+          }
+        }
+      },
+      "checks": {
+        "op_a:ends": "passed",
+        "op_b:through_all": "passed",
+        "op_c:ends": "passed",
+        "op_cc:through_on_circle": "passed",
+        "op_e:ends": "passed"
+      }
+    },
+    {
+      "name": "negative_angle",
+      "inputs": {
+        "alpha": {
+          "kind": "number",
+          "value": -2.0
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -4.0
+          }
+        },
+        "K": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.833333333333333,
+            "y": 0.16666666666666663
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 4.0
+          }
+        },
+        "R": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "alpha": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -2.0,
+            "unit": "scalar"
+          }
+        },
+        "cc": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.242640687119285
+          }
+        },
+        "s1": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.123105625617661,
+            "a0": 0.24497866312686414,
+            "a1": 2.0344439357957027
+          }
+        },
+        "s2": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              0.833333333333333,
+              0.16666666666666663
+            ],
+            "r": 4.249182927993988,
+            "a0": 0.19739555984988075,
+            "a1": 4.514993420534809
+          }
+        },
+        "s3": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.123105625617661,
+            "a0": 4.5281639703064505,
+            "a1": 6.5281639703064505
+          }
+        },
+        "s4": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.242640687119285,
+            "a0": 4.4674103172578254,
+            "a1": 8.31762924297529
+          }
+        }
+      },
+      "checks": {
+        "op_a:ends": "passed",
+        "op_b:through_all": "passed",
+        "op_c:ends": "passed",
+        "op_cc:through_on_circle": "passed",
+        "op_e:ends": "passed"
+      }
+    },
+    {
+      "name": "full_disc",
+      "inputs": {
+        "alpha": {
+          "kind": "number",
+          "value": 9.0
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -4.0
+          }
+        },
+        "K": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.833333333333333,
+            "y": 0.16666666666666663
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 4.0
+          }
+        },
+        "R": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "alpha": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 9.0,
+            "unit": "scalar"
+          }
+        },
+        "cc": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.242640687119285
+          }
+        },
+        "s1": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.123105625617661,
+            "a0": 0.24497866312686414,
+            "a1": 2.0344439357957027
+          }
+        },
+        "s2": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              0.833333333333333,
+              0.16666666666666663
+            ],
+            "r": 4.249182927993988,
+            "a0": 0.19739555984988075,
+            "a1": 4.514993420534809
+          }
+        },
+        "s3": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.123105625617661,
+            "a0": 0.24497866312686414,
+            "a1": 6.5281639703064505
+          }
+        },
+        "s4": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.242640687119285,
+            "a0": 4.4674103172578254,
+            "a1": 8.31762924297529
+          }
+        }
+      },
+      "checks": {
+        "op_a:ends": "passed",
+        "op_b:through_all": "passed",
+        "op_c:ends": "passed",
+        "op_cc:through_on_circle": "passed",
+        "op_e:ends": "passed"
+      }
+    },
+    {
+      "name": "wrapped",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            1,
+            5
+          ]
+        },
+        "Q": {
+          "kind": "point",
+          "value": [
+            4,
+            -3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 5.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -4.0
+          }
+        },
+        "K": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0142857142857142,
+            "y": 0.44285714285714306
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": -3.0
+          }
+        },
+        "R": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "alpha": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.2,
+            "unit": "scalar"
+          }
+        },
+        "cc": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.242640687119285
+          }
+        },
+        "s1": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 5.0,
+            "a0": 1.5707963267948966,
+            "a1": 5.497787143782138
+          }
+        },
+        "s2": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0142857142857142,
+              0.44285714285714306
+            ],
+            "r": 4.557165248489549,
+            "a0": 4.487939752067086,
+            "a1": 7.857116419944296
+          }
+        },
+        "s3": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 5.0,
+            "a0": 1.5707963267948966,
+            "a1": 2.7707963267948967
+          }
+        },
+        "s4": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.242640687119285,
+            "a0": 4.4674103172578254,
+            "a1": 5.497787143782138
+          }
+        }
+      },
+      "checks": {
+        "op_a:ends": "passed",
+        "op_b:through_all": "passed",
+        "op_c:ends": "passed",
+        "op_cc:through_on_circle": "passed",
+        "op_e:ends": "passed"
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            1,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": -4.0
+          }
+        },
+        "K": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -5.166666666666667,
+            "y": -0.5833333333333334
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 4.0
+          }
+        },
+        "R": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "alpha": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.2,
+            "unit": "scalar"
+          }
+        },
+        "cc": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.242640687119285
+          }
+        },
+        "s1": {
+          "state": "undefined",
+          "type": "sector",
+          "reason": "coincident_points"
+        },
+        "s2": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              -5.166666666666667,
+              -0.5833333333333334
+            ],
+            "r": 6.194195311382711,
+            "a0": 0.09431395132718053,
+            "a1": 5.6989140295986775
+          }
+        },
+        "s3": {
+          "state": "undefined",
+          "type": "sector",
+          "reason": "coincident_points"
+        },
+        "s4": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 4.242640687119285,
+            "a0": 4.4674103172578254,
+            "a1": 8.31762924297529
+          }
+        }
+      },
+      "checks": {
+        "op_b:through_all": "passed",
+        "op_cc:through_on_circle": "passed",
+        "op_e:ends": "passed"
+      }
+    }
+  ]
+}

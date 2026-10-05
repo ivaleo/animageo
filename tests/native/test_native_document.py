@@ -330,7 +330,7 @@ def _invalid_documents():
     yield 'element extra key', variant(lambda d: d['elements']['M'].__setitem__('style', {}))
     yield 'producer extra key', variant(lambda d: d['elements']['M']['producer'].__setitem__('x', 1))
     yield 'origin not object', variant(lambda d: d['elements']['M'].__setitem__('origin', 'tool'))
-    yield 'input kind', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'angle', 'value': 1}))
+    yield 'input kind', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'direction', 'value': 1}))
     yield 'number input bool', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'number', 'value': True}))
     yield 'number input array', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'number', 'value': [1]}))
     yield 'number input without value', variant(lambda d: d['inputs'].__setitem__('A', {'kind': 'number'}))

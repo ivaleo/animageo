@@ -207,5 +207,71 @@
     },
     "math": "docs/native/ops/intersect.other_than.md",
     "signatureHash": "sha256:2f4d6797ee18797329eccd116a221f147f701ae15d6da0892528cb553b9700cd"
+  },
+  {
+    "op": "intersect.line_sector",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "line",
+        "type": "linear"
+      },
+      {
+        "slot": "sector",
+        "type": "sector"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "arc.1",
+        "type": "point"
+      },
+      {
+        "slot": "arc.2",
+        "type": "point"
+      },
+      {
+        "slot": "side.1",
+        "type": "point"
+      },
+      {
+        "slot": "side.2",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "sector_sides",
+      "slots": [
+        "arc.1",
+        "arc.2",
+        "side.1",
+        "side.2"
+      ],
+      "text": "arc.1, arc.2 on the arc in the order of the line parameter (fixed on the carrier circle before the filters), side.1 on the radius to S0, side.2 on the radius to S1"
+    },
+    "undefined": [
+      "zero_length",
+      "no_intersection",
+      "outside_part",
+      "parallel",
+      "coincident",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "incident_both",
+        "text": "each point lies on the line part and on the sector boundary: the larger distance"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{arc.1}, {arc.2}, {side.1}, {side.2} — точки пересечения {line} с границей {sector}"
+    },
+    "math": "docs/native/ops/intersect.line_sector.md",
+    "signatureHash": "sha256:ad6efcd2b4fdeda63f3caf448501fc287dbe8b322a2d289b6244db1d7293d268"
   }
 ]

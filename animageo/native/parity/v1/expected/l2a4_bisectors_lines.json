@@ -1,0 +1,865 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_bisectors_lines",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a4.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_bisectors_lines",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_m": {
+        "id": "op_m",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "D"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "m"
+          }
+        ]
+      },
+      "op_bi": {
+        "id": "op_bi",
+        "op": "line.angle_bisectors_of_lines",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "m"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "internal",
+            "elementId": "bi"
+          },
+          {
+            "slot": "external",
+            "elementId": "be"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "m": {
+        "id": "m",
+        "type": "segment",
+        "displayName": "m",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "segment"
+        }
+      },
+      "bi": {
+        "id": "bi",
+        "type": "line",
+        "displayName": "bi",
+        "producer": {
+          "operationId": "op_bi",
+          "slot": "internal"
+        }
+      },
+      "be": {
+        "id": "be",
+        "type": "line",
+        "displayName": "be",
+        "producer": {
+          "operationId": "op_bi",
+          "slot": "external"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -1
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          4,
+          1
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          -2,
+          -4
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          1,
+          5
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "crossing",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -4.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 5.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "be": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.48216731645822997,
+              -0.4465019493746899
+            ],
+            "dir": [
+              -0.679449593831383,
+              0.7337221881900319
+            ]
+          }
+        },
+        "bi": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.24510541081449722,
+              0.264683767556508
+            ],
+            "dir": [
+              0.7337221881900319,
+              0.679449593831383
+            ]
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.0,
+              -4.0
+            ],
+            "b": [
+              1.0,
+              5.0
+            ],
+            "length": 9.486832980505138
+          }
+        }
+      },
+      "checks": {
+        "op_bi:equal_angles": "passed",
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:ends": "passed"
+      }
+    },
+    {
+      "name": "obtuse",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            3,
+            5
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            -1,
+            -4
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 5.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -4.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "be": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.25434589751323644,
+              -0.30272173059521856
+            ],
+            "dir": [
+              0.7656305674906952,
+              0.6432805252173237
+            ]
+          }
+        },
+        "bi": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.620654102486764,
+              0.5214717305952188
+            ],
+            "dir": [
+              0.6432805252173237,
+              -0.7656305674906952
+            ]
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.0,
+              5.0
+            ],
+            "b": [
+              -1.0,
+              -4.0
+            ],
+            "length": 9.848857801796104
+          }
+        }
+      },
+      "checks": {
+        "op_bi:equal_angles": "passed",
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:ends": "passed"
+      }
+    },
+    {
+      "name": "parallel_same",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            -4,
+            3
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            4,
+            5
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 5.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "be": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "parallel"
+        },
+        "bi": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.47058823529411775,
+              1.8823529411764706
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              3.0
+            ],
+            "b": [
+              4.0,
+              5.0
+            ],
+            "length": 8.246211251235321
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:ends": "passed"
+      }
+    },
+    {
+      "name": "parallel_opposite",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            4,
+            5
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            -4,
+            3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 5.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "be": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.4705882352941173,
+              1.8823529411764706
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "bi": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "parallel"
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              4.0,
+              5.0
+            ],
+            "b": [
+              -4.0,
+              3.0
+            ],
+            "length": 8.246211251235321
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:ends": "passed"
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            -8,
+            -2
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            8,
+            2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -8.0,
+            "y": -2.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 8.0,
+            "y": 2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "be": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident"
+        },
+        "bi": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -8.0,
+              -2.0
+            ],
+            "b": [
+              8.0,
+              2.0
+            ],
+            "length": 16.492422502470642
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:ends": "passed"
+      }
+    },
+    {
+      "name": "zero_segment",
+      "inputs": {
+        "D": {
+          "kind": "point",
+          "value": [
+            -2,
+            -4
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -4.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -4.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "be": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "zero_length"
+        },
+        "bi": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "zero_length"
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.0,
+              -4.0
+            ],
+            "b": [
+              -2.0,
+              -4.0
+            ],
+            "length": 0.0
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:ends": "passed"
+      }
+    }
+  ]
+}

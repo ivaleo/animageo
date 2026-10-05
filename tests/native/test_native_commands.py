@@ -131,6 +131,8 @@ def structure_problems(original, parsed):
 
 
 SCENES = sorted(p for p in SCENES_DIR.glob('*.json') if p.stem != 'graph_errors')
+# Ops of registry 1.4 get lexicon entries in L3; the default lexicon covers 1.0–1.3.
+LEXICON_OPS = {op for op, r in registry().ops.items() if r['since'] != '1.4'}
 
 
 # ── lexicon ──────────────────────────────────────────────────────────────
@@ -159,7 +161,7 @@ class TestLexicon:
     def test_every_op_has_a_name(self):
         lex = Lexicon()
         named = {e.op for e in lex.entries}
-        assert named == set(registry().ops)
+        assert named == LEXICON_OPS
 
     @pytest.mark.parametrize('mutate, needle', [
         (lambda d: d.update(format='x'), 'format'),
@@ -773,7 +775,7 @@ class TestFixtures:
             if case['base'] is None and not case['expect']['issues']:
                 for op in {o['op'] for o in case['expect']['operations'] if not o['hidden']}:
                     per_op[op] = per_op.get(op, 0) + 1
-        assert {op for op, n in per_op.items() if n >= 3} == set(registry().ops)
+        assert {op for op, n in per_op.items() if n >= 3} == LEXICON_OPS
         issues = [i for c in cases for i in c['expect']['issues']]
         assert len([i for i in issues if i['severity'] == 'error']) >= 20
         assert set(ERROR_CODES) <= {i['code'] for i in issues}

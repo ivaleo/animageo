@@ -22,7 +22,7 @@ from typing import NamedTuple
 from ..canonical import canonical_json
 from ..document import DOCUMENT_FORMAT, ID_RE, NativeDocument, as_document, iter_refs
 from ..edit import EditError, _effects, _finish, delete, name_key, redefine, valid_name
-from ..registry import REGISTRY_VERSION, registry
+from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, registry
 from .issues import CommandIssue, LineError, ambiguous_name
 from .lexer import tokenize
 from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, Lexicon
@@ -492,6 +492,8 @@ class _Builder:
                     path_slot = next(i['slot'] for i in record.get('inputs', ()) if i['type'] == 'path')
                     value = self._path_default(args[path_slot])
                 free_input = {'kind': 'pathParameter', 'value': value}
+            elif kind in FREE_INPUT_DEFAULTS:      # an angle: 0 when left out
+                free_input = {'kind': kind, 'value': FREE_INPUT_DEFAULTS[kind]['value'] if value is None else value}
         return _Request(entry.op, record, args, free_input, entry.name)
 
     # ── helpers (pairs and ∠ABC) ─────────────────────────────────────────

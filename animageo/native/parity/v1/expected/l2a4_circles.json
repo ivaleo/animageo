@@ -1,0 +1,974 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_circles",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a4.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_circles",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_d": {
+        "id": "op_d",
+        "op": "circle.diameter",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "d"
+          },
+          {
+            "slot": "center",
+            "elementId": "M"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "circle.center_segment",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "k"
+          }
+        ]
+      },
+      "op_e": {
+        "id": "op_e",
+        "op": "circle.excircle",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "e"
+          },
+          {
+            "slot": "center",
+            "elementId": "Ie"
+          },
+          {
+            "slot": "touch",
+            "elementId": "Te"
+          }
+        ]
+      },
+      "op_f": {
+        "id": "op_f",
+        "op": "circle.excircle",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "f"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "d": {
+        "id": "d",
+        "type": "circle",
+        "displayName": "d",
+        "producer": {
+          "operationId": "op_d",
+          "slot": "circle"
+        }
+      },
+      "M": {
+        "id": "M",
+        "type": "point",
+        "displayName": "M",
+        "producer": {
+          "operationId": "op_d",
+          "slot": "center"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "circle",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "circle"
+        }
+      },
+      "e": {
+        "id": "e",
+        "type": "circle",
+        "displayName": "e",
+        "producer": {
+          "operationId": "op_e",
+          "slot": "circle"
+        }
+      },
+      "Ie": {
+        "id": "Ie",
+        "type": "point",
+        "displayName": "Ie",
+        "producer": {
+          "operationId": "op_e",
+          "slot": "center"
+        }
+      },
+      "Te": {
+        "id": "Te",
+        "type": "point",
+        "displayName": "Te",
+        "producer": {
+          "operationId": "op_e",
+          "slot": "touch"
+        }
+      },
+      "f": {
+        "id": "f",
+        "type": "circle",
+        "displayName": "f",
+        "producer": {
+          "operationId": "op_f",
+          "slot": "circle"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -3,
+          -1
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          3,
+          2
+        ]
+      },
+      "O": {
+        "kind": "point",
+        "value": [
+          1,
+          -2
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          5
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 5.0
+          }
+        },
+        "Ie": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.581138830084189,
+            "y": 5.581138830084189
+          }
+        },
+        "M": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.5
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 2.0
+          }
+        },
+        "Te": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.4999999999999998,
+            "y": 3.5
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.5
+            ],
+            "r": 3.3541019662496847
+          }
+        },
+        "e": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              3.581138830084189,
+              5.581138830084189
+            ],
+            "r": 2.9431747586863364
+          }
+        },
+        "f": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.7434164902525695,
+              -5.74341649025257
+            ],
+            "r": 6.363961030678929
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -2.0
+            ],
+            "r": 6.708203932499369
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              -1.0
+            ],
+            "b": [
+              3.0,
+              2.0
+            ],
+            "length": 6.708203932499369
+          }
+        }
+      },
+      "checks": {
+        "op_d:through_ends": "passed",
+        "op_e:tangent_sides": "passed",
+        "op_f:tangent_sides": "passed",
+        "op_k:matches": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "right",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "Q": {
+          "kind": "point",
+          "value": [
+            4,
+            0
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 3.0
+          }
+        },
+        "Ie": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 6.0,
+            "y": 6.0
+          }
+        },
+        "M": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "Te": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.4000000000000004,
+            "y": 1.1999999999999997
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              2.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "e": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              6.0,
+              6.0
+            ],
+            "r": 6.0
+          }
+        },
+        "f": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              3.0,
+              -3.0
+            ],
+            "r": 3.0
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -2.0
+            ],
+            "r": 4.0
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              4.0,
+              0.0
+            ],
+            "length": 4.0
+          }
+        }
+      },
+      "checks": {
+        "op_d:through_ends": "passed",
+        "op_e:tangent_sides": "passed",
+        "op_f:tangent_sides": "passed",
+        "op_k:matches": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "obtuse",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -4,
+            0
+          ]
+        },
+        "Q": {
+          "kind": "point",
+          "value": [
+            4,
+            0
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            1,
+            2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "Ie": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.495358041299246,
+            "y": 1.6360564707577911
+          }
+        },
+        "M": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "Te": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.587837195934344,
+            "y": 0.27477520271043754
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 4.0
+          }
+        },
+        "e": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              4.495358041299246,
+              1.6360564707577911
+            ],
+            "r": 1.636056470757791
+          }
+        },
+        "f": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              -0.8898067658352596,
+              -16.149934659417763
+            ],
+            "r": 16.149934659417763
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -2.0
+            ],
+            "r": 8.0
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              0.0
+            ],
+            "b": [
+              4.0,
+              0.0
+            ],
+            "length": 8.0
+          }
+        }
+      },
+      "checks": {
+        "op_d:through_ends": "passed",
+        "op_e:tangent_sides": "passed",
+        "op_f:tangent_sides": "passed",
+        "op_k:matches": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "collinear",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            9,
+            5
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 9.0,
+            "y": 5.0
+          }
+        },
+        "Ie": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "collinear_points"
+        },
+        "M": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.5
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 2.0
+          }
+        },
+        "Te": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "collinear_points"
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.5
+            ],
+            "r": 3.3541019662496847
+          }
+        },
+        "e": {
+          "state": "undefined",
+          "type": "circle",
+          "reason": "collinear_points"
+        },
+        "f": {
+          "state": "undefined",
+          "type": "circle",
+          "reason": "collinear_points"
+        },
+        "k": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -2.0
+            ],
+            "r": 6.708203932499369
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              -1.0
+            ],
+            "b": [
+              3.0,
+              2.0
+            ],
+            "length": 6.708203932499369
+          }
+        }
+      },
+      "checks": {
+        "op_d:through_ends": "passed",
+        "op_k:matches": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "Q": {
+          "kind": "point",
+          "value": [
+            -3,
+            -1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 5.0
+          }
+        },
+        "Ie": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "collinear_points"
+        },
+        "M": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident_points"
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -1.0
+          }
+        },
+        "Te": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "collinear_points"
+        },
+        "d": {
+          "state": "undefined",
+          "type": "circle",
+          "reason": "coincident_points"
+        },
+        "e": {
+          "state": "undefined",
+          "type": "circle",
+          "reason": "collinear_points"
+        },
+        "f": {
+          "state": "undefined",
+          "type": "circle",
+          "reason": "collinear_points"
+        },
+        "k": {
+          "state": "undefined",
+          "type": "circle",
+          "reason": "nonpositive_radius"
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              -1.0
+            ],
+            "b": [
+              -3.0,
+              -1.0
+            ],
+            "length": 0.0
+          }
+        }
+      },
+      "checks": {
+        "op_s:ends": "passed"
+      }
+    }
+  ]
+}

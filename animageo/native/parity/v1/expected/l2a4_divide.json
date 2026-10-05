@@ -1,0 +1,513 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a4_divide",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a4.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_divide",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_m": {
+        "id": "op_m",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "m"
+          }
+        ]
+      },
+      "op_n": {
+        "id": "op_n",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "n"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.divide",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "m": {
+            "kind": "ref",
+            "elementId": "m"
+          },
+          "n": {
+            "kind": "ref",
+            "elementId": "n"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_H": {
+        "id": "op_H",
+        "op": "point.divide",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "m": {
+            "kind": "number",
+            "value": 1
+          },
+          "n": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "H"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "m": {
+        "id": "m",
+        "type": "number",
+        "displayName": "m",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "number"
+        }
+      },
+      "n": {
+        "id": "n",
+        "type": "number",
+        "displayName": "n",
+        "producer": {
+          "operationId": "op_n",
+          "slot": "number"
+        }
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "displayName": "P",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        }
+      },
+      "H": {
+        "id": "H",
+        "type": "point",
+        "displayName": "H",
+        "producer": {
+          "operationId": "op_H",
+          "slot": "point"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -1
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          5,
+          3
+        ]
+      },
+      "m": {
+        "kind": "number",
+        "value": 2
+      },
+      "n": {
+        "kind": "number",
+        "value": 1
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "two_to_one",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "H": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.75,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 1.6666666666666667
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 3.0
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0,
+            "unit": "scalar"
+          }
+        },
+        "n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {
+        "op_H:ratio": "passed",
+        "op_P:ratio": "passed"
+      }
+    },
+    {
+      "name": "m_zero",
+      "inputs": {
+        "m": {
+          "kind": "number",
+          "value": 0
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "H": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.75,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 3.0
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "scalar"
+          }
+        },
+        "n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {
+        "op_H:ratio": "passed",
+        "op_P:ratio": "passed"
+      }
+    },
+    {
+      "name": "n_zero",
+      "inputs": {
+        "n": {
+          "kind": "number",
+          "value": 0
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "H": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.75,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 3.0
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0,
+            "unit": "scalar"
+          }
+        },
+        "n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {
+        "op_H:ratio": "passed",
+        "op_P:ratio": "passed"
+      }
+    },
+    {
+      "name": "negative_m",
+      "inputs": {
+        "m": {
+          "kind": "number",
+          "value": -1
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "H": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.75,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "invalid_parameter"
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 3.0
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -1.0,
+            "unit": "scalar"
+          }
+        },
+        "n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {
+        "op_H:ratio": "passed"
+      }
+    },
+    {
+      "name": "both_zero",
+      "inputs": {
+        "m": {
+          "kind": "number",
+          "value": 0
+        },
+        "n": {
+          "kind": "number",
+          "value": 0
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "H": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.75,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "invalid_parameter"
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 3.0
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "scalar"
+          }
+        },
+        "n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {
+        "op_H:ratio": "passed"
+      }
+    }
+  ]
+}
