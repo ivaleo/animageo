@@ -26,7 +26,7 @@ Master schema: `animageo/native/schema/construction.v1.schema.json`
 {
   "format": "animageo-construction/v1",          required
   "documentId": ID,                              required
-  "operationRegistryVersion": "1.3",             required, "<major>.<minor>"
+  "operationRegistryVersion": "1.4",             required, "<major>.<minor>"
   "operations": {ID: Operation},                 required
   "elements":   {ID: Element},                   required
   "inputs":     {ID: Input},
@@ -49,6 +49,7 @@ Element   = {"id": ID, "type": type, "producer": {"operationId": ID, "slot": slo
 Input     = {"kind": "point", "value": [x, y]}                         point.free
           | {"kind": "pathParameter", "value": t, "branch"?: -1 | 1}    point.on_path
           | {"kind": "number", "value": v}                              number.free
+          | {"kind": "angle", "value": radians}                         segment.from_point_length (1.4)
 ```
 
 - `ID` matches `^[A-Za-z0-9_-]{1,64}$`; the product uses UUIDv4, fixtures use
@@ -64,7 +65,11 @@ Input     = {"kind": "point", "value": [x, y]}                         point.fre
   element without a usable value of its kind evaluates to `error/schema`
   (§5.2).
 - The operation `branch` stays `null` (or absent) for every operation of
-  registries 1.1–1.3: the output slot names the solution (§5.4).
+  registries 1.1–1.4: the output slot names the solution (§5.4).
+- The input of a free operation belongs to the element of its **first**
+  output slot (`segment` of `segment.from_point_length`, not `end`). An
+  `angle` input may be absent: it then is `0` (`FREE_INPUT_DEFAULTS` of
+  `registry.py`); the other kinds are required.
 - `args` holds input slots and params (§4) alike. A `number` argument
   (literal) is allowed in an input slot of type `number` (a radius) and is
   the only kind a param takes.
@@ -103,10 +108,10 @@ only on a structurally valid document.
 | `unknown_slot` | error | an argument or output slot the op does not declare (a repeat slot beyond the list length too) |
 | `missing_slot` | error | a declared input slot or a required param has no argument |
 | `dangling_ref` | error | a reference (argument or `inputs` key) to a missing element |
-| `type_mismatch` | error | argument kind (list vs ref), a list shorter than `min`, an element type that does not fit the slot, an element type that differs from its output slot type, a number literal in an input slot of another type, a param argument that is not a number literal, an input kind that differs from the free kind (`point` for `point.free`, `pathParameter` for `point.on_path`, `number` for `number.free`) |
+| `type_mismatch` | error | argument kind (list vs ref), a list shorter than `min`, an element type that does not fit the slot, an element type that differs from its output slot type, a number literal in an input slot of another type, a param argument that is not a number literal, an input kind that differs from the free kind (`point` for `point.free`, `pathParameter` for `point.on_path`, `number` for `number.free`, `angle` for `segment.from_point_length`) |
 | `cycle` | error | the operation lies on a dependency cycle |
-| `input_not_free` | error | an input value for an element not produced by a free op |
-| `missing_input` | error | a free element without an input value |
+| `input_not_free` | error | an input value for an element not produced by a free op, or for an element of a free op other than its first output slot |
+| `missing_input` | error | the element of the first output slot of a free op without an input value (not for an `angle` input, which defaults to `0`) |
 
 ## 3. Canonical JSON and hash
 
@@ -127,7 +132,7 @@ The text `JSON.stringify` prints after object keys are sorted:
 table `animageo/native/parity/v1/canonical.json` is a list of
 `{"value", "canonical"}` pairs that both kernels must reproduce.
 
-## 4. Registry `ops/v1` (version 1.3)
+## 4. Registry `ops/v1` (version 1.4)
 
 `animageo/native/ops/v1/<group>.json` holds arrays of records:
 
@@ -166,26 +171,62 @@ table `animageo/native/parity/v1/canonical.json` is a list of
 | `mark.equal_segments` | 1.3 | `segments: segment[] (min 2)`; param `count` → `mark` | — |
 | `mark.equal_angles` | 1.3 | `angles: angle[] (min 2)`; param `count` → `mark` | — |
 | `mark.right_angle` | 1.3 | `a, vertex, b: point` → `mark` | — |
+| `point.divide` | 1.4 | `a, b: point, m, n: number` → `point` (ratio `m : n` from `a`) | — |
+| `point.center` | 1.4 | `of: round` → `center` | — |
+| `point.closest` | 1.4 | `point: point, path: path` → `foot` | — |
+| `point.at_distance` | 1.4 | `a, b: point, distance: number` → `point`, `segment` | — |
+| `polygon.vertex` | 1.4 | `of: vertexed`; param `k` → `vertex` | — |
+| `line.angle_bisectors_of_lines` | 1.4 | `first, second: linear` → `internal`, `external` | `bisector_kind` |
+| `line.external_bisector` | 1.4 | `a, vertex, b: point` → `line` | — |
+| `ray.at_angle` | 1.4 | `vertex, a: point, size: number` → `ray`, `point` | — |
+| `ray.by_vector` (beta) | 1.4 | `origin: point, vector: vector` → `ray` | — |
+| `line.tangents_from_point` | 1.4 | `point: point, circle: circle` → `tangent.1`, `tangent.2: line`, `touch.1`, `touch.2: point` | `tangent_side` |
+| `line.tangent_at` | 1.4 | `point: point, circle: circle` → `line` | — |
+| `segment.from_point_length` | 1.4 | free `angle`, `start: point, length: number` → `segment`, `end` | — |
+| `segment.midline` | 1.4 | `first, second: segment` → `segment`, `mid.1`, `mid.2` | — |
+| `polyline.by_points` | 1.4 | `points: point[] (min 2)` → `polyline` | — |
+| `circle.diameter` | 1.4 | `a, b: point` → `circle`, `center` | — |
+| `circle.center_segment` | 1.4 | `center: point, radius: segment` → `circle` | — |
+| `circle.excircle` | 1.4 | `a, b, c: point` → `circle`, `center`, `touch` (the circle opposite `a`, `touch` on `bc`) | — |
+| `arc.center_two_points`, `sector.center_two_points` | 1.4 | `center, a, b: point` → `arc` / `sector` | — |
+| `arc.three_points`, `sector.three_points` | 1.4 | `a, b, c: point` → `arc` / `sector`, `center` | — |
+| `arc.semicircle` | 1.4 | `a, b: point` → `arc` | — |
+| `arc.on_circle`, `sector.on_circle` | 1.4 | `circle: circle, a, b: point` → `arc` / `sector` | — |
+| `sector.from_angle` | 1.4 | `center, a: point, size: number` → `sector` | — |
+| `polygon.regular` | 1.4 | `a, b: point`; param `n` → `polygon`, `side.1…n`, `vertex.1…n` | `vertex_index` |
+| `polygon.regular_center` | 1.4 | `center, a: point`; param `n` → `polygon`, `side.1…n`, `vertex.1…n` | `vertex_index` |
+| `polygon.parallelogram` | 1.4 | `a, b, c: point` → `polygon`, `side.1…4`, `vertex` | `vertex_index` |
+| `polygon.centroid` | 1.4 | `polygon: polygon` → `centroid` | — |
+| `intersect.line_sector` | 1.4 | `line: linear, sector: sector` → `arc.1`, `arc.2`, `side.1`, `side.2` | `sector_sides` |
 
 - A slot type may be a family (`_types.json` → `families`):
 
   | family | types |
   |---|---|
   | `linear` | `line`, `segment`, `ray` |
-  | `circular` | `circle` |
-  | `curve` | `line`, `segment`, `ray`, `circle` |
-  | `path` | `line`, `segment`, `ray`, `circle`, `polygon` |
+  | `circular` | `circle`, `arc` (1.4) |
+  | `curve` | `line`, `segment`, `ray`, `circle`, `arc` (1.4) |
+  | `path` | `line`, `segment`, `ray`, `circle`, `polygon`, `arc`, `sector`, `polyline` (1.4) |
+  | `round` (1.4) | `circle`, `arc`, `sector` |
+  | `vertexed` (1.4) | `segment`, `polyline`, `polygon` |
 
+  An arc in a `circular` slot (`intersect.line_circle`,
+  `intersect.circle_circle`, `intersect.other_than`) is intersected as its
+  carrier circle and then filtered (the arc filter, §5.4);
 - `repeat: "vertices"` on output `side` declares the slots `side.1 … side.N`,
-  `N` = number of items of the list argument `vertices`; a document may bind
-  any subset of the declared output slots;
+  `N` = number of items of the list argument `vertices`; a `repeat` naming a
+  param (`repeat: "n"` of `polygon.regular`, 1.4) declares `N =
+  repeat_count(n)`: `round(n)` when `n` is a whole number in `[1, 100]`,
+  else `0` (so `n = 2` declares two slots that evaluate to
+  `invalid_parameter`, `n = 2.5` none); a document may bind any subset of
+  the declared output slots;
 - `signatureHash = "sha256:" + sha256(canonical({op, inputs: [{slot, type,
   list (default false), min (default null)}], params: [{slot, type, unit
   (default null)}], outputs: [{slot, type, repeat (default null)}], free
   (default null), branch: branch.policy or null, orientation, pathParam}))`;
   the hashes of the 1.0 records did not change in 1.1, nor those of the
-  1.0 and 1.1 records in 1.2, nor those of the earlier records in 1.3
-  (a test pins them);
+  1.0 and 1.1 records in 1.2, nor those of the earlier records in 1.3 and
+  1.4 (a test pins them);
 - params (`type: "number"` only) are op settings written in `args` as
   number literals: `optional` (default `false`) and `default` (a number or
   absent) are outside the hash. An absent optional param reaches the
@@ -207,7 +248,8 @@ Service catalogs:
   wrap of a difference of directions, §5);
 - `_reasons.json`: reason → state;
 - `_policies.json`: branch policies (`single`, `line_param_order`,
-  `circle_side`, `other_than`, §5.4);
+  `circle_side`, `other_than`; since 1.4 `tangent_side`, `bisector_kind`,
+  `vertex_index`, `sector_sides`, §5.4);
 - `_numeric.json`: bounds, tolerances, the generator margin and its noise
   decisions (§6).
 
@@ -234,6 +276,9 @@ Record = {"state": "defined", "type", "value", "detail"?}
 | number | `{value, unit}` — `unit` one of `scalar`, `length`, `area`, `angle` (radians), `count` |
 | angle | `{vertex: [x, y], a0, a1, size}` — radians; `a0 ∈ [0, 2π)` the direction of the first side from `+x`, `size ∈ [0, 2π)` counter-clockwise from the first side to the second, `a1 = a0 + size` (not normalised) |
 | mark | `{kind, count}` — `kind` one of `markKinds` (`equal_segments`, `equal_angles`, `right_angle`), `count` an integer `1…3` (`1` for a right angle) |
+| arc | `{c: [x, y], r, a0, a1}` — radians, counter-clockwise from `a0` to `a1`; `a0 ∈ [0, 2π)`, `a1 ∈ [a0, a0 + 2π]`; a zero sweep is defined, `a1 = a0 + 2π` is the full circle |
+| sector | `{c: [x, y], r, a0, a1}` — the region of the arc `{c, r, a0, a1}` and the radii to its ends `S0`, `S1`; `a1 = a0 + 2π` is the full disc |
+| polyline | `{vertices: [[x, y], …], length}` — at least two vertices in definition order, `length` the sum of the links |
 
 Angles (`_types.json → angles`): a direction is normalised by `θ =
 atan2(y, x)`, `θ < 0` gives `θ + 2π`, then `θ ≥ 2π` gives `0` and `−0`
@@ -296,8 +341,8 @@ order):
    dependency) and is a `type_mismatch` elsewhere. Then each param in
    registry order: absent and required → `error/schema`; not a number
    literal → `error/type_mismatch`. The first problem found wins;
-4. a free op whose element has no usable input value of its kind →
-   `error/schema`;
+4. a free op whose element (first output slot) has no usable input value of
+   its kind → `error/schema`; an absent `angle` input is `0`;
 5. **upstream**: among the input elements (registry slot order, list items in
    order) that are not `defined`, take the worst state by
    `error > unsupported > undefined`, the first one on a tie; every output
@@ -309,7 +354,7 @@ order):
    and a `diagnostics` entry `{code: "internal", operationId, op, message}`.
 
 Every output slot is always computed; the elements bound to the op take
-their slots. An element left without a record (never in 1.1–1.3) is `error/schema`.
+their slots. An element left without a record (never in 1.1–1.4) is `error/schema`.
 
 ### 5.3 Checks
 
@@ -321,6 +366,15 @@ full op result; `e ≤ 1e-9·S` → `passed`, `e ≥ 1e-6·S` → `failed`, othe
 The formulas are in the op pages. The check of a mark (`equal`, `right`) is
 the claim it draws: a `failed` status says the drawing no longer matches
 the claim; it does not change the mark's state.
+
+Since 1.8.1a4 `native.check(doc, checks=None, *, inputs=None,
+relations=None, trials=0, seed=None)` also measures relations between
+elements (`incident`, `parallel`, `perpendicular`, `equal_length`,
+`equal_angle`, `collinear`, `concyclic`, `concurrent`, `tangent`; report key
+`"relation:<id>"`, status `unsupported` for an unknown predicate or argument
+type) and, with `trials > 0`, re-evaluates the document with perturbed free
+inputs (`general_position`). The predicates, the generator and the
+aggregation are in [checks.md](checks.md).
 
 ### 5.4 Branches and slot policies
 
@@ -336,6 +390,21 @@ slot `undefined` instead of moving another solution into it.
 | `line_param_order` | `first` has the smaller parameter `t` along the orientation of the linear input (`dir` of a line or ray, `b − a` of a segment). The slots are fixed on the **carrier line** before the part filter of a segment or a ray, which then works per slot: when the first solution leaves the segment, the second stays in `second` |
 | `circle_side` | `first` lies to the left of the directed segment from the first centre to the second (`(c2 − c1) × (X − c1) > 0`), `second` to the right; swapping the inputs swaps the slots |
 | `other_than` | one slot: the solution of the base pair other than the explicit argument `known`; tangency at `known` gives `known`; `known` not among the solutions → `undefined/branch_absent` |
+| `tangent_side` (1.4) | tangents from a point: `tangent.1`, `touch.1` to the left of the ray from the point to the centre, `tangent.2`, `touch.2` to the right; a point on the circle fills both slots with the tangent at it (`multiplicity 2`, directions continuous with the outside case); inside → `point_inside` |
+| `bisector_kind` (1.4) | `internal` has the direction `normalize(d1 + d2)`, `external` is it turned by `+90°`; for parallel lines the slot whose direction sum is not zero is the midline, the other is `parallel` (`coincident` for one line) |
+| `vertex_index` (1.4) | `polygon`, `side.i` from `vertex.i` to `vertex.(i + 1)` (`side.n` closes), `vertex.k` from one; `vertex.1 = a`, `vertex.2 = b` exactly; a clockwise input stays clockwise (the area is unsigned) |
+| `sector_sides` (1.4) | `arc.1`, `arc.2` on the arc in the order of the line parameter (fixed on the carrier circle before the part filters), `side.1` on the radius `c → S0`, `side.2` on the radius `c → S1` |
+
+**Arc filter** (1.4). An arc in a `circular` slot is intersected as its
+carrier circle; the slots are fixed there, then each slot is kept only on
+the arc: `φ = θ − a0` wrapped into `[0, 2π)` (`θ` the direction of the
+solution from the centre), the solution is on the arc when `r·(φ − sweep) ≤
+tol.decide` or `r·(2π − φ) ≤ tol.decide`, otherwise the slot is
+`undefined/outside_part` with `detail: {"slot": <the arc's argument slot>}`
+(`circle` of `intersect.line_circle`, `first`/`second` of
+`intersect.circle_circle` and `intersect.other_than`, `sector` of
+`intersect.line_sector`). A double root keeps its `multiplicity` only when
+it stays.
 
 A tangency (`|δ| ≤ tol.decide` for a line and a circle, `|e1|` or `|e2| ≤
 tol.decide` for two circles) is a double root: both slots hold the touching
@@ -366,12 +435,23 @@ point moves with the path:
 | other ray | affine | `o = origin`, `v = dir` | `t < 0` → `0` | `0.5` |
 | circle | angle | centre `c`, radius `r` | angle from +x | `π/4` |
 | polygon (`n` vertices `V`) | perimeter | the sides in order | wraps to `[0, n)` | `0.5` |
+| line by `line.external_bisector` | affine | `o = vertex`, `v = dir` | any | `0.5` |
+| line by `line.tangents_from_point`, `line.tangent_at` | affine | `o = point`, `v = dir` | any | `0.5` |
+| ray by `ray.at_angle` | affine | `o = origin`, `v = dir` | `t < 0` → `0` | `0.5` |
+| arc (1.4) | arc | `c`, `r`, `a0`, `a1` | fraction of the arc, clamped to `[0, 1]` | `0.5` |
+| sector (1.4) | sector | the arc, then the radius `S1 → c`, then `c → S0` | wraps to `[0, 3)` | `0.5` |
+| polyline (1.4, `n` vertices) | polyline | the links in order | clamped to `[0, n − 1]` | `0.5` |
 
     affine:     point = o + clamp(t)·v
     angle:      point = (cx + r·cos t, cy + r·sin t)
     perimeter:  t' = t − n·floor(t / n);  t' < 0 → t' + n;  t' ≥ n → 0
                 k = floor(t'), f = t' − k
                 point = V[k] + f·(V[(k + 1) mod n] − V[k])     (side side.(k + 1))
+    arc:        φ = a0 + clamp(t, 0, 1)·(a1 − a0);  point = (cx + r·cos φ, cy + r·sin φ)
+    sector:     w = t wrapped into [0, 3) like perimeter;  S_i = c + r·(cos a_i, sin a_i)
+                w ≤ 1: the arc point of w;  w ≤ 2: S1 + (w − 1)·(c − S1);  else c + (w − 2)·(S0 − c)
+    polyline:   w = clamp(t, 0, n − 1);  k = min(floor(w), n − 2);  f = w − k
+                point = V[k] + f·(V[k + 1] − V[k])
 
 The frame of a path element comes from `frames[<producer op>]` (on the
 values of the producer's arguments) when its producer is listed there,
@@ -430,7 +510,7 @@ is still refused. The decisions `angle_wrap` and `zero_angle` of
 across their boundaries, so a case near them is refused even when it is
 built exactly; only `m = 0` exactly is accepted.
 
-Library set (`animageo/native/parity/v1/`, 49 scenes):
+Library set (`animageo/native/parity/v1/`, 71 scenes):
 
 - registry 1.0: `basic_points`, `segment_line`, `circle`, `intersect_lines`,
   `intersect_segments`, `polygon_triangle`, `polygon_quad`, `upstream_chain`,
@@ -451,7 +531,16 @@ Library set (`animageo/native/parity/v1/`, 49 scenes):
   `on_path_l2_lines`, `l2a1_chain`;
 - registry 1.3: `angle_points`, `angle_zero_wrap`, `marks_equal_segments`,
   `marks_equal_angles`, `marks_right_angle`, `incircle`,
-  `incircle_touch_chain`, `a3_chain` (marks both passed and failed).
+  `incircle_touch_chain`, `a3_chain` (marks both passed and failed);
+- registry 1.4: `l2a4_divide`, `l2a4_center`, `l2a4_closest`,
+  `l2a4_at_distance`, `l2a4_vertex`, `l2a4_bisectors_lines`,
+  `l2a4_external_bisector`, `l2a4_ray_at_angle`, `l2a4_ray_by_vector`,
+  `l2a4_tangents`, `l2a4_tangent_at`, `l2a4_segment_length`, `l2a4_midline`,
+  `l2a4_polyline`, `l2a4_circles`, `l2a4_arcs`, `l2a4_sectors`,
+  `l2a4_on_path_arcs`, `l2a4_regular`, `l2a4_parallelogram`,
+  `l2a4_line_sector`, `l2a4_arc_filter`. A line through the centre of a
+  sector (both radii met at `s = 0` up to rounding) is left to unit tests:
+  its decision value is rounding noise of a non-exact zero.
 
 At least three cases per op; degenerate cases with binary-exact inputs or a
 noise decision.
@@ -585,6 +674,12 @@ this rectangle.
   ticks on the targets. Back to kernel values: a `NativeMark` gives
   `{kind, count}`, the angle of a right-angle mark `{kind: "right_angle",
   count: 1}`.
+- Registry 1.4: an arc is a classic `Arc` and a sector a `CircleSector`
+  whose `angles` are the kernel `[a0, a1]` as they are (a full arc keeps
+  `a1 = a0 + 2π`; the classic constructor would fold it to zero); a
+  polyline is a `LocusCurve` of its vertices. The free `angle` input of
+  `segment.from_point_length` is a constant of the command (the document's
+  value, `0` when absent).
 - The renderer draws the classic types of `animageo.geo.DRAW_ORDER` (by
   exact type, in that order of layers); a number, an equality mark and an
   undefined element are not drawn (`geo.is_drawn`).
