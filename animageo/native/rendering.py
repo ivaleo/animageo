@@ -476,7 +476,6 @@ def _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report,
     scale = VIDEO_QUALITY[video['quality']]
     width = _even(float(export.get('ptWidth', view['ptWidth'])) * scale)
     height = _even(float(export.get('ptHeight', view['ptHeight'])) * scale)
-    holder = {}
 
     class NativeTimelineScene(AnimaGeoScene):
         def construct(self):
@@ -484,7 +483,6 @@ def _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report,
                               reference=layout.get('reference'), content=layout.get('content'),
                               export=layout.get('export'))
             self.play_keyframes(bridge)
-            holder['scene'] = self
 
     with tempfile.TemporaryDirectory(prefix='animageo_video_') as media:
         with tempconfig({'media_dir': media, 'pixel_width': width, 'pixel_height': height,
