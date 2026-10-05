@@ -234,3 +234,9 @@ user-interface objects, regular polygons) are the output of
 them; a test compares them entry by entry), each shows what it is for
 (`test_native_l5_corpus.py`), and their expectations are in
 `tests/native/import/expected/`.
+
+Speed (`test_native_l5_speed.py`, `slow`, the numbers are printed): a file
+of 3000 objects (the limit; groups of a triangle with its midpoints, medians,
+centroid, a circle, a perpendicular and the medial triangle, all editable)
+imports in 4.0 s against the budget of 30 s; `from_construction` of a scene
+of 300 operations takes 0.1 s against 1 s.
