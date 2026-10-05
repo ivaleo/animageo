@@ -7,6 +7,74 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0a2] - 2026-10-05
+
+The second part of the native kernel stage L3: conditions of a document,
+the general case with a counterexample, recipes v1 and automatic marks.
+
+### Added
+
+- The document takes `conditions[]` (`construct` and `check` conditions:
+  receiver, statement, recipe, places and their operations, the origin of the
+  receiver), `suppressedMarks[]`, `elements.<id>.origin` (`kind: "auto"`,
+  `source`) and `viewDefaults.autoMarks`; `validate` reports the
+  `condition_*` codes, `mark_origin_unknown` and
+  `suppressed_mark_unknown_kind`. The JSON schema follows.
+  `docs/native/conditions.md`.
+- Statements (the AST shared with the web, with `coincident`) and their
+  compiler to `check` predicates (`statement_checks`, `measure_statement`,
+  `relation`); new predicates `equal_value`, `not`, `on_object`,
+  `coincident`, `congruent`.
+- `native.check_general`: the general case of a statement by SplitMix64
+  trials (seed `sha256(documentId:checkId)`, step `0.5·S·k/trials`), a
+  counterexample `{trial, inputs}` and `inconclusive` when more than 20 % of
+  the trials are unmeasured.
+- Recipes v1 (`animageo-recipe/v1`, 13 recipes: lengths, right angles,
+  perpendicular and parallel lines, a point on a line or an object, equal
+  angles and angle values, tangency) and `native.apply_condition`,
+  `native.release_condition`, `native.condition_candidates`,
+  `native.shape_conditions` (right, isosceles and equilateral triangles,
+  parallelogram, rhombus, rectangle, square, trapezoid); the receiver by
+  default, the intersection of two places, refusals with a reason. Cards for
+  the assistant: `docs/native/ops/recipes.md`.
+- Automatic marks: `native.auto_marks`, `native.add_auto_marks`,
+  `native.auto_sources` with the table `animageo/native/marks/auto.v1.json`
+  (`animageo-auto-marks/v1`: equal segments, right angles, equal angles,
+  halves of a midpoint and a median, the angles of a bisector, Thales);
+  `apply_condition` adds the marks of its condition (`marks=False` to skip).
+- `native.steps` makes a `condition` step per condition and puts a mark in
+  the step of its source; `native.describe` phrases conditions and takes
+  `values=True` (lengths, angles and numbers of the operations and
+  statements).
+- `native.has`: `check.general`, `conditions`, `apply_condition`,
+  `auto_marks`, `describe.values`.
+- Fixtures `animageo-recipes/v1`, `animageo-general/v1`, `animageo-marks/v1`
+  (`python -m animageo.native fixtures conditions [--check]`), 17 parity
+  scenes `recipe_*` and `shape_*` with their steps and describe snapshots.
+
+### Changed
+
+- `native.delete` and `native.redefine` respect conditions: deleting a
+  participant of a condition restores its receiver (`receiverOrigin`, or a
+  free point at the current position with the warning `origin_unusable`)
+  and removes the condition with its places and marks; redefining a receiver
+  removes its conditions; `condition_cycle` refuses a receiver built on its
+  own participant. Effects `removed.conditions`, `modified.restoredFrom`. A
+  document without conditions edits as in 1.9.0a1.
+- An angle element in a statement measures the convex angle
+  (`min(size, 2π − size)`), as an angle of three points does.
+- Edits copy a document through JSON, and the JSON check of `load` builds
+  pointers only for a value that is not plain JSON: faster on large
+  documents, the same results. Budgets of plan L3 on 300 operations:
+  `apply_condition` p95 ≈ 22 ms, `auto_marks` ≈ 2.7 ms per source,
+  `check_general` of 50 trials ≈ 350 ms (tests with a margin of 2).
+
+### Fixed
+
+- `native.redefine` takes the default of an optional free input of the new
+  operation (for example, the angle of a rotation) instead of refusing it
+  with `missing_input`.
+
 ## [1.9.0a1] - 2026-10-05
 
 The first part of the native kernel stage L3: registry 1.5 (triangle
