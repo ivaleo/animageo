@@ -697,7 +697,9 @@ obj       ::= the name of an element | a pair of points (AB)
   `steps` and conditions the order is the 1.8 one.
 - An explicit `given`/`group` step with a `title` or with ≥ 2 printed
   operations gets a heading `# <title>` (no title: `# Дано` for `given`, `#`
-  for a group); its `text` goes to the end of its first line (`  # text`).
+  for a group; 1.9.0a5: a `given` step with a title — `# Дано: <title>`, so
+  it reads back as `given`); its `text` goes to the end of its first line
+  (`  # text`).
   After a group with a heading, a blank line closes it before the next
   printed line that is not a heading.
 - `Условие(…)` and `Проверить(…)` go right after the step where their last
@@ -716,8 +718,9 @@ keeps the current position).
 ### 12.4 Steps from comments
 
 - A line that is only a comment opens an explicit group: its text is the
-  `title` (`# Дано`/`# Given` — kind `given`, no title; a bare `#` — no
-  title). The group lasts to the next comment line or a blank line.
+  `title` (`# Дано`/`# Given` — kind `given`, no title; 1.9.0a5: `# Дано:
+  <title>` — kind `given` with that title; a bare `#` — no title). The group
+  lasts to the next comment line or a blank line.
 - A comment at the end of a line is the `text` of the step of its operation
   (inside a group — the group's text; several are joined with `; `); outside
   a group the operation becomes an explicit one-operation step.

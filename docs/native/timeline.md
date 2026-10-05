@@ -99,7 +99,10 @@ the bridge builds (`kernel/bridge.py`):
   step 2, with `direction` `ccw` for `d > 0`, `cw` for `d < 0`, `short`
   for `d = 0`. Whatever the classic constraint of the point (a circle,
   arc and sector are classic circles, a polygon is `unknown` → linear), the
-  classic interpolation then gives the values of §2 (`|d| < 2π`); the test
+  classic interpolation then gives the values of §2 — on a polygon also for
+  `|d| ≥ 2π` (an 8-gon, period 8, shifts of ±7–7.5 per interval: the classic
+  constraint of a point on a polygon is that of its path, never `circle`, so
+  the classic lerps the unwrapped `tparam`; 1.9.0a5 test); the test
   checks segment, ray, line, circle, polygon, arc, sector and polyline at
   and between keyframes.
 - A number is clamped to the `min`/`max` literals of its operation at each
@@ -113,6 +116,37 @@ with the inputs of `sample_timeline` (explicit `inputs` on top) and its
 frame of the playback at `t` with no effect in progress. The report gains
 `t` and `visible`; hidden elements have `visible: false` and no box.
 
+1.9.0a5, `styles` and `@camera` in `render(t)`: `timeline_extras(doc,
+timeline)` keeps of the bridged timeline only `styles`, `values["@camera"]`,
+`easing` and `defaults`; the loaded scene then gets them as the playback
+leaves them — every interval before the one containing `t` played to its
+end (classic style interpolators at 1, their finalizers, the camera at 1),
+then the style and camera interpolators of that interval at its progress
+(the colour space of `rendering.color_interpolation`). A style set at a
+keyframe is held after it, as in the video. `sample_timeline` stays
+`{t, inputs, visible}`: styles and the camera are classic state (colour
+interpolation, baselines from the resolved style), not inputs of the
+kernel, so they are applied by the renderer, not sampled.
+
+Not in a still frame, by design:
+
+- `events` (`flash`, `circumscribe`, `indicate`, …) — emphasis of the
+  playback that restores itself when its window ends; a frame at `t` is the
+  state without it (the video draws it).
+- the progress of an `enter`/`exit` effect — an element is visible from its
+  keyframe on (the carry-forward of the web, `keyframe_visibility_parity.json`);
+  a still frame never shows a half-drawn `create` or a half-faded `fade`.
+  Frames for comparison with a video are taken outside effects.
+
+`render(fmt="png", video={fps?, quality})` (1.9.0a5, `native.has("render.frame")`):
+the frame through the camera of the video — a scene loaded under the pixel
+size of the video (the canvas times `quality`, even), one `update_frame`,
+the camera image (RGBA PNG, background of the style). With `t` and
+`timeline` it is the frame of the video at `t`. The report gains `video`
+`{quality, width, height}`; its boxes stay in pixels of the canvas. Without
+`video` a PNG is cairosvg of the SVG, as before (the static export of the
+web); `video` with another static format is a `ValueError`.
+
 `fmt ∈ {"mp4", "gif", "webm", "mov"}` — the video of the timeline: the
 document loaded by `loadDocument`, the bridged timeline played by
 `play_keyframes`, manim + ffmpeg (`render_config.configure_render`). Without
@@ -122,15 +156,18 @@ a timeline: `ValueError("timeline_required")`. `video={fps, quality}`
 a video: `{format, documentId, kernel, fmt, video: {fps, quality, width,
 height, duration}, t, visible}` (`t`, `visible` of the last keyframe).
 
-Measured (1.9.0a4, `test_native_l3a4_render_manim.py`, 20 frames of
+Measured (1.9.0a5, `test_native_l3a4_render_manim.py`, 20 frames of
 `tests/native/frames/*.json`): an MP4 frame `n` against `render(t=n/fps,
-fmt="png")` — PSNR 29.6–46 dB, at most 1.23 % of pixels off by more than
-16/255. Steps frames (44–46 dB, ≤ 0.06 %) and the first frames of a number
-scene (41–43 dB) meet the gate of plan L3 (≥ 40 dB, ≤ 0.1 %); frames with
-filled polygons and sectors, long lines and labels do not — the rasterisers
-differ (cairosvg of the SVG, the manim camera and h264), not the geometry or
-the time: the frame `n` peaks at `t = n/fps`, half a frame off drops to
-20–23 dB. The gate is for 1.9.0.
+fmt="png", video=…)` — PSNR 45.7 dB – ∞ on all 20 frames; 17 frames have
+≤ 0.1 % of pixels off by more than 16/255, three (`paths` 3 and 5, `number`
+19) have 0.100–0.134 %, less than H.264 alone (libx264, crf 23, yuv420p as
+manim encodes) on the same still: 0.17–0.37 %. What is left is the codec:
+the steps frames, where nothing moves between H.264 references, are 62–67 dB
+and 0 %. The test guards ≥ 40 dB and ≤ 0.1 % or not more than the codec
+alone, and that the frame `n` is closest to `render` at `t = n/fps`. A
+timeline with `styles` and `@camera` (five frames, red on green edges):
+38.5–53 dB, within the codec alone. Before (1.9.0a4, cairosvg of the SVG):
+29.6–46 dB, ≤ 1.23 %.
 
 ## 4. `steps_timeline(doc, *, lag=0.3, duration=0.5, pause=0.6, effects=None, start=0.0) → StepsTimeline` (contract)
 
@@ -190,4 +227,5 @@ python -m animageo.native timeline <doc.json> --timeline <keyframes.json> (--t T
 prints `steps_timeline`, or `sample_timeline` at `--t`, or
 `timeline_to_bridge` with `--bridge`; a timeline file may be the output of
 the first form. `fixtures verify` also checks `animageo-timeline/v1` files.
-`native.has`: `timeline`, `steps_timeline`, `render.t`, `render.video`.
+`native.has`: `timeline`, `steps_timeline`, `render.t`, `render.video`,
+`render.frame` (1.9.0a5).
