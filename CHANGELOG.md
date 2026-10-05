@@ -7,6 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0a3] - 2026-10-05
+
+The third part of the native kernel stage L3: «Команды» take conditions,
+checks, relation queries and steps from comments; the printer follows the
+steps and prints conditions in place; edit mode keeps conditions.
+
+### Added
+
+- «Команды»: `Условие(statement[, двигать X])` / `Condition(…)` — a
+  construct condition; the parser stays structural and returns
+  `conditionRequests` (`apply`, `release`, `replace`, `move`, each with the
+  line and the receiver) instead of applying recipes. Refusals known without
+  computation are errors of the line: `unsupported_condition`,
+  `receiver_not_free`, `receiver_is_ancestor`, `too_many_conditions`.
+- `Проверить(statement)` / `Check(…)` — a `check` condition kept in the
+  document (`c<n>`, `seq`); check commands for kinds without a sign
+  (`ПроверкаКоллинеарности`, `ПроверкаКонцикличности`,
+  `ПроверкаКонкурентности`, `ПроверкаПараллельности`,
+  `ПроверкаПерпендикулярности`, `ПроверкаКасания`, `ПроверкаПринадлежности`,
+  `ПроверкаРавенства`, `ПроверкаСовпадения` with English aliases), usable in
+  both.
+- Statements in the text: `=`, `≠`, `∥`, `⟂`, `∈`, `касается`, `|AB|`, `∠ABC`,
+  `∠α`, numbers, degrees, `π`, arithmetic, `√` and functions; the AST of
+  `native.conditions` (`coincident` for two points). `Отношение(a, b)` /
+  `Relation(…)` returns `queries` and changes nothing.
+- Steps from comments: a comment-only line opens a group step (`# Дано` — the
+  `given` step), a blank line closes it, a trailing comment is the text of
+  the step of its line. `ParseResult` gains `conditionRequests` and
+  `queries`; condition and check lines are in `lines` with `conditionId`.
+- The printer prints in the order of `native.steps` (explicit steps, then
+  `seq`), group headers, step texts, and condition lines after the last step
+  of their participants; it prints a receiver by its origin and leaves out
+  places and automatic marks (`printable_document`). The warning
+  `unprintable_condition`.
+- `apply_condition_requests(doc, requests)` carries out the requests of a
+  parse (apply, release, replace, move) in the sandbox or a test and reports a
+  refusal per line.
+- Lexicon: a `keywords` block (`condition`, `check`, `move`, `touches`, `not`,
+  `near`, `given`, `relation`), check entries (`check` instead of `op`), names
+  of all registry 1.4 operations but `number.expression` and `text.free`;
+  `lexicon_problems` checks keywords and check names. The lexicon hash
+  changes.
+- Commands fixtures: 7 new files (`parse_l2a4`, `conditions`,
+  `condition_errors`, `checks`, `comment_steps`, `print_order`,
+  `edit_conditions`, 246 cases, 458 in all); conditions cases carry
+  `afterRequests`. Features `commands.conditions`, `commands.steps`.
+
+### Changed
+
+- Comments are no longer dropped: the warning `comment_dropped` is gone (the
+  fixture case is `comment_step`).
+- `apply_condition` takes the receiver out of an explicit step before
+  applying (it used to fail with `step_cycle`).
+- Statements outside `Условие`/`Проверить` stay `forbidden`, and so does
+  `около`.
+- `parse_commands`/`print_commands` build the shipped lexicon once; 300 lines
+  parse in ≈ 35 ms and print in ≈ 15 ms (p95), edit mode ≈ 60 ms (median);
+  a slow budget test.
+
 ## [1.9.0a2] - 2026-10-05
 
 The second part of the native kernel stage L3: conditions of a document,
