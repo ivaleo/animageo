@@ -42,7 +42,12 @@ L2A4_OPS = {
     'polygon.regular', 'polygon.regular_center', 'polygon.parallelogram', 'polygon.centroid',
     'intersect.line_sector',
 }
-ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS
+L2A5_OPS = {
+    'angle.between_lines', 'angle.between_vectors', 'angle.by_size', 'number.angle',
+    'measure.length', 'measure.distance', 'measure.area', 'measure.perimeter', 'measure.angle',
+    'measure.radius', 'measure.circumference',
+}
+ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS
 # Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were.
 L0_HASHES = {
     'circle.center_point': 'sha256:f3b2e070e9310312708009adfc04cfd7411128d482a4b7522f7320af35ca9810',
@@ -94,7 +99,7 @@ def test_ops_and_files():
     reg = registry()
     assert set(reg.ops) == ALL_OPS
     assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark',
-                               'arc'}
+                               'arc', 'measure'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
@@ -119,7 +124,7 @@ def test_l0_records_unchanged():
         assert reg.index['ops'][op] == digest
         assert reg.get(op)['since'] == '1.3'
     assert set(L2A2_HASHES) == L2A2_OPS
-    for op in L2A4_OPS:
+    for op in L2A4_OPS | L2A5_OPS:
         assert reg.get(op)['since'] == '1.4'
 
 
@@ -127,9 +132,9 @@ def test_l0_records_unchanged():
 def test_record_fields(op):
     record = registry().get(op)
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free'}
-    assert record['status'] == ('beta' if op == 'ray.by_vector' else 'stable')
+    assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors') else 'stable')
     if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
-                  'polygon.vertex', 'polygon.regular', 'polygon.regular_center'):
+                  'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle'):
         assert record['params'] == []
     for param in record['params']:
         assert {'slot', 'type', 'unit', 'text'} <= set(param) <= {'slot', 'type', 'unit', 'optional',
@@ -213,6 +218,9 @@ def test_contract_table():
         'path': ['line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'polyline'],
         'round': ['circle', 'arc', 'sector'],
         'vertexed': ['segment', 'polyline', 'polygon'],
+        'measurable': ['segment', 'vector', 'polyline', 'arc'],
+        'bounded': ['polygon', 'circle', 'sector'],
+        'figure': ['point', 'line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'polyline'],
     }
     assert reg.accepts('linear', 'ray') and not reg.accepts('circular', 'ray')
 

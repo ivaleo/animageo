@@ -739,6 +739,78 @@ def _line_sector(args, result, tol):
     return error
 
 
+# ---- registry 1.4, 1.8.1a5 ------------------------------------------------------
+
+
+def _unit_at(theta):
+    return math.cos(theta), math.sin(theta)
+
+
+def _udist(u, w):
+    return math.hypot(u[0] - w[0], u[1] - w[1])
+
+
+def _dir_of(inp):
+    """Unit direction of a linear input or a vector (the length is positive here)."""
+    v = inp.value
+    if inp.type in ('line', 'ray'):
+        return v['dir'][0], v['dir'][1]
+    dx = v['b'][0] - v['a'][0]
+    dy = v['b'][1] - v['a'][1]
+    length = math.hypot(dx, dy)
+    return dx / length, dy / length
+
+
+def _carrier_distance(p, inp):
+    v = inp.value
+    if inp.type == 'line':
+        o = v['p']
+    elif inp.type == 'ray':
+        o = v['origin']
+    else:
+        o = v['a']
+    d = _dir_of(inp)
+    return abs((p[0] - o[0]) * d[1] - (p[1] - o[1]) * d[0])
+
+
+@register_check('angle.between_lines', 'sides')
+def _between_lines_sides(args, result, tol):
+    ang = result['angle']
+    v = _pt(ang['vertex'])
+    d1 = _dir_of(args['first'])
+    d2 = _dir_of(args['second'])
+    u0 = _unit_at(ang['a0'])
+    u1 = _unit_at(ang['a1'])
+    sides = min(_udist(u0, d1) + _udist(u1, d2), _udist(u0, d2) + _udist(u1, d1))
+    return max(_carrier_distance(v, args['first']), _carrier_distance(v, args['second']), sides * tol.scale)
+
+
+@register_check('angle.between_vectors', 'sides')
+def _between_vectors_sides(args, result, tol):
+    ang = result['angle']
+    start = _pt(args['first'].value['a'])
+    d1 = _dir_of(args['first'])
+    d2 = _dir_of(args['second'])
+    return max(_dist(_pt(ang['vertex']), start), _udist(_unit_at(ang['a0']), d1) * tol.scale,
+               _udist(_unit_at(ang['a1']), d2) * tol.scale)
+
+
+@register_check('angle.by_size', 'rotation')
+def _by_size_rotation(args, result, tol):
+    v = _pt(args['vertex'].value)
+    a = _pt(args['a'].value)
+    p = _pt(result['point'])
+    alpha = _number(args['size'])
+    ra = _dist(a, v)
+    rp = _dist(p, v)
+    ta = math.atan2(a[1] - v[1], a[0] - v[0])
+    tp = math.atan2(p[1] - v[1], p[0] - v[0])
+    first, second = (ta, tp) if alpha >= 0 else (tp, ta)
+    ang = result['angle']
+    return max(abs(rp - ra), abs(wrap_angle(tp - ta - alpha)) * ra, _dist(_pt(ang['vertex']), v),
+               abs(wrap_angle(ang['a0'] - first)) * tol.scale, abs(wrap_angle(ang['a1'] - second)) * tol.scale)
+
+
 def run_checks(evaluated, keys=None) -> CheckReport:
     """Run the registry checks over an :class:`~.evaluate.Evaluated` result.
 

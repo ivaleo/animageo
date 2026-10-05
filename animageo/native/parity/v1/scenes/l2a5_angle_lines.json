@@ -1,0 +1,459 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a5_angle_lines",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a5_angle_lines",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_E": {
+        "id": "op_E",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "E"
+          }
+        ]
+      },
+      "op_F": {
+        "id": "op_F",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "F"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "D"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "ray.by_points",
+        "args": {
+          "origin": {
+            "kind": "ref",
+            "elementId": "E"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "F"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "ray",
+            "elementId": "r"
+          }
+        ]
+      },
+      "op_t1": {
+        "id": "op_t1",
+        "op": "angle.between_lines",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "t1"
+          }
+        ]
+      },
+      "op_t2": {
+        "id": "op_t2",
+        "op": "angle.between_lines",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "s"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "l"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "t2"
+          }
+        ]
+      },
+      "op_t3": {
+        "id": "op_t3",
+        "op": "angle.between_lines",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "r"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "t3"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "E": {
+        "id": "E",
+        "type": "point",
+        "displayName": "E",
+        "producer": {
+          "operationId": "op_E",
+          "slot": "point"
+        }
+      },
+      "F": {
+        "id": "F",
+        "type": "point",
+        "displayName": "F",
+        "producer": {
+          "operationId": "op_F",
+          "slot": "point"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "ray",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "ray"
+        }
+      },
+      "t1": {
+        "id": "t1",
+        "type": "angle",
+        "displayName": "t1",
+        "producer": {
+          "operationId": "op_t1",
+          "slot": "angle"
+        }
+      },
+      "t2": {
+        "id": "t2",
+        "type": "angle",
+        "displayName": "t2",
+        "producer": {
+          "operationId": "op_t2",
+          "slot": "angle"
+        }
+      },
+      "t3": {
+        "id": "t3",
+        "type": "angle",
+        "displayName": "t3",
+        "producer": {
+          "operationId": "op_t3",
+          "slot": "angle"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -1
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          4,
+          1
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          -1,
+          -4
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          2,
+          4
+        ]
+      },
+      "E": {
+        "kind": "point",
+        "value": [
+          3,
+          -3
+        ]
+      },
+      "F": {
+        "kind": "point",
+        "value": [
+          -2,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "obtuse",
+      "inputs": {
+        "D": {
+          "kind": "point",
+          "value": [
+            -3,
+            3
+          ]
+        }
+      }
+    },
+    {
+      "name": "vertex_off_parts",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            6,
+            2
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            7,
+            5
+          ]
+        },
+        "E": {
+          "kind": "point",
+          "value": [
+            -6,
+            4
+          ]
+        },
+        "F": {
+          "kind": "point",
+          "value": [
+            -7,
+            6
+          ]
+        }
+      }
+    },
+    {
+      "name": "parallel",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            -4,
+            -3
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            4,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            8,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "name": "zero_length",
+      "inputs": {
+        "D": {
+          "kind": "point",
+          "value": [
+            -1,
+            -4
+          ]
+        }
+      }
+    }
+  ]
+}

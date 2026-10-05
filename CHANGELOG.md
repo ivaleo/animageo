@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Registry 1.4 of `animageo.native` grows (1.8.1a5; records with `since:
+  "1.4"` may still change until 1.8.1, earlier records do not):
+  - `angle.between_lines` — the convex angle between the directions of two
+    linear inputs at the crossing of their carriers (`parallel`,
+    `coincident`); `angle.between_vectors` (beta) — counterclockwise from
+    the first vector to the second at its start; `angle.by_size` — GeoGebra
+    `Angle(A, V, α)`: the angle and the point `A` turned about `V`;
+  - `number.angle` — a free angle parameter (input kind `angle`, radians,
+    `0` when absent; params `min`, `max`, `step`), `unit: "angle"`;
+  - measures with a unit: `measure.length` (segment, vector, polyline,
+    arc), `measure.distance` (point to a point or a path),
+    `measure.area` and `measure.perimeter` (polygon, disc, sector),
+    `measure.angle`, `measure.radius`, `measure.circumference`; output slot
+    `number`;
+  - families `measurable`, `bounded`, `figure`; six parity scenes
+    `l2a5_*`.
+
 ## [1.8.1a4] - 2026-10-05
 
 ### Added

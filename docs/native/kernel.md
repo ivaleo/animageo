@@ -198,6 +198,16 @@ table `animageo/native/parity/v1/canonical.json` is a list of
 | `polygon.parallelogram` | 1.4 | `a, b, c: point` → `polygon`, `side.1…4`, `vertex` | `vertex_index` |
 | `polygon.centroid` | 1.4 | `polygon: polygon` → `centroid` | — |
 | `intersect.line_sector` | 1.4 | `line: linear, sector: sector` → `arc.1`, `arc.2`, `side.1`, `side.2` | `sector_sides` |
+| `angle.between_lines` | 1.4 (a5) | `first, second: linear` → `angle` (convex, at the crossing of the carriers) | — |
+| `angle.between_vectors` (beta) | 1.4 (a5) | `first, second: vector` → `angle` (counterclockwise, at `first.a`) | — |
+| `angle.by_size` | 1.4 (a5) | `vertex, a: point, size: number` → `angle`, `point` | — |
+| `number.angle` | 1.4 (a5) | free `angle`; params `min`, `max`, `step` → `number` (`unit: "angle"`) | — |
+| `measure.length` | 1.4 (a5) | `of: measurable` → `number` (`length`) | — |
+| `measure.distance` | 1.4 (a5) | `point: point, to: figure` → `number` (`length`) | — |
+| `measure.area`, `measure.perimeter` | 1.4 (a5) | `of: bounded` → `number` (`area` / `length`) | — |
+| `measure.angle` | 1.4 (a5) | `angle: angle` → `number` (`angle`) | — |
+| `measure.radius` | 1.4 (a5) | `of: round` → `number` (`length`) | — |
+| `measure.circumference` | 1.4 (a5) | `circle: circle` → `number` (`length`) | — |
 
 - A slot type may be a family (`_types.json` → `families`):
 
@@ -209,6 +219,9 @@ table `animageo/native/parity/v1/canonical.json` is a list of
   | `path` | `line`, `segment`, `ray`, `circle`, `polygon`, `arc`, `sector`, `polyline` (1.4) |
   | `round` (1.4) | `circle`, `arc`, `sector` |
   | `vertexed` (1.4) | `segment`, `polyline`, `polygon` |
+  | `measurable` (1.4, a5) | `segment`, `vector`, `polyline`, `arc` |
+  | `bounded` (1.4, a5) | `polygon`, `circle`, `sector` |
+  | `figure` (1.4, a5) | `point` and the `path` types |
 
   An arc in a `circular` slot (`intersect.line_circle`,
   `intersect.circle_circle`, `intersect.other_than`) is intersected as its

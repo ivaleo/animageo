@@ -1,0 +1,2347 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a5_measures",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a5.dev0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a5_measures",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_v": {
+        "id": "op_v",
+        "op": "vector.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "v"
+          }
+        ]
+      },
+      "op_w": {
+        "id": "op_w",
+        "op": "polyline.by_points",
+        "args": {
+          "points": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "Q"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polyline",
+            "elementId": "w"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "arc.center_two_points",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "arc",
+            "elementId": "k"
+          }
+        ]
+      },
+      "op_g": {
+        "id": "op_g",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "Q"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "g"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "sector.center_two_points",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "D"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "t"
+          }
+        ]
+      },
+      "op_ang": {
+        "id": "op_ang",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "ang"
+          }
+        ]
+      },
+      "op_Ls": {
+        "id": "op_Ls",
+        "op": "measure.length",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Ls"
+          }
+        ]
+      },
+      "op_Lv": {
+        "id": "op_Lv",
+        "op": "measure.length",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "v"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Lv"
+          }
+        ]
+      },
+      "op_Lw": {
+        "id": "op_Lw",
+        "op": "measure.length",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "w"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Lw"
+          }
+        ]
+      },
+      "op_Lk": {
+        "id": "op_Lk",
+        "op": "measure.length",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "k"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Lk"
+          }
+        ]
+      },
+      "op_Sg": {
+        "id": "op_Sg",
+        "op": "measure.area",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "g"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Sg"
+          }
+        ]
+      },
+      "op_Sc": {
+        "id": "op_Sc",
+        "op": "measure.area",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Sc"
+          }
+        ]
+      },
+      "op_St": {
+        "id": "op_St",
+        "op": "measure.area",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "t"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "St"
+          }
+        ]
+      },
+      "op_Pg": {
+        "id": "op_Pg",
+        "op": "measure.perimeter",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "g"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Pg"
+          }
+        ]
+      },
+      "op_Pc": {
+        "id": "op_Pc",
+        "op": "measure.perimeter",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Pc"
+          }
+        ]
+      },
+      "op_Pt": {
+        "id": "op_Pt",
+        "op": "measure.perimeter",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "t"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Pt"
+          }
+        ]
+      },
+      "op_Rc": {
+        "id": "op_Rc",
+        "op": "measure.radius",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Rc"
+          }
+        ]
+      },
+      "op_Rk": {
+        "id": "op_Rk",
+        "op": "measure.radius",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "k"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Rk"
+          }
+        ]
+      },
+      "op_Rt": {
+        "id": "op_Rt",
+        "op": "measure.radius",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "t"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Rt"
+          }
+        ]
+      },
+      "op_Cc": {
+        "id": "op_Cc",
+        "op": "measure.circumference",
+        "args": {
+          "circle": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Cc"
+          }
+        ]
+      },
+      "op_Ma": {
+        "id": "op_Ma",
+        "op": "measure.angle",
+        "args": {
+          "angle": {
+            "kind": "ref",
+            "elementId": "ang"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Ma"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "v": {
+        "id": "v",
+        "type": "vector",
+        "displayName": "v",
+        "producer": {
+          "operationId": "op_v",
+          "slot": "vector"
+        }
+      },
+      "w": {
+        "id": "w",
+        "type": "polyline",
+        "displayName": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "polyline"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "arc",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "arc"
+        }
+      },
+      "g": {
+        "id": "g",
+        "type": "polygon",
+        "displayName": "g",
+        "producer": {
+          "operationId": "op_g",
+          "slot": "polygon"
+        }
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "displayName": "c",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        }
+      },
+      "t": {
+        "id": "t",
+        "type": "sector",
+        "displayName": "t",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "sector"
+        }
+      },
+      "ang": {
+        "id": "ang",
+        "type": "angle",
+        "displayName": "ang",
+        "producer": {
+          "operationId": "op_ang",
+          "slot": "angle"
+        }
+      },
+      "Ls": {
+        "id": "Ls",
+        "type": "number",
+        "displayName": "Ls",
+        "producer": {
+          "operationId": "op_Ls",
+          "slot": "number"
+        }
+      },
+      "Lv": {
+        "id": "Lv",
+        "type": "number",
+        "displayName": "Lv",
+        "producer": {
+          "operationId": "op_Lv",
+          "slot": "number"
+        }
+      },
+      "Lw": {
+        "id": "Lw",
+        "type": "number",
+        "displayName": "Lw",
+        "producer": {
+          "operationId": "op_Lw",
+          "slot": "number"
+        }
+      },
+      "Lk": {
+        "id": "Lk",
+        "type": "number",
+        "displayName": "Lk",
+        "producer": {
+          "operationId": "op_Lk",
+          "slot": "number"
+        }
+      },
+      "Sg": {
+        "id": "Sg",
+        "type": "number",
+        "displayName": "Sg",
+        "producer": {
+          "operationId": "op_Sg",
+          "slot": "number"
+        }
+      },
+      "Sc": {
+        "id": "Sc",
+        "type": "number",
+        "displayName": "Sc",
+        "producer": {
+          "operationId": "op_Sc",
+          "slot": "number"
+        }
+      },
+      "St": {
+        "id": "St",
+        "type": "number",
+        "displayName": "St",
+        "producer": {
+          "operationId": "op_St",
+          "slot": "number"
+        }
+      },
+      "Pg": {
+        "id": "Pg",
+        "type": "number",
+        "displayName": "Pg",
+        "producer": {
+          "operationId": "op_Pg",
+          "slot": "number"
+        }
+      },
+      "Pc": {
+        "id": "Pc",
+        "type": "number",
+        "displayName": "Pc",
+        "producer": {
+          "operationId": "op_Pc",
+          "slot": "number"
+        }
+      },
+      "Pt": {
+        "id": "Pt",
+        "type": "number",
+        "displayName": "Pt",
+        "producer": {
+          "operationId": "op_Pt",
+          "slot": "number"
+        }
+      },
+      "Rc": {
+        "id": "Rc",
+        "type": "number",
+        "displayName": "Rc",
+        "producer": {
+          "operationId": "op_Rc",
+          "slot": "number"
+        }
+      },
+      "Rk": {
+        "id": "Rk",
+        "type": "number",
+        "displayName": "Rk",
+        "producer": {
+          "operationId": "op_Rk",
+          "slot": "number"
+        }
+      },
+      "Rt": {
+        "id": "Rt",
+        "type": "number",
+        "displayName": "Rt",
+        "producer": {
+          "operationId": "op_Rt",
+          "slot": "number"
+        }
+      },
+      "Cc": {
+        "id": "Cc",
+        "type": "number",
+        "displayName": "Cc",
+        "producer": {
+          "operationId": "op_Cc",
+          "slot": "number"
+        }
+      },
+      "Ma": {
+        "id": "Ma",
+        "type": "number",
+        "displayName": "Ma",
+        "producer": {
+          "operationId": "op_Ma",
+          "slot": "number"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -2
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          3,
+          -3
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          3
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          -3,
+          4
+        ]
+      },
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "Cc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 31.41592653589793,
+            "unit": "length"
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 4.0
+          }
+        },
+        "Lk": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 6.062306189991536,
+            "unit": "length"
+          }
+        },
+        "Ls": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 7.0710678118654755,
+            "unit": "length"
+          }
+        },
+        "Lv": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 6.082762530298219,
+            "unit": "length"
+          }
+        },
+        "Lw": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 20.22489815402917,
+            "unit": "length"
+          }
+        },
+        "Ma": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.3214461533822712,
+            "unit": "angle"
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "Pc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 31.41592653589793,
+            "unit": "length"
+          }
+        },
+        "Pg": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 26.307660684327388,
+            "unit": "length"
+          }
+        },
+        "Pt": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 17.853981633974485,
+            "unit": "length"
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "Rc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 5.0,
+            "unit": "length"
+          }
+        },
+        "Rk": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.242640687119285,
+            "unit": "length"
+          }
+        },
+        "Rt": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 5.0,
+            "unit": "length"
+          }
+        },
+        "Sc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 78.53981633974483,
+            "unit": "area"
+          }
+        },
+        "Sg": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 43.0,
+            "unit": "area"
+          }
+        },
+        "St": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 19.634954084936208,
+            "unit": "area"
+          }
+        },
+        "ang": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 3.6052402625905993,
+            "a1": 6.9266864159728705,
+            "size": 3.3214461533822712
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 5.0
+          }
+        },
+        "g": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                3.0,
+                -3.0
+              ],
+              [
+                4.0,
+                3.0
+              ],
+              [
+                -3.0,
+                4.0
+              ]
+            ],
+            "area": 43.0
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "arc",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 4.242640687119285,
+            "a0": 5.497787143782138,
+            "a1": 6.9266864159728705
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              3.0,
+              -3.0
+            ],
+            "length": 7.0710678118654755
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 5.0,
+            "a0": 0.6435011087932844,
+            "a1": 2.214297435588181
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              3.0
+            ],
+            "length": 6.082762530298219
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                3.0,
+                -3.0
+              ],
+              [
+                4.0,
+                3.0
+              ],
+              [
+                -3.0,
+                4.0
+              ]
+            ],
+            "length": 20.22489815402917
+          }
+        }
+      },
+      "checks": {
+        "op_ang:sides": "passed",
+        "op_c:through_on_circle": "passed",
+        "op_g:sides_match": "passed",
+        "op_k:ends": "passed",
+        "op_s:ends": "passed",
+        "op_t:ends": "passed",
+        "op_v:ends": "passed",
+        "op_w:vertices": "passed"
+      }
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "O": {
+          "kind": "point",
+          "value": [
+            1,
+            -1
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            5,
+            1
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            -2,
+            5
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 1.0
+          }
+        },
+        "Cc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 28.099258924162907,
+            "unit": "length"
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 5.0
+          }
+        },
+        "Lk": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.532834942700779,
+            "unit": "length"
+          }
+        },
+        "Ls": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 7.0710678118654755,
+            "unit": "length"
+          }
+        },
+        "Lv": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.47213595499958,
+            "unit": "length"
+          }
+        },
+        "Lw": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 19.605461515163604,
+            "unit": "length"
+          }
+        },
+        "Ma": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.4078447027407184,
+            "unit": "angle"
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -1.0
+          }
+        },
+        "Pc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 28.099258924162907,
+            "unit": "length"
+          }
+        },
+        "Pg": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 26.88557140444412,
+            "unit": "length"
+          }
+        },
+        "Pt": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 15.969086641039887,
+            "unit": "length"
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "Rc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.47213595499958,
+            "unit": "length"
+          }
+        },
+        "Rk": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.8284271247461903,
+            "unit": "length"
+          }
+        },
+        "Rt": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.47213595499958,
+            "unit": "length"
+          }
+        },
+        "Sc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 62.83185307179587,
+            "unit": "area"
+          }
+        },
+        "Sg": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 43.5,
+            "unit": "area"
+          }
+        },
+        "St": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 15.70796326794897,
+            "unit": "area"
+          }
+        },
+        "ang": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              1.0,
+              -1.0
+            ],
+            "a0": 3.3389882134396736,
+            "a1": 6.7468329161803915,
+            "size": 3.4078447027407184
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -1.0
+            ],
+            "r": 4.47213595499958
+          }
+        },
+        "g": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                3.0,
+                -3.0
+              ],
+              [
+                5.0,
+                1.0
+              ],
+              [
+                -2.0,
+                5.0
+              ]
+            ],
+            "area": 43.5
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "arc",
+          "value": {
+            "c": [
+              1.0,
+              -1.0
+            ],
+            "r": 2.8284271247461903,
+            "a0": 5.497787143782138,
+            "a1": 6.746832916180392
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              3.0,
+              -3.0
+            ],
+            "length": 7.0710678118654755
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              1.0,
+              -1.0
+            ],
+            "r": 4.47213595499958,
+            "a0": 0.4636476090008061,
+            "a1": 2.0344439357957027
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              -3.0
+            ],
+            "b": [
+              5.0,
+              1.0
+            ],
+            "length": 4.47213595499958
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                3.0,
+                -3.0
+              ],
+              [
+                5.0,
+                1.0
+              ],
+              [
+                -2.0,
+                5.0
+              ]
+            ],
+            "length": 19.605461515163604
+          }
+        }
+      },
+      "checks": {
+        "op_ang:sides": "passed",
+        "op_c:through_on_circle": "passed",
+        "op_g:sides_match": "passed",
+        "op_k:ends": "passed",
+        "op_s:ends": "passed",
+        "op_t:ends": "passed",
+        "op_v:ends": "passed",
+        "op_w:vertices": "passed"
+      }
+    },
+    {
+      "name": "clockwise_polygon",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -3,
+            4
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            -4,
+            -2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 4.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "Cc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 31.41592653589793,
+            "unit": "length"
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "Lk": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 6.062306189991536,
+            "unit": "length"
+          }
+        },
+        "Ls": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 9.219544457292887,
+            "unit": "length"
+          }
+        },
+        "Lv": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 6.082762530298219,
+            "unit": "length"
+          }
+        },
+        "Lw": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 24.73628811964771,
+            "unit": "length"
+          }
+        },
+        "Ma": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.71238898038469,
+            "unit": "angle"
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "Pc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 31.41592653589793,
+            "unit": "length"
+          }
+        },
+        "Pg": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 30.81905064994593,
+            "unit": "length"
+          }
+        },
+        "Pt": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 24.808695768986574,
+            "unit": "length"
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "Rc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 5.0,
+            "unit": "length"
+          }
+        },
+        "Rk": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.242640687119285,
+            "unit": "length"
+          }
+        },
+        "Rt": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 5.0,
+            "unit": "length"
+          }
+        },
+        "Sc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 78.53981633974483,
+            "unit": "area"
+          }
+        },
+        "Sg": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "area"
+          }
+        },
+        "St": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 37.02173942246644,
+            "unit": "area"
+          }
+        },
+        "ang": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 2.214297435588181,
+            "a1": 6.9266864159728705,
+            "size": 4.71238898038469
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 5.0
+          }
+        },
+        "g": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -3.0,
+                4.0
+              ],
+              [
+                3.0,
+                -3.0
+              ],
+              [
+                4.0,
+                3.0
+              ],
+              [
+                -4.0,
+                -2.0
+              ]
+            ],
+            "area": 0.0
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "arc",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 4.242640687119285,
+            "a0": 5.497787143782138,
+            "a1": 6.9266864159728705
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              4.0
+            ],
+            "b": [
+              3.0,
+              -3.0
+            ],
+            "length": 9.219544457292887
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 5.0,
+            "a0": 0.6435011087932844,
+            "a1": 3.6052402625905993
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              3.0
+            ],
+            "length": 6.082762530298219
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                -3.0,
+                4.0
+              ],
+              [
+                3.0,
+                -3.0
+              ],
+              [
+                4.0,
+                3.0
+              ],
+              [
+                -4.0,
+                -2.0
+              ]
+            ],
+            "length": 24.73628811964771
+          }
+        }
+      },
+      "checks": {
+        "op_ang:sides": "passed",
+        "op_c:through_on_circle": "passed",
+        "op_g:sides_match": "passed",
+        "op_k:ends": "passed",
+        "op_s:ends": "passed",
+        "op_t:ends": "passed",
+        "op_v:ends": "passed",
+        "op_w:vertices": "passed"
+      }
+    },
+    {
+      "name": "flat",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            5,
+            -3.2857142857142856
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            -2,
+            -2.2857142857142856
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": -3.2857142857142856
+          }
+        },
+        "Cc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 37.59210307814144,
+            "unit": "length"
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -2.2857142857142856
+          }
+        },
+        "Lk": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.8655749811232193,
+            "unit": "length"
+          }
+        },
+        "Ls": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 7.0710678118654755,
+            "unit": "length"
+          }
+        },
+        "Lv": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0203050891044216,
+            "unit": "length"
+          }
+        },
+        "Lw": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 16.162440712835373,
+            "unit": "length"
+          }
+        },
+        "Ma": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0965648607840874,
+            "unit": "angle"
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "Pc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 37.59210307814144,
+            "unit": "length"
+          }
+        },
+        "Pg": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 18.182745801939795,
+            "unit": "length"
+          }
+        },
+        "Pt": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 39.337657370143134,
+            "unit": "length"
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "Rc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 5.9829690261062645,
+            "unit": "length"
+          }
+        },
+        "Rk": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.242640687119285,
+            "unit": "length"
+          }
+        },
+        "Rt": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 5.9829690261062645,
+            "unit": "length"
+          }
+        },
+        "Sc": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 112.4561941713571,
+            "unit": "area"
+          }
+        },
+        "Sg": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "area"
+          }
+        },
+        "St": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 81.88207443522666,
+            "unit": "area"
+          }
+        },
+        "ang": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 3.6052402625905993,
+            "a1": 5.701805123374687,
+            "size": 2.0965648607840874
+          }
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 5.9829690261062645
+          }
+        },
+        "g": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                3.0,
+                -3.0
+              ],
+              [
+                5.0,
+                -3.2857142857142856
+              ],
+              [
+                -2.0,
+                -2.2857142857142856
+              ]
+            ],
+            "area": 0.0
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "arc",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 4.242640687119285,
+            "a0": 5.497787143782138,
+            "a1": 5.701805123374687
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              3.0,
+              -3.0
+            ],
+            "length": 7.0710678118654755
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "sector",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 5.9829690261062645,
+            "a0": 5.701805123374687,
+            "a1": 10.276744287942652
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              -3.0
+            ],
+            "b": [
+              5.0,
+              -3.2857142857142856
+            ],
+            "length": 2.0203050891044216
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                3.0,
+                -3.0
+              ],
+              [
+                5.0,
+                -3.2857142857142856
+              ],
+              [
+                -2.0,
+                -2.2857142857142856
+              ]
+            ],
+            "length": 16.162440712835373
+          }
+        }
+      },
+      "checks": {
+        "op_ang:sides": "passed",
+        "op_c:through_on_circle": "passed",
+        "op_g:sides_match": "passed",
+        "op_k:ends": "passed",
+        "op_s:ends": "passed",
+        "op_t:ends": "passed",
+        "op_v:ends": "passed",
+        "op_w:vertices": "passed"
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "Cc": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "c"
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 4.0
+          }
+        },
+        "Lk": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "k"
+        },
+        "Ls": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 7.0710678118654755,
+            "unit": "length"
+          }
+        },
+        "Lv": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.242640687119285,
+            "unit": "length"
+          }
+        },
+        "Lw": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 16.31370849898476,
+            "unit": "length"
+          }
+        },
+        "Ma": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "ang"
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "Pc": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "c"
+        },
+        "Pg": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 22.396471029282978,
+            "unit": "length"
+          }
+        },
+        "Pt": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "t"
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "Rc": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "c"
+        },
+        "Rk": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "k"
+        },
+        "Rt": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "t"
+        },
+        "Sc": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "c"
+        },
+        "Sg": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 20.0,
+            "unit": "area"
+          }
+        },
+        "St": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "t"
+        },
+        "ang": {
+          "state": "undefined",
+          "type": "angle",
+          "reason": "coincident_points"
+        },
+        "c": {
+          "state": "undefined",
+          "type": "circle",
+          "reason": "nonpositive_radius"
+        },
+        "g": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                3.0,
+                -3.0
+              ],
+              [
+                0.0,
+                0.0
+              ],
+              [
+                -3.0,
+                4.0
+              ]
+            ],
+            "area": 20.0
+          }
+        },
+        "k": {
+          "state": "undefined",
+          "type": "arc",
+          "reason": "coincident_points"
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -2.0
+            ],
+            "b": [
+              3.0,
+              -3.0
+            ],
+            "length": 7.0710678118654755
+          }
+        },
+        "t": {
+          "state": "undefined",
+          "type": "sector",
+          "reason": "coincident_points"
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              -3.0
+            ],
+            "b": [
+              0.0,
+              0.0
+            ],
+            "length": 4.242640687119285
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "polyline",
+          "value": {
+            "vertices": [
+              [
+                -4.0,
+                -2.0
+              ],
+              [
+                3.0,
+                -3.0
+              ],
+              [
+                0.0,
+                0.0
+              ],
+              [
+                -3.0,
+                4.0
+              ]
+            ],
+            "length": 16.31370849898476
+          }
+        }
+      },
+      "checks": {
+        "op_g:sides_match": "passed",
+        "op_s:ends": "passed",
+        "op_v:ends": "passed",
+        "op_w:vertices": "passed"
+      }
+    }
+  ]
+}

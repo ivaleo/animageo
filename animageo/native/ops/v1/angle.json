@@ -43,5 +43,138 @@
     },
     "math": "docs/native/ops/angle.by_points.md",
     "signatureHash": "sha256:6cff8a588d81eec06ee2b49dfdd3fd97f810f09a77d47ee7538efd69d8e19dd9"
+  },
+  {
+    "op": "angle.between_lines",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "linear"
+      },
+      {
+        "slot": "second",
+        "type": "linear"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "angle",
+        "type": "angle"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "zero_length",
+      "parallel",
+      "coincident",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "sides",
+        "text": "the vertex lies on both carriers and the sides run along their directions: max(dist(vertex, carrier 1), dist(vertex, carrier 2), min(|u(a0) - d1| + |u(a1) - d2|, |u(a0) - d2| + |u(a1) - d1|) S)"
+      }
+    ],
+    "orientation": "convex",
+    "pathParam": null,
+    "stepKind": "angle",
+    "phrases": {
+      "ru": "{angle} — угол между {first} и {second}"
+    },
+    "math": "docs/native/ops/angle.between_lines.md",
+    "signatureHash": "sha256:49c323bdc7ada36c6509d2670557366148fe31536756072c4183dce14c57b477"
+  },
+  {
+    "op": "angle.between_vectors",
+    "status": "beta",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "vector"
+      },
+      {
+        "slot": "second",
+        "type": "vector"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "angle",
+        "type": "angle"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "zero_length",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "sides",
+        "text": "the vertex is the start of the first vector and the sides run along the vectors: max(|vertex - first.a|, |u(a0) - d1| S, |u(a1) - d2| S)"
+      }
+    ],
+    "orientation": "ccw_first_to_second",
+    "pathParam": null,
+    "stepKind": "angle",
+    "phrases": {
+      "ru": "{angle} — угол между векторами {first} и {second}"
+    },
+    "math": "docs/native/ops/angle.between_vectors.md",
+    "signatureHash": "sha256:7d8ff7320a48bbbe7f67a7fc0d8bb0db452df0e13ca934c52ae8aeaef9ab49b0"
+  },
+  {
+    "op": "angle.by_size",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "vertex",
+        "type": "point"
+      },
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "size",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "angle",
+        "type": "angle"
+      },
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "rotation",
+        "text": "the point is a turned by size about the vertex and the angle runs between them: max(| |P - v| - |a - v| |, |wrap(theta(P - v) - theta(a - v) - size)| |a - v|, |vertex - v|, |wrap(a0 - theta(first side))| S, |wrap(a1 - theta(second side))| S)"
+      }
+    ],
+    "orientation": "ccw_from_a",
+    "pathParam": null,
+    "stepKind": "angle",
+    "phrases": {
+      "ru": "{angle} — угол {size} при вершине {vertex} от луча {vertex}{a}; {point} — образ {a} при повороте"
+    },
+    "math": "docs/native/ops/angle.by_size.md",
+    "signatureHash": "sha256:f1a36b488adcc0c581a38fb64da94b56df9a93d59864035638606ed7bdc039fd"
   }
 ]

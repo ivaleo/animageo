@@ -1,0 +1,223 @@
+[
+  {
+    "op": "measure.length",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "of",
+        "type": "measurable"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "measure",
+    "phrases": {
+      "ru": "{number} — длина {of}"
+    },
+    "math": "docs/native/ops/measure.length.md",
+    "signatureHash": "sha256:71e6c3f9a86a8e38c882cff862f5f3dbb876569d37564638249f7fec3fddccbb"
+  },
+  {
+    "op": "measure.distance",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "to",
+        "type": "figure"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "measure",
+    "phrases": {
+      "ru": "{number} — расстояние от {point} до {to}"
+    },
+    "math": "docs/native/ops/measure.distance.md",
+    "signatureHash": "sha256:b0c3e912246fcf3b36af5973475fbd309fd618e27f4800b1d25395ae5dbdd31b"
+  },
+  {
+    "op": "measure.area",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "of",
+        "type": "bounded"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "measure",
+    "phrases": {
+      "ru": "{number} — площадь {of}"
+    },
+    "math": "docs/native/ops/measure.area.md",
+    "signatureHash": "sha256:81324352795e06c3eb4fb4982bfe5e1c78145bc3c108a69085512e24836d40c9"
+  },
+  {
+    "op": "measure.perimeter",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "of",
+        "type": "bounded"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "measure",
+    "phrases": {
+      "ru": "{number} — периметр {of}"
+    },
+    "math": "docs/native/ops/measure.perimeter.md",
+    "signatureHash": "sha256:1cf84b1d544f82ed7e58f5b40ba168fc649733175267decee9ddd6ddf0e629d1"
+  },
+  {
+    "op": "measure.angle",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "angle",
+        "type": "angle"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "measure",
+    "phrases": {
+      "ru": "{number} — величина угла {angle}"
+    },
+    "math": "docs/native/ops/measure.angle.md",
+    "signatureHash": "sha256:e8ff36ab632de7060019fe69dfc281ba8c5cab20044a8d37e86671d69490335a"
+  },
+  {
+    "op": "measure.radius",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "of",
+        "type": "round"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "measure",
+    "phrases": {
+      "ru": "{number} — радиус {of}"
+    },
+    "math": "docs/native/ops/measure.radius.md",
+    "signatureHash": "sha256:526084d283c6395fbb56ef37bdb68c8fdd9dbfa6397a7e28a36d1d72c18b493f"
+  },
+  {
+    "op": "measure.circumference",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "circle",
+        "type": "circle"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "measure",
+    "phrases": {
+      "ru": "{number} — длина окружности {circle}"
+    },
+    "math": "docs/native/ops/measure.circumference.md",
+    "signatureHash": "sha256:6d9768f2b07d4731cc5a97e4e42b457d1db301e3ce43d3c0f3b1a7aefa3594c3"
+  }
+]

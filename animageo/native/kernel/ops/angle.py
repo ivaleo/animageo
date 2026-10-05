@@ -75,3 +75,102 @@ def by_points(args, ctx):
         ctx.decide('zero_angle', cr, tol_s)         # size jumps between 0 and 2 pi
     size = normalize_angle(math.atan2(cr, q))
     return {'angle': {'vertex': [vertex['x'], vertex['y']], 'a0': a0, 'a1': a0 + size, 'size': size}}
+
+
+# ── registry 1.4 (1.8.1a5) ───────────────────────────────────────────────
+
+def _angle_value(vx: float, vy: float, ux: float, uy: float, size: float, ctx) -> dict:
+    """The angle at ``(vx, vy)`` whose first side runs along the unit ``u``."""
+    if ux > 0:
+        ctx.decide('angle_wrap', uy, ctx.tol.decide_scalar)     # a0 jumps between 0 and 2 pi
+    a0 = normalize_angle(math.atan2(uy, ux))
+    return {'vertex': [vx, vy], 'a0': a0, 'a1': a0 + size, 'size': size}
+
+
+@op('angle.between_lines')
+def between_lines(args, ctx):
+    from .intersect import carrier
+    c1 = carrier(args['first'], ctx)
+    if isinstance(c1, Undefined):
+        return {'angle': c1}
+    c2 = carrier(args['second'], ctx)
+    if isinstance(c2, Undefined):
+        return {'angle': c2}
+    tol_s = ctx.tol.decide_scalar
+    cross = c1.dx * c2.dy - c1.dy * c2.dx
+    ctx.decide('parallel', cross, tol_s)
+    wx = c2.px - c1.px
+    wy = c2.py - c1.py
+    if abs(cross) <= tol_s:
+        dist = abs(wx * c1.dy - wy * c1.dx)
+        tol = ctx.tol.decide_length
+        ctx.decide('coincident', dist, tol)
+        return {'angle': Undefined('coincident' if dist <= tol else 'parallel')}
+    t = (wx * c2.dy - wy * c2.dx) / cross
+    vx = c1.px + t * c1.dx
+    vy = c1.py + t * c1.dy
+    q = c1.dx * c2.dx + c1.dy * c2.dy
+    size = normalize_angle(math.atan2(abs(cross), q))
+    if cross > 0:
+        return {'angle': _angle_value(vx, vy, c1.dx, c1.dy, size, ctx)}
+    return {'angle': _angle_value(vx, vy, c2.dx, c2.dy, size, ctx)}
+
+
+def _unit_vector(value: dict, ctx):
+    ax, ay = value['a']
+    bx, by = value['b']
+    dx = bx - ax
+    dy = by - ay
+    length = math.hypot(dx, dy)
+    tol = ctx.tol.decide_length
+    ctx.decide('zero_length', length, tol)
+    if length <= tol:
+        return Undefined('zero_length')
+    return dx / length, dy / length
+
+
+@op('angle.between_vectors')
+def between_vectors(args, ctx):
+    first = args['first'].value
+    u = _unit_vector(first, ctx)
+    if isinstance(u, Undefined):
+        return {'angle': u}
+    w = _unit_vector(args['second'].value, ctx)
+    if isinstance(w, Undefined):
+        return {'angle': w}
+    cr = u[0] * w[1] - u[1] * w[0]
+    q = u[0] * w[0] + u[1] * w[1]
+    if q > 0:
+        ctx.decide('zero_angle', cr, ctx.tol.decide_scalar)     # size jumps between 0 and 2 pi
+    size = normalize_angle(math.atan2(cr, q))
+    return {'angle': _angle_value(first['a'][0], first['a'][1], u[0], u[1], size, ctx)}
+
+
+@op('angle.by_size')
+def by_size(args, ctx):
+    v = args['vertex'].value
+    a = args['a'].value
+    vx, vy = v['x'], v['y']
+    wx = a['x'] - vx
+    wy = a['y'] - vy
+    length = math.hypot(wx, wy)
+    tol = ctx.tol.decide_length
+    ctx.decide('coincident_points', length, tol)
+    if length <= tol:
+        undefined = Undefined('coincident_points')
+        return {'angle': undefined, 'point': undefined}
+    alpha = args['size'].value['value']
+    c = math.cos(alpha)
+    s = math.sin(alpha)
+    px = vx + (c * wx - s * wy)
+    py = vy + (s * wx + c * wy)
+    ctx.decide('zero_angle', wrap_angle(alpha), ctx.tol.decide_scalar)   # size jumps between 0 and 2 pi
+    if alpha >= 0:
+        fx, fy, m = wx, wy, alpha
+    else:
+        fx, fy, m = px - vx, py - vy, -alpha
+    m = m - TWO_PI * math.floor(m / TWO_PI)
+    if m >= TWO_PI:
+        m = 0.0
+    lf = math.hypot(fx, fy)
+    return {'angle': _angle_value(vx, vy, fx / lf, fy / lf, m, ctx), 'point': {'x': px, 'y': py}}

@@ -49,5 +49,57 @@
     },
     "math": "docs/native/ops/number.free.md",
     "signatureHash": "sha256:1b23a21461be5d9d3b96461a10823bfc46c347a8bc7da320cffa91e36bca6f2a"
+  },
+  {
+    "op": "number.angle",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [],
+    "params": [
+      {
+        "slot": "min",
+        "type": "number",
+        "unit": "angle",
+        "optional": true,
+        "text": "lower bound in radians: a smaller input value is clamped to it"
+      },
+      {
+        "slot": "max",
+        "type": "number",
+        "unit": "angle",
+        "optional": true,
+        "text": "upper bound in radians: a larger input value is clamped to it; min > max is invalid_parameter"
+      },
+      {
+        "slot": "step",
+        "type": "number",
+        "unit": "angle",
+        "optional": true,
+        "text": "slider step for the interface in radians, > 0 (invalid_parameter otherwise); the value is not snapped"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "free": {
+      "kind": "angle"
+    },
+    "branch": null,
+    "undefined": [
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "number",
+    "phrases": {
+      "ru": "{number} — угол-параметр"
+    },
+    "math": "docs/native/ops/number.angle.md",
+    "signatureHash": "sha256:6417bcd5a01b1a097a59cd8c2aa44625023021db8a73cd495d57f4dbb756d7fa"
   }
 ]

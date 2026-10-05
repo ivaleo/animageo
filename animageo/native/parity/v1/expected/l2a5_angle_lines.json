@@ -1,0 +1,1265 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a5_angle_lines",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a5.dev0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a5_angle_lines",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_E": {
+        "id": "op_E",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "E"
+          }
+        ]
+      },
+      "op_F": {
+        "id": "op_F",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "F"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "D"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "ray.by_points",
+        "args": {
+          "origin": {
+            "kind": "ref",
+            "elementId": "E"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "F"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "ray",
+            "elementId": "r"
+          }
+        ]
+      },
+      "op_t1": {
+        "id": "op_t1",
+        "op": "angle.between_lines",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "t1"
+          }
+        ]
+      },
+      "op_t2": {
+        "id": "op_t2",
+        "op": "angle.between_lines",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "s"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "l"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "t2"
+          }
+        ]
+      },
+      "op_t3": {
+        "id": "op_t3",
+        "op": "angle.between_lines",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "r"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "t3"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "E": {
+        "id": "E",
+        "type": "point",
+        "displayName": "E",
+        "producer": {
+          "operationId": "op_E",
+          "slot": "point"
+        }
+      },
+      "F": {
+        "id": "F",
+        "type": "point",
+        "displayName": "F",
+        "producer": {
+          "operationId": "op_F",
+          "slot": "point"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "ray",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "ray"
+        }
+      },
+      "t1": {
+        "id": "t1",
+        "type": "angle",
+        "displayName": "t1",
+        "producer": {
+          "operationId": "op_t1",
+          "slot": "angle"
+        }
+      },
+      "t2": {
+        "id": "t2",
+        "type": "angle",
+        "displayName": "t2",
+        "producer": {
+          "operationId": "op_t2",
+          "slot": "angle"
+        }
+      },
+      "t3": {
+        "id": "t3",
+        "type": "angle",
+        "displayName": "t3",
+        "producer": {
+          "operationId": "op_t3",
+          "slot": "angle"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -1
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          4,
+          1
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          -1,
+          -4
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          2,
+          4
+        ]
+      },
+      "E": {
+        "kind": "point",
+        "value": [
+          3,
+          -3
+        ]
+      },
+      "F": {
+        "kind": "point",
+        "value": [
+          -2,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -4.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 4.0
+          }
+        },
+        "E": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "F": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              3.0,
+              -3.0
+            ],
+            "dir": [
+              -0.6401843996644799,
+              0.7682212795973759
+            ]
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.0,
+              -4.0
+            ],
+            "b": [
+              2.0,
+              4.0
+            ],
+            "length": 8.54400374531753
+          }
+        },
+        "t1": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.5517241379310344,
+              0.1379310344827586
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 1.2120256565243244,
+            "size": 0.9670469933974603
+          }
+        },
+        "t2": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.5517241379310343,
+              0.137931034482758
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 1.2120256565243244,
+            "size": 0.9670469933974603
+          }
+        },
+        "t3": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.41379310344827547,
+              0.10344827586206887
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 2.2655346029916,
+            "size": 2.0205559398647357
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed",
+        "op_s:ends": "passed",
+        "op_t1:sides": "passed",
+        "op_t2:sides": "passed",
+        "op_t3:sides": "passed"
+      }
+    },
+    {
+      "name": "obtuse",
+      "inputs": {
+        "D": {
+          "kind": "point",
+          "value": [
+            -3,
+            3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -4.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 3.0
+          }
+        },
+        "E": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "F": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              3.0,
+              -3.0
+            ],
+            "dir": [
+              -0.6401843996644799,
+              0.7682212795973759
+            ]
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.0,
+              -4.0
+            ],
+            "b": [
+              -3.0,
+              3.0
+            ],
+            "length": 7.280109889280518
+          }
+        },
+        "t1": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -2.0,
+              -0.5
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 1.849095985800008,
+            "size": 1.6041173226731438
+          }
+        },
+        "t2": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -2.0,
+              -0.5
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 1.849095985800008,
+            "size": 1.6041173226731438
+          }
+        },
+        "t3": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.41379310344827547,
+              0.10344827586206887
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 2.2655346029916,
+            "size": 2.0205559398647357
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed",
+        "op_s:ends": "passed",
+        "op_t1:sides": "passed",
+        "op_t2:sides": "passed",
+        "op_t3:sides": "passed"
+      }
+    },
+    {
+      "name": "vertex_off_parts",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            6,
+            2
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            7,
+            5
+          ]
+        },
+        "E": {
+          "kind": "point",
+          "value": [
+            -6,
+            4
+          ]
+        },
+        "F": {
+          "kind": "point",
+          "value": [
+            -7,
+            6
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 6.0,
+            "y": 2.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 7.0,
+            "y": 5.0
+          }
+        },
+        "E": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -6.0,
+            "y": 4.0
+          }
+        },
+        "F": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -7.0,
+            "y": 6.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              -6.0,
+              4.0
+            ],
+            "dir": [
+              -0.4472135954999579,
+              0.8944271909999159
+            ]
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              6.0,
+              2.0
+            ],
+            "b": [
+              7.0,
+              5.0
+            ],
+            "length": 3.1622776601683795
+          }
+        },
+        "t1": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              5.8181818181818175,
+              1.4545454545454544
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 1.2490457723982544,
+            "size": 1.0040671092713902
+          }
+        },
+        "t2": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              5.818181818181818,
+              1.4545454545454546
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 1.2490457723982544,
+            "size": 1.0040671092713902
+          }
+        },
+        "t3": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -3.555555555555556,
+              -0.888888888888889
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 2.0344439357957027,
+            "size": 1.7894652726688385
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed",
+        "op_s:ends": "passed",
+        "op_t1:sides": "passed",
+        "op_t2:sides": "passed",
+        "op_t3:sides": "passed"
+      }
+    },
+    {
+      "name": "parallel",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            -4,
+            -3
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            4,
+            -1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": -1.0
+          }
+        },
+        "E": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "F": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              3.0,
+              -3.0
+            ],
+            "dir": [
+              -0.6401843996644799,
+              0.7682212795973759
+            ]
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -4.0,
+              -3.0
+            ],
+            "b": [
+              4.0,
+              -1.0
+            ],
+            "length": 8.246211251235321
+          }
+        },
+        "t1": {
+          "state": "undefined",
+          "type": "angle",
+          "reason": "parallel"
+        },
+        "t2": {
+          "state": "undefined",
+          "type": "angle",
+          "reason": "parallel"
+        },
+        "t3": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.41379310344827547,
+              0.10344827586206887
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 2.2655346029916,
+            "size": 2.0205559398647357
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed",
+        "op_s:ends": "passed",
+        "op_t3:sides": "passed"
+      }
+    },
+    {
+      "name": "coincident",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            8,
+            2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 8.0,
+            "y": 2.0
+          }
+        },
+        "E": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "F": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              3.0,
+              -3.0
+            ],
+            "dir": [
+              -0.6401843996644799,
+              0.7682212795973759
+            ]
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              8.0,
+              2.0
+            ],
+            "length": 8.246211251235321
+          }
+        },
+        "t1": {
+          "state": "undefined",
+          "type": "angle",
+          "reason": "coincident"
+        },
+        "t2": {
+          "state": "undefined",
+          "type": "angle",
+          "reason": "coincident"
+        },
+        "t3": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.41379310344827547,
+              0.10344827586206887
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 2.2655346029916,
+            "size": 2.0205559398647357
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed",
+        "op_s:ends": "passed",
+        "op_t3:sides": "passed"
+      }
+    },
+    {
+      "name": "zero_length",
+      "inputs": {
+        "D": {
+          "kind": "point",
+          "value": [
+            -1,
+            -4
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -1.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -4.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -4.0
+          }
+        },
+        "E": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -3.0
+          }
+        },
+        "F": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 3.0
+          }
+        },
+        "Q": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 1.0
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.9701425001453319,
+              0.24253562503633297
+            ]
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              3.0,
+              -3.0
+            ],
+            "dir": [
+              -0.6401843996644799,
+              0.7682212795973759
+            ]
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -1.0,
+              -4.0
+            ],
+            "b": [
+              -1.0,
+              -4.0
+            ],
+            "length": 0.0
+          }
+        },
+        "t1": {
+          "state": "undefined",
+          "type": "angle",
+          "reason": "zero_length"
+        },
+        "t2": {
+          "state": "undefined",
+          "type": "angle",
+          "reason": "zero_length"
+        },
+        "t3": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.41379310344827547,
+              0.10344827586206887
+            ],
+            "a0": 0.24497866312686414,
+            "a1": 2.2655346029916,
+            "size": 2.0205559398647357
+          }
+        }
+      },
+      "checks": {
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_r:origin": "passed",
+        "op_r:through": "passed",
+        "op_s:ends": "passed",
+        "op_t3:sides": "passed"
+      }
+    }
+  ]
+}

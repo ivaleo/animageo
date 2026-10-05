@@ -32,6 +32,9 @@ REQUIRED_SCENES = {
     'l2a4_external_bisector', 'l2a4_ray_at_angle', 'l2a4_ray_by_vector', 'l2a4_tangents', 'l2a4_tangent_at',
     'l2a4_segment_length', 'l2a4_midline', 'l2a4_polyline', 'l2a4_circles', 'l2a4_arcs', 'l2a4_sectors',
     'l2a4_on_path_arcs', 'l2a4_regular', 'l2a4_parallelogram', 'l2a4_line_sector', 'l2a4_arc_filter',
+    # registry 1.4, 1.8.1a5
+    'l2a5_angle_lines', 'l2a5_angle_vectors', 'l2a5_angle_by_size', 'l2a5_number_angle', 'l2a5_measures',
+    'l2a5_distance',
 }
 
 
