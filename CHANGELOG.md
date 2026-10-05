@@ -7,6 +7,100 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0a2] - 2026-10-05
+
+The native kernel stage L5, stage 3 (without L4: coordinates, functions and
+conics stay unmapped): hatching and the TikZ frame, three requests of the
+web to the import, the arithmetic of numbers, and the import under test —
+fuzzing, three cases per table row, deliberate files with recorded
+expectations, a style witness against the classic drawing and speed
+budgets (`docs/native/import.md`).
+
+### Added
+
+- `appearance.overrides` of one element take `fill_pattern` and the
+  `hatch_*` keys: the pattern is drawn on that element only, in SVG, PNG,
+  PDF, EPS and TikZ (before, `unknown_style_key`).
+  `native.has("appearance.hatch")`.
+- `native.delete` (and every edit that removes elements) drops the removed
+  operations from `steps` — an empty step goes — and the removed elements
+  from `bindings.legacyNames`; the effects name the changed steps.
+  `native.has("delete.cleanup")`.
+- `native.from_ggb(…, empty_document=True)`: a file whose objects all stay
+  out of the document (pictures only, or nothing) gives a valid document
+  without operations, with the view of the file, instead of `None`. The
+  default is unchanged. `native.has("from_ggb.empty_document")`.
+- `ggb_value` of a text in the import report: `anchor` of every text that
+  has a place (its start point, the saved position of the point it is
+  attached to — `anchor_ref` —, the pixel of a text fixed on the screen in
+  drawing coordinates — `screen: true`); for a `+` of literals and objects
+  the template of `text.free` with `refs` (`{ggb_name, as: point | number |
+  angle | length | area}`), `decimals` and `shown` (the text as the file
+  shows it, equal to the classic `resolve_text_string`).
+  `native.has("import_report.text_template")`.
+- `convert/dsl_map.json` version 2: formula rows. The arithmetic of numbers
+  and measures — 24 classic keys (`+ - * / ^`, the opposite, `Abs`, `Sqrt`,
+  `Sin`, `Cos`, `Tan`, `Ctan`, a copy) — is `number.expression` with the
+  numbers of the document as `refs`; `from_ggb` puts the formula of a
+  nested arithmetic expression into the formula that uses it. 477 keys:
+  166 rows to 48 ops; 46 arithmetic keys of points, vectors, angles or
+  segments stay `formula_unsupported`; `opsWithoutClassic` 37.
+  `native.has("convert.formula")`.
+- CLI: `convert corpus record|verify <dir> [--expected <dir>]` (expectations
+  `animageo.import_expectation` v1: outcome, summary, dropped kinds, warning
+  codes and the category and reason of every object) and `convert map
+  --coverage <dir> [--json]`.
+- Tests: fuzzing of `from_ggb` (marker `fuzz`: broken and lying archives,
+  zip bombs, DTD in any encoding, non-finite numbers, odd labels, cycles,
+  seeded random series); three cases for every op, free and formula row
+  (general, another configuration, degenerate — 14 rows without a reachable
+  degenerate configuration name the reason, 35 degenerate configurations
+  where the classic and the kernel disagree are pinned as `differs`);
+  21 deliberate `.ggb` files from the generator `tests/native/ggb_synth.py`
+  with their expectations (2 refused, 114 objects, 78% editable); a style
+  witness (`slow`, needs manim): 10 files drawn by the classic `loadGGB`
+  and by `native.render` with `ggb_style` as overrides have the same
+  strokes and fills; speed (`slow`): `from_ggb` of 3000 objects 4.0–5.4 s
+  (budget 30 s), `from_construction` of 300 operations 0.1 s (budget 1 s).
+
+### Changed
+
+- `native.render(fmt="tikz" | "tex")` of a document scene clips and bounds
+  the picture by the export canvas of SVG (`int(ptWidth) × int(ptHeight)`)
+  instead of the 16:9 camera frame, so a compiled TeX page is the PDF page;
+  `TikZOptions.frame` chooses. The classic `exportTikZ` is unchanged.
+  `native.has("render.tikz_frame")`.
+- The import report: an argument that is an expression with no object of
+  its own (`Circle(A, r/2)`, `Circle(A, Distance(A, B))`) is
+  `formula_unsupported` with the expression in `detail` (before, a
+  translated part gave `depends_on_unsupported` without a cause); a second
+  `<element>` or expression of a name is the warning `duplicate_definition`
+  (the first one stands); `ggb_style` of a shape without fill keeps
+  `fill_opacity` 0, as the classic; a number the classic computes as `nan`
+  or infinite (a division by zero) is an undefined expected value, so it
+  matches an undefined value of the kernel.
+- Fixtures of the parity scenes, steps, conditions, commands and timeline
+  changed in the version label only.
+
+### Fixed
+
+- `from_ggb` (found by fuzzing): any damage of the archive is
+  `import_not_ggb`; a `DOCTYPE` in any encoding and an undecodable encoding
+  are `ggb_invalid`; a label over 200 characters refuses the file and the
+  long strings of the report are cut to the schema; an output without its
+  `<element>` is `parse_error`; a free input whose value fails the check is
+  `differs`; a non-finite literal or view is ignored; the categories settle
+  so that the closure is exactly the dependents of unsupported objects and
+  an editable object never refers to an element outside the document; a
+  regular polygon takes 3…100 vertices in the translator.
+
+### Deviations
+
+- Classic: `polygon_ppi` (a regular polygon by two points and a count)
+  refuses more than 10 000 vertices — it built them in memory, a `.ggb`
+  could ask for millions. The only change of classic behaviour in this
+  release.
+
 ## [1.10.0a1] - 2026-10-05
 
 The native kernel stage L5, stages 0–1: a `.ggb` file and the classic graph
