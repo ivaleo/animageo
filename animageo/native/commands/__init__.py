@@ -13,7 +13,7 @@ Pure Python: no module here imports manim or the classic package.
 """
 from __future__ import annotations
 
-from .build import ParseResult, is_helper, pair_op, parse_commands
+from .build import ParseResult, is_helper, pair_op, parse_commands, time_ordered_id
 from .issues import ERROR_CODES, WARNING_CODES, CommandIssue
 from .lexicon import LEXICON_FORMAT, Lexicon, LexiconError, default_lexicon, lexicon_hash, lexicon_problems
 from .naming import next_name, polygon_side_names
@@ -39,4 +39,5 @@ __all__ = [
     'parse_commands',
     'polygon_side_names',
     'print_commands',
+    'time_ordered_id',
 ]
