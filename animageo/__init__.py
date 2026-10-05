@@ -9,7 +9,7 @@ manim backed API (``AnimaGeoScene``, ``GeoStyle``, … and the manim names of
 Submodules (``animageo.native``, ``animageo.style``, …) import on their own.
 """
 
-__version__ = "1.10.0a3"
+__version__ = "1.11.0rc1"
 
 import importlib
 import importlib.util

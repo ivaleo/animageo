@@ -7,6 +7,167 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc1] - 2026-10-05
+
+The native kernel stage L6, putting things in order, as the release
+candidate of 1.11.0: the classic fixes left by the kernel spec §15, a lazy
+`import animageo`, the public API as a snapshot, a deprecation policy, the
+operation registry `1.5` frozen as the 1.0 contract, LaTeX of labels
+without shell escape, the documentation of the native kernel and a runner
+of a corpus of real drawings against the previous release. Versions: L6 is
+`1.11.0rc1` (planned as `1.12.0rc1`), L4 (coordinates, functions, conics)
+moves to `1.12`; `1.10.0` without a suffix is not released — its
+acceptance goes into `1.11.0rc1` → `1.11.0`. The intended changes of the
+classic behaviour since 1.8 are summed up below in «1.8 → 1.11: native».
+
+### Added
+
+- The public API is a snapshot: `tests/snapshots/public_api.json` holds
+  the names and signatures of `animageo.native.__all__` (67), of
+  `REGISTRY_VERSION`, `as_document`, `bound_producer` (outside `__all__`,
+  imported by the web) and of the 96 own top-level names of the classic
+  API; `tests/test_public_api.py` compares, `--write` rewrites it. A change
+  goes only with a line here.
+- Deprecation policy: `animageo/_deprecation.py`
+  (`@deprecated(since, remove_in="2.0", alternative)`, `register`, `warn`
+  → `DeprecationWarning`, `__deprecated__` as PEP 702); nothing is removed
+  before 2.0; the list is `docs/native/deprecations.md` (a test keeps it
+  equal to `DEPRECATIONS`).
+- The registry `1.5` is the 1.0 contract:
+  `tests/native/test_registry_frozen_1_0.py` with the snapshot
+  `registry_frozen_1_0.json` (85 ops and every catalog entry). An op is
+  never removed and keeps its signature; any other change of a record needs
+  a new registry version and `since` set to it; `beta` → `stable` stays
+  free (`docs/native/kernel.md` §4).
+- Documentation: `docs/native.md` (overview, quick start, stability,
+  safety) and `docs/native/api.md` (every public name with its signature;
+  `TestApiDoc` checks it against the snapshot), a «Native kernel» section
+  of the mkdocs navigation, README, `llms.txt` and section 12 of
+  `AI_USAGE_PROMPT.md`.
+- `scripts/classic_corpus.py`: `record` / `verify` / `compare --base OLD`
+  of a corpus outside the repository (argument or `ANIMAGEO_CORPUS`):
+  `.ggb` (loadGGB → SVG), a DSL block next to its `.ggb`, a DSL file, an
+  animation of the web (`--web` or `ANIMAGEO_WEB`; the last frame, `--video
+  N` short videos); every render in its own process; SVG compared byte for
+  byte, then with numbers rounded and ids renumbered, PNG by pixels, video
+  by frames; a Markdown/JSON report with timings.
+  `docs/native/classic-diffs.json` lists the intended differences (scene →
+  item → CHANGELOG line) and the numbers of the runs.
+- Speed: `tests/native/test_native_l6_speed.py` (`slow`) — `evaluate` of
+  300 operations within 50 ms (p95; the L0 chain of 302 ops and a mix of
+  every op of the registry, 488 ops).
+- The packaging tests cover every data file of the package (each matched
+  by a `package-data` pattern, each pattern matching a file; the data read
+  through `importlib.resources`; the wheel without `tests/` and `docs/`).
+- `python -m animageo.parsers.dsl._regen_stubs --write | --check`:
+  `namespace.pyi` and `animageo/dsl.pyi` are generated from the factories
+  (`COMMAND_REGISTRY`) and checked in CI.
+
+### Changed
+
+- `import animageo` is lazy (PEP 562): it binds `__version__` and the
+  submodules and loads neither manim nor the classic modules; the classic
+  API loads on the first access to one of its names, and `from animageo
+  import *` gives the same 683 names as 1.10.0a3
+  (`tests/snapshots/star_import.json`, manim 0.21.0). `import
+  animageo.native` stays without manim; without manim the classic names
+  are absent as before. The command-line sniffing of 1.10
+  (`_running_package_main`) is gone.
+- `animageo/dsl.pyi` re-exports all 99 factories (`Direction`,
+  `UnitVector`, `Slope`, `FunctionValue`, … were missing); `FunctionValue`
+  has a typed stub; `CpxTo` is gone from both stubs.
+- The warning of keyframes JSON v1 goes through `_deprecation` and adds
+  "Deprecated since 1.6.0; removed in 2.0." to its old text.
+- `Construction.element()` / `var()` stop at the first match instead of
+  filtering the whole list (same result): `from_ggb` of 3000 objects
+  4.55 s → 3.93 s.
+- `convert/dsl_map.json`: `mapVersion` 3, the row `cpx_to_a` is gone.
+- CI: the fuzz tests run as their own step (`-m fuzz`, 10³ random cases
+  per run, the run number as the seed base; `ANIMAGEO_FUZZ_CASES`,
+  `ANIMAGEO_FUZZ_SEED`), the main step `-m "not fuzz"`; the DSL stubs are
+  checked.
+- Fixtures of the parity scenes, steps, conditions, commands and timeline
+  changed in the version label only.
+
+### Removed
+
+- `animageo.parsers.ggb_generator`: a `.ggb` writer of an old API that was
+  never imported and wrote into `/temp` (kernel spec §15); there is no
+  `.ggb` writer in 1.x.
+- The DSL factories `CpxTo` and `Signature`: the factories were found by
+  scanning the globals of `lib_commands`, so the helper `cpx_to_a`
+  (imported from `lib_elements`) became the command `CpxTo` of one angle,
+  and `signature_alias` the factory `Signature`, which could never
+  dispatch. Factories and `_can_dispatch` now read `COMMAND_REGISTRY`,
+  which takes only functions defined in `lib_commands`: 476 commands, 99
+  factories; `CpxTo(…)` and `Signature(…)` in a DSL scene raise
+  `NameError`. The helper `cpx_to_a` itself stays.
+
+### Fixed
+
+- `Equality` of a polygon (`equality_Pm`, `equality_PP`) reads the value
+  of the area `Measure`; it read `.x`, so the command was always
+  undefined.
+- The value of a vector in a dynamic text (`format_object_value`) is its
+  direction; it read `.coords` and raised.
+- 1.10.0a3 skipped its classic API when `sys.argv` held an argument ending
+  in `.ggb`, so a script run as `python script.py drawing.ggb` could not
+  `from animageo import AnimaGeoScene`; the lazy import has no such rule.
+
+### Security
+
+- LaTeX of labels compiles with `-no-shell-escape`
+  (`animageo/_tex_security.py`, installed by `animageo.ui` into manim's
+  TeX compilation command, so every classic render path, `native.render`
+  and a caller's own `make_tex_compilation_command` get it): a `\write18`
+  in a label runs nothing (tested with real LaTeX). Restricting what TeX
+  may read (`openin_any=p`) stays with the caller's environment.
+- The lint of kernel spec §7 covers all of `animageo/native/**`: aliases of
+  `importlib`/`os`/`builtins`, `import_module`, `os.exec*`/`spawn*`/
+  `fork*`, `multiprocessing`, `pty`, `runpy`, `code`, `socket`, `shelve`,
+  `__builtins__[…]`, aliases of `eval`/`exec`.
+
+### 1.8 → 1.11: native
+
+Every intended change of the classic API (`AnimaGeoScene`, the DSL,
+`loadGGB`) made by the native kernel stages, with its test. Nothing else
+of the classic output changed: on the owner's corpus of real drawings (147
+`.ggb`, 24 DSL blocks, 40 animations of the web) 1.10.0a3 and 1.11.0rc1
+give the same SVG, the same last frames and the same videos byte for
+byte; one 3D drawing fails on both (`docs/native/classic-diffs.json`).
+
+| Version | Change | Test |
+|---|---|---|
+| 1.8.0a2 | An intersection with fewer points than outputs leaves the missing outputs undefined (they kept the previous build) | `tests/test_classic_fixes_l1.py::TestTailOutputs` |
+| 1.8.0a2 | A circle of zero or negative radius is undefined without an error; `Circle` no longer asserts | `tests/test_classic_fixes_l1.py::TestCircles` |
+| 1.8.0a2 | `Line(A, B)` of points equal up to rounding is undefined (was a random direction) | `tests/test_classic_fixes_l1.py::TestLinePP` |
+| 1.8.0a2 | Default positions of points on paths are reproducible; `Construction(seed=…)` | `tests/test_classic_fixes_l1.py::TestSeededRandomness` |
+| 1.8.0a2 | `python -m animageo` starts without the manim API whatever its arguments | `tests/native/test_native_import.py` |
+| 1.8.1a1 | `Circle(A, B, C)` of collinear or coincident points is undefined without an error | `tests/test_classic_fixes_l2.py::TestCirclePPP` |
+| 1.8.1a1 | `AngularBisector(A, B, C)` with `A` or `C` at the vertex is undefined (was NaN) | `tests/test_classic_fixes_l2.py::TestAngularBisectorPPP` |
+| 1.8.1 | `Tangent(A, c)` from a point inside the circle is undefined (was the polar) | `tests/test_classic_fixes_l2.py::TestTangentFromInside` |
+| 1.8.1 | `Vector(v, k)` runs from the start of `v` | `tests/test_classic_fixes_l2.py::TestVectorScaled` |
+| 1.8.1 | `Rotate(v, α, O)` of a vector turns both ends about `O` | `tests/test_classic_fixes_l2.py::TestRotateVector` |
+| 1.8.1 | `CircleSector.contains` works (returned `None`), so `Intersect` filters with a sector work | `tests/test_classic_fixes_l2.py::TestSectorContains` |
+| 1.8.1 | `AngleBisector(l1, l2)` of parallel lines is undefined without an error | `tests/test_classic_fixes_l2.py::TestBisectorsOfParallelLines` |
+| 1.8.1 | `Intersect(line, sector)` also finds the points on the radii | `tests/test_classic_fixes_l2.py::TestLineAndSector` |
+| 1.8.1 | Signature aliases: `Slope(s)` of a segment, `Tangent(l, c)`, `Mirror(A, x² + y² = 4)` … build (were errors) | `tests/test_classic_fixes_l2.py::TestSignatureAliases` |
+| 1.8.1 | A locus gets the stroke of the other curves (style defaults `locuscurve`) | `tests/test_classic_fixes_l2.py::TestLocusDefaults` |
+| 1.10.0a1 | The `.ggb` parser admits one assignment of an expression: no dunders, private attributes, lambdas, comprehensions, definitions, imports | `tests/test_ggb_parser_exec.py::TestGgbCodeGuard` |
+| 1.10.0a2 | `polygon_ppi` of more than 10 000 vertices is undefined | `tests/native/test_native_l5_fuzz.py::test_a_regular_polygon_of_too_many_vertices` |
+| 1.11.0rc1 | `Equality` of a polygon compares its area (was always undefined) | `tests/test_classic_fixes_l6.py::TestEqualityOfPolygons` |
+| 1.11.0rc1 | The value of a vector in a dynamic text is its direction (raised) | `tests/test_classic_fixes_l6.py::TestVectorValueInText` |
+| 1.11.0rc1 | The DSL factories `CpxTo` and `Signature` are gone (`NameError`) | `tests/test_classic_fixes_l6.py::TestHelpersAreNoCommands` |
+| 1.11.0rc1 | `animageo.parsers.ggb_generator` is gone | `tests/test_removed_modules.py` |
+| 1.11.0rc1 | `import animageo` loads no manim; `from animageo import *` gives the same names | `tests/test_lazy_import.py` |
+| 1.11.0rc1 | A `.ggb` in `sys.argv` no longer hides the classic API | `tests/test_lazy_import.py::TestClassicApiOnFirstUse` |
+| 1.11.0rc1 | LaTeX of labels without shell escape | `tests/test_tex_no_shell_escape.py` |
+| 1.11.0rc1 | The warning of keyframes JSON v1 names its removal in 2.0 | `tests/test_deprecation.py` |
+| 1.11.0rc1 | `Construction.element()` / `var()` faster, same result | `tests/native/test_native_l6_speed.py`, the construction tests |
+
+New style keys of 1.8.1 (`fill_pattern` and `hatch_*`, `sector_sides`)
+change nothing by default.
+
 ## [1.10.0a3] - 2026-10-05
 
 The native kernel stage L5, stage 3 continued (without L4): three findings

@@ -5,7 +5,7 @@ turns geometric constructions into publication-quality SVG images and
 manim-rendered MP4 animations. This document is self-sufficient: follow it
 even if you have never seen the library before. Prefer it over guesses from
 training data — the API here was verified against the shipped version
-(**animageo 1.10.0a3**; the guide ships inside the package, so the installed
+(**animageo 1.11.0rc1**; the guide ships inside the package, so the installed
 copy always matches the installed version it came with).
 
 **Mental model.** AnimaGeo is "GeoGebra as code". You describe geometry as a
