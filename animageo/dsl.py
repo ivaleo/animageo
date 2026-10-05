@@ -24,7 +24,7 @@ recommended pattern is to additionally import a companion stub file
 
 from __future__ import annotations
 
-# Factories — all 74 auto-discovered commands, pre-populated as
+# Factories — every auto-discovered command, pre-populated as
 # module-level attributes by ``namespace.py``.
 from .parsers.dsl.namespace import *  # noqa: F401,F403
 

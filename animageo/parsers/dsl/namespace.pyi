@@ -13,9 +13,15 @@ signatures below.
 Regeneration
 ------------
 
-To refresh this file after adding commands to ``lib_commands.py``::
+Every factory of the DSL (every command of ``COMMAND_REGISTRY``) has a
+stub here: a typed one written by hand, or a plain one in the block
+between the ``GENERATED FACTORIES`` markers. After adding a command to
+``lib_commands.py`` run::
 
-    python3 -m animageo.parsers.dsl._regen_stubs
+    python -m animageo.parsers.dsl._regen_stubs --write
+
+which also rewrites ``animageo/dsl.pyi`` as a whole; CI runs it with
+``--check``. A typed stub of a factory that is gone is removed by it.
 """
 
 from typing import Any, Callable, Optional, Sequence, Tuple, TypeVar, Union
@@ -115,6 +121,7 @@ def SemiMajorAxisLength(conic: Conic, *, name: Optional[str] = ...) -> Measure: 
 def SemiMinorAxisLength(conic: Conic, *, name: Optional[str] = ...) -> Measure: ...
 def Value(obj: ElementProxy, *, name: Optional[str] = ...) -> Measure: ...
 def Coefficients(obj: ElementProxy, *, name: Optional[str] = ...) -> Any: ...
+def FunctionValue(f: Function, x: Union[float, Measure, Angle], *, name: Optional[str] = ...) -> Measure: ...
 
 
 # ── Boolean tests ────────────────────────────────────────────────
@@ -203,9 +210,14 @@ def Sin(x: Any, *, name: Optional[str] = ...) -> Any: ...
 def Cos(x: Any, *, name: Optional[str] = ...) -> Any: ...
 def Tan(x: Any, *, name: Optional[str] = ...) -> Any: ...
 def Ctan(x: Any, *, name: Optional[str] = ...) -> Any: ...
-def CpxTo(*args: Any, name: Optional[str] = ...) -> Any: ...
 
 def AngleSize(*args: Any, name: Optional[str] = ...) -> Any: ...
+
+
+# ── Factories without a typed signature (generated) ──────────────
+
+# BEGIN GENERATED FACTORIES
+# END GENERATED FACTORIES
 
 
 # ── Stylistic helpers ────────────────────────────────────────────

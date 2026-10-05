@@ -32,6 +32,11 @@ jobs:
       - name: Install package
         run: python -m pip install -e ".[dev]"
 
+      # namespace.pyi / dsl.pyi declare exactly the factories of the DSL
+      # (COMMAND_REGISTRY); a new command needs `_regen_stubs --write`.
+      - name: Check the DSL stubs
+        run: python -m animageo.parsers.dsl._regen_stubs --check
+
       - name: Run tests
         run: python -m pytest tests/ -q
 

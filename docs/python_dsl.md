@@ -354,12 +354,15 @@ Silently dropped at transform time:
 
 ## Current limitations
 
-- The `.pyi` stubs declare 86 factory signatures (51 detailed typed
-  signatures + 35 generic `*args: Any`); element constructors
-  (`Point`, `Line`, …) are typed separately in `proxy.pyi`. For rarely
-  used commands the IDE may show `Any` instead of a precise type.
-  Extend them in `namespace.pyi` (runnable validator:
-  `python3 -m animageo.parsers.dsl._regen_stubs`).
+- The `.pyi` stubs declare every one of the 99 factories: 86 signatures
+  in `namespace.pyi` (52 detailed typed signatures + 34 generic
+  `*args: Any`) and 13 element constructors (`Point`, `Line`, …) typed
+  in `proxy.pyi`. For rarely used commands the IDE may show `Any`
+  instead of a precise type. The stubs follow `COMMAND_REGISTRY`:
+  `python -m animageo.parsers.dsl._regen_stubs --write` adds a plain
+  stub for a new command, drops the stub of a removed one and rewrites
+  `animageo/dsl.pyi`; CI runs it with `--check`. A precise type is
+  written by hand in `namespace.pyi`.
 - Sandbox: `open`, `eval`, `exec`, `__import__`, `compile` are blocked
   — `NameError` at runtime. A top-level `import` is silently dropped
   (leaving room for IDE stubs, but the name is not bound at runtime).
