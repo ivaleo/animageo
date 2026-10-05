@@ -1,0 +1,3664 @@
+{
+ "cases": [
+  {
+   "condition": {
+    "mode": "construct",
+    "statement": {
+     "kind": "eq",
+     "left": {
+      "len": {
+       "pair": [
+        "B",
+        "C"
+       ]
+      }
+     },
+     "right": {
+      "num": 4
+     }
+    }
+   },
+   "document": {
+    "appearance": {
+     "c1_c": {
+      "role": "aux",
+      "visible": false
+     }
+    },
+    "conditions": [
+     {
+      "id": "c1",
+      "mode": "construct",
+      "operationIds": [
+       "op_c1_1",
+       "op_C"
+      ],
+      "receiver": "C",
+      "receiverOrigin": {
+       "args": {},
+       "input": {
+        "point": [
+         0.5,
+         2
+        ]
+       },
+       "op": "point.free"
+      },
+      "recipe": "length.value",
+      "seq": 2,
+      "shapeId": null,
+      "source": "panel",
+      "statement": {
+       "kind": "eq",
+       "left": {
+        "len": {
+         "pair": [
+          "A",
+          "C"
+         ]
+        }
+       },
+       "right": {
+        "num": 4
+       }
+      }
+     }
+    ],
+    "documentId": "refusals",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "E": {
+      "displayName": "E",
+      "id": "E",
+      "producer": {
+       "operationId": "op_E",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "c1_c": {
+      "displayName": "",
+      "id": "c1_c",
+      "producer": {
+       "operationId": "op_c1_1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       -3,
+       -2
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       3,
+       -2
+      ]
+     },
+     "C": {
+      "kind": "pathParameter",
+      "value": 0.8519663271732721
+     },
+     "E": {
+      "kind": "point",
+      "value": [
+       -1,
+       3
+      ]
+     }
+    },
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {
+       "path": {
+        "elementId": "c1_c",
+        "kind": "ref"
+       }
+      },
+      "id": "op_C",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_E": {
+      "args": {},
+      "id": "op_E",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "E",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1_1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 4
+       }
+      },
+      "id": "op_c1_1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1_c",
+        "slot": "circle"
+       }
+      ],
+      "seq": 1
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "check": "passed",
+    "document": {
+     "appearance": {
+      "c1_c": {
+       "role": "aux",
+       "visible": false
+      },
+      "c2_c": {
+       "role": "aux",
+       "visible": false
+      }
+     },
+     "conditions": [
+      {
+       "id": "c1",
+       "mode": "construct",
+       "operationIds": [
+        "op_c1_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "length.value",
+       "seq": 2,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "eq",
+        "left": {
+         "len": {
+          "pair": [
+           "A",
+           "C"
+          ]
+         }
+        },
+        "right": {
+         "num": 4
+        }
+       }
+      },
+      {
+       "id": "c2",
+       "mode": "construct",
+       "operationIds": [
+        "op_c2_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "length.value",
+       "seq": 4,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "eq",
+        "left": {
+         "len": {
+          "pair": [
+           "B",
+           "C"
+          ]
+         }
+        },
+        "right": {
+         "num": 4
+        }
+       }
+      }
+     ],
+     "documentId": "refusals",
+     "elements": {
+      "A": {
+       "displayName": "A",
+       "id": "A",
+       "producer": {
+        "operationId": "op_A",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "B": {
+       "displayName": "B",
+       "id": "B",
+       "producer": {
+        "operationId": "op_B",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "C": {
+       "displayName": "C",
+       "id": "C",
+       "producer": {
+        "operationId": "op_C",
+        "slot": "first"
+       },
+       "type": "point"
+      },
+      "E": {
+       "displayName": "E",
+       "id": "E",
+       "producer": {
+        "operationId": "op_E",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "M": {
+       "displayName": "M",
+       "id": "M",
+       "producer": {
+        "operationId": "op_M",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "c1_c": {
+       "displayName": "",
+       "id": "c1_c",
+       "producer": {
+        "operationId": "op_c1_1",
+        "slot": "circle"
+       },
+       "type": "circle"
+      },
+      "c2_c": {
+       "displayName": "",
+       "id": "c2_c",
+       "producer": {
+        "operationId": "op_c2_1",
+        "slot": "circle"
+       },
+       "type": "circle"
+      }
+     },
+     "format": "animageo-construction/v1",
+     "inputs": {
+      "A": {
+       "kind": "point",
+       "value": [
+        -3,
+        -2
+       ]
+      },
+      "B": {
+       "kind": "point",
+       "value": [
+        3,
+        -2
+       ]
+      },
+      "E": {
+       "kind": "point",
+       "value": [
+        -1,
+        3
+       ]
+      }
+     },
+     "operationRegistryVersion": "1.5",
+     "operations": {
+      "op_A": {
+       "args": {},
+       "id": "op_A",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "A",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_B": {
+       "args": {},
+       "id": "op_B",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "B",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_C": {
+       "args": {
+        "first": {
+         "elementId": "c1_c",
+         "kind": "ref"
+        },
+        "second": {
+         "elementId": "c2_c",
+         "kind": "ref"
+        }
+       },
+       "id": "op_C",
+       "op": "intersect.circle_circle",
+       "outputs": [
+        {
+         "elementId": "C",
+         "slot": "first"
+        }
+       ]
+      },
+      "op_E": {
+       "args": {},
+       "id": "op_E",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "E",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_M": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_M",
+       "op": "point.midpoint",
+       "outputs": [
+        {
+         "elementId": "M",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_c1_1": {
+       "args": {
+        "center": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "radius": {
+         "kind": "number",
+         "value": 4
+        }
+       },
+       "id": "op_c1_1",
+       "op": "circle.center_radius",
+       "outputs": [
+        {
+         "elementId": "c1_c",
+         "slot": "circle"
+        }
+       ],
+       "seq": 1
+      },
+      "op_c2_1": {
+       "args": {
+        "center": {
+         "elementId": "B",
+         "kind": "ref"
+        },
+        "radius": {
+         "kind": "number",
+         "value": 4
+        }
+       },
+       "id": "op_c2_1",
+       "op": "circle.center_radius",
+       "outputs": [
+        {
+         "elementId": "c2_c",
+         "slot": "circle"
+        }
+       ],
+       "seq": 3
+      }
+     },
+     "viewDefaults": {
+      "bounds": [
+       -6,
+       -4,
+       6,
+       4
+      ]
+     }
+    },
+    "refusal": null,
+    "shift": {
+     "distance": 0.5165686765344374,
+     "elementId": "C",
+     "from": [
+      -0.3659815685259278,
+      1.0103067788275113
+     ],
+     "to": [
+      0,
+      0.6457513110645907
+     ]
+    },
+    "values": {
+     "C": [
+      0,
+      0.6457513110645907
+     ]
+    }
+   },
+   "name": "two-0",
+   "receiver": "C"
+  },
+  {
+   "condition": {
+    "mode": "construct",
+    "statement": {
+     "kind": "on",
+     "object": {
+      "pair": [
+       "E",
+       "M"
+      ]
+     },
+     "point": {
+      "ref": "C"
+     }
+    }
+   },
+   "document": {
+    "appearance": {
+     "c1_c": {
+      "role": "aux",
+      "visible": false
+     }
+    },
+    "conditions": [
+     {
+      "id": "c1",
+      "mode": "construct",
+      "operationIds": [
+       "op_c1_1",
+       "op_C"
+      ],
+      "receiver": "C",
+      "receiverOrigin": {
+       "args": {},
+       "input": {
+        "point": [
+         0.5,
+         2
+        ]
+       },
+       "op": "point.free"
+      },
+      "recipe": "length.value",
+      "seq": 2,
+      "shapeId": null,
+      "source": "panel",
+      "statement": {
+       "kind": "eq",
+       "left": {
+        "len": {
+         "pair": [
+          "A",
+          "C"
+         ]
+        }
+       },
+       "right": {
+        "num": 4
+       }
+      }
+     }
+    ],
+    "documentId": "refusals",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "E": {
+      "displayName": "E",
+      "id": "E",
+      "producer": {
+       "operationId": "op_E",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "c1_c": {
+      "displayName": "",
+      "id": "c1_c",
+      "producer": {
+       "operationId": "op_c1_1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       -3,
+       -2
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       3,
+       -2
+      ]
+     },
+     "C": {
+      "kind": "pathParameter",
+      "value": 0.8519663271732721
+     },
+     "E": {
+      "kind": "point",
+      "value": [
+       -1,
+       3
+      ]
+     }
+    },
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {
+       "path": {
+        "elementId": "c1_c",
+        "kind": "ref"
+       }
+      },
+      "id": "op_C",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_E": {
+      "args": {},
+      "id": "op_E",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "E",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1_1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 4
+       }
+      },
+      "id": "op_c1_1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1_c",
+        "slot": "circle"
+       }
+      ],
+      "seq": 1
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "check": "passed",
+    "document": {
+     "appearance": {
+      "c1_c": {
+       "role": "aux",
+       "visible": false
+      },
+      "c2_l": {
+       "role": "aux",
+       "visible": false
+      }
+     },
+     "conditions": [
+      {
+       "id": "c1",
+       "mode": "construct",
+       "operationIds": [
+        "op_c1_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "length.value",
+       "seq": 2,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "eq",
+        "left": {
+         "len": {
+          "pair": [
+           "A",
+           "C"
+          ]
+         }
+        },
+        "right": {
+         "num": 4
+        }
+       }
+      },
+      {
+       "id": "c2",
+       "mode": "construct",
+       "operationIds": [
+        "op_c2_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "on_line",
+       "seq": 4,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "on",
+        "object": {
+         "pair": [
+          "E",
+          "M"
+         ]
+        },
+        "point": {
+         "ref": "C"
+        }
+       }
+      }
+     ],
+     "documentId": "refusals",
+     "elements": {
+      "A": {
+       "displayName": "A",
+       "id": "A",
+       "producer": {
+        "operationId": "op_A",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "B": {
+       "displayName": "B",
+       "id": "B",
+       "producer": {
+        "operationId": "op_B",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "C": {
+       "displayName": "C",
+       "id": "C",
+       "producer": {
+        "operationId": "op_C",
+        "slot": "first"
+       },
+       "type": "point"
+      },
+      "E": {
+       "displayName": "E",
+       "id": "E",
+       "producer": {
+        "operationId": "op_E",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "M": {
+       "displayName": "M",
+       "id": "M",
+       "producer": {
+        "operationId": "op_M",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "c1_c": {
+       "displayName": "",
+       "id": "c1_c",
+       "producer": {
+        "operationId": "op_c1_1",
+        "slot": "circle"
+       },
+       "type": "circle"
+      },
+      "c2_l": {
+       "displayName": "",
+       "id": "c2_l",
+       "producer": {
+        "operationId": "op_c2_1",
+        "slot": "line"
+       },
+       "type": "line"
+      }
+     },
+     "format": "animageo-construction/v1",
+     "inputs": {
+      "A": {
+       "kind": "point",
+       "value": [
+        -3,
+        -2
+       ]
+      },
+      "B": {
+       "kind": "point",
+       "value": [
+        3,
+        -2
+       ]
+      },
+      "E": {
+       "kind": "point",
+       "value": [
+        -1,
+        3
+       ]
+      }
+     },
+     "operationRegistryVersion": "1.5",
+     "operations": {
+      "op_A": {
+       "args": {},
+       "id": "op_A",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "A",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_B": {
+       "args": {},
+       "id": "op_B",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "B",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_C": {
+       "args": {
+        "circle": {
+         "elementId": "c1_c",
+         "kind": "ref"
+        },
+        "line": {
+         "elementId": "c2_l",
+         "kind": "ref"
+        }
+       },
+       "id": "op_C",
+       "op": "intersect.line_circle",
+       "outputs": [
+        {
+         "elementId": "C",
+         "slot": "first"
+        }
+       ]
+      },
+      "op_E": {
+       "args": {},
+       "id": "op_E",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "E",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_M": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_M",
+       "op": "point.midpoint",
+       "outputs": [
+        {
+         "elementId": "M",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_c1_1": {
+       "args": {
+        "center": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "radius": {
+         "kind": "number",
+         "value": 4
+        }
+       },
+       "id": "op_c1_1",
+       "op": "circle.center_radius",
+       "outputs": [
+        {
+         "elementId": "c1_c",
+         "slot": "circle"
+        }
+       ],
+       "seq": 1
+      },
+      "op_c2_1": {
+       "args": {
+        "a": {
+         "elementId": "E",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "M",
+         "kind": "ref"
+        }
+       },
+       "id": "op_c2_1",
+       "op": "line.by_points",
+       "outputs": [
+        {
+         "elementId": "c2_l",
+         "slot": "line"
+        }
+       ],
+       "seq": 3
+      }
+     },
+     "viewDefaults": {
+      "bounds": [
+       -6,
+       -4,
+       6,
+       4
+      ]
+     }
+    },
+    "refusal": null,
+    "shift": {
+     "distance": 0.35954436224571173,
+     "elementId": "C",
+     "from": [
+      -0.3659815685259278,
+      1.0103067788275113
+     ],
+     "to": [
+      -0.6469336523494329,
+      1.2346682617471643
+     ]
+    },
+    "values": {
+     "C": [
+      -0.6469336523494329,
+      1.2346682617471643
+     ]
+    }
+   },
+   "name": "two-1",
+   "receiver": "C"
+  },
+  {
+   "condition": {
+    "mode": "construct",
+    "statement": {
+     "a": {
+      "pair": [
+       "A",
+       "E"
+      ]
+     },
+     "b": {
+      "pair": [
+       "M",
+       "C"
+      ]
+     },
+     "kind": "parallel"
+    }
+   },
+   "document": {
+    "appearance": {
+     "c1_c": {
+      "role": "aux",
+      "visible": false
+     }
+    },
+    "conditions": [
+     {
+      "id": "c1",
+      "mode": "construct",
+      "operationIds": [
+       "op_c1_1",
+       "op_C"
+      ],
+      "receiver": "C",
+      "receiverOrigin": {
+       "args": {},
+       "input": {
+        "point": [
+         0.5,
+         2
+        ]
+       },
+       "op": "point.free"
+      },
+      "recipe": "length.value",
+      "seq": 2,
+      "shapeId": null,
+      "source": "panel",
+      "statement": {
+       "kind": "eq",
+       "left": {
+        "len": {
+         "pair": [
+          "A",
+          "C"
+         ]
+        }
+       },
+       "right": {
+        "num": 4
+       }
+      }
+     }
+    ],
+    "documentId": "refusals",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "E": {
+      "displayName": "E",
+      "id": "E",
+      "producer": {
+       "operationId": "op_E",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "c1_c": {
+      "displayName": "",
+      "id": "c1_c",
+      "producer": {
+       "operationId": "op_c1_1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       -3,
+       -2
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       3,
+       -2
+      ]
+     },
+     "C": {
+      "kind": "pathParameter",
+      "value": 0.8519663271732721
+     },
+     "E": {
+      "kind": "point",
+      "value": [
+       -1,
+       3
+      ]
+     }
+    },
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {
+       "path": {
+        "elementId": "c1_c",
+        "kind": "ref"
+       }
+      },
+      "id": "op_C",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_E": {
+      "args": {},
+      "id": "op_E",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "E",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1_1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 4
+       }
+      },
+      "id": "op_c1_1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1_c",
+        "slot": "circle"
+       }
+      ],
+      "seq": 1
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "check": "passed",
+    "document": {
+     "appearance": {
+      "c1_c": {
+       "role": "aux",
+       "visible": false
+      },
+      "c2_l": {
+       "role": "aux",
+       "visible": false
+      },
+      "c2_p": {
+       "role": "aux",
+       "visible": false
+      }
+     },
+     "conditions": [
+      {
+       "id": "c1",
+       "mode": "construct",
+       "operationIds": [
+        "op_c1_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "length.value",
+       "seq": 2,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "eq",
+        "left": {
+         "len": {
+          "pair": [
+           "A",
+           "C"
+          ]
+         }
+        },
+        "right": {
+         "num": 4
+        }
+       }
+      },
+      {
+       "id": "c2",
+       "mode": "construct",
+       "operationIds": [
+        "op_c2_1",
+        "op_c2_2",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "parallel",
+       "seq": 5,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "a": {
+         "pair": [
+          "A",
+          "E"
+         ]
+        },
+        "b": {
+         "pair": [
+          "M",
+          "C"
+         ]
+        },
+        "kind": "parallel"
+       }
+      }
+     ],
+     "documentId": "refusals",
+     "elements": {
+      "A": {
+       "displayName": "A",
+       "id": "A",
+       "producer": {
+        "operationId": "op_A",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "B": {
+       "displayName": "B",
+       "id": "B",
+       "producer": {
+        "operationId": "op_B",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "C": {
+       "displayName": "C",
+       "id": "C",
+       "producer": {
+        "operationId": "op_C",
+        "slot": "second"
+       },
+       "type": "point"
+      },
+      "E": {
+       "displayName": "E",
+       "id": "E",
+       "producer": {
+        "operationId": "op_E",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "M": {
+       "displayName": "M",
+       "id": "M",
+       "producer": {
+        "operationId": "op_M",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "c1_c": {
+       "displayName": "",
+       "id": "c1_c",
+       "producer": {
+        "operationId": "op_c1_1",
+        "slot": "circle"
+       },
+       "type": "circle"
+      },
+      "c2_l": {
+       "displayName": "",
+       "id": "c2_l",
+       "producer": {
+        "operationId": "op_c2_1",
+        "slot": "line"
+       },
+       "type": "line"
+      },
+      "c2_p": {
+       "displayName": "",
+       "id": "c2_p",
+       "producer": {
+        "operationId": "op_c2_2",
+        "slot": "line"
+       },
+       "type": "line"
+      }
+     },
+     "format": "animageo-construction/v1",
+     "inputs": {
+      "A": {
+       "kind": "point",
+       "value": [
+        -3,
+        -2
+       ]
+      },
+      "B": {
+       "kind": "point",
+       "value": [
+        3,
+        -2
+       ]
+      },
+      "E": {
+       "kind": "point",
+       "value": [
+        -1,
+        3
+       ]
+      }
+     },
+     "operationRegistryVersion": "1.5",
+     "operations": {
+      "op_A": {
+       "args": {},
+       "id": "op_A",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "A",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_B": {
+       "args": {},
+       "id": "op_B",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "B",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_C": {
+       "args": {
+        "circle": {
+         "elementId": "c1_c",
+         "kind": "ref"
+        },
+        "line": {
+         "elementId": "c2_p",
+         "kind": "ref"
+        }
+       },
+       "id": "op_C",
+       "op": "intersect.line_circle",
+       "outputs": [
+        {
+         "elementId": "C",
+         "slot": "second"
+        }
+       ]
+      },
+      "op_E": {
+       "args": {},
+       "id": "op_E",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "E",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_M": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_M",
+       "op": "point.midpoint",
+       "outputs": [
+        {
+         "elementId": "M",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_c1_1": {
+       "args": {
+        "center": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "radius": {
+         "kind": "number",
+         "value": 4
+        }
+       },
+       "id": "op_c1_1",
+       "op": "circle.center_radius",
+       "outputs": [
+        {
+         "elementId": "c1_c",
+         "slot": "circle"
+        }
+       ],
+       "seq": 1
+      },
+      "op_c2_1": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "E",
+         "kind": "ref"
+        }
+       },
+       "id": "op_c2_1",
+       "op": "line.by_points",
+       "outputs": [
+        {
+         "elementId": "c2_l",
+         "slot": "line"
+        }
+       ],
+       "seq": 3
+      },
+      "op_c2_2": {
+       "args": {
+        "base": {
+         "elementId": "c2_l",
+         "kind": "ref"
+        },
+        "point": {
+         "elementId": "M",
+         "kind": "ref"
+        }
+       },
+       "id": "op_c2_2",
+       "op": "line.parallel",
+       "outputs": [
+        {
+         "elementId": "c2_p",
+         "slot": "line"
+        }
+       ],
+       "seq": 4
+      }
+     },
+     "viewDefaults": {
+      "bounds": [
+       -6,
+       -4,
+       6,
+       4
+      ]
+     }
+    },
+    "refusal": null,
+    "shift": {
+     "distance": 1.7145398561770504,
+     "elementId": "C",
+     "from": [
+      -0.3659815685259278,
+      1.0103067788275113
+     ],
+     "to": [
+      0.6523879195682967,
+      -0.3690302010792581
+     ]
+    },
+    "values": {
+     "C": [
+      0.6523879195682967,
+      -0.3690302010792581
+     ]
+    }
+   },
+   "name": "two-2",
+   "receiver": "C"
+  },
+  {
+   "condition": {
+    "mode": "construct",
+    "statement": {
+     "kind": "eq",
+     "left": {
+      "len": {
+       "pair": [
+        "E",
+        "C"
+       ]
+      }
+     },
+     "right": {
+      "len": {
+       "pair": [
+        "E",
+        "A"
+       ]
+      }
+     }
+    }
+   },
+   "document": {
+    "appearance": {
+     "c1_c": {
+      "role": "aux",
+      "visible": false
+     }
+    },
+    "conditions": [
+     {
+      "id": "c1",
+      "mode": "construct",
+      "operationIds": [
+       "op_c1_1",
+       "op_C"
+      ],
+      "receiver": "C",
+      "receiverOrigin": {
+       "args": {},
+       "input": {
+        "point": [
+         0.5,
+         2
+        ]
+       },
+       "op": "point.free"
+      },
+      "recipe": "length.value",
+      "seq": 2,
+      "shapeId": null,
+      "source": "panel",
+      "statement": {
+       "kind": "eq",
+       "left": {
+        "len": {
+         "pair": [
+          "A",
+          "C"
+         ]
+        }
+       },
+       "right": {
+        "num": 4
+       }
+      }
+     }
+    ],
+    "documentId": "refusals",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "E": {
+      "displayName": "E",
+      "id": "E",
+      "producer": {
+       "operationId": "op_E",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "c1_c": {
+      "displayName": "",
+      "id": "c1_c",
+      "producer": {
+       "operationId": "op_c1_1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       -3,
+       -2
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       3,
+       -2
+      ]
+     },
+     "C": {
+      "kind": "pathParameter",
+      "value": 0.8519663271732721
+     },
+     "E": {
+      "kind": "point",
+      "value": [
+       -1,
+       3
+      ]
+     }
+    },
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {
+       "path": {
+        "elementId": "c1_c",
+        "kind": "ref"
+       }
+      },
+      "id": "op_C",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_E": {
+      "args": {},
+      "id": "op_E",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "E",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1_1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 4
+       }
+      },
+      "id": "op_c1_1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1_c",
+        "slot": "circle"
+       }
+      ],
+      "seq": 1
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "check": "passed",
+    "document": {
+     "appearance": {
+      "aux_c2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c2_2": {
+       "role": "aux",
+       "visible": false
+      },
+      "c1_c": {
+       "role": "aux",
+       "visible": false
+      },
+      "c2_c": {
+       "role": "aux",
+       "visible": false
+      }
+     },
+     "conditions": [
+      {
+       "id": "c1",
+       "mode": "construct",
+       "operationIds": [
+        "op_c1_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "length.value",
+       "seq": 2,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "eq",
+        "left": {
+         "len": {
+          "pair": [
+           "A",
+           "C"
+          ]
+         }
+        },
+        "right": {
+         "num": 4
+        }
+       }
+      },
+      {
+       "id": "c2",
+       "mode": "construct",
+       "operationIds": [
+        "op_c2_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "equal_length.vertex",
+       "seq": 4,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "eq",
+        "left": {
+         "len": {
+          "pair": [
+           "E",
+           "C"
+          ]
+         }
+        },
+        "right": {
+         "len": {
+          "pair": [
+           "E",
+           "A"
+          ]
+         }
+        }
+       }
+      }
+     ],
+     "documentId": "refusals",
+     "elements": {
+      "A": {
+       "displayName": "A",
+       "id": "A",
+       "producer": {
+        "operationId": "op_A",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "B": {
+       "displayName": "B",
+       "id": "B",
+       "producer": {
+        "operationId": "op_B",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "C": {
+       "displayName": "C",
+       "id": "C",
+       "producer": {
+        "operationId": "op_C",
+        "slot": "second"
+       },
+       "type": "point"
+      },
+      "E": {
+       "displayName": "E",
+       "id": "E",
+       "producer": {
+        "operationId": "op_E",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "M": {
+       "displayName": "M",
+       "id": "M",
+       "producer": {
+        "operationId": "op_M",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "aux_c2": {
+       "displayName": "",
+       "id": "aux_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c2_2": {
+       "displayName": "",
+       "id": "aux_c2_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "c1_c": {
+       "displayName": "",
+       "id": "c1_c",
+       "producer": {
+        "operationId": "op_c1_1",
+        "slot": "circle"
+       },
+       "type": "circle"
+      },
+      "c2_c": {
+       "displayName": "",
+       "id": "c2_c",
+       "producer": {
+        "operationId": "op_c2_1",
+        "slot": "circle"
+       },
+       "type": "circle"
+      },
+      "mark_c2": {
+       "displayName": "",
+       "id": "mark_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_mark_c2",
+        "slot": "mark"
+       },
+       "type": "mark"
+      }
+     },
+     "format": "animageo-construction/v1",
+     "inputs": {
+      "A": {
+       "kind": "point",
+       "value": [
+        -3,
+        -2
+       ]
+      },
+      "B": {
+       "kind": "point",
+       "value": [
+        3,
+        -2
+       ]
+      },
+      "E": {
+       "kind": "point",
+       "value": [
+        -1,
+        3
+       ]
+      }
+     },
+     "operationRegistryVersion": "1.5",
+     "operations": {
+      "op_A": {
+       "args": {},
+       "id": "op_A",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "A",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_B": {
+       "args": {},
+       "id": "op_B",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "B",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_C": {
+       "args": {
+        "first": {
+         "elementId": "c1_c",
+         "kind": "ref"
+        },
+        "second": {
+         "elementId": "c2_c",
+         "kind": "ref"
+        }
+       },
+       "id": "op_C",
+       "op": "intersect.circle_circle",
+       "outputs": [
+        {
+         "elementId": "C",
+         "slot": "second"
+        }
+       ]
+      },
+      "op_E": {
+       "args": {},
+       "id": "op_E",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "E",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_M": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_M",
+       "op": "point.midpoint",
+       "outputs": [
+        {
+         "elementId": "M",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_aux_c2": {
+       "args": {
+        "a": {
+         "elementId": "E",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 5
+      },
+      "op_aux_c2_2": {
+       "args": {
+        "a": {
+         "elementId": "E",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "A",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 6
+      },
+      "op_c1_1": {
+       "args": {
+        "center": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "radius": {
+         "kind": "number",
+         "value": 4
+        }
+       },
+       "id": "op_c1_1",
+       "op": "circle.center_radius",
+       "outputs": [
+        {
+         "elementId": "c1_c",
+         "slot": "circle"
+        }
+       ],
+       "seq": 1
+      },
+      "op_c2_1": {
+       "args": {
+        "center": {
+         "elementId": "E",
+         "kind": "ref"
+        },
+        "through": {
+         "elementId": "A",
+         "kind": "ref"
+        }
+       },
+       "id": "op_c2_1",
+       "op": "circle.center_point",
+       "outputs": [
+        {
+         "elementId": "c2_c",
+         "slot": "circle"
+        }
+       ],
+       "seq": 3
+      },
+      "op_mark_c2": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "segments": {
+         "items": [
+          {
+           "elementId": "aux_c2",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c2_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c2",
+       "op": "mark.equal_segments",
+       "outputs": [
+        {
+         "elementId": "mark_c2",
+         "slot": "mark"
+        }
+       ],
+       "seq": 7
+      }
+     },
+     "viewDefaults": {
+      "bounds": [
+       -6,
+       -4,
+       6,
+       4
+      ]
+     }
+    },
+    "refusal": null,
+    "shift": {
+     "distance": 3.3057302594445632,
+     "elementId": "C",
+     "from": [
+      -0.3659815685259278,
+      1.0103067788275113
+     ],
+     "to": [
+      1,
+      -1.9999999999999993
+     ]
+    },
+    "values": {
+     "C": [
+      1,
+      -1.9999999999999993
+     ]
+    }
+   },
+   "name": "two-3",
+   "receiver": "C"
+  },
+  {
+   "condition": {
+    "mode": "construct",
+    "statement": {
+     "kind": "eq",
+     "left": {
+      "angle": [
+       {
+        "ref": "B"
+       },
+       {
+        "ref": "M"
+       },
+       {
+        "ref": "C"
+       }
+      ]
+     },
+     "right": {
+      "deg": 70
+     }
+    }
+   },
+   "document": {
+    "appearance": {
+     "c1_c": {
+      "role": "aux",
+      "visible": false
+     }
+    },
+    "conditions": [
+     {
+      "id": "c1",
+      "mode": "construct",
+      "operationIds": [
+       "op_c1_1",
+       "op_C"
+      ],
+      "receiver": "C",
+      "receiverOrigin": {
+       "args": {},
+       "input": {
+        "point": [
+         0.5,
+         2
+        ]
+       },
+       "op": "point.free"
+      },
+      "recipe": "length.value",
+      "seq": 2,
+      "shapeId": null,
+      "source": "panel",
+      "statement": {
+       "kind": "eq",
+       "left": {
+        "len": {
+         "pair": [
+          "A",
+          "C"
+         ]
+        }
+       },
+       "right": {
+        "num": 4
+       }
+      }
+     }
+    ],
+    "documentId": "refusals",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "E": {
+      "displayName": "E",
+      "id": "E",
+      "producer": {
+       "operationId": "op_E",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "c1_c": {
+      "displayName": "",
+      "id": "c1_c",
+      "producer": {
+       "operationId": "op_c1_1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       -3,
+       -2
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       3,
+       -2
+      ]
+     },
+     "C": {
+      "kind": "pathParameter",
+      "value": 0.8519663271732721
+     },
+     "E": {
+      "kind": "point",
+      "value": [
+       -1,
+       3
+      ]
+     }
+    },
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {
+       "path": {
+        "elementId": "c1_c",
+        "kind": "ref"
+       }
+      },
+      "id": "op_C",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_E": {
+      "args": {},
+      "id": "op_E",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "E",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1_1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 4
+       }
+      },
+      "id": "op_c1_1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1_c",
+        "slot": "circle"
+       }
+      ],
+      "seq": 1
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "check": "passed",
+    "document": {
+     "appearance": {
+      "c1_c": {
+       "role": "aux",
+       "visible": false
+      },
+      "c2_r": {
+       "role": "aux",
+       "visible": false
+      }
+     },
+     "conditions": [
+      {
+       "id": "c1",
+       "mode": "construct",
+       "operationIds": [
+        "op_c1_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "length.value",
+       "seq": 2,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "eq",
+        "left": {
+         "len": {
+          "pair": [
+           "A",
+           "C"
+          ]
+         }
+        },
+        "right": {
+         "num": 4
+        }
+       }
+      },
+      {
+       "id": "c2",
+       "mode": "construct",
+       "operationIds": [
+        "op_c2_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "angle.value",
+       "seq": 4,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "eq",
+        "left": {
+         "angle": [
+          {
+           "ref": "B"
+          },
+          {
+           "ref": "M"
+          },
+          {
+           "ref": "C"
+          }
+         ]
+        },
+        "right": {
+         "deg": 70
+        }
+       }
+      }
+     ],
+     "documentId": "refusals",
+     "elements": {
+      "A": {
+       "displayName": "A",
+       "id": "A",
+       "producer": {
+        "operationId": "op_A",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "B": {
+       "displayName": "B",
+       "id": "B",
+       "producer": {
+        "operationId": "op_B",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "C": {
+       "displayName": "C",
+       "id": "C",
+       "producer": {
+        "operationId": "op_C",
+        "slot": "second"
+       },
+       "type": "point"
+      },
+      "E": {
+       "displayName": "E",
+       "id": "E",
+       "producer": {
+        "operationId": "op_E",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "M": {
+       "displayName": "M",
+       "id": "M",
+       "producer": {
+        "operationId": "op_M",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "c1_c": {
+       "displayName": "",
+       "id": "c1_c",
+       "producer": {
+        "operationId": "op_c1_1",
+        "slot": "circle"
+       },
+       "type": "circle"
+      },
+      "c2_r": {
+       "displayName": "",
+       "id": "c2_r",
+       "producer": {
+        "operationId": "op_c2_1",
+        "slot": "ray"
+       },
+       "type": "ray"
+      }
+     },
+     "format": "animageo-construction/v1",
+     "inputs": {
+      "A": {
+       "kind": "point",
+       "value": [
+        -3,
+        -2
+       ]
+      },
+      "B": {
+       "kind": "point",
+       "value": [
+        3,
+        -2
+       ]
+      },
+      "E": {
+       "kind": "point",
+       "value": [
+        -1,
+        3
+       ]
+      }
+     },
+     "operationRegistryVersion": "1.5",
+     "operations": {
+      "op_A": {
+       "args": {},
+       "id": "op_A",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "A",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_B": {
+       "args": {},
+       "id": "op_B",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "B",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_C": {
+       "args": {
+        "circle": {
+         "elementId": "c1_c",
+         "kind": "ref"
+        },
+        "line": {
+         "elementId": "c2_r",
+         "kind": "ref"
+        }
+       },
+       "id": "op_C",
+       "op": "intersect.line_circle",
+       "outputs": [
+        {
+         "elementId": "C",
+         "slot": "second"
+        }
+       ]
+      },
+      "op_E": {
+       "args": {},
+       "id": "op_E",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "E",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_M": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_M",
+       "op": "point.midpoint",
+       "outputs": [
+        {
+         "elementId": "M",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_c1_1": {
+       "args": {
+        "center": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "radius": {
+         "kind": "number",
+         "value": 4
+        }
+       },
+       "id": "op_c1_1",
+       "op": "circle.center_radius",
+       "outputs": [
+        {
+         "elementId": "c1_c",
+         "slot": "circle"
+        }
+       ],
+       "seq": 1
+      },
+      "op_c2_1": {
+       "args": {
+        "a": {
+         "elementId": "B",
+         "kind": "ref"
+        },
+        "size": {
+         "kind": "number",
+         "value": 1.2217304763960306
+        },
+        "vertex": {
+         "elementId": "M",
+         "kind": "ref"
+        }
+       },
+       "id": "op_c2_1",
+       "op": "ray.at_angle",
+       "outputs": [
+        {
+         "elementId": "c2_r",
+         "slot": "ray"
+        }
+       ],
+       "seq": 3
+      }
+     },
+     "viewDefaults": {
+      "bounds": [
+       -6,
+       -4,
+       6,
+       4
+      ]
+     }
+    },
+    "refusal": null,
+    "shift": {
+     "distance": 1.6376766418056448,
+     "elementId": "C",
+     "from": [
+      -0.3659815685259278,
+      1.0103067788275113
+     ],
+     "to": [
+      0.6196328164288115,
+      -0.29757282850876976
+     ]
+    },
+    "values": {
+     "C": [
+      0.6196328164288115,
+      -0.29757282850876976
+     ]
+    }
+   },
+   "name": "two-4",
+   "receiver": "C"
+  },
+  {
+   "condition": {
+    "mode": "construct",
+    "statement": {
+     "kind": "eq",
+     "left": {
+      "len": {
+       "pair": [
+        "B",
+        "C"
+       ]
+      }
+     },
+     "right": {
+      "num": 6
+     }
+    }
+   },
+   "document": {
+    "appearance": {
+     "c1_c": {
+      "role": "aux",
+      "visible": false
+     }
+    },
+    "conditions": [
+     {
+      "id": "c1",
+      "mode": "construct",
+      "operationIds": [
+       "op_c1_1",
+       "op_C"
+      ],
+      "receiver": "C",
+      "receiverOrigin": {
+       "args": {},
+       "input": {
+        "point": [
+         0.5,
+         2
+        ]
+       },
+       "op": "point.free"
+      },
+      "recipe": "length.value",
+      "seq": 2,
+      "shapeId": null,
+      "source": "panel",
+      "statement": {
+       "kind": "eq",
+       "left": {
+        "len": {
+         "pair": [
+          "A",
+          "C"
+         ]
+        }
+       },
+       "right": {
+        "num": 4
+       }
+      }
+     }
+    ],
+    "documentId": "refusals",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "E": {
+      "displayName": "E",
+      "id": "E",
+      "producer": {
+       "operationId": "op_E",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "c1_c": {
+      "displayName": "",
+      "id": "c1_c",
+      "producer": {
+       "operationId": "op_c1_1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       -3,
+       -2
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       3,
+       -2
+      ]
+     },
+     "C": {
+      "kind": "pathParameter",
+      "value": 0.8519663271732721
+     },
+     "E": {
+      "kind": "point",
+      "value": [
+       -1,
+       3
+      ]
+     }
+    },
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {
+       "path": {
+        "elementId": "c1_c",
+        "kind": "ref"
+       }
+      },
+      "id": "op_C",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_E": {
+      "args": {},
+      "id": "op_E",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "E",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1_1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 4
+       }
+      },
+      "id": "op_c1_1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1_c",
+        "slot": "circle"
+       }
+      ],
+      "seq": 1
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "check": "passed",
+    "document": {
+     "appearance": {
+      "c1_c": {
+       "role": "aux",
+       "visible": false
+      },
+      "c2_c": {
+       "role": "aux",
+       "visible": false
+      }
+     },
+     "conditions": [
+      {
+       "id": "c1",
+       "mode": "construct",
+       "operationIds": [
+        "op_c1_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "length.value",
+       "seq": 2,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "eq",
+        "left": {
+         "len": {
+          "pair": [
+           "A",
+           "C"
+          ]
+         }
+        },
+        "right": {
+         "num": 4
+        }
+       }
+      },
+      {
+       "id": "c2",
+       "mode": "construct",
+       "operationIds": [
+        "op_c2_1",
+        "op_C"
+       ],
+       "receiver": "C",
+       "receiverOrigin": {
+        "args": {},
+        "input": {
+         "point": [
+          0.5,
+          2
+         ]
+        },
+        "op": "point.free"
+       },
+       "recipe": "length.value",
+       "seq": 4,
+       "shapeId": null,
+       "source": "panel",
+       "statement": {
+        "kind": "eq",
+        "left": {
+         "len": {
+          "pair": [
+           "B",
+           "C"
+          ]
+         }
+        },
+        "right": {
+         "num": 6
+        }
+       }
+      }
+     ],
+     "documentId": "refusals",
+     "elements": {
+      "A": {
+       "displayName": "A",
+       "id": "A",
+       "producer": {
+        "operationId": "op_A",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "B": {
+       "displayName": "B",
+       "id": "B",
+       "producer": {
+        "operationId": "op_B",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "C": {
+       "displayName": "C",
+       "id": "C",
+       "producer": {
+        "operationId": "op_C",
+        "slot": "first"
+       },
+       "type": "point"
+      },
+      "E": {
+       "displayName": "E",
+       "id": "E",
+       "producer": {
+        "operationId": "op_E",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "M": {
+       "displayName": "M",
+       "id": "M",
+       "producer": {
+        "operationId": "op_M",
+        "slot": "point"
+       },
+       "type": "point"
+      },
+      "c1_c": {
+       "displayName": "",
+       "id": "c1_c",
+       "producer": {
+        "operationId": "op_c1_1",
+        "slot": "circle"
+       },
+       "type": "circle"
+      },
+      "c2_c": {
+       "displayName": "",
+       "id": "c2_c",
+       "producer": {
+        "operationId": "op_c2_1",
+        "slot": "circle"
+       },
+       "type": "circle"
+      }
+     },
+     "format": "animageo-construction/v1",
+     "inputs": {
+      "A": {
+       "kind": "point",
+       "value": [
+        -3,
+        -2
+       ]
+      },
+      "B": {
+       "kind": "point",
+       "value": [
+        3,
+        -2
+       ]
+      },
+      "E": {
+       "kind": "point",
+       "value": [
+        -1,
+        3
+       ]
+      }
+     },
+     "operationRegistryVersion": "1.5",
+     "operations": {
+      "op_A": {
+       "args": {},
+       "id": "op_A",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "A",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_B": {
+       "args": {},
+       "id": "op_B",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "B",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_C": {
+       "args": {
+        "first": {
+         "elementId": "c1_c",
+         "kind": "ref"
+        },
+        "second": {
+         "elementId": "c2_c",
+         "kind": "ref"
+        }
+       },
+       "id": "op_C",
+       "op": "intersect.circle_circle",
+       "outputs": [
+        {
+         "elementId": "C",
+         "slot": "first"
+        }
+       ]
+      },
+      "op_E": {
+       "args": {},
+       "id": "op_E",
+       "op": "point.free",
+       "outputs": [
+        {
+         "elementId": "E",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_M": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_M",
+       "op": "point.midpoint",
+       "outputs": [
+        {
+         "elementId": "M",
+         "slot": "point"
+        }
+       ]
+      },
+      "op_c1_1": {
+       "args": {
+        "center": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "radius": {
+         "kind": "number",
+         "value": 4
+        }
+       },
+       "id": "op_c1_1",
+       "op": "circle.center_radius",
+       "outputs": [
+        {
+         "elementId": "c1_c",
+         "slot": "circle"
+        }
+       ],
+       "seq": 1
+      },
+      "op_c2_1": {
+       "args": {
+        "center": {
+         "elementId": "B",
+         "kind": "ref"
+        },
+        "radius": {
+         "kind": "number",
+         "value": 6
+        }
+       },
+       "id": "op_c2_1",
+       "op": "circle.center_radius",
+       "outputs": [
+        {
+         "elementId": "c2_c",
+         "slot": "circle"
+        }
+       ],
+       "seq": 3
+      }
+     },
+     "viewDefaults": {
+      "bounds": [
+       -6,
+       -4,
+       6,
+       4
+      ]
+     }
+    },
+    "refusal": null,
+    "shift": {
+     "distance": 1.5069158096216386,
+     "elementId": "C",
+     "from": [
+      -0.3659815685259278,
+      1.0103067788275113
+     ],
+     "to": [
+      -1.6666666666666667,
+      1.7712361663282534
+     ]
+    },
+    "values": {
+     "C": [
+      -1.6666666666666667,
+      1.7712361663282534
+     ]
+    }
+   },
+   "name": "two-5",
+   "receiver": "C"
+  }
+ ],
+ "format": "animageo-recipes/v1",
+ "generatedBy": "animageo 1.9.0a2.dev3",
+ "id": "two",
+ "registry": "1.5"
+}

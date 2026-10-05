@@ -1,0 +1,808 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "shape_parallelogram",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a2.dev3",
+  "document": {
+    "appearance": {
+      "c1_l": {
+        "role": "aux",
+        "visible": false
+      },
+      "c1_p": {
+        "role": "aux",
+        "visible": false
+      },
+      "c2_l": {
+        "role": "aux",
+        "visible": false
+      },
+      "c2_p": {
+        "role": "aux",
+        "visible": false
+      }
+    },
+    "conditions": [
+      {
+        "id": "c1",
+        "mode": "construct",
+        "operationIds": [
+          "op_c1_1",
+          "op_c1_2",
+          "op_D"
+        ],
+        "receiver": "D",
+        "receiverOrigin": {
+          "args": {},
+          "input": {
+            "point": [
+              -2.2,
+              1.8
+            ]
+          },
+          "op": "point.free"
+        },
+        "recipe": "parallel",
+        "seq": 3,
+        "shapeId": "T",
+        "source": "shape",
+        "statement": {
+          "a": {
+            "pair": [
+              "A",
+              "B"
+            ]
+          },
+          "b": {
+            "pair": [
+              "D",
+              "C"
+            ]
+          },
+          "kind": "parallel"
+        }
+      },
+      {
+        "id": "c2",
+        "mode": "construct",
+        "operationIds": [
+          "op_c2_1",
+          "op_c2_2",
+          "op_D"
+        ],
+        "receiver": "D",
+        "receiverOrigin": {
+          "args": {},
+          "input": {
+            "point": [
+              -2.2,
+              1.8
+            ]
+          },
+          "op": "point.free"
+        },
+        "recipe": "parallel",
+        "seq": 6,
+        "shapeId": "T",
+        "source": "shape",
+        "statement": {
+          "a": {
+            "pair": [
+              "A",
+              "D"
+            ]
+          },
+          "b": {
+            "pair": [
+              "B",
+              "C"
+            ]
+          },
+          "kind": "parallel"
+        }
+      }
+    ],
+    "documentId": "shape_parallelogram",
+    "elements": {
+      "A": {
+        "displayName": "A",
+        "id": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "B": {
+        "displayName": "B",
+        "id": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "C": {
+        "displayName": "C",
+        "id": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "D": {
+        "displayName": "D",
+        "id": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "T": {
+        "displayName": "T",
+        "id": "T",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "polygon"
+        },
+        "type": "polygon"
+      },
+      "c1_l": {
+        "displayName": "",
+        "id": "c1_l",
+        "producer": {
+          "operationId": "op_c1_1",
+          "slot": "line"
+        },
+        "type": "line"
+      },
+      "c1_p": {
+        "displayName": "",
+        "id": "c1_p",
+        "producer": {
+          "operationId": "op_c1_2",
+          "slot": "line"
+        },
+        "type": "line"
+      },
+      "c2_l": {
+        "displayName": "",
+        "id": "c2_l",
+        "producer": {
+          "operationId": "op_c2_1",
+          "slot": "line"
+        },
+        "type": "line"
+      },
+      "c2_p": {
+        "displayName": "",
+        "id": "c2_p",
+        "producer": {
+          "operationId": "op_c2_2",
+          "slot": "line"
+        },
+        "type": "line"
+      }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -3,
+          -2
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          3,
+          -1.5
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          2.5,
+          2.2
+        ]
+      }
+    },
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "args": {},
+        "id": "op_A",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "A",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_B": {
+        "args": {},
+        "id": "op_B",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "B",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_C": {
+        "args": {},
+        "id": "op_C",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "C",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_D": {
+        "args": {
+          "first": {
+            "elementId": "c1_p",
+            "kind": "ref"
+          },
+          "second": {
+            "elementId": "c2_p",
+            "kind": "ref"
+          }
+        },
+        "id": "op_D",
+        "op": "intersect.line_line",
+        "outputs": [
+          {
+            "elementId": "D",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_T": {
+        "args": {
+          "vertices": {
+            "items": [
+              {
+                "elementId": "A",
+                "kind": "ref"
+              },
+              {
+                "elementId": "B",
+                "kind": "ref"
+              },
+              {
+                "elementId": "C",
+                "kind": "ref"
+              },
+              {
+                "elementId": "D",
+                "kind": "ref"
+              }
+            ],
+            "kind": "list"
+          }
+        },
+        "id": "op_T",
+        "op": "polygon.by_points",
+        "outputs": [
+          {
+            "elementId": "T",
+            "slot": "polygon"
+          }
+        ]
+      },
+      "op_c1_1": {
+        "args": {
+          "a": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "B",
+            "kind": "ref"
+          }
+        },
+        "id": "op_c1_1",
+        "op": "line.by_points",
+        "outputs": [
+          {
+            "elementId": "c1_l",
+            "slot": "line"
+          }
+        ],
+        "seq": 1
+      },
+      "op_c1_2": {
+        "args": {
+          "base": {
+            "elementId": "c1_l",
+            "kind": "ref"
+          },
+          "point": {
+            "elementId": "C",
+            "kind": "ref"
+          }
+        },
+        "id": "op_c1_2",
+        "op": "line.parallel",
+        "outputs": [
+          {
+            "elementId": "c1_p",
+            "slot": "line"
+          }
+        ],
+        "seq": 2
+      },
+      "op_c2_1": {
+        "args": {
+          "a": {
+            "elementId": "B",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "C",
+            "kind": "ref"
+          }
+        },
+        "id": "op_c2_1",
+        "op": "line.by_points",
+        "outputs": [
+          {
+            "elementId": "c2_l",
+            "slot": "line"
+          }
+        ],
+        "seq": 4
+      },
+      "op_c2_2": {
+        "args": {
+          "base": {
+            "elementId": "c2_l",
+            "kind": "ref"
+          },
+          "point": {
+            "elementId": "A",
+            "kind": "ref"
+          }
+        },
+        "id": "op_c2_2",
+        "op": "line.parallel",
+        "outputs": [
+          {
+            "elementId": "c2_p",
+            "slot": "line"
+          }
+        ],
+        "seq": 5
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -6,
+        -4,
+        6,
+        4
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "now",
+      "scale": 12.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -1.5
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.5,
+            "y": 2.2
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.4999999999999996,
+            "y": 1.7000000000000002
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -3.0,
+                -2.0
+              ],
+              [
+                3.0,
+                -1.5
+              ],
+              [
+                2.5,
+                2.2
+              ],
+              [
+                -3.4999999999999996,
+                1.7000000000000002
+              ]
+            ],
+            "area": 22.45
+          }
+        },
+        "c1_l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.14482758620689618,
+              -1.7379310344827585
+            ],
+            "dir": [
+              0.9965457582448796,
+              0.08304547985373997
+            ]
+          }
+        },
+        "c1_p": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.1648275862068962,
+              1.9779310344827588
+            ],
+            "dir": [
+              0.9965457582448796,
+              0.08304547985373997
+            ]
+          }
+        },
+        "c2_l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.7471305595408895,
+              0.3712338593974176
+            ],
+            "dir": [
+              -0.13391789600139503,
+              0.9909924304103234
+            ]
+          }
+        },
+        "c2_p": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -3.2116212338593972,
+              -0.4340028694404592
+            ],
+            "dir": [
+              -0.13391789600139503,
+              0.9909924304103234
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_D:incident_both": "passed",
+        "op_T:sides_match": "passed",
+        "op_c1_1:through_a": "passed",
+        "op_c1_1:through_b": "passed",
+        "op_c1_2:through_point": "passed",
+        "op_c1_2:parallel": "passed",
+        "op_c2_1:through_a": "passed",
+        "op_c2_1:through_b": "passed",
+        "op_c2_2:through_point": "passed",
+        "op_c2_2:parallel": "passed"
+      }
+    },
+    {
+      "name": "move_a",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -2.6,
+            -1.7
+          ]
+        }
+      },
+      "scale": 12.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.6,
+            "y": -1.7
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -1.5
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.5,
+            "y": 2.2
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.1000000000000005,
+            "y": 2.0
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -2.6,
+                -1.7
+              ],
+              [
+                3.0,
+                -1.5
+              ],
+              [
+                2.5,
+                2.2
+              ],
+              [
+                -3.1000000000000005,
+                2.0
+              ]
+            ],
+            "area": 20.82
+          }
+        },
+        "c1_l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.05732484076433142,
+              -1.6050955414012738
+            ],
+            "dir": [
+              0.9993628543475496,
+              0.03569153051241248
+            ]
+          }
+        },
+        "c1_p": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.0752866242038217,
+              2.1080254777070064
+            ],
+            "dir": [
+              0.9993628543475496,
+              0.03569153051241248
+            ]
+          }
+        },
+        "c2_l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.7471305595408895,
+              0.3712338593974176
+            ],
+            "dir": [
+              -0.13391789600139503,
+              0.9909924304103234
+            ]
+          }
+        },
+        "c2_p": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -2.778981348637016,
+              -0.37553802008608317
+            ],
+            "dir": [
+              -0.13391789600139503,
+              0.9909924304103234
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_D:incident_both": "passed",
+        "op_T:sides_match": "passed",
+        "op_c1_1:through_a": "passed",
+        "op_c1_1:through_b": "passed",
+        "op_c1_2:through_point": "passed",
+        "op_c1_2:parallel": "passed",
+        "op_c2_1:through_a": "passed",
+        "op_c2_1:through_b": "passed",
+        "op_c2_2:through_point": "passed",
+        "op_c2_2:parallel": "passed"
+      }
+    },
+    {
+      "name": "move_b",
+      "inputs": {
+        "B": {
+          "kind": "point",
+          "value": [
+            2.7,
+            -1.1
+          ]
+        }
+      },
+      "scale": 12.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.7,
+            "y": -1.1
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.5,
+            "y": 2.2
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.1999999999999997,
+            "y": 1.3000000000000003
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                -3.0,
+                -2.0
+              ],
+              [
+                2.7,
+                -1.1
+              ],
+              [
+                2.5,
+                2.2
+              ],
+              [
+                -3.1999999999999997,
+                1.3000000000000003
+              ]
+            ],
+            "area": 18.990000000000002
+          }
+        },
+        "c1_l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.23513513513513473,
+              -1.4891891891891893
+            ],
+            "dir": [
+              0.987762965329069,
+              0.15596257347301087
+            ]
+          }
+        },
+        "c1_p": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.2781081081081078,
+              1.7613513513513517
+            ],
+            "dir": [
+              0.987762965329069,
+              0.15596257347301087
+            ]
+          }
+        },
+        "c2_l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.623696248856359,
+              0.15901189387008263
+            ],
+            "dir": [
+              -0.060495060401890406,
+              0.9981684966311909
+            ]
+          }
+        },
+        "c2_p": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -3.109789569990851,
+              -0.18847209515096064
+            ],
+            "dir": [
+              -0.060495060401890406,
+              0.9981684966311909
+            ]
+          }
+        }
+      },
+      "checks": {
+        "op_D:incident_both": "passed",
+        "op_T:sides_match": "passed",
+        "op_c1_1:through_a": "passed",
+        "op_c1_1:through_b": "passed",
+        "op_c1_2:through_point": "passed",
+        "op_c1_2:parallel": "passed",
+        "op_c2_1:through_a": "passed",
+        "op_c2_1:through_b": "passed",
+        "op_c2_2:through_point": "passed",
+        "op_c2_2:parallel": "passed"
+      }
+    }
+  ]
+}

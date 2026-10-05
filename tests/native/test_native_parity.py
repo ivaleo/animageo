@@ -43,6 +43,11 @@ REQUIRED_SCENES = {
     'triangle_altitude', 'triangle_altitude_pair', 'triangle_median', 'triangle_bisector',
     'triangle_centers', 'triangle_excenters', 'triangle_bitwise', 'triangle_chain', 'locus_segment',
     'locus_circle', 'locus_polygon', 'locus_line_window', 'locus_undefined', 'locus_number',
+    # 1.9.0a2: documents after each recipe and after four shapes
+    'recipe_on_object', 'recipe_on_line', 'recipe_length_value', 'recipe_equal_length_vertex',
+    'recipe_equal_length_free', 'recipe_equal_length_apex', 'recipe_parallel', 'recipe_perpendicular',
+    'recipe_right_angle_vertex', 'recipe_right_angle_side', 'recipe_angle_value', 'recipe_angle_equal',
+    'recipe_tangent', 'shape_right_triangle', 'shape_equilateral', 'shape_parallelogram', 'shape_square',
 }
 
 

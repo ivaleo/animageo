@@ -255,13 +255,13 @@ def test_marks_of_an_operation_join_its_step_and_values():
     assert lines[-1] == '3. Проводим высоту h из вершины C к стороне s (|CH| = 4); отмечаем прямой угол CHA.'
 
 
-def test_a_mark_that_needs_a_later_point_stays_a_step():
+def test_a_mark_that_needs_a_later_point_joins_its_step():
     b = tri()
     b.op('op_k', 'circle.diameter', {'a': R('A'), 'b': R('B')}, [('circle', 'k', 'circle'), ('center', 'O', 'point')])
     b.on_path('P', 'k', 1.0)
     doc = add_auto_marks(b.doc, ['op_k']).document
-    ids = [s.id for s in native.steps(doc)]
-    assert ids.index('op:op_mark_op_k') > ids.index('op:op_P')
+    step = next(s for s in native.steps(doc) if 'op_P' in s.operationIds)
+    assert step.operationIds == ['op_P', 'op_mark_op_k']
 
 
 def test_describe_values_of_angles_and_numbers():

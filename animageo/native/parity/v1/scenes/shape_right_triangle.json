@@ -1,0 +1,291 @@
+{
+ "cases": [
+  {
+   "name": "now"
+  },
+  {
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      -2.6,
+      -1.7
+     ]
+    }
+   },
+   "name": "move_a"
+  },
+  {
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      2.7,
+      -1.1
+     ]
+    }
+   },
+   "name": "move_b"
+  }
+ ],
+ "document": {
+  "appearance": {
+   "c1_c": {
+    "role": "aux",
+    "visible": false
+   }
+  },
+  "conditions": [
+   {
+    "id": "c1",
+    "mode": "construct",
+    "operationIds": [
+     "op_c1_1",
+     "op_C"
+    ],
+    "receiver": "C",
+    "receiverOrigin": {
+     "args": {},
+     "input": {
+      "point": [
+       2.5,
+       2.2
+      ]
+     },
+     "op": "point.free"
+    },
+    "recipe": "right_angle.vertex",
+    "seq": 2,
+    "shapeId": "T",
+    "source": "shape",
+    "statement": {
+     "kind": "eq",
+     "left": {
+      "angle": [
+       {
+        "ref": "A"
+       },
+       {
+        "ref": "C"
+       },
+       {
+        "ref": "B"
+       }
+      ]
+     },
+     "right": {
+      "deg": 90
+     }
+    }
+   }
+  ],
+  "documentId": "shape_right_triangle",
+  "elements": {
+   "A": {
+    "displayName": "A",
+    "id": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    },
+    "type": "point"
+   },
+   "B": {
+    "displayName": "B",
+    "id": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    },
+    "type": "point"
+   },
+   "C": {
+    "displayName": "C",
+    "id": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    },
+    "type": "point"
+   },
+   "T": {
+    "displayName": "T",
+    "id": "T",
+    "producer": {
+     "operationId": "op_T",
+     "slot": "polygon"
+    },
+    "type": "polygon"
+   },
+   "c1_c": {
+    "displayName": "",
+    "id": "c1_c",
+    "producer": {
+     "operationId": "op_c1_1",
+     "slot": "circle"
+    },
+    "type": "circle"
+   },
+   "mark_c1": {
+    "displayName": "",
+    "id": "mark_c1",
+    "origin": {
+     "kind": "auto",
+     "source": "c1"
+    },
+    "producer": {
+     "operationId": "op_mark_c1",
+     "slot": "mark"
+    },
+    "type": "mark"
+   }
+  },
+  "format": "animageo-construction/v1",
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     -3,
+     -2
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     3,
+     -1.5
+    ]
+   },
+   "C": {
+    "kind": "pathParameter",
+    "value": 1.0065281379369648
+   }
+  },
+  "operationRegistryVersion": "1.5",
+  "operations": {
+   "op_A": {
+    "args": {},
+    "id": "op_A",
+    "op": "point.free",
+    "outputs": [
+     {
+      "elementId": "A",
+      "slot": "point"
+     }
+    ]
+   },
+   "op_B": {
+    "args": {},
+    "id": "op_B",
+    "op": "point.free",
+    "outputs": [
+     {
+      "elementId": "B",
+      "slot": "point"
+     }
+    ]
+   },
+   "op_C": {
+    "args": {
+     "path": {
+      "elementId": "c1_c",
+      "kind": "ref"
+     }
+    },
+    "id": "op_C",
+    "op": "point.on_path",
+    "outputs": [
+     {
+      "elementId": "C",
+      "slot": "point"
+     }
+    ]
+   },
+   "op_T": {
+    "args": {
+     "vertices": {
+      "items": [
+       {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      ],
+      "kind": "list"
+     }
+    },
+    "id": "op_T",
+    "op": "polygon.by_points",
+    "outputs": [
+     {
+      "elementId": "T",
+      "slot": "polygon"
+     }
+    ]
+   },
+   "op_c1_1": {
+    "args": {
+     "a": {
+      "elementId": "A",
+      "kind": "ref"
+     },
+     "b": {
+      "elementId": "B",
+      "kind": "ref"
+     }
+    },
+    "id": "op_c1_1",
+    "op": "circle.diameter",
+    "outputs": [
+     {
+      "elementId": "c1_c",
+      "slot": "circle"
+     }
+    ],
+    "seq": 1
+   },
+   "op_mark_c1": {
+    "args": {
+     "a": {
+      "elementId": "A",
+      "kind": "ref"
+     },
+     "b": {
+      "elementId": "B",
+      "kind": "ref"
+     },
+     "vertex": {
+      "elementId": "C",
+      "kind": "ref"
+     }
+    },
+    "id": "op_mark_c1",
+    "op": "mark.right_angle",
+    "outputs": [
+     {
+      "elementId": "mark_c1",
+      "slot": "mark"
+     }
+    ],
+    "seq": 3
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -6,
+    -4,
+    6,
+    4
+   ]
+  }
+ },
+ "format": "animageo-parity/v1",
+ "id": "shape_right_triangle"
+}

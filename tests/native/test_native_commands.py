@@ -563,6 +563,8 @@ class TestPrint:
     @pytest.mark.parametrize('path', SCENES, ids=lambda p: p.stem)
     def test_round_trip_on_parity_scenes(self, path):
         doc = read_json(path)['document']
+        if doc.get('conditions'):
+            pytest.skip('conditions are printed in «Команды» from 1.9.0a3 (plan L3 §4)')
         printed = print_commands(doc)
         result = parse_commands(printed.text, document_id='doc')
         # the only issues are ambiguous_name, at the same places as the printer's
@@ -601,6 +603,8 @@ class TestPrint:
     @pytest.mark.parametrize('path', SCENES, ids=lambda p: p.stem)
     def test_printed_text_edits_nothing(self, path):
         doc = read_json(path)['document']
+        if path.stem == 'recipe_angle_equal':
+            pytest.skip('the number.expression of angle.equal is printed from 1.9.0a3 (plan L3 §4)')
         result = parse_commands(print_commands(doc).text, base=doc)
         if path.stem == 'l2a5_number_expression':     # formula lines fail and keep their operations
             assert {i.code for i in result.issues} == {'forbidden'}

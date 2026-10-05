@@ -1,0 +1,400 @@
+{
+ "cases": [
+  {
+   "name": "now"
+  },
+  {
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      -2.6,
+      -1.7
+     ]
+    }
+   },
+   "name": "move_a"
+  },
+  {
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      2.7,
+      -1.6
+     ]
+    }
+   },
+   "name": "move_b"
+  },
+  {
+   "inputs": {
+    "D": {
+     "kind": "pathParameter",
+     "value": 0.8
+    }
+   },
+   "name": "move_receiver"
+  }
+ ],
+ "document": {
+  "appearance": {
+   "c1_l": {
+    "role": "aux",
+    "visible": false
+   },
+   "c1_p": {
+    "role": "aux",
+    "visible": false
+   }
+  },
+  "conditions": [
+   {
+    "id": "c1",
+    "mode": "construct",
+    "operationIds": [
+     "op_c1_1",
+     "op_c1_2",
+     "op_D"
+    ],
+    "receiver": "D",
+    "receiverOrigin": {
+     "args": {},
+     "input": {
+      "point": [
+       1,
+       -0.5
+      ]
+     },
+     "op": "point.free"
+    },
+    "recipe": "parallel",
+    "seq": 3,
+    "shapeId": null,
+    "source": "panel",
+    "statement": {
+     "a": {
+      "pair": [
+       "A",
+       "B"
+      ]
+     },
+     "b": {
+      "pair": [
+       "C",
+       "D"
+      ]
+     },
+     "kind": "parallel"
+    }
+   }
+  ],
+  "documentId": "recipe_parallel",
+  "elements": {
+   "A": {
+    "displayName": "A",
+    "id": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    },
+    "type": "point"
+   },
+   "B": {
+    "displayName": "B",
+    "id": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    },
+    "type": "point"
+   },
+   "C": {
+    "displayName": "C",
+    "id": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    },
+    "type": "point"
+   },
+   "D": {
+    "displayName": "D",
+    "id": "D",
+    "producer": {
+     "operationId": "op_D",
+     "slot": "point"
+    },
+    "type": "point"
+   },
+   "O": {
+    "displayName": "O",
+    "id": "O",
+    "producer": {
+     "operationId": "op_O",
+     "slot": "point"
+    },
+    "type": "point"
+   },
+   "c1_l": {
+    "displayName": "",
+    "id": "c1_l",
+    "producer": {
+     "operationId": "op_c1_1",
+     "slot": "line"
+    },
+    "type": "line"
+   },
+   "c1_p": {
+    "displayName": "",
+    "id": "c1_p",
+    "producer": {
+     "operationId": "op_c1_2",
+     "slot": "line"
+    },
+    "type": "line"
+   },
+   "k": {
+    "displayName": "k",
+    "id": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "circle"
+    },
+    "type": "circle"
+   },
+   "n": {
+    "displayName": "n",
+    "id": "n",
+    "producer": {
+     "operationId": "op_n",
+     "slot": "number"
+    },
+    "type": "number"
+   },
+   "w": {
+    "displayName": "w",
+    "id": "w",
+    "producer": {
+     "operationId": "op_w",
+     "slot": "circle"
+    },
+    "type": "circle"
+   }
+  },
+  "format": "animageo-construction/v1",
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     -3,
+     -2
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     3,
+     -2
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     0.5,
+     2
+    ]
+   },
+   "D": {
+    "kind": "pathParameter",
+    "value": 0.5
+   },
+   "O": {
+    "kind": "point",
+    "value": [
+     4,
+     2.5
+    ]
+   },
+   "n": {
+    "kind": "number",
+    "value": 2
+   }
+  },
+  "operationRegistryVersion": "1.5",
+  "operations": {
+   "op_A": {
+    "args": {},
+    "id": "op_A",
+    "op": "point.free",
+    "outputs": [
+     {
+      "elementId": "A",
+      "slot": "point"
+     }
+    ]
+   },
+   "op_B": {
+    "args": {},
+    "id": "op_B",
+    "op": "point.free",
+    "outputs": [
+     {
+      "elementId": "B",
+      "slot": "point"
+     }
+    ]
+   },
+   "op_C": {
+    "args": {},
+    "id": "op_C",
+    "op": "point.free",
+    "outputs": [
+     {
+      "elementId": "C",
+      "slot": "point"
+     }
+    ]
+   },
+   "op_D": {
+    "args": {
+     "path": {
+      "elementId": "c1_p",
+      "kind": "ref"
+     }
+    },
+    "id": "op_D",
+    "op": "point.on_path",
+    "outputs": [
+     {
+      "elementId": "D",
+      "slot": "point"
+     }
+    ]
+   },
+   "op_O": {
+    "args": {},
+    "id": "op_O",
+    "op": "point.free",
+    "outputs": [
+     {
+      "elementId": "O",
+      "slot": "point"
+     }
+    ]
+   },
+   "op_c1_1": {
+    "args": {
+     "a": {
+      "elementId": "A",
+      "kind": "ref"
+     },
+     "b": {
+      "elementId": "B",
+      "kind": "ref"
+     }
+    },
+    "id": "op_c1_1",
+    "op": "line.by_points",
+    "outputs": [
+     {
+      "elementId": "c1_l",
+      "slot": "line"
+     }
+    ],
+    "seq": 1
+   },
+   "op_c1_2": {
+    "args": {
+     "base": {
+      "elementId": "c1_l",
+      "kind": "ref"
+     },
+     "point": {
+      "elementId": "C",
+      "kind": "ref"
+     }
+    },
+    "id": "op_c1_2",
+    "op": "line.parallel",
+    "outputs": [
+     {
+      "elementId": "c1_p",
+      "slot": "line"
+     }
+    ],
+    "seq": 2
+   },
+   "op_k": {
+    "args": {
+     "center": {
+      "elementId": "A",
+      "kind": "ref"
+     },
+     "through": {
+      "elementId": "B",
+      "kind": "ref"
+     }
+    },
+    "id": "op_k",
+    "op": "circle.center_point",
+    "outputs": [
+     {
+      "elementId": "k",
+      "slot": "circle"
+     }
+    ]
+   },
+   "op_n": {
+    "args": {
+     "max": {
+      "kind": "number",
+      "value": 4
+     },
+     "min": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "id": "op_n",
+    "op": "number.free",
+    "outputs": [
+     {
+      "elementId": "n",
+      "slot": "number"
+     }
+    ]
+   },
+   "op_w": {
+    "args": {
+     "center": {
+      "elementId": "O",
+      "kind": "ref"
+     },
+     "radius": {
+      "kind": "number",
+      "value": 0.8
+     }
+    },
+    "id": "op_w",
+    "op": "circle.center_radius",
+    "outputs": [
+     {
+      "elementId": "w",
+      "slot": "circle"
+     }
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -6,
+    -4,
+    6,
+    4
+   ]
+  }
+ },
+ "format": "animageo-parity/v1",
+ "id": "recipe_parallel"
+}

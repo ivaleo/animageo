@@ -2,6 +2,7 @@
 
     python -m animageo.native fixtures generate <scenes…> -o <dir> [--steps <dir>]
     python -m animageo.native fixtures verify <fixtures…>
+    python -m animageo.native fixtures conditions [-o <root>] [--check]
     python -m animageo.native registry index [--check]
     python -m animageo.native evaluate <doc.json> [--inputs case.json] [--canonical]
     python -m animageo.native validate <doc.json>
@@ -20,6 +21,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from .canonical import canonical_json
 from .document import LoadError, load, validate
@@ -59,6 +61,21 @@ def _cmd_fixtures_verify(args) -> int:
         _out(line)
     _out(f'{files} fixtures, {cases} cases, {len(mismatches)} mismatches')
     return 1 if mismatches else 0
+
+
+def _cmd_fixtures_conditions(args) -> int:
+    from .conditions.fixtures import DEFAULT_ROOT, check_fixtures, verify_fixtures, write_fixtures
+    root = Path(args.out) if args.out else DEFAULT_ROOT
+    if args.check:
+        problems = check_fixtures(root)
+        files, cases, mismatches = verify_fixtures(root)
+        for item in problems + mismatches:
+            _out(f'stale: {item}')
+        _out(f'{files} fixtures, {cases} cases, {len(problems) + len(mismatches)} mismatches')
+        return 1 if problems or mismatches else 0
+    for path in write_fixtures(root):
+        _out(str(path))
+    return 0
 
 
 def _cmd_registry_index(args) -> int:
@@ -249,6 +266,11 @@ def build_parser() -> argparse.ArgumentParser:
     ver = fsub.add_parser('verify', help='re-evaluate fixtures and compare (exit 1 on mismatch)')
     ver.add_argument('fixtures', nargs='+', help='fixture files or directories of *.json')
     ver.set_defaults(func=_cmd_fixtures_verify)
+
+    fc = fsub.add_parser('conditions', help='write (or --check) the fixtures of recipes, general case and marks')
+    fc.add_argument('-o', '--out', help='root directory (default: the shipped parity/v1)')
+    fc.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
+    fc.set_defaults(func=_cmd_fixtures_conditions)
 
     reg = sub.add_parser('registry', help='operation registry ops/v1')
     rsub = reg.add_subparsers(dest='action', required=True)

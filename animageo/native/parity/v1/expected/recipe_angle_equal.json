@@ -1,0 +1,1296 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "recipe_angle_equal",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a2.dev3",
+  "document": {
+    "appearance": {
+      "aux_c1": {
+        "role": "aux",
+        "visible": false
+      },
+      "aux_c1_2": {
+        "role": "aux",
+        "visible": false
+      },
+      "c1_g": {
+        "role": "aux",
+        "visible": false
+      },
+      "c1_m": {
+        "role": "aux",
+        "visible": false
+      },
+      "c1_n": {
+        "role": "aux",
+        "visible": false
+      },
+      "c1_r": {
+        "role": "aux",
+        "visible": false
+      }
+    },
+    "conditions": [
+      {
+        "id": "c1",
+        "mode": "construct",
+        "operationIds": [
+          "op_c1_1",
+          "op_c1_2",
+          "op_c1_3",
+          "op_c1_4",
+          "op_D"
+        ],
+        "receiver": "D",
+        "receiverOrigin": {
+          "args": {},
+          "input": {
+            "point": [
+              1,
+              -0.5
+            ]
+          },
+          "op": "point.free"
+        },
+        "recipe": "angle.equal",
+        "seq": 5,
+        "shapeId": null,
+        "source": "panel",
+        "statement": {
+          "kind": "eq",
+          "left": {
+            "angle": [
+              {
+                "ref": "B"
+              },
+              {
+                "ref": "A"
+              },
+              {
+                "ref": "C"
+              }
+            ]
+          },
+          "right": {
+            "angle": [
+              {
+                "ref": "A"
+              },
+              {
+                "ref": "B"
+              },
+              {
+                "ref": "D"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "documentId": "recipe_angle_equal",
+    "elements": {
+      "A": {
+        "displayName": "A",
+        "id": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "B": {
+        "displayName": "B",
+        "id": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "C": {
+        "displayName": "C",
+        "id": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "D": {
+        "displayName": "D",
+        "id": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "O": {
+        "displayName": "O",
+        "id": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "aux_c1": {
+        "displayName": "",
+        "id": "aux_c1",
+        "origin": {
+          "kind": "auto",
+          "source": "c1"
+        },
+        "producer": {
+          "operationId": "op_aux_c1",
+          "slot": "angle"
+        },
+        "type": "angle"
+      },
+      "aux_c1_2": {
+        "displayName": "",
+        "id": "aux_c1_2",
+        "origin": {
+          "kind": "auto",
+          "source": "c1"
+        },
+        "producer": {
+          "operationId": "op_aux_c1_2",
+          "slot": "angle"
+        },
+        "type": "angle"
+      },
+      "c1_g": {
+        "displayName": "",
+        "id": "c1_g",
+        "producer": {
+          "operationId": "op_c1_1",
+          "slot": "angle"
+        },
+        "type": "angle"
+      },
+      "c1_m": {
+        "displayName": "",
+        "id": "c1_m",
+        "producer": {
+          "operationId": "op_c1_2",
+          "slot": "number"
+        },
+        "type": "number"
+      },
+      "c1_n": {
+        "displayName": "",
+        "id": "c1_n",
+        "producer": {
+          "operationId": "op_c1_3",
+          "slot": "number"
+        },
+        "type": "number"
+      },
+      "c1_r": {
+        "displayName": "",
+        "id": "c1_r",
+        "producer": {
+          "operationId": "op_c1_4",
+          "slot": "ray"
+        },
+        "type": "ray"
+      },
+      "k": {
+        "displayName": "k",
+        "id": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "circle"
+        },
+        "type": "circle"
+      },
+      "mark_c1": {
+        "displayName": "",
+        "id": "mark_c1",
+        "origin": {
+          "kind": "auto",
+          "source": "c1"
+        },
+        "producer": {
+          "operationId": "op_mark_c1",
+          "slot": "mark"
+        },
+        "type": "mark"
+      },
+      "n": {
+        "displayName": "n",
+        "id": "n",
+        "producer": {
+          "operationId": "op_n",
+          "slot": "number"
+        },
+        "type": "number"
+      },
+      "w": {
+        "displayName": "w",
+        "id": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "circle"
+        },
+        "type": "circle"
+      }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -3,
+          -2
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          3,
+          -2
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0.5,
+          2
+        ]
+      },
+      "D": {
+        "kind": "pathParameter",
+        "value": 2.445874257797353
+      },
+      "O": {
+        "kind": "point",
+        "value": [
+          4,
+          2.5
+        ]
+      },
+      "n": {
+        "kind": "number",
+        "value": 2
+      }
+    },
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "args": {},
+        "id": "op_A",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "A",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_B": {
+        "args": {},
+        "id": "op_B",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "B",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_C": {
+        "args": {},
+        "id": "op_C",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "C",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_D": {
+        "args": {
+          "path": {
+            "elementId": "c1_r",
+            "kind": "ref"
+          }
+        },
+        "id": "op_D",
+        "op": "point.on_path",
+        "outputs": [
+          {
+            "elementId": "D",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_O": {
+        "args": {},
+        "id": "op_O",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "O",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_aux_c1": {
+        "args": {
+          "a": {
+            "elementId": "B",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "C",
+            "kind": "ref"
+          },
+          "vertex": {
+            "elementId": "A",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c1",
+        "op": "angle.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c1",
+            "slot": "angle"
+          }
+        ],
+        "seq": 6
+      },
+      "op_aux_c1_2": {
+        "args": {
+          "a": {
+            "elementId": "D",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "vertex": {
+            "elementId": "B",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c1_2",
+        "op": "angle.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c1_2",
+            "slot": "angle"
+          }
+        ],
+        "seq": 7
+      },
+      "op_c1_1": {
+        "args": {
+          "a": {
+            "elementId": "B",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "C",
+            "kind": "ref"
+          },
+          "vertex": {
+            "elementId": "A",
+            "kind": "ref"
+          }
+        },
+        "id": "op_c1_1",
+        "op": "angle.by_points",
+        "outputs": [
+          {
+            "elementId": "c1_g",
+            "slot": "angle"
+          }
+        ],
+        "seq": 1
+      },
+      "op_c1_2": {
+        "args": {
+          "angle": {
+            "elementId": "c1_g",
+            "kind": "ref"
+          }
+        },
+        "id": "op_c1_2",
+        "op": "measure.angle",
+        "outputs": [
+          {
+            "elementId": "c1_m",
+            "slot": "number"
+          }
+        ],
+        "seq": 2
+      },
+      "op_c1_3": {
+        "args": {
+          "expr": {
+            "ast": {
+              "args": [
+                {
+                  "num": -1
+                },
+                {
+                  "args": [
+                    {
+                      "ref": 0
+                    },
+                    {
+                      "args": [
+                        {
+                          "args": [
+                            {
+                              "num": 2
+                            },
+                            {
+                              "const": "pi"
+                            }
+                          ],
+                          "op": "*"
+                        },
+                        {
+                          "ref": 0
+                        }
+                      ],
+                      "op": "-"
+                    }
+                  ],
+                  "fn": "min"
+                }
+              ],
+              "op": "*"
+            },
+            "kind": "expr"
+          },
+          "refs": {
+            "items": [
+              {
+                "elementId": "c1_m",
+                "kind": "ref"
+              }
+            ],
+            "kind": "list"
+          }
+        },
+        "id": "op_c1_3",
+        "op": "number.expression",
+        "outputs": [
+          {
+            "elementId": "c1_n",
+            "slot": "number"
+          }
+        ],
+        "seq": 3
+      },
+      "op_c1_4": {
+        "args": {
+          "a": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "size": {
+            "elementId": "c1_n",
+            "kind": "ref"
+          },
+          "vertex": {
+            "elementId": "B",
+            "kind": "ref"
+          }
+        },
+        "id": "op_c1_4",
+        "op": "ray.at_angle",
+        "outputs": [
+          {
+            "elementId": "c1_r",
+            "slot": "ray"
+          }
+        ],
+        "seq": 4
+      },
+      "op_k": {
+        "args": {
+          "center": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "through": {
+            "elementId": "B",
+            "kind": "ref"
+          }
+        },
+        "id": "op_k",
+        "op": "circle.center_point",
+        "outputs": [
+          {
+            "elementId": "k",
+            "slot": "circle"
+          }
+        ]
+      },
+      "op_mark_c1": {
+        "args": {
+          "angles": {
+            "items": [
+              {
+                "elementId": "aux_c1",
+                "kind": "ref"
+              },
+              {
+                "elementId": "aux_c1_2",
+                "kind": "ref"
+              }
+            ],
+            "kind": "list"
+          },
+          "count": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "id": "op_mark_c1",
+        "op": "mark.equal_angles",
+        "outputs": [
+          {
+            "elementId": "mark_c1",
+            "slot": "mark"
+          }
+        ],
+        "seq": 8
+      },
+      "op_n": {
+        "args": {
+          "max": {
+            "kind": "number",
+            "value": 4
+          },
+          "min": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "id": "op_n",
+        "op": "number.free",
+        "outputs": [
+          {
+            "elementId": "n",
+            "slot": "number"
+          }
+        ]
+      },
+      "op_w": {
+        "args": {
+          "center": {
+            "elementId": "O",
+            "kind": "ref"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 0.8
+          }
+        },
+        "id": "op_w",
+        "op": "circle.center_radius",
+        "outputs": [
+          {
+            "elementId": "w",
+            "slot": "circle"
+          }
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -6,
+        -4,
+        6,
+        4
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "now",
+      "scale": 12.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 2.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.3893805309734513,
+            "y": -0.1592920353982299
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 2.5
+          }
+        },
+        "aux_c1": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -3.0,
+              -2.0
+            ],
+            "a0": 0.0,
+            "a1": 0.8519663271732721,
+            "size": 0.8519663271732721
+          }
+        },
+        "aux_c1_2": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              3.0,
+              -2.0
+            ],
+            "a0": 2.289626326416521,
+            "a1": 3.141592653589793,
+            "size": 0.8519663271732721
+          }
+        },
+        "c1_g": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -3.0,
+              -2.0
+            ],
+            "a0": 0.0,
+            "a1": 0.8519663271732721,
+            "size": 0.8519663271732721
+          }
+        },
+        "c1_m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.8519663271732721,
+            "unit": "angle"
+          }
+        },
+        "c1_n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -0.8519663271732721,
+            "unit": "scalar"
+          }
+        },
+        "c1_r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              3.0,
+              -2.0
+            ],
+            "dir": [
+              -0.658504607868518,
+              0.7525766947068778
+            ]
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              -3.0,
+              -2.0
+            ],
+            "r": 6.0
+          }
+        },
+        "mark_c1": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_angles",
+            "count": 1
+          }
+        },
+        "n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0,
+            "unit": "scalar"
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              4.0,
+              2.5
+            ],
+            "r": 0.8
+          }
+        }
+      },
+      "checks": {
+        "op_D:on_path": "passed",
+        "op_aux_c1:sides": "passed",
+        "op_aux_c1_2:sides": "passed",
+        "op_c1_1:sides": "passed",
+        "op_c1_4:angle": "passed",
+        "op_k:through_on_circle": "passed",
+        "op_mark_c1:equal": "passed",
+        "op_w:matches": "passed"
+      }
+    },
+    {
+      "name": "move_a",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -2.6,
+            -1.7
+          ]
+        }
+      },
+      "scale": 12.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.6,
+            "y": -1.7
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 2.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.6384991336615504,
+            "y": 0.03189967171497088
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 2.5
+          }
+        },
+        "aux_c1": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -2.6,
+              -1.7
+            ],
+            "a0": 6.229665038720271,
+            "a1": 7.156590844104775,
+            "size": 0.9269258053845042
+          }
+        },
+        "aux_c1_2": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              3.0,
+              -2.0
+            ],
+            "a0": 2.161146579745974,
+            "a1": 3.088072385130478,
+            "size": 0.9269258053845044
+          }
+        },
+        "c1_g": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -2.6,
+              -1.7
+            ],
+            "a0": 6.229665038720271,
+            "a1": 7.156590844104775,
+            "size": 0.9269258053845042
+          }
+        },
+        "c1_m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.9269258053845042,
+            "unit": "angle"
+          }
+        },
+        "c1_n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -0.9269258053845042,
+            "unit": "scalar"
+          }
+        },
+        "c1_r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              3.0,
+              -2.0
+            ],
+            "dir": [
+              -0.5566520282054718,
+              0.8307457610453002
+            ]
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              -2.6,
+              -1.7
+            ],
+            "r": 5.60802995712398
+          }
+        },
+        "mark_c1": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_angles",
+            "count": 1
+          }
+        },
+        "n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0,
+            "unit": "scalar"
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              4.0,
+              2.5
+            ],
+            "r": 0.8
+          }
+        }
+      },
+      "checks": {
+        "op_D:on_path": "passed",
+        "op_aux_c1:sides": "passed",
+        "op_aux_c1_2:sides": "passed",
+        "op_c1_1:sides": "passed",
+        "op_c1_4:angle": "passed",
+        "op_k:through_on_circle": "passed",
+        "op_mark_c1:equal": "passed",
+        "op_w:matches": "passed"
+      }
+    },
+    {
+      "name": "move_b",
+      "inputs": {
+        "B": {
+          "kind": "point",
+          "value": [
+            2.7,
+            -1.6
+          ]
+        }
+      },
+      "scale": 12.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.7,
+            "y": -1.6
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 2.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.8480871132553631,
+            "y": -0.0022767621190147302
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 2.5
+          }
+        },
+        "aux_c1": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -3.0,
+              -2.0
+            ],
+            "a0": 0.07006058263845542,
+            "a1": 0.8519663271732721,
+            "size": 0.7819057445348168
+          }
+        },
+        "aux_c1_2": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              2.7,
+              -1.6
+            ],
+            "a0": 2.429747491693432,
+            "a1": 3.2116532362282486,
+            "size": 0.7819057445348168
+          }
+        },
+        "c1_g": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -3.0,
+              -2.0
+            ],
+            "a0": 0.07006058263845542,
+            "a1": 0.8519663271732721,
+            "size": 0.7819057445348168
+          }
+        },
+        "c1_m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.7819057445348168,
+            "unit": "angle"
+          }
+        },
+        "c1_n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -0.7819057445348168,
+            "unit": "scalar"
+          }
+        },
+        "c1_r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              2.7,
+              -1.6
+            ],
+            "dir": [
+              -0.7571578468683784,
+              0.6532319610411308
+            ]
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              -3.0,
+              -2.0
+            ],
+            "r": 5.7140178508646615
+          }
+        },
+        "mark_c1": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_angles",
+            "count": 1
+          }
+        },
+        "n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0,
+            "unit": "scalar"
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              4.0,
+              2.5
+            ],
+            "r": 0.8
+          }
+        }
+      },
+      "checks": {
+        "op_D:on_path": "passed",
+        "op_aux_c1:sides": "passed",
+        "op_aux_c1_2:sides": "passed",
+        "op_c1_1:sides": "passed",
+        "op_c1_4:angle": "passed",
+        "op_k:through_on_circle": "passed",
+        "op_mark_c1:equal": "passed",
+        "op_w:matches": "passed"
+      }
+    },
+    {
+      "name": "move_receiver",
+      "inputs": {
+        "D": {
+          "kind": "pathParameter",
+          "value": 2.745874
+        }
+      },
+      "scale": 12.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -2.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": -2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 2.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.1918293183736408,
+            "y": 0.06648077900155336
+          }
+        },
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 2.5
+          }
+        },
+        "aux_c1": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -3.0,
+              -2.0
+            ],
+            "a0": 0.0,
+            "a1": 0.8519663271732721,
+            "size": 0.8519663271732721
+          }
+        },
+        "aux_c1_2": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              3.0,
+              -2.0
+            ],
+            "a0": 2.289626326416521,
+            "a1": 3.141592653589793,
+            "size": 0.851966327173272
+          }
+        },
+        "c1_g": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              -3.0,
+              -2.0
+            ],
+            "a0": 0.0,
+            "a1": 0.8519663271732721,
+            "size": 0.8519663271732721
+          }
+        },
+        "c1_m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.8519663271732721,
+            "unit": "angle"
+          }
+        },
+        "c1_n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -0.8519663271732721,
+            "unit": "scalar"
+          }
+        },
+        "c1_r": {
+          "state": "defined",
+          "type": "ray",
+          "value": {
+            "origin": [
+              3.0,
+              -2.0
+            ],
+            "dir": [
+              -0.658504607868518,
+              0.7525766947068778
+            ]
+          }
+        },
+        "k": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              -3.0,
+              -2.0
+            ],
+            "r": 6.0
+          }
+        },
+        "mark_c1": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "equal_angles",
+            "count": 1
+          }
+        },
+        "n": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0,
+            "unit": "scalar"
+          }
+        },
+        "w": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              4.0,
+              2.5
+            ],
+            "r": 0.8
+          }
+        }
+      },
+      "checks": {
+        "op_D:on_path": "passed",
+        "op_aux_c1:sides": "passed",
+        "op_aux_c1_2:sides": "passed",
+        "op_c1_1:sides": "passed",
+        "op_c1_4:angle": "passed",
+        "op_k:through_on_circle": "passed",
+        "op_mark_c1:equal": "passed",
+        "op_w:matches": "passed"
+      }
+    }
+  ]
+}

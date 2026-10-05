@@ -27,7 +27,9 @@
    condition on that receiver. An automatic mark and its helpers
    (``origin.kind = "auto"``) join the step of their source (an operation
    or a condition) when everything they use comes from that step or before
-   it; otherwise each stays a step of its own.
+   it; else the step of one of their direct dependencies (the one with the
+   largest order key first) on the same terms; otherwise each stays a step
+   of its own.
 
 ``steps_merge`` and ``steps_split`` return a new ``steps`` array for the
 document (structural helpers of the web API: «Объединить с предыдущим»,
@@ -124,7 +126,8 @@ def _groups(doc, explicit) -> tuple:
     receiver's operation goes to the last condition on the receiver), then
     one ``op`` group per other operation; an automatic mark and its helpers
     join the group of their source when everything they use is built by
-    then (otherwise they stay steps of their own)."""
+    then, else the group of a direct dependency (largest order key first),
+    else they stay steps of their own."""
     ops = doc.operations
     groups = []
     owner: dict = {}
@@ -169,17 +172,25 @@ def _groups(doc, explicit) -> tuple:
         index = {g['id']: g for g in groups}
         for op_id in sorted(auto):
             source = auto[op_id]
-            target = owner.get(source) if source in ops else ('condition:' + source
-                                                              if 'condition:' + source in index else None)
-            group = index.get(target)
-            if group is not None:
-                inside = set(group['ops'])
-                upstream = set().union(*(_ancestors(op_deps, o, memo) for o in group['ops'])) | inside
-                needed = {d for d in _ancestors(op_deps, op_id, memo) if auto.get(d) != source}
+            first = owner.get(source) if source in ops else ('condition:' + source
+                                                             if 'condition:' + source in index else None)
+            needed = {d for d in _ancestors(op_deps, op_id, memo) if auto.get(d) != source}
+            # the step of the source, else the step of a direct need (latest order key first)
+            direct = sorted({owner[d] for d in op_deps.get(op_id, ()) if d in owner and auto.get(d) != source},
+                            key=lambda g: max(order_key(doc, o) for o in index[g]['ops']), reverse=True)
+            placed = False
+            for target in [first] + direct:
+                group = index.get(target)
+                if group is None:
+                    continue
+                upstream = set().union(*(_ancestors(op_deps, o, memo) for o in group['ops'])) | set(group['ops'])
                 if needed <= upstream:
                     group['ops'].append(op_id)
                     owner[op_id] = target
-                    continue
+                    placed = True
+                    break
+            if placed:
+                continue
             owner[op_id] = 'op:' + op_id
             groups.append({'id': 'op:' + op_id, 'kind': 'op', 'title': None, 'text': None, 'ops': [op_id],
                            'explicit': False, 'conditions': []})

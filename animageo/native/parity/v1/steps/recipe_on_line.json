@@ -1,0 +1,422 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "recipe_on_line",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a2.dev3",
+  "document": {
+    "appearance": {
+      "c1_l": {
+        "role": "aux",
+        "visible": false
+      }
+    },
+    "conditions": [
+      {
+        "id": "c1",
+        "mode": "construct",
+        "operationIds": [
+          "op_c1_1",
+          "op_C"
+        ],
+        "receiver": "C",
+        "receiverOrigin": {
+          "args": {},
+          "input": {
+            "point": [
+              0.5,
+              2
+            ]
+          },
+          "op": "point.free"
+        },
+        "recipe": "on_line",
+        "seq": 2,
+        "shapeId": null,
+        "source": "panel",
+        "statement": {
+          "kind": "on",
+          "object": {
+            "pair": [
+              "A",
+              "B"
+            ]
+          },
+          "point": {
+            "ref": "C"
+          }
+        }
+      }
+    ],
+    "documentId": "recipe_on_line",
+    "elements": {
+      "A": {
+        "displayName": "A",
+        "id": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "B": {
+        "displayName": "B",
+        "id": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "C": {
+        "displayName": "C",
+        "id": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "D": {
+        "displayName": "D",
+        "id": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "O": {
+        "displayName": "O",
+        "id": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        },
+        "type": "point"
+      },
+      "c1_l": {
+        "displayName": "",
+        "id": "c1_l",
+        "producer": {
+          "operationId": "op_c1_1",
+          "slot": "line"
+        },
+        "type": "line"
+      },
+      "k": {
+        "displayName": "k",
+        "id": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "circle"
+        },
+        "type": "circle"
+      },
+      "n": {
+        "displayName": "n",
+        "id": "n",
+        "producer": {
+          "operationId": "op_n",
+          "slot": "number"
+        },
+        "type": "number"
+      },
+      "w": {
+        "displayName": "w",
+        "id": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "circle"
+        },
+        "type": "circle"
+      }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -3,
+          -2
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          3,
+          -2
+        ]
+      },
+      "C": {
+        "kind": "pathParameter",
+        "value": 0.5833333333333334
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          1,
+          -0.5
+        ]
+      },
+      "O": {
+        "kind": "point",
+        "value": [
+          4,
+          2.5
+        ]
+      },
+      "n": {
+        "kind": "number",
+        "value": 2
+      }
+    },
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "args": {},
+        "id": "op_A",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "A",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_B": {
+        "args": {},
+        "id": "op_B",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "B",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_C": {
+        "args": {
+          "path": {
+            "elementId": "c1_l",
+            "kind": "ref"
+          }
+        },
+        "id": "op_C",
+        "op": "point.on_path",
+        "outputs": [
+          {
+            "elementId": "C",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_D": {
+        "args": {},
+        "id": "op_D",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "D",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_O": {
+        "args": {},
+        "id": "op_O",
+        "op": "point.free",
+        "outputs": [
+          {
+            "elementId": "O",
+            "slot": "point"
+          }
+        ]
+      },
+      "op_c1_1": {
+        "args": {
+          "a": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "B",
+            "kind": "ref"
+          }
+        },
+        "id": "op_c1_1",
+        "op": "line.by_points",
+        "outputs": [
+          {
+            "elementId": "c1_l",
+            "slot": "line"
+          }
+        ],
+        "seq": 1
+      },
+      "op_k": {
+        "args": {
+          "center": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "through": {
+            "elementId": "B",
+            "kind": "ref"
+          }
+        },
+        "id": "op_k",
+        "op": "circle.center_point",
+        "outputs": [
+          {
+            "elementId": "k",
+            "slot": "circle"
+          }
+        ]
+      },
+      "op_n": {
+        "args": {
+          "max": {
+            "kind": "number",
+            "value": 4
+          },
+          "min": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "id": "op_n",
+        "op": "number.free",
+        "outputs": [
+          {
+            "elementId": "n",
+            "slot": "number"
+          }
+        ]
+      },
+      "op_w": {
+        "args": {
+          "center": {
+            "elementId": "O",
+            "kind": "ref"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 0.8
+          }
+        },
+        "id": "op_w",
+        "op": "circle.center_radius",
+        "outputs": [
+          {
+            "elementId": "w",
+            "slot": "circle"
+          }
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -6,
+        -4,
+        6,
+        4
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B"
+        ],
+        "elementIds": [
+          "A",
+          "B"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "condition:c1",
+        "kind": "condition",
+        "operationIds": [
+          "op_c1_1",
+          "op_C"
+        ],
+        "elementIds": [
+          "C"
+        ],
+        "auxElementIds": [
+          "c1_l"
+        ]
+      },
+      {
+        "id": "op:op_D",
+        "kind": "op",
+        "operationIds": [
+          "op_D"
+        ],
+        "elementIds": [
+          "D"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_O",
+        "kind": "op",
+        "operationIds": [
+          "op_O"
+        ],
+        "elementIds": [
+          "O"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_k",
+        "kind": "op",
+        "operationIds": [
+          "op_k"
+        ],
+        "elementIds": [
+          "k"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_n",
+        "kind": "op",
+        "operationIds": [
+          "op_n"
+        ],
+        "elementIds": [
+          "n"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_w",
+        "kind": "op",
+        "operationIds": [
+          "op_w"
+        ],
+        "elementIds": [
+          "w"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B.",
+      "2. Ставим C на прямой AB.",
+      "3. Отмечаем точку D.",
+      "4. Отмечаем точку O.",
+      "5. Строим окружность k с центром A, проходящую через B.",
+      "6. Задаём число n.",
+      "7. Строим окружность w с центром O и радиусом 0,8."
+    ],
+    "timeline": null
+  }
+}
