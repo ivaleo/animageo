@@ -10,7 +10,9 @@ The text form of a document, «Команды» (`native.parse_commands`,
 `native.print_commands`), is in `docs/native/commands.md`; the expressions of
 `number.expression` (AST v1, `animageo.native.expr`) are in
 `docs/native/expr.md`; time by element ID (`sample_timeline`, `render(t)`,
-video, `steps_timeline`) is in `docs/native/timeline.md`.
+video, `steps_timeline`) is in `docs/native/timeline.md`; the import of `.ggb`
+and of the classic graph (`native.from_ggb`, `native.from_construction`,
+`import_report.v1`, stage L5) is in `docs/native/import.md`.
 The browser kernel of the web app repeats §1–§8 in TypeScript; the
 per-operation formulas are in `docs/native/ops/<op>.md`. When the two kernels
 disagree, the library is right and the fixtures it generates are the
@@ -618,6 +620,8 @@ python -m animageo.native validate <doc.json> [--json]          # exit 1 when th
 python -m animageo.native commands fixtures|parse|print …       # «Команды», commands.md §10
 python -m animageo.native fixtures timeline [--check]           # animageo-timeline/v1, timeline.md §5
 python -m animageo.native steps|describe|timeline <doc.json> …  # timeline.md §5
+python -m animageo.native from-ggb <file.ggb> [-o …] [--report …] # import.md §7
+python -m animageo.native convert map [--check]                 # import.md §1
 ```
 
 Exit codes: `0` success; `1` a verify mismatch, an issue found by `validate`
