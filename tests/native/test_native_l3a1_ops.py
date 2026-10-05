@@ -380,3 +380,49 @@ def test_altitude_of_a_pair_through_commands():
     ev = native.evaluate(data)
     by_name = {e['displayName']: e['id'] for e in data['elements'].values() if e.get('displayName')}
     assert ev.elements[by_name['x']]['value']['a'] == [0.0, 0.0]
+
+
+# ── determinism and performance (plan L3 §2.9) ───────────────────────────
+
+L3_SCENES = sorted(p for p in (__import__('pathlib').Path(__file__).resolve().parents[2] / 'animageo' / 'native'
+                               / 'parity' / 'v1' / 'scenes').glob('*.json')
+                   if p.stem.startswith(('triangle_', 'locus_')))
+
+
+@pytest.mark.parametrize('path', L3_SCENES, ids=lambda p: p.stem)
+def test_l3_scenes_ignore_key_order(path):
+    import json
+    import random
+    scene = json.loads(path.read_text(encoding='utf-8'))
+    doc = scene['document']
+    shuffled = copy.deepcopy(doc)
+    rng = random.Random(20261005)
+    for section in ('operations', 'elements', 'inputs'):
+        items = list(shuffled.get(section, {}).items())
+        rng.shuffle(items)
+        shuffled[section] = dict(items)
+    for case in scene['cases']:
+        a = native.canonical_json(native.evaluate(doc, inputs=case.get('inputs')).elements)
+        b = native.canonical_json(native.evaluate(shuffled, inputs=case.get('inputs')).elements)
+        assert a == b, case['name']
+    assert native.describe(doc) == native.describe(shuffled)
+    assert [s.to_dict() for s in native.steps(doc)] == [s.to_dict() for s in native.steps(shuffled)]
+
+
+def test_locus_of_the_orthocenter_p95_within_150_ms():
+    def build(b):
+        b.free('O', 0, 0).free('R', 3, 0).free('B', -2, -1).free('C', 2, -1)
+        b.circle('c', 'O', 'R')
+        b.op('op_A', 'point.on_path', {'path': ref('c')}, [('point', 'A', 'point')])
+        b.doc['inputs']['A'] = path_input(1.0)
+        b.op('op_H', 'triangle.orthocenter', {'a': ref('A'), 'b': ref('B'), 'c': ref('C')}, [('point', 'H', 'point')])
+        b.op('op_g', 'locus.of_point', {'trace': ref('H'), 'mover': ref('A')}, [('locus', 'g', 'locus')])
+    doc = doc_of(build)
+    native.evaluate(doc)
+    times = []
+    for _ in range(20):
+        start = time.perf_counter()
+        native.evaluate(doc)
+        times.append(time.perf_counter() - start)
+    times.sort()
+    assert times[int(0.95 * len(times)) - 1] < 0.15

@@ -7,6 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0a1] - 2026-10-05
+
+The first part of the native kernel stage L3: registry 1.5 (triangle
+operations and the locus), steps and the text of a construction, EPS/TikZ
+output and style roles.
+
+### Added
+
+- Registry 1.5 of `animageo.native`: `triangle.altitude` (with the foot and
+  the extension of the side), `triangle.median`, `triangle.bisector`,
+  `triangle.centroid`, `triangle.incenter`, `triangle.circumcenter`,
+  `triangle.orthocenter`, `triangle.excenters` and `locus.of_point`; the
+  type `locus` `{points, range, closed}`, the family `locus_driver` and the
+  reasons `not_dependent`, `empty_range`. The centres are bit for bit the
+  centres of `circle.incircle`, `circle.three_points` and `circle.excircle`.
+  A locus samples 256 parameters of its mover over the range of its
+  definition and re-evaluates only the operations between the mover and the
+  trace. `docs/native/kernel.md` §11, `docs/native/ops/`.
+- The document takes `operations.<id>.seq`, a top-level `steps` array of
+  explicit groups and `appearance.<id>.role`; `validate` reports
+  `step_unknown_operation`, `step_duplicate_operation`, `step_duplicate_id`,
+  `step_empty`, `step_cycle`, and the warnings `seq_duplicate`,
+  `role_unknown`. The JSON schema follows.
+- `native.steps`, `native.steps_merge`, `native.steps_split`,
+  `native.assign_seq`; `native.describe` with the phrase table
+  `animageo/native/phrases/ru.v1.json` (`animageo-phrases/v1`, every
+  `stepKind`, context phrases of a triangle); `native.has` and
+  `native.FEATURES`. `docs/native/steps.md`.
+- `native.render(fmt='eps' | 'tikz' | 'tex')`.
+- Style roles: `appearance.<id>.role` (`given`, `aux`, `sought`) styles an
+  element from the new `roles` section of the style (defaults in
+  `builtin.json` and `animageo.style.schema.ROLE_DEFAULTS`); the render
+  report gives the role and the box of a locus.
+- Classic `LocusCurve(points, breaks=None)`: optional starts of runs, drawn as
+  separate polylines by the renderer, the TikZ exporter and JSXGraph; without
+  `breaks` the output is unchanged.
+- «Команды»: `Высота`, `Медиана`, `Биссектриса`, `ТочкаПересеченияМедиан`,
+  `Инцентр`, `ЦентрОписанной`, `Ортоцентр`, `ЦентрВневписанной`, `ГМТ` (and
+  their aliases); a pair `BC` in the side of an altitude is a hidden line.
+- Parity: 14 scenes of registry 1.5 (101 in all), fixtures
+  `animageo-steps/v1` for every scene (`fixtures generate --steps`), describe
+  snapshots, commands fixtures `parse_triangle`.
+
+### Changed
+
+- Fixtures of the earlier scenes and the commands fixtures changed in their
+  labels only (registry 1.5, version): a document without the new fields
+  evaluates as in 1.8.1.
+
 ## [1.8.1] - 2026-10-05
 
 The final release of the native kernel stage L2 (registry 1.4).

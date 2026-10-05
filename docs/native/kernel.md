@@ -1,4 +1,4 @@
-# `animageo.native` — contract of the reference kernel (L0–L2)
+# `animageo.native` — contract of the reference kernel (L0–L3)
 
 `animageo.native` reads construction documents `animageo-construction/v1`,
 evaluates them, edits them and produces parity fixtures; with manim
@@ -145,12 +145,13 @@ The text `JSON.stringify` prints after object keys are sorted:
 table `animageo/native/parity/v1/canonical.json` is a list of
 `{"value", "canonical"}` pairs that both kernels must reproduce.
 
-## 4. Registry `ops/v1` (version 1.4)
+## 4. Registry `ops/v1` (version 1.5)
 
 Registry 1.4 is frozen since animageo 1.8.1: the records of 1.0–1.4 and their
 `signatureHash` stay as they are (`beta` is a descriptive status outside the
 hash and may become `stable`); a new operation or a changed signature goes to
-registry 1.5.
+registry 1.5. Registry 1.5 (animageo 1.9.0a1) adds the operations of a
+triangle and the locus (§11).
 
 `animageo/native/ops/v1/<group>.json` holds arrays of records:
 
@@ -987,3 +988,116 @@ The kernel has no state and no randomness: the evaluation of a document does
 not depend on the order of its keys, the order of evaluations or on
 repeating them, and no module of the package imports `random` or
 `numpy.random` (`tests/native/test_native_determinism.py`).
+
+## 11. Stage L3, part 1 (registry 1.5, animageo 1.9.0a1)
+
+### 11.1 Registry 1.5
+
+Nine operations, `since: "1.5"`, `stable` (formulas, decisions and checks in
+`docs/native/ops/<op>.md`):
+
+| op | inputs → outputs | undefined | checks |
+|---|---|---|---|
+| `triangle.altitude` | `vertex: point, side: linear` (`ends`) → `altitude, extension: segment, foot: point` | `zero_length`, `branch_absent`, `upstream` | `perpendicular`, `on_carrier` |
+| `triangle.median` | `vertex: point, side: segment` → `median: segment, midpoint: point` | `zero_length`, `upstream` | `midpoint` |
+| `triangle.bisector` | `vertex: point, side: segment` → `bisector: segment, foot: point` | `coincident_points`, `collinear_points`, `upstream` | `equal_angles`, `on_side` |
+| `triangle.centroid` | `a, b, c: point` → `point` | `upstream` | `medians` |
+| `triangle.incenter` | `a, b, c` → `point` | `collinear_points`, `upstream` | `equidistant_sides` |
+| `triangle.circumcenter` | `a, b, c` → `point` | `collinear_points`, `upstream` | `equidistant` |
+| `triangle.orthocenter` | `a, b, c` → `point` | `collinear_points`, `upstream` | `perpendicular` |
+| `triangle.excenters` | `a, b, c` → `center: point` (opposite `a`) | `collinear_points`, `upstream` | `equidistant_lines` |
+| `locus.of_point` | `trace: point, mover: locus_driver` → `locus: locus` | `unsupported_signature`, `not_dependent`, `empty_range`, `upstream` | `on_trace` |
+
+- Type `locus`: `{points: [[x, y] | null, …], range: [t0, t1], closed: bool}`
+  (`points` — length, `range` — scalar); family `locus_driver = [point,
+  number]`; `locus` is in no other family (a point on a locus and
+  intersections with it are L4). Reasons `not_dependent`, `empty_range`
+  (state `undefined`).
+- `ends` (a field of a record input, outside the signature hash): the side of
+  `triangle.altitude` receives the two defining points of a line or a ray
+  whose producer frame is `o = args.Y`, `v = args.X − args.Y`
+  (`line.by_points`: `a`, `b`; `ray.by_points`: `origin`, `through`;
+  `evaluate.side_end_slots`); any other line or ray has no ends and no
+  `extension`. A pair `BC` in the side slot of «Команды» is a hidden
+  `line.by_points` (a `segment.by_points` for `median` and `bisector`).
+- The centres are bit for bit the centres of `circle.incircle`,
+  `circle.three_points` (vertex `a` first) and `circle.excircle`; the foot of
+  an altitude is the arithmetic of `point.projection`.
+
+### 11.2 Evaluation
+
+- An implementation that returns `unsupported_signature` gives the state of
+  that reason in `_reasons.json` (`unsupported`), as the structural rules do.
+- Checks of `triangle.altitude` run when `altitude` and `foot` are defined:
+  its `extension` may be `undefined` (`branch_absent` in every acute
+  triangle) without skipping them (`CHECK_OPTIONAL_SLOTS`).
+- `locus.of_point` is a graph operation: it receives the evaluation scope
+  (document, states so far, inputs, order). Mover: the point of
+  `point.on_path` or the number of `number.free` with both `min` and `max`;
+  else `unsupported_signature`. The trace's producer must depend on the
+  mover's (else `not_dependent`). Range from the definition: segment, arc
+  `[0, 1]`; polyline `[0, n − 1]`; circle `[0, 2π)`, polygon `[0, n)`, sector
+  `[0, 3)` — closed; line and ray — Liang–Barsky clip of the producer frame
+  to the window `B4` (`viewDefaults.bounds` scaled 4 times about its centre),
+  a ray from `0`; number `[min, max]`. A window of no length
+  (`(t1 − t0)·|v| ≤ tol.decide_length`, a number `t1 − t0 ≤ tol.decide_scalar`)
+  or a line that misses the window is `empty_range`. `N = 256` samples: open
+  `t_k = t0 + (k·(t1 − t0))/(N − 1)`, closed `t_k = t0 + (k·(t1 − t0))/N`.
+  Each sample replaces the mover input by `t_k` and evaluates only the
+  operations between the mover and the trace (downstream of the mover ∩
+  upstream of the trace, in the evaluation order; a free op inside keeps its
+  input or default); `points[k]` is the trace or `null`. The decisions of
+  the sampled operations are reported like the decisions of the document
+  (the generator refuses a near-degenerate sample). The check `on_trace`
+  compares the samples `0, N/4, N/2, 3N/4` with full evaluations.
+
+### 11.3 Document: `seq`, `steps`, `role`
+
+- `operations.<id>.seq` (integer ≥ 1, optional): the order key of the steps
+  and the printer — operations without `seq` first by ID, then by `seq`,
+  ties by ID; a repeated `seq` is the warning `seq_duplicate`.
+  `native.assign_seq(doc, op_ids)` returns a copy numbered after the largest
+  `seq`.
+- `steps: [{id, kind: given | group | condition, title?, text?,
+  operationIds}]` — explicit groups. `validate` errors:
+  `step_unknown_operation`, `step_duplicate_operation`, `step_duplicate_id`,
+  `step_empty`, `step_cycle`.
+- `appearance.<id>.role` (a string): `given | aux | sought`; another value is
+  the warning `role_unknown` and is ignored.
+
+The JSON schema `schema/construction.v1.schema.json` and the structure check
+agree on these fields. `native.steps`, `steps_merge`, `steps_split` and
+`native.describe` are in `docs/native/steps.md`; `native.has(feature)` and
+`native.FEATURES` list the features of the stage (`triangle`, `locus`,
+`steps`, `describe`, `render.eps`, `render.tikz`, `roles`).
+
+### 11.4 Rendering
+
+- `native.render(fmt=…)`: `eps` (`exportEPS`), `tikz` (`exportTikZ`,
+  `standalone=False`), `tex` (`standalone=True`), besides `svg`, `png`,
+  `pdf`.
+- Roles: `appearance.<id>.role` puts the keys of the style's `roles.<role>`
+  (a point takes `roles.<role>.point`) under `appearance.overrides`; token
+  references are resolved by the style resolver. The defaults
+  (`animageo.style.schema.ROLE_DEFAULTS`, mirrored by `roles` in
+  `builtin.json`): `given` — stroke `color.main`, point fill `color.strong`;
+  `aux` — stroke `color.aux`, width `line_width.aux`, dash ratio `0.5`, point
+  size `point_size.aux`; `sought` — stroke `color.accent`, width
+  `line_width.bold`, point fill `color.accent` and size `point_size.bold`.
+- A `locus` is a classic `LocusCurve` of its defined samples with `breaks`
+  (a new optional field: one polyline per run in the renderer, TikZ and
+  JSXGraph) where a neighbour is `null` or two neighbours are more than
+  `0.25·S` apart; a closed locus joins its last sample to the first when they
+  are near. Its bridge command evaluates the document with the current free
+  inputs of the construction.
+- Report: `elements.<id>.role` for an element with a role; a `locus`
+  reports the box of its defined samples.
+
+### 11.5 Fixtures `animageo-steps/v1`
+
+`python -m animageo.native fixtures generate <scenes…> -o <dir> --steps
+<dir>` also writes, per scene, `{format: "animageo-steps/v1", id, registry,
+generatedBy, document, expect: {steps: [{id, kind, title?, text?,
+operationIds, elementIds, auxElementIds}], describe: [line…], timeline:
+null}}` (`parity/v1/steps`, all scenes); `fixtures verify` compares them
+exactly.

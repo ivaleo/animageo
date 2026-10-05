@@ -289,7 +289,10 @@ the path's default parameter, or the `min` of `number.free`.
 
 ### 4.4 The default lexicon
 
-`lexicon.v1.json`, 26 entries for the operations of L0–L2 stages 1–2:
+`lexicon.v1.json`, 35 entries: 26 for the operations of L0–L2 stages 1–2 and
+9 for L3 (1.9.0a1). `Биссектриса` has two entries, resolved as in §4.3:
+`(A, B, C)` is the angle bisector, `(vertex, side)` the bisector of a
+triangle:
 
 | name | aliases | op |
 |---|---|---|
@@ -309,6 +312,19 @@ the path's default parameter, or the `min` of `number.free`.
 | Параметр | Ползунок, Slider | `number.free` (`$input?, min?, max?, step?`) |
 | Угол | Angle | `angle.by_points` |
 | ОтметкаРавныхОтрезков, ОтметкаРавныхУглов, ПрямойУгол | — | `mark.equal_segments`, `mark.equal_angles`, `mark.right_angle` |
+| Высота | Altitude | `triangle.altitude` (`vertex, side`) |
+| Медиана | Median | `triangle.median` (`vertex, side`) |
+| Биссектриса | AngleBisector | `triangle.bisector` (`vertex, side`) |
+| ТочкаПересеченияМедиан | Центроид, Centroid | `triangle.centroid` |
+| Инцентр | ЦентрВписанной, Incenter | `triangle.incenter` |
+| ЦентрОписанной | Circumcenter | `triangle.circumcenter` |
+| Ортоцентр | Orthocenter | `triangle.orthocenter` |
+| ЦентрВневписанной | Excenter | `triangle.excenters` |
+| ГМТ | Локус, Locus | `locus.of_point` (`point, mover`) |
+
+`side` takes a segment, a line, a ray or a pair `BC`; the pair becomes a
+hidden `line.by_points` (§3), whose points are the ends of the side
+(kernel.md §11.1).
 
 ## 5. Default names
 
@@ -560,6 +576,7 @@ and 11 name keys), generated for the default lexicon.
 | `overloads` | 7 |
 | `names` | 12 |
 | `numbers` | 5 |
+| `parse_triangle` | 27: the eight `triangle.*` ops by pair, by named segment and by alias, unnamed outputs, `ГМТ` on a segment, a circle and a slider (1.9.0a1) |
 | `errors` | 37: every error code with its column, plus `forbidden` variants and columns before replacements |
 | `edit` | 17: unchanged text, moved point, changed number, redefine (and refused, and to a free op), deleted line (and cascade), new line, new name, mark count, removed mark, secondary names, error keeps the operation, swapped outputs, redefine below, reused free name |
 
