@@ -180,14 +180,18 @@ def step_issues(doc, *, check_cycle: bool = True) -> list:
         return issues
     groups, owner = _groups(doc, explicit)
     _order, rest, _deps, cyclic = _ordered(doc, groups, owner)
+    return _cycle_issues(explicit, rest, cyclic)
+
+
+def _cycle_issues(explicit, rest, cyclic) -> list:
+    """``step_cycle`` for every explicit group left unordered (none when
+    the operations themselves are on a cycle: that is the document's error)."""
+    if cyclic:
+        return []
     index = {step['id']: i for i, step in enumerate(explicit)}
-    if not cyclic:
-        for group in rest:
-            if group['explicit']:
-                issues.append(Issue('step_cycle', f"/steps/{index[group['id']]}",
-                                    f"step {group['id']!r} cannot be ordered by the dependencies of its "
-                                    f"operations"))
-    return issues
+    return [Issue('step_cycle', f"/steps/{index[group['id']]}",
+                  f"step {group['id']!r} cannot be ordered by the dependencies of its operations")
+            for group in rest if group['explicit']]
 
 
 def _visible(doc, el_id: str) -> bool:
@@ -214,11 +218,14 @@ def steps(doc) -> list:
     """The steps of ``doc`` in order (see the module docstring)."""
     doc = as_document(doc)
     explicit = _explicit(doc)
-    issues = [i for i in step_issues(doc, check_cycle=True) if i.severity == 'error']
+    issues = [i for i in step_issues(doc, check_cycle=False) if i.severity == 'error']
     if issues:
         raise StepError(issues)
     groups, owner = _groups(doc, explicit)
-    ordered, rest, op_deps, _cyclic = _ordered(doc, groups, owner)
+    ordered, rest, op_deps, cyclic = _ordered(doc, groups, owner)
+    issues = _cycle_issues(explicit, rest, cyclic)
+    if issues:
+        raise StepError(issues)
     out = [_step_of(doc, g, op_deps) for g in ordered + rest]
     if any(s.kind == 'given' for s in out):
         return out

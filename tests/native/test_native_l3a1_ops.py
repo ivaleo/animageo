@@ -426,3 +426,69 @@ def test_locus_of_the_orthocenter_p95_within_150_ms():
         times.append(time.perf_counter() - start)
     times.sort()
     assert times[int(0.95 * len(times)) - 1] < 0.15
+
+
+def _trajectory(doc, k):
+    """Inputs at step ``k`` of a fixed trajectory: points move on small
+    circles, path parameters and numbers drift (plan L3 §7)."""
+    inputs = copy.deepcopy(doc.get('inputs', {}))
+    for i, (el_id, entry) in enumerate(sorted(inputs.items())):
+        angle = 0.13 * k + i
+        if entry['kind'] == 'point':
+            x, y = entry['value']
+            entry['value'] = [x + 0.4 * math.sin(angle), y + 0.4 * math.cos(angle)]
+        elif entry['kind'] in ('pathParameter', 'number'):
+            entry['value'] = entry['value'] + 0.01 * k
+    return inputs
+
+
+@pytest.mark.parametrize('path', L3_SCENES, ids=lambda p: p.stem)
+def test_l3_scenes_same_values_forward_backward_and_after_reload(path):
+    import json
+    doc = json.loads(path.read_text(encoding='utf-8'))['document']
+    forward = [native.canonical_json(native.evaluate(doc, inputs=_trajectory(doc, k)).elements)
+               for k in range(50)]
+    backward = [native.canonical_json(native.evaluate(doc, inputs=_trajectory(doc, k)).elements)
+                for k in reversed(range(50))]
+    assert forward == backward[::-1]
+    again = native.dump(native.load(native.dumps(native.load(doc))))
+    for k in (0, 17, 49):
+        assert native.canonical_json(native.evaluate(again, inputs=_trajectory(doc, k)).elements) == forward[k]
+
+
+def _chain_of_300():
+    """Three free points and 300 operations: midpoints, segments and
+    altitudes in a chain."""
+    def build(b):
+        b.free('A', 0, 0).free('B', 4, 0).free('C', 1, 3)
+        prev = ('A', 'B', 'C')
+        for i in range(100):
+            a, bb, c = prev
+            b.midpoint(f'M{i}', a, bb)
+            b.segment(f's{i}', bb, c)
+            b.op(f'op_h{i}', 'triangle.altitude', {'vertex': ref(a), 'side': ref(f's{i}')},
+                 [('altitude', f'h{i}', 'segment'), ('foot', f'H{i}', 'point')])
+            prev = (bb, c, f'M{i}')
+    doc = doc_of(build)
+    assert len(doc['operations']) == 303
+    return doc
+
+
+def _p95(fn, runs=20):
+    fn()
+    times = []
+    for _ in range(runs):
+        start = time.perf_counter()
+        fn()
+        times.append(time.perf_counter() - start)
+    times.sort()
+    return times[int(0.95 * runs) - 1]
+
+
+@pytest.mark.slow
+def test_steps_and_describe_on_300_operations_within_budget():
+    """Budgets of plan L3 §6 on a loaded document (5 and 20 ms; measured
+    3.4 and 8.2 ms), with a margin of 2 for a busy machine."""
+    doc = native.load(_chain_of_300())
+    assert _p95(lambda: native.steps(doc)) < 0.005 * 2
+    assert _p95(lambda: native.describe(doc)) < 0.020 * 2

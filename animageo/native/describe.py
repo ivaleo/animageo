@@ -88,6 +88,7 @@ class _Namer:
         self.precision = precision
         appearance = doc.data.get('appearance')
         self.appearance = appearance if isinstance(appearance, dict) else {}
+        self.triangles = None          # {frozenset(vertices): vertices}, built on first use
 
     def _producer(self, el_id):
         el = self.doc.elements[el_id]
@@ -170,21 +171,25 @@ def _triangle_points(op, namer):
     return refs
 
 
-def _triangle_polygon(doc, points):
-    for op_id in sorted(doc.operations):
-        op = doc.operations[op_id]
-        if op['op'] != 'polygon.by_points':
-            continue
-        vertices = list(iter_refs(op['args'].get('vertices') or {}))
-        if len(vertices) == 3 and set(vertices) == set(points):
-            return vertices
-    return None
+def _triangle_polygon(namer, points):
+    """The vertices of the first ``polygon.by_points`` (by operation ID)
+    whose three vertices are ``points``, or ``None``."""
+    if namer.triangles is None:
+        namer.triangles = {}
+        for op_id in sorted(namer.doc.operations):
+            op = namer.doc.operations[op_id]
+            if op['op'] != 'polygon.by_points':
+                continue
+            vertices = list(iter_refs(op['args'].get('vertices') or {}))
+            if len(vertices) == 3:
+                namer.triangles.setdefault(frozenset(vertices), vertices)
+    return namer.triangles.get(frozenset(points))
 
 
 def _when(cond, op, namer, extra) -> bool:
     if cond == 'triangle_vertices':
         points = _triangle_points(op, namer)
-        vertices = _triangle_polygon(namer.doc, points) if points else None
+        vertices = _triangle_polygon(namer, points) if points else None
         if vertices is None:
             return False
         extra['triangle'] = namer.join(vertices)
