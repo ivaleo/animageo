@@ -201,6 +201,13 @@ _DIR_TO_ANCHOR = ['ML', 'BL', 'BC', 'BR', 'MR', 'TR', 'TC', 'TL']
 # off the marker (e.g. a value label during an animation where the angle shrinks).
 ANGLE_LABEL_NARROW_MAX_FACTOR = 2.5
 
+# How far from its object a label may sit and still read as that object's
+# label, in label font sizes, measured from the label's anchor to its centre.
+# A hinted sector that cannot seat the label this close gives way to the
+# neighbouring one, and ``figure_side_priority`` takes a label out of its
+# figure only to a place this close.
+LABEL_FAR_EM = 1.6
+
 
 # ── Canonical position-preference orders (P0-A) ───────────────────────
 # Rank per direction index (lower = more preferred). Direction indices match
@@ -379,6 +386,8 @@ class LabelInfo:
     hint: tuple = None                 # ``label_hint_px`` — desired centre offset
                                        # from the anchor (px, y up); soft, see
                                        # ``_apply_label_hints``
+    font_em: float = 0.0               # label font size in scene MU — the unit of
+                                       # ``LABEL_FAR_EM``; 0 when unknown
 
 
 # ── Geometry helpers ──────────────────────────────────────────────────
@@ -1407,6 +1416,7 @@ def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px
         tex_w, tex_h = _measure_label_bbox(label_text, font_px)
         hw = tex_w / 2
         hh = tex_h / 2
+        font_em = float(fs_px) / ptUnit
 
         # Compute margin and preferred direction per element type
         margin = 0.0
@@ -1471,6 +1481,7 @@ def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px
                 fixed_center=fc,
                 fixed_anchor='MC',
                 hint=hint,
+                font_em=font_em,
             ))
             continue
 
@@ -1482,6 +1493,7 @@ def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px
             margin=margin,
             clear_radius=point_clear_radius,
             hint=hint,
+            font_em=font_em,
         ))
     return labels
 
@@ -3003,6 +3015,39 @@ def _angle_placement_params(scene, elem, lbl, *, gap_arc_px, gap_sides_px,
     )
 
 
+def _pick_seat(seats, *, near, far, hint_inside):
+    """The seat a hinted label takes, out of one candidate per sector.
+
+    ``seats`` lists ``(inside, seat)`` in the order of :func:`_sectors_for_hint`
+    — sectors outside a closed figure first, each group nearest the hint first;
+    ``seat`` is ``(direction, centre, away)`` or ``None`` for a sector the label
+    does not fit into at all. ``away`` is the distance from the anchor.
+
+    Outside the figure comes first. The exception is a hint that points into
+    the figure while no outside sector seats the label ``near``: there is no
+    room outside, so the hint is followed. Within the chosen group the first
+    sector — the hinted one — is kept while it seats the label within ``far``.
+    When it needs more, the next sector, the neighbour nearest the hint, takes
+    over if it does seat the label that close; otherwise the hinted sector
+    stands, however far the label has to go: one sector over is as far as a
+    label moves off its hinted side.
+    """
+    outside = [seat for inside, seat in seats if not inside and seat is not None]
+    within = [seat for inside, seat in seats if inside and seat is not None]
+
+    def _first(group):
+        if not group:
+            return None
+        if group[0][2] > far + 1e-9 and len(group) > 1 and group[1][2] <= far + 1e-9:
+            return group[1]
+        return group[0]
+
+    roomy = any(seat[2] <= near + 1e-9 for seat in outside)
+    if within and (not outside or (hint_inside and not roomy)):
+        return _first(within)
+    return _first(outside)
+
+
 def _apply_label_hints(scene, labels, segments, circles, arc_pts, *, distance,
                        padding, geom_gap, ptUnit, ptUnit_ggb, min_offset_px):
     """Turn every ``label_hint_px`` into the solver's "current position".
@@ -3025,14 +3070,19 @@ def _apply_label_hints(scene, labels, segments, circles, arc_pts, *, distance,
 
     At a point with two or more edges the candidates come from
     :func:`_sectors_for_hint`; for a ``Point`` the sectors inside a closed
-    figure (:func:`_figure_faces`) come after the ones outside. The first
-    sector in which the label fits within the usual push cap wins, so a sector
-    too narrow for the label gives way to the next one instead of sending the
-    label into a free search. Inside the sector the label takes the direction
-    nearest the hint that seats it *near* its point — within its own
-    half-diagonal of the base distance, as far as a label with nothing in its
-    way ever needs — and, when no direction does, the one that seats it
-    nearest.
+    figure (:func:`_figure_faces`) come after the ones outside. Inside a sector
+    the label takes the direction nearest the hint that seats it *near* its
+    point — within its own half-diagonal of the base distance, as far as a
+    label with nothing in its way ever needs — and, when no direction does,
+    the one that seats it nearest.
+
+    The hinted sector is kept while it seats the label *within reach*: no
+    farther than ``LABEL_FAR_EM`` font sizes from the anchor (or than "near",
+    for a label so large that near is farther). A sector that needs more — two
+    edges close together, a line running across the hinted side — gives way to
+    the neighbouring sector nearest the hint, if that one seats the label
+    within reach (:func:`_pick_seat`); otherwise the hinted side stands. The
+    distance is the solver's own, anchor to the centre of the box it checks.
 
     "Outside the figure" holds while there is room outside, i.e. some outside
     sector seats the label near. When the hint points into the figure and
@@ -3079,12 +3129,13 @@ def _apply_label_hints(scene, labels, segments, circles, arc_pts, *, distance,
         hw_p, hh_p = lbl.half_w + padding, lbl.half_h + padding
         max_extra = lbl.clear_radius + max(hw_p, hh_p) + base * 2.0
         near = base + float(np.hypot(hw_p, hh_p))
+        far = max(near, LABEL_FAR_EM * lbl.font_em)
         reach = start + max_extra + hw_p + hh_p + geom_gap + 0.05
         cseg, _dash, ccirc, carc = _cull_obstacles(
             segments, None, circles, arc_pts, anchor, reach)
 
         def _seat(directions):
-            """``(direction, centre, is_near)`` for one sector, or ``None``."""
+            """``(direction, centre, away)`` for one sector, or ``None``."""
             best = None
             for direction in directions:
                 spot, clear = _push_clear_along(
@@ -3094,21 +3145,16 @@ def _apply_label_hints(scene, labels, segments, circles, arc_pts, *, distance,
                     continue
                 away = float(np.linalg.norm(spot - anchor))
                 if away <= near:
-                    return direction, spot, True
+                    return direction, spot, away
                 if best is None or away < best[2] - 1e-9:
                     best = (direction, spot, away)
-            return None if best is None else (best[0], best[1], False)
+            return best
 
-        seats = [(inside, _seat(directions)) for directions, inside in sectors]
-        outside = [seat for inside, seat in seats if not inside and seat is not None]
-        within = [seat for inside, seat in seats if inside and seat is not None]
-        found = outside[0] if outside else None
-        if within:
-            hint_inside = (is_interior is not None and is_interior(
-                atan2(float(unit[1]), float(unit[0]))))
-            roomy = any(is_near for _d, _c, is_near in outside)
-            if found is None or (hint_inside and not roomy):
-                found = within[0]
+        hint_inside = (is_interior is not None and is_interior(
+            atan2(float(unit[1]), float(unit[0]))))
+        found = _pick_seat(
+            [(inside, _seat(directions)) for directions, inside in sectors],
+            near=near, far=far, hint_inside=hint_inside)
         if found is not None:
             chosen, home = found[0], found[1]
         else:

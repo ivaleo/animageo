@@ -22,10 +22,12 @@ import pytest
 
 from animageo.animageo import AnimaGeoScene
 from animageo.label_placement import (
+    LABEL_FAR_EM,
     _collect_labels,
     _point_in_polygon,
     _sectors_for_hint,
     _segment_bbox_overlap,
+    compute_angle_label_center,
     compute_label_layout,
 )
 
@@ -330,6 +332,68 @@ class TestLargeLabels:
         assert _turn(off, 90) < 20
 
 
+# ── a tight hinted sector: the side is kept only while the label stays near ──
+
+def _fork(width_deg):
+    """A vertex with two edges leaving it downwards, ``width_deg`` apart: a
+    sector of that width below the vertex, the rest of the circle above."""
+    lo, hi = math.radians(270 - width_deg / 2), math.radians(270 + width_deg / 2)
+    return (
+        "V = Point(0, 0)\n"
+        f"P = Point({4 * math.cos(lo):.4f}, {4 * math.sin(lo):.4f})\n"
+        f"Q = Point({4 * math.cos(hi):.4f}, {4 * math.sin(hi):.4f})\n"
+        "vp = Segment(V, P)\nvq = Segment(V, Q)\n")
+
+
+class TestTightSector:
+    HINT = [2.0, -14.0]        # into the sector below, a little right of its middle
+    # A bar across the sector below the vertex, 20 px down: too close for the
+    # label to sit above it, so the hinted sector seats the label only past it.
+    BAR = "S = Point(-1.2, -0.4)\nT = Point(1.2, -0.4)\nst = Segment(S, T)\n"
+
+    def test_the_limit_is_a_named_constant(self):
+        assert LABEL_FAR_EM == 1.6
+
+    @CONFIGS
+    def test_roomy_sector_keeps_the_hinted_side(self, cfg):
+        sc = _scene(_fork(100), 'V')
+        sc.element('V').style['font_size_px'] = 16.0
+        sc.element('V').style['label_hint_px'] = self.HINT
+        assert _turn(_offset(sc, cfg, 'V'), 270) < 50
+
+    @CONFIGS
+    def test_tight_sector_gives_way_to_the_neighbour_nearest_the_hint(self, cfg):
+        """Past the bar the label would sit some 1.8–2 font sizes from its
+        vertex. Beyond 1.6 it no longer reads as the vertex's label, so it
+        moves to the neighbouring sector — entered over the edge the hint is
+        nearer to (the right one) — and sits close, clear of everything."""
+        sc = _scene(_fork(100) + self.BAR, 'V')
+        sc.element('V').style['font_size_px'] = 16.0
+        sc.element('V').style['label_hint_px'] = self.HINT
+        off = _offset(sc, cfg, 'V')
+        assert _turn(off, 350) < 30            # right of the right edge (320°)
+        lbl = next(item for item in _collect_labels(sc, 14.0) if item.name == 'V')
+        for a, b in (('V', 'P'), ('V', 'Q'), ('S', 'T')):
+            start = np.array(sc.element(a).data.coords[:2], dtype=float)
+            end = np.array(sc.element(b).data.coords[:2], dtype=float)
+            assert _segment_bbox_overlap(start, end, off[0] / 50.0, off[1] / 50.0,
+                                         lbl.half_w, lbl.half_h) == 0
+
+    @CONFIGS
+    def test_hinted_side_stands_when_the_neighbour_is_no_closer(self, cfg):
+        """Seven edges, every sector as tight as the hinted one: there is no
+        nearer place one sector over, so the side of the hint is kept."""
+        edges = [270 + 360.0 / 7 * (k + 0.5) for k in range(7)]
+        code = "V = Point(0, 0)\n" + "".join(
+            f"P{k} = Point({4 * math.cos(math.radians(a)):.4f}, "
+            f"{4 * math.sin(math.radians(a)):.4f})\ns{k} = Segment(V, P{k})\n"
+            for k, a in enumerate(edges))
+        sc = _scene(code, 'V')
+        sc.element('V').style['font_size_px'] = 16.0
+        sc.element('V').style['label_hint_px'] = [0.0, -14.0]
+        assert _turn(_offset(sc, cfg, 'V'), 270) < 26
+
+
 # ── an angle: inside while it fits ────────────────────────────────────
 
 WIDE ="A = Point(0, 0)\nB = Point(3, 0)\nC = Point(1.5, 2.6)\nang = Angle(B, A, C)\n"
@@ -394,7 +458,6 @@ class TestAngleHint:
         labels = {l.name: l for l in _collect_labels(sc, 14.0)}
         layout = compute_label_layout(sc, cfg=cfg, canonicalize=True)
         a = np.array(layout['A'].offset_ggb) / 50.0
-        from animageo.label_placement import compute_angle_label_center
         ang_c = compute_angle_label_center(sc.element('ang').data,
                                            layout['ang'].angle_params, 50)
         dx, dy = abs(a[0] - ang_c[0]), abs(a[1] - ang_c[1])

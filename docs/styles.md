@@ -721,8 +721,12 @@ What auto-placement does with it:
 - The **distance** is the layout's own (compact, clear of the marker and of
   the lines), so a hint may be rough. Where the hinted direction would put the
   label far from its point — next to a line it has to clear — the label turns
-  toward the middle of the sector, 45° at most. A sector too narrow for the
-  label at all gives way to the next one.
+  toward the middle of the sector, 45° at most.
+- The hinted side is kept while the label can sit **within 1.6 font sizes** of
+  its point there. A sector that needs more — two lines close together, a line
+  across the hinted side — gives way to the neighbouring sector nearest the
+  hint, when the label sits that close there; otherwise the hinted side
+  stands. A sector too narrow for the label at all gives way to the next one.
 - The label is **not locked**: if the hinted place is taken by a line or by
   another label, it moves along, staying as close to the hint as it can.
 - The hint is read on every placement pass and outranks a manual or GeoGebra
