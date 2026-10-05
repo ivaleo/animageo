@@ -294,7 +294,7 @@ without a name on the left gets the first free name for its type, where
 | point | `A … Z`, then `A_1 … Z_1`, `A_2 …` |
 | line, segment, ray, vector, number | `a b c d f g h j k l m n o p q r s t u v w` (no `e i x y z`), then `a_1 …` |
 | circle | the same letters starting from `c` |
-| polygon | `t`, then the lower letters |
+| polygon | `t`, then `t_1`, `t_2 …` |
 | angle | `α β γ δ ε ζ η θ κ λ μ ν ξ π ρ σ τ φ χ ψ ω`, then `α_1 …` |
 | mark, hidden elements | `""` |
 
