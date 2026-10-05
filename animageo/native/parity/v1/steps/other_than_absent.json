@@ -654,6 +654,306 @@
       "9. Строим отрезок AB.",
       "10. Отмечаем вторую точку Z пересечения s и c."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "C": false,
+              "D": false,
+              "K": false,
+              "O": false,
+              "Q": false,
+              "R": false,
+              "c": false,
+              "d": false,
+              "W": false,
+              "l": false,
+              "X": false,
+              "m": false,
+              "Y": false,
+              "s": false,
+              "Z": false
+            }
+          },
+          {
+            "t": 2.6,
+            "visible": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true,
+              "K": true,
+              "O": true,
+              "Q": true,
+              "R": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              },
+              "K": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.2
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.5
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.7999999999999998
+              },
+              "R": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 2.1
+              }
+            }
+          },
+          {
+            "t": 3.7,
+            "visible": {
+              "c": true
+            },
+            "enter": {
+              "c": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.8,
+            "visible": {
+              "d": true
+            },
+            "enter": {
+              "d": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.8999999999999995,
+            "visible": {
+              "W": true
+            },
+            "enter": {
+              "W": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.999999999999999,
+            "visible": {
+              "l": true
+            },
+            "enter": {
+              "l": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 8.099999999999998,
+            "visible": {
+              "X": true
+            },
+            "enter": {
+              "X": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 9.199999999999998,
+            "visible": {
+              "m": true
+            },
+            "enter": {
+              "m": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 10.299999999999997,
+            "visible": {
+              "Y": true
+            },
+            "enter": {
+              "Y": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 11.399999999999997,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 12.499999999999996,
+            "visible": {
+              "Z": true
+            },
+            "enter": {
+              "Z": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 2.6,
+          "elementIds": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "K",
+            "O",
+            "Q",
+            "R"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c",
+          "start": 3.2,
+          "end": 3.7,
+          "elementIds": [
+            "c"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_d",
+          "start": 4.3,
+          "end": 4.8,
+          "elementIds": [
+            "d"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_W",
+          "start": 5.3999999999999995,
+          "end": 5.8999999999999995,
+          "elementIds": [
+            "W"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_l",
+          "start": 6.499999999999999,
+          "end": 6.999999999999999,
+          "elementIds": [
+            "l"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_X",
+          "start": 7.599999999999999,
+          "end": 8.099999999999998,
+          "elementIds": [
+            "X"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_m",
+          "start": 8.699999999999998,
+          "end": 9.199999999999998,
+          "elementIds": [
+            "m"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Y",
+          "start": 9.799999999999997,
+          "end": 10.299999999999997,
+          "elementIds": [
+            "Y"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 10.899999999999997,
+          "end": 11.399999999999997,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Z",
+          "start": 11.999999999999996,
+          "end": 12.499999999999996,
+          "elementIds": [
+            "Z"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 12.499999999999996
+    }
   }
 }

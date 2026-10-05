@@ -419,6 +419,166 @@
       "6. Задаём число n.",
       "7. Строим окружность w с центром O и радиусом 0,8."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "C": false,
+              "D": false,
+              "O": false,
+              "k": false,
+              "w": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "B": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "C": true
+            },
+            "enter": {
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.0,
+            "visible": {
+              "D": true
+            },
+            "enter": {
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.1,
+            "visible": {
+              "O": true
+            },
+            "enter": {
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.199999999999999,
+            "visible": {
+              "k": true
+            },
+            "enter": {
+              "k": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.299999999999999,
+            "visible": {
+              "w": true
+            },
+            "enter": {
+              "w": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "B"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "condition:c1",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "C"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_D",
+          "start": 2.5,
+          "end": 3.0,
+          "elementIds": [
+            "D"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_O",
+          "start": 3.6,
+          "end": 4.1,
+          "elementIds": [
+            "O"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_k",
+          "start": 4.699999999999999,
+          "end": 5.199999999999999,
+          "elementIds": [
+            "k"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w",
+          "start": 5.799999999999999,
+          "end": 6.299999999999999,
+          "elementIds": [
+            "w"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 6.299999999999999
+    }
   }
 }

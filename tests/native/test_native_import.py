@@ -117,21 +117,30 @@ def _resolved_imports(path):
 # (``import animageo.native`` never loads it).
 LAZY_ALLOWED = {
     'animageo/native/kernel/bridge.py': (GEO, 'numpy'),
-    'animageo/native/rendering.py': (CLASSIC, GEO, 'animageo.labels', 'cairosvg'),
+    # 1.9.0a4: video — manim (tempconfig) and render_config inside _render_video
+    'animageo/native/rendering.py': (CLASSIC, GEO, 'animageo.labels', 'cairosvg', BLOCKED, 'animageo.render_config'),
     # backend='tex' loads animageo.ui (manim) on purpose, inside a function
     'animageo/native/labels/layout.py': (GEO, 'animageo.labels', 'animageo.label_placement', 'animageo.style',
                                          'animageo.export_layout', 'animageo.ui', 'numpy'),
 }
 
 
+# Leaf modules of pure math outside animageo.native any native module may
+# import at module level (1.9.0a4: the easing functions, plan L3 §5.2).
+LEAF_ALLOWED = ('animageo.easing',)
+
+
 def test_native_modules_do_not_import_classic_code():
     """Every import under animageo/native stays in animageo.native (or the
-    package root for ``__version__``) or the standard library."""
+    package root for ``__version__``, or a leaf of :data:`LEAF_ALLOWED`) or
+    the standard library."""
     offenders = []
     for path in sorted((REPO_ROOT / 'animageo' / 'native').rglob('*.py')):
         allowed = LAZY_ALLOWED.get(path.relative_to(REPO_ROOT).as_posix(), ())
         for name, lazy in _resolved_imports(path):
             if lazy and any(name == a or name.startswith(a + '.') for a in allowed):
+                continue
+            if name in LEAF_ALLOWED:
                 continue
             top = name.split('.')[0]
             outside_native = top == 'animageo' and name != 'animageo' and not (

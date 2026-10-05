@@ -128,6 +128,74 @@
       "1. Дано: точки O, P.",
       "2. Строим окружность c с центром O, проходящую через P."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "O": false,
+              "P": false,
+              "c": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "O": true,
+              "P": true
+            },
+            "enter": {
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "P": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "c": true
+            },
+            "enter": {
+              "c": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "O",
+            "P"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "c"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 1.9
+    }
   }
 }

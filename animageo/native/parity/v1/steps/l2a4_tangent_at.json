@@ -329,6 +329,174 @@
       "5. Проводим касательную u к c в точке Q.",
       "6. Проводим касательную w к c в точке R."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "O": false,
+              "Q": false,
+              "R": false,
+              "c": false,
+              "T": false,
+              "t": false,
+              "u": false,
+              "w": false
+            }
+          },
+          {
+            "t": 1.1,
+            "visible": {
+              "O": true,
+              "Q": true,
+              "R": true
+            },
+            "enter": {
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "R": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "c": true
+            },
+            "enter": {
+              "c": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.3000000000000003,
+            "visible": {
+              "T": true
+            },
+            "enter": {
+              "T": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.4,
+            "visible": {
+              "t": true
+            },
+            "enter": {
+              "t": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.5,
+            "visible": {
+              "u": true
+            },
+            "enter": {
+              "u": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.6,
+            "visible": {
+              "w": true
+            },
+            "enter": {
+              "w": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.1,
+          "elementIds": [
+            "O",
+            "Q",
+            "R"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c",
+          "start": 1.7000000000000002,
+          "end": 2.2,
+          "elementIds": [
+            "c"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_T",
+          "start": 2.8000000000000003,
+          "end": 3.3000000000000003,
+          "elementIds": [
+            "T"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t",
+          "start": 3.9000000000000004,
+          "end": 4.4,
+          "elementIds": [
+            "t"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_u",
+          "start": 5.0,
+          "end": 5.5,
+          "elementIds": [
+            "u"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w",
+          "start": 6.1,
+          "end": 6.6,
+          "elementIds": [
+            "w"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 6.6
+    }
   }
 }

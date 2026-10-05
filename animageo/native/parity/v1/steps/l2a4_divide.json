@@ -265,6 +265,97 @@
       "4. Задаём число n.",
       "5. Отмечаем точку P, делящую отрезок AQ в отношении m: n."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "Q": false,
+              "H": false,
+              "P": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "H": true
+            },
+            "enter": {
+              "H": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.0,
+            "visible": {
+              "P": true
+            },
+            "enter": {
+              "P": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_H",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "H"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P",
+          "start": 2.5,
+          "end": 3.0,
+          "elementIds": [
+            "P"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 3.0
+    }
   }
 }

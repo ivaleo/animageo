@@ -22,6 +22,9 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     native.print_commands(doc).text          # document → «Команды» (docs/native/commands.md)
     native.steps(doc), native.describe(doc)  # steps and their text (docs/native/steps.md)
     native.has("locus")                      # features by stage (native.FEATURES)
+    native.sample_timeline(doc, timeline, t) # {t, inputs, visible} by ID (docs/native/timeline.md)
+    native.evaluate(doc, t=1.5, timeline=tl) # the document at time t, ev.visible
+    native.steps_timeline(doc)               # StepsTimeline(keyframes, steps, duration)
 
 No module of this package imports manim, ``animageo.animageo`` or
 ``animageo.geo`` at import time; the bridge (``kernel/bridge.py``),
@@ -69,12 +72,13 @@ from .sampling import check_general
 from .conditions.apply import (ConditionResult, Refusal, apply_condition, condition_candidates, release_condition,
                                shape_conditions)
 from .conditions.marks import AutoMarks, add_auto_marks, auto_marks, auto_sources
+from .timeline import StepsTimeline, sample_timeline, steps_timeline, timeline_to_bridge
 
 # Features of this library by stage of plan L3 (``has``): the web asks for a
 # feature instead of comparing versions.
 FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles',
             'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values',
-            'commands.conditions', 'commands.steps')
+            'commands.conditions', 'commands.steps', 'timeline', 'steps_timeline', 'render.t', 'render.video')
 
 
 def has(feature: str) -> bool:
@@ -84,7 +88,10 @@ def has(feature: str) -> bool:
     ``apply_condition``, ``auto_marks``, ``describe.values``; stage 3:
     ``commands.conditions`` — «Команды» with ``Условие``, ``Проверить``,
     check commands and ``Отношение``, ``commands.steps`` — comments as steps
-    and the print order by steps)."""
+    and the print order by steps; stage 4: ``timeline`` — keyframes by ID,
+    ``sample_timeline``, ``evaluate(t, timeline)``, ``timeline_to_bridge``;
+    ``steps_timeline``; ``render.t`` — ``render(t=…, timeline=…)``;
+    ``render.video`` — ``mp4``, ``gif``, ``webm``, ``mov``)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION
@@ -147,20 +154,41 @@ __all__ = [
     'statement_problems',
     'steps',
     'steps_merge',
+    'StepsTimeline',
+    'sample_timeline',
+    'steps_timeline',
+    'timeline_to_bridge',
     'steps_split',
     'validate',
 ]
 
 
-def evaluate(doc, *, inputs=None) -> Evaluated:
+def evaluate(doc, *, inputs=None, t=None, timeline=None) -> Evaluated:
     """Values, states and reasons of every element of ``doc``.
 
     ``doc`` is a :class:`NativeDocument` or anything :func:`load` reads;
     ``inputs`` (``{elementId: {"kind": "point", "value": [x, y]}}`` or
     ``{"kind": "pathParameter", "value": t}``) overrides the document's input
     values of free elements.
+
+    1.9.0a4: with ``timeline`` (keyframes by element ID) and ``t`` — the
+    document at time ``t``: ``evaluate(doc, inputs=sample["inputs"])`` of
+    :func:`sample_timeline` (``inputs`` on top), plus ``ev.t`` and
+    ``ev.visible`` (``{id: bool}``, carried forward). ``t`` without
+    ``timeline`` (or the reverse) is a ``ValueError``.
     """
-    return _evaluate(doc, inputs=inputs)
+    if t is None and timeline is None:
+        return _evaluate(doc, inputs=inputs)
+    if t is None or timeline is None:
+        raise ValueError('evaluate: t and timeline go together')
+    doc = as_document(doc)
+    sample = sample_timeline(doc, timeline, t)
+    merged = dict(sample['inputs'])
+    merged.update(inputs or {})
+    ev = _evaluate(doc, inputs=merged)
+    ev.t = sample['t']
+    ev.visible = sample['visible']
+    return ev
 
 
 def check(doc, checks=None, *, inputs=None, relations=None, trials=0, seed=None) -> CheckReport:

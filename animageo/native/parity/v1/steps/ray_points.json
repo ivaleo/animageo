@@ -317,6 +317,159 @@
       "4. Отмечаем точку X пересечения r и m.",
       "5. Отмечаем точку Y пересечения m и r."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "O": false,
+              "P": false,
+              "m": false,
+              "r": false,
+              "X": false,
+              "Y": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "A": true,
+              "B": true,
+              "O": true,
+              "P": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "P": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 2.5,
+            "visible": {
+              "m": true
+            },
+            "enter": {
+              "m": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "r": true
+            },
+            "enter": {
+              "r": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.7,
+            "visible": {
+              "X": true
+            },
+            "enter": {
+              "X": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.8,
+            "visible": {
+              "Y": true
+            },
+            "enter": {
+              "Y": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "A",
+            "B",
+            "O",
+            "P"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_m",
+          "start": 2.0,
+          "end": 2.5,
+          "elementIds": [
+            "m"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_r",
+          "start": 3.1,
+          "end": 3.6,
+          "elementIds": [
+            "r"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_X",
+          "start": 4.2,
+          "end": 4.7,
+          "elementIds": [
+            "X"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Y",
+          "start": 5.3,
+          "end": 5.8,
+          "elementIds": [
+            "Y"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 5.8
+    }
   }
 }

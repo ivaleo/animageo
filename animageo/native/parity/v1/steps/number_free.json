@@ -299,6 +299,89 @@
       "4. Строим окружность c3 с центром O и радиусом n3.",
       "5. Задаём число n4."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "O": false,
+              "c2": false,
+              "c3": false
+            }
+          },
+          {
+            "t": 0.5,
+            "visible": {
+              "O": true
+            },
+            "enter": {
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              }
+            }
+          },
+          {
+            "t": 1.6,
+            "visible": {
+              "c2": true
+            },
+            "enter": {
+              "c2": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 2.7,
+            "visible": {
+              "c3": true
+            },
+            "enter": {
+              "c3": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.5,
+          "elementIds": [
+            "O"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c2",
+          "start": 1.1,
+          "end": 1.6,
+          "elementIds": [
+            "c2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c3",
+          "start": 2.2,
+          "end": 2.7,
+          "elementIds": [
+            "c3"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 2.7
+    }
   }
 }

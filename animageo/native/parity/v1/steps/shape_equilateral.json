@@ -587,6 +587,143 @@
       "5. Отмечаем равные отрезки AB и AC.",
       "6. Отмечаем равные отрезки AB и BC."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "C": false,
+              "T": false,
+              "mark_c1": false,
+              "mark_c2": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "B": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "C": true
+            },
+            "enter": {
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.0,
+            "visible": {
+              "T": true
+            },
+            "enter": {
+              "T": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.1,
+            "visible": {
+              "mark_c1": true
+            },
+            "enter": {
+              "mark_c1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.199999999999999,
+            "visible": {
+              "mark_c2": true
+            },
+            "enter": {
+              "mark_c2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "B"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "condition:c2",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "C"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_T",
+          "start": 2.5,
+          "end": 3.0,
+          "elementIds": [
+            "T"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_mark_c1",
+          "start": 3.6,
+          "end": 4.1,
+          "elementIds": [
+            "mark_c1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_mark_c2",
+          "start": 4.699999999999999,
+          "end": 5.199999999999999,
+          "elementIds": [
+            "mark_c2"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 5.199999999999999
+    }
   }
 }

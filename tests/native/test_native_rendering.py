@@ -193,10 +193,12 @@ def test_undrawn_elements_have_no_label():
 
 class TestArguments:
     @pytest.mark.parametrize('kwargs, error', [
-        ({'fmt': 'mp4'}, NotImplementedError),
-        ({'fmt': 'gif'}, NotImplementedError),
-        ({'t': 1.0}, NotImplementedError),
-        ({'timeline': {}}, NotImplementedError),
+        # 1.9.0a4: a video needs a timeline, t and timeline go together
+        ({'fmt': 'mp4'}, ValueError),
+        ({'fmt': 'gif'}, ValueError),
+        ({'t': 1.0}, ValueError),
+        ({'timeline': {}}, ValueError),
+        ({'fmt': 'avi'}, NotImplementedError),
         ({'export_layout': {'export': {}, 'size': [1, 1]}}, ValueError),
         ({'export_layout': [1]}, ValueError),
         ({'inputs': {'A': point_input('x', 0)}}, ValueError),

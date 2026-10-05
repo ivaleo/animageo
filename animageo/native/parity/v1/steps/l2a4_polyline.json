@@ -253,6 +253,113 @@
       "2. Строим ломаную AD.",
       "3. Строим ломаную AQCD."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "C": false,
+              "D": false,
+              "Q": false,
+              "v": false,
+              "w": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "A": true,
+              "C": true,
+              "D": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 2.5,
+            "visible": {
+              "v": true
+            },
+            "enter": {
+              "v": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "w": true
+            },
+            "enter": {
+              "w": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "A",
+            "C",
+            "D",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_v",
+          "start": 2.0,
+          "end": 2.5,
+          "elementIds": [
+            "v"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w",
+          "start": 3.1,
+          "end": 3.6,
+          "elementIds": [
+            "w"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 3.6
+    }
   }
 }

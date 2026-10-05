@@ -1,0 +1,8956 @@
+{
+ "format": "animageo-timeline/v1",
+ "id": "timeline_paths",
+ "registry": "1.5",
+ "generatedBy": "animageo 1.9.0a3",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "timeline_paths",
+  "operationRegistryVersion": "1.5",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_D": {
+    "id": "op_D",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "D"
+     }
+    ]
+   },
+   "op_s": {
+    "id": "op_s",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "s"
+     }
+    ]
+   },
+   "op_r": {
+    "id": "op_r",
+    "op": "ray.by_points",
+    "args": {
+     "origin": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "C"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "ray",
+      "elementId": "r"
+     }
+    ]
+   },
+   "op_l": {
+    "id": "op_l",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "B"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "C"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "l"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "circle.center_point",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "circle",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_q": {
+    "id": "op_q",
+    "op": "polygon.by_points",
+    "args": {
+     "vertices": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       {
+        "kind": "ref",
+        "elementId": "D"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "polygon",
+      "elementId": "q"
+     }
+    ]
+   },
+   "op_ar": {
+    "id": "op_ar",
+    "op": "arc.center_two_points",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "a": {
+      "kind": "ref",
+      "elementId": "B"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "C"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "arc",
+      "elementId": "ar"
+     }
+    ]
+   },
+   "op_sc": {
+    "id": "op_sc",
+    "op": "sector.center_two_points",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "D"
+     },
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "C"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "sector",
+      "elementId": "sc"
+     }
+    ]
+   },
+   "op_pl": {
+    "id": "op_pl",
+    "op": "polyline.by_points",
+    "args": {
+     "points": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "polyline",
+      "elementId": "pl"
+     }
+    ]
+   },
+   "op_Ps": {
+    "id": "op_Ps",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "s"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Ps"
+     }
+    ]
+   },
+   "op_Pr": {
+    "id": "op_Pr",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "r"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Pr"
+     }
+    ]
+   },
+   "op_Pl": {
+    "id": "op_Pl",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "l"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Pl"
+     }
+    ]
+   },
+   "op_Pc": {
+    "id": "op_Pc",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "c"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Pc"
+     }
+    ]
+   },
+   "op_Pq": {
+    "id": "op_Pq",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "q"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Pq"
+     }
+    ]
+   },
+   "op_Pa": {
+    "id": "op_Pa",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "ar"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Pa"
+     }
+    ]
+   },
+   "op_Psc": {
+    "id": "op_Psc",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "sc"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Psc"
+     }
+    ]
+   },
+   "op_Ppl": {
+    "id": "op_Ppl",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "pl"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Ppl"
+     }
+    ]
+   },
+   "op_k": {
+    "id": "op_k",
+    "op": "number.free",
+    "args": {
+     "min": {
+      "kind": "number",
+      "value": 0
+     },
+     "max": {
+      "kind": "number",
+      "value": 5
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "k"
+     }
+    ]
+   },
+   "op_h": {
+    "id": "op_h",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "C"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "D"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "h"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "D": {
+    "id": "D",
+    "type": "point",
+    "displayName": "D",
+    "producer": {
+     "operationId": "op_D",
+     "slot": "point"
+    }
+   },
+   "s": {
+    "id": "s",
+    "type": "segment",
+    "displayName": "s",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "segment"
+    }
+   },
+   "r": {
+    "id": "r",
+    "type": "ray",
+    "displayName": "r",
+    "producer": {
+     "operationId": "op_r",
+     "slot": "ray"
+    }
+   },
+   "l": {
+    "id": "l",
+    "type": "line",
+    "displayName": "l",
+    "producer": {
+     "operationId": "op_l",
+     "slot": "line"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "circle",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "circle"
+    }
+   },
+   "q": {
+    "id": "q",
+    "type": "polygon",
+    "displayName": "q",
+    "producer": {
+     "operationId": "op_q",
+     "slot": "polygon"
+    }
+   },
+   "ar": {
+    "id": "ar",
+    "type": "arc",
+    "displayName": "ar",
+    "producer": {
+     "operationId": "op_ar",
+     "slot": "arc"
+    }
+   },
+   "sc": {
+    "id": "sc",
+    "type": "sector",
+    "displayName": "sc",
+    "producer": {
+     "operationId": "op_sc",
+     "slot": "sector"
+    }
+   },
+   "pl": {
+    "id": "pl",
+    "type": "polyline",
+    "displayName": "pl",
+    "producer": {
+     "operationId": "op_pl",
+     "slot": "polyline"
+    }
+   },
+   "Ps": {
+    "id": "Ps",
+    "type": "point",
+    "displayName": "Ps",
+    "producer": {
+     "operationId": "op_Ps",
+     "slot": "point"
+    }
+   },
+   "Pr": {
+    "id": "Pr",
+    "type": "point",
+    "displayName": "Pr",
+    "producer": {
+     "operationId": "op_Pr",
+     "slot": "point"
+    }
+   },
+   "Pl": {
+    "id": "Pl",
+    "type": "point",
+    "displayName": "Pl",
+    "producer": {
+     "operationId": "op_Pl",
+     "slot": "point"
+    }
+   },
+   "Pc": {
+    "id": "Pc",
+    "type": "point",
+    "displayName": "Pc",
+    "producer": {
+     "operationId": "op_Pc",
+     "slot": "point"
+    }
+   },
+   "Pq": {
+    "id": "Pq",
+    "type": "point",
+    "displayName": "Pq",
+    "producer": {
+     "operationId": "op_Pq",
+     "slot": "point"
+    }
+   },
+   "Pa": {
+    "id": "Pa",
+    "type": "point",
+    "displayName": "Pa",
+    "producer": {
+     "operationId": "op_Pa",
+     "slot": "point"
+    }
+   },
+   "Psc": {
+    "id": "Psc",
+    "type": "point",
+    "displayName": "Psc",
+    "producer": {
+     "operationId": "op_Psc",
+     "slot": "point"
+    }
+   },
+   "Ppl": {
+    "id": "Ppl",
+    "type": "point",
+    "displayName": "Ppl",
+    "producer": {
+     "operationId": "op_Ppl",
+     "slot": "point"
+    }
+   },
+   "k": {
+    "id": "k",
+    "type": "number",
+    "displayName": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "number"
+    }
+   },
+   "h": {
+    "id": "h",
+    "type": "segment",
+    "displayName": "h",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "segment"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0,
+     0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     3,
+     0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     1,
+     2
+    ]
+   },
+   "D": {
+    "kind": "point",
+    "value": [
+     -2,
+     1
+    ]
+   },
+   "Ps": {
+    "kind": "pathParameter",
+    "value": 0.25
+   },
+   "Pr": {
+    "kind": "pathParameter",
+    "value": 0.5
+   },
+   "Pl": {
+    "kind": "pathParameter",
+    "value": 0.0
+   },
+   "Pc": {
+    "kind": "pathParameter",
+    "value": 0.5
+   },
+   "Pq": {
+    "kind": "pathParameter",
+    "value": 3.5
+   },
+   "Pa": {
+    "kind": "pathParameter",
+    "value": 0.2
+   },
+   "Psc": {
+    "kind": "pathParameter",
+    "value": 2.5
+   },
+   "Ppl": {
+    "kind": "pathParameter",
+    "value": 0.5
+   },
+   "k": {
+    "kind": "number",
+    "value": 1.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -6,
+    -4,
+    6,
+    4
+   ]
+  },
+  "appearance": {
+   "h": {
+    "visible": false
+   }
+  }
+ },
+ "steps": {
+  "keyframes": {
+   "version": 2,
+   "keyframes": [
+    {
+     "t": 0.0,
+     "visible": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "ar": false,
+      "Pa": false,
+      "c": false,
+      "Pc": false,
+      "l": false,
+      "Pl": false,
+      "pl": false,
+      "Ppl": false,
+      "q": false,
+      "Pq": false,
+      "r": false,
+      "Pr": false,
+      "s": false,
+      "Ps": false,
+      "sc": false,
+      "Psc": false
+     }
+    },
+    {
+     "t": 1.4,
+     "visible": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true
+     },
+     "enter": {
+      "A": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.0
+      },
+      "B": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.3
+      },
+      "C": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      },
+      "D": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.8999999999999999
+      }
+     }
+    },
+    {
+     "t": 2.5,
+     "visible": {
+      "ar": true
+     },
+     "enter": {
+      "ar": {
+       "effect": "create",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 3.6,
+     "visible": {
+      "Pa": true
+     },
+     "enter": {
+      "Pa": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 4.7,
+     "visible": {
+      "c": true
+     },
+     "enter": {
+      "c": {
+       "effect": "create",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 5.8,
+     "visible": {
+      "Pc": true
+     },
+     "enter": {
+      "Pc": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 6.8999999999999995,
+     "visible": {
+      "l": true
+     },
+     "enter": {
+      "l": {
+       "effect": "create",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 7.999999999999999,
+     "visible": {
+      "Pl": true
+     },
+     "enter": {
+      "Pl": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 9.1,
+     "visible": {
+      "pl": true
+     },
+     "enter": {
+      "pl": {
+       "effect": "create",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 10.2,
+     "visible": {
+      "Ppl": true
+     },
+     "enter": {
+      "Ppl": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 11.299999999999999,
+     "visible": {
+      "q": true
+     },
+     "enter": {
+      "q": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 12.399999999999999,
+     "visible": {
+      "Pq": true
+     },
+     "enter": {
+      "Pq": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 13.499999999999998,
+     "visible": {
+      "r": true
+     },
+     "enter": {
+      "r": {
+       "effect": "create",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 14.599999999999998,
+     "visible": {
+      "Pr": true
+     },
+     "enter": {
+      "Pr": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 15.699999999999998,
+     "visible": {
+      "s": true
+     },
+     "enter": {
+      "s": {
+       "effect": "create",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 16.799999999999997,
+     "visible": {
+      "Ps": true
+     },
+     "enter": {
+      "Ps": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 17.9,
+     "visible": {
+      "sc": true
+     },
+     "enter": {
+      "sc": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 19.0,
+     "visible": {
+      "Psc": true
+     },
+     "enter": {
+      "Psc": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    }
+   ]
+  },
+  "steps": [
+   {
+    "stepId": "given",
+    "start": 0.0,
+    "end": 1.4,
+    "elementIds": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_ar",
+    "start": 2.0,
+    "end": 2.5,
+    "elementIds": [
+     "ar"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_Pa",
+    "start": 3.1,
+    "end": 3.6,
+    "elementIds": [
+     "Pa"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_c",
+    "start": 4.2,
+    "end": 4.7,
+    "elementIds": [
+     "c"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_Pc",
+    "start": 5.3,
+    "end": 5.8,
+    "elementIds": [
+     "Pc"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_l",
+    "start": 6.3999999999999995,
+    "end": 6.8999999999999995,
+    "elementIds": [
+     "l"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_Pl",
+    "start": 7.499999999999999,
+    "end": 7.999999999999999,
+    "elementIds": [
+     "Pl"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_pl",
+    "start": 8.6,
+    "end": 9.1,
+    "elementIds": [
+     "pl"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_Ppl",
+    "start": 9.7,
+    "end": 10.2,
+    "elementIds": [
+     "Ppl"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_q",
+    "start": 10.799999999999999,
+    "end": 11.299999999999999,
+    "elementIds": [
+     "q"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_Pq",
+    "start": 11.899999999999999,
+    "end": 12.399999999999999,
+    "elementIds": [
+     "Pq"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_r",
+    "start": 12.999999999999998,
+    "end": 13.499999999999998,
+    "elementIds": [
+     "r"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_Pr",
+    "start": 14.099999999999998,
+    "end": 14.599999999999998,
+    "elementIds": [
+     "Pr"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_s",
+    "start": 15.199999999999998,
+    "end": 15.699999999999998,
+    "elementIds": [
+     "s"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_Ps",
+    "start": 16.299999999999997,
+    "end": 16.799999999999997,
+    "elementIds": [
+     "Ps"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_sc",
+    "start": 17.4,
+    "end": 17.9,
+    "elementIds": [
+     "sc"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "op:op_Psc",
+    "start": 18.5,
+    "end": 19.0,
+    "elementIds": [
+     "Psc"
+    ],
+    "text": null
+   }
+  ],
+  "duration": 19.0
+ },
+ "cases": [
+  {
+   "name": "point_linear",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "A": [
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "A": [
+        2,
+        -1
+       ]
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.25,
+         -0.125
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.5,
+         -0.25
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         1.0,
+         -0.5
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         1.5,
+         -0.75
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_A": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_A": [
+         2.0,
+         -1.0
+        ]
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "point_smooth",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "A": [
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "A": [
+        2,
+        -1
+       ]
+      },
+      "easing": "smooth"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0859375,
+         -0.04296875
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.3125,
+         -0.15625
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         1.0,
+         -0.5
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         1.6875,
+         -0.84375
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_A": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_A": [
+         2.0,
+         -1.0
+        ]
+       },
+       "easing": "smooth"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "point_in_out",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "A": [
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "A": [
+        2,
+        -1
+       ]
+      },
+      "easing": "in_out"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0625,
+         -0.03125
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.25,
+         -0.125
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         1.0,
+         -0.5
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         1.75,
+         -0.875
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_A": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_A": [
+         2.0,
+         -1.0
+        ]
+       },
+       "easing": "in_out"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "point_ease_out_back",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "A": [
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "A": [
+        2,
+        -1
+       ]
+      },
+      "easing": "ease_out_back"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         4.440892098500626e-16,
+         -2.220446049250313e-16
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.9858492968750001,
+         -0.49292464843750006
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         1.6348193750000004,
+         -0.8174096875000002
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.175395,
+         -1.0876975
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.128273125,
+         -1.0641365625
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_A": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_A": [
+         2.0,
+         -1.0
+        ]
+       },
+       "easing": "ease_out_back"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "point_ease_out_bounce",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "A": [
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "A": [
+        2,
+        -1
+       ]
+      },
+      "easing": "ease_out_bounce"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.236328125,
+         -0.1181640625
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.9453125,
+         -0.47265625
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         1.53125,
+         -0.765625
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         1.9453125,
+         -0.97265625
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_A": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_A": [
+         2.0,
+         -1.0
+        ]
+       },
+       "easing": "ease_out_bounce"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "point_rush_into",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "A": [
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "A": [
+        2,
+        -1
+       ]
+      },
+      "easing": "rush_into"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.023266640021955755,
+         -0.011633320010977877
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.06602182439987843,
+         -0.033010912199939214
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.2804148661804326,
+         -0.1402074330902163
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.875751702791034,
+         -0.437875851395517
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         2.0,
+         -1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_A": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_A": [
+         2.0,
+         -1.0
+        ]
+       },
+       "easing": "rush_into"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "circle_short",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pc": {
+        "tparam": 0.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pc": {
+        "tparam": 5.5,
+        "direction": "short"
+       }
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.3396018366025517
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.17920367320510344
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": -0.14159265358979312
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": -0.4623889803846897
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": -0.7831853071795862
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": -0.7831853071795862
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pc": {
+         "tparam": 0.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pc": {
+         "tparam": -0.7831853071795862,
+         "direction": "cw"
+        }
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "circle_long",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pc": {
+        "tparam": 0.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pc": {
+        "tparam": 5.5,
+        "direction": "long"
+       }
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 1.125
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 1.75
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 3.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 4.25
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 5.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 5.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pc": {
+         "tparam": 0.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pc": {
+         "tparam": 5.5,
+         "direction": "ccw"
+        }
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "circle_cw",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pc": {
+        "tparam": 0.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pc": {
+        "tparam": 5.5,
+        "direction": "cw"
+       }
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.3396018366025517
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.17920367320510344
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": -0.14159265358979312
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": -0.4623889803846897
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": -0.7831853071795862
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": -0.7831853071795862
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pc": {
+         "tparam": 0.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pc": {
+         "tparam": -0.7831853071795862,
+         "direction": "cw"
+        }
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "circle_ccw",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pc": {
+        "tparam": 0.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pc": {
+        "tparam": 5.5,
+        "direction": "ccw"
+       }
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 1.125
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 1.75
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 3.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 4.25
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 5.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 5.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pc": {
+         "tparam": 0.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pc": {
+         "tparam": 5.5,
+         "direction": "ccw"
+        }
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "polygon_short",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pq": {
+        "tparam": 3.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pq": {
+        "tparam": 0.5,
+        "direction": "short"
+       }
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 3.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 3.625
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 3.75
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 4.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 4.25
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 4.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 4.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pq": {
+         "tparam": 3.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pq": {
+         "tparam": 4.5,
+         "direction": "ccw"
+        }
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "polygon_long",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pq": {
+        "tparam": 3.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pq": {
+        "tparam": 0.5,
+        "direction": "long"
+       }
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 3.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 3.125
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 2.75
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 2.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 1.25
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pq": {
+         "tparam": 3.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pq": {
+         "tparam": 0.5,
+         "direction": "cw"
+        }
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "polygon_cw",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pq": {
+        "tparam": 3.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pq": {
+        "tparam": 0.5,
+        "direction": "cw"
+       }
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 3.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 3.125
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 2.75
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 2.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 1.25
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pq": {
+         "tparam": 3.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pq": {
+         "tparam": 0.5,
+         "direction": "cw"
+        }
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "polygon_ccw",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pq": {
+        "tparam": 3.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pq": {
+        "tparam": 0.5,
+        "direction": "ccw"
+       }
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 3.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 3.625
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 3.75
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 4.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 4.25
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 4.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pq": {
+        "kind": "pathParameter",
+        "value": 4.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pq": {
+         "tparam": 3.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pq": {
+         "tparam": 4.5,
+         "direction": "ccw"
+        }
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "sector_short",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Psc": {
+        "tparam": 2.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Psc": {
+        "tparam": 0.5,
+        "direction": "short"
+       }
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 2.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 2.625
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 2.75
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 3.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 3.25
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 3.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 3.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Psc": {
+         "tparam": 2.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Psc": {
+         "tparam": 3.5,
+         "direction": "ccw"
+        }
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "sector_long",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Psc": {
+        "tparam": 2.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Psc": {
+        "tparam": 0.5,
+        "direction": "long"
+       }
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 2.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 2.25
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 2.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 1.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 1.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Psc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Psc": {
+         "tparam": 2.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Psc": {
+         "tparam": 0.5,
+         "direction": "cw"
+        }
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "linear_path_Ps",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Ps": {
+        "tparam": 0.0
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Ps": {
+        "tparam": 1.0,
+        "direction": "ccw"
+       }
+      },
+      "easing": "smooth"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Ps": {
+        "kind": "pathParameter",
+        "value": 0.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Ps": {
+        "kind": "pathParameter",
+        "value": 0.04296875
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Ps": {
+        "kind": "pathParameter",
+        "value": 0.15625
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Ps": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Ps": {
+        "kind": "pathParameter",
+        "value": 0.84375
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Ps": {
+        "kind": "pathParameter",
+        "value": 1.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Ps": {
+        "kind": "pathParameter",
+        "value": 1.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Ps": {
+         "tparam": 0.0,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Ps": {
+         "tparam": 1.0,
+         "direction": "ccw"
+        }
+       },
+       "easing": "smooth"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "linear_path_Pr",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pr": {
+        "tparam": 0.5
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pr": {
+        "tparam": 3.0,
+        "direction": "ccw"
+       }
+      },
+      "easing": "smooth"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pr": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pr": {
+        "kind": "pathParameter",
+        "value": 0.607421875
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pr": {
+        "kind": "pathParameter",
+        "value": 0.890625
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pr": {
+        "kind": "pathParameter",
+        "value": 1.75
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pr": {
+        "kind": "pathParameter",
+        "value": 2.609375
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pr": {
+        "kind": "pathParameter",
+        "value": 3.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pr": {
+        "kind": "pathParameter",
+        "value": 3.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pr": {
+         "tparam": 0.5,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pr": {
+         "tparam": 3.0,
+         "direction": "ccw"
+        }
+       },
+       "easing": "smooth"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "linear_path_Pl",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pl": {
+        "tparam": -1.0
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pl": {
+        "tparam": 2.0,
+        "direction": "ccw"
+       }
+      },
+      "easing": "smooth"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pl": {
+        "kind": "pathParameter",
+        "value": -1.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pl": {
+        "kind": "pathParameter",
+        "value": -0.87109375
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pl": {
+        "kind": "pathParameter",
+        "value": -0.53125
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pl": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pl": {
+        "kind": "pathParameter",
+        "value": 1.53125
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pl": {
+        "kind": "pathParameter",
+        "value": 2.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pl": {
+        "kind": "pathParameter",
+        "value": 2.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pl": {
+         "tparam": -1.0,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pl": {
+         "tparam": 2.0,
+         "direction": "ccw"
+        }
+       },
+       "easing": "smooth"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "linear_path_Pa",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Pa": {
+        "tparam": 0.0
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Pa": {
+        "tparam": 1.0,
+        "direction": "ccw"
+       }
+      },
+      "easing": "smooth"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Pa": {
+        "kind": "pathParameter",
+        "value": 0.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Pa": {
+        "kind": "pathParameter",
+        "value": 0.04296875
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Pa": {
+        "kind": "pathParameter",
+        "value": 0.15625
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Pa": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Pa": {
+        "kind": "pathParameter",
+        "value": 0.84375
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pa": {
+        "kind": "pathParameter",
+        "value": 1.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Pa": {
+        "kind": "pathParameter",
+        "value": 1.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Pa": {
+         "tparam": 0.0,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Pa": {
+         "tparam": 1.0,
+         "direction": "ccw"
+        }
+       },
+       "easing": "smooth"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "linear_path_Ppl",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "Ppl": {
+        "tparam": 0.0
+       }
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "Ppl": {
+        "tparam": 2.0,
+        "direction": "ccw"
+       }
+      },
+      "easing": "smooth"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "Ppl": {
+        "kind": "pathParameter",
+        "value": 0.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "Ppl": {
+        "kind": "pathParameter",
+        "value": 0.0859375
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "Ppl": {
+        "kind": "pathParameter",
+        "value": 0.3125
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "Ppl": {
+        "kind": "pathParameter",
+        "value": 1.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "Ppl": {
+        "kind": "pathParameter",
+        "value": 1.6875
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Ppl": {
+        "kind": "pathParameter",
+        "value": 2.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "Ppl": {
+        "kind": "pathParameter",
+        "value": 2.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_Ppl": {
+         "tparam": 0.0,
+         "direction": "short"
+        }
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_Ppl": {
+         "tparam": 2.0,
+         "direction": "ccw"
+        }
+       },
+       "easing": "smooth"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "number",
+   "timeline": {
+    "version": 2,
+    "defaults": {
+     "easing": "linear"
+    },
+    "keyframes": [
+     {
+      "t": 0
+     },
+     {
+      "t": 1,
+      "values": {
+       "k": 3
+      }
+     },
+     {
+      "t": 3,
+      "values": {
+       "k": 0.5
+      },
+      "easing": "in"
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "k": {
+        "kind": "number",
+        "value": 1.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "k": {
+        "kind": "number",
+        "value": 1.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "k": {
+        "kind": "number",
+        "value": 2.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "k": {
+        "kind": "number",
+        "value": 3.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "k": {
+        "kind": "number",
+        "value": 2.84375
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "k": {
+        "kind": "number",
+        "value": 2.375
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 3.0,
+      "inputs": {
+       "k": {
+        "kind": "number",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0
+      },
+      {
+       "t": 1.0,
+       "values": {
+        "e_k": 3.0
+       }
+      },
+      {
+       "t": 3.0,
+       "values": {
+        "e_k": 0.5
+       },
+       "easing": "in"
+      }
+     ],
+     "defaults": {
+      "easing": "linear"
+     }
+    }
+   }
+  },
+  {
+   "name": "carry_forward_values",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "A": [
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "t": 1,
+      "values": {
+       "B": [
+        4,
+        1
+       ]
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "C": [
+        1,
+        3
+       ]
+      }
+     },
+     {
+      "t": 3,
+      "values": {
+       "A": [
+        -1,
+        -1
+       ],
+       "Pc": {
+        "tparam": 1.0
+       }
+      }
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       },
+       "B": {
+        "kind": "point",
+        "value": [
+         3.0,
+         0.0
+        ]
+       },
+       "C": {
+        "kind": "point",
+        "value": [
+         1.0,
+         2.0
+        ]
+       },
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       },
+       "B": {
+        "kind": "point",
+        "value": [
+         3.15625,
+         0.15625
+        ]
+       },
+       "C": {
+        "kind": "point",
+        "value": [
+         1.0,
+         2.0
+        ]
+       },
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       },
+       "B": {
+        "kind": "point",
+        "value": [
+         3.5,
+         0.5
+        ]
+       },
+       "C": {
+        "kind": "point",
+        "value": [
+         1.0,
+         2.0
+        ]
+       },
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       },
+       "B": {
+        "kind": "point",
+        "value": [
+         4.0,
+         1.0
+        ]
+       },
+       "C": {
+        "kind": "point",
+        "value": [
+         1.0,
+         2.0
+        ]
+       },
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       },
+       "B": {
+        "kind": "point",
+        "value": [
+         4.0,
+         1.0
+        ]
+       },
+       "C": {
+        "kind": "point",
+        "value": [
+         1.0,
+         2.5
+        ]
+       },
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       },
+       "B": {
+        "kind": "point",
+        "value": [
+         4.0,
+         1.0
+        ]
+       },
+       "C": {
+        "kind": "point",
+        "value": [
+         1.0,
+         3.0
+        ]
+       },
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 0.5
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 3.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         -1.0,
+         -1.0
+        ]
+       },
+       "B": {
+        "kind": "point",
+        "value": [
+         4.0,
+         1.0
+        ]
+       },
+       "C": {
+        "kind": "point",
+        "value": [
+         1.0,
+         3.0
+        ]
+       },
+       "Pc": {
+        "kind": "pathParameter",
+        "value": 1.0
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "e_A": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      {
+       "t": 1.0,
+       "values": {
+        "e_B": [
+         4.0,
+         1.0
+        ]
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_C": [
+         1.0,
+         3.0
+        ]
+       }
+      },
+      {
+       "t": 3.0,
+       "values": {
+        "e_A": [
+         -1.0,
+         -1.0
+        ],
+        "e_Pc": {
+         "tparam": 1.0,
+         "direction": "ccw"
+        }
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "visibility_carry_forward",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "visible": {
+       "s": false,
+       "c": false
+      },
+      "hide": [
+       "q"
+      ]
+     },
+     {
+      "t": 1,
+      "show": [
+       "s"
+      ],
+      "visible": {
+       "h": true
+      }
+     },
+     {
+      "t": 2,
+      "visible": {
+       "c": true,
+       "s": false
+      },
+      "enter": {
+       "c": {
+        "effect": "create",
+        "duration": 0.5,
+        "at": 0.2
+       }
+      }
+     },
+     {
+      "t": 3,
+      "hide": [
+       "h"
+      ],
+      "exit": {
+       "h": "fade"
+      },
+      "visible": {
+       "gone": true
+      }
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": false,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": false,
+       "r": true,
+       "s": false,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.25,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": false,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": false,
+       "r": true,
+       "s": false,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": false,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": false,
+       "r": true,
+       "s": false,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": false,
+       "h": true,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": false,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": false,
+       "h": true,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": false,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": true,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": false,
+       "r": true,
+       "s": false,
+       "sc": true
+      }
+     },
+     {
+      "t": 3.0,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": false,
+       "r": true,
+       "s": false,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "visible": {
+        "e_c": false,
+        "e_q": false,
+        "e_s": false
+       }
+      },
+      {
+       "t": 1.0,
+       "visible": {
+        "e_h": true,
+        "e_s": true
+       }
+      },
+      {
+       "t": 2.0,
+       "visible": {
+        "e_c": true,
+        "e_s": false
+       },
+       "enter": {
+        "e_c": {
+         "effect": "create",
+         "duration": 0.5,
+         "at": 0.2
+        }
+       }
+      },
+      {
+       "t": 3.0,
+       "visible": {
+        "e_h": false
+       },
+       "exit": {
+        "e_h": "fade"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "clamped_time",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 1,
+      "values": {
+       "B": [
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "t": 2,
+      "values": {
+       "B": [
+        3,
+        2
+       ]
+      },
+      "easing": "linear"
+     }
+    ]
+   },
+   "samples": [
+    -1.0,
+    0.5,
+    1.5,
+    2.0,
+    5.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 1.0,
+      "inputs": {
+       "B": {
+        "kind": "point",
+        "value": [
+         3.0,
+         0.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "B": {
+        "kind": "point",
+        "value": [
+         3.0,
+         0.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {
+       "B": {
+        "kind": "point",
+        "value": [
+         3.0,
+         1.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "B": {
+        "kind": "point",
+        "value": [
+         3.0,
+         2.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 2.0,
+      "inputs": {
+       "B": {
+        "kind": "point",
+        "value": [
+         3.0,
+         2.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 1.0,
+       "values": {
+        "e_B": [
+         3.0,
+         0.0
+        ]
+       }
+      },
+      {
+       "t": 2.0,
+       "values": {
+        "e_B": [
+         3.0,
+         2.0
+        ]
+       },
+       "easing": "linear"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "styles_and_camera",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0,
+      "values": {
+       "@camera": {
+        "width": 12
+       }
+      }
+     },
+     {
+      "t": 1,
+      "values": {
+       "@camera": {
+        "width": 8
+       },
+       "A": [
+        0.5,
+        0.5
+       ]
+      },
+      "styles": {
+       "c": {
+        "stroke": "#ff0000"
+       }
+      },
+      "events": [
+       {
+        "effect": "indicate",
+        "targets": [
+         "A",
+         "k"
+        ],
+        "at": 0.1
+       }
+      ]
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.5,
+    1.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.25,
+         0.25
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     },
+     {
+      "t": 1.0,
+      "inputs": {
+       "A": {
+        "kind": "point",
+        "value": [
+         0.5,
+         0.5
+        ]
+       }
+      },
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "D": true,
+       "Pa": true,
+       "Pc": true,
+       "Pl": true,
+       "Ppl": true,
+       "Pq": true,
+       "Pr": true,
+       "Ps": true,
+       "Psc": true,
+       "ar": true,
+       "c": true,
+       "h": false,
+       "k": true,
+       "l": true,
+       "pl": true,
+       "q": true,
+       "r": true,
+       "s": true,
+       "sc": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "values": {
+        "@camera": {
+         "width": 12
+        }
+       }
+      },
+      {
+       "t": 1.0,
+       "values": {
+        "e_A": [
+         0.5,
+         0.5
+        ],
+        "@camera": {
+         "width": 8
+        }
+       },
+       "styles": {
+        "e_c": {
+         "stroke": "#ff0000"
+        }
+       },
+       "events": [
+        {
+         "effect": "indicate",
+         "targets": [
+          "e_A"
+         ],
+         "at": 0.1
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -180,6 +180,82 @@
       "1. Дано: точки A, Q; число d.",
       "2. Откладываем на луче AQ расстояние d и отмечаем точку P."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "Q": false,
+              "P": false,
+              "s": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "P": true,
+              "s": true
+            },
+            "enter": {
+              "P": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P",
+          "start": 1.4,
+          "end": 2.2,
+          "elementIds": [
+            "P",
+            "s"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 2.2
+    }
   }
 }

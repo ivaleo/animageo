@@ -239,6 +239,113 @@
       "2. Строим угол t величиной alpha при вершине V от луча VA.",
       "3. Строим угол u величиной 1,57 при вершине V от луча VA."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "V": false,
+              "t": false,
+              "T": false,
+              "u": false,
+              "U": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "V": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "V": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "t": true,
+              "T": true
+            },
+            "enter": {
+              "t": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "T": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 3.6000000000000005,
+            "visible": {
+              "u": true,
+              "U": true
+            },
+            "enter": {
+              "u": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "U": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "V"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t",
+          "start": 1.4,
+          "end": 2.2,
+          "elementIds": [
+            "t",
+            "T"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_u",
+          "start": 2.8000000000000003,
+          "end": 3.6000000000000005,
+          "elementIds": [
+            "u",
+            "U"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 3.6000000000000005
+    }
   }
 }

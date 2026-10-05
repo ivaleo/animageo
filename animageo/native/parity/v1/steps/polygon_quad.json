@@ -235,6 +235,106 @@
       "1. Дано: точки A, B, C, D.",
       "2. Строим многоугольник ABCD."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "C": false,
+              "D": false,
+              "Q": false,
+              "sAB": false,
+              "sCD": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 3.1,
+            "visible": {
+              "Q": true,
+              "sAB": true,
+              "sCD": true
+            },
+            "enter": {
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "sAB": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              },
+              "sCD": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 1.2
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Q",
+          "start": 2.0,
+          "end": 3.1,
+          "elementIds": [
+            "Q",
+            "sAB",
+            "sCD"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 3.1
+    }
   }
 }

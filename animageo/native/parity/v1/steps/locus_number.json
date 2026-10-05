@@ -468,6 +468,220 @@
       "8. Отмечаем точки X, Y пересечения l и d.",
       "9. Строим геометрическое место g точки Y при изменении числа k."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "e": false,
+              "Q": false,
+              "h": false,
+              "d": false,
+              "l": false,
+              "X": false,
+              "Y": false,
+              "g": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "B": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "e": true
+            },
+            "enter": {
+              "e": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.0,
+            "visible": {
+              "Q": true
+            },
+            "enter": {
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.1,
+            "visible": {
+              "h": true
+            },
+            "enter": {
+              "h": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.199999999999999,
+            "visible": {
+              "d": true
+            },
+            "enter": {
+              "d": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.299999999999999,
+            "visible": {
+              "l": true
+            },
+            "enter": {
+              "l": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.699999999999998,
+            "visible": {
+              "X": true,
+              "Y": true
+            },
+            "enter": {
+              "X": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "Y": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 8.799999999999999,
+            "visible": {
+              "g": true
+            },
+            "enter": {
+              "g": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "B"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_e",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "e"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Q",
+          "start": 2.5,
+          "end": 3.0,
+          "elementIds": [
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_h",
+          "start": 3.6,
+          "end": 4.1,
+          "elementIds": [
+            "h"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_d",
+          "start": 4.699999999999999,
+          "end": 5.199999999999999,
+          "elementIds": [
+            "d"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_l",
+          "start": 5.799999999999999,
+          "end": 6.299999999999999,
+          "elementIds": [
+            "l"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_X",
+          "start": 6.899999999999999,
+          "end": 7.699999999999998,
+          "elementIds": [
+            "X",
+            "Y"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_g",
+          "start": 8.299999999999999,
+          "end": 8.799999999999999,
+          "elementIds": [
+            "g"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 8.799999999999999
+    }
   }
 }

@@ -177,9 +177,10 @@ def generate_scene(scene: dict) -> dict:
 
 def steps_expect(document) -> dict:
     """``{steps, describe, timeline}`` of a document (``animageo-steps/v1``;
-    ``timeline`` is ``None`` until stage 4)."""
+    ``timeline`` — ``steps_timeline`` with the default arguments, 1.9.0a4)."""
     from .describe import describe
     from .steps import steps
+    from .timeline import steps_timeline
     doc = load(document, strict=True)
     rows = []
     for step in steps(doc):
@@ -190,7 +191,8 @@ def steps_expect(document) -> dict:
             row['text'] = step.text
         row.update(operationIds=step.operationIds, elementIds=step.elementIds, auxElementIds=step.auxElementIds)
         rows.append(row)
-    return {'steps': rows, 'describe': describe(doc), 'timeline': None}
+    timeline = json.loads(json.dumps(steps_timeline(doc).to_dict()))
+    return {'steps': rows, 'describe': describe(doc), 'timeline': timeline}
 
 
 def steps_fixture(scene: dict) -> dict:
@@ -273,6 +275,9 @@ def verify_fixture(fixture: dict, label: str = '') -> list:
     label = label or str(fixture.get('id', '?'))
     if isinstance(fixture, dict) and fixture.get('format') == STEPS_FORMAT:
         return verify_steps_fixture(fixture, label)
+    from .timeline_fixtures import TIMELINE_FORMAT, verify_fixture as verify_timeline_fixture
+    if isinstance(fixture, dict) and fixture.get('format') == TIMELINE_FORMAT:
+        return verify_timeline_fixture(fixture, label)[1]
     try:
         check_scene(fixture)
         doc = load(fixture['document'], strict=True)

@@ -457,6 +457,221 @@
       "6. Отмечаем угол t2 между s и l.",
       "7. Отмечаем угол t3 между l и r."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "C": false,
+              "D": false,
+              "E": false,
+              "F": false,
+              "Q": false,
+              "l": false,
+              "r": false,
+              "s": false,
+              "t1": false,
+              "t2": false,
+              "t3": false
+            }
+          },
+          {
+            "t": 2.0,
+            "visible": {
+              "A": true,
+              "C": true,
+              "D": true,
+              "E": true,
+              "F": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "E": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              },
+              "F": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.2
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.5
+              }
+            }
+          },
+          {
+            "t": 3.1,
+            "visible": {
+              "l": true
+            },
+            "enter": {
+              "l": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.2,
+            "visible": {
+              "r": true
+            },
+            "enter": {
+              "r": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.3,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.3999999999999995,
+            "visible": {
+              "t1": true
+            },
+            "enter": {
+              "t1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.499999999999999,
+            "visible": {
+              "t2": true
+            },
+            "enter": {
+              "t2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 8.6,
+            "visible": {
+              "t3": true
+            },
+            "enter": {
+              "t3": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 2.0,
+          "elementIds": [
+            "A",
+            "C",
+            "D",
+            "E",
+            "F",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_l",
+          "start": 2.6,
+          "end": 3.1,
+          "elementIds": [
+            "l"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_r",
+          "start": 3.7,
+          "end": 4.2,
+          "elementIds": [
+            "r"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 4.8,
+          "end": 5.3,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t1",
+          "start": 5.8999999999999995,
+          "end": 6.3999999999999995,
+          "elementIds": [
+            "t1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t2",
+          "start": 6.999999999999999,
+          "end": 7.499999999999999,
+          "elementIds": [
+            "t2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t3",
+          "start": 8.1,
+          "end": 8.6,
+          "elementIds": [
+            "t3"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 8.6
+    }
   }
 }

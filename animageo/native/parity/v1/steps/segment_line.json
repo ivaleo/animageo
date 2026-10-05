@@ -218,6 +218,120 @@
       "3. Проводим прямую BA.",
       "4. Строим отрезок AB."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "l": false,
+              "lBA": false,
+              "s": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "B": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "l": true
+            },
+            "enter": {
+              "l": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.0,
+            "visible": {
+              "lBA": true
+            },
+            "enter": {
+              "lBA": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.1,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "B"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_l",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "l"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_lBA",
+          "start": 2.5,
+          "end": 3.0,
+          "elementIds": [
+            "lBA"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 3.6,
+          "end": 4.1,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 4.1
+    }
   }
 }

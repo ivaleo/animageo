@@ -411,6 +411,220 @@
       "7. Отмечаем точку Q на s.",
       "8. Отмечаем середину M отрезка QO."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "O": false,
+              "R": false,
+              "c": false,
+              "P": false,
+              "l": false,
+              "T": false,
+              "s": false,
+              "Q": false,
+              "M": false
+            }
+          },
+          {
+            "t": 1.1,
+            "visible": {
+              "A": true,
+              "O": true,
+              "R": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "R": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "c": true
+            },
+            "enter": {
+              "c": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.3000000000000003,
+            "visible": {
+              "P": true
+            },
+            "enter": {
+              "P": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.4,
+            "visible": {
+              "l": true
+            },
+            "enter": {
+              "l": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.5,
+            "visible": {
+              "T": true
+            },
+            "enter": {
+              "T": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.6,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.699999999999999,
+            "visible": {
+              "Q": true
+            },
+            "enter": {
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 8.799999999999999,
+            "visible": {
+              "M": true
+            },
+            "enter": {
+              "M": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.1,
+          "elementIds": [
+            "A",
+            "O",
+            "R"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c",
+          "start": 1.7000000000000002,
+          "end": 2.2,
+          "elementIds": [
+            "c"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P",
+          "start": 2.8000000000000003,
+          "end": 3.3000000000000003,
+          "elementIds": [
+            "P"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_l",
+          "start": 3.9000000000000004,
+          "end": 4.4,
+          "elementIds": [
+            "l"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_T",
+          "start": 5.0,
+          "end": 5.5,
+          "elementIds": [
+            "T"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 6.1,
+          "end": 6.6,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Q",
+          "start": 7.199999999999999,
+          "end": 7.699999999999999,
+          "elementIds": [
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_M",
+          "start": 8.299999999999999,
+          "end": 8.799999999999999,
+          "elementIds": [
+            "M"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 8.799999999999999
+    }
   }
 }

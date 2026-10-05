@@ -625,6 +625,329 @@
       "10. Отмечаем равные отрезки sa и sb.",
       "11. Строим окружность w через точки Ta, Tb, Tc."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "C": false,
+              "Q": false,
+              "k": false,
+              "I": false,
+              "Ta": false,
+              "Tb": false,
+              "Tc": false,
+              "ca": false,
+              "cb": false,
+              "G": false,
+              "g": false,
+              "r": false,
+              "sa": false,
+              "sb": false,
+              "e": false,
+              "w": false,
+              "O": false
+            }
+          },
+          {
+            "t": 1.1,
+            "visible": {
+              "A": true,
+              "C": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.4000000000000004,
+            "visible": {
+              "k": true,
+              "I": true,
+              "Ta": true,
+              "Tb": true,
+              "Tc": true
+            },
+            "enter": {
+              "k": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "I": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              },
+              "Ta": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.2
+              },
+              "Tb": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.5
+              },
+              "Tc": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.7999999999999998
+              }
+            }
+          },
+          {
+            "t": 4.5,
+            "visible": {
+              "ca": true
+            },
+            "enter": {
+              "ca": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.6,
+            "visible": {
+              "cb": true
+            },
+            "enter": {
+              "cb": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.699999999999999,
+            "visible": {
+              "G": true
+            },
+            "enter": {
+              "G": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.799999999999999,
+            "visible": {
+              "g": true
+            },
+            "enter": {
+              "g": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 8.899999999999999,
+            "visible": {
+              "r": true
+            },
+            "enter": {
+              "r": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 9.999999999999998,
+            "visible": {
+              "sa": true
+            },
+            "enter": {
+              "sa": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 11.099999999999998,
+            "visible": {
+              "sb": true
+            },
+            "enter": {
+              "sb": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 12.199999999999998,
+            "visible": {
+              "e": true
+            },
+            "enter": {
+              "e": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 13.599999999999998,
+            "visible": {
+              "w": true,
+              "O": true
+            },
+            "enter": {
+              "w": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.1,
+          "elementIds": [
+            "A",
+            "C",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_k",
+          "start": 1.7000000000000002,
+          "end": 3.4000000000000004,
+          "elementIds": [
+            "k",
+            "I",
+            "Ta",
+            "Tb",
+            "Tc"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_ca",
+          "start": 4.0,
+          "end": 4.5,
+          "elementIds": [
+            "ca"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_cb",
+          "start": 5.1,
+          "end": 5.6,
+          "elementIds": [
+            "cb"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_G",
+          "start": 6.199999999999999,
+          "end": 6.699999999999999,
+          "elementIds": [
+            "G"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_g",
+          "start": 7.299999999999999,
+          "end": 7.799999999999999,
+          "elementIds": [
+            "g"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_r",
+          "start": 8.399999999999999,
+          "end": 8.899999999999999,
+          "elementIds": [
+            "r"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_sa",
+          "start": 9.499999999999998,
+          "end": 9.999999999999998,
+          "elementIds": [
+            "sa"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_sb",
+          "start": 10.599999999999998,
+          "end": 11.099999999999998,
+          "elementIds": [
+            "sb"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_e",
+          "start": 11.699999999999998,
+          "end": 12.199999999999998,
+          "elementIds": [
+            "e"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w",
+          "start": 12.799999999999997,
+          "end": 13.599999999999998,
+          "elementIds": [
+            "w",
+            "O"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 13.599999999999998
+    }
   }
 }

@@ -475,6 +475,238 @@
       "5. Отмечаем точки X1, X2, Y1, Y2 пересечения l с границей t.",
       "6. Отмечаем точки Z1, Z2, Z3, Z4 пересечения s с границей t."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "L1": false,
+              "L2": false,
+              "O": false,
+              "Q": false,
+              "l": false,
+              "s": false,
+              "t": false,
+              "X1": false,
+              "X2": false,
+              "Y1": false,
+              "Y2": false,
+              "Z1": false,
+              "Z2": false,
+              "Z3": false,
+              "Z4": false
+            }
+          },
+          {
+            "t": 1.7,
+            "visible": {
+              "A": true,
+              "L1": true,
+              "L2": true,
+              "O": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "L1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "L2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.2
+              }
+            }
+          },
+          {
+            "t": 2.8,
+            "visible": {
+              "l": true
+            },
+            "enter": {
+              "l": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.9,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.0,
+            "visible": {
+              "t": true
+            },
+            "enter": {
+              "t": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.0,
+            "visible": {
+              "X1": true,
+              "X2": true,
+              "Y1": true,
+              "Y2": true
+            },
+            "enter": {
+              "X1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "X2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              },
+              "Y1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.2
+              },
+              "Y2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.5
+              }
+            }
+          },
+          {
+            "t": 9.0,
+            "visible": {
+              "Z1": true,
+              "Z2": true,
+              "Z3": true,
+              "Z4": true
+            },
+            "enter": {
+              "Z1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "Z2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              },
+              "Z3": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.2
+              },
+              "Z4": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.5
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.7,
+          "elementIds": [
+            "A",
+            "L1",
+            "L2",
+            "O",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_l",
+          "start": 2.3,
+          "end": 2.8,
+          "elementIds": [
+            "l"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 3.4,
+          "end": 3.9,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t",
+          "start": 4.5,
+          "end": 5.0,
+          "elementIds": [
+            "t"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_x",
+          "start": 5.6,
+          "end": 7.0,
+          "elementIds": [
+            "X1",
+            "X2",
+            "Y1",
+            "Y2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_z",
+          "start": 7.6,
+          "end": 9.0,
+          "elementIds": [
+            "Z1",
+            "Z2",
+            "Z3",
+            "Z4"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 9.0
+    }
   }
 }

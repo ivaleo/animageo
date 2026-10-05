@@ -3,16 +3,22 @@
     python -m animageo.native fixtures generate <scenes…> -o <dir> [--steps <dir>]
     python -m animageo.native fixtures verify <fixtures…>
     python -m animageo.native fixtures conditions [-o <root>] [--check]
+    python -m animageo.native fixtures timeline [-o <dir>] [--check]
     python -m animageo.native registry index [--check]
     python -m animageo.native evaluate <doc.json> [--inputs case.json] [--canonical]
     python -m animageo.native validate <doc.json>
     python -m animageo.native commands fixtures [--lexicon <file>] -o <dir> [--check]
     python -m animageo.native commands parse <text file | -> [--lexicon <file>] [--base <doc.json>]
     python -m animageo.native commands print <doc.json> [--lexicon <file>]
+    python -m animageo.native steps <doc.json>
+    python -m animageo.native describe <doc.json> [--values] [--precision N]
+    python -m animageo.native timeline <doc.json> [--lag L --duration D --pause P --start S]
+    python -m animageo.native timeline <doc.json> --timeline <keyframes.json> --t T [--bridge]
 
 Exit codes: 0 success; 1 verify mismatches, validate issues (invalid JSON
 included), an out-of-date registry index or a refused scene, out-of-date
-commands fixtures, a commands text with errors; 2 an input that cannot be
+commands fixtures, a commands text with errors, out-of-date timeline
+fixtures; 2 an input that cannot be
 used (a missing file; for ``evaluate`` a document that does not load or bad
 ``--inputs``; an unusable lexicon).
 """
@@ -76,6 +82,80 @@ def _cmd_fixtures_conditions(args) -> int:
     for path in write_fixtures(root):
         _out(str(path))
     return 0
+
+
+def _cmd_fixtures_timeline(args) -> int:
+    from .timeline_fixtures import DEFAULT_DIR, check_fixtures, verify_fixtures, write_fixtures
+    root = Path(args.out) if args.out else DEFAULT_DIR
+    if args.check:
+        problems = check_fixtures(root)
+        files, cases, mismatches = verify_fixtures(root)
+        for item in problems + mismatches:
+            _out(f'stale: {item}')
+        _out(f'{files} fixtures, {cases} cases, {len(problems) + len(mismatches)} mismatches')
+        return 1 if problems or mismatches else 0
+    for path in write_fixtures(root):
+        _out(str(path))
+    return 0
+
+
+def _read_document(path):
+    """A document file, or the document of a parity scene or fixture."""
+    with open(path, encoding='utf-8') as fh:
+        data = json.load(fh)
+    if isinstance(data, dict) and data.get('format') != 'animageo-construction/v1' and \
+            isinstance(data.get('document'), dict):
+        data = data['document']
+    return load(data)
+
+
+def _document_command(args, run) -> int:
+    try:
+        result = run(_read_document(args.document))
+    except LoadError as exc:
+        for issue in exc.issues:
+            _err(f'{issue.code} {issue.path or "/"}: {issue.message}')
+        return 2
+    except (OSError, ValueError) as exc:
+        _err(str(exc))
+        return 2
+    if isinstance(result, str):
+        _out(result)
+    else:
+        _out(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def _cmd_steps(args) -> int:
+    from .steps import steps
+    return _document_command(args, lambda doc: [s.to_dict() for s in steps(doc)])
+
+
+def _cmd_describe(args) -> int:
+    from .describe import describe
+    return _document_command(args, lambda doc: '\n'.join(
+        describe(doc, values=args.values, precision=args.precision)))
+
+
+def _cmd_timeline(args) -> int:
+    from .timeline import sample_timeline, steps_timeline, timeline_to_bridge
+
+    def run(doc):
+        if args.timeline is None:
+            if args.t is not None or args.bridge:
+                raise ValueError('--t and --bridge need --timeline')
+            return steps_timeline(doc, lag=args.lag, duration=args.duration, pause=args.pause,
+                                  start=args.start).to_dict()
+        with open(args.timeline, encoding='utf-8') as fh:
+            timeline = json.load(fh)
+        if isinstance(timeline, dict) and isinstance(timeline.get('keyframes'), dict):
+            timeline = timeline['keyframes']          # a steps timeline printed by this command
+        if args.bridge:
+            return timeline_to_bridge(doc, timeline)
+        if args.t is None:
+            raise ValueError('--timeline needs --t or --bridge')
+        return sample_timeline(doc, timeline, args.t)
+    return _document_command(args, run)
 
 
 def _cmd_registry_index(args) -> int:
@@ -274,6 +354,11 @@ def build_parser() -> argparse.ArgumentParser:
     fc.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
     fc.set_defaults(func=_cmd_fixtures_conditions)
 
+    ft = fsub.add_parser('timeline', help='write (or --check) the animageo-timeline/v1 fixtures')
+    ft.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/timeline)')
+    ft.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
+    ft.set_defaults(func=_cmd_fixtures_timeline)
+
     reg = sub.add_parser('registry', help='operation registry ops/v1')
     rsub = reg.add_subparsers(dest='action', required=True)
     idx = rsub.add_parser('index', help='refresh signatureHash fields and INDEX.json')
@@ -310,6 +395,25 @@ def build_parser() -> argparse.ArgumentParser:
     cr.add_argument('document', help='animageo-construction/v1 JSON file (or a parity scene)')
     cr.add_argument('--lexicon', help='animageo-lexicon/v1 JSON file')
     cr.set_defaults(func=_cmd_commands_print)
+
+    st = sub.add_parser('steps', help='the steps of a document (native.steps) as JSON')
+    st.add_argument('document', help='animageo-construction/v1 JSON file (or a scene or fixture)')
+    st.set_defaults(func=_cmd_steps)
+    de = sub.add_parser('describe', help='the text of a construction (native.describe)')
+    de.add_argument('document', help='animageo-construction/v1 JSON file (or a scene or fixture)')
+    de.add_argument('--values', action='store_true', help='add the values now')
+    de.add_argument('--precision', type=int, default=2, help='digits after the comma (default 2)')
+    de.set_defaults(func=_cmd_describe)
+    tl = sub.add_parser('timeline', help='steps_timeline of a document, or a timeline sampled at --t')
+    tl.add_argument('document', help='animageo-construction/v1 JSON file (or a scene or fixture)')
+    tl.add_argument('--lag', type=float, default=0.3)
+    tl.add_argument('--duration', type=float, default=0.5)
+    tl.add_argument('--pause', type=float, default=0.6)
+    tl.add_argument('--start', type=float, default=0.0)
+    tl.add_argument('--timeline', help='keyframes by element ID (JSON); with --t: sample_timeline')
+    tl.add_argument('--t', type=float, help='the time to sample --timeline at')
+    tl.add_argument('--bridge', action='store_true', help='print timeline_to_bridge of --timeline')
+    tl.set_defaults(func=_cmd_timeline)
     return parser
 
 

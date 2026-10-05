@@ -613,6 +613,283 @@
       "8. Строим отрезок CD.",
       "9. Отмечаем точку X4 пересечения s и l, ближайшую к N."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "C": false,
+              "D": false,
+              "N": false,
+              "O": false,
+              "P": false,
+              "Q": false,
+              "c": false,
+              "k": false,
+              "X3": false,
+              "l": false,
+              "X1": false,
+              "X2": false,
+              "s": false,
+              "X4": false
+            }
+          },
+          {
+            "t": 2.6,
+            "visible": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true,
+              "N": true,
+              "O": true,
+              "P": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              },
+              "N": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.2
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.5
+              },
+              "P": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.7999999999999998
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 2.1
+              }
+            }
+          },
+          {
+            "t": 3.7,
+            "visible": {
+              "c": true
+            },
+            "enter": {
+              "c": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.8,
+            "visible": {
+              "k": true
+            },
+            "enter": {
+              "k": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.8999999999999995,
+            "visible": {
+              "X3": true
+            },
+            "enter": {
+              "X3": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.999999999999999,
+            "visible": {
+              "l": true
+            },
+            "enter": {
+              "l": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 8.099999999999998,
+            "visible": {
+              "X1": true
+            },
+            "enter": {
+              "X1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 9.199999999999998,
+            "visible": {
+              "X2": true
+            },
+            "enter": {
+              "X2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 10.299999999999997,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 11.399999999999997,
+            "visible": {
+              "X4": true
+            },
+            "enter": {
+              "X4": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 2.6,
+          "elementIds": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "N",
+            "O",
+            "P",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c",
+          "start": 3.2,
+          "end": 3.7,
+          "elementIds": [
+            "c"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_k",
+          "start": 4.3,
+          "end": 4.8,
+          "elementIds": [
+            "k"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_X3",
+          "start": 5.3999999999999995,
+          "end": 5.8999999999999995,
+          "elementIds": [
+            "X3"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_l",
+          "start": 6.499999999999999,
+          "end": 6.999999999999999,
+          "elementIds": [
+            "l"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_X1",
+          "start": 7.599999999999999,
+          "end": 8.099999999999998,
+          "elementIds": [
+            "X1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_X2",
+          "start": 8.699999999999998,
+          "end": 9.199999999999998,
+          "elementIds": [
+            "X2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 9.799999999999997,
+          "end": 10.299999999999997,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_X4",
+          "start": 10.899999999999997,
+          "end": 11.399999999999997,
+          "elementIds": [
+            "X4"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 11.399999999999997
+    }
   }
 }

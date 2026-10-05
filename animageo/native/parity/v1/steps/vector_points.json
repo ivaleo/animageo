@@ -177,6 +177,97 @@
       "2. Строим вектор CA.",
       "3. Строим вектор AC."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "C": false,
+              "u": false,
+              "v": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "C": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "u": true
+            },
+            "enter": {
+              "u": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.0,
+            "visible": {
+              "v": true
+            },
+            "enter": {
+              "v": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "C"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_u",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "u"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_v",
+          "start": 2.5,
+          "end": 3.0,
+          "elementIds": [
+            "v"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 3.0
+    }
   }
 }

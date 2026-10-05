@@ -311,6 +311,135 @@
       "6. Задаём число r.",
       "7. Строим окружность c2 с центром O и радиусом r."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "O": false,
+              "c1": false,
+              "c3": false,
+              "c4": false,
+              "c2": false
+            }
+          },
+          {
+            "t": 0.5,
+            "visible": {
+              "O": true
+            },
+            "enter": {
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              }
+            }
+          },
+          {
+            "t": 1.6,
+            "visible": {
+              "c1": true
+            },
+            "enter": {
+              "c1": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 2.7,
+            "visible": {
+              "c3": true
+            },
+            "enter": {
+              "c3": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.8000000000000003,
+            "visible": {
+              "c4": true
+            },
+            "enter": {
+              "c4": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.9,
+            "visible": {
+              "c2": true
+            },
+            "enter": {
+              "c2": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.5,
+          "elementIds": [
+            "O"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c1",
+          "start": 1.1,
+          "end": 1.6,
+          "elementIds": [
+            "c1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c3",
+          "start": 2.2,
+          "end": 2.7,
+          "elementIds": [
+            "c3"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c4",
+          "start": 3.3000000000000003,
+          "end": 3.8000000000000003,
+          "elementIds": [
+            "c4"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c2",
+          "start": 4.4,
+          "end": 4.9,
+          "elementIds": [
+            "c2"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 4.9
+    }
   }
 }

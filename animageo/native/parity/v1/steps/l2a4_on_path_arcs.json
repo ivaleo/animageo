@@ -580,6 +580,297 @@
       "10. Отмечаем точку P4 на w.",
       "11. Отмечаем точку P7 на w."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "C": false,
+              "O": false,
+              "Q": false,
+              "k": false,
+              "P1": false,
+              "P5": false,
+              "t": false,
+              "P2": false,
+              "P3": false,
+              "P6": false,
+              "w": false,
+              "P4": false,
+              "P7": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "A": true,
+              "C": true,
+              "O": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 2.5,
+            "visible": {
+              "k": true
+            },
+            "enter": {
+              "k": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "P1": true
+            },
+            "enter": {
+              "P1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.7,
+            "visible": {
+              "P5": true
+            },
+            "enter": {
+              "P5": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.8,
+            "visible": {
+              "t": true
+            },
+            "enter": {
+              "t": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.8999999999999995,
+            "visible": {
+              "P2": true
+            },
+            "enter": {
+              "P2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.999999999999999,
+            "visible": {
+              "P3": true
+            },
+            "enter": {
+              "P3": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 9.1,
+            "visible": {
+              "P6": true
+            },
+            "enter": {
+              "P6": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 10.2,
+            "visible": {
+              "w": true
+            },
+            "enter": {
+              "w": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 11.299999999999999,
+            "visible": {
+              "P4": true
+            },
+            "enter": {
+              "P4": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 12.399999999999999,
+            "visible": {
+              "P7": true
+            },
+            "enter": {
+              "P7": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "A",
+            "C",
+            "O",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_k",
+          "start": 2.0,
+          "end": 2.5,
+          "elementIds": [
+            "k"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P1",
+          "start": 3.1,
+          "end": 3.6,
+          "elementIds": [
+            "P1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P5",
+          "start": 4.2,
+          "end": 4.7,
+          "elementIds": [
+            "P5"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t",
+          "start": 5.3,
+          "end": 5.8,
+          "elementIds": [
+            "t"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P2",
+          "start": 6.3999999999999995,
+          "end": 6.8999999999999995,
+          "elementIds": [
+            "P2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P3",
+          "start": 7.499999999999999,
+          "end": 7.999999999999999,
+          "elementIds": [
+            "P3"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P6",
+          "start": 8.6,
+          "end": 9.1,
+          "elementIds": [
+            "P6"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w",
+          "start": 9.7,
+          "end": 10.2,
+          "elementIds": [
+            "w"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P4",
+          "start": 10.799999999999999,
+          "end": 11.299999999999999,
+          "elementIds": [
+            "P4"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P7",
+          "start": 11.899999999999999,
+          "end": 12.399999999999999,
+          "elementIds": [
+            "P7"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 12.399999999999999
+    }
   }
 }

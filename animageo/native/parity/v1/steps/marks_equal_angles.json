@@ -413,6 +413,197 @@
       "6. Отмечаем равные углы ∠CQA и ∠ACQ.",
       "7. Отмечаем равные углы ∠CQA, ∠ACQ и ∠QAC."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "C": false,
+              "Q": false,
+              "g": false,
+              "h": false,
+              "k": false,
+              "m0": false,
+              "m2": false,
+              "m3": false
+            }
+          },
+          {
+            "t": 1.1,
+            "visible": {
+              "A": true,
+              "C": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "g": true
+            },
+            "enter": {
+              "g": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.3000000000000003,
+            "visible": {
+              "h": true
+            },
+            "enter": {
+              "h": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.4,
+            "visible": {
+              "k": true
+            },
+            "enter": {
+              "k": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.5,
+            "visible": {
+              "m0": true
+            },
+            "enter": {
+              "m0": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.6,
+            "visible": {
+              "m2": true
+            },
+            "enter": {
+              "m2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.699999999999999,
+            "visible": {
+              "m3": true
+            },
+            "enter": {
+              "m3": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.1,
+          "elementIds": [
+            "A",
+            "C",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_g",
+          "start": 1.7000000000000002,
+          "end": 2.2,
+          "elementIds": [
+            "g"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_h",
+          "start": 2.8000000000000003,
+          "end": 3.3000000000000003,
+          "elementIds": [
+            "h"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_k",
+          "start": 3.9000000000000004,
+          "end": 4.4,
+          "elementIds": [
+            "k"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_m0",
+          "start": 5.0,
+          "end": 5.5,
+          "elementIds": [
+            "m0"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_m2",
+          "start": 6.1,
+          "end": 6.6,
+          "elementIds": [
+            "m2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_m3",
+          "start": 7.199999999999999,
+          "end": 7.699999999999999,
+          "elementIds": [
+            "m3"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 7.699999999999999
+    }
   }
 }

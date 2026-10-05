@@ -88,9 +88,13 @@ class Evaluated:
     registry: str = REGISTRY_VERSION
     # operationId -> (op, args, result) for ops that ran and gave only values
     computed: dict = field(default_factory=dict, repr=False)
+    # 1.9.0a4: ``evaluate(doc, t=…, timeline=…)`` — the time and the visibility
+    # of every element at that time (``native.sample_timeline``); ``None`` otherwise
+    t: float | None = None
+    visible: dict | None = None
 
     def to_dict(self) -> dict:
-        return {
+        out = {
             'format': EVALUATED_FORMAT,
             'documentId': self.document_id,
             'kernel': {'library': self.library, 'registry': self.registry},
@@ -98,6 +102,10 @@ class Evaluated:
             'elements': self.elements,
             'diagnostics': self.diagnostics,
         }
+        if self.visible is not None:
+            out['t'] = self.t
+            out['visible'] = self.visible
+        return out
 
 
 def _free_elements(doc: NativeDocument, reg) -> dict:

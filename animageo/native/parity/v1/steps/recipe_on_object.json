@@ -354,6 +354,136 @@
       "4. Задаём число n.",
       "5. Строим окружность w с центром O и радиусом 0,8."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "D": false,
+              "O": false,
+              "k": false,
+              "C": false,
+              "w": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "A": true,
+              "B": true,
+              "D": true,
+              "O": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 2.5,
+            "visible": {
+              "k": true
+            },
+            "enter": {
+              "k": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "C": true
+            },
+            "enter": {
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.7,
+            "visible": {
+              "w": true
+            },
+            "enter": {
+              "w": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "A",
+            "B",
+            "D",
+            "O"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_k",
+          "start": 2.0,
+          "end": 2.5,
+          "elementIds": [
+            "k"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "condition:c1",
+          "start": 3.1,
+          "end": 3.6,
+          "elementIds": [
+            "C"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w",
+          "start": 4.2,
+          "end": 4.7,
+          "elementIds": [
+            "w"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 4.7
+    }
   }
 }

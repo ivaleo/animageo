@@ -613,6 +613,305 @@
       "11. Отмечаем точки X, Y пересечения v и c.",
       "12. Строим геометрическое место g точки Y при движении точки P."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "O": false,
+              "R": false,
+              "c": false,
+              "f": false,
+              "W": false,
+              "s": false,
+              "P": false,
+              "n": false,
+              "u": false,
+              "v": false,
+              "X": false,
+              "Y": false,
+              "g": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "A": true,
+              "B": true,
+              "O": true,
+              "R": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "R": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 2.5,
+            "visible": {
+              "c": true
+            },
+            "enter": {
+              "c": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "f": true
+            },
+            "enter": {
+              "f": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.7,
+            "visible": {
+              "W": true
+            },
+            "enter": {
+              "W": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.8,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.8999999999999995,
+            "visible": {
+              "P": true
+            },
+            "enter": {
+              "P": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.999999999999999,
+            "visible": {
+              "n": true
+            },
+            "enter": {
+              "n": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 9.1,
+            "visible": {
+              "u": true
+            },
+            "enter": {
+              "u": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 10.2,
+            "visible": {
+              "v": true
+            },
+            "enter": {
+              "v": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 11.6,
+            "visible": {
+              "X": true,
+              "Y": true
+            },
+            "enter": {
+              "X": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "Y": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 12.7,
+            "visible": {
+              "g": true
+            },
+            "enter": {
+              "g": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "A",
+            "B",
+            "O",
+            "R"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c",
+          "start": 2.0,
+          "end": 2.5,
+          "elementIds": [
+            "c"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_f",
+          "start": 3.1,
+          "end": 3.6,
+          "elementIds": [
+            "f"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_W",
+          "start": 4.2,
+          "end": 4.7,
+          "elementIds": [
+            "W"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 5.3,
+          "end": 5.8,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P",
+          "start": 6.3999999999999995,
+          "end": 6.8999999999999995,
+          "elementIds": [
+            "P"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_n",
+          "start": 7.499999999999999,
+          "end": 7.999999999999999,
+          "elementIds": [
+            "n"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_u",
+          "start": 8.6,
+          "end": 9.1,
+          "elementIds": [
+            "u"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_v",
+          "start": 9.7,
+          "end": 10.2,
+          "elementIds": [
+            "v"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_X",
+          "start": 10.799999999999999,
+          "end": 11.6,
+          "elementIds": [
+            "X",
+            "Y"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_g",
+          "start": 12.2,
+          "end": 12.7,
+          "elementIds": [
+            "g"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 12.7
+    }
   }
 }

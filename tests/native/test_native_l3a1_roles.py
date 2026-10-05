@@ -60,4 +60,5 @@ def test_role_style_split_and_formats():
     assert role_style(ROLE_DEFAULTS, 'aux', 'point') == {'size_px': 'presets.point_size.aux'}
     assert role_style({'aux': {'_comment': 'x', 'stroke': 'red'}}, 'aux', 'circle') == {'stroke': 'red'}
     assert role_style(None, 'aux', 'circle') == {}
-    assert RENDER_FORMATS == ('svg', 'png', 'pdf', 'eps', 'tikz', 'tex')
+    assert RENDER_FORMATS[:6] == ('svg', 'png', 'pdf', 'eps', 'tikz', 'tex')
+    assert RENDER_FORMATS[6:] == ('mp4', 'gif', 'webm', 'mov')        # 1.9.0a4

@@ -206,6 +206,105 @@
       "2. Откладываем от точки A отрезок s длины len.",
       "3. Откладываем от точки A отрезок z длины 3."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "s": false,
+              "E": false,
+              "z": false,
+              "Z": false
+            }
+          },
+          {
+            "t": 0.5,
+            "visible": {
+              "A": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              }
+            }
+          },
+          {
+            "t": 1.9000000000000001,
+            "visible": {
+              "s": true,
+              "E": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "E": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 3.3,
+            "visible": {
+              "z": true,
+              "Z": true
+            },
+            "enter": {
+              "z": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "Z": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.5,
+          "elementIds": [
+            "A"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 1.1,
+          "end": 1.9000000000000001,
+          "elementIds": [
+            "s",
+            "E"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_z",
+          "start": 2.5,
+          "end": 3.3,
+          "elementIds": [
+            "z",
+            "Z"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 3.3
+    }
   }
 }

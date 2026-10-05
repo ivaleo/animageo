@@ -59,7 +59,10 @@ __all__ = [
     'LABEL_MODES',
     'REPORT_FORMAT',
     'RENDER_FORMATS',
+    'STATIC_FORMATS',
+    'VIDEO_FORMATS',
     'RenderResult',
+    'document_at',
     'appearance_plan',
     'apply_appearance',
     'role_style',
@@ -72,7 +75,12 @@ __all__ = [
 ]
 
 REPORT_FORMAT = 'animageo-render-report/v1'
-RENDER_FORMATS = ('svg', 'png', 'pdf', 'eps', 'tikz', 'tex')
+STATIC_FORMATS = ('svg', 'png', 'pdf', 'eps', 'tikz', 'tex')
+VIDEO_FORMATS = ('mp4', 'gif', 'webm', 'mov')
+RENDER_FORMATS = STATIC_FORMATS + VIDEO_FORMATS
+# video={quality}: the scale of the pixel size of the canvas (1.9.0a4)
+VIDEO_QUALITY = {'low': 0.5, 'medium': 1.0, 'high': 1.5, 'production': 2.0}
+VIDEO_DEFAULTS = {'fps': 30, 'quality': 'medium'}
 LAYOUT_KEYS = ('reference', 'content', 'export')
 SOURCE_WIDTH = 800.0
 OVERLAP_SHARE = 0.15
@@ -304,8 +312,59 @@ def _check_layout(export_layout) -> dict:
     return export_layout
 
 
+def document_at(doc, sample: dict):
+    """A copy of ``doc`` whose ``appearance.<id>.visible`` is ``sample["visible"]``
+    where it differs from the document (``sample_timeline``)."""
+    from .document import load
+    from .timeline import appearance_visible
+    doc = as_document(doc)
+    data = None
+    for el_id, flag in sorted(sample['visible'].items()):
+        if appearance_visible(doc, el_id) == flag:
+            continue
+        if data is None:
+            import copy
+            data = copy.deepcopy(doc.data)
+            if not isinstance(data.get('appearance'), dict):
+                data['appearance'] = {}
+        entry = data['appearance'].get(el_id)
+        entry = dict(entry) if isinstance(entry, dict) else {}
+        entry['visible'] = flag
+        data['appearance'][el_id] = entry
+    return doc if data is None else load(data)
+
+
+def _check_video(video) -> dict:
+    out = dict(VIDEO_DEFAULTS)
+    if video is None:
+        return out
+    if not isinstance(video, dict):
+        raise ValueError('video must be a mapping {fps, quality}')
+    unknown = sorted(set(video) - set(VIDEO_DEFAULTS))
+    if unknown:
+        raise ValueError(f'video: unknown keys {unknown}; allowed: {sorted(VIDEO_DEFAULTS)}')
+    out.update(video)
+    fps = out['fps']
+    if isinstance(fps, bool) or not isinstance(fps, (int, float)) or not 1 <= fps <= 120:
+        raise ValueError(f'video.fps must be a number in [1, 120], got {fps!r}')
+    if out['quality'] not in VIDEO_QUALITY:
+        raise ValueError(f'video.quality must be one of {list(VIDEO_QUALITY)}, got {out["quality"]!r}')
+    return out
+
+
+def _import_scene():
+    try:
+        from ..animageo import AnimaGeoScene
+    except ModuleNotFoundError as exc:
+        if exc.name == 'manim' or (exc.name or '').startswith('manim.'):
+            raise RuntimeError('native.render needs manim (pip install animageo[render] '
+                               'or a manim environment)') from None
+        raise
+    return AnimaGeoScene
+
+
 def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
-           inputs=None, t=None, timeline=None, report=True) -> RenderResult:
+           inputs=None, t=None, timeline=None, report=True, video=None) -> RenderResult:
     """Render ``doc`` to ``out`` (a temporary file when ``None``).
 
     ``style_config``: a style dict (already through the web's
@@ -316,23 +375,44 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
     export?}``. ``fmt``: ``svg``, ``png`` (SVG rasterised by cairosvg),
     ``pdf`` (96 dpi), ``eps`` (``exportEPS``), ``tikz`` (a ``tikzpicture``
     to include, ``exportTikZ(standalone=False)``) or ``tex`` (a compilable
-    standalone document). ``t`` and ``timeline`` are not supported yet.
+    standalone document).
+
+    1.9.0a4 (docs/native/timeline.md §3): ``t`` with ``timeline`` (keyframes
+    by element ID) renders the frame at time ``t``: the document with the
+    inputs and the visibility of ``sample_timeline`` (``inputs`` on top);
+    the report gains ``t`` and ``visible``, boxes are those of the drawn
+    elements. ``fmt`` ``mp4``, ``gif``, ``webm``, ``mov``: the video of
+    ``timeline`` (required: ``ValueError("timeline_required")``) played by
+    the classic ``play_keyframes`` on the scene of the bridge
+    (``timeline_to_bridge``), manim + ffmpeg; ``video={fps, quality}``
+    (``fps`` 30, ``quality`` ``low`` | ``medium`` | ``high`` |
+    ``production`` — 0.5, 1, 1.5, 2 times the canvas in pixels); the
+    report of a video is short: ``video`` ``{fps, quality, width, height,
+    duration}``, and ``t``/``visible`` of the last keyframe.
     """
     if fmt not in RENDER_FORMATS:
         raise NotImplementedError(f'format {fmt!r}: native.render writes {", ".join(RENDER_FORMATS)}')
-    if t is not None or timeline is not None:
-        raise NotImplementedError('native.render: t and timeline are not supported yet')
     layout = _check_layout(export_layout)
     doc = as_document(doc)
     from .kernel.evaluate import check_inputs
     check_inputs(doc, inputs)
-    try:
-        from ..animageo import AnimaGeoScene
-    except ModuleNotFoundError as exc:
-        if exc.name == 'manim' or (exc.name or '').startswith('manim.'):
-            raise RuntimeError('native.render needs manim (pip install animageo[render] '
-                               'or a manim environment)') from None
-        raise
+    if fmt in VIDEO_FORMATS:
+        if timeline is None:
+            raise ValueError('timeline_required')
+        return _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report, _check_video(video))
+    if video is not None:
+        raise ValueError('video applies to mp4, gif, webm and mov only')
+    sample = None
+    if t is not None or timeline is not None:
+        if t is None or timeline is None:
+            raise ValueError('native.render: t and timeline go together')
+        from .timeline import sample_timeline
+        sample = sample_timeline(doc, timeline, t)
+        merged = dict(sample['inputs'])
+        merged.update(inputs or {})
+        inputs = merged
+        doc = document_at(doc, sample)
+    AnimaGeoScene = _import_scene()
 
     if out is None:
         fd, out = tempfile.mkstemp(prefix='animageo_', suffix='.' + ('tex' if fmt == 'tikz' else fmt))
@@ -364,6 +444,72 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         finally:
             os.unlink(svg_path)
     body = build_report(scene, doc, fmt=fmt, inputs=inputs) if report else None
+    if body is not None and sample is not None:
+        body['t'] = sample['t']
+        body['visible'] = sample['visible']
+    return RenderResult(path=out, fmt=fmt, report=body)
+
+
+def _even(v: float) -> int:
+    return max(2, int(round(v / 2.0)) * 2)
+
+
+def _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report, video) -> RenderResult:
+    """The video of ``timeline`` (``render`` with a video ``fmt``)."""
+    import glob
+    import shutil
+    from .timeline import normalize_timeline, sample_timeline, timeline_to_bridge
+    bridge = timeline_to_bridge(doc, timeline)
+    if len(bridge['keyframes']) < 2:
+        raise ValueError('timeline: a video needs at least two keyframes')
+    end = normalize_timeline(doc, timeline)['keyframes'][-1]['t']
+    AnimaGeoScene = _import_scene()
+    from manim import tempconfig
+    from ..render_config import configure_render
+
+    if out is None:
+        fd, out = tempfile.mkstemp(prefix='animageo_', suffix='.' + fmt)
+        os.close(fd)
+    out = os.path.abspath(os.fspath(out))
+    export = (layout.get('export') or {}) if isinstance(layout.get('export'), dict) else {}
+    view = source_view(doc)
+    scale = VIDEO_QUALITY[video['quality']]
+    width = _even(float(export.get('ptWidth', view['ptWidth'])) * scale)
+    height = _even(float(export.get('ptHeight', view['ptHeight'])) * scale)
+    holder = {}
+
+    class NativeTimelineScene(AnimaGeoScene):
+        def construct(self):
+            self.loadDocument(doc, style=style_config, inputs=inputs,
+                              reference=layout.get('reference'), content=layout.get('content'),
+                              export=layout.get('export'))
+            self.play_keyframes(bridge)
+            holder['scene'] = self
+
+    with tempfile.TemporaryDirectory(prefix='animageo_video_') as media:
+        with tempconfig({'media_dir': media, 'pixel_width': width, 'pixel_height': height,
+                         'frame_rate': float(video['fps']), 'output_file': 'native_timeline',
+                         'disable_caching': True, 'verbosity': 'ERROR', 'progress_bar': 'none',
+                         'write_to_movie': True}):
+            configure_render(format=fmt, fps=video['fps'])
+            NativeTimelineScene().render()
+        found = [p for p in glob.glob(os.path.join(media, '**', '*.' + fmt), recursive=True)
+                 if 'partial_movie_files' not in p]
+        if not found:
+            raise RuntimeError(f'native.render: manim wrote no {fmt} file')
+        shutil.move(max(found, key=os.path.getmtime), out)
+    body = None
+    if report:
+        sample = sample_timeline(doc, timeline, end)
+        merged = dict(sample['inputs'])
+        merged.update(inputs or {})
+        from .. import __version__
+        from .registry import REGISTRY_VERSION
+        body = {'format': REPORT_FORMAT, 'documentId': doc.document_id,
+                'kernel': {'library': __version__, 'registry': REGISTRY_VERSION}, 'fmt': fmt,
+                'video': {'fps': video['fps'], 'quality': video['quality'], 'width': width, 'height': height,
+                          'duration': end - normalize_timeline(doc, timeline)['keyframes'][0]['t']},
+                't': sample['t'], 'visible': sample['visible']}
     return RenderResult(path=out, fmt=fmt, report=body)
 
 

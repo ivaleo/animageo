@@ -309,6 +309,105 @@
       "2. Ставим C на окружности с диаметром AB: ∠ACB = 90°; отмечаем прямой угол ACB.",
       "3. Строим треугольник ABC."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "C": false,
+              "mark_c1": false,
+              "T": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "B": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "C": true,
+              "mark_c1": true
+            },
+            "enter": {
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "mark_c1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 3.3000000000000003,
+            "visible": {
+              "T": true
+            },
+            "enter": {
+              "T": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "B"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "condition:c1",
+          "start": 1.4,
+          "end": 2.2,
+          "elementIds": [
+            "C",
+            "mark_c1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_T",
+          "start": 2.8000000000000003,
+          "end": 3.3000000000000003,
+          "elementIds": [
+            "T"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 3.3000000000000003
+    }
   }
 }

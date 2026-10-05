@@ -522,6 +522,245 @@
       "6. Проводим прямую L1L2.",
       "7. Отмечаем точки X1, X2 пересечения l и k."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "L1": false,
+              "L2": false,
+              "O": false,
+              "O2": false,
+              "Q": false,
+              "R2": false,
+              "c2": false,
+              "k": false,
+              "Y1": false,
+              "Y2": false,
+              "Z": false,
+              "l": false,
+              "X1": false,
+              "X2": false
+            }
+          },
+          {
+            "t": 2.3,
+            "visible": {
+              "A": true,
+              "L1": true,
+              "L2": true,
+              "O": true,
+              "O2": true,
+              "Q": true,
+              "R2": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "L1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "L2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              },
+              "O2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.2
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.5
+              },
+              "R2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.7999999999999998
+              }
+            }
+          },
+          {
+            "t": 3.4,
+            "visible": {
+              "c2": true
+            },
+            "enter": {
+              "c2": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.5,
+            "visible": {
+              "k": true
+            },
+            "enter": {
+              "k": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.8999999999999995,
+            "visible": {
+              "Y1": true,
+              "Y2": true
+            },
+            "enter": {
+              "Y1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "Y2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 6.999999999999999,
+            "visible": {
+              "Z": true
+            },
+            "enter": {
+              "Z": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 8.099999999999998,
+            "visible": {
+              "l": true
+            },
+            "enter": {
+              "l": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 9.499999999999998,
+            "visible": {
+              "X1": true,
+              "X2": true
+            },
+            "enter": {
+              "X1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "X2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 2.3,
+          "elementIds": [
+            "A",
+            "L1",
+            "L2",
+            "O",
+            "O2",
+            "Q",
+            "R2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c2",
+          "start": 2.9,
+          "end": 3.4,
+          "elementIds": [
+            "c2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_k",
+          "start": 4.0,
+          "end": 4.5,
+          "elementIds": [
+            "k"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Y1_Y2",
+          "start": 5.1,
+          "end": 5.8999999999999995,
+          "elementIds": [
+            "Y1",
+            "Y2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Z",
+          "start": 6.499999999999999,
+          "end": 6.999999999999999,
+          "elementIds": [
+            "Z"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_l",
+          "start": 7.599999999999999,
+          "end": 8.099999999999998,
+          "elementIds": [
+            "l"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_X1_X2",
+          "start": 8.699999999999998,
+          "end": 9.499999999999998,
+          "elementIds": [
+            "X1",
+            "X2"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 9.499999999999998
+    }
   }
 }

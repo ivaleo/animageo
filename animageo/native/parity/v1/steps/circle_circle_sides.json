@@ -345,6 +345,175 @@
       "4. Отмечаем точки P1, P2 пересечения c1 и c2.",
       "5. Отмечаем точки Q1, Q2 пересечения c2 и c1."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "O1": false,
+              "O2": false,
+              "R1": false,
+              "R2": false,
+              "c1": false,
+              "c2": false,
+              "P1": false,
+              "P2": false,
+              "Q1": false,
+              "Q2": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "O1": true,
+              "O2": true,
+              "R1": true,
+              "R2": true
+            },
+            "enter": {
+              "O1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "O2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "R1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "R2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 2.5,
+            "visible": {
+              "c1": true
+            },
+            "enter": {
+              "c1": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "c2": true
+            },
+            "enter": {
+              "c2": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.0,
+            "visible": {
+              "P1": true,
+              "P2": true
+            },
+            "enter": {
+              "P1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "P2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 6.3999999999999995,
+            "visible": {
+              "Q1": true,
+              "Q2": true
+            },
+            "enter": {
+              "Q1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "Q2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "O1",
+            "O2",
+            "R1",
+            "R2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c1",
+          "start": 2.0,
+          "end": 2.5,
+          "elementIds": [
+            "c1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c2",
+          "start": 3.1,
+          "end": 3.6,
+          "elementIds": [
+            "c2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P1_P2",
+          "start": 4.2,
+          "end": 5.0,
+          "elementIds": [
+            "P1",
+            "P2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Q1_Q2",
+          "start": 5.6,
+          "end": 6.3999999999999995,
+          "elementIds": [
+            "Q1",
+            "Q2"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 6.3999999999999995
+    }
   }
 }

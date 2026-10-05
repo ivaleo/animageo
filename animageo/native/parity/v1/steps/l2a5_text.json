@@ -611,6 +611,220 @@
       "10. Добавляем надпись у точки A.",
       "11. Добавляем надпись у точки V."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "C": false,
+              "V": false,
+              "ang": false,
+              "s": false,
+              "t1": false,
+              "t2": false,
+              "t3": false,
+              "t4": false,
+              "t5": false
+            }
+          },
+          {
+            "t": 1.1,
+            "visible": {
+              "A": true,
+              "C": true,
+              "V": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "V": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "ang": true
+            },
+            "enter": {
+              "ang": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.3000000000000003,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.4,
+            "visible": {
+              "t1": true
+            },
+            "enter": {
+              "t1": {
+                "effect": "write",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.5,
+            "visible": {
+              "t2": true
+            },
+            "enter": {
+              "t2": {
+                "effect": "write",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.6,
+            "visible": {
+              "t3": true
+            },
+            "enter": {
+              "t3": {
+                "effect": "write",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.699999999999999,
+            "visible": {
+              "t4": true
+            },
+            "enter": {
+              "t4": {
+                "effect": "write",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 8.799999999999999,
+            "visible": {
+              "t5": true
+            },
+            "enter": {
+              "t5": {
+                "effect": "write",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.1,
+          "elementIds": [
+            "A",
+            "C",
+            "V"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_ang",
+          "start": 1.7000000000000002,
+          "end": 2.2,
+          "elementIds": [
+            "ang"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 2.8000000000000003,
+          "end": 3.3000000000000003,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t1",
+          "start": 3.9000000000000004,
+          "end": 4.4,
+          "elementIds": [
+            "t1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t2",
+          "start": 5.0,
+          "end": 5.5,
+          "elementIds": [
+            "t2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t3",
+          "start": 6.1,
+          "end": 6.6,
+          "elementIds": [
+            "t3"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t4",
+          "start": 7.199999999999999,
+          "end": 7.699999999999999,
+          "elementIds": [
+            "t4"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_t5",
+          "start": 8.299999999999999,
+          "end": 8.799999999999999,
+          "elementIds": [
+            "t5"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 8.799999999999999
+    }
   }
 }

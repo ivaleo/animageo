@@ -585,6 +585,297 @@
       "10. Отмечаем вершину W0 фигуры w.",
       "11. Отмечаем вершину W3 фигуры w."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "C": false,
+              "D": false,
+              "Q": false,
+              "g": false,
+              "V1": false,
+              "V4": false,
+              "V5": false,
+              "s": false,
+              "S2": false,
+              "Sh": false,
+              "w": false,
+              "W0": false,
+              "W3": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "A": true,
+              "C": true,
+              "D": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 2.5,
+            "visible": {
+              "g": true
+            },
+            "enter": {
+              "g": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "V1": true
+            },
+            "enter": {
+              "V1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.7,
+            "visible": {
+              "V4": true
+            },
+            "enter": {
+              "V4": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.8,
+            "visible": {
+              "V5": true
+            },
+            "enter": {
+              "V5": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.8999999999999995,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.999999999999999,
+            "visible": {
+              "S2": true
+            },
+            "enter": {
+              "S2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 9.1,
+            "visible": {
+              "Sh": true
+            },
+            "enter": {
+              "Sh": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 10.2,
+            "visible": {
+              "w": true
+            },
+            "enter": {
+              "w": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 11.299999999999999,
+            "visible": {
+              "W0": true
+            },
+            "enter": {
+              "W0": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 12.399999999999999,
+            "visible": {
+              "W3": true
+            },
+            "enter": {
+              "W3": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "A",
+            "C",
+            "D",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_g",
+          "start": 2.0,
+          "end": 2.5,
+          "elementIds": [
+            "g"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_V1",
+          "start": 3.1,
+          "end": 3.6,
+          "elementIds": [
+            "V1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_V4",
+          "start": 4.2,
+          "end": 4.7,
+          "elementIds": [
+            "V4"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_V5",
+          "start": 5.3,
+          "end": 5.8,
+          "elementIds": [
+            "V5"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 6.3999999999999995,
+          "end": 6.8999999999999995,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_S2",
+          "start": 7.499999999999999,
+          "end": 7.999999999999999,
+          "elementIds": [
+            "S2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Sh",
+          "start": 8.6,
+          "end": 9.1,
+          "elementIds": [
+            "Sh"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w",
+          "start": 9.7,
+          "end": 10.2,
+          "elementIds": [
+            "w"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_W0",
+          "start": 10.799999999999999,
+          "end": 11.299999999999999,
+          "elementIds": [
+            "W0"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_W3",
+          "start": 11.899999999999999,
+          "end": 12.399999999999999,
+          "elementIds": [
+            "W3"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 12.399999999999999
+    }
   }
 }

@@ -275,6 +275,144 @@
       "3. Строим отрезок AC.",
       "4. Проводим среднюю линию m через середины ab и ac."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "C": false,
+              "Q": false,
+              "ab": false,
+              "ac": false,
+              "m": false,
+              "M1": false,
+              "M2": false
+            }
+          },
+          {
+            "t": 1.1,
+            "visible": {
+              "A": true,
+              "C": true,
+              "Q": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "ab": true
+            },
+            "enter": {
+              "ab": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.3000000000000003,
+            "visible": {
+              "ac": true
+            },
+            "enter": {
+              "ac": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.0,
+            "visible": {
+              "m": true,
+              "M1": true,
+              "M2": true
+            },
+            "enter": {
+              "m": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "M1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              },
+              "M2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 1.2
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.1,
+          "elementIds": [
+            "A",
+            "C",
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_ab",
+          "start": 1.7000000000000002,
+          "end": 2.2,
+          "elementIds": [
+            "ab"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_ac",
+          "start": 2.8000000000000003,
+          "end": 3.3000000000000003,
+          "elementIds": [
+            "ac"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_m",
+          "start": 3.9000000000000004,
+          "end": 5.0,
+          "elementIds": [
+            "m",
+            "M1",
+            "M2"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 5.0
+    }
   }
 }

@@ -378,6 +378,212 @@
       "7. Проводим прямую AB.",
       "8. Отмечаем точку Y пересечения lAB и CD."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "AB": false,
+              "C": false,
+              "D": false,
+              "CD": false,
+              "X": false,
+              "lAB": false,
+              "Y": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "B": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "AB": true
+            },
+            "enter": {
+              "AB": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.0,
+            "visible": {
+              "C": true
+            },
+            "enter": {
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.1,
+            "visible": {
+              "D": true
+            },
+            "enter": {
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.199999999999999,
+            "visible": {
+              "CD": true
+            },
+            "enter": {
+              "CD": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.299999999999999,
+            "visible": {
+              "X": true
+            },
+            "enter": {
+              "X": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.399999999999999,
+            "visible": {
+              "lAB": true
+            },
+            "enter": {
+              "lAB": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 8.499999999999998,
+            "visible": {
+              "Y": true
+            },
+            "enter": {
+              "Y": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "B"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_AB",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "AB"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_C",
+          "start": 2.5,
+          "end": 3.0,
+          "elementIds": [
+            "C"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_D",
+          "start": 3.6,
+          "end": 4.1,
+          "elementIds": [
+            "D"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_CD",
+          "start": 4.699999999999999,
+          "end": 5.199999999999999,
+          "elementIds": [
+            "CD"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_X",
+          "start": 5.799999999999999,
+          "end": 6.299999999999999,
+          "elementIds": [
+            "X"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_lAB",
+          "start": 6.899999999999999,
+          "end": 7.399999999999999,
+          "elementIds": [
+            "lAB"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Y",
+          "start": 7.999999999999998,
+          "end": 8.499999999999998,
+          "elementIds": [
+            "Y"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 8.499999999999998
+    }
   }
 }

@@ -1,0 +1,570 @@
+{
+ "format": "animageo-timeline/v1",
+ "id": "timeline_triangle",
+ "registry": "1.5",
+ "generatedBy": "animageo 1.9.0a3",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "timeline_triangle",
+  "operationRegistryVersion": "1.5",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_t": {
+    "id": "op_t",
+    "op": "polygon.by_points",
+    "args": {
+     "vertices": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "polygon",
+      "elementId": "t"
+     }
+    ]
+   },
+   "op_M": {
+    "id": "op_M",
+    "op": "point.midpoint",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "M"
+     }
+    ]
+   },
+   "op_m": {
+    "id": "op_m",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "C"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "M"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "m"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "t": {
+    "id": "t",
+    "type": "polygon",
+    "displayName": "t",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "polygon"
+    }
+   },
+   "M": {
+    "id": "M",
+    "type": "point",
+    "displayName": "M",
+    "producer": {
+     "operationId": "op_M",
+     "slot": "point"
+    }
+   },
+   "m": {
+    "id": "m",
+    "type": "segment",
+    "displayName": "m",
+    "producer": {
+     "operationId": "op_m",
+     "slot": "segment"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     -3,
+     -2
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     3,
+     -2
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     0,
+     2.5
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -6,
+    -4,
+    6,
+    4
+   ]
+  },
+  "steps": [
+   {
+    "id": "median",
+    "kind": "group",
+    "title": "Медиана",
+    "operationIds": [
+     "op_M",
+     "op_m"
+    ],
+    "text": "Проводим медиану CM"
+   }
+  ]
+ },
+ "steps": {
+  "keyframes": {
+   "version": 2,
+   "keyframes": [
+    {
+     "t": 0.0,
+     "visible": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "M": false,
+      "m": false,
+      "t": false
+     }
+    },
+    {
+     "t": 1.1,
+     "visible": {
+      "A": true,
+      "B": true,
+      "C": true
+     },
+     "enter": {
+      "A": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.0
+      },
+      "B": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.3
+      },
+      "C": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    },
+    {
+     "t": 2.5,
+     "visible": {
+      "M": true,
+      "m": true
+     },
+     "enter": {
+      "M": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      },
+      "m": {
+       "effect": "create",
+       "duration": 0.5,
+       "at": 0.8999999999999999
+      }
+     }
+    },
+    {
+     "t": 3.6,
+     "visible": {
+      "t": true
+     },
+     "enter": {
+      "t": {
+       "effect": "fade",
+       "duration": 0.5,
+       "at": 0.6
+      }
+     }
+    }
+   ]
+  },
+  "steps": [
+   {
+    "stepId": "given",
+    "start": 0.0,
+    "end": 1.1,
+    "elementIds": [
+     "A",
+     "B",
+     "C"
+    ],
+    "text": null
+   },
+   {
+    "stepId": "median",
+    "start": 1.7000000000000002,
+    "end": 2.5,
+    "elementIds": [
+     "M",
+     "m"
+    ],
+    "text": "Проводим медиану CM"
+   },
+   {
+    "stepId": "op:op_t",
+    "start": 3.1,
+    "end": 3.6,
+    "elementIds": [
+     "t"
+    ],
+    "text": null
+   }
+  ],
+  "duration": 3.6
+ },
+ "cases": [
+  {
+   "name": "steps_timeline",
+   "timeline": {
+    "version": 2,
+    "keyframes": [
+     {
+      "t": 0.0,
+      "visible": {
+       "A": false,
+       "B": false,
+       "C": false,
+       "M": false,
+       "m": false,
+       "t": false
+      }
+     },
+     {
+      "t": 1.1,
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true
+      },
+      "enter": {
+       "A": {
+        "effect": "fade",
+        "duration": 0.5,
+        "at": 0.0
+       },
+       "B": {
+        "effect": "fade",
+        "duration": 0.5,
+        "at": 0.3
+       },
+       "C": {
+        "effect": "fade",
+        "duration": 0.5,
+        "at": 0.6
+       }
+      }
+     },
+     {
+      "t": 2.5,
+      "visible": {
+       "M": true,
+       "m": true
+      },
+      "enter": {
+       "M": {
+        "effect": "fade",
+        "duration": 0.5,
+        "at": 0.6
+       },
+       "m": {
+        "effect": "create",
+        "duration": 0.5,
+        "at": 0.8999999999999999
+       }
+      }
+     },
+     {
+      "t": 3.6,
+      "visible": {
+       "t": true
+      },
+      "enter": {
+       "t": {
+        "effect": "fade",
+        "duration": 0.5,
+        "at": 0.6
+       }
+      }
+     }
+    ]
+   },
+   "samples": [
+    0.0,
+    0.5,
+    1.1,
+    1.5,
+    2.2,
+    3.0,
+    4.0
+   ],
+   "expect": {
+    "samples": [
+     {
+      "t": 0.0,
+      "inputs": {},
+      "visible": {
+       "A": false,
+       "B": false,
+       "C": false,
+       "M": false,
+       "m": false,
+       "t": false
+      }
+     },
+     {
+      "t": 0.5,
+      "inputs": {},
+      "visible": {
+       "A": false,
+       "B": false,
+       "C": false,
+       "M": false,
+       "m": false,
+       "t": false
+      }
+     },
+     {
+      "t": 1.1,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "M": false,
+       "m": false,
+       "t": false
+      }
+     },
+     {
+      "t": 1.5,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "M": false,
+       "m": false,
+       "t": false
+      }
+     },
+     {
+      "t": 2.2,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "M": false,
+       "m": false,
+       "t": false
+      }
+     },
+     {
+      "t": 3.0,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "M": true,
+       "m": true,
+       "t": false
+      }
+     },
+     {
+      "t": 3.6,
+      "inputs": {},
+      "visible": {
+       "A": true,
+       "B": true,
+       "C": true,
+       "M": true,
+       "m": true,
+       "t": true
+      }
+     }
+    ],
+    "bridge": {
+     "version": 2,
+     "keyframes": [
+      {
+       "t": 0.0,
+       "visible": {
+        "e_A": false,
+        "e_B": false,
+        "e_C": false,
+        "e_M": false,
+        "e_m": false,
+        "e_t": false
+       }
+      },
+      {
+       "t": 1.1,
+       "visible": {
+        "e_A": true,
+        "e_B": true,
+        "e_C": true
+       },
+       "enter": {
+        "e_A": {
+         "effect": "fade",
+         "duration": 0.5,
+         "at": 0.0
+        },
+        "e_B": {
+         "effect": "fade",
+         "duration": 0.5,
+         "at": 0.3
+        },
+        "e_C": {
+         "effect": "fade",
+         "duration": 0.5,
+         "at": 0.6
+        }
+       }
+      },
+      {
+       "t": 2.5,
+       "visible": {
+        "e_M": true,
+        "e_m": true
+       },
+       "enter": {
+        "e_M": {
+         "effect": "fade",
+         "duration": 0.5,
+         "at": 0.6
+        },
+        "e_m": {
+         "effect": "create",
+         "duration": 0.5,
+         "at": 0.8999999999999999
+        }
+       }
+      },
+      {
+       "t": 3.6,
+       "visible": {
+        "e_t": true
+       },
+       "enter": {
+        "e_t": {
+         "effect": "fade",
+         "duration": 0.5,
+         "at": 0.6
+        }
+       }
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

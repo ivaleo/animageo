@@ -259,6 +259,143 @@
       "4. Отмечаем точку Q на c.",
       "5. Отмечаем точку W на c."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "O": false,
+              "R": false,
+              "c": false,
+              "P": false,
+              "Q": false,
+              "W": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "O": true,
+              "R": true
+            },
+            "enter": {
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "R": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "c": true
+            },
+            "enter": {
+              "c": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.0,
+            "visible": {
+              "P": true
+            },
+            "enter": {
+              "P": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.1,
+            "visible": {
+              "Q": true
+            },
+            "enter": {
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.199999999999999,
+            "visible": {
+              "W": true
+            },
+            "enter": {
+              "W": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "O",
+            "R"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "c"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P",
+          "start": 2.5,
+          "end": 3.0,
+          "elementIds": [
+            "P"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Q",
+          "start": 3.6,
+          "end": 4.1,
+          "elementIds": [
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_W",
+          "start": 4.699999999999999,
+          "end": 5.199999999999999,
+          "elementIds": [
+            "W"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 5.199999999999999
+    }
   }
 }

@@ -251,6 +251,128 @@
       "3. Отмечаем центр Jb вневписанной окружности треугольника BCA, касающейся стороны CA.",
       "4. Отмечаем центр Jc вневписанной окружности треугольника CAB, касающейся стороны AB."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "C": false,
+              "Ja": false,
+              "Jb": false,
+              "Jc": false
+            }
+          },
+          {
+            "t": 1.1,
+            "visible": {
+              "A": true,
+              "B": true,
+              "C": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "Ja": true
+            },
+            "enter": {
+              "Ja": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.3000000000000003,
+            "visible": {
+              "Jb": true
+            },
+            "enter": {
+              "Jb": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.4,
+            "visible": {
+              "Jc": true
+            },
+            "enter": {
+              "Jc": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.1,
+          "elementIds": [
+            "A",
+            "B",
+            "C"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Ja",
+          "start": 1.7000000000000002,
+          "end": 2.2,
+          "elementIds": [
+            "Ja"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Jb",
+          "start": 2.8000000000000003,
+          "end": 3.3000000000000003,
+          "elementIds": [
+            "Jb"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Jc",
+          "start": 3.9000000000000004,
+          "end": 4.4,
+          "elementIds": [
+            "Jc"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 4.4
+    }
   }
 }

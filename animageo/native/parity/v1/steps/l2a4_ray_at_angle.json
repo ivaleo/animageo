@@ -225,6 +225,105 @@
       "2. Проводим луч q из точки V под углом -1,57 к лучу VA.",
       "3. Проводим луч r из точки V под углом alpha к лучу VA."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "V": false,
+              "q": false,
+              "r": false,
+              "Ap": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "V": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "V": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "q": true
+            },
+            "enter": {
+              "q": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.3,
+            "visible": {
+              "r": true,
+              "Ap": true
+            },
+            "enter": {
+              "r": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "Ap": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "V"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_q",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_r",
+          "start": 2.5,
+          "end": 3.3,
+          "elementIds": [
+            "r",
+            "Ap"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 3.3
+    }
   }
 }

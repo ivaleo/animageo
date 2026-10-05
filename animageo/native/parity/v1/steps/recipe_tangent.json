@@ -397,6 +397,136 @@
       "4. Строим окружность w с центром O и радиусом 0,8.",
       "5. Ставим D на касательной из C к w."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "C": false,
+              "O": false,
+              "k": false,
+              "w": false,
+              "D": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "O": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 2.5,
+            "visible": {
+              "k": true
+            },
+            "enter": {
+              "k": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "w": true
+            },
+            "enter": {
+              "w": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.7,
+            "visible": {
+              "D": true
+            },
+            "enter": {
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "A",
+            "B",
+            "C",
+            "O"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_k",
+          "start": 2.0,
+          "end": 2.5,
+          "elementIds": [
+            "k"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w",
+          "start": 3.1,
+          "end": 3.6,
+          "elementIds": [
+            "w"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "condition:c1",
+          "start": 4.2,
+          "end": 4.7,
+          "elementIds": [
+            "D"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 4.7
+    }
   }
 }

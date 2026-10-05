@@ -341,6 +341,189 @@
       "6. Отмечаем точку Q на r.",
       "7. Отмечаем точку V на r."
     ],
-    "timeline": null
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "l": false,
+              "P": false,
+              "U": false,
+              "r": false,
+              "Q": false,
+              "V": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "A": true,
+              "B": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "l": true
+            },
+            "enter": {
+              "l": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.0,
+            "visible": {
+              "P": true
+            },
+            "enter": {
+              "P": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.1,
+            "visible": {
+              "U": true
+            },
+            "enter": {
+              "U": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.199999999999999,
+            "visible": {
+              "r": true
+            },
+            "enter": {
+              "r": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.299999999999999,
+            "visible": {
+              "Q": true
+            },
+            "enter": {
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.399999999999999,
+            "visible": {
+              "V": true
+            },
+            "enter": {
+              "V": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "A",
+            "B"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_l",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "l"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_P",
+          "start": 2.5,
+          "end": 3.0,
+          "elementIds": [
+            "P"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_U",
+          "start": 3.6,
+          "end": 4.1,
+          "elementIds": [
+            "U"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_r",
+          "start": 4.699999999999999,
+          "end": 5.199999999999999,
+          "elementIds": [
+            "r"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Q",
+          "start": 5.799999999999999,
+          "end": 6.299999999999999,
+          "elementIds": [
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_V",
+          "start": 6.899999999999999,
+          "end": 7.399999999999999,
+          "elementIds": [
+            "V"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 7.399999999999999
+    }
   }
 }
