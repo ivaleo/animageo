@@ -6,6 +6,8 @@ installed it also renders them (§9). No module of the package imports manim
 or the classic modules (`animageo.animageo`, `animageo.geo`) at import time:
 the bridge and the renderer load the classic code inside their functions.
 Label layout (`native.layout_labels`, §9.7) works without manim.
+The text form of a document, «Команды» (`native.parse_commands`,
+`native.print_commands`), is in `docs/native/commands.md`.
 The browser kernel of the web app repeats §1–§8 in TypeScript; the
 per-operation formulas are in `docs/native/ops/<op>.md`. When the two kernels
 disagree, the library is right and the fixtures it generates are the
@@ -462,6 +464,7 @@ python -m animageo.native fixtures verify <fixtures…>          # exit 1 on a m
 python -m animageo.native registry index [--check]             # exit 1 when out of date
 python -m animageo.native evaluate <doc.json> [--inputs case.json] [--checks] [--canonical]
 python -m animageo.native validate <doc.json> [--json]          # exit 1 when there are issues
+python -m animageo.native commands fixtures|parse|print …       # «Команды», commands.md §10
 ```
 
 Exit codes: `0` success; `1` a verify mismatch, an issue found by `validate`
