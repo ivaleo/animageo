@@ -64,6 +64,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     param `decimals` (default 2) half to even, angles in degrees with `°`,
     points as `(x, y)`. The bridge draws it as a classic `Text`. «Команды»
     print `Текст("…", A, a)` with `unprintable_operation`.
+  - `intersect.nearest` (beta) — GeoGebra `Intersect(a, b, <Point>)`: of
+    the solutions of two curves (the base pair, its order and part filters)
+    the one nearest to the point `near`; new policy `nearest_to` (a tie
+    within `tol.decide` keeps the earlier solution); without a defined
+    solution the reason of the pair; check `on_both`.
 
 ## [1.8.1a4] - 2026-10-05
 

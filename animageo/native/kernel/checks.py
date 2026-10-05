@@ -185,6 +185,11 @@ def _other_than_on_both(args, result, tol):
     return _on_both((result['point'],), args['first'], args['second'], tol)
 
 
+@register_check('intersect.nearest', 'on_both')
+def _nearest_on_both(args, result, tol):
+    return _on_both((result['point'],), args['first'], args['second'], tol)
+
+
 @register_check('point.on_path', 'on_path')
 def _on_path(args, result, tol):
     x, y = _xy(result['point'])

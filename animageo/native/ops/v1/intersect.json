@@ -273,5 +273,61 @@
     },
     "math": "docs/native/ops/intersect.line_sector.md",
     "signatureHash": "sha256:ad6efcd2b4fdeda63f3caf448501fc287dbe8b322a2d289b6244db1d7293d268"
+  },
+  {
+    "op": "intersect.nearest",
+    "status": "beta",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "curve"
+      },
+      {
+        "slot": "second",
+        "type": "curve"
+      },
+      {
+        "slot": "near",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "nearest_to",
+      "slots": [
+        "point"
+      ],
+      "text": "the solution of first and second nearest to near; equal distances keep the earlier solution of the pair"
+    },
+    "undefined": [
+      "no_intersection",
+      "parallel",
+      "coincident",
+      "concentric",
+      "outside_part",
+      "zero_length",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "the point lies on both inputs: the larger distance of the point to the carrier line of a linear input or to the circle (| |X - c| - r |)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{point} — точка пересечения {first} и {second}, ближайшая к {near}"
+    },
+    "math": "docs/native/ops/intersect.nearest.md",
+    "signatureHash": "sha256:ed8cbe159e5f9027d5c19caee8752dc360a3e7ed7db0ce30a722e182b92d2d31"
   }
 ]

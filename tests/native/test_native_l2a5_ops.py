@@ -584,3 +584,37 @@ def test_a5_transform_checks_catch_a_wrong_value(monkeypatch, make, op_name, key
     assert native.check(doc).results[key] == 'passed'
     _patched(monkeypatch, op_name, shift)
     assert native.check(doc).results[key] == 'failed'
+
+
+# ── intersect.nearest (beta) ─────────────────────────────────────────────
+
+
+def nearest_doc(near=(4, 3)):
+    b = DocBuilder('nearest', registry_version='1.4')
+    b.free('O', 0, 0).free('P', 3, 0).free('A', -5, 0).free('B', 5, 0).free('N', *near)
+    b.circle('c', 'O', 'P').line('l', 'A', 'B')
+    for el, first, second in (('X', 'l', 'c'), ('Y', 'c', 'l')):
+        b.op('op_' + el, 'intersect.nearest', {'first': ref(first), 'second': ref(second), 'near': ref('N')},
+             [('point', el, 'point')])
+    return b.doc
+
+
+class TestNearest:
+    def test_the_nearest_solution(self):
+        e = native.evaluate(nearest_doc((4, 3))).elements
+        assert value(e['X']) == {'x': 3.0, 'y': 0.0} and value(e['Y']) == {'x': 3.0, 'y': 0.0}
+        e = native.evaluate(nearest_doc((-1, 7))).elements
+        assert value(e['X']) == {'x': -3.0, 'y': 0.0}
+
+    def test_a_tie_keeps_the_first_solution_of_the_pair(self):
+        e = native.evaluate(nearest_doc((0, 5))).elements
+        assert value(e['X']) == {'x': -3.0, 'y': 0.0}         # line_param_order: −3 comes first
+
+    def test_no_solution_gives_the_reason_of_the_pair(self):
+        doc = nearest_doc()
+        ev = native.evaluate(doc, inputs={'A': {'kind': 'point', 'value': [-5, 4]},
+                                          'B': {'kind': 'point', 'value': [5, 4]}})
+        assert ev.elements['X']['reason'] == 'no_intersection'
+
+    def test_check(self):
+        all_passed(nearest_doc())

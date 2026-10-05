@@ -47,7 +47,7 @@ L2A5_OPS = {
     'measure.length', 'measure.distance', 'measure.area', 'measure.perimeter', 'measure.angle',
     'measure.radius', 'measure.circumference', 'measure.polygon_angles',
     'transform.translate', 'transform.rotate', 'transform.reflect_line', 'transform.reflect_point',
-    'transform.dilate', 'text.free',
+    'transform.dilate', 'text.free', 'intersect.nearest',
 }
 ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS
 # Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were.
@@ -134,7 +134,8 @@ def test_l0_records_unchanged():
 def test_record_fields(op):
     record = registry().get(op)
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free'}
-    assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors') else 'stable')
+    assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors', 'intersect.nearest')
+                                else 'stable')
     if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
                   'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle',
                   'text.free'):
@@ -385,7 +386,7 @@ def test_types_and_policies_catalogs():
     reg = registry()
     assert reg.types['ray']['value'] == {'origin': 'length', 'dir': 'scalar'}
     assert set(reg.policies) == {'single', 'line_param_order', 'circle_side', 'other_than',
-                                 'tangent_side', 'bisector_kind', 'vertex_index', 'sector_sides'}
+                                 'tangent_side', 'bisector_kind', 'vertex_index', 'sector_sides', 'nearest_to'}
     assert set(reg.paths) == set(reg.families['path'])
     kinds = {'segment': 'affine', 'line': 'affine', 'ray': 'affine', 'circle': 'angle', 'polygon': 'perimeter',
              'arc': 'arc', 'sector': 'sector', 'polyline': 'polyline'}

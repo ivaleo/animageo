@@ -273,6 +273,43 @@ def other_than(args, ctx):
     return {'point': Undefined('branch_absent')}
 
 
+def _pair_roots(first, second, ctx) -> list:
+    """The solutions of a curve pair in the order of its policy, filtered by
+    the parts (an arc, a segment, a ray), as plain points or Undefined."""
+    if first.type in _LINEAR and second.type in _LINEAR:
+        roots = [line_line_point(first, second, ctx)]
+    elif first.type in _LINEAR:
+        roots = line_circle_points(first, second, ctx, 'first')
+    elif second.type in _LINEAR:
+        roots = line_circle_points(second, first, ctx, 'second')
+    else:
+        roots = circle_circle_points(first, second, ctx)
+    return [_plain(r) for r in _filter_both(roots, first, second, ctx)]
+
+
+@op('intersect.nearest')
+def nearest(args, ctx):
+    """The solution of the pair nearest to ``near`` (``nearest_to``): distances
+    by ``hypot``; a distance within ``tol.decide`` of the best keeps the
+    earlier solution in the pair's order."""
+    roots = _pair_roots(args['first'], args['second'], ctx)
+    defined = [r for r in roots if not isinstance(r, Undefined)]
+    if not defined:
+        return {'point': roots[0]}
+    near = args['near'].value
+    tol = ctx.tol.decide_length
+    best = None
+    best_dist = 0.0
+    for r in defined:
+        dist = math.hypot(r['x'] - near['x'], r['y'] - near['y'])
+        if best is not None:
+            ctx.decide('nearest_tie', dist - best_dist, tol)
+        if best is None or dist < best_dist - tol:
+            best = r
+            best_dist = dist
+    return {'point': best}
+
+
 SECTOR_SLOTS = ('arc.1', 'arc.2', 'side.1', 'side.2')
 
 

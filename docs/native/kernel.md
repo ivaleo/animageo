@@ -229,6 +229,7 @@ table `animageo/native/parity/v1/canonical.json` is a list of
 | `transform.reflect_line` | 1.4 (a5) | `obj: transformable, line: linear` → `image`, `side.i`, `vertex.k` (orientation reversed) | `vertex_index` |
 | `transform.reflect_point` | 1.4 (a5) | `obj: transformable, point: point` → `image`, `side.i`, `vertex.k` | `vertex_index` |
 | `transform.dilate` | 1.4 (a5) | `obj: transformable, factor: number, center: point` → `image`, `side.i`, `vertex.k` | `vertex_index` |
+| `intersect.nearest` (beta) | 1.4 (a5) | `first, second: curve, near: point` → `point` (the solution nearest to `near`) | `nearest_to` |
 
 - A slot type may be a family (`_types.json` → `families`):
 
@@ -293,7 +294,7 @@ Service catalogs:
 - `_reasons.json`: reason → state;
 - `_policies.json`: branch policies (`single`, `line_param_order`,
   `circle_side`, `other_than`; since 1.4 `tangent_side`, `bisector_kind`,
-  `vertex_index`, `sector_sides`, §5.4);
+  `vertex_index`, `sector_sides`, and in a5 `nearest_to`, §5.4);
 - `_numeric.json`: bounds, tolerances, the generator margin and its noise
   decisions (§6).
 
@@ -447,6 +448,7 @@ slot `undefined` instead of moving another solution into it.
 | `bisector_kind` (1.4) | `internal` has the direction `normalize(d1 + d2)`, `external` is it turned by `+90°`; for parallel lines the slot whose direction sum is not zero is the midline, the other is `parallel` (`coincident` for one line) |
 | `vertex_index` (1.4) | `polygon`, `side.i` from `vertex.i` to `vertex.(i + 1)` (`side.n` closes), `vertex.k` from one; `vertex.1 = a`, `vertex.2 = b` exactly; a clockwise input stays clockwise (the area is unsigned) |
 | `sector_sides` (1.4) | `arc.1`, `arc.2` on the arc in the order of the line parameter (fixed on the carrier circle before the part filters), `side.1` on the radius `c → S0`, `side.2` on the radius `c → S1` |
+| `nearest_to` (1.4, a5) | one slot: of the solutions of the base pair (its order, after the part filters) the one nearest to the argument `near`; a distance within `tol.decide` of the best keeps the earlier solution (decision `nearest_tie`); no defined solution → the reason of the first one |
 
 **Arc filter** (1.4). An arc in a `circular` slot is intersected as its
 carrier circle; the slots are fixed there, then each slot is kept only on
