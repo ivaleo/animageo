@@ -349,3 +349,238 @@ def test_bridge_numbers_of_measures():
     from animageo.native.kernel import bridge
     for v in ({'value': 2.5, 'unit': 'length'}, {'value': 6.0, 'unit': 'area'}, {'value': 1.0, 'unit': 'angle'}):
         assert bridge.from_classic('number', bridge.to_classic('number', v)) == v
+
+
+# ── registry: like outputs and the structural repeat ─────────────────────
+
+class TestStructuralRepeat:
+    def doc(self):
+        b = B().free('A', 0, 0).free('Q', 4, 0).free('C', 0, 3).free('M', 1, 1)
+        b.polygon('g', 'A', 'Q', 'C')
+        b.op('op_h', 'transform.reflect_point', {'obj': ref('g'), 'point': ref('M')},
+             [('image', 'h', 'polygon'), ('vertex.3', 'H3', 'point')])
+        b.op('op_j', 'transform.reflect_point', {'obj': ref('h'), 'point': ref('A')},
+             [('image', 'j', 'polygon'), ('side.2', 'J2', 'segment')])
+        b.op('op_s', 'transform.reflect_point', {'obj': ref('A'), 'point': ref('M')}, [('image', 'S', 'point')])
+        return b.doc
+
+    def test_slots_and_types(self):
+        reg = registry()
+        doc = native.load(self.doc())
+        record = reg.get('transform.reflect_point')
+        args = doc.operations['op_j']['args']
+        assert reg.output_slots(record, args, doc) == ['image', 'side.1', 'side.2', 'side.3', 'vertex.1',
+                                                       'vertex.2', 'vertex.3']
+        assert reg.output_type(record, 'image', args, doc) == 'polygon'
+        assert reg.output_type(record, 'vertex.4', args, doc) is None
+        assert reg.output_type(record, 'image', doc.operations['op_s']['args'], doc) == 'point'
+        assert reg.output_slots(record, doc.operations['op_s']['args'], doc) == ['image']
+        assert reg.output_type(record, 'image') == 'transformable'          # no arguments: the declared type
+        assert reg.vertex_count(doc, 'g') == 3 and reg.vertex_count(doc, 'j') == 3
+        assert reg.vertex_count(doc, 'A') == 0 and reg.vertex_count(doc, 'nope') == 0
+        assert reg.vertex_count(None, 'g') == 0
+        assert reg.vertex_count({'operations': doc.operations, 'elements': doc.elements}, 'h') == 3
+
+    def test_evaluate_and_validate(self):
+        doc = self.doc()
+        assert native.validate(doc) == []
+        e = ev(doc)
+        assert close(xy(e['H3']), (2, -1)) and value(e['J2'])['a'] == [2.0, -2.0]
+        doc['operations']['op_h']['outputs'].append({'slot': 'vertex.4', 'elementId': 'H4'})
+        doc['elements']['H4'] = {'id': 'H4', 'type': 'point', 'displayName': 'H4',
+                                 'producer': {'operationId': 'op_h', 'slot': 'vertex.4'}}
+        assert [i.code for i in native.validate(doc)] == ['unknown_slot']
+        assert reason(ev(doc)['H4']) == 'schema'
+
+    def test_image_type_must_match(self):
+        doc = self.doc()
+        doc['elements']['S']['type'] = 'segment'
+        assert 'type_mismatch' in [i.code for i in native.validate(doc)]
+        assert reason(ev(doc)['S']) == 'type_mismatch'
+
+    def test_a_cycle_counts_nothing(self):
+        doc = self.doc()
+        doc['operations']['op_h']['args']['obj'] = ref('j')              # h ← j ← h
+        loaded = native.load(doc, strict=False)
+        assert registry().vertex_count(loaded, 'j') == 0
+        assert reason(ev(doc)['j']) in ('cycle', 'schema')
+
+    def test_like_stays_out_of_older_hashes(self):
+        from animageo.native.registry import signature, signature_hash
+        record = registry().get('transform.translate')
+        assert signature(record)['outputs'][0] == {'slot': 'image', 'type': 'transformable', 'repeat': None,
+                                                   'like': 'obj'}
+        assert 'like' not in signature(registry().get('polygon.by_points'))['outputs'][0]
+        plain = dict(record, outputs=[dict(o) for o in record['outputs']])
+        del plain['outputs'][0]['like']
+        assert signature_hash(plain) != record['signatureHash']
+
+
+# ── transformations ──────────────────────────────────────────────────────
+
+OBJECTS = (('A', 'point'), ('s', 'segment'), ('r', 'ray'), ('l', 'line'), ('v', 'vector'), ('c', 'circle'),
+           ('k', 'arc'), ('t', 'sector'), ('g', 'polygon'))
+
+
+def transform_doc(op, extra_args, setup, free=()):
+    b = B().free('A', 1, 0).free('Q', 3, 0).free('C', 1, 2).free('O', 0, 0)
+    for el, x, y in free:
+        b.free(el, x, y)
+    b.segment('s', 'A', 'Q')
+    b.ray('r', 'A', 'C')
+    b.line('l', 'Q', 'C')
+    b.vector('v', 'A', 'C')
+    b.circle('c', 'O', 'A')
+    b.op('op_k', 'arc.center_two_points', {'center': ref('O'), 'a': ref('A'), 'b': ref('C')}, [('arc', 'k', 'arc')])
+    b.op('op_t', 'sector.center_two_points', {'center': ref('O'), 'a': ref('A'), 'b': ref('C')},
+         [('sector', 't', 'sector')])
+    b.polygon('g', 'A', 'Q', 'C')
+    setup(b)
+    for obj, type_ in OBJECTS:
+        outs = [('image', obj + '1', type_)]
+        if type_ == 'polygon':
+            outs += [(f'side.{j}', f'p{j}', 'segment') for j in (1, 2, 3)]
+            outs += [(f'vertex.{j}', f'P{j}', 'point') for j in (1, 2, 3)]
+        b.op('op_' + obj + '1', op, dict(extra_args, obj=ref(obj)), outs)
+    return b.doc
+
+
+class TestTransforms:
+    def translate(self):
+        return transform_doc('transform.translate', {'vector': ref('u')}, lambda b: b.vector('u', 'U1', 'U2'),
+                             free=(('U1', 0, 0), ('U2', 2, 1)))
+
+    def rotate(self, alpha=PI / 2):
+        return transform_doc('transform.rotate', {'angle': num(alpha), 'center': ref('O')}, lambda b: None)
+
+    def mirror(self):
+        return transform_doc('transform.reflect_line', {'line': ref('m')}, lambda b: b.line('m', 'O', 'X'),
+                             free=(('X', 1, 0),))
+
+    def half_turn(self):
+        return transform_doc('transform.reflect_point', {'point': ref('M')}, lambda b: None, free=(('M', 2, 2),))
+
+    def dilate(self, k=2.0):
+        return transform_doc('transform.dilate', {'factor': num(k), 'center': ref('O')}, lambda b: None)
+
+    def test_translate(self):
+        e = ev(self.translate())
+        assert xy(e['A1']) == (3.0, 1.0)
+        assert value(e['s1']) == {'a': [3.0, 1.0], 'b': [5.0, 1.0], 'length': 2.0}
+        assert value(e['c1']) == {'c': [2.0, 1.0], 'r': 1.0}
+        assert value(e['k1'])['a0'] == value(e['k'])['a0'] and value(e['k1'])['c'] == [2.0, 1.0]
+        assert value(e['g1'])['vertices'] == [[3.0, 1.0], [5.0, 1.0], [3.0, 3.0]]
+        assert value(e['p2'])['a'] == [5.0, 1.0] and xy(e['P3']) == (3.0, 3.0)
+
+    def test_rotate_quarter_turn(self):
+        e = ev(self.rotate())
+        assert close(xy(e['A1']), (0, 1), 1e-15)
+        assert close(value(e['r1'])['dir'], (-1, 0), 1e-15)
+        line = value(e['l1'])                   # the line through (0, 3) and (−2, 1)
+        assert close(line['dir'], (-1 / math.sqrt(2), -1 / math.sqrt(2)), 1e-15)
+        assert close(line['p'], (-1.5, 1.5), 1e-12)
+        k = value(e['k1'])
+        assert abs(k['a0'] - PI / 2) < 1e-12 and abs((k['a1'] - k['a0']) - (value(e['k'])['a1'] - value(e['k'])['a0'])) < 1e-15
+
+    def test_reflect_line_reverses(self):
+        e = ev(self.mirror())                   # the x axis
+        assert close(xy(e['C1']) if 'C1' in e else xy(e['P3']), (1, -2), 1e-15)
+        g = value(e['g1'])
+        assert close(g['vertices'][2], (1, -2), 1e-15) and g['area'] == 2.0       # clockwise, area unsigned
+        k, k0 = value(e['k1']), value(e['k'])
+        # the arc from 0 to atan2(2, 1) reflects to the arc from −atan2(2, 1) to 0, counterclockwise
+        assert abs(k['a0'] - (2 * PI - k0['a1'])) < 1e-12 and abs(k['a1'] - 2 * PI) < 1e-12
+        assert close(value(e['v1'])['b'], (1, -2), 1e-15)
+
+    def test_reflect_point_and_dilate(self):
+        e = ev(self.half_turn())
+        assert close(xy(e['A1']), (3, 4), 1e-15) and close(value(e['r1'])['dir'], (0, -1), 1e-15)
+        assert abs(value(e['t1'])['a0'] - PI) < 1e-12
+        e = ev(self.dilate(-2.0))
+        assert close(xy(e['A1']), (-2, 0), 1e-15) and value(e['c1'])['r'] == 2.0
+        assert value(e['s1'])['length'] == 4.0 and close(value(e['r1'])['dir'], (0, -1), 1e-15)
+        assert value(e['g1'])['area'] == 8.0
+        e = ev(self.dilate(0.0))
+        assert {reason(e[el]) for el in ('A1', 'g1', 'p1', 'P3', 'k1')} == {'invalid_parameter'}
+
+    def test_zero_length_mirror(self):
+        e = ev(self.mirror(), {'X': point_input(0, 0)})
+        assert reason(e['A1']) == 'coincident_points' or reason(e['A1']) == 'upstream'
+        b = B().free('A', 1, 1).free('L', 0, 0)
+        b.segment('m', 'L', 'L')
+        b.op('op_A1', 'transform.reflect_line', {'obj': ref('A'), 'line': ref('m')}, [('image', 'A1', 'point')])
+        assert reason(ev(b.doc)['A1']) == 'zero_length'
+
+    @pytest.mark.parametrize('name', ['translate', 'rotate', 'mirror', 'half_turn', 'dilate'])
+    def test_checks(self, name):
+        all_passed(getattr(self, name)())
+
+    def test_rotate_checks_any_angle(self):
+        for alpha in (-2.5, 0.3, 4.0, 9.0):
+            all_passed(self.rotate(alpha))
+        all_passed(self.dilate(-0.5))
+
+
+class TestPolygonAngles:
+    def doc(self, pts):
+        b = B()
+        names = []
+        for i, (x, y) in enumerate(pts):
+            b.free(f'V{i}', x, y)
+            names.append(f'V{i}')
+        b.polygon('g', *names)
+        b.op('op_w', 'measure.polygon_angles', {'polygon': ref('g')},
+             [(f'angle.{k}', f'W{k}', 'angle') for k in range(1, len(pts) + 1)])
+        return b.doc
+
+    def sizes(self, pts):
+        e = ev(self.doc(pts))
+        return [value(e[f'W{k}'])['size'] for k in range(1, len(pts) + 1)]
+
+    def test_square_either_way(self):
+        ccw = [(0, 0), (2, 0), (2, 2), (0, 2)]
+        assert close(self.sizes(ccw), [PI / 2] * 4)
+        assert close(self.sizes(ccw[::-1]), [PI / 2] * 4)
+        w1 = value(ev(self.doc(ccw))['W1'])
+        assert w1['vertex'] == [0.0, 0.0] and w1['a0'] == 0.0      # from the side to vertex 2
+
+    def test_concave_and_sum(self):
+        pts = [(0, 0), (4, 0), (1, 1), (0, 4)]
+        sizes = self.sizes(pts)
+        assert sizes[2] > PI and abs(sum(sizes) - 2 * PI) < 1e-12
+        sizes = self.sizes(pts[::-1])
+        assert sizes[1] > PI and abs(sum(sizes) - 2 * PI) < 1e-12
+
+    def test_degenerate(self):
+        e = ev(self.doc([(0, 0), (1, 0), (2, 0)]))
+        assert {reason(e[f'W{k}']) for k in (1, 2, 3)} == {'collinear_points'}
+        e = ev(self.doc([(0, 0), (2, 0), (2, 0), (0, 2)]))
+        assert [e[f'W{k}']['state'] for k in (1, 2, 3, 4)] == ['defined', 'undefined', 'undefined', 'defined']
+
+    def test_slots_follow_the_polygon(self):
+        doc = self.doc([(0, 0), (2, 0), (0, 2)])
+        doc['operations']['op_w']['outputs'].append({'slot': 'angle.4', 'elementId': 'W4'})
+        doc['elements']['W4'] = {'id': 'W4', 'type': 'angle', 'displayName': 'W4',
+                                 'producer': {'operationId': 'op_w', 'slot': 'angle.4'}}
+        assert [i.code for i in native.validate(doc)] == ['unknown_slot']
+
+    def test_checks(self):
+        all_passed(self.doc([(0, 0), (4, 0), (1, 1), (0, 4)]))
+        all_passed(self.doc([(0, 4), (1, 1), (4, 0), (0, 0)]))
+
+
+@pytest.mark.parametrize('make, op_name, key, shift', [
+    (lambda: TestTransforms().rotate(0.7), 'transform.rotate', 'op_g1:image',
+     lambda r: dict(r, **{'vertex.2': {'x': r['vertex.2']['x'] + 0.5, 'y': r['vertex.2']['y']}})),
+    (lambda: TestTransforms().mirror(), 'transform.reflect_line', 'op_k1:image',
+     lambda r: dict(r, image=dict(r['image'], a0=r['image']['a0'] + 0.3, a1=r['image']['a1'] + 0.3))),
+    (lambda: TestTransforms().dilate(), 'transform.dilate', 'op_l1:image',
+     lambda r: dict(r, image=dict(r['image'], p=[r['image']['p'][0] + 0.5, r['image']['p'][1]]))),
+    (lambda: TestPolygonAngles().doc([(0, 0), (4, 0), (1, 1), (0, 4)]), 'measure.polygon_angles', 'op_w:interior',
+     lambda r: dict(r, **{'angle.3': dict(r['angle.3'], a1=r['angle.3']['a1'] + 0.3)})),
+])
+def test_a5_transform_checks_catch_a_wrong_value(monkeypatch, make, op_name, key, shift):
+    doc = make()
+    assert native.check(doc).results[key] == 'passed'
+    _patched(monkeypatch, op_name, shift)
+    assert native.check(doc).results[key] == 'failed'

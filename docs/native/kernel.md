@@ -138,7 +138,7 @@ table `animageo/native/parity/v1/canonical.json` is a list of
 
 ```text
 {op, status, since, inputs: [{slot, type, list?, min?}], params: [{slot, type, unit, optional?, default?, text}],
- outputs: [{slot, type, repeat?}],
+ outputs: [{slot, type, repeat?, like?}],
  free?: {kind}, branch: null | {policy, slots, text}, undefined: [reason…], checks: [{id, text}],
  orientation, pathParam: null | "carrier/v1", stepKind, phrases: {ru}, math, signatureHash}
 ```
@@ -208,6 +208,12 @@ table `animageo/native/parity/v1/canonical.json` is a list of
 | `measure.angle` | 1.4 (a5) | `angle: angle` → `number` (`angle`) | — |
 | `measure.radius` | 1.4 (a5) | `of: round` → `number` (`length`) | — |
 | `measure.circumference` | 1.4 (a5) | `circle: circle` → `number` (`length`) | — |
+| `measure.polygon_angles` | 1.4 (a5) | `polygon: polygon` → `angle.1…N` (interior, at vertex `k`) | `vertex_index` |
+| `transform.translate` | 1.4 (a5) | `obj: transformable, vector: vector` → `image` (like `obj`), `side.1…N`, `vertex.1…N` | `vertex_index` |
+| `transform.rotate` | 1.4 (a5) | `obj: transformable, angle: number, center: point` → `image`, `side.i`, `vertex.k` | `vertex_index` |
+| `transform.reflect_line` | 1.4 (a5) | `obj: transformable, line: linear` → `image`, `side.i`, `vertex.k` (orientation reversed) | `vertex_index` |
+| `transform.reflect_point` | 1.4 (a5) | `obj: transformable, point: point` → `image`, `side.i`, `vertex.k` | `vertex_index` |
+| `transform.dilate` | 1.4 (a5) | `obj: transformable, factor: number, center: point` → `image`, `side.i`, `vertex.k` | `vertex_index` |
 
 - A slot type may be a family (`_types.json` → `families`):
 
@@ -222,6 +228,7 @@ table `animageo/native/parity/v1/canonical.json` is a list of
   | `measurable` (1.4, a5) | `segment`, `vector`, `polyline`, `arc` |
   | `bounded` (1.4, a5) | `polygon`, `circle`, `sector` |
   | `figure` (1.4, a5) | `point` and the `path` types |
+  | `transformable` (1.4, a5) | `point`, `segment`, `ray`, `line`, `vector`, `circle`, `arc`, `sector`, `polygon` |
 
   An arc in a `circular` slot (`intersect.line_circle`,
   `intersect.circle_circle`, `intersect.other_than`) is intersected as its
@@ -231,11 +238,19 @@ table `animageo/native/parity/v1/canonical.json` is a list of
   param (`repeat: "n"` of `polygon.regular`, 1.4) declares `N =
   repeat_count(n)`: `round(n)` when `n` is a whole number in `[1, 100]`,
   else `0` (so `n = 2` declares two slots that evaluate to
-  `invalid_parameter`, `n = 2.5` none); a document may bind any subset of
-  the declared output slots;
+  `invalid_parameter`, `n = 2.5` none); a `repeat` naming a single
+  reference input (`repeat: "obj"` of the transforms, `repeat: "polygon"`
+  of `measure.polygon_angles`, 1.4 a5) declares `N` = the vertex count of
+  that element: the number of `side.i` slots its producer declares (`0`
+  for an element of another type, so the image of a segment has no
+  `side`/`vertex` slots); a document may bind any subset of the declared
+  output slots;
+- `like: "obj"` on an output (1.4 a5) gives it the type of the element
+  bound to that input (`image` of `transform.rotate` on a circle is a
+  `circle`); the declared `type` is the family it must belong to;
 - `signatureHash = "sha256:" + sha256(canonical({op, inputs: [{slot, type,
   list (default false), min (default null)}], params: [{slot, type, unit
-  (default null)}], outputs: [{slot, type, repeat (default null)}], free
+  (default null)}], outputs: [{slot, type, repeat (default null), like (only when set)}], free
   (default null), branch: branch.policy or null, orientation, pathParam}))`;
   the hashes of the 1.0 records did not change in 1.1, nor those of the
   1.0 and 1.1 records in 1.2, nor those of the earlier records in 1.3 and

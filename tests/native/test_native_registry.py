@@ -45,7 +45,9 @@ L2A4_OPS = {
 L2A5_OPS = {
     'angle.between_lines', 'angle.between_vectors', 'angle.by_size', 'number.angle',
     'measure.length', 'measure.distance', 'measure.area', 'measure.perimeter', 'measure.angle',
-    'measure.radius', 'measure.circumference',
+    'measure.radius', 'measure.circumference', 'measure.polygon_angles',
+    'transform.translate', 'transform.rotate', 'transform.reflect_line', 'transform.reflect_point',
+    'transform.dilate',
 }
 ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS
 # Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were.
@@ -99,7 +101,7 @@ def test_ops_and_files():
     reg = registry()
     assert set(reg.ops) == ALL_OPS
     assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark',
-                               'arc', 'measure'}
+                               'arc', 'measure', 'transform'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
@@ -221,6 +223,7 @@ def test_contract_table():
         'measurable': ['segment', 'vector', 'polyline', 'arc'],
         'bounded': ['polygon', 'circle', 'sector'],
         'figure': ['point', 'line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'polyline'],
+        'transformable': ['point', 'segment', 'ray', 'line', 'vector', 'circle', 'arc', 'sector', 'polygon'],
     }
     assert reg.accepts('linear', 'ray') and not reg.accepts('circular', 'ray')
 

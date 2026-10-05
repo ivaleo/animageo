@@ -24,7 +24,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `measure.angle`, `measure.radius`, `measure.circumference`; output slot
     `number`;
   - families `measurable`, `bounded`, `figure`; six parity scenes
-    `l2a5_*`.
+    `l2a5_*`;
+  - `measure.polygon_angles` — the interior angles of a polygon, slots
+    `angle.1…N` at vertex `k` (`vertex_index`);
+  - transformations `transform.translate`, `transform.rotate`,
+    `transform.reflect_line`, `transform.reflect_point` and
+    `transform.dilate` of a `transformable` object (point, segment, ray,
+    line, vector, circle, arc, sector, polygon): output `image` of the type
+    of the object, and for a polygon also `side.i` and `vertex.k`; a
+    reflection in a line reverses the orientation (an arc keeps its
+    counterclockwise sweep, its ends swap), a dilation by `k ≈ 0` is
+    `invalid_parameter`; mandatory checks against an independent map;
+  - record field `like` on an output (the type of the element of that
+    input; in the signature only when set, so earlier hashes stay) and a
+    `repeat` that names a single reference input (the vertex count of that
+    polygon, read from the slots of its producer); `output_type` and
+    `output_slots` take the document graph; six more scenes `l2a5_*`.
 
 ## [1.8.1a4] - 2026-10-05
 

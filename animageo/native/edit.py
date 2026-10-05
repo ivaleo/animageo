@@ -308,7 +308,7 @@ def redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> Ed
     taken = {}
     for out in old_outputs:
         slot = slot_map.get(out['slot'], out['slot'])
-        new_type = reg.output_type(record, slot, new_args)
+        new_type = reg.output_type(record, slot, new_args, doc)
         if new_type is None:
             unpaired.append(out['elementId'])
             continue

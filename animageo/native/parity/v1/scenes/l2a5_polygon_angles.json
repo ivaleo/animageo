@@ -1,0 +1,388 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a5_polygon_angles",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a5_polygon_angles",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_g": {
+        "id": "op_g",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "Q"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "g"
+          }
+        ]
+      },
+      "op_pa": {
+        "id": "op_pa",
+        "op": "measure.polygon_angles",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "g"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle.1",
+            "elementId": "W1"
+          },
+          {
+            "slot": "angle.2",
+            "elementId": "W2"
+          },
+          {
+            "slot": "angle.3",
+            "elementId": "W3"
+          },
+          {
+            "slot": "angle.4",
+            "elementId": "W4"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "polygon.regular",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "n": {
+            "kind": "number",
+            "value": 5
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "r"
+          }
+        ]
+      },
+      "op_ra": {
+        "id": "op_ra",
+        "op": "measure.polygon_angles",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "r"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle.1",
+            "elementId": "R1"
+          },
+          {
+            "slot": "angle.3",
+            "elementId": "R3"
+          },
+          {
+            "slot": "angle.5",
+            "elementId": "R5"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "g": {
+        "id": "g",
+        "type": "polygon",
+        "displayName": "g",
+        "producer": {
+          "operationId": "op_g",
+          "slot": "polygon"
+        }
+      },
+      "W1": {
+        "id": "W1",
+        "type": "angle",
+        "displayName": "W1",
+        "producer": {
+          "operationId": "op_pa",
+          "slot": "angle.1"
+        }
+      },
+      "W2": {
+        "id": "W2",
+        "type": "angle",
+        "displayName": "W2",
+        "producer": {
+          "operationId": "op_pa",
+          "slot": "angle.2"
+        }
+      },
+      "W3": {
+        "id": "W3",
+        "type": "angle",
+        "displayName": "W3",
+        "producer": {
+          "operationId": "op_pa",
+          "slot": "angle.3"
+        }
+      },
+      "W4": {
+        "id": "W4",
+        "type": "angle",
+        "displayName": "W4",
+        "producer": {
+          "operationId": "op_pa",
+          "slot": "angle.4"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "polygon",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "polygon"
+        }
+      },
+      "R1": {
+        "id": "R1",
+        "type": "angle",
+        "displayName": "R1",
+        "producer": {
+          "operationId": "op_ra",
+          "slot": "angle.1"
+        }
+      },
+      "R3": {
+        "id": "R3",
+        "type": "angle",
+        "displayName": "R3",
+        "producer": {
+          "operationId": "op_ra",
+          "slot": "angle.3"
+        }
+      },
+      "R5": {
+        "id": "R5",
+        "type": "angle",
+        "displayName": "R5",
+        "producer": {
+          "operationId": "op_ra",
+          "slot": "angle.5"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -3
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          4,
+          -2
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          3,
+          3
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          -3,
+          2
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "convex"
+    },
+    {
+      "name": "concave",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "name": "clockwise",
+      "inputs": {
+        "Q": {
+          "kind": "point",
+          "value": [
+            -3,
+            2
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            4,
+            -2
+          ]
+        }
+      }
+    },
+    {
+      "name": "flat",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            12,
+            -1
+          ]
+        },
+        "D": {
+          "kind": "point",
+          "value": [
+            20,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "coincident_vertex",
+      "inputs": {
+        "D": {
+          "kind": "point",
+          "value": [
+            3,
+            3
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -71,7 +71,7 @@ class _Printer:
     def _left(self, op_id: str, record: dict) -> list:
         op = self.ops[op_id]
         args = op.get('args') or {}
-        slots = self.reg.output_slots(record, args)
+        slots = self.reg.output_slots(record, args, self.doc)
         by_slot = {o.get('slot'): o.get('elementId') for o in op.get('outputs') or ()
                    if o.get('elementId') in self.elements}
         last = -1
@@ -94,7 +94,7 @@ class _Printer:
                 if name_key(name) in self.taken:
                     name = next_name('segment', TakenKeys(self.taken))
             else:
-                name = next_name(self.reg.output_type(record, slot, args) or 'line', TakenKeys(self.taken))
+                name = next_name(self.reg.output_type(record, slot, args, self.doc) or 'line', TakenKeys(self.taken))
             if not name:
                 name = next_name('line', TakenKeys(self.taken))
             self.taken.add(name_key(name))

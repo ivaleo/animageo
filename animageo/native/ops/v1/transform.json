@@ -1,0 +1,307 @@
+[
+  {
+    "op": "transform.translate",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "obj",
+        "type": "transformable"
+      },
+      {
+        "slot": "vector",
+        "type": "vector"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "image",
+        "type": "transformable",
+        "like": "obj"
+      },
+      {
+        "slot": "side",
+        "type": "segment",
+        "repeat": "obj"
+      },
+      {
+        "slot": "vertex",
+        "type": "point",
+        "repeat": "obj"
+      }
+    ],
+    "branch": {
+      "policy": "vertex_index",
+      "slots": [
+        "image",
+        "side",
+        "vertex"
+      ],
+      "text": "the image has the type of obj; the image of a polygon also gives side.i from vertex.i to vertex.(i + 1) and vertex.k, the image of vertex k (as many as obj has vertices), without normalizing the orientation"
+    },
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "image",
+        "text": "every defining point of the image is the image of the matching point of obj (a line: the images of two of its points lie on it and its direction is the image direction; an arc or a sector after a reflection in a line: its ends swapped); polygon parts match the image vertices: the largest distance"
+      }
+    ],
+    "orientation": "preserved",
+    "pathParam": null,
+    "stepKind": "transform",
+    "phrases": {
+      "ru": "{image} — образ {obj} при параллельном переносе на вектор {vector}"
+    },
+    "math": "docs/native/ops/transform.translate.md",
+    "signatureHash": "sha256:e01e8feba29536aed49dc73897abff38588d4fb4b302abfd1555ef0ee4abc06f"
+  },
+  {
+    "op": "transform.rotate",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "obj",
+        "type": "transformable"
+      },
+      {
+        "slot": "angle",
+        "type": "number"
+      },
+      {
+        "slot": "center",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "image",
+        "type": "transformable",
+        "like": "obj"
+      },
+      {
+        "slot": "side",
+        "type": "segment",
+        "repeat": "obj"
+      },
+      {
+        "slot": "vertex",
+        "type": "point",
+        "repeat": "obj"
+      }
+    ],
+    "branch": {
+      "policy": "vertex_index",
+      "slots": [
+        "image",
+        "side",
+        "vertex"
+      ],
+      "text": "the image has the type of obj; the image of a polygon also gives side.i from vertex.i to vertex.(i + 1) and vertex.k, the image of vertex k (as many as obj has vertices), without normalizing the orientation"
+    },
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "image",
+        "text": "every defining point of the image is the image of the matching point of obj (a line: the images of two of its points lie on it and its direction is the image direction; an arc or a sector after a reflection in a line: its ends swapped); polygon parts match the image vertices: the largest distance"
+      }
+    ],
+    "orientation": "preserved",
+    "pathParam": null,
+    "stepKind": "transform",
+    "phrases": {
+      "ru": "{image} — образ {obj} при повороте на {angle} вокруг {center}"
+    },
+    "math": "docs/native/ops/transform.rotate.md",
+    "signatureHash": "sha256:d4217dff3414aeeb04e23551a999a3fac706e6a9ed716dd7210bdb922086c1bc"
+  },
+  {
+    "op": "transform.reflect_line",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "obj",
+        "type": "transformable"
+      },
+      {
+        "slot": "line",
+        "type": "linear"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "image",
+        "type": "transformable",
+        "like": "obj"
+      },
+      {
+        "slot": "side",
+        "type": "segment",
+        "repeat": "obj"
+      },
+      {
+        "slot": "vertex",
+        "type": "point",
+        "repeat": "obj"
+      }
+    ],
+    "branch": {
+      "policy": "vertex_index",
+      "slots": [
+        "image",
+        "side",
+        "vertex"
+      ],
+      "text": "the image has the type of obj; the image of a polygon also gives side.i from vertex.i to vertex.(i + 1) and vertex.k, the image of vertex k (as many as obj has vertices), without normalizing the orientation"
+    },
+    "undefined": [
+      "zero_length",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "image",
+        "text": "every defining point of the image is the image of the matching point of obj (a line: the images of two of its points lie on it and its direction is the image direction; an arc or a sector after a reflection in a line: its ends swapped); polygon parts match the image vertices: the largest distance"
+      }
+    ],
+    "orientation": "reversed",
+    "pathParam": null,
+    "stepKind": "transform",
+    "phrases": {
+      "ru": "{image} — образ {obj} при симметрии относительно {line}"
+    },
+    "math": "docs/native/ops/transform.reflect_line.md",
+    "signatureHash": "sha256:bae523d182d4d7d6e304b20fe4042cc2afe9c3f79ee1f4b077f6ac10efec6374"
+  },
+  {
+    "op": "transform.reflect_point",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "obj",
+        "type": "transformable"
+      },
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "image",
+        "type": "transformable",
+        "like": "obj"
+      },
+      {
+        "slot": "side",
+        "type": "segment",
+        "repeat": "obj"
+      },
+      {
+        "slot": "vertex",
+        "type": "point",
+        "repeat": "obj"
+      }
+    ],
+    "branch": {
+      "policy": "vertex_index",
+      "slots": [
+        "image",
+        "side",
+        "vertex"
+      ],
+      "text": "the image has the type of obj; the image of a polygon also gives side.i from vertex.i to vertex.(i + 1) and vertex.k, the image of vertex k (as many as obj has vertices), without normalizing the orientation"
+    },
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "image",
+        "text": "every defining point of the image is the image of the matching point of obj (a line: the images of two of its points lie on it and its direction is the image direction; an arc or a sector after a reflection in a line: its ends swapped); polygon parts match the image vertices: the largest distance"
+      }
+    ],
+    "orientation": "preserved",
+    "pathParam": null,
+    "stepKind": "transform",
+    "phrases": {
+      "ru": "{image} — образ {obj} при симметрии относительно точки {point}"
+    },
+    "math": "docs/native/ops/transform.reflect_point.md",
+    "signatureHash": "sha256:265a56c8c8e12e887db5b35995c0c45027499dbc1574f62c4aab6efaed15f0fc"
+  },
+  {
+    "op": "transform.dilate",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "obj",
+        "type": "transformable"
+      },
+      {
+        "slot": "factor",
+        "type": "number"
+      },
+      {
+        "slot": "center",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "image",
+        "type": "transformable",
+        "like": "obj"
+      },
+      {
+        "slot": "side",
+        "type": "segment",
+        "repeat": "obj"
+      },
+      {
+        "slot": "vertex",
+        "type": "point",
+        "repeat": "obj"
+      }
+    ],
+    "branch": {
+      "policy": "vertex_index",
+      "slots": [
+        "image",
+        "side",
+        "vertex"
+      ],
+      "text": "the image has the type of obj; the image of a polygon also gives side.i from vertex.i to vertex.(i + 1) and vertex.k, the image of vertex k (as many as obj has vertices), without normalizing the orientation"
+    },
+    "undefined": [
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "image",
+        "text": "every defining point of the image is the image of the matching point of obj (a line: the images of two of its points lie on it and its direction is the image direction; an arc or a sector after a reflection in a line: its ends swapped); polygon parts match the image vertices: the largest distance"
+      }
+    ],
+    "orientation": "preserved",
+    "pathParam": null,
+    "stepKind": "transform",
+    "phrases": {
+      "ru": "{image} — образ {obj} при гомотетии с центром {center} и коэффициентом {factor}"
+    },
+    "math": "docs/native/ops/transform.dilate.md",
+    "signatureHash": "sha256:2c469c8abed13e3c25b1494495f263784ae27d5825fa5eae0d7e06a791dc1f4e"
+  }
+]

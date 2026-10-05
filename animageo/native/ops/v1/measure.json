@@ -219,5 +219,50 @@
     },
     "math": "docs/native/ops/measure.circumference.md",
     "signatureHash": "sha256:6d9768f2b07d4731cc5a97e4e42b457d1db301e3ce43d3c0f3b1a7aefa3594c3"
+  },
+  {
+    "op": "measure.polygon_angles",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "polygon",
+        "type": "polygon"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "angle",
+        "type": "angle",
+        "repeat": "polygon"
+      }
+    ],
+    "branch": {
+      "policy": "vertex_index",
+      "slots": [
+        "angle"
+      ],
+      "text": "angle.k is the interior angle at vertex k (as many slots as the polygon has vertices): counterclockwise from the side to vertex k + 1 to the side to vertex k - 1 of a counterclockwise polygon, from k - 1 to k + 1 of a clockwise one"
+    },
+    "undefined": [
+      "collinear_points",
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "interior",
+        "text": "each angle sits at its vertex with its sides towards the neighbours: max(|vertex - V_k|, |wrap(a0 - theta(first neighbour - V_k))| S, |wrap(a1 - theta(second neighbour - V_k))| S)"
+      }
+    ],
+    "orientation": "interior",
+    "pathParam": null,
+    "stepKind": "measure",
+    "phrases": {
+      "ru": "углы многоугольника {polygon}"
+    },
+    "math": "docs/native/ops/measure.polygon_angles.md",
+    "signatureHash": "sha256:6d7a2465d42a5eff438911e19e7a7aaf352a45023a353c8518da7fad046118ba"
   }
 ]

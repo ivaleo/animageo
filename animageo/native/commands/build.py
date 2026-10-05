@@ -577,7 +577,7 @@ class _Builder:
     # ── lines ────────────────────────────────────────────────────────────
 
     def _out_slots(self, req: _Request) -> list:
-        return self.reg.output_slots(req.record, req.args)
+        return self.reg.output_slots(req.record, req.args, self.W)
 
     def _check_names(self, st, slots) -> None:
         seen = set()
@@ -606,7 +606,7 @@ class _Builder:
                     taken.add(name_key(sides[i]))
         for slot in slots:
             if slot not in names:
-                name = next_name(self.reg.output_type(req.record, slot, args), TakenKeys(taken))
+                name = next_name(self.reg.output_type(req.record, slot, args, self.W), TakenKeys(taken))
                 names[slot] = name
                 if name:
                     taken.add(name_key(name))
@@ -653,7 +653,7 @@ class _Builder:
         outputs = []
         free_el = None
         for slot in slots:
-            el_id = self._add_element(op_id, slot, self.reg.output_type(req.record, slot, args), names[slot])
+            el_id = self._add_element(op_id, slot, self.reg.output_type(req.record, slot, args, self.W), names[slot])
             outputs.append({'slot': slot, 'elementId': el_id})
             free_el = free_el or el_id
         self.W['operations'][op_id] = {'id': op_id, 'op': req.op, 'args': args, 'outputs': outputs}
@@ -720,7 +720,7 @@ class _Builder:
             known = {s: self.W['elements'][e].get('displayName') or '' for s, e in present.items()}
             names = self._default_names(req, args, slots, {**known, **given})
             for slot in missing:
-                present[slot] = self._add_element(op_id, slot, self.reg.output_type(req.record, slot, args),
+                present[slot] = self._add_element(op_id, slot, self.reg.output_type(req.record, slot, args, self.W),
                                                   names[slot])
         for slot, name in given.items():
             self._set_name(present[slot], name)

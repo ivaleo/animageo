@@ -336,7 +336,7 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
             continue
         record = reg.get(ops[producer]['op'])
         if record is not None:
-            out_type = reg.output_type(record, el['producer']['slot'], ops[producer]['args'])
+            out_type = reg.output_type(record, el['producer']['slot'], ops[producer]['args'], doc)
             if out_type is None:
                 states[el_id] = state_record('error', el['type'], 'schema')
                 continue

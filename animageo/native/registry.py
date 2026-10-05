@@ -16,7 +16,7 @@ path parameter — and nothing descriptive (phrases, checks, status, math)::
         "op": op,
         "inputs":  [{"slot", "type", "list": bool = false, "min": int | null}],
         "params":  [{"slot", "type", "unit": str | null}],   # optional/default are outside
-        "outputs": [{"slot", "type", "repeat": str | null}],
+        "outputs": [{"slot", "type", "repeat": str | null, "like"?: str}],  # like only when set
         "free": {...} | null,
         "branch": branch.policy | null,
         "orientation": str | null,
@@ -111,15 +111,29 @@ def signature(record: dict) -> dict:
             {'slot': item['slot'], 'type': item['type'], 'unit': item.get('unit')}
             for item in record.get('params', [])
         ],
-        'outputs': [
-            {'slot': item['slot'], 'type': item['type'], 'repeat': item.get('repeat')}
-            for item in record.get('outputs', [])
-        ],
+        'outputs': [_output_signature(item) for item in record.get('outputs', [])],
         'free': record.get('free'),
         'branch': branch.get('policy') if isinstance(branch, dict) else None,
         'orientation': record.get('orientation'),
         'pathParam': record.get('pathParam'),
     }
+
+
+def _output_signature(item: dict) -> dict:
+    out = {'slot': item['slot'], 'type': item['type'], 'repeat': item.get('repeat')}
+    if item.get('like') is not None:          # registry 1.4: absent from older records, so their hashes stay
+        out['like'] = item['like']
+    return out
+
+
+def _graph_maps(graph):
+    """``(operations, elements)`` of a document graph: a :class:`NativeDocument`
+    (``.operations``, ``.elements``) or a dict with those keys."""
+    if graph is None:
+        return None
+    if isinstance(graph, dict):
+        return graph.get('operations') or {}, graph.get('elements') or {}
+    return graph.operations, graph.elements
 
 
 def signature_hash(record: dict) -> str:
@@ -153,19 +167,25 @@ class Registry:
             return True
         return element_type in self.families.get(slot_type, ())
 
-    def output_type(self, record: dict, slot: str, args: dict | None = None):
+    def output_type(self, record: dict, slot: str, args: dict | None = None, graph=None):
         """Type of output ``slot`` of ``record``, or ``None`` if there is no such slot.
 
         A ``repeat`` output ``side`` over the list input ``vertices`` declares
         the slots ``side.1`` … ``side.N``, ``N`` being the number of items of
         ``args['vertices']`` (any positive index when ``args`` is not given);
         a ``repeat`` naming a param ``n`` declares :func:`repeat_count` of its
-        value (the default when absent).
+        value (the default when absent); a ``repeat`` naming a reference input
+        (registry 1.4) declares the vertex count of that element in ``graph``
+        (:meth:`vertex_count`). An output with ``like`` has the type of the
+        element of that input in ``graph`` (its declared type when ``args`` is
+        not given). ``graph`` is the document (``operations``, ``elements``).
         """
         for out in record.get('outputs', []):
             repeat = out.get('repeat')
             if repeat is None:
                 if out['slot'] == slot:
+                    if out.get('like') is not None and args is not None:
+                        return self._like_type(out, args, graph)
                     return out['type']
                 continue
             match = _REPEAT_SLOT.match(slot)
@@ -173,13 +193,22 @@ class Registry:
                 continue
             if args is None:
                 return out['type']
-            if int(match.group('index')) <= self._repeat_count(record, repeat, args):
+            if int(match.group('index')) <= self._repeat_count(record, repeat, args, graph):
                 return out['type']
             return None
         return None
 
-    @staticmethod
-    def _repeat_count(record: dict, repeat: str, args: dict) -> int:
+    def _like_type(self, out: dict, args: dict, graph):
+        arg = args.get(out['like'])
+        maps = _graph_maps(graph)
+        if maps is None or not isinstance(arg, dict) or arg.get('kind') != 'ref':
+            return None
+        element = maps[1].get(arg.get('elementId'))
+        if element is None or not self.accepts(out['type'], element.get('type')):
+            return None
+        return element['type']
+
+    def _repeat_count(self, record: dict, repeat: str, args: dict, graph=None, _seen=frozenset()) -> int:
         for param in record.get('params', []):
             if param['slot'] == repeat:
                 arg = args.get(repeat)
@@ -189,9 +218,33 @@ class Registry:
         arg = args.get(repeat)
         if isinstance(arg, dict) and arg.get('kind') == 'list' and isinstance(arg.get('items'), list):
             return len(arg['items'])
+        if isinstance(arg, dict) and arg.get('kind') == 'ref':
+            return self.vertex_count(graph, arg.get('elementId'), _seen)
         return 0
 
-    def output_slots(self, record: dict, args: dict) -> list:
+    def vertex_count(self, graph, element_id, _seen=frozenset()) -> int:
+        """The number of vertices of the ``polygon`` element ``element_id`` of
+        ``graph``, read from the structure of its producer: the number of its
+        ``side.i`` slots (``0`` for an element of another type, a missing
+        producer, an unknown op or a cycle)."""
+        maps = _graph_maps(graph)
+        if maps is None:
+            return 0
+        operations, elements = maps
+        element = elements.get(element_id)
+        if not isinstance(element, dict) or element.get('type') != 'polygon':
+            return 0
+        op_id = (element.get('producer') or {}).get('operationId')
+        op = operations.get(op_id)
+        if op is None or op_id in _seen:
+            return 0
+        record = self.get(op.get('op'))
+        if record is None:
+            return 0
+        slots = self.output_slots(record, op.get('args') or {}, graph, _seen | {op_id})
+        return sum(1 for s in slots if s.startswith('side.'))
+
+    def output_slots(self, record: dict, args: dict, graph=None, _seen=frozenset()) -> list:
         """All output slots of ``record`` for ``args``, in canonical order."""
         slots = []
         for out in record.get('outputs', []):
@@ -199,7 +252,7 @@ class Registry:
             if repeat is None:
                 slots.append(out['slot'])
                 continue
-            count = self._repeat_count(record, repeat, args)
+            count = self._repeat_count(record, repeat, args, graph, _seen)
             slots.extend(f"{out['slot']}.{i}" for i in range(1, count + 1))
         return slots
 
@@ -286,6 +339,7 @@ def registry_problems(reg: Registry | None = None) -> list:
         for item in record.get('inputs', []) + record.get('outputs', []):
             if item['type'] not in known_types:
                 problems.append(f"{op}: unknown type {item['type']!r} of slot {item['slot']!r}")
+        problems.extend(_output_problems(op, record))
         branch = record.get('branch')
         policy = branch.get('policy') if isinstance(branch, dict) else None
         if policy is not None and policy not in reg.policies:
@@ -299,6 +353,22 @@ def registry_problems(reg: Registry | None = None) -> list:
     if reg.index != index:
         problems.append('INDEX.json is out of date; run: python -m animageo.native registry index')
     return problems
+
+
+def _output_problems(op: str, record: dict) -> list:
+    """``like`` names a single reference input; ``repeat`` names a param, a list
+    input or a single input of type ``polygon`` (or a family with it)."""
+    out = []
+    params = {p['slot'] for p in record.get('params', [])}
+    inputs = {i['slot']: i for i in record.get('inputs', [])}
+    for item in record.get('outputs', []):
+        like = item.get('like')
+        if like is not None and (like not in inputs or inputs[like].get('list')):
+            out.append(f"{op}: output {item['slot']!r} is like {like!r}, not a single input")
+        repeat = item.get('repeat')
+        if repeat is not None and repeat not in params and repeat not in inputs:
+            out.append(f"{op}: output {item['slot']!r} repeats by unknown slot {repeat!r}")
+    return out
 
 
 def _param_problems(op: str, record: dict) -> list:

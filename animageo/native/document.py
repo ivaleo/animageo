@@ -727,7 +727,7 @@ def validate(doc) -> list:
                 issues.append(Issue('duplicate_output', opath + '/elementId',
                                     f'element {el_id!r} is bound twice', operationId=op_id, elementId=el_id))
             bound_by.setdefault(el_id, op_id)
-            if record is not None and reg.output_type(record, slot, args) is None:
+            if record is not None and reg.output_type(record, slot, args, doc) is None:
                 issues.append(Issue('unknown_slot', opath + '/slot', f"{op['op']} has no output slot {slot!r}",
                                     operationId=op_id))
             el = elements.get(el_id)
@@ -756,7 +756,7 @@ def validate(doc) -> list:
         record = reg.get(op['op'])
         if record is None:
             continue
-        out_type = reg.output_type(record, prod['slot'], op['args'])
+        out_type = reg.output_type(record, prod['slot'], op['args'], doc)
         if out_type is not None and out_type != el['type']:
             issues.append(Issue('type_mismatch', path + '/type',
                                 f"slot {prod['slot']!r} of {op['op']} produces {out_type}, not {el['type']}",

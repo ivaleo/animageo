@@ -811,6 +811,111 @@ def _by_size_rotation(args, result, tol):
                abs(wrap_angle(ang['a0'] - first)) * tol.scale, abs(wrap_angle(ang['a1'] - second)) * tol.scale)
 
 
+def _transform_point(op_name, args):
+    """The map of a transformation as ``(x, y) → (x', y')``, written apart from
+    the op (``ops/transform.*.md``)."""
+    if op_name == 'transform.translate':
+        v = args['vector'].value
+        return lambda x, y: (x + (v['b'][0] - v['a'][0]), y + (v['b'][1] - v['a'][1]))
+    if op_name == 'transform.rotate':
+        alpha = _number(args['angle'])
+        cx, cy = _pt(args['center'].value)
+        return lambda x, y: (cx + math.hypot(x - cx, y - cy) * math.cos(math.atan2(y - cy, x - cx) + alpha),
+                             cy + math.hypot(x - cx, y - cy) * math.sin(math.atan2(y - cy, x - cx) + alpha))
+    if op_name == 'transform.reflect_line':
+        inp = args['line']
+        v = inp.value
+        o = v['p'] if inp.type == 'line' else v['origin'] if inp.type == 'ray' else v['a']
+        d = _dir_of(inp)
+
+        def reflect(x, y):
+            s = (x - o[0]) * d[0] + (y - o[1]) * d[1]
+            fx, fy = o[0] + s * d[0], o[1] + s * d[1]            # the foot on the line
+            return 2 * fx - x, 2 * fy - y
+        return reflect
+    if op_name == 'transform.reflect_point':
+        cx, cy = _pt(args['point'].value)
+        return lambda x, y: (2 * cx - x, 2 * cy - y)
+    k = _number(args['factor'])
+    cx, cy = _pt(args['center'].value)
+    return lambda x, y: (cx + k * (x - cx), cy + k * (y - cy))
+
+
+def _image_error(op_name, args, result, tol):
+    f = _transform_point(op_name, args)
+    obj = args['obj']
+    v = obj.value
+    img = result['image']
+    pairs = []
+    if obj.type == 'point':
+        pairs.append((f(v['x'], v['y']), _pt(img)))
+    elif obj.type in ('segment', 'vector'):
+        pairs += [(f(*v['a']), _pt(img['a'])), (f(*v['b']), _pt(img['b']))]
+    elif obj.type == 'ray':
+        o = f(*v['origin'])
+        e = f(v['origin'][0] + v['dir'][0], v['origin'][1] + v['dir'][1])
+        d = (e[0] - o[0], e[1] - o[1])
+        length = math.hypot(*d)
+        return max(_dist(o, _pt(img['origin'])), _udist((d[0] / length, d[1] / length), _pt(img['dir'])) * tol.scale)
+    elif obj.type == 'line':
+        p0 = f(*v['p'])
+        p1 = f(v['p'][0] + v['dir'][0], v['p'][1] + v['dir'][1])
+        d = (p1[0] - p0[0], p1[1] - p0[1])
+        length = math.hypot(*d)
+        line = img
+        errs = [_distance_to_line(p0[0], p0[1], line), _distance_to_line(p1[0], p1[1], line),
+                _udist((d[0] / length, d[1] / length), _pt(line['dir'])) * tol.scale]
+        return max(errs)
+    elif obj.type == 'circle':
+        c = f(*v['c'])
+        s = f(v['c'][0] + v['r'], v['c'][1])
+        return max(_dist(c, _pt(img['c'])), abs(_dist(c, s) - img['r']))
+    elif obj.type in ('arc', 'sector'):
+        c = f(*v['c'])
+        s0 = f(v['c'][0] + v['r'] * math.cos(v['a0']), v['c'][1] + v['r'] * math.sin(v['a0']))
+        s1 = f(v['c'][0] + v['r'] * math.cos(v['a1']), v['c'][1] + v['r'] * math.sin(v['a1']))
+        if op_name == 'transform.reflect_line':
+            s0, s1 = s1, s0
+        ic = _pt(img['c'])
+        e0 = (ic[0] + img['r'] * math.cos(img['a0']), ic[1] + img['r'] * math.sin(img['a0']))
+        e1 = (ic[0] + img['r'] * math.cos(img['a1']), ic[1] + img['r'] * math.sin(img['a1']))
+        return max(_dist(c, ic), abs(_dist(c, s0) - img['r']), _dist(s0, e0), _dist(s1, e1),
+                   abs((img['a1'] - img['a0']) - (v['a1'] - v['a0'])) * tol.scale)
+    else:
+        vs = [f(x, y) for x, y in v['vertices']]
+        n = len(vs)
+        for k in range(n):
+            pairs.append((vs[k], _pt(img['vertices'][k])))
+            pairs.append((vs[k], _pt(result[f'vertex.{k + 1}'])))
+            side = result[f'side.{k + 1}']
+            pairs.append((vs[k], _pt(side['a'])))
+            pairs.append((vs[(k + 1) % n], _pt(side['b'])))
+    return max(_dist(p, q) for p, q in pairs)
+
+
+for _op in ('transform.translate', 'transform.rotate', 'transform.reflect_line', 'transform.reflect_point',
+            'transform.dilate'):
+    register_check(_op, 'image')(lambda args, result, tol, _op=_op: _image_error(_op, args, result, tol))
+
+
+@register_check('measure.polygon_angles', 'interior')
+def _polygon_angles_interior(args, result, tol):
+    vs = args['polygon'].value['vertices']
+    n = len(vs)
+    acc = sum(vs[i][0] * vs[(i + 1) % n][1] - vs[(i + 1) % n][0] * vs[i][1] for i in range(n))
+    err = 0.0
+    for k in range(n):
+        ang = result[f'angle.{k + 1}']
+        v = vs[k]
+        prev, nxt = vs[k - 1], vs[(k + 1) % n]
+        first, second = (nxt, prev) if acc > 0 else (prev, nxt)
+        t1 = math.atan2(first[1] - v[1], first[0] - v[0])
+        t2 = math.atan2(second[1] - v[1], second[0] - v[0])
+        err = max(err, _dist(_pt(ang['vertex']), v), abs(wrap_angle(ang['a0'] - t1)) * tol.scale,
+                  abs(wrap_angle(ang['a1'] - t2)) * tol.scale)
+    return err
+
+
 def run_checks(evaluated, keys=None) -> CheckReport:
     """Run the registry checks over an :class:`~.evaluate.Evaluated` result.
 

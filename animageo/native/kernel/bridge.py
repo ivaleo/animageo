@@ -406,7 +406,7 @@ def build_construction(doc, *, inputs=None, seed=None):
         record = reg.get(ops[producer]['op']) if producer is not None else None
         if record is None:
             continue
-        out_type = reg.output_type(record, elements[el_id]['producer']['slot'], ops[producer]['args'])
+        out_type = reg.output_type(record, elements[el_id]['producer']['slot'], ops[producer]['args'], doc)
         if out_type is not None and out_type == elements[el_id]['type']:
             bound.setdefault(producer, []).append(el_id)
 
