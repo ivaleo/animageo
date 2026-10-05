@@ -1,0 +1,754 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a5_number_expression",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a5_number_expression",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_a": {
+        "id": "op_a",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "a"
+          }
+        ]
+      },
+      "op_b": {
+        "id": "op_b",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "b"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_L": {
+        "id": "op_L",
+        "op": "measure.length",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "L"
+          }
+        ]
+      },
+      "op_e1": {
+        "id": "op_e1",
+        "op": "number.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "+",
+              "args": [
+                {
+                  "fn": "sqrt",
+                  "args": [
+                    {
+                      "ref": 0
+                    }
+                  ]
+                },
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "ref": 1
+                    },
+                    {
+                      "num": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "a"
+              },
+              {
+                "kind": "ref",
+                "elementId": "b"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "e1"
+          }
+        ]
+      },
+      "op_e2": {
+        "id": "op_e2",
+        "op": "number.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "/",
+              "args": [
+                {
+                  "fn": "ln",
+                  "args": [
+                    {
+                      "ref": 0
+                    }
+                  ]
+                },
+                {
+                  "op": "-",
+                  "args": [
+                    {
+                      "ref": 1
+                    },
+                    {
+                      "num": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "a"
+              },
+              {
+                "kind": "ref",
+                "elementId": "b"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "e2"
+          }
+        ]
+      },
+      "op_e3": {
+        "id": "op_e3",
+        "op": "number.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "*",
+                  "args": [
+                    {
+                      "fn": "exp",
+                      "args": [
+                        {
+                          "ref": 1
+                        }
+                      ]
+                    },
+                    {
+                      "const": "pi"
+                    }
+                  ]
+                },
+                {
+                  "fn": "max",
+                  "args": [
+                    {
+                      "ref": 0
+                    },
+                    {
+                      "ref": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "a"
+              },
+              {
+                "kind": "ref",
+                "elementId": "b"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "e3"
+          }
+        ]
+      },
+      "op_e4": {
+        "id": "op_e4",
+        "op": "number.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "fn": "asin",
+              "args": [
+                {
+                  "op": "/",
+                  "args": [
+                    {
+                      "ref": 1
+                    },
+                    {
+                      "ref": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "a"
+              },
+              {
+                "kind": "ref",
+                "elementId": "b"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "e4"
+          }
+        ]
+      },
+      "op_e5": {
+        "id": "op_e5",
+        "op": "number.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "+",
+              "args": [
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "ref": 0
+                    },
+                    {
+                      "num": -2
+                    }
+                  ]
+                },
+                {
+                  "op": "*",
+                  "args": [
+                    {
+                      "fn": "abs",
+                      "args": [
+                        {
+                          "op": "neg",
+                          "args": [
+                            {
+                              "ref": 1
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "fn": "lg",
+                      "args": [
+                        {
+                          "ref": 0
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "a"
+              },
+              {
+                "kind": "ref",
+                "elementId": "b"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "e5"
+          }
+        ]
+      },
+      "op_e6": {
+        "id": "op_e6",
+        "op": "number.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "fn": "cos",
+                      "args": [
+                        {
+                          "ref": 0
+                        }
+                      ]
+                    },
+                    {
+                      "fn": "sin",
+                      "args": [
+                        {
+                          "ref": 1
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "*",
+                  "args": [
+                    {
+                      "fn": "tan",
+                      "args": [
+                        {
+                          "num": 0.5
+                        }
+                      ]
+                    },
+                    {
+                      "fn": "min",
+                      "args": [
+                        {
+                          "fn": "atan",
+                          "args": [
+                            {
+                              "ref": 0
+                            }
+                          ]
+                        },
+                        {
+                          "fn": "acos",
+                          "args": [
+                            {
+                              "num": 0.25
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "a"
+              },
+              {
+                "kind": "ref",
+                "elementId": "b"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "e6"
+          }
+        ]
+      },
+      "op_e7": {
+        "id": "op_e7",
+        "op": "number.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "*",
+              "args": [
+                {
+                  "num": 2
+                },
+                {
+                  "const": "pi"
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "e7"
+          }
+        ]
+      },
+      "op_e8": {
+        "id": "op_e8",
+        "op": "number.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "/",
+              "args": [
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "ref": 0
+                    },
+                    {
+                      "num": 2
+                    }
+                  ]
+                },
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "ref": 1
+                    },
+                    {
+                      "num": 0.5
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "L"
+              },
+              {
+                "kind": "ref",
+                "elementId": "a"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "e8"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "a": {
+        "id": "a",
+        "type": "number",
+        "displayName": "a",
+        "producer": {
+          "operationId": "op_a",
+          "slot": "number"
+        }
+      },
+      "b": {
+        "id": "b",
+        "type": "number",
+        "displayName": "b",
+        "producer": {
+          "operationId": "op_b",
+          "slot": "number"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "L": {
+        "id": "L",
+        "type": "number",
+        "displayName": "L",
+        "producer": {
+          "operationId": "op_L",
+          "slot": "number"
+        }
+      },
+      "e1": {
+        "id": "e1",
+        "type": "number",
+        "displayName": "e1",
+        "producer": {
+          "operationId": "op_e1",
+          "slot": "number"
+        }
+      },
+      "e2": {
+        "id": "e2",
+        "type": "number",
+        "displayName": "e2",
+        "producer": {
+          "operationId": "op_e2",
+          "slot": "number"
+        }
+      },
+      "e3": {
+        "id": "e3",
+        "type": "number",
+        "displayName": "e3",
+        "producer": {
+          "operationId": "op_e3",
+          "slot": "number"
+        }
+      },
+      "e4": {
+        "id": "e4",
+        "type": "number",
+        "displayName": "e4",
+        "producer": {
+          "operationId": "op_e4",
+          "slot": "number"
+        }
+      },
+      "e5": {
+        "id": "e5",
+        "type": "number",
+        "displayName": "e5",
+        "producer": {
+          "operationId": "op_e5",
+          "slot": "number"
+        }
+      },
+      "e6": {
+        "id": "e6",
+        "type": "number",
+        "displayName": "e6",
+        "producer": {
+          "operationId": "op_e6",
+          "slot": "number"
+        }
+      },
+      "e7": {
+        "id": "e7",
+        "type": "number",
+        "displayName": "e7",
+        "producer": {
+          "operationId": "op_e7",
+          "slot": "number"
+        }
+      },
+      "e8": {
+        "id": "e8",
+        "type": "number",
+        "displayName": "e8",
+        "producer": {
+          "operationId": "op_e8",
+          "slot": "number"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -3,
+          -1
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          3,
+          3
+        ]
+      },
+      "a": {
+        "kind": "number",
+        "value": 4
+      },
+      "b": {
+        "kind": "number",
+        "value": 2
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "other_values",
+      "inputs": {
+        "a": {
+          "kind": "number",
+          "value": 9
+        },
+        "b": {
+          "kind": "number",
+          "value": 0.5
+        },
+        "Q": {
+          "kind": "point",
+          "value": [
+            1,
+            4
+          ]
+        }
+      }
+    },
+    {
+      "name": "division_by_zero",
+      "inputs": {
+        "b": {
+          "kind": "number",
+          "value": 1
+        }
+      }
+    },
+    {
+      "name": "outside_the_domain",
+      "inputs": {
+        "a": {
+          "kind": "number",
+          "value": -1
+        }
+      }
+    },
+    {
+      "name": "overflow",
+      "inputs": {
+        "b": {
+          "kind": "number",
+          "value": 1000
+        }
+      }
+    }
+  ]
+}

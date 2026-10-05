@@ -453,6 +453,7 @@ def build_construction(doc, *, inputs=None, seed=None):
         input_names = [names.by_id[r] for _slot, _is_list, ids in resolved.refs for r in ids]
         constants = dict(resolved.params)
         constants.update({slot: number_literal(v) for slot, v in resolved.literals.items()})
+        constants.update({slot: Input('expr', ast) for slot, ast in resolved.exprs.items()})
         path_frame = None
         tparam_of = None
         free_value = None

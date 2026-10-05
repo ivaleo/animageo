@@ -39,7 +39,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     input; in the signature only when set, so earlier hashes stay) and a
     `repeat` that names a single reference input (the vertex count of that
     polygon, read from the slots of its producer); `output_type` and
-    `output_slots` take the document graph; six more scenes `l2a5_*`.
+    `output_slots` take the document graph; six more scenes `l2a5_*`;
+  - `number.expression` — a number computed by a formula: the new argument
+    kind `{"kind": "expr", "ast": Expr}` (document schema and structure
+    check) holds a tree of AST v1 (`docs/native/expr.md`): numbers, `pi`,
+    `{"ref": k}` into the list input `refs`, `+ - * / ^`, unary minus,
+    `sqrt abs sin cos tan asin acos atan exp ln lg min max`; depth at most
+    32, at most 256 nodes, integer literal powers up to 64. A tree outside
+    these rules is the `validate` issue `formula` with a JSON pointer to
+    the node and the state `error/formula`; evaluation walks the tree (no
+    `eval`) and gives `out_of_domain` or `non_finite`. AST v1 is a subset
+    of the planned AST v2, so v1 trees stay valid. Package
+    `animageo.native.expr` (`problems`, `evaluate`, `to_text`); the type
+    `expr` and the limits `expr` join `_types.json` and `_numeric.json`.
+    «Команды» print the formula (`e = sqrt(a) + b^3`) with the warning
+    `unprintable_operation`: the grammar has no expressions yet, the line
+    reads back as `forbidden` and an edit keeps the operation.
 
 ## [1.8.1a4] - 2026-10-05
 

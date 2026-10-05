@@ -321,6 +321,11 @@ def _invalid_documents():
         lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'number', 'value': '1'}))
     yield 'bool as number', variant(
         lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'number', 'value': True}))
+    yield 'expr without ast', variant(lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'expr'}))
+    yield 'expr ast not an object', variant(
+        lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'expr', 'ast': [1]}))
+    yield 'expr extra key', variant(
+        lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'expr', 'ast': {'num': 1}, 'text': '1'}))
     yield 'bad output slot', variant(lambda d: d['operations']['op_M']['outputs'][0].__setitem__('slot', 'side.0'))
     yield 'output extra key', variant(lambda d: d['operations']['op_M']['outputs'][0].__setitem__('x', 1))
     yield 'outputs not array', variant(lambda d: d['operations']['op_M'].__setitem__('outputs', {}))

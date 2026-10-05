@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://animageo.ru/schema/animageo-construction/v1.json",
   "title": "animageo-construction/v1",
-  "description": "Construction document read by animageo.native (ref, list and number arguments; point, pathParameter, number and angle inputs). Sections the library does not interpret (appearance, styleBinding, timeline, exportDefaults, bindings, workIntent, unknown top-level keys) are kept as is; appearance entries may carry locked (a boolean) and workIntent has a fixed shape, both ignored by evaluation. Rules checked by the library but not written here: viewDefaults.bounds needs xmin < xmax and ymin < ymax.",
+  "description": "Construction document read by animageo.native (ref, list, number and expr arguments; point, pathParameter, number and angle inputs). Sections the library does not interpret (appearance, styleBinding, timeline, exportDefaults, bindings, workIntent, unknown top-level keys) are kept as is; appearance entries may carry locked (a boolean) and workIntent has a fixed shape, both ignored by evaluation. Rules checked by the library but not written here: viewDefaults.bounds needs xmin < xmax and ymin < ymax.",
   "type": "object",
   "required": [
     "format",
@@ -126,7 +126,8 @@
           "enum": [
             "ref",
             "list",
-            "number"
+            "number",
+            "expr"
           ]
         }
       },
@@ -139,6 +140,9 @@
         },
         {
           "$ref": "#/$defs/numberArgument"
+        },
+        {
+          "$ref": "#/$defs/exprArgument"
         }
       ]
     },
@@ -189,6 +193,23 @@
         },
         "value": {
           "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "exprArgument": {
+      "description": "AST v1 of number.expression (docs/native/expr.md); the schema checks only that ast is an object, validate checks the tree (formula)",
+      "type": "object",
+      "required": [
+        "kind",
+        "ast"
+      ],
+      "properties": {
+        "kind": {
+          "const": "expr"
+        },
+        "ast": {
+          "type": "object"
         }
       },
       "additionalProperties": false

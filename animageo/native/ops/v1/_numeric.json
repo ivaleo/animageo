@@ -15,6 +15,12 @@
     "parity.area": "times S^2",
     "parity.scalar": "absolute"
   },
+  "expr": {
+    "maxDepth": 32,
+    "maxNodes": 256,
+    "maxIntegerPower": 64,
+    "text": "limits of AST v1 (docs/native/expr.md): the root is at depth 1; maxIntegerPower bounds |n| of an integer literal exponent; a tree over a limit is the issue formula"
+  },
   "generator": {
     "decisionMargin": 1000,
     "rule": "refuse a case when a degeneracy decision value m satisfies 0 < |m| < decisionMargin * tol, tol being the decide tolerance of that decision",

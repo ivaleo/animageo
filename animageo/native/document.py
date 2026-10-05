@@ -20,6 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .canonical import canonical_json, sha256_of
+from .expr import problems as expr_problems
 from .registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, free_slot, registry
 
 __all__ = [
@@ -266,8 +267,12 @@ class _Structure:
             self.keys(arg, path, 'a number argument', ('kind', 'value'), ('kind', 'value'), operationId=op_id)
             if 'value' in arg and not _is_number(arg['value']):
                 self.add(path + '/value', 'value must be a number', operationId=op_id)
+        elif kind == 'expr':           # registry 1.4 (a5): the tree itself is checked by validate (formula)
+            self.keys(arg, path, 'an expr argument', ('kind', 'ast'), ('kind', 'ast'), operationId=op_id)
+            if 'ast' in arg:
+                self.object(arg['ast'], path + '/ast', 'ast')
         else:
-            self.add(path + '/kind', f'unknown argument kind {kind!r} (ref, list, number)', operationId=op_id)
+            self.add(path + '/kind', f'unknown argument kind {kind!r} (ref, list, number, expr)', operationId=op_id)
 
     def operation(self, key, op, path):
         if not self.object(op, path, 'an operation'):
@@ -668,6 +673,17 @@ def validate(doc) -> list:
                 if arg is None:
                     issues.append(Issue('missing_slot', spath, f"{op['op']} needs argument {slot!r}",
                                         operationId=op_id))
+                    continue
+                if item['type'] == 'expr':
+                    if arg['kind'] != 'expr':
+                        issues.append(Issue('type_mismatch', spath, f'argument {slot!r} must be an expression',
+                                            operationId=op_id))
+                        continue
+                    refs_arg = args.get('refs')
+                    count = len(refs_arg['items']) if isinstance(refs_arg, dict) and refs_arg['kind'] == 'list' \
+                        else None
+                    for pointer, message in expr_problems(arg['ast'], count):
+                        issues.append(Issue('formula', spath + '/ast' + pointer, message, operationId=op_id))
                     continue
                 if item.get('list'):
                     if arg['kind'] != 'list':

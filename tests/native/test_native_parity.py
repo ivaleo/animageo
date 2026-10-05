@@ -35,7 +35,7 @@ REQUIRED_SCENES = {
     # registry 1.4, 1.8.1a5
     'l2a5_angle_lines', 'l2a5_angle_vectors', 'l2a5_angle_by_size', 'l2a5_number_angle', 'l2a5_measures',
     'l2a5_distance', 'l2a5_polygon_angles', 'l2a5_translate', 'l2a5_rotate', 'l2a5_reflect_line',
-    'l2a5_reflect_point', 'l2a5_dilate',
+    'l2a5_reflect_point', 'l2a5_dilate', 'l2a5_number_expression',
 }
 
 

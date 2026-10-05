@@ -101,5 +101,44 @@
     },
     "math": "docs/native/ops/number.angle.md",
     "signatureHash": "sha256:6417bcd5a01b1a097a59cd8c2aa44625023021db8a73cd495d57f4dbb756d7fa"
+  },
+  {
+    "op": "number.expression",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "expr",
+        "type": "expr"
+      },
+      {
+        "slot": "refs",
+        "type": "number",
+        "list": true,
+        "min": 0
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "out_of_domain",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "number",
+    "phrases": {
+      "ru": "{number} = {expr}"
+    },
+    "math": "docs/native/ops/number.expression.md",
+    "signatureHash": "sha256:505399eccb4aa57b83b582daf2430cec60b49bbfefe864ef30e6d27f4429fb9f"
   }
 ]

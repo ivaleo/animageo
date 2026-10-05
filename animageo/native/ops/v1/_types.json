@@ -51,6 +51,11 @@
     "polyline": {
       "value": {"vertices": "length", "length": "length"},
       "text": "polyline {vertices: [[x, y], ...], length}; at least two vertices in definition order, length is the sum of the links"
+    },
+    "expr": {
+      "value": {},
+      "argument": true,
+      "text": "expr: the type of an input slot that takes the argument {kind: \"expr\", ast} (AST v1, docs/native/expr.md), not of an element; {ref: k} reads item k of the list input refs of the same operation"
     }
   },
   "markKinds": {"equal_segments": "mark.equal_segments", "equal_angles": "mark.equal_angles", "right_angle": "mark.right_angle"},

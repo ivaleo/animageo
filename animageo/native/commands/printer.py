@@ -15,6 +15,8 @@ from typing import NamedTuple
 
 from ..document import as_document, bound_producer, cyclic_operations, iter_refs, op_dependencies
 from ..edit import name_key
+from ..expr import problems as expr_problems
+from ..expr import to_text as expr_text
 from ..kernel.evaluate import _order
 from ..registry import FREE_INPUT_DEFAULTS, registry
 from .build import HELPER_OPS, helper_key, is_helper, pair_op
@@ -162,12 +164,25 @@ class _Printer:
             return [('?', '', True)]
         if arg.get('kind') == 'number':
             return [(format_number(arg.get('value')), NUM, False)]
+        if arg.get('kind') == 'expr':
+            return [('выражение', '', True)]
         if arg.get('kind') == 'list':
             out = []
             for item in arg.get('items') or ():
                 out.extend(self._arg(item, position))
             return out
         return [self._ref(arg.get('elementId'), position)]
+
+    def _expression_text(self, op: dict):
+        """The text of a valid ``number.expression`` (``sqrt(a) + b^3``), else ``None``."""
+        args = op.get('args') or {}
+        expr, refs = args.get('expr'), args.get('refs')
+        items = refs.get('items') if isinstance(refs, dict) and refs.get('kind') == 'list' else None
+        if (not isinstance(expr, dict) or expr.get('kind') != 'expr' or not isinstance(items, list)
+                or not all(isinstance(i, dict) and i.get('kind') == 'ref' for i in items)
+                or expr_problems(expr.get('ast'), len(items))):
+            return None
+        return expr_text(expr['ast'], [self._ref(i.get('elementId'), None)[0] for i in items])
 
     def _free_value(self, op: dict, record: dict):
         free = record.get('free')
@@ -313,6 +328,13 @@ class _Printer:
             value = self._free_value(op, record)
             if value is not None:
                 return f'{prefix}{format_number(value)}', info
+        if op['op'] == 'number.expression':
+            text = self._expression_text(op)
+            if text is not None:
+                # the grammar of «Команды» has no expressions yet: the line reads
+                # back as the error forbidden, and an edit keeps the operation
+                self._warn('unprintable_operation', line_no, column, 'выражения в «Командах» будут позже')
+                return f'{prefix}{text}', info
         call = self._call(op, record)
         if call is None:
             # an operation that does not fit its registry record: print what it

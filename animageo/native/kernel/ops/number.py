@@ -1,6 +1,7 @@
-"""``number.free`` (docs/native/ops/number.free.md)."""
+"""``number.free``, ``number.angle``, ``number.expression`` (docs/native/ops/number.*.md)."""
 from __future__ import annotations
 
+from ...expr import ExprError, evaluate
 from ..values import Undefined
 from . import op
 
@@ -37,3 +38,13 @@ def angle(args, ctx):
     if hi is not None and v > hi:
         v = hi
     return {'number': {'value': v, 'unit': 'angle'}}
+
+
+@op('number.expression')
+def expression(args, ctx):
+    refs = [item.value['value'] for item in args['refs']]
+    try:
+        value = evaluate(args['expr'].value, refs)
+    except ExprError as exc:
+        return {'number': Undefined(exc.reason)}
+    return {'number': {'value': value, 'unit': 'scalar'}}

@@ -43,7 +43,7 @@ L2A4_OPS = {
     'intersect.line_sector',
 }
 L2A5_OPS = {
-    'angle.between_lines', 'angle.between_vectors', 'angle.by_size', 'number.angle',
+    'angle.between_lines', 'angle.between_vectors', 'angle.by_size', 'number.angle', 'number.expression',
     'measure.length', 'measure.distance', 'measure.area', 'measure.perimeter', 'measure.angle',
     'measure.radius', 'measure.circumference', 'measure.polygon_angles',
     'transform.translate', 'transform.rotate', 'transform.reflect_line', 'transform.reflect_point',
