@@ -179,8 +179,26 @@ def _is_finite_number(value) -> bool:
     return _is_number(value) and math.isfinite(value)
 
 
+def _json_clean(value) -> bool:
+    """``True`` when ``value`` is plain JSON (exact built-in types, finite
+    numbers, string keys); anything else goes to :func:`_json_issues`, which
+    builds the pointers only then."""
+    t = type(value)
+    if t is str or t is int or t is bool or value is None:
+        return True
+    if t is float:
+        return math.isfinite(value)
+    if t is dict:
+        return all(type(k) is str and _json_clean(v) for k, v in value.items())
+    if t is list:
+        return all(_json_clean(v) for v in value)
+    return False
+
+
 def _json_issues(value, path, out):
     """Values a JSON document cannot hold (NaN, ∞, non-string keys, objects)."""
+    if _json_clean(value):
+        return
     if value is None or isinstance(value, (bool, str)):
         return
     if _is_number(value):
@@ -554,6 +572,24 @@ def structure_issues(data) -> list:
     _json_issues(data, '', issues)
     checker = _Structure()
     checker.document(data)
+    return issues + checker.issues
+
+
+def structure_issues_of(data, *, operations=(), elements=(), inputs=()) -> list:
+    """Structural issues of the named records only: an edit of a document
+    already known to be well formed (``redefine`` inside ``apply_condition``)."""
+    issues: list = []
+    checker = _Structure()
+    for section, keys, check in (('operations', operations, checker.operation),
+                                 ('elements', elements, checker.element),
+                                 ('inputs', inputs, checker.input_value)):
+        records = data.get(section) or {}
+        for key in keys:
+            if key in records:
+                path = '/' + section + _pointer(key)
+                _json_issues(records[key], path, issues)
+                checker.string(key, path, f'a key of {section}', ID_RE)
+                check(key, records[key], path)
     return issues + checker.issues
 
 

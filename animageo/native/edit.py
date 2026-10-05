@@ -28,8 +28,9 @@ from .document import (
     as_document,
     bound_producer,
     cyclic_operations,
-    load,
     op_dependencies,
+    structure_issues,
+    structure_issues_of,
     validate,
 )
 from .registry import FREE_INPUT_DEFAULTS, registry
@@ -314,7 +315,7 @@ def redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> Ed
     return _redefine(doc, op_id, new_op, slot_map=slot_map, inputs=inputs)
 
 
-def _redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> EditResult:
+def _redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None, _take: bool = False) -> EditResult:
     """Replace the definition of operation ``op_id`` keeping its output IDs.
 
     ``new_op = {op, args, branch?}``. Outputs pair with the new op's slots by
@@ -381,7 +382,8 @@ def _redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> E
     new_inputs = dict(inputs or {})
     free = record.get('free')
     free_slot = record['outputs'][0]['slot'] if free is not None else None
-    data = json_copy(doc.data)
+    # ``_take``: the caller hands over a private document (``apply_condition``)
+    data = doc.data if _take else json_copy(doc.data)
     effects = _effects()
     for el_id, slot, _type in pairs:
         if free is not None and slot == free_slot:
@@ -434,10 +436,17 @@ def _redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> E
                 elementId=el_id, operationId=op_id, severity='warning').to_dict())
         effects['modified']['operations'] = [o for o in effects['modified']['operations'] if o in data['operations']]
 
-    result = load(data, strict=False)
+    if _take:      # the rest of a handed-over document is well formed
+        schema = structure_issues_of(data, operations=[op_id], elements=[p[0] for p in pairs],
+                                     inputs=list(new_inputs))
+    else:
+        schema = structure_issues(data)
+    result = NativeDocument(data, schema)   # ``data`` is already a private copy
     after = validate(result)
     after_keys = _issue_keys(after)
-    new_errors = after_keys - _issue_keys(validate(doc)) if after_keys else set()   # the old document only when needed
+    # the old document only when needed; with ``_take`` it is gone, so every error is new
+    old_keys = _issue_keys(validate(doc)) if after_keys and not _take else set()
+    new_errors = after_keys - old_keys
     if new_errors:
         raise EditError([i for i in after if (i.code, i.path, i.elementId, i.operationId) in new_errors])
     return EditResult(result, _finish(effects))

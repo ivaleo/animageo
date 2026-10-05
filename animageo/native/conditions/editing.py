@@ -189,8 +189,8 @@ def redefine_with_conditions(doc, op_id, new_op, *, slot_map=None, inputs=None) 
         receiver = cond.get('receiver')
         if cond.get('mode') != 'construct' or receiver not in cur.elements:
             continue
-        below = _reach(cur, [receiver], 'down') - {receiver}
-        if below & _participants(cond):
+        others = _participants(cond) - {receiver}
+        if others and receiver in _reach(cur, sorted(others), 'up'):
             issues.append(Issue('condition_cycle', f'/conditions/{i}',
                                 f"receiver {receiver!r} of condition {cond.get('id')!r} would be built on its own "
                                 f"participant", elementId=receiver))

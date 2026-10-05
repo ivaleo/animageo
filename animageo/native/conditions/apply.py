@@ -12,7 +12,7 @@ import copy
 import math
 from typing import NamedTuple
 
-from ..document import NativeDocument, as_document, bound_producer, iter_refs, validate
+from ..document import NativeDocument, as_document, bound_producer, iter_refs
 from ..edit import _delete as delete
 from ..edit import _effects, _finish, _reach, json_copy
 from ..edit import _redefine as redefine
@@ -20,7 +20,7 @@ from ..registry import registry
 from ..steps import order_key
 from .recipes import matches
 from .statements import statement_elements, statement_problems
-from .validate import MAX_CONSTRAINTS, condition_list
+from .validate import MAX_CONSTRAINTS, condition_issues, condition_list
 
 __all__ = ['Refusal', 'ConditionResult', 'apply_condition', 'release_condition', 'condition_candidates',
            'shape_conditions', 'SHAPES']
@@ -63,10 +63,16 @@ def _status(doc, el_id, participants) -> str:
     constrained = any(c.get('mode') == 'construct' and c.get('receiver') == el_id for c in condition_list(doc))
     if op is None or (op['op'] not in FREE_OPS and not constrained):
         return 'not_free'
-    below = _reach(doc, [el_id], 'down') - {el_id}
-    if below & (set(participants) - {el_id}):
+    if _above_others(doc, el_id, participants):
         return 'ancestor'
     return 'ok'
+
+
+def _above_others(doc, el_id, participants) -> bool:
+    """``el_id`` is an ancestor of another participant (walks up from the
+    others: cheaper than the descendants of ``el_id`` in a large document)."""
+    others = [p for p in participants if p != el_id]
+    return bool(others) and el_id in _reach(doc, others, 'up')
 
 
 def _condition_ops(doc) -> set:
@@ -103,8 +109,7 @@ def _make_free_options(doc, participants) -> list:
         _op_id, op = _producer_op(doc, el_id)
         if op is None or op['op'] == 'point.free':
             continue
-        below = _reach(doc, [el_id], 'down') - {el_id}
-        if below & (set(participants) - {el_id}):
+        if _above_others(doc, el_id, participants):
             continue
         out.append(el_id)
     out.sort(key=lambda e: order_key(doc, bound_producer(doc, e)), reverse=True)
@@ -248,14 +253,13 @@ def _place_ops(doc, recipe, binds, cid, ids, ev):
     return data, made, op_ids
 
 
-def _onto_ray(doc, locus, xy):
+def _onto_ray(doc, locus, xy, sev):
     """``xy``, or — when ``xy`` is behind the origin of a ray place — the
     point of the ray at the same distance from its origin (the receiver must
-    not land on the vertex of an angle)."""
-    from ..kernel.evaluate import evaluate
+    not land on the vertex of an angle). ``sev``: the evaluation of ``doc``."""
     if doc.elements[locus]['type'] != 'ray':
         return xy
-    state = evaluate(doc).elements.get(locus)
+    state = sev.elements.get(locus)
     if state is None or state['state'] != 'defined':
         return xy
     (ox, oy), (dx, dy) = state['value']['origin'], state['value']['dir']
@@ -263,6 +267,23 @@ def _onto_ray(doc, locus, xy):
         return xy
     d = math.hypot(xy[0] - ox, xy[1] - oy)
     return (ox + d * dx, oy + d * dy)
+
+
+def _project(doc, sev, locus, xy):
+    """:func:`animageo.native.project` of ``xy`` onto the place ``locus``
+    with the evaluation ``sev`` of ``doc`` (one evaluation per apply)."""
+    from ..kernel import paths as _paths
+    from ..kernel.evaluate import producer_values
+    type_ = doc.elements[locus]['type']
+    if type_ not in registry().paths:
+        from .. import project
+        return project(doc, locus, xy)
+    states = sev.elements
+    if states.get(locus, {}).get('state') != 'defined':
+        return None
+    producer_op, values = producer_values(locus, doc.elements, doc.operations, states)
+    frame = _paths.frame(type_, states[locus]['value'], producer_op, values)
+    return _paths.project(frame, float(xy[0]), float(xy[1]), sev.tolerances.decide_length)
 
 
 def _family(name):
@@ -370,14 +391,14 @@ def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, 
     xy = _xy(ev, receiver)
     staged = NativeDocument(data)
     if rop['op'] == 'point.free':
-        from .. import project
-        target = _onto_ray(staged, locus, xy) if xy is not None else None
-        t = project(staged, locus, target) if target is not None else None
+        sev = evaluate(staged) if xy is not None else None
+        target = _onto_ray(staged, locus, xy, sev) if xy is not None else None
+        t = _project(staged, sev, locus, target) if target is not None else None
         if t is None:
             return _refuse(doc, 'no_intersection_now', f'the place of {receiver!r} is not defined now',
                            list(_ESCAPE))
         result = redefine(staged, rop_id, {'op': 'point.on_path', 'args': {'path': _ref(locus)}},
-                          inputs={receiver: {'kind': 'pathParameter', 'value': t}})
+                          inputs={receiver: {'kind': 'pathParameter', 'value': t}}, _take=True)
     else:
         old_path = next(iter(iter_refs(rop['args'].get('path') or {})), None)
         meet = _meet(staged, old_path, locus) if old_path else None
@@ -397,7 +418,7 @@ def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, 
         if best is None:
             return _refuse(doc, 'no_intersection_now', 'the places of the point do not meet now', list(_ESCAPE))
         result = best[1]
-    new_data = json_copy(result.document.data)
+    new_data = result.document.data          # private: made by this call
     entry = {'id': cid, 'seq': _max_seq(new_data) + 1, 'mode': 'construct', 'statement': copy.deepcopy(statement),
              'receiver': receiver, 'recipe': recipe['recipe'], 'operationIds': place_ops + [rop_id]}
     previous = [c for c in condition_list(doc) if c.get('mode') == 'construct' and c.get('receiver') == receiver]
@@ -406,7 +427,8 @@ def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, 
     entry['shapeId'] = condition.get('shapeId')
     new_data.setdefault('conditions', []).append(entry)
     new_doc = NativeDocument(new_data)
-    errors = [i for i in validate(new_doc) if i.severity == 'error']
+    # the rest was validated by redefine (no new errors)
+    errors = [i for i in condition_issues(new_doc) if i.severity == 'error']
     if errors:
         raise AssertionError(f'recipe {recipe["recipe"]} made an invalid document: {errors}')
     effects = result.effects
