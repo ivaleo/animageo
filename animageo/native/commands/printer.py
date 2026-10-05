@@ -153,6 +153,8 @@ def _header(step, printed, explicit, lexicon) -> str | None:
     if not explicit or not printed:
         return None
     if step.title:
+        if step.kind == 'given':                    # read back as «given» with its title
+            return f'# {lexicon.word("given")}: {step.title}'
         return f'# {step.title}'
     if len(printed) >= 2:
         return f'# {lexicon.word("given")}' if step.kind == 'given' else '#'
@@ -165,8 +167,12 @@ def step_signature(doc, lexicon) -> list:
     lex = as_lexicon(lexicon)
     data = _printable(doc)
     helpers = {op_id for op_id in data.get('operations') or {} if is_helper(data, op_id)}
+    return _plan_signature(_plan(data, helpers), lex)
+
+
+def _plan_signature(plan, lex) -> list:
     out = []
-    for step, printed, explicit in _plan(data, helpers):
+    for step, printed, explicit in plan:
         if not explicit or not printed:
             continue
         if _header(step, printed, explicit, lex) is not None or step.text:
@@ -403,7 +409,7 @@ class _Printer:
     # ── lines ────────────────────────────────────────────────────────────
 
     def run(self) -> PrintResult:
-        plan = _plan(self.data, self.helpers)
+        plan = self.plan = _plan(self.data, self.helpers)
         at_step = self._condition_places(plan)
         lines, out = [], []
         group_open = False
@@ -602,3 +608,12 @@ def print_commands(doc, *, lexicon=None) -> PrintResult:
     """The text of «Команды» for ``doc`` (commands.md §6)."""
     lex = as_lexicon(lexicon)
     return _Printer(doc, lex).run()
+
+
+def print_with_signature(doc, lexicon) -> tuple:
+    """``(print_commands(doc), step_signature(doc))`` from one plan (edit
+    mode prints the base and compares its groups)."""
+    lex = as_lexicon(lexicon)
+    printer = _Printer(doc, lex)
+    result = printer.run()
+    return result, _plan_signature(printer.plan, lex)

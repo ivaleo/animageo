@@ -11,6 +11,7 @@ without a line are deleted with everything built on them.
 from __future__ import annotations
 
 import copy
+import functools
 import inspect
 import os
 import re
@@ -204,8 +205,11 @@ def _refusal_text(issue, data: dict) -> str:
     return f'строку нельзя применить: {text}'
 
 
+@functools.lru_cache(maxsize=4096)
 def _signature(line: str):
-    """The tokens of a line without its comment, or ``None`` if it does not lex."""
+    """The tokens of a line without its comment, or ``None`` if it does not lex
+    (cached: edit mode signs the typed lines and the printed base, mostly the
+    same strings)."""
     try:
         tokens, _ = tokenize(line)
     except LineError:
@@ -228,7 +232,8 @@ class _Builder:
             }
             self.editing = False
         else:
-            self.base = as_document(base).data
+            self.base_doc = as_document(base)
+            self.base = self.base_doc.data
             self.editing = True
         self.W = copy.deepcopy(self.base)
         self.W.setdefault('operations', {})
@@ -1009,6 +1014,8 @@ class _Builder:
                 kind = 'group'
                 if title and self.lex.keyword(title) == 'given':
                     kind, title = 'given', ''
+                elif ':' in title and self.lex.keyword(title.split(':', 1)[0].strip()) == 'given':
+                    kind, title = 'given', title.split(':', 1)[1].strip()   # «# Дано: заголовок»
                 current = {'kind': kind, 'title': title, 'text': '', 'ops': [], 'first': None}
                 groups.append(current)
                 continue
@@ -1032,7 +1039,7 @@ class _Builder:
                 target['first'] = ops[0]
         signature = [(g['title'], g['text'], [o for o in g['ops'] if not is_helper(self.W, o)]) for g in groups
                      if g['ops']]
-        if self.editing and signature == (printed_step_signature(self.base, self.lex)
+        if self.editing and signature == (self._base_signature()
                                           if self.base.get('steps') else []):
             steps = []
             for step in self.base.get('steps') or ():
@@ -1198,15 +1205,23 @@ class _Builder:
                     if readings:
                         self.issues.append(ambiguous_name(nm.text, readings, no, nm.column))
 
+    def _base_print(self) -> tuple:
+        """The print of ``base`` and its step signature, computed once."""
+        if getattr(self, '_base_printed', None) is None:
+            from .printer import print_with_signature
+            self._base_printed = print_with_signature(self.base_doc, self.lex)
+        return self._base_printed
+
+    def _base_signature(self) -> list:
+        return self._base_print()[1]
+
     def _printed_base(self) -> dict:
         """``{operationId: token signature}`` of the lines the printer gives
         for ``base``: a line typed back unchanged keeps its operation as it is,
         even when the printer could not say everything (a param after a gap,
         a pair that does not read back)."""
-        from .printer import print_commands
-
         out = {}
-        result = print_commands(NativeDocument(self.base), lexicon=self.lex)
+        result = self._base_print()[0]
         rows = result.text.split('\n')
         for info in result.lines:
             if not info['operationIds']:

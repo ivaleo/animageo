@@ -454,7 +454,10 @@ def test_parse_and_print_300_lines_within_budget():
     """Plan L3 §6: ``parse_commands``/``print_commands`` on 300 lines 50 ms
     (here with a group, step texts, a condition and a check; measured p95
     ≈ 35 ms new, ≈ 15 ms print), a margin of 2 for a busy machine; edit mode
-    (print of the base inside, measured median ≈ 60 ms) — 3."""
+    (print of the base inside) — 3. 1.9.0a5: edit mode loads and prints the
+    base once and caches line signatures — fastest run 57–58 → 40 ms with a
+    cold cache, 35 ms warm, on a machine at load 10 (1.9.0a3 idle median ≈ 60
+    ms; now ≈ 40–45 ms)."""
     from tests.native.test_native_l3a2_budgets import _p95
     text = _text_of_300()
     parsed = parse_commands(text, document_id='doc')
@@ -465,3 +468,63 @@ def test_parse_and_print_300_lines_within_budget():
     assert _p95(lambda: parse_commands(text, document_id='doc')) < 0.100
     assert _p95(lambda: print_commands(doc)) < 0.100
     assert _p95(lambda: parse_commands(printed, base=doc)) < 0.150
+
+
+# ── 1.9.0a5: «Дано» with a title, determinism (plan L3 §7) ───────────────
+
+
+def test_given_with_a_title_reads_back_as_given():
+    text = '# Дано: треугольник\n' + P3 + '\n# Середины\nM = Середина(A, B)\nN = Середина(B, C)'
+    result = parse(text)
+    assert result.issues == []
+    given, group = result.document.data['steps']
+    assert (given['kind'], given['title']) == ('given', 'треугольник')
+    assert (group['kind'], group['title']) == ('group', 'Середины')
+    printed = print_commands(result.document).text
+    assert printed.startswith('# Дано: треугольник\nA = (0, 0)')
+    again = parse(printed, base=result.document)
+    assert native.canonical_json(again.document.data) == native.canonical_json(result.document.data)
+    fresh = parse(printed)
+    assert [(s['kind'], s.get('title')) for s in fresh.document.data['steps']] == [
+        ('given', 'треугольник'), ('group', 'Середины')]
+    assert parse('# Given: a triangle\n' + P3).document.data['steps'][0]['kind'] == 'given'
+    assert parse('# Дано треугольник\n' + P3).document.data['steps'][0]['kind'] == 'group'
+
+
+def _shuffled(value, rnd):
+    """The same document with every mapping in another key order (lists —
+    ordered by meaning — stay)."""
+    if isinstance(value, dict):
+        items = list(value.items())
+        rnd.shuffle(items)
+        return {k: _shuffled(v, rnd) for k, v in items}
+    if isinstance(value, list):
+        return [_shuffled(v, rnd) for v in value]
+    return value
+
+
+DETERMINISM_SCENES = SCENES[:40]
+
+
+@pytest.mark.parametrize('path', DETERMINISM_SCENES, ids=lambda p: p.stem)
+def test_commands_are_deterministic(path):
+    """Plan L3 §7 for «Команды»: the print and the parse do not depend on the
+    key order of the document (order key and ID decide), on
+    ``load → dump → load``, or on the run; edit mode against a reordered base
+    gives the same document."""
+    import random
+    data = read_json(path)['document']
+    doc = native.load(data)
+    text = print_commands(doc).text
+    shuffled = native.load(_shuffled(copy.deepcopy(data), random.Random(path.stem)))
+    assert print_commands(shuffled).text == text
+    assert print_commands(native.load(native.dump(doc))).text == text
+    assert print_commands(doc).lines == print_commands(shuffled).lines
+    first = parse(text)
+    second = parse(text)
+    assert native.canonical_json(first.document.data) == native.canonical_json(second.document.data)
+    assert first.conditionRequests == second.conditionRequests
+    edit = parse_commands(text, base=doc, id_factory=counter_ids(), document_id='doc')
+    edit_shuffled = parse_commands(text, base=shuffled, id_factory=counter_ids(), document_id='doc')
+    assert native.canonical_json(edit.document.data) == native.canonical_json(edit_shuffled.document.data)
+    assert edit.conditionRequests == edit_shuffled.conditionRequests
