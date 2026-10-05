@@ -576,6 +576,19 @@ scene.element('sector').style['z_index_fill'] = 0.2   # только для Circ
 |---|---|---|
 | `fill` | hex | `style.background` (для точек — `style.strong`) |
 | `fill_opacity` | float 0..1 | `1` |
+| `fill_pattern` | `"solid"`/`"hatch"`/`"crosshatch"`/`"dots"`/`"none"` (многоугольники, окружности, секторы) | `"solid"` |
+| `hatch_angle_deg` | float, градусы | `45` |
+| `hatch_spacing_px` | float > 0, px | `6` |
+| `hatch_width_px` | float, px (точка — две ширины в поперечнике) | `0.75` |
+| `hatch_color` | `"stroke"` (цвет обводки) или hex | `"stroke"` |
+| `hatch_opacity` | float 0..1 | `1` |
+| `sector_sides` | bool, секторы круга: обводить и радиусы | `false` (только дуга) |
+
+Узор заменяет сплошную заливку. Он рисуется обычными отрезками или точками,
+отсечёнными областью (`animageo/hatch.py`), а не SVG-паттерном, поэтому SVG,
+PDF, PNG, EPS, видео и TikZ показывают одни и те же линии. Линии привязаны к
+плоскости (`n·x = k·spacing`) и не сдвигаются вместе с элементом; размеры
+`*_px` следуют раскладке экспорта, как все украшения.
 
 ### Точки
 

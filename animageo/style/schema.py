@@ -217,6 +217,14 @@ dashed stroke stays one path (SVG ``stroke-dasharray``).
 
 Fill
 - ``fill``, ``fill_opacity``
+- ``fill_pattern`` ("solid"|"hatch"|"crosshatch"|"dots"|"none"; polygons,
+  circles, sectors), ``hatch_angle_deg``, ``hatch_spacing_px``,
+  ``hatch_width_px``, ``hatch_color`` ("stroke" or a colour),
+  ``hatch_opacity``. A pattern replaces the solid fill and is drawn as
+  segments or dots cut by the region (``animageo/hatch.py``), the same in
+  SVG, PDF, PNG, EPS, video and TikZ.
+- ``sector_sides`` (circle sectors, default ``false``): stroke the two
+  radii as well as the arc, as GeoGebra draws a sector.
 
 Points
 - ``size_px`` (diameter, pixels)

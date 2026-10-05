@@ -345,6 +345,8 @@
         "conic",
         "function",
         "implicitcurve",
+        "locuscurve",
+        "region",
         "decoration"
       ]
     },
@@ -446,6 +448,27 @@
         },
         "fill_opacity": {
           "$ref": "#/$defs/opacityOrRef"
+        },
+        "fill_pattern": {
+          "enum": ["solid", "hatch", "crosshatch", "dots", "none"]
+        },
+        "hatch_angle_deg": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "hatch_spacing_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "hatch_width_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "hatch_color": {
+          "anyOf": [{"const": "stroke"}, {"$ref": "#/$defs/colorOrRef"}]
+        },
+        "hatch_opacity": {
+          "$ref": "#/$defs/opacityOrRef"
+        },
+        "sector_sides": {
+          "type": "boolean"
         },
         "font_size_px": {
           "$ref": "#/$defs/numberOrRef"

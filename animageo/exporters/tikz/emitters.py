@@ -128,6 +128,38 @@ def emit_label(ctx: TikzContext, elem, x, y, labels: List[str],
     labels.append(f"\\node[{', '.join(opts)}] at {_coord(ctx, x, y)} {{{text}}};")
 
 
+def _fill_pattern(ctx: TikzContext, elem, region) -> bool:
+    """Emit the ``fill_pattern`` of a region (kernel spec §9.1) and return
+    ``False``, or return ``True`` for ``solid`` (the caller fills as usual).
+    The segments and dots are those of the renderer (:mod:`animageo.hatch`),
+    in scene units like every coordinate here."""
+    from ... import hatch as _hatch
+
+    pattern = ctx.resolve(elem, "fill_pattern", default="solid") or "solid"
+    if pattern == "solid" or pattern not in _hatch.FILL_PATTERNS:
+        return True
+    if pattern == "none":
+        return False
+    spec = _hatch.hatch_spec(lambda e, k, d=None: ctx.resolve(e, k, default=d), elem, ctx.ptUnit_style)
+    col = spec["color"] or ctx.resolve(elem, "stroke", default=stroke_default(ctx))
+    opts = [f"draw={ctx.doc.color(col)}" if pattern != "dots" else f"fill={ctx.doc.color(col)}"]
+    if spec["opacity"] < 1.0:
+        opts.append(f"{'draw' if pattern != 'dots' else 'fill'} opacity={fmt_num(spec['opacity'], 3)}")
+    if pattern == "dots":
+        r = ctx.doc.num(spec["dot_radius_mu"])
+        dots = _hatch.hatch_dots(region, spec["angle"], spec["spacing_mu"])
+        if dots and spec["dot_radius_mu"] > 0.0:
+            path = " ".join(f"{_coord(ctx, x, y)} circle ({r})" for x, y in dots)
+            ctx.doc.line(f"\\fill[{', '.join(opts)}] {path};")
+        return False
+    opts.append(f"line width={fmt_num(ctx.size_pt(spec['width_px']), ctx.opt.size_precision)}pt")
+    segs = _hatch.pattern_segments(region, pattern, spec["angle"], spec["spacing_mu"])
+    if segs:
+        path = " ".join(f"{_coord(ctx, x0, y0)} -- {_coord(ctx, x1, y1)}" for x0, y0, x1, y1 in segs)
+        ctx.doc.line(f"\\draw[{', '.join(opts)}] {path};")
+    return False
+
+
 def _combined_fill_stroke(ctx: TikzContext, elem, *, fill_default=None) -> str:
     """Options for a path that is both filled (if opacity>0) and stroked."""
     opts = stroke_options(ctx, elem)
@@ -279,7 +311,10 @@ def emit_vector(ctx: TikzContext, elem, labels: List[str]) -> None:
 def emit_circle(ctx: TikzContext, elem, labels: List[str]) -> None:
     cx, cy = float(elem.data.center[0]), float(elem.data.center[1])
     r = float(elem.data.radius)
-    opts = _combined_fill_stroke(ctx, elem, fill_default=ctx.scene.style.background)
+    if _fill_pattern(ctx, elem, {"circle": (cx, cy, r)}):
+        opts = _combined_fill_stroke(ctx, elem, fill_default=ctx.scene.style.background)
+    else:
+        opts = stroke_options(ctx, elem)
     ctx.doc.line(f"\\draw[{opts}] ({ctx.doc.num(cx)},{ctx.doc.num(cy)}) circle ({ctx.doc.num(r)});")
 
 
@@ -313,16 +348,23 @@ def emit_circlesector(ctx: TikzContext, elem, labels: List[str]) -> None:
     a1, a2 = elem.data.angles
     a1d, a2d = math.degrees(a1), math.degrees(a2)
     sx, sy = _arc_start(cx, cy, r, a1)
-    if _fill_opacity(ctx, elem) > 0:
+    solid = _fill_pattern(ctx, elem, {"sector": (cx, cy, r, float(a1), float(a2))})
+    if solid and _fill_opacity(ctx, elem) > 0:
         fopts = fill_options(ctx, elem)
         ctx.doc.line(
             f"\\fill[{fopts}] ({ctx.doc.num(cx)},{ctx.doc.num(cy)}) -- {_coord(ctx, sx, sy)} "
             f"arc ({ctx.doc.num(a1d)}:{ctx.doc.num(a2d)}:{ctx.doc.num(r)}) -- cycle;"
         )
     opts = stroke_options(ctx, elem)
-    ctx.doc.line(
-        f"\\draw[{opts}] {_coord(ctx, sx, sy)} arc ({ctx.doc.num(a1d)}:{ctx.doc.num(a2d)}:{ctx.doc.num(r)});"
-    )
+    if ctx.resolve(elem, "sector_sides", default=False) is True:
+        ctx.doc.line(
+            f"\\draw[{opts}] ({ctx.doc.num(cx)},{ctx.doc.num(cy)}) -- {_coord(ctx, sx, sy)} "
+            f"arc ({ctx.doc.num(a1d)}:{ctx.doc.num(a2d)}:{ctx.doc.num(r)}) -- cycle;"
+        )
+    else:
+        ctx.doc.line(
+            f"\\draw[{opts}] {_coord(ctx, sx, sy)} arc ({ctx.doc.num(a1d)}:{ctx.doc.num(a2d)}:{ctx.doc.num(r)});"
+        )
     mid = (a1 + a2) / 2
     lx = cx + r * 0.7 * math.cos(mid)
     ly = cy + r * 0.7 * math.sin(mid)
@@ -334,7 +376,8 @@ def emit_circlesector(ctx: TikzContext, elem, labels: List[str]) -> None:
 def emit_polygon(ctx: TikzContext, elem, labels: List[str]) -> None:
     verts = elem.data.vertices
     chain = " -- ".join(_coord(ctx, v[0], v[1]) for v in verts)
-    if _fill_opacity(ctx, elem) > 0:
+    solid = _fill_pattern(ctx, elem, {"polygon": [(float(v[0]), float(v[1])) for v in verts]})
+    if solid and _fill_opacity(ctx, elem) > 0:
         ctx.doc.line(f"\\fill[{fill_options(ctx, elem)}] {chain} -- cycle;")
     if _stroke_opacity(ctx, elem, default=0.0) > 0:
         ctx.doc.line(f"\\draw[{stroke_options(ctx, elem)}] {chain} -- cycle;")

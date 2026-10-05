@@ -51,6 +51,13 @@ class StyleProxy(dict):
     # ── Fill (polygons / sectors / arcs / angles) ────────────────
     fill: str                          # hex '#rrggbb'
     fill_opacity: float                # [0, 1]
+    fill_pattern: str                  # 'solid' (default), 'hatch', 'crosshatch', 'dots', 'none' (1.8.1)
+    hatch_angle_deg: float             # direction of the hatch lines, degrees (45)
+    hatch_spacing_px: float            # distance between the lines / dots, style px (6)
+    hatch_width_px: float              # hatch line width, style px (0.75); a dot is two widths across
+    hatch_color: str                   # 'stroke' (the stroke colour, default) or hex '#rrggbb'
+    hatch_opacity: float               # [0, 1] (1)
+    sector_sides: bool                 # circle sectors: stroke the radii too (False — the arc only)
 
     # ── Font ─────────────────────────────────────────────────────
     font_size: float                   # manim font_size units

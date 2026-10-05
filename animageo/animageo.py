@@ -3285,13 +3285,52 @@ class AnimaGeoScene(MovingCameraScene):
 
     # ── Per-type renderers ────────────────────────────────────────────
 
+    def _fill_pattern_layer(self, elem, ctx, region, shape):
+        """The fill layer of a region by its ``fill_pattern`` (kernel spec
+        §9.1): ``shape`` (the usual solid fill) for ``solid``; for
+        ``hatch``/``crosshatch`` one path of segments, for ``dots`` one path
+        of small discs; for ``none`` (or a pattern that misses the region)
+        ``shape`` made transparent. The element keeps the same layers either
+        way, so ``become`` (style changes, keyframes) stays aligned. The
+        geometry is :mod:`animageo.hatch`, the same in every format and in
+        TikZ."""
+        from . import hatch as _hatch
+
+        pattern = _resolve_style(self, elem, 'fill_pattern', default='solid') or 'solid'
+        if pattern == 'solid' or pattern not in _hatch.FILL_PATTERNS:
+            return shape
+        spec = _hatch.hatch_spec(lambda e, k, d=None: _resolve_style(self, e, k, default=d), elem, ctx.ptUnit_style)
+        col = ManimColor(ctx.col_s if spec['color'] is None else spec['color'])
+        vm = None
+        if pattern == 'dots' and spec['dot_radius_mu'] > 0.0:
+            dots = _hatch.hatch_dots(region, spec['angle'], spec['spacing_mu'])
+            if dots:
+                disc = Circle(radius=spec['dot_radius_mu'], num_components=5).points   # 4 curves
+                vm = VMobject(fill_color=col, fill_opacity=spec['opacity'], stroke_width=0)
+                vm.set_points(np.concatenate([disc + np.array([x, y, 0.0]) for x, y in dots]))
+        elif pattern in ('hatch', 'crosshatch'):
+            segs = _hatch.pattern_segments(region, pattern, spec['angle'], spec['spacing_mu'])
+            if segs:
+                vm = VMobject(stroke_color=col, stroke_opacity=spec['opacity'],
+                              stroke_width=stroke_width_to_manim(spec['width_px'], ctx.ptUnit_style),
+                              fill_opacity=0)
+                for x0, y0, x1, y1 in segs:
+                    vm.start_new_path(np.array([x0, y0, 0.0]))
+                    vm.add_line_to(np.array([x1, y1, 0.0]))
+                vm.set_cap_style(CapStyleType.BUTT)
+        if vm is None:
+            return shape.set_fill(opacity=0)
+        return vm.set_z_index(shape.z_index)
+
     def _render_polygon(self, elem, ctx):
         pp = [[p[0], p[1], 0] for p in elem.data.vertices]
-        fill_layer = Polygon(
-            *pp,
-            color=ctx.col_s, fill_color=ctx.col_f, fill_opacity=ctx.op_f,
-            stroke_width=0, stroke_opacity=0,
-        ).set_z_index(ctx.zz)
+        fill_layer = self._fill_pattern_layer(
+            elem, ctx, {'polygon': [(float(p[0]), float(p[1])) for p in elem.data.vertices]},
+            Polygon(
+                *pp,
+                color=ctx.col_s, fill_color=ctx.col_f, fill_opacity=ctx.op_f,
+                stroke_width=0, stroke_opacity=0,
+            ).set_z_index(ctx.zz))
         stroke_layer = Polygon(
             *pp, joint_type=LineJointType.ROUND,
             color=ctx.col_s, fill_opacity=0,
@@ -3538,11 +3577,13 @@ class AnimaGeoScene(MovingCameraScene):
 
     def _render_circle(self, elem, ctx):
         c = [elem.data.center[0], elem.data.center[1], 0]
-        circ_fill = Circle(
-            name=elem.name, arc_center=c, radius=elem.data.radius,
-            fill_color=ctx.col_f, fill_opacity=ctx.op_f,
-            stroke_opacity=0, stroke_width=0,
-        ).set_z_index(ctx.zz_fill)
+        circ_fill = self._fill_pattern_layer(
+            elem, ctx, {'circle': (float(c[0]), float(c[1]), float(elem.data.radius))},
+            Circle(
+                name=elem.name, arc_center=c, radius=elem.data.radius,
+                fill_color=ctx.col_f, fill_opacity=ctx.op_f,
+                stroke_opacity=0, stroke_width=0,
+            ).set_z_index(ctx.zz_fill))
         circ_stroke = Circle(
             name=elem.name, arc_center=c, radius=elem.data.radius,
             color=ctx.col_s, fill_opacity=0,
@@ -3588,10 +3629,21 @@ class AnimaGeoScene(MovingCameraScene):
         angle_diff = a2 - a1
 
         arr = [
+            self._fill_pattern_layer(
+                elem, ctx,
+                {'sector': (float(c[0]), float(c[1]), float(elem.data.radius), float(a1), float(a2))},
+                Sector(arc_center=c, radius=elem.data.radius,
+                       start_angle=a1, angle=angle_diff,
+                       fill_color=ctx.col_f, fill_opacity=ctx.op_f,
+                       stroke_width=0).set_z_index(ctx.zz_fill)),
+            # ``sector_sides`` (1.8.1) strokes the radii too, as GeoGebra
+            # draws a sector; the default keeps the classic arc only.
             Sector(arc_center=c, radius=elem.data.radius,
                    start_angle=a1, angle=angle_diff,
-                   fill_color=ctx.col_f, fill_opacity=ctx.op_f,
-                   stroke_width=0).set_z_index(ctx.zz_fill),
+                   color=ctx.col_s, fill_opacity=0,
+                   stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
+                   joint_type=LineJointType.ROUND).set_z_index(ctx.zz)
+            if _resolve_style(self, elem, 'sector_sides', default=False) is True else
             Arc(arc_center=c, radius=elem.data.radius,
                 start_angle=a1, angle=angle_diff,
                 color=ctx.col_s, fill_opacity=0,

@@ -39,10 +39,15 @@ ANIMATABLE_STYLE_KEYS = {
     'arrow_width_px': SCALAR,
     'label_radial_offset_px': SCALAR,
     'stroke_dash_period_px': SCALAR,
+    'hatch_angle_deg': SCALAR,
+    'hatch_spacing_px': SCALAR,
+    'hatch_width_px': SCALAR,
+    'hatch_opacity': SCALAR,
     # colors
     'stroke': COLOR,
     'fill': COLOR,
     'label_color': COLOR,
+    'hatch_color': COLOR,      # a keyframe sets a colour; 'stroke' is the static default
     # 2-component pixel offsets
     'label_offset_px': OFFSET2,
     # text (swap semantics, never lerped)
@@ -59,6 +64,8 @@ ANIMATABLE_STYLE_KEYS = {
     'label_mode': DISCRETE,
     'z_index': DISCRETE,
     'z_index_fill': DISCRETE,
+    'fill_pattern': DISCRETE,
+    'sector_sides': DISCRETE,
     # semi-discrete
     'stroke_dash_ratio': DASH,
 }

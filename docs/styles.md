@@ -518,6 +518,19 @@ keeps its type's layer and label defaults.
 |---|---|---|
 | `fill` | hex | `style.background` (for points — `style.strong`) |
 | `fill_opacity` | float 0..1 | `1` |
+| `fill_pattern` | `"solid"`/`"hatch"`/`"crosshatch"`/`"dots"`/`"none"` (polygons, circles, sectors) | `"solid"` |
+| `hatch_angle_deg` | float, degrees | `45` |
+| `hatch_spacing_px` | float > 0, px | `6` |
+| `hatch_width_px` | float, px (a dot is two widths across) | `0.75` |
+| `hatch_color` | `"stroke"` (the stroke colour) or hex | `"stroke"` |
+| `hatch_opacity` | float 0..1 | `1` |
+| `sector_sides` | bool, circle sectors: stroke the radii too | `false` (the arc only) |
+
+A pattern replaces the solid fill. It is drawn as plain segments or dots cut
+by the region (`animageo/hatch.py`), not as an SVG pattern, so SVG, PDF, PNG,
+EPS, video and TikZ show the same lines. The lines are anchored in the plane
+(`n·x = k·spacing`), so the hatching stays put when the element moves; the
+`*_px` sizes follow the export layout like every decoration.
 
 ### Points
 

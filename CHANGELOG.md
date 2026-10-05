@@ -30,6 +30,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Style defaults for `locuscurve` (`style/builtin.json`): a locus gets the
   stroke colour and width of the other curves instead of the renderer
   fallbacks.
+- Fill patterns (kernel spec §9.1): the style keys `fill_pattern`
+  (`solid`, `hatch`, `crosshatch`, `dots`, `none`), `hatch_angle_deg`,
+  `hatch_spacing_px`, `hatch_width_px`, `hatch_color` (`"stroke"` or a
+  colour) and `hatch_opacity` for polygons, circles and circle sectors. A
+  pattern replaces the solid fill and is drawn by geometry
+  (`animageo/hatch.py`: `hatch_segments(region, angle, spacing, phase)`,
+  `hatch_dots`), not as an SVG pattern, so SVG, PDF, PNG, EPS, video and
+  TikZ show the same segments; the lines are anchored in the plane and the
+  `*_px` sizes follow the export layout. The keys are animatable
+  (`fill_pattern` snaps, `hatch_color` snaps from `"stroke"`).
+- Style key `sector_sides` for circle sectors: `true` strokes the two radii
+  as well as the arc, as GeoGebra draws a sector (renderer and TikZ). The
+  default stays `false`, the classic arc only, so existing drawings do not
+  change.
+- Style defaults for `region` (registry regions, L4): fill or hatch without
+  a stroke. `docs/ai_style_json_schema.json` knows the new keys and the
+  `locuscurve` and `region` types.
 
 ### Fixed
 
