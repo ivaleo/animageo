@@ -15,15 +15,18 @@
     python -m animageo.native timeline <doc.json> [--lag L --duration D --pause P --start S]
     python -m animageo.native timeline <doc.json> --timeline <keyframes.json> --t T [--bridge]
     python -m animageo.native from-ggb <file.ggb> [-o doc.json] [--report rep.json] [--namespace UUID] [--mode partial|strict]
-    python -m animageo.native convert map [--check]
+    python -m animageo.native convert map [--check] [--coverage <dir> [--json]]
+    python -m animageo.native convert corpus record|verify <dir> [--expected <dir>]
 
 Exit codes: 0 success; 1 verify mismatches, validate issues (invalid JSON
 included), an out-of-date registry index or a refused scene, out-of-date
 commands fixtures, a commands text with errors, out-of-date timeline
 fixtures, ``from-ggb --mode strict`` with objects that do not translate, a
-problem of the GGB command table (``convert map --check``); 2 an input that
-cannot be used (a missing file; for ``evaluate`` a document that does not load
-or bad ``--inputs``; an unusable lexicon; a ``.ggb`` refused by ``from-ggb``).
+problem of the GGB command table (``convert map --check``), a corpus that
+differs from its expectations (``convert corpus verify``); 2 an input that
+cannot be used (a missing file or directory; for ``evaluate`` a document that
+does not load or bad ``--inputs``; an unusable lexicon; a ``.ggb`` refused by
+``from-ggb``).
 """
 from __future__ import annotations
 
@@ -368,6 +371,14 @@ def _cmd_from_ggb(args) -> int:
 
 def _cmd_convert_map(args) -> int:
     from .convert import dsl_map, map_problems
+    if args.coverage:
+        from .convert.corpus import coverage, coverage_text
+        if not Path(args.coverage).is_dir():
+            _err(f'not a directory: {args.coverage}')
+            return 2
+        cov = coverage(args.coverage)
+        _out(json.dumps(cov, ensure_ascii=False, indent=1) if args.json else coverage_text(cov))
+        return 0
     problems = map_problems()
     for p in problems:
         _out(p)
@@ -378,6 +389,22 @@ def _cmd_convert_map(args) -> int:
     if not args.check or problems:
         _out(f'{len(rows)} classic signatures, {mapped} translated to {len(ops)} operations, '
              f'map version {table.version}')
+    return 1 if problems else 0
+
+
+def _cmd_convert_corpus(args) -> int:
+    from .convert.corpus import record, verify
+    if not Path(args.directory).is_dir():
+        _err(f'not a directory: {args.directory}')
+        return 2
+    if args.corpus_action == 'record':
+        written = record(args.directory, args.expected)
+        _out(f'{len(written)} expectations in {args.expected}')
+        return 0
+    problems, checked = verify(args.directory, args.expected)
+    for p in problems:
+        _out(p)
+    _out(f'{checked} files, {len(problems)} differences')
     return 1 if problems else 0
 
 
@@ -479,7 +506,19 @@ def build_parser() -> argparse.ArgumentParser:
     cvsub = cv.add_subparsers(dest='action', required=True)
     cvm = cvsub.add_parser('map', help='check convert/dsl_map.json against the classic commands and the registry')
     cvm.add_argument('--check', action='store_true', help='print only the problems; exit 1 when any')
+    cvm.add_argument('--coverage', metavar='DIR',
+                     help='instead: the objects of the .ggb files under DIR by category and by key')
+    cvm.add_argument('--json', action='store_true', help='with --coverage: print JSON')
     cvm.set_defaults(func=_cmd_convert_map)
+    cc = cvsub.add_parser('corpus', help='expectations of a corpus of .ggb files (by sha256)')
+    ccsub = cc.add_subparsers(dest='corpus_action', required=True)
+    for action, text in (('record', 'write the expectation of every .ggb under DIR'),
+                         ('verify', 'compare every .ggb under DIR with its expectation (exit 1 on a difference)')):
+        ca = ccsub.add_parser(action, help=text)
+        ca.add_argument('directory', help='a directory of .ggb files (searched recursively)')
+        ca.add_argument('--expected', default='tests/native/import/expected',
+                        help='the directory of <sha256>.json (default: tests/native/import/expected)')
+        ca.set_defaults(func=_cmd_convert_corpus)
     return parser
 
 

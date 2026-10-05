@@ -197,14 +197,33 @@ runs under a 20 s deadline). What the fuzzing changed:
 
 ```text
 python -m animageo.native from-ggb <file.ggb> [-o doc.json] [--report rep.json] [--namespace UUID] [--mode partial|strict]
-python -m animageo.native convert map [--check]
+python -m animageo.native convert map [--check] [--coverage <dir> [--json]]
+python -m animageo.native convert corpus record|verify <dir> [--expected <dir>]
 ```
 
 `from-ggb`: exit 0 (`partial`, even with objects that do not translate), 1 —
 `strict` with objects that are not editable, 2 — a refused or missing file.
 Without `--namespace` the IDs come from the sha256 of the file.
 
-## 8. Deliberate files (1.10.0a2)
+## 8. Corpus and expectations (1.10.0a2)
+
+`convert corpus record <dir>` writes for every `*.ggb` under `<dir>`
+(recursively) the expectation `<expected>/<sha256>.json`
+(`animageo.import_expectation` v1, `convert/corpus.py`): the outcome — a
+report or a refusal with its code —, whether there is a document, the
+summary, the dropped kinds, the warning codes and `[name, category, reason]`
+of every object, one per line. No IDs and no values: a change of the
+document that keeps the categories keeps the expectation. `verify` compares
+(exit 1): a file without an expectation, another outcome, category or reason,
+a report that breaks `report_problems`. `--expected` defaults to
+`tests/native/import/expected`, where the expectations live in git (the
+files of a real corpus do not: other people's work); an expectation changes
+only with its reason in the commit message.
+
+`convert map --coverage <dir>` counts the objects of the corpus by category
+and by key — the `dsl_map` key of a translated command, else
+`command:<GGB command>`, else `type:<GGB type>` (free objects); `--json`
+prints the same as JSON with `editable_share`.
 
 The deliberate files `tests/native/import/synthetic/*.ggb` (21: 3D, CAS,
 spreadsheet cells, scripts and a button, lists, a macro, breakpoints, a DTD,
@@ -212,5 +231,6 @@ a zip without `geogebra.xml`, pictures only, texts, a function and its
 closure, an expression argument, dropped effects, a random point, styles,
 user-interface objects, regular polygons) are the output of
 `tests/native/ggb_synth.py` (`python -m tests.native.ggb_synth` rewrites
-them; a test compares them entry by entry); each shows what it is for
-(`test_native_l5_corpus.py`).
+them; a test compares them entry by entry), each shows what it is for
+(`test_native_l5_corpus.py`), and their expectations are in
+`tests/native/import/expected/`.

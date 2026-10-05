@@ -1,11 +1,18 @@
-"""The deliberate ``.ggb`` files (plan L5 §8, stage 3; 1.10.0a2)."""
+"""The deliberate ``.ggb`` files, the corpus expectations and the coverage of the
+table (plan L5 §8, stage 3; 1.10.0a2)."""
+import json
 import zipfile
 
 import pytest
 
+from animageo.native.cli import main
 from animageo.native.convert import from_ggb
-from tests.native.ggb_synth import SYNTHETIC, SYNTHETIC_DIR, ggb_bytes, triangle
+from animageo.native.convert.corpus import corpus_files, coverage, expectation, record, verify
+from tests.native.conftest import REPO_ROOT
+from tests.native.ggb_synth import SYNTHETIC, SYNTHETIC_DIR, ggb_bytes, point, triangle, zip_bytes
 from tests.native.test_native_l5_ggb import NS, _check
+
+EXPECTED_DIR = REPO_ROOT / 'tests/native/import/expected'
 
 # what each deliberate file is for: {ggb_name: (category, reason)}, the dropped kinds, or the refusal
 PURPOSE = {
@@ -94,3 +101,72 @@ def test_each_file_shows_what_it_is_for(name):
 
 def test_every_deliberate_file_has_a_purpose():
     assert set(PURPOSE) == set(SYNTHETIC)
+
+
+def test_the_synthetic_corpus_meets_its_expectations():
+    problems, checked = verify(SYNTHETIC_DIR, EXPECTED_DIR)
+    assert problems == [] and checked == len(SYNTHETIC)
+
+
+def test_record_and_verify(tmp_path):
+    corpus = tmp_path / 'corpus'
+    (corpus / 'a' / 'b').mkdir(parents=True)
+    (corpus / 'small.ggb').write_bytes(ggb_bytes(point('A', 0.0, 0.0)))
+    (corpus / 'a' / 'b' / 'tri.ggb').write_bytes(ggb_bytes(triangle()))
+    (corpus / 'broken.ggb').write_bytes(b'PK not a zip')
+    (corpus / 'notes.txt').write_text('not a ggb')
+    assert [p.relative_to(corpus).as_posix() for p in corpus_files(corpus)] == ['a/b/tri.ggb', 'broken.ggb',
+                                                                                'small.ggb']
+    expected = tmp_path / 'expected'
+    written = record(corpus, expected)
+    assert len(written) == 3 and all(p.parent == expected for p in written)
+    assert verify(corpus, expected) == ([], 3)
+    exp = json.loads((expected / written[0].name).read_text(encoding='utf-8'))
+    assert exp['file'] == 'a/b/tri.ggb' and exp['outcome'] == 'report' and len(exp['elements']) == 7
+    assert exp == expectation(corpus / 'a' / 'b' / 'tri.ggb', name='a/b/tri.ggb')
+    # a changed category is a difference, by object
+    exp['elements'][3] = ['t1', 'differs', 'value_mismatch']
+    exp['summary']['editable'] -= 1
+    exp['summary']['differs'] += 1
+    (expected / written[0].name).write_text(json.dumps(exp), encoding='utf-8')
+    problems, _ = verify(corpus, expected)
+    assert problems == ['a/b/tri.ggb: editable 6 → 7', 'a/b/tri.ggb: differs 1 → 0',
+                        'a/b/tri.ggb: t1: differs value_mismatch → editable']
+    # a file without an expectation, a changed refusal
+    (corpus / 'new.ggb').write_bytes(zip_bytes({'readme.txt': 'x'}))
+    broken = expectation(corpus / 'broken.ggb')
+    (expected / f'{broken["sha256"]}.json').write_text(json.dumps({**broken, 'code': 'import_too_large'}))
+    problems, checked = verify(corpus, expected)
+    assert checked == 4
+    assert 'broken.ggb: outcome import_too_large → import_not_ggb' in problems
+    assert any(p.startswith('new.ggb: no expectation') for p in problems)
+
+
+def test_cli_corpus_and_coverage(tmp_path, capsys):
+    corpus = tmp_path / 'corpus'
+    corpus.mkdir()
+    (corpus / 'tri.ggb').write_bytes(ggb_bytes(triangle()))
+    expected = tmp_path / 'expected'
+    assert main(['convert', 'corpus', 'record', str(corpus), '--expected', str(expected)]) == 0
+    assert main(['convert', 'corpus', 'verify', str(corpus), '--expected', str(expected)]) == 0
+    assert '1 files, 0 differences' in capsys.readouterr().out
+    (corpus / 'other.ggb').write_bytes(ggb_bytes(point('A', 1.0, 1.0)))
+    assert main(['convert', 'corpus', 'verify', str(corpus), '--expected', str(expected)]) == 1
+    assert main(['convert', 'corpus', 'verify', str(tmp_path / 'missing')]) == 2
+    capsys.readouterr()
+    assert main(['convert', 'map', '--coverage', str(corpus)]) == 0
+    text = capsys.readouterr().out
+    assert text.startswith('2 files, 8 objects') and 'polygon' in text
+    assert main(['convert', 'map', '--coverage', str(corpus), '--json']) == 0
+    cov = json.loads(capsys.readouterr().out)
+    assert cov['categories']['editable'] == 8 and cov['keys']['polygon']['editable'] == 4
+    assert cov['keys']['type:point']['editable'] == 4 and cov['editable_share'] == 1.0
+    assert main(['convert', 'map', '--coverage', str(tmp_path / 'missing')]) == 2
+
+
+def test_coverage_of_the_synthetic_corpus():
+    cov = coverage(SYNTHETIC_DIR)
+    assert cov['files'] == len(SYNTHETIC)
+    assert cov['refused'] == {'ggb_invalid': 1, 'import_not_ggb': 1}
+    assert cov['objects'] == sum(cov['categories'].values()) == sum(sum(v.values()) for v in cov['keys'].values())
+    assert cov['keys']['intersect_lc']['editable'] == 2
