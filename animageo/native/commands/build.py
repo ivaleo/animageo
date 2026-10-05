@@ -25,7 +25,7 @@ from ..edit import EditError, _effects, _finish, delete, name_key, redefine, val
 from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, registry
 from .issues import CommandIssue, LineError, ambiguous_name
 from .lexer import tokenize
-from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, Lexicon
+from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, Lexicon, normalize_name
 from .naming import TakenKeys, next_name, pair_readings, polygon_side_names, suggest_name
 from .resolve import closest_name, kind_text, resolve
 from .syntax import parse_line
@@ -67,13 +67,21 @@ class ParseResult(NamedTuple):
     """``document`` — a :class:`NativeDocument`; ``effects`` — what changed
     against ``base`` (the shape of :mod:`animageo.native.edit`; everything is
     ``added`` for a new document); ``lines`` — ``[{line, operationIds,
-    elementIds}]`` for the lines that stand for an operation; ``issues`` —
-    :class:`CommandIssue` by line and column."""
+    elementIds}]`` for the lines that stand for an operation, plus ``[{line,
+    operationIds: [], elementIds: [], conditionId}]`` for a ``Проверить`` line
+    and an ``Условие`` line kept as it is; ``issues`` — :class:`CommandIssue`
+    by line and column; ``conditionRequests`` — ``[{line, kind: "apply" |
+    "release" | "replace" | "move", statement?, receiver?, conditionId?,
+    point?}]`` for the caller to carry out
+    (:func:`animageo.native.commands.apply_condition_requests`); ``queries`` —
+    ``[{line, kind: "relation", a, b}]`` of ``Отношение(a, b)``."""
 
     document: NativeDocument
     effects: dict
     lines: list
     issues: list
+    conditionRequests: list = []
+    queries: list = []
 
 
 def helper_key(op: dict):
@@ -243,6 +251,16 @@ class _Builder:
         self._scope_index = None    # name key → element ID: the elements in scope
         self._scope_points = None   # the same, points only
         self._helper_index = None   # (op, point IDs) → [operation ID]: pair-like operations
+        # 1.9.0a3: conditions, checks, queries and steps from comments
+        self.requests = []
+        self.queries = []
+        self.condition_lines = []   # [{line, operationIds: [], elementIds: [], conditionId}]
+        self.kept_conditions = set()        # base construct conditions with an unchanged line
+        self.kept_checks = set()            # base check conditions with a line
+        self.new_checks = []
+        self.receiver_ops = {}              # receiver op ID → [construct condition]
+        self.comments = {}                  # line → (text, comment only)
+        self.failed_conditions = 0          # Условие lines with an error: they keep a condition each
 
     # ── IDs ──────────────────────────────────────────────────────────────
 
@@ -772,6 +790,289 @@ class _Builder:
             self.matched.add(op_id)
             self._record_line(line, op_id)
 
+
+    # ── statements (1.9.0a3) ─────────────────────────────────────────────
+
+    def element(self, name: str):
+        return self._scope_names().get(name_key(name))
+
+    def type_of(self, el_id: str):
+        return (self.W['elements'].get(el_id) or {}).get('type')
+
+    def split(self, text: str, column: int, parts: int):
+        return self._split_or_fail(text, column, parts)
+
+    def unknown(self, text: str, column: int):
+        self._unknown(text, column)
+
+    def point(self, tok) -> dict:
+        el = self.element(tok.text)
+        if el is None:
+            self._unknown(tok.text, tok.column)
+        if self.type_of(el) != 'point':
+            raise LineError('type_mismatch', tok.column, f'{tok.text} — {kind_text(self.type_of(el))}, а нужна точка')
+        return {'ref': el}
+
+    def obj(self, tokens, column: int, types=None) -> dict:
+        if len(tokens) != 1 or tokens[0].kind != 'name':
+            raise LineError('syntax', tokens[0].column if tokens else column, 'нужно имя объекта или пара точек')
+        tok = tokens[0]
+        el = self.element(tok.text)
+        if el is not None:
+            return {'ref': el}
+        return {'pair': list(self._split_or_fail(tok.text, tok.column, 2))}
+
+    def _statement(self, st):
+        from .statements import parse_statement
+        tokens = st.tokens
+        receiver = None
+        if st.kind == 'condition':
+            from .statements import _split_commas
+            parts = _split_commas(tokens)
+            if len(parts) > 2:
+                raise LineError('syntax', parts[2][0].column if parts[2] else st.column, 'лишний аргумент')
+            if len(parts) == 2:
+                tail = parts[1]
+                if (len(tail) != 2 or tail[0].kind != 'name' or self.lex.keyword(tail[0].text) != 'move'
+                        or tail[1].kind != 'name'):
+                    raise LineError('syntax', tail[0].column if tail else st.column,
+                                    f'после запятой нужно «{self.lex.word("move")} X»')
+                receiver = self.point(tail[1])['ref']
+                tokens = parts[0]
+        return parse_statement(tokens, self, self.lex, st.command_column, NativeDocument(self.W)), receiver
+
+    def _condition_line(self, no: int, st) -> None:
+        from ..conditions.apply import _choose, _constraints, _points, _status
+        from ..conditions.recipes import matches
+        from .printer import printable_document
+        statement, receiver = self._statement(st)
+        # judged without the conditions of the text applied (as in a new
+        # document): receivers at their origins, no places
+        doc = NativeDocument(printable_document(NativeDocument(self.W))) if self.editing else NativeDocument(self.W)
+        found = matches(doc, statement)
+        column = st.command_column
+        if not found:
+            raise LineError('unsupported_condition', column, 'такое условие построить нельзя: нет рецепта',
+                            hint=f'{self.lex.word("check")}(…)')
+        participants = _points(doc, statement)
+        receivers = list(dict.fromkeys(b[r['receiver']] for r, b in found))
+        explicit = receiver is not None
+        if explicit:
+            if receiver not in receivers:
+                raise LineError('unsupported_condition', column, 'нет рецепта, который двигает эту точку')
+            status = _status(doc, receiver, participants)
+            if status == 'not_free':
+                raise LineError('receiver_not_free', column, 'точку нельзя двигать: она не свободна')
+            if status == 'ancestor':
+                raise LineError('receiver_is_ancestor', column, 'точку нельзя двигать: от неё зависят другие участники')
+        else:
+            statuses = {r: _status(doc, r, participants) for r in receivers}
+            ok = [r for r in receivers if statuses[r] == 'ok']
+            if not ok:
+                if any(v == 'ancestor' for v in statuses.values()):
+                    raise LineError('receiver_is_ancestor', column, 'двигать некого: точки условия задают друг друга')
+                raise LineError('receiver_not_free', column, 'двигать некого: в условии нет свободной точки')
+            receiver = _choose(doc, ok, participants)
+        key = canonical_json(statement)
+        if self.editing:
+            for cond in self._base_construct():
+                if cond['id'] in self.kept_conditions or canonical_json(cond.get('statement')) != key:
+                    continue
+                if explicit and cond.get('receiver') != receiver:
+                    continue
+                self.kept_conditions.add(cond['id'])
+                self.condition_lines.append({'line': no, 'operationIds': [], 'elementIds': [],
+                                             'conditionId': cond['id']})
+                return
+        on_receiver = sum(1 for r in self.requests if r['kind'] in ('apply', 'replace') and r.get('receiver') == receiver)
+        on_receiver += sum(1 for c in self._base_construct() if c['id'] in self.kept_conditions
+                           and c.get('receiver') == receiver)
+        if _constraints(doc, receiver) + on_receiver >= 2:
+            raise LineError('too_many_conditions', column, 'у точки уже два условия')
+        request = {'line': no, 'kind': 'apply', 'statement': statement, 'receiver': receiver}
+        if self.editing:
+            free = [c for c in self._base_construct() if c['id'] not in self.kept_conditions
+                    and not any(r.get('conditionId') == c['id'] for r in self.requests)]
+            old = next((c for c in free if c.get('receiver') == receiver), None) or \
+                next((c for c in free if canonical_json(c.get('statement')) == key), None)
+            if old is not None:
+                request = {'line': no, 'kind': 'replace', 'conditionId': old['id'], 'statement': statement,
+                           'receiver': receiver}
+        self.requests.append(request)
+
+    def _check_line(self, no: int, st) -> None:
+        from .statements import parse_statement
+        tokens = st.tokens
+        statement = parse_statement(tokens, self, self.lex, st.command_column, NativeDocument(self.W))
+        key = canonical_json(statement)
+        if self.editing:
+            for cond in self.base.get('conditions') or ():
+                if (isinstance(cond, dict) and cond.get('mode') == 'check' and cond.get('id') not in self.kept_checks
+                        and canonical_json(cond.get('statement')) == key):
+                    self.kept_checks.add(cond['id'])
+                    self.condition_lines.append({'line': no, 'operationIds': [], 'elementIds': [],
+                                                 'conditionId': cond['id']})
+                    return
+        self.new_checks.append((no, statement))
+
+    def _relation_line(self, no: int, st) -> None:
+        from .statements import parse_objects
+        a, b = parse_objects(st.tokens, self, st.command_column)
+        self.queries.append({'line': no, 'kind': 'relation', 'a': a, 'b': b})
+
+    def _base_construct(self) -> list:
+        return [c for c in self.base.get('conditions') or ()
+                if isinstance(c, dict) and c.get('mode') == 'construct' and isinstance(c.get('id'), str)]
+
+    def _move_receiver(self, no: int, st, op_id: str) -> None:
+        """A changed point literal on the line of a receiver: the new origin
+        and a ``move`` request; the operation stays."""
+        conds = self.receiver_ops[op_id]
+        receiver = conds[0]['receiver']
+        origin = {'op': 'point.free', 'args': {}, 'input': {'point': [st.value[0], st.value[1]]}}
+        for cond in self.W.get('conditions') or ():
+            if isinstance(cond, dict) and cond.get('mode') == 'construct' and cond.get('receiver') == receiver:
+                cond['receiverOrigin'] = copy.deepcopy(origin)
+        self.requests.append({'line': no, 'kind': 'move', 'conditionId': conds[0]['id'], 'receiver': receiver,
+                              'point': [st.value[0], st.value[1]]})
+        self.matched.add(op_id)
+        self._record_line(no, op_id)
+
+    def _reserve_condition_ops(self) -> None:
+        """Edit mode: the places of construct conditions and the automatic
+        marks have no lines; they stay unless their condition goes."""
+        data = self.base
+        for cond in self._base_construct():
+            receiver = cond.get('receiver')
+            rop = ((data.get('elements') or {}).get(receiver) or {}).get('producer', {}).get('operationId')
+            for op_id in cond.get('operationIds') or ():
+                if op_id == rop:
+                    self.receiver_ops.setdefault(op_id, []).append(cond)
+                elif op_id in (data.get('operations') or {}):
+                    self.matched.add(op_id)
+        for op_id in auto_ops(data):
+            self.matched.add(op_id)
+
+    def _finish_conditions(self) -> None:
+        conds = self.W.get('conditions')
+        present = {c.get('id') for c in conds or () if isinstance(c, dict)}
+        if self.editing:
+            spared = self.failed_conditions
+            for cond in self._base_construct():
+                if cond['id'] in present and cond['id'] not in self.kept_conditions \
+                        and not any(r.get('conditionId') == cond['id'] for r in self.requests):
+                    if spared:
+                        spared -= 1           # an Условие line with an error keeps its condition
+                        continue
+                    self.requests.append({'line': None, 'kind': 'release', 'conditionId': cond['id']})
+            for req in list(self.requests):
+                if req.get('conditionId') is not None and req.get('conditionId') not in present:
+                    if req['kind'] == 'replace':
+                        req['kind'] = 'apply'
+                        del req['conditionId']
+                    else:
+                        self.requests.remove(req)
+            if conds is not None:
+                self.W['conditions'] = [c for c in conds if not (isinstance(c, dict) and c.get('mode') == 'check'
+                                                                  and c.get('id') not in self.kept_checks)]
+        if self.new_checks:
+            from ..conditions.apply import _max_seq
+            used = set(self.W['operations']) | set(self.W['elements']) | {
+                c.get('id') for c in self.W.get('conditions') or () if isinstance(c, dict)}
+            seq = _max_seq(self.W)
+            n = 1
+            for _no, statement in self.new_checks:
+                while f'c{n}' in used:
+                    n += 1
+                cid = f'c{n}'
+                used.add(cid)
+                seq += 1
+                self.W.setdefault('conditions', []).append({'id': cid, 'seq': seq, 'mode': 'check',
+                                                            'statement': statement})
+                self.condition_lines.append({'line': _no, 'operationIds': [], 'elementIds': [], 'conditionId': cid})
+        if self.W.get('conditions') == [] and 'conditions' not in self.base:
+            del self.W['conditions']
+        # releases first (they free receivers and places), then the lines in order
+        self.requests.sort(key=lambda r: (r['kind'] != 'release', r['line'] or 0))
+
+    def _comment_steps(self, lines: list) -> None:
+        """Explicit steps from comments (plan L3 §4.1): a comment line opens
+        a group (its text is the title; «# Дано» — the «Дано» step) that runs
+        to the next comment line or an empty line; a comment at the end of a
+        line is the ``text`` of its step."""
+        by_line = {e['line']: e['operationIds'] for e in lines if e['operationIds']}
+        groups, current = [], None
+        for no in range(1, self.line_count + 1):
+            comment = self.comments.get(no)
+            if comment is not None and comment[1]:
+                title = comment[0]
+                kind = 'group'
+                if title and self.lex.keyword(title) == 'given':
+                    kind, title = 'given', ''
+                current = {'kind': kind, 'title': title, 'text': '', 'ops': [], 'first': None}
+                groups.append(current)
+                continue
+            if no in self.blank_lines:
+                current = None
+                continue
+            ops = by_line.get(no)
+            if not ops:
+                continue
+            text = comment[0] if comment is not None else ''
+            target = current
+            if target is None:
+                if not text:
+                    continue
+                target = {'kind': 'group', 'title': '', 'text': '', 'ops': [], 'first': None}
+                groups.append(target)
+            if text:
+                target['text'] = f"{target['text']}; {text}" if target['text'] else text
+            target['ops'].extend(ops)
+            if target['first'] is None:
+                target['first'] = ops[0]
+        signature = [(g['title'], g['text'], [o for o in g['ops'] if not is_helper(self.W, o)]) for g in groups
+                     if g['ops']]
+        if self.editing and signature == printed_step_signature(self.base, self.lex):
+            steps = []
+            for step in self.base.get('steps') or ():
+                if not isinstance(step, dict):
+                    continue
+                kept = [o for o in step.get('operationIds') or () if o in self.W['operations']]
+                if kept:
+                    steps.append({**copy.deepcopy(step), 'operationIds': kept})
+            if steps or 'steps' in self.W:
+                self.W['steps'] = steps
+            if self.W.get('steps') == [] and 'steps' not in self.base:
+                del self.W['steps']
+            return
+        base_steps = [s for s in self.base.get('steps') or () if isinstance(s, dict)]
+        used_ids = set()
+        out, assigned = [], set()
+        for g in groups:
+            ops = [o for o in dict.fromkeys(g['ops']) if o not in assigned and o in self.W['operations']]
+            if not ops:
+                continue
+            assigned.update(ops)
+            sid = next((s.get('id') for s in base_steps if g['first'] in (s.get('operationIds') or ())
+                        and s.get('id') not in used_ids), None)
+            if sid is None:
+                n = 1
+                taken = used_ids | {s.get('id') for s in base_steps}
+                while f's{n}' in taken:
+                    n += 1
+                sid = f's{n}'
+            used_ids.add(sid)
+            step = {'id': sid, 'kind': g['kind'], 'operationIds': ops}
+            if g['title']:
+                step['title'] = g['title']
+            if g['text']:
+                step['text'] = g['text']
+            out.append(step)
+        if out:
+            self.W['steps'] = out
+        else:
+            self.W.pop('steps', None)
+
     # ── run ──────────────────────────────────────────────────────────────
 
     def run(self, text: str) -> ParseResult:
@@ -779,8 +1080,12 @@ class _Builder:
             raise TypeError('text must be a string')
         rows = text.split('\n')
         statements = []
+        self.line_count = len(rows)
+        self.blank_lines = set()
         for no, raw in enumerate(rows, 1):
             line = raw[:-1] if raw.endswith('\r') else raw
+            if not line.strip():
+                self.blank_lines.add(no)
             try:
                 tokens, comment = tokenize(line)
             except LineError as exc:
@@ -788,10 +1093,9 @@ class _Builder:
                 statements.append((no, None, _claim_names(line)))
                 continue
             if comment is not None:
-                self.issues.append(CommandIssue('comment_dropped', no, comment,
-                                                'комментарий не сохраняется в документе', 'warning'))
+                self.comments[no] = (line[comment:].strip(), not tokens)
             try:
-                st = parse_line(tokens, no)
+                st = parse_line(tokens, no, self.lex)
             except LineError as exc:
                 self.issues.append(exc.issue(no))
                 statements.append((no, None, _claim_names(line)))
@@ -829,10 +1133,22 @@ class _Builder:
                     self.pending.update(named)
                 else:
                     self.nameless.add(op_id)
+        if self.editing:
+            self._reserve_condition_ops()
         printed = self._printed_base() if self.editing else {}
+        handlers = {'condition': self._condition_line, 'check': self._check_line, 'checkcall': self._check_line,
+                    'relation': self._relation_line}
         for no, st, _names in statements:
             self.line_no = no
             op_id = self.claims.get(no)
+            if st is not None and st.kind in handlers:
+                try:
+                    handlers[st.kind](no, st)
+                except LineError as exc:
+                    self.issues.append(exc.issue(no))
+                    if st.kind == 'condition':
+                        self.failed_conditions += 1
+                continue
             if st is None:
                 self._keep(no, op_id)
                 continue
@@ -840,16 +1156,24 @@ class _Builder:
             if same is not None:
                 self._keep(no, same)
                 continue
+            if op_id in self.receiver_ops and st.kind == 'point':
+                self._move_receiver(no, st, op_id)
+                continue
             try:
                 self._apply(st, op_id)
             except LineError as exc:
                 self.issues.append(exc.issue(no))
                 self._keep(no, op_id)
         self._finish()
+        self._finish_conditions()
         lines = self._final_lines()
+        self._comment_steps(lines)
         self._ambiguous_names(statements, lines)
+        lines = sorted(lines + [e for e in self.condition_lines
+                                if any(isinstance(c, dict) and c.get('id') == e['conditionId']
+                                       for c in self.W.get('conditions') or ())], key=lambda e: e['line'])
         return ParseResult(NativeDocument(self.W), self._diff(), lines,
-                           sorted(self.issues, key=lambda i: (i.line, i.column)))
+                           sorted(self.issues, key=lambda i: (i.line, i.column)), self.requests, self.queries)
 
     def _ambiguous_names(self, statements, lines) -> None:
         """``ambiguous_name`` (a warning, commands.md §3) at a left name of a
@@ -884,6 +1208,8 @@ class _Builder:
         result = print_commands(NativeDocument(self.base), lexicon=self.lex)
         rows = result.text.split('\n')
         for info in result.lines:
+            if not info['operationIds']:
+                continue
             sig = _signature(rows[info['line'] - 1])
             if sig is not None:
                 out[info['operationIds'][0]] = sig
@@ -911,7 +1237,8 @@ class _Builder:
         if sig is None:
             return None
         if op_id is not None:
-            if op_id in self.W['operations'] and printed.get(op_id) == sig and self._refs_in_scope(op_id):
+            if op_id in self.W['operations'] and printed.get(op_id) == sig and (
+                    op_id in self.receiver_ops or self._refs_in_scope(op_id)):
                 return op_id
             return None
         for candidate in sorted(self.nameless):
@@ -963,6 +1290,15 @@ class _Builder:
         before = self.base.get('appearance') or {}
         after = self.W.get('appearance') or {}
         effects['removed']['appearance'] = [k for k in before if k not in after]
+        before = {c.get('id'): c for c in self.base.get('conditions') or () if isinstance(c, dict)}
+        after = {c.get('id'): c for c in self.W.get('conditions') or () if isinstance(c, dict)}
+        added = [k for k in after if k not in before]
+        removed = [k for k in before if k not in after]
+        modified = [k for k in after if k in before and canonical_json(after[k]) != canonical_json(before[k])]
+        if added or removed or modified:
+            effects.setdefault('added', {})['conditions'] = added
+            effects.setdefault('removed', {})['conditions'] = removed
+            effects.setdefault('modified', {})['conditions'] = modified
         effects['warnings'] = list(self.warnings)
         return _finish(effects)
 
@@ -979,6 +1315,27 @@ class _Builder:
                         'elementIds': [o['elementId'] for o in main.get('outputs') or ()
                                        if o.get('elementId') in elements]})
         return out
+
+
+def auto_ops(data: dict) -> list:
+    """Operations whose outputs are all automatic (``origin.kind = "auto"``):
+    automatic marks and their helpers; «Команды» do not print them."""
+    elements = data.get('elements') or {}
+    out = []
+    for op_id, op in (data.get('operations') or {}).items():
+        outs = [elements.get(o.get('elementId')) for o in op.get('outputs') or ()]
+        if outs and all(isinstance(e, dict) and isinstance(e.get('origin'), dict)
+                        and e['origin'].get('kind') == 'auto' for e in outs):
+            out.append(op_id)
+    return out
+
+
+def printed_step_signature(data, lexicon) -> list:
+    """``[(title, text, visible printed op IDs)]`` of the groups the printer
+    shows for ``data``: edit mode keeps the steps of ``base`` when the text
+    shows the same groups."""
+    from .printer import step_signature
+    return step_signature(data, lexicon)
 
 
 def parse_commands(text: str, *, lexicon=None, base=None, id_factory=None, document_id=None) -> ParseResult:

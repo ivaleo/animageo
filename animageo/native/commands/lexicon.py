@@ -4,7 +4,15 @@
 
     {"format": "animageo-lexicon/v1",
      "commands": [{"name": "Середина", "aliases": ["Midpoint"], "op": "point.midpoint",
-                   "form"?: [slot | "$input", …], "minArgs"?: n}, …]}
+                   "form"?: [slot | "$input", …], "minArgs"?: n},
+                  {"name": "ПроверкаПараллельности", "aliases": ["AreParallel"], "check": "parallel"}, …],
+     "keywords"?: {"condition": ["Условие", "Condition"], "check": ["Проверить", "Check"], …}}
+
+An entry with ``check`` (a statement kind, :data:`CHECK_KINDS`) instead of
+``op`` is a check command (plan L3 §4.1): its arguments are the objects of
+the statement, it reads as ``Проверить(…)`` and prints as ``Проверить(a ∥ b)``.
+``keywords`` (1.9.0a3) renames the words of the grammar; a missing key keeps
+the default of :data:`DEFAULT_KEYWORDS` (the first word prints).
 
 An entry pairs a name (and its aliases) with a registry operation; one name
 may stand for several operations (overloads), told apart by the number and
@@ -37,6 +45,8 @@ from ..canonical import canonical_json, sha256_of
 from ..registry import FREE_INPUT_DEFAULTS, registry
 
 __all__ = [
+    'CHECK_KINDS',
+    'DEFAULT_KEYWORDS',
     'INPUT',
     'LEXICON_FORMAT',
     'Entry',
@@ -57,6 +67,27 @@ DEFAULT_PATH = Path(__file__).with_name('lexicon.v1.json')
 # literal, a point literal ``(x, y)``, ``не A`` (the known point of an
 # intersection), a pair of points ``BC`` and three points ``∠ABC``.
 NUM, PT, NOT, PAIR, ANGLE3 = '#num', '#pt', '#not', '#pair', '#angle3'
+
+# Words of the grammar (plan L3 §4.5); ``given`` and ``relation`` are
+# additions of 1.9.0a3: a comment line «# Дано» opens the explicit «Дано»
+# step, ``Отношение(a, b)`` is a query.
+DEFAULT_KEYWORDS = {
+    'condition': ['Условие', 'Condition'],
+    'check': ['Проверить', 'Check'],
+    'move': ['двигать', 'move'],
+    'touches': ['касается', 'touches'],
+    'not': ['не', 'not'],
+    'near': ['около', 'near'],
+    'given': ['Дано', 'Given'],
+    'relation': ['Отношение', 'Relation'],
+}
+# Statement kinds a check command may stand for, with their arguments:
+# two objects, a point and an object, or a list of points or lines.
+CHECK_KINDS = {
+    'parallel': 'two', 'perpendicular': 'two', 'tangent': 'two', 'congruent': 'two',
+    'on': 'point_object', 'coincident': 'two_points',
+    'collinear': 'points', 'concyclic': 'points', 'concurrent': 'lines',
+}
 
 
 class LexiconError(ValueError):
@@ -194,15 +225,24 @@ def _entry_problems(i: int, entry, reg) -> list:
     if not isinstance(entry, dict):
         return [f'{where}: not an object']
     problems = []
-    unknown = sorted(set(entry) - {'name', 'aliases', 'op', 'form', 'minArgs'})
-    if unknown:
-        problems.append(f'{where}: unknown keys {unknown}')
+    if 'check' in entry:
+        unknown = sorted(set(entry) - {'name', 'aliases', 'check'})
+        if unknown:
+            problems.append(f'{where}: unknown keys {unknown} (a check command has name, aliases, check)')
+    else:
+        unknown = sorted(set(entry) - {'name', 'aliases', 'op', 'form', 'minArgs'})
+        if unknown:
+            problems.append(f'{where}: unknown keys {unknown}')
     name = entry.get('name')
     if not isinstance(name, str) or not normalize_name(name):
         problems.append(f'{where}: name must be a non-empty string')
     aliases = entry.get('aliases', [])
     if not isinstance(aliases, list) or not all(isinstance(a, str) and normalize_name(a) for a in aliases):
         problems.append(f'{where}: aliases must be a list of non-empty strings')
+    if 'check' in entry:
+        if entry['check'] not in CHECK_KINDS:
+            problems.append(f'{where}: check must be one of {sorted(CHECK_KINDS)}')
+        return problems
     op = entry.get('op')
     record = reg.get(op) if isinstance(op, str) else None
     if record is None:
@@ -314,6 +354,8 @@ def _overload_problems(entries) -> list:
 def _build_entries(data: dict, reg) -> list:
     entries = []
     for i, raw in enumerate(data['commands']):
+        if 'check' in raw:
+            continue
         record = reg.get(raw['op'])
         positions = _positions(record, raw.get('form'))
         min_args = raw.get('minArgs')
@@ -337,9 +379,19 @@ def lexicon_problems(data) -> list:
     problems = []
     if data.get('format') != LEXICON_FORMAT:
         problems.append(f'format must be {LEXICON_FORMAT!r}')
-    unknown = sorted(set(data) - {'format', 'commands'})
+    unknown = sorted(set(data) - {'format', 'commands', 'keywords'})
     if unknown:
         problems.append(f'unknown keys {unknown}')
+    keywords = data.get('keywords', {})
+    if not isinstance(keywords, dict):
+        problems.append('keywords must be an object')
+    else:
+        for key, words in keywords.items():
+            if key not in DEFAULT_KEYWORDS:
+                problems.append(f'keywords: unknown key {key!r}')
+            elif not (isinstance(words, list) and words and all(isinstance(w, str) and normalize_name(w)
+                                                                   and len(w.split()) == 1 for w in words)):
+                problems.append(f'keywords.{key}: a non-empty list of one-word strings')
     commands = data.get('commands')
     if not isinstance(commands, list):
         return problems + ['commands must be a list']
@@ -347,7 +399,32 @@ def lexicon_problems(data) -> list:
         problems.extend(_entry_problems(i, entry, reg))
     if problems:
         return problems
-    return _overload_problems(_build_entries(data, reg))
+    entries = _build_entries(data, reg)
+    op_keys = {key for entry in entries for key in entry.keys}
+    check_keys = {}
+    for i, raw in enumerate(commands):
+        if 'check' not in raw:
+            continue
+        for name in (raw['name'], *raw.get('aliases', ())):
+            key = normalize_name(name)
+            if key in op_keys:
+                problems.append(f'commands[{i}]: the check name {name!r} is also a command name')
+            elif check_keys.setdefault(key, raw['check']) != raw['check']:
+                problems.append(f'commands[{i}]: the check name {name!r} stands for two statement kinds')
+    words = _keywords(data)
+    for key, items in words.items():
+        for word in items:
+            if normalize_name(word) in op_keys or normalize_name(word) in check_keys:
+                problems.append(f'keywords.{key}: {word!r} is also a command name')
+    return problems + _overload_problems(entries)
+
+
+def _keywords(data: dict) -> dict:
+    out = {k: list(v) for k, v in DEFAULT_KEYWORDS.items()}
+    raw = data.get('keywords')
+    if isinstance(raw, dict):
+        out.update({k: list(v) for k, v in raw.items() if k in out})
+    return out
 
 
 class Lexicon:
@@ -368,6 +445,34 @@ class Lexicon:
         self._by_op = {}
         for entry in self.entries:
             self._by_op.setdefault(entry.op, entry)
+        self.keywords = _keywords(self.data)
+        self._keyword_of = {}
+        for key, words in self.keywords.items():
+            for word in words:
+                self._keyword_of.setdefault(normalize_name(word), key)
+        self.checks = {}             # name key → statement kind
+        self._check_name = {}        # statement kind → printed name
+        for raw in self.data['commands']:
+            if 'check' in raw:
+                for name in (raw['name'], *raw.get('aliases', ())):
+                    self.checks.setdefault(normalize_name(name), raw['check'])
+                self._check_name.setdefault(raw['check'], raw['name'])
+
+    def keyword(self, word: str):
+        """The key of :data:`DEFAULT_KEYWORDS` that ``word`` is, or ``None``."""
+        return self._keyword_of.get(normalize_name(word))
+
+    def word(self, key: str) -> str:
+        """The printed word of a keyword (the first one)."""
+        return self.keywords[key][0]
+
+    def check_kind(self, name: str):
+        """The statement kind of the check command ``name``, or ``None``."""
+        return self.checks.get(normalize_name(name))
+
+    def check_name(self, kind: str):
+        """The printed name of the check command of ``kind``, or ``None``."""
+        return self._check_name.get(kind)
 
     def lookup(self, name: str) -> list:
         """Entries named ``name`` in lexicon order; a registry op ID written
@@ -402,4 +507,9 @@ class Lexicon:
             for name in (entry.name, *entry.aliases):
                 if name not in out:
                     out.append(name)
+        for raw in self.data['commands']:
+            if 'check' in raw:
+                for name in (raw['name'], *raw.get('aliases', ())):
+                    if name not in out:
+                        out.append(name)
         return out

@@ -213,6 +213,8 @@ def _cmd_commands_parse(args) -> int:
         'effects': result.effects,
         'lines': result.lines,
         'issues': [i.to_dict() for i in result.issues],
+        'conditionRequests': result.conditionRequests,
+        'queries': result.queries,
     }
     if args.canonical:
         _out(canonical_json(payload))
@@ -297,7 +299,7 @@ def build_parser() -> argparse.ArgumentParser:
     cf.add_argument('-o', '--out', help='output directory (default without --lexicon: the shipped fixtures)')
     cf.add_argument('--check', action='store_true', help='only compare; exit 1 when out of date')
     cf.set_defaults(func=_cmd_commands_fixtures)
-    cp = csub.add_parser('parse', help='parse commands; print {document, effects, lines, issues}')
+    cp = csub.add_parser('parse', help='parse commands; print {document, effects, lines, issues, conditionRequests, queries}')
     cp.add_argument('text', help='a text file of commands, or - for stdin')
     cp.add_argument('--lexicon', help='animageo-lexicon/v1 JSON file')
     cp.add_argument('--base', help='a document to edit (edit mode)')

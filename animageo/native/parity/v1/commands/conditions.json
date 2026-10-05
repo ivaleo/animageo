@@ -1,0 +1,5411 @@
+{
+  "format": "animageo-commands/v1",
+  "id": "conditions",
+  "lexiconHash": "sha256:1410111f96af706f06b5029dcc4887d67a5c0b0b94db24455c22a9b217fc4d45",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a2",
+  "cases": [
+    {
+      "name": "right_angle_vertex_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠ADB = 90°)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "D"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90.0
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠ADB = 90°)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "right_angle.vertex"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "right_angle_vertex_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠BDA = 90°, двигать D)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "D"
+                  },
+                  {
+                    "ref": "A"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90.0
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠BDA = 90°)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "right_angle.vertex"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "right_angle_vertex_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nCondition(<)ADB = 90 deg)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "D"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90.0
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠ADB = 90°)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "right_angle.vertex"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "right_angle_side_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠ABC = 90°)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "C"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90.0
+              }
+            },
+            "receiver": "C"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠ABC = 90°)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "right_angle.side"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "right_angle_side_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠BAD = 90°, двигать D)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "D"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90.0
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠BAD = 90°)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "right_angle.side"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "right_angle_side_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠CBA = 90°)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "C"
+                  },
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "A"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90.0
+              }
+            },
+            "receiver": "C"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠CBA = 90°)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "right_angle.side"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "angle_value_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠BAD = 40°)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "D"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 40.0
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠BAD = 40°)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "angle.value"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "angle_value_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠BAC = 30°, двигать C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "C"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 30.0
+              }
+            },
+            "receiver": "C"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠BAC = 30°)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "angle.value"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "angle_value_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠DAB = 60°)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "D"
+                  },
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 60.0
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠DAB = 60°)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "angle.value"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "angle_equal_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠BAD = ∠ABC)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "D"
+                  }
+                ]
+              },
+              "right": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "C"
+                  }
+                ]
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠BAD = ∠ABC)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "angle.equal"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "angle_equal_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠ABD = ∠BAC, двигать D)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "D"
+                  }
+                ]
+              },
+              "right": {
+                "angle": [
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "C"
+                  }
+                ]
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠ABD = ∠BAC)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "angle.equal"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "angle_equal_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠CAB = ∠DBA)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "C"
+                  },
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "angle": [
+                  {
+                    "ref": "D"
+                  },
+                  {
+                    "ref": "B"
+                  },
+                  {
+                    "ref": "A"
+                  }
+                ]
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(∠CAB = ∠DBA)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "angle.equal"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "equal_length_free_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AD| = |BC|)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "D"
+                  ]
+                }
+              },
+              "right": {
+                "len": {
+                  "pair": [
+                    "B",
+                    "C"
+                  ]
+                }
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AD| = |BC|)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "equal_length.free"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "equal_length_free_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|CD| = |AB|)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "C",
+                    "D"
+                  ]
+                }
+              },
+              "right": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "B"
+                  ]
+                }
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|CD| = |AB|)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "equal_length.free"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "equal_length_free_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|BD| = |AC|)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "B",
+                    "D"
+                  ]
+                }
+              },
+              "right": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "C"
+                  ]
+                }
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|BD| = |AC|)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "equal_length.free"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "equal_length_vertex_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AB| = |AC|)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "B"
+                  ]
+                }
+              },
+              "right": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "C"
+                  ]
+                }
+              }
+            },
+            "receiver": "C"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AB| = |AC|)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "equal_length.vertex"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "equal_length_vertex_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AD| = |AB|)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "D"
+                  ]
+                }
+              },
+              "right": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "B"
+                  ]
+                }
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AD| = |AB|)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "equal_length.vertex"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "equal_length_vertex_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|BA| = |BD|)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "B",
+                    "A"
+                  ]
+                }
+              },
+              "right": {
+                "len": {
+                  "pair": [
+                    "B",
+                    "D"
+                  ]
+                }
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|BA| = |BD|)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "equal_length.vertex"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "equal_length_apex_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|DA| = |DB|)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "D",
+                    "A"
+                  ]
+                }
+              },
+              "right": {
+                "len": {
+                  "pair": [
+                    "D",
+                    "B"
+                  ]
+                }
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|DA| = |DB|)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "equal_length.apex"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "equal_length_apex_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|CA| = |CB|, двигать C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "C",
+                    "A"
+                  ]
+                }
+              },
+              "right": {
+                "len": {
+                  "pair": [
+                    "C",
+                    "B"
+                  ]
+                }
+              }
+            },
+            "receiver": "C"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|CA| = |CB|)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "equal_length.apex"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "equal_length_apex_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|CA| = |CB|)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "C",
+                    "A"
+                  ]
+                }
+              },
+              "right": {
+                "len": {
+                  "pair": [
+                    "C",
+                    "B"
+                  ]
+                }
+              }
+            },
+            "receiver": "C"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|CA| = |CB|)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "equal_length.apex"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "length_value_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AC| = 5)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "C"
+                  ]
+                }
+              },
+              "right": {
+                "num": 5.0
+              }
+            },
+            "receiver": "C"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AC| = 5)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "length.value"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "length_value_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|BD| = 2)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "B",
+                    "D"
+                  ]
+                }
+              },
+              "right": {
+                "num": 2.0
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|BD| = 2)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "length.value"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "length_value_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|DC| = 3, двигать D)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "D",
+                    "C"
+                  ]
+                }
+              },
+              "right": {
+                "num": 3.0
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|DC| = 3)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "length.value"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "on_line_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(D ∈ AB)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "on",
+              "point": {
+                "ref": "D"
+              },
+              "object": {
+                "pair": [
+                  "A",
+                  "B"
+                ]
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(D ∈ AB)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "on_line"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "on_line_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nl = Прямая(A, C)\nУсловие(D ∈ l)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "C"
+            },
+            "outputs": {
+              "line": "l"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "l"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 6,
+            "kind": "apply",
+            "statement": {
+              "kind": "on",
+              "point": {
+                "ref": "D"
+              },
+              "object": {
+                "ref": "l"
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nl = Прямая(A, C)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nl = Прямая(A, C)\nУсловие(D ∈ l)",
+          "results": [
+            {
+              "line": 6,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "on_object"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "on_line_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(C in BD)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "on",
+              "point": {
+                "ref": "C"
+              },
+              "object": {
+                "pair": [
+                  "B",
+                  "D"
+                ]
+              }
+            },
+            "receiver": "C"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(C ∈ BD)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "on_line"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "on_object_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nk = Окружность(A, B)\nУсловие(D ∈ k)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "A",
+              "through": "B"
+            },
+            "outputs": {
+              "circle": "k"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "k"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 6,
+            "kind": "apply",
+            "statement": {
+              "kind": "on",
+              "point": {
+                "ref": "D"
+              },
+              "object": {
+                "ref": "k"
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nk = Окружность(A, B)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nk = Окружность(A, B)\nУсловие(D ∈ k)",
+          "results": [
+            {
+              "line": 6,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "on_object"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "on_object_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\ns = Отрезок(A, B)\nУсловие(D ∈ s)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "s"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 6,
+            "kind": "apply",
+            "statement": {
+              "kind": "on",
+              "point": {
+                "ref": "D"
+              },
+              "object": {
+                "ref": "s"
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\ns = Отрезок(A, B)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\ns = Отрезок(A, B)\nУсловие(D ∈ s)",
+          "results": [
+            {
+              "line": 6,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "on_object"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "on_object_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nk = Окружность(C, 2)\nУсловие(D ∈ k)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_radius",
+            "args": {
+              "center": "C",
+              "radius": 2.0
+            },
+            "outputs": {
+              "circle": "k"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "k"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 6,
+            "kind": "apply",
+            "statement": {
+              "kind": "on",
+              "point": {
+                "ref": "D"
+              },
+              "object": {
+                "ref": "k"
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nk = Окружность(C, 2)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nk = Окружность(C, 2)\nУсловие(D ∈ k)",
+          "results": [
+            {
+              "line": 6,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "on_object"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "parallel_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(AB ∥ DC)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "parallel",
+              "a": {
+                "pair": [
+                  "A",
+                  "B"
+                ]
+              },
+              "b": {
+                "pair": [
+                  "D",
+                  "C"
+                ]
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(AB ∥ DC)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "parallel"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "parallel_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(AC || BD)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "parallel",
+              "a": {
+                "pair": [
+                  "A",
+                  "C"
+                ]
+              },
+              "b": {
+                "pair": [
+                  "B",
+                  "D"
+                ]
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(AC ∥ BD)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "parallel"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "parallel_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(BD ∥ AC, двигать D)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "parallel",
+              "a": {
+                "pair": [
+                  "B",
+                  "D"
+                ]
+              },
+              "b": {
+                "pair": [
+                  "A",
+                  "C"
+                ]
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(BD ∥ AC)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "parallel"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "perpendicular_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(AB ⟂ CD)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "perpendicular",
+              "a": {
+                "pair": [
+                  "A",
+                  "B"
+                ]
+              },
+              "b": {
+                "pair": [
+                  "C",
+                  "D"
+                ]
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(AB ⟂ CD)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "perpendicular"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "perpendicular_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(AC _|_ BD)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "perpendicular",
+              "a": {
+                "pair": [
+                  "A",
+                  "C"
+                ]
+              },
+              "b": {
+                "pair": [
+                  "B",
+                  "D"
+                ]
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(AC ⟂ BD)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "perpendicular"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "perpendicular_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(BD ⟂ AC, двигать D)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "perpendicular",
+              "a": {
+                "pair": [
+                  "B",
+                  "D"
+                ]
+              },
+              "b": {
+                "pair": [
+                  "A",
+                  "C"
+                ]
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(BD ⟂ AC)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "perpendicular"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "tangent_1",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nO = (4, 2.5)\nw = Окружность(O, 0.8)\nУсловие(CD касается w)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "O"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_radius",
+            "args": {
+              "center": "O",
+              "radius": 0.8
+            },
+            "outputs": {
+              "circle": "w"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          },
+          "O": {
+            "kind": "point",
+            "value": [
+              4.0,
+              2.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "O"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "w"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 7,
+            "kind": "apply",
+            "statement": {
+              "kind": "tangent",
+              "a": {
+                "pair": [
+                  "C",
+                  "D"
+                ]
+              },
+              "b": {
+                "ref": "w"
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nO = (4, 2.5)\nw = Окружность(O, 0.8)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nO = (4, 2.5)\nw = Окружность(O, 0.8)\nУсловие(CD касается w)",
+          "results": [
+            {
+              "line": 7,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "tangent"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "tangent_2",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nO = (4, 2.5)\nw = Окружность(O, 0.8)\nУсловие(AD касается w)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "O"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_radius",
+            "args": {
+              "center": "O",
+              "radius": 0.8
+            },
+            "outputs": {
+              "circle": "w"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          },
+          "O": {
+            "kind": "point",
+            "value": [
+              4.0,
+              2.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "O"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "w"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 7,
+            "kind": "apply",
+            "statement": {
+              "kind": "tangent",
+              "a": {
+                "pair": [
+                  "A",
+                  "D"
+                ]
+              },
+              "b": {
+                "ref": "w"
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nO = (4, 2.5)\nw = Окружность(O, 0.8)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nO = (4, 2.5)\nw = Окружность(O, 0.8)\nУсловие(AD касается w)",
+          "results": [
+            {
+              "line": 7,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "tangent"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "tangent_3",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nO = (4, 2.5)\nw = Окружность(O, 0.8)\nCondition(BD touches w)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "O"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_radius",
+            "args": {
+              "center": "O",
+              "radius": 0.8
+            },
+            "outputs": {
+              "circle": "w"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          },
+          "O": {
+            "kind": "point",
+            "value": [
+              4.0,
+              2.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "O"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "w"
+            ]
+          }
+        ],
+        "issues": [],
+        "conditionRequests": [
+          {
+            "line": 7,
+            "kind": "apply",
+            "statement": {
+              "kind": "tangent",
+              "a": {
+                "pair": [
+                  "B",
+                  "D"
+                ]
+              },
+              "b": {
+                "ref": "w"
+              }
+            },
+            "receiver": "D"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nO = (4, 2.5)\nw = Окружность(O, 0.8)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nO = (4, 2.5)\nw = Окружность(O, 0.8)\nУсловие(BD касается w)",
+          "results": [
+            {
+              "line": 7,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "tangent"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -16,13 +16,18 @@ ERROR_CODES = (
     'invalid_name',
     'forbidden',
     'syntax',
+    # 1.9.0a3: conditions (plan L3 §4.2)
+    'unsupported_condition',
+    'receiver_not_free',
+    'receiver_is_ancestor',
+    'too_many_conditions',
 )
 WARNING_CODES = (
-    'comment_dropped',
     'ambiguous_name',
     'unprintable_pair',
     'unprintable_params',
     'unprintable_operation',
+    'unprintable_condition',
 )
 
 

@@ -1,13 +1,13 @@
 {
   "format": "animageo-commands/v1",
-  "id": "parse_lines",
+  "id": "condition_errors",
   "lexiconHash": "sha256:1410111f96af706f06b5029dcc4887d67a5c0b0b94db24455c22a9b217fc4d45",
   "registry": "1.5",
   "generatedBy": "animageo 1.9.0a2",
   "cases": [
     {
-      "name": "segment",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\ns = Отрезок(A, B)",
+      "name": "unsupported",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(ПроверкаКоллинеарности(A, B, C, D))",
       "base": null,
       "expect": {
         "operations": [
@@ -36,119 +36,236 @@
             "hidden": false
           },
           {
-            "op": "segment.by_points",
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "unsupported_condition",
+            "line": 5,
+            "column": 1,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)"
+      }
+    },
+    {
+      "name": "unsupported_receiver",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AB| = 3, двигать C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "unsupported_condition",
+            "line": 5,
+            "column": 1,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)"
+      }
+    },
+    {
+      "name": "not_free",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)\nN = Середина(B, C)\nУсловие(|MN| = 2)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
             "args": {
               "a": "A",
               "b": "B"
             },
             "outputs": {
-              "segment": "s"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "s"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\ns = Отрезок(A, B)"
-      }
-    },
-    {
-      "name": "segment_unnamed",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nОтрезок(B, C)\nОтрезок(C, A)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
+              "point": "M"
             },
             "hidden": false
           },
           {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "segment.by_points",
+            "op": "point.midpoint",
             "args": {
               "a": "B",
               "b": "C"
             },
             "outputs": {
-              "segment": "a"
-            },
-            "hidden": false
-          },
-          {
-            "op": "segment.by_points",
-            "args": {
-              "a": "C",
-              "b": "A"
-            },
-            "outputs": {
-              "segment": "b"
+              "point": "N"
             },
             "hidden": false
           }
@@ -198,23 +315,30 @@
           {
             "line": 4,
             "elements": [
-              "a"
+              "M"
             ]
           },
           {
             "line": 5,
             "elements": [
-              "b"
+              "N"
             ]
           }
         ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\na = Отрезок(B, C)\nb = Отрезок(C, A)"
+        "issues": [
+          {
+            "code": "receiver_not_free",
+            "line": 6,
+            "column": 1,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)\nN = Середина(B, C)"
       }
     },
     {
-      "name": "segment_alias",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\ns = Segment(A, C)",
+      "name": "not_free_explicit",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)\nУсловие(|MC| = 2, двигать M)",
       "base": null,
       "expect": {
         "operations": [
@@ -243,13 +367,13 @@
             "hidden": false
           },
           {
-            "op": "segment.by_points",
+            "op": "point.midpoint",
             "args": {
               "a": "A",
-              "b": "C"
+              "b": "B"
             },
             "outputs": {
-              "segment": "s"
+              "point": "M"
             },
             "hidden": false
           }
@@ -299,17 +423,24 @@
           {
             "line": 4,
             "elements": [
-              "s"
+              "M"
             ]
           }
         ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\ns = Отрезок(A, C)"
+        "issues": [
+          {
+            "code": "receiver_not_free",
+            "line": 5,
+            "column": 1,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)"
       }
     },
     {
-      "name": "line",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)",
+      "name": "ancestor",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)\nУсловие(∠AMC = 90°, двигать A)",
       "base": null,
       "expect": {
         "operations": [
@@ -334,6 +465,381 @@
             "args": {},
             "outputs": {
               "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "M"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "receiver_is_ancestor",
+            "line": 5,
+            "column": 1,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)"
+      }
+    },
+    {
+      "name": "ancestor_all",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)\nУсловие(|AM| = 3)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "M"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "receiver_is_ancestor",
+            "line": 5,
+            "column": 1,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)"
+      }
+    },
+    {
+      "name": "too_many",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AC| = 5)\nУсловие(|BC| = 4)\nУсловие(∠ACB = 90°)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "too_many_conditions",
+            "line": 7,
+            "column": 1,
+            "severity": "error"
+          }
+        ],
+        "conditionRequests": [
+          {
+            "line": 5,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "C"
+                  ]
+                }
+              },
+              "right": {
+                "num": 5.0
+              }
+            },
+            "receiver": "C"
+          },
+          {
+            "line": 6,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "B",
+                    "C"
+                  ]
+                }
+              },
+              "right": {
+                "num": 4.0
+              }
+            },
+            "receiver": "C"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AC| = 5)\nУсловие(|BC| = 4)",
+          "results": [
+            {
+              "line": 5,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "length.value"
+            },
+            {
+              "line": 6,
+              "kind": "apply",
+              "refusal": null,
+              "recipe": "length.value"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "too_many_on_path",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nl = Прямая(A, B)\nP = Точка(l)\nУсловие(|CP| = 3)\nУсловие(|DP| = 2)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
             },
             "hidden": false
           },
@@ -345,505 +851,13 @@
             },
             "outputs": {
               "line": "l"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "l"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)"
-      }
-    },
-    {
-      "name": "line_unnamed",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nПрямая(A, B)\nПрямая(B, C)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.by_points",
-            "args": {
-              "a": "A",
-              "b": "B"
-            },
-            "outputs": {
-              "line": "a"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.by_points",
-            "args": {
-              "a": "B",
-              "b": "C"
-            },
-            "outputs": {
-              "line": "b"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "a"
-            ]
-          },
-          {
-            "line": 5,
-            "elements": [
-              "b"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\na = Прямая(A, B)\nb = Прямая(B, C)"
-      }
-    },
-    {
-      "name": "line_alias",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Line(C, A)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.by_points",
-            "args": {
-              "a": "C",
-              "b": "A"
-            },
-            "outputs": {
-              "line": "l"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "l"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(C, A)"
-      }
-    },
-    {
-      "name": "ray",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nr = Луч(A, B)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "ray.by_points",
-            "args": {
-              "origin": "A",
-              "through": "B"
-            },
-            "outputs": {
-              "ray": "r"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "r"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nr = Луч(A, B)"
-      }
-    },
-    {
-      "name": "ray_unnamed",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nЛуч(B, C)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "ray.by_points",
-            "args": {
-              "origin": "B",
-              "through": "C"
-            },
-            "outputs": {
-              "ray": "a"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "a"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\na = Луч(B, C)"
-      }
-    },
-    {
-      "name": "ray_on_path",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nr = Луч(A, C)\nP = Точка(r, 1.5)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "ray.by_points",
-            "args": {
-              "origin": "A",
-              "through": "C"
-            },
-            "outputs": {
-              "ray": "r"
             },
             "hidden": false
           },
           {
             "op": "point.on_path",
             "args": {
-              "path": "r"
+              "path": "l"
             },
             "outputs": {
               "point": "P"
@@ -855,27 +869,34 @@
           "A": {
             "kind": "point",
             "value": [
-              0.0,
-              0.0
+              -3.0,
+              -2.0
             ]
           },
           "B": {
             "kind": "point",
             "value": [
-              4.0,
-              0.0
+              3.0,
+              -2.0
             ]
           },
           "C": {
             "kind": "point",
             "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
               1.0,
-              3.0
+              -0.5
             ]
           },
           "P": {
             "kind": "pathParameter",
-            "value": 1.5
+            "value": 0.5
           }
         },
         "lines": [
@@ -900,135 +921,68 @@
           {
             "line": 4,
             "elements": [
-              "r"
+              "D"
             ]
           },
           {
             "line": 5,
-            "elements": [
-              "P"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nr = Луч(A, C)\nP = Точка(r, 1.5)"
-      }
-    },
-    {
-      "name": "parallel",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)\np = Параллельная(C, l)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.by_points",
-            "args": {
-              "a": "A",
-              "b": "B"
-            },
-            "outputs": {
-              "line": "l"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.parallel",
-            "args": {
-              "point": "C",
-              "base": "l"
-            },
-            "outputs": {
-              "line": "p"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
             "elements": [
               "l"
             ]
           },
           {
-            "line": 5,
+            "line": 6,
             "elements": [
-              "p"
+              "P"
             ]
           }
         ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)\np = Параллельная(C, l)"
+        "issues": [
+          {
+            "code": "too_many_conditions",
+            "line": 8,
+            "column": 1,
+            "severity": "error"
+          }
+        ],
+        "conditionRequests": [
+          {
+            "line": 7,
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "C",
+                    "P"
+                  ]
+                }
+              },
+              "right": {
+                "num": 3.0
+              }
+            },
+            "receiver": "P"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nl = Прямая(A, B)\nP = Точка(l, 0.5)",
+        "afterRequests": {
+          "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nl = Прямая(A, B)\nP = Точка(l, 0.5)",
+          "results": [
+            {
+              "line": 7,
+              "kind": "apply",
+              "refusal": "no_intersection_now",
+              "recipe": null
+            }
+          ]
+        }
       }
     },
     {
-      "name": "parallel_pair",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\np = Параллельная(C, AB)",
+      "name": "ambiguous_pair",
+      "text": "A = (0, 0)\nB = (1, 0)\nC = (2, 1)\nAB = (3, 3)\nBC = (4, 1)\nУсловие(|ABC| = 2)",
       "base": null,
       "expect": {
         "operations": [
@@ -1057,24 +1011,18 @@
             "hidden": false
           },
           {
-            "op": "line.by_points",
-            "args": {
-              "a": "A",
-              "b": "B"
-            },
+            "op": "point.free",
+            "args": {},
             "outputs": {
-              "line": "#1"
+              "point": "AB"
             },
-            "hidden": true
+            "hidden": false
           },
           {
-            "op": "line.parallel",
-            "args": {
-              "point": "C",
-              "base": "#1"
-            },
+            "op": "point.free",
+            "args": {},
             "outputs": {
-              "line": "p"
+              "point": "BC"
             },
             "hidden": false
           }
@@ -1090,15 +1038,29 @@
           "B": {
             "kind": "point",
             "value": [
-              4.0,
+              1.0,
               0.0
             ]
           },
           "C": {
             "kind": "point",
             "value": [
-              1.0,
+              2.0,
+              1.0
+            ]
+          },
+          "AB": {
+            "kind": "point",
+            "value": [
+              3.0,
               3.0
+            ]
+          },
+          "BC": {
+            "kind": "point",
+            "value": [
+              4.0,
+              1.0
             ]
           }
         },
@@ -1124,17 +1086,56 @@
           {
             "line": 4,
             "elements": [
-              "p"
+              "AB"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "BC"
             ]
           }
         ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\np = Параллельная(C, AB)"
+        "issues": [
+          {
+            "code": "ambiguous_name",
+            "line": 4,
+            "column": 1,
+            "severity": "warning"
+          },
+          {
+            "code": "ambiguous_name",
+            "line": 5,
+            "column": 1,
+            "severity": "warning"
+          },
+          {
+            "code": "ambiguous_pair",
+            "line": 6,
+            "column": 10,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (0, 0)\nB = (1, 0)\nC = (2, 1)\nAB = (3, 3)\nBC = (4, 1)",
+        "printIssues": [
+          {
+            "code": "ambiguous_name",
+            "line": 4,
+            "column": 1,
+            "severity": "warning"
+          },
+          {
+            "code": "ambiguous_name",
+            "line": 5,
+            "column": 1,
+            "severity": "warning"
+          }
+        ]
       }
     },
     {
-      "name": "parallel_segment",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\ns = Отрезок(A, B)\np = Параллельная(C, s)",
+      "name": "ambiguous_pair_object",
+      "text": "A = (0, 0)\nB = (1, 0)\nC = (2, 1)\nAB = (3, 3)\nBC = (4, 1)\nD = (1, 2)\nУсловие(D ∈ ABC)",
       "base": null,
       "expect": {
         "operations": [
@@ -1159,6 +1160,859 @@
             "args": {},
             "outputs": {
               "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "AB"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "BC"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              1.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              2.0,
+              1.0
+            ]
+          },
+          "AB": {
+            "kind": "point",
+            "value": [
+              3.0,
+              3.0
+            ]
+          },
+          "BC": {
+            "kind": "point",
+            "value": [
+              4.0,
+              1.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              2.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "AB"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "BC"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "ambiguous_name",
+            "line": 4,
+            "column": 1,
+            "severity": "warning"
+          },
+          {
+            "code": "ambiguous_name",
+            "line": 5,
+            "column": 1,
+            "severity": "warning"
+          },
+          {
+            "code": "ambiguous_pair",
+            "line": 7,
+            "column": 13,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (0, 0)\nB = (1, 0)\nC = (2, 1)\nAB = (3, 3)\nBC = (4, 1)\nD = (1, 2)",
+        "printIssues": [
+          {
+            "code": "ambiguous_name",
+            "line": 4,
+            "column": 1,
+            "severity": "warning"
+          },
+          {
+            "code": "ambiguous_name",
+            "line": 5,
+            "column": 1,
+            "severity": "warning"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown_name",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AX| = 2)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "unknown_name",
+            "line": 5,
+            "column": 10,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)"
+      }
+    },
+    {
+      "name": "statement_missing",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(AB)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "syntax",
+            "line": 5,
+            "column": 9,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)"
+      }
+    },
+    {
+      "name": "two_relations",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(AB ∥ CD ∥ AC)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "syntax",
+            "line": 5,
+            "column": 17,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)"
+      }
+    },
+    {
+      "name": "move_word",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие(|AC| = 2, тянуть C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "syntax",
+            "line": 5,
+            "column": 19,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)"
+      }
+    },
+    {
+      "name": "move_not_point",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nk = Окружность(A, B)\nУсловие(|AC| = 2, двигать k)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "A",
+              "through": "B"
+            },
+            "outputs": {
+              "circle": "k"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "k"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "type_mismatch",
+            "line": 6,
+            "column": 27,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nk = Окружность(A, B)"
+      }
+    },
+    {
+      "name": "length_of_number",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nr = 2\nУсловие(|r| = 2)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "number.free",
+            "args": {},
+            "outputs": {
+              "number": "r"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -3.0,
+              -2.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -2.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              1.0,
+              -0.5
+            ]
+          },
+          "r": {
+            "kind": "number",
+            "value": 2.0
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "r"
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "type_mismatch",
+            "line": 6,
+            "column": 9,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nr = 2"
+      }
+    },
+    {
+      "name": "segment_as_number",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\ns = Отрезок(A, B)\nУсловие(s = 2)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
             },
             "hidden": false
           },
@@ -1172,39 +2026,35 @@
               "segment": "s"
             },
             "hidden": false
-          },
-          {
-            "op": "line.parallel",
-            "args": {
-              "point": "C",
-              "base": "s"
-            },
-            "outputs": {
-              "line": "p"
-            },
-            "hidden": false
           }
         ],
         "inputs": {
           "A": {
             "kind": "point",
             "value": [
-              0.0,
-              0.0
+              -3.0,
+              -2.0
             ]
           },
           "B": {
             "kind": "point",
             "value": [
-              4.0,
-              0.0
+              3.0,
+              -2.0
             ]
           },
           "C": {
             "kind": "point",
             "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
               1.0,
-              3.0
+              -0.5
             ]
           }
         },
@@ -1229,673 +2079,31 @@
           },
           {
             "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
             "elements": [
               "s"
             ]
-          },
-          {
-            "line": 5,
-            "elements": [
-              "p"
-            ]
           }
         ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\ns = Отрезок(A, B)\np = Параллельная(C, s)"
-      }
-    },
-    {
-      "name": "perpendicular",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)\nq = Перпендикуляр(C, l)",
-      "base": null,
-      "expect": {
-        "operations": [
+        "issues": [
           {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.by_points",
-            "args": {
-              "a": "A",
-              "b": "B"
-            },
-            "outputs": {
-              "line": "l"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.perpendicular",
-            "args": {
-              "point": "C",
-              "base": "l"
-            },
-            "outputs": {
-              "line": "q"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "l"
-            ]
-          },
-          {
-            "line": 5,
-            "elements": [
-              "q"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)\nq = Перпендикуляр(C, l)"
-      }
-    },
-    {
-      "name": "perpendicular_pair",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nq = Перпендикуляр(C, AB)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.by_points",
-            "args": {
-              "a": "A",
-              "b": "B"
-            },
-            "outputs": {
-              "line": "#1"
-            },
-            "hidden": true
-          },
-          {
-            "op": "line.perpendicular",
-            "args": {
-              "point": "C",
-              "base": "#1"
-            },
-            "outputs": {
-              "line": "q"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "q"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nq = Перпендикуляр(C, AB)"
-      }
-    },
-    {
-      "name": "perpendicular_ray",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nr = Луч(A, B)\nq = Перпендикуляр(C, r)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "ray.by_points",
-            "args": {
-              "origin": "A",
-              "through": "B"
-            },
-            "outputs": {
-              "ray": "r"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.perpendicular",
-            "args": {
-              "point": "C",
-              "base": "r"
-            },
-            "outputs": {
-              "line": "q"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "r"
-            ]
-          },
-          {
-            "line": 5,
-            "elements": [
-              "q"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nr = Луч(A, B)\nq = Перпендикуляр(C, r)"
-      }
-    },
-    {
-      "name": "bisector",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nm = СерединныйПерпендикуляр(A, B)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.perpendicular_bisector",
-            "args": {
-              "a": "A",
-              "b": "B"
-            },
-            "outputs": {
-              "line": "m"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "m"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nm = СерединныйПерпендикуляр(A, B)"
-      }
-    },
-    {
-      "name": "bisector_unnamed",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nСерединныйПерпендикуляр(B, C)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.perpendicular_bisector",
-            "args": {
-              "a": "B",
-              "b": "C"
-            },
-            "outputs": {
-              "line": "a"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "a"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\na = СерединныйПерпендикуляр(B, C)"
-      }
-    },
-    {
-      "name": "bisector_chain",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nm = СерединныйПерпендикуляр(A, B)\nn = СерединныйПерпендикуляр(B, C)\nO = Пересечение(m, n)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.perpendicular_bisector",
-            "args": {
-              "a": "A",
-              "b": "B"
-            },
-            "outputs": {
-              "line": "m"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.perpendicular_bisector",
-            "args": {
-              "a": "B",
-              "b": "C"
-            },
-            "outputs": {
-              "line": "n"
-            },
-            "hidden": false
-          },
-          {
-            "op": "intersect.line_line",
-            "args": {
-              "first": "m",
-              "second": "n"
-            },
-            "outputs": {
-              "point": "O"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "m"
-            ]
-          },
-          {
-            "line": 5,
-            "elements": [
-              "n"
-            ]
-          },
-          {
+            "code": "type_mismatch",
             "line": 6,
-            "elements": [
-              "O"
-            ]
+            "column": 9,
+            "severity": "error"
           }
         ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nm = СерединныйПерпендикуляр(A, B)\nn = СерединныйПерпендикуляр(B, C)\nO = Пересечение(m, n)"
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\ns = Отрезок(A, B)"
       }
     },
     {
-      "name": "angle_bisector",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nw = Биссектриса(B, A, C)",
+      "name": "point_on_point",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nПроверить(A ∈ B)",
       "base": null,
       "expect": {
         "operations": [
@@ -1924,14 +2132,10 @@
             "hidden": false
           },
           {
-            "op": "line.angle_bisector",
-            "args": {
-              "a": "B",
-              "vertex": "A",
-              "b": "C"
-            },
+            "op": "point.free",
+            "args": {},
             "outputs": {
-              "line": "w"
+              "point": "D"
             },
             "hidden": false
           }
@@ -1940,22 +2144,29 @@
           "A": {
             "kind": "point",
             "value": [
-              0.0,
-              0.0
+              -3.0,
+              -2.0
             ]
           },
           "B": {
             "kind": "point",
             "value": [
-              4.0,
-              0.0
+              3.0,
+              -2.0
             ]
           },
           "C": {
             "kind": "point",
             "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
               1.0,
-              3.0
+              -0.5
             ]
           }
         },
@@ -1981,237 +2192,38 @@
           {
             "line": 4,
             "elements": [
-              "w"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nw = Биссектриса(B, A, C)"
-      }
-    },
-    {
-      "name": "angle_bisector_unnamed",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nБиссектриса(A, B, C)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.angle_bisector",
-            "args": {
-              "a": "A",
-              "vertex": "B",
-              "b": "C"
-            },
-            "outputs": {
-              "line": "a"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "a"
-            ]
-          }
-        ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\na = Биссектриса(A, B, C)"
-      }
-    },
-    {
-      "name": "angle_bisector_chain",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nw = Биссектриса(B, A, C)\nW = Пересечение(w, BC)",
-      "base": null,
-      "expect": {
-        "operations": [
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "A"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "B"
-            },
-            "hidden": false
-          },
-          {
-            "op": "point.free",
-            "args": {},
-            "outputs": {
-              "point": "C"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.angle_bisector",
-            "args": {
-              "a": "B",
-              "vertex": "A",
-              "b": "C"
-            },
-            "outputs": {
-              "line": "w"
-            },
-            "hidden": false
-          },
-          {
-            "op": "line.by_points",
-            "args": {
-              "a": "B",
-              "b": "C"
-            },
-            "outputs": {
-              "line": "#1"
-            },
-            "hidden": true
-          },
-          {
-            "op": "intersect.line_line",
-            "args": {
-              "first": "w",
-              "second": "#1"
-            },
-            "outputs": {
-              "point": "W"
-            },
-            "hidden": false
-          }
-        ],
-        "inputs": {
-          "A": {
-            "kind": "point",
-            "value": [
-              0.0,
-              0.0
-            ]
-          },
-          "B": {
-            "kind": "point",
-            "value": [
-              4.0,
-              0.0
-            ]
-          },
-          "C": {
-            "kind": "point",
-            "value": [
-              1.0,
-              3.0
-            ]
-          }
-        },
-        "lines": [
-          {
-            "line": 1,
-            "elements": [
-              "A"
-            ]
-          },
-          {
-            "line": 2,
-            "elements": [
-              "B"
-            ]
-          },
-          {
-            "line": 3,
-            "elements": [
-              "C"
-            ]
-          },
-          {
-            "line": 4,
-            "elements": [
-              "w"
+              "D"
             ]
           },
           {
             "line": 5,
-            "elements": [
-              "W"
-            ]
+            "elements": [],
+            "condition": "c1"
           }
         ],
         "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nw = Биссектриса(B, A, C)\nW = Пересечение(w, BC)"
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "check",
+            "statement": {
+              "kind": "on",
+              "point": {
+                "ref": "A"
+              },
+              "object": {
+                "ref": "B"
+              }
+            }
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nПроверить(A ∈ B)"
       }
     },
     {
-      "name": "vector",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nv = Вектор(A, B)",
+      "name": "check_point_not_object",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nПроверить(AB ∈ C)",
       "base": null,
       "expect": {
         "operations": [
@@ -2240,13 +2252,10 @@
             "hidden": false
           },
           {
-            "op": "vector.by_points",
-            "args": {
-              "a": "A",
-              "b": "B"
-            },
+            "op": "point.free",
+            "args": {},
             "outputs": {
-              "vector": "v"
+              "point": "D"
             },
             "hidden": false
           }
@@ -2255,22 +2264,29 @@
           "A": {
             "kind": "point",
             "value": [
-              0.0,
-              0.0
+              -3.0,
+              -2.0
             ]
           },
           "B": {
             "kind": "point",
             "value": [
-              4.0,
-              0.0
+              3.0,
+              -2.0
             ]
           },
           "C": {
             "kind": "point",
             "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
               1.0,
-              3.0
+              -0.5
             ]
           }
         },
@@ -2296,17 +2312,24 @@
           {
             "line": 4,
             "elements": [
-              "v"
+              "D"
             ]
           }
         ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nv = Вектор(A, B)"
+        "issues": [
+          {
+            "code": "unknown_name",
+            "line": 5,
+            "column": 11,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)"
       }
     },
     {
-      "name": "vector_unnamed",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nВектор(B, C)",
+      "name": "empty",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nУсловие()",
       "base": null,
       "expect": {
         "operations": [
@@ -2335,13 +2358,10 @@
             "hidden": false
           },
           {
-            "op": "vector.by_points",
-            "args": {
-              "a": "B",
-              "b": "C"
-            },
+            "op": "point.free",
+            "args": {},
             "outputs": {
-              "vector": "a"
+              "point": "D"
             },
             "hidden": false
           }
@@ -2350,22 +2370,29 @@
           "A": {
             "kind": "point",
             "value": [
-              0.0,
-              0.0
+              -3.0,
+              -2.0
             ]
           },
           "B": {
             "kind": "point",
             "value": [
-              4.0,
-              0.0
+              3.0,
+              -2.0
             ]
           },
           "C": {
             "kind": "point",
             "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
               1.0,
-              3.0
+              -0.5
             ]
           }
         },
@@ -2391,17 +2418,24 @@
           {
             "line": 4,
             "elements": [
-              "a"
+              "D"
             ]
           }
         ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\na = Вектор(B, C)"
+        "issues": [
+          {
+            "code": "syntax",
+            "line": 5,
+            "column": 9,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)"
       }
     },
     {
-      "name": "vector_alias",
-      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nv = Vector(C, A)",
+      "name": "names_on_left",
+      "text": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)\nt = Проверить(A ∈ AB)",
       "base": null,
       "expect": {
         "operations": [
@@ -2430,13 +2464,10 @@
             "hidden": false
           },
           {
-            "op": "vector.by_points",
-            "args": {
-              "a": "C",
-              "b": "A"
-            },
+            "op": "point.free",
+            "args": {},
             "outputs": {
-              "vector": "v"
+              "point": "D"
             },
             "hidden": false
           }
@@ -2445,22 +2476,29 @@
           "A": {
             "kind": "point",
             "value": [
-              0.0,
-              0.0
+              -3.0,
+              -2.0
             ]
           },
           "B": {
             "kind": "point",
             "value": [
-              4.0,
-              0.0
+              3.0,
+              -2.0
             ]
           },
           "C": {
             "kind": "point",
             "value": [
+              0.5,
+              2.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
               1.0,
-              3.0
+              -0.5
             ]
           }
         },
@@ -2486,12 +2524,19 @@
           {
             "line": 4,
             "elements": [
-              "v"
+              "D"
             ]
           }
         ],
-        "issues": [],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nv = Вектор(C, A)"
+        "issues": [
+          {
+            "code": "syntax",
+            "line": 5,
+            "column": 15,
+            "severity": "error"
+          }
+        ],
+        "print": "A = (-3, -2)\nB = (3, -2)\nC = (0.5, 2)\nD = (1, -0.5)"
       }
     }
   ]

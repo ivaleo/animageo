@@ -73,14 +73,18 @@ from .conditions.marks import AutoMarks, add_auto_marks, auto_marks, auto_source
 # Features of this library by stage of plan L3 (``has``): the web asks for a
 # feature instead of comparing versions.
 FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles',
-            'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values')
+            'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values',
+            'commands.conditions', 'commands.steps')
 
 
 def has(feature: str) -> bool:
     """Whether this library has ``feature`` (one of :data:`FEATURES`; stage 1 of L3:
     ``triangle``, ``locus``, ``steps``, ``describe``, ``render.eps``,
     ``render.tikz``, ``roles``; stage 2: ``check.general``, ``conditions``,
-    ``apply_condition``, ``auto_marks``, ``describe.values``)."""
+    ``apply_condition``, ``auto_marks``, ``describe.values``; stage 3:
+    ``commands.conditions`` — «Команды» with ``Условие``, ``Проверить``,
+    check commands and ``Отношение``, ``commands.steps`` — comments as steps
+    and the print order by steps)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION

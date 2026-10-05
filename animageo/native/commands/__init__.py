@@ -18,7 +18,8 @@ from .issues import ERROR_CODES, WARNING_CODES, CommandIssue
 from .lexicon import LEXICON_FORMAT, Lexicon, LexiconError, default_lexicon, lexicon_hash, lexicon_problems
 from .naming import next_name, polygon_side_names
 from .numbers import format_number
-from .printer import PrintResult, print_commands
+from .printer import PrintResult, print_commands, printable_document
+from .requests import RequestsResult, apply_condition_requests
 
 __all__ = [
     'CommandIssue',
@@ -28,6 +29,9 @@ __all__ = [
     'LexiconError',
     'ParseResult',
     'PrintResult',
+    'RequestsResult',
+    'apply_condition_requests',
+    'printable_document',
     'WARNING_CODES',
     'default_lexicon',
     'format_number',

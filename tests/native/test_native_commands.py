@@ -135,8 +135,9 @@ def structure_problems(original, parsed):
 
 
 SCENES = sorted(p for p in SCENES_DIR.glob('*.json') if p.stem != 'graph_errors')
-# Ops of registry 1.4 get lexicon entries in L3; the default lexicon covers 1.0–1.3.
-LEXICON_OPS = {op for op, r in registry().ops.items() if r['since'] != '1.4'}
+# The default lexicon covers every op but the two that «Команды» cannot type
+# (an expression and a text template; the printer prints them by hand).
+LEXICON_OPS = {op for op in registry().ops if op not in ('number.expression', 'text.free')}
 
 
 # ── lexicon ──────────────────────────────────────────────────────────────
@@ -153,7 +154,8 @@ class TestLexicon:
         lex = Lexicon()
         assert [e.op for e in lex.lookup('серединный  ПЕРПЕНДИКУЛЯР')] == ['line.perpendicular_bisector']
         assert {e.op for e in lex.lookup('Пересечение')} == {
-            'intersect.line_line', 'intersect.line_circle', 'intersect.circle_circle', 'intersect.other_than'}
+            'intersect.line_line', 'intersect.line_circle', 'intersect.circle_circle', 'intersect.other_than',
+            'intersect.nearest'}
 
     def test_registry_id_is_a_command(self):
         lex = Lexicon()
@@ -232,8 +234,8 @@ class TestLexer:
 
 class TestGrammar:
     @pytest.mark.parametrize('text, code', [
-        ('Условие(|AB| = |AC|)', 'forbidden'),
-        ('Проверить(AB ∥ CD)', 'forbidden'),
+        ('AB ∥ CD', 'forbidden'),
+        ('t = Условие(A ∈ b)', 'syntax'),
         ('y = 2x + 1', 'forbidden'),
         ('x = 3', 'forbidden'),
         ('f(x) = x^2', 'forbidden'),
@@ -265,11 +267,13 @@ class TestGrammar:
         assert (issue.code, issue.line, issue.column, issue.hint) == ('forbidden', 6, 23, 'не C')
         assert 'будет позже' in issue.message
 
-    def test_comments_are_dropped_with_a_warning(self):
+    def test_comments_become_steps(self):
+        # 1.9.0a3: a comment is the text of the step, a comment line opens a group
         result = parse('A = (0, 0)  # начало\n# только комментарий\n\n')
-        assert [(i.code, i.line, i.column, i.severity) for i in result.issues] == [
-            ('comment_dropped', 1, 13, 'warning'), ('comment_dropped', 2, 1, 'warning')]
+        assert result.issues == []
         assert len(result.document.operations) == 1
+        [step] = result.document.data['steps']
+        assert (step['kind'], step['text'], 'title' in step) == ('group', 'начало', False)
 
     def test_crlf(self):
         result = parse('A = (0, 0)\r\nB = (1, 1)\r\n')
@@ -564,7 +568,7 @@ class TestPrint:
     def test_round_trip_on_parity_scenes(self, path):
         doc = read_json(path)['document']
         if doc.get('conditions'):
-            pytest.skip('conditions are printed in «Команды» from 1.9.0a3 (plan L3 §4)')
+            pytest.skip('a document with conditions reads back with requests (test_native_l3a3_commands.py)')
         printed = print_commands(doc)
         result = parse_commands(printed.text, document_id='doc')
         # the only issues are ambiguous_name, at the same places as the printer's
@@ -603,8 +607,6 @@ class TestPrint:
     @pytest.mark.parametrize('path', SCENES, ids=lambda p: p.stem)
     def test_printed_text_edits_nothing(self, path):
         doc = read_json(path)['document']
-        if path.stem == 'recipe_angle_equal':
-            pytest.skip('the number.expression of angle.equal is printed from 1.9.0a3 (plan L3 §4)')
         result = parse_commands(print_commands(doc).text, base=doc)
         if path.stem == 'l2a5_number_expression':     # formula lines fail and keep their operations
             assert {i.code for i in result.issues} == {'forbidden'}
@@ -802,13 +804,13 @@ class TestFixtures:
             if case['base'] is None and not case['expect']['issues']:
                 for op in {o['op'] for o in case['expect']['operations'] if not o['hidden']}:
                     per_op[op] = per_op.get(op, 0) + 1
-        assert {op for op, n in per_op.items() if n >= 3} == LEXICON_OPS
+        assert {op for op, n in per_op.items() if n >= 2} == LEXICON_OPS
         issues = [i for c in cases for i in c['expect']['issues']]
         assert len([i for i in issues if i['severity'] == 'error']) >= 20
         assert set(ERROR_CODES) <= {i['code'] for i in issues}
         warnings = {i['code'] for i in issues if i['severity'] == 'warning'}
         printed = {i['code'] for c in cases for i in c['expect'].get('printIssues', ())}
-        assert {'comment_dropped', 'ambiguous_name'} <= warnings and 'ambiguous_name' in printed
+        assert 'ambiguous_name' in warnings and 'ambiguous_name' in printed
         assert len([c for c in cases if c['base'] is not None]) >= 10
 
     def test_cases_replay(self):
@@ -843,7 +845,7 @@ class TestFixtures:
         names = {}
         for entry in data['commands']:
             names.setdefault(entry['name'], []).append(entry)
-        data['commands'] = [e for e in data['commands'] if e['op'] != 'line.parallel']
+        data['commands'] = [e for e in data['commands'] if e.get('op') != 'line.parallel']
         assert lexicon_problems(data) == []
         fixtures = build_fixtures(data)
         midpoint = next(c for c in fixtures['parse_points.json']['cases'] if c['name'] == 'midpoint')
@@ -896,7 +898,7 @@ class TestCli:
         code, out, _ = self.run(capsys, 'commands', 'parse', str(text), '--document-id', 'x')
         assert code == 0
         payload = json.loads(out)
-        assert set(payload) == {'document', 'effects', 'lines', 'issues'}
+        assert set(payload) == {'document', 'effects', 'lines', 'issues', 'conditionRequests', 'queries'}
         doc = tmp_path / 'doc.json'
         doc.write_text(json.dumps(payload['document']), encoding='utf-8')
         code, out, _ = self.run(capsys, 'commands', 'print', str(doc))

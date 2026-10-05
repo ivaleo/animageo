@@ -61,11 +61,15 @@ class Statement:
     kind: str
     column: int
     names: list = field(default_factory=list)
+    # 1.9.0a3: ``condition`` (``Условие(…)``), ``check`` (``Проверить(…)``
+    # or a check command), ``relation`` (``Отношение(a, b)``); ``tokens`` —
+    # what is inside the parentheses (a check command: the whole call)
     command: str = ''
     command_column: int = 0
     args: list = field(default_factory=list)
     value: object = None
     text: str = ''
+    tokens: list = field(default_factory=list)
 
 
 def literal_value(digits: str, sign: str = '', degrees: bool = False) -> float:
@@ -222,7 +226,8 @@ def _parse_right(tokens, line: int, names, column_eq: int) -> Statement:
     if top & _COMPARE:
         raise LineError('forbidden', first.column, f'неравенства {_LATER_PL}')
     if top & _STATEMENT:
-        raise LineError('forbidden', first.column, f'условия и проверки {_LATER_PL}')
+        raise LineError('forbidden', first.column, 'утверждение пишется внутри Условие(…) или Проверить(…)',
+                        hint='Проверить(…)')
     point = _point_literal(tokens)
     if point is not None:
         return Statement(line, 'point', first.column, names, value=point[0])
@@ -246,8 +251,8 @@ def _parse_right(tokens, line: int, names, column_eq: int) -> Statement:
             for part, sep in _split_top(inner, ','):
                 col = sep.column if sep is not None else tokens[k].column
                 args.append(_parse_arg(part, col))
-        if not args and normalize_name(command) in ('условие', 'проверить'):
-            raise LineError('forbidden', first.column, f'условия и проверки {_LATER_PL}')
+        if normalize_name(command) in ('условие', 'проверить', 'condition', 'check', 'отношение', 'relation'):
+            raise LineError('syntax', first.column, f'у «{command}» нет имён слева')
         return Statement(line, 'call', first.column, names, command=command,
                          command_column=first.column, args=args)
     if len(tokens) == 1 and first.kind == 'name':
@@ -257,13 +262,52 @@ def _parse_right(tokens, line: int, names, column_eq: int) -> Statement:
     _forbidden_expression(tokens, first.column)
 
 
-def parse_line(tokens, line: int):
+def _statement_line(tokens, line: int, kind: str):
+    first = tokens[0]
+    _check_balance(tokens)
+    k = 0
+    while k < len(tokens) and tokens[k].kind == 'name':
+        k += 1
+    if k == 0 or k >= len(tokens) or not _is_sym(tokens[k], '(') or _matching(tokens, k) != len(tokens) - 1:
+        raise LineError('syntax', first.column, f'нужно «{first.text}(…)»')
+    inner = tokens[k + 1:-1]
+    if not inner:
+        raise LineError('syntax', tokens[k].end, 'пустые скобки: нужно утверждение')
+    command = ' '.join(t.text for t in tokens[:k])
+    return Statement(line, kind, first.column, command=command, command_column=first.column,
+                     tokens=list(tokens) if kind == 'checkcall' else list(inner))
+
+
+def _statement_kind(tokens, lex):
+    """``condition``, ``check``, ``relation`` or ``checkcall`` when the line
+    starts with a keyword or a check command of ``lex``, else ``None``."""
+    first = tokens[0]
+    if lex is None or first.kind != 'name':
+        return None
+    k = 0
+    while k < len(tokens) and tokens[k].kind == 'name':
+        k += 1
+    word = ' '.join(t.text for t in tokens[:k])
+    key = lex.keyword(first.text) if k == 1 else None
+    if key in ('condition', 'check', 'relation'):
+        return key
+    if lex.check_kind(word) is not None and k < len(tokens) and _is_sym(tokens[k], '('):
+        return 'checkcall'
+    return None
+
+
+def parse_line(tokens, line: int, lex=None):
     """The :class:`Statement` of one line's tokens (comment removed), or
-    ``None`` for an empty line; raises :class:`LineError`."""
+    ``None`` for an empty line; raises :class:`LineError`. Without ``lex``
+    (a :class:`~animageo.native.commands.lexicon.Lexicon`) ``Условие`` and
+    ``Проверить`` are refused as in 1.8."""
     if not tokens:
         return None
     first = tokens[0]
-    if first.kind == 'name' and normalize_name(first.text) in ('условие', 'проверить'):
+    kind = _statement_kind(tokens, lex)
+    if kind is not None:
+        return _statement_line(tokens, line, kind)
+    if lex is None and first.kind == 'name' and normalize_name(first.text) in ('условие', 'проверить'):
         raise LineError('forbidden', first.column, f'условия и проверки {_LATER_PL}')
     _check_balance(tokens)
     parts = _split_top(tokens, '=')

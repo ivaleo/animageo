@@ -305,6 +305,24 @@ def _meet(doc, first, second):
     return None
 
 
+def _leave_explicit_step(data, op_id) -> None:
+    """The receiver's operation leaves its explicit step (1.9.0a3): it goes
+    to the step of its condition, and staying would make the steps cyclic
+    (the places depend on the other participants)."""
+    steps = data.get('steps')
+    if not isinstance(steps, list) or not any(isinstance(s, dict) and op_id in (s.get('operationIds') or ())
+                                              for s in steps):
+        return
+    out = []
+    for step in steps:
+        if isinstance(step, dict) and op_id in (step.get('operationIds') or ()):
+            step = {**step, 'operationIds': [o for o in step['operationIds'] if o != op_id]}
+            if not step['operationIds']:
+                continue
+        out.append(step)
+    data['steps'] = out
+
+
 def _origin(doc, receiver) -> dict:
     op_id, op = _producer_op(doc, receiver)
     entry = {'op': op['op'], 'args': copy.deepcopy(op.get('args') or {})}
@@ -389,6 +407,7 @@ def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, 
     locus = _arg(redef['args']['path'], binds, made, ev)['elementId']
     rop_id, rop = _producer_op(doc, receiver)
     xy = _xy(ev, receiver)
+    _leave_explicit_step(data, rop_id)
     staged = NativeDocument(data)
     if rop['op'] == 'point.free':
         sev = evaluate(staged) if xy is not None else None

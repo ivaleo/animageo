@@ -1,7 +1,7 @@
 {
   "format": "animageo-commands/v1",
   "id": "errors",
-  "lexiconHash": "sha256:54cfec0b4ae2f6f93f70e1b621e2f278a71f2bf4930a8fdd798d473fbe1743ac",
+  "lexiconHash": "sha256:1410111f96af706f06b5029dcc4887d67a5c0b0b94db24455c22a9b217fc4d45",
   "registry": "1.5",
   "generatedBy": "animageo 1.9.0a2",
   "cases": [
@@ -978,6 +978,18 @@
               "line": "m"
             },
             "hidden": false
+          },
+          {
+            "op": "intersect.nearest",
+            "args": {
+              "first": "l",
+              "second": "m",
+              "near": "A"
+            },
+            "outputs": {
+              "point": "X"
+            },
+            "hidden": false
           }
         ],
         "inputs": {
@@ -1033,17 +1045,16 @@
             "elements": [
               "m"
             ]
-          }
-        ],
-        "issues": [
+          },
           {
-            "code": "type_mismatch",
             "line": 6,
-            "column": 23,
-            "severity": "error"
+            "elements": [
+              "X"
+            ]
           }
         ],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)\nm = Прямая(A, C)"
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)\nm = Прямая(A, C)\nX = Пересечение(l, m, A)"
       }
     },
     {
@@ -1732,12 +1743,31 @@
             ]
           }
         ],
-        "issues": [
+        "issues": [],
+        "conditionRequests": [
           {
-            "code": "forbidden",
             "line": 4,
-            "column": 1,
-            "severity": "error"
+            "kind": "apply",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "B"
+                  ]
+                }
+              },
+              "right": {
+                "len": {
+                  "pair": [
+                    "A",
+                    "C"
+                  ]
+                }
+              }
+            },
+            "receiver": "C"
           }
         ],
         "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)"
@@ -1815,17 +1845,34 @@
             "elements": [
               "C"
             ]
-          }
-        ],
-        "issues": [
+          },
           {
-            "code": "forbidden",
             "line": 4,
-            "column": 1,
-            "severity": "error"
+            "elements": [],
+            "condition": "c1"
           }
         ],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)"
+        "issues": [],
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "check",
+            "statement": {
+              "kind": "on",
+              "point": {
+                "ref": "A"
+              },
+              "object": {
+                "pair": [
+                  "A",
+                  "B"
+                ]
+              }
+            }
+          }
+        ],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nПроверить(A ∈ AB)"
       }
     },
     {
@@ -2572,7 +2619,7 @@
       }
     },
     {
-      "name": "comment_dropped",
+      "name": "comment_step",
       "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)  # середина AB\n# строка-комментарий",
       "base": null,
       "expect": {
@@ -2662,21 +2709,18 @@
             ]
           }
         ],
-        "issues": [
+        "issues": [],
+        "steps": [
           {
-            "code": "comment_dropped",
-            "line": 4,
-            "column": 21,
-            "severity": "warning"
-          },
-          {
-            "code": "comment_dropped",
-            "line": 5,
-            "column": 1,
-            "severity": "warning"
+            "id": "s1",
+            "kind": "group",
+            "operationIds": [
+              "@3"
+            ],
+            "text": "середина AB"
           }
         ],
-        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)"
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)  # середина AB"
       }
     },
     {
@@ -2906,19 +2950,23 @@
         ],
         "issues": [
           {
-            "code": "comment_dropped",
-            "line": 2,
-            "column": 13,
-            "severity": "warning"
-          },
-          {
             "code": "forbidden",
             "line": 3,
             "column": 5,
             "severity": "error"
           }
         ],
-        "print": "A = (0, 0)\nB = (1, 1)"
+        "steps": [
+          {
+            "id": "s1",
+            "kind": "group",
+            "operationIds": [
+              "@1"
+            ],
+            "text": "a || b"
+          }
+        ],
+        "print": "A = (0, 0)\nB = (1, 1)  # a || b"
       }
     }
   ]

@@ -11,6 +11,7 @@ middle without a name gets the default name the parser would give.
 """
 from __future__ import annotations
 
+import copy
 import json
 from typing import NamedTuple
 
@@ -42,9 +43,123 @@ class PrintResult(NamedTuple):
     issues: list
 
 
+def printable_document(doc) -> dict:
+    """The document the lines are printed from (plan L3 §4.3): each receiver
+    of a construct condition is defined by its ``receiverOrigin``, the hidden
+    places of conditions and the automatic marks are gone, and so are the
+    ``construct`` conditions and the ``condition`` steps; ``check``
+    conditions stay (a copy; ``doc`` is not changed)."""
+    from .build import auto_ops
+    data = copy.deepcopy(as_document(doc).data)
+    conds = [c for c in data.get('conditions') or () if isinstance(c, dict)]
+    ops = data.get('operations') or {}
+    elements = data.get('elements') or {}
+    if not conds and not any(isinstance(e, dict) and isinstance(e.get('origin'), dict) for e in elements.values()):
+        return data
+    drop = set(auto_ops(data))
+    receivers = {}
+    for cond in conds:
+        if cond.get('mode') != 'construct':
+            continue
+        receiver = cond.get('receiver')
+        rop = ((elements.get(receiver) or {}).get('producer') or {}).get('operationId')
+        for op_id in cond.get('operationIds') or ():
+            if op_id != rop:
+                drop.add(op_id)
+        if rop in ops and isinstance(cond.get('receiverOrigin'), dict):
+            receivers.setdefault(rop, (receiver, cond['receiverOrigin']))
+    reg = registry()
+    for rop, (receiver, origin) in receivers.items():
+        record = reg.get(origin.get('op'))
+        if record is None:
+            continue
+        slot = record['outputs'][0]['slot']
+        old = ops[rop]
+        for out in old.get('outputs') or ():
+            if out.get('elementId') != receiver:
+                elements.pop(out.get('elementId'), None)
+        new = {'id': rop, 'op': origin['op'], 'args': copy.deepcopy(origin.get('args') or {}),
+               'outputs': [{'slot': slot, 'elementId': receiver}]}
+        if 'seq' in old:
+            new['seq'] = old['seq']
+        ops[rop] = new
+        elements[receiver]['producer'] = {'operationId': rop, 'slot': slot}
+        value = origin.get('input')
+        if isinstance(value, dict) and len(value) == 1:
+            kind, val = next(iter(value.items()))
+            data.setdefault('inputs', {})[receiver] = {'kind': kind, 'value': copy.deepcopy(val)}
+        else:
+            (data.get('inputs') or {}).pop(receiver, None)
+    for op_id in drop:
+        op = ops.pop(op_id, None)
+        for out in (op or {}).get('outputs') or ():
+            el = out.get('elementId')
+            elements.pop(el, None)
+            (data.get('inputs') or {}).pop(el, None)
+            (data.get('appearance') or {}).pop(el, None)
+    data['conditions'] = [c for c in conds if c.get('mode') == 'check']
+    steps = []
+    for step in data.get('steps') or ():
+        if not isinstance(step, dict) or step.get('kind') == 'condition':
+            continue
+        kept = [o for o in step.get('operationIds') or () if o in ops]
+        if kept:
+            steps.append({**step, 'operationIds': kept})
+    if 'steps' in data:
+        data['steps'] = steps
+    return data
+
+
+def _plan(data: dict, helpers: set) -> list:
+    """``[(step or None, printed op IDs, explicit)]`` in the order of
+    :func:`animageo.native.steps`; a document whose steps cannot be ordered
+    prints in topological order, one operation per step."""
+    from ..document import NativeDocument
+    from ..steps import StepError, steps as doc_steps
+    doc = NativeDocument(data)
+    explicit_ids = {s.get('id') for s in data.get('steps') or () if isinstance(s, dict)}
+    try:
+        found = doc_steps(doc)
+    except (StepError, ValueError, KeyError):
+        deps = op_dependencies(doc)
+        order = _order(list(doc.operations), deps, cyclic_operations(deps))
+        return [(None, [op_id], False) for op_id in order if op_id not in helpers]
+    out = []
+    for step in found:
+        printed = [op_id for op_id in step.operationIds if op_id not in helpers and op_id in doc.operations]
+        out.append((step, printed, step.id in explicit_ids and step.kind in ('given', 'group')))
+    return out
+
+
+def _header(step, printed, explicit, lexicon) -> str | None:
+    if not explicit or not printed:
+        return None
+    if step.title:
+        return f'# {step.title}'
+    if len(printed) >= 2:
+        return f'# {lexicon.word("given")}' if step.kind == 'given' else '#'
+    return None
+
+
+def step_signature(doc, lexicon) -> list:
+    """``[(title, text, printed op IDs)]`` of the explicit steps the printer
+    shows (a heading or a comment)."""
+    lex = lexicon if isinstance(lexicon, Lexicon) else Lexicon(lexicon)
+    data = printable_document(doc)
+    helpers = {op_id for op_id in data.get('operations') or {} if is_helper(data, op_id)}
+    out = []
+    for step, printed, explicit in _plan(data, helpers):
+        if not explicit or not printed:
+            continue
+        if _header(step, printed, explicit, lex) is not None or step.text:
+            out.append((step.title or '', step.text or '', list(printed)))
+    return out
+
+
 class _Printer:
     def __init__(self, doc, lexicon: Lexicon):
-        self.doc = as_document(doc)
+        self.source = as_document(doc)
+        self.doc = as_document(printable_document(self.source))
         self.data = self.doc.data
         self.lex = lexicon
         self.reg = registry()
@@ -270,24 +385,91 @@ class _Printer:
     # ── lines ────────────────────────────────────────────────────────────
 
     def run(self) -> PrintResult:
-        deps = op_dependencies(self.doc)
-        order = _order(list(self.ops), deps, cyclic_operations(deps))
+        plan = _plan(self.data, self.helpers)
+        at_step = self._condition_places(plan)
         lines, out = [], []
-        for op_id in order:
-            if op_id in self.helpers:
-                continue
-            text, info = self._line(op_id, len(lines) + 1)
+        group_open = False
+        for index, (step, printed, explicit) in enumerate(plan):
+            header = _header(step, printed, explicit, self.lex) if step is not None else None
+            if header is not None:
+                lines.append(header)
+                group_open = True
+            elif group_open and printed:
+                lines.append('')
+                group_open = False
+            for k, op_id in enumerate(printed):
+                text, info = self._line(op_id, len(lines) + 1)
+                if k == 0 and explicit and step.text:
+                    text += f'  # {step.text}'
+                lines.append(text)
+                out.append(info)
+                for el in info['elementIds']:
+                    name = self.names.get(el)
+                    if name and name_key(name) not in self.scope_keys:
+                        self.scope_keys[name_key(name)] = el
+                        self.scope_ids.add(el)
+                        if self.elements[el].get('type') == 'point':
+                            self.scope_points.add(name_key(name))
+            for cond in at_step.get(index, ()):
+                text = self._condition_text(cond, len(lines) + 1)
+                lines.append(text)
+                out.append({'line': len(lines), 'operationIds': [], 'elementIds': [], 'conditionId': cond['id']})
+        for cond in at_step.get(None, ()):
+            text = self._condition_text(cond, len(lines) + 1)
             lines.append(text)
-            out.append(info)
-            for el in info['elementIds']:
-                name = self.names.get(el)
-                if name and name_key(name) not in self.scope_keys:
-                    self.scope_keys[name_key(name)] = el
-                    self.scope_ids.add(el)
-                    if self.elements[el].get('type') == 'point':
-                        self.scope_points.add(name_key(name))
+            out.append({'line': len(lines), 'operationIds': [], 'elementIds': [], 'conditionId': cond['id']})
         self._ambiguous_names()
         return PrintResult('\n'.join(lines), out, self.issues)
+
+    # ── conditions (1.9.0a3) ─────────────────────────────────────────────
+
+    def _condition_places(self, plan) -> dict:
+        """``{step index: [condition]}``: a condition goes right after the
+        step where its last participant is made; ties by ``seq``, then ID."""
+        from ..conditions.statements import statement_elements
+        step_of = {}
+        for index, (_step, printed, _explicit) in enumerate(plan):
+            for op_id in (_step.operationIds if _step is not None else printed):
+                step_of[op_id] = index
+        conds = [c for c in self.source.data.get('conditions') or ()
+                 if isinstance(c, dict) and c.get('mode') in ('construct', 'check') and isinstance(c.get('statement'), dict)]
+        placed = {}
+        for cond in sorted(conds, key=lambda c: (c.get('seq') if isinstance(c.get('seq'), int) else 0, str(c.get('id')))):
+            index = -1
+            for el_id in statement_elements(cond['statement']):
+                op_id = bound_producer(self.doc, el_id) if el_id in self.elements else None
+                if op_id is None or op_id not in step_of:
+                    index = None
+                    break
+                index = max(index, step_of[op_id])
+            placed.setdefault(index if index != -1 else 0, []).append(cond)
+        return placed
+
+    def _default_receiver(self, statement):
+        from ..conditions.apply import _choose, _points, _status
+        from ..conditions.recipes import matches
+        try:
+            found = matches(self.doc, statement)
+        except Exception:      # a statement the printed document cannot hold
+            return None
+        participants = _points(self.doc, statement)
+        receivers = list(dict.fromkeys(b[r['receiver']] for r, b in found))
+        ok = [r for r in receivers if _status(self.doc, r, participants) == 'ok']
+        return _choose(self.doc, ok, participants) if ok else None
+
+    def _condition_text(self, cond, line_no: int) -> str:
+        from .statements import statement_text
+        try:
+            text = statement_text(cond['statement'], self.names, self.lex)
+        except (KeyError, TypeError, ValueError):
+            self._warn('unprintable_condition', line_no, 1, 'условие не прочитать')
+            text = json.dumps(cond['statement'], ensure_ascii=False)
+        if cond.get('mode') == 'check':
+            return f'{self.lex.word("check")}({text})'
+        receiver = cond.get('receiver')
+        if receiver is not None and receiver != self._default_receiver(cond['statement']):
+            text += f', {self.lex.word("move")} {self.names.get(receiver, receiver)}'
+        return f'{self.lex.word("condition")}({text})'
 
     def _ambiguous_names(self) -> None:
         """``ambiguous_name`` at a left name that also reads as two point

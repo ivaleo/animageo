@@ -151,7 +151,7 @@ class TestAngleInput:
         from animageo.native.commands import parse_commands, print_commands
         printed = print_commands(self.doc())
         assert printed.issues == [] or all(i.code == 'ambiguous_name' for i in printed.issues)
-        assert 'segment.from_point_length(A, len, 0)' in printed.text
+        assert 's, E = Отрезок(A, len, 0)' in printed.text
         parsed = parse_commands('A = (1, 2)\ns, E = segment.from_point_length(A, 5, 0.6)', document_id='doc')
         assert parsed.issues == []
         angles = [v for v in parsed.document.inputs.values() if v['kind'] == 'angle']

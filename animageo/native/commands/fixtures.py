@@ -301,7 +301,7 @@ _SYNTAX = [
         ('syntax_comma', P3 + 'M = {point.midpoint}(A B)', None),
         ('syntax_char', P3 + 'M = {point.midpoint}(A; B) @', None),
         ('syntax_no_right', 'M =', None),
-        ('comment_dropped', P3 + 'M = {point.midpoint}(A, B)  # середина AB\n# строка-комментарий', None),
+        ('comment_step', P3 + 'M = {point.midpoint}(A, B)  # середина AB\n# строка-комментарий', None),
         ('errors_skip_line', P3 + 'M = {point.midpoint}(A, X)\nN = {point.midpoint}(B, C)\nK = {point.midpoint}(M, N)',
          None),
         ('columns_in_code_points', 'Ω = (0, 0)\nΣ = (1, 1)\nζ = {point.midpoint}(Ω, Ψ)', None),
@@ -426,13 +426,44 @@ def normalize(result, *, with_effects: bool = False) -> dict:
         outputs = {o['slot']: label(o['elementId']) for o in op.get('outputs') or ()}
         operations.append({'op': op['op'], 'args': {k: arg(v) for k, v in (op.get('args') or {}).items()},
                            'outputs': outputs, 'hidden': helper})
+    lines = []
+    for e in result.lines:
+        row = {'line': e['line'], 'elements': [label(x) for x in e['elementIds']]}
+        if e.get('conditionId') is not None:
+            row['condition'] = e['conditionId']
+        lines.append(row)
     expect = {
         'operations': operations,
         'inputs': {label(k): v for k, v in (data.get('inputs') or {}).items()},
-        'lines': [{'line': e['line'], 'elements': [label(x) for x in e['elementIds']]} for e in result.lines],
+        'lines': lines,
         'issues': [{'code': i.code, 'line': i.line, 'column': i.column, 'severity': i.severity}
                    for i in result.issues],
     }
+    # 1.9.0a3: conditions, steps, requests and queries (only when present)
+    index = {op_id: f'@{k}' for k, op_id in enumerate(order)}
+
+    def relabel(value):
+        if isinstance(value, dict):
+            return {k: relabel(v) for k, v in value.items()}
+        if isinstance(value, list):
+            return [relabel(v) for v in value]
+        if isinstance(value, str):
+            if value in elements:
+                return label(value)
+            if value in index:
+                return index[value]
+        return value
+
+    if data.get('conditions'):
+        expect['conditions'] = relabel(data['conditions'])
+    if data.get('steps'):
+        expect['steps'] = relabel(data['steps'])
+    requests = getattr(result, 'conditionRequests', None)
+    if requests:
+        expect['conditionRequests'] = relabel(requests)
+    queries = getattr(result, 'queries', None)
+    if queries:
+        expect['queries'] = relabel(queries)
     if with_effects:
         expect['effects'] = result.effects
     return expect
@@ -485,6 +516,16 @@ def build_fixtures(lexicon=None) -> dict:
             'registry': REGISTRY_VERSION,
             'generatedBy': f'animageo {_library_version()}',
             'cases': [_case(name, text, base, lex) for name, text, base in cases],
+        }
+    from .fixtures_l3 import CATALOG_L3, build_case
+    for fixture_id, cases in CATALOG_L3:
+        out[f'{fixture_id}.json'] = {
+            'format': COMMANDS_FORMAT,
+            'id': fixture_id,
+            'lexiconHash': lexicon_hash(lex.data),
+            'registry': REGISTRY_VERSION,
+            'generatedBy': f'animageo {_library_version()}',
+            'cases': [build_case(name, spec, lex) for name, spec in cases],
         }
     out['naming.json'] = _naming_fixture()
     return out
