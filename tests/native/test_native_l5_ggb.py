@@ -1,5 +1,6 @@
 """``native.from_ggb``: the import of ``.ggb`` and ``import_report.v1`` (kernel stage L5, plan §3.5–§3.8, §7)."""
 import json
+import math
 import uuid
 import zipfile
 from pathlib import Path
@@ -199,6 +200,10 @@ def _numeric(label, value, exp=None):
     return (expression(label, exp) if exp else '') + element('numeric', label, extra=f'<value val="{value!r}"/>')
 
 
+def _angle(label, value, exp=None):
+    return (expression(label, exp) if exp else '') + element('angle', label, extra=f'<value val="{value!r}"/>')
+
+
 def _with_text(doc, value, by_name):
     """``doc`` with the ``text.free`` the web builds from ``ggb_value`` of a
     text: a number insert as is, a length or an area through ``measure.*``."""
@@ -381,7 +386,8 @@ def test_arithmetic_of_numbers_is_editable():
     """``c = a + b``, ``d = (c - 7)^2 / 4``, ``h = r / 2`` of a distance:
     ``number.expression`` with the inputs as ``refs`` (1.10.0a2); the saved
     value is checked. (``sqrt(a)``, ``sin(a)`` and ``2a`` as GeoGebra writes
-    them are not parsed by the classic parser: ``parse_error``.)"""
+    them the classic parser does not parse; the import reads them itself —
+    :func:`test_expressions_geogebra_writes_are_formulas`, 1.10.0a3.)"""
     body = (_numeric('a', 2.0) + _numeric('b', 3.0) + _numeric('c', 5.0, 'a + b')
             + _numeric('d', 1.0, '(c - 7)^2 / 4')
             + point('A', 0.0, 0.0) + point('B', 3.0, 0.0) + command('Distance', ['A', 'B'], ['r'])
@@ -487,6 +493,96 @@ def test_a_point_by_numbers_of_objects_is_not_editable():
     assert e['P']['depends_on'] == ['a', 'b']
     assert (e['M']['category'], e['M']['reason']) == ('picture', 'depends_on_unsupported')
     assert e['Q']['category'] == e['a']['category'] == e['b']['category'] == 'editable'
+
+
+def test_expressions_geogebra_writes_are_formulas():
+    """``sqrt(a)``, ``sin(a)``, ``2a``, ``a²``, ``abs(a - 7)`` — what GeoGebra
+    writes and the classic parser does not parse — are read by the import
+    itself into ``number.expression`` (1.10.0a3, decision 3 of the tech lead:
+    the classic parser is not changed); the saved value is checked, moving
+    the input moves them. What stays outside the formulas says why."""
+    from tests.native.ggb_synth import SYNTHETIC
+    doc, rep = _import(SYNTHETIC['number_expressions'][1]())
+    e = _by_name(rep)
+    asts = {'r': {'fn': 'sqrt', 'args': [{'ref': 0}]}, 'si': {'fn': 'sin', 'args': [{'ref': 0}]},
+            'd': {'op': '*', 'args': [{'num': 2.0}, {'ref': 0}]}, 'q': {'op': '^', 'args': [{'ref': 0}, {'num': 2.0}]},
+            'm': {'fn': 'abs', 'args': [{'op': '-', 'args': [{'ref': 0}, {'num': 7.0}]}]},
+            'u': {'op': '-', 'args': [{'op': '*', 'args': [{'fn': 'sqrt', 'args': [{'ref': 0}]}, {'ref': 1}]},
+                                      {'num': 4.0}]}}
+    a_id, d_id = e['a']['native_ids'][0], e['d']['native_ids'][0]
+    for name, ast in asts.items():
+        assert (e[name]['category'], e[name]['value_check']) == ('editable', 'passed'), name
+        op = _op_of(doc, e[name])
+        assert (op['op'], op['args']['expr']['ast']) == ('number.expression', ast), name
+        assert [r['elementId'] for r in op['args']['refs']['items']] == ([a_id, d_id] if name == 'u' else [a_id])
+    assert e['u']['depends_on'] == ['a', 'd']
+    moved = native.evaluate(native.load(doc), inputs={a_id: {'kind': 'number', 'value': 2.25}})
+    value = {n: moved.elements[e[n]['native_ids'][0]]['value']['value'] for n in asts}
+    assert value == pytest.approx({'r': 1.5, 'si': math.sin(2.25), 'd': 4.5, 'q': 5.0625, 'm': 4.75, 'u': 2.75})
+    assert {n: (e[n]['category'], e[n]['reason'], e[n]['detail']) for n in ('fl', 'h')} == {
+        'fl': ('unsupported', 'formula_unsupported', 'функции floor нет в формулах'),
+        'h': ('unsupported', 'formula_unsupported',
+              'вычисление с точками, векторами, углами или отрезками пока не переносится')}
+    assert native.has('convert.ggb_expressions')
+
+
+@pytest.mark.parametrize('exp, value, want', [
+    ('2a', 9.0, ('differs', 'value_mismatch')),                 # the saved value is checked
+    ('2π', 2 * math.pi, ('editable', None)),                    # a constant: a free number of the saved value
+    ('x(A) + a', 5.0, ('unsupported', 'formula_unsupported')),
+    ('round(a)', 4.0, ('unsupported', 'formula_unsupported')),
+    ('2a +', 8.0, ('unsupported', 'parse_error')),
+    ('sqrt(s)', 3.0, ('unsupported', 'formula_unsupported')),
+])
+def test_an_expression_of_a_number_is_checked(exp, value, want):
+    body = (point('A', 1.0, 0.0) + point('B', 1.0, 9.0) + command('Segment', ['A', 'B'], ['s'])
+            + element('segment', 's', extra='<coords x="1" y="0" z="-1"/>') + _numeric('a', 4.0)
+            + _numeric('k', value, exp) + command('Circle', ['A', 'k'], ['c'])
+            + element('conic', 'c', extra=f'<matrix A0="1" A1="1" A2="{1 - value * value!r}" A3="0" A4="-1" A5="0"/>'))
+    doc, rep = _import(ggb_bytes(body))
+    e = _by_name(rep)
+    assert (e['k']['category'], e['k'].get('reason')) == want
+    if want[0] == 'unsupported':
+        assert e['k']['detail'] and (e['c']['category'], e['c']['reason']) == ('closure', 'depends_on_unsupported')
+    else:                       # the circle of the radius k: as k
+        assert e['c']['category'] == want[0]
+    if want == ('differs', 'value_mismatch'):
+        assert e['k']['delta'] == pytest.approx(1.0)
+
+
+def test_abs_of_a_measure():
+    """``abs(r - 7)`` of a distance: the classic parses it into commands whose
+    ``abs`` has no signature (1.10.0a2: not translated); the import reads the
+    expression itself — one formula with the reference ``r``, no element
+    without its object (1.10.0a3)."""
+    body = (point('A', 0.0, 0.0) + point('B', 3.0, 4.0) + command('Distance', ['A', 'B'], ['r']) + _numeric('r', 5.0)
+            + _numeric('m', 2.0, 'abs(r - 7)') + _numeric('m2', 15.0, 'abs(r) + 2 r') + _numeric('k', 3.0, 'm + 1'))
+    doc, rep = _import(ggb_bytes(body))
+    e = _by_name(rep)
+    assert all(x['category'] == 'editable' for x in rep['elements'])
+    assert _op_of(doc, e['m'])['args']['expr']['ast'] == {
+        'fn': 'abs', 'args': [{'op': '-', 'args': [{'ref': 0}, {'num': 7.0}]}]}
+    assert sorted(doc['bindings']['legacyNames'].values()) == sorted(e) and len(doc['elements']) == len(e)
+
+
+def test_an_angle_by_an_expression():
+    """An ``angle`` by an expression the classic does not parse: a constant is
+    the free angle of its saved value; computed from objects it stays
+    outside — ``number.expression`` gives a number, not an angle; a formula
+    over an angle of a figure stays outside too (1.10.0a3)."""
+    body = (element('angle', 'α', extra='<value val="0.5"/>') + _angle('b1', 2 * math.pi / 3, '2π/3')
+            + _angle('b4', 1.0, '2 α') + point('A', 0.0, 0.0) + point('B', 1.0, 0.0) + point('C', 0.0, 1.0)
+            + command('Angle', ['B', 'A', 'C'], ['γ']) + _angle('γ', math.pi / 2) + _numeric('k', 1.0, 'sin(γ)')
+            + _numeric('h', 0.25, 'α/2') + command('Rotate', ['B', 'b1', 'A'], ['B1'])
+            + point('B1', -0.5, math.sqrt(3) / 2))
+    doc, rep = _import(ggb_bytes(body))
+    e = _by_name(rep)
+    note = 'вычисление с точками, векторами, углами или отрезками пока не переносится'
+    assert {n: (e[n]['category'], e[n].get('reason'), e[n].get('detail')) for n in ('b1', 'b4', 'k', 'h', 'B1')} == {
+        'b1': ('editable', None, None), 'b4': ('unsupported', 'formula_unsupported', note),
+        'k': ('unsupported', 'formula_unsupported', note), 'h': ('editable', None, None), 'B1': ('editable', None, None)}
+    assert _op_of(doc, e['b1'])['op'] == 'number.angle'
+    assert _op_of(doc, e['h'])['op'] == 'number.expression'
 
 
 def test_seq_and_steps_from_breakpoints():

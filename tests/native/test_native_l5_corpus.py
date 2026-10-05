@@ -25,8 +25,7 @@ PURPOSE = {
     'macro': {'D': ('editable', None), 'warnings': {'macros_expanded'}},
     'three_d': {'P': ('unsupported', '3d'), 'p': ('unsupported', '3d'), 'dropped': {'3d'}},
     'cas': {'dropped': {'cas'}},
-    'spreadsheet': {'A1': ('editable', None), 'B1': ('unsupported', 'parse_error'),
-                    'P': ('closure', 'depends_on_unsupported')},
+    'spreadsheet': {'A1': ('editable', None), 'B1': ('editable', None), 'P': ('picture', 'unsupported_signature')},
     'dtd': {'refused': 'ggb_invalid'},
     'not_a_ggb': {'refused': 'import_not_ggb'},
     'pictures_only': {'t1': ('picture', 'fixed_text'), 't2': ('picture', 'latex_macros'),
@@ -44,6 +43,8 @@ PURPOSE = {
     'regular_polygon': {'poly1': ('editable', None), 'poly2': ('unsupported', 'unsupported_signature')},
     'latex_texts': {'n': ('editable', None), 't2': ('picture', 'latex_macros'), 't3': ('picture', 'fixed_text')},
     'command_synonym': {'all': 'editable'},
+    'number_expressions': {**{n: ('editable', None) for n in ('a', 'r', 'si', 'd', 'q', 'm', 'u')},
+                           'fl': ('unsupported', 'formula_unsupported'), 'h': ('unsupported', 'formula_unsupported')},
 }
 
 

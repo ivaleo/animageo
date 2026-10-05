@@ -16,6 +16,7 @@ this module (``test_native_l5_corpus.py`` compares them); after a change::
 from __future__ import annotations
 
 import io
+import math
 import sys
 import zipfile
 from pathlib import Path
@@ -113,6 +114,10 @@ def _text(label: str, exp: str, start: str, *, latex: bool = False) -> str:
             + element('text', label, extra=f'{start}<isLaTeX val="{str(latex).lower()}"/>'))
 
 
+def _number(label: str, exp: str, value: float) -> str:
+    return expression(label, exp) + element('numeric', label, extra=f'<value val="{value!r}"/>')
+
+
 def _macro_xml() -> bytes:
     """The user tool ``Mid3(A, B, C)``: the midpoint of the side ``AB`` of a triangle."""
     return ('<?xml version="1.0" encoding="utf-8"?><geogebra format="5.0">'
@@ -176,7 +181,8 @@ def _synthetic() -> dict:
                               + '<cascell caslabel="$1"><inputCell><expression value="x+1"/></inputCell></cascell>'
                               + '<cascell><inputCell><expression value="Solve(x^2=4)"/></inputCell></cascell>')),
         'spreadsheet': (
-            'objects of spreadsheet cells A1, B1 and a point by them (an implicit product the classic does not parse)',
+            'objects of spreadsheet cells A1, B1 (an implicit product the classic does not parse, read by the import) '
+            'and a point by them (a point by coordinates: the ops come with L4)',
             lambda: ggb_bytes(element('numeric', 'A1', extra='<value val="3"/>')
                               + expression('B1', '2 A1') + element('numeric', 'B1', extra='<value val="6"/>')
                               + expression('P', '(A1, B1)') + point('P', 3.0, 6.0))),
@@ -260,6 +266,16 @@ def _synthetic() -> dict:
                               + element('line', 'g', extra='<coords x="-1" y="1" z="0"/>')
                               + command('AngularBisector', ['A', 'B', 'C'], ['h'])
                               + element('line', 'h', extra='<coords x="-1" y="1" z="0"/>'))),
+        'number_expressions': (
+            'numbers by expressions GeoGebra writes (sqrt, sin, 2a, a², abs) read by the import; floor and a '
+            'segment in an expression stay outside the formulas',
+            lambda: ggb_bytes(point('A', 0.0, 0.0) + point('B', 3.0, 4.0) + command('Segment', ['A', 'B'], ['s'])
+                              + element('segment', 's', extra='<coords x="4" y="-3" z="0"/>')
+                              + element('numeric', 'a', extra=f'<value val="4"/>{_SLIDER}')
+                              + _number('r', 'sqrt(a)', 2.0) + _number('si', 'sin(a)', math.sin(4.0))
+                              + _number('d', '2a', 8.0) + _number('q', 'a²', 16.0)
+                              + _number('m', 'abs(a - 7)', 3.0) + _number('u', 'sqrt(a) d - 4', 12.0)
+                              + _number('fl', 'floor(a)', 4.0) + _number('h', 's / 2', 2.5))),
     }
 
 

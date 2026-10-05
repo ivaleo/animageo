@@ -159,6 +159,46 @@ def _node_label(node) -> str:
     return f'<{node.tag}>'
 
 
+def _read_formulas(infos, norm, ctx, built_by_command, parse_number, ExprError) -> None:
+    """The expressions of numbers the import reads itself (1.10.0a3, decision 3
+    of the tech lead: the classic parser is not changed): a ``numeric`` defined
+    by an expression the classic did not parse (``sqrt(a)``, ``2a``, ``a²``) or
+    parsed into commands it may not translate (``abs`` of a computed value)
+    goes to ``ctx.formulas`` — the translator builds it where the classic does
+    not. An expression without references the classic did not parse (``2π``) is
+    a constant: the free number (an ``angle`` — the free angle) of its saved
+    value, as the classic makes of ``sqrt(2)`` and ``30°``. An expression read
+    but outside the formulas of the kernel (``floor(a)``, a segment in it) gets
+    that reason instead of ``parse_error``; so does an ``angle`` computed from
+    objects (``2α``): ``number.expression`` gives a number, not an angle."""
+    from .construction import NOTE_DETAILS
+    kinds = {i['label']: i['type'] for i in infos}
+    for info in infos:
+        t = info['type']
+        if t not in ('numeric', 'angle') or info.get('command') != 'Expression' or not info.get('inputs'):
+            continue
+        n = norm[info['label']]
+        forced = ctx.forced.get(n)
+        if forced is not None and forced[0] != 'parse_error' or forced is None and n not in built_by_command:
+            continue
+        if t == 'angle' and forced is None:
+            continue
+        try:
+            ast, refs = parse_number(info['inputs'][0], kinds)
+        except ExprError as exc:
+            if forced is not None and exc.reason == 'formula_unsupported':
+                ctx.forced[n] = (exc.reason, exc.detail)
+            continue
+        if t == 'angle' and refs:
+            ctx.forced[n] = ('formula_unsupported', NOTE_DETAILS[
+                'arithmetic of points, vectors, angles or segments (number.expression takes numbers only)'])
+            continue
+        if forced is not None:
+            del ctx.forced[n]
+        if refs:
+            ctx.formulas[n] = (ast, [norm[r] for r in refs])
+
+
 def _text_of(expr: str) -> str:
     s = expr.strip()
     if len(s) >= 2 and s[0] == '"' and s[-1] == '"' and s.count('"') == 2:
@@ -181,7 +221,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     from ..registry import REGISTRY_VERSION
     from .ggb import (COMMANDS_3D, DEFAULT_JS, PLACEABLE, TYPES_3D, TYPES_FORMULA, TYPES_UI, canonical_commands,
                       ggb_value, parse_xml, read_ggb, scan, text_extras, view_bounds)
-    from .ggb_expr import names_in
+    from .ggb_expr import ExprError, names_in, parse_number
     from ..document import iter_refs
     from .keys import make_id
     from .style import appearance, ggb_style, label_of
@@ -288,6 +328,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         app = appearance(info, None)
         if app:
             ctx.appearance[n] = app
+    _read_formulas(infos, norm, ctx, built_by_command, parse_number, ExprError)
     with _quiet():
         tr = translate(constr, ctx)
     # one entry per <element>

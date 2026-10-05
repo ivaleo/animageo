@@ -93,6 +93,9 @@ class Context:
     bounds: list | None = None
     origin_of: object = None
     inline_formulas: bool = False                     # a phantom formula goes into the formula that uses it
+    # classic name → (AST v1, classic names of its refs): the expression of a number of a .ggb read by the
+    # import itself (:mod:`.ggb_expr`, 1.10.0a3) — built where the classic does not translate it
+    formulas: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -396,6 +399,42 @@ class _Builder:
             raise _Untranslated('formula_unsupported', 'выражение выходит за пределы формул (expr.md §2)')
         return {'expr': {'kind': 'expr', 'ast': ast}, 'refs': {'kind': 'list', 'items': refs}}
 
+    def formula(self, name):
+        """The ``number.expression`` of ``ctx.formulas[name]`` (an expression of a
+        ``.ggb`` the classic does not translate, 1.10.0a3): its refs are the
+        elements of the objects it names; an object not translated makes the
+        closure, an object that is not a number of the document the reason
+        ``formula_unsupported``."""
+        from ..expr.validate import problems
+        ast, names = self.ctx.formulas[name]
+        rec = self.record(name, key=self.key_for(name))
+        rec.command, rec.signature, rec.inputs = 'Expression', None, list(dict.fromkeys(names))
+        rec.status, rec.reason, rec.detail, rec.free = 'translated', None, None, False
+        try:
+            items = []
+            for ref in names:
+                eid = self.element_of.get(ref)
+                if eid is None:
+                    raise _Untranslated('depends_on_unsupported', deps=[ref])
+                if self.doc['elements'][eid]['type'] != 'number':      # an angle of a figure, …
+                    raise _Untranslated('formula_unsupported', NOTE_DETAILS[
+                        'arithmetic of points, vectors, angles or segments (number.expression takes numbers only)'])
+                items.append(_ref(eid))
+            if problems(ast, len(items)):
+                raise _Untranslated('formula_unsupported', 'выражение выходит за пределы формул (expr.md §2)')
+        except _Untranslated as exc:
+            rec.status = 'closure' if exc.reason == 'depends_on_unsupported' else 'untranslated'
+            rec.reason, rec.detail = exc.reason, exc.detail
+            return
+        op_id = operation_id(self.ns, rec.key)
+        op = {'id': op_id, 'op': 'number.expression',
+              'args': {'expr': {'kind': 'expr', 'ast': copy.deepcopy(ast)}, 'refs': {'kind': 'list', 'items': items}},
+              'outputs': []}
+        self.doc['operations'][op_id] = op
+        eid = self.add_element(name, rec, op_id, 'number', 'number')
+        op['outputs'].append({'slot': 'number', 'elementId': eid})
+        rec.op_id = op_id
+
     def segment_ends(self, inp):
         eid = self.element_of.get(inp) if isinstance(inp, str) else None
         if eid is None:
@@ -452,6 +491,11 @@ class _Builder:
                     rec.status, rec.reason = 'closure', 'depends_on_unsupported'
                 else:
                     rec.status, rec.reason, rec.detail = 'untranslated', exc.reason, exc.detail
+        # an expression of a .ggb the classic read but cannot translate (abs of a computed value, …):
+        # the formula the import read itself (1.10.0a3)
+        for o, rec in zip(outs, recs):
+            if o in self.ctx.formulas and rec.status != 'translated' and not rec.native_ids:
+                self.formula(o)
 
     def build(self, cmd, sig, inputs, outs, recs):
         row = self.table.lookup(sig)
@@ -734,7 +778,12 @@ def translate(constr, ctx: Context) -> Translation:
     free = [e.name for e in constr.elements if e.name not in AXES and e.name not in produced]
     free += [v.name for v in constr.vars if v.name not in produced]
     free = list(dict.fromkeys(free))          # a name twice (a damaged file): one free object
+    # an expression of a .ggb the classic did not parse (its saved value is a free object of the
+    # classic): the formula the import read itself, in its place among the commands (1.10.0a3)
+    pending = sorted((n for n in ctx.formulas if n not in produced), key=lambda n: ctx.order.get(n, 10 ** 6))
     for name in sorted(free, key=lambda n: ctx.order.get(n, 10 ** 6)):
+        if name in ctx.formulas:
+            continue
         obj = constr.objectByName(name)
         if isinstance(obj, Var) and KeyMaker.is_phantom(name):
             builder.record(name, key=builder.key_for(name, 'value', (str(_literal(obj.data)),), 0),
@@ -743,7 +792,12 @@ def translate(constr, ctx: Context) -> Translation:
             continue
         builder.free_object(name)
     for cmd in constr.commands:
+        named = [ctx.order[o] for o in (str(getattr(o, 'name', o)) for o in cmd.outputs) if o in ctx.order]
+        while pending and named and ctx.order.get(pending[0], 10 ** 6) < min(named):
+            builder.formula(pending.pop(0))
         builder.command(cmd)
+    for name in pending:
+        builder.formula(name)
     doc = _validate(builder)
     _project_on_path(builder)
     doc = _validate(builder)

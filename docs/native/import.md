@@ -71,7 +71,36 @@ its own — `Circle(A, r/2)`, `Circle(A, Distance(A, B))`, a command inside
 a formula — is `formula_unsupported` with the expression in `detail` (a
 document element of no report entry would be needed). GeoGebra writes
 `sqrt(a)`, `sin(a)` and `2a`, which the classic parser does not take
-(`parse_error`); `Sqrt(a)`, `Sin(a)` and `2*a` translate.
+(`parse_error` in 1.10.0a2); `Sqrt(a)`, `Sin(a)` and `2*a` translate.
+
+1.10.0a3 (`native.has("convert.ggb_expressions")`): the import reads the
+expression of a number of a `.ggb` itself (`convert/ggb_expr.py`) where the
+classic does not translate it — the classic parser is the behaviour of
+`loadGGB` and is not changed (decision 3 of the tech lead). The reader
+tokenizes the text and reads it by recursive descent into AST v1, nothing is
+evaluated: `+ −` below `· /` and the implicit product (`2a`, `a b`,
+`2(a + b)`, `1/2a` is `(1/2)·a`, left to right as in GeoGebra), then the
+unary minus, then `^` (right-associative, `−a²` is `−(a²)`), then the
+superscript powers (`a²`, `a⁻¹`) and `°`; the lowercase functions `sqrt`,
+`abs`, `sin`, `cos`, `tan`, `asin`/`arcsin`, `acos`/`arccos`,
+`atan`/`arctan`, `exp`, `ln`, `log` (natural; `log(b, x)` — to the base
+`b`), `lg`, `cot`, `sec`, `csc`, the commands `Min`, `Max` of two numbers,
+`π`, `ℯ`. A reference must be a `numeric` or an `angle` of the file that is a
+number of the document; the formula is `number.expression` with these
+references, its value is checked against the saved one (`value_mismatch` —
+`differs`). An expression without references (`2π`) is a free number of its
+saved value, as the classic makes of `sqrt(2)`. What stays outside says why
+(`formula_unsupported`): a function the formulas do not have (`floor(a)`,
+`round(a)`, `random()`), a command (`Distance(A, B)`), coordinates (`x(A)`),
+an object that is not a number (a segment, a function, a list), a tree past
+the limits of AST v1 (`expr.md` §2: depth, 256 nodes, an integer power above
+64, a text longer than 1000 characters); a text the reader does not know
+stays `parse_error`. A computation with points, vectors, angles or segments
+the classic parsed keeps its reason of 1.10.0a2, and so does a formula of
+the reader over an angle of a figure (`sin(γ)` of `γ = Angle(B, A, C)`). An
+`angle` by an expression the classic did not parse: a constant (`2π/3`) is
+the free angle of its saved value; one computed from objects (`2α`) is
+`formula_unsupported` — `number.expression` gives a number, not an angle.
 
 A point given by coordinates that are objects of the file (`P = (A1, B1)`)
 was a free point at its saved place — it lost the dependency on the numbers,
@@ -292,11 +321,13 @@ and by key — the `dsl_map` key of a translated command, else
 `command:<GGB command>`, else `type:<GGB type>` (free objects); `--json`
 prints the same as JSON with `editable_share`.
 
-The deliberate files `tests/native/import/synthetic/*.ggb` (21: 3D, CAS,
+The deliberate files `tests/native/import/synthetic/*.ggb` (24: 3D, CAS,
 spreadsheet cells, scripts and a button, lists, a macro, breakpoints, a DTD,
 a zip without `geogebra.xml`, pictures only, texts, a function and its
 closure, an expression argument, dropped effects, a random point, styles,
-user-interface objects, regular polygons) are the output of
+user-interface objects, regular polygons; 1.10.0a3: numbers by the
+expressions GeoGebra writes, a fixed LaTeX text with names in its formula,
+`AngleBisector`) are the output of
 `tests/native/ggb_synth.py` (`python -m tests.native.ggb_synth` rewrites
 them; a test compares them entry by entry), each shows what it is for
 (`test_native_l5_corpus.py`), and their expectations are in

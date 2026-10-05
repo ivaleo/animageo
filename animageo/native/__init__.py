@@ -84,7 +84,8 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'commands.conditions', 'commands.steps', 'timeline', 'steps_timeline', 'render.t', 'render.video',
             'render.frame', 'from_ggb', 'from_construction', 'import_report.v1', 'appearance.hatch',
             'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document', 'convert.formula',
-            'import_report.text_template', 'import_report.text_literals', 'convert.command_synonyms')
+            'import_report.text_template', 'import_report.text_literals', 'convert.command_synonyms',
+            'convert.ggb_expressions')
 
 
 def has(feature: str) -> bool:
@@ -114,7 +115,10 @@ def has(feature: str) -> bool:
     text as shown; 1.10.0a3: ``import_report.text_literals`` — the names
     inside the string literals of a text are no references, a fixed text has
     no ``depends_on``; ``convert.command_synonyms`` — ``AngleBisector`` of a
-    ``.ggb`` is ``AngularBisector``)."""
+    ``.ggb`` is ``AngularBisector``; ``convert.ggb_expressions`` — a number of
+    a ``.ggb`` by an expression GeoGebra writes and the classic parser does
+    not take (``sqrt(a)``, ``sin(a)``, ``2a``, ``a²``, ``abs(r - 7)``) is
+    ``number.expression``)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION
