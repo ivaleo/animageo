@@ -1,0 +1,301 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "other_than_tangent",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "other_than_tangent",
+    "operationRegistryVersion": "1.1",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_X": {
+        "id": "op_X",
+        "op": "intersect.other_than",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "known": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "X"
+          }
+        ]
+      },
+      "op_Y": {
+        "id": "op_Y",
+        "op": "intersect.other_than",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "known": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Y"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        },
+        "displayName": "c"
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        },
+        "displayName": "l"
+      },
+      "X": {
+        "id": "X",
+        "type": "point",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "point"
+        },
+        "displayName": "X"
+      },
+      "Y": {
+        "id": "Y",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Y",
+          "slot": "point"
+        },
+        "displayName": "Y"
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          2
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          3,
+          2
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_O"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "O"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c",
+        "kind": "op",
+        "operationIds": [
+          "op_c"
+        ],
+        "elementIds": [
+          "c"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_l",
+        "kind": "op",
+        "operationIds": [
+          "op_l"
+        ],
+        "elementIds": [
+          "l"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_X",
+        "kind": "op",
+        "operationIds": [
+          "op_X"
+        ],
+        "elementIds": [
+          "X"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Y",
+        "kind": "op",
+        "operationIds": [
+          "op_Y"
+        ],
+        "elementIds": [
+          "Y"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B, O.",
+      "2. Строим окружность c с центром O, проходящую через A.",
+      "3. Проводим прямую AB.",
+      "4. Отмечаем вторую точку X пересечения l и c.",
+      "5. Отмечаем вторую точку Y пересечения c и l."
+    ],
+    "timeline": null
+  }
+}

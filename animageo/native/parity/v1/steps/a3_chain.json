@@ -1,0 +1,950 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "a3_chain",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "a3_chain",
+    "operationRegistryVersion": "1.3",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_n": {
+        "id": "op_n",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "D"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "n"
+          }
+        ]
+      },
+      "op_X": {
+        "id": "op_X",
+        "op": "intersect.line_line",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "n"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "X"
+          }
+        ]
+      },
+      "op_gx": {
+        "id": "op_gx",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "X"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "gx"
+          }
+        ]
+      },
+      "op_rx": {
+        "id": "op_rx",
+        "op": "mark.right_angle",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "X"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "D"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "rx"
+          }
+        ]
+      },
+      "op_poly": {
+        "id": "op_poly",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "Q"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "poly"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "p1"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "p2"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "p3"
+          },
+          {
+            "slot": "side.4",
+            "elementId": "p4"
+          }
+        ]
+      },
+      "op_es": {
+        "id": "op_es",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "p1"
+              },
+              {
+                "kind": "ref",
+                "elementId": "p3"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "es"
+          }
+        ]
+      },
+      "op_eo": {
+        "id": "op_eo",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "p2"
+              },
+              {
+                "kind": "ref",
+                "elementId": "p4"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "eo"
+          }
+        ]
+      },
+      "op_ga": {
+        "id": "op_ga",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "D"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "ga"
+          }
+        ]
+      },
+      "op_gc": {
+        "id": "op_gc",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "D"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "gc"
+          }
+        ]
+      },
+      "op_ea": {
+        "id": "op_ea",
+        "op": "mark.equal_angles",
+        "args": {
+          "angles": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "ga"
+              },
+              {
+                "kind": "ref",
+                "elementId": "gc"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "ea"
+          }
+        ]
+      },
+      "op_sx": {
+        "id": "op_sx",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "X"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sx"
+          }
+        ]
+      },
+      "op_sy": {
+        "id": "op_sy",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "D"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "X"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sy"
+          }
+        ]
+      },
+      "op_ex": {
+        "id": "op_ex",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "sx"
+              },
+              {
+                "kind": "ref",
+                "elementId": "sy"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "ex"
+          }
+        ]
+      },
+      "op_eg": {
+        "id": "op_eg",
+        "op": "mark.equal_angles",
+        "args": {
+          "angles": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "gx"
+              },
+              {
+                "kind": "ref",
+                "elementId": "ga"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "eg"
+          }
+        ]
+      },
+      "op_ki": {
+        "id": "op_ki",
+        "op": "circle.incircle",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "D"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "X"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "ki"
+          },
+          {
+            "slot": "center",
+            "elementId": "J"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "n": {
+        "id": "n",
+        "type": "line",
+        "displayName": "n",
+        "producer": {
+          "operationId": "op_n",
+          "slot": "line"
+        }
+      },
+      "X": {
+        "id": "X",
+        "type": "point",
+        "displayName": "X",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "point"
+        }
+      },
+      "gx": {
+        "id": "gx",
+        "type": "angle",
+        "displayName": "gx",
+        "producer": {
+          "operationId": "op_gx",
+          "slot": "angle"
+        }
+      },
+      "rx": {
+        "id": "rx",
+        "type": "mark",
+        "displayName": "rx",
+        "producer": {
+          "operationId": "op_rx",
+          "slot": "mark"
+        }
+      },
+      "poly": {
+        "id": "poly",
+        "type": "polygon",
+        "displayName": "poly",
+        "producer": {
+          "operationId": "op_poly",
+          "slot": "polygon"
+        }
+      },
+      "p1": {
+        "id": "p1",
+        "type": "segment",
+        "displayName": "p1",
+        "producer": {
+          "operationId": "op_poly",
+          "slot": "side.1"
+        }
+      },
+      "p2": {
+        "id": "p2",
+        "type": "segment",
+        "displayName": "p2",
+        "producer": {
+          "operationId": "op_poly",
+          "slot": "side.2"
+        }
+      },
+      "p3": {
+        "id": "p3",
+        "type": "segment",
+        "displayName": "p3",
+        "producer": {
+          "operationId": "op_poly",
+          "slot": "side.3"
+        }
+      },
+      "p4": {
+        "id": "p4",
+        "type": "segment",
+        "displayName": "p4",
+        "producer": {
+          "operationId": "op_poly",
+          "slot": "side.4"
+        }
+      },
+      "es": {
+        "id": "es",
+        "type": "mark",
+        "displayName": "es",
+        "producer": {
+          "operationId": "op_es",
+          "slot": "mark"
+        }
+      },
+      "eo": {
+        "id": "eo",
+        "type": "mark",
+        "displayName": "eo",
+        "producer": {
+          "operationId": "op_eo",
+          "slot": "mark"
+        }
+      },
+      "ga": {
+        "id": "ga",
+        "type": "angle",
+        "displayName": "ga",
+        "producer": {
+          "operationId": "op_ga",
+          "slot": "angle"
+        }
+      },
+      "gc": {
+        "id": "gc",
+        "type": "angle",
+        "displayName": "gc",
+        "producer": {
+          "operationId": "op_gc",
+          "slot": "angle"
+        }
+      },
+      "ea": {
+        "id": "ea",
+        "type": "mark",
+        "displayName": "ea",
+        "producer": {
+          "operationId": "op_ea",
+          "slot": "mark"
+        }
+      },
+      "sx": {
+        "id": "sx",
+        "type": "segment",
+        "displayName": "sx",
+        "producer": {
+          "operationId": "op_sx",
+          "slot": "segment"
+        }
+      },
+      "sy": {
+        "id": "sy",
+        "type": "segment",
+        "displayName": "sy",
+        "producer": {
+          "operationId": "op_sy",
+          "slot": "segment"
+        }
+      },
+      "ex": {
+        "id": "ex",
+        "type": "mark",
+        "displayName": "ex",
+        "producer": {
+          "operationId": "op_ex",
+          "slot": "mark"
+        }
+      },
+      "eg": {
+        "id": "eg",
+        "type": "mark",
+        "displayName": "eg",
+        "producer": {
+          "operationId": "op_eg",
+          "slot": "mark"
+        }
+      },
+      "ki": {
+        "id": "ki",
+        "type": "circle",
+        "displayName": "ki",
+        "producer": {
+          "operationId": "op_ki",
+          "slot": "circle"
+        }
+      },
+      "J": {
+        "id": "J",
+        "type": "point",
+        "displayName": "J",
+        "producer": {
+          "operationId": "op_ki",
+          "slot": "center"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -5,
+          -1
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          4,
+          -3
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          3,
+          4
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          -2,
+          5
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_C",
+          "op_D",
+          "op_Q"
+        ],
+        "elementIds": [
+          "A",
+          "C",
+          "D",
+          "Q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_ga",
+        "kind": "op",
+        "operationIds": [
+          "op_ga"
+        ],
+        "elementIds": [
+          "ga"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_gc",
+        "kind": "op",
+        "operationIds": [
+          "op_gc"
+        ],
+        "elementIds": [
+          "gc"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_ea",
+        "kind": "op",
+        "operationIds": [
+          "op_ea"
+        ],
+        "elementIds": [
+          "ea"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_l",
+        "kind": "op",
+        "operationIds": [
+          "op_l"
+        ],
+        "elementIds": [
+          "l"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_n",
+        "kind": "op",
+        "operationIds": [
+          "op_n"
+        ],
+        "elementIds": [
+          "n"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_X",
+        "kind": "op",
+        "operationIds": [
+          "op_X"
+        ],
+        "elementIds": [
+          "X"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_gx",
+        "kind": "op",
+        "operationIds": [
+          "op_gx"
+        ],
+        "elementIds": [
+          "gx"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_eg",
+        "kind": "op",
+        "operationIds": [
+          "op_eg"
+        ],
+        "elementIds": [
+          "eg"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_ki",
+        "kind": "op",
+        "operationIds": [
+          "op_ki"
+        ],
+        "elementIds": [
+          "ki",
+          "J"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_poly",
+        "kind": "op",
+        "operationIds": [
+          "op_poly"
+        ],
+        "elementIds": [
+          "poly",
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_eo",
+        "kind": "op",
+        "operationIds": [
+          "op_eo"
+        ],
+        "elementIds": [
+          "eo"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_es",
+        "kind": "op",
+        "operationIds": [
+          "op_es"
+        ],
+        "elementIds": [
+          "es"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_rx",
+        "kind": "op",
+        "operationIds": [
+          "op_rx"
+        ],
+        "elementIds": [
+          "rx"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_sx",
+        "kind": "op",
+        "operationIds": [
+          "op_sx"
+        ],
+        "elementIds": [
+          "sx"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_sy",
+        "kind": "op",
+        "operationIds": [
+          "op_sy"
+        ],
+        "elementIds": [
+          "sy"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_ex",
+        "kind": "op",
+        "operationIds": [
+          "op_ex"
+        ],
+        "elementIds": [
+          "ex"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, C, D, Q.",
+      "2. Отмечаем угол QAD.",
+      "3. Отмечаем угол DCQ.",
+      "4. Отмечаем равные углы ∠QAD и ∠DCQ.",
+      "5. Проводим прямую AQ.",
+      "6. Проводим прямую DC.",
+      "7. Отмечаем точку X пересечения l и n.",
+      "8. Отмечаем угол QXC.",
+      "9. Отмечаем равные углы ∠QXC и ∠QAD.",
+      "10. Строим окружность ki, вписанную в треугольник ADX.",
+      "11. Строим многоугольник AQCD.",
+      "12. Отмечаем равные отрезки p2 и p4.",
+      "13. Отмечаем равные отрезки p1 и p3.",
+      "14. Отмечаем прямой угол AXD.",
+      "15. Строим отрезок AX.",
+      "16. Строим отрезок DX.",
+      "17. Отмечаем равные отрезки sx и sy."
+    ],
+    "timeline": null
+  }
+}

@@ -1,0 +1,256 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "triangle_excenters",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "triangle_excenters",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_Ja": {
+        "id": "op_Ja",
+        "op": "triangle.excenters",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "center",
+            "elementId": "Ja"
+          }
+        ]
+      },
+      "op_Jb": {
+        "id": "op_Jb",
+        "op": "triangle.excenters",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "center",
+            "elementId": "Jb"
+          }
+        ]
+      },
+      "op_Jc": {
+        "id": "op_Jc",
+        "op": "triangle.excenters",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "center",
+            "elementId": "Jc"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "Ja": {
+        "id": "Ja",
+        "type": "point",
+        "displayName": "Ja",
+        "producer": {
+          "operationId": "op_Ja",
+          "slot": "center"
+        }
+      },
+      "Jb": {
+        "id": "Jb",
+        "type": "point",
+        "displayName": "Jb",
+        "producer": {
+          "operationId": "op_Jb",
+          "slot": "center"
+        }
+      },
+      "Jc": {
+        "id": "Jc",
+        "type": "point",
+        "displayName": "Jc",
+        "producer": {
+          "operationId": "op_Jc",
+          "slot": "center"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          3
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      }
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_C"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "C"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Ja",
+        "kind": "op",
+        "operationIds": [
+          "op_Ja"
+        ],
+        "elementIds": [
+          "Ja"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Jb",
+        "kind": "op",
+        "operationIds": [
+          "op_Jb"
+        ],
+        "elementIds": [
+          "Jb"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Jc",
+        "kind": "op",
+        "operationIds": [
+          "op_Jc"
+        ],
+        "elementIds": [
+          "Jc"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B, C.",
+      "2. Отмечаем центр Ja вневписанной окружности треугольника ABC, касающейся стороны BC.",
+      "3. Отмечаем центр Jb вневписанной окружности треугольника BCA, касающейся стороны CA.",
+      "4. Отмечаем центр Jc вневписанной окружности треугольника CAB, касающейся стороны AB."
+    ],
+    "timeline": null
+  }
+}

@@ -47,6 +47,8 @@ TYPE_RE = re.compile(r'^[a-z][a-z0-9_]*$')
 VERSION_RE = re.compile(r'^[0-9]+\.[0-9]+$')
 
 _REQUIRED = ('format', 'documentId', 'operationRegistryVersion', 'operations', 'elements')
+STEP_KINDS = ('given', 'group', 'condition')     # explicit steps of a document (1.9.0a1)
+ROLES = ('given', 'aux', 'sought')               # appearance.<id>.role (1.9.0a1)
 
 
 @dataclass(frozen=True)
@@ -286,9 +288,11 @@ class _Structure:
         if not self.object(op, path, 'an operation'):
             return
         self.keys(op, path, 'an operation', ('id', 'op', 'args', 'outputs'),
-                  ('id', 'op', 'args', 'outputs', 'branch'), operationId=key)
+                  ('id', 'op', 'args', 'outputs', 'branch', 'seq'), operationId=key)
         if 'id' in op:
             self.string(op['id'], path + '/id', 'id', ID_RE)
+        if 'seq' in op and (not isinstance(op['seq'], int) or isinstance(op['seq'], bool) or op['seq'] < 1):
+            self.add(path + '/seq', 'seq must be an integer >= 1', operationId=key)
         if 'op' in op:
             self.string(op['op'], path + '/op', 'op', OP_RE)
         args = op.get('args')
@@ -409,6 +413,31 @@ class _Structure:
             if not (_is_number(value) and math.isfinite(value) and value == int(value) and value >= 0):
                 self.add(path + '/briefRevision', 'briefRevision must be a non-negative integer')
 
+    def steps(self, steps, path):
+        if not isinstance(steps, list):
+            self.add(path, 'steps must be an array')
+            return
+        for i, step in enumerate(steps):
+            spath = f'{path}/{i}'
+            if not self.object(step, spath, 'a step'):
+                continue
+            self.keys(step, spath, 'a step', ('id', 'kind', 'operationIds'),
+                      ('id', 'kind', 'title', 'text', 'operationIds'))
+            if 'id' in step:
+                self.string(step['id'], spath + '/id', 'id', ID_RE)
+            if 'kind' in step and step['kind'] not in STEP_KINDS:
+                self.add(spath + '/kind', f'kind must be one of {", ".join(STEP_KINDS)}')
+            for name in ('title', 'text'):
+                if name in step:
+                    self.string(step[name], f'{spath}/{name}', name)
+            ids = step.get('operationIds')
+            if 'operationIds' in step:
+                if not isinstance(ids, list):
+                    self.add(spath + '/operationIds', 'operationIds must be an array')
+                else:
+                    for k, op_id in enumerate(ids):
+                        self.string(op_id, f'{spath}/operationIds/{k}', 'an operation ID', ID_RE)
+
     def document(self, doc):
         self.keys(doc, '', 'the document', _REQUIRED)
         if 'format' in doc and doc['format'] != DOCUMENT_FORMAT:
@@ -436,6 +465,10 @@ class _Structure:
             for key, entry in doc['appearance'].items():
                 if isinstance(entry, dict) and 'locked' in entry and not isinstance(entry['locked'], bool):
                     self.add('/appearance' + _pointer(key) + '/locked', 'locked must be a boolean')
+                if isinstance(entry, dict) and 'role' in entry and not isinstance(entry['role'], str):
+                    self.add('/appearance' + _pointer(key) + '/role', 'role must be a string')
+        if 'steps' in doc:
+            self.steps(doc['steps'], '/steps')
         if 'workIntent' in doc and doc['workIntent'] is not None:
             self.work_intent(doc['workIntent'], '/workIntent')
         if 'timeline' in doc and doc['timeline'] is not None:
@@ -634,8 +667,10 @@ def validate(doc) -> list:
     Graph rules run only on a structurally valid document. Codes:
     ``schema``, ``id_mismatch``, ``duplicate_output``, ``producer_mismatch``,
     ``unknown_slot``, ``missing_slot``, ``dangling_ref``, ``type_mismatch``,
-    ``cycle``, ``input_not_free``, ``missing_input`` (errors) and
-    ``unknown_op``, ``newer_registry`` (warnings).
+    ``cycle``, ``input_not_free``, ``missing_input``, ``step_unknown_operation``,
+    ``step_duplicate_operation``, ``step_duplicate_id``, ``step_empty``,
+    ``step_cycle`` (errors) and ``unknown_op``, ``newer_registry``,
+    ``seq_duplicate``, ``role_unknown`` (warnings).
     """
     if not isinstance(doc, NativeDocument):
         doc = load(doc, strict=False)
@@ -812,7 +847,29 @@ def validate(doc) -> list:
             issues.append(Issue('type_mismatch', path + '/kind',
                                 f"element {el_id!r} takes a {free['kind']} input", elementId=el_id))
 
-    for op_id in sorted(cyclic_operations(op_dependencies(doc))):
+    cyclic = cyclic_operations(op_dependencies(doc))
+    for op_id in sorted(cyclic):
         issues.append(Issue('cycle', '/operations' + _pointer(op_id),
                             f'operation {op_id!r} depends on itself', operationId=op_id))
+
+    seqs: dict = {}
+    for op_id in sorted(ops):
+        if 'seq' in ops[op_id]:
+            seqs.setdefault(ops[op_id]['seq'], []).append(op_id)
+    for seq in sorted(seqs):
+        for op_id in seqs[seq][1:]:
+            issues.append(Issue('seq_duplicate', '/operations' + _pointer(op_id) + '/seq',
+                                f'seq {seq} is also the seq of {seqs[seq][0]!r}', operationId=op_id,
+                                severity='warning'))
+    appearance = doc.data.get('appearance')
+    if isinstance(appearance, dict):
+        for el_id in sorted(appearance):
+            entry = appearance[el_id]
+            if isinstance(entry, dict) and 'role' in entry and entry['role'] not in ROLES:
+                issues.append(Issue('role_unknown', '/appearance' + _pointer(el_id) + '/role',
+                                    f"role {entry['role']!r} is not one of {', '.join(ROLES)}",
+                                    elementId=el_id if el_id in elements else None, severity='warning'))
+    if 'steps' in doc.data:
+        from .steps import step_issues
+        issues.extend(step_issues(doc, check_cycle=not cyclic))
     return issues

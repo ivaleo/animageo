@@ -1,6 +1,6 @@
 """Command line of ``animageo.native``::
 
-    python -m animageo.native fixtures generate <scenes…> -o <dir>
+    python -m animageo.native fixtures generate <scenes…> -o <dir> [--steps <dir>]
     python -m animageo.native fixtures verify <fixtures…>
     python -m animageo.native registry index [--check]
     python -m animageo.native evaluate <doc.json> [--inputs case.json] [--canonical]
@@ -44,7 +44,7 @@ def _library_version() -> str:
 
 def _cmd_fixtures_generate(args) -> int:
     try:
-        written = generate(args.scenes, args.out)
+        written = generate(args.scenes, args.out, steps_dir=args.steps)
     except ParityError as exc:
         _err(f'refused: {exc}')
         return 1
@@ -244,6 +244,7 @@ def build_parser() -> argparse.ArgumentParser:
     gen = fsub.add_parser('generate', help='evaluate scenes and write fixtures with expectations')
     gen.add_argument('scenes', nargs='+', help='scene files or directories of *.json')
     gen.add_argument('-o', '--out', required=True, help='output directory')
+    gen.add_argument('--steps', help='also write the animageo-steps/v1 fixtures into this directory')
     gen.set_defaults(func=_cmd_fixtures_generate)
     ver = fsub.add_parser('verify', help='re-evaluate fixtures and compare (exit 1 on mismatch)')
     ver.add_argument('fixtures', nargs='+', help='fixture files or directories of *.json')

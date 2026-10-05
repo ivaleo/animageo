@@ -1,0 +1,316 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "circle_center_radius",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "circle_center_radius",
+    "operationRegistryVersion": "1.2",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "r"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "number.free",
+        "args": {
+          "min": {
+            "kind": "number",
+            "value": 0.5
+          },
+          "max": {
+            "kind": "number",
+            "value": 4
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "k"
+          }
+        ]
+      },
+      "op_c1": {
+        "id": "op_c1",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c1"
+          }
+        ]
+      },
+      "op_c2": {
+        "id": "op_c2",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "ref",
+            "elementId": "r"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c2"
+          }
+        ]
+      },
+      "op_c3": {
+        "id": "op_c3",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "number",
+            "value": -1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c3"
+          }
+        ]
+      },
+      "op_c4": {
+        "id": "op_c4",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "ref",
+            "elementId": "k"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c4"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "number",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "number"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "number",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "number"
+        }
+      },
+      "c1": {
+        "id": "c1",
+        "type": "circle",
+        "displayName": "c1",
+        "producer": {
+          "operationId": "op_c1",
+          "slot": "circle"
+        }
+      },
+      "c2": {
+        "id": "c2",
+        "type": "circle",
+        "displayName": "c2",
+        "producer": {
+          "operationId": "op_c2",
+          "slot": "circle"
+        }
+      },
+      "c3": {
+        "id": "c3",
+        "type": "circle",
+        "displayName": "c3",
+        "producer": {
+          "operationId": "op_c3",
+          "slot": "circle"
+        }
+      },
+      "c4": {
+        "id": "c4",
+        "type": "circle",
+        "displayName": "c4",
+        "producer": {
+          "operationId": "op_c4",
+          "slot": "circle"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          1,
+          -1
+        ]
+      },
+      "r": {
+        "kind": "number",
+        "value": 2.5
+      },
+      "k": {
+        "kind": "number",
+        "value": 1
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_O"
+        ],
+        "elementIds": [
+          "O"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c1",
+        "kind": "op",
+        "operationIds": [
+          "op_c1"
+        ],
+        "elementIds": [
+          "c1"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c3",
+        "kind": "op",
+        "operationIds": [
+          "op_c3"
+        ],
+        "elementIds": [
+          "c3"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_k",
+        "kind": "op",
+        "operationIds": [
+          "op_k"
+        ],
+        "elementIds": [
+          "k"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c4",
+        "kind": "op",
+        "operationIds": [
+          "op_c4"
+        ],
+        "elementIds": [
+          "c4"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_r",
+        "kind": "op",
+        "operationIds": [
+          "op_r"
+        ],
+        "elementIds": [
+          "r"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c2",
+        "kind": "op",
+        "operationIds": [
+          "op_c2"
+        ],
+        "elementIds": [
+          "c2"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точка O.",
+      "2. Строим окружность c1 с центром O и радиусом 3.",
+      "3. Строим окружность c3 с центром O и радиусом -1.",
+      "4. Задаём число k.",
+      "5. Строим окружность c4 с центром O и радиусом k.",
+      "6. Задаём число r.",
+      "7. Строим окружность c2 с центром O и радиусом r."
+    ],
+    "timeline": null
+  }
+}

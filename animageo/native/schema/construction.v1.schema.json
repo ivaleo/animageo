@@ -55,6 +55,10 @@
         "properties": {
           "locked": {
             "type": "boolean"
+          },
+          "role": {
+            "description": "Style role (1.9.0a1): given, aux or sought; another value is the warning role_unknown and is ignored.",
+            "type": "string"
           }
         }
       }
@@ -89,6 +93,13 @@
     },
     "workIntent": {
       "$ref": "#/$defs/workIntent"
+    },
+    "steps": {
+      "description": "Explicit steps of the construction (1.9.0a1, native.steps): groups of operations; the other operations are one step each.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/step"
+      }
     }
   },
   "$defs": {
@@ -301,6 +312,11 @@
               "additionalProperties": false
             }
           ]
+        },
+        "seq": {
+          "description": "Order of the operation for the steps and the printer (1.9.0a1): operations without seq first (by ID), then by seq, ties by ID.",
+          "type": "integer",
+          "minimum": 1
         }
       },
       "additionalProperties": false
@@ -479,6 +495,39 @@
           "minimum": 0
         }
       }
+    },
+    "step": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "operationIds"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "given",
+            "group",
+            "condition"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "operationIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

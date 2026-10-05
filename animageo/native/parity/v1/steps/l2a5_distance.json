@@ -1,0 +1,916 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "l2a5_distance",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a5_distance",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_P": {
+        "id": "op_P",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "ray.by_points",
+        "args": {
+          "origin": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "ray",
+            "elementId": "r"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_g": {
+        "id": "op_g",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "Q"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "g"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "arc.semicircle",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "arc",
+            "elementId": "k"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "sector.center_two_points",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "t"
+          }
+        ]
+      },
+      "op_w": {
+        "id": "op_w",
+        "op": "polyline.by_points",
+        "args": {
+          "points": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "Q"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polyline",
+            "elementId": "w"
+          }
+        ]
+      },
+      "op_Dp": {
+        "id": "op_Dp",
+        "op": "measure.distance",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "to": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Dp"
+          }
+        ]
+      },
+      "op_Dl": {
+        "id": "op_Dl",
+        "op": "measure.distance",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "to": {
+            "kind": "ref",
+            "elementId": "l"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Dl"
+          }
+        ]
+      },
+      "op_Ds": {
+        "id": "op_Ds",
+        "op": "measure.distance",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "to": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Ds"
+          }
+        ]
+      },
+      "op_Dr": {
+        "id": "op_Dr",
+        "op": "measure.distance",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "to": {
+            "kind": "ref",
+            "elementId": "r"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Dr"
+          }
+        ]
+      },
+      "op_Dc": {
+        "id": "op_Dc",
+        "op": "measure.distance",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "to": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Dc"
+          }
+        ]
+      },
+      "op_Dg": {
+        "id": "op_Dg",
+        "op": "measure.distance",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "to": {
+            "kind": "ref",
+            "elementId": "g"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Dg"
+          }
+        ]
+      },
+      "op_Dk": {
+        "id": "op_Dk",
+        "op": "measure.distance",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "to": {
+            "kind": "ref",
+            "elementId": "k"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Dk"
+          }
+        ]
+      },
+      "op_Dt": {
+        "id": "op_Dt",
+        "op": "measure.distance",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "to": {
+            "kind": "ref",
+            "elementId": "t"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Dt"
+          }
+        ]
+      },
+      "op_Dw": {
+        "id": "op_Dw",
+        "op": "measure.distance",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "to": {
+            "kind": "ref",
+            "elementId": "w"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "Dw"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "P": {
+        "id": "P",
+        "type": "point",
+        "displayName": "P",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        }
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "ray",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "ray"
+        }
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "displayName": "c",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        }
+      },
+      "g": {
+        "id": "g",
+        "type": "polygon",
+        "displayName": "g",
+        "producer": {
+          "operationId": "op_g",
+          "slot": "polygon"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "arc",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "arc"
+        }
+      },
+      "t": {
+        "id": "t",
+        "type": "sector",
+        "displayName": "t",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "sector"
+        }
+      },
+      "w": {
+        "id": "w",
+        "type": "polyline",
+        "displayName": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "polyline"
+        }
+      },
+      "Dp": {
+        "id": "Dp",
+        "type": "number",
+        "displayName": "Dp",
+        "producer": {
+          "operationId": "op_Dp",
+          "slot": "number"
+        }
+      },
+      "Dl": {
+        "id": "Dl",
+        "type": "number",
+        "displayName": "Dl",
+        "producer": {
+          "operationId": "op_Dl",
+          "slot": "number"
+        }
+      },
+      "Ds": {
+        "id": "Ds",
+        "type": "number",
+        "displayName": "Ds",
+        "producer": {
+          "operationId": "op_Ds",
+          "slot": "number"
+        }
+      },
+      "Dr": {
+        "id": "Dr",
+        "type": "number",
+        "displayName": "Dr",
+        "producer": {
+          "operationId": "op_Dr",
+          "slot": "number"
+        }
+      },
+      "Dc": {
+        "id": "Dc",
+        "type": "number",
+        "displayName": "Dc",
+        "producer": {
+          "operationId": "op_Dc",
+          "slot": "number"
+        }
+      },
+      "Dg": {
+        "id": "Dg",
+        "type": "number",
+        "displayName": "Dg",
+        "producer": {
+          "operationId": "op_Dg",
+          "slot": "number"
+        }
+      },
+      "Dk": {
+        "id": "Dk",
+        "type": "number",
+        "displayName": "Dk",
+        "producer": {
+          "operationId": "op_Dk",
+          "slot": "number"
+        }
+      },
+      "Dt": {
+        "id": "Dt",
+        "type": "number",
+        "displayName": "Dt",
+        "producer": {
+          "operationId": "op_Dt",
+          "slot": "number"
+        }
+      },
+      "Dw": {
+        "id": "Dw",
+        "type": "number",
+        "displayName": "Dw",
+        "producer": {
+          "operationId": "op_Dw",
+          "slot": "number"
+        }
+      }
+    },
+    "inputs": {
+      "P": {
+        "kind": "point",
+        "value": [
+          2,
+          3
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -2
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          3,
+          -2
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          4
+        ]
+      },
+      "O": {
+        "kind": "point",
+        "value": [
+          -1,
+          0
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_C",
+          "op_O",
+          "op_P"
+        ],
+        "elementIds": [
+          "A",
+          "C",
+          "O",
+          "P"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Dp",
+        "kind": "op",
+        "operationIds": [
+          "op_Dp"
+        ],
+        "elementIds": [
+          "Dp"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Q",
+        "kind": "op",
+        "operationIds": [
+          "op_Q"
+        ],
+        "elementIds": [
+          "Q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c",
+        "kind": "op",
+        "operationIds": [
+          "op_c"
+        ],
+        "elementIds": [
+          "c"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Dc",
+        "kind": "op",
+        "operationIds": [
+          "op_Dc"
+        ],
+        "elementIds": [
+          "Dc"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_g",
+        "kind": "op",
+        "operationIds": [
+          "op_g"
+        ],
+        "elementIds": [
+          "g"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Dg",
+        "kind": "op",
+        "operationIds": [
+          "op_Dg"
+        ],
+        "elementIds": [
+          "Dg"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_k",
+        "kind": "op",
+        "operationIds": [
+          "op_k"
+        ],
+        "elementIds": [
+          "k"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Dk",
+        "kind": "op",
+        "operationIds": [
+          "op_Dk"
+        ],
+        "elementIds": [
+          "Dk"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_l",
+        "kind": "op",
+        "operationIds": [
+          "op_l"
+        ],
+        "elementIds": [
+          "l"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Dl",
+        "kind": "op",
+        "operationIds": [
+          "op_Dl"
+        ],
+        "elementIds": [
+          "Dl"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_r",
+        "kind": "op",
+        "operationIds": [
+          "op_r"
+        ],
+        "elementIds": [
+          "r"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Dr",
+        "kind": "op",
+        "operationIds": [
+          "op_Dr"
+        ],
+        "elementIds": [
+          "Dr"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_s",
+        "kind": "op",
+        "operationIds": [
+          "op_s"
+        ],
+        "elementIds": [
+          "s"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Ds",
+        "kind": "op",
+        "operationIds": [
+          "op_Ds"
+        ],
+        "elementIds": [
+          "Ds"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_t",
+        "kind": "op",
+        "operationIds": [
+          "op_t"
+        ],
+        "elementIds": [
+          "t"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Dt",
+        "kind": "op",
+        "operationIds": [
+          "op_Dt"
+        ],
+        "elementIds": [
+          "Dt"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_w",
+        "kind": "op",
+        "operationIds": [
+          "op_w"
+        ],
+        "elementIds": [
+          "w"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Dw",
+        "kind": "op",
+        "operationIds": [
+          "op_Dw"
+        ],
+        "elementIds": [
+          "Dw"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, C, O, P.",
+      "2. Находим расстояние от точки P до C.",
+      "3. Отмечаем точку Q.",
+      "4. Строим окружность c с центром O, проходящую через A.",
+      "5. Находим расстояние от точки P до c.",
+      "6. Строим треугольник AQC.",
+      "7. Находим расстояние от точки P до AQC.",
+      "8. Строим полуокружность k на отрезке AQ.",
+      "9. Находим расстояние от точки P до k.",
+      "10. Проводим прямую AQ.",
+      "11. Находим расстояние от точки P до l.",
+      "12. Проводим луч QC.",
+      "13. Находим расстояние от точки P до r.",
+      "14. Строим отрезок AQ.",
+      "15. Находим расстояние от точки P до s.",
+      "16. Строим сектор t с центром O от точки Q до луча OC.",
+      "17. Находим расстояние от точки P до t.",
+      "18. Строим ломаную AQC.",
+      "19. Находим расстояние от точки P до w."
+    ],
+    "timeline": null
+  }
+}

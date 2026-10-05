@@ -1,5 +1,11 @@
 """Parity fixtures ``animageo-parity/v1``: generate expectations and verify them.
 
+``animageo-steps/v1`` (1.9.0a1, ``parity/v1/steps``): ``{format, id,
+registry, generatedBy, document, expect: {steps, describe, timeline}}`` —
+the steps of ``native.steps`` (id, kind, title/text when given,
+operationIds, elementIds, auxElementIds) and the lines of
+``native.describe``; ``verify`` compares them exactly.
+
 A scene (``parity/v1/scenes/*.json``) is ``{format, id, document, cases:
 [{name, inputs?}]}``. ``generate`` evaluates every case and writes the
 fixture with ``registry``, ``generatedBy`` and, per case, ``scale``,
@@ -33,6 +39,9 @@ from .registry import REGISTRY_VERSION, registry
 
 __all__ = [
     'PARITY_FORMAT',
+    'STEPS_FORMAT',
+    'steps_expect',
+    'steps_fixture',
     'ParityError',
     'check_scene',
     'generate_scene',
@@ -44,6 +53,7 @@ __all__ = [
 ]
 
 PARITY_FORMAT = 'animageo-parity/v1'
+STEPS_FORMAT = 'animageo-steps/v1'
 
 
 class ParityError(ValueError):
@@ -165,23 +175,78 @@ def generate_scene(scene: dict) -> dict:
     }
 
 
-def generate(paths, out_dir) -> list:
-    """Generate fixtures for scene files/directories into ``out_dir``; returns written paths."""
+def steps_expect(document) -> dict:
+    """``{steps, describe, timeline}`` of a document (``animageo-steps/v1``;
+    ``timeline`` is ``None`` until stage 4)."""
+    from .describe import describe
+    from .steps import steps
+    doc = load(document, strict=True)
+    rows = []
+    for step in steps(doc):
+        row = {'id': step.id, 'kind': step.kind}
+        if step.title is not None:
+            row['title'] = step.title
+        if step.text is not None:
+            row['text'] = step.text
+        row.update(operationIds=step.operationIds, elementIds=step.elementIds, auxElementIds=step.auxElementIds)
+        rows.append(row)
+    return {'steps': rows, 'describe': describe(doc), 'timeline': None}
+
+
+def steps_fixture(scene: dict) -> dict:
+    """The ``animageo-steps/v1`` fixture of a scene: its steps and description."""
+    check_scene(scene)
+    try:
+        expect = steps_expect(scene['document'])
+    except ValueError as exc:
+        raise ParityError(f"scene {scene['id']}: {exc}") from None
+    return {
+        'format': STEPS_FORMAT,
+        'id': scene['id'],
+        'registry': REGISTRY_VERSION,
+        'generatedBy': f'animageo {_library_version()}',
+        'document': scene['document'],
+        'expect': expect,
+    }
+
+
+def generate(paths, out_dir, steps_dir=None) -> list:
+    """Generate fixtures for scene files/directories into ``out_dir`` (and
+    the ``animageo-steps/v1`` fixtures into ``steps_dir``); returns written paths."""
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    if steps_dir is not None:
+        steps_dir = Path(steps_dir)
+        steps_dir.mkdir(parents=True, exist_ok=True)
     fixtures = []
     for path in expand_paths(paths):
         try:
             scene = _read(path)
         except (OSError, ValueError) as exc:
             raise ParityError(f'{path}: {exc}') from None
-        fixtures.append((path, generate_scene(scene)))
+        fixtures.append((out_dir / path.name, generate_scene(scene)))
+        if steps_dir is not None:
+            fixtures.append((steps_dir / path.name, steps_fixture(scene)))
     written = []
-    for path, fixture in fixtures:
-        target = out_dir / path.name
+    for target, fixture in fixtures:
         _write(target, fixture)
         written.append(target)
     return written
+
+
+def verify_steps_fixture(fixture: dict, label: str = '') -> list:
+    """Mismatches between an ``animageo-steps/v1`` fixture and this library."""
+    label = label or str(fixture.get('id', '?'))
+    try:
+        actual = steps_expect(fixture['document'])
+    except (KeyError, ValueError) as exc:
+        return [f'{label}: {exc}']
+    expect = fixture.get('expect') or {}
+    out = []
+    for key in ('steps', 'describe', 'timeline'):
+        if expect.get(key) != actual[key]:
+            out.append(f'{label} {key}: expected {expect.get(key)!r}, got {actual[key]!r}')
+    return out
 
 
 def _compare_record(el_id, expected, actual, type_info, tol, label) -> list:
@@ -206,6 +271,8 @@ def _compare_record(el_id, expected, actual, type_info, tol, label) -> list:
 def verify_fixture(fixture: dict, label: str = '') -> list:
     """Mismatches between a fixture and this library, as readable lines."""
     label = label or str(fixture.get('id', '?'))
+    if isinstance(fixture, dict) and fixture.get('format') == STEPS_FORMAT:
+        return verify_steps_fixture(fixture, label)
     try:
         check_scene(fixture)
         doc = load(fixture['document'], strict=True)
@@ -260,5 +327,7 @@ def verify(paths):
             continue
         if isinstance(fixture, dict) and isinstance(fixture.get('cases'), list):
             cases += len(fixture['cases'])
+        elif isinstance(fixture, dict) and fixture.get('format') == STEPS_FORMAT:
+            cases += 1
         mismatches.extend(verify_fixture(fixture, label=path.name))
     return len(files), cases, mismatches

@@ -20,6 +20,8 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     native.layout_labels(doc)                # {id: {anchor, box, offsetWorld, …}} without manim
     native.parse_commands(text)              # «Команды» → ParseResult(document, effects, lines, issues)
     native.print_commands(doc).text          # document → «Команды» (docs/native/commands.md)
+    native.steps(doc), native.describe(doc)  # steps and their text (docs/native/steps.md)
+    native.has("locus")                      # features by stage (native.FEATURES)
 
 No module of this package imports manim, ``animageo.animageo`` or
 ``animageo.geo`` at import time; the bridge (``kernel/bridge.py``),
@@ -60,6 +62,19 @@ from .registry import REGISTRY_VERSION, Registry, registry, signature_hash
 from .labels import layout_labels
 from .commands import parse_commands, print_commands
 from .rendering import RenderResult, render, source_view
+from .steps import Step, StepError, assign_seq, steps, steps_merge, steps_split
+from .describe import describe
+
+# Features of this library by stage of plan L3 (``has``): the web asks for a
+# feature instead of comparing versions.
+FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles')
+
+
+def has(feature: str) -> bool:
+    """Whether this library has ``feature`` (one of :data:`FEATURES`; stage 1 of L3:
+    ``triangle``, ``locus``, ``steps``, ``describe``, ``render.eps``,
+    ``render.tikz``, ``roles``)."""
+    return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION
 
@@ -70,6 +85,7 @@ __all__ = [
     'EditError',
     'EditResult',
     'Evaluated',
+    'FEATURES',
     'Issue',
     'LoadError',
     'NativeDocument',
@@ -98,6 +114,14 @@ __all__ = [
     'run_checks',
     'signature_hash',
     'source_view',
+    'Step',
+    'StepError',
+    'assign_seq',
+    'describe',
+    'has',
+    'steps',
+    'steps_merge',
+    'steps_split',
     'validate',
 ]
 

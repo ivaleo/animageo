@@ -1,0 +1,900 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "graph_errors",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "graph_errors",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_F": {
+        "id": "op_F",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "F"
+          }
+        ]
+      },
+      "op_sAB": {
+        "id": "op_sAB",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sAB"
+          }
+        ]
+      },
+      "op_lAB": {
+        "id": "op_lAB",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "lAB"
+          }
+        ]
+      },
+      "op_lCD": {
+        "id": "op_lCD",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "D"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "lCD"
+          }
+        ]
+      },
+      "op_X": {
+        "id": "op_X",
+        "op": "intersect.line_line",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "lAB"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "lCD"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "X"
+          }
+        ]
+      },
+      "op_sAG": {
+        "id": "op_sAG",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "ghost"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sAG"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "P"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_sPC": {
+        "id": "op_sPC",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sPC"
+          }
+        ]
+      },
+      "op_R": {
+        "id": "op_R",
+        "op": "point.reflect_magic",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "mirror": {
+            "kind": "ref",
+            "elementId": "lAB"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "R"
+          }
+        ]
+      },
+      "op_sRC": {
+        "id": "op_sRC",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "R"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sRC"
+          }
+        ]
+      },
+      "op_cBad": {
+        "id": "op_cBad",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "sAB"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "cBad"
+          }
+        ]
+      },
+      "op_sAC": {
+        "id": "op_sAC",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sAC"
+          }
+        ]
+      },
+      "op_mBad": {
+        "id": "op_mBad",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "mBad"
+          }
+        ]
+      },
+      "op_W": {
+        "id": "op_W",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "X"
+              },
+              {
+                "kind": "ref",
+                "elementId": "R"
+              },
+              {
+                "kind": "ref",
+                "elementId": "P"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "W"
+          }
+        ]
+      },
+      "op_W2": {
+        "id": "op_W2",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "X"
+              },
+              {
+                "kind": "ref",
+                "elementId": "R"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "W2"
+          }
+        ]
+      },
+      "op_W3": {
+        "id": "op_W3",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "X"
+              },
+              {
+                "kind": "ref",
+                "elementId": "A"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "W3"
+          }
+        ]
+      },
+      "op_sFA": {
+        "id": "op_sFA",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "F"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "sFA"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        },
+        "displayName": "C"
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        },
+        "displayName": "D"
+      },
+      "F": {
+        "id": "F",
+        "type": "point",
+        "producer": {
+          "operationId": "op_F",
+          "slot": "point"
+        },
+        "displayName": "F"
+      },
+      "sAB": {
+        "id": "sAB",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_sAB",
+          "slot": "segment"
+        },
+        "displayName": "sAB"
+      },
+      "lAB": {
+        "id": "lAB",
+        "type": "line",
+        "producer": {
+          "operationId": "op_lAB",
+          "slot": "line"
+        },
+        "displayName": "lAB"
+      },
+      "lCD": {
+        "id": "lCD",
+        "type": "line",
+        "producer": {
+          "operationId": "op_lCD",
+          "slot": "line"
+        },
+        "displayName": "lCD"
+      },
+      "X": {
+        "id": "X",
+        "type": "point",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "point"
+        },
+        "displayName": "X"
+      },
+      "sAG": {
+        "id": "sAG",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_sAG",
+          "slot": "segment"
+        },
+        "displayName": "sAG"
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        },
+        "displayName": "Q"
+      },
+      "sPC": {
+        "id": "sPC",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_sPC",
+          "slot": "segment"
+        },
+        "displayName": "sPC"
+      },
+      "R": {
+        "id": "R",
+        "type": "point",
+        "producer": {
+          "operationId": "op_R",
+          "slot": "point"
+        },
+        "displayName": "R"
+      },
+      "sRC": {
+        "id": "sRC",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_sRC",
+          "slot": "segment"
+        },
+        "displayName": "sRC"
+      },
+      "cBad": {
+        "id": "cBad",
+        "type": "circle",
+        "producer": {
+          "operationId": "op_cBad",
+          "slot": "circle"
+        },
+        "displayName": "cBad"
+      },
+      "sAC": {
+        "id": "sAC",
+        "type": "line",
+        "producer": {
+          "operationId": "op_sAC",
+          "slot": "segment"
+        },
+        "displayName": "sAC"
+      },
+      "mBad": {
+        "id": "mBad",
+        "type": "point",
+        "producer": {
+          "operationId": "op_mBad",
+          "slot": "point"
+        },
+        "displayName": "mBad"
+      },
+      "W": {
+        "id": "W",
+        "type": "polygon",
+        "producer": {
+          "operationId": "op_W",
+          "slot": "polygon"
+        },
+        "displayName": "W"
+      },
+      "W2": {
+        "id": "W2",
+        "type": "polygon",
+        "producer": {
+          "operationId": "op_W2",
+          "slot": "polygon"
+        },
+        "displayName": "W2"
+      },
+      "W3": {
+        "id": "W3",
+        "type": "polygon",
+        "producer": {
+          "operationId": "op_W3",
+          "slot": "polygon"
+        },
+        "displayName": "W3"
+      },
+      "sFA": {
+        "id": "sFA",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_sFA",
+          "slot": "segment"
+        },
+        "displayName": "sFA"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          1,
+          3
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          2,
+          -2
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_C",
+          "op_D",
+          "op_F"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "F"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_P",
+        "kind": "op",
+        "operationIds": [
+          "op_P"
+        ],
+        "elementIds": [
+          "P"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Q",
+        "kind": "op",
+        "operationIds": [
+          "op_Q"
+        ],
+        "elementIds": [
+          "Q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_lAB",
+        "kind": "op",
+        "operationIds": [
+          "op_lAB"
+        ],
+        "elementIds": [
+          "lAB"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_R",
+        "kind": "op",
+        "operationIds": [
+          "op_R"
+        ],
+        "elementIds": [
+          "R"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_lCD",
+        "kind": "op",
+        "operationIds": [
+          "op_lCD"
+        ],
+        "elementIds": [
+          "lCD"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_X",
+        "kind": "op",
+        "operationIds": [
+          "op_X"
+        ],
+        "elementIds": [
+          "X"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_W",
+        "kind": "op",
+        "operationIds": [
+          "op_W"
+        ],
+        "elementIds": [
+          "W"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_W2",
+        "kind": "op",
+        "operationIds": [
+          "op_W2"
+        ],
+        "elementIds": [
+          "W2"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_W3",
+        "kind": "op",
+        "operationIds": [
+          "op_W3"
+        ],
+        "elementIds": [
+          "W3"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_mBad",
+        "kind": "op",
+        "operationIds": [
+          "op_mBad"
+        ],
+        "elementIds": [
+          "mBad"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_sAB",
+        "kind": "op",
+        "operationIds": [
+          "op_sAB"
+        ],
+        "elementIds": [
+          "sAB"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_cBad",
+        "kind": "op",
+        "operationIds": [
+          "op_cBad"
+        ],
+        "elementIds": [
+          "cBad"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_sAC",
+        "kind": "op",
+        "operationIds": [
+          "op_sAC"
+        ],
+        "elementIds": [
+          "sAC"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_sAG",
+        "kind": "op",
+        "operationIds": [
+          "op_sAG"
+        ],
+        "elementIds": [
+          "sAG"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_sFA",
+        "kind": "op",
+        "operationIds": [
+          "op_sFA"
+        ],
+        "elementIds": [
+          "sFA"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_sPC",
+        "kind": "op",
+        "operationIds": [
+          "op_sPC"
+        ],
+        "elementIds": [
+          "sPC"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_sRC",
+        "kind": "op",
+        "operationIds": [
+          "op_sRC"
+        ],
+        "elementIds": [
+          "sRC"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B, C, D, F.",
+      "2. Отмечаем середину P отрезка AQ.",
+      "3. Отмечаем середину Q отрезка BP.",
+      "4. Проводим прямую AB.",
+      "5. point.reflect_magic.",
+      "6. Проводим прямую CD.",
+      "7. Отмечаем точку X пересечения lAB и lCD.",
+      "8. Строим треугольник XRP.",
+      "9. Строим треугольник XRC.",
+      "10. Строим треугольник CXA.",
+      "11. Отмечаем середину mBad отрезка A.",
+      "12. Строим отрезок AB.",
+      "13. Строим окружность cBad с центром sAB, проходящую через C.",
+      "14. Строим отрезок AC.",
+      "15. Строим отрезок A.",
+      "16. Строим отрезок FA.",
+      "17. Строим отрезок PC.",
+      "18. Строим отрезок RC."
+    ],
+    "timeline": null
+  }
+}

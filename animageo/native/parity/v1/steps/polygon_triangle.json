@@ -1,0 +1,220 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "polygon_triangle",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "polygon_triangle",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_T": {
+        "id": "op_T",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "T"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "sAB"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "sBC"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "sCA"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        },
+        "displayName": "C"
+      },
+      "T": {
+        "id": "T",
+        "type": "polygon",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "polygon"
+        },
+        "displayName": "T"
+      },
+      "sAB": {
+        "id": "sAB",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "side.1"
+        },
+        "displayName": "sAB"
+      },
+      "sBC": {
+        "id": "sBC",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "side.2"
+        },
+        "displayName": "sBC"
+      },
+      "sCA": {
+        "id": "sCA",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "side.3"
+        },
+        "displayName": "sCA"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_C"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "C"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_T",
+        "kind": "op",
+        "operationIds": [
+          "op_T"
+        ],
+        "elementIds": [
+          "T",
+          "sAB",
+          "sBC",
+          "sCA"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Строим треугольник ABC."
+    ],
+    "timeline": null
+  }
+}

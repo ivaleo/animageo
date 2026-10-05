@@ -1,0 +1,217 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "triangle_median",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "triangle_median",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_m": {
+        "id": "op_m",
+        "op": "triangle.median",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "side": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "median",
+            "elementId": "m"
+          },
+          {
+            "slot": "midpoint",
+            "elementId": "M"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "m": {
+        "id": "m",
+        "type": "segment",
+        "displayName": "m",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "median"
+        }
+      },
+      "M": {
+        "id": "M",
+        "type": "point",
+        "displayName": "M",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "midpoint"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          3
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      }
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_C"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "C"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_s",
+        "kind": "op",
+        "operationIds": [
+          "op_s"
+        ],
+        "elementIds": [
+          "s"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_m",
+        "kind": "op",
+        "operationIds": [
+          "op_m"
+        ],
+        "elementIds": [
+          "m",
+          "M"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B, C.",
+      "2. Строим отрезок BC.",
+      "3. Проводим медиану m из вершины A к стороне s."
+    ],
+    "timeline": null
+  }
+}

@@ -1,0 +1,341 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "triangle_altitude",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "triangle_altitude",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_h": {
+        "id": "op_h",
+        "op": "triangle.altitude",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "side": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "altitude",
+            "elementId": "h"
+          },
+          {
+            "slot": "foot",
+            "elementId": "H"
+          },
+          {
+            "slot": "extension",
+            "elementId": "x"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.parallel",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_g": {
+        "id": "op_g",
+        "op": "triangle.altitude",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "side": {
+            "kind": "ref",
+            "elementId": "l"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "altitude",
+            "elementId": "g"
+          },
+          {
+            "slot": "foot",
+            "elementId": "G"
+          },
+          {
+            "slot": "extension",
+            "elementId": "y"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "h": {
+        "id": "h",
+        "type": "segment",
+        "displayName": "h",
+        "producer": {
+          "operationId": "op_h",
+          "slot": "altitude"
+        }
+      },
+      "H": {
+        "id": "H",
+        "type": "point",
+        "displayName": "H",
+        "producer": {
+          "operationId": "op_h",
+          "slot": "foot"
+        }
+      },
+      "x": {
+        "id": "x",
+        "type": "segment",
+        "displayName": "x",
+        "producer": {
+          "operationId": "op_h",
+          "slot": "extension"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "g": {
+        "id": "g",
+        "type": "segment",
+        "displayName": "g",
+        "producer": {
+          "operationId": "op_g",
+          "slot": "altitude"
+        }
+      },
+      "G": {
+        "id": "G",
+        "type": "point",
+        "displayName": "G",
+        "producer": {
+          "operationId": "op_g",
+          "slot": "foot"
+        }
+      },
+      "y": {
+        "id": "y",
+        "type": "segment",
+        "displayName": "y",
+        "producer": {
+          "operationId": "op_g",
+          "slot": "extension"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          3
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      }
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_C"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "C"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_s",
+        "kind": "op",
+        "operationIds": [
+          "op_s"
+        ],
+        "elementIds": [
+          "s"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_h",
+        "kind": "op",
+        "operationIds": [
+          "op_h"
+        ],
+        "elementIds": [
+          "h",
+          "H",
+          "x"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_l",
+        "kind": "op",
+        "operationIds": [
+          "op_l"
+        ],
+        "elementIds": [
+          "l"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_g",
+        "kind": "op",
+        "operationIds": [
+          "op_g"
+        ],
+        "elementIds": [
+          "g",
+          "G",
+          "y"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B, C.",
+      "2. Строим отрезок BC.",
+      "3. Проводим высоту h из вершины A к стороне s.",
+      "4. Проводим через точку B прямую l, параллельную s.",
+      "5. Проводим высоту g из вершины A к стороне l."
+    ],
+    "timeline": null
+  }
+}

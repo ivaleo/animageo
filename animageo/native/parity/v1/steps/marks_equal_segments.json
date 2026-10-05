@@ -1,0 +1,452 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "marks_equal_segments",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "marks_equal_segments",
+    "operationRegistryVersion": "1.3",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "t"
+          }
+        ]
+      },
+      "op_u": {
+        "id": "op_u",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "u"
+          }
+        ]
+      },
+      "op_m1": {
+        "id": "op_m1",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "s"
+              },
+              {
+                "kind": "ref",
+                "elementId": "t"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m1"
+          }
+        ]
+      },
+      "op_m2": {
+        "id": "op_m2",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "s"
+              },
+              {
+                "kind": "ref",
+                "elementId": "t"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m2"
+          }
+        ]
+      },
+      "op_m3": {
+        "id": "op_m3",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "s"
+              },
+              {
+                "kind": "ref",
+                "elementId": "t"
+              },
+              {
+                "kind": "ref",
+                "elementId": "u"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m3"
+          }
+        ]
+      },
+      "op_m4": {
+        "id": "op_m4",
+        "op": "mark.equal_segments",
+        "args": {
+          "segments": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "s"
+              },
+              {
+                "kind": "ref",
+                "elementId": "t"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 4
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m4"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "t": {
+        "id": "t",
+        "type": "segment",
+        "displayName": "t",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "segment"
+        }
+      },
+      "u": {
+        "id": "u",
+        "type": "segment",
+        "displayName": "u",
+        "producer": {
+          "operationId": "op_u",
+          "slot": "segment"
+        }
+      },
+      "m1": {
+        "id": "m1",
+        "type": "mark",
+        "displayName": "m1",
+        "producer": {
+          "operationId": "op_m1",
+          "slot": "mark"
+        }
+      },
+      "m2": {
+        "id": "m2",
+        "type": "mark",
+        "displayName": "m2",
+        "producer": {
+          "operationId": "op_m2",
+          "slot": "mark"
+        }
+      },
+      "m3": {
+        "id": "m3",
+        "type": "mark",
+        "displayName": "m3",
+        "producer": {
+          "operationId": "op_m3",
+          "slot": "mark"
+        }
+      },
+      "m4": {
+        "id": "m4",
+        "type": "mark",
+        "displayName": "m4",
+        "producer": {
+          "operationId": "op_m4",
+          "slot": "mark"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          4
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          -3,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          3,
+          0
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_C",
+          "op_Q"
+        ],
+        "elementIds": [
+          "A",
+          "C",
+          "Q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_s",
+        "kind": "op",
+        "operationIds": [
+          "op_s"
+        ],
+        "elementIds": [
+          "s"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_t",
+        "kind": "op",
+        "operationIds": [
+          "op_t"
+        ],
+        "elementIds": [
+          "t"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_m1",
+        "kind": "op",
+        "operationIds": [
+          "op_m1"
+        ],
+        "elementIds": [
+          "m1"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_m2",
+        "kind": "op",
+        "operationIds": [
+          "op_m2"
+        ],
+        "elementIds": [
+          "m2"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_m4",
+        "kind": "op",
+        "operationIds": [
+          "op_m4"
+        ],
+        "elementIds": [
+          "m4"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_u",
+        "kind": "op",
+        "operationIds": [
+          "op_u"
+        ],
+        "elementIds": [
+          "u"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_m3",
+        "kind": "op",
+        "operationIds": [
+          "op_m3"
+        ],
+        "elementIds": [
+          "m3"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, C, Q.",
+      "2. Строим отрезок AQ.",
+      "3. Строим отрезок AC.",
+      "4. Отмечаем равные отрезки s и t.",
+      "5. Отмечаем равные отрезки s и t.",
+      "6. Отмечаем равные отрезки s и t.",
+      "7. Строим отрезок QC.",
+      "8. Отмечаем равные отрезки s, t и u."
+    ],
+    "timeline": null
+  }
+}

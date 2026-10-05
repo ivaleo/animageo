@@ -1,0 +1,401 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "l2a4_parallelogram",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_parallelogram",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_p": {
+        "id": "op_p",
+        "op": "polygon.parallelogram",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "p"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "p1"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "p2"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "p3"
+          },
+          {
+            "slot": "side.4",
+            "elementId": "p4"
+          },
+          {
+            "slot": "vertex",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_G": {
+        "id": "op_G",
+        "op": "polygon.centroid",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "p"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "centroid",
+            "elementId": "G"
+          }
+        ]
+      },
+      "op_E": {
+        "id": "op_E",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "E"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "Q"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              },
+              {
+                "kind": "ref",
+                "elementId": "E"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "q"
+          }
+        ]
+      },
+      "op_H": {
+        "id": "op_H",
+        "op": "polygon.centroid",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "centroid",
+            "elementId": "H"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "p": {
+        "id": "p",
+        "type": "polygon",
+        "displayName": "p",
+        "producer": {
+          "operationId": "op_p",
+          "slot": "polygon"
+        }
+      },
+      "p1": {
+        "id": "p1",
+        "type": "segment",
+        "displayName": "p1",
+        "producer": {
+          "operationId": "op_p",
+          "slot": "side.1"
+        }
+      },
+      "p2": {
+        "id": "p2",
+        "type": "segment",
+        "displayName": "p2",
+        "producer": {
+          "operationId": "op_p",
+          "slot": "side.2"
+        }
+      },
+      "p3": {
+        "id": "p3",
+        "type": "segment",
+        "displayName": "p3",
+        "producer": {
+          "operationId": "op_p",
+          "slot": "side.3"
+        }
+      },
+      "p4": {
+        "id": "p4",
+        "type": "segment",
+        "displayName": "p4",
+        "producer": {
+          "operationId": "op_p",
+          "slot": "side.4"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_p",
+          "slot": "vertex"
+        }
+      },
+      "G": {
+        "id": "G",
+        "type": "point",
+        "displayName": "G",
+        "producer": {
+          "operationId": "op_G",
+          "slot": "centroid"
+        }
+      },
+      "E": {
+        "id": "E",
+        "type": "point",
+        "displayName": "E",
+        "producer": {
+          "operationId": "op_E",
+          "slot": "point"
+        }
+      },
+      "q": {
+        "id": "q",
+        "type": "polygon",
+        "displayName": "q",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "polygon"
+        }
+      },
+      "H": {
+        "id": "H",
+        "type": "point",
+        "displayName": "H",
+        "producer": {
+          "operationId": "op_H",
+          "slot": "centroid"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -3,
+          -2
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          3,
+          -2
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          5,
+          2
+        ]
+      },
+      "E": {
+        "kind": "point",
+        "value": [
+          -4,
+          4
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_C",
+          "op_E",
+          "op_Q"
+        ],
+        "elementIds": [
+          "A",
+          "C",
+          "E",
+          "Q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_p",
+        "kind": "op",
+        "operationIds": [
+          "op_p"
+        ],
+        "elementIds": [
+          "p",
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "D"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_G",
+        "kind": "op",
+        "operationIds": [
+          "op_G"
+        ],
+        "elementIds": [
+          "G"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_q",
+        "kind": "op",
+        "operationIds": [
+          "op_q"
+        ],
+        "elementIds": [
+          "q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_H",
+        "kind": "op",
+        "operationIds": [
+          "op_H"
+        ],
+        "elementIds": [
+          "H"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, C, E, Q.",
+      "2. Достраиваем параллелограмм AQCD.",
+      "3. Отмечаем центр масс G многоугольника p.",
+      "4. Строим многоугольник AQCE.",
+      "5. Отмечаем центр масс H многоугольника AQCE."
+    ],
+    "timeline": null
+  }
+}

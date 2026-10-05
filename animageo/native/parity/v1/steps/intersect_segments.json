@@ -1,0 +1,383 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "intersect_segments",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "intersect_segments",
+    "operationRegistryVersion": "1.0",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_AB": {
+        "id": "op_AB",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "AB"
+          }
+        ]
+      },
+      "op_CD": {
+        "id": "op_CD",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "D"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "CD"
+          }
+        ]
+      },
+      "op_lAB": {
+        "id": "op_lAB",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "lAB"
+          }
+        ]
+      },
+      "op_X": {
+        "id": "op_X",
+        "op": "intersect.line_line",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "AB"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "CD"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "X"
+          }
+        ]
+      },
+      "op_Y": {
+        "id": "op_Y",
+        "op": "intersect.line_line",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "lAB"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "CD"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Y"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        },
+        "displayName": "C"
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        },
+        "displayName": "D"
+      },
+      "AB": {
+        "id": "AB",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_AB",
+          "slot": "segment"
+        },
+        "displayName": "AB"
+      },
+      "CD": {
+        "id": "CD",
+        "type": "segment",
+        "producer": {
+          "operationId": "op_CD",
+          "slot": "segment"
+        },
+        "displayName": "CD"
+      },
+      "lAB": {
+        "id": "lAB",
+        "type": "line",
+        "producer": {
+          "operationId": "op_lAB",
+          "slot": "line"
+        },
+        "displayName": "lAB"
+      },
+      "X": {
+        "id": "X",
+        "type": "point",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "point"
+        },
+        "displayName": "X"
+      },
+      "Y": {
+        "id": "Y",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Y",
+          "slot": "point"
+        },
+        "displayName": "Y"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          -3
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          0,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B"
+        ],
+        "elementIds": [
+          "A",
+          "B"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_AB",
+        "kind": "op",
+        "operationIds": [
+          "op_AB"
+        ],
+        "elementIds": [
+          "AB"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_C",
+        "kind": "op",
+        "operationIds": [
+          "op_C"
+        ],
+        "elementIds": [
+          "C"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_D",
+        "kind": "op",
+        "operationIds": [
+          "op_D"
+        ],
+        "elementIds": [
+          "D"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_CD",
+        "kind": "op",
+        "operationIds": [
+          "op_CD"
+        ],
+        "elementIds": [
+          "CD"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_X",
+        "kind": "op",
+        "operationIds": [
+          "op_X"
+        ],
+        "elementIds": [
+          "X"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_lAB",
+        "kind": "op",
+        "operationIds": [
+          "op_lAB"
+        ],
+        "elementIds": [
+          "lAB"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Y",
+        "kind": "op",
+        "operationIds": [
+          "op_Y"
+        ],
+        "elementIds": [
+          "Y"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B.",
+      "2. Строим отрезок AB.",
+      "3. Отмечаем точку C.",
+      "4. Отмечаем точку D.",
+      "5. Строим отрезок CD.",
+      "6. Отмечаем точку X пересечения AB и CD.",
+      "7. Проводим прямую AB.",
+      "8. Отмечаем точку Y пересечения lAB и CD."
+    ],
+    "timeline": null
+  }
+}

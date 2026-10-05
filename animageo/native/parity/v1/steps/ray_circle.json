@@ -1,0 +1,295 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "ray_circle",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ray_circle",
+    "operationRegistryVersion": "1.1",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_R": {
+        "id": "op_R",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "R"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "ray.by_points",
+        "args": {
+          "origin": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "ray",
+            "elementId": "q"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "R"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_Q1_Q2": {
+        "id": "op_Q1_Q2",
+        "op": "intersect.line_circle",
+        "args": {
+          "line": {
+            "kind": "ref",
+            "elementId": "q"
+          },
+          "circle": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "Q1"
+          },
+          {
+            "slot": "second",
+            "elementId": "Q2"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "O": {
+        "id": "O",
+        "type": "point",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "R": {
+        "id": "R",
+        "type": "point",
+        "producer": {
+          "operationId": "op_R",
+          "slot": "point"
+        },
+        "displayName": "R"
+      },
+      "q": {
+        "id": "q",
+        "type": "ray",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "ray"
+        },
+        "displayName": "q"
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        },
+        "displayName": "c"
+      },
+      "Q1": {
+        "id": "Q1",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Q1_Q2",
+          "slot": "first"
+        },
+        "displayName": "Q1"
+      },
+      "Q2": {
+        "id": "Q2",
+        "type": "point",
+        "producer": {
+          "operationId": "op_Q1_Q2",
+          "slot": "second"
+        },
+        "displayName": "Q2"
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          1,
+          0
+        ]
+      },
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "R": {
+        "kind": "point",
+        "value": [
+          0,
+          5
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_O",
+          "op_R"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "O",
+          "R"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c",
+        "kind": "op",
+        "operationIds": [
+          "op_c"
+        ],
+        "elementIds": [
+          "c"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_q",
+        "kind": "op",
+        "operationIds": [
+          "op_q"
+        ],
+        "elementIds": [
+          "q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Q1_Q2",
+        "kind": "op",
+        "operationIds": [
+          "op_Q1_Q2"
+        ],
+        "elementIds": [
+          "Q1",
+          "Q2"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B, O, R.",
+      "2. Строим окружность c с центром O, проходящую через R.",
+      "3. Проводим луч AB.",
+      "4. Отмечаем точки Q1, Q2 пересечения q и c."
+    ],
+    "timeline": null
+  }
+}

@@ -1,0 +1,458 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "l2a4_sectors",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_sectors",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_R": {
+        "id": "op_R",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "R"
+          }
+        ]
+      },
+      "op_alpha": {
+        "id": "op_alpha",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "alpha"
+          }
+        ]
+      },
+      "op_a": {
+        "id": "op_a",
+        "op": "sector.center_two_points",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "s1"
+          }
+        ]
+      },
+      "op_b": {
+        "id": "op_b",
+        "op": "sector.three_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "s2"
+          },
+          {
+            "slot": "center",
+            "elementId": "K"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "sector.from_angle",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "size": {
+            "kind": "ref",
+            "elementId": "alpha"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "s3"
+          }
+        ]
+      },
+      "op_cc": {
+        "id": "op_cc",
+        "op": "circle.center_point",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "through": {
+            "kind": "ref",
+            "elementId": "R"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "cc"
+          }
+        ]
+      },
+      "op_e": {
+        "id": "op_e",
+        "op": "sector.on_circle",
+        "args": {
+          "circle": {
+            "kind": "ref",
+            "elementId": "cc"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "sector",
+            "elementId": "s4"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "R": {
+        "id": "R",
+        "type": "point",
+        "displayName": "R",
+        "producer": {
+          "operationId": "op_R",
+          "slot": "point"
+        }
+      },
+      "alpha": {
+        "id": "alpha",
+        "type": "number",
+        "displayName": "alpha",
+        "producer": {
+          "operationId": "op_alpha",
+          "slot": "number"
+        }
+      },
+      "s1": {
+        "id": "s1",
+        "type": "sector",
+        "displayName": "s1",
+        "producer": {
+          "operationId": "op_a",
+          "slot": "sector"
+        }
+      },
+      "s2": {
+        "id": "s2",
+        "type": "sector",
+        "displayName": "s2",
+        "producer": {
+          "operationId": "op_b",
+          "slot": "sector"
+        }
+      },
+      "K": {
+        "id": "K",
+        "type": "point",
+        "displayName": "K",
+        "producer": {
+          "operationId": "op_b",
+          "slot": "center"
+        }
+      },
+      "s3": {
+        "id": "s3",
+        "type": "sector",
+        "displayName": "s3",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "sector"
+        }
+      },
+      "cc": {
+        "id": "cc",
+        "type": "circle",
+        "displayName": "cc",
+        "producer": {
+          "operationId": "op_cc",
+          "slot": "circle"
+        }
+      },
+      "s4": {
+        "id": "s4",
+        "type": "sector",
+        "displayName": "s4",
+        "producer": {
+          "operationId": "op_e",
+          "slot": "sector"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          1,
+          0
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          5,
+          1
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          -1,
+          4
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          -4
+        ]
+      },
+      "R": {
+        "kind": "point",
+        "value": [
+          4,
+          3
+        ]
+      },
+      "alpha": {
+        "kind": "number",
+        "value": 1.2
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_C",
+          "op_O",
+          "op_Q",
+          "op_R"
+        ],
+        "elementIds": [
+          "A",
+          "C",
+          "O",
+          "Q",
+          "R"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_a",
+        "kind": "op",
+        "operationIds": [
+          "op_a"
+        ],
+        "elementIds": [
+          "s1"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_alpha",
+        "kind": "op",
+        "operationIds": [
+          "op_alpha"
+        ],
+        "elementIds": [
+          "alpha"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_b",
+        "kind": "op",
+        "operationIds": [
+          "op_b"
+        ],
+        "elementIds": [
+          "s2",
+          "K"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c",
+        "kind": "op",
+        "operationIds": [
+          "op_c"
+        ],
+        "elementIds": [
+          "s3"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_cc",
+        "kind": "op",
+        "operationIds": [
+          "op_cc"
+        ],
+        "elementIds": [
+          "cc"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_e",
+        "kind": "op",
+        "operationIds": [
+          "op_e"
+        ],
+        "elementIds": [
+          "s4"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, C, O, Q, R.",
+      "2. Строим сектор s1 с центром O от точки A до луча OQ.",
+      "3. Задаём число alpha.",
+      "4. Строим сектор s2 по дуге AQC.",
+      "5. Строим сектор s3 с центром O от точки A с углом alpha.",
+      "6. Строим окружность cc с центром O, проходящую через R.",
+      "7. Строим сектор s4 окружности cc от C до Q."
+    ],
+    "timeline": null
+  }
+}

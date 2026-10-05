@@ -1,0 +1,802 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "l2a4_regular",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a4_regular",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_tri": {
+        "id": "op_tri",
+        "op": "polygon.regular",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "n": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "tri"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "tris1"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "tris2"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "tris3"
+          },
+          {
+            "slot": "vertex.1",
+            "elementId": "triv1"
+          },
+          {
+            "slot": "vertex.2",
+            "elementId": "triv2"
+          },
+          {
+            "slot": "vertex.3",
+            "elementId": "triv3"
+          }
+        ]
+      },
+      "op_pen": {
+        "id": "op_pen",
+        "op": "polygon.regular",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "n": {
+            "kind": "number",
+            "value": 5
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "pen"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "pens1"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "pens2"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "pens3"
+          },
+          {
+            "slot": "side.4",
+            "elementId": "pens4"
+          },
+          {
+            "slot": "side.5",
+            "elementId": "pens5"
+          },
+          {
+            "slot": "vertex.1",
+            "elementId": "penv1"
+          },
+          {
+            "slot": "vertex.2",
+            "elementId": "penv2"
+          },
+          {
+            "slot": "vertex.3",
+            "elementId": "penv3"
+          },
+          {
+            "slot": "vertex.4",
+            "elementId": "penv4"
+          },
+          {
+            "slot": "vertex.5",
+            "elementId": "penv5"
+          }
+        ]
+      },
+      "op_hexc": {
+        "id": "op_hexc",
+        "op": "polygon.regular_center",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "n": {
+            "kind": "number",
+            "value": 6
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "hexc"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "hexcs1"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "hexcs2"
+          },
+          {
+            "slot": "side.3",
+            "elementId": "hexcs3"
+          },
+          {
+            "slot": "side.4",
+            "elementId": "hexcs4"
+          },
+          {
+            "slot": "side.5",
+            "elementId": "hexcs5"
+          },
+          {
+            "slot": "side.6",
+            "elementId": "hexcs6"
+          },
+          {
+            "slot": "vertex.1",
+            "elementId": "hexcv1"
+          },
+          {
+            "slot": "vertex.2",
+            "elementId": "hexcv2"
+          },
+          {
+            "slot": "vertex.3",
+            "elementId": "hexcv3"
+          },
+          {
+            "slot": "vertex.4",
+            "elementId": "hexcv4"
+          },
+          {
+            "slot": "vertex.5",
+            "elementId": "hexcv5"
+          },
+          {
+            "slot": "vertex.6",
+            "elementId": "hexcv6"
+          }
+        ]
+      },
+      "op_two": {
+        "id": "op_two",
+        "op": "polygon.regular",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "n": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "two"
+          },
+          {
+            "slot": "side.1",
+            "elementId": "twos1"
+          },
+          {
+            "slot": "side.2",
+            "elementId": "twos2"
+          },
+          {
+            "slot": "vertex.1",
+            "elementId": "twov1"
+          },
+          {
+            "slot": "vertex.2",
+            "elementId": "twov2"
+          }
+        ]
+      },
+      "op_frac": {
+        "id": "op_frac",
+        "op": "polygon.regular",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "n": {
+            "kind": "number",
+            "value": 2.5
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "frac"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "tri": {
+        "id": "tri",
+        "type": "polygon",
+        "displayName": "tri",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "polygon"
+        }
+      },
+      "tris1": {
+        "id": "tris1",
+        "type": "segment",
+        "displayName": "tris1",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "side.1"
+        }
+      },
+      "tris2": {
+        "id": "tris2",
+        "type": "segment",
+        "displayName": "tris2",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "side.2"
+        }
+      },
+      "tris3": {
+        "id": "tris3",
+        "type": "segment",
+        "displayName": "tris3",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "side.3"
+        }
+      },
+      "triv1": {
+        "id": "triv1",
+        "type": "point",
+        "displayName": "triv1",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "vertex.1"
+        }
+      },
+      "triv2": {
+        "id": "triv2",
+        "type": "point",
+        "displayName": "triv2",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "vertex.2"
+        }
+      },
+      "triv3": {
+        "id": "triv3",
+        "type": "point",
+        "displayName": "triv3",
+        "producer": {
+          "operationId": "op_tri",
+          "slot": "vertex.3"
+        }
+      },
+      "pen": {
+        "id": "pen",
+        "type": "polygon",
+        "displayName": "pen",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "polygon"
+        }
+      },
+      "pens1": {
+        "id": "pens1",
+        "type": "segment",
+        "displayName": "pens1",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "side.1"
+        }
+      },
+      "pens2": {
+        "id": "pens2",
+        "type": "segment",
+        "displayName": "pens2",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "side.2"
+        }
+      },
+      "pens3": {
+        "id": "pens3",
+        "type": "segment",
+        "displayName": "pens3",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "side.3"
+        }
+      },
+      "pens4": {
+        "id": "pens4",
+        "type": "segment",
+        "displayName": "pens4",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "side.4"
+        }
+      },
+      "pens5": {
+        "id": "pens5",
+        "type": "segment",
+        "displayName": "pens5",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "side.5"
+        }
+      },
+      "penv1": {
+        "id": "penv1",
+        "type": "point",
+        "displayName": "penv1",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "vertex.1"
+        }
+      },
+      "penv2": {
+        "id": "penv2",
+        "type": "point",
+        "displayName": "penv2",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "vertex.2"
+        }
+      },
+      "penv3": {
+        "id": "penv3",
+        "type": "point",
+        "displayName": "penv3",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "vertex.3"
+        }
+      },
+      "penv4": {
+        "id": "penv4",
+        "type": "point",
+        "displayName": "penv4",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "vertex.4"
+        }
+      },
+      "penv5": {
+        "id": "penv5",
+        "type": "point",
+        "displayName": "penv5",
+        "producer": {
+          "operationId": "op_pen",
+          "slot": "vertex.5"
+        }
+      },
+      "hexc": {
+        "id": "hexc",
+        "type": "polygon",
+        "displayName": "hexc",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "polygon"
+        }
+      },
+      "hexcs1": {
+        "id": "hexcs1",
+        "type": "segment",
+        "displayName": "hexcs1",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.1"
+        }
+      },
+      "hexcs2": {
+        "id": "hexcs2",
+        "type": "segment",
+        "displayName": "hexcs2",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.2"
+        }
+      },
+      "hexcs3": {
+        "id": "hexcs3",
+        "type": "segment",
+        "displayName": "hexcs3",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.3"
+        }
+      },
+      "hexcs4": {
+        "id": "hexcs4",
+        "type": "segment",
+        "displayName": "hexcs4",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.4"
+        }
+      },
+      "hexcs5": {
+        "id": "hexcs5",
+        "type": "segment",
+        "displayName": "hexcs5",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.5"
+        }
+      },
+      "hexcs6": {
+        "id": "hexcs6",
+        "type": "segment",
+        "displayName": "hexcs6",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "side.6"
+        }
+      },
+      "hexcv1": {
+        "id": "hexcv1",
+        "type": "point",
+        "displayName": "hexcv1",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.1"
+        }
+      },
+      "hexcv2": {
+        "id": "hexcv2",
+        "type": "point",
+        "displayName": "hexcv2",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.2"
+        }
+      },
+      "hexcv3": {
+        "id": "hexcv3",
+        "type": "point",
+        "displayName": "hexcv3",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.3"
+        }
+      },
+      "hexcv4": {
+        "id": "hexcv4",
+        "type": "point",
+        "displayName": "hexcv4",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.4"
+        }
+      },
+      "hexcv5": {
+        "id": "hexcv5",
+        "type": "point",
+        "displayName": "hexcv5",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.5"
+        }
+      },
+      "hexcv6": {
+        "id": "hexcv6",
+        "type": "point",
+        "displayName": "hexcv6",
+        "producer": {
+          "operationId": "op_hexc",
+          "slot": "vertex.6"
+        }
+      },
+      "two": {
+        "id": "two",
+        "type": "polygon",
+        "displayName": "two",
+        "producer": {
+          "operationId": "op_two",
+          "slot": "polygon"
+        }
+      },
+      "twos1": {
+        "id": "twos1",
+        "type": "segment",
+        "displayName": "twos1",
+        "producer": {
+          "operationId": "op_two",
+          "slot": "side.1"
+        }
+      },
+      "twos2": {
+        "id": "twos2",
+        "type": "segment",
+        "displayName": "twos2",
+        "producer": {
+          "operationId": "op_two",
+          "slot": "side.2"
+        }
+      },
+      "twov1": {
+        "id": "twov1",
+        "type": "point",
+        "displayName": "twov1",
+        "producer": {
+          "operationId": "op_two",
+          "slot": "vertex.1"
+        }
+      },
+      "twov2": {
+        "id": "twov2",
+        "type": "point",
+        "displayName": "twov2",
+        "producer": {
+          "operationId": "op_two",
+          "slot": "vertex.2"
+        }
+      },
+      "frac": {
+        "id": "frac",
+        "type": "polygon",
+        "displayName": "frac",
+        "producer": {
+          "operationId": "op_frac",
+          "slot": "polygon"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -2,
+          -2
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          2,
+          -2
+        ]
+      },
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          1
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_O",
+          "op_Q"
+        ],
+        "elementIds": [
+          "A",
+          "O",
+          "Q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_frac",
+        "kind": "op",
+        "operationIds": [
+          "op_frac"
+        ],
+        "elementIds": [
+          "frac"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_hexc",
+        "kind": "op",
+        "operationIds": [
+          "op_hexc"
+        ],
+        "elementIds": [
+          "hexc",
+          "hexcs1",
+          "hexcs2",
+          "hexcs3",
+          "hexcs4",
+          "hexcs5",
+          "hexcs6",
+          "hexcv1",
+          "hexcv2",
+          "hexcv3",
+          "hexcv4",
+          "hexcv5",
+          "hexcv6"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_pen",
+        "kind": "op",
+        "operationIds": [
+          "op_pen"
+        ],
+        "elementIds": [
+          "pen",
+          "pens1",
+          "pens2",
+          "pens3",
+          "pens4",
+          "pens5",
+          "penv1",
+          "penv2",
+          "penv3",
+          "penv4",
+          "penv5"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_tri",
+        "kind": "op",
+        "operationIds": [
+          "op_tri"
+        ],
+        "elementIds": [
+          "tri",
+          "tris1",
+          "tris2",
+          "tris3",
+          "triv1",
+          "triv2",
+          "triv3"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_two",
+        "kind": "op",
+        "operationIds": [
+          "op_two"
+        ],
+        "elementIds": [
+          "two",
+          "twos1",
+          "twos2",
+          "twov1",
+          "twov2"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, O, Q.",
+      "2. Строим правильный многоугольник frac со стороной AQ.",
+      "3. Строим правильный многоугольник hexc с центром O и вершиной A.",
+      "4. Строим правильный многоугольник pen со стороной AQ.",
+      "5. Строим правильный многоугольник tri со стороной AQ.",
+      "6. Строим правильный многоугольник two со стороной AQ."
+    ],
+    "timeline": null
+  }
+}

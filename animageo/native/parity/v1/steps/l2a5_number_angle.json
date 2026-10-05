@@ -1,0 +1,318 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "l2a5_number_angle",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a5_number_angle",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_V": {
+        "id": "op_V",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "V"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_p": {
+        "id": "op_p",
+        "op": "number.angle",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "p"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "number.angle",
+        "args": {
+          "min": {
+            "kind": "number",
+            "value": 0.0
+          },
+          "max": {
+            "kind": "number",
+            "value": 1.5707963267948966
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "q"
+          }
+        ]
+      },
+      "op_z": {
+        "id": "op_z",
+        "op": "number.angle",
+        "args": {
+          "min": {
+            "kind": "number",
+            "value": 2.0
+          },
+          "max": {
+            "kind": "number",
+            "value": 1.0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "z"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "angle.by_size",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "size": {
+            "kind": "ref",
+            "elementId": "q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "t"
+          },
+          {
+            "slot": "point",
+            "elementId": "T"
+          }
+        ]
+      },
+      "op_m": {
+        "id": "op_m",
+        "op": "measure.angle",
+        "args": {
+          "angle": {
+            "kind": "ref",
+            "elementId": "t"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "m"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "V": {
+        "id": "V",
+        "type": "point",
+        "displayName": "V",
+        "producer": {
+          "operationId": "op_V",
+          "slot": "point"
+        }
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "p": {
+        "id": "p",
+        "type": "number",
+        "displayName": "p",
+        "producer": {
+          "operationId": "op_p",
+          "slot": "number"
+        }
+      },
+      "q": {
+        "id": "q",
+        "type": "number",
+        "displayName": "q",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "number"
+        }
+      },
+      "z": {
+        "id": "z",
+        "type": "number",
+        "displayName": "z",
+        "producer": {
+          "operationId": "op_z",
+          "slot": "number"
+        }
+      },
+      "t": {
+        "id": "t",
+        "type": "angle",
+        "displayName": "t",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "angle"
+        }
+      },
+      "T": {
+        "id": "T",
+        "type": "point",
+        "displayName": "T",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "point"
+        }
+      },
+      "m": {
+        "id": "m",
+        "type": "number",
+        "displayName": "m",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "number"
+        }
+      }
+    },
+    "inputs": {
+      "V": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "p": {
+        "kind": "angle",
+        "value": 0.5
+      },
+      "q": {
+        "kind": "angle",
+        "value": 1.0
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_V"
+        ],
+        "elementIds": [
+          "A",
+          "V"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_p",
+        "kind": "op",
+        "operationIds": [
+          "op_p"
+        ],
+        "elementIds": [
+          "p"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_q",
+        "kind": "op",
+        "operationIds": [
+          "op_q"
+        ],
+        "elementIds": [
+          "q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_t",
+        "kind": "op",
+        "operationIds": [
+          "op_t"
+        ],
+        "elementIds": [
+          "t",
+          "T"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_m",
+        "kind": "op",
+        "operationIds": [
+          "op_m"
+        ],
+        "elementIds": [
+          "m"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_z",
+        "kind": "op",
+        "operationIds": [
+          "op_z"
+        ],
+        "elementIds": [
+          "z"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, V.",
+      "2. Задаём угол p.",
+      "3. Задаём угол q.",
+      "4. Строим угол t величиной q при вершине V от луча VA.",
+      "5. Измеряем угол t.",
+      "6. Задаём угол z."
+    ],
+    "timeline": null
+  }
+}

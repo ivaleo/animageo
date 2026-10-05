@@ -1,0 +1,304 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "number_free",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "number_free",
+    "operationRegistryVersion": "1.2",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_n1": {
+        "id": "op_n1",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "n1"
+          }
+        ]
+      },
+      "op_n2": {
+        "id": "op_n2",
+        "op": "number.free",
+        "args": {
+          "min": {
+            "kind": "number",
+            "value": 0
+          },
+          "max": {
+            "kind": "number",
+            "value": 5
+          },
+          "step": {
+            "kind": "number",
+            "value": 0.5
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "n2"
+          }
+        ]
+      },
+      "op_n3": {
+        "id": "op_n3",
+        "op": "number.free",
+        "args": {
+          "min": {
+            "kind": "number",
+            "value": 3
+          },
+          "max": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "n3"
+          }
+        ]
+      },
+      "op_n4": {
+        "id": "op_n4",
+        "op": "number.free",
+        "args": {
+          "step": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "n4"
+          }
+        ]
+      },
+      "op_c2": {
+        "id": "op_c2",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "ref",
+            "elementId": "n2"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c2"
+          }
+        ]
+      },
+      "op_c3": {
+        "id": "op_c3",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "ref",
+            "elementId": "n3"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c3"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "n1": {
+        "id": "n1",
+        "type": "number",
+        "displayName": "n1",
+        "producer": {
+          "operationId": "op_n1",
+          "slot": "number"
+        }
+      },
+      "n2": {
+        "id": "n2",
+        "type": "number",
+        "displayName": "n2",
+        "producer": {
+          "operationId": "op_n2",
+          "slot": "number"
+        }
+      },
+      "n3": {
+        "id": "n3",
+        "type": "number",
+        "displayName": "n3",
+        "producer": {
+          "operationId": "op_n3",
+          "slot": "number"
+        }
+      },
+      "n4": {
+        "id": "n4",
+        "type": "number",
+        "displayName": "n4",
+        "producer": {
+          "operationId": "op_n4",
+          "slot": "number"
+        }
+      },
+      "c2": {
+        "id": "c2",
+        "type": "circle",
+        "displayName": "c2",
+        "producer": {
+          "operationId": "op_c2",
+          "slot": "circle"
+        }
+      },
+      "c3": {
+        "id": "c3",
+        "type": "circle",
+        "displayName": "c3",
+        "producer": {
+          "operationId": "op_c3",
+          "slot": "circle"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "n1": {
+        "kind": "number",
+        "value": 1.5
+      },
+      "n2": {
+        "kind": "number",
+        "value": 2
+      },
+      "n3": {
+        "kind": "number",
+        "value": 1
+      },
+      "n4": {
+        "kind": "number",
+        "value": 1
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_O",
+          "op_n1",
+          "op_n2"
+        ],
+        "elementIds": [
+          "O",
+          "n1",
+          "n2"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c2",
+        "kind": "op",
+        "operationIds": [
+          "op_c2"
+        ],
+        "elementIds": [
+          "c2"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_n3",
+        "kind": "op",
+        "operationIds": [
+          "op_n3"
+        ],
+        "elementIds": [
+          "n3"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c3",
+        "kind": "op",
+        "operationIds": [
+          "op_c3"
+        ],
+        "elementIds": [
+          "c3"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_n4",
+        "kind": "op",
+        "operationIds": [
+          "op_n4"
+        ],
+        "elementIds": [
+          "n4"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точка O; числа n1, n2.",
+      "2. Строим окружность c2 с центром O и радиусом n2.",
+      "3. Задаём число n3.",
+      "4. Строим окружность c3 с центром O и радиусом n3.",
+      "5. Задаём число n4."
+    ],
+    "timeline": null
+  }
+}

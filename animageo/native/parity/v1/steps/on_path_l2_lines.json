@@ -1,0 +1,502 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "on_path_l2_lines",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "on_path_l2_lines",
+    "operationRegistryVersion": "1.2",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_p": {
+        "id": "op_p",
+        "op": "line.parallel",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "l"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "p"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "line.perpendicular",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "base": {
+            "kind": "ref",
+            "elementId": "l"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "q"
+          }
+        ]
+      },
+      "op_m": {
+        "id": "op_m",
+        "op": "line.perpendicular_bisector",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "m"
+          }
+        ]
+      },
+      "op_w": {
+        "id": "op_w",
+        "op": "line.angle_bisector",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "w"
+          }
+        ]
+      },
+      "op_P1": {
+        "id": "op_P1",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "p"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P1"
+          }
+        ]
+      },
+      "op_P2": {
+        "id": "op_P2",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P2"
+          }
+        ]
+      },
+      "op_P3": {
+        "id": "op_P3",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "m"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P3"
+          }
+        ]
+      },
+      "op_P4": {
+        "id": "op_P4",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "w"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P4"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "p": {
+        "id": "p",
+        "type": "line",
+        "displayName": "p",
+        "producer": {
+          "operationId": "op_p",
+          "slot": "line"
+        }
+      },
+      "q": {
+        "id": "q",
+        "type": "line",
+        "displayName": "q",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "line"
+        }
+      },
+      "m": {
+        "id": "m",
+        "type": "line",
+        "displayName": "m",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "line"
+        }
+      },
+      "w": {
+        "id": "w",
+        "type": "line",
+        "displayName": "w",
+        "producer": {
+          "operationId": "op_w",
+          "slot": "line"
+        }
+      },
+      "P1": {
+        "id": "P1",
+        "type": "point",
+        "displayName": "P1",
+        "producer": {
+          "operationId": "op_P1",
+          "slot": "point"
+        }
+      },
+      "P2": {
+        "id": "P2",
+        "type": "point",
+        "displayName": "P2",
+        "producer": {
+          "operationId": "op_P2",
+          "slot": "point"
+        }
+      },
+      "P3": {
+        "id": "P3",
+        "type": "point",
+        "displayName": "P3",
+        "producer": {
+          "operationId": "op_P3",
+          "slot": "point"
+        }
+      },
+      "P4": {
+        "id": "P4",
+        "type": "point",
+        "displayName": "P4",
+        "producer": {
+          "operationId": "op_P4",
+          "slot": "point"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -3,
+          -1
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          3,
+          2
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          0,
+          4
+        ]
+      },
+      "P1": {
+        "kind": "pathParameter",
+        "value": 1.5
+      },
+      "P2": {
+        "kind": "pathParameter",
+        "value": -2
+      },
+      "P3": {
+        "kind": "pathParameter",
+        "value": 0.75
+      },
+      "P4": {
+        "kind": "pathParameter",
+        "value": 2
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_Q"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "Q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_l",
+        "kind": "op",
+        "operationIds": [
+          "op_l"
+        ],
+        "elementIds": [
+          "l"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_m",
+        "kind": "op",
+        "operationIds": [
+          "op_m"
+        ],
+        "elementIds": [
+          "m"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_P3",
+        "kind": "op",
+        "operationIds": [
+          "op_P3"
+        ],
+        "elementIds": [
+          "P3"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_p",
+        "kind": "op",
+        "operationIds": [
+          "op_p"
+        ],
+        "elementIds": [
+          "p"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_P1",
+        "kind": "op",
+        "operationIds": [
+          "op_P1"
+        ],
+        "elementIds": [
+          "P1"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_q",
+        "kind": "op",
+        "operationIds": [
+          "op_q"
+        ],
+        "elementIds": [
+          "q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_P2",
+        "kind": "op",
+        "operationIds": [
+          "op_P2"
+        ],
+        "elementIds": [
+          "P2"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_w",
+        "kind": "op",
+        "operationIds": [
+          "op_w"
+        ],
+        "elementIds": [
+          "w"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_P4",
+        "kind": "op",
+        "operationIds": [
+          "op_P4"
+        ],
+        "elementIds": [
+          "P4"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B, Q.",
+      "2. Проводим прямую AB.",
+      "3. Проводим серединный перпендикуляр m к отрезку AB.",
+      "4. Отмечаем точку P3 на m.",
+      "5. Проводим через точку Q прямую p, параллельную l.",
+      "6. Отмечаем точку P1 на p.",
+      "7. Проводим через точку Q прямую q, перпендикулярную l.",
+      "8. Отмечаем точку P2 на q.",
+      "9. Проводим биссектрису w угла AQB.",
+      "10. Отмечаем точку P4 на w."
+    ],
+    "timeline": null
+  }
+}

@@ -299,6 +299,22 @@ def _invalid_documents():
         return doc
 
     yield 'missing format', variant(lambda d: d.pop('format'))
+    # 1.9.0a1: seq, steps, appearance role
+    yield 'seq zero', variant(lambda d: d['operations']['op_M'].__setitem__('seq', 0))
+    yield 'seq string', variant(lambda d: d['operations']['op_M'].__setitem__('seq', '1'))
+    yield 'seq bool', variant(lambda d: d['operations']['op_M'].__setitem__('seq', True))
+    yield 'seq fraction', variant(lambda d: d['operations']['op_M'].__setitem__('seq', 1.5))
+    yield 'steps object', variant(lambda d: d.__setitem__('steps', {}))
+    yield 'step kind', variant(lambda d: d.__setitem__('steps', [{'id': 's1', 'kind': 'op', 'operationIds': []}]))
+    yield 'step no operations', variant(lambda d: d.__setitem__('steps', [{'id': 's1', 'kind': 'group'}]))
+    yield 'step extra key', variant(lambda d: d.__setitem__(
+        'steps', [{'id': 's1', 'kind': 'group', 'operationIds': [], 'seq': 1}]))
+    yield 'step bad id', variant(lambda d: d.__setitem__('steps', [{'id': 's 1', 'kind': 'group', 'operationIds': []}]))
+    yield 'step title type', variant(lambda d: d.__setitem__(
+        'steps', [{'id': 's1', 'kind': 'group', 'title': 1, 'operationIds': []}]))
+    yield 'step operation id', variant(lambda d: d.__setitem__(
+        'steps', [{'id': 's1', 'kind': 'group', 'operationIds': [3]}]))
+    yield 'role type', variant(lambda d: d.__setitem__('appearance', {'A': {'role': 1}}))
     yield 'wrong format', variant(lambda d: d.__setitem__('format', 'animageo-construction/v2'))
     yield 'bad document id', variant(lambda d: d.__setitem__('documentId', 'with space'))
     yield 'long id', variant(lambda d: d.__setitem__('documentId', 'x' * 65))
@@ -421,6 +437,12 @@ def _valid_documents():
     doc = copy.deepcopy(base)
     doc['workIntent'] = WORK_INTENT
     yield 'work intent', doc
+    doc = copy.deepcopy(base)
+    doc['operations']['op_M']['seq'] = 3
+    doc['steps'] = [{'id': 's1', 'kind': 'group', 'title': 'Середина', 'text': 'Отмечаем M',
+                     'operationIds': ['op_M']}, {'id': 's2', 'kind': 'given', 'operationIds': []}]
+    doc['appearance'] = {'A': {'role': 'given'}, 'M': {'role': 'whatever'}}
+    yield 'seq, steps and roles (1.9.0a1)', doc
     for intent in ({}, None, {'condition': {'text': ''}}, {'forbid': [], 'assumptions': [], 'briefRevision': 0},
                    {'condition': {'text': 'x' * 4000}, 'assumptions': ['y' * 200] * 10, 'briefRevision': 3.0}):
         doc = copy.deepcopy(base)

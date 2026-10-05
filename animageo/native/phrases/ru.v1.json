@@ -1,0 +1,301 @@
+{
+  "format": "animageo-phrases/v1",
+  "lang": "ru",
+  "steps": {
+    "free_point": {
+      "text": "Отмечаем точку {point}"
+    },
+    "point_on_path": {
+      "text": "Отмечаем точку {point} на {path}"
+    },
+    "midpoint": {
+      "text": "Отмечаем середину {point} отрезка {a}{b}"
+    },
+    "intersection": {
+      "text": "Отмечаем точку {out:point} пересечения {first} и {second}",
+      "ops": {
+        "intersect.line_circle": "Отмечаем точки {out:first,second} пересечения {line} и {circle}",
+        "intersect.circle_circle": "Отмечаем точки {out:first,second} пересечения {first} и {second}",
+        "intersect.other_than": "Отмечаем вторую точку {point} пересечения {first} и {second}",
+        "intersect.nearest": "Отмечаем точку {point} пересечения {first} и {second}, ближайшую к {near}",
+        "intersect.line_sector": "Отмечаем точки {out:arc.1,arc.2,side.1,side.2} пересечения {line} с границей {sector}"
+      }
+    },
+    "segment": {
+      "text": "Строим отрезок {a}{b}",
+      "ops": {
+        "segment.from_point_length": "Откладываем от точки {start} отрезок {segment} длины {length}"
+      }
+    },
+    "line": {
+      "text": "Проводим прямую {a}{b}"
+    },
+    "ray": {
+      "text": "Проводим луч {origin}{through}",
+      "ops": {
+        "ray.by_vector": "Проводим луч {ray} из {origin} по направлению {vector}"
+      }
+    },
+    "vector": {
+      "text": "Строим вектор {a}{b}"
+    },
+    "polygon": {
+      "text": "Строим многоугольник {vertices}",
+      "context": [
+        {
+          "when": "three_vertices",
+          "text": "Строим треугольник {vertices}"
+        }
+      ]
+    },
+    "polyline": {
+      "text": "Строим ломаную {points}"
+    },
+    "circle": {
+      "text": "Строим окружность {circle} с центром {center}, проходящую через {through}",
+      "ops": {
+        "circle.center_radius": "Строим окружность {circle} с центром {center} и радиусом {radius}",
+        "circle.center_segment": "Строим окружность {circle} с центром {center} и радиусом {radius}",
+        "circle.diameter": "Строим окружность {circle} на диаметре {a}{b}"
+      }
+    },
+    "circumcircle": {
+      "text": "Строим окружность {circle} через точки {a}, {b}, {c}",
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Строим описанную окружность {circle} треугольника {triangle}"
+        }
+      ]
+    },
+    "incircle": {
+      "text": "Строим окружность {circle}, вписанную в треугольник {a}{b}{c}",
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Строим вписанную окружность {circle} треугольника {triangle}"
+        }
+      ]
+    },
+    "excircle": {
+      "text": "Строим вневписанную окружность {circle} треугольника {a}{b}{c}, касающуюся стороны {b}{c}",
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Строим вневписанную окружность {circle} треугольника {triangle}, касающуюся стороны {b}{c}"
+        }
+      ]
+    },
+    "parallel": {
+      "text": "Проводим через точку {point} прямую {line}, параллельную {base}"
+    },
+    "perpendicular": {
+      "text": "Проводим через точку {point} прямую {line}, перпендикулярную {base}"
+    },
+    "perpendicular_bisector": {
+      "text": "Проводим серединный перпендикуляр {line} к отрезку {a}{b}"
+    },
+    "angle_bisector": {
+      "text": "Проводим биссектрису {line} угла {a}{vertex}{b}",
+      "ops": {
+        "line.angle_bisectors_of_lines": "Проводим биссектрисы {out:internal,external} углов между {first} и {second}"
+      }
+    },
+    "external_bisector": {
+      "text": "Проводим внешнюю биссектрису {line} угла {a}{vertex}{b}"
+    },
+    "tangent": {
+      "text": "Проводим касательную {line} к {circle} в точке {point}",
+      "ops": {
+        "line.tangents_from_point": "Проводим касательные {out:tangent.1,tangent.2} из точки {point} к {circle}"
+      }
+    },
+    "projection": {
+      "text": "Опускаем перпендикуляр из точки {point} на {base} и отмечаем его основание {foot}"
+    },
+    "center": {
+      "text": "Отмечаем центр {center} фигуры {of}"
+    },
+    "closest_point": {
+      "text": "Отмечаем точку {foot} на {path}, ближайшую к {point}"
+    },
+    "divide": {
+      "text": "Отмечаем точку {point}, делящую отрезок {a}{b} в отношении {m} : {n}"
+    },
+    "point_at_distance": {
+      "text": "Откладываем на луче {a}{b} расстояние {distance} и отмечаем точку {point}"
+    },
+    "angle": {
+      "text": "Отмечаем угол {a}{vertex}{b}",
+      "ops": {
+        "angle.between_lines": "Отмечаем угол {angle} между {first} и {second}",
+        "angle.between_vectors": "Отмечаем угол {angle} между векторами {first} и {second}",
+        "angle.by_size": "Строим угол {angle} величиной {size} при вершине {vertex} от луча {vertex}{a}"
+      }
+    },
+    "arc": {
+      "text": "Строим дугу {arc} с центром {center} от точки {a} до луча {center}{b}",
+      "ops": {
+        "arc.on_circle": "Строим дугу {arc} окружности {circle} от {a} до {b}",
+        "arc.semicircle": "Строим полуокружность {arc} на отрезке {a}{b}",
+        "arc.three_points": "Строим дугу {arc} через точки {a}, {b}, {c}"
+      }
+    },
+    "sector": {
+      "text": "Строим сектор {sector} с центром {center} от точки {a} до луча {center}{b}",
+      "ops": {
+        "sector.from_angle": "Строим сектор {sector} с центром {center} от точки {a} с углом {size}",
+        "sector.on_circle": "Строим сектор {sector} окружности {circle} от {a} до {b}",
+        "sector.three_points": "Строим сектор {sector} по дуге {a}{b}{c}"
+      }
+    },
+    "mark": {
+      "text": "Отмечаем прямой угол {a}{vertex}{b}",
+      "ops": {
+        "mark.equal_segments": "Отмечаем равные отрезки {segments}",
+        "mark.equal_angles": "Отмечаем равные углы {angles}"
+      }
+    },
+    "measure": {
+      "text": "Находим длину {of}",
+      "ops": {
+        "measure.angle": "Измеряем угол {angle}",
+        "measure.area": "Находим площадь {of}",
+        "measure.circumference": "Находим длину окружности {circle}",
+        "measure.distance": "Находим расстояние от точки {point} до {to}",
+        "measure.perimeter": "Находим периметр {of}",
+        "measure.polygon_angles": "Отмечаем углы многоугольника {polygon}",
+        "measure.radius": "Находим радиус {of}"
+      }
+    },
+    "number": {
+      "text": "Задаём число {number}",
+      "ops": {
+        "number.angle": "Задаём угол {number}",
+        "number.expression": "Вычисляем {number} по формуле"
+      }
+    },
+    "vertex": {
+      "text": "Отмечаем вершину {vertex} фигуры {of}"
+    },
+    "centroid": {
+      "text": "Отмечаем точку {point} пересечения медиан треугольника {a}{b}{c}",
+      "ops": {
+        "polygon.centroid": "Отмечаем центр масс {centroid} многоугольника {polygon}"
+      },
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Отмечаем точку {point} пересечения медиан треугольника {triangle}"
+        }
+      ]
+    },
+    "parallelogram": {
+      "text": "Достраиваем параллелограмм {a}{b}{c}{out:vertex}"
+    },
+    "regular_polygon": {
+      "text": "Строим правильный многоугольник {polygon} со стороной {a}{b}",
+      "ops": {
+        "polygon.regular_center": "Строим правильный многоугольник {polygon} с центром {center} и вершиной {a}"
+      }
+    },
+    "ray_at_angle": {
+      "text": "Проводим луч {ray} из точки {vertex} под углом {size} к лучу {vertex}{a}"
+    },
+    "midline": {
+      "text": "Проводим среднюю линию {segment} через середины {first} и {second}"
+    },
+    "text": {
+      "text": "Добавляем надпись {text} у точки {anchor}"
+    },
+    "transform": {
+      "text": "Строим образ {image} фигуры {obj} при параллельном переносе на вектор {vector}",
+      "ops": {
+        "transform.dilate": "Строим образ {image} фигуры {obj} при гомотетии с центром {center} и коэффициентом {factor}",
+        "transform.reflect_line": "Строим образ {image} фигуры {obj} при симметрии относительно {line}",
+        "transform.reflect_point": "Строим образ {image} фигуры {obj} при симметрии относительно точки {point}",
+        "transform.rotate": "Строим образ {image} фигуры {obj} при повороте на {angle} вокруг точки {center}"
+      }
+    },
+    "altitude": {
+      "text": "Проводим высоту {altitude} из вершины {vertex} к стороне {side}",
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Проводим высоту {altitude} треугольника {triangle} из вершины {vertex}"
+        }
+      ]
+    },
+    "median": {
+      "text": "Проводим медиану {median} из вершины {vertex} к стороне {side}",
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Проводим медиану {median} треугольника {triangle} из вершины {vertex}"
+        }
+      ]
+    },
+    "bisector": {
+      "text": "Проводим биссектрису {bisector} из вершины {vertex} к стороне {side}",
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Проводим биссектрису {bisector} треугольника {triangle} из вершины {vertex}"
+        }
+      ]
+    },
+    "circumcenter": {
+      "text": "Отмечаем центр {point} окружности, описанной около треугольника {a}{b}{c}",
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Отмечаем центр {point} окружности, описанной около треугольника {triangle}"
+        }
+      ]
+    },
+    "incenter": {
+      "text": "Отмечаем центр {point} окружности, вписанной в треугольник {a}{b}{c}",
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Отмечаем центр {point} окружности, вписанной в треугольник {triangle}"
+        }
+      ]
+    },
+    "orthocenter": {
+      "text": "Отмечаем точку {point} пересечения высот треугольника {a}{b}{c}",
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Отмечаем точку {point} пересечения высот треугольника {triangle}"
+        }
+      ]
+    },
+    "excenter": {
+      "text": "Отмечаем центр {center} вневписанной окружности треугольника {a}{b}{c}, касающейся стороны {b}{c}",
+      "context": [
+        {
+          "when": "triangle_vertices",
+          "text": "Отмечаем центр {center} вневписанной окружности треугольника {triangle}, касающейся стороны {b}{c}"
+        }
+      ]
+    },
+    "locus": {
+      "text": "Строим геометрическое место {locus} точки {trace} при движении точки {mover}",
+      "context": [
+        {
+          "when": "number_mover",
+          "text": "Строим геометрическое место {locus} точки {trace} при изменении числа {mover}"
+        }
+      ]
+    }
+  },
+  "given": {
+    "point": "Дано: точка {list}",
+    "points": "Дано: точки {list}",
+    "number": "число {list}",
+    "numbers": "числа {list}",
+    "numbers_only": "Дано: {numbers}",
+    "triangle": "Строим треугольник {name}"
+  }
+}

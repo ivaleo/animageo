@@ -1,0 +1,244 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "l2a5_angle_by_size",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a5_angle_by_size",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_V": {
+        "id": "op_V",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "V"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_alpha": {
+        "id": "op_alpha",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "alpha"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "angle.by_size",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "size": {
+            "kind": "ref",
+            "elementId": "alpha"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "t"
+          },
+          {
+            "slot": "point",
+            "elementId": "T"
+          }
+        ]
+      },
+      "op_u": {
+        "id": "op_u",
+        "op": "angle.by_size",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "size": {
+            "kind": "number",
+            "value": 1.5707963267948966
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "u"
+          },
+          {
+            "slot": "point",
+            "elementId": "U"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "V": {
+        "id": "V",
+        "type": "point",
+        "displayName": "V",
+        "producer": {
+          "operationId": "op_V",
+          "slot": "point"
+        }
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "alpha": {
+        "id": "alpha",
+        "type": "number",
+        "displayName": "alpha",
+        "producer": {
+          "operationId": "op_alpha",
+          "slot": "number"
+        }
+      },
+      "t": {
+        "id": "t",
+        "type": "angle",
+        "displayName": "t",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "angle"
+        }
+      },
+      "T": {
+        "id": "T",
+        "type": "point",
+        "displayName": "T",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "point"
+        }
+      },
+      "u": {
+        "id": "u",
+        "type": "angle",
+        "displayName": "u",
+        "producer": {
+          "operationId": "op_u",
+          "slot": "angle"
+        }
+      },
+      "U": {
+        "id": "U",
+        "type": "point",
+        "displayName": "U",
+        "producer": {
+          "operationId": "op_u",
+          "slot": "point"
+        }
+      }
+    },
+    "inputs": {
+      "V": {
+        "kind": "point",
+        "value": [
+          -1,
+          -1
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          4,
+          1
+        ]
+      },
+      "alpha": {
+        "kind": "number",
+        "value": 0.8
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_V",
+          "op_alpha"
+        ],
+        "elementIds": [
+          "A",
+          "V",
+          "alpha"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_t",
+        "kind": "op",
+        "operationIds": [
+          "op_t"
+        ],
+        "elementIds": [
+          "t",
+          "T"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_u",
+        "kind": "op",
+        "operationIds": [
+          "op_u"
+        ],
+        "elementIds": [
+          "u",
+          "U"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, V; число alpha.",
+      "2. Строим угол t величиной alpha при вершине V от луча VA.",
+      "3. Строим угол u величиной 1,57 при вершине V от луча VA."
+    ],
+    "timeline": null
+  }
+}

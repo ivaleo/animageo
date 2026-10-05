@@ -1,0 +1,418 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "marks_equal_angles",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "marks_equal_angles",
+    "operationRegistryVersion": "1.3",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_g": {
+        "id": "op_g",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "g"
+          }
+        ]
+      },
+      "op_h": {
+        "id": "op_h",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "h"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "k"
+          }
+        ]
+      },
+      "op_m2": {
+        "id": "op_m2",
+        "op": "mark.equal_angles",
+        "args": {
+          "angles": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "g"
+              },
+              {
+                "kind": "ref",
+                "elementId": "h"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m2"
+          }
+        ]
+      },
+      "op_m3": {
+        "id": "op_m3",
+        "op": "mark.equal_angles",
+        "args": {
+          "angles": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "g"
+              },
+              {
+                "kind": "ref",
+                "elementId": "h"
+              },
+              {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m3"
+          }
+        ]
+      },
+      "op_m0": {
+        "id": "op_m0",
+        "op": "mark.equal_angles",
+        "args": {
+          "angles": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "g"
+              },
+              {
+                "kind": "ref",
+                "elementId": "h"
+              }
+            ]
+          },
+          "count": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "mark",
+            "elementId": "m0"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "g": {
+        "id": "g",
+        "type": "angle",
+        "displayName": "g",
+        "producer": {
+          "operationId": "op_g",
+          "slot": "angle"
+        }
+      },
+      "h": {
+        "id": "h",
+        "type": "angle",
+        "displayName": "h",
+        "producer": {
+          "operationId": "op_h",
+          "slot": "angle"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "angle",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "angle"
+        }
+      },
+      "m2": {
+        "id": "m2",
+        "type": "mark",
+        "displayName": "m2",
+        "producer": {
+          "operationId": "op_m2",
+          "slot": "mark"
+        }
+      },
+      "m3": {
+        "id": "m3",
+        "type": "mark",
+        "displayName": "m3",
+        "producer": {
+          "operationId": "op_m3",
+          "slot": "mark"
+        }
+      },
+      "m0": {
+        "id": "m0",
+        "type": "mark",
+        "displayName": "m0",
+        "producer": {
+          "operationId": "op_m0",
+          "slot": "mark"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          4
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          -3,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          3,
+          0
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_C",
+          "op_Q"
+        ],
+        "elementIds": [
+          "A",
+          "C",
+          "Q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_g",
+        "kind": "op",
+        "operationIds": [
+          "op_g"
+        ],
+        "elementIds": [
+          "g"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_h",
+        "kind": "op",
+        "operationIds": [
+          "op_h"
+        ],
+        "elementIds": [
+          "h"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_k",
+        "kind": "op",
+        "operationIds": [
+          "op_k"
+        ],
+        "elementIds": [
+          "k"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_m0",
+        "kind": "op",
+        "operationIds": [
+          "op_m0"
+        ],
+        "elementIds": [
+          "m0"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_m2",
+        "kind": "op",
+        "operationIds": [
+          "op_m2"
+        ],
+        "elementIds": [
+          "m2"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_m3",
+        "kind": "op",
+        "operationIds": [
+          "op_m3"
+        ],
+        "elementIds": [
+          "m3"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, C, Q.",
+      "2. Отмечаем угол CQA.",
+      "3. Отмечаем угол ACQ.",
+      "4. Отмечаем угол QAC.",
+      "5. Отмечаем равные углы ∠CQA и ∠ACQ.",
+      "6. Отмечаем равные углы ∠CQA и ∠ACQ.",
+      "7. Отмечаем равные углы ∠CQA, ∠ACQ и ∠QAC."
+    ],
+    "timeline": null
+  }
+}

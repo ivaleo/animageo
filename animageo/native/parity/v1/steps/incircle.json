@@ -1,0 +1,230 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "incircle",
+  "registry": "1.5",
+  "generatedBy": "animageo 1.9.0a1.dev1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "incircle",
+    "operationRegistryVersion": "1.3",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "circle.incircle",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "k"
+          },
+          {
+            "slot": "center",
+            "elementId": "I"
+          },
+          {
+            "slot": "touch_a",
+            "elementId": "Ta"
+          },
+          {
+            "slot": "touch_b",
+            "elementId": "Tb"
+          },
+          {
+            "slot": "touch_c",
+            "elementId": "Tc"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "point",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "circle",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "circle"
+        }
+      },
+      "I": {
+        "id": "I",
+        "type": "point",
+        "displayName": "I",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "center"
+        }
+      },
+      "Ta": {
+        "id": "Ta",
+        "type": "point",
+        "displayName": "Ta",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "touch_a"
+        }
+      },
+      "Tb": {
+        "id": "Tb",
+        "type": "point",
+        "displayName": "Tb",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "touch_b"
+        }
+      },
+      "Tc": {
+        "id": "Tc",
+        "type": "point",
+        "displayName": "Tc",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "touch_c"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -4,
+          -2
+        ]
+      },
+      "Q": {
+        "kind": "point",
+        "value": [
+          5,
+          -1
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          1,
+          6
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_C",
+          "op_Q"
+        ],
+        "elementIds": [
+          "A",
+          "C",
+          "Q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_k",
+        "kind": "op",
+        "operationIds": [
+          "op_k"
+        ],
+        "elementIds": [
+          "k",
+          "I",
+          "Ta",
+          "Tb",
+          "Tc"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, C, Q.",
+      "2. Строим окружность k, вписанную в треугольник AQC."
+    ],
+    "timeline": null
+  }
+}
