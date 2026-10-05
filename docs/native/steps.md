@@ -41,7 +41,15 @@ conditionIds)`, `kind ∈ given | op | group | condition`;
 4. `elementIds`: the outputs of the step's operations in operation order and
    then output order, unless `appearance.<id>.visible` is `false`;
    `auxElementIds`: the hidden ones (pairs of «Команды», helper lines).
-   `conditionIds` is empty until the conditions of stage 2.
+   `conditionIds`: the condition of a `condition` step; for an explicit
+   group, the construct conditions with an operation in it.
+5. Conditions (1.9.0a2, `conditions.md` §7): the operations of a construct
+   condition outside explicit groups form the step `condition:<id>`, kind
+   `condition`; the receiver's operation goes to the step of the last
+   condition on it. An automatic mark and its helpers (`origin.kind =
+   "auto"`) join the step of their source when everything they use is built
+   there or before, else the step of a direct dependency (largest order key
+   first), else they stay steps of their own.
 
 ### `steps_merge(doc, step_id)`, `steps_split(doc, step_id, operation_ids)`
 
@@ -76,8 +84,18 @@ One line per step: `"<n>. <phrase>."`.
   «Дано: число k»). Three points followed by the step of a
   `polygon.by_points` on exactly those points: «Строим треугольник ABC», and
   that polygon step gets no line of its own.
-- `values=True` (lengths and angles after the phrase) comes with stage 2:
-  `NotImplementedError`.
+- A `condition` step (1.9.0a2): `steps.condition.text` («Ставим {recipe}»)
+  with `{recipe}` the `phrase.ru` of the recipe filled with the names of its
+  bindings (a number literal in the decimal format, `D` in degrees), then
+  the phrases of the marks of the step. The phrase of an automatic mark
+  joined after another starts with a small letter; an operation whose
+  outputs are all hidden helpers of automatic marks has no phrase.
+- `values=True` (1.9.0a2, computational; `ev` or an evaluation): after the
+  phrase of an operation `(…; …)` — a visible segment `|AB| = 2,4` (by its
+  two points when the producer has them), an angle `∠ABC = 35°` (its size),
+  a number `k = 1,5`; after a condition step — every `len` and three-point
+  `angle` of its statement (convex degrees). Decimal comma, at most
+  `precision` digits, trailing zeros dropped; an undefined value is skipped.
 
 ### The phrase table `phrases/ru.v1.json`
 

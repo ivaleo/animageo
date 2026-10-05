@@ -1101,3 +1101,35 @@ generatedBy, document, expect: {steps: [{id, kind, title?, text?,
 operationIds, elementIds, auxElementIds}], describe: [line…], timeline:
 null}}` (`parity/v1/steps`, all scenes); `fixtures verify` compares them
 exactly.
+
+## 12. Stage L3, part 2 (animageo 1.9.0a2)
+
+Conditions, the general case and automatic marks: the contract is
+`docs/native/conditions.md`; recipe cards for the assistant —
+`docs/native/ops/recipes.md`. In short:
+
+- Document: `conditions[]`, `suppressedMarks[]`, `elements.<id>.origin`
+  (`kind: "auto"` checked), `viewDefaults.autoMarks`; `validate` codes
+  `condition_*`, `mark_origin_unknown`, `suppressed_mark_unknown_kind`; the
+  JSON schema follows.
+- Statements (AST shared with the web) compile to `check` predicates
+  (`statement_checks`); new predicates `on_object`, `coincident`,
+  `congruent`; `measure_statement`, `relation`.
+- `check_general` — the general case: SplitMix64 trials with the seed
+  `sha256(documentId:checkId)`, a counterexample (trial and inputs),
+  `inconclusive` over 20 % unmeasured trials. L2 `general_position` (the
+  trials of `native.check`) is unchanged.
+- Recipes v1 (13 files) → `apply_condition`, `release_condition`,
+  `condition_candidates`, `shape_conditions`; `delete` and `redefine`
+  respect conditions (§8 codes `condition_cycle`, effects
+  `removed.conditions`, `modified.restoredFrom`).
+- `auto_marks`, `add_auto_marks`, `auto_sources` (`marks/auto.v1.json`);
+  `apply_condition` adds the marks of its condition.
+- `steps`: `condition` steps; marks in the step of their source; `describe`
+  phrases conditions and gives `values=True`.
+- `redefine` takes the default of an optional free input
+  (`FREE_INPUT_DEFAULTS`) instead of `missing_input`.
+- Fixtures `animageo-recipes/v1`, `animageo-general/v1`,
+  `animageo-marks/v1` (`fixtures conditions`), 17 scenes `recipe_*`,
+  `shape_*`; `native.has`: `check.general`, `conditions`, `apply_condition`,
+  `auto_marks`, `describe.values`.
