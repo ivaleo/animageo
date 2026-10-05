@@ -64,7 +64,8 @@ L4; arithmetic of values — `formula_unsupported`; predicates (`AreParallel`,
 1.10.0a2 (`native.has("convert.formula")`): the arithmetic of numbers and
 measures — 24 keys (`+ - * / ^`, the opposite, `Abs`, `Sqrt`, `Sin`, `Cos`,
 `Tan`, `Ctan`, a copy) — is `number.expression`. The other 46 keys of
-arithmetic stay `formula_unsupported`: they compute with points, vectors,
+arithmetic (45 since 1.11.0rc1: `cpx_to_a` was no command, `mapVersion` 3)
+stay `formula_unsupported`: they compute with points, vectors,
 angles or segments (`number.expression` takes numbers only and gives a
 number, not an angle). An argument that is an expression with no object of
 its own — `Circle(A, r/2)`, `Circle(A, Distance(A, B))`, a command inside

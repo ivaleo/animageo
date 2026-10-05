@@ -684,9 +684,11 @@ def format_object_value(data, decimals):
         length = float(np.linalg.norm(data.endpoints[0] - data.endpoints[1]))
         return format_number(length, decimals)
     if isinstance(data, Vector):
+        # the components of the vector, as GeoGebra prints it (a Vector has
+        # ``direction``, not ``coords`` — before 1.11.0rc1 this raised)
         return '({}, {})'.format(
-            format_number(data.coords[0], decimals),
-            format_number(data.coords[1], decimals),
+            format_number(data.direction[0], decimals),
+            format_number(data.direction[1], decimals),
         )
     return str(data)
 

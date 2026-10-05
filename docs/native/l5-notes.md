@@ -16,6 +16,8 @@ is to be revisited.
   1.10.0a2: 24 of the 70 — the arithmetic of numbers and measures — are
   formula rows of `number.expression` (`mapVersion` 2, `docs/native/import.md`
   §1); 46 stay `formula_unsupported` (points, vectors, angles, segments).
+  1.11.0rc1: 476 keys — `cpx_to_a`, a helper of `lib_elements`, is no
+  command any more (kernel spec §15); 45 stay `formula_unsupported`.
 - 38 registry ops have no classic key (`opsWithoutClassic`): marks, triangle
   centres and lines the classic has no command for, `text.free`,
   `number.expression`, the free inputs (37 in 1.10.0a2: `number.expression`

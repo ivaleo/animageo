@@ -37,7 +37,7 @@ Each auto-generated factory:
 Dispatch validation
 -------------------
 
-``_can_dispatch(name)`` checks ``lib_commands`` for any function
+``_can_dispatch(name)`` checks ``COMMAND_REGISTRY`` for any command
 matching ``snake_case(name)`` exactly, or ``snake_case(name)_SUFFIX``
 where ``SUFFIX`` is a valid shortcut string. Unknown names are
 rejected at lookup time with ``NameError`` instead of a silent
@@ -94,25 +94,22 @@ def _is_shortcut_suffix(s: str) -> bool:
 
 
 def _can_dispatch(camel_name: str) -> bool:
-    """True if ``lib_commands`` has any function matching the command name.
+    """True if the dispatch table ``COMMAND_REGISTRY`` has the command.
 
     Matches either the bare snake_case form (no-suffix commands like
-    ``polygon``) or ``snake_case_SUFFIX`` for a valid shortcut SUFFIX.
+    ``polygon``) or ``snake_case_SUFFIX`` for a valid shortcut SUFFIX. The
+    table, not the globals of ``lib_commands``: a helper imported there is
+    no command (1.11.0rc1, see :func:`_discover_command_names`).
     """
     snake = _camel_to_snake(camel_name)
+    registry = _lib_commands.COMMAND_REGISTRY
     # Exact match — no-suffix commands.
-    fn = getattr(_lib_commands, snake, None)
-    if callable(fn):
+    if snake in registry:
         return True
     # Suffix match.
     prefix_dash = snake + "_"
-    for fname in dir(_lib_commands):
-        if not fname.startswith(prefix_dash):
-            continue
-        suffix = fname[len(prefix_dash):]
-        if _is_shortcut_suffix(suffix):
-            return True
-    return False
+    return any(fname.startswith(prefix_dash) and _is_shortcut_suffix(fname[len(prefix_dash):])
+               for fname in registry)
 
 
 # ── Factory generator ────────────────────────────────────────────
@@ -277,28 +274,21 @@ class FactoryDict(dict):
 # ── Pre-discovered factory registry ──────────────────────────────
 
 def _discover_command_names() -> set[str]:
-    """Scan lib_commands for dispatchable commands, return CamelCase set."""
+    """CamelCase factories of the dispatch table ``COMMAND_REGISTRY``.
+
+    Before 1.11.0rc1 this scanned every global of ``lib_commands`` on its
+    own, so two helpers that only look like dispatch names became factories
+    that could never dispatch: ``cpx_to_a`` (``CpxTo``, imported from
+    ``lib_elements``) and ``signature_alias`` (``Signature``). The table is
+    the one list of commands now (kernel spec §15)."""
     names: set[str] = set()
-    for fname in dir(_lib_commands):
-        if fname.startswith("_"):
+    for fname in _lib_commands.COMMAND_REGISTRY:
+        prefix, sep, suffix = fname.rpartition("_")
+        if not sep or not prefix or not _is_shortcut_suffix(suffix):
+            continue          # ``polygon`` and the formula ``*_Tn`` have their ``*_T…`` keys
+        if not all(c.islower() or c.isdigit() or c == "_" for c in prefix):
             continue
-        fn = getattr(_lib_commands, fname, None)
-        if not callable(fn):
-            continue
-        # Skip classes / helpers (CamelCase in lib_commands).
-        if fname[0].isupper():
-            continue
-        if "_" in fname:
-            prefix, suffix = fname.rsplit("_", 1)
-            if not all(c.islower() or c.isdigit() or c == "_" for c in prefix):
-                continue
-            if not prefix:
-                continue
-            if _is_shortcut_suffix(suffix):
-                camel = "".join(w.capitalize() for w in prefix.split("_"))
-                names.add(camel)
-        # else: no-underscore helpers (toObjArray, strCommand, etc.) are
-        # skipped — they either CamelCase-filtered above or are utilities.
+        names.add("".join(w.capitalize() for w in prefix.split("_")))
     return names
 
 

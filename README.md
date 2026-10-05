@@ -27,7 +27,7 @@ file required — and animate them by keyframes or by driving free variables.
 - **Faithful GeoGebra import** — points, lines, segments, rays, vectors,
   polygons, angles (incl. right-angle markers), circles, arcs, sectors, and
   first-class **conics, explicit functions, and implicit curves**, plus custom
-  tool (macro) expansion. The DSL exposes 100 command factories backed by 477
+  tool (macro) expansion. The DSL exposes 99 command factories backed by 476
   type-specialized dispatch signatures. Formulas (functions, conics, lines,
   implicit curves) follow sliders, measures, point coordinates and other
   functions; anything that cannot be followed is reported in

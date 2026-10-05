@@ -520,7 +520,7 @@ Dilate, Mirror, Reflect, Rotate, Translate
 Арифметические фабрики команд рантайма:
 
 ```text
-Abs, Add, Assign, Cos, CpxTo, Ctan, Div, Mult, Pow, Sin, Sqrt, Sub, Tan, USub
+Abs, Add, Assign, Cos, Ctan, Div, Mult, Pow, Sin, Sqrt, Sub, Tan, USub
 ```
 
 Для генерируемого кода построения предпочитайте обычные операторы Python и

@@ -569,10 +569,10 @@ def equality_pp(p1, p2):
 
 def equality_Pm(polygon, m):
     if m.dimension != 2: return None
-    return Boolean(np.isclose(area_P(polygon).x, m.value))
+    return Boolean(np.isclose(area_P(polygon).value, m.value))
 
 def equality_PP(poly1, poly2):
-    return Boolean(np.isclose(area_P(poly1).x, area_P(poly2).x))
+    return Boolean(np.isclose(area_P(poly1).value, area_P(poly2).value))
 
 def equality_sm(s, m):
     return equality_ms(m,s)
@@ -3704,6 +3704,12 @@ def _build_command_registry():
 
     for name, obj in list(globals().items()):
         if not callable(obj) or name.startswith('_'):
+            continue
+        # Only functions defined here are commands: the helpers this module
+        # star-imports from ``lib_elements`` (``cpx_to_a`` — a complex number
+        # to an array) matched the naming convention and became the DSL
+        # factory ``CpxTo`` of one angle (kernel spec §15, removed in 1.11.0rc1).
+        if getattr(obj, '__module__', None) != __name__:
             continue
         # Special no-suffix case for polygon(p, p, p, ...).
         if name == 'polygon' or name in _VARIADIC_DISPATCH:

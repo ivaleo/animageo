@@ -17,8 +17,8 @@ Open, forward-looking work. Shipped work lives in the
 
 ## GeoGebra coverage
 
-Most everyday commands are implemented (477 dispatch signatures exposed
-through 100 auto-discovered DSL factories). Known gaps:
+Most everyday commands are implemented (476 dispatch signatures exposed
+through 99 auto-discovered DSL factories). Known gaps:
 
 - Exact/symbolic `Locus` and `LocusEquation` (current `Locus` is a sampled
   polyline).

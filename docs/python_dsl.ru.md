@@ -112,7 +112,7 @@ A = Point(sqrt(2), pi/2)
 
 | Конструкторы | Команды |
 |---|---|
-| `Point`, `Line`, `Segment`, `Ray`, `Circle`, `Arc`, `CircleSector`, `Angle`, `Polygon`, `Vector`, `Conic`, `Function`, `ImplicitCurve` | `Midpoint`, `Distance`, `Length`, `Radius`, `Center`, `Vertex`, `Focus`, `Intersect`, `AreCollinear`, `PerpendicularLine`, `Tangent`, `Polar`, `Rotate`, `Dilate`, … (всего 100 фабрик команд, которые диспетчеризуются в 477 сигнатур для конкретных сочетаний типов аргументов в `COMMAND_REGISTRY`) |
+| `Point`, `Line`, `Segment`, `Ray`, `Circle`, `Arc`, `CircleSector`, `Angle`, `Polygon`, `Vector`, `Conic`, `Function`, `ImplicitCurve` | `Midpoint`, `Distance`, `Length`, `Radius`, `Center`, `Vertex`, `Focus`, `Intersect`, `AreCollinear`, `PerpendicularLine`, `Tangent`, `Polar`, `Rotate`, `Dilate`, … (всего 99 фабрик команд, которые диспетчеризуются в 476 сигнатур для конкретных сочетаний типов аргументов в `COMMAND_REGISTRY`) |
 
 Неизвестное имя вызывает `NameError`: ошибка всегда явная и никогда не
 превращается в незаметную пустую операцию.

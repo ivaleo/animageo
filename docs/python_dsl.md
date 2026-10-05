@@ -109,7 +109,7 @@ Key factories:
 
 | Constructors | Commands |
 |---|---|
-| `Point`, `Line`, `Segment`, `Ray`, `Circle`, `Arc`, `CircleSector`, `Angle`, `Polygon`, `Vector`, `Conic`, `Function`, `ImplicitCurve` | `Midpoint`, `Distance`, `Length`, `Radius`, `Center`, `Vertex`, `Focus`, `Intersect`, `AreCollinear`, `PerpendicularLine`, `Tangent`, `Polar`, `Rotate`, `Dilate`, … (100 command factories in total, dispatching to 477 type-specialized signatures in `COMMAND_REGISTRY` — one per argument-type combination) |
+| `Point`, `Line`, `Segment`, `Ray`, `Circle`, `Arc`, `CircleSector`, `Angle`, `Polygon`, `Vector`, `Conic`, `Function`, `ImplicitCurve` | `Midpoint`, `Distance`, `Length`, `Radius`, `Center`, `Vertex`, `Focus`, `Intersect`, `AreCollinear`, `PerpendicularLine`, `Tangent`, `Polar`, `Rotate`, `Dilate`, … (99 command factories in total, dispatching to 476 type-specialized signatures in `COMMAND_REGISTRY` — one per argument-type combination) |
 
 An unknown name raises a `NameError` — a clean failure, never a
 silent no-op.

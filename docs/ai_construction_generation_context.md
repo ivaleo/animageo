@@ -492,7 +492,7 @@ Dilate, Mirror, Reflect, Rotate, Translate
 Arithmetic/runtime command factories:
 
 ```text
-Abs, Add, Assign, Cos, CpxTo, Ctan, Div, Mult, Pow, Sin, Sqrt, Sub, Tan, USub
+Abs, Add, Assign, Cos, Ctan, Div, Mult, Pow, Sin, Sqrt, Sub, Tan, USub
 ```
 
 For generated construction code, prefer ordinary Python operators and math

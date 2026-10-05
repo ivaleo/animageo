@@ -562,7 +562,7 @@ viewport), O(grid_n²) work.
 
 Full guide: [docs/python_dsl.md](python_dsl.md). Below is a short summary.
 
-Exec-based engine. Any valid Python code works — loops, conditionals, functions, comprehensions, kwargs, tuple unpacking are all supported. The current namespace exposes 100 auto-discovered command factories backed by 477 dispatch signatures from `lib_commands.py`.
+Exec-based engine. Any valid Python code works — loops, conditionals, functions, comprehensions, kwargs, tuple unpacking are all supported. The current namespace exposes 99 auto-discovered command factories backed by 476 dispatch signatures from `lib_commands.py`.
 
 ```python
 # Points and basic constructions

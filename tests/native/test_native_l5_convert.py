@@ -497,7 +497,8 @@ def test_arithmetic_of_numbers_is_a_number_expression():
     assert {k for k, r in rows.items() if r.get('op') == 'number.expression'} == FORMULA_ROWS
     assert all('formula' in rows[k] for k in FORMULA_ROWS)
     left = {k for k, r in rows.items() if r.get('unmapped') == 'formula_unsupported'}
-    assert len(left) == 70 - len(FORMULA_ROWS)
+    # 70 arithmetic keys in 1.10.0a2; ``cpx_to_a`` is no command since 1.11.0rc1
+    assert len(left) == 69 - len(FORMULA_ROWS)
     assert all(set(k.rpartition('_')[2]) & set('psvAa') for k in left), left
 
 
