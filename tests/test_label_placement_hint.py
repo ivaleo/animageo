@@ -192,6 +192,27 @@ class TestVertexHint:
         assert off[1] < 0
 
 
+# ── a segment: the hint chooses the side of the segment ───────────────
+
+class TestSegmentHint:
+    SEGMENT = "A = Point(-3, 0)\nB = Point(3, 0)\ns = Segment(A, B)\n"
+
+    @CONFIGS
+    @pytest.mark.parametrize('hint, sign', [
+        ([0.0, 14.0], 1), ([0.0, -14.0], -1),
+        ([-20.0, 4.0], 1), ([20.0, -4.0], -1),      # mostly along the segment
+    ])
+    def test_hint_sets_the_side_of_the_segment(self, cfg, hint, sign):
+        sc = _scene(self.SEGMENT, 'ABs')
+        sc.element('s').style['label_hint_px'] = hint
+        off = _offset(sc, cfg, 's')
+        assert off[1] * sign > 0
+        lbl = next(item for item in _collect_labels(sc, 30) if item.name == 's')
+        assert _segment_bbox_overlap(np.array([-3.0, 0.0]), np.array([3.0, 0.0]),
+                                     off[0] / 50.0, off[1] / 50.0,
+                                     lbl.half_w, lbl.half_h) == 0
+
+
 # ── the sectors a hinted label may take ───────────────────────────────
 
 class TestSectorsForHint:
