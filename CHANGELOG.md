@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.1a3] - 2026-10-05
+
+### Added
+
+- «Команды», the text form of a construction document
+  (`animageo.native.commands`, `docs/native/commands.md`):
+  - `native.parse_commands(text, *, lexicon, base, id_factory, document_id)`
+    builds a document from lines such as `M = Середина(A, B)`,
+    `A = (0, 0)`, `r = 3`, `α = ∠ABC` or `X = Пересечение(c, d, не A)`;
+  - a pair of points `BC` in an argument becomes a hidden segment or line
+    (and `∠ABC` a hidden angle) that is printed back as `BC`;
+  - outputs without a name on the left get the default names of the web
+    canon, with school names for the sides of a triangle;
+  - a line with an error is skipped, with an issue that carries a code, the
+    line, the column in the text as typed, a Russian message and a hint; the
+    document is built from the other lines;
+  - the notation outside the subset (conditions, equations, functions,
+    expressions, `key = value`, `около A`) is refused as «будет позже».
+- `native.print_commands(doc)` prints a document as «Команды». The lines
+  follow the topological order with ties by operation ID; free points and
+  numbers have short forms; each call uses the first lexicon entry that
+  reads back as the operation. `parse_commands(print_commands(doc).text)`
+  rebuilds every parity scene.
+- Edit mode: `parse_commands(text, base=doc)` changes a document to match
+  the text and keeps IDs.
+  - A changed coordinate or number becomes a new input value.
+  - A changed definition goes through `redefine`; a refusal is an error of
+    the line.
+  - A removed line deletes its operation and what is built on it.
+  - A line typed back unchanged keeps its operation exactly.
+  - `effects` lists what changed.
+- The lexicon `animageo-lexicon/v1` maps command names and aliases to
+  operations, with the order of the arguments and how many are required.
+  - Overloads are told apart by the number and the kinds of the arguments.
+  - `lexicon_problems` reports ambiguous and unreachable overloads.
+  - A copy of the lexicon for the operations of registry 1.3 ships with the
+    library.
+- Fixtures `animageo-commands/v1` (184 cases: parsing, pairs, overloads,
+  names, numbers, every error code with its column, edit mode with
+  effects) and `animageo-naming/v1` (default names), generated from
+  templates for any lexicon:
+  `python -m animageo.native commands fixtures --lexicon <file> -o <dir>`
+  writes or `--check`s them, and `commands parse` and `commands print`
+  help debugging.
+- Default IDs of new operations and elements are time-ordered (the UUID
+  version 7 layout), so independent lines print in the order they were
+  typed.
+
 ## [1.8.1a2] - 2026-10-04
 
 ### Added
@@ -1921,7 +1969,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.1a2...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.1a3...HEAD
+[1.8.1a3]: https://github.com/ivaleo/animageo/compare/v1.8.1a2...v1.8.1a3
 [1.8.1a2]: https://github.com/ivaleo/animageo/compare/v1.8.1a1...v1.8.1a2
 [1.8.1a1]: https://github.com/ivaleo/animageo/compare/v1.8.0a2...v1.8.1a1
 [1.8.0a2]: https://github.com/ivaleo/animageo/compare/v1.8.0a1...v1.8.0a2

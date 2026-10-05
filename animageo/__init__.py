@@ -1,4 +1,4 @@
-__version__ = "1.8.1a2"
+__version__ = "1.8.1a3"
 
 import importlib.util
 import os
