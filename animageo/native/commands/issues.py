@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-__all__ = ['CommandIssue', 'LineError', 'ERROR_CODES', 'WARNING_CODES']
+__all__ = ['CommandIssue', 'LineError', 'ERROR_CODES', 'WARNING_CODES', 'ambiguous_name']
 
 # A line with an error is not applied; a warning does not stop anything.
 ERROR_CODES = (
@@ -19,6 +19,7 @@ ERROR_CODES = (
 )
 WARNING_CODES = (
     'comment_dropped',
+    'ambiguous_name',
     'unprintable_pair',
     'unprintable_params',
     'unprintable_operation',
@@ -63,3 +64,13 @@ class LineError(Exception):
 
     def issue(self, line: int) -> CommandIssue:
         return CommandIssue(self.code, line, self.column, self.message, 'error', self.hint)
+
+
+def ambiguous_name(name: str, readings, line: int, column: int) -> CommandIssue:
+    """The warning ``ambiguous_name`` (commands.md §3): the name of an
+    element also reads as two point names; ``readings`` — from
+    :func:`animageo.native.commands.naming.pair_readings`."""
+    head, tail = readings[0]
+    return CommandIssue('ambiguous_name', line, column,
+                        f'{name} читается и как пара точек {head}, {tail}; '
+                        f'в аргументах {name} означает этот объект, а не пару', 'warning')

@@ -22,6 +22,7 @@ import re
 from pathlib import Path
 
 from ..canonical import canonical_json
+from ..edit import name_key
 from ..registry import REGISTRY_VERSION
 from .build import is_helper, parse_commands
 from .lexicon import Lexicon, lexicon_hash
@@ -185,6 +186,9 @@ _SYNTAX = [
         ('pair_reuses_visible', P4 + 's = {segment.by_points}(A, B)\n{mark.equal_segments}(AB, CD)', None),
         ('pair_reuses_hidden', P4 + 'X = {intersect.line_line}(AB, CD)\nY = {intersect.line_line}(AB, CD)', None),
         ('pair_element_wins', P3 + 'AB = (2, 2)\nM = {point.midpoint}(AB, C)', None),
+        ('element_name_reads_as_pair', P3 + 'c = {circle.center_point}(A, C)\nd = {circle.center_point}(B, C)\n'
+                                       'X, BC = {intersect.circle_circle}(c, d)\nM = {point.midpoint}(BC, A)\n'
+                                       'A_1 = (5, 5)\nBA_{1} = {segment.by_points}(A, C)', None),
         ('pair_indexed_points', 'A_1 = (0, 0)\nB = (3, 0)\nC = (0, 2)\nH = {point.projection}(C, A_1B)', None),
         ('pair_primes', "A' = (0, 1)\nB' = (3, 1)\nC = (0, 2)\nH = {point.projection}(C, A'B')", None),
         ('pair_order_kept', P4 + '{mark.equal_segments}(BA, DC)', None),
@@ -333,6 +337,8 @@ _NAMING_CASES = [
     ('mark', 'mark', []),
 ]
 
+_KEY_NAMES = ['A', 'A_1', 'A_{1}', 'A_{12}', "A_{1}'", 'A1', 'A₁', 'α_{2}', 'T_{ab}', 'Пи_{1}', "B''"]
+
 _SIDE_CASES = [
     ('triangle_school', ['A', 'B', 'C'], []),
     ('triangle_rotated', ['B', 'C', 'A'], []),
@@ -431,6 +437,7 @@ def _naming_fixture() -> dict:
                   for n, t, taken in _NAMING_CASES],
         'sides': [{'name': n, 'vertices': v, 'taken': taken, 'expect': polygon_side_names(v, taken)}
                   for n, v, taken in _SIDE_CASES],
+        'keys': [{'name': n, 'key': name_key(n)} for n in _KEY_NAMES],
     }
 
 

@@ -27,6 +27,7 @@ __all__ = [
     'next_name',
     'kind_of_type',
     'polygon_side_names',
+    'pair_readings',
     'suggest_name',
 ]
 
@@ -110,6 +111,18 @@ def polygon_side_names(vertex_names, taken) -> list:
         name = _first_free(LOWER, keys)
         keys.add(name)
         out.append(name)
+    return out
+
+
+def pair_readings(name: str, point_keys) -> list:
+    """The ways ``name`` reads as two point names: ``[(head, tail)]`` for
+    every split whose parts have their :func:`name_key` in ``point_keys``
+    (``BC`` with points ``B``, ``C`` → ``[("B", "C")]``)."""
+    out = []
+    for k in range(1, len(name)):
+        head, tail = name[:k], name[k:]
+        if name_key(head) in point_keys and name_key(tail) in point_keys:
+            out.append((head, tail))
     return out
 
 

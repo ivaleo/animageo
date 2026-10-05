@@ -33,6 +33,7 @@ from animageo.native.commands.fixtures import (
     render_template,
 )
 from animageo.native.commands.lexer import tokenize
+from animageo.native.edit import valid_name
 from animageo.native.registry import registry
 from tests.native.conftest import SCENES_DIR, read_json
 
@@ -423,8 +424,25 @@ class TestPairs:
 
     def test_element_name_wins(self):
         result = parse(P3 + 'AB = (2, 2)\nM = Середина(AB, C)')
-        assert result.issues == []
+        [issue] = result.issues
+        assert (issue.code, issue.line, issue.column, issue.severity) == ('ambiguous_name', 4, 1, 'warning')
         assert producer(result, 'M')['args']['a']['elementId'] == by_name(result, 'AB')['id']
+
+    def test_ambiguous_name_in_parser_and_printer(self):
+        text = (P3 + 'c = Окружность(A, C)\nd = Окружность(B, C)\nX, BC = Пересечение(c, d)\n'
+                'A_1 = (5, 5)\nBA_{1} = Отрезок(A, C)\nK = (1, 1)')
+        result = parse(text)
+        got = [(i.code, i.line, i.column, i.severity) for i in result.issues]
+        assert got == [('ambiguous_name', 6, 4, 'warning'), ('ambiguous_name', 8, 1, 'warning')]
+        assert 'пара точек B, A_{1}' in result.issues[1].message
+        printed = print_commands(result.document)
+        assert [(i.code, i.line, i.column) for i in printed.issues] == [(c, l, k) for c, l, k, _ in got]
+        # the points may come later: the whole document counts
+        late = parse('BC = (1, 1)\nB = (0, 0)\nC = (2, 0)')
+        assert [(i.code, i.line) for i in late.issues] == [('ambiguous_name', 1)]
+        # a line with an error is not flagged; nor a name of no two points
+        assert [i.code for i in parse(P3 + 'AB = Середина(A, X)').issues] == ['unknown_name']
+        assert parse(P3 + 'AD = (1, 1)').issues == []
 
     def test_split_with_indices(self):
         result = parse('A_1 = (0, 0)\nB = (3, 0)\nC = (0, 2)\nH = Проекция(C, A_1B)')
@@ -432,7 +450,9 @@ class TestPairs:
 
     def test_ambiguous(self):
         result = parse('A = (0, 0)\nAB = (1, 1)\nB = (2, 0)\nBC = (3, 3)\nC = (4, 4)\nH = Проекция(C, ABC)')
-        [issue] = result.issues
+        assert [(i.code, i.line) for i in result.issues if i.severity == 'warning'] == [
+            ('ambiguous_name', 2), ('ambiguous_name', 4)]
+        [issue] = [i for i in result.issues if i.severity == 'error']
         assert (issue.code, issue.column) == ('ambiguous_pair', 17)
         assert issue.hint == 'A, BC или AB, C'
 
@@ -539,22 +559,30 @@ class TestPrint:
         doc = read_json(path)['document']
         printed = print_commands(doc)
         result = parse_commands(printed.text, document_id='doc')
-        assert result.issues == []
+        # the only issues are ambiguous_name, at the same places as the printer's
+        ambiguous = [(i.code, i.line, i.column) for i in printed.issues if i.code == 'ambiguous_name']
+        assert [(i.code, i.line, i.column) for i in result.issues] == ambiguous
+        others = [i.code for i in printed.issues if i.code != 'ambiguous_name']
         problems = structure_problems(doc, result.document.data)
+        if path.stem in ('intersect_lines', 'intersect_segments'):
+            # lines AB and CD of points A, B, C, D
+            assert [(c, l) for c, l, _ in ambiguous] == [('ambiguous_name', 3), ('ambiguous_name', 6)]
+        else:
+            assert ambiguous == []
         if path.stem == 'number_free':
             # n4 has step but no min/max: positional arguments cannot say it
-            assert [i.code for i in printed.issues] == ['unprintable_params']
+            assert others == ['unprintable_params']
             assert sorted(problems) == sorted(["missing number.free {\"step\":0} {'number': 'n4'}",
                                                "extra ('number.free', '{}', {'number': 'n4'}, False)"])
         else:
-            assert printed.issues == []
+            assert others == []
             assert problems == []
 
     @pytest.mark.parametrize('path', SCENES, ids=lambda p: p.stem)
     def test_printed_text_edits_nothing(self, path):
         doc = read_json(path)['document']
         result = parse_commands(print_commands(doc).text, base=doc)
-        assert result.issues == []
+        assert {i.code for i in result.issues} <= {'ambiguous_name'}
         assert changed(result.effects) == {}
         assert native.canonical_json(result.document.data) == native.canonical_json(doc)
 
@@ -576,7 +604,8 @@ class TestPrint:
         data['inputs']['e0'] = {'kind': 'point', 'value': [5, 5]}
         printed = print_commands(data)
         assert printed.text.splitlines()[0] == 'AB = (5, 5)'
-        [issue] = printed.issues
+        assert [i.code for i in printed.issues] == ['ambiguous_name', 'unprintable_pair']
+        issue = printed.issues[1]
         assert (issue.code, issue.severity) == ('unprintable_pair', 'warning')
         assert printed.text.splitlines()[issue.line - 1][issue.column - 1:].startswith('AB')
 
@@ -748,6 +777,9 @@ class TestFixtures:
         issues = [i for c in cases for i in c['expect']['issues']]
         assert len([i for i in issues if i['severity'] == 'error']) >= 20
         assert set(ERROR_CODES) <= {i['code'] for i in issues}
+        warnings = {i['code'] for i in issues if i['severity'] == 'warning'}
+        printed = {i['code'] for c in cases for i in c['expect'].get('printIssues', ())}
+        assert {'comment_dropped', 'ambiguous_name'} <= warnings and 'ambiguous_name' in printed
         assert len([c for c in cases if c['base'] is not None]) >= 10
 
     def test_cases_replay(self):
@@ -771,6 +803,9 @@ class TestFixtures:
             assert next_name(case['type'], case['taken']) == case['expect']
         for case in table['sides']:
             assert polygon_side_names(case['vertices'], case['taken']) == case['expect']
+        keys = {case['name']: case['key'] for case in table['keys']}
+        assert keys['A_{1}'] == keys['A_1'] == 'A_1' and keys['A₁'] == 'A₁' and keys['A1'] == 'A1'
+        assert all(valid_name(name) for name in keys)
 
     def test_other_lexicon(self, tmp_path):
         data = default_lexicon()

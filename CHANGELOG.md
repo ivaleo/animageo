@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- «Команды»: the warning `ambiguous_name`. When the name of an element also
+  reads as two names of points of the document (an element `BC` next to
+  points `B` and `C`), the name still means the element; `parse_commands`
+  and `print_commands` both flag it, once, at the name on the left of the
+  line that defines it, at the same line and column.
+- `naming.json` has a `keys` section: raw names with their `name_key`.
+
+### Changed
+
+- `docs/native/commands.md` states that clients must give time-ordered IDs:
+  the printer orders independent lines by operation ID.
+
 ## [1.8.1a3] - 2026-10-05
 
 ### Added

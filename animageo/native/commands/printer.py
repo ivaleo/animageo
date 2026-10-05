@@ -18,9 +18,9 @@ from ..edit import name_key
 from ..kernel.evaluate import _order
 from ..registry import registry
 from .build import HELPER_OPS, helper_key, is_helper, pair_op
-from .issues import CommandIssue, LineError
+from .issues import CommandIssue, LineError, ambiguous_name
 from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, Lexicon
-from .naming import TakenKeys, next_name, polygon_side_names
+from .naming import TakenKeys, next_name, pair_readings, polygon_side_names
 from .numbers import format_number
 from .resolve import resolve
 
@@ -30,8 +30,8 @@ __all__ = ['PrintResult', 'print_commands']
 class PrintResult(NamedTuple):
     """``text`` — the lines joined with ``\\n`` (no trailing newline);
     ``lines`` — ``[{line, operationIds, elementIds}]``; ``issues`` —
-    warnings (:class:`CommandIssue`): ``unprintable_pair``,
-    ``unprintable_params``, ``unprintable_operation``."""
+    warnings (:class:`CommandIssue`): ``ambiguous_name``,
+    ``unprintable_pair``, ``unprintable_params``, ``unprintable_operation``."""
 
     text: str
     lines: list
@@ -64,6 +64,7 @@ class _Printer:
             if key is not None:
                 self.made.setdefault(key, []).append(op_id)
         self.issues = []
+        self.left_at = []               # (line, left names) of the printed lines
 
     # ── names ────────────────────────────────────────────────────────────
 
@@ -251,7 +252,24 @@ class _Printer:
                     self.scope_ids.add(el)
                     if self.elements[el].get('type') == 'point':
                         self.scope_points.add(name_key(name))
+        self._ambiguous_names()
         return PrintResult('\n'.join(lines), out, self.issues)
+
+    def _ambiguous_names(self) -> None:
+        """``ambiguous_name`` at a left name that also reads as two point
+        names of the document (commands.md §3); first on its line."""
+        point_keys = {name_key(name) for el, name in self.names.items()
+                      if (self.elements.get(el) or {}).get('type') == 'point'}
+        found = []
+        for line_no, left in self.left_at:
+            column = 1
+            for name in left:
+                readings = pair_readings(name, point_keys)
+                if readings:
+                    found.append(ambiguous_name(name, readings, line_no, column))
+                column += len(name) + 2
+        if found:
+            self.issues = sorted(self.issues + found, key=lambda i: (i.line, i.code != 'ambiguous_name'))
 
     def _warn(self, code: str, line: int, column: int, message: str):
         self.issues.append(CommandIssue(code, line, column, message, 'warning'))
@@ -275,10 +293,12 @@ class _Printer:
                 self.names.setdefault(el, self.names.get(el) or el)
             left = [self.names[el] for el in outputs]
             prefix = f"{', '.join(left)} = " if left else ''
+            self.left_at.append((line_no, left))
             self._warn('unprintable_operation', line_no, len(prefix) + 1,
                        f'операции {op.get("op")} нет в реестре')
             return f"{prefix}{op.get('op')}({', '.join(parts)})", info
         left = self._left(op_id, record)
+        self.left_at.append((line_no, left))
         prefix = f"{', '.join(left)} = " if left else ''
         column = len(prefix) + 1
         if op['op'] == 'point.free':

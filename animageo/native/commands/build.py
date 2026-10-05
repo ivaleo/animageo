@@ -23,10 +23,10 @@ from ..canonical import canonical_json
 from ..document import DOCUMENT_FORMAT, ID_RE, NativeDocument, as_document, iter_refs
 from ..edit import EditError, _effects, _finish, delete, name_key, redefine, valid_name
 from ..registry import REGISTRY_VERSION, registry
-from .issues import CommandIssue, LineError
+from .issues import CommandIssue, LineError, ambiguous_name
 from .lexer import tokenize
 from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, Lexicon
-from .naming import TakenKeys, next_name, polygon_side_names, suggest_name
+from .naming import TakenKeys, next_name, pair_readings, polygon_side_names, suggest_name
 from .resolve import closest_name, kind_text, resolve
 from .syntax import parse_line
 
@@ -844,8 +844,32 @@ class _Builder:
                 self.issues.append(exc.issue(no))
                 self._keep(no, op_id)
         self._finish()
-        return ParseResult(NativeDocument(self.W), self._diff(), self._final_lines(),
+        lines = self._final_lines()
+        self._ambiguous_names(statements, lines)
+        return ParseResult(NativeDocument(self.W), self._diff(), lines,
                            sorted(self.issues, key=lambda i: (i.line, i.column)))
+
+    def _ambiguous_names(self, statements, lines) -> None:
+        """``ambiguous_name`` (a warning, commands.md §3) at a left name of a
+        line without errors whose element also reads as two point names of
+        the resulting document."""
+        elements = self.W['elements']
+        point_keys = {name_key(el['displayName']) for el in elements.values()
+                      if isinstance(el, dict) and el.get('type') == 'point' and el.get('displayName')}
+        if not point_keys:
+            return
+        failed = {i.line for i in self.issues if i.severity == 'error'}
+        named = {e['line']: {name_key(elements[x].get('displayName') or '') for x in e['elementIds']}
+                 for e in lines}
+        for no, st, _names in statements:
+            if st is None or no in failed:
+                continue
+            keys = named.get(no, ())
+            for nm in st.names:
+                if name_key(nm.text) in keys:
+                    readings = pair_readings(nm.text, point_keys)
+                    if readings:
+                        self.issues.append(ambiguous_name(nm.text, readings, no, nm.column))
 
     def _printed_base(self) -> dict:
         """``{operationId: token signature}`` of the lines the printer gives
