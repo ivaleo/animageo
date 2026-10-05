@@ -1,0 +1,1009 @@
+{
+ "about": "Public API of animageo: animageo.native.__all__ (+ the names outside __all__ the web imports) and the own names of the top level. Changed only together with CHANGELOG; rewritten by `python tests/test_public_api.py --write`.",
+ "since": "1.11.0rc1",
+ "native": {
+  "all": [
+   "AutoMarks",
+   "CheckReport",
+   "ConditionResult",
+   "ConvertError",
+   "DOCUMENT_FORMAT",
+   "EVALUATED_FORMAT",
+   "EditError",
+   "EditResult",
+   "Evaluated",
+   "FEATURES",
+   "ImportRefused",
+   "Issue",
+   "LoadError",
+   "NativeDocument",
+   "Refusal",
+   "Registry",
+   "RenderResult",
+   "Step",
+   "StepError",
+   "StepsTimeline",
+   "__registry_version__",
+   "add_auto_marks",
+   "apply_condition",
+   "assign_seq",
+   "auto_marks",
+   "auto_sources",
+   "canonical_json",
+   "check",
+   "check_general",
+   "closure",
+   "condition_candidates",
+   "content_hash",
+   "delete",
+   "dependencies",
+   "describe",
+   "dump",
+   "dumps",
+   "evaluate",
+   "free_inputs",
+   "from_construction",
+   "from_ggb",
+   "has",
+   "layout_labels",
+   "load",
+   "measure_statement",
+   "parse_commands",
+   "print_commands",
+   "project",
+   "redefine",
+   "registry",
+   "relation",
+   "release_condition",
+   "rename",
+   "render",
+   "run_checks",
+   "sample_timeline",
+   "shape_conditions",
+   "signature_hash",
+   "source_view",
+   "statement_checks",
+   "statement_problems",
+   "steps",
+   "steps_merge",
+   "steps_split",
+   "steps_timeline",
+   "timeline_to_bridge",
+   "validate"
+  ],
+  "names": {
+   "AutoMarks": {
+    "kind": "class",
+    "signature": "(document, operations, elements, warnings)",
+    "members": {
+     "document": "attribute",
+     "elements": "attribute",
+     "operations": "attribute",
+     "warnings": "attribute"
+    }
+   },
+   "CheckReport": {
+    "kind": "class",
+    "signature": "(results=<factory>, errors=<factory>, details=<factory>)",
+    "members": {
+     "ok": "property",
+     "to_dict": "(self)"
+    }
+   },
+   "ConditionResult": {
+    "kind": "class",
+    "signature": "(document, effects, condition, refusal)",
+    "members": {
+     "condition": "attribute",
+     "document": "attribute",
+     "effects": "attribute",
+     "refusal": "attribute"
+    }
+   },
+   "ConvertError": {
+    "kind": "exception",
+    "signature": "(items)"
+   },
+   "DOCUMENT_FORMAT": {
+    "kind": "constant",
+    "type": "str",
+    "value": "animageo-construction/v1"
+   },
+   "EVALUATED_FORMAT": {
+    "kind": "constant",
+    "type": "str",
+    "value": "animageo-evaluated/v1"
+   },
+   "EditError": {
+    "kind": "exception",
+    "signature": "(issues)"
+   },
+   "EditResult": {
+    "kind": "class",
+    "signature": "(document, effects)",
+    "members": {
+     "document": "attribute",
+     "effects": "attribute"
+    }
+   },
+   "Evaluated": {
+    "kind": "class",
+    "signature": "(document_id, scale, elements, diagnostics, tolerances, library='', registry='1.5', computed=<factory>, t=None, visible=None)",
+    "members": {
+     "library": "attribute",
+     "registry": "attribute",
+     "t": "attribute",
+     "to_dict": "(self)",
+     "visible": "attribute"
+    }
+   },
+   "FEATURES": {
+    "kind": "constant",
+    "type": "tuple",
+    "value": [
+     "triangle",
+     "locus",
+     "steps",
+     "describe",
+     "render.eps",
+     "render.tikz",
+     "roles",
+     "check.general",
+     "conditions",
+     "apply_condition",
+     "auto_marks",
+     "describe.values",
+     "commands.conditions",
+     "commands.steps",
+     "timeline",
+     "steps_timeline",
+     "render.t",
+     "render.video",
+     "render.frame",
+     "from_ggb",
+     "from_construction",
+     "import_report.v1",
+     "appearance.hatch",
+     "render.tikz_frame",
+     "delete.cleanup",
+     "from_ggb.empty_document",
+     "convert.formula",
+     "import_report.text_template",
+     "import_report.text_literals",
+     "convert.command_synonyms",
+     "convert.ggb_expressions"
+    ]
+   },
+   "ImportRefused": {
+    "kind": "exception",
+    "signature": "(code, detail='')"
+   },
+   "Issue": {
+    "kind": "class",
+    "signature": "(code, path, message, elementId=None, operationId=None, severity='error')",
+    "members": {
+     "elementId": "attribute",
+     "operationId": "attribute",
+     "severity": "attribute",
+     "to_dict": "(self)"
+    }
+   },
+   "LoadError": {
+    "kind": "exception",
+    "signature": "(issues)"
+   },
+   "NativeDocument": {
+    "kind": "class",
+    "signature": "(data, schema_issues=())",
+    "members": {
+     "bounds": "property",
+     "data": "property",
+     "document_id": "property",
+     "elements": "property",
+     "inputs": "property",
+     "operations": "property",
+     "registry_version": "property",
+     "schema_issues": "attribute"
+    }
+   },
+   "Refusal": {
+    "kind": "class",
+    "signature": "(code, message, options)",
+    "members": {
+     "code": "attribute",
+     "message": "attribute",
+     "options": "attribute"
+    }
+   },
+   "Registry": {
+    "kind": "class",
+    "signature": "(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>)",
+    "members": {
+     "accepts": "(self, slot_type, element_type)",
+     "get": "(self, op)",
+     "output_slots": "(self, record, args, graph=None, _seen=<frozenset>)",
+     "output_type": "(self, record, slot, args=None, graph=None)",
+     "vertex_count": "(self, graph, element_id, _seen=<frozenset>)"
+    }
+   },
+   "RenderResult": {
+    "kind": "class",
+    "signature": "(path, fmt, report)"
+   },
+   "Step": {
+    "kind": "class",
+    "signature": "(id, kind, title=None, text=None, operationIds=<factory>, elementIds=<factory>, auxElementIds=<factory>, conditionIds=<factory>)",
+    "members": {
+     "text": "attribute",
+     "title": "attribute",
+     "to_dict": "(self)"
+    }
+   },
+   "StepError": {
+    "kind": "exception",
+    "signature": "(issues)"
+   },
+   "StepsTimeline": {
+    "kind": "class",
+    "signature": "(keyframes, steps=<factory>, duration=0.0)",
+    "members": {
+     "duration": "attribute",
+     "to_dict": "(self)"
+    }
+   },
+   "__registry_version__": {
+    "kind": "constant",
+    "type": "str",
+    "value": "1.5"
+   },
+   "add_auto_marks": {
+    "kind": "function",
+    "signature": "(doc, sources, *, ev=None, id_factory=None)"
+   },
+   "apply_condition": {
+    "kind": "function",
+    "signature": "(doc, condition, *, receiver=None, id_factory=None, ev=None, marks=True)"
+   },
+   "assign_seq": {
+    "kind": "function",
+    "signature": "(doc, op_ids)"
+   },
+   "auto_marks": {
+    "kind": "function",
+    "signature": "(doc, sources, *, ev=None, id_factory=None)"
+   },
+   "auto_sources": {
+    "kind": "function",
+    "signature": "(doc)"
+   },
+   "canonical_json": {
+    "kind": "function",
+    "signature": "(value)"
+   },
+   "check": {
+    "kind": "function",
+    "signature": "(doc, checks=None, *, inputs=None, relations=None, trials=0, seed=None)"
+   },
+   "check_general": {
+    "kind": "function",
+    "signature": "(doc, targets=None, *, seed=None, trials=50, inputs=None)"
+   },
+   "closure": {
+    "kind": "function",
+    "signature": "(doc, ids, *, direction='down')"
+   },
+   "condition_candidates": {
+    "kind": "function",
+    "signature": "(doc, statement)"
+   },
+   "content_hash": {
+    "kind": "function",
+    "signature": "(doc)"
+   },
+   "delete": {
+    "kind": "function",
+    "signature": "(doc, ids, *, mode='element')"
+   },
+   "dependencies": {
+    "kind": "function",
+    "signature": "(doc, element_id)"
+   },
+   "describe": {
+    "kind": "function",
+    "signature": "(doc, *, values=False, phrases=None, ev=None, precision=2)"
+   },
+   "dump": {
+    "kind": "function",
+    "signature": "(doc)"
+   },
+   "dumps": {
+    "kind": "function",
+    "signature": "(doc)"
+   },
+   "evaluate": {
+    "kind": "function",
+    "signature": "(doc, *, inputs=None, t=None, timeline=None)"
+   },
+   "free_inputs": {
+    "kind": "function",
+    "signature": "(doc, ids)"
+   },
+   "from_construction": {
+    "kind": "function",
+    "signature": "(constr, *, mode='strict', id_namespace, key_of=None, origin_of=None)"
+   },
+   "from_ggb": {
+    "kind": "function",
+    "signature": "(path_or_bytes, *, id_namespace, mode='partial', limits=None, name=None, empty_document=False)"
+   },
+   "has": {
+    "kind": "function",
+    "signature": "(feature)"
+   },
+   "layout_labels": {
+    "kind": "function",
+    "signature": "(doc, ev=None, *, inputs=None, style_config=None, export_layout=None, backend='metrics', place=None)"
+   },
+   "load": {
+    "kind": "function",
+    "signature": "(source, *, strict=True)"
+   },
+   "measure_statement": {
+    "kind": "function",
+    "signature": "(doc, statement, ev)"
+   },
+   "parse_commands": {
+    "kind": "function",
+    "signature": "(text, *, lexicon=None, base=None, id_factory=None, document_id=None)"
+   },
+   "print_commands": {
+    "kind": "function",
+    "signature": "(doc, *, lexicon=None)"
+   },
+   "project": {
+    "kind": "function",
+    "signature": "(doc, element_id, xy, *, inputs=None)"
+   },
+   "redefine": {
+    "kind": "function",
+    "signature": "(doc, op_id, new_op, *, slot_map=None, inputs=None)"
+   },
+   "registry": {
+    "kind": "function",
+    "signature": "()"
+   },
+   "relation": {
+    "kind": "function",
+    "signature": "(doc, a, b, ev)"
+   },
+   "release_condition": {
+    "kind": "function",
+    "signature": "(doc, condition_id, *, ev=None)"
+   },
+   "rename": {
+    "kind": "function",
+    "signature": "(doc, element_id, display_name)"
+   },
+   "render": {
+    "kind": "function",
+    "signature": "(doc, *, style_config=None, export_layout=None, fmt='svg', out=None, inputs=None, t=None, timeline=None, report=True, video=None)"
+   },
+   "run_checks": {
+    "kind": "function",
+    "signature": "(evaluated, keys=None)"
+   },
+   "sample_timeline": {
+    "kind": "function",
+    "signature": "(doc, timeline, t)"
+   },
+   "shape_conditions": {
+    "kind": "function",
+    "signature": "(doc, polygon_id, shape)"
+   },
+   "signature_hash": {
+    "kind": "function",
+    "signature": "(record)"
+   },
+   "source_view": {
+    "kind": "function",
+    "signature": "(doc)"
+   },
+   "statement_checks": {
+    "kind": "function",
+    "signature": "(doc, statement)"
+   },
+   "statement_problems": {
+    "kind": "function",
+    "signature": "(statement, doc=None, path='')"
+   },
+   "steps": {
+    "kind": "function",
+    "signature": "(doc)"
+   },
+   "steps_merge": {
+    "kind": "function",
+    "signature": "(doc, step_id)"
+   },
+   "steps_split": {
+    "kind": "function",
+    "signature": "(doc, step_id, operation_ids)"
+   },
+   "steps_timeline": {
+    "kind": "function",
+    "signature": "(doc, *, lag=0.3, duration=0.5, pause=0.6, effects=None, start=0.0)"
+   },
+   "timeline_to_bridge": {
+    "kind": "function",
+    "signature": "(doc, timeline)"
+   },
+   "validate": {
+    "kind": "function",
+    "signature": "(doc)"
+   }
+  },
+  "outside_all": {
+   "REGISTRY_VERSION": {
+    "kind": "constant",
+    "type": "str",
+    "value": "1.5"
+   },
+   "as_document": {
+    "kind": "function",
+    "signature": "(source)"
+   },
+   "bound_producer": {
+    "kind": "function",
+    "signature": "(doc, element_id)"
+   }
+  }
+ },
+ "top": {
+  "AnimaGeoScene": {
+   "kind": "class",
+   "signature": "()",
+   "members": {
+    "CreateMObject": "(self, elem, z_auto=False, debug=False)",
+    "Hide": "(self, names, **kwargs)",
+    "HideAll": "(self, **kwargs)",
+    "Restore": "(self, names, **kwargs)",
+    "Shade": "(self, names, **kwargs)",
+    "Show": "(self, names, mode='Fade', **kwargs)",
+    "ShowAll": "(self, **kwargs)",
+    "ShowCreate": "(self, name, **kwargs)",
+    "Update": "(self, names, **kwargs)",
+    "UpdateAll": "(self, **kwargs)",
+    "addAllGeometry": "(self, show=False)",
+    "addCoordinateBackground": "(self)",
+    "addGeoElement": "(self, elem)",
+    "addGrid": "(self, x_range=(-10, 10, 1), y_range=(-10, 10, 1))",
+    "addOrdered": "(self, mobj)",
+    "addUpdater": "(self, tracker)",
+    "addVar": "(self, name, value=0)",
+    "animating": "(self, tracker)",
+    "applyStyle": "(self, style=None, import_policy=None, reference=None, content=None, export=None)",
+    "apply_keyframes_at": "(self, keyframes_data, t)",
+    "autoPlaceLabels": "(self, dynamic=False)",
+    "clearLabelTracker": "(self)",
+    "clearUpdater": "(self, tracker)",
+    "element": "(self, name)",
+    "exportEPS": "(self, filepath, *, dpi=96.0)",
+    "exportJSXGraph": "(self, filepath=None, *, options=None, **kwargs)",
+    "exportPDF": "(self, filepath, *, dpi=96.0)",
+    "exportSVG": "(self, filepath)",
+    "exportStylePromptSummary": "(self, filepath=None, **kwargs)",
+    "exportTikZ": "(self, filepath=None, *, standalone=False, options=None, **kwargs)",
+    "fitView": "(self, width=800, height=600, *, padding=40, style=None, passes=2)",
+    "getAllGeometryBounds": "(self, ptUnit=1)",
+    "get_element_states": "(self)",
+    "get_independent_elements": "(self)",
+    "loadCode": "(self, filepath, debug=False, show=True)",
+    "loadDocument": "(self, doc, style=None, import_policy=None, reference=None, content=None, export=None, *, inputs=None, debug=False)",
+    "loadGGB": "(self, filepath, style=None, import_policy=None, debug=False, generate_stubs=True, strict=False, reference=None, content=None, export=None)",
+    "mobject": "(self, name)",
+    "playHide": "(self, names, **kwargs)",
+    "playRestore": "(self, names, mode='Fade', **kwargs)",
+    "playShade": "(self, names, mode='Fade', **kwargs)",
+    "playShow": "(self, names, mode='Fade', **kwargs)",
+    "playUpdate": "(self, names, **kwargs)",
+    "play_keyframes": "(self, keyframes_data)",
+    "putCode": "(self, code, debug=False, show=True)",
+    "reloadPolicy": "(self, import_policy)",
+    "resetScene": "(self)",
+    "reveal_construction": "(self, lag=0.3, duration=0.5, effect=None, play=True)",
+    "setElementStyle": "(self, names, *, update=True, **props)",
+    "setStyle": "(self, style)",
+    "setVisible": "(self, names, visible, *, update=True)",
+    "updateAllGeometry": "(self)",
+    "updateGeoElements": "(self, updates=None)",
+    "updateVar": "(self, tracker)",
+    "waitCut": "(self, msg=None, **kwargs)"
+   }
+  },
+  "CAIRO_LINE_WIDTH_MULTIPLE": {
+   "kind": "constant",
+   "type": "float",
+   "value": 0.01
+  },
+  "COLOR_SPACES": {
+   "kind": "constant",
+   "type": "tuple",
+   "value": [
+    "oklab",
+    "srgb"
+   ]
+  },
+  "ConicType": {
+   "kind": "class",
+   "signature": "(value, names=None, *, module=None, qualname=None, type=None, start=1, boundary=None)",
+   "members": {
+    "CIRCLE": "attribute",
+    "DOUBLE_LINE": "attribute",
+    "ELLIPSE": "attribute",
+    "EMPTY": "attribute",
+    "HYPERBOLA": "attribute",
+    "INTERSECTING_LINES": "attribute",
+    "PARABOLA": "attribute",
+    "PARALLEL_LINES": "attribute",
+    "POINT": "attribute"
+   }
+  },
+  "CustomArrowTip": {
+   "kind": "class",
+   "signature": "(length=0.35, **kwargs)",
+   "members": {
+    "animation_overrides": "attribute"
+   }
+  },
+  "DashCamera": {
+   "kind": "class",
+   "members": {
+    "apply_stroke": "(self, ctx, vmobject, background=False)"
+   }
+  },
+  "ET": {
+   "kind": "module",
+   "module": "xml.etree.ElementTree"
+  },
+  "FixedLabel": {
+   "kind": "class",
+   "signature": "(text, camera=None, screen_position=None, font='Trebuchet MS', font_size=20.0, font_color='#888', font_opacity=1.0, **kwargs)",
+   "members": {
+    "animation_overrides": "attribute",
+    "move_to_screen_position": "(self, point)",
+    "update_position": "(self, screen_position=None, camera=None)"
+   }
+  },
+  "GGB_FONT_SCALE": {
+   "kind": "constant",
+   "type": "float",
+   "value": 100.0
+  },
+  "GeoStyle": {
+   "kind": "class",
+   "signature": "(style=None)",
+   "members": {
+    "load_from_dict": "(self, style_json, file_hint=None)",
+    "load_from_json": "(self, path)",
+    "setViewByGeo": "(self, geoView)"
+   }
+  },
+  "ImportPolicy": {
+   "kind": "class",
+   "signature": "(base='faithful', size_px=None, stroke_width_px=None, arc_size_px=None, label_offset_px=None, label_color=None, label_visible=None, visible=None, label_text=None, label_mode=None, label_value_precision=None, label_value_strip_zeros=None, label_angle_unit=None, label_value_separator=None, angle_range=None, tick_count=None, stroke=None, fill=None, fill_opacity=None, font_size_px=None, point_shape=None, stroke_opacity=None, stroke_dash_ratio=None, stroke_dash_period_px=None, stroke_linecap=None)",
+   "members": {
+    "angle_range": "attribute",
+    "arc_size_px": "attribute",
+    "base": "attribute",
+    "faithful": "(cls)",
+    "fill": "attribute",
+    "fill_opacity": "attribute",
+    "font_size_px": "attribute",
+    "from_dict": "(cls, d)",
+    "label_angle_unit": "attribute",
+    "label_color": "attribute",
+    "label_mode": "attribute",
+    "label_offset_px": "attribute",
+    "label_text": "attribute",
+    "label_value_precision": "attribute",
+    "label_value_separator": "attribute",
+    "label_value_strip_zeros": "attribute",
+    "label_visible": "attribute",
+    "point_shape": "attribute",
+    "resolve": "(self, elem, defaults=None, ptUnit=1.0)",
+    "resolve_overrides_only": "(self, elem, defaults=None, ptUnit=1.0)",
+    "size_px": "attribute",
+    "stroke": "attribute",
+    "stroke_dash_period_px": "attribute",
+    "stroke_dash_ratio": "attribute",
+    "stroke_linecap": "attribute",
+    "stroke_opacity": "attribute",
+    "stroke_width_px": "attribute",
+    "style_only": "(cls)",
+    "tick_count": "attribute",
+    "visible": "attribute"
+   }
+  },
+  "KeyframeSequence": {
+   "kind": "class",
+   "signature": "(keyframes, intervals, element_info, version=1, defaults=None)",
+   "members": {
+    "attach_label_layouts": "(self, layouts)",
+    "bind_style_tracks": "(self, get_element, resolve, color_space='oklab')",
+    "bind_visibility": "(self, get_element=None)",
+    "drop_style_key": "(self, key)",
+    "from_json": "(cls, data, construction)",
+    "has_events": "(self)",
+    "has_style_tracks": "(self)",
+    "has_visibility_effects": "(self)"
+   }
+  },
+  "LABEL_ANCHORS": {
+   "kind": "constant",
+   "type": "dict"
+  },
+  "NamedValueTracker": {
+   "kind": "class",
+   "signature": "(name=None, value=0)",
+   "members": {
+    "animation_overrides": "attribute"
+   }
+  },
+  "NumberedFrame": {
+   "kind": "class",
+   "signature": "(number, camera=None, screen_position=None, circle_radius=0.4, circle_color='#777', circle_fill_opacity=0.1, font='Trebuchet MS', font_size=36, font_color='#444', stroke_width=0, **kwargs)",
+   "members": {
+    "animation_overrides": "attribute",
+    "move_to_screen_position": "(self, point)",
+    "update_position": "(self, screen_position=None, camera=None)"
+   }
+  },
+  "OUTPUT_FORMATS": {
+   "kind": "constant",
+   "type": "tuple",
+   "value": [
+    "png",
+    "gif",
+    "mp4",
+    "webm",
+    "mov"
+   ]
+  },
+  "RusTex": {
+   "kind": "constant",
+   "type": "TexTemplate"
+  },
+  "SQRT2": {
+   "kind": "constant",
+   "type": "float64",
+   "value": 1.4142135623730951
+  },
+  "ShowText": {
+   "kind": "function",
+   "signature": "(scene, header=None, body=None, pos=<ndarray>, width=None, numeration=None, **kwargs)"
+  },
+  "SimpleNamespace": {
+   "kind": "class"
+  },
+  "StyleConfig": {
+   "kind": "class",
+   "signature": "(presets=<factory>, reference=<factory>, rendering=<factory>, defaults=<factory>, overlay=<factory>, ggb=None, source=<factory>)",
+   "members": {
+    "from_dict": "(cls, d)",
+    "ggb": "attribute",
+    "load": "(cls, user_path=None)",
+    "resolve_ref": "(self, value)"
+   }
+  },
+  "ValueLabel": {
+   "kind": "class",
+   "signature": "(value=0.0, prefix_tex=None, suffix_tex=None, suffix_raised=False, num_decimal_places=1, color=None, font_size=48, z_index=0, tex_template=None, **kwargs)",
+   "members": {
+    "animation_overrides": "attribute",
+    "get_value": "(self)",
+    "set_value": "(self, number)"
+   }
+  },
+  "Z_ANGLE": {
+   "kind": "constant",
+   "type": "int",
+   "value": 3
+  },
+  "Z_FILL": {
+   "kind": "constant",
+   "type": "float",
+   "value": 0.01
+  },
+  "Z_FILL_LABEL": {
+   "kind": "constant",
+   "type": "float",
+   "value": 0.1
+  },
+  "Z_LABEL": {
+   "kind": "constant",
+   "type": "int",
+   "value": 50
+  },
+  "Z_POINT": {
+   "kind": "constant",
+   "type": "int",
+   "value": 50
+  },
+  "Z_STROKE": {
+   "kind": "constant",
+   "type": "int",
+   "value": 5
+  },
+  "animageo": {
+   "kind": "module",
+   "module": "animageo.animageo"
+  },
+  "apply_cairo_dash": {
+   "kind": "function",
+   "signature": "(ctx, mobject)"
+  },
+  "apply_parsed_value": {
+   "kind": "function",
+   "signature": "(construction, name, kind, val)"
+  },
+  "compute_export_layout": {
+   "kind": "function",
+   "signature": "(source_view, *, export_size, reference_size=None, fit='contain', source_rect='ggb_view', manual_scale=None, anchor='center', offset=None, padding=0.0)"
+  },
+  "compute_reference_export_layout": {
+   "kind": "function",
+   "signature": "(source_view, *, reference_size, export_size, content=None, export=None)"
+  },
+  "configure_render": {
+   "kind": "function",
+   "signature": "(*, format=None, fps=None, transparent=None)"
+  },
+  "contextmanager": {
+   "kind": "function",
+   "signature": "(func)"
+  },
+  "correctedLabel": {
+   "kind": "function",
+   "signature": "(label)"
+  },
+  "create_label": {
+   "kind": "function",
+   "signature": "(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=<ndarray>, ptUnit_ggb=None, anchor=None, ggb_font_px=None, label_text=None, label_offset_px=None, auto_placed=None, label_spec=None, dynamic=False, ggb_manual_base_px=None, ggb_label_attach=None)"
+  },
+  "create_svg_from_vgroup": {
+   "kind": "function",
+   "signature": "(vgroup, file_name=None, style=None)"
+  },
+  "create_svg_from_vmobject": {
+   "kind": "function",
+   "signature": "(vmobject, file_name=None, style=None)"
+  },
+  "dash": {
+   "kind": "module",
+   "module": "animageo.dash"
+  },
+  "dash_pattern": {
+   "kind": "function",
+   "signature": "(length_mu, dash_mu, gap_mu, *, closed=False, fit_ends=False, cap_extent_mu=0.0, phase_mu=0.0)"
+  },
+  "dash_ratio": {
+   "kind": "function",
+   "signature": "(value)"
+  },
+  "easing": {
+   "kind": "module",
+   "module": "animageo.easing"
+  },
+  "element_dash_px": {
+   "kind": "function",
+   "signature": "(scene, elem, resolve=None)"
+  },
+  "export_layout": {
+   "kind": "module",
+   "module": "animageo.export_layout"
+  },
+  "extract_mobject_family_members": {
+   "kind": "function",
+   "signature": "(mobjects, use_z_index=False, only_those_with_points=False)"
+  },
+  "geo": {
+   "kind": "module",
+   "module": "animageo.geo.construction"
+  },
+  "getColorFromDict": {
+   "kind": "function",
+   "signature": "(color_dict, col, eps=0.01)"
+  },
+  "get_dash": {
+   "kind": "function",
+   "signature": "(mobject)"
+  },
+  "ggb_font_px_to_manim_fontsize": {
+   "kind": "function",
+   "signature": "(ggb_font_px, ptUnit)"
+  },
+  "ggb_parser": {
+   "kind": "module",
+   "module": "animageo.parsers.ggb_parser"
+  },
+  "hasParam": {
+   "kind": "function",
+   "signature": "(d, key)"
+  },
+  "importlib": {
+   "kind": "module",
+   "module": "importlib"
+  },
+  "install_cyrillic_tex_template": {
+   "kind": "function",
+   "signature": "(force=False)"
+  },
+  "install_gif_palette_fix": {
+   "kind": "function",
+   "signature": "()"
+  },
+  "isnan": {
+   "kind": "function",
+   "signature": "(x)"
+  },
+  "json": {
+   "kind": "module",
+   "module": "json"
+  },
+  "keyframes": {
+   "kind": "module",
+   "module": "animageo.keyframes"
+  },
+  "labels": {
+   "kind": "module",
+   "module": "animageo.labels"
+  },
+  "logging": {
+   "kind": "module",
+   "module": "logging"
+  },
+  "make_hyperbola_branch_param": {
+   "kind": "function",
+   "signature": "(center, axis_u, axis_v, a, b, branch_sign)"
+  },
+  "make_parabola_param": {
+   "kind": "function",
+   "signature": "(vertex, axis, perp, focal_parameter)"
+  },
+  "marching_squares": {
+   "kind": "function",
+   "signature": "(F, viewport, *, grid_n=128, level=0.0)"
+  },
+  "math": {
+   "kind": "module",
+   "module": "math"
+  },
+  "normalize_content_options": {
+   "kind": "function",
+   "signature": "(content)"
+  },
+  "normalize_export_options": {
+   "kind": "function",
+   "signature": "(export)"
+  },
+  "os": {
+   "kind": "module",
+   "module": "os"
+  },
+  "parsers": {
+   "kind": "module",
+   "module": "animageo.parsers"
+  },
+  "path_length": {
+   "kind": "function",
+   "signature": "(points)"
+  },
+  "prewarm_decimal_glyphs": {
+   "kind": "function",
+   "signature": "()"
+  },
+  "re": {
+   "kind": "module",
+   "module": "re"
+  },
+  "render_config": {
+   "kind": "module",
+   "module": "animageo.render_config"
+  },
+  "rendered_view_from_bounds": {
+   "kind": "function",
+   "signature": "(source_view, bounds, *, padding_px=0, infinite_policy='ignore')"
+  },
+  "rendering_dash_period_px": {
+   "kind": "function",
+   "signature": "(scene)"
+  },
+  "reorder_objects_by_name": {
+   "kind": "function",
+   "signature": "(scene, name_order)"
+  },
+  "resolve_auto_size": {
+   "kind": "function",
+   "signature": "(size, aspect_source)"
+  },
+  "resolve_label_spec": {
+   "kind": "function",
+   "signature": "(scene, elem)"
+  },
+  "resolve_label_text": {
+   "kind": "function",
+   "signature": "(scene, elem)"
+  },
+  "resolve_style_input": {
+   "kind": "function",
+   "signature": "(style)"
+  },
+  "round_corners_vmobject": {
+   "kind": "function",
+   "signature": "(points, radius=0.5, components_per_rounded_corner=8)"
+  },
+  "sample_parametric": {
+   "kind": "function",
+   "signature": "(func, t_range, viewport=None, *, initial_samples=32, max_samples=500, segment_mu=0.05, viewport_pad=0.1)"
+  },
+  "set_dash": {
+   "kind": "function",
+   "signature": "(mobject, pattern)"
+  },
+  "size_from_config": {
+   "kind": "function",
+   "signature": "(value)"
+  },
+  "source_view_from_bounds_px": {
+   "kind": "function",
+   "signature": "(source_view, bounds_px, *, padding_px=0, infinite_policy='ignore')"
+  },
+  "stitch_segments": {
+   "kind": "function",
+   "signature": "(segments, *, tol=1e-09)"
+  },
+  "stroke_width_to_manim": {
+   "kind": "function",
+   "signature": "(stroke_width_px, ptUnit)"
+  },
+  "style": {
+   "kind": "module",
+   "module": "animageo.style"
+  },
+  "sys": {
+   "kind": "module",
+   "module": "sys"
+  },
+  "tempfile": {
+   "kind": "module",
+   "module": "tempfile"
+  },
+  "textify_cyrillic": {
+   "kind": "function",
+   "signature": "(s)"
+  },
+  "traceback": {
+   "kind": "module",
+   "module": "traceback"
+  },
+  "ui": {
+   "kind": "module",
+   "module": "animageo.ui"
+  },
+  "updateMax": {
+   "kind": "function",
+   "signature": "(maxX, x)"
+  },
+  "updateMin": {
+   "kind": "function",
+   "signature": "(minX, x)"
+  },
+  "viewport_t_range_hyperbola_branch": {
+   "kind": "function",
+   "signature": "(center, axis_u, axis_v, a, b, branch_sign, viewport)"
+  },
+  "viewport_t_ranges_parabola": {
+   "kind": "function",
+   "signature": "(vertex, axis, perp, focal_parameter, viewport)"
+  }
+ }
+}
