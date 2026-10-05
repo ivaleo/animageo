@@ -7,6 +7,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0a3] - 2026-10-05
+
+The native kernel stage L5, stage 3 continued (without L4): three findings
+of the corpus run of the web closed in the import only — a fixed LaTeX
+text, the interface name `AngleBisector` and the expressions of numbers
+GeoGebra writes — and a false `editable` of a point by object
+coordinates removed (`docs/native/import.md`). The classic `loadGGB` and
+its parser are unchanged.
+
+### Added
+
+- `from_ggb` reads the expression of a number of a `.ggb` itself
+  (`convert/ggb_expr.py`: a tokenizer and a recursive descent into AST v1,
+  nothing is evaluated) where the classic parser does not translate it:
+  `sqrt(a)`, `sin(a)`, `2a`, `a²`, `abs(r - 7)`, `log(b, x)`, `cot`, `sec`,
+  `csc`, `Min`, `Max`, `π`, `ℯ`, `°`, with the precedence of GeoGebra. A
+  number with references is `number.expression` (its value is checked
+  against the saved one, a wrong one is `differs`); without references
+  (`2π`) it is the free number of its saved value; a constant angle
+  (`2π/3`) is the free angle. What is read but stays outside says why
+  (`formula_unsupported` instead of `parse_error`): `floor(a)`, a command,
+  `x(A)`, a segment or a function in the expression, an angle computed from
+  objects (`2α`), a tree past the limits of AST v1.
+  `native.has("convert.ggb_expressions")`.
+- `ggb.COMMAND_SYNONYMS`: `AngleBisector` — the name of the GeoGebra
+  interface a hand-made file may carry — is `AngularBisector` for the
+  import (the same op, command and signature; before, `no_registry_op`).
+  `native.has("convert.command_synonyms")`.
+- Tests: 3 deliberate `.ggb` files of `tests/native/ggb_synth.py` with
+  their expectations — `latex_texts`, `command_synonym`,
+  `number_expressions` (24 files, 2 refused, 141 objects, 80% editable);
+  the reader of expressions by its own tests (grammar, precedence, limits,
+  the round trip through `expr.printer`).
+
+### Changed
+
+- The import report: `depends_on` names the objects a definition refers to
+  outside its string literals, so a fixed text (`"$S = \frac{1}{2} a h_a$"`
+  of a file with a segment `a`) has no `depends_on` and a template without
+  references; `"S = " + a` keeps `["a"]`; `t_{AB}` is one name, a
+  superscript power is no part of a name. `import_report.v1` is unchanged.
+  `native.has("import_report.text_literals")`.
+- The expectation of `spreadsheet.ggb`: `B1 = 2 A1` is editable (was
+  `unsupported`, `parse_error`); `P = (A1, B1)` is `picture`,
+  `unsupported_signature` (was the closure of `B1`).
+- Fixtures of the parity scenes, steps, conditions, commands and timeline
+  changed in the version label only.
+
+### Fixed
+
+- `from_ggb`: a point by coordinates that are objects of the file
+  (`P = (a, b)`) was a free point at its saved place — moving `a` did not
+  move it, a false `editable`. It is `picture`, `unsupported_signature`
+  until L4 brings the ops of points by coordinates; a point of literal
+  coordinates and a DSL `Point(a, b)` stay free points.
+- `from_ggb`: `abs` of a computed value (`abs(r - 7)`, no classic
+  signature in 1.10.0a2) is `number.expression`.
+
 ## [1.10.0a2] - 2026-10-05
 
 The native kernel stage L5, stage 3 (without L4: coordinates, functions and

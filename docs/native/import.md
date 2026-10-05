@@ -1,6 +1,6 @@
 # Import: `.ggb` and the classic graph as documents (`native.from_ggb`, `native.from_construction`)
 
-animageo 1.10.0a1–1.10.0a2, kernel stage L5, stages 1–3 (plan L5 §3). The package
+animageo 1.10.0a1–1.10.0a3, kernel stage L5, stages 1–3 (plan L5 §3). The package
 `animageo.native.convert` translates the classic `Construction` — the graph
 `ggb_parser` builds from a `.ggb` and the DSL builds from a scene — into an
 `animageo-construction/v1` document, by one table of commands. What does not
