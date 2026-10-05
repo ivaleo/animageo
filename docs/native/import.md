@@ -172,6 +172,29 @@ with `names` (≤ 50). `warnings`: `{code, ggb_name?, detail?}`.
 `document_hash` is `native.content_hash` of the document.
 `report_problems(report, document)` checks the rules the schema cannot.
 
+`ggb_value` of a text (1.10.0a2, `native.has("import_report.text_template")`)
+is `{kind: "text", text, anchor, anchor_ref?, screen?, template?, refs?,
+decimals?, shown?}`:
+
+- `text` — the GeoGebra expression (a literal without its quotes);
+- `anchor` — `[x, y]` of every text that has a place: its start point, the
+  saved position of the point it is attached to (`anchor_ref` — that point's
+  name), or a text fixed on the screen — its pixel in drawing coordinates
+  (`screen: true`); `null` — no place in the file;
+- `template`, `refs`, `decimals` — for a text that is a `+` of literals and
+  objects: the template of `text.free` (`{k}` — item `k` of `refs`, the
+  braces of a literal doubled) and its references `{ggb_name, as}`, where
+  `as` is what GeoGebra prints: `point`, `number`, `angle` (degrees),
+  `length` (of a segment: `measure.length`), `area` (of a polygon:
+  `measure.area`); `decimals` — the rounding of the file. A part that is not
+  such an object (`x(A)`, a function, a command) — no template;
+- `shown` — the text as the file shows it, from the saved values (the
+  classic `resolve_text_string` gives the same).
+
+The web builds `text.free` from these (the anchor — the point of
+`anchor_ref` or a hidden free point at `anchor`); the category of a text does
+not change (`picture`).
+
 `seq` of the operations follows the construction protocol (the XML order);
 `steps` (groups) appear only when the XML has breakpoints — a step is the
 protocol up to a breakpoint inclusive, the rest is the last step.

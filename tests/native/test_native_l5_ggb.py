@@ -195,6 +195,93 @@ def test_texts_are_pictures():
     assert all(e['ggb_value']['kind'] == 'text' for e in texts)
 
 
+def _numeric(label, value, exp=None):
+    return (expression(label, exp) if exp else '') + element('numeric', label, extra=f'<value val="{value!r}"/>')
+
+
+def _with_text(doc, value, by_name):
+    """``doc`` with the ``text.free`` the web builds from ``ggb_value`` of a
+    text: a number insert as is, a length or an area through ``measure.*``."""
+    doc = json.loads(json.dumps(doc))
+    items = []
+    for k, ref in enumerate(value['refs']):
+        eid = by_name[ref['ggb_name']]['native_ids'][0]
+        if ref['as'] in ('length', 'area'):
+            op = {'length': 'measure.length', 'area': 'measure.area'}[ref['as']]
+            doc['operations'][f'op_m{k}'] = {'id': f'op_m{k}', 'op': op, 'args': {'of': {'kind': 'ref', 'elementId': eid}},
+                                             'outputs': [{'slot': 'number', 'elementId': f'm{k}'}]}
+            doc['elements'][f'm{k}'] = {'id': f'm{k}', 'type': 'number', 'displayName': '',
+                                        'producer': {'operationId': f'op_m{k}', 'slot': 'number'}}
+            eid = f'm{k}'
+        items.append({'kind': 'ref', 'elementId': eid})
+    if 'anchor_ref' in value:
+        anchor = by_name[value['anchor_ref']]['native_ids'][0]
+    else:                   # a text at a fixed place: a hidden free point
+        anchor = 'p'
+        doc['operations']['op_p'] = {'id': 'op_p', 'op': 'point.free', 'args': {},
+                                     'outputs': [{'slot': 'point', 'elementId': 'p'}]}
+        doc['elements']['p'] = {'id': 'p', 'type': 'point', 'displayName': '',
+                                'producer': {'operationId': 'op_p', 'slot': 'point'}}
+        doc['inputs']['p'] = {'kind': 'point', 'value': value['anchor']}
+    doc['operations']['op_t'] = {'id': 'op_t', 'op': 'text.free', 'args': {
+        'text': {'kind': 'template', 'value': value['template']}, 'anchor': {'kind': 'ref', 'elementId': anchor},
+        'refs': {'kind': 'list', 'items': items}, 'decimals': {'kind': 'number', 'value': value['decimals']}},
+        'outputs': [{'slot': 'text', 'elementId': 't'}]}
+    doc['elements']['t'] = {'id': 't', 'type': 'text', 'displayName': '', 'producer': {'operationId': 'op_t', 'slot': 'text'}}
+    return doc
+
+
+def test_a_dependent_text_has_a_template_and_an_anchor():
+    """``ggb_value`` of a text (1.10.0a2): the anchor of every text, the
+    template of ``text.free`` with its references and the text as shown —
+    the ``text.free`` built from them shows what the classic shows."""
+    from animageo.geo.construction import Construction
+    from animageo.geo.lib_elements import resolve_text_string
+    from animageo.parsers import ggb_parser
+    path = REPO_ROOT / 'tests/fixtures/text_dynamic.ggb'
+    doc, rep = _import(path)
+    e = _by_name(rep)
+    area, parts = e['надпись3']['ggb_value'], e['надпись4']['ggb_value']
+    assert (area['template'].replace('\xa0', ' '), area['refs']) == (       # the file has no-break spaces
+        'Площадь = {0} ', [{'ggb_name': 't1', 'as': 'area'}])
+    assert (parts['template'].replace('\xa0', ' '), parts['refs'], parts['anchor_ref']) == (
+        'элементы: точка {0}, сторона {1}', [{'ggb_name': 'A', 'as': 'point'}, {'ggb_name': 'a', 'as': 'length'}], 'A')
+    assert parts['anchor'] == e['A']['ggb_value']['value']
+    assert all(x['ggb_value']['anchor'] is not None for x in rep['elements'] if x['ggb_type'] == 'text')
+    constr = Construction()
+    constr.strict_unsupported = constr.log_unsupported = False
+    ggb_parser.load(constr, {}, str(path))
+    for label, value in (('надпись3', area), ('надпись4', parts)):
+        classic = resolve_text_string(constr, constr.element(label).data, value['decimals'])
+        assert value['shown'] == classic
+        built = _with_text(doc, value, e)
+        assert native.validate(native.load(built)) == []
+        assert native.evaluate(native.load(built)).elements['t']['value']['text'] == classic
+    assert native.has('import_report.text_template')
+
+
+@pytest.mark.parametrize('body, expected', [
+    # a text fixed on the screen: its pixel in drawing coordinates (view: origin 400, 300; 50 px a unit)
+    (expression('t', '"Задача"') + element('text', 't', extra='<absoluteScreenLocation x="500" y="200"/>'),
+     {'anchor': [2.0, 2.0], 'screen': True, 'template': 'Задача', 'refs': [], 'shown': 'Задача'}),
+    # braces of a literal are doubled; a number insert
+    (_numeric('k', 2.5) + expression('t', '"{k} = " + k') + element('text', 't', extra='<startPoint x="1" y="2" z="1"/>'),
+     {'anchor': [1.0, 2.0], 'template': '{{k}} = {0}', 'refs': [{'ggb_name': 'k', 'as': 'number'}], 'shown': '{k} = 2.5'}),
+    # an angle prints degrees
+    (element('angle', 'w', extra='<value val="0.5235987755982988"/>') + expression('t', '"w = " + w')
+     + element('text', 't', extra='<startPoint x="0" y="0" z="1"/>'),
+     {'anchor': [0.0, 0.0], 'template': 'w = {0}', 'refs': [{'ggb_name': 'w', 'as': 'angle'}], 'shown': 'w = 30°'}),
+    # a part that is not an object GeoGebra prints as a number or a point: no template
+    (point('A', 1.0, 1.0) + expression('t', '"x = " + x(A)') + element('text', 't', extra='<startPoint exp="A"/>'),
+     {'anchor': [1.0, 1.0], 'anchor_ref': 'A'}),
+])
+def test_text_anchor_and_template(body, expected):
+    _, rep = _import(ggb_bytes(body))
+    value = _by_name(rep)['t']['ggb_value']
+    got = {k: v for k, v in value.items() if k not in ('kind', 'text', 'decimals')}
+    assert got == expected
+
+
 def test_dropped_and_warnings():
     body = triangle(command('Midpoint', ['A', 'B'], ['M'])
                     + point('M', 2.0, 0.0, extra='<condition showObject="a&gt;1"/><dynamicColor val1="1" val2="0" '
@@ -290,10 +377,6 @@ def test_a_second_definition_of_a_name_is_a_warning():
     assert dup == ['A', 'M', 't1']
 
 
-def _numeric(label, value, exp=None):
-    return (expression(label, exp) if exp else '') + element('numeric', label, extra=f'<value val="{value!r}"/>')
-
-
 def test_arithmetic_of_numbers_is_editable():
     """``c = a + b``, ``d = (c - 7)^2 / 4``, ``h = r / 2`` of a distance:
     ``number.expression`` with the inputs as ``refs`` (1.10.0a2); the saved
@@ -379,6 +462,7 @@ def test_an_empty_document_on_request():
     assert doc is None
     doc, rep = _import(pictures, empty_document=True)
     assert doc['operations'] == {} and doc['elements'] == {}
+    assert doc['viewDefaults']['bounds'] == [-8.0, -6.0, 8.0, 6.0]        # the view of the file
     assert rep['document_hash'] == native.content_hash(doc)
     assert {e['category'] for e in rep['elements']} == {'picture', 'unsupported'}
     assert doc['documentId'] == from_ggb(pictures, id_namespace=NS, empty_document=True)[0]['documentId']

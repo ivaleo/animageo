@@ -304,6 +304,9 @@ def scan(root) -> dict:
                     info['start_ref'] = sp.attrib['exp']
                 else:
                     info['start'] = [_float(sp.attrib.get('x')), _float(sp.attrib.get('y'))]
+            screen = node.find('absoluteScreenLocation')
+            if screen is not None:
+                info['screen'] = [_float(screen.attrib.get('x')), _float(screen.attrib.get('y'))]
             latex = node.find('isLaTeX')
             info['latex'] = latex is not None and latex.attrib.get('val') == 'true'
             scripts = [s for s in node if s.tag in ('javascript', 'ggbscript')]
@@ -361,6 +364,111 @@ def view_bounds(view):
     if not all(math.isfinite(v) for v in bounds) or bounds[0] >= bounds[2] or bounds[1] >= bounds[3]:
         return None             # a degenerate or overflowing view: the document takes its default
     return bounds
+
+
+def screen_to_world(view, x, y):
+    """The drawing coordinates of the pixel ``(x, y)`` of the saved graphics
+    view (``None`` — no view or no pixel)."""
+    cs = view.find('coordSystem') if view is not None else None
+    if cs is None or x is None or y is None:
+        return None
+    x0, y0 = _float(cs.attrib.get('xZero')), _float(cs.attrib.get('yZero'))
+    sx = _float(cs.attrib.get('scale'))
+    sy = _float(cs.attrib.get('yscale')) or sx
+    if None in (x0, y0, sx, sy) or sx <= 0 or sy <= 0:
+        return None
+    out = [(x - x0) / sx, (y0 - y) / sy]
+    return out if all(math.isfinite(v) for v in out) else None
+
+
+# what GeoGebra prints for an object in a text, by its type (the classic ``format_object_value``)
+TEXT_INSERTS = {'point': 'point', 'numeric': 'number', 'angle': 'angle', 'segment': 'length', 'polygon': 'area'}
+
+
+def text_extras(info: dict, by_label: dict, point_of, view, decimals, classic_of=None) -> dict:
+    """The anchor and the ``text.free`` template of a text (1.10.0a2,
+    ``has("import_report.text_template")``), keys of its ``ggb_value``:
+
+    - ``anchor`` for every text that has one: the start point; the saved
+      position of the point it is attached to (``anchor_ref`` — that point);
+      a text fixed on the screen — its pixel in drawing coordinates
+      (``screen: true``);
+    - ``template``, ``refs``, ``decimals`` of a text that is a ``+`` of
+      literals and objects: the template of ``text.free`` (``{k}`` — item ``k``
+      of ``refs``, literal braces doubled), ``refs`` — ``{ggb_name, as}``
+      with ``as`` what GeoGebra prints: ``point``, ``number``, ``angle``
+      (degrees), ``length`` (of a segment), ``area`` (of a polygon);
+      ``shown`` — the text as the file shows it, from the saved values
+      (the length of a side of a polygon from the classic object,
+      ``classic_of(label)``)."""
+    out = {}
+    if info.get('start') is None:
+        ref = (info.get('start_ref') or '').strip()
+        if ref in by_label and by_label[ref].get('type') == 'point':
+            out['anchor_ref'] = ref
+            p = point_of(ref) if point_of is not None else None
+            if p is not None:
+                out['anchor'] = p
+        elif info.get('screen') is not None:
+            p = screen_to_world(view, *info['screen'])
+            if p is not None:
+                out['anchor'], out['screen'] = p, True
+    if info.get('command') != 'Expression' or not info.get('inputs'):
+        return out
+    from ...parsers.ggb_parser import split_text_parts
+    from ..expr.template import format_value, template_problems
+    pieces, shown, refs, index = [], [], [], {}
+    places = 2 if decimals is None or not 0 <= decimals <= 10 else int(decimals)
+    for kind, piece in split_text_parts(info['inputs'][0]):
+        if kind == 'str':
+            pieces.append(piece.replace('{', '{{').replace('}', '}}'))
+            if shown is not None:
+                shown.append(piece)
+            continue
+        name = piece.strip()
+        as_ = TEXT_INSERTS.get((by_label.get(name) or {}).get('type'))
+        if as_ is None:
+            return out
+        if name not in index:
+            index[name] = len(refs)
+            refs.append({'ggb_name': name, 'as': as_})
+        pieces.append('{%d}' % index[name])
+        if shown is not None:
+            value = _shown_value(by_label[name], as_, point_of, places, format_value, classic_of)
+            shown = None if value is None else shown + [value]
+    template = ''.join(pieces)
+    if template_problems(template, len(refs)):
+        return out
+    out.update(template=template, refs=refs, decimals=places)
+    if shown is not None:
+        out['shown'] = ''.join(shown)
+    return out
+
+
+def _shown_value(info, as_, point_of, places, format_value, classic_of=None):
+    """An insert as the file shows it (``None`` — no saved value)."""
+    v = ggb_value(info, point_of)
+    value = v.get('value') if v else None
+    try:
+        if as_ == 'length' and (v or {}).get('kind') != 'segment' and classic_of is not None:
+            ends = getattr(classic_of(info['label']), 'endpoints', None)
+            if ends is not None:
+                v, value = {'kind': 'segment'}, [[float(c) for c in ends[0][:2]], [float(c) for c in ends[1][:2]]]
+        if as_ == 'point' and value is not None:
+            return f'({format_value(value[0], places)}, {format_value(value[1], places)})'
+        if as_ == 'number' and value is not None:
+            return format_value(value, places)
+        if as_ == 'angle' and value is not None:
+            return format_value(value * 180.0 / math.pi, places) + '°'
+        if as_ == 'length' and v['kind'] == 'segment':
+            (x1, y1), (x2, y2) = value
+            return format_value(math.hypot(x2 - x1, y2 - y1), places)
+        if as_ == 'area' and v['kind'] == 'polygon':
+            area = sum(p[0] * q[1] - q[0] * p[1] for p, q in zip(value, value[1:] + value[:1])) / 2
+            return format_value(abs(area), places)
+    except (TypeError, ValueError, KeyError, IndexError):
+        return None
+    return None
 
 
 def ggb_value(info: dict, point_of=None):

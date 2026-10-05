@@ -196,7 +196,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     from ... import __version__
     from ..registry import REGISTRY_VERSION
     from .ggb import (COMMANDS_3D, DEFAULT_JS, PLACEABLE, TYPES_3D, TYPES_FORMULA, TYPES_UI, ggb_value, parse_xml,
-                      read_ggb, scan, view_bounds)
+                      read_ggb, scan, text_extras, view_bounds)
     from ..document import iter_refs
     from .keys import make_id
     from .style import appearance, ggb_style, label_of
@@ -234,6 +234,10 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         i = by_label.get(label)
         v = ggb_value(i) if i is not None and i['type'] == 'point' else None
         return v['value'] if v else None
+
+    def classic_of(label):
+        el = constr.element(norm[label]) if label in norm else None
+        return getattr(el, 'data', None)
 
     diag_outputs = {}
     for d in getattr(constr, 'command_diagnostics', []):
@@ -326,6 +330,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
             info['text'] = _text_of(info['inputs'][0]) if info.get('inputs') else ''
             deps = [d for d in deps if d not in ('text',)]
         value = ggb_value(info, point_of)
+        if t == 'text' and value is not None:
+            value.update(text_extras(info, by_label, point_of, sc['view'], sc.get('decimals'), classic_of))
         placeable = t in PLACEABLE and value is not None and (value.get('value') is not None or t == 'text') \
             and (t != 'segment' or value['kind'] == 'segment')
         e = {'name': label, 'info': info, 'depends_on': deps, 'free': False, 'value_check': 'not_checked',

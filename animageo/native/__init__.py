@@ -83,7 +83,8 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values',
             'commands.conditions', 'commands.steps', 'timeline', 'steps_timeline', 'render.t', 'render.video',
             'render.frame', 'from_ggb', 'from_construction', 'import_report.v1', 'appearance.hatch',
-            'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document', 'convert.formula')
+            'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document', 'convert.formula',
+            'import_report.text_template')
 
 
 def has(feature: str) -> bool:
@@ -107,7 +108,10 @@ def has(feature: str) -> bool:
     elements from ``bindings.legacyNames``; ``from_ggb.empty_document`` —
     ``from_ggb(empty_document=True)`` returns a document without operations
     instead of ``None``; ``convert.formula`` — the arithmetic of numbers of a
-    ``.ggb`` or a DSL scene is ``number.expression``, ``dsl_map`` version 2)."""
+    ``.ggb`` or a DSL scene is ``number.expression``, ``dsl_map`` version 2;
+    ``import_report.text_template`` — ``ggb_value`` of a text has the anchor
+    of every text, the template of ``text.free`` with its references and the
+    text as shown)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION
