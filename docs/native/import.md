@@ -179,8 +179,9 @@ runs under a 20 s deadline). What the fuzzing changed:
   200 characters is `ggb_invalid`;
 - a regular polygon takes 3 to 100 vertices (`unsupported_signature`
   otherwise); the classic `Polygon(A, B, n)` refuses more than 10 000;
-- a name defined twice: the first definition wins, the second command is the
-  warning `duplicate_definition`; an output of a command without its own
+- a name defined twice: the first definition wins, the second — a command,
+  an expression or an `<element>` — is the warning `duplicate_definition`;
+  an output of a command without its own
   `<element>` is not an object of the report, its dependents are
   `parse_error`;
 - a free input whose value fails the check (a point at infinity, a

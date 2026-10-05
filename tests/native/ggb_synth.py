@@ -195,7 +195,7 @@ def _synthetic() -> dict:
                               + element('image', 'pic1'))),
         'texts': (
             'a fixed text, a text at a point, a text with values of objects',
-            lambda: ggb_bytes(tri + _text('t1', '"Треугольник"', '<startPoint x="0" y="4" z="1"/>')
+            lambda: ggb_bytes(tri + _text('title', '"Треугольник"', '<startPoint x="0" y="4" z="1"/>')
                               + _text('t2', '"вершина"', '<startPoint exp="A"/>')
                               + _text('t3', '"AB = " + c + ", A = " + A', '<startPoint x="2" y="-1" z="1"/>'))),
         'function_closure': (

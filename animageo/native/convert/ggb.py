@@ -191,8 +191,10 @@ def _bool(v):
 
 def scan(root) -> dict:
     """``{elements: [info], dropped: {kind: [labels]}, view, app, version,
-    decimals, outputs: [labels]}`` of the GGB XML root (``outputs`` — the
-    labels commands and expressions define, with an ``<element>`` or not)."""
+    decimals, outputs: [labels], duplicates: [labels]}`` of the GGB XML root
+    (``outputs`` — the labels commands and expressions define, with an
+    ``<element>`` or not; ``duplicates`` — the labels defined twice: a second
+    ``<element>``, expression or command output, the first one stands)."""
     constr = root.find('construction')
     if constr is None:
         raise ImportRefused('import_not_ggb', 'нет <construction>')
@@ -200,6 +202,11 @@ def scan(root) -> dict:
     producer: dict = {}         # label → (command name, input labels, kind)
     dropped: dict = {}
     seen_labels = set()
+    duplicates: list = []
+
+    def duplicate(label):
+        if label not in duplicates:
+            duplicates.append(label)
 
     def drop(kind, label=None):
         dropped.setdefault(kind, [])
@@ -218,15 +225,21 @@ def scan(root) -> dict:
             for label in (out.attrib.values() if out is not None else ()):
                 if label:
                     # a label defined twice (a damaged file): the first definition stands, as in the translator
+                    if label in producer:
+                        duplicate(label)
                     producer.setdefault(label, (name, inputs, 'command'))
         elif tag == 'expression':
             label = node.attrib.get('label')
             if label:
+                if label in producer:
+                    duplicate(label)
                 producer.setdefault(label, ('Expression', [node.attrib.get('exp', '')], 'expression'))
         elif tag == 'cascell':
             drop('cas')
         elif tag == 'element':
             label = node.attrib.get('label')
+            if label in seen_labels:
+                duplicate(label)
             if not label or label in seen_labels:
                 continue
             seen_labels.add(label)
@@ -327,7 +340,8 @@ def scan(root) -> dict:
     if kernel is not None and kernel.find('decimals') is not None:
         decimals = _float(kernel.find('decimals').attrib.get('val'))
     return {'elements': elements, 'dropped': dropped, 'view': view, 'app': head.get('app'),
-            'version': head.get('version'), 'decimals': decimals, 'outputs': list(producer)}
+            'version': head.get('version'), 'decimals': decimals, 'outputs': list(producer),
+            'duplicates': duplicates}
 
 
 def view_bounds(view):

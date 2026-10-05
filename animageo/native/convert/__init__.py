@@ -454,6 +454,9 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     for w in tr.warnings:
         warnings.append({'code': w['code'], **({'ggb_name': display.get(w['name'], w['name'])}
                                                  if w.get('name') else {})})
+    for label in sc.get('duplicates', []):
+        if {'code': 'duplicate_definition', 'ggb_name': label} not in warnings:
+            warnings.append({'code': 'duplicate_definition', 'ggb_name': label})
     if parse_errors:
         warnings.append({'code': 'parse_error', 'detail': ', '.join(str(x) for x in parse_errors)[:500]})
     if macro_names:

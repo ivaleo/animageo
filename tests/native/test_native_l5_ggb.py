@@ -273,6 +273,23 @@ def test_a_shape_without_fill_keeps_a_zero_fill():
     assert _by_name(rep)['k']['ggb_style']['fill'] == '#1565c0'
 
 
+def test_a_second_definition_of_a_name_is_a_warning():
+    """A name defined twice — two ``<element>``, a text over a polygon, two
+    commands: the first definition stands, the second is the warning
+    ``duplicate_definition`` (1.10.0a2: the ``<element>`` and the expression
+    were dropped silently)."""
+    body = triangle(point('A', 5.0, 5.0)
+                    + expression('t1', '"Треугольник"') + element('text', 't1', extra='<startPoint x="0" y="4" z="1"/>')
+                    + command('Midpoint', ['A', 'B'], ['M']) + point('M', 2.0, 0.0)
+                    + command('Midpoint', ['B', 'C'], ['M']))
+    doc, rep = _import(ggb_bytes(body))
+    e = _by_name(rep)
+    assert e['t1']['ggb_type'] == 'polygon' and e['t1']['category'] == 'editable'
+    assert e['A']['ggb_value']['value'] == [0.0, 0.0]
+    dup = sorted(w['ggb_name'] for w in rep['warnings'] if w['code'] == 'duplicate_definition')
+    assert dup == ['A', 'M', 't1']
+
+
 def test_seq_and_steps_from_breakpoints():
     body = (point('A', 0.0, 0.0, extra='<breakpoint val="true"/>') + point('B', 4.0, 0.0)
             + command('Segment', ['A', 'B'], ['s'])
