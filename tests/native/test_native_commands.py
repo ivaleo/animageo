@@ -94,6 +94,8 @@ def describe(data):
             return [arg(i) for i in a['items']]
         if a['kind'] == 'expr':
             return a['ast']
+        if a['kind'] == 'template':
+            return a['value']
         return float(a['value'])
 
     rows = []
@@ -573,6 +575,13 @@ class TestPrint:
             assert [(i.code, i.line) for i in result.issues] == [('forbidden', i.line) for i in formulas]
             assert len(problems) == 8 and all(p.startswith('missing number.expression') for p in problems)
             return
+        if path.stem == 'l2a5_text':
+            # the grammar has no strings yet: a text line reads back as a syntax error at «"»
+            texts = [i for i in printed.issues if i.code == 'unprintable_operation']
+            assert len(texts) == 5 and [i.code for i in printed.issues] == ['unprintable_operation'] * 5
+            assert [(i.code, i.line) for i in result.issues] == [('syntax', i.line) for i in texts]
+            assert len(problems) == 5 and all(p.startswith('missing text.free') for p in problems)
+            return
         assert [(i.code, i.line, i.column) for i in result.issues] == ambiguous
         others = [i.code for i in printed.issues if i.code != 'ambiguous_name']
         if path.stem in ('intersect_lines', 'intersect_segments'):
@@ -595,6 +604,8 @@ class TestPrint:
         result = parse_commands(print_commands(doc).text, base=doc)
         if path.stem == 'l2a5_number_expression':     # formula lines fail and keep their operations
             assert {i.code for i in result.issues} == {'forbidden'}
+        elif path.stem == 'l2a5_text':
+            assert {i.code for i in result.issues} == {'syntax'}
         else:
             assert {i.code for i in result.issues} <= {'ambiguous_name'}
         assert changed(result.effects) == {}

@@ -49,6 +49,7 @@ from ..document import (
     op_dependencies,
 )
 from ..expr import problems as expr_problems
+from ..expr import template_problems
 from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, free_slot, registry
 from . import paths
 from .numeric import Tolerances, scene_scale, tolerances
@@ -231,14 +232,16 @@ class Arguments:
     slots in registry order; ``literals`` — ``{slot: value}`` of number
     literals in ``number`` input slots; ``params`` — ``{slot: float | None}``
     of every declared param (the default, or ``None``, when absent);
-    ``exprs`` — ``{slot: ast}`` of the valid trees in ``expr`` input slots
-    (registry 1.4, a5).
+    ``exprs`` — ``{slot: ast}`` of the valid trees in ``expr`` input slots,
+    ``templates`` — ``{slot: string}`` of the valid templates in
+    ``template`` input slots (registry 1.4, a5).
     """
 
     refs: list
     literals: dict
     params: dict
     exprs: dict = field(default_factory=dict)
+    templates: dict = field(default_factory=dict)
 
     def __iter__(self):           # ``for slot, is_list, ids in arguments`` reads the refs
         return iter(self.refs)
@@ -251,10 +254,10 @@ def _argument_status(op, record, doc, reg):
     registry order (missing → ``schema``, wrong kind or short list →
     ``type_mismatch``, dangling reference → ``dangling_ref``, element type
     not fitting → ``type_mismatch``; a ``number`` slot also takes a number
-    literal, an ``expr`` slot takes only an ``expr`` argument); then params in
-    registry order (not a number → ``type_mismatch``, a required one missing
-    → ``schema``); last, a tree that :func:`expr.problems` refuses (with the
-    item count of ``refs``) → ``error/formula``.
+    literal, an ``expr`` or ``template`` slot takes only an argument of that
+    kind); then params in registry order (not a number → ``type_mismatch``, a
+    required one missing → ``schema``); last, a tree or a template that the
+    rules refuse (with the item count of ``refs``) → ``error/formula``.
     """
     args = op['args']
     declared = {item['slot'] for item in record['inputs']} | {item['slot'] for item in record['params']}
@@ -264,6 +267,7 @@ def _argument_status(op, record, doc, reg):
     resolved = []
     literals = {}
     exprs = {}
+    templates = {}
     for item in record['inputs']:
         arg = args.get(item['slot'])
         if arg is None:
@@ -271,10 +275,13 @@ def _argument_status(op, record, doc, reg):
         if not item.get('list') and item['type'] == 'number' and arg.get('kind') == 'number':
             literals[item['slot']] = float(arg['value'])
             continue
-        if item['type'] == 'expr':
-            if arg.get('kind') != 'expr':
+        if item['type'] in ('expr', 'template'):
+            if arg.get('kind') != item['type']:
                 return ('error', 'type_mismatch')
-            exprs[item['slot']] = arg.get('ast')
+            if item['type'] == 'expr':
+                exprs[item['slot']] = arg.get('ast')
+            else:
+                templates[item['slot']] = arg.get('value')
             continue
         if item.get('list'):
             if arg.get('kind') != 'list':
@@ -307,11 +314,12 @@ def _argument_status(op, record, doc, reg):
         if arg.get('kind') != 'number':
             return ('error', 'type_mismatch')
         params[item['slot']] = float(arg['value'])
-    if exprs:
+    if exprs or templates:
         count = next((len(ids) for slot, _is_list, ids in resolved if slot == 'refs'), None)
-        if any(expr_problems(ast, count) for ast in exprs.values()):
+        if any(expr_problems(ast, count) for ast in exprs.values()) \
+                or any(template_problems(s, count) for s in templates.values()):
             return ('error', 'formula')
-    return Arguments(resolved, literals, params, exprs)
+    return Arguments(resolved, literals, params, exprs, templates)
 
 
 def number_literal(value: float) -> Input:
@@ -410,6 +418,8 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
             args[slot] = number_literal(value)
         for slot, ast in resolved.exprs.items():
             args[slot] = Input('expr', ast)
+        for slot, text in resolved.templates.items():
+            args[slot] = Input('template', text)
         path_slots = {item['slot'] for item in record['inputs'] if item['type'] == 'path'}
         for slot, is_list, ids in resolved.refs:
             if slot in path_slots:

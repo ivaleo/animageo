@@ -36,6 +36,10 @@ values unit sides along ``a0`` and ``a1``. A right-angle mark is a classic
 ``native.appearance_plan``); an equality mark is a :class:`NativeMark` —
 no geometry of its own, the renderer draws its ticks on the targets.
 
+A text (``text.free``, 1.4 a5) is a classic ``Text`` with one literal
+segment — the filled template — and its top-left corner at the anchor; an
+``expr`` tree or a template is a constant of the command, like a param.
+
 This module imports ``animageo.geo`` (and numpy) inside its functions only,
 so ``import animageo.native`` stays free of the classic code; ``animageo.geo``
 itself does not need manim.
@@ -107,7 +111,7 @@ class NativeMark:
 
 def _fingerprint(obj) -> tuple:
     keys = ('coords', 'normal', 'offset', 'start', 'endpoints', 'center', 'radius', 'vertices', 'value',
-            'dimension', 'vertex', 'side1', 'side2', 'kind', 'count', 'angles', 'points')
+            'dimension', 'vertex', 'side1', 'side2', 'kind', 'count', 'angles', 'points', 'position')
     out = []
     for key in keys:
         value = getattr(obj, key, None)
@@ -135,7 +139,7 @@ def to_classic(type_: str, value, *, sides=None):
     if value is None:
         return None
     from ...geo.lib_elements import Angle, Arc, Circle, CircleSector, Line, LocusCurve, Point, Polygon, Ray, \
-        Segment, Vector
+        Segment, Text, Vector
     from ...geo.lib_vars import AngleSize, Measure
     import numpy as np
 
@@ -184,6 +188,8 @@ def to_classic(type_: str, value, *, sides=None):
             obj = AngleSize(float(value['value']))
         else:
             obj = Measure(float(value['value']), _MEASURE_DIMENSION.get(unit, 0))
+    elif type_ == 'text':               # a plain classic text of the filled template, top-left at the anchor
+        obj = Text([('str', value['text'])], position=value['anchor'])
     else:
         raise ValueError(f'no classic type for {type_!r}')
     obj._native = (_fingerprint(obj), value)
@@ -264,6 +270,9 @@ def from_classic(type_: str, obj):
         if isinstance(obj, (int, float)) and not isinstance(obj, bool):
             return {'value': float(obj), 'unit': 'scalar'}
         raise ValueError(f'no kernel number for {type(obj).__name__}')
+    if type_ == 'text':
+        text = ''.join(s for kind, s in obj.segments if kind == 'str')
+        return {'anchor': [float(v) for v in obj.position[:2]], 'text': text, 'parts': [{'text': text}] if text else []}
     raise ValueError(f'no kernel type for {type_!r}')
 
 
@@ -454,6 +463,7 @@ def build_construction(doc, *, inputs=None, seed=None):
         constants = dict(resolved.params)
         constants.update({slot: number_literal(v) for slot, v in resolved.literals.items()})
         constants.update({slot: Input('expr', ast) for slot, ast in resolved.exprs.items()})
+        constants.update({slot: Input('template', s) for slot, s in resolved.templates.items()})
         path_frame = None
         tparam_of = None
         free_value = None

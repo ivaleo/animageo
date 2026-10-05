@@ -47,7 +47,7 @@ L2A5_OPS = {
     'measure.length', 'measure.distance', 'measure.area', 'measure.perimeter', 'measure.angle',
     'measure.radius', 'measure.circumference', 'measure.polygon_angles',
     'transform.translate', 'transform.rotate', 'transform.reflect_line', 'transform.reflect_point',
-    'transform.dilate',
+    'transform.dilate', 'text.free',
 }
 ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS
 # Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were.
@@ -101,7 +101,7 @@ def test_ops_and_files():
     reg = registry()
     assert set(reg.ops) == ALL_OPS
     assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark',
-                               'arc', 'measure', 'transform'}
+                               'arc', 'measure', 'transform', 'text'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
@@ -136,7 +136,8 @@ def test_record_fields(op):
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free'}
     assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors') else 'stable')
     if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
-                  'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle'):
+                  'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle',
+                  'text.free'):
         assert record['params'] == []
     for param in record['params']:
         assert {'slot', 'type', 'unit', 'text'} <= set(param) <= {'slot', 'type', 'unit', 'optional',
@@ -224,6 +225,7 @@ def test_contract_table():
         'bounded': ['polygon', 'circle', 'sector'],
         'figure': ['point', 'line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'polyline'],
         'transformable': ['point', 'segment', 'ray', 'line', 'vector', 'circle', 'arc', 'sector', 'polygon'],
+        'insertable': ['number', 'point'],
     }
     assert reg.accepts('linear', 'ray') and not reg.accepts('circular', 'ray')
 

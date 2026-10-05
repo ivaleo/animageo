@@ -7,7 +7,9 @@ or the classic modules (`animageo.animageo`, `animageo.geo`) at import time:
 the bridge and the renderer load the classic code inside their functions.
 Label layout (`native.layout_labels`, §9.7) works without manim.
 The text form of a document, «Команды» (`native.parse_commands`,
-`native.print_commands`), is in `docs/native/commands.md`.
+`native.print_commands`), is in `docs/native/commands.md`; the expressions of
+`number.expression` (AST v1, `animageo.native.expr`) are in
+`docs/native/expr.md`.
 The browser kernel of the web app repeats §1–§8 in TypeScript; the
 per-operation formulas are in `docs/native/ops/<op>.md`. When the two kernels
 disagree, the library is right and the fixtures it generates are the
@@ -45,6 +47,7 @@ Argument  = {"kind": "ref", "elementId": ID}
           | {"kind": "list", "items": [Argument, …]}
           | {"kind": "number", "value": number}
           | {"kind": "expr", "ast": Expr}                    1.4 (a5), expr.md
+          | {"kind": "template", "value": string ≤ 1000}     1.4 (a5), ops/text.free.md
 Element   = {"id": ID, "type": type, "producer": {"operationId": ID, "slot": slot},
              "displayName": string, "origin"?: object}
 Input     = {"kind": "point", "value": [x, y]}                         point.free
@@ -78,7 +81,10 @@ Input     = {"kind": "point", "value": [x, y]}                         point.fre
   (`number.expression`), and that slot takes nothing else. The structure
   checks only that `ast` is an object; the tree itself (nodes, whitelist,
   limits, `{ref: k}` inside the list input `refs`) is checked by `validate`
-  as the issue `formula` ([expr.md](expr.md)).
+  as the issue `formula` ([expr.md](expr.md)). Likewise a `template`
+  argument (1.4, a5) goes only into an input slot of type `template`
+  (`text.free`): the structure checks a string of at most 1000 characters
+  (code points), `validate` its inserts `{k}` (`formula`).
 - Sections the library does not interpret — `appearance` (read by the
   renderer, §9), `styleBinding`, `timeline`, `exportDefaults`, `bindings`,
   `origin`, unknown keys — are kept as they are.
@@ -116,7 +122,7 @@ only on a structurally valid document.
 | `dangling_ref` | error | a reference (argument or `inputs` key) to a missing element |
 | `type_mismatch` | error | argument kind (list vs ref), a list shorter than `min`, an element type that does not fit the slot, an element type that differs from its output slot type, a number literal in an input slot of another type, a param argument that is not a number literal, an input kind that differs from the free kind (`point` for `point.free`, `pathParameter` for `point.on_path`, `number` for `number.free`, `angle` for `segment.from_point_length`) |
 | `cycle` | error | the operation lies on a dependency cycle |
-| `formula` | error | an `expr` tree breaks AST v1 (a node, the whitelist, a limit, a `ref` outside `refs`); `path` points at the node ([expr.md](expr.md) §2) |
+| `formula` | error | an `expr` tree breaks AST v1 (a node, the whitelist, a limit, a `ref` outside `refs`); `path` points at the node ([expr.md](expr.md) §2). A `template` with a bad brace or an insert outside `refs`; `path` is the template's `value` ([ops/text.free.md](ops/text.free.md)) |
 | `input_not_free` | error | an input value for an element not produced by a free op, or for an element of a free op other than its first output slot |
 | `missing_input` | error | the element of the first output slot of a free op without an input value (not for an `angle` input, which defaults to `0`) |
 
@@ -216,6 +222,7 @@ table `animageo/native/parity/v1/canonical.json` is a list of
 | `measure.radius` | 1.4 (a5) | `of: round` → `number` (`length`) | — |
 | `measure.circumference` | 1.4 (a5) | `circle: circle` → `number` (`length`) | — |
 | `number.expression` | 1.4 (a5) | `expr: expr, refs: number[]` (min 0) → `number` (`unit: "scalar"`, [expr.md](expr.md)) | — |
+| `text.free` | 1.4 (a5) | `text: template, anchor: point, refs: insertable[]` (min 0); param `decimals` → `text` | — |
 | `measure.polygon_angles` | 1.4 (a5) | `polygon: polygon` → `angle.1…N` (interior, at vertex `k`) | `vertex_index` |
 | `transform.translate` | 1.4 (a5) | `obj: transformable, vector: vector` → `image` (like `obj`), `side.1…N`, `vertex.1…N` | `vertex_index` |
 | `transform.rotate` | 1.4 (a5) | `obj: transformable, angle: number, center: point` → `image`, `side.i`, `vertex.k` | `vertex_index` |
@@ -237,6 +244,7 @@ table `animageo/native/parity/v1/canonical.json` is a list of
   | `bounded` (1.4, a5) | `polygon`, `circle`, `sector` |
   | `figure` (1.4, a5) | `point` and the `path` types |
   | `transformable` (1.4, a5) | `point`, `segment`, `ray`, `line`, `vector`, `circle`, `arc`, `sector`, `polygon` |
+  | `insertable` (1.4, a5) | `number`, `point` |
 
   An arc in a `circular` slot (`intersect.line_circle`,
   `intersect.circle_circle`, `intersect.other_than`) is intersected as its
@@ -315,9 +323,11 @@ Record = {"state": "defined", "type", "value", "detail"?}
 | arc | `{c: [x, y], r, a0, a1}` — radians, counter-clockwise from `a0` to `a1`; `a0 ∈ [0, 2π)`, `a1 ∈ [a0, a0 + 2π]`; a zero sweep is defined, `a1 = a0 + 2π` is the full circle |
 | sector | `{c: [x, y], r, a0, a1}` — the region of the arc `{c, r, a0, a1}` and the radii to its ends `S0`, `S1`; `a1 = a0 + 2π` is the full disc |
 | polyline | `{vertices: [[x, y], …], length}` — at least two vertices in definition order, `length` the sum of the links |
+| text (1.4, a5) | `{anchor: [x, y], text, parts}` — the filled template and its pieces `{text}` / `{ref: k, text}`; `text` and `parts` compare exactly |
 
-`_types.json` also lists `expr` (1.4, a5, `"argument": true`): the type of an
-input slot that takes an `expr` argument, never the type of an element.
+`_types.json` also lists `expr` and `template` (1.4, a5, `"argument": true`):
+the types of input slots that take an `expr` or a `template` argument,
+never the type of an element.
 
 Angles (`_types.json → angles`): a direction is normalised by `θ =
 atan2(y, x)`, `θ < 0` gives `θ + 2π`, then `θ ≥ 2π` gives `0` and `−0`
@@ -379,9 +389,10 @@ order):
    type `number` (it is the defined value `{value, unit: "scalar"}` and no
    dependency) and is a `type_mismatch` elsewhere. Then each param in
    registry order: absent and required → `error/schema`; not a number
-   literal → `error/type_mismatch`. An `expr` slot (1.4, a5) takes only an
-   `expr` argument (else `error/type_mismatch`), and after the params a tree
-   that AST v1 refuses, with the item count of `refs`, is `error/formula`.
+   literal → `error/type_mismatch`. An `expr` or `template` slot (1.4, a5)
+   takes only an argument of that kind (else `error/type_mismatch`), and
+   after the params a tree or a template that the rules refuse, with the
+   item count of `refs`, is `error/formula`.
    The first problem found wins;
 4. a free op whose element (first output slot) has no usable input value of
    its kind → `error/schema`; an absent `angle` input is `0`;

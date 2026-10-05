@@ -54,7 +54,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `expr` and the limits `expr` join `_types.json` and `_numeric.json`.
     «Команды» print the formula (`e = sqrt(a) + b^3`) with the warning
     `unprintable_operation`: the grammar has no expressions yet, the line
-    reads back as `forbidden` and an edit keeps the operation.
+    reads back as `forbidden` and an edit keeps the operation;
+  - `text.free` — a text at a point with inserts: the argument kind
+    `{"kind": "template", "value": string}` (at most 1000 characters;
+    schema and structure check), `{k}` inserts item `k` of the list input
+    `refs` (a number or a point, family `insertable`), `{{`/`}}` are
+    braces; a bad insert is the issue `formula`. The value type `text` is
+    `{anchor, text, parts}` without markup; numbers print rounded to the
+    param `decimals` (default 2) half to even, angles in degrees with `°`,
+    points as `(x, y)`. The bridge draws it as a classic `Text`. «Команды»
+    print `Текст("…", A, a)` with `unprintable_operation`.
 
 ## [1.8.1a4] - 2026-10-05
 

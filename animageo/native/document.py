@@ -20,6 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .canonical import canonical_json, sha256_of
+from .expr import MAX_TEMPLATE_LENGTH, template_problems
 from .expr import problems as expr_problems
 from .registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, free_slot, registry
 
@@ -271,8 +272,15 @@ class _Structure:
             self.keys(arg, path, 'an expr argument', ('kind', 'ast'), ('kind', 'ast'), operationId=op_id)
             if 'ast' in arg:
                 self.object(arg['ast'], path + '/ast', 'ast')
+        elif kind == 'template':       # registry 1.4 (a5): inserts are checked by validate (formula)
+            self.keys(arg, path, 'a template argument', ('kind', 'value'), ('kind', 'value'), operationId=op_id)
+            value = arg.get('value')
+            if 'value' in arg and (not isinstance(value, str) or len(value) > MAX_TEMPLATE_LENGTH):
+                self.add(path + '/value', f'value must be a string of at most {MAX_TEMPLATE_LENGTH} characters',
+                         operationId=op_id)
         else:
-            self.add(path + '/kind', f'unknown argument kind {kind!r} (ref, list, number, expr)', operationId=op_id)
+            self.add(path + '/kind', f'unknown argument kind {kind!r} (ref, list, number, expr, template)',
+                     operationId=op_id)
 
     def operation(self, key, op, path):
         if not self.object(op, path, 'an operation'):
@@ -674,16 +682,21 @@ def validate(doc) -> list:
                     issues.append(Issue('missing_slot', spath, f"{op['op']} needs argument {slot!r}",
                                         operationId=op_id))
                     continue
-                if item['type'] == 'expr':
-                    if arg['kind'] != 'expr':
-                        issues.append(Issue('type_mismatch', spath, f'argument {slot!r} must be an expression',
+                if item['type'] in ('expr', 'template'):
+                    if arg['kind'] != item['type']:
+                        issues.append(Issue('type_mismatch', spath, f"argument {slot!r} must be "
+                                            f"{'an expression' if item['type'] == 'expr' else 'a template'}",
                                             operationId=op_id))
                         continue
                     refs_arg = args.get('refs')
                     count = len(refs_arg['items']) if isinstance(refs_arg, dict) and refs_arg['kind'] == 'list' \
                         else None
-                    for pointer, message in expr_problems(arg['ast'], count):
-                        issues.append(Issue('formula', spath + '/ast' + pointer, message, operationId=op_id))
+                    if item['type'] == 'expr':
+                        for pointer, message in expr_problems(arg['ast'], count):
+                            issues.append(Issue('formula', spath + '/ast' + pointer, message, operationId=op_id))
+                    else:
+                        for message in template_problems(arg['value'], count):
+                            issues.append(Issue('formula', spath + '/value', message, operationId=op_id))
                     continue
                 if item.get('list'):
                     if arg['kind'] != 'list':

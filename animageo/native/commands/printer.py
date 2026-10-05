@@ -11,11 +11,13 @@ middle without a name gets the default name the parser would give.
 """
 from __future__ import annotations
 
+import json
 from typing import NamedTuple
 
 from ..document import as_document, bound_producer, cyclic_operations, iter_refs, op_dependencies
 from ..edit import name_key
 from ..expr import problems as expr_problems
+from ..expr import template_problems
 from ..expr import to_text as expr_text
 from ..kernel.evaluate import _order
 from ..registry import FREE_INPUT_DEFAULTS, registry
@@ -166,6 +168,8 @@ class _Printer:
             return [(format_number(arg.get('value')), NUM, False)]
         if arg.get('kind') == 'expr':
             return [('выражение', '', True)]
+        if arg.get('kind') == 'template':
+            return [(json.dumps(arg.get('value'), ensure_ascii=False), '', True)]
         if arg.get('kind') == 'list':
             out = []
             for item in arg.get('items') or ():
@@ -183,6 +187,19 @@ class _Printer:
                 or expr_problems(expr.get('ast'), len(items))):
             return None
         return expr_text(expr['ast'], [self._ref(i.get('elementId'), None)[0] for i in items])
+
+    def _text_line(self, op: dict):
+        """``Текст("…", A, a, b)`` of a valid ``text.free``, else ``None``."""
+        args = op.get('args') or {}
+        template, anchor, refs = args.get('text'), args.get('anchor'), args.get('refs')
+        items = refs.get('items') if isinstance(refs, dict) and refs.get('kind') == 'list' else None
+        if (not isinstance(template, dict) or template.get('kind') != 'template'
+                or not isinstance(anchor, dict) or anchor.get('kind') != 'ref' or not isinstance(items, list)
+                or not all(isinstance(i, dict) and i.get('kind') == 'ref' for i in items)
+                or template_problems(template.get('value'), len(items))):
+            return None
+        names = [self._ref(i.get('elementId'), None)[0] for i in [anchor] + items]
+        return f"Текст({json.dumps(template['value'], ensure_ascii=False)}, {', '.join(names)})"
 
     def _free_value(self, op: dict, record: dict):
         free = record.get('free')
@@ -334,6 +351,13 @@ class _Printer:
                 # the grammar of «Команды» has no expressions yet: the line reads
                 # back as the error forbidden, and an edit keeps the operation
                 self._warn('unprintable_operation', line_no, column, 'выражения в «Командах» будут позже')
+                return f'{prefix}{text}', info
+        if op['op'] == 'text.free':
+            text = self._text_line(op)
+            if text is not None:
+                # «Команды» have no strings yet: the line reads back as a syntax
+                # error, and an edit keeps the operation
+                self._warn('unprintable_operation', line_no, column, 'надписи в «Командах» будут позже')
                 return f'{prefix}{text}', info
         call = self._call(op, record)
         if call is None:

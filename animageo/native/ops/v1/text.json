@@ -1,0 +1,53 @@
+[
+  {
+    "op": "text.free",
+    "status": "stable",
+    "since": "1.4",
+    "inputs": [
+      {
+        "slot": "text",
+        "type": "template"
+      },
+      {
+        "slot": "anchor",
+        "type": "point"
+      },
+      {
+        "slot": "refs",
+        "type": "insertable",
+        "list": true,
+        "min": 0
+      }
+    ],
+    "params": [
+      {
+        "slot": "decimals",
+        "type": "number",
+        "unit": null,
+        "optional": true,
+        "default": 2,
+        "text": "decimal places of a number insert: a whole number 0…10 (invalid_parameter otherwise); 2 when absent"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "text",
+        "type": "text"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "text",
+    "phrases": {
+      "ru": "{text} — надпись у точки {anchor}"
+    },
+    "math": "docs/native/ops/text.free.md",
+    "signatureHash": "sha256:1ac2a20404ba190ff963202c85848dc3b23aa4890ff43279ab432e9fb7c1715c"
+  }
+]

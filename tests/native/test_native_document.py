@@ -324,6 +324,12 @@ def _invalid_documents():
     yield 'expr without ast', variant(lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'expr'}))
     yield 'expr ast not an object', variant(
         lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'expr', 'ast': [1]}))
+    yield 'template not a string', variant(
+        lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'template', 'value': 1}))
+    yield 'template too long', variant(
+        lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'template', 'value': 'я' * 1001}))
+    yield 'template without value', variant(
+        lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'template'}))
     yield 'expr extra key', variant(
         lambda d: d['operations']['op_M']['args'].__setitem__('a', {'kind': 'expr', 'ast': {'num': 1}, 'text': '1'}))
     yield 'bad output slot', variant(lambda d: d['operations']['op_M']['outputs'][0].__setitem__('slot', 'side.0'))

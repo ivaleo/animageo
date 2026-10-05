@@ -12,10 +12,15 @@ language that comes later, so a v1 tree stays a valid v2 tree::
 operation. No text is parsed and nothing is ``eval``-ed: :func:`problems`
 checks a tree against the whitelist and the limits, :func:`evaluate` walks
 it node by node.
+
+The templates of ``text.free`` (``"Угол {0}"``) live here too
+(:mod:`.template`): a string with inserts ``{k}`` into ``refs``.
 """
 from .evaluate import ExprError, evaluate
 from .printer import to_text
+from .template import MAX_TEMPLATE_LENGTH, format_value, split_template, template_problems
 from .validate import CONSTANTS, FUNCTIONS, MAX_DEPTH, MAX_INTEGER_POWER, MAX_NODES, OPERATORS, problems
 
-__all__ = ['CONSTANTS', 'ExprError', 'FUNCTIONS', 'MAX_DEPTH', 'MAX_INTEGER_POWER', 'MAX_NODES', 'OPERATORS',
-           'evaluate', 'problems', 'to_text']
+__all__ = ['CONSTANTS', 'ExprError', 'FUNCTIONS', 'MAX_DEPTH', 'MAX_INTEGER_POWER', 'MAX_NODES',
+           'MAX_TEMPLATE_LENGTH', 'OPERATORS', 'evaluate', 'format_value', 'problems', 'split_template',
+           'template_problems', 'to_text']

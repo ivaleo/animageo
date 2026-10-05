@@ -52,6 +52,15 @@
       "value": {"vertices": "length", "length": "length"},
       "text": "polyline {vertices: [[x, y], ...], length}; at least two vertices in definition order, length is the sum of the links"
     },
+    "text": {
+      "value": {"anchor": "length"},
+      "text": "text {anchor: [x, y], text, parts}; text is the template with its inserts filled, parts the pieces in order: {text} for a literal, {ref: k, text} for an insert; both compare exactly (registry 1.4, a5)"
+    },
+    "template": {
+      "value": {},
+      "argument": true,
+      "text": "template: the type of an input slot that takes the argument {kind: \"template\", value: string} (docs/native/ops/text.free.md), not of an element; {k} inserts item k of the list input refs"
+    },
     "expr": {
       "value": {},
       "argument": true,
@@ -75,7 +84,8 @@
     "measurable": ["segment", "vector", "polyline", "arc"],
     "bounded": ["polygon", "circle", "sector"],
     "figure": ["point", "line", "segment", "ray", "circle", "polygon", "arc", "sector", "polyline"],
-    "transformable": ["point", "segment", "ray", "line", "vector", "circle", "arc", "sector", "polygon"]
+    "transformable": ["point", "segment", "ray", "line", "vector", "circle", "arc", "sector", "polygon"],
+    "insertable": ["number", "point"]
   },
   "paths": {
     "segment": {

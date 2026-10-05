@@ -405,8 +405,9 @@ the hidden pairs. The exceptions:
 Edit mode keeps more: `parse_commands(print_commands(doc).text, base=doc)`
 gives empty `effects` and the same document. This holds for every scene of
 `parity/v1` and every document of the commands fixtures; a scene with a
-`number.expression` reads back with the error `forbidden` at its lines, and
-the edit keeps those operations (a failed line keeps the operation it names).
+`number.expression` reads back with the error `forbidden` at its lines (a
+`text.free` with `syntax`), and the edit keeps those operations (a failed
+line keeps the operation it names).
 
 ### 6.4 Warnings
 
@@ -417,6 +418,7 @@ the edit keeps those operations (a failed line keeps the operation it names).
 | `unprintable_params` | a param after a left-out one (for example `max` without `min`): the form has no gap | the nearest form the lexicon has; the param after the gap is dropped |
 | `unprintable_operation` | the op is not in the registry, or the operation does not fit its record | `opid(args)` in registry slot order |
 | `unprintable_operation` | a `number.expression` (1.8.1a5): the grammar has no expressions yet | the formula, `e = sqrt(a) + b^3` ([expr.md](expr.md) §4); it reads back as `forbidden` |
+| `unprintable_operation` | a `text.free` (1.8.1a5): the grammar has no strings yet | `t = Текст("a = {0}", A, a)` — the template as a JSON string, the anchor, the refs (`decimals` is not printed); it reads back as `syntax` at `"` |
 
 ## 7. Issues
 
@@ -593,7 +595,8 @@ python -m animageo.native commands print <doc.json> [--lexicon <file>]
   with `seq` (L3).
 - `number.expression` prints as its formula, which the grammar refuses
   (`forbidden`, «выражения будут позже»); expressions in «Команды» come with
-  the expression language v2.
+  the expression language v2. `text.free` prints as `Текст("…", A, …)`,
+  which the lexer refuses at `"` (`syntax`).
 - A param after a gap (`number.free` with `max` but no `min`) does not print
   (`unprintable_params`). Edit mode still keeps it, as long as the printed
   line comes back unchanged.

@@ -1,0 +1,1300 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l2a5_text",
+  "registry": "1.4",
+  "generatedBy": "animageo 1.8.1a5.dev3",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l2a5_text",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_V": {
+        "id": "op_V",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "V"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_a": {
+        "id": "op_a",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "a"
+          }
+        ]
+      },
+      "op_b": {
+        "id": "op_b",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "b"
+          }
+        ]
+      },
+      "op_ang": {
+        "id": "op_ang",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "ang"
+          }
+        ]
+      },
+      "op_m": {
+        "id": "op_m",
+        "op": "measure.angle",
+        "args": {
+          "angle": {
+            "kind": "ref",
+            "elementId": "ang"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "m"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_L": {
+        "id": "op_L",
+        "op": "measure.length",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "L"
+          }
+        ]
+      },
+      "op_t1": {
+        "id": "op_t1",
+        "op": "text.free",
+        "args": {
+          "text": {
+            "kind": "template",
+            "value": "a = {0}, b = {1}"
+          },
+          "anchor": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "a"
+              },
+              {
+                "kind": "ref",
+                "elementId": "b"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "text",
+            "elementId": "t1"
+          }
+        ]
+      },
+      "op_t2": {
+        "id": "op_t2",
+        "op": "text.free",
+        "args": {
+          "text": {
+            "kind": "template",
+            "value": "угол CVA = {0}"
+          },
+          "anchor": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "m"
+              }
+            ]
+          },
+          "decimals": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "text",
+            "elementId": "t2"
+          }
+        ]
+      },
+      "op_t3": {
+        "id": "op_t3",
+        "op": "text.free",
+        "args": {
+          "text": {
+            "kind": "template",
+            "value": "A = {0}, |AC| = {1}, снова {0}"
+          },
+          "anchor": {
+            "kind": "ref",
+            "elementId": "C"
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "L"
+              }
+            ]
+          },
+          "decimals": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "text",
+            "elementId": "t3"
+          }
+        ]
+      },
+      "op_t4": {
+        "id": "op_t4",
+        "op": "text.free",
+        "args": {
+          "text": {
+            "kind": "template",
+            "value": "Дано: {{ABC}}"
+          },
+          "anchor": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "text",
+            "elementId": "t4"
+          }
+        ]
+      },
+      "op_t5": {
+        "id": "op_t5",
+        "op": "text.free",
+        "args": {
+          "text": {
+            "kind": "template",
+            "value": "n = {0}"
+          },
+          "anchor": {
+            "kind": "ref",
+            "elementId": "V"
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "a"
+              }
+            ]
+          },
+          "decimals": {
+            "kind": "number",
+            "value": 2.5
+          }
+        },
+        "outputs": [
+          {
+            "slot": "text",
+            "elementId": "t5"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "V": {
+        "id": "V",
+        "type": "point",
+        "displayName": "V",
+        "producer": {
+          "operationId": "op_V",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "a": {
+        "id": "a",
+        "type": "number",
+        "displayName": "a",
+        "producer": {
+          "operationId": "op_a",
+          "slot": "number"
+        }
+      },
+      "b": {
+        "id": "b",
+        "type": "number",
+        "displayName": "b",
+        "producer": {
+          "operationId": "op_b",
+          "slot": "number"
+        }
+      },
+      "ang": {
+        "id": "ang",
+        "type": "angle",
+        "displayName": "ang",
+        "producer": {
+          "operationId": "op_ang",
+          "slot": "angle"
+        }
+      },
+      "m": {
+        "id": "m",
+        "type": "number",
+        "displayName": "m",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "number"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "L": {
+        "id": "L",
+        "type": "number",
+        "displayName": "L",
+        "producer": {
+          "operationId": "op_L",
+          "slot": "number"
+        }
+      },
+      "t1": {
+        "id": "t1",
+        "type": "text",
+        "displayName": "t1",
+        "producer": {
+          "operationId": "op_t1",
+          "slot": "text"
+        }
+      },
+      "t2": {
+        "id": "t2",
+        "type": "text",
+        "displayName": "t2",
+        "producer": {
+          "operationId": "op_t2",
+          "slot": "text"
+        }
+      },
+      "t3": {
+        "id": "t3",
+        "type": "text",
+        "displayName": "t3",
+        "producer": {
+          "operationId": "op_t3",
+          "slot": "text"
+        }
+      },
+      "t4": {
+        "id": "t4",
+        "type": "text",
+        "displayName": "t4",
+        "producer": {
+          "operationId": "op_t4",
+          "slot": "text"
+        }
+      },
+      "t5": {
+        "id": "t5",
+        "type": "text",
+        "displayName": "t5",
+        "producer": {
+          "operationId": "op_t5",
+          "slot": "text"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          2
+        ]
+      },
+      "V": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "a": {
+        "kind": "number",
+        "value": 0.125
+      },
+      "b": {
+        "kind": "number",
+        "value": 2.5
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "L": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.605551275463989,
+            "unit": "length"
+          }
+        },
+        "V": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "a": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.125,
+            "unit": "scalar"
+          }
+        },
+        "ang": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 0.0,
+            "a1": 1.1071487177940904,
+            "size": 1.1071487177940904
+          }
+        },
+        "b": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.5,
+            "unit": "scalar"
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.1071487177940904,
+            "unit": "angle"
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              2.0
+            ],
+            "b": [
+              4.0,
+              0.0
+            ],
+            "length": 3.605551275463989
+          }
+        },
+        "t1": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              1.0,
+              2.0
+            ],
+            "text": "a = 0.12, b = 2.5",
+            "parts": [
+              {
+                "text": "a = "
+              },
+              {
+                "ref": 0,
+                "text": "0.12"
+              },
+              {
+                "text": ", b = "
+              },
+              {
+                "ref": 1,
+                "text": "2.5"
+              }
+            ]
+          }
+        },
+        "t2": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              0.0,
+              0.0
+            ],
+            "text": "угол CVA = 63.4°",
+            "parts": [
+              {
+                "text": "угол CVA = "
+              },
+              {
+                "ref": 0,
+                "text": "63.4°"
+              }
+            ]
+          }
+        },
+        "t3": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              4.0,
+              0.0
+            ],
+            "text": "A = (1, 2), |AC| = 4, снова (1, 2)",
+            "parts": [
+              {
+                "text": "A = "
+              },
+              {
+                "ref": 0,
+                "text": "(1, 2)"
+              },
+              {
+                "text": ", |AC| = "
+              },
+              {
+                "ref": 1,
+                "text": "4"
+              },
+              {
+                "text": ", снова "
+              },
+              {
+                "ref": 0,
+                "text": "(1, 2)"
+              }
+            ]
+          }
+        },
+        "t4": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              1.0,
+              2.0
+            ],
+            "text": "Дано: {ABC}",
+            "parts": [
+              {
+                "text": "Дано: {ABC}"
+              }
+            ]
+          }
+        },
+        "t5": {
+          "state": "undefined",
+          "type": "text",
+          "reason": "invalid_parameter"
+        }
+      },
+      "checks": {
+        "op_ang:sides": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "half_to_even",
+      "inputs": {
+        "a": {
+          "kind": "number",
+          "value": 0.375
+        },
+        "b": {
+          "kind": "number",
+          "value": -0.004
+        },
+        "A": {
+          "kind": "point",
+          "value": [
+            -2.5,
+            1.5
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.5,
+            "y": 1.5
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "L": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 6.670832032063167,
+            "unit": "length"
+          }
+        },
+        "V": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "a": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.375,
+            "unit": "scalar"
+          }
+        },
+        "ang": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 0.0,
+            "a1": 2.601173153319209,
+            "size": 2.601173153319209
+          }
+        },
+        "b": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -0.004,
+            "unit": "scalar"
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.601173153319209,
+            "unit": "angle"
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.5,
+              1.5
+            ],
+            "b": [
+              4.0,
+              0.0
+            ],
+            "length": 6.670832032063167
+          }
+        },
+        "t1": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              -2.5,
+              1.5
+            ],
+            "text": "a = 0.38, b = 0",
+            "parts": [
+              {
+                "text": "a = "
+              },
+              {
+                "ref": 0,
+                "text": "0.38"
+              },
+              {
+                "text": ", b = "
+              },
+              {
+                "ref": 1,
+                "text": "0"
+              }
+            ]
+          }
+        },
+        "t2": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              0.0,
+              0.0
+            ],
+            "text": "угол CVA = 149°",
+            "parts": [
+              {
+                "text": "угол CVA = "
+              },
+              {
+                "ref": 0,
+                "text": "149°"
+              }
+            ]
+          }
+        },
+        "t3": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              4.0,
+              0.0
+            ],
+            "text": "A = (-2, 2), |AC| = 7, снова (-2, 2)",
+            "parts": [
+              {
+                "text": "A = "
+              },
+              {
+                "ref": 0,
+                "text": "(-2, 2)"
+              },
+              {
+                "text": ", |AC| = "
+              },
+              {
+                "ref": 1,
+                "text": "7"
+              },
+              {
+                "text": ", снова "
+              },
+              {
+                "ref": 0,
+                "text": "(-2, 2)"
+              }
+            ]
+          }
+        },
+        "t4": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              -2.5,
+              1.5
+            ],
+            "text": "Дано: {ABC}",
+            "parts": [
+              {
+                "text": "Дано: {ABC}"
+              }
+            ]
+          }
+        },
+        "t5": {
+          "state": "undefined",
+          "type": "text",
+          "reason": "invalid_parameter"
+        }
+      },
+      "checks": {
+        "op_ang:sides": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            3,
+            3
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            -4,
+            1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 3.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 1.0
+          }
+        },
+        "L": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 7.280109889280518,
+            "unit": "length"
+          }
+        },
+        "V": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "a": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.125,
+            "unit": "scalar"
+          }
+        },
+        "ang": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 2.896613990462929,
+            "a1": 7.0685834705770345,
+            "size": 4.171969480114106
+          }
+        },
+        "b": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.5,
+            "unit": "scalar"
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.171969480114106,
+            "unit": "angle"
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.0,
+              3.0
+            ],
+            "b": [
+              -4.0,
+              1.0
+            ],
+            "length": 7.280109889280518
+          }
+        },
+        "t1": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              3.0,
+              3.0
+            ],
+            "text": "a = 0.12, b = 2.5",
+            "parts": [
+              {
+                "text": "a = "
+              },
+              {
+                "ref": 0,
+                "text": "0.12"
+              },
+              {
+                "text": ", b = "
+              },
+              {
+                "ref": 1,
+                "text": "2.5"
+              }
+            ]
+          }
+        },
+        "t2": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              0.0,
+              0.0
+            ],
+            "text": "угол CVA = 239°",
+            "parts": [
+              {
+                "text": "угол CVA = "
+              },
+              {
+                "ref": 0,
+                "text": "239°"
+              }
+            ]
+          }
+        },
+        "t3": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              -4.0,
+              1.0
+            ],
+            "text": "A = (3, 3), |AC| = 7, снова (3, 3)",
+            "parts": [
+              {
+                "text": "A = "
+              },
+              {
+                "ref": 0,
+                "text": "(3, 3)"
+              },
+              {
+                "text": ", |AC| = "
+              },
+              {
+                "ref": 1,
+                "text": "7"
+              },
+              {
+                "text": ", снова "
+              },
+              {
+                "ref": 0,
+                "text": "(3, 3)"
+              }
+            ]
+          }
+        },
+        "t4": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              3.0,
+              3.0
+            ],
+            "text": "Дано: {ABC}",
+            "parts": [
+              {
+                "text": "Дано: {ABC}"
+              }
+            ]
+          }
+        },
+        "t5": {
+          "state": "undefined",
+          "type": "text",
+          "reason": "invalid_parameter"
+        }
+      },
+      "checks": {
+        "op_ang:sides": "passed",
+        "op_s:ends": "passed"
+      }
+    },
+    {
+      "name": "large",
+      "inputs": {
+        "b": {
+          "kind": "number",
+          "value": 1e+16
+        },
+        "a": {
+          "kind": "number",
+          "value": -7.0
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "L": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.605551275463989,
+            "unit": "length"
+          }
+        },
+        "V": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "a": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -7.0,
+            "unit": "scalar"
+          }
+        },
+        "ang": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 0.0,
+            "a1": 1.1071487177940904,
+            "size": 1.1071487177940904
+          }
+        },
+        "b": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1e+16,
+            "unit": "scalar"
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.1071487177940904,
+            "unit": "angle"
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              1.0,
+              2.0
+            ],
+            "b": [
+              4.0,
+              0.0
+            ],
+            "length": 3.605551275463989
+          }
+        },
+        "t1": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              1.0,
+              2.0
+            ],
+            "text": "a = -7, b = 1e+16",
+            "parts": [
+              {
+                "text": "a = "
+              },
+              {
+                "ref": 0,
+                "text": "-7"
+              },
+              {
+                "text": ", b = "
+              },
+              {
+                "ref": 1,
+                "text": "1e+16"
+              }
+            ]
+          }
+        },
+        "t2": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              0.0,
+              0.0
+            ],
+            "text": "угол CVA = 63.4°",
+            "parts": [
+              {
+                "text": "угол CVA = "
+              },
+              {
+                "ref": 0,
+                "text": "63.4°"
+              }
+            ]
+          }
+        },
+        "t3": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              4.0,
+              0.0
+            ],
+            "text": "A = (1, 2), |AC| = 4, снова (1, 2)",
+            "parts": [
+              {
+                "text": "A = "
+              },
+              {
+                "ref": 0,
+                "text": "(1, 2)"
+              },
+              {
+                "text": ", |AC| = "
+              },
+              {
+                "ref": 1,
+                "text": "4"
+              },
+              {
+                "text": ", снова "
+              },
+              {
+                "ref": 0,
+                "text": "(1, 2)"
+              }
+            ]
+          }
+        },
+        "t4": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              1.0,
+              2.0
+            ],
+            "text": "Дано: {ABC}",
+            "parts": [
+              {
+                "text": "Дано: {ABC}"
+              }
+            ]
+          }
+        },
+        "t5": {
+          "state": "undefined",
+          "type": "text",
+          "reason": "invalid_parameter"
+        }
+      },
+      "checks": {
+        "op_ang:sides": "passed",
+        "op_s:ends": "passed"
+      }
+    }
+  ]
+}
