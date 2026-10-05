@@ -86,6 +86,32 @@ class TestDelete:
             native.delete(scene(), ['A', 'ghost'])
         assert [i.code for i in info.value.issues] == ['unknown_element']
 
+    def test_steps_and_legacy_names_follow(self):
+        """1.10.0a2: a removed operation leaves its step (an empty step goes), a
+        removed element its legacy name; the effects name the steps."""
+        doc = scene()
+        doc['steps'] = [{'id': 'given', 'kind': 'group', 'operationIds': ['op_A', 'op_B', 'op_C', 'op_D']},
+                        {'id': 's2', 'kind': 'group', 'operationIds': ['op_s', 'op_l', 'op_M']},
+                        {'id': 's3', 'kind': 'group', 'operationIds': ['op_c', 'op_P1_P2']}]
+        doc['bindings'] = {'legacyNames': {'A': 'A', 'M': 'M', 'c': 'c', 'P2': 'P_2'}}
+        assert native.validate(doc) == []
+        new, eff = native.delete(doc, ['M'])
+        assert native.validate(new) == []
+        assert new.data['steps'] == [doc['steps'][0], {'id': 's2', 'kind': 'group', 'operationIds': ['op_s', 'op_l']}]
+        assert new.data['bindings'] == {'legacyNames': {'A': 'A'}}
+        assert eff['removed']['steps'] == ['s3'] and eff['modified']['steps'] == ['s2']
+        # the last step goes: no steps left
+        new, eff = native.delete(doc, ['A', 'B'])
+        assert new.data['steps'] == [{'id': 'given', 'kind': 'group', 'operationIds': ['op_C', 'op_D']}]
+        assert eff['removed']['steps'] == ['s2', 's3'] and eff['modified']['steps'] == ['given']
+        assert native.validate(new) == []
+        new, _ = native.delete(new, ['C', 'D'])
+        assert 'steps' not in new.data and new.data['bindings'] == {'legacyNames': {}}
+        # a document without steps keeps the effects of before
+        _, eff = native.delete(scene(), ['P2'])
+        assert 'steps' not in eff['removed'] and 'steps' not in eff['modified']
+        assert native.has('delete.cleanup')
+
 
 class TestRedefine:
     def test_make_a_point_free(self):

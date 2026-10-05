@@ -651,7 +651,7 @@ query lists its result in this order.
 | `closure(doc, ids, *, direction="down")` | the elements reachable from `ids` (included): `"down"` the dependents, `"up"` the ancestors; `ValueError` for an unknown ID |
 | `dependencies(doc, id)` | the ancestors of `id`, without it |
 | `free_inputs(doc, ids)` | the free elements (`point.free`, `point.on_path`) among `closure(ids, "up")` |
-| `delete(doc, ids, *, mode="element")` | `closure(ids, "down")` goes; an operation loses the outputs that went and goes when none are left or when it references a removed element; `mode="operation"` also removes every other output of the producers of `ids`. Inputs and appearance of removed elements go |
+| `delete(doc, ids, *, mode="element")` | `closure(ids, "down")` goes; an operation loses the outputs that went and goes when none are left or when it references a removed element; `mode="operation"` also removes every other output of the producers of `ids`. Inputs, appearance and `bindings.legacyNames` of removed elements go; a removed operation leaves its step in `steps`, a step left empty goes (no step left — no `steps`; 1.10.0a2) |
 | `redefine(doc, op_id, new_op, *, slot_map=None, inputs=None)` | replaces the definition (`{op, args, branch?}`) keeping the output IDs: outputs pair with new slots by name or `slot_map`; an output without a pair goes with its dependents (warning `output_removed`); types and producers of the paired elements follow the new op; `inputs` gives the input values a new free op needs; the inputs of elements that stop being free go |
 | `rename(doc, id, display_name)` | sets `displayName`; the graph does not change |
 
@@ -663,6 +663,10 @@ query lists its result in this order.
  "modified": {"operations": [], "elements": [], "inputs": []},
  "warnings": [Issue.to_dict(), …]}
 ```
+
+When an edit changes `steps` (1.10.0a2), `removed.steps` lists the steps
+that went and `modified.steps` the steps that lost operations; the keys are
+absent otherwise.
 
 Refusal codes:
 

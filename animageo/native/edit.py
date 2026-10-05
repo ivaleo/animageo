@@ -202,9 +202,11 @@ def free_inputs(doc, ids) -> list:
 
 
 def _remove_elements(data: dict, gone: set, effects: dict) -> None:
-    """Drop ``gone`` elements with their inputs and appearance; strip them from
-    operation outputs; drop operations left without outputs or referencing
-    a dropped element."""
+    """Drop ``gone`` elements with their inputs, appearance and legacy names;
+    strip them from operation outputs; drop operations left without outputs
+    or referencing a dropped element, and drop those from the steps (a step
+    left empty goes; ``effects`` gets ``removed.steps`` / ``modified.steps``
+    only when a step changed)."""
     elements = data.get('elements') or {}
     for el_id in gone:
         if el_id in elements:
@@ -220,7 +222,13 @@ def _remove_elements(data: dict, gone: set, effects: dict) -> None:
         for el_id in [e for e in appearance if e in gone]:
             del appearance[el_id]
             effects['removed']['appearance'].append(el_id)
+    bindings = data.get('bindings')
+    legacy = bindings.get('legacyNames') if isinstance(bindings, dict) else None
+    if isinstance(legacy, dict):
+        for el_id in [e for e in legacy if e in gone]:
+            del legacy[el_id]
     ops = data.get('operations') or {}
+    dropped = set()
     for op_id in list(ops):
         op = ops[op_id]
         outputs = op.get('outputs') or []
@@ -228,11 +236,29 @@ def _remove_elements(data: dict, gone: set, effects: dict) -> None:
         refs_gone = any(ref in gone for ref in _op_refs(op))
         if (outputs and not kept) or refs_gone:
             del ops[op_id]
+            dropped.add(op_id)
             effects['removed']['operations'].append(op_id)
             effects['modified']['operations'] = [o for o in effects['modified']['operations'] if o != op_id]
         elif len(kept) != len(outputs):
             op['outputs'] = kept
             effects['modified']['operations'].append(op_id)
+    steps = data.get('steps')
+    if dropped and isinstance(steps, list):
+        left = []
+        for step in steps:
+            ids = step.get('operationIds') if isinstance(step, dict) else None
+            if isinstance(ids, list) and any(o in dropped for o in ids):
+                rest = [o for o in ids if o not in dropped]
+                if not rest:
+                    effects['removed'].setdefault('steps', []).append(step.get('id'))
+                    continue
+                step['operationIds'] = rest
+                effects['modified'].setdefault('steps', []).append(step.get('id'))
+            left.append(step)
+        if left:
+            data['steps'] = left
+        else:
+            del data['steps']
 
 
 def delete(doc, ids, *, mode: str = 'element') -> EditResult:
