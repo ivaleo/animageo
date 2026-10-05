@@ -1,4 +1,5 @@
-"""The data files of animageo.native ship with the package."""
+"""The data files of animageo ship with the package (1.11.0rc1, L6 item 12:
+every data file of the package, not only the JSON of ``animageo.native``)."""
 import fnmatch
 import json
 import os
@@ -21,11 +22,38 @@ DATA_DIRS = [
     ('parity', 'v1', 'expected'),
     ('parity', 'v1', 'commands'),
     ('commands',),
+    ('convert',),
+    ('labels',),
+    ('phrases',),
+    ('marks',),
+    ('recipes', 'v1'),
+    ('parity', 'v1', 'steps'),
+    ('parity', 'v1', 'timeline'),
+    ('parity', 'v1', 'recipes'),
+    ('parity', 'v1', 'general'),
+    ('parity', 'v1', 'marks'),
 ]
+PACKAGE_DIR = REPO_ROOT / 'animageo'
 
 
 def _json_files_on_disk():
     return sorted(str(p.relative_to(REPO_ROOT / 'animageo')) for p in NATIVE_DIR.rglob('*.json'))
+
+
+def _data_files_on_disk():
+    """Every file of the package that is not Python source (``.claude`` is pruned)."""
+    out = []
+    for path in PACKAGE_DIR.rglob('*'):
+        rel = path.relative_to(PACKAGE_DIR)
+        if (not path.is_file() or path.suffix in ('.py', '.pyc') or '__pycache__' in rel.parts
+                or rel.parts[0] == '.claude'):
+            continue
+        out.append(rel.as_posix())
+    return sorted(out)
+
+
+def _covered(rel, patterns):
+    return any(fnmatch.fnmatch(rel, pattern) and rel.count('/') == pattern.count('/') for pattern in patterns)
 
 
 def test_resources_are_found_through_importlib():
@@ -46,8 +74,28 @@ def test_package_data_covers_every_json_file():
     config = tomllib.loads((REPO_ROOT / 'pyproject.toml').read_text(encoding='utf-8'))
     patterns = config['tool']['setuptools']['package-data']['animageo']
     for rel in _json_files_on_disk():
-        assert any(fnmatch.fnmatch(rel, pattern) and rel.count('/') == pattern.count('/')
-                   for pattern in patterns), rel
+        assert _covered(rel, patterns), rel
+
+
+def test_package_data_covers_every_data_file():
+    config = tomllib.loads((REPO_ROOT / 'pyproject.toml').read_text(encoding='utf-8'))
+    patterns = config['tool']['setuptools']['package-data']['animageo']
+    files = _data_files_on_disk()
+    assert {'dsl.pyi', 'py.typed', 'AI_USAGE_PROMPT.md', 'native/convert/dsl_map.json',
+            'native/labels/metrics.v1.json', 'native/marks/auto.v1.json', 'style/builtin.json',
+            'parsers/dsl/namespace.pyi'} <= set(files)
+    assert [rel for rel in files if not _covered(rel, patterns)] == []
+    # every pattern still matches something (no stale entry)
+    assert [p for p in patterns if not any(_covered(rel, [p]) for rel in files)] == []
+
+
+def test_the_style_data_is_found_through_importlib():
+    root = resources.files('animageo')
+    json.loads(root.joinpath('style', 'builtin.json').read_text(encoding='utf-8'))
+    presets = [e.name for e in root.joinpath('style', 'presets').iterdir() if e.name.endswith('.json')]
+    assert presets
+    assert root.joinpath('dsl.pyi').is_file() and root.joinpath('py.typed').is_file()
+    json.loads(root.joinpath('exporters', 'jsxgraph', 'board.schema.json').read_text(encoding='utf-8'))
 
 
 def test_manifest_includes_json_for_the_sdist():
@@ -67,5 +115,6 @@ def test_wheel_contains_the_data(tmp_path):
                    check=True, timeout=600)
     wheel = next(out.glob('animageo-*.whl'))
     names = set(zipfile.ZipFile(wheel).namelist())
-    for rel in _json_files_on_disk():
+    for rel in _data_files_on_disk():
         assert f'animageo/{rel}' in names, rel
+    assert not [n for n in names if n.startswith(('tests/', 'docs/', 'animageo/.claude/'))]
