@@ -40,9 +40,9 @@ print('LOADED', _json.dumps(sorted(m for m in _sys.modules
 """
 
 
-def _run(code, *, blocked=False):
+def _run(code, *, blocked=False, args=()):
     proc = subprocess.run(
-        [sys.executable, '-c', (_BLOCKER if blocked else '') + code],
+        [sys.executable, '-c', (_BLOCKER if blocked else '') + code, *args],
         cwd=REPO_ROOT, capture_output=True, text=True, timeout=180,
     )
     assert proc.returncode == 0, proc.stdout + proc.stderr
@@ -133,6 +133,14 @@ class TestClassicApiOnFirstUse:
         # as in 1.10.0a3: the classic module's ``geo`` (the construction
         # module) wins over the subpackage
         assert rows['GEO'] == 'animageo.geo.construction'
+
+    def test_a_ggb_argument_does_not_hide_the_api(self):
+        """1.10.0a3 skipped the classic import when ``sys.argv`` held a
+        ``.ggb`` (taken for ``python -m animageo file.ggb``): a script run
+        as ``script.py drawing.ggb`` got ImportError on
+        ``from animageo import AnimaGeoScene``. Found by the corpus runner."""
+        code = 'from animageo import AnimaGeoScene\nprint("OK", AnimaGeoScene.__name__)\n'
+        assert 'OK AnimaGeoScene' in _run(code, args=('drawing.ggb',))
 
     def test_star_import_then_names(self):
         code = ('from animageo import *\nassert issubclass(AnimaGeoScene, Scene)\n'

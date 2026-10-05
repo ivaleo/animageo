@@ -1,0 +1,25 @@
+{
+ "format": "animageo-classic-diffs/v1",
+ "about": "Intended differences of the classic renderer, by scene of a regression corpus: the scene id (its path in the corpus), the item of the kernel spec §15 that changed it and its line of the CHANGELOG. scripts/classic_corpus.py verify/compare treat a listed scene that changed as expected and report a listed scene that did not change. The corpus stays outside the repository; only the numbers of its runs are kept here.",
+ "diffs": {},
+ "runs": [
+  {
+   "date": "2026-10-05",
+   "command": "scripts/classic_corpus.py compare $ANIMAGEO_CORPUS --base <1.10.0a3 checkout> --web <web checkout> --video 5 -j 3",
+   "base": "1.10.0a3",
+   "head": "1.11.0rc1",
+   "corpus": "animageo-corpus-2026-10-05: qa 17 + extra 65 + animations 40 + dsl-pairs 24 .ggb, 24 DSL blocks, 40 timelines",
+   "scenes": {"ggb": 147, "dsl-block": 24, "animation": 40},
+   "verdicts": {"same": 210, "failed-both": 1, "different": 0, "broken": 0, "fixed": 0},
+   "compared": "SVG byte for byte (147 drawings, 24 blocks); the last frame PNG of 40 animations and 5 low quality videos byte for byte",
+   "failedBoth": {
+    "qa/19f71e8b427967f2d0a7964203715336b6de9760e6698457513f3f1a6e44728f.ggb": "a 3D drawing (Cube of point3d): the classic draws no 3D, loadGGB(generate_stubs=False) stops at NameError B on both"
+   },
+   "timeSeconds": {
+    "fromAnimageoImportAnimaGeoScene": {"base": 1.06, "head": 1.06, "note": "median of 8 fresh processes; import animageo alone: 1.06 → 0.000"},
+    "loadGGB": {"base": 7.86, "head": 7.80, "note": "sum over 146 drawings, warm LaTeX cache, best of 2, one process, sequential"},
+    "exportSVG": {"base": 0.46, "head": 0.47, "note": "the same runs"}
+   }
+  }
+ ]
+}
