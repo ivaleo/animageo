@@ -47,6 +47,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The bridge draws an arc as a classic `Arc`, a sector as a
   `CircleSector` and a polyline as a `LocusCurve`.
 - 22 parity scenes `l2a4_*` (71 in all, 328 cases).
+- Relations in `native.check(doc, checks=None, *, inputs=None,
+  relations=None, trials=0, seed=None)` (`docs/native/checks.md`):
+  `incident`, `parallel`, `perpendicular`, `equal_length`, `equal_angle`,
+  `collinear`, `concyclic`, `concurrent`, `tangent` between elements, under
+  the keys `relation:<id>`; an unknown predicate or argument type is
+  `unsupported`. `CheckReport.details` says why a result is not decided.
+- `general_position`: with `trials = N > 0` every check and relation must
+  also hold in `N` re-evaluations with perturbed free inputs. The trials
+  use a stdlib SplitMix64 generator seeded from `sha256` of the document ID
+  (or `seed`) and the check ID, so the browser kernel repeats them bit for
+  bit; a failed trial is reported as a counterexample.
 
 ### Changed
 

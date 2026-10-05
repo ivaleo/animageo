@@ -41,6 +41,7 @@ from .document import (
     validate,
 )
 from .kernel.checks import CheckReport, run_checks
+from .kernel.relations import check_document as _check_document
 from .document import as_document, bound_producer
 from .edit import (
     EditError,
@@ -112,13 +113,22 @@ def evaluate(doc, *, inputs=None) -> Evaluated:
     return _evaluate(doc, inputs=inputs)
 
 
-def check(doc, checks=None, *, inputs=None) -> CheckReport:
-    """Mandatory checks of every operation whose outputs are defined.
+def check(doc, checks=None, *, inputs=None, relations=None, trials=0, seed=None) -> CheckReport:
+    """Mandatory checks of every operation whose outputs are defined, and
+    relations between elements.
 
-    ``checks`` limits the report to ``"<operationId>:<checkId>"`` keys or bare
-    check IDs. Each result is ``passed``, ``failed`` or ``inconclusive``.
+    ``checks`` limits the op checks to ``"<operationId>:<checkId>"`` keys or
+    bare check IDs. ``relations`` — ``[{"id", "predicate", "args":
+    [elementId…]}]`` with the predicates ``incident``, ``parallel``,
+    ``perpendicular``, ``equal_length``, ``equal_angle``, ``collinear``,
+    ``concyclic``, ``concurrent``, ``tangent``; their keys are
+    ``"relation:<id>"``. Each result is ``passed``, ``failed``,
+    ``inconclusive`` or (a relation only) ``unsupported``; ``details`` says
+    why. ``trials = N > 0`` runs ``general_position``: every check must also
+    hold with the free inputs perturbed ``N`` times, the trials seeded by
+    ``sha256(documentId or str(seed), check id)`` (``docs/native/checks.md``).
     """
-    return run_checks(_evaluate(doc, inputs=inputs), checks)
+    return _check_document(doc, checks, inputs=inputs, relations=relations, trials=trials, seed=seed)
 
 
 def project(doc, element_id: str, xy, *, inputs=None) -> float | None:
