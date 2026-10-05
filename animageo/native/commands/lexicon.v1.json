@@ -1,0 +1,31 @@
+{
+  "format": "animageo-lexicon/v1",
+  "commands": [
+    {"name": "Точка", "aliases": ["Point"], "op": "point.free", "form": ["$input"]},
+    {"name": "Точка", "aliases": ["Point"], "op": "point.on_path", "form": ["path", "$input"], "minArgs": 1},
+    {"name": "Середина", "aliases": ["Midpoint"], "op": "point.midpoint"},
+    {"name": "Пересечение", "aliases": ["Intersect"], "op": "intersect.line_line"},
+    {"name": "Пересечение", "aliases": ["Intersect"], "op": "intersect.line_circle"},
+    {"name": "Пересечение", "aliases": ["Intersect"], "op": "intersect.circle_circle"},
+    {"name": "Пересечение", "aliases": ["ВтороеПересечение"], "op": "intersect.other_than"},
+    {"name": "Проекция", "aliases": ["ОснованиеПерпендикуляра"], "op": "point.projection"},
+    {"name": "Отрезок", "aliases": ["Segment"], "op": "segment.by_points"},
+    {"name": "Прямая", "aliases": ["Line"], "op": "line.by_points"},
+    {"name": "Луч", "aliases": ["Ray"], "op": "ray.by_points"},
+    {"name": "Параллельная", "aliases": ["Прямая", "Line"], "op": "line.parallel"},
+    {"name": "Перпендикуляр", "aliases": ["PerpendicularLine"], "op": "line.perpendicular"},
+    {"name": "СерединныйПерпендикуляр", "aliases": ["СрединныйПерпендикуляр", "PerpendicularBisector"], "op": "line.perpendicular_bisector"},
+    {"name": "Биссектриса", "aliases": ["AngleBisector"], "op": "line.angle_bisector"},
+    {"name": "Вектор", "aliases": ["Vector"], "op": "vector.by_points"},
+    {"name": "Окружность", "aliases": ["Circle"], "op": "circle.center_point"},
+    {"name": "Окружность", "aliases": ["Circle"], "op": "circle.center_radius"},
+    {"name": "ОписаннаяОкружность", "aliases": ["Окружность", "Circle", "Circumcircle"], "op": "circle.three_points"},
+    {"name": "ВписаннаяОкружность", "aliases": ["Incircle"], "op": "circle.incircle"},
+    {"name": "Многоугольник", "aliases": ["Polygon"], "op": "polygon.by_points"},
+    {"name": "Параметр", "aliases": ["Ползунок", "Slider"], "op": "number.free", "form": ["$input", "min", "max", "step"], "minArgs": 0},
+    {"name": "Угол", "aliases": ["Angle"], "op": "angle.by_points"},
+    {"name": "ОтметкаРавныхОтрезков", "aliases": [], "op": "mark.equal_segments"},
+    {"name": "ОтметкаРавныхУглов", "aliases": [], "op": "mark.equal_angles"},
+    {"name": "ПрямойУгол", "aliases": [], "op": "mark.right_angle"}
+  ]
+}
