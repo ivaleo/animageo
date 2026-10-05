@@ -247,6 +247,12 @@ def _synthetic() -> dict:
                               + element('polygon', 'poly1')
                               + command('Polygon', ['B', 'A', '200'], ['poly2'])
                               + element('polygon', 'poly2'))),
+        'latex_texts': (
+            'a fixed LaTeX text whose formula has the names of objects, and a text with the value of a number',
+            lambda: ggb_bytes(tri + element('numeric', 'n', extra=f'<value val="2"/>{_SLIDER}')
+                              + _text('t2', '"$S = \\frac{1}{2} a \\cdot h_a, \\; n \\ge 2$"',
+                                      '<startPoint x="0" y="5" z="1"/>', latex=True)
+                              + _text('t3', '"n = " + n', '<startPoint x="0" y="4" z="1"/>'))),
     }
 
 

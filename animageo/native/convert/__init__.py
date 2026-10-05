@@ -14,7 +14,6 @@ from __future__ import annotations
 import contextlib
 import copy
 import logging
-import re
 
 from .construction import ConvertError, Context, translate
 from .ggb import ImportRefused, LIMITS
@@ -24,8 +23,6 @@ from .report import REPORT_FORMAT, REPORT_VERSION, categorize, construction_repo
 
 __all__ = ['ConvertError', 'ImportRefused', 'LIMITS', 'MAP_FORMAT', 'REPORT_FORMAT', 'dsl_map', 'from_construction',
            'from_ggb', 'map_problems', 'report_problems']
-
-_TOKEN = re.compile(r"[^\W\d][\w']*(?:_\{[^}]*\})?")
 
 
 @contextlib.contextmanager
@@ -162,19 +159,6 @@ def _node_label(node) -> str:
     return f'<{node.tag}>'
 
 
-def _labels_in(texts, labels) -> list:
-    out = []
-    for text in texts:
-        if text in labels:
-            found = [text]
-        else:
-            found = [t for t in _TOKEN.findall(str(text)) if t in labels]
-        for t in found:
-            if t not in out:
-                out.append(t)
-    return out
-
-
 def _text_of(expr: str) -> str:
     s = expr.strip()
     if len(s) >= 2 and s[0] == '"' and s[-1] == '"' and s.count('"') == 2:
@@ -197,6 +181,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     from ..registry import REGISTRY_VERSION
     from .ggb import (COMMANDS_3D, DEFAULT_JS, PLACEABLE, TYPES_3D, TYPES_FORMULA, TYPES_UI, ggb_value, parse_xml,
                       read_ggb, scan, text_extras, view_bounds)
+    from .ggb_expr import names_in
     from ..document import iter_refs
     from .keys import make_id
     from .style import appearance, ggb_style, label_of
@@ -326,7 +311,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         label, t = info['label'], info['type']
         n = norm[label]
         rec = tr.records.get(n)
-        deps = [d for d in _labels_in(info.get('inputs', []), labels) if d != label]
+        deps = [d for d in names_in(info.get('inputs', []), labels) if d != label]
         if t == 'text' and info.get('command') == 'Expression':
             info['text'] = _text_of(info['inputs'][0]) if info.get('inputs') else ''
             deps = [d for d in deps if d not in ('text',)]

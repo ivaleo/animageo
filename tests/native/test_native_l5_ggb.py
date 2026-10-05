@@ -422,6 +422,30 @@ def test_an_expression_argument_is_not_carried():
     assert sorted(el['type'] for el in doc['elements'].values()) == ['number', 'number', 'point', 'point']
 
 
+def test_a_fixed_latex_text_refers_to_nothing():
+    """The names inside the string literals of a text are not references
+    (1.10.0a3): a fixed LaTeX text whose formula has ``a`` and ``n`` has no
+    ``depends_on`` and a template without references; a text with the value
+    of ``n`` keeps both."""
+    from tests.native.ggb_synth import SYNTHETIC
+    _, rep = _import(SYNTHETIC['latex_texts'][1]())
+    e = _by_name(rep)
+    fixed, valued = e['t2'], e['t3']
+    assert (fixed['category'], fixed['reason'], fixed['depends_on']) == ('picture', 'latex_macros', [])
+    assert (fixed['ggb_value']['template'], fixed['ggb_value']['refs']) == (
+        '$S = \\frac{{1}}{{2}} a \\cdot h_a, \\; n \\ge 2$', [])
+    assert (valued['category'], valued['depends_on']) == ('picture', ['n'])
+    assert (valued['ggb_value']['template'], valued['ggb_value']['refs']) == (
+        'n = {0}', [{'ggb_name': 'n', 'as': 'number'}])
+    # a label with an index in braces
+    body = (_numeric('t_{AB}', 2.0) + expression('t', '"t = " + t_{AB} + " (\\alpha)"')
+            + element('text', 't', extra='<startPoint x="0" y="0" z="1"/>'))
+    _, rep = _import(ggb_bytes(body))
+    t = _by_name(rep)['t']
+    assert t['depends_on'] == ['t_{AB}'] and t['ggb_value']['refs'] == [{'ggb_name': 't_{AB}', 'as': 'number'}]
+    assert native.has('import_report.text_literals')
+
+
 def test_seq_and_steps_from_breakpoints():
     body = (point('A', 0.0, 0.0, extra='<breakpoint val="true"/>') + point('B', 4.0, 0.0)
             + command('Segment', ['A', 'B'], ['s'])

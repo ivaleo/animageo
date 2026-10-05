@@ -195,6 +195,14 @@ The web builds `text.free` from these (the anchor — the point of
 `anchor_ref` or a hidden free point at `anchor`); the category of a text does
 not change (`picture`).
 
+`depends_on` of every object names the objects of the file its definition
+refers to outside the string literals (1.10.0a3,
+`native.has("import_report.text_literals")`): the letters of the LaTeX
+formula of a fixed text (`"$S = \frac{1}{2} a h_a$"`) are no references, so
+such a text has no `depends_on` and a template without references (`refs`
+`[]`); `"S = " + a` keeps `depends_on` `["a"]`. A name with an index in
+braces (`t_{AB}`) is one name.
+
 `seq` of the operations follows the construction protocol (the XML order);
 `steps` (groups) appear only when the XML has breakpoints — a step is the
 protocol up to a breakpoint inclusive, the rest is the last step.
