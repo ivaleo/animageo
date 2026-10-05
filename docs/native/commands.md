@@ -32,6 +32,7 @@ default_lexicon() -> dict           lexicon_problems(data) -> [str]
 lexicon_hash(data) -> "sha256:…"    Lexicon(data)  # raises LexiconError(problems)
 next_name(type, taken) -> str       polygon_side_names(vertices, taken) -> [str]
 format_number(x) -> str             is_helper(doc_data, op_id) -> bool
+time_ordered_id() -> str
 ```
 
 `parse_commands` and `print_commands` are also exported from
@@ -47,17 +48,24 @@ format_number(x) -> str             is_helper(doc_data, op_id) -> bool
   `"element"`; a factory without parameters is called bare. An ID must match
   `[A-Za-z0-9_-]{1,64}` (`ValueError` otherwise). IDs already in use are
   skipped, so a counter can be passed as is.
+- **IDs must grow in creation order.** The printer orders lines that do
+  not depend on each other by operation ID (§6.1), so the IDs decide where
+  such lines print. A client that brings its own IDs (`id_factory`, or the
+  operations of `base`) must make them time-ordered: UUID v7 or ULID, which
+  sort as strings in creation order. With random IDs (`uuid4`) independent
+  lines change places after a print, and a later line that refers to a line
+  that moved below it gets `unknown_name`.
 - The default factory is `time_ordered_id()`: UUIDs with the version 7
-  layout that increase within the process. The printer breaks ties by
-  operation ID (§6.1), so IDs that grow in creation order keep independent
-  lines where they were typed. Random IDs (`uuid4`) would shuffle them; a
-  host that brings its own IDs should make them time-ordered too.
+  layout (48-bit milliseconds, a 12-bit counter for IDs made in the same
+  millisecond, random bits) that increase within the process.
 - `lines` gives one entry per applied line, in text order:
   `{line, operationIds, elementIds}`. `operationIds` starts with the line's
   operation, followed by the hidden operations its arguments created (§3).
   `elementIds` are the outputs of the line's operation.
 - A line with an error is skipped: `issues` gets the error, and the document
-  is built from the other lines. `issues` is sorted by line and column.
+  is built from the other lines. `issues` also holds the warnings
+  `comment_dropped` (§2.2) and `ambiguous_name` (§3) and is sorted by line
+  and column.
 - `effects` uses the shape of the edits in kernel.md §8. A new document
   lists everything under `added`.
 - `PrintResult.lines` has the same shape for the printed text.
@@ -141,8 +149,27 @@ An argument that is a name resolves in this order:
    options as the hint (`A, BC или AB, C`). No split is `unknown_name`.
 3. **`∠ABC`** splits the same way into three points.
 
-An element name wins over a pair split: if `BC` is an element, `BC` means
-that element even when `B` and `C` are points.
+**An element name wins over a pair split.** If `BC` is an element, `BC`
+means that element even when `B` and `C` are points. This deviates from §11
+of the kernel spec and §5.4 of the L2 plan, where both readings together
+were the error `ambiguous_pair`. The reason: elements named after their
+points are common (lines imported from GeoGebra are called `AB`), and with
+the error the printed text of such a document would not read back, because
+every line that refers to `BC` would fail.
+
+Instead, both directions flag such a name with the warning `ambiguous_name`:
+
+- **the parser** — at a name on the left of a line without errors, when the
+  element's name also splits into two names of points of the resulting
+  document. The points may be made on any line, above or below;
+- **the printer** — at the same place in its text: the name on the left of
+  the line that defines the element.
+
+The warning comes once per name, where the name is defined, not at each use.
+`parse_commands(print_commands(doc).text).issues` holds the same
+`ambiguous_name` warnings as `print_commands(doc).issues`, at the same lines
+and columns. The web highlights the name; to refer to the pair instead, the
+user renames the element.
 
 A pair becomes a hidden operation. If the argument's position takes
 `segment` but not `line` (a `segment` slot, a list of segments), the pair
@@ -318,8 +345,9 @@ In edit mode, the names of operations that lost their line are free (§8).
 
 - a name must follow the `rename` grammar (kernel.md §8), else
   `invalid_name`;
-- a name another element has is `name_taken`, with a free name as the hint:
-  the same letters with the next `_k`, so `A` gives `A_1`;
+- a name another element has is `name_taken`, compared by `name_key`
+  (`A_{1}` is taken when `A_1` exists), with a free name as the hint: the
+  same letters with the next `_k`, so `A` gives `A_1`;
 - the same name twice on one line is also `name_taken`;
 - more names than outputs is `arity`.
 
@@ -332,7 +360,9 @@ outputs the left side does not name get default names.
 ### 6.1 Lines
 
 - **Order.** One line per operation, in Kahn order with ties by operation
-  ID (`kernel.evaluate._order`, the topological order of kernel.md §8).
+  ID (`kernel.evaluate._order`, the topological order of kernel.md §8). So
+  the IDs decide the order of independent lines, and clients must give
+  time-ordered IDs (§1).
   Hidden pair and `∠ABC` operations get no line. Their elements appear in
   arguments as `BC` and `∠ABC`. (Web decision №7; `seq` and the order of
   steps come with L3.)
@@ -380,6 +410,7 @@ gives empty `effects` and the same document. This holds for every scene of
 
 | code | when | what is printed |
 |---|---|---|
+| `ambiguous_name` | an element's name on the left also reads as two names of points of the document (§3); the column is the name's | the name as it is; in arguments it means the element |
 | `unprintable_pair` | a hidden pair or angle would not read back as itself. Its points may have no names, or `BC` may not split one way. An element may be named `BC`. The position may make the other pair op. Or a visible element made the same way would be taken instead | `BC` anyway; it may not read back |
 | `unprintable_params` | a param after a left-out one (for example `max` without `min`): the form has no gap | the nearest form the lexicon has; the param after the gap is dropped |
 | `unprintable_operation` | the op is not in the registry, or the operation does not fit its record | `opid(args)` in registry slot order |
@@ -398,6 +429,7 @@ gives empty `effects` and the same document. This holds for every scene of
 | `name_taken` | error | a name on the left belongs to another element, or repeats |
 | `invalid_name` | error | a name on the left breaks the `rename` grammar |
 | `comment_dropped` | warning | a comment (§2.2) |
+| `ambiguous_name` | warning | a name on the left also reads as two names of points of the document; the name means the element (§3). The printer gives the same warning |
 | `unprintable_pair`, `unprintable_params`, `unprintable_operation` | warning | printer only (§6.4) |
 
 In edit mode a refused `redefine` (§8) reports its own code: `slot_conflict`,
@@ -469,12 +501,12 @@ sorted; the shape is kernel.md §8.
 ## 9. Fixtures
 
 `animageo/native/parity/v1/commands/` holds 11 files `animageo-commands/v1`
-(184 cases) and `naming.json` (`animageo-naming/v1`, 20 names and 8 side
-cases), generated for the default lexicon.
+(185 cases) and `naming.json` (`animageo-naming/v1`: 20 names, 8 side cases
+and 11 name keys), generated for the default lexicon.
 
 ```text
 {"format": "animageo-commands/v1", "id": "parse_points",
- "lexiconHash": "sha256:…", "registry": "1.3", "generatedBy": "animageo 1.8.1a3",
+ "lexiconHash": "sha256:…", "registry": "1.3", "generatedBy": "animageo 1.8.1a4.dev0",
  "cases": [{"name": "…", "text": "A = (0, 0)\n…", "base": null | {document},
             "expect": {"operations": [{"op", "args", "outputs", "hidden"}],
                        "inputs": {"<name>": {…}},
@@ -505,8 +537,10 @@ cases), generated for the default lexicon.
 - **`print`** is the printer's text for the parsed document, and
   `printIssues` its warnings.
 - **Naming cases.** `naming.json` has `cases: [{name, type, taken, expect}]`
-  for `next_name` and `sides: [{name, vertices, taken, expect}]` for
-  `polygon_side_names`.
+  for `next_name`, `sides: [{name, vertices, taken, expect}]` for
+  `polygon_side_names` and `keys: [{name, key}]`: raw names with their
+  `name_key` (`A_{1}` → `A_1`, `A₁` stays `A₁`), for a client that ports
+  `name_key`. `taken` holds raw names; a client compares them by key.
 
 **Contents of the set:**
 
@@ -517,7 +551,7 @@ cases), generated for the default lexicon.
 | `parse_intersections` | 12 |
 | `parse_circles` | 15 |
 | `parse_angles_marks` | 12 |
-| `pairs` | 8 |
+| `pairs` | 9 |
 | `overloads` | 7 |
 | `names` | 12 |
 | `numbers` | 5 |
@@ -549,10 +583,11 @@ python -m animageo.native commands print <doc.json> [--lexicon <file>]
 - `in` and `deg` are words of the notation (§2.1), and `x` or `y` alone on
   the left is an equation. These names cannot be typed, although the
   document allows them; the printer prints them anyway.
-- Lines that do not depend on each other print in operation-ID order (§6.1).
-  With IDs that do not grow in creation order, a line may print below a line
-  that the user then makes refer to it; that reference is `unknown_name`
-  until the line moves up. Explicit order comes with `seq` (L3).
+- Lines that do not depend on each other print in operation-ID order (§6.1),
+  hence the rule of §1: IDs grow in creation order. With other IDs a line
+  may print below a line that the user then makes refer to it; that
+  reference is `unknown_name` until the line moves up. Explicit order comes
+  with `seq` (L3).
 - A param after a gap (`number.free` with `max` but no `min`) does not print
   (`unprintable_params`). Edit mode still keeps it, as long as the printed
   line comes back unchanged.
