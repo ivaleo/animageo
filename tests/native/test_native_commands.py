@@ -683,6 +683,54 @@ class TestEdit:
 # ── fixtures and the command line ────────────────────────────────────────
 
 
+class TestScaling:
+    """Parsing, printing and editing grow about linearly with the text: the
+    work per line does not scan the whole document (counted in name keys, so
+    the test does not depend on the machine)."""
+
+    @staticmethod
+    def text(n):
+        lines = []
+        for k in range(1, n + 1):
+            lines += [f'P_{{{k}}} = ({k}, {k % 7})', f'Q_{{{k}}} = ({k + 0.5}, {k * 3 % 5})',
+                      f'M_{{{k}}} = Середина(P_{{{k}}}, Q_{{{k}}})', f'c_{{{k}}} = Окружность(M_{{{k}}}, P_{{{k}}})',
+                      f'l_{{{k}}} = Перпендикуляр(M_{{{k}}}, P_{{{k}}}Q_{{{k}}})',
+                      f'X_{{{k}}}, Y_{{{k}}} = Пересечение(l_{{{k}}}, c_{{{k}}})',
+                      f'ОтметкаРавныхОтрезков(P_{{{k}}}M_{{{k}}}, M_{{{k}}}Q_{{{k}}})']
+        return '\n'.join(lines)
+
+    def test_linear(self, monkeypatch):
+        from animageo.native import edit
+        from animageo.native.commands import build, naming, printer
+
+        count = [0]
+        original = edit.name_key
+
+        def counting(name):
+            count[0] += 1
+            return original(name)
+
+        for module in (build, naming, printer):
+            monkeypatch.setattr(module, 'name_key', counting)
+
+        def work(n):
+            out = []
+            count[0] = 0
+            doc = parse_commands(self.text(n)).document
+            out.append(count[0])
+            count[0] = 0
+            text = print_commands(doc).text
+            out.append(count[0])
+            count[0] = 0
+            result = parse_commands(text.replace('P_{2} = (2, 2)', 'P_{2} = (3, 2)'), base=doc)
+            out.append(count[0])
+            assert not result.issues and result.effects['modified']['inputs']
+            return out
+
+        small, large = work(8), work(80)
+        assert all(b < 15 * a for a, b in zip(small, large)), (small, large)
+
+
 class TestFixtures:
     def test_shipped_fixtures_are_up_to_date(self):
         assert check_fixtures(DEFAULT_DIR) == []

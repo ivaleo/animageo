@@ -26,11 +26,11 @@ from ..registry import REGISTRY_VERSION, registry
 from .issues import CommandIssue, LineError
 from .lexer import tokenize
 from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, Lexicon
-from .naming import next_name, polygon_side_names, suggest_name
+from .naming import TakenKeys, next_name, polygon_side_names, suggest_name
 from .resolve import closest_name, kind_text, resolve
 from .syntax import parse_line
 
-__all__ = ['ParseResult', 'parse_commands', 'HELPER_OPS', 'is_helper', 'pair_op', 'time_ordered_id']
+__all__ = ['ParseResult', 'parse_commands', 'HELPER_OPS', 'helper_key', 'is_helper', 'pair_op', 'time_ordered_id']
 
 HELPER_OPS = {
     'segment.by_points': ('a', 'b'),
@@ -74,6 +74,22 @@ class ParseResult(NamedTuple):
     effects: dict
     lines: list
     issues: list
+
+
+def helper_key(op: dict):
+    """``(op, point IDs)`` of an operation that a pair or ``∠ABC`` could
+    stand for (one of ``HELPER_OPS`` with element refs), or ``None``."""
+    slots = HELPER_OPS.get(op.get('op'))
+    args = op.get('args') or {}
+    if slots is None or len(args) != len(slots):
+        return None
+    points = []
+    for slot in slots:
+        arg = args.get(slot)
+        if not isinstance(arg, dict) or arg.get('kind') != 'ref':
+            return None
+        points.append(arg.get('elementId'))
+    return op['op'], tuple(points)
 
 
 def is_helper(data: dict, op_id: str) -> bool:
@@ -223,7 +239,10 @@ class _Builder:
         self.line_no = 0
         self.lines = []
         self.warnings = []
-        self._names_cache = None
+        self._index = None          # name key → {element ID: None}: the named elements of W
+        self._scope_index = None    # name key → element ID: the elements in scope
+        self._scope_points = None   # the same, points only
+        self._helper_index = None   # (op, point IDs) → [operation ID]: pair-like operations
 
     # ── IDs ──────────────────────────────────────────────────────────────
 
@@ -254,43 +273,82 @@ class _Builder:
 
     # ── names ────────────────────────────────────────────────────────────
 
-    def _scope_names(self) -> dict:
-        if self._names_cache is None:
-            out = {}
-            elements = self.W['elements']
-            for el_id in self.scope:
-                el = elements.get(el_id)
-                name = el.get('displayName') if isinstance(el, dict) else None
-                if isinstance(name, str) and name:
-                    out.setdefault(name_key(name), el_id)
-            self._names_cache = out
-        return self._names_cache
+    # The indexes below grow with every line and are rebuilt (lazily) only
+    # when ``W`` is replaced by ``redefine``: a text of n lines parses in
+    # about linear time.
 
     def _dirty(self):
-        self._names_cache = None
+        """``W`` was replaced: rebuild the indexes when next needed."""
+        self._index = self._scope_index = self._scope_points = self._helper_index = None
+
+    def _name_index(self) -> dict:
+        if self._index is None:
+            index = {}
+            for el_id, el in self.W['elements'].items():
+                name = el.get('displayName') if isinstance(el, dict) else None
+                if isinstance(name, str) and name:
+                    index.setdefault(name_key(name), {})[el_id] = None
+            self._index = index
+        return self._index
+
+    def _set_name(self, el_id: str, name: str) -> None:
+        el = self.W['elements'][el_id]
+        old = el.get('displayName')
+        if old == name:
+            return
+        el['displayName'] = name
+        if self._index is not None:
+            if isinstance(old, str) and old:
+                ids = self._index.get(name_key(old))
+                if ids is not None:
+                    ids.pop(el_id, None)
+                    if not ids:
+                        del self._index[name_key(old)]
+            if name:
+                self._index.setdefault(name_key(name), {})[el_id] = None
+        if el_id in self.scope:
+            self._scope_index = self._scope_points = None
+
+    def _note_scope(self, el_id: str) -> None:
+        if self._scope_index is None:
+            return
+        el = self.W['elements'].get(el_id)
+        name = el.get('displayName') if isinstance(el, dict) else None
+        if isinstance(name, str) and name:
+            key = name_key(name)
+            if key not in self._scope_index:
+                self._scope_index[key] = el_id
+                if el.get('type') == 'point':
+                    self._scope_points[key] = el_id
+
+    def _scope_names(self) -> dict:
+        if self._scope_index is None:
+            self._scope_index, self._scope_points = {}, {}
+            for el_id in self.W['elements']:
+                if el_id in self.scope:
+                    self._note_scope(el_id)
+        return self._scope_index
 
     def _owner(self, name: str):
         """The element of ``W`` called ``name`` whose name is not free, or ``None``."""
-        key = name_key(name)
-        for el_id, el in self.W['elements'].items():
-            if el_id in self.pending:
-                continue
-            other = el.get('displayName') if isinstance(el, dict) else None
-            if isinstance(other, str) and other and name_key(other) == key:
+        for el_id in self._name_index().get(name_key(name)) or ():
+            if el_id not in self.pending:
                 return el_id
         return None
 
-    def _all_names(self) -> set:
-        names = {el.get('displayName') for el in self.W['elements'].values() if isinstance(el, dict)}
-        return {n for n in names if isinstance(n, str) and n} | self.reserved
+    def _taken(self) -> set:
+        """Name keys a default name may not take: every name of ``W`` (names
+        of operations left without a line included) and every name written on
+        a left side."""
+        return set(self._name_index()) | self.reserved
+
+    def _all_names(self) -> TakenKeys:
+        return TakenKeys(self._taken())
 
     def _free_pending(self, name: str):
-        key = name_key(name)
-        for el_id in list(self.pending):
-            el = self.W['elements'].get(el_id)
-            if isinstance(el, dict) and name_key(el.get('displayName') or '') == key:
-                el['displayName'] = ''
-        self._dirty()
+        for el_id in list(self._name_index().get(name_key(name)) or ()):
+            if el_id in self.pending:
+                self._set_name(el_id, '')
 
     def _taken_error(self, name: str, column: int, owner: str):
         raise LineError('name_taken', column, f'имя {name} уже занято',
@@ -299,11 +357,8 @@ class _Builder:
     # ── arguments ────────────────────────────────────────────────────────
 
     def _points(self) -> dict:
-        out = {}
-        for key, el_id in self._scope_names().items():
-            if self.W['elements'][el_id].get('type') == 'point':
-                out[key] = el_id
-        return out
+        self._scope_names()
+        return self._scope_points
 
     def _splits(self, text: str, parts: int):
         points = self._points()
@@ -441,16 +496,22 @@ class _Builder:
 
     # ── helpers (pairs and ∠ABC) ─────────────────────────────────────────
 
+    def _note_helper(self, op_id: str) -> None:
+        if self._helper_index is not None:
+            key = helper_key(self.W['operations'][op_id])
+            if key is not None:
+                self._helper_index.setdefault(key, []).append(op_id)
+
     def _find_helper(self, helper: _Helper):
-        slots = HELPER_OPS[helper.op]
+        if self._helper_index is None:
+            self._helper_index = {}
+            for op_id in self.W['operations']:
+                self._note_helper(op_id)
+        key = (helper.op, tuple(helper.points))
         visible = hidden = None
-        for op_id, op in self.W['operations'].items():
-            if op.get('op') != helper.op:
-                continue
-            args = op.get('args') or {}
-            if len(args) != len(slots) or any(
-                    not isinstance(args.get(s), dict) or args[s].get('kind') != 'ref'
-                    or args[s].get('elementId') != p for s, p in zip(slots, helper.points)):
+        for op_id in self._helper_index.get(key, ()):
+            op = self.W['operations'].get(op_id)
+            if op is None or helper_key(op) != key:
                 continue
             out = next((o['elementId'] for o in op.get('outputs') or () if o.get('elementId') in self.W['elements']),
                        None)
@@ -478,6 +539,7 @@ class _Builder:
         self.W['elements'][el_id] = {'id': el_id, 'type': out['type'], 'displayName': '',
                                      'producer': {'operationId': op_id, 'slot': out['slot']}}
         self.W.setdefault('appearance', {})[el_id] = {'visible': False}
+        self._note_helper(op_id)
         return el_id
 
     def _materialize(self, args: dict, create: bool = True):
@@ -531,27 +593,29 @@ class _Builder:
 
     def _default_names(self, req: _Request, args: dict, slots, given: dict) -> dict:
         """Names of every slot: ``given`` (slot → name) plus defaults."""
-        taken = self._all_names() | set(given.values())
+        taken = self._taken() | {name_key(n) for n in given.values() if n}
         names = dict(given)
         if req.op == 'polygon.by_points':
             vertex_names = [self.W['elements'][r].get('displayName') or '' for r in iter_refs(args['vertices'])]
-            sides = polygon_side_names(vertex_names, taken)
+            sides = polygon_side_names(vertex_names, TakenKeys(taken))
             for i, slot in enumerate(s for s in slots if s.startswith('side.')):
                 if slot not in names:
                     names[slot] = sides[i]
-                    taken.add(sides[i])
+                    taken.add(name_key(sides[i]))
         for slot in slots:
             if slot not in names:
-                name = next_name(self.reg.output_type(req.record, slot, args), taken)
+                name = next_name(self.reg.output_type(req.record, slot, args), TakenKeys(taken))
                 names[slot] = name
                 if name:
-                    taken.add(name)
+                    taken.add(name_key(name))
         return names
 
     def _add_element(self, op_id: str, slot: str, el_type: str, name: str) -> str:
         el_id = self.new_id('element')
         self.W['elements'][el_id] = {'id': el_id, 'type': el_type, 'displayName': name,
                                      'producer': {'operationId': op_id, 'slot': slot}}
+        if name and self._index is not None:
+            self._index.setdefault(name_key(name), {})[el_id] = None
         return el_id
 
     def _set_input(self, el_id: str, value) -> None:
@@ -564,8 +628,10 @@ class _Builder:
     def _record_line(self, line: int, op_id: str) -> None:
         op = self.W['operations'][op_id]
         outputs = [o['elementId'] for o in op.get('outputs') or () if o.get('elementId') in self.W['elements']]
-        self.scope.update(outputs)
-        self._dirty()
+        for el_id in outputs:
+            if el_id not in self.scope:
+                self.scope.add(el_id)
+                self._note_scope(el_id)
         self.lines.append({'line': line, 'operationIds': [op_id] + self._helper_ops(op.get('args') or {}),
                            'elementIds': outputs})
 
@@ -589,6 +655,7 @@ class _Builder:
             outputs.append({'slot': slot, 'elementId': el_id})
             free_el = free_el or el_id
         self.W['operations'][op_id] = {'id': op_id, 'op': req.op, 'args': args, 'outputs': outputs}
+        self._note_helper(op_id)
         if req.input is not None:
             self._set_input(free_el, req.input)
         self._record_line(st.line, op_id)
@@ -654,14 +721,11 @@ class _Builder:
                 present[slot] = self._add_element(op_id, slot, self.reg.output_type(req.record, slot, args),
                                                   names[slot])
         for slot, name in given.items():
-            el = self.W['elements'][present[slot]]
-            if el.get('displayName') != name:
-                el['displayName'] = name
+            self._set_name(present[slot], name)
         op['outputs'] = [{'slot': s, 'elementId': present[s]} for s in slots if s in present]
         if req.input is not None:
             self._set_input(present[slots[0]], req.input)
         self.matched.add(op_id)
-        self._dirty()
         self._record_line(st.line, op_id)
 
     def _definition_match(self, req: _Request):
@@ -865,7 +929,7 @@ class _Builder:
             for key, value in after.items():
                 if key not in before:
                     effects['added'][section].append(key)
-                elif canonical_json(value) != canonical_json(before[key]):
+                elif value != before[key] and canonical_json(value) != canonical_json(before[key]):
                     effects['modified'][section].append(key)
             for key in before:
                 if key not in after:

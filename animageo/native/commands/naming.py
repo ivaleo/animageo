@@ -53,7 +53,13 @@ def kind_of_type(element_type: str) -> str:
     return 'line'
 
 
+class TakenKeys(frozenset):
+    """``taken`` given as name keys already (no ``name_key`` per call)."""
+
+
 def _keys(taken) -> set:
+    if isinstance(taken, TakenKeys):
+        return set(taken)
     return {name_key(n) for n in taken if isinstance(n, str) and n}
 
 

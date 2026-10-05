@@ -17,10 +17,10 @@ from ..document import as_document, bound_producer, cyclic_operations, iter_refs
 from ..edit import name_key
 from ..kernel.evaluate import _order
 from ..registry import registry
-from .build import HELPER_OPS, is_helper, pair_op
+from .build import HELPER_OPS, helper_key, is_helper, pair_op
 from .issues import CommandIssue, LineError
 from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, Lexicon
-from .naming import next_name, polygon_side_names
+from .naming import TakenKeys, next_name, polygon_side_names
 from .numbers import format_number
 from .resolve import resolve
 
@@ -54,8 +54,15 @@ class _Printer:
             name = el.get('displayName') if isinstance(el, dict) else None
             if isinstance(name, str) and name:
                 self.names[el_id] = name
-        self.taken = set(self.names.values())
+        self.taken = {name_key(n) for n in self.names.values()}     # name keys in use
         self.scope_keys = {}            # name key → element ID of the lines printed so far
+        self.scope_ids = set()          # the values of scope_keys
+        self.scope_points = set()       # the keys of scope_keys that are points
+        self.made = {}                  # (op, point IDs) → visible operations a pair could mean
+        for op_id, op in self.ops.items():
+            key = None if op_id in self.helpers else helper_key(op)
+            if key is not None:
+                self.made.setdefault(key, []).append(op_id)
         self.issues = []
 
     # ── names ────────────────────────────────────────────────────────────
@@ -81,15 +88,15 @@ class _Printer:
             if slot.startswith('side.') and op.get('op') == 'polygon.by_points':
                 if sides is None:
                     vertex_names = [self.names.get(r, '') for r in iter_refs(args.get('vertices'))]
-                    sides = polygon_side_names(vertex_names, self.taken)
+                    sides = polygon_side_names(vertex_names, TakenKeys(self.taken))
                 name = sides[int(slot.split('.')[1]) - 1]
-                if name_key(name) in {name_key(t) for t in self.taken}:
-                    name = next_name('segment', self.taken)
+                if name_key(name) in self.taken:
+                    name = next_name('segment', TakenKeys(self.taken))
             else:
-                name = next_name(self.reg.output_type(record, slot, args) or 'line', self.taken)
+                name = next_name(self.reg.output_type(record, slot, args) or 'line', TakenKeys(self.taken))
             if not name:
-                name = next_name('line', self.taken)
-            self.taken.add(name)
+                name = next_name('line', TakenKeys(self.taken))
+            self.taken.add(name_key(name))
             if el is not None:
                 self.names[el] = name
             names.append(name)
@@ -115,17 +122,14 @@ class _Printer:
                 return True
             if name_key(text) in self.scope_keys:
                 return True
-        point_keys = {k for k, e in self.scope_keys.items() if self.elements[e].get('type') == 'point'}
+        point_keys = self.scope_points
         if any(p not in self.names for p in points):
             return True
         if _count_splits(text, point_keys, parts) != 1:
             return True
-        for op_id, op in self.ops.items():
-            if op_id in self.helpers or op.get('op') != helper_op:
-                continue
-            args = op.get('args') or {}
-            if [args.get(s, {}).get('elementId') for s in HELPER_OPS[helper_op]] == points and any(
-                    o.get('elementId') in self.scope_keys.values() for o in op.get('outputs') or ()):
+        # a visible element made the same way would be read instead
+        for op_id in self.made.get((helper_op, tuple(points)), ()):
+            if any(o.get('elementId') in self.scope_ids for o in self.ops[op_id].get('outputs') or ()):
                 return True
         return False
 
@@ -242,8 +246,11 @@ class _Printer:
             out.append(info)
             for el in info['elementIds']:
                 name = self.names.get(el)
-                if name:
-                    self.scope_keys.setdefault(name_key(name), el)
+                if name and name_key(name) not in self.scope_keys:
+                    self.scope_keys[name_key(name)] = el
+                    self.scope_ids.add(el)
+                    if self.elements[el].get('type') == 'point':
+                        self.scope_points.add(name_key(name))
         return PrintResult('\n'.join(lines), out, self.issues)
 
     def _warn(self, code: str, line: int, column: int, message: str):
