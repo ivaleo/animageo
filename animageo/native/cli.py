@@ -14,13 +14,16 @@
     python -m animageo.native describe <doc.json> [--values] [--precision N]
     python -m animageo.native timeline <doc.json> [--lag L --duration D --pause P --start S]
     python -m animageo.native timeline <doc.json> --timeline <keyframes.json> --t T [--bridge]
+    python -m animageo.native from-ggb <file.ggb> [-o doc.json] [--report rep.json] [--namespace UUID] [--mode partial|strict]
+    python -m animageo.native convert map [--check]
 
 Exit codes: 0 success; 1 verify mismatches, validate issues (invalid JSON
 included), an out-of-date registry index or a refused scene, out-of-date
 commands fixtures, a commands text with errors, out-of-date timeline
-fixtures; 2 an input that cannot be
-used (a missing file; for ``evaluate`` a document that does not load or bad
-``--inputs``; an unusable lexicon).
+fixtures, ``from-ggb --mode strict`` with objects that do not translate, a
+problem of the GGB command table (``convert map --check``); 2 an input that
+cannot be used (a missing file; for ``evaluate`` a document that does not load
+or bad ``--inputs``; an unusable lexicon; a ``.ggb`` refused by ``from-ggb``).
 """
 from __future__ import annotations
 
@@ -329,6 +332,55 @@ def _cmd_commands_print(args) -> int:
     return 0
 
 
+def _cmd_from_ggb(args) -> int:
+    import hashlib
+    import uuid
+    from .convert import ConvertError, ImportRefused, from_ggb
+    try:
+        data = Path(args.file).read_bytes()
+    except OSError as exc:
+        _err(str(exc))
+        return 2
+    try:
+        ns = uuid.UUID(args.namespace) if args.namespace else uuid.UUID(hashlib.sha256(data).hexdigest()[:32])
+    except ValueError:
+        _err(f'--namespace: not a UUID: {args.namespace}')
+        return 2
+    try:
+        doc, report = from_ggb(data, id_namespace=ns, mode=args.mode, name=Path(args.file).name)
+    except ImportRefused as exc:
+        _err(f'{exc.code}: {exc.detail}')
+        return 2
+    except ConvertError as exc:
+        for item in exc.items:
+            _err(f'{item.get("name")}: {item.get("command") or ""} {item.get("reason") or ""}')
+        return 1
+    if args.out and doc is not None:
+        Path(args.out).write_text(canonical_json(doc) + '\n', encoding='utf-8')
+    if args.report:
+        Path(args.report).write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    if not args.out and not args.report:
+        _out(json.dumps({'document': doc, 'report': report}, ensure_ascii=False, indent=2))
+    else:
+        _out(' '.join(f'{k} {v}' for k, v in report['summary'].items()))
+    return 0
+
+
+def _cmd_convert_map(args) -> int:
+    from .convert import dsl_map, map_problems
+    problems = map_problems()
+    for p in problems:
+        _out(p)
+    table = dsl_map()
+    rows = table.commands
+    mapped = sum(1 for r in rows.values() if 'op' in r or 'free' in r)
+    ops = {r['op'] for r in rows.values() if 'op' in r}
+    if not args.check or problems:
+        _out(f'{len(rows)} classic signatures, {mapped} translated to {len(ops)} operations, '
+             f'map version {table.version}')
+    return 1 if problems else 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog='python -m animageo.native',
@@ -414,6 +466,20 @@ def build_parser() -> argparse.ArgumentParser:
     tl.add_argument('--t', type=float, help='the time to sample --timeline at')
     tl.add_argument('--bridge', action='store_true', help='print timeline_to_bridge of --timeline')
     tl.set_defaults(func=_cmd_timeline)
+
+    fg = sub.add_parser('from-ggb', help='import a .ggb: the document and the import_report.v1')
+    fg.add_argument('file', help='a .ggb file')
+    fg.add_argument('-o', '--out', help='write the document (canonical JSON) here')
+    fg.add_argument('--report', help='write the import report here')
+    fg.add_argument('--namespace', help='UUID namespace of the IDs (default: from the sha256 of the file)')
+    fg.add_argument('--mode', choices=('partial', 'strict'), default='partial',
+                    help='strict: exit 1 unless every object is editable')
+    fg.set_defaults(func=_cmd_from_ggb)
+    cv = sub.add_parser('convert', help='the GGB command → operation table')
+    cvsub = cv.add_subparsers(dest='action', required=True)
+    cvm = cvsub.add_parser('map', help='check convert/dsl_map.json against the classic commands and the registry')
+    cvm.add_argument('--check', action='store_true', help='print only the problems; exit 1 when any')
+    cvm.set_defaults(func=_cmd_convert_map)
     return parser
 
 
