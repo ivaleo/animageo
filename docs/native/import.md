@@ -54,6 +54,24 @@ L4; arithmetic of values — `formula_unsupported`; predicates (`AreParallel`,
 …) — `no_registry_op`; intersections with conics, points by numbers —
 `unsupported_signature`.
 
+Every op and free row has three cases in `tests/native/test_native_l5_convert.py`
+(1.10.0a2): the general one, another configuration (the next variant of
+each input — for a `byValue` row the classic outputs meet the slots in
+another order, for an indexed row it is the other output) and a degenerate
+one (well-formed inputs in a degenerate configuration: coincident or
+collinear points, parallel lines, a tangency, a zero factor or vector).
+Eight rows have no degenerate configuration the classic can reach, with
+the reason (`NO_DEGENERACY`: a circle of radius 0 and a line through one
+point are undefined in the classic; a free point; a locus is never
+compared). In 31 degenerate configurations the classic and the kernel
+disagree — at a tangency the classic gives one point and the kernel a
+double one; a zero factor, a zero vector of a ray, a regular polygon on
+coincident points, a semicircle on coincident points, a point on a ray of
+zero length are point-like in the classic and undefined in the kernel; the
+bisectors of parallel lines are undefined in the classic, the kernel gives
+the midline; a flat polygon has a centroid in the classic only. They are
+`differs`, never `editable` (`DEGENERATE_DIFFERS`).
+
 ## 2. Keys and IDs
 
 `id = uuid5(id_namespace, key)`. Keys: a `.ggb` object — `ggb:<label>`; a DSL
