@@ -13,7 +13,9 @@ import math
 from typing import NamedTuple
 
 from ..document import NativeDocument, as_document, bound_producer, iter_refs, validate
-from ..edit import _effects, _finish, closure, delete, redefine
+from ..edit import _delete as delete
+from ..edit import _effects, _finish, closure
+from ..edit import _redefine as redefine
 from ..registry import registry
 from ..steps import order_key
 from .recipes import matches
@@ -312,11 +314,13 @@ def condition_candidates(doc, statement) -> list:
 
 # ── apply ─────────────────────────────────────────────────────────────────
 
-def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None) -> ConditionResult:
+def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, marks: bool = True) -> ConditionResult:
     """Apply ``condition = {statement, mode: "construct", source, shapeId?}``
     (plan L3 §3.6). Refusals: ``unsupported_condition``,
     ``receiver_not_free``, ``receiver_is_ancestor``, ``too_many_conditions``,
-    ``no_intersection_now``."""
+    ``no_intersection_now``. ``marks``: add the automatic marks of the
+    condition (:func:`animageo.native.conditions.marks.add_auto_marks`; the
+    web passes ``False`` when «Отмечать автоматически» is off)."""
     from ..kernel.evaluate import evaluate
     doc = as_document(doc)
     statement = condition.get('statement')
@@ -407,7 +411,16 @@ def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None) 
     effects = result.effects
     effects['added']['operations'] = sorted(set(effects['added']['operations']) | set(place_ops))
     effects['added']['elements'] = sorted(set(effects['added']['elements']) | set(made.values()))
-    new_xy = _xy(evaluate(new_doc), receiver)
+    after = evaluate(new_doc)
+    if marks:
+        from .marks import add_auto_marks
+        marked = add_auto_marks(new_doc, [cid], ev=after, id_factory=id_factory)
+        new_doc = marked.document
+        effects['added']['operations'] = sorted(set(effects['added']['operations']) |
+                                                {op['id'] for op in marked.operations})
+        effects['added']['elements'] = sorted(set(effects['added']['elements']) | set(marked.elements))
+        effects['warnings'] = list(effects.get('warnings', [])) + marked.warnings
+    new_xy = _xy(after, receiver)
     if xy is not None and new_xy is not None:
         effects['shift'] = {'elementId': receiver, 'from': list(xy), 'to': list(new_xy),
                             'distance': math.hypot(new_xy[0] - xy[0], new_xy[1] - xy[1])}

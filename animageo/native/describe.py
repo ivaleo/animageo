@@ -31,13 +31,27 @@ one line ``"<n>. <phrase>."`` per step of :func:`~animageo.native.steps.steps`.
   A, B, C» (and «; числа k»); three points followed by the step of a
   ``polygon.by_points`` on exactly them — «Строим треугольник ABC», and that
   polygon step gets no line of its own.
-- ``values=True`` (lengths and angles after the phrase) is stage 2:
-  ``NotImplementedError``.
+- Conditions (1.9.0a2): a ``condition`` step is ``steps.condition.text``
+  («Ставим {recipe}») with ``{recipe}`` — the ``phrase.ru`` of the recipe
+  filled with the names of its bindings (a number literal in the decimal
+  format below, ``D`` in degrees) — followed by the phrases of the marks in
+  the step. An operation whose outputs are all hidden helpers of an
+  automatic mark (``origin.kind = "auto"``) has no phrase.
+- The phrase of an automatic mark joined after another one starts with a
+  small letter («…; отмечаем прямой угол CHA»).
+- ``values=True``: after the phrase of an operation, `` (… ; …)`` with the
+  values now (``ev`` or an evaluation): a visible segment ``|AB| = 2,4``
+  (by its two points when the producer has them),
+  an angle ``∠ABC = 35°`` (its size), a number ``k = 1,5``; for a condition
+  step, every ``len`` and three-point ``angle`` of the statement (convex
+  degrees). Decimal comma, at most ``precision`` digits, trailing zeros
+  dropped; an undefined value is skipped.
 """
 from __future__ import annotations
 
 import copy
 import json
+import math
 import re
 from pathlib import Path
 
@@ -278,11 +292,122 @@ def _given_phrase(doc, step, table, namer):
     return '; '.join(parts), points, numbers
 
 
+def _auto_helper(doc, namer, op_id) -> bool:
+    outs = [o['elementId'] for o in doc.operations[op_id]['outputs'] if o['elementId'] in doc.elements]
+    return bool(outs) and all(isinstance(doc.elements[e].get('origin'), dict)
+                              and doc.elements[e]['origin'].get('kind') == 'auto' and namer._hidden(e) for e in outs)
+
+
+def _condition(doc, step):
+    ids = set(step.conditionIds)
+    raw = doc.data.get('conditions')
+    return next((c for c in raw if isinstance(c, dict) and c.get('id') in ids), None) if isinstance(raw, list) else None
+
+
+def _condition_phrase(doc, cond, table, namer) -> str | None:
+    from .conditions.recipes import matches
+    entry = table['steps'].get('condition') or {'text': 'Ставим {recipe}'}
+    for recipe, binds in matches(doc, cond.get('statement') or {}):
+        if recipe['recipe'] != cond.get('recipe') or binds.get(recipe['receiver']) != cond.get('receiver'):
+            continue
+
+        def one(m):
+            value = binds.get(m.group(1))
+            if isinstance(value, str):
+                return namer.name(value) if value in doc.elements else value
+            if isinstance(value, tuple):
+                kind, v = value
+                return namer.name(v) if kind == 'ref' and v in doc.elements else _number(v, namer.precision)
+            return ''
+        text = _PLACEHOLDER.sub(one, recipe.get('phrase', {}).get('ru', recipe['recipe']))
+        return _tidy(entry['text'].replace('{recipe}', text).replace('{receiver}', namer.name(cond['receiver'])))
+    return None
+
+
+def _deg(radians, precision) -> str:
+    return _number(radians * 180 / math.pi, precision) + '°'
+
+
+def _op_values(doc, op_id, namer, ev) -> list:
+    out = []
+    for o in doc.operations[op_id]['outputs']:
+        el_id = o['elementId']
+        if el_id not in doc.elements or namer._hidden(el_id):
+            continue
+        state = ev.elements.get(el_id)
+        if state is None or state['state'] != 'defined':
+            continue
+        type_, value = doc.elements[el_id]['type'], state['value']
+        if type_ == 'segment':
+            out.append(f'|{namer.ends(el_id) or namer.name(el_id)}| = {_number(value["length"], namer.precision)}')
+        elif type_ == 'angle':
+            name = namer.name(el_id)
+            out.append(f'{name if name.startswith("∠") else "∠" + name} = {_deg(value["size"], namer.precision)}')
+        elif type_ == 'number':
+            number = value.get('value') if isinstance(value, dict) else value
+            if isinstance(number, (int, float)):
+                out.append(f'{namer.name(el_id)} = {_number(number, namer.precision)}')
+    return out
+
+
+def _statement_values(doc, statement, namer, ev) -> list:
+    from .conditions.statements import _convex_angle
+    out = []
+
+    def xy(el_id):
+        state = ev.elements.get(el_id)
+        if state is None or state['state'] != 'defined':
+            return None
+        v = state['value']
+        return (v['x'], v['y']) if isinstance(v, dict) else (v[0], v[1])
+
+    def walk(node):
+        if isinstance(node, dict):
+            if isinstance(node.get('len'), dict) and isinstance(node['len'].get('pair'), list):
+                p, q = node['len']['pair']
+                a, b = xy(p), xy(q)
+                if None not in (a, b):
+                    text = f'|{namer.name(p)}{namer.name(q)}| = {_number(math.hypot(b[0] - a[0], b[1] - a[1]), namer.precision)}'
+                    if text not in out:
+                        out.append(text)
+                return
+            if isinstance(node.get('angle'), list) and len(node['angle']) == 3:
+                ids = [x.get('ref') for x in node['angle'] if isinstance(x, dict)]
+                pts = [xy(i) for i in ids] if len(ids) == 3 else [None]
+                if None not in pts:
+                    text = f'∠{"".join(namer.name(i) for i in ids)} = {_deg(_convex_angle(*pts), namer.precision)}'
+                    if text not in out:
+                        out.append(text)
+                return
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+    walk(statement)
+    return out
+
+
+def _lower(text) -> str:
+    return text[:1].lower() + text[1:]
+
+
+def _auto_mark(doc, op_id) -> bool:
+    return doc.operations[op_id]['op'].startswith('mark.') and any(
+        isinstance(doc.elements.get(o['elementId'], {}).get('origin'), dict)
+        and doc.elements[o['elementId']]['origin'].get('kind') == 'auto' for o in doc.operations[op_id]['outputs'])
+
+
+def _with_values(text, items) -> str:
+    return f'{text} ({"; ".join(items)})' if items else text
+
+
 def describe(doc, *, values: bool = False, phrases=None, ev=None, precision: int = 2) -> list:
     """The lines of the construction (see the module docstring)."""
-    if values:
-        raise NotImplementedError('describe(values=True) comes with stage 2 (1.9.0a2)')
     doc = as_document(doc)
+    if values and ev is None:
+        from .kernel.evaluate import evaluate
+        ev = evaluate(doc)
     table = _merged(phrases)
     namer = _Namer(doc, precision)
     order = steps(doc)
@@ -314,7 +439,20 @@ def describe(doc, *, values: bool = False, phrases=None, ev=None, precision: int
                         skip = nxt.id
                 lines.append(f'{n}. {text}.')
                 continue
-        phrases_ = [_op_phrase(doc, op_id, table, namer) for op_id in step.operationIds]
+        cond = _condition(doc, step) if step.kind == 'condition' else None
+        head = _condition_phrase(doc, cond, table, namer) if cond is not None else None
+        if head is not None:
+            ops = [o for o in step.operationIds if doc.operations[o]['op'].startswith('mark.')]
+            if values:
+                head = _with_values(head, _statement_values(doc, cond.get('statement'), namer, ev))
+            phrases_ = [head] + [_lower(_op_phrase(doc, op_id, table, namer)) for op_id in ops]
+        else:
+            ops = [o for o in step.operationIds if not _auto_helper(doc, namer, o)]
+            phrases_ = [_op_phrase(doc, op_id, table, namer) for op_id in ops]
+            phrases_ = [_lower(p) if k and _auto_mark(doc, o) else p
+                        for k, (p, o) in enumerate(zip(phrases_, ops))]
+            if values:
+                phrases_ = [_with_values(p, _op_values(doc, o, namer, ev)) for p, o in zip(phrases_, ops)]
         if step.title is not None:
             lines.append(f'{n}. {step.title}.')
             lines += [f'{n}.{k}. {p}.' for k, p in enumerate(phrases_, start=1)]

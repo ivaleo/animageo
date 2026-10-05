@@ -1,0 +1,30 @@
+{
+  "format": "animageo-auto-marks/v1",
+  "text": "Sources of automatic marks (plan L3 §3.7, docs/native/conditions.md §6). Outside the registry records. 'rule' names the rule of animageo.native.conditions.marks; slots name the inputs and outputs of the source operation.",
+  "ops": {
+    "triangle.altitude": {"mark": "right_angle", "rule": "foot", "point": "vertex", "foot": "foot", "side": "side"},
+    "point.projection": {"mark": "right_angle", "rule": "foot", "point": "point", "foot": "foot", "side": "base",
+                         "requires": "visible_segment"},
+    "line.perpendicular": {"mark": "right_angle", "rule": "perpendicular", "point": "point", "line": "line",
+                           "side": "base", "requires": "visible_intersection"},
+    "circle.diameter": {"mark": "right_angle", "rule": "thales", "a": "a", "b": "b", "circle": "circle"},
+    "line.tangents_from_point": {"mark": "right_angle", "rule": "touch", "point": "point", "circle": "circle",
+                                 "touch": ["touch.1", "touch.2"], "requires": "visible_center"},
+    "point.midpoint": {"mark": "equal_segments", "rule": "halves", "a": "a", "b": "b", "midpoint": "point"},
+    "triangle.median": {"mark": "equal_segments", "rule": "halves", "side": "side", "midpoint": "midpoint"},
+    "triangle.bisector": {"mark": "equal_angles", "rule": "bisector", "vertex": "vertex", "side": "side",
+                          "foot": "foot"},
+    "line.angle_bisector": {"mark": "equal_angles", "rule": "angle_bisector", "a": "a", "vertex": "vertex",
+                            "b": "b", "line": "line"}
+  },
+  "conditions": {
+    "equal_length.vertex": {"mark": "equal_segments"},
+    "equal_length.free": {"mark": "equal_segments"},
+    "equal_length.apex": {"mark": "equal_segments"},
+    "length.value": {"mark": "equal_segments"},
+    "right_angle.vertex": {"mark": "right_angle"},
+    "right_angle.side": {"mark": "right_angle"},
+    "perpendicular": {"mark": "right_angle"},
+    "angle.equal": {"mark": "equal_angles"}
+  }
+}

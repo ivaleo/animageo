@@ -354,7 +354,8 @@ def _to_ast(doc, ev, node, refs, tol):
                 raise rel._Inconclusive('coincident_points')
             refs.append(_convex_angle(a, b, c))
         else:
-            refs.append(float(_value(ev, arg['ref'])['size']))
+            size = float(_value(ev, arg['ref'])['size'])
+            refs.append(min(size, 2 * math.pi - size))       # m(size): convex, as the check of the marks
         return {'ref': len(refs) - 1}
     if 'op' in node:
         return {'op': node['op'], 'args': [_to_ast(doc, ev, c, refs, tol) for c in node['args']]}

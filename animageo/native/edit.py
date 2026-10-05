@@ -31,7 +31,7 @@ from .document import (
     op_dependencies,
     validate,
 )
-from .registry import registry
+from .registry import FREE_INPUT_DEFAULTS, registry
 
 __all__ = [
     'EditError',
@@ -234,7 +234,24 @@ def delete(doc, ids, *, mode: str = 'element') -> EditResult:
     outputs that went and goes when none are left. ``mode="operation"``:
     every output of the producers of ``ids`` goes too. Inputs and appearance
     of removed elements go; other sections are kept.
+
+    Conditions (1.9.0a2, docs/native/conditions.md §5): deleting a
+    participant of a construct condition restores its receiver from
+    ``receiverOrigin`` first (the receiver and what is built on it stay;
+    every condition on that receiver goes with its places and automatic
+    marks); a condition whose receiver or participant went is removed.
+    ``effects.removed.conditions``, ``effects.modified.restoredFrom`` (the
+    restored receivers).
     """
+    doc = as_document(doc)
+    if doc.data.get('conditions'):
+        from .conditions.editing import delete_with_conditions
+        return delete_with_conditions(doc, ids, mode=mode)
+    return _delete(doc, ids, mode=mode)
+
+
+def _delete(doc, ids, *, mode: str = 'element') -> EditResult:
+    """:func:`delete` without the rules of the conditions."""
     if mode not in ('element', 'operation'):
         raise ValueError("mode must be 'element' or 'operation'")
     doc = as_document(doc)
@@ -277,6 +294,20 @@ def _users(doc, el_id) -> list:
 
 
 def redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> EditResult:
+    """Replace the definition of operation ``op_id`` keeping its output IDs
+    (see :func:`_redefine`). Conditions (1.9.0a2): redefining the operation
+    of a receiver removes the conditions on it (their places and automatic
+    marks go, ``effects.removed.conditions``); a result in which a receiver
+    is an ancestor of a participant of its condition is refused with
+    ``condition_cycle`` (one issue per condition)."""
+    doc = as_document(doc)
+    if doc.data.get('conditions'):
+        from .conditions.editing import redefine_with_conditions
+        return redefine_with_conditions(doc, op_id, new_op, slot_map=slot_map, inputs=inputs)
+    return _redefine(doc, op_id, new_op, slot_map=slot_map, inputs=inputs)
+
+
+def _redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> EditResult:
     """Replace the definition of operation ``op_id`` keeping its output IDs.
 
     ``new_op = {op, args, branch?}``. Outputs pair with the new op's slots by
@@ -286,7 +317,8 @@ def redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> Ed
     ``type_mismatch`` (an output's new type does not fit an operation that
     uses it), ``cycle`` (the new arguments use an output's dependents),
     ``missing_input`` (a free op without an input of its kind in ``inputs``
-    or the document), then any error :func:`validate` did not report before.
+    or the document, unless the kind has a default in
+    ``FREE_INPUT_DEFAULTS``: then no input is written), then any error :func:`validate` did not report before.
     """
     doc = as_document(doc)
     reg = registry()
@@ -349,7 +381,11 @@ def redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> Ed
             given = new_inputs.get(el_id)
             if given is None:
                 existing = doc.inputs.get(el_id)
-                if not (isinstance(existing, dict) and existing.get('kind') == free['kind']):
+                # an optional input (``FREE_INPUT_DEFAULTS``: the angle of
+                # ``segment.from_point_length``) takes its default, as in
+                # ``validate`` and ``evaluate``; no record is written
+                if not (isinstance(existing, dict) and existing.get('kind') == free['kind']) \
+                        and free['kind'] not in FREE_INPUT_DEFAULTS:
                     _fail('missing_input', f'{new_op["op"]} needs a {free["kind"]} input for {el_id!r}',
                           '/inputs' + _pointer(el_id), elementId=el_id)
     for el_id in new_inputs:

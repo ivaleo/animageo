@@ -18,8 +18,16 @@
    the step ``id = "given"``, ``kind = "given"``.
 4. ``elementIds``: the outputs of the step's operations (operation order,
    then output order) that ``appearance`` does not hide; ``auxElementIds``:
-   the hidden ones (pairs, helper lines). ``conditionIds`` is empty until
-   the conditions of stage 2.
+   the hidden ones (pairs, helper lines). ``conditionIds``: the condition of
+   a ``condition`` step; for an explicit group, the construct conditions
+   with an operation in it.
+5. Conditions (1.9.0a2): the operations of a construct condition outside
+   explicit groups form the step ``id = "condition:<conditionId>"``, kind
+   ``condition``; the receiver's operation goes to the step of the last
+   condition on that receiver. An automatic mark and its helpers
+   (``origin.kind = "auto"``) join the step of their source (an operation
+   or a condition) when everything they use comes from that step or before
+   it; otherwise each stays a step of its own.
 
 ``steps_merge`` and ``steps_split`` return a new ``steps`` array for the
 document (structural helpers of the web API: «Объединить с предыдущим»,
@@ -83,8 +91,40 @@ def _explicit(doc) -> list:
     return [s for s in raw if isinstance(s, dict)] if isinstance(raw, list) else []
 
 
+def _construct_conditions(doc) -> list:
+    raw = doc.data.get('conditions')
+    return [c for c in raw if isinstance(c, dict) and c.get('mode') == 'construct' and isinstance(c.get('id'), str)] \
+        if isinstance(raw, list) else []
+
+
+def _auto_source(doc, op_id):
+    """The ``origin.source`` of an automatic mark (or of its helper)."""
+    for out in doc.operations[op_id]['outputs']:
+        origin = doc.elements.get(out['elementId'], {}).get('origin')
+        if isinstance(origin, dict) and origin.get('kind') == 'auto' and isinstance(origin.get('source'), str):
+            return origin['source']
+    return None
+
+
+def _ancestors(op_deps, op_id, memo) -> set:
+    if op_id in memo:
+        return memo[op_id]
+    memo[op_id] = set()
+    out = set()
+    for dep in op_deps.get(op_id, ()):
+        out.add(dep)
+        out |= _ancestors(op_deps, dep, memo)
+    memo[op_id] = out
+    return out
+
+
 def _groups(doc, explicit) -> tuple:
-    """``(groups, owner)``: explicit groups then one ``op`` group per other operation."""
+    """``(groups, owner)``: explicit groups, then a ``condition`` group per
+    construct condition (its operations outside explicit groups; the
+    receiver's operation goes to the last condition on the receiver), then
+    one ``op`` group per other operation; an automatic mark and its helpers
+    join the group of their source when everything they use is built by
+    then (otherwise they stay steps of their own)."""
     ops = doc.operations
     groups = []
     owner: dict = {}
@@ -93,12 +133,56 @@ def _groups(doc, explicit) -> tuple:
         for op_id in ids:
             owner[op_id] = step['id']
         groups.append({'id': step['id'], 'kind': step['kind'], 'title': step.get('title'),
-                       'text': step.get('text'), 'ops': ids, 'explicit': True})
+                       'text': step.get('text'), 'ops': ids, 'explicit': True, 'conditions': []})
+    conditions = _construct_conditions(doc)
+    receiver_op = {}
+    for cond in conditions:
+        receiver = cond.get('receiver')
+        if isinstance(receiver, str) and receiver in doc.elements:
+            receiver_op[doc.elements[receiver]['producer']['operationId']] = cond['id']
+    by_id = {}
+    for cond in conditions:
+        ids = [o for o in cond.get('operationIds') or () if isinstance(o, str) and o in ops and o not in owner
+               and receiver_op.get(o, cond['id']) == cond['id']]
+        gid = 'condition:' + cond['id']
+        if not ids or gid in by_id:
+            continue
+        for op_id in ids:
+            owner[op_id] = gid
+        by_id[gid] = {'id': gid, 'kind': 'condition', 'title': None, 'text': None, 'ops': ids, 'explicit': False,
+                      'conditions': [cond['id']]}
+        groups.append(by_id[gid])
+    auto = {}
     for op_id in sorted(ops):
-        if op_id not in owner:
+        if op_id in owner:
+            continue
+        source = _auto_source(doc, op_id)
+        if source is not None and source != op_id:
+            auto[op_id] = source
+            continue
+        owner[op_id] = 'op:' + op_id
+        groups.append({'id': 'op:' + op_id, 'kind': 'op', 'title': None, 'text': None, 'ops': [op_id],
+                       'explicit': False, 'conditions': []})
+    if auto:
+        op_deps = op_dependencies(doc)
+        memo: dict = {}
+        index = {g['id']: g for g in groups}
+        for op_id in sorted(auto):
+            source = auto[op_id]
+            target = owner.get(source) if source in ops else ('condition:' + source
+                                                              if 'condition:' + source in index else None)
+            group = index.get(target)
+            if group is not None:
+                inside = set(group['ops'])
+                upstream = set().union(*(_ancestors(op_deps, o, memo) for o in group['ops'])) | inside
+                needed = {d for d in _ancestors(op_deps, op_id, memo) if auto.get(d) != source}
+                if needed <= upstream:
+                    group['ops'].append(op_id)
+                    owner[op_id] = target
+                    continue
             owner[op_id] = 'op:' + op_id
             groups.append({'id': 'op:' + op_id, 'kind': 'op', 'title': None, 'text': None, 'ops': [op_id],
-                           'explicit': False})
+                           'explicit': False, 'conditions': []})
     return groups, owner
 
 
@@ -211,7 +295,12 @@ def _step_of(doc, group, op_deps) -> Step:
             el_id = out['elementId']
             if el_id in doc.elements:
                 (shown if _visible(doc, el_id) else hidden).append(el_id)
-    return Step(group['id'], group['kind'], group['title'], group['text'], order + rest, shown, hidden, [])
+    conditions = list(group.get('conditions') or ())
+    if group['explicit']:
+        inside_ops = set(order + rest)
+        conditions = [c['id'] for c in _construct_conditions(doc)
+                      if inside_ops & set(c.get('operationIds') or ())]
+    return Step(group['id'], group['kind'], group['title'], group['text'], order + rest, shown, hidden, conditions)
 
 
 def steps(doc) -> list:

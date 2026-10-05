@@ -68,17 +68,19 @@ from .conditions import measure_statement, relation, statement_checks, statement
 from .sampling import check_general
 from .conditions.apply import (ConditionResult, Refusal, apply_condition, condition_candidates, release_condition,
                                shape_conditions)
+from .conditions.marks import AutoMarks, add_auto_marks, auto_marks, auto_sources
 
 # Features of this library by stage of plan L3 (``has``): the web asks for a
 # feature instead of comparing versions.
 FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles',
-            'check.general', 'conditions', 'apply_condition')
+            'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values')
 
 
 def has(feature: str) -> bool:
     """Whether this library has ``feature`` (one of :data:`FEATURES`; stage 1 of L3:
     ``triangle``, ``locus``, ``steps``, ``describe``, ``render.eps``,
-    ``render.tikz``, ``roles``)."""
+    ``render.tikz``, ``roles``; stage 2: ``check.general``, ``conditions``,
+    ``apply_condition``, ``auto_marks``, ``describe.values``)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION
@@ -131,6 +133,10 @@ __all__ = [
     'condition_candidates',
     'release_condition',
     'shape_conditions',
+    'AutoMarks',
+    'add_auto_marks',
+    'auto_marks',
+    'auto_sources',
     'measure_statement',
     'relation',
     'statement_checks',

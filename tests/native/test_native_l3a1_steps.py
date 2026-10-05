@@ -175,8 +175,8 @@ def test_describe_groups_titles_texts_and_overlay():
     lines = native.describe(doc, phrases={'steps': {'segment': {'text': 'Соединяем {a} и {b}'}}})
     assert lines == ['1. Дано: точки A, B, C.', '2. Высота.', '2.1. Соединяем B и C.',
                      '2.2. Проводим высоту h из вершины A к стороне BC.', '3. Окружность через вершины.']
-    with pytest.raises(NotImplementedError):
-        native.describe(doc, values=True)
+    lines = native.describe(doc, values=True)          # 1.9.0a2: values after the phrases
+    assert lines[1:3] == ['2. Высота.', '2.1. Строим отрезок BC (|BC| = ' + lines[2].split('= ')[1]]
 
 
 def test_describe_names_hidden_lines_by_their_points():
