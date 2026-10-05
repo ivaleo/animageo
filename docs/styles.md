@@ -736,7 +736,10 @@ What auto-placement does with it:
 Two rules outrank a hint, because a copied position may be wrong:
 
 - an **angle label stays inside its angle** while it fits there — a hint that
-  points outside moves it out only when the angle is too narrow for the label;
+  points outside moves it out only when the angle is too narrow for the label.
+  "Fits" means clear of both sides and not past the end of the shorter one;
+  if `angle_label_max_arm_fraction` stops the label where it still touches a
+  side, such a label goes further in, to where it fits, instead of going out;
 - the label of a **point on a closed figure** (a polygon, or segments joined
   into a cycle) stays **outside the figure** while there is room outside. When
   there is none — a circle runs close along the figure, say — a hint that

@@ -1192,43 +1192,58 @@ def _angle_manual_exterior(scene, elem, angle_range, render_r_px, ptUnit,
     return side < 0.0
 
 
-def _angle_label_fits_inside(ang, angle_params: AngleParams, ptUnit: float) -> bool:
-    """True when the angle label has room INSIDE its angle.
+def _angle_room_inside(ang, angle_params: AngleParams,
+                       ptUnit: float) -> Optional[AngleParams]:
+    """The placement that seats an angle label INSIDE its angle, or ``None``
+    when there is no room for it there.
 
-    "Room" means the label, at the interior position auto-placement would give
-    it (:func:`compute_angle_label_center`, caps included), neither touches one
-    of the two sides nor lies past the end of the shorter one. A narrow angle
-    fails this: the caps stop the label before the sides have opened wide
-    enough for it. A reflex-range marker always has room.
+    "Room" means the label neither touches one of the two sides nor lies past
+    the end of the shorter one. The interior position auto-placement gives
+    (:func:`compute_angle_label_center`, caps included) is tried first. When
+    that one fails only because ``max_arm_fraction`` stops the label where the
+    sides have not yet opened wide enough, the same position without that cap
+    is tried — still within the narrow-angle bound and the shorter arm — and
+    returned with the cap lifted. A reflex-range marker always has room.
     """
-    if angle_params.angle_range == 'reflex':
-        return True
     import dataclasses
     inner = dataclasses.replace(angle_params, exterior=False)
-    center = compute_angle_label_center(ang, inner, ptUnit)
+    if inner.angle_range == 'reflex':
+        return inner
     vertex = np.asarray(ang.vertex[:2], dtype=float)
     s1 = np.asarray(ang.side1[:2], dtype=float)
     s2 = np.asarray(ang.side2[:2], dtype=float)
-    if float(np.linalg.norm(center - vertex)) > min(
-            float(np.linalg.norm(s1)), float(np.linalg.norm(s2))):
-        return False
-    for side in (s1, s2):
-        if _segment_bbox_overlap(vertex, vertex + side, center[0], center[1],
-                                 angle_params.half_w, angle_params.half_h) > 0:
+    arm = min(float(np.linalg.norm(s1)), float(np.linalg.norm(s2)))
+
+    def _fits(params):
+        center = compute_angle_label_center(ang, params, ptUnit)
+        if float(np.linalg.norm(center - vertex)) > arm:
             return False
-    return True
+        return not any(
+            _segment_bbox_overlap(vertex, vertex + side, center[0], center[1],
+                                  params.half_w, params.half_h) > 0
+            for side in (s1, s2))
+
+    if _fits(inner):
+        return inner
+    if inner.max_arm_fraction is not None:
+        uncapped = dataclasses.replace(inner, max_arm_fraction=None)
+        if _fits(uncapped):
+            return uncapped
+    return None
 
 
-def _angle_hint_exterior(ang, hint, angle_params: AngleParams, ptUnit: float) -> bool:
-    """Should an angle label carrying ``label_hint_px`` go OUTSIDE its angle?
+def _angle_hint_placement(ang, hint, angle_params: AngleParams,
+                          ptUnit: float) -> AngleParams:
+    """Where an angle label carrying ``label_hint_px`` goes.
 
     Inside is the priority: the label leaves the angle only when the hint points
     to the far side of the vertex (same half-plane test as FP-8) AND there is no
-    room for it inside (:func:`_angle_label_fits_inside`). A hint that points
-    outside a roomy angle is therefore overruled — the usual source of such a
-    hint is a position copied from another drawing, where it may have belonged
-    to a different object.
+    room for it inside (:func:`_angle_room_inside`). A hint that points outside
+    an angle with room is therefore overruled — the usual source of such a hint
+    is a position copied from another drawing, where it may have belonged to a
+    different object. A hint that points inside changes nothing.
     """
+    import dataclasses
     v1n = ang.side1[:2] / (np.linalg.norm(ang.side1[:2]) + 1e-12)
     v2n = ang.side2[:2] / (np.linalg.norm(ang.side2[:2]) + 1e-12)
     bis = v1n + v2n
@@ -1237,8 +1252,11 @@ def _angle_hint_exterior(ang, hint, angle_params: AngleParams, ptUnit: float) ->
     if angle_params.angle_range == 'reflex':
         bis = -bis
     if float(hint[0]) * float(bis[0]) + float(hint[1]) * float(bis[1]) >= 0.0:
-        return False
-    return not _angle_label_fits_inside(ang, angle_params, ptUnit)
+        return angle_params
+    room = _angle_room_inside(ang, angle_params, ptUnit)
+    if room is not None:
+        return room
+    return dataclasses.replace(angle_params, exterior=True)
 
 
 DEFAULT_ANGLE_RADIUS_CONFIG = {
@@ -3090,7 +3108,7 @@ def _apply_label_hints(scene, labels, segments, circles, arc_pts, *, distance,
     circumscribed circle, say), the hinted place inside is taken instead,
     provided the label fits there.
 
-    Angle labels are handled by the caller (:func:`_angle_hint_exterior`).
+    Angle labels are handled by the caller (:func:`_angle_hint_placement`).
     """
     from .geo import lib_elements as geo
 
@@ -3468,9 +3486,8 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
     # ``label_hint_px`` on an angle label: inside is the priority, the hint only
     # decides for an angle with no room inside. Settled before solving so the
     # other labels see the angle label where it will really be drawn.
-    hinted_exterior = {}
+    hinted_angles = {}
     if hinted:
-        import dataclasses
         from .geo import lib_elements as geo
         for lbl in labels:
             if lbl.hint is None or lbl.fixed_center is None:
@@ -3481,11 +3498,11 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
             params = _angle_placement_params(
                 scene, elem, lbl, gap_arc_px=gap_arc_px, gap_sides_px=gap_sides_px,
                 ang_rshift_px=ang_rshift_px, max_arm_fraction=angle_arm_cap)
-            outside = _angle_hint_exterior(elem.data, lbl.hint, params, ptUnit)
-            hinted_exterior[lbl.name] = outside
-            if outside:
+            settled = _angle_hint_placement(elem.data, lbl.hint, params, ptUnit)
+            hinted_angles[lbl.name] = settled
+            if settled != params:
                 lbl.fixed_center = compute_angle_label_center(
-                    elem.data, dataclasses.replace(params, exterior=True), ptUnit)
+                    elem.data, settled, ptUnit)
 
     # P1-C: per-label colour luminance + collected fills for the contrast term.
     fills = ()
@@ -3628,9 +3645,10 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
             angle_params = _angle_placement_params(
                 scene, elem, lbl, gap_arc_px=gap_arc_px, gap_sides_px=gap_sides_px,
                 ang_rshift_px=ang_rshift_px, max_arm_fraction=angle_arm_cap)
-            if name in hinted_exterior:
+            exterior = False
+            if name in hinted_angles:
                 # ``label_hint_px``: inside while it fits, decided before solving.
-                exterior = hinted_exterior[name]
+                angle_params = hinted_angles[name]
             else:
                 # FP-8: honour a manual label the user placed OUTSIDE a narrow
                 # angle. If we are respecting current positions and this angle

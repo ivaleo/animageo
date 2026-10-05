@@ -398,6 +398,9 @@ class TestTightSector:
 
 WIDE ="A = Point(0, 0)\nB = Point(3, 0)\nC = Point(1.5, 2.6)\nang = Angle(B, A, C)\n"
 NARROW = "A = Point(0, 0)\nB = Point(3, 0)\nC = Point(3, 0.3)\nang = Angle(B, A, C)\n"
+# 26° between arms of 3 units: at 0.45 of the arm a large label still touches a
+# side, at 0.8 of it the label is clear.
+CAPPED = "A = Point(0, 0)\nB = Point(3, 0)\nC = Point(2.6964, 1.3151)\nang = Angle(B, A, C)\n"
 
 
 def _bisector(sc, name='ang'):
@@ -424,6 +427,46 @@ class TestAngleHint:
         sc.element('ang').style['label_hint_px'] = [float(out[0]), float(out[1])]
         layout = compute_label_layout(sc, cfg=cfg)
         assert layout['ang'].angle_params.exterior is True
+
+    def test_room_beyond_the_arm_cap_keeps_the_label_inside(self):
+        """``angle_label_max_arm_fraction`` stops the label at 0.45 of the
+        shorter arm. Here that is where it still touches a side, although a
+        little further along the bisector — well before the arm ends — it
+        fits. That is room inside: the hint pointing outside is overruled and
+        the label goes where it fits, the cap lifted for it."""
+        sc = _scene(CAPPED, ['ang'])
+        sc.element('ang').style['font_size_px'] = 30.0
+        ang = sc.element('ang').data
+        vertex = np.asarray(ang.vertex[:2], dtype=float)
+
+        def touched(params):
+            centre = compute_angle_label_center(ang, params, 50)
+            return sum(
+                _segment_bbox_overlap(vertex, vertex + np.asarray(side[:2], dtype=float),
+                                      centre[0], centre[1], params.half_w, params.half_h)
+                for side in (ang.side1, ang.side2))
+
+        capped = compute_label_layout(sc, cfg=RECOMMENDED)['ang'].angle_params
+        assert touched(capped) > 0                 # the premise: the cap bites
+        out = -_bisector(sc) * 20.0
+        sc.element('ang').style['label_hint_px'] = [float(out[0]), float(out[1])]
+        params = compute_label_layout(sc, cfg=RECOMMENDED)['ang'].angle_params
+        assert params.exterior is False
+        assert touched(params) == 0
+        centre = compute_angle_label_center(ang, params, 50)
+        assert np.linalg.norm(centre - vertex) < 3.0      # between the sides, not past them
+
+    def test_hint_inside_keeps_the_arm_cap(self):
+        """The cap is lifted only to keep a label from leaving its angle. A
+        hint that points inside changes nothing."""
+        sc = _scene(CAPPED, ['ang'])
+        sc.element('ang').style['font_size_px'] = 30.0
+        before = compute_label_layout(sc, cfg=RECOMMENDED)['ang']
+        inside = _bisector(sc) * 60.0
+        sc.element('ang').style['label_hint_px'] = [float(inside[0]), float(inside[1])]
+        after = compute_label_layout(sc, cfg=RECOMMENDED)['ang']
+        assert after.angle_params == before.angle_params
+        assert np.allclose(after.offset_ggb, before.offset_ggb)
 
     @CONFIGS
     def test_hint_inside_a_cramped_angle_stays_inside(self, cfg):

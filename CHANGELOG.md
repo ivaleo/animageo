@@ -15,11 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hinted side and still moves the label off lines and other labels; unlike
   `label_offset_px` + `label_placement_locked`, nothing is frozen. The hint is
   read on every pass, including for labels created by `putCode`. An angle
-  label stays inside its angle while it fits, and the label of a point on a
-  closed figure stays outside it while there is room outside — both outrank
-  the hint. The hinted side is kept while the label can sit within 1.6 font
-  sizes of its point there; a sector that needs more gives way to the
-  neighbouring one nearest the hint. Layouts without a hint are unchanged.
+  label stays inside its angle while it fits there — past
+  `angle_label_max_arm_fraction` if that is what it takes — and the label of
+  a point on a closed figure stays outside it while there is room outside;
+  both outrank the hint. The hinted side is kept while the label can sit
+  within 1.6 font sizes of its point there; a sector that needs more gives
+  way to the neighbouring one nearest the hint. Layouts without a hint are
+  unchanged.
 
 ## [1.7.13] - 2026-10-01
 
