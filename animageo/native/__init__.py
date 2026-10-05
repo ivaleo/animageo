@@ -82,7 +82,7 @@ from .convert import ConvertError, ImportRefused, from_construction, from_ggb
 FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz', 'roles',
             'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values',
             'commands.conditions', 'commands.steps', 'timeline', 'steps_timeline', 'render.t', 'render.video',
-            'render.frame', 'from_ggb', 'from_construction', 'import_report.v1')
+            'render.frame', 'from_ggb', 'from_construction', 'import_report.v1', 'appearance.hatch')
 
 
 def has(feature: str) -> bool:
@@ -98,7 +98,9 @@ def has(feature: str) -> bool:
     ``render.video`` — ``mp4``, ``gif``, ``webm``, ``mov``; 1.9.0a5: ``render.frame`` —
     ``render(fmt="png", video=…)``, the frame through the camera of the video;
     kernel stage L5, 1.10.0a1: ``from_ggb``, ``from_construction``,
-    ``import_report.v1`` — the import of ``.ggb`` and of the classic graph)."""
+    ``import_report.v1`` — the import of ``.ggb`` and of the classic graph;
+    1.10.0a2: ``appearance.hatch`` — ``fill_pattern`` and ``hatch_*`` in
+    ``appearance.overrides``)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION

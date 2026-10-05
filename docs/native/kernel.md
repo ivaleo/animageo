@@ -773,6 +773,13 @@ offsetWorld?}, overrides?}}`. Each element gets:
 - `overrides`: element style keys (stroke, fill, points, labels, ticks,
   arrows, angles, `z_index`, `z_index_fill`; the list is
   `rendering.APPEARANCE_STYLE_KEYS`). Other keys are not applied.
+  1.10.0a2 (`has("appearance.hatch")`): the hatching of a polygon, circle or
+  sector — `fill_pattern` (`solid`, `hatch`, `crosshatch`, `dots`, `none`),
+  `hatch_angle_deg`, `hatch_spacing_px`, `hatch_width_px`, `hatch_color`
+  (`stroke` or a colour), `hatch_opacity` — the keys the style already had
+  (`overlay.per_type`, `animageo/hatch.py`). An override is the element's
+  own style: it wins over the style's `overlay` and draws the pattern on
+  this element only, in SVG, PNG, PDF, EPS and TikZ alike.
 
 Marks (registry 1.3, `native.appearance_plan`):
 

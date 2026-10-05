@@ -101,6 +101,8 @@ APPEARANCE_STYLE_KEYS = frozenset({
     # stroke and fill
     'stroke', 'stroke_width_px', 'stroke_opacity', 'stroke_dash_ratio', 'stroke_dash_period_px',
     'stroke_linecap', 'fill', 'fill_opacity',
+    # hatching of a polygon, circle or sector (1.10.0a2; animageo/hatch.py)
+    'fill_pattern', 'hatch_angle_deg', 'hatch_spacing_px', 'hatch_width_px', 'hatch_color', 'hatch_opacity',
     # points
     'size_px', 'point_shape',
     # labels
