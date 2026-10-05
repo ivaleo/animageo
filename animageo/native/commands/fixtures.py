@@ -25,7 +25,7 @@ from ..canonical import canonical_json
 from ..edit import name_key
 from ..registry import REGISTRY_VERSION
 from .build import is_helper, parse_commands
-from .lexicon import Lexicon, lexicon_hash
+from .lexicon import Lexicon, as_lexicon, lexicon_hash
 from .naming import next_name, polygon_side_names
 from .printer import print_commands
 
@@ -506,7 +506,7 @@ def _naming_fixture() -> dict:
 
 def build_fixtures(lexicon=None) -> dict:
     """``{file name: fixture}`` for ``lexicon`` (a dict, a :class:`Lexicon` or ``None``)."""
-    lex = lexicon if isinstance(lexicon, Lexicon) else Lexicon(lexicon)
+    lex = as_lexicon(lexicon)
     out = {}
     for fixture_id, cases in CATALOG:
         out[f'{fixture_id}.json'] = {

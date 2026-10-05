@@ -25,7 +25,7 @@ from ..edit import EditError, _effects, _finish, delete, name_key, redefine, val
 from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, registry
 from .issues import CommandIssue, LineError, ambiguous_name
 from .lexer import tokenize
-from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, Lexicon, normalize_name
+from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, Lexicon, as_lexicon, normalize_name
 from .naming import TakenKeys, next_name, pair_readings, polygon_side_names, suggest_name
 from .resolve import closest_name, kind_text, resolve
 from .syntax import parse_line
@@ -844,11 +844,11 @@ class _Builder:
     def _condition_line(self, no: int, st) -> None:
         from ..conditions.apply import _choose, _constraints, _points, _status
         from ..conditions.recipes import matches
-        from .printer import printable_document
+        from .printer import _printable
         statement, receiver = self._statement(st)
         # judged without the conditions of the text applied (as in a new
         # document): receivers at their origins, no places
-        doc = NativeDocument(printable_document(NativeDocument(self.W))) if self.editing else NativeDocument(self.W)
+        doc = NativeDocument(_printable(NativeDocument(self.W))) if self.editing else NativeDocument(self.W)
         found = matches(doc, statement)
         column = st.command_column
         if not found:
@@ -1032,7 +1032,8 @@ class _Builder:
                 target['first'] = ops[0]
         signature = [(g['title'], g['text'], [o for o in g['ops'] if not is_helper(self.W, o)]) for g in groups
                      if g['ops']]
-        if self.editing and signature == printed_step_signature(self.base, self.lex):
+        if self.editing and signature == (printed_step_signature(self.base, self.lex)
+                                          if self.base.get('steps') else []):
             steps = []
             for step in self.base.get('steps') or ():
                 if not isinstance(step, dict):
@@ -1348,5 +1349,5 @@ def parse_commands(text: str, *, lexicon=None, base=None, id_factory=None, docum
     ``"element"`` (a factory without parameters is called bare; default
     :func:`time_ordered_id`); IDs already in use are skipped.
     """
-    lex = lexicon if isinstance(lexicon, Lexicon) else Lexicon(lexicon)
+    lex = as_lexicon(lexicon)
     return _Builder(lex, base, id_factory, document_id).run(text)

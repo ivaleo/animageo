@@ -436,3 +436,32 @@ class TestFixturesL3:
                 assert len(result.conditionRequests) == len(case['expect'].get('conditionRequests', ())), case['name']
                 assert print_commands(result.document).text == case['expect']['print'], case['name']
             break
+
+
+def _text_of_300():
+    lines = ['A = (-3, -2)', 'B = (3, -2)', 'C = (0.5, 2)', '# Дано']
+    prev = ('A', 'B')
+    for i in range(1, 99):
+        lines += [f'M{i} = Середина({prev[0]}, {prev[1]})  # шаг {i}', f'l{i} = Прямая(M{i}, C)',
+                  f'c{i} = Окружность(M{i}, C)']
+        prev = (f'M{i}', 'C' if i % 2 else 'A')
+    lines += ['D = (1, -0.5)', 'Условие(|AD| = |BD|)', 'Проверить(AB ⟂ CD)']
+    return '\n'.join(lines)
+
+
+@pytest.mark.slow
+def test_parse_and_print_300_lines_within_budget():
+    """Plan L3 §6: ``parse_commands``/``print_commands`` on 300 lines 50 ms
+    (here with a group, step texts, a condition and a check; measured p95
+    ≈ 35 ms new, ≈ 15 ms print), a margin of 2 for a busy machine; edit mode
+    (print of the base inside, measured median ≈ 60 ms) — 3."""
+    from tests.native.test_native_l3a2_budgets import _p95
+    text = _text_of_300()
+    parsed = parse_commands(text, document_id='doc')
+    assert not [i for i in parsed.issues if i.severity == 'error']
+    doc = apply_condition_requests(parsed.document, parsed.conditionRequests).document
+    printed = print_commands(doc).text
+    assert parse_commands(printed, base=doc).effects['added']['operations'] == []
+    assert _p95(lambda: parse_commands(text, document_id='doc')) < 0.100
+    assert _p95(lambda: print_commands(doc)) < 0.100
+    assert _p95(lambda: parse_commands(printed, base=doc)) < 0.150

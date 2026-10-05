@@ -15,7 +15,7 @@ import copy
 import json
 from typing import NamedTuple
 
-from ..document import as_document, bound_producer, cyclic_operations, iter_refs, op_dependencies
+from ..document import NativeDocument, as_document, bound_producer, cyclic_operations, iter_refs, op_dependencies
 from ..edit import name_key
 from ..expr import problems as expr_problems
 from ..expr import template_problems
@@ -24,7 +24,7 @@ from ..kernel.evaluate import _order
 from ..registry import FREE_INPUT_DEFAULTS, registry
 from .build import HELPER_OPS, helper_key, is_helper, pair_op
 from .issues import CommandIssue, LineError, ambiguous_name
-from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, Lexicon
+from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, Lexicon, as_lexicon
 from .naming import TakenKeys, next_name, pair_readings, polygon_side_names
 from .numbers import format_number
 from .resolve import resolve
@@ -43,19 +43,37 @@ class PrintResult(NamedTuple):
     issues: list
 
 
+def _plain(data) -> bool:
+    """No conditions and no automatic marks: the document prints as is."""
+    elements = data.get('elements') or {}
+    return not data.get('conditions') and not any(
+        isinstance(e, dict) and isinstance(e.get('origin'), dict) for e in elements.values())
+
+
 def printable_document(doc) -> dict:
     """The document the lines are printed from (plan L3 §4.3): each receiver
     of a construct condition is defined by its ``receiverOrigin``, the hidden
     places of conditions and the automatic marks are gone, and so are the
     ``construct`` conditions and the ``condition`` steps; ``check``
     conditions stay (a copy; ``doc`` is not changed)."""
+    return copy.deepcopy(_printable(doc))
+
+
+def _printable(doc) -> dict:
+    """:func:`printable_document` without the copy: unchanged records are
+    shared with ``doc`` (read only); a document without conditions and
+    automatic marks is returned as is."""
     from .build import auto_ops
-    data = copy.deepcopy(as_document(doc).data)
+    src = as_document(doc).data
+    if _plain(src):
+        return src
+    data = dict(src)
+    for key in ('operations', 'elements', 'inputs', 'appearance'):
+        if isinstance(src.get(key), dict):
+            data[key] = dict(src[key])
     conds = [c for c in data.get('conditions') or () if isinstance(c, dict)]
     ops = data.get('operations') or {}
     elements = data.get('elements') or {}
-    if not conds and not any(isinstance(e, dict) and isinstance(e.get('origin'), dict) for e in elements.values()):
-        return data
     drop = set(auto_ops(data))
     receivers = {}
     for cond in conds:
@@ -83,7 +101,7 @@ def printable_document(doc) -> dict:
         if 'seq' in old:
             new['seq'] = old['seq']
         ops[rop] = new
-        elements[receiver]['producer'] = {'operationId': rop, 'slot': slot}
+        elements[receiver] = {**elements[receiver], 'producer': {'operationId': rop, 'slot': slot}}
         value = origin.get('input')
         if isinstance(value, dict) and len(value) == 1:
             kind, val = next(iter(value.items()))
@@ -144,8 +162,8 @@ def _header(step, printed, explicit, lexicon) -> str | None:
 def step_signature(doc, lexicon) -> list:
     """``[(title, text, printed op IDs)]`` of the explicit steps the printer
     shows (a heading or a comment)."""
-    lex = lexicon if isinstance(lexicon, Lexicon) else Lexicon(lexicon)
-    data = printable_document(doc)
+    lex = as_lexicon(lexicon)
+    data = _printable(doc)
     helpers = {op_id for op_id in data.get('operations') or {} if is_helper(data, op_id)}
     out = []
     for step, printed, explicit in _plan(data, helpers):
@@ -159,7 +177,7 @@ def step_signature(doc, lexicon) -> list:
 class _Printer:
     def __init__(self, doc, lexicon: Lexicon):
         self.source = as_document(doc)
-        self.doc = as_document(printable_document(self.source))
+        self.doc = self.source if _plain(self.source.data) else NativeDocument(_printable(self.source))
         self.data = self.doc.data
         self.lex = lexicon
         self.reg = registry()
@@ -582,5 +600,5 @@ def _count_splits(text: str, keys: set, parts: int) -> int:
 
 def print_commands(doc, *, lexicon=None) -> PrintResult:
     """The text of «Команды» for ``doc`` (commands.md §6)."""
-    lex = lexicon if isinstance(lexicon, Lexicon) else Lexicon(lexicon)
+    lex = as_lexicon(lexicon)
     return _Printer(doc, lex).run()

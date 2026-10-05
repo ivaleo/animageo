@@ -513,3 +513,19 @@ class Lexicon:
                     if name not in out:
                         out.append(name)
         return out
+
+
+_DEFAULT_LEXICON = []
+
+
+def as_lexicon(lexicon=None) -> Lexicon:
+    """``lexicon`` as a :class:`Lexicon`: an instance as is, a dict checked
+    and built, ``None`` the shipped lexicon (built once and shared; it is
+    read only)."""
+    if isinstance(lexicon, Lexicon):
+        return lexicon
+    if lexicon is None:
+        if not _DEFAULT_LEXICON:
+            _DEFAULT_LEXICON.append(Lexicon())
+        return _DEFAULT_LEXICON[0]
+    return Lexicon(lexicon)
