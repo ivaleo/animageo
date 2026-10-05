@@ -20,7 +20,7 @@ from .construction import ConvertError, Context, translate
 from .ggb import ImportRefused, LIMITS
 from .keys import namespace_of
 from .mapping import MAP_FORMAT, dsl_map, map_problems
-from .report import REPORT_FORMAT, REPORT_VERSION, categorize, construction_report, report_problems
+from .report import REPORT_FORMAT, REPORT_VERSION, categorize, construction_report, report_problems, settle
 
 __all__ = ['ConvertError', 'ImportRefused', 'LIMITS', 'MAP_FORMAT', 'REPORT_FORMAT', 'dsl_map', 'from_construction',
            'from_ggb', 'map_problems', 'report_problems']
@@ -138,15 +138,28 @@ def _classic_parse(root, macro_root, scanned):
             if bad.tag in ('command', 'expression'):
                 out = bad.find('output')
                 labels = set(out.attrib.values()) if out is not None else {bad.attrib.get('label')}
+                labels.discard(None)
+                labels.discard('')
                 cut += [n for n in nodes[hi:] if n.tag == 'element' and n.attrib.get('label') in labels]
             for n in cut:
-                label = n.attrib.get('label') or (list(n.find('output').attrib.values())
-                                                  if n.find('output') is not None else [None])[0]
+                label = _node_label(n)
                 if label not in removed:
                     removed.append(label)
             nodes = [n for n in nodes if all(n is not c for c in cut)]
     constr = Construction()
     return constr, removed + ['*']
+
+
+def _node_label(node) -> str:
+    """The label of a construction node for the report: its own, the first
+    output of a command, or its tag (a node without either)."""
+    if node.attrib.get('label'):
+        return node.attrib['label']
+    out = node.find('output')
+    for value in (out.attrib.values() if out is not None else ()):
+        if value:
+            return value
+    return f'<{node.tag}>'
 
 
 def _labels_in(texts, labels) -> list:
@@ -180,6 +193,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     from ..registry import REGISTRY_VERSION
     from .ggb import (COMMANDS_3D, DEFAULT_JS, PLACEABLE, TYPES_3D, TYPES_FORMULA, TYPES_UI, ggb_value, parse_xml,
                       read_ggb, scan, view_bounds)
+    from ..document import iter_refs
     from .keys import make_id
     from .style import appearance, ggb_style, label_of
     if mode not in ('strict', 'partial'):
@@ -193,6 +207,10 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     infos = sc['elements']
     if len(infos) > lim['objects']:
         raise ImportRefused('import_too_many_objects', f'объектов {len(infos)} > {lim["objects"]}')
+    long_label = next((i['label'] for i in infos if len(i['label']) > lim['label_chars']), None)
+    if long_label is not None:
+        raise ImportRefused('ggb_invalid', f'имя объекта длиннее {lim["label_chars"]} символов: '
+                                           f'{long_label[:40]}…')
     macro_root = parse_xml(f.macro_xml, depth=lim['depth']) if f.macro_xml else None
     macro_names = set()
     if macro_root is not None:
@@ -220,6 +238,12 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     built_by_command = {str(getattr(o, 'name', o)) for cmd in constr.commands for o in cmd.outputs}
     ctx = Context(namespace=ns, prefix='ggb', mode=mode, display=display, bounds=view_bounds(sc['view']))
     ctx.xml_types = {i['label']: i['type'] for i in infos}
+    for label in sc['outputs']:
+        if label not in labels:
+            # defined by a command but without its <element>: not an object of the report, so its
+            # dependents cannot refer to it in the document
+            ctx.forced[constr.name_mapping.get(label) or normalize_name(label)] = (
+                'parse_error', f'у выхода команды {label[:40]} нет <element>')
     for info in infos:
         n = norm[info['label']]
         ctx.order[n] = info['order']
@@ -337,6 +361,12 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         entries.append(e)
     categorize(entries)
     doc = tr.document
+
+    def refs_of(nid):
+        el = doc['elements'].get(nid)
+        op = doc['operations'].get(el['producer']['operationId']) if el else None
+        return [r for arg in (op or {}).get('args', {}).values() if isinstance(arg, dict) for r in iter_refs(arg)]
+    settle(entries, refs_of)
     keep = {nid for e in entries if e['category'] in ('editable', 'differs') for nid in e['native_ids']}
     # an editable/differs element produced together with a dropped one keeps only its own element
     _prune(doc, keep)
@@ -381,7 +411,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         if command and command != 'Expression':
             item['command'] = command[:80]
         if rec is not None and rec.signature:
-            item['signature'] = rec.signature
+            item['signature'] = rec.signature[:80]
         if e.get('reason'):
             item['reason'] = e['reason']
         if e.get('detail'):
@@ -437,7 +467,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         'registry': REGISTRY_VERSION,
         'mapVersion': dsl_map().version,
         'source': {'name': f.name[:255], 'size': f.size, 'sha256': f.sha256,
-                   'ggb_version': (sc.get('version') or None), 'app': sc.get('app'), 'objects': len(elements)},
+                   'ggb_version': (sc.get('version') or '')[:40] or None, 'app': (sc.get('app') or '')[:40] or None,
+                   'objects': len(elements)},
         'summary': summary,
         'elements': elements,
         'dropped': drop_list,

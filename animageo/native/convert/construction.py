@@ -134,15 +134,21 @@ class _Untranslated(Exception):
 
 
 def _literal(data):
-    """A classic constant as a float (``None`` — not a number)."""
+    """A classic constant as a finite float (``None`` — not a number, or not a
+    finite one: an integer past the float range, ``inf``, ``nan``)."""
     from ...geo.lib_vars import AngleSize, Measure
     if isinstance(data, bool):
         return None
-    if isinstance(data, (int, float)):
-        return float(data)
-    if isinstance(data, (AngleSize, Measure)):
-        return float(data.value)
-    return None
+    try:
+        if isinstance(data, (int, float)):
+            value = float(data)
+        elif isinstance(data, (AngleSize, Measure)):
+            value = float(data.value)
+        else:
+            return None
+    except (OverflowError, TypeError, ValueError):
+        return None
+    return value if math.isfinite(value) else None
 
 
 class _Builder:
@@ -349,6 +355,12 @@ class _Builder:
         outs = [str(getattr(o, 'name', o)) for o in cmd.outputs if str(getattr(o, 'name', o))]
         if not outs:
             return
+        again = [o for o in outs if o in self.records and self.records[o].command is not None]
+        if again:
+            # a second definition of an output (a damaged file): the first one stands
+            for o in again:
+                self.warnings.append({'code': 'duplicate_definition', 'name': o})
+            return
         inputs = list(cmd.inputs)
         sig = self.signature(cmd, inputs)
         in_names = [i for i in inputs if isinstance(i, str) and self.is_object(i)]
@@ -450,8 +462,8 @@ class _Builder:
             slots = ['polygon'] + [f'side.{k}' for k in range(1, len(inputs) + 1)]
         else:      # regular
             n = int(args['n']['value']) if args.get('n', {}).get('kind') == 'number' else 0
-            if n < 3:
-                raise _Untranslated('unsupported_signature', 'число сторон')
+            if not 3 <= n <= 100:            # polygon.regular takes 3..100 vertices
+                raise _Untranslated('unsupported_signature', 'число сторон не от 3 до 100')
             slots = ['polygon'] + [f'side.{k}' for k in range(1, n + 1)] + [f'vertex.{k}' for k in range(3, n + 1)]
         op_id = operation_id(self.ns, recs[0].key)
         op = {'id': op_id, 'op': op_name, 'args': args, 'outputs': []}
@@ -650,6 +662,7 @@ def translate(constr, ctx: Context) -> Translation:
             produced.add(str(getattr(o, 'name', o)))
     free = [e.name for e in constr.elements if e.name not in AXES and e.name not in produced]
     free += [v.name for v in constr.vars if v.name not in produced]
+    free = list(dict.fromkeys(free))          # a name twice (a damaged file): one free object
     for name in sorted(free, key=lambda n: ctx.order.get(n, 10 ** 6)):
         obj = constr.objectByName(name)
         if isinstance(obj, Var) and KeyMaker.is_phantom(name):

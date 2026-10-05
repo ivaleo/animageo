@@ -4,7 +4,9 @@
 Categories (W6 §0.1): ``editable`` — an operation of the registry whose value
 matches (``value_check = passed``) or a free input taken from the source as
 is; ``differs`` — translated, but the value does not match or is not checked
-(decision 12: ``not_checked`` of a dependent is ``differs``); ``picture`` — not
+(decision 12: ``not_checked`` of a dependent is ``differs``; a free input
+whose value fails the check — a point at infinity, a slider the kernel does
+not hold — is ``differs`` too, 1.10.0a2); ``picture`` — not
 translated, with a value the web can place statically (a point, a segment, a
 polygon, a text), unless it depends on an unsupported object; ``unsupported``
 — not translated, with a reason; ``closure`` — depends (through a chain) on an
@@ -14,7 +16,7 @@ from __future__ import annotations
 
 from collections import Counter
 
-__all__ = ['REPORT_FORMAT', 'REPORT_VERSION', 'CATEGORIES', 'REASONS', 'DROPPED_KINDS', 'categorize',
+__all__ = ['REPORT_FORMAT', 'REPORT_VERSION', 'CATEGORIES', 'REASONS', 'DROPPED_KINDS', 'categorize', 'settle',
            'report_problems', 'construction_report']
 
 REPORT_FORMAT = 'animageo.import_report'
@@ -35,11 +37,13 @@ def categorize(entries: list) -> list:
     (``translated`` | ``untranslated``), ``reason`` (own reason when
     untranslated), ``free``, ``value_check``, ``placeable`` (the web can place
     its value) and ``picture_reason`` (``latex_macros`` / ``fixed_text`` of a
-    text). Dependencies come before their dependents.
+    text). The entries are taken dependencies first (a damaged file may name
+    a dependency after its dependent; a cycle keeps the source order); the
+    list keeps its order.
     """
     by_name = {}
     tainted = set()             # names with an unsupported ancestor (through any chain, pictures included)
-    for e in entries:
+    for e in _dependency_order(entries):
         deps = [by_name[d] for d in e['depends_on'] if d in by_name]
         unsupported_above = any(d['category'] == 'unsupported' or d['name'] in tainted for d in deps)
         if unsupported_above:
@@ -49,7 +53,7 @@ def categorize(entries: list) -> list:
                 # its input is not in the document: it cannot be translated after all
                 e['status'] = 'untranslated'
                 e['reason'] = 'depends_on_unsupported'
-            elif e.get('free') or e['value_check'] == 'passed':
+            elif e['value_check'] == 'passed' or e.get('free') and e['value_check'] != 'failed':
                 e['category'], e['reason'] = 'editable', None
             else:
                 e['category'] = 'differs'
@@ -72,6 +76,66 @@ def categorize(entries: list) -> list:
                 e['value_check'] = 'not_checked'
         by_name[e['name']] = e
     return entries
+
+
+def _dependency_order(entries: list) -> list:
+    """``entries`` with every entry after the entries it depends on (stable;
+    the entries of a cycle follow in source order)."""
+    names = {e['name'] for e in entries}
+    pending = {e['name']: {d for d in e['depends_on'] if d in names and d != e['name']} for e in entries}
+    done: set = set()
+    out = []
+    rest = list(entries)
+    while rest:
+        ready = [e for e in rest if pending[e['name']] <= done]
+        if not ready:                    # a cycle: its first entry goes on
+            ready = rest[:1]
+        for e in ready:
+            done.add(e['name'])
+            out.append(e)
+        taken = {id(e) for e in ready}
+        rest = [e for e in rest if id(e) not in taken]
+    return out
+
+
+def settle(entries: list, refs_of=None) -> list:
+    """After :func:`categorize`: make the categories obey the rules of
+    :func:`report_problems` whatever the graph (cycles, a dependency the
+    report does not name). ``refs_of(native_id)`` — the native IDs the
+    element's operation refers to (``None`` — no document check): an
+    editable or differing entry whose operation refers to an element not
+    carried over is not carried over either. A sound file is unchanged."""
+    for _ in range(2 * len(entries) + 5):
+        changed = False
+        elements = [{'ggb_name': e['name'], 'category': e['category'], 'depends_on': e['depends_on']}
+                    for e in entries]
+        expected = _closure_names(elements)
+        for e in entries:
+            if e['name'] in expected and e['category'] not in ('closure', 'picture'):
+                _drop(e, 'closure')
+                changed = True
+            elif e['category'] == 'closure' and e['name'] not in expected:
+                _drop(e, 'unsupported')
+                changed = True
+        if refs_of is not None:
+            keep = {nid for e in entries if e['category'] in ('editable', 'differs') for nid in e['native_ids']}
+            for e in entries:
+                if e['category'] in ('editable', 'differs') and any(
+                        r not in keep for nid in e['native_ids'] for r in refs_of(nid)):
+                    keep.difference_update(e['native_ids'])
+                    _drop(e, 'picture' if e.get('placeable') else 'unsupported')
+                    changed = True
+        if not changed:
+            return entries
+    raise RuntimeError('import report: the categories do not settle')
+
+
+def _drop(e: dict, category: str) -> None:
+    e['status'] = 'untranslated'
+    e['category'] = category
+    e['reason'] = 'depends_on_unsupported'
+    e['native_ids'] = []
+    e['value_check'] = 'not_checked'
 
 
 def _closure_names(elements: list) -> set:

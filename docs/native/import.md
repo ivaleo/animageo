@@ -146,6 +146,32 @@ lambda, comprehension or definition (before 1.10.0a1 a `.ggb` expression
 could reach `object.__subclasses__()`). `tests/native/test_native_no_exec.py`
 keeps `exec`, `eval`, `compile`, `subprocess`, … out of `animageo.native`.
 
+1.10.0a2, after fuzzing (`tests/native/test_native_l5_fuzz.py`, marker
+`fuzz`; the random series are `slow` too): the outcome of any input is a
+report or `ImportRefused` — never another exception, never a hang (each case
+runs under a 20 s deadline). What the fuzzing changed:
+
+- refusals: any damage of the archive (a broken deflate stream, an unknown or
+  encrypted method, a wrong CRC) is `import_not_ggb`; a `DOCTYPE` is refused
+  in any encoding (UTF-16/32 too, by the parser, not by a byte search); an
+  encoding Python cannot decode is `ggb_invalid`; an object name longer than
+  200 characters is `ggb_invalid`;
+- a regular polygon takes 3 to 100 vertices (`unsupported_signature`
+  otherwise); the classic `Polygon(A, B, n)` refuses more than 10 000;
+- a name defined twice: the first definition wins, the second command is the
+  warning `duplicate_definition`; an output of a command without its own
+  `<element>` is not an object of the report, its dependents are
+  `parse_error`;
+- a free input whose value fails the check (a point at infinity, a
+  non-finite value) is `differs`, not `editable`; a view with non-finite or
+  empty bounds is ignored;
+- the categories are set dependencies first and then settled
+  (`report.settle`): the closure is exactly the dependents of unsupported
+  objects, and an editable object never refers to an element that is not in
+  the document — whatever the order of the XML, a cycle or a dangling name;
+- the long strings of the report are cut to the schema (`signature` 80,
+  `app` and `ggb_version` 40).
+
 ## 7. Command line
 
 ```text

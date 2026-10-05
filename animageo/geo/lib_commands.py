@@ -2477,7 +2477,14 @@ def polar_pc(point, circle):
     if np.isclose(n, 0).all(): return None
     return Line(n, np.dot(n, circle.center) + circle.radius_squared)
 
+# Regular polygons have at most this many vertices: a larger (or not finite) n
+# from a file is undefined instead of n points built in memory (1.10.0a2).
+MAX_REGULAR_POLYGON_VERTICES = 10000
+
+
 def polygon_ppi(p1, p2, n):
+    if not n <= MAX_REGULAR_POLYGON_VERTICES:
+        raise ValueError(f'a regular polygon of {n} vertices (at most {MAX_REGULAR_POLYGON_VERTICES})')
     p1c, p2c = (a_to_cpx(p.coords) for p in (p1, p2))
     alpha = 2 * np.pi / n
     center = p2c + (p1c - p2c) / (1 - np.exp(-alpha * 1j))

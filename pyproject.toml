@@ -43,6 +43,7 @@ python_files = ["test_*.py"]
 markers = [
     "manim: requires the optional Manim render dependency",
     "slow: timing and wheel-build tests (deselect with -m \"not slow\")",
+    "fuzz: hostile and random input of the importers (the random series are also slow)",
 ]
 
 [project.urls]

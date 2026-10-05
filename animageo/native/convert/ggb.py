@@ -18,9 +18,11 @@ from __future__ import annotations
 
 import hashlib
 import io
+import lzma
 import math
 import re
 import zipfile
+import zlib
 from dataclasses import dataclass, field
 from xml.etree import ElementTree
 
@@ -33,7 +35,13 @@ LIMITS = {
     'xml_bytes': 10 * 1024 * 1024,
     'objects': 3000,
     'depth': 64,
+    'label_chars': 200,
 }
+
+# What a damaged archive raises while an entry is read: a bad header or
+# CRC, an unknown or encrypted method, a broken deflate, bzip2 or lzma stream.
+_ZIP_ERRORS = (zipfile.BadZipFile, zipfile.LargeZipFile, ValueError, OSError, RuntimeError, EOFError,
+               NotImplementedError, zlib.error, lzma.LZMAError, OverflowError, KeyError, IndexError)
 
 # What GeoGebra writes into geogebra_javascript.js when there is no script.
 DEFAULT_JS = re.compile(rb'^\s*function\s+ggbOnInit\s*\(\s*\)\s*\{\s*\}\s*$')
@@ -107,7 +115,7 @@ def read_ggb(path_or_bytes, *, name: str | None = None, limits=None) -> GgbFile:
     try:
         zf = zipfile.ZipFile(io.BytesIO(raw))
         infos = zf.infolist()
-    except (zipfile.BadZipFile, ValueError, OSError) as exc:
+    except _ZIP_ERRORS as exc:
         raise ImportRefused('import_not_ggb', f'не zip-архив: {exc}') from None
     if len(infos) > lim['entries']:
         raise ImportRefused('import_too_large', f'записей в архиве {len(infos)} > {lim["entries"]}')
@@ -128,7 +136,7 @@ def read_ggb(path_or_bytes, *, name: str | None = None, limits=None) -> GgbFile:
         javascript = _bounded_read(zf, js, lim['xml_bytes']) if js is not None else None
     except ImportRefused:
         raise
-    except (zipfile.BadZipFile, ValueError, OSError, RuntimeError, EOFError) as exc:
+    except _ZIP_ERRORS as exc:
         raise ImportRefused('import_not_ggb', f'архив повреждён: {exc}') from None
     return GgbFile(name=name, size=len(raw), sha256=sha, xml=xml, macro_xml=macro_xml, javascript=javascript,
                    entries=[i.filename for i in infos])
@@ -137,13 +145,28 @@ def read_ggb(path_or_bytes, *, name: str | None = None, limits=None) -> GgbFile:
 _DTD = re.compile(rb'<!\s*(DOCTYPE|ENTITY)', re.IGNORECASE)
 
 
+class _NoDoctype(ElementTree.TreeBuilder):
+    """The tree builder of :func:`parse_xml`: a document type declaration
+    stops the parser as soon as it starts — before its entities are declared
+    or any external part is looked up, whatever the encoding (the byte check
+    sees only an ASCII-compatible ``<!DOCTYPE``)."""
+
+    def doctype(self, name, pubid, system):
+        raise ImportRefused('ggb_invalid', 'XML с DOCTYPE или ENTITY')
+
+
 def parse_xml(data: bytes, *, depth: int = 64):
     """The root of a GGB XML document; DTD and entities refuse it."""
     if _DTD.search(data):
         raise ImportRefused('ggb_invalid', 'XML с DOCTYPE или ENTITY')
     try:
-        root = ElementTree.fromstring(data)
-    except ElementTree.ParseError as exc:
+        parser = ElementTree.XMLParser(target=_NoDoctype())
+        parser.feed(data)
+        root = parser.close()
+    except ImportRefused:
+        raise
+    except (ElementTree.ParseError, ValueError, LookupError, UnicodeError) as exc:
+        # ValueError: an encoding expat does not take ("multi-byte encodings are not supported")
         raise ImportRefused('ggb_invalid', f'XML не разбирается: {exc}') from None
     stack = [(root, 1)]
     while stack:
@@ -168,7 +191,8 @@ def _bool(v):
 
 def scan(root) -> dict:
     """``{elements: [info], dropped: {kind: [labels]}, view, app, version,
-    commands: {label: command}, breakpoints: [labels]}`` of the GGB XML root."""
+    decimals, outputs: [labels]}`` of the GGB XML root (``outputs`` — the
+    labels commands and expressions define, with an ``<element>`` or not)."""
     constr = root.find('construction')
     if constr is None:
         raise ImportRefused('import_not_ggb', 'нет <construction>')
@@ -193,11 +217,12 @@ def scan(root) -> dict:
             inputs = list(inp.attrib.values()) if inp is not None else []
             for label in (out.attrib.values() if out is not None else ()):
                 if label:
-                    producer[label] = (name, inputs, 'command')
+                    # a label defined twice (a damaged file): the first definition stands, as in the translator
+                    producer.setdefault(label, (name, inputs, 'command'))
         elif tag == 'expression':
             label = node.attrib.get('label')
             if label:
-                producer[label] = ('Expression', [node.attrib.get('exp', '')], 'expression')
+                producer.setdefault(label, ('Expression', [node.attrib.get('exp', '')], 'expression'))
         elif tag == 'cascell':
             drop('cas')
         elif tag == 'element':
@@ -302,7 +327,7 @@ def scan(root) -> dict:
     if kernel is not None and kernel.find('decimals') is not None:
         decimals = _float(kernel.find('decimals').attrib.get('val'))
     return {'elements': elements, 'dropped': dropped, 'view': view, 'app': head.get('app'),
-            'version': head.get('version'), 'decimals': decimals}
+            'version': head.get('version'), 'decimals': decimals, 'outputs': list(producer)}
 
 
 def view_bounds(view):
@@ -318,7 +343,10 @@ def view_bounds(view):
     sy = _float(cs.attrib.get('yscale')) or sx
     if None in (w, h, x0, y0, sx, sy) or sx <= 0 or sy <= 0 or w <= 0 or h <= 0:
         return None
-    return [-x0 / sx, -(h - y0) / sy, (w - x0) / sx, y0 / sy]
+    bounds = [-x0 / sx, -(h - y0) / sy, (w - x0) / sx, y0 / sy]
+    if not all(math.isfinite(v) for v in bounds) or bounds[0] >= bounds[2] or bounds[1] >= bounds[3]:
+        return None             # a degenerate or overflowing view: the document takes its default
+    return bounds
 
 
 def ggb_value(info: dict, point_of=None):
