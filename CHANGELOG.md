@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0a5] - 2026-10-05
+
+The fifth part of the native kernel stage L3: the frame of `render(t)` is the
+frame of the video, styles and the camera of a timeline reach it, and the
+remainder of «Команды» (edit mode speed, «Дано» with a title, determinism).
+
+### Added
+
+- `native.render(fmt="png", video={fps?, quality})`: the frame through the
+  manim camera of the video (its pixel size) instead of cairosvg of the SVG;
+  with `t` and `timeline` an MP4 frame matches it at 45.7 dB – ∞ on the 20
+  frames of `tests/native/frames` (the rest is H.264). The report gains
+  `video {quality, width, height}`. `native.has("render.frame")`.
+- `native.render(t=…, timeline=…)` applies `styles` and `@camera` of the
+  timeline as the playback leaves them (held after their keyframe, the
+  classic interpolators inside the interval); `rendering.timeline_extras`.
+  The camera shows in the video-camera PNG; vector exports keep the export
+  frame of the style, as the classic `exportSVG` does.
+- «Команды»: `# Дано: <title>` — a `given` step with a title; the printer
+  writes a titled `given` step that way, so it reads back as `given`.
+- Tests: a polygon point shifted by |d| ≥ 2π per interval (an 8-gon) plays
+  in the bridge as the kernel samples it; determinism of «Команды» (plan L3
+  §7) on 40 parity scenes — key order of the document, `load → dump → load`,
+  runs and edit mode against a reordered base.
+
+### Changed
+
+- Edit mode of «Команды» loads `base` once, prints it once (the step
+  signature comes from the same plan) and caches line signatures: 300 lines,
+  fastest run 57 → 40 ms (cold cache), 35 ms warm.
+- PNG without `video` is unchanged (cairosvg of the SVG).
+
 ## [1.9.0a4] - 2026-10-05
 
 The fourth part of the native kernel stage L3: time by element ID — a
