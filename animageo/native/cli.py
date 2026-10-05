@@ -5,11 +5,15 @@
     python -m animageo.native registry index [--check]
     python -m animageo.native evaluate <doc.json> [--inputs case.json] [--canonical]
     python -m animageo.native validate <doc.json>
+    python -m animageo.native commands fixtures [--lexicon <file>] -o <dir> [--check]
+    python -m animageo.native commands parse <text file | -> [--lexicon <file>] [--base <doc.json>]
+    python -m animageo.native commands print <doc.json> [--lexicon <file>]
 
 Exit codes: 0 success; 1 verify mismatches, validate issues (invalid JSON
-included), an out-of-date registry index or a refused scene; 2 an input that
-cannot be used (a missing file; for ``evaluate`` a document that does not load
-or bad ``--inputs``).
+included), an out-of-date registry index or a refused scene, out-of-date
+commands fixtures, a commands text with errors; 2 an input that cannot be
+used (a missing file; for ``evaluate`` a document that does not load or bad
+``--inputs``; an unusable lexicon).
 """
 from __future__ import annotations
 
@@ -126,6 +130,106 @@ def _cmd_validate(args) -> int:
     return 1 if issues else 0
 
 
+def _read_lexicon(path):
+    """The lexicon of ``--lexicon`` (``None``: the shipped one); raises
+    ``ValueError`` with the reasons when it is not usable."""
+    from .commands.lexicon import Lexicon, LexiconError
+
+    if not path:
+        return Lexicon()
+    with open(path, encoding='utf-8') as fh:
+        data = json.load(fh)
+    try:
+        return Lexicon(data)
+    except LexiconError as exc:
+        raise ValueError('lexicon: ' + '; '.join(exc.problems)) from None
+
+
+def _cmd_commands_fixtures(args) -> int:
+    from .commands.fixtures import DEFAULT_DIR, check_fixtures, write_fixtures
+
+    try:
+        lexicon = _read_lexicon(args.lexicon)
+    except (OSError, ValueError) as exc:
+        _err(str(exc))
+        return 2
+    out = args.out or (None if args.lexicon else str(DEFAULT_DIR))
+    if out is None:
+        _err('-o/--out is required with --lexicon')
+        return 2
+    if args.check:
+        problems = check_fixtures(out, lexicon)
+        for line in problems:
+            _out(line)
+        if problems:
+            _out('run: python -m animageo.native commands fixtures'
+                 + (f' --lexicon {args.lexicon}' if args.lexicon else '') + f' -o {out}')
+            return 1
+        _out(f'commands fixtures in {out} are up to date (lexicon {lexicon.hash})')
+        return 0
+    for path in write_fixtures(out, lexicon):
+        _out(f'wrote {path}')
+    return 0
+
+
+def _cmd_commands_parse(args) -> int:
+    from .commands import parse_commands
+
+    try:
+        lexicon = _read_lexicon(args.lexicon)
+        if args.text == '-':
+            text = sys.stdin.read()
+        else:
+            with open(args.text, encoding='utf-8') as fh:
+                text = fh.read()
+        base = load(args.base) if args.base else None
+        result = parse_commands(text, lexicon=lexicon, base=base, document_id=args.document_id)
+    except LoadError as exc:
+        for issue in exc.issues:
+            _err(f'{issue.code} {issue.path or "/"}: {issue.message}')
+        return 2
+    except (OSError, ValueError) as exc:
+        _err(str(exc))
+        return 2
+    payload = {
+        'document': result.document.data,
+        'effects': result.effects,
+        'lines': result.lines,
+        'issues': [i.to_dict() for i in result.issues],
+    }
+    if args.canonical:
+        _out(canonical_json(payload))
+    else:
+        _out(json.dumps(payload, ensure_ascii=False, indent=2))
+    for issue in result.issues:
+        _err(f'{issue.severity} {issue.code} {issue.line}:{issue.column}: {issue.message}'
+             + (f' ({issue.hint})' if issue.hint else ''))
+    return 1 if any(i.severity == 'error' for i in result.issues) else 0
+
+
+def _cmd_commands_print(args) -> int:
+    from .commands import print_commands
+
+    try:
+        lexicon = _read_lexicon(args.lexicon)
+        with open(args.document, encoding='utf-8') as fh:
+            data = json.load(fh)
+        if isinstance(data, dict) and data.get('format') == 'animageo-parity/v1':
+            data = data.get('document')          # a parity scene or fixture
+        result = print_commands(load(data), lexicon=lexicon)
+    except LoadError as exc:
+        for issue in exc.issues:
+            _err(f'{issue.code} {issue.path or "/"}: {issue.message}')
+        return 2
+    except (OSError, ValueError) as exc:
+        _err(str(exc))
+        return 2
+    _out(result.text)
+    for issue in result.issues:
+        _err(f'{issue.severity} {issue.code} {issue.line}:{issue.column}: {issue.message}')
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog='python -m animageo.native',
@@ -162,6 +266,25 @@ def build_parser() -> argparse.ArgumentParser:
     va.add_argument('document', help='animageo-construction/v1 JSON file')
     va.add_argument('--json', action='store_true', help='print the issues as JSON')
     va.set_defaults(func=_cmd_validate)
+
+    cm = sub.add_parser('commands', help='«Команды»: the text form of a document')
+    csub = cm.add_subparsers(dest='action', required=True)
+    cf = csub.add_parser('fixtures', help='write (or --check) the commands fixtures of a lexicon')
+    cf.add_argument('--lexicon', help='animageo-lexicon/v1 JSON file (default: the shipped lexicon)')
+    cf.add_argument('-o', '--out', help='output directory (default without --lexicon: the shipped fixtures)')
+    cf.add_argument('--check', action='store_true', help='only compare; exit 1 when out of date')
+    cf.set_defaults(func=_cmd_commands_fixtures)
+    cp = csub.add_parser('parse', help='parse commands; print {document, effects, lines, issues}')
+    cp.add_argument('text', help='a text file of commands, or - for stdin')
+    cp.add_argument('--lexicon', help='animageo-lexicon/v1 JSON file')
+    cp.add_argument('--base', help='a document to edit (edit mode)')
+    cp.add_argument('--document-id', help='documentId of a new document')
+    cp.add_argument('--canonical', action='store_true', help='print canonical JSON')
+    cp.set_defaults(func=_cmd_commands_parse)
+    cr = csub.add_parser('print', help='print a document as commands')
+    cr.add_argument('document', help='animageo-construction/v1 JSON file (or a parity scene)')
+    cr.add_argument('--lexicon', help='animageo-lexicon/v1 JSON file')
+    cr.set_defaults(func=_cmd_commands_print)
     return parser
 
 

@@ -1,0 +1,300 @@
+{
+  "format": "animageo-commands/v1",
+  "id": "numbers",
+  "lexiconHash": "sha256:9e22e4e3bfcca43e6d10f2087213b9cf7218cf06a7b031f990ed500669c8b322",
+  "registry": "1.3",
+  "generatedBy": "animageo 1.8.1a2",
+  "cases": [
+    {
+      "name": "decimals",
+      "text": "A = (0.1, 0.000001)\nB = (123456789012345.6, -2.5)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.1,
+              1e-06
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              123456789012345.6,
+              -2.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0.1, 0.000001)\nB = (123456789012345.6, -2.5)"
+      }
+    },
+    {
+      "name": "exponents",
+      "text": "A = (1.5e-7, 2E+21)\nB = (1e15, .5)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              1.5e-07,
+              2e+21
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              1000000000000000.0,
+              0.5
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (1.5e-7, 2e+21)\nB = (1e+15, 0.5)"
+      }
+    },
+    {
+      "name": "negative_zero",
+      "text": "A = (-0, -0.0)\nr = -0",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "number.free",
+            "args": {},
+            "outputs": {
+              "number": "r"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -0.0,
+              -0.0
+            ]
+          },
+          "r": {
+            "kind": "number",
+            "value": -0.0
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "r"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nr = 0"
+      }
+    },
+    {
+      "name": "degrees",
+      "text": "α = 40°\nβ = 90 deg\nγ = -30°",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "number.free",
+            "args": {},
+            "outputs": {
+              "number": "α"
+            },
+            "hidden": false
+          },
+          {
+            "op": "number.free",
+            "args": {},
+            "outputs": {
+              "number": "β"
+            },
+            "hidden": false
+          },
+          {
+            "op": "number.free",
+            "args": {},
+            "outputs": {
+              "number": "γ"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "α": {
+            "kind": "number",
+            "value": 0.6981317007977318
+          },
+          "β": {
+            "kind": "number",
+            "value": 1.5707963267948966
+          },
+          "γ": {
+            "kind": "number",
+            "value": -0.5235987755982988
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "α"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "β"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "γ"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "α = 0.6981317007977318\nβ = 1.5707963267948966\nγ = -0.5235987755982988"
+      }
+    },
+    {
+      "name": "long_fraction",
+      "text": "A = (0.30000000000000004, 0.1)\nr = 3.14159265358979",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "number.free",
+            "args": {},
+            "outputs": {
+              "number": "r"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.30000000000000004,
+              0.1
+            ]
+          },
+          "r": {
+            "kind": "number",
+            "value": 3.14159265358979
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "r"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0.30000000000000004, 0.1)\nr = 3.14159265358979"
+      }
+    }
+  ]
+}

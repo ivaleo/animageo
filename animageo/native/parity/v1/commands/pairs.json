@@ -1,0 +1,1056 @@
+{
+  "format": "animageo-commands/v1",
+  "id": "pairs",
+  "lexiconHash": "sha256:9e22e4e3bfcca43e6d10f2087213b9cf7218cf06a7b031f990ed500669c8b322",
+  "registry": "1.3",
+  "generatedBy": "animageo 1.8.1a2",
+  "cases": [
+    {
+      "name": "pair_segment_slot",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nОтметкаРавныхОтрезков(AB, CD)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "D"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nОтметкаРавныхОтрезков(AB, CD)"
+      }
+    },
+    {
+      "name": "pair_line_slot",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nX = Пересечение(AB, CD)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "C",
+              "b": "D"
+            },
+            "outputs": {
+              "line": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "intersect.line_line",
+            "args": {
+              "first": "#1",
+              "second": "#2"
+            },
+            "outputs": {
+              "point": "X"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "X"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nX = Пересечение(AB, CD)"
+      }
+    },
+    {
+      "name": "pair_reuses_visible",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\ns = Отрезок(A, B)\nОтметкаРавныхОтрезков(AB, CD)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "D"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "s",
+                "#1"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\ns = Отрезок(A, B)\nОтметкаРавныхОтрезков(s, CD)"
+      }
+    },
+    {
+      "name": "pair_reuses_hidden",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nX = Пересечение(AB, CD)\nY = Пересечение(AB, CD)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "C",
+              "b": "D"
+            },
+            "outputs": {
+              "line": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "intersect.line_line",
+            "args": {
+              "first": "#1",
+              "second": "#2"
+            },
+            "outputs": {
+              "point": "X"
+            },
+            "hidden": false
+          },
+          {
+            "op": "intersect.line_line",
+            "args": {
+              "first": "#1",
+              "second": "#2"
+            },
+            "outputs": {
+              "point": "Y"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "X"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "Y"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nX = Пересечение(AB, CD)\nY = Пересечение(AB, CD)"
+      }
+    },
+    {
+      "name": "pair_element_wins",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nAB = (2, 2)\nM = Середина(AB, C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "AB"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "AB",
+              "b": "C"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "AB": {
+            "kind": "point",
+            "value": [
+              2.0,
+              2.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "AB"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nAB = (2, 2)\nM = Середина(AB, C)"
+      }
+    },
+    {
+      "name": "pair_indexed_points",
+      "text": "A_1 = (0, 0)\nB = (3, 0)\nC = (0, 2)\nH = Проекция(C, A_1B)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A_1"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A_1",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "point.projection",
+            "args": {
+              "point": "C",
+              "base": "#1"
+            },
+            "outputs": {
+              "foot": "H"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A_1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.0,
+              2.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A_1"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "H"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A_1 = (0, 0)\nB = (3, 0)\nC = (0, 2)\nH = Проекция(C, A_1B)"
+      }
+    },
+    {
+      "name": "pair_primes",
+      "text": "A' = (0, 1)\nB' = (3, 1)\nC = (0, 2)\nH = Проекция(C, A'B')",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A'"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B'"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A'",
+              "b": "B'"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "point.projection",
+            "args": {
+              "point": "C",
+              "base": "#1"
+            },
+            "outputs": {
+              "foot": "H"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A'": {
+            "kind": "point",
+            "value": [
+              0.0,
+              1.0
+            ]
+          },
+          "B'": {
+            "kind": "point",
+            "value": [
+              3.0,
+              1.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              0.0,
+              2.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A'"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B'"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "H"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A' = (0, 1)\nB' = (3, 1)\nC = (0, 2)\nH = Проекция(C, A'B')"
+      }
+    },
+    {
+      "name": "pair_order_kept",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nОтметкаРавныхОтрезков(BA, DC)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "B",
+              "b": "A"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "D",
+              "b": "C"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nОтметкаРавныхОтрезков(BA, DC)"
+      }
+    }
+  ]
+}

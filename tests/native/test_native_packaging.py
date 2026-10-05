@@ -19,6 +19,7 @@ DATA_DIRS = [
     ('parity', 'v1'),
     ('parity', 'v1', 'scenes'),
     ('parity', 'v1', 'expected'),
+    ('parity', 'v1', 'commands'),
     ('commands',),
 ]
 

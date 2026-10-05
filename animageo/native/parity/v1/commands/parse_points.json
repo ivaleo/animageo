@@ -1,0 +1,1254 @@
+{
+  "format": "animageo-commands/v1",
+  "id": "parse_points",
+  "lexiconHash": "sha256:9e22e4e3bfcca43e6d10f2087213b9cf7218cf06a7b031f990ed500669c8b322",
+  "registry": "1.3",
+  "generatedBy": "animageo 1.8.1a2",
+  "cases": [
+    {
+      "name": "free_point",
+      "text": "A = (1, 2)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              1.0,
+              2.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (1, 2)"
+      }
+    },
+    {
+      "name": "free_point_signs",
+      "text": "A = (-1.5, 2.25)\nB = (+3, -0)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -1.5,
+              2.25
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              3.0,
+              -0.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (-1.5, 2.25)\nB = (3, 0)"
+      }
+    },
+    {
+      "name": "free_point_unnamed",
+      "text": "(3, 4)\n(5, 6)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              3.0,
+              4.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              5.0,
+              6.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (3, 4)\nB = (5, 6)"
+      }
+    },
+    {
+      "name": "on_path_parameter",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)\nP = Точка(l, 0.25)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "l"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.on_path",
+            "args": {
+              "path": "l"
+            },
+            "outputs": {
+              "point": "P"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "P": {
+            "kind": "pathParameter",
+            "value": 0.25
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "l"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "P"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)\nP = Точка(l, 0.25)"
+      }
+    },
+    {
+      "name": "on_path_default",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nc = Окружность(A, B)\nP = Точка(c)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "A",
+              "through": "B"
+            },
+            "outputs": {
+              "circle": "c"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.on_path",
+            "args": {
+              "path": "c"
+            },
+            "outputs": {
+              "point": "P"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "P": {
+            "kind": "pathParameter",
+            "value": 0.7853981633974483
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "c"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "P"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nc = Окружность(A, B)\nP = Точка(c, 0.7853981633974483)"
+      }
+    },
+    {
+      "name": "on_path_pair",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nP = Точка(AB, 2)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "point.on_path",
+            "args": {
+              "path": "#1"
+            },
+            "outputs": {
+              "point": "P"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "P": {
+            "kind": "pathParameter",
+            "value": 2.0
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "P"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nP = Точка(AB, 2)"
+      }
+    },
+    {
+      "name": "midpoint",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "M"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)"
+      }
+    },
+    {
+      "name": "midpoint_unnamed",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nСередина(B, C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "B",
+              "b": "C"
+            },
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = Середина(B, C)"
+      }
+    },
+    {
+      "name": "midpoint_chain",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)\nN = Середина(M, C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "M",
+              "b": "C"
+            },
+            "outputs": {
+              "point": "N"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "N"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)\nN = Середина(M, C)"
+      }
+    },
+    {
+      "name": "projection_pair",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nH = Проекция(C, AB)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "point.projection",
+            "args": {
+              "point": "C",
+              "base": "#1"
+            },
+            "outputs": {
+              "foot": "H"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "H"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nH = Проекция(C, AB)"
+      }
+    },
+    {
+      "name": "projection_strict",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\ns = Отрезок(A, B)\nH = Проекция(C, s, 1)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.projection",
+            "args": {
+              "point": "C",
+              "base": "s",
+              "strict": 1.0
+            },
+            "outputs": {
+              "foot": "H"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "H"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\ns = Отрезок(A, B)\nH = Проекция(C, s, 1)"
+      }
+    },
+    {
+      "name": "projection_unnamed",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)\nПроекция(C, l)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "l"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.projection",
+            "args": {
+              "point": "C",
+              "base": "l"
+            },
+            "outputs": {
+              "foot": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "l"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nl = Прямая(A, B)\nD = Проекция(C, l)"
+      }
+    },
+    {
+      "name": "number_value",
+      "text": "r = 3",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "number.free",
+            "args": {},
+            "outputs": {
+              "number": "r"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "r": {
+            "kind": "number",
+            "value": 3.0
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "r"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "r = 3"
+      }
+    },
+    {
+      "name": "number_slider",
+      "text": "k = Параметр(1, 0, 5, 0.5)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "number.free",
+            "args": {
+              "min": 0.0,
+              "max": 5.0,
+              "step": 0.5
+            },
+            "outputs": {
+              "number": "k"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "k": {
+            "kind": "number",
+            "value": 1.0
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "k"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "k = Параметр(1, 0, 5, 0.5)"
+      }
+    },
+    {
+      "name": "number_slider_short",
+      "text": "k = Параметр(2, -1)\nm = Параметр()",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "number.free",
+            "args": {
+              "min": -1.0
+            },
+            "outputs": {
+              "number": "k"
+            },
+            "hidden": false
+          },
+          {
+            "op": "number.free",
+            "args": {},
+            "outputs": {
+              "number": "m"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "k": {
+            "kind": "number",
+            "value": 2.0
+          },
+          "m": {
+            "kind": "number",
+            "value": 0.0
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "k"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "m"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "k = Параметр(2, -1)\nm = 0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,7834 @@
+{
+  "format": "animageo-commands/v1",
+  "id": "edit",
+  "lexiconHash": "sha256:9e22e4e3bfcca43e6d10f2087213b9cf7218cf06a7b031f990ed500669c8b322",
+  "registry": "1.3",
+  "generatedBy": "animageo 1.8.1a2",
+  "cases": [
+    {
+      "name": "unchanged",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "move_point",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 4)\nt = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": [
+              "e3"
+            ]
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 4)\nt, c, a, b = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "change_number",
+      "text": "r = 2.5\nA = (0, 0)\nc = Окружность(A, r)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "number.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "number",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "circle.center_radius",
+            "args": {
+              "center": {
+                "kind": "ref",
+                "elementId": "e2"
+              },
+              "radius": {
+                "kind": "ref",
+                "elementId": "e1"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "e3"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "number",
+            "displayName": "r",
+            "producer": {
+              "operationId": "o1",
+              "slot": "number"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "circle",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o3",
+              "slot": "circle"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "number",
+            "value": 2.0
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "number.free",
+            "args": {},
+            "outputs": {
+              "number": "r"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_radius",
+            "args": {
+              "center": "A",
+              "radius": "r"
+            },
+            "outputs": {
+              "circle": "c"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "r": {
+            "kind": "number",
+            "value": 2.5
+          },
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "r"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "c"
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": [
+              "e1"
+            ]
+          },
+          "warnings": []
+        },
+        "print": "r = 2.5\nA = (0, 0)\nc = Окружность(A, r)"
+      }
+    },
+    {
+      "name": "redefine",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nM = Проекция(C, AB)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "point.projection",
+            "args": {
+              "point": "C",
+              "base": "#1"
+            },
+            "outputs": {
+              "foot": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#3"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#2",
+                "#3"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [
+              "o10"
+            ],
+            "elements": [
+              "e13"
+            ],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [
+              "o5"
+            ],
+            "elements": [
+              "e8"
+            ],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)\nM = Проекция(C, AB)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "redefine_refused",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nM = Окружность(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "type_mismatch",
+            "line": 5,
+            "column": 5,
+            "severity": "error"
+          }
+        ],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "redefine_free",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nM = (2, -1)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "M": {
+            "kind": "point",
+            "value": [
+              2.0,
+              -1.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": [
+              "e8"
+            ]
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [
+              "o5"
+            ],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)\nM = (2, -1)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "delete_line",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nM = Середина(A, B)\nОтметкаРавныхОтрезков(AM, MB)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [
+              "o6"
+            ],
+            "elements": [
+              "e9"
+            ],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)\nM = Середина(A, B)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "delete_line_cascade",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [
+              "o5",
+              "o6",
+              "o7",
+              "o8",
+              "o9"
+            ],
+            "elements": [
+              "e10",
+              "e11",
+              "e12",
+              "e8",
+              "e9"
+            ],
+            "inputs": [],
+            "appearance": [
+              "e10",
+              "e11"
+            ]
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)"
+      }
+    },
+    {
+      "name": "new_line",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)\nN = Середина(B, C)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "B",
+              "b": "C"
+            },
+            "outputs": {
+              "point": "N"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              ""
+            ]
+          },
+          {
+            "line": 8,
+            "elements": [
+              "N"
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [
+              "o10"
+            ],
+            "elements": [
+              "e13"
+            ],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nN = Середина(B, C)\nt, c, a, b = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "new_name_is_new_operation",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nM = Середина(A, B)\nu = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "u"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "u"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [
+              "o10"
+            ],
+            "elements": [
+              "e13"
+            ],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [
+              "o6"
+            ],
+            "elements": [
+              "e9"
+            ],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)\nM = Середина(A, B)\nu = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "mark_count",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB, 2)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ],
+              "count": 2.0
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [
+              "o9"
+            ],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB, 2)"
+      }
+    },
+    {
+      "name": "mark_removed",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [
+              "o7",
+              "o8",
+              "o9"
+            ],
+            "elements": [
+              "e10",
+              "e11",
+              "e12"
+            ],
+            "inputs": [],
+            "appearance": [
+              "e10",
+              "e11"
+            ]
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)"
+      }
+    },
+    {
+      "name": "secondary_names",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, z, x = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "z",
+              "side.2": "x",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "z",
+              "x",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [],
+            "elements": [
+              "e5",
+              "e6"
+            ],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, z, x, b = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "error_keeps_operation",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nM = Середина(A, B\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e1"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e2"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e3"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "polygon",
+                "elementId": "e4"
+              },
+              {
+                "slot": "side.1",
+                "elementId": "e5"
+              },
+              {
+                "slot": "side.2",
+                "elementId": "e6"
+              },
+              {
+                "slot": "side.3",
+                "elementId": "e7"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "point.midpoint",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e8"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e3"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e9"
+              }
+            ]
+          },
+          "o7": {
+            "id": "o7",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e8"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e10"
+              }
+            ]
+          },
+          "o8": {
+            "id": "o8",
+            "op": "segment.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "e8"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "segment",
+                "elementId": "e11"
+              }
+            ]
+          },
+          "o9": {
+            "id": "o9",
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": {
+                "kind": "list",
+                "items": [
+                  {
+                    "kind": "ref",
+                    "elementId": "e10"
+                  },
+                  {
+                    "kind": "ref",
+                    "elementId": "e11"
+                  }
+                ]
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "e12"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "polygon",
+            "displayName": "t",
+            "producer": {
+              "operationId": "o4",
+              "slot": "polygon"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "segment",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.1"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "segment",
+            "displayName": "a",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.2"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "segment",
+            "displayName": "b",
+            "producer": {
+              "operationId": "o4",
+              "slot": "side.3"
+            }
+          },
+          "e8": {
+            "id": "e8",
+            "type": "point",
+            "displayName": "M",
+            "producer": {
+              "operationId": "o5",
+              "slot": "point"
+            }
+          },
+          "e9": {
+            "id": "e9",
+            "type": "segment",
+            "displayName": "s",
+            "producer": {
+              "operationId": "o6",
+              "slot": "segment"
+            }
+          },
+          "e10": {
+            "id": "e10",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o7",
+              "slot": "segment"
+            }
+          },
+          "e11": {
+            "id": "e11",
+            "type": "segment",
+            "displayName": "",
+            "producer": {
+              "operationId": "o8",
+              "slot": "segment"
+            }
+          },
+          "e12": {
+            "id": "e12",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "o9",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "appearance": {
+          "e10": {
+            "visible": false
+          },
+          "e11": {
+            "visible": false
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "C",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [
+          {
+            "code": "syntax",
+            "line": 5,
+            "column": 13,
+            "severity": "error"
+          }
+        ],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)\nM = Середина(A, B)\ns = Отрезок(C, M)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "swap_outputs",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nc = Окружность(A, C)\nd = Окружность(B, C)\nQ, P = Пересечение(c, d)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "circle.center_point",
+            "args": {
+              "center": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "through": {
+                "kind": "ref",
+                "elementId": "e3"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "e4"
+              }
+            ]
+          },
+          "o5": {
+            "id": "o5",
+            "op": "circle.center_point",
+            "args": {
+              "center": {
+                "kind": "ref",
+                "elementId": "e2"
+              },
+              "through": {
+                "kind": "ref",
+                "elementId": "e3"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "e5"
+              }
+            ]
+          },
+          "o6": {
+            "id": "o6",
+            "op": "intersect.circle_circle",
+            "args": {
+              "first": {
+                "kind": "ref",
+                "elementId": "e4"
+              },
+              "second": {
+                "kind": "ref",
+                "elementId": "e5"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "first",
+                "elementId": "e6"
+              },
+              {
+                "slot": "second",
+                "elementId": "e7"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "circle",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "circle"
+            }
+          },
+          "e5": {
+            "id": "e5",
+            "type": "circle",
+            "displayName": "d",
+            "producer": {
+              "operationId": "o5",
+              "slot": "circle"
+            }
+          },
+          "e6": {
+            "id": "e6",
+            "type": "point",
+            "displayName": "P",
+            "producer": {
+              "operationId": "o6",
+              "slot": "first"
+            }
+          },
+          "e7": {
+            "id": "e7",
+            "type": "point",
+            "displayName": "Q",
+            "producer": {
+              "operationId": "o6",
+              "slot": "second"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "A",
+              "through": "C"
+            },
+            "outputs": {
+              "circle": "c"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "B",
+              "through": "C"
+            },
+            "outputs": {
+              "circle": "d"
+            },
+            "hidden": false
+          },
+          {
+            "op": "intersect.circle_circle",
+            "args": {
+              "first": "c",
+              "second": "d"
+            },
+            "outputs": {
+              "first": "Q",
+              "second": "P"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "c"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "d"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "Q",
+              "P"
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [
+              "o6"
+            ],
+            "elements": [
+              "e6",
+              "e7"
+            ],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nc = Окружность(A, C)\nd = Окружность(B, C)\nQ, P = Пересечение(c, d)"
+      }
+    },
+    {
+      "name": "redefine_moves_down",
+      "text": "A = (0, 0)\nB = (4, 0)\nc = Окружность(A, B)\nC, D = Пересечение(AB, c)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "circle.center_point",
+            "args": {
+              "center": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "through": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "e4"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "circle",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "circle"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "A",
+              "through": "B"
+            },
+            "outputs": {
+              "circle": "c"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "intersect.line_circle",
+            "args": {
+              "line": "#1",
+              "circle": "c"
+            },
+            "outputs": {
+              "first": "C",
+              "second": "D"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "c"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "C",
+              "D"
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [
+              "o5"
+            ],
+            "elements": [
+              "e5",
+              "e6"
+            ],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [],
+            "elements": [],
+            "inputs": [
+              "e3"
+            ],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [
+              "o3"
+            ],
+            "elements": [
+              "e3"
+            ],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nc = Окружность(A, B)\nC, D = Пересечение(AB, c)"
+      }
+    },
+    {
+      "name": "free_name_reused",
+      "text": "A = (0, 0)\nB = (4, 0)\nc = Окружность(A, B)\nD, C = Пересечение(AB, c)",
+      "base": {
+        "format": "animageo-construction/v1",
+        "documentId": "doc",
+        "operationRegistryVersion": "1.3",
+        "operations": {
+          "o1": {
+            "id": "o1",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e1"
+              }
+            ]
+          },
+          "o2": {
+            "id": "o2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e2"
+              }
+            ]
+          },
+          "o3": {
+            "id": "o3",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "e3"
+              }
+            ]
+          },
+          "o4": {
+            "id": "o4",
+            "op": "circle.center_point",
+            "args": {
+              "center": {
+                "kind": "ref",
+                "elementId": "e1"
+              },
+              "through": {
+                "kind": "ref",
+                "elementId": "e2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "e4"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "e1": {
+            "id": "e1",
+            "type": "point",
+            "displayName": "A",
+            "producer": {
+              "operationId": "o1",
+              "slot": "point"
+            }
+          },
+          "e2": {
+            "id": "e2",
+            "type": "point",
+            "displayName": "B",
+            "producer": {
+              "operationId": "o2",
+              "slot": "point"
+            }
+          },
+          "e3": {
+            "id": "e3",
+            "type": "point",
+            "displayName": "C",
+            "producer": {
+              "operationId": "o3",
+              "slot": "point"
+            }
+          },
+          "e4": {
+            "id": "e4",
+            "type": "circle",
+            "displayName": "c",
+            "producer": {
+              "operationId": "o4",
+              "slot": "circle"
+            }
+          }
+        },
+        "inputs": {
+          "e1": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "e2": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "e3": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        }
+      },
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "A",
+              "through": "B"
+            },
+            "outputs": {
+              "circle": "c"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "intersect.line_circle",
+            "args": {
+              "line": "#1",
+              "circle": "c"
+            },
+            "outputs": {
+              "first": "D",
+              "second": "C"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "c"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D",
+              "C"
+            ]
+          }
+        ],
+        "issues": [],
+        "effects": {
+          "added": {
+            "operations": [
+              "o5",
+              "o6"
+            ],
+            "elements": [
+              "e5",
+              "e6",
+              "e7"
+            ],
+            "inputs": []
+          },
+          "removed": {
+            "operations": [
+              "o3"
+            ],
+            "elements": [
+              "e3"
+            ],
+            "inputs": [
+              "e3"
+            ],
+            "appearance": []
+          },
+          "modified": {
+            "operations": [],
+            "elements": [],
+            "inputs": []
+          },
+          "warnings": []
+        },
+        "print": "A = (0, 0)\nB = (4, 0)\nc = Окружность(A, B)\nD, C = Пересечение(AB, c)"
+      }
+    }
+  ]
+}

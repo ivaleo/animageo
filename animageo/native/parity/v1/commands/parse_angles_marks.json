@@ -1,0 +1,1437 @@
+{
+  "format": "animageo-commands/v1",
+  "id": "parse_angles_marks",
+  "lexiconHash": "sha256:9e22e4e3bfcca43e6d10f2087213b9cf7218cf06a7b031f990ed500669c8b322",
+  "registry": "1.3",
+  "generatedBy": "animageo 1.8.1a2",
+  "cases": [
+    {
+      "name": "angle",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nα = Угол(B, A, C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "B",
+              "vertex": "A",
+              "b": "C"
+            },
+            "outputs": {
+              "angle": "α"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "α"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nα = Угол(B, A, C)"
+      }
+    },
+    {
+      "name": "angle_symbol",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nβ = ∠ABC",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "A",
+              "vertex": "B",
+              "b": "C"
+            },
+            "outputs": {
+              "angle": "β"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "β"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nβ = Угол(A, B, C)"
+      }
+    },
+    {
+      "name": "angle_unnamed",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\n∠BCA\nУгол(C, A, B)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "B",
+              "vertex": "C",
+              "b": "A"
+            },
+            "outputs": {
+              "angle": "α"
+            },
+            "hidden": false
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "C",
+              "vertex": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "angle": "β"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "α"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "β"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nα = Угол(B, C, A)\nβ = Угол(C, A, B)"
+      }
+    },
+    {
+      "name": "equal_segments_pairs",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)\nОтметкаРавныхОтрезков(AM, MB)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "M"
+            },
+            "outputs": {
+              "segment": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "M",
+              "b": "B"
+            },
+            "outputs": {
+              "segment": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nM = Середина(A, B)\nОтметкаРавныхОтрезков(AM, MB)"
+      }
+    },
+    {
+      "name": "equal_segments_named",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\ns = Отрезок(A, C)\nt = Отрезок(B, C)\nОтметкаРавныхОтрезков(s, t, 2)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "A",
+              "b": "C"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          },
+          {
+            "op": "segment.by_points",
+            "args": {
+              "a": "B",
+              "b": "C"
+            },
+            "outputs": {
+              "segment": "t"
+            },
+            "hidden": false
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "s",
+                "t"
+              ],
+              "count": 2.0
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "s"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "t"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\ns = Отрезок(A, C)\nt = Отрезок(B, C)\nОтметкаРавныхОтрезков(s, t, 2)"
+      }
+    },
+    {
+      "name": "equal_segments_three",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt = Многоугольник(A, B, C)\nОтметкаРавныхОтрезков(a, b, c, 3)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "t",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "mark.equal_segments",
+            "args": {
+              "segments": [
+                "a",
+                "b",
+                "c"
+              ],
+              "count": 3.0
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "t",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nt, c, a, b = Многоугольник(A, B, C)\nОтметкаРавныхОтрезков(a, b, c, 3)"
+      }
+    },
+    {
+      "name": "equal_angles_symbols",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nОтметкаРавныхУглов(∠BAC, ∠ACB)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "B",
+              "vertex": "A",
+              "b": "C"
+            },
+            "outputs": {
+              "angle": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "A",
+              "vertex": "C",
+              "b": "B"
+            },
+            "outputs": {
+              "angle": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_angles",
+            "args": {
+              "angles": [
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nОтметкаРавныхУглов(∠BAC, ∠ACB)"
+      }
+    },
+    {
+      "name": "equal_angles_named",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nα = ∠BAC\nβ = ∠CBA\nОтметкаРавныхУглов(α, β, 2)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "B",
+              "vertex": "A",
+              "b": "C"
+            },
+            "outputs": {
+              "angle": "α"
+            },
+            "hidden": false
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "C",
+              "vertex": "B",
+              "b": "A"
+            },
+            "outputs": {
+              "angle": "β"
+            },
+            "hidden": false
+          },
+          {
+            "op": "mark.equal_angles",
+            "args": {
+              "angles": [
+                "α",
+                "β"
+              ],
+              "count": 2.0
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "α"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "β"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nα = Угол(B, A, C)\nβ = Угол(C, B, A)\nОтметкаРавныхУглов(α, β, 2)"
+      }
+    },
+    {
+      "name": "equal_angles_named_mark",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nα = ∠BAC\nm = ОтметкаРавныхУглов(α, ∠ACB, ∠CBA)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "B",
+              "vertex": "A",
+              "b": "C"
+            },
+            "outputs": {
+              "angle": "α"
+            },
+            "hidden": false
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "A",
+              "vertex": "C",
+              "b": "B"
+            },
+            "outputs": {
+              "angle": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "angle.by_points",
+            "args": {
+              "a": "C",
+              "vertex": "B",
+              "b": "A"
+            },
+            "outputs": {
+              "angle": "#2"
+            },
+            "hidden": true
+          },
+          {
+            "op": "mark.equal_angles",
+            "args": {
+              "angles": [
+                "α",
+                "#1",
+                "#2"
+              ]
+            },
+            "outputs": {
+              "mark": "m"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "α"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "m"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nα = Угол(B, A, C)\nm = ОтметкаРавныхУглов(α, ∠ACB, ∠CBA)"
+      }
+    },
+    {
+      "name": "right_angle",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nH = Проекция(C, AB)\nПрямойУгол(C, H, B)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "point.projection",
+            "args": {
+              "point": "C",
+              "base": "#1"
+            },
+            "outputs": {
+              "foot": "H"
+            },
+            "hidden": false
+          },
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": "C",
+              "vertex": "H",
+              "b": "B"
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "H"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nH = Проекция(C, AB)\nПрямойУгол(C, H, B)"
+      }
+    },
+    {
+      "name": "right_angle_named",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nr = ПрямойУгол(B, A, C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": "B",
+              "vertex": "A",
+              "b": "C"
+            },
+            "outputs": {
+              "mark": "r"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "r"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nr = ПрямойУгол(B, A, C)"
+      }
+    },
+    {
+      "name": "right_angle_count_free",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nПрямойУгол(A, B, C)\nПрямойУгол(B, C, A)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": "A",
+              "vertex": "B",
+              "b": "C"
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          },
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": "B",
+              "vertex": "C",
+              "b": "A"
+            },
+            "outputs": {
+              "mark": ""
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              ""
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              ""
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nПрямойУгол(A, B, C)\nПрямойУгол(B, C, A)"
+      }
+    }
+  ]
+}
