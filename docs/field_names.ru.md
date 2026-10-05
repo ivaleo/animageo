@@ -364,6 +364,7 @@
 | Смещение | `<labelOffset x,y>` | `label_offset_px` (Y инвертируется) | `label_offset_px` (после инверсии Y) | `import.policy.label_offset_px`, `overlay.per_name` | `tex.shift(...)` |
 | Радиальное смещение (угол) | — | — | `label_radial_offset_px` | `overlay.per_name` | прибавляется к `r` для Angle |
 | Зафиксированное положение | — | — | `label_placement_locked` (bool) | `overlay.per_name` | пропускается решателем |
+| Подсказка места | — | — | `label_hint_px` (`[x, y]`, ось y вверх) | `overlay.per_name` | читается решателем как желаемая сторона подписи; рендерер её не читает |
 | Внутренний флаг авторазмещения | — | — | `_auto_placed` (bool, внутренний) | — | отключает поправку на выносной элемент GGB в `create_label` |
 
 ### 3.6. Видимость и слои

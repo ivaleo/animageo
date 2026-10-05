@@ -224,6 +224,11 @@ is not a drawable element type.
 - `label_offset_px`: `[dx, dy]`.
 - `label_radial_offset_px`: radial offset for angle labels.
 - `label_placement_locked`: bool; prevents auto-placement from moving a label.
+- `label_hint_px`: `[dx, dy]`, y up; where the label centre should be relative
+  to the element's anchor (the point, a segment's midpoint, an angle's vertex).
+  A soft request: auto-placement keeps the hinted side and still avoids
+  collisions. Prefer it to `label_offset_px` + `label_placement_locked` when
+  only the side is known.
 - `font_size_px`: label font size.
 
 ### Stroke

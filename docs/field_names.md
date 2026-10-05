@@ -364,6 +364,7 @@ The GGB `point_style` code is decomposed into three independent axes (`point_sha
 | Offset | `<labelOffset x,y>` | `label_offset_px` (Y gets inverted) | `label_offset_px` (after Y inversion) | `import.policy.label_offset_px`, `overlay.per_name` | `tex.shift(...)` |
 | Radial offset (angle) | — | — | `label_radial_offset_px` | `overlay.per_name` | added to `r` for Angle |
 | Frozen position | — | — | `label_placement_locked` (bool) | `overlay.per_name` | skipped by the solver |
+| Placement hint | — | — | `label_hint_px` (`[x, y]`, y up) | `overlay.per_name` | read by the solver as the label's desired side; never by the renderer |
 | Internal auto-layout flag | — | — | `_auto_placed` (bool, internal) | — | disables the GGB descender correction in `create_label` |
 
 ### 3.6. Visibility and layers

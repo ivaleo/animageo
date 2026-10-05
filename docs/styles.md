@@ -561,6 +561,7 @@ keeps its type's layer and label defaults.
 | `font_size_px` | float (px) | `defaults.<type>.font_size_px` | Per-element font size override |
 | `label_radial_offset_px` | float (px) | `defaults.angle.label_radial_offset_px` (`0`) | Radial label offset from the geometry (used for angles) |
 | `label_placement_locked` | bool | `False` | Protects the label from auto-placement |
+| `label_hint_px` | `[x, y]` (GGB px, y up) | — | Where the label centre should be, relative to the element's anchor; a soft request to auto-placement (§ "A hint instead of a lock") |
 | `_auto_placed` | bool | `False` (internal) | Set by the auto-layout; disables the GGB descender correction in `create_label` |
 
 ### Z-index (see §5)
@@ -694,6 +695,52 @@ The anchor is always `MC`.
 scene.element('A').style['label_placement_locked'] = True
 scene.element('A').style['label_offset_px'] = [10, -5]
 ```
+
+### A hint instead of a lock
+
+A locked label stays exactly where `label_offset_px` puts it, whatever is
+drawn there. When you only know *which side* the label belongs on — the
+position comes from another drawing, from a model, from a rule of thumb —
+give auto-placement a hint and let it do the rest:
+
+```python
+scene.element('A').style['label_hint_px'] = [-12, -10]   # below-left of A
+```
+
+`label_hint_px` is the desired offset of the label **centre** from the
+element's anchor — the point itself, a segment's midpoint, an angle's vertex —
+in the same pixels as `label_offset_px`, y up. On a point it is the same pair
+of numbers you would write into `label_offset_px` with `label_anchor='MC'`.
+
+What auto-placement does with it:
+
+- The label keeps the hinted **side**: at a vertex it goes into the sector the
+  hint points into and keeps the hinted direction there (held ~28° away from
+  the sector's edges); a free point's label goes in the hinted direction. A
+  segment's label takes the hinted side of the segment.
+- The **distance** is the layout's own (compact, clear of the marker and of
+  the lines), so a hint may be rough. Where the hinted direction would put the
+  label far from its point — next to a line it has to clear — the label turns
+  toward the middle of the sector, 45° at most. A sector too narrow for the
+  label at all gives way to the next one.
+- The label is **not locked**: if the hinted place is taken by a line or by
+  another label, it moves along, staying as close to the hint as it can.
+- The hint is read on every placement pass and outranks a manual or GeoGebra
+  offset; `label_placement_locked` outranks the hint. It works whether or not
+  `respect_current_position` is on.
+
+Two rules outrank a hint, because a copied position may be wrong:
+
+- an **angle label stays inside its angle** while it fits there — a hint that
+  points outside moves it out only when the angle is too narrow for the label;
+- the label of a **point on a closed figure** (a polygon, or segments joined
+  into a cycle) stays **outside the figure** while there is room outside. When
+  there is none — a circle runs close along the figure, say — a hint that
+  points inside is followed.
+
+A hint only takes effect when placement runs. `loadGGB` places labels once;
+for elements created or hinted later by `putCode`/`loadCode`, call
+`scene.autoPlaceLabels()` afterwards. Without a hint nothing changes.
 
 ### Dynamics and keyframe snapshots
 

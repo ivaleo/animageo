@@ -240,6 +240,9 @@ Arrow heads
 
 Positioning / layering
 - ``label_offset_px`` ([dx, dy], GGB pixels)
+- ``label_hint_px`` ([dx, dy], GGB pixels, y up): where the label centre
+  should be relative to the element's label anchor — a soft request to
+  auto-placement, not a position (see ``label_placement._apply_label_hints``)
 - ``label_radial_offset_px`` (radial label offset for angles, pixels)
 - ``font_size_px`` (pixel-invariant label font size)
 - ``z_index``, ``z_index_fill`` (CircleSector)

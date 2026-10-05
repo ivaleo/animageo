@@ -37,6 +37,8 @@ class StyleProxy(dict):
 
     # ── Label positioning ────────────────────────────────────────
     label_offset_px: List[float]       # [dx, dy] in GGB pixel units
+    label_hint_px: List[float]         # [dx, dy] soft desired label centre, from the
+                                       # element's anchor; read by auto-placement only
     label_radial_offset_px: float      # radial offset for angle labels
 
     # ── Stroke (lines / curves / boundaries) — SVG-compatible ────

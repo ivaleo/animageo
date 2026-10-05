@@ -376,6 +376,9 @@ class LabelInfo:
     blocked_wedges: tuple = ()         # R2: (start,end) rad angle-marker wedges at
                                        # this anchor; excluded by the direction
                                        # resolvers so labels avoid the marker
+    hint: tuple = None                 # ``label_hint_px`` — desired centre offset
+                                       # from the anchor (px, y up); soft, see
+                                       # ``_apply_label_hints``
 
 
 # ── Geometry helpers ──────────────────────────────────────────────────
@@ -672,6 +675,82 @@ def _collect_obstacles(scene, *, angle_marker_obstacle=False):
 
     arc_pts_arr = np.array(arc_pts) if arc_pts else np.empty((0, 2))
     return segments, circles, arc_pts_arr, seg_dashed, circ_dashed
+
+
+def _figure_faces(scene, *, max_vertices=6, max_segments=150):
+    """Closed figures of the drawing, as ``(N, 2)`` vertex arrays in scene MU.
+
+    A figure is a visible ``Polygon`` element or a cycle of up to
+    ``max_vertices`` visible segments joined at their endpoints (a triangle
+    drawn as three segments is a figure too). Used to tell which side of a
+    vertex is "inside" for labels that carry ``label_hint_px``.
+
+    Cycles are found from every endpoint: for each pair of its neighbours, the
+    shortest chain of segments between them that avoids the endpoint closes one
+    figure. Dense scenes (more than ``max_segments`` segments) skip the cycle
+    search and report polygons only.
+    """
+    from .geo import lib_elements as geo
+
+    faces = []
+    xy = {}
+    adjacent = {}
+    count = 0
+    for elem in scene.geo.elements:
+        if not _resolve_style(scene, elem, 'visible',
+                              default=getattr(elem, 'visible', True)):
+            continue
+        d = elem.data
+        if isinstance(d, geo.Polygon):
+            faces.append(np.asarray(d.vertices, dtype=float)[:, :2].copy())
+        elif isinstance(d, geo.Segment):
+            a = np.asarray(d.endpoints[0][:2], dtype=float)
+            b = np.asarray(d.endpoints[1][:2], dtype=float)
+            ka = (round(float(a[0]), 4), round(float(a[1]), 4))
+            kb = (round(float(b[0]), 4), round(float(b[1]), 4))
+            if ka == kb:
+                continue
+            xy[ka], xy[kb] = a, b
+            adjacent.setdefault(ka, set()).add(kb)
+            adjacent.setdefault(kb, set()).add(ka)
+            count += 1
+    if count < 3 or count > max_segments:
+        return faces
+
+    def _chain(start, goal, avoid):
+        """Shortest chain start → goal that does not pass through ``avoid``."""
+        if goal in adjacent[start]:
+            return [start, goal]
+        paths = [[start]]
+        seen = {start, avoid}
+        for _ in range(max_vertices - 2):
+            grown = []
+            for path in paths:
+                for nxt in sorted(adjacent[path[-1]]):
+                    if nxt == goal:
+                        return path + [nxt]
+                    if nxt not in seen:
+                        seen.add(nxt)
+                        grown.append(path + [nxt])
+            paths = grown
+            if not paths:
+                break
+        return None
+
+    found = set()
+    for node in sorted(adjacent):
+        around = sorted(adjacent[node])
+        for i in range(len(around)):
+            for j in range(i + 1, len(around)):
+                chain = _chain(around[i], around[j], node)
+                if chain is None or len(chain) + 1 > max_vertices:
+                    continue
+                key = frozenset(chain) | {node}
+                if key in found:
+                    continue
+                found.add(key)
+                faces.append(np.array([xy[node]] + [xy[k] for k in chain], dtype=float))
+    return faces
 
 
 def _angle_drawn_sector(scene, elem):
@@ -1104,6 +1183,55 @@ def _angle_manual_exterior(scene, elem, angle_range, render_r_px, ptUnit,
     return side < 0.0
 
 
+def _angle_label_fits_inside(ang, angle_params: AngleParams, ptUnit: float) -> bool:
+    """True when the angle label has room INSIDE its angle.
+
+    "Room" means the label, at the interior position auto-placement would give
+    it (:func:`compute_angle_label_center`, caps included), neither touches one
+    of the two sides nor lies past the end of the shorter one. A narrow angle
+    fails this: the caps stop the label before the sides have opened wide
+    enough for it. A reflex-range marker always has room.
+    """
+    if angle_params.angle_range == 'reflex':
+        return True
+    import dataclasses
+    inner = dataclasses.replace(angle_params, exterior=False)
+    center = compute_angle_label_center(ang, inner, ptUnit)
+    vertex = np.asarray(ang.vertex[:2], dtype=float)
+    s1 = np.asarray(ang.side1[:2], dtype=float)
+    s2 = np.asarray(ang.side2[:2], dtype=float)
+    if float(np.linalg.norm(center - vertex)) > min(
+            float(np.linalg.norm(s1)), float(np.linalg.norm(s2))):
+        return False
+    for side in (s1, s2):
+        if _segment_bbox_overlap(vertex, vertex + side, center[0], center[1],
+                                 angle_params.half_w, angle_params.half_h) > 0:
+            return False
+    return True
+
+
+def _angle_hint_exterior(ang, hint, angle_params: AngleParams, ptUnit: float) -> bool:
+    """Should an angle label carrying ``label_hint_px`` go OUTSIDE its angle?
+
+    Inside is the priority: the label leaves the angle only when the hint points
+    to the far side of the vertex (same half-plane test as FP-8) AND there is no
+    room for it inside (:func:`_angle_label_fits_inside`). A hint that points
+    outside a roomy angle is therefore overruled — the usual source of such a
+    hint is a position copied from another drawing, where it may have belonged
+    to a different object.
+    """
+    v1n = ang.side1[:2] / (np.linalg.norm(ang.side1[:2]) + 1e-12)
+    v2n = ang.side2[:2] / (np.linalg.norm(ang.side2[:2]) + 1e-12)
+    bis = v1n + v2n
+    nb = np.linalg.norm(bis)
+    bis = bis / nb if nb > 1e-6 else v1n
+    if angle_params.angle_range == 'reflex':
+        bis = -bis
+    if float(hint[0]) * float(bis[0]) + float(hint[1]) * float(bis[1]) >= 0.0:
+        return False
+    return not _angle_label_fits_inside(ang, angle_params, ptUnit)
+
+
 DEFAULT_ANGLE_RADIUS_CONFIG = {
     'enabled': False,
     'exp': 0.25,              # scale factor is (pivot / angle)**exp
@@ -1231,6 +1359,28 @@ def _angle_render_label_radius_px(
     return float(right_px) / sqrt(2)
 
 
+def _label_hint(scene, elem):
+    """Per-element ``label_hint_px`` as an ``(dx, dy)`` float pair, or ``None``.
+
+    The hint is the desired offset of the label CENTRE from the element's label
+    anchor (:func:`_get_anchor`: the point itself, a segment's midpoint, an
+    angle's vertex), in ``label_offset_px`` pixels, y up. A missing, malformed or
+    zero-length value is "no hint" — a zero vector carries no direction.
+    """
+    raw = _resolve_style(scene, elem, 'label_hint_px', default=None)
+    if raw is None or isinstance(raw, (str, bytes)):
+        return None
+    try:
+        if len(raw) != 2:
+            return None
+        hx, hy = float(raw[0]), float(raw[1])
+    except (TypeError, ValueError):
+        return None
+    if not (np.isfinite(hx) and np.isfinite(hy)) or (hx * hx + hy * hy) < 1e-12:
+        return None
+    return (hx, hy)
+
+
 def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px=0.0):
     """Collect LabelInfo for all visible elements with label_visible=True."""
     from .geo import lib_elements as geo
@@ -1247,6 +1397,7 @@ def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px
         if _resolve_style(scene, elem, 'label_placement_locked', default=False):
             continue
 
+        hint = _label_hint(scene, elem)
         label_text = resolve_label_text(scene, elem)
         # Match the renderer: label size is the canonical pixel-unit
         # ``font_size_px`` resolved through the style layers.
@@ -1319,6 +1470,7 @@ def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px
                 half_h=hh,
                 fixed_center=fc,
                 fixed_anchor='MC',
+                hint=hint,
             ))
             continue
 
@@ -1329,6 +1481,7 @@ def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px
             half_h=hh,
             margin=margin,
             clear_radius=point_clear_radius,
+            hint=hint,
         ))
     return labels
 
@@ -1601,6 +1754,83 @@ def _bisector_of_gap_nearest(dirs, preferred,
         rel = min(max((pang - lo) % (2 * pi), align), w - align)
         mid = (lo + rel) % (2 * pi)
     return np.array([cos(mid), sin(mid)])
+
+
+def _sectors_for_hint(dirs, preferred, *, blocked_arcs=None, is_interior=None,
+                      align_deg=28.0, min_sector=0.8, slide_deg=45.0,
+                      slide_step_deg=15.0):
+    """Where a label with ``label_hint_px`` may go at a vertex/crossing: the free
+    sectors around the point, best first, each with its candidate directions.
+
+    ``dirs`` are the unit directions of the edges through the point,
+    ``preferred`` the hinted direction. The label belongs in the free sector the
+    hint points into and — unlike :func:`_bisector_of_gap_nearest`, which centres
+    a GeoGebra position on the sector bisector — keeps the hinted direction
+    itself, only held ``align_deg`` away from the sector's edges so it does not
+    read as an edge's label. A sector narrower than twice that margin has no
+    such freedom: the label takes its bisector.
+
+    Sectors that cannot be used are skipped: narrower than ``min_sector`` rad
+    (no room for a label) or covered by an angle marker (``blocked_arcs``, R2).
+    The rest are ordered: when ``is_interior(theta)`` is given, sectors outside
+    a closed figure come before the ones inside it ("the label of a figure
+    vertex sits outside"); then by angular distance from the hint. A sector the
+    hint does not point into is entered from the edge nearer to the hint.
+
+    Within a sector the directions start at the hinted one and step toward the
+    sector's bisector — where a sector is roomiest — by ``slide_step_deg``, at
+    most ``slide_deg`` in all, so the caller can trade a few degrees for a place
+    closer to the point without leaving the hinted side.
+
+    Returns a list of ``(directions, inside)`` pairs, ``inside`` telling whether
+    the sector lies inside a figure; empty for a non-vertex (< 2 edges), where
+    the caller takes the isolated-point path.
+    """
+    if len(dirs) < 2:
+        return []
+    p = np.asarray(preferred, dtype=float)[:2]
+    pang = atan2(float(p[1]), float(p[0])) % (2 * pi)
+    angs = sorted(atan2(float(d[1]), float(d[0])) % (2 * pi) for d in dirs)
+    n = len(angs)
+    gaps = []  # (width, lo_edge, bisector_angle)
+    for i in range(n):
+        lo = angs[i]
+        w = (angs[(i + 1) % n] - lo) % (2 * pi)
+        gaps.append((w, lo, lo + w / 2.0))
+
+    def _blocked(g):
+        return bool(blocked_arcs) and any(
+            _angle_in_arc(g[2], s, e) for (s, e) in blocked_arcs)
+
+    usable = [g for g in gaps if g[0] >= min_sector and not _blocked(g)]
+    if not usable:
+        fallback = _bisector_of_largest_gap(dirs, blocked_arcs=blocked_arcs)
+        return [] if fallback is None else [([fallback], False)]
+
+    def _away(g):
+        """Angular distance from the hint to the sector (0 when it is inside)."""
+        w, lo, _mid = g
+        rel = (pang - lo) % (2 * pi)
+        return 0.0 if rel <= w else min(rel - w, 2 * pi - rel)
+
+    def _inside(g):
+        return bool(is_interior is not None and is_interior(g[2]))
+
+    step = slide_step_deg * pi / 180.0
+    out = []
+    for gap in sorted(usable, key=lambda g: (_inside(g), _away(g))):
+        w, lo, mid = gap
+        align = min(align_deg * pi / 180.0, w / 2.0)
+        rel = (pang - lo) % (2 * pi)
+        if rel > w:   # hint outside the sector: enter it from the nearer edge
+            rel = w if (rel - w) <= (2 * pi - rel) else 0.0
+        rel = min(max(rel, align), w - align)
+        theta = lo + rel
+        slide = max(-slide_deg * pi / 180.0, min(slide_deg * pi / 180.0, mid - theta))
+        count = int(np.ceil(abs(slide) / step - 1e-9))
+        thetas = [theta + slide * k / count for k in range(count + 1)] if count else [theta]
+        out.append(([np.array([cos(t), sin(t)]) for t in thetas], _inside(gap)))
+    return out
 
 
 def _push_clear_of_marker(center, anchor, clear_radius, hw_p, hh_p, ptUnit):
@@ -2106,6 +2336,8 @@ def _cluster_consistency_pass(scene, labels, result, segments, circles, arc_pts,
             continue
         if len(_incident_directions(lbl.anchor, segments)) >= 2:
             continue  # vertex — keep its external bisector
+        if lbl.hint is not None:
+            continue  # hinted — its side is the author's, not the row's
         free.append((k, np.asarray(lbl.anchor, dtype=float)[:2]))
     if len(free) < min_cluster:
         return
@@ -2239,6 +2471,10 @@ def _clearance_guard_pass(labels, result, segments, circles, arc_pts,
     there. When nothing clear exists within ``max_push_px`` the label keeps its
     position (graceful degradation: a dense node still gets its closest, least
     bad placement rather than being flung away).
+
+    A label with ``label_hint_px`` is first pushed straight out along its
+    direction: at its own radius the nearest free angle can be on another side
+    of the point, and the side is what a hint is for.
     """
     by_name = {lbl.name: lbl for lbl in labels}
     step = 1.0 / ptUnit
@@ -2267,6 +2503,15 @@ def _clearance_guard_pass(labels, result, segments, circles, arc_pts,
         cur_ang = atan2(float(d_vec[1]), float(d_vec[0])) if dist > 1e-9 else 0.0
         base = max(distance + lbl.margin, dist)
         best = None
+        if lbl.hint is not None:
+            d = base
+            while d <= base + cap + 1e-9:
+                c = np.array([a[0] + d * cos(cur_ang), a[1] + d * sin(cur_ang)])
+                if not _candidate_has_overlap(c, hw_p, hh_p, segments, circles,
+                                              arc_pts, others, geom_gap):
+                    best = c
+                    break
+                d += step
         d = base
         while d <= base + cap + 1e-9 and best is None:
             for off in offs:
@@ -2721,6 +2966,160 @@ def _overlay_label_placement_config(scene) -> dict:
     return getattr(overlay, 'label_placement', {}) or {}
 
 
+def _angle_placement_params(scene, elem, lbl, *, gap_arc_px, gap_sides_px,
+                            ang_rshift_px, max_arm_fraction) -> AngleParams:
+    """Interior :class:`AngleParams` an angle label is finally placed with.
+
+    Mirrors ``_render_angle``: the outer arc radius (auto-radius and multi-arc
+    expansion included) and the renderer's label base radius with the
+    per-element ``label_radial_offset_px``. ``exterior`` is left ``False`` — the
+    caller decides it.
+    """
+    angle_range = _resolve_style(scene, elem, 'angle_range', default='minor') or 'minor'
+    base_arc_px = _resolve_style(scene, elem, 'arc_size_px', default=30)
+    base_arc = compute_effective_arc_size_px(
+        elem, elem.data, scene.style, base_px=base_arc_px,
+        angle_range=angle_range,
+        auto_radius=_resolve_style(scene, elem, 'auto_radius', default=True),
+    )
+    lines = int(_resolve_style(scene, elem, 'tick_count', default=1) or 1)
+    outer_arc_px = _angle_effective_arc_r_px(base_arc, lines, ang_rshift_px)
+    render_r_px = _angle_render_label_radius_px(
+        scene, elem, base_arc, outer_arc_px, angle_range,
+    )
+    label_radial_offset_px = _resolve_style(
+        scene, elem, 'label_radial_offset_px', default=0.0,
+    )
+    return AngleParams(
+        arc_r_px=outer_arc_px,
+        half_w=lbl.half_w,
+        half_h=lbl.half_h,
+        gap_arc_px=gap_arc_px,
+        gap_sides_px=gap_sides_px,
+        angle_range=angle_range,
+        render_r_px=float(render_r_px) + float(label_radial_offset_px or 0.0),
+        exterior=False,
+        max_arm_fraction=max_arm_fraction,
+    )
+
+
+def _apply_label_hints(scene, labels, segments, circles, arc_pts, *, distance,
+                       padding, geom_gap, ptUnit, ptUnit_ggb, min_offset_px):
+    """Turn every ``label_hint_px`` into the solver's "current position".
+
+    The hint plays the part a manual GeoGebra position plays under
+    ``respect_current_position`` — a direction to keep (``bisector_dir`` /
+    ``preferred_dir``) and, for a hint of at least ``min_offset_px``, a pinned
+    home position (``current_center``) that is kept while collision-free and
+    otherwise pulls the search through the inertia term. It is read on every
+    pass, whatever ``_auto_placed`` or ``ggb_raw`` say, so it also works for
+    labels created by ``putCode`` and survives repeated placement.
+
+    Only the hinted side is binding. The distance from the anchor is the
+    layout's own: the home position is the nearest place along the chosen
+    direction where the label clears its own marker and the drawing — from the
+    base distance at a vertex, from the hinted distance (capped at the compact
+    one) elsewhere. A home that sat on the label's own vertex or its sides
+    would pull the label back onto them and leave the final clearance sweep to
+    move it wherever is free — round to another side.
+
+    At a point with two or more edges the candidates come from
+    :func:`_sectors_for_hint`; for a ``Point`` the sectors inside a closed
+    figure (:func:`_figure_faces`) come after the ones outside. The first
+    sector in which the label fits within the usual push cap wins, so a sector
+    too narrow for the label gives way to the next one instead of sending the
+    label into a free search. Inside the sector the label takes the direction
+    nearest the hint that seats it *near* its point — within its own
+    half-diagonal of the base distance, as far as a label with nothing in its
+    way ever needs — and, when no direction does, the one that seats it
+    nearest.
+
+    "Outside the figure" holds while there is room outside, i.e. some outside
+    sector seats the label near. When the hint points into the figure and
+    there is no such room (something runs close along the figure — a
+    circumscribed circle, say), the hinted place inside is taken instead,
+    provided the label fits there.
+
+    Angle labels are handled by the caller (:func:`_angle_hint_exterior`).
+    """
+    from .geo import lib_elements as geo
+
+    faces = None
+    for lbl in labels:
+        if lbl.hint is None or lbl.fixed_center is not None:
+            continue
+        elem = scene.geo.element(lbl.name)
+        if elem is None:
+            continue
+        hint = np.array(lbl.hint, dtype=float)
+        mag = float(np.linalg.norm(hint))
+        unit = hint / mag
+        anchor = np.asarray(lbl.anchor, dtype=float)[:2]
+        base = distance + lbl.margin
+        inc_dirs = _incident_directions(anchor, segments)
+
+        is_interior = None
+        if isinstance(elem.data, geo.Point) and len(inc_dirs) >= 2:
+            if faces is None:
+                faces = _figure_faces(scene)
+            if faces:
+                def is_interior(theta, _a=anchor, _r=base, _faces=faces):
+                    probe = _a + _r * np.array([cos(theta), sin(theta)])
+                    return any(_point_in_polygon(probe, face) for face in _faces)
+
+        sectors = _sectors_for_hint(
+            inc_dirs, unit, blocked_arcs=lbl.blocked_wedges or None,
+            is_interior=is_interior)
+        if sectors:
+            start = base
+        else:   # an isolated point: the hinted direction, the hinted distance
+            sectors = [([unit], False)]
+            start = min(mag / ptUnit_ggb, base + max(lbl.half_w, lbl.half_h))
+
+        hw_p, hh_p = lbl.half_w + padding, lbl.half_h + padding
+        max_extra = lbl.clear_radius + max(hw_p, hh_p) + base * 2.0
+        near = base + float(np.hypot(hw_p, hh_p))
+        reach = start + max_extra + hw_p + hh_p + geom_gap + 0.05
+        cseg, _dash, ccirc, carc = _cull_obstacles(
+            segments, None, circles, arc_pts, anchor, reach)
+
+        def _seat(directions):
+            """``(direction, centre, is_near)`` for one sector, or ``None``."""
+            best = None
+            for direction in directions:
+                spot, clear = _push_clear_along(
+                    anchor + direction * start, anchor, lbl.clear_radius, hw_p,
+                    hh_p, cseg, ccirc, carc, [], ptUnit, max_extra, geom_gap)
+                if not clear:
+                    continue
+                away = float(np.linalg.norm(spot - anchor))
+                if away <= near:
+                    return direction, spot, True
+                if best is None or away < best[2] - 1e-9:
+                    best = (direction, spot, away)
+            return None if best is None else (best[0], best[1], False)
+
+        seats = [(inside, _seat(directions)) for directions, inside in sectors]
+        outside = [seat for inside, seat in seats if not inside and seat is not None]
+        within = [seat for inside, seat in seats if inside and seat is not None]
+        found = outside[0] if outside else None
+        if within:
+            hint_inside = (is_interior is not None and is_interior(
+                atan2(float(unit[1]), float(unit[0]))))
+            roomy = any(is_near for _d, _c, is_near in outside)
+            if found is None or (hint_inside and not roomy):
+                found = within[0]
+        if found is not None:
+            chosen, home = found[0], found[1]
+        else:
+            chosen = sectors[0][0][0]
+            home = anchor + chosen * start
+        lbl.bisector_dir = chosen
+        lbl.preferred_dir = _nearest_dir_index(chosen)
+        if mag >= min_offset_px:
+            lbl.current_center = home
+
+
 def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict:
     """Compute label placements for every visible labelled element. Pure.
 
@@ -2874,6 +3273,20 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
                 lbl.bisector_dir = bis
                 lbl.preferred_dir = _nearest_dir_index(bis)
 
+    # ``label_hint_px``: an explicit, non-locking desired position. A hinted
+    # label gets its "home" from the hint (below) instead of from a manual/GGB
+    # offset, and is respected even when ``respect_current_position`` is off —
+    # so every respect-driven stage runs for a scene that has a hint. Without
+    # any hint ``respect_any`` is just ``respect_current``.
+    hinted = any(lbl.hint is not None for lbl in labels)
+    respect_any = respect_current or hinted
+    if hinted:
+        _apply_label_hints(scene, labels, segments, circles, arc_pts,
+                           distance=distance, padding=padding,
+                           geom_gap=geom_gap, ptUnit=ptUnit,
+                           ptUnit_ggb=ptUnit_ggb,
+                           min_offset_px=respect_min_offset_px)
+
     # P1-D: snapshot the existing manual/GGB position (the "home" center) for each
     # movable label, so the solver can keep it / stay near it. Skip positions
     # that were produced by a previous auto-place pass (``_auto_placed``) — those
@@ -2882,7 +3295,7 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
         from .geo import lib_elements as geo
         ggb_font_px = scene.style.export.get('fontSize')
         for lbl in labels:
-            if lbl.fixed_center is not None:
+            if lbl.fixed_center is not None or lbl.hint is not None:
                 continue
             elem = scene.geo.element(lbl.name)
             if elem is None:
@@ -3006,6 +3419,28 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
                     pin_scene = min(mag_scene, cap_scene)
                     lbl.current_center = anchor_pt + unit * pin_scene
 
+    # ``label_hint_px`` on an angle label: inside is the priority, the hint only
+    # decides for an angle with no room inside. Settled before solving so the
+    # other labels see the angle label where it will really be drawn.
+    hinted_exterior = {}
+    if hinted:
+        import dataclasses
+        from .geo import lib_elements as geo
+        for lbl in labels:
+            if lbl.hint is None or lbl.fixed_center is None:
+                continue
+            elem = scene.geo.element(lbl.name)
+            if elem is None or not isinstance(elem.data, geo.Angle):
+                continue
+            params = _angle_placement_params(
+                scene, elem, lbl, gap_arc_px=gap_arc_px, gap_sides_px=gap_sides_px,
+                ang_rshift_px=ang_rshift_px, max_arm_fraction=angle_arm_cap)
+            outside = _angle_hint_exterior(elem.data, lbl.hint, params, ptUnit)
+            hinted_exterior[lbl.name] = outside
+            if outside:
+                lbl.fixed_center = compute_angle_label_center(
+                    elem.data, dataclasses.replace(params, exterior=True), ptUnit)
+
     # P1-C: per-label colour luminance + collected fills for the contrast term.
     fills = ()
     if w_fill > 0:
@@ -3028,7 +3463,7 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
         (pref_ranks is not None and w_pref)
         or soft_falloff_px > 0
         or repair_iterations > 0
-        or respect_current
+        or respect_any
         or w_fill > 0
         or point_bisector
         or geom_gap > 0
@@ -3048,7 +3483,7 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
             weights=weights, padding=padding, ptUnit=ptUnit,
             position_priority=pref_ranks, w_pref=w_pref,
             soft_falloff_px=soft_falloff_px, w_soft=w_soft,
-            w_inertia=(w_inertia if respect_current else 0.0),
+            w_inertia=(w_inertia if respect_any else 0.0),
             w_fill=w_fill, fills=fills, geom_gap=geom_gap,
             w_assoc=w_assoc, anchors=assoc_anchors,
             seg_dashed=seg_dashed, dashed_factor=dashed_factor,
@@ -3057,7 +3492,7 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
     result = _solve_greedy(
         labels, segments, circles, arc_pts, distance, padding, weights, ptUnit,
         cost_model=cost_model,
-        respect_current=respect_current,
+        respect_current=respect_any,
         keep_current_if_free=keep_current_if_free,
         geom_gap=geom_gap,
         directional=directional,
@@ -3069,12 +3504,12 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
     if cost_model is not None and repair_iterations > 0:
         _repair_pass(labels, result, segments, circles, arc_pts,
                      distance, padding, cost_model, repair_iterations,
-                     respect_current=respect_current,
+                     respect_current=respect_any,
                      continuous_steps=continuous_steps)
 
     if consistent_placement:
         _consistency_pass(scene, labels, result, segments, circles, arc_pts,
-                          distance, padding, respect_current=respect_current)
+                          distance, padding, respect_current=respect_any)
 
     # Round-12: region-aware consistency — align a row/column of free points so a
     # grid is systematic, without touching scattered points or vertices.
@@ -3105,7 +3540,7 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
     # constraint once more at the end whenever manual positions participate.
     # Only labels that actually overlap move, and only when a nearby clear spot
     # is reachable.
-    if respect_current:
+    if respect_any:
         _clearance_guard_pass(labels, result, segments, circles, arc_pts,
                               distance, padding, ptUnit, geom_gap=geom_gap)
 
@@ -3144,42 +3579,26 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
         if is_angle:
             label_anchor = lbl.fixed_anchor or 'MC'
             kind = 'dynamic_angle'
-            angle_range = _resolve_style(scene, elem, 'angle_range', default='minor') or 'minor'
-            base_arc_px = _resolve_style(scene, elem, 'arc_size_px', default=30)
-            base_arc = compute_effective_arc_size_px(
-                elem, elem.data, scene.style, base_px=base_arc_px,
-                angle_range=angle_range,
-                auto_radius=_resolve_style(scene, elem, 'auto_radius', default=True),
-            )
-            lines = int(_resolve_style(scene, elem, 'tick_count', default=1) or 1)
-            outer_arc_px = _angle_effective_arc_r_px(base_arc, lines, ang_rshift_px)
-            render_r_px = _angle_render_label_radius_px(
-                scene, elem, base_arc, outer_arc_px, angle_range,
-            )
-            label_radial_offset_px = _resolve_style(
-                scene, elem, 'label_radial_offset_px', default=0.0,
-            )
-            render_r_eff = float(render_r_px) + float(label_radial_offset_px or 0.0)
-            # FP-8: honour a manual label the user placed OUTSIDE a narrow angle.
-            # If we are respecting current positions and this angle carries a
-            # substantive (non-auto) offset whose resulting center sits on the far
-            # side of the vertex from the interior bisector, keep it outside the
-            # wedge instead of snapping it back inside onto the arms.
-            exterior = _angle_manual_exterior(
-                scene, elem, angle_range, render_r_eff, ptUnit, ptUnit_ggb,
-                respect_current, respect_min_offset_px,
-            )
-            angle_params = AngleParams(
-                arc_r_px=outer_arc_px,
-                half_w=lbl.half_w,
-                half_h=lbl.half_h,
-                gap_arc_px=gap_arc_px,
-                gap_sides_px=gap_sides_px,
-                angle_range=angle_range,
-                render_r_px=render_r_eff,
-                exterior=exterior,
-                max_arm_fraction=angle_arm_cap,
-            )
+            angle_params = _angle_placement_params(
+                scene, elem, lbl, gap_arc_px=gap_arc_px, gap_sides_px=gap_sides_px,
+                ang_rshift_px=ang_rshift_px, max_arm_fraction=angle_arm_cap)
+            if name in hinted_exterior:
+                # ``label_hint_px``: inside while it fits, decided before solving.
+                exterior = hinted_exterior[name]
+            else:
+                # FP-8: honour a manual label the user placed OUTSIDE a narrow
+                # angle. If we are respecting current positions and this angle
+                # carries a substantive (non-auto) offset whose resulting center
+                # sits on the far side of the vertex from the interior bisector,
+                # keep it outside the wedge instead of snapping it back inside
+                # onto the arms.
+                exterior = _angle_manual_exterior(
+                    scene, elem, angle_params.angle_range, angle_params.render_r_px,
+                    ptUnit, ptUnit_ggb, respect_current, respect_min_offset_px,
+                )
+            if exterior:
+                import dataclasses
+                angle_params = dataclasses.replace(angle_params, exterior=True)
             offset_ggb = compute_angle_label_offset_px(
                 elem.data, angle_params, ptUnit, ptUnit_ggb,
             )

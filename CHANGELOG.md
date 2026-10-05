@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `label_hint_px` — a soft placement hint for a label: the desired offset of
+  the label centre from its element (the point, a segment's midpoint, an
+  angle's vertex), in `label_offset_px` pixels, y up. Auto-placement keeps the
+  hinted side and still moves the label off lines and other labels; unlike
+  `label_offset_px` + `label_placement_locked`, nothing is frozen. The hint is
+  read on every pass, including for labels created by `putCode`. An angle
+  label stays inside its angle while it fits, and the label of a point on a
+  closed figure stays outside it while there is room outside — both outrank
+  the hint. Layouts without a hint are unchanged.
+
 ## [1.7.13] - 2026-10-01
 
 ### Added
