@@ -7,6 +7,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0a1] - 2026-10-05
+
+The native kernel stage L5, stages 0–1: a `.ggb` file and the classic graph
+become an `animageo-construction/v1` document by one table of commands,
+with a report of what translated and why the rest did not
+(`docs/native/import.md`; the spikes C0–C4 — `docs/native/l5-notes.md`).
+
+### Added
+
+- `native.from_ggb(path | bytes, *, id_namespace, mode="partial")` and
+  `native.from_construction(constr, *, id_namespace, mode="strict",
+  key_of=None, origin_of=None)` → `(document | None, report)`;
+  `native.ConvertError` (strict mode, `.items`), `native.ImportRefused`
+  (`.code`). `native.has("from_ggb")`, `has("from_construction")`,
+  `has("import_report.v1")`.
+- `convert/dsl_map.json`: a row per classic dispatch key (477) — 140 op rows
+  to 47 registry ops, 2 free rows (`Point(x, y)`, `AngleSize(a)`), 335
+  unmapped with a reason (224 `no_registry_op`, 70 `formula_unsupported`,
+  41 `unsupported_signature`); `opsWithoutClassic` lists 38 registry ops no
+  classic key builds. `map_problems()` checks both directions and the GGB
+  commands of the web seed.
+- IDs `uuid5(namespace, key)`: `ggb:<label>`, `dsl:<name>`,
+  `anon:<key>(<input keys>)#<n>` for phantoms (an inserted line changes no
+  ID); names in `bindings.legacyNames`. Multi-output commands choose the
+  slot of each output by value (one probe evaluation); a point on a path
+  gets its parameter by `native.project`.
+- `value_check` against the GGB XML or the classic values, `tol.import =
+  1e-6·S`: 17 real files, the largest delta 3.6·10⁻¹⁶·S. Undefined in both
+  passes; GGB angle styles accept the counter-clockwise or the shown size.
+- `schema/import_report.v1.schema.json` (master copy of the web's draft
+  with additions): every XML element in exactly one entry — `editable`,
+  `differs`, `picture`, `unsupported`, `closure` — with `reason`, Russian
+  `detail`, `ggb_value` / `native_value` / `delta`, `label`, `ggb_style`
+  (appearance overrides the classic `loadGGB` would give), `hidden`,
+  `layer`; `dropped` (scripts, animation, conditional visibility, dynamic
+  colours, layers, 3D, CAS, images) and `warnings`.
+  `convert.report_problems` checks the rules the schema cannot.
+- `seq` of the operations follows the construction protocol; `steps` come
+  from the breakpoints of the XML.
+- CLI: `python -m animageo.native from-ggb <file.ggb> [-o] [--report]
+  [--namespace] [--mode]` and `convert map [--check]`.
+- Tests: the table row by row on a general case (138 of 139 op rows
+  editable; a locus is `differs` / `value_unchecked` by design), degenerate
+  and by-value cases, keys, synthetic `.ggb` files for every reason and
+  limit, the real files, witnesses of the spikes C0–C4, an AST lint that
+  keeps `exec`, `eval`, `subprocess` out of `animageo.native`.
+
+### Security
+
+- A `.ggb` is untrusted: `from_ggb` refuses files over 20 MB, 50 entries,
+  50 MB unpacked (by the headers and by a bounded read, so a zip bomb with
+  lying sizes too), XML over 10 MB or 64 levels deep, a `DOCTYPE` or
+  `ENTITY`, more than 3000 objects; the archive is read in memory; GGB
+  scripts are counted, never run.
+- The classic `.ggb` parser (`ggb_parser`) turned GGB expressions into
+  Python for `dsl.run`, and a crafted expression could reach
+  `object.__subclasses__()`. It now admits one assignment of an expression
+  only: no `__dunder__` name, no private attribute, no lambda,
+  comprehension, definition or import.
+
+### Changed
+
+- Fixtures of the parity scenes, steps, conditions, commands and timeline
+  changed in the version label only.
+
 ## [1.9.0a5] - 2026-10-05
 
 The fifth part of the native kernel stage L3: the frame of `render(t)` is the
