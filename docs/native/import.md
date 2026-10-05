@@ -13,7 +13,10 @@ doc, report = native.from_construction(constr, id_namespace=ns)     # strict by 
 native.has("from_ggb"), native.has("from_construction"), native.has("import_report.v1")
 ```
 
-`doc` is `None` when nothing translates. `id_namespace` (a `uuid.UUID` or
+`doc` is `None` when nothing translates; with `empty_document=True`
+(1.10.0a2, `native.has("from_ggb.empty_document")`) it is then a valid
+document without operations — a file of pictures only gives the web a
+document to place them on. `id_namespace` (a `uuid.UUID` or
 its string) is given by the caller — the web passes the uuid of the import
 (decision 6). `mode="strict"` raises `native.ConvertError` (`.items` — the
 objects that are not editable) unless everything is editable;

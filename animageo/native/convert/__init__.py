@@ -182,12 +182,16 @@ def _text_of(expr: str) -> str:
     return s
 
 
-def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None, name: str | None = None):
+def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None, name: str | None = None,
+             empty_document: bool = False):
     """A ``.ggb`` (path or bytes) as ``(document | None, import_report.v1)``.
 
     Limits refuse the file before parsing (:class:`ImportRefused`); each
     ``<element>`` of the XML is one entry of the report; ``mode="strict"``
-    raises :class:`ConvertError` unless every object is editable."""
+    raises :class:`ConvertError` unless every object is editable. The
+    document is ``None`` when nothing translates, unless ``empty_document``
+    (1.10.0a2, ``has("from_ggb.empty_document")``): then it is a valid
+    document without operations, for the pictures of the report."""
     from .. import content_hash
     from ... import __version__
     from ..registry import REGISTRY_VERSION
@@ -392,7 +396,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     if steps:
         doc['steps'] = [{'id': make_id(ns, f'step:{k}'), 'kind': 'group', 'operationIds': ops}
                         for k, ops in enumerate(steps, 1)]
-    if doc['operations']:
+    if doc['operations'] or empty_document:
         from ..document import load, validate
         issues = [i for i in validate(load(doc, strict=False)) if getattr(i, 'severity', 'error') == 'error']
         if issues:

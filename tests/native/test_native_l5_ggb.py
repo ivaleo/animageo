@@ -265,6 +265,25 @@ def test_nothing_to_carry_over():
     assert doc is None and rep['elements'] == []
 
 
+def test_an_empty_document_on_request():
+    # a file of pictures only: the web places them on an empty document (1.10.0a2)
+    pictures = ggb_bytes(expression('t', '"Задача 1"')
+                         + element('text', 't', extra='<startPoint x="1" y="2" z="1"/>')
+                         + element('point3d', 'P', extra='<coords x="1" y="2" z="3" w="1"/>'))
+    doc, rep = _import(pictures)
+    assert doc is None
+    doc, rep = _import(pictures, empty_document=True)
+    assert doc['operations'] == {} and doc['elements'] == {}
+    assert rep['document_hash'] == native.content_hash(doc)
+    assert {e['category'] for e in rep['elements']} == {'picture', 'unsupported'}
+    assert doc['documentId'] == from_ggb(pictures, id_namespace=NS, empty_document=True)[0]['documentId']
+    doc, rep = _import(ggb_bytes(''), empty_document=True)
+    assert doc['elements'] == {} and rep['elements'] == []
+    full, _ = _import(ggb_bytes(triangle()), empty_document=True)
+    assert full == _import(ggb_bytes(triangle()))[0]
+    assert native.has('from_ggb.empty_document')
+
+
 # ── untrusted input (plan §7) ───────────────────────────────────────────
 
 def test_expression_cannot_reach_dunders(tmp_path):

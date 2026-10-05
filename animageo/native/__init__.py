@@ -83,7 +83,7 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'check.general', 'conditions', 'apply_condition', 'auto_marks', 'describe.values',
             'commands.conditions', 'commands.steps', 'timeline', 'steps_timeline', 'render.t', 'render.video',
             'render.frame', 'from_ggb', 'from_construction', 'import_report.v1', 'appearance.hatch',
-            'render.tikz_frame', 'delete.cleanup')
+            'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document')
 
 
 def has(feature: str) -> bool:
@@ -104,7 +104,9 @@ def has(feature: str) -> bool:
     ``appearance.overrides``; ``render.tikz_frame`` — the clip and the
     bounding box of TikZ/TeX are the export canvas of SVG; ``delete.cleanup``
     — :func:`delete` drops the operations it removes from ``steps`` and the
-    elements from ``bindings.legacyNames``)."""
+    elements from ``bindings.legacyNames``; ``from_ggb.empty_document`` —
+    ``from_ggb(empty_document=True)`` returns a document without operations
+    instead of ``None``)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION
