@@ -102,9 +102,10 @@ the bridge builds (`kernel/bridge.py`):
   classic interpolation then gives the values of §2 (`|d| < 2π`); the test
   checks segment, ray, line, circle, polygon, arc, sector and polyline at
   and between keyframes.
-- A number keeps the value of the timeline: the classic `Var` is not
-  clamped to `min`/`max` of `number.free` (the kernel is) — keep numbers
-  in range.
+- A number is clamped to the `min`/`max` literals of its operation at each
+  keyframe (the kernel clamps, the classic `Var` does not); inside an
+  interval the classic lerps the clamped ends, the kernel clamps the lerp —
+  the same while both ends are in range.
 
 `native.render(doc, …, t=…, timeline=…)` (static formats): the document
 with the inputs of `sample_timeline` (explicit `inputs` on top) and its
@@ -121,11 +122,15 @@ a timeline: `ValueError("timeline_required")`. `video={fps, quality}`
 a video: `{format, documentId, kernel, fmt, video: {fps, quality, width,
 height, duration}, t, visible}` (`t`, `visible` of the last keyframe).
 
-Measured (1.9.0a4, `test_native_l3a4_render_manim.py`): an MP4 frame at
-`n/fps` against `render(t=n/fps, fmt="png")` — PSNR ≈ 32 dB, ≈ 1.1 % of
-pixels off by more than 16/255, at every `t`, moving or still: the
-rasterisers differ (cairosvg of the SVG, the manim camera and h264), the
-geometry does not. The gate of plan L3 (≥ 40 dB, ≤ 0.1 %) is for 1.9.0.
+Measured (1.9.0a4, `test_native_l3a4_render_manim.py`, 20 frames of
+`tests/native/frames/*.json`): an MP4 frame `n` against `render(t=n/fps,
+fmt="png")` — PSNR 29.6–46 dB, at most 1.23 % of pixels off by more than
+16/255. Steps frames (44–46 dB, ≤ 0.06 %) and the first frames of a number
+scene (41–43 dB) meet the gate of plan L3 (≥ 40 dB, ≤ 0.1 %); frames with
+filled polygons and sectors, long lines and labels do not — the rasterisers
+differ (cairosvg of the SVG, the manim camera and h264), not the geometry or
+the time: the frame `n` peaks at `t = n/fps`, half a frame off drops to
+20–23 dB. The gate is for 1.9.0.
 
 ## 4. `steps_timeline(doc, *, lag=0.3, duration=0.5, pause=0.6, effects=None, start=0.0) → StepsTimeline` (contract)
 

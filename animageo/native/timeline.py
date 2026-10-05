@@ -50,7 +50,8 @@ scene built by the bridge: IDs → ``e_<hex>`` (``kernel/bridge.py``), a path
 parameter → the classic ``tparam`` (the bridge passes it to the kernel as
 it is) unwrapped along the timeline as in step 2, with ``ccw`` for
 ``d > 0`` and ``cw`` for ``d < 0``: the classic interpolation then gives the
-same values on every path (``|d| < 2π``). Number elements (classic
+same values on every path (``|d| < 2π``). A number is clamped to the
+``min``/``max`` of its operation at each keyframe. Number elements (classic
 ``Var``) are dropped from visibility maps.
 
 ``steps_timeline(doc, *, lag, duration, pause, effects, start)`` — the
@@ -305,6 +306,19 @@ def sample_timeline(doc, timeline, t) -> dict:
 
 # ── bridge ───────────────────────────────────────────────────────────────
 
+def _clamp_number(doc, el_id, value: float) -> float:
+    """``value`` clamped to the ``min``/``max`` literals of the free number's
+    operation, as the kernel clamps it (the classic ``Var`` takes it as is)."""
+    producer = bound_producer(doc, el_id)
+    args = doc.operations[producer]['args'] if producer is not None else {}
+    lo, hi = (args.get(k) or {} for k in ('min', 'max'))
+    if lo.get('kind') == 'number' and isinstance(lo.get('value'), (int, float)) and value < lo['value']:
+        value = float(lo['value'])
+    if hi.get('kind') == 'number' and isinstance(hi.get('value'), (int, float)) and value > hi['value']:
+        value = float(hi['value'])
+    return value
+
+
 def timeline_to_bridge(doc, timeline) -> dict:
     """The classic keyframe JSON v2 of ``timeline`` for the scene of the bridge."""
     from .kernel.bridge import build_names
@@ -323,7 +337,7 @@ def timeline_to_bridge(doc, timeline) -> dict:
             if kind == 'point':
                 values[names[el_id]] = [at[k][0], at[k][1]]
             elif kind == 'number':
-                values[names[el_id]] = at[k]
+                values[names[el_id]] = _clamp_number(doc, el_id, at[k])
             else:
                 d = at[k] - at[k - 1] if k > 0 else 0.0
                 values[names[el_id]] = {'tparam': at[k],

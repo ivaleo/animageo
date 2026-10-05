@@ -1,0 +1,239 @@
+{
+ "format": "animageo-frames/v1",
+ "id": "frames_circle",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "frames_circle",
+  "operationRegistryVersion": "1.5",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "circle.center_point",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "circle",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "c"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_t": {
+    "id": "op_t",
+    "op": "line.tangent_at",
+    "args": {
+     "point": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "circle": {
+      "kind": "ref",
+      "elementId": "c"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "t"
+     }
+    ]
+   },
+   "op_r": {
+    "id": "op_r",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "P"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "r"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "circle",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "circle"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "t": {
+    "id": "t",
+    "type": "line",
+    "displayName": "t",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "line"
+    }
+   },
+   "r": {
+    "id": "r",
+    "type": "segment",
+    "displayName": "r",
+    "producer": {
+     "operationId": "op_r",
+     "slot": "segment"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0,
+     0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     2,
+     0
+    ]
+   },
+   "P": {
+    "kind": "pathParameter",
+    "value": 0.3
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -6,
+    -4,
+    6,
+    4
+   ]
+  }
+ },
+ "timeline": {
+  "version": 2,
+  "keyframes": [
+   {
+    "t": 0,
+    "values": {
+     "P": {
+      "tparam": 0.3
+     }
+    }
+   },
+   {
+    "t": 1,
+    "values": {
+     "P": {
+      "tparam": 4.0,
+      "direction": "cw"
+     },
+     "B": [
+      2.5,
+      0.5
+     ]
+    },
+    "easing": "smooth"
+   },
+   {
+    "t": 2,
+    "values": {
+     "P": {
+      "tparam": 1.0,
+      "direction": "long"
+     }
+    },
+    "easing": "linear"
+   }
+  ]
+ },
+ "fps": 10,
+ "quality": "medium",
+ "frames": [
+  0,
+  4,
+  8,
+  12,
+  19
+ ]
+}

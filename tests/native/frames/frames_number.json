@@ -1,0 +1,201 @@
+{
+ "format": "animageo-frames/v1",
+ "id": "frames_number",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "frames_number",
+  "operationRegistryVersion": "1.5",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_k": {
+    "id": "op_k",
+    "op": "number.free",
+    "args": {
+     "min": {
+      "kind": "number",
+      "value": 0.5
+     },
+     "max": {
+      "kind": "number",
+      "value": 3.5
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "k"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "circle.center_radius",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "radius": {
+      "kind": "ref",
+      "elementId": "k"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "circle",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "c"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_r": {
+    "id": "op_r",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "P"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "r"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "k": {
+    "id": "k",
+    "type": "number",
+    "displayName": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "number"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "circle",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "circle"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "r": {
+    "id": "r",
+    "type": "segment",
+    "displayName": "r",
+    "producer": {
+     "operationId": "op_r",
+     "slot": "segment"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     -1,
+     0
+    ]
+   },
+   "k": {
+    "kind": "number",
+    "value": 1.0
+   },
+   "P": {
+    "kind": "pathParameter",
+    "value": 1.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -6,
+    -4,
+    6,
+    4
+   ]
+  }
+ },
+ "timeline": {
+  "version": 2,
+  "keyframes": [
+   {
+    "t": 0,
+    "values": {
+     "k": 1.0
+    }
+   },
+   {
+    "t": 2,
+    "values": {
+     "k": 3.0,
+     "P": {
+      "tparam": 2.5,
+      "direction": "ccw"
+     }
+    },
+    "easing": "in_out"
+   }
+  ]
+ },
+ "fps": 10,
+ "quality": "medium",
+ "frames": [
+  0,
+  5,
+  10,
+  15,
+  19
+ ]
+}

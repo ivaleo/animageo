@@ -268,6 +268,12 @@ def test_bridge_tparam_matches_native_on_every_path_type(paths_doc, el_id, a, b,
         assert (x, y) == pytest.approx((nx, ny), abs=1e-9), (el_id, t)
 
 
+def test_bridge_clamps_numbers_like_the_kernel(paths_doc):
+    tm = timeline(kf(0, values={'k': -3}), kf(1, values={'k': 9}))
+    assert [k['values']['e_k'] for k in native.timeline_to_bridge(paths_doc, tm)['keyframes']] == [0.0, 5.0]
+    assert native.evaluate(paths_doc, t=1, timeline=tm).elements['k']['value']['value'] == 5.0
+
+
 def test_bridge_names_visibility_and_extras(paths_doc):
     tm = timeline(kf(0, values={'@camera': {'width': 12}, 'k': 2}, visible={'s': False, 'k': False}),
                   kf(1, values={'A': [1, 1]}, show=['s'], enter={'s': {'effect': 'create'}},
