@@ -449,12 +449,12 @@ class Construction:
             self.add(Command(nameCommand, inputs, outputs))
 
     def element(self, name: str): #) -> Element | None:
-        result = list(filter(lambda elem: elem.name == name, self.elements))
-        return result[0] if result else None
+        # the first element of that name; stops there (1.11.0rc1: the whole
+        # list was filtered — 2/3 of from_ggb on 3000 objects)
+        return next((elem for elem in self.elements if elem.name == name), None)
 
     def var(self, name: str): #) -> Var | None:
-        result = list(filter(lambda var: var.name == name, self.vars))
-        return result[0] if result else None
+        return next((var for var in self.vars if var.name == name), None)
 
     def objectByName(self, name: str): #) -> Element | Var | None:
         for elem in self.elements:
