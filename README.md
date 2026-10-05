@@ -44,6 +44,9 @@ file required — and animate them by keyframes or by driving free variables.
   for LaTeX, interactive **JSXGraph** (with a framework-agnostic web runtime),
   and MP4/GIF/WebM/PNG via manim. Dashed lines are exported as a single path
   with a dash pattern (`stroke-dasharray` in SVG, a native dash in PDF/EPS).
+- **Native kernel** — `animageo.native`: constructions as JSON documents with
+  stable IDs, evaluated, checked, edited, described and rendered; a `.ggb` or
+  a DSL scene imports into one. Needs no manim except to render.
 - **AI-agent friendly** — a self-sufficient usage guide ships in the package
   (`animageo --ai-guide`), plus compact construction summaries for LLM styling.
 
@@ -190,6 +193,28 @@ Placement is opt-in per style file (`overlay.label_placement`); see the
 recommended preset and full parameter reference in
 [docs/styles.md](https://github.com/ivaleo/animageo/blob/main/docs/styles.md).
 
+## Native kernel
+
+`animageo.native` keeps a construction as a JSON document
+(`animageo-construction/v1`) — operations and elements with stable IDs — and
+evaluates, checks, edits, describes and renders it. `import animageo` and
+`import animageo.native` load neither manim nor the classic API; only
+rendering does.
+
+```python
+from animageo import native
+
+doc = native.parse_commands("A = (0, 0)\nB = (4, 0)\nM = Середина(A, B)").document
+native.evaluate(doc)                                   # values by element ID
+native.render(doc, fmt='svg', out='midpoint.svg')      # manim needed here
+doc, report = native.from_ggb('drawing.ggb', id_namespace='6ba7b811-9dad-11d1-80b4-00c04fd430c8')
+```
+
+The overview is [docs/native.md](https://github.com/ivaleo/animageo/blob/main/docs/native.md),
+the API with every signature is
+[docs/native/api.md](https://github.com/ivaleo/animageo/blob/main/docs/native/api.md);
+`python -m animageo.native --help` lists the command line.
+
 ## AI-agent usage
 
 If you (or a tool you are driving) are an AI agent, read the self-sufficient
@@ -253,6 +278,7 @@ the label-placement preset — lives in [docs/styles.md](https://github.com/ival
 - [docs/quickstart.md](https://github.com/ivaleo/animageo/blob/main/docs/quickstart.md) — getting started
 - [docs/architecture.md](https://github.com/ivaleo/animageo/blob/main/docs/architecture.md) — pipeline & module map
 - [docs/api.md](https://github.com/ivaleo/animageo/blob/main/docs/api.md) — scene / construction API reference
+- [docs/native.md](https://github.com/ivaleo/animageo/blob/main/docs/native.md) — the native kernel: overview; [docs/native/api.md](https://github.com/ivaleo/animageo/blob/main/docs/native/api.md) — its API
 - [docs/keyframes.md](https://github.com/ivaleo/animageo/blob/main/docs/keyframes.md) — keyframe animation timeline format
 - [docs/python_dsl.md](https://github.com/ivaleo/animageo/blob/main/docs/python_dsl.md) — the construction DSL
 - [docs/styles.md](https://github.com/ivaleo/animageo/blob/main/docs/styles.md) — the style system (main reference)

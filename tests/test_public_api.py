@@ -18,6 +18,7 @@ from __future__ import annotations
 import importlib.util
 import inspect
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -189,6 +190,54 @@ class TestTopLevel:
     def test_snapshot_covers_the_star_import(self, snapshot):
         own = json.loads(STAR_PATH.read_text(encoding='utf-8'))['own']
         assert sorted(snapshot['top']) == sorted(own)
+
+
+API_DOC = REPO_ROOT / 'docs' / 'native' / 'api.md'
+_ENTRY = re.compile(r'^- `([^`]+)`')
+_HEAD = re.compile(r'^(?:(class|exception) )?([A-Za-z_]\w*)(\(.*\))?(?: = (.+))?$')
+
+
+def documented_api(text: str) -> dict:
+    """``{name: {kind, signature?, value?}}`` of the entries ``- `…` `` of api.md."""
+    out = {}
+    for line in text.splitlines():
+        match = _ENTRY.match(line)
+        head = _HEAD.match(match.group(1)) if match else None
+        if not head:
+            continue
+        prefix, name, signature, value = head.groups()
+        assert name not in out, f'{name} is listed twice'
+        if signature is not None:
+            out[name] = {'kind': prefix or 'function', 'signature': signature}
+        else:
+            out[name] = {'kind': 'constant'} | ({'value': value} if value is not None else {})
+    return out
+
+
+class TestApiDoc:
+    """``docs/native/api.md`` lists the snapshot: names and signatures (L6 item 8)."""
+
+    def test_the_doc_lists_every_name_with_its_signature(self, snapshot):
+        documented = documented_api(API_DOC.read_text(encoding='utf-8'))
+        expected = {}
+        for name, row in {**snapshot['native']['names'], **snapshot['native']['outside_all']}.items():
+            if row['kind'] == 'constant':
+                expected[name] = {'kind': 'constant'} | (
+                    {'value': repr(row['value'])} if row.get('type') == 'str' else {})
+            else:
+                expected[name] = {'kind': row['kind'], 'signature': row['signature']}
+        assert _diff(expected, documented) == []
+
+    def test_the_parser(self):
+        text = ("- `class A(x, *, y=None)` — a class\n- `exception E(issues)`\n- `f(doc)` — f\n"
+                "- `V = '1.5'`\n- `FEATURES` — names\nnot an entry `g(x)`\n")
+        assert documented_api(text) == {
+            'A': {'kind': 'class', 'signature': '(x, *, y=None)'},
+            'E': {'kind': 'exception', 'signature': '(issues)'},
+            'f': {'kind': 'function', 'signature': '(doc)'},
+            'V': {'kind': 'constant', 'value': "'1.5'"},
+            'FEATURES': {'kind': 'constant'},
+        }
 
 
 def test_snapshot_is_written_by_this_module(snapshot):

@@ -1032,6 +1032,39 @@ view generously (§8.4) so the motion stays in frame.
 
 ---
 
+## 12. The native kernel (JSON documents, no manim)
+
+Use `animageo.native` when the user wants a construction as **data** — to
+store, diff, check or edit it by ID, to import a `.ggb` without rendering, or
+to describe it in words. It needs no manim except to render; `import
+animageo.native` is fast and safe on a server.
+
+```python
+from animageo import native
+
+res = native.parse_commands(              # «Команды», the text form (docs/native/commands.md)
+    "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\n"
+    "t, c, a, b = Многоугольник(A, B, C)\nM = Середина(A, B)")
+assert res.issues == []                   # problems of the text, by line and column
+doc = res.document                        # animageo-construction/v1
+ev = native.evaluate(doc)                 # ev.elements[id] = {'state', 'type', 'value', ...}
+native.describe(doc)                      # ['1. Строим треугольник ABC.', '2. Отмечаем середину M отрезка AB.']
+native.print_commands(doc).text           # back to the text
+native.render(doc, fmt='svg', out='t.svg')        # this one needs manim + LaTeX
+
+doc, report = native.from_ggb('drawing.ggb', id_namespace='6ba7b811-9dad-11d1-80b4-00c04fd430c8')
+# doc is a dict (None if nothing imported); report['summary'] counts editable / picture / unsupported
+```
+
+Rules: objects are addressed by **ID**, the name shown is `displayName`;
+`id_namespace` is a UUID string (IDs are derived from it, so the same file
+gives the same IDs); `native.validate(doc)` lists the problems of a document
+(empty = valid); check `native.has('feature')` before relying on a feature of
+a newer release. Every public name and signature: `docs/native/api.md`;
+the command line: `python -m animageo.native --help`.
+
+---
+
 ## Further reading
 
 If you hit something this guide does not cover:
