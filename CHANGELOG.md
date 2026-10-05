@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.14] - 2026-10-06
+
 ### Added
 
 - `label_hint_px` — a soft placement hint for a label: the desired offset of
@@ -1732,7 +1734,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.13...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.7.14...HEAD
+[1.7.14]: https://github.com/ivaleo/animageo/compare/v1.7.13...v1.7.14
 [1.7.13]: https://github.com/ivaleo/animageo/compare/v1.7.12...v1.7.13
 [1.7.12]: https://github.com/ivaleo/animageo/compare/v1.7.11...v1.7.12
 [1.7.11]: https://github.com/ivaleo/animageo/compare/v1.7.10...v1.7.11
