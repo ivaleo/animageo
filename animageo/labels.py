@@ -8,6 +8,7 @@ from typing import Any
 import numpy as np
 
 from .style.resolver import resolve as _resolve_style
+from .style.resolver import trace as _trace_style
 
 
 LABEL_MODE_LABEL = "label"
@@ -145,10 +146,42 @@ def _default_label_text(scene, elem) -> str:
     return "$" + _display_name(scene, elem) + "$"
 
 
+def _label_text(scene, elem) -> str:
+    """Resolve imported dynamic captions without bypassing style priority.
+
+    The import layer stores a text-object name. Read its current content on
+    every call so hidden sources and animation updates work, while explicit
+    label_text, overlays, disabled import and import-policy overrides retain
+    their existing semantics. Invalid references use the ordinary fallback.
+    """
+    label_text = _resolve_style(scene, elem, 'label_text',
+                                default=_default_label_text(scene, elem))
+    if not (getattr(elem, 'ggb_style', None) or {}).get('label_dynamic_caption'):
+        return str(label_text)
+    source, _ = _trace_style(scene, elem, 'label_text')
+    if source not in ('elem.style', 'overlay.per_name', 'overlay.per_type'):
+        ref = _resolve_style(scene, elem, 'label_dynamic_caption')
+        construction = getattr(scene, 'geo', None)
+        if ref and construction is not None:
+            from .geo.lib_elements import Text, text_to_display_latex
+
+            name = getattr(construction, 'name_mapping', {}).get(ref, ref)
+            obj = construction.objectByName(name)
+            data = getattr(obj, 'data', None)
+            if isinstance(data, Text):
+                content = text_to_display_latex(
+                    construction, data, getattr(construction, 'ggb_decimals', 2))
+                # Captions are inline labels even if their source text uses
+                # display delimiters. Keep JSXGraph and value-label joins valid.
+                if data.is_latex and _math_inner(content) != content:
+                    return _math_wrap(_math_inner(content))
+                return content
+    return str(label_text)
+
+
 def resolve_label_text(scene, elem) -> str:
     """Return the final TeX label text for an element."""
-    label_text = _resolve_style(scene, elem, "label_text",
-                                default=_default_label_text(scene, elem))
+    label_text = _label_text(scene, elem)
     mode = normalize_label_mode(_resolve_style(scene, elem, "label_mode", default=LABEL_MODE_LABEL))
     if mode == LABEL_MODE_LABEL:
         return str(label_text)
@@ -222,8 +255,7 @@ def resolve_label_spec(scene, elem) -> LabelSpec:
 
     prefix_tex = None
     if mode == LABEL_MODE_LABEL_VALUE:
-        label_text = _resolve_style(scene, elem, "label_text",
-                                    default=_default_label_text(scene, elem))
+        label_text = _label_text(scene, elem)
         separator = _resolve_style(scene, elem, "label_value_separator", default=" = ")
         prefix_tex = _math_wrap(_math_inner(str(label_text)) + str(separator))
 
@@ -344,8 +376,13 @@ def _display_angle_value(scene, elem, value: float) -> float:
 
 
 def _math_inner(text: str) -> str:
+    if len(text) >= 4 and text.startswith('$$') and text.endswith('$$'):
+        return text[2:-2]
     if len(text) >= 2 and text[0] == "$" and text[-1] == "$":
         return text[1:-1]
+    if ((text.startswith(r'\(') and text.endswith(r'\)'))
+            or (text.startswith(r'\[') and text.endswith(r'\]'))):
+        return text[2:-2]
     return text
 
 

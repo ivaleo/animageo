@@ -173,6 +173,8 @@ class ImportPolicy:
             else:
                 style[style_key] = resolved
 
+        if self.label_text is not None:
+            style.pop('label_dynamic_caption', None)
         return style
 
     def resolve_overrides_only(
@@ -202,6 +204,10 @@ class ImportPolicy:
                 continue
             overrides[style_key] = resolved
 
+        if (self.label_text is not None
+                and 'label_dynamic_caption' in (getattr(elem, 'ggb_style', None) or {})):
+            # A policy-provided literal replaces the imported live reference.
+            overrides['label_dynamic_caption'] = None
         return overrides
 
 

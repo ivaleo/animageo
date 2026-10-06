@@ -537,7 +537,13 @@ class AnimaGeoScene(MovingCameraScene):
     def updateGeoElements(self, updates = None):
         for elem in self.geo.elements:
             if updates: 
-                if elem.name not in updates: continue
+                if elem.name not in updates:
+                    # Caption dependencies are text references, outside the
+                    # geometry graph. A tracker can change their content while
+                    # leaving this element's geometry unchanged.
+                    if (not elem.ggb_style.get('label_dynamic_caption')
+                            or not _resolve_style(self, elem, 'label_dynamic_caption')):
+                        continue
 
             mobj = self.mobject(elem.name)   
             mobj_new = self.CreateMObject(elem)

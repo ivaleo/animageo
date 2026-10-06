@@ -556,15 +556,18 @@ class Text:
     Position is either literal ``position`` coords **or** ``anchor_point``
     (the name of a point the text is attached to). ``is_latex`` selects LaTeX
     vs plain rendering; ``serif`` mirrors GeoGebra's font serif flag.
+    ``latex_math_mode`` adds GeoGebra's implicit formula mode when importing
+    LaTeX text without delimiters. Python-created Text keeps literal LaTeX.
     """
 
     def __init__(self, segments, position=None, anchor_point=None,
-                 is_latex=False, serif=False):
+                 is_latex=False, serif=False, *, latex_math_mode=False):
         self.segments = list(segments)
         self.position = None if position is None else np.array(position, dtype=float)
         self.anchor_point = anchor_point
         self.is_latex = bool(is_latex)
         self.serif = bool(serif)
+        self.latex_math_mode = bool(latex_math_mode)
 
         self.style = StyleProxy()
         self.style['z_index'] = Z_LABEL
@@ -726,15 +729,27 @@ def textify_cyrillic(s):
                    for p in parts)
 
 
+_EXPLICIT_MATH_RE = re.compile(
+    r'(?<!\\)(?:\\\\)*(?:\$|\\[([]|\\begin\{'
+    r'(?:math|displaymath|equation\*?|align\*?|alignat\*?|flalign\*?|gather\*?|multline\*?)\})'
+)
+
+
 def text_to_display_latex(construction, text, decimals):
     """Resolve a :class:`Text` to a LaTeX-ready display string, shared by the
-    manim renderer and the TikZ/JSXGraph exporters. LaTeX texts pass through;
-    plain texts are escaped. Non-breaking spaces collapse to regular spaces.
+    manim renderer and exporters. Plain texts are escaped. Imported GeoGebra
+    formulas get math delimiters only when no explicit math scope exists;
+    already-delimited or mixed LaTeX and Python-created texts pass through.
+    Non-breaking spaces collapse to regular spaces.
     Returns ``''`` for empty/blank content."""
     content = resolve_text_string(construction, text, decimals).replace('\xa0', ' ')
     if not content.strip():
         return ''
-    return content if text.is_latex else latex_escape_text(content)
+    if not text.is_latex:
+        return latex_escape_text(content)
+    if getattr(text, 'latex_math_mode', False) and not _EXPLICIT_MATH_RE.search(content):
+        return '$' + content + '$'
+    return content
 
 
 #--------------------------------------------------------------------------

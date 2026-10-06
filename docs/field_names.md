@@ -195,7 +195,7 @@ Column legend:
 | Number | `<element type="numeric">` | `Measure` (inside `Var`) | — | — (invisible) | — |
 | Boolean | — | `Boolean` (inside `Var`) | — | — | — |
 | Angle size | `<element type="angle">` + value | `AngleSize` (inside `Var`) | — | — | — |
-| Label | `<labelMode>`, `<caption>`, `<objColor>` | via `elem.style['label_*']` | `rendering.label_anchor`, `font_size`, `per_name: {...}` | `Tex` (via `create_label`) | `<text>` + `<path>` |
+| Label | `<labelMode>`, `<caption>`, `<dynamicCaption>`, `<objColor>` | via `elem.style['label_*']` | `rendering.label_anchor`, `font_size`, `per_name: {...}` | `Tex` (via `create_label`) | `<text>` + `<path>` |
 
 **Command dispatch** (`lib_commands.py`): command name = `{command_name}_{type_shortcuts}`, where the shortcuts are `p=Point, l=Line, r=Ray, s=Segment, v=Vector, c=Circle, C=Arc, S=CircleSector, a=Angle, P=Polygon, K=Conic, F=Function, I=ImplicitCurve, i=int/float, m=Measure, A=AngleSize, b=Boolean, T=str`. Example: `intersect_Kl(conic, line)`, `midpoint_pp(p1, p2)`.
 
@@ -355,6 +355,7 @@ The GGB `point_style` code is decomposed into three independent axes (`point_sha
 | Concept | GGB XML | `elem.ggb_raw` | `elem.style` | JSON | manim |
 |---|---|---|---|---|---|
 | Text | `<labelMode>`, `<caption>` | `label_caption` | `label_text` | `import.policy.label_text`, `overlay.per_name` | `Tex(text)` |
+| Dynamic caption source | `<dynamicCaption val>` | `label_dynamic_caption` (original text-object name) | `ggb_style.label_dynamic_caption` (internal import metadata, modes 3/9) | no public style setting; explicit `label_text` overrides it | current source text through `text_to_display_latex` |
 | Text mode | `<labelMode val>` | `label_mode` (`0/1/2/3/9`) | `label_mode` (`label` / `value` / `label_value`) | `import.policy.label_mode`, `overlay.per_type`, `overlay.per_name` | picks `label`, `value`, or `label = value` |
 | Value format | — | — | `label_value_precision`, `label_value_strip_zeros`, `label_angle_unit`, `label_value_separator` | `overlay.per_type`, `overlay.per_name`, `import.policy.*` | formats the numeric part |
 | Visibility | `<show label>` | `show_label` | `label_visible` | `defaults.<type>.label_visible`, `overlay.per_type`, `overlay.per_name`, `import.policy.label_visible` | (conditional creation) |

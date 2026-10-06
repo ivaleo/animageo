@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.15] - 2026-10-06
+
+### Fixed
+
+- GeoGebra caption modes now resolve `dynamicCaption` text-object references,
+  including hidden sources, forward references and updates during animation.
+  Explicit label text, overlay rules and disabled import retain their priority.
+- Imported GeoGebra LaTeX formulas without delimiters now receive mathematical
+  mode. Existing math delimiters, mixed text/formulas, plain text and
+  Python-created `Text` objects keep their previous handling.
+
 ## [1.7.14] - 2026-10-06
 
 ### Added

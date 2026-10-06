@@ -554,6 +554,9 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
             caption = xelem.find("caption")
             if caption is not None:
                 raw[name]['label_caption'] = caption.attrib['val']
+            dynamic_caption = xelem.find("dynamicCaption")
+            if dynamic_caption is not None:
+                raw[name]['label_dynamic_caption'] = dynamic_caption.attrib.get('val')
 
             elem = xelem.find("labelMode")
             if elem is not None:
@@ -562,6 +565,10 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                 style[name]['label_mode'] = geogebra_label_mode_to_style(label_mode)
                 if label_mode in (3, 9) and caption is not None:
                     style[name]['label_text'] = '$' + caption.attrib['val'] + '$'
+                if label_mode in (3, 9) and dynamic_caption is not None:
+                    # Keep the text-object reference, including forward refs.
+                    # Its content is resolved live by labels.py, not frozen here.
+                    style[name]['label_dynamic_caption'] = dynamic_caption.attrib.get('val')
 
             elem = xelem.find("angleStyle")
             if elem is not None:
@@ -967,7 +974,8 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
 
                 constr.add(Element(name, Text(segments, position=position,
                                               anchor_point=anchor_point,
-                                              is_latex=is_latex, serif=serif),
+                                              is_latex=is_latex, serif=serif,
+                                              latex_math_mode=is_latex),
                                    fixed=True))
                 continue
 

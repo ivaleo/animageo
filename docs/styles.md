@@ -575,6 +575,24 @@ keeps its type's layer and label defaults.
 
 ## 7. Labels and TeX
 
+### Captions from GeoGebra text objects
+
+Since 1.7.15, GeoGebra caption modes 3 (caption) and 9 (caption and value)
+read the text object referenced by `<dynamicCaption val="textName"/>`.
+The source may be hidden and may appear later in the file; its current
+content is read again when a variable changes during animation. A missing
+or non-text source falls back to the static caption or object name.
+Explicit `label_text`, `overlay.per_name` / `overlay.per_type` label text,
+and an import-policy `label_text` override take priority. With
+`import.enabled=false`, GeoGebra captions are not imported.
+
+An imported text with `isLaTeX=true` is a formula: bare `\varphi` works
+without adding `\[...\]`. Existing `$...$`, `\(...\)`, `\[...\]`, math
+environments and mixed text with explicit formulas are preserved. Plain
+text still uses TeX escaping. Python-created `Text` keeps its previous
+LaTeX handling; pass `latex_math_mode=True` explicitly to use the same
+implicit formula mode.
+
 ### The 9-point anchor
 
 ```
@@ -811,7 +829,7 @@ Each field accepts: `None` (fallback), a literal (number/bool/list/dict/hex), a 
 | `label_color` | `<objColor>` as `obj_color.hex` | `label_color` |
 | `label_visible` | `<show label>` | `label_visible` |
 | `visible` | `<show object>` | `visible` |
-| `label_text` | `<caption>` | `label_text` |
+| `label_text` | `<caption>` (an explicit policy override replaces a dynamic caption) | `label_text` |
 | `angle_range` | `<angleStyle val>` | `angle_range` |
 | `tick_count` | `<decoration type>` | `tick_count` |
 | `font_size_px` | literal / callable (`raw=None`) | `font_size_px` |
