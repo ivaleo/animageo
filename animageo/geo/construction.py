@@ -667,9 +667,10 @@ class Construction:
         # Special case for Intersect(Circle/Conic, ...): GeoGebra orders
         # intersections by already-known points on the input objects.
         points_order = None
+        binding = getattr(command_original, '_ggb_intersection', None)
         if command.name == 'Intersect':
             points_order = self._intersect_points_order(command_original, input_data)
-            if points_order and is_number(input_data[-1]):
+            if binding is None and points_order and is_number(input_data[-1]):
                 input_data.append(points_order)
 
         if command.name == 'Locus':
@@ -696,9 +697,16 @@ class Construction:
 
         if f is not None:
             try:
-                output_data = f(*input_data)
+                output_data = (binding.compute(input_data, points_order)
+                               if binding is not None else NotImplemented)
+                bound = output_data is not NotImplemented
+                if not bound:
+                    args = input_data
+                    if binding is not None and points_order and is_number(input_data[-1]):
+                        args = input_data + [points_order]
+                    output_data = f(*args)
                 if not isinstance(output_data, list): output_data = [output_data]
-                if command.name == 'Intersect' and points_order:
+                if not bound and command.name == 'Intersect' and points_order:
                     output_data = order_points_by_reference(output_data, points_order)
                 if debug:
                     str_inputs = [obj.name if hasattr(obj,"name") else obj for obj in command_original.inputs]
@@ -706,13 +714,14 @@ class Construction:
                     logger.debug("    in:  %s", input_data)
                     logger.debug("    out: %s", output_data)
 
-                for i in range(len(output_data)):
-                    if (i < len(command.outputs)):
-                        if self.element(command.outputs[i]) is not None:
-                            if not self.element(command.outputs[i]).fixed:
-                                self.update(command.outputs[i], output_data[i], log = log)
-                        else:
-                            self.update(command.outputs[i], output_data[i], log = log)
+                # Output names are stable slots, including currently undefined
+                # ones. Keeping every slot lets GGB import retain its visual
+                # metadata and clears an old result when an intersection vanishes.
+                for i, name in enumerate(command.outputs):
+                    data = output_data[i] if i < len(output_data) else None
+                    elem = self.element(name)
+                    if elem is None or not elem.fixed:
+                        self.update(name, data, log=log)
             except Exception as e:
                 str_inputs = [obj.name if hasattr(obj,"name") else obj for obj in command_original.inputs]
                 logger.warning("Command '%s(%s)' failed: %s", f.__name__, str_inputs, e)

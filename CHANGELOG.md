@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.16] - 2026-10-07
+
+### Fixed
+
+- GGB circle/conic intersections use saved point coordinates to identify the
+  chosen solution, including explicit intersection indices. Geometry stays
+  dynamic; a reversed line normal no longer selects the other circle centre.
+- Imported circle/segment/ray intersections retain solution slots after both
+  solutions occur. Single-frame keyframe seeks establish the earlier
+  intersection history, matching sequential playback.
+- Every declared command output exists even while undefined, retaining GGB
+  visibility and styling. Rebuilds clear missing solutions and update their
+  dependents, preventing visible black points and arcs with stale endpoints.
+
 ## [1.7.15] - 2026-10-06
 
 ### Fixed

@@ -13,6 +13,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element as XElement
 
 from ..geo.construction import Construction
+from ..geo.intersection_binding import ImportedIntersection
 from ..geo.lib_commands import Command, COMMAND_REGISTRY, strCommand
 from ..geo.formula_params import (
     formula_bindings, formula_objects, formula_parameters, mentioned_numbers,
@@ -516,6 +517,17 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
     text_exprs = {}  # normalized name -> raw text <expression> exp, deferred to
                      # the following <element type="text"> which carries position/style
     element_types = _element_types_by_label(constr_xelem)
+    saved_points = {}
+    for elem_xml in constr_xelem.findall('element'):
+        coords = elem_xml.find('coords')
+        if elem_xml.get('type') != 'point' or coords is None:
+            continue
+        try:
+            xyz = np.array([float(coords.get(k, 'nan')) for k in ('x', 'y', 'z')])
+            point = xyz[:2] / xyz[2] if np.isfinite(xyz).all() and xyz[2] != 0 else None
+        except (TypeError, ValueError):
+            point = None
+        saved_points[elem_xml.get('label')] = point
 
     for xelem in constr_xelem:                    
         if xelem.tag == "element":                    
@@ -790,6 +802,9 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                     new_inputs = new_inputs + [repr(x_range[0]), repr(x_range[1])]
 
             command = Command(comm_name, new_inputs, outputs)
+            if comm_name == 'Intersect':
+                command._ggb_intersection = ImportedIntersection(
+                    [saved_points.get(output) for output in outputs_raw])
             constr.add(command)
             constr.apply(command, debug = debug)
             

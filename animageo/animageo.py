@@ -1761,6 +1761,11 @@ class AnimaGeoScene(MovingCameraScene):
 
         saved_raw, element_info = self._snapshot_independents()
         saved_visibility = {e.name: e.visible for e in self.geo.elements}
+        saved_intersections = [
+            (binding, binding.snapshot())
+            for cmd in self.geo.commands
+            if (binding := getattr(cmd, '_ggb_intersection', None)) is not None
+        ]
 
         # Snapshot the original value of every (name, key) that ANY keyframe's
         # 'styles' animates, so it can be restored byte-for-byte afterward
@@ -1869,6 +1874,8 @@ class AnimaGeoScene(MovingCameraScene):
             e = self.geo.element(name)
             if e is not None:
                 e.visible = vis
+        for binding, state in saved_intersections:
+            binding.restore(state)
         self.geo.rebuild(full=True)
 
         return layouts
@@ -2020,6 +2027,14 @@ class AnimaGeoScene(MovingCameraScene):
                 idx = i
                 break
         interval = seq.intervals[idx]
+        # A limited-path Intersect can begin with a single solution in slot 0
+        # and acquire stable slots only after both solutions occur. A fresh
+        # static seek must establish that history just as playback does.
+        if any(getattr(getattr(cmd, '_ggb_intersection', None),
+                       'initial_limited', False) for cmd in self.geo.commands):
+            for previous in kfs[:idx]:
+                self._apply_keyframe_state(previous, seq.element_info,
+                                           update_scene=False)
         # Labels exactly as playback places them: the snapshots of this
         # interval's two keyframes, interpolated (only these two are computed).
         layouts = self._bind_label_snapshots(seq, indices={idx, idx + 1})
