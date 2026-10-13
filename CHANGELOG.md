@@ -1098,6 +1098,49 @@ The final release of the native kernel stage L2 (registry 1.4).
   still works without manim. With manim installed nothing changes; the
   classic API is the same as in 1.7.13.
 
+## [1.7.16] - 2026-10-07
+
+### Fixed
+
+- GGB circle/conic intersections use saved point coordinates to identify the
+  chosen solution, including explicit intersection indices. Geometry stays
+  dynamic; a reversed line normal no longer selects the other circle centre.
+- Imported circle/segment/ray intersections retain solution slots after both
+  solutions occur. Single-frame keyframe seeks establish the earlier
+  intersection history, matching sequential playback.
+- Every declared command output exists even while undefined, retaining GGB
+  visibility and styling. Rebuilds clear missing solutions and update their
+  dependents, preventing visible black points and arcs with stale endpoints.
+
+## [1.7.15] - 2026-10-06
+
+### Fixed
+
+- GeoGebra caption modes now resolve `dynamicCaption` text-object references,
+  including hidden sources, forward references and updates during animation.
+  Explicit label text, overlay rules and disabled import retain their priority.
+- Imported GeoGebra LaTeX formulas without delimiters now receive mathematical
+  mode. Existing math delimiters, mixed text/formulas, plain text and
+  Python-created `Text` objects keep their previous handling.
+
+## [1.7.14] - 2026-10-06
+
+### Added
+
+- `label_hint_px` — a soft placement hint for a label: the desired offset of
+  the label centre from its element (the point, a segment's midpoint, an
+  angle's vertex), in `label_offset_px` pixels, y up. Auto-placement keeps the
+  hinted side and still moves the label off lines and other labels; unlike
+  `label_offset_px` + `label_placement_locked`, nothing is frozen. The hint is
+  read on every pass, including for labels created by `putCode`. An angle
+  label stays inside its angle while it fits there — past
+  `angle_label_max_arm_fraction` if that is what it takes — and the label of
+  a point on a closed figure stays outside it while there is room outside;
+  both outrank the hint. The hinted side is kept while the label can sit
+  within 1.6 font sizes of its point there; a sector that needs more gives
+  way to the neighbouring one nearest the hint. Layouts without a hint are
+  unchanged.
+
 ## [1.7.13] - 2026-10-01
 
 ### Added
@@ -2816,6 +2859,7 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 [1.8.1a1]: https://github.com/ivaleo/animageo/compare/v1.8.0a2...v1.8.1a1
 [1.8.0a2]: https://github.com/ivaleo/animageo/compare/v1.8.0a1...v1.8.0a2
 [1.8.0a1]: https://github.com/ivaleo/animageo/compare/v1.7.13...v1.8.0a1
+[1.7.14]: https://github.com/ivaleo/animageo/compare/v1.7.13...v1.7.14
 [1.7.13]: https://github.com/ivaleo/animageo/compare/v1.7.12...v1.7.13
 [1.7.12]: https://github.com/ivaleo/animageo/compare/v1.7.11...v1.7.12
 [1.7.11]: https://github.com/ivaleo/animageo/compare/v1.7.10...v1.7.11

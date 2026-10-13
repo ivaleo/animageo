@@ -574,6 +574,7 @@ EPS, video and TikZ show the same lines. The lines are anchored in the plane
 | `font_size_px` | float (px) | `defaults.<type>.font_size_px` | Per-element font size override |
 | `label_radial_offset_px` | float (px) | `defaults.angle.label_radial_offset_px` (`0`) | Radial label offset from the geometry (used for angles) |
 | `label_placement_locked` | bool | `False` | Protects the label from auto-placement |
+| `label_hint_px` | `[x, y]` (GGB px, y up) | — | Where the label centre should be, relative to the element's anchor; a soft request to auto-placement (§ "A hint instead of a lock") |
 | `_auto_placed` | bool | `False` (internal) | Set by the auto-layout; disables the GGB descender correction in `create_label` |
 
 ### Z-index (see §5)
@@ -586,6 +587,24 @@ EPS, video and TikZ show the same lines. The lines are anchored in the plane
 ---
 
 ## 7. Labels and TeX
+
+### Captions from GeoGebra text objects
+
+Since 1.7.15, GeoGebra caption modes 3 (caption) and 9 (caption and value)
+read the text object referenced by `<dynamicCaption val="textName"/>`.
+The source may be hidden and may appear later in the file; its current
+content is read again when a variable changes during animation. A missing
+or non-text source falls back to the static caption or object name.
+Explicit `label_text`, `overlay.per_name` / `overlay.per_type` label text,
+and an import-policy `label_text` override take priority. With
+`import.enabled=false`, GeoGebra captions are not imported.
+
+An imported text with `isLaTeX=true` is a formula: bare `\varphi` works
+without adding `\[...\]`. Existing `$...$`, `\(...\)`, `\[...\]`, math
+environments and mixed text with explicit formulas are preserved. Plain
+text still uses TeX escaping. Python-created `Text` keeps its previous
+LaTeX handling; pass `latex_math_mode=True` explicitly to use the same
+implicit formula mode.
 
 ### The 9-point anchor
 
@@ -708,6 +727,59 @@ scene.element('A').style['label_placement_locked'] = True
 scene.element('A').style['label_offset_px'] = [10, -5]
 ```
 
+### A hint instead of a lock
+
+A locked label stays exactly where `label_offset_px` puts it, whatever is
+drawn there. When you only know *which side* the label belongs on — the
+position comes from another drawing, from a model, from a rule of thumb —
+give auto-placement a hint and let it do the rest:
+
+```python
+scene.element('A').style['label_hint_px'] = [-12, -10]   # below-left of A
+```
+
+`label_hint_px` is the desired offset of the label **centre** from the
+element's anchor — the point itself, a segment's midpoint, an angle's vertex —
+in the same pixels as `label_offset_px`, y up. On a point it is the same pair
+of numbers you would write into `label_offset_px` with `label_anchor='MC'`.
+
+What auto-placement does with it:
+
+- The label keeps the hinted **side**: at a vertex it goes into the sector the
+  hint points into and keeps the hinted direction there (held ~28° away from
+  the sector's edges); a free point's label goes in the hinted direction. A
+  segment's label takes the hinted side of the segment.
+- The **distance** is the layout's own (compact, clear of the marker and of
+  the lines), so a hint may be rough. Where the hinted direction would put the
+  label far from its point — next to a line it has to clear — the label turns
+  toward the middle of the sector, 45° at most.
+- The hinted side is kept while the label can sit **within 1.6 font sizes** of
+  its point there. A sector that needs more — two lines close together, a line
+  across the hinted side — gives way to the neighbouring sector nearest the
+  hint, when the label sits that close there; otherwise the hinted side
+  stands. A sector too narrow for the label at all gives way to the next one.
+- The label is **not locked**: if the hinted place is taken by a line or by
+  another label, it moves along, staying as close to the hint as it can.
+- The hint is read on every placement pass and outranks a manual or GeoGebra
+  offset; `label_placement_locked` outranks the hint. It works whether or not
+  `respect_current_position` is on.
+
+Two rules outrank a hint, because a copied position may be wrong:
+
+- an **angle label stays inside its angle** while it fits there — a hint that
+  points outside moves it out only when the angle is too narrow for the label.
+  "Fits" means clear of both sides and not past the end of the shorter one;
+  if `angle_label_max_arm_fraction` stops the label where it still touches a
+  side, such a label goes further in, to where it fits, instead of going out;
+- the label of a **point on a closed figure** (a polygon, or segments joined
+  into a cycle) stays **outside the figure** while there is room outside. When
+  there is none — a circle runs close along the figure, say — a hint that
+  points inside is followed.
+
+A hint only takes effect when placement runs. `loadGGB` places labels once;
+for elements created or hinted later by `putCode`/`loadCode`, call
+`scene.autoPlaceLabels()` afterwards. Without a hint nothing changes.
+
 ### Dynamics and keyframe snapshots
 
 See §11.
@@ -770,7 +842,7 @@ Each field accepts: `None` (fallback), a literal (number/bool/list/dict/hex), a 
 | `label_color` | `<objColor>` as `obj_color.hex` | `label_color` |
 | `label_visible` | `<show label>` | `label_visible` |
 | `visible` | `<show object>` | `visible` |
-| `label_text` | `<caption>` | `label_text` |
+| `label_text` | `<caption>` (an explicit policy override replaces a dynamic caption) | `label_text` |
 | `angle_range` | `<angleStyle val>` | `angle_range` |
 | `tick_count` | `<decoration type>` | `tick_count` |
 | `font_size_px` | literal / callable (`raw=None`) | `font_size_px` |

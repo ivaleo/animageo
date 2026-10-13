@@ -50,7 +50,9 @@ do not guess API details from training data.
    all families together; never one alone (§7 has the full table).
 7. **Labels are solved, not sprinkled.** Label what the user named; enable
    the auto-placement preset for any labeled figure; pin individual
-   stragglers with `label_offset_px` + `label_placement_locked`.
+   stragglers with `label_offset_px` + `label_placement_locked`, or — when
+   only the side matters — hint it with `label_hint_px=[dx, dy]` (label
+   centre from the point, y up) and call `scene.autoPlaceLabels()`.
 8. **Animate variables, not frames.** Route motion through `addVar`
    trackers; the dependency graph moves everything downstream. Never
    rewrite coordinates frame by frame.

@@ -47,6 +47,8 @@ def resolve_ggb_style(ggb_raw: dict) -> dict:
 
     if 'label_caption' in ggb_raw and ggb_raw.get('label_mode') in (3, 9):
         style['label_text'] = '$' + ggb_raw['label_caption'] + '$'
+    if 'label_dynamic_caption' in ggb_raw and ggb_raw.get('label_mode') in (3, 9):
+        style['label_dynamic_caption'] = ggb_raw['label_dynamic_caption']
 
     if 'angle_style' in ggb_raw:
         style['angle_range'] = 'reflex' if ggb_raw['angle_style'] == 2 else 'minor'

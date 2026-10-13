@@ -6,6 +6,51 @@ library.
 
 ---
 
+## GeoGebra captions and formula text
+
+`<dynamicCaption val="textName"/>` is a reference to a text object, not a
+literal caption. In caption modes (3 and 9), the parser retains it in
+`ggb_raw`/`ggb_style` as `label_dynamic_caption`; label resolution reads the
+current text content even when that source is hidden. Missing or non-text
+sources fall back to the ordinary caption/name. Explicit `label_text`,
+overlay rules, an import-policy label override and `import.enabled=false`
+still take precedence. Selective animation refreshes also redraw caption
+owners, since these text references are outside the geometry dependency graph.
+
+GeoGebra's `isLaTeX=true` implies formula mode; Manim's `Tex` starts in text
+mode. Imported `Text` therefore sets `latex_math_mode=True`, and
+`text_to_display_latex` wraps bare formulas such as `\varphi` in `$...$`.
+Existing `$...$`, `\(...\)`, `\[...\]`, math environments and mixed text with
+explicit formulas are preserved. Plain text still uses escaping. The new
+keyword defaults to false for Python-created `Text`, preserving literal
+LaTeX and prose used by existing scripts. Dynamic captions normalize outer
+math delimiters to inline mode so caption/value joins and JSXGraph labels do
+not nest math scopes.
+
+## Imported intersection identities
+
+Since 1.7.16, GGB `Intersect` outputs retain their named solution slots and
+visual metadata while undefined. A missing solution is `elem.data is None`;
+it does not remove the element, and a later rebuild reuses its visibility,
+imported style and dependent commands. Every command output is cleared when
+its solution disappears, rather than keeping the last coordinates.
+
+For imported circle/conic intersections, saved point coordinates identify
+which computed root belongs to each output or explicit 1-based index.
+Coordinates are divided by their homogeneous `z`; they choose a branch and
+are not frozen geometry. This matters even for a static drawing: two
+equivalent lines with opposite normals can reverse analytic root order.
+
+A circle/segment/ray intersection can initially fill its first output with
+the only solution on the path. Once two solutions have occurred, their slots
+remain stable: falling outside the path makes that slot undefined, without
+moving the survivor to the other name. A fresh `apply_keyframes_at` seek
+establishes the preceding keyframe states before sampling such an import.
+Raw intersection functions and Python-created commands retain their existing
+root ordering; the import binding lives on GGB commands. This is not a full
+implementation of GeoGebra's continuous nearest-point tracking for arbitrary
+conics. Regression tests: `tests/test_ggb_intersection_binding.py`.
+
 ## manim
 
 ### `Mobject.set_default` accumulates a partialmethod chain — never call it in a hot path
