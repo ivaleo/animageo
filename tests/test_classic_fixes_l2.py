@@ -68,7 +68,8 @@ class TestAngularBisectorPPP:
 # ── 1.8.1: the classic fixes of §15 for registry 1.4 ─────────────────────
 
 from animageo.geo.lib_commands import (  # noqa: E402
-    angular_bisector_ll, intersect_Sl, rotate_vAp, signature_alias, tangent_pc, tangent_pci, vector_vi,
+    angular_bisector_ll, intersect_lSi, intersect_Sl, intersect_Sli, rotate_vAp, signature_alias, tangent_pc,
+    tangent_pci, vector_vi,
 )
 from animageo.geo.lib_conic import Conic  # noqa: E402
 from animageo.geo.lib_elements import Circle, CircleSector, Line, LocusCurve, Ray, Segment, Vector  # noqa: E402
@@ -168,6 +169,26 @@ class TestLineAndSector:
 
     def test_misses(self):
         assert intersect_Sl(self.sector, carrier(S((-5, -2), (5, -2)))) is None
+
+    # ``Intersect(sector, line, n)`` numbers the points as GeoGebra does: the
+    # points of the arc only. A drawing of GeoGebra: the line drawn through a
+    # point of the radius reaches the arc at its point number one. The
+    # construction passes the points that define the sector and the line as
+    # the order of the answers, and the point on the radius is one of them.
+    crossing = carrier(S((0, 2.539521835886975), (1, 3.539521835886975)))    # y = x + 2.5395…
+    order = [P(0, 0), P(4, 0), P(0, 4), P(0, 2.539521835886975)]
+    on_arc = (1.2576304667184355, 3.7971523026054106)
+
+    def test_an_indexed_point_is_a_point_of_the_arc(self):
+        assert intersect_Sli(self.sector, self.crossing, 1).coords == pytest.approx(self.on_arc)
+        assert intersect_Sli(self.sector, self.crossing, 1, self.order).coords == pytest.approx(self.on_arc)
+        assert intersect_lSi(self.crossing, self.sector, 1, self.order).coords == pytest.approx(self.on_arc)
+
+    def test_no_indexed_point_on_a_radius(self):
+        assert intersect_Sli(self.sector, self.crossing, 2) is None
+        assert intersect_lSi(self.crossing, self.sector, 2, self.order) is None
+        points = intersect_Sl(self.sector, self.crossing)                     # the list keeps the radii
+        assert sorted(tuple(np.round(p.coords, 9)) for p in points) == [(0.0, 2.539521836), (1.257630467, 3.797152303)]
 
 
 class TestSignatureAliases:

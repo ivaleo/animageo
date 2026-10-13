@@ -741,7 +741,12 @@ def intersect_lS(line, sector):
     return intersect_Sl(sector, line)
 
 def intersect_Sli(sector, line, index, points_order=None):
-    res = intersect_Sl(sector, line)
+    """The point number ``index`` of the sector on the line, numbered as
+    GeoGebra numbers them: the points of the arc only. The points on the
+    radii belong to the list of :func:`intersect_Sl`, not to the numbering —
+    a line drawn through a point of a radius would otherwise get that point
+    as its number one."""
+    res = intersect_Cl(Arc(sector.center, sector.radius, sector.angles), line)
     return res_by_index(res, index, points_order)
 
 def intersect_lSi(line, sector, index, points_order=None):
