@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc2] - 2026-10-13
+
+1.11.0rc1 together with the three patch releases of the stable line made
+after the two lines parted at 1.7.13: 1.7.14, 1.7.15 and 1.7.16 (their
+entries stand below, after 1.8.0a1). `main` is merged into the 1.11 line;
+the one change besides it is the fix of the indexed `Intersect` with a
+sector below. The native kernel is that of 1.11.0rc1:
+`animageo/native` differs in the version label of the generated fixtures
+only, the operation registry stays `1.5`, and the public API snapshot
+(`tests/snapshots/public_api.json`) is the same.
+
+### Added
+
+- `label_hint_px` (1.7.14) — a soft placement hint for a label: the desired
+  offset of the label centre from its element (the point, a segment's
+  midpoint, an angle's vertex), in `label_offset_px` pixels, y up.
+  Auto-placement keeps the hinted side and still moves the label off lines
+  and other labels; nothing is frozen. An angle label stays inside its
+  angle while it fits there, and the label of a point on a closed figure
+  stays outside it while there is room outside; both outrank the hint.
+  Layouts without a hint are unchanged. The solver reads the hint from a
+  `label_placement.LayoutInput` as from a scene, the label measured by the
+  input's own `measure_label`. A native document does not carry the hint:
+  the keys of `appearance.overrides` are those of 1.11.0rc1.
+
+### Fixed
+
+- GeoGebra caption modes resolve `dynamicCaption` text-object references,
+  including hidden sources, forward references and updates during
+  animation. Explicit label text, overlay rules and disabled import keep
+  their priority (1.7.15).
+- Imported GeoGebra LaTeX formulas without delimiters get mathematical
+  mode; existing math delimiters, mixed text and formulas, plain text and
+  Python-created `Text` objects keep their handling (1.7.15). `Text` takes
+  the keyword `latex_math_mode` (`False` by default).
+- Imported circle/conic intersections use the saved point coordinates to
+  identify the chosen solution, explicit intersection indices included;
+  circle/segment/ray intersections retain their solution slots after both
+  solutions occur, also in a single-frame keyframe seek (1.7.16).
+- Every declared command output exists even while undefined, keeping its
+  GGB visibility and styling; a rebuild clears a missing solution and
+  updates its dependents (1.7.16). 1.11.0rc1 made the outputs a result
+  does not reach undefined as well; the two changes are one loop over the
+  output slots now.
+- `Intersect(sector, line, n)` and `Intersect(line, sector, n)` number the
+  points of the arc only, as GeoGebra does and as 1.7 did. Since 1.8.1 the
+  indexed form counted the points on the radii too, so a line drawn through
+  a point of a radius got that point as its number one, and a drawing
+  imported from GeoGebra lost the polygons built on such points. The list
+  of `Intersect(line, sector)` keeps the points on the radii
+  (`tests/test_classic_fixes_l2.py::TestLineAndSector`).
+
 ## [1.11.0rc1] - 2026-10-05
 
 The native kernel stage L6, putting things in order, as the release
@@ -150,7 +202,7 @@ byte; one 3D drawing fails on both (`docs/native/classic-diffs.json`).
 | 1.8.1 | `Rotate(v, α, O)` of a vector turns both ends about `O` | `tests/test_classic_fixes_l2.py::TestRotateVector` |
 | 1.8.1 | `CircleSector.contains` works (returned `None`), so `Intersect` filters with a sector work | `tests/test_classic_fixes_l2.py::TestSectorContains` |
 | 1.8.1 | `AngleBisector(l1, l2)` of parallel lines is undefined without an error | `tests/test_classic_fixes_l2.py::TestBisectorsOfParallelLines` |
-| 1.8.1 | `Intersect(line, sector)` also finds the points on the radii | `tests/test_classic_fixes_l2.py::TestLineAndSector` |
+| 1.8.1 | `Intersect(line, sector)` also finds the points on the radii (the list; the indexed form numbers the arc only, see 1.11.0rc2) | `tests/test_classic_fixes_l2.py::TestLineAndSector` |
 | 1.8.1 | Signature aliases: `Slope(s)` of a segment, `Tangent(l, c)`, `Mirror(A, x² + y² = 4)` … build (were errors) | `tests/test_classic_fixes_l2.py::TestSignatureAliases` |
 | 1.8.1 | A locus gets the stroke of the other curves (style defaults `locuscurve`) | `tests/test_classic_fixes_l2.py::TestLocusDefaults` |
 | 1.10.0a1 | The `.ggb` parser admits one assignment of an expression: no dunders, private attributes, lambdas, comprehensions, definitions, imports | `tests/test_ggb_parser_exec.py::TestGgbCodeGuard` |
