@@ -1,8 +1,9 @@
-"""Functions of one variable (registry 1.6, docs/native/expr.md §5).
+"""Functions of the variables of a slot (registry 1.6, docs/native/expr.md §5).
 
 :func:`compile_function` turns a tree with the variable ``x`` into a Python
-function ``f(x) -> float`` that raises :class:`ExprError` where the tree has
-no value. Each node does the IEEE operation of :func:`~.evaluate.evaluate`
+function ``f(x) -> float`` (with ``vars=('x', 'y')`` — ``f(x, y)``, the
+equation of ``conic.equation``) that raises :class:`ExprError` where the
+tree has no value. Each node does the IEEE operation of :func:`~.evaluate.evaluate`
 in the same order (left before right) and the same checks; ``if`` takes only
 its chosen branch, ``and``/``or`` stop at the first operand that decides.
 """
@@ -34,7 +35,7 @@ def _divide(a, b):
     return f
 
 
-def _value(node, refs):
+def _value(node, refs, names=('x',)):
     if 'num' in node:
         v = float(node['num'])
         return lambda x: v
@@ -45,12 +46,15 @@ def _value(node, refs):
         v = float(refs[int(node['ref'])])
         return lambda x: v
     if 'var' in node:
-        return lambda x: x
+        if len(names) == 1:
+            return lambda x: x
+        i = names.index(node['var'])
+        return lambda x: x[i]
     if 'if' in node:
         items = node['if']
-        cond = _condition(items[0], refs)
-        then = _value(items[1], refs)
-        other = _value(items[2], refs) if len(items) == 3 else None
+        cond = _condition(items[0], refs, names)
+        then = _value(items[1], refs, names)
+        other = _value(items[2], refs, names) if len(items) == 3 else None
 
         def choose(x):
             if cond(x):
@@ -62,16 +66,16 @@ def _value(node, refs):
     if 'op' in node:
         name = node['op']
         args = node['args']
-        a = _value(args[0], refs)
+        a = _value(args[0], refs, names)
         if name == 'neg':
             return lambda x: -a(x)
         if name == '^':
             n = integer_power(node)
             if n is not None:
                 return lambda x: _checked(_power(a(x), n))
-            b = _value(args[1], refs)
+            b = _value(args[1], refs, names)
             return lambda x: _checked(_pow(a(x), b(x)))
-        b = _value(args[1], refs)
+        b = _value(args[1], refs, names)
         if name == '+':
             return lambda x: _checked(a(x) + b(x))
         if name == '-':
@@ -81,9 +85,9 @@ def _value(node, refs):
         return _divide(a, b)
     name = node['fn']
     args = node['args']
-    a = _value(args[0], refs)
+    a = _value(args[0], refs, names)
     if name in ('min', 'max'):
-        b = _value(args[1], refs)
+        b = _value(args[1], refs, names)
         if name == 'min':
             def low(x):
                 av = a(x)
@@ -99,10 +103,10 @@ def _value(node, refs):
     return lambda x: _checked(_fn(name, a(x)))
 
 
-def _condition(node, refs):
+def _condition(node, refs, names):
     if 'cmp' in node:
-        a = _value(node['args'][0], refs)
-        b = _value(node['args'][1], refs)
+        a = _value(node['args'][0], refs, names)
+        b = _value(node['args'][1], refs, names)
         sign = node['cmp']
         if sign == '<':
             return lambda x: a(x) < b(x)
@@ -112,27 +116,33 @@ def _condition(node, refs):
             return lambda x: a(x) > b(x)
         return lambda x: a(x) >= b(x)
     if 'not' in node:
-        c = _condition(node['not'][0], refs)
+        c = _condition(node['not'][0], refs, names)
         return lambda x: not c(x)
     kind = 'and' if 'and' in node else 'or'
-    left = _condition(node[kind][0], refs)
-    right = _condition(node[kind][1], refs)
+    left = _condition(node[kind][0], refs, names)
+    right = _condition(node[kind][1], refs, names)
     if kind == 'and':
         return lambda x: left(x) and right(x)
     return lambda x: left(x) or right(x)
 
 
-def compile_function(ast, refs=(), var: str = 'x'):
+def compile_function(ast, refs=(), var: str = 'x', *, vars=None):
     """``f(x)`` of the tree ``ast`` with the variable ``var`` and the numbers
-    ``refs``; ``f`` raises :class:`ExprError` (``out_of_domain``,
-    ``non_finite``) where the tree has no value and returns ``+0`` for
-    ``-0``. A tree :func:`~.validate.problems` refuses raises
-    ``ExprError('formula')`` here."""
+    ``refs`` (``vars=('x', 'y')``: ``f(x, y)``); ``f`` raises
+    :class:`ExprError` (``out_of_domain``, ``non_finite``) where the tree has
+    no value and returns ``+0`` for ``-0``. A tree
+    :func:`~.validate.problems` refuses raises ``ExprError('formula')``
+    here."""
+    names = tuple(vars) if vars is not None else (var,)
     refs = [float(v) for v in refs]
-    if problems(ast, len(refs), (var,)):
+    if problems(ast, len(refs), names):
         raise ExprError('formula')
-    body = _value(ast, refs)
+    body = _value(ast, refs, names)
+    if len(names) == 1:
+        def f(x):
+            return body(float(x)) + 0.0
+        return f
 
-    def f(x):
-        return body(float(x)) + 0.0
-    return f
+    def g(*values):
+        return body(tuple(float(v) for v in values)) + 0.0
+    return g

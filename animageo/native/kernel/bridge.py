@@ -54,7 +54,9 @@ expression (:func:`native_function`): its callable is the kernel
 :func:`~animageo.native.kernel.function.evaluator` and ``native_value`` the
 kernel value, which the renderers sample with ``function_runs``. A
 ``point.on_function`` holds its ``x`` like a point on a path holds ``t``
-(the classic ``tparam`` of its element).
+(the classic ``tparam`` of its element). A ``conic`` is a classic ``Conic``
+of the matrix of the value with the type of its ``kind``
+(:func:`native_conic`), drawn by the classic renderer.
 
 This module imports ``animageo.geo`` (and numpy) inside its functions only,
 so ``import animageo.native`` stays free of the classic code; ``animageo.geo``
@@ -176,6 +178,26 @@ def native_function(value):
     return obj
 
 
+def native_conic(value):
+    """A classic ``Conic`` of a kernel ``conic`` value: the matrix of the
+    value (:func:`.conic.matrix`) with the type set from ``kind`` (a circle
+    when ``a == b``) instead of the classic classification; ``native_value``
+    keeps the value (the label anchor of the renderer)."""
+    import numpy as np
+    from ...geo.lib_conic import Conic, ConicType
+    from .conic import matrix
+    obj = Conic(np.array(matrix(value), dtype=float))
+    kind = value['kind']
+    if kind == 'ellipse':
+        obj._type = ConicType.CIRCLE if value['a'] == value['b'] else ConicType.ELLIPSE
+    elif kind == 'hyperbola':
+        obj._type = ConicType.HYPERBOLA
+    else:
+        obj._type = ConicType.PARABOLA
+    obj.native_value = value
+    return obj
+
+
 LOCUS_GAP = 0.25     # a locus line breaks between samples farther apart than LOCUS_GAP·S
 
 
@@ -279,6 +301,8 @@ def to_classic(type_: str, value, *, sides=None, scale=None):
         obj = Text([('str', value['text'])], position=value['anchor'])
     elif type_ == 'function':
         obj = native_function(value)
+    elif type_ == 'conic':
+        obj = native_conic(value)
     else:
         raise ValueError(f'no classic type for {type_!r}')
     obj._native = (_fingerprint(obj), value)
@@ -362,10 +386,10 @@ def from_classic(type_: str, obj):
         if isinstance(obj, (int, float)) and not isinstance(obj, bool):
             return {'value': float(obj), 'unit': 'scalar'}
         raise ValueError(f'no kernel number for {type(obj).__name__}')
-    if type_ == 'function':
+    if type_ in ('function', 'conic'):
         native = getattr(obj, 'native_value', None)
         if native is None:
-            raise ValueError('no kernel function for a classic sympy Function')
+            raise ValueError(f'no kernel {type_} for a classic {type(obj).__name__}')
         return native
     if type_ == 'text':
         text = ''.join(s for kind, s in obj.segments if kind == 'str')

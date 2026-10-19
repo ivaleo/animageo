@@ -449,5 +449,60 @@
     },
     "math": "docs/native/ops/intersect.function_line.md",
     "signatureHash": "sha256:8f3df17ee8795b5fb33a8fd23825da54cec385892b7edf5975ca47ea61dbf4d6"
+  },
+  {
+    "op": "intersect.line_conic",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "line",
+        "type": "linear"
+      },
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "first",
+        "type": "point"
+      },
+      {
+        "slot": "second",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "line_param_order",
+      "slots": [
+        "first",
+        "second"
+      ],
+      "text": "first has the smaller parameter along the orientation of line; slots are fixed on the carrier before the part filter; a tangency fills both slots; one common point (a line parallel to the axis of a parabola or to an asymptote) fills first, second is branch_absent"
+    },
+    "undefined": [
+      "no_intersection",
+      "outside_part",
+      "zero_length",
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "every defined point lies on both inputs: the larger of the distance to the carrier line and the focal residual of the conic"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{first}, {second} — точки пересечения {line} и {conic}"
+    },
+    "math": "docs/native/ops/intersect.line_conic.md",
+    "signatureHash": "sha256:5c8b43984d7edc2e1ab5cdfaff44c00b745b90a00f459e9607e1dc5c5e717bb6"
   }
 ]

@@ -56,4 +56,4 @@ class OpContext:
 
 
 from . import angle, arc, circle, intersect, line, locus, mark, measure, number, point, polygon, text, transform, triangle  # noqa: E402,F401,E501  (registration)
-from . import function  # noqa: E402,F401  (registration, registry 1.6)
+from . import conic, function  # noqa: E402,F401  (registration, registry 1.6)

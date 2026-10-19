@@ -316,6 +316,11 @@ CHECK_OPTIONAL_SLOTS = {
     'function.extremum': frozenset({'extremum'}),
     'intersect.function_function': frozenset({'point'}),
     'intersect.function_line': frozenset({'point'}),
+    # a parabola has one focus, one vertex and one axis; a line parallel to
+    # the axis of a parabola or to an asymptote meets the conic once
+    'conic.foci': frozenset({'second'}),
+    'conic.vertices': frozenset({'second', 'third', 'fourth'}),
+    'intersect.line_conic': frozenset({'second'}),
 }
 
 

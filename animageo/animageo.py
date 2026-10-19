@@ -4385,7 +4385,14 @@ class AnimaGeoScene(MovingCameraScene):
 
         if not arr:
             return None
-        if ctx.has_label and ctx.ggb_label_point is not None:
+        native = getattr(conic, 'native_value', None)
+        if ctx.has_label and native is not None:
+            # registry 1.6: a kernel conic hangs its label off a point of the
+            # curve, the anchor label_placement._get_anchor uses
+            from .native.kernel.conic import label_anchor
+            ax, ay = label_anchor(native)
+            self._append_label(arr, elem, [float(ax), float(ay), 0], ctx)
+        elif ctx.has_label and ctx.ggb_label_point is not None:
             # Ellipse/circle conics drew no label. Only the applet-placed one is
             # reproducible: the placement solver has no anchor for conics.
             self._append_label(arr, elem, [0.0, 0.0, 0], ctx)
