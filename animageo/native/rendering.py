@@ -198,6 +198,8 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
     ``inputs``. The ``overrides`` of an equality mark in
     :data:`~animageo.native.paint.MARK_TRANSFERS` (the sizes of the ticks,
     the spacing of the arcs; 1.11.0rc3) go to its targets the same way.
+    This is the static drawing; the frame of a timeline puts on the targets
+    the keys of the marks in that frame (1.11.0rc5, ``docs/native/timeline.md`` §3).
 
     An override the element does not read (:func:`~animageo.native.paint.style_keys`)
     is applied and reported as ``style_key_ineffective`` with ``reason``
@@ -205,6 +207,51 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
     (:func:`~animageo.native.paint.ineffective_reason`; 1.11.0rc3). The keys
     of a role are not reported: a role is written for every type.
     """
+    plan, diagnostics, _decorations = _appearance_plan(doc, unit, inputs=inputs, evaluated=evaluated,
+                                                       roles=roles)
+    return plan, diagnostics
+
+
+def _mark_style(decorations, present) -> tuple:
+    """``({targetId: {key: value}}, {targetId: markId})`` — the keys the
+    equality marks ``present`` put on their targets, composed as
+    :func:`appearance_plan` composes them (the first mark in ID order wins a
+    key), and the mark whose ``tick_count`` each target draws.
+    ``decorations`` — those of :func:`_appearance_plan`."""
+    keys, owner = {}, {}
+    for mark_id, targets, _applied in decorations:
+        if mark_id not in present:
+            continue
+        for target, style in targets.items():
+            slot = keys.setdefault(target, {})
+            for key, value in style.items():
+                slot.setdefault(key, value)
+            if 'tick_count' in style:
+                owner.setdefault(target, mark_id)
+    return keys, owner
+
+
+def _mark_count(doc, mark_id, record):
+    """The count of an equality mark: its value, else (undefined) the literal of its op."""
+    if record.get('state') == 'defined':
+        return record['value']['count']
+    from .document import bound_producer
+    from .kernel.ops.mark import COUNTS
+    producer = bound_producer(doc, mark_id)
+    arg = doc.operations[producer].get('args', {}).get('count') if producer is not None else None
+    value = arg.get('value') if isinstance(arg, dict) and arg.get('kind') == 'number' else None
+    return int(value) if isinstance(value, (int, float)) and value in COUNTS else None
+
+
+def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> tuple:
+    """:func:`appearance_plan` and the decorations of the equality marks
+    (1.11.0rc5): ``[(markId, {targetId: {key: value}}, applied)]`` in ID
+    order — the keys each mark puts on its targets while it is in the frame
+    (``tick_count`` and its :data:`~animageo.native.paint.MARK_TRANSFERS`
+    without the keys a target sets itself), whatever its visibility in the
+    document; ``applied`` — the plan puts them (the mark is visible and
+    defined). The frame of a timeline puts those of the marks it shows
+    (``AnimaGeoScene._sync_mark_decorations``)."""
     from .paint import MARK_TRANSFERS, ineffective_reason, style_type_of
     doc = as_document(doc)
     appearance = doc.data.get('appearance')
@@ -271,28 +318,36 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
                     diagnostics.append({'code': 'unknown_style_key', 'elementId': el_id, 'key': key})
         plan[el_id] = {'visible': visible if isinstance(visible, bool) else True, 'style': style}
     marks = sorted(el_id for el_id, el in doc.elements.items() if el.get('type') == 'mark')
+    decorations = []
     if marks:
         if evaluated is None:
             from .kernel.evaluate import evaluate
             evaluated = evaluate(doc, inputs=inputs)
         targets = mark_targets(doc)
+        own = {el_id: set(entry['style']) for el_id, entry in plan.items()}
         for mark_id in marks:
             record = evaluated.elements.get(mark_id, {})
-            if record.get('state') != 'defined' or not plan[mark_id]['visible']:
+            defined = record.get('state') == 'defined'
+            if mark_id not in targets:                  # a right-angle mark draws itself
+                if defined and plan[mark_id]['visible'] and record['value']['kind'] == 'right_angle':
+                    plan[mark_id]['style'].setdefault('right_angle_marker', True)
                 continue
-            kind, count = record['value']['kind'], record['value']['count']
-            if kind == 'right_angle':
-                plan[mark_id]['style'].setdefault('right_angle_marker', True)
+            count = _mark_count(doc, mark_id, record)
+            if count is None:
                 continue
             entry = appearance.get(mark_id)
             overrides = entry.get('overrides') if isinstance(entry, dict) else None
             passed = {key: overrides[key] for key in MARK_TRANSFERS.get(style_type_of(doc, mark_id), ())
                       if isinstance(overrides, dict) and key in overrides}
-            for target in targets.get(mark_id, ()):
-                plan[target]['style'].setdefault('tick_count', count)
-                for key, value in sorted(passed.items()):
-                    plan[target]['style'].setdefault(key, value)
-    return plan, diagnostics
+            keys = {'tick_count': count, **dict(sorted(passed.items()))}
+            decorations.append((mark_id, {target: {k: v for k, v in keys.items() if k not in own[target]}
+                                          for target in targets[mark_id]},
+                                defined and plan[mark_id]['visible']))
+        style, _owner = _mark_style(decorations, {mark_id for mark_id, _t, applied in decorations if applied})
+        for target, keys in style.items():
+            for key, value in keys.items():
+                plan[target]['style'].setdefault(key, value)
+    return plan, diagnostics, decorations
 
 
 def apply_appearance(construction, names, plan) -> None:

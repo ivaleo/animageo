@@ -132,6 +132,18 @@ events over them. The interval of `t` is `[t_k, t_{k+1})`, as in the video
   after it — before the keyframe that makes it visible. An element its
   effect shows nothing of yet (an entrance not begun, an exit done) is left
   out of the frame (no mobject, no box).
+- Equality marks (1.11.0rc5). A `mark.equal_segments` or
+  `mark.equal_angles` has no drawing of its own: its ticks and arcs are
+  drawn by its targets, and they belong to the mark in time — on the
+  targets while the mark is in the frame (visible at `t`, defined, its
+  entrance begun, its exit not done), and its effect is drawn on them
+  (`fade` — their opacity, `create` — their stroke up to the progress,
+  `grow` — about each target's ticks). Of the arcs of an angle the mark's are
+  the outer ones (those beyond the angle's own `tick_count`); the angle's
+  own arc stays. A mark hidden in the document puts its ticks from the
+  frame that shows it. Before (1.11.0rc4) the frame and the video kept the
+  ticks of the visibility of the document at every `t`; in 1.11.0rc3 the
+  still read the visibility at `t`, its video drew the static ticks.
 - Events (`indicate`, `flash`, `circumscribe`) are drawn in their window.
   1.11.0: the overlay of `flash` and `circumscribe` is rebuilt from its
   target every frame (it follows a moving target), overlays stack by the

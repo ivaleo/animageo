@@ -197,3 +197,12 @@ def test_the_video_draws_the_ticks_only_while_their_mark_is_in_the_frame():
 
 def test_the_frame_is_the_video_frame_inside_the_windows_of_the_marks():
     _assert_frames(_doc(), TIMELINE, list(range(0, 40)))
+
+
+def test_labels_placed_at_keyframes_see_the_arcs_of_the_marks_shown_there():
+    """With label snapshots the labels are placed at each keyframe with the
+    ticks and arcs of the marks shown at it; the frame is still the video's."""
+    doc = _doc()
+    doc['appearance'].setdefault('alpha', {})['label'] = {'mode': 'value'}
+    style = {'overlay': {'label_placement': {'enabled': True, 'keyframe_snapshots': True}}}
+    _assert_frames(doc, TIMELINE, [0, 5, 13, 15, 18, 22, 25, 33], style=style)

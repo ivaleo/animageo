@@ -251,7 +251,8 @@ class AnimaGeoScene(MovingCameraScene):
         # ({name: (elem, z_auto, dynamic)}) and made once, before the effects
         # of the frame (:meth:`_deferring_builds`).
         self._deferred_builds = None
-        
+        self._reset_mark_decorations()
+
     def mobject(self, name): 
         for mobj in self.mobjects: 
             if mobj.name == name: return mobj
@@ -440,7 +441,93 @@ class AnimaGeoScene(MovingCameraScene):
     def updateAllGeometry(self):
         self.updateGeoElements()
     
+    # ── the decorations of equality marks (1.11.0rc5) ──────────────────
+    #
+    # An equality mark of a document (``mark.equal_segments``,
+    # ``mark.equal_angles``) has no mobject: its ticks and arcs are drawn by
+    # its targets (``tick_count`` and the keys of ``MARK_TRANSFERS``). They
+    # belong to the mark in time: the targets carry them while the mark is
+    # in the frame (visible, defined, its effect begun and not done), and
+    # the enter/exit effect of the mark is drawn on them.
+
+    def _reset_mark_decorations(self):
+        # [(mark, {target: {key: value}})] in mark ID order; the keys the
+        # marks in the frame put on each target; the mark whose ticks a
+        # target draws; the marks the current frame leaves out (their effect
+        # shows nothing of them yet)
+        self._mark_decor = []
+        self._mark_targets = {}
+        self._mark_applied = {}
+        self._mark_owner = {}
+        self._marks_absent = frozenset()
+
+    def _init_mark_decorations(self, names, decorations):
+        """The decorations of ``_appearance_plan`` by classic name; the plan
+        has put those of the marks it shows."""
+        from .native.rendering import _mark_style
+        by_id = names.by_id
+        self._mark_decor = [(by_id[mark], {by_id[t]: keys for t, keys in targets.items()})
+                            for mark, targets, _applied in decorations]
+        self._mark_targets = {mark: tuple(targets) for mark, targets in self._mark_decor}
+        applied = {by_id[mark] for mark, _targets, ok in decorations if ok}
+        self._mark_applied, self._mark_owner = _mark_style(
+            [(mark, targets, None) for mark, targets in self._mark_decor], applied)
+
+    def _sync_mark_decorations(self):
+        """Put on the targets the keys of the marks in the frame (and take
+        those of the others off); returns the targets whose keys changed."""
+        from .native.kernel.bridge import NativeMark
+        from .native.rendering import _mark_style
+        present = set()
+        for mark, _targets in self._mark_decor:
+            elem = self.geo.element(mark)
+            if (elem is not None and getattr(elem, 'visible', True) and isinstance(elem.data, NativeMark)
+                    and mark not in self._marks_absent):
+                present.add(mark)
+        desired, owner = _mark_style([(mark, targets, None) for mark, targets in self._mark_decor], present)
+        changed = set()
+        for target in set(desired) | set(self._mark_applied):
+            want, have = desired.get(target, {}), self._mark_applied.get(target, {})
+            if want == have:
+                continue
+            elem = self.geo.element(target)
+            if elem is not None:
+                for key in have:
+                    if key not in want:
+                        elem.style.pop(key, None)
+                for key, value in want.items():
+                    elem.style[key] = value
+            changed.add(target)
+        self._mark_applied, self._mark_owner = desired, owner
+        return changed
+
+    def _mark_decoration_groups(self, mark):
+        """The decorations of ``mark`` in the frame, one ``VGroup`` per
+        target that draws them (``None`` when ``mark`` has none)."""
+        targets = self._mark_targets.get(mark)
+        if targets is None:
+            return None
+        groups = []
+        for target in targets:
+            if self._mark_owner.get(target) != mark:
+                continue
+            mobj = self.mobject(target)
+            if mobj is None:
+                continue
+            parts = [m for m in mobj.submobjects if getattr(m, '_animageo_mark', None) == mark]
+            if parts:
+                groups.append(VGroup(*parts))
+        return groups
+
     def updateGeoElements(self, updates = None):
+        if self._mark_decor:
+            # the targets of a mark follow it: rebuilt when its keys change
+            # on them and with it (its effect is drawn on them, fresh)
+            changed = self._sync_mark_decorations()
+            if updates:
+                followers = {t for mark in self._mark_targets if mark in updates for t in self._mark_targets[mark]}
+                if changed or followers:
+                    updates = set(updates) | changed | followers
         for elem in self.geo.elements:
             if updates: 
                 if elem.name not in updates:
@@ -481,6 +568,8 @@ class AnimaGeoScene(MovingCameraScene):
                 if hasattr(sub_new, 'cap_style'):
                     sub_old.cap_style = sub_new.cap_style
                 set_dash(sub_old, get_dash(sub_new))
+                # the ticks of an equality mark stay its (its effect finds them)
+                sub_old._animageo_mark = getattr(sub_new, '_animageo_mark', None)
 
     def _defer_build(self, elem, *, z_auto):
         """Record the build of ``elem`` (the last one wins): how it is built —
@@ -1067,6 +1156,7 @@ class AnimaGeoScene(MovingCameraScene):
         self._construction_source = {'kind': 'unknown'}
         self.label_point_clearance = False
         self.export_frame_exact = False
+        self._reset_mark_decorations()
         try:
             self.clear()  # manim Scene.clear() — drop accumulated mobjects
         except Exception:
@@ -1152,7 +1242,7 @@ class AnimaGeoScene(MovingCameraScene):
         """
         from .native.document import as_document
         from .native.kernel.bridge import build_construction
-        from .native.rendering import appearance_plan, apply_appearance, source_view
+        from .native.rendering import _appearance_plan, apply_appearance, source_view
 
         doc = as_document(doc)
         self.resetScene()
@@ -1171,8 +1261,9 @@ class AnimaGeoScene(MovingCameraScene):
         construction.rebuild(debug=debug, full=True)
         from .style.config import StyleConfig
         roles = StyleConfig.load(style).source.get('roles')     # appearance.<id>.role (1.9.0a1)
-        plan, diagnostics = appearance_plan(doc, view['ptUnit'], inputs=inputs, roles=roles)
+        plan, diagnostics, decorations = _appearance_plan(doc, view['ptUnit'], inputs=inputs, roles=roles)
         apply_appearance(construction, names, plan)
+        self._init_mark_decorations(names, decorations)
         self.native_diagnostics = diagnostics
         self.applyStyle(
             style=style,
@@ -1853,6 +1944,8 @@ class AnimaGeoScene(MovingCameraScene):
                     e = self.geo.element(name)
                     if e is not None:
                         e.visible = vis
+                if self._mark_decor:
+                    self._sync_mark_decorations()   # the ticks of the marks of this keyframe
                 for name, props in running_styles.items():
                     elem = self.geo.element(name)
                     if elem is None:
@@ -1906,6 +1999,8 @@ class AnimaGeoScene(MovingCameraScene):
                 e = self.geo.element(name)
                 if e is not None:
                     e.visible = vis
+            if self._mark_decor:
+                self._sync_mark_decorations()
             for binding, state in saved_intersections:
                 binding.restore(state)
 
@@ -2151,6 +2246,10 @@ class AnimaGeoScene(MovingCameraScene):
             m = self.mobject(e.name)
             if m is not None:
                 self.remove(m)
+        # the ticks of an exited mark leave its targets
+        marks = [e.name for e in interval.exit_effects if e.name in self._mark_targets]
+        if marks:
+            self.updateGeoElements(marks)
 
     def _keyframe_frame(self, interval, p, active_events, *, effects=True, events=True):
         """The scene at progress ``p`` of ``interval``: one frame of the
@@ -2204,14 +2303,23 @@ class AnimaGeoScene(MovingCameraScene):
                 compute_angle_label_offset_px(elem.data, ap, ptUnit, ptUnit_ggb))
             updates[name] = updates.get(name, True)
 
+        absent = set()
         if effects:
+            t_abs = p * interval.duration
             for e in list(interval.enter_effects) + list(interval.exit_effects):
                 updates[e.name] = updates.get(e.name, True)
+                # a mark its effect shows nothing of puts no tick on its targets
+                if e.name in self._mark_targets and self._effect_alpha(e, t_abs) <= 0:
+                    absent.add(e.name)
         for spec in interval.events:
             for name in spec.targets:
                 updates[name] = updates.get(name, True)
 
-        self.updateGeoElements(updates)
+        self._marks_absent = frozenset(absent)
+        try:
+            self.updateGeoElements(updates)
+        finally:
+            self._marks_absent = frozenset()
 
     def _keyframe_effects(self, interval, p, active_events, *, effects=True, events=True):
         """The second half of :meth:`_keyframe_frame`: the enter/exit effects
@@ -2549,7 +2657,14 @@ class AnimaGeoScene(MovingCameraScene):
         """
         mobj = self.mobject(name)
         if mobj is None:
+            # an equality mark: its effect is drawn on its ticks and arcs
+            for group in self._mark_decoration_groups(name) or ():
+                self._effect_on(group, kind, alpha)
             return
+        self._effect_on(mobj, kind, alpha)
+
+    def _effect_on(self, mobj, kind, alpha):
+        """:meth:`_apply_effect_alpha` on the mobject ``mobj``."""
         if kind == 'none':
             # step visibility: fully shown iff alpha >= 1 (in) / > 0 (already
             # handled by _effect_alpha stepping); hide when alpha == 0.
@@ -3308,6 +3423,16 @@ class AnimaGeoScene(MovingCameraScene):
         arrow_h_mu       = _px('arrow_length_px')
 
         tick_count = int(_resolve_style(self, elem, 'tick_count', default=0) or 0)
+        # the equality mark whose ticks the element draws, and the ticks
+        # (arcs of an angle) it draws without it (1.11.0rc5)
+        mark = self._mark_owner.get(elem.name)
+        own_ticks = tick_count
+        if mark is not None and 'tick_count' in elem.style:
+            given = elem.style.pop('tick_count')
+            try:
+                own_ticks = int(_resolve_style(self, elem, 'tick_count', default=0) or 0)
+            finally:
+                elem.style['tick_count'] = given
         tick_style = _resolve_style(self, elem, 'tick_style', default='line')
         tick_radius_px = _resolve_style(self, elem, 'tick_radius_px', default=None)
         angle_range = _resolve_style(self, elem, 'angle_range', default='minor') or 'minor'
@@ -3367,6 +3492,7 @@ class AnimaGeoScene(MovingCameraScene):
             arrow_width=arrow_w_mu,
             arrow_height=arrow_h_mu,
             tick_count=tick_count,
+            mark=mark, own_ticks=own_ticks,
             tick_style=tick_style,
             tick_radius_px=tick_radius_px,
             angle_range=angle_range,
@@ -3722,12 +3848,16 @@ class AnimaGeoScene(MovingCameraScene):
              .rotate(rotation_angle, about_point=ORIGIN)
              .shift([p[0], p[1], 0]))
             for i in range(ctx.tick_count):
-                arr.append(Angle(
+                arc = Angle(
                     *lines, radius=r - i * arc_shift_px / ptUnit,
                     other_angle=False,
                     color=ctx.col_s, fill_opacity=0,
                     stroke_width=ctx.lw, stroke_opacity=ctx.op_s,
-                ).set_z_index(ctx.zz + 0.1))
+                ).set_z_index(ctx.zz + 0.1)
+                # the outer arcs are the mark's, the inner ones the angle's own
+                if ctx.mark is not None and i < ctx.tick_count - ctx.own_ticks:
+                    arc._animageo_mark = ctx.mark
+                arr.append(arc)
 
         if ctx.has_label:
             r += ctx.label_roff
@@ -3774,11 +3904,14 @@ class AnimaGeoScene(MovingCameraScene):
             d = s * ((1 + num) * 0.5) - s / 2 + l / (2 * t)
             points.append(list(m + v * d + n * (l / 2) * sign) + [0])
 
-            arr.append(round_corners_vmobject(
+            wave = round_corners_vmobject(
                 points, radius=radius, components_per_rounded_corner=8,
             ).set_stroke(
                 color=ctx.col_s, width=ctx.strich_width, opacity=ctx.op_s,
-            ).set_z_index(ctx.zz))
+            ).set_z_index(ctx.zz)
+            if ctx.mark is not None:
+                wave._animageo_mark = ctx.mark      # the ticks of an equality mark
+            arr.append(wave)
             return
 
         line = Line(
@@ -3789,7 +3922,10 @@ class AnimaGeoScene(MovingCameraScene):
         ).set_z_index(ctx.zz)
         for i in range(num):
             d = ctx.strich_rshift * ((1 - num) * 0.5 + i)
-            arr.append(line.copy().shift([v[0] * d, v[1] * d, 0]))
+            tick = line.copy().shift([v[0] * d, v[1] * d, 0])
+            if ctx.mark is not None:
+                tick._animageo_mark = ctx.mark      # the ticks of an equality mark
+            arr.append(tick)
 
     def _render_segment(self, elem, ctx):
         style = ctx.style
