@@ -2553,14 +2553,20 @@ class AnimaGeoScene(MovingCameraScene):
         return raw if spec.direction == 'in' else 1.0 - raw
 
     def _effect_fade(self, mobj, alpha):
-        """Multiply every family member's stroke & fill opacity by *alpha*."""
+        """Multiply every family member's stroke & fill opacity by *alpha*.
+
+        Each member on its own (``family=False``): a member with points can
+        hold others — the stem of a vector holds its tip — and setting the
+        stem's opacity on its family wrote the stem's fill (none) into the
+        tip, so a fade took the tip out entirely (1.11.0rc7).
+        """
         for sub in mobj.family_members_with_points():
             try:
-                sub.set_stroke(opacity=sub.get_stroke_opacity() * alpha)
+                sub.set_stroke(opacity=sub.get_stroke_opacity() * alpha, family=False)
             except Exception:
                 pass
             try:
-                sub.set_fill(opacity=sub.get_fill_opacity() * alpha)
+                sub.set_fill(opacity=sub.get_fill_opacity() * alpha, family=False)
             except Exception:
                 pass
 
@@ -2575,8 +2581,8 @@ class AnimaGeoScene(MovingCameraScene):
             if has_fill or getattr(sub, '_animageo_is_halo', False):
                 # Filled sub-mobject: fade it in rather than partial-draw.
                 try:
-                    sub.set_fill(opacity=sub.get_fill_opacity() * alpha)
-                    sub.set_stroke(opacity=sub.get_stroke_opacity() * alpha)
+                    sub.set_fill(opacity=sub.get_fill_opacity() * alpha, family=False)
+                    sub.set_stroke(opacity=sub.get_stroke_opacity() * alpha, family=False)
                 except Exception:
                     pass
                 continue
@@ -2586,7 +2592,7 @@ class AnimaGeoScene(MovingCameraScene):
             except Exception:
                 # Fallback: fade if partial draw isn't supported for this sub.
                 try:
-                    sub.set_stroke(opacity=sub.get_stroke_opacity() * alpha)
+                    sub.set_stroke(opacity=sub.get_stroke_opacity() * alpha, family=False)
                 except Exception:
                     pass
 
@@ -2624,7 +2630,9 @@ class AnimaGeoScene(MovingCameraScene):
         Operates on leaf VMobjects (a Tex/label's glyphs live below its
         top-level submobject), so it is genuinely progressive for real
         single-Tex labels, not all-or-nothing. Falls back to a plain fade for
-        a mobject with no glyph substructure.
+        a mobject with no glyph substructure. The tip of a vector is the leaf
+        after its stem: it appears once the stem is there, as manim's
+        ``Create`` of an arrow draws the tip after its line.
         """
         alpha = 0.0 if alpha < 0 else (1.0 if alpha > 1 else alpha)
         family = list(mobj.family_members_with_points())

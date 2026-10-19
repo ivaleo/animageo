@@ -133,7 +133,10 @@ events over them. The interval of `t` is `[t_k, t_{k+1})`, as in the video
   (`fade`, `create`, `grow`, `write`, `none`) until the window ends, in full
   after it — before the keyframe that makes it visible. An element its
   effect shows nothing of yet (an entrance not begun, an exit done) is left
-  out of the frame (no mobject, no box).
+  out of the frame (no mobject, no box). The tip of a vector goes with its
+  stem (1.11.0rc7, `keyframes.md`): `fade` — the opacity of the stem;
+  `write` — the leaf after the stem, open from `round(a·n)` past it (from
+  `a = 3/4` for a vector without a label).
 - Equality marks (1.11.0rc5). A `mark.equal_segments` or
   `mark.equal_angles` has no drawing of its own: its ticks and arcs are
   drawn by its targets, and they belong to the mark in time — on the

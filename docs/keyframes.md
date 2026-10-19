@@ -146,6 +146,15 @@ at the requested duration; v2 does not add the legacy v1 0.4 second show/hide
 delay. `grow` and `shrink` scale the element's geometry about its own centre;
 the label stays in place and fades instead of scaling.
 
+The tip of a vector goes with its stem (1.11.0rc7): `fade` gives it the
+opacity of the stem, `create` fades it in with the stroke, `grow` scales it
+with the stem. `write` reveals the leaves of an element in order — the first
+`round(a·n)` of `n` (`a` the progress, `round` half to even) — and the tip is
+the leaf after the stem: it appears once the stem is there (`a ≥ 3/4` for a
+vector without a label), as manim's `Create` of an arrow (`lag_ratio = 1`)
+draws the tip once its line is done. Before, a fade of the stem took the
+fill of the tip with it and both effects left the tip out for good.
+
 ## Construction reveal
 
 For a staged "construction protocol" animation:
