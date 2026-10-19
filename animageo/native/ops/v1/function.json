@@ -1,0 +1,185 @@
+[
+  {
+    "op": "function.expr",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "expr",
+        "type": "expr",
+        "vars": [
+          "x"
+        ]
+      },
+      {
+        "slot": "refs",
+        "type": "number",
+        "list": true,
+        "min": 0
+      }
+    ],
+    "params": [
+      {
+        "slot": "min",
+        "type": "number",
+        "unit": "length",
+        "optional": true,
+        "text": "left end of the domain (absent: unbounded)"
+      },
+      {
+        "slot": "max",
+        "type": "number",
+        "unit": "length",
+        "optional": true,
+        "text": "right end of the domain (absent: unbounded); max <= min gives empty_range"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "empty_range",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "function",
+    "phrases": {
+      "ru": "{function} — функция"
+    },
+    "math": "docs/native/ops/function.expr.md",
+    "signatureHash": "sha256:333c52964319c9e8e42870a3fd5bec84fe0d8d954f310fc54fcaf26a40e8f60e"
+  },
+  {
+    "op": "function.root",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      },
+      {
+        "slot": "a",
+        "type": "number"
+      },
+      {
+        "slot": "b",
+        "type": "number"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 1,
+        "text": "number of slots, a whole number 1..100 (default 1); outside it the operation has no output slots"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "root",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "branch": {
+      "policy": "roots_ascending",
+      "slots": [
+        "root"
+      ],
+      "text": "root.k is the k-th root on [a, b] by x; a double root fills two slots"
+    },
+    "undefined": [
+      "empty_range",
+      "coincident",
+      "no_root_in_window",
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_graph",
+        "text": "every defined point lies on the graph: the largest |y - f(x)| of a result point (f of the function input)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "function_root",
+    "phrases": {
+      "ru": "{root} — нули функции {function} на промежутке от {a} до {b}"
+    },
+    "math": "docs/native/ops/function.root.md",
+    "signatureHash": "sha256:ba26a9c2b7e0ddc3ae2f258b08f940914b2d99a6a0925e64ca7fde806a8fad01"
+  },
+  {
+    "op": "function.extremum",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      },
+      {
+        "slot": "a",
+        "type": "number"
+      },
+      {
+        "slot": "b",
+        "type": "number"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 1,
+        "text": "number of slots, a whole number 1..100 (default 1); outside it the operation has no output slots"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "extremum",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "branch": {
+      "policy": "roots_ascending",
+      "slots": [
+        "extremum"
+      ],
+      "text": "extremum.k is the k-th interior extremum on [a, b] by x; detail.kind is max or min"
+    },
+    "undefined": [
+      "empty_range",
+      "no_root_in_window",
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_graph",
+        "text": "every defined point lies on the graph: the largest |y - f(x)| of a result point (f of the function input)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "function_extremum",
+    "phrases": {
+      "ru": "{extremum} — экстремумы функции {function} на промежутке от {a} до {b}"
+    },
+    "math": "docs/native/ops/function.extremum.md",
+    "signatureHash": "sha256:b58f29a49f2029587d4fc90b1c39ca23f6f39ace1bff49ec973bb357ae7f0430"
+  }
+]

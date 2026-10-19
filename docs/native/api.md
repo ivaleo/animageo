@@ -51,8 +51,8 @@ Read, check and write `animageo-construction/v1` (kernel.md §1–§2).
 
 The operation registry `ops/v1` (kernel.md §4) and what this library can do.
 
-- `REGISTRY_VERSION = '1.5'`
-- `__registry_version__ = '1.5'`
+- `REGISTRY_VERSION = '1.6'`
+- `__registry_version__ = '1.6'`
 - `class Registry(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>)` — The loaded registry: records by op, service catalogs and the index.
 - `registry()` — The registry shipped with this library (cached).
 - `signature_hash(record)` — `"sha256:<hex>"` of the canonical JSON of `signature()`.
@@ -64,7 +64,7 @@ The operation registry `ops/v1` (kernel.md §4) and what this library can do.
 Values, states and reasons (kernel.md §5–§7); checks and the general case (checks.md).
 
 - `EVALUATED_FORMAT = 'animageo-evaluated/v1'`
-- `class Evaluated(document_id, scale, elements, diagnostics, tolerances, library='', registry='1.5', computed=<factory>, t=None, visible=None)` — The result of `evaluate()`; `to_dict()` is `animageo-evaluated/v1`.
+- `class Evaluated(document_id, scale, elements, diagnostics, tolerances, library='', registry='1.6', computed=<factory>, t=None, visible=None)` — The result of `evaluate()`; `to_dict()` is `animageo-evaluated/v1`.
 - `evaluate(doc, *, inputs=None, t=None, timeline=None)` — Values, states and reasons of every element of `doc`.
 - `project(doc, element_id, xy, *, inputs=None)` — The path parameter of the point of a path nearest to `xy`.
 - `check(doc, checks=None, *, inputs=None, relations=None, trials=0, seed=None)` — Mandatory checks of every operation whose outputs are defined, and relations between elements.

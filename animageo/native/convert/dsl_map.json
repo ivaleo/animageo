@@ -1,7 +1,7 @@
 {
  "format": "animageo-dsl-map/v1",
  "mapVersion": 3,
- "registry": "1.5",
+ "registry": "1.6",
  "commands": {
   "abs_i": {
    "factory": "Abs",
@@ -5080,6 +5080,11 @@
   "angle.by_size": "classic Angle(A, B, α) is not a dispatch key",
   "circle.diameter": "no classic command builds it",
   "circle.excircle": "no classic command builds it",
+  "function.expr": "registry 1.6: classic functions are not translated yet",
+  "function.extremum": "registry 1.6: classic functions are not translated yet",
+  "function.root": "registry 1.6: classic functions are not translated yet",
+  "intersect.function_function": "registry 1.6: classic functions are not translated yet",
+  "intersect.function_line": "registry 1.6: classic functions are not translated yet",
   "intersect.nearest": "no classic command builds it",
   "intersect.other_than": "no classic command builds it",
   "line.external_bisector": "no classic command builds it",
@@ -5094,6 +5099,7 @@
   "point.at_distance": "no classic command builds it",
   "point.divide": "no classic command builds it",
   "point.free": "free element: a point without a command (GGB <element type=\"point\">, DSL Point(x, y) → point_ii free row)",
+  "point.on_function": "registry 1.6: classic functions are not translated yet",
   "point.projection": "no classic command builds it",
   "polygon.parallelogram": "no classic command builds it",
   "polygon.regular_center": "no classic command builds it",

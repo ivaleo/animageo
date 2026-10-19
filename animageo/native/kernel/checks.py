@@ -1072,6 +1072,55 @@ def _locus_on_trace(args, result, tol):
     return error
 
 
+# ── registry 1.6: functions ──────────────────────────────────────────────
+
+def _off_graph(value, points) -> float:
+    """The largest ``|y − f(x)|`` of the defined ``points`` (``∞`` where ``f`` has no value)."""
+    from .function import evaluator
+    f = evaluator(value)
+    error = 0.0
+    for p in points:
+        if isinstance(p, Undefined) or p is None:
+            continue
+        y = f(p['x'])
+        if y is None:
+            return math.inf
+        error = max(error, abs(p['y'] - y))
+    return error
+
+
+@register_check('function.root', 'on_graph')
+def _root_on_graph(args, result, tol):
+    return _off_graph(args['function'].value, result.values())
+
+
+@register_check('function.extremum', 'on_graph')
+def _extremum_on_graph(args, result, tol):
+    return _off_graph(args['function'].value, result.values())
+
+
+@register_check('point.on_function', 'on_graph')
+def _on_function_on_graph(args, result, tol):
+    return _off_graph(args['function'].value, (result['point'],))
+
+
+@register_check('intersect.function_function', 'on_both')
+def _function_function_on_both(args, result, tol):
+    return max(_off_graph(args['first'].value, result.values()), _off_graph(args['second'].value, result.values()))
+
+
+@register_check('intersect.function_line', 'on_both')
+def _function_line_on_both(args, result, tol):
+    error = _off_graph(args['function'].value, result.values())
+    c = carrier(args['line'], _QuietContext(tol))
+    if isinstance(c, Undefined):
+        return math.inf
+    for p in result.values():
+        if not isinstance(p, Undefined) and p is not None:
+            error = max(error, distance_to_carrier(p['x'], p['y'], c))
+    return error
+
+
 def run_checks(evaluated, keys=None) -> CheckReport:
     """Run the registry checks over an :class:`~.evaluate.Evaluated` result.
 

@@ -4398,6 +4398,15 @@ class AnimaGeoScene(MovingCameraScene):
         viewport = (left, bottom, right_x, top_y)
         segment_mu = 3.0 / ptUnit
 
+        native = getattr(func, 'native_value', None)
+        if native is not None:
+            # A native function (registry 1.6): the kernel sampler, gaps at
+            # discontinuities and outside the domain, no sympy.
+            from .native.kernel.function import function_runs
+            arr = [self._curve_polyline(run, ctx)
+                   for run in function_runs(native, (left, right_x), (bottom, top_y)) if len(run) >= 2]
+            return VGroup(*arr, name=elem.name) if arr else None
+
         x_range = (left, right_x)
         if func.explicit_domain is not None:
             dom_lo, dom_hi = func.explicit_domain

@@ -860,7 +860,7 @@ def validate(doc) -> list:
                     count = len(refs_arg['items']) if isinstance(refs_arg, dict) and refs_arg['kind'] == 'list' \
                         else None
                     if item['type'] == 'expr':
-                        for pointer, message in expr_problems(arg['ast'], count):
+                        for pointer, message in expr_problems(arg['ast'], count, item.get('vars') or ()):
                             issues.append(Issue('formula', spath + '/ast' + pointer, message, operationId=op_id))
                     else:
                         for message in template_problems(arg['value'], count):

@@ -60,6 +60,10 @@
       "value": {"points": "length", "range": "scalar"},
       "text": "locus {points: [[x, y] | null, ...], range: [t0, t1], closed}: the trace sampled at N = 256 parameter values of the mover over range (closed: the end t1 is not sampled); a null sample is an undefined trace; closed compares exactly (registry 1.5)"
     },
+    "function": {
+      "value": {"refs": "length", "domain": "length"},
+      "text": "function {expr, refs, domain}: y = f(x) given by the AST expr with the variable x (docs/native/expr.md §5), refs the values of the refs of function.expr, domain [lo | null, hi | null]; expr compares exactly (registry 1.6)"
+    },
     "template": {
       "value": {},
       "argument": true,

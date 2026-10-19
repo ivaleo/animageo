@@ -33,6 +33,7 @@ from animageo.native.commands.fixtures import (
     render_template,
 )
 from animageo.native.commands.lexer import tokenize
+from animageo.native.commands.lexicon import deferred_op
 from animageo.native.edit import valid_name
 from animageo.native.registry import registry
 from tests.native.conftest import SCENES_DIR, read_json
@@ -136,8 +137,9 @@ def structure_problems(original, parsed):
 
 SCENES = sorted(p for p in SCENES_DIR.glob('*.json') if p.stem != 'graph_errors')
 # The default lexicon covers every op but the two that «Команды» cannot type
-# (an expression and a text template; the printer prints them by hand).
-LEXICON_OPS = {op for op in registry().ops if op not in ('number.expression', 'text.free')}
+# (an expression and a text template; the printer prints them by hand) and the
+# functions and conics of registry 1.6 (no commands yet, ``deferred_op``).
+LEXICON_OPS = {op for op in registry().ops if op not in ('number.expression', 'text.free') and not deferred_op(op)}
 
 
 # ── lexicon ──────────────────────────────────────────────────────────────

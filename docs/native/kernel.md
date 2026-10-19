@@ -1343,3 +1343,37 @@ Time by element ID: the contract is `docs/native/timeline.md`. In short:
 - Fixtures `animageo-timeline/v1` (`fixtures timeline`); the steps fixtures
   carry `expect.timeline`; CLI `steps`, `describe`, `timeline`;
   `native.has`: `timeline`, `steps_timeline`, `render.t`, `render.video`.
+
+## 14. Registry 1.6: functions and conics (wave G2)
+
+Operations `since: "1.6"`, `beta` (formulas, decisions and checks in
+`docs/native/ops/<op>.md`). The view keys `axes` and `grid` of
+`viewDefaults` are [view.md](view.md).
+
+| op | inputs → outputs | undefined | checks |
+|---|---|---|---|
+| `function.expr` | `expr: expr` (`vars: ["x"]`), `refs: number[]`; params `min`, `max` (optional) → `function` | `empty_range`, `upstream` | — |
+| `function.root` | `function, a: number, b: number`; param `count` (default 1) → `root.1 … root.count: point` | `empty_range`, `coincident`, `no_root_in_window`, `branch_absent`, `upstream` | `on_graph` |
+| `function.extremum` | `function, a, b`; `count` → `extremum.k: point` (`detail.kind`: `max`, `min`) | `empty_range`, `no_root_in_window`, `branch_absent`, `upstream` | `on_graph` |
+| `intersect.function_function` | `first, second: function`; `count` → `point.k` | `no_intersection`, `coincident`, `branch_absent`, `upstream` | `on_both` |
+| `intersect.function_line` | `function, line: linear`; `count` → `point.k` | `no_intersection`, `coincident`, `outside_part`, `zero_length`, `branch_absent`, `upstream` | `on_both` |
+| `point.on_function` | `function`; free `pathParameter` (x) → `point` | `out_of_domain`, `upstream` | `on_graph` |
+
+- Type `function`: `{expr, refs, domain: [lo | null, hi | null]}` (`refs`,
+  `domain` — length; `expr` compares exactly); in no family.
+- An input of a record may list `vars` (`function.expr`: `["x"]`): its `expr`
+  argument takes the nodes of [expr.md §5](expr.md); `vars` enters the
+  signature only when present (the hashes of older records stay).
+- Searches run on the grid of 512 cells with bisection and golden section
+  ([function.root](ops/function.root.md)); policy `roots_ascending`: by `x`,
+  a double root in two slots (`detail.multiplicity: 2`). The intersections
+  search the x-range of the window `B4` of `viewDefaults.bounds`
+  (`OpContext.bounds`). A missing repeated slot does not skip the checks of
+  its operation (`CHECK_OPTIONAL_SLOTS` by the base name of the slot).
+- Bridge: a classic `Function` without sympy (`bridge.native_function`),
+  drawn by `kernel/function.py::function_runs` (manim and TikZ); the `x` of
+  `point.on_function` is the `tparam` of its classic element.
+- «Команды»: no commands for functions and conics yet
+  (`commands.lexicon.deferred_op`); the printer prints their lines with the
+  warning `unprintable_operation` («функции и коники в «Командах» будут позже»).
+- The DSL map lists them in `opsWithoutClassic`.

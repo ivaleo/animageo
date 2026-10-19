@@ -6,7 +6,10 @@
       "text": "Отмечаем точку {point}"
     },
     "point_on_path": {
-      "text": "Отмечаем точку {point} на {path}"
+      "text": "Отмечаем точку {point} на {path}",
+      "ops": {
+        "point.on_function": "Отмечаем точку {point} на графике {function}"
+      }
     },
     "midpoint": {
       "text": "Отмечаем середину {point} отрезка {a}{b}"
@@ -18,7 +21,9 @@
         "intersect.circle_circle": "Отмечаем точки {out:first,second} пересечения {first} и {second}",
         "intersect.other_than": "Отмечаем вторую точку {point} пересечения {first} и {second}",
         "intersect.nearest": "Отмечаем точку {point} пересечения {first} и {second}, ближайшую к {near}",
-        "intersect.line_sector": "Отмечаем точки {out:arc.1,arc.2,side.1,side.2} пересечения {line} с границей {sector}"
+        "intersect.line_sector": "Отмечаем точки {out:arc.1,arc.2,side.1,side.2} пересечения {line} с границей {sector}",
+        "intersect.function_function": "Отмечаем точки {out:point} пересечения графиков {first} и {second}",
+        "intersect.function_line": "Отмечаем точки {out:point} пересечения графика {function} и {line}"
       }
     },
     "segment": {
@@ -291,6 +296,15 @@
           "text": "Строим геометрическое место {locus} точки {trace} при изменении числа {mover}"
         }
       ]
+    },
+    "function": {
+      "text": "Строим график функции {function}"
+    },
+    "function_root": {
+      "text": "Отмечаем нули {out:root} функции {function} на промежутке от {a} до {b}"
+    },
+    "function_extremum": {
+      "text": "Отмечаем экстремумы {out:extremum} функции {function} на промежутке от {a} до {b}"
     }
   },
   "given": {

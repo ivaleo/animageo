@@ -573,6 +573,15 @@ def emit_function(ctx: TikzContext, elem, labels: List[str]) -> None:
     viewport = (left, bottom, right_x, top_y)
     segment_mu = 3.0 / ctx.ptUnit
 
+    native = getattr(func, 'native_value', None)
+    if native is not None:                  # registry 1.6: the kernel sampler (as the manim renderer)
+        from ...native.kernel.function import function_runs
+        opts = stroke_options(ctx, elem)
+        for run in function_runs(native, (left, right_x), (bottom, top_y)):
+            if len(run) >= 2:
+                _polyline(ctx, opts, run)
+        return
+
     x_range = (left, right_x)
     if func.explicit_domain is not None:
         dom_lo, dom_hi = func.explicit_domain

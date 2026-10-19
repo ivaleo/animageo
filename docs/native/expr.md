@@ -8,10 +8,11 @@ below and walk it node by node. Code: `animageo/native/expr/`
 (`validate.py`, `evaluate.py`, `printer.py`); the operation page is
 [ops/number.expression.md](ops/number.expression.md).
 
-AST v1 is a **strict subset** of AST v2 of the expression language planned
-for registry 1.6: every v1 tree is a v2 tree with the same value, so a v1
-document is read by v2 code without migration. v2 adds nodes (`var`, `if`,
-comparisons), functions and constants; v1 refuses them as `formula`.
+AST v1 is a **strict subset** of the trees of a function (registry 1.6,
+§5): every v1 tree has the same value there, so a v1 document is read
+without migration. The nodes of §5 (`var`, `if`, comparisons) are allowed
+only in an `expr` slot whose record lists `vars` (`function.expr`); every
+other slot refuses them as `formula`.
 
 ## 1. Nodes
 
@@ -95,3 +96,29 @@ prints the name of `refs[k]`. The grammar of «Команды» 1.8.1 has no
 expressions yet: the printer writes the line (`e = sqrt(a) + b^3`) with the
 warning `unprintable_operation`, the parser refuses it as `forbidden`, and
 an edit of the text keeps the operation as it was (commands.md §8).
+
+## 5. Functions of `x` (registry 1.6)
+
+The slot `expr` of [function.expr](ops/function.expr.md) has `"vars": ["x"]`
+in its record. Its tree takes the nodes of §1 and:
+
+```text
+Expr += {"var": "x"}                                  the variable
+      | {"if": [Cond, Expr]}                          Expr where Cond holds, no value elsewhere
+      | {"if": [Cond, Expr, Expr]}                    the second Expr where Cond fails
+Cond := {"cmp": "<" | "<=" | ">" | ">=", "args": [Expr, Expr]}
+      | {"and": [Cond, Cond]} | {"or": [Cond, Cond]} | {"not": [Cond]}
+```
+
+- A condition stands only in the first place of `if` and inside `and`,
+  `or`, `not`; a value never stands there (`formula` at the pointer of the
+  node, `/if/0`, `/and/1`…). `var` names a variable of the slot.
+- The limits of §2 count every node, conditions included.
+- Evaluation is §3; `if` evaluates its condition and then only the chosen
+  branch; `and`/`or` stop at the first operand that decides; a comparison
+  is the IEEE comparison of two values (any undefined operand makes the
+  whole value undefined). `if` without the third item where the condition
+  fails is `out_of_domain`: the graph has no point there.
+- `compile_function(ast, refs)` (`expr/function.py`) turns the tree into
+  `f(x)` once (closures), with the semantics of §3 node by node.
+- `to_text` prints `x`, `If(x < 0, −x, x)`, `(a) && (b)`, `(a) || (b)`, `!(a)`.

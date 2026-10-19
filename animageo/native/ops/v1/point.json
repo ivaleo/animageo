@@ -338,5 +338,45 @@
     },
     "math": "docs/native/ops/point.at_distance.md",
     "signatureHash": "sha256:502a94cc805fd807497a7b5a5e5b63088dec178422408840a2f754d98c861fa3"
+  },
+  {
+    "op": "point.on_function",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "free": {
+      "kind": "pathParameter"
+    },
+    "branch": null,
+    "undefined": [
+      "out_of_domain",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_graph",
+        "text": "every defined point lies on the graph: the largest |y - f(x)| of a result point (f of the function input)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "point_on_path",
+    "phrases": {
+      "ru": "{point} — точка на графике {function}"
+    },
+    "math": "docs/native/ops/point.on_function.md",
+    "signatureHash": "sha256:8f5a007b4941c0d2dad142edf43098aba9af98e4401cb6aa56f77440fdb933f9"
   }
 ]

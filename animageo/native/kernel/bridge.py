@@ -49,6 +49,13 @@ sample to the first); its command evaluates the document with the current
 free inputs of the construction (the kernel samples a subgraph, the
 construction has no notion of it).
 
+Registry 1.6: a ``function`` is a classic ``Function`` without a sympy
+expression (:func:`native_function`): its callable is the kernel
+:func:`~animageo.native.kernel.function.evaluator` and ``native_value`` the
+kernel value, which the renderers sample with ``function_runs``. A
+``point.on_function`` holds its ``x`` like a point on a path holds ``t``
+(the classic ``tparam`` of its element).
+
 This module imports ``animageo.geo`` (and numpy) inside its functions only,
 so ``import animageo.native`` stays free of the classic code; ``animageo.geo``
 itself does not need manim.
@@ -120,7 +127,7 @@ class NativeMark:
 
 def _fingerprint(obj) -> tuple:
     keys = ('coords', 'normal', 'offset', 'start', 'endpoints', 'center', 'radius', 'vertices', 'value',
-            'dimension', 'vertex', 'side1', 'side2', 'kind', 'count', 'angles', 'points', 'position')
+            'dimension', 'vertex', 'side1', 'side2', 'kind', 'count', 'angles', 'points', 'position', 'matrix')
     out = []
     for key in keys:
         value = getattr(obj, key, None)
@@ -128,9 +135,45 @@ def _fingerprint(obj) -> tuple:
             out.append((key, value))
         elif isinstance(value, (list, tuple)):
             out.append((key, tuple(float(v) for v in value)))
-        elif value is not None:
-            out.append((key, value.tobytes() if hasattr(value, 'tobytes') else float(value)))
+        elif hasattr(value, 'tobytes'):
+            out.append((key, value.tobytes()))
+        elif isinstance(value, (int, float)):
+            out.append((key, float(value)))
     return tuple(out)
+
+
+def native_function(value):
+    """A classic ``Function`` of a kernel ``function`` value, built without
+    sympy: ``f(x)`` is NaN where the kernel value has no point."""
+    import numpy as np
+    from ...geo.lib_function import Z_LINE, Function
+    from ...style.proxy import StyleProxy
+    from .function import evaluator
+    f = evaluator(value)
+
+    def scalar(x):
+        y = f(float(x))
+        return math.nan if y is None else y
+
+    def call(x):
+        if np.ndim(x) == 0:
+            return scalar(x)
+        return np.array([scalar(v) for v in np.ravel(x)], dtype=float).reshape(np.shape(x))
+
+    obj = Function.__new__(Function)
+    obj.expr = None
+    obj.var = None
+    obj.source = 'native'
+    lo, hi = value['domain']
+    obj.explicit_domain = None if lo is None and hi is None else \
+        (-math.inf if lo is None else float(lo), math.inf if hi is None else float(hi))
+    obj.natural_singularities = []
+    obj._callable = call
+    obj.native_value = value
+    obj.style = StyleProxy()
+    obj.style['fill_opacity'] = 0
+    obj.style['z_index'] = Z_LINE
+    return obj
 
 
 LOCUS_GAP = 0.25     # a locus line breaks between samples farther apart than LOCUS_GAP·S
@@ -234,6 +277,8 @@ def to_classic(type_: str, value, *, sides=None, scale=None):
             obj = Measure(float(value['value']), _MEASURE_DIMENSION.get(unit, 0))
     elif type_ == 'text':               # a plain classic text of the filled template, top-left at the anchor
         obj = Text([('str', value['text'])], position=value['anchor'])
+    elif type_ == 'function':
+        obj = native_function(value)
     else:
         raise ValueError(f'no classic type for {type_!r}')
     obj._native = (_fingerprint(obj), value)
@@ -317,6 +362,11 @@ def from_classic(type_: str, obj):
         if isinstance(obj, (int, float)) and not isinstance(obj, bool):
             return {'value': float(obj), 'unit': 'scalar'}
         raise ValueError(f'no kernel number for {type(obj).__name__}')
+    if type_ == 'function':
+        native = getattr(obj, 'native_value', None)
+        if native is None:
+            raise ValueError('no kernel function for a classic sympy Function')
+        return native
     if type_ == 'text':
         text = ''.join(s for kind, s in obj.segments if kind == 'str')
         return {'anchor': [float(v) for v in obj.position[:2]], 'text': text, 'parts': [{'text': text}] if text else []}
@@ -355,7 +405,7 @@ class _Runner:
 
     def __init__(self, construction, op_name, layout, out_slots, out_types, tol, *,
                  free_value=None, path_frame=None, tparam_of=None, constants=None, free_input=None,
-                 end_slots=()):
+                 end_slots=(), bounds=None):
         self.construction = construction
         self.op_name = op_name
         self.layout = layout              # [(slot, is_list, [element type…])]
@@ -368,6 +418,7 @@ class _Runner:
         self.tparam_of = tparam_of        # classic name of the on_path output
         self.free_input = free_input      # a free angle input: the document's (or default) input value
         self.end_slots = end_slots        # slots whose side gets the two defining points (registry 1.5)
+        self.bounds = bounds              # viewDefaults.bounds (registry 1.6: the window of intersections)
         self.__name__ = op_name
 
     def __call__(self, *classic):
@@ -402,13 +453,18 @@ class _Runner:
             if t is None:
                 t = self.free_value['value']
             input_value = {'kind': 'pathParameter', 'value': float(t)}
+        elif self.tparam_of is not None:  # point.on_function: x held as the tparam of its element
+            t = getattr(self.construction.element(self.tparam_of), 'tparam', None)
+            if t is None:
+                t = self.free_value['value']
+            input_value = {'kind': 'pathParameter', 'value': float(t)}
         for slot in self.end_slots:
             a, b = (from_classic('point', classic[i + k]) for k in range(2))
             i += 2
             side = args[slot]
             frame = ((a['x'], a['y']), (b['x'], b['y'])) if a is not None and b is not None else None
             args[slot] = Input(side.type, side.value, frame)
-        result = IMPLEMENTATIONS[self.op_name](args, OpContext(self.tol, input=input_value))
+        result = IMPLEMENTATIONS[self.op_name](args, OpContext(self.tol, input=input_value, bounds=self.bounds))
         out = []
         for slot, type_ in zip(self.out_slots, self.out_types):
             value = result.get(slot)
@@ -580,7 +636,13 @@ def build_construction(doc, *, inputs=None, seed=None):
         tparam_of = None
         free_value = None
         free_input = value if free is not None and free['kind'] == 'angle' else None
-        if free is not None and free['kind'] == 'pathParameter':
+        if free is not None and free['kind'] == 'pathParameter' and \
+                not any(item['type'] == 'path' for item in record['inputs']):
+            tparam_of = names.by_id[outs[0]]        # point.on_function: x without a path frame
+            free_value = values_in[outs[0]]
+            construction.add(Element(tparam_of, Point([0.0, 0.0]), tparam=float(free_value['value'])))
+            created.add(outs[0])
+        elif free is not None and free['kind'] == 'pathParameter':
             path_id = resolved.refs[0][2][0]
             path_op = ops[elements[path_id]['producer']['operationId']]
             producer_layout = []
@@ -618,7 +680,7 @@ def build_construction(doc, *, inputs=None, seed=None):
                          [elements[e]['producer']['slot'] for e in outs],
                          [elements[e]['type'] for e in outs], tol,
                          free_value=free_value, path_frame=path_frame, tparam_of=tparam_of,
-                         constants=constants, free_input=free_input, end_slots=end_slots)
+                         constants=constants, free_input=free_input, end_slots=end_slots, bounds=doc.bounds)
         construction.add(NativeCommand(op['op'], input_names, [names.by_id[e] for e in outs], op_id, runner))
 
     for el_id in sorted(elements):      # elements of broken operations

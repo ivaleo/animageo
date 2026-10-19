@@ -213,7 +213,8 @@ class _Subgraph:
                     local[el_id] = state_record('undefined', elements[el_id]['type'], 'upstream')
                 continue
             args = build_args(record, resolved, elements, doc.operations, states)
-            ctx = OpContext(scope.tol, input=free_input, operation_id=op_id, decisions=scope.decisions)
+            ctx = OpContext(scope.tol, input=free_input, operation_id=op_id, decisions=scope.decisions,
+                            bounds=doc.bounds)
             try:
                 result = IMPLEMENTATIONS[op['op']](args, ctx)
             except Exception:  # a sample with a failing operation is simply not drawn
