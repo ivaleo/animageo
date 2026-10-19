@@ -7,6 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc3] - Unreleased
+
+The contract of the paint between the native renderer and a second one
+(the canvas of the web app): which style keys each element type reads, the
+paint the renderer draws, computed without manim, and fixtures to compare
+with. Two fixes make the video and the background fill of an angle agree
+with the still frame and with the canvas. The operation registry stays
+`1.5`. New `native.has` flags: `style_keys`, `resolve_paint`. The public
+API snapshot gains `native.style_keys`, `native.resolve_paint`, the two
+flags and the keyword `strip_zeros` of `ValueLabel`.
+
+### Added
+
+- `native.style_keys()` — the keys of `appearance.overrides` each element
+  type reads, with their unit (`color`, `px`, `opacity`, `ratio`, `deg`,
+  `count`, `enum`, `bool`, `number`, `string`), the allowed values and the
+  default under the built-in style; a mark by its operation
+  (`mark.right_angle`, `mark.equal_segments`, `mark.equal_angles`), and the
+  keys an equality mark passes to its targets (`docs/native/kernel.md`
+  §9.3).
+- `appearance_plan` (and the report of `native.render`) warns
+  `{code: "style_key_ineffective", elementId, key, type, reason}` about an
+  override the element accepts but does not read: `not_read` (the dash of a
+  polygon or a sector, `z_index_fill` of a polygon, the cap of a circle, the
+  ticks of an angle, …), `not_drawn` (a number, an expression, a template),
+  `mark_transfers_only`. The override is still applied; the keys of a role
+  are not reported.
+- The sizes of the ticks of `mark.equal_segments` (`tick_length_px`,
+  `tick_width_px`, `tick_shift_px`, `tick_style`, `tick_radius_px`) and
+  `arc_shift_px` of `mark.equal_angles` in `appearance.overrides` go to the
+  targets of the mark, as its count does: an explicit key of a target wins,
+  of several marks on one target the first in ID order wins.
+- `native.resolve_paint(doc, style_config=None, t=None, *, timeline=None,
+  inputs=None, export_layout=None)` — the paint `native.render` draws each
+  element with, without manim: stroke (colour, opacity, width, cap, the
+  dash and the pattern fitted to the path), fill (as drawn, hatching),
+  point, arrow, ticks (with their lines in world units), the angle marker
+  (base and automatic radius, arcs, the right-angle square), label (colour,
+  size, anchor, text) and the format of values, layers, in style pixels;
+  at `t` of a timeline with its style tracks (§9.8).
+- Fixtures `animageo-paint-parity/v1` in `animageo/native/parity/v1/paint`
+  (44 scenes in 10 files: ticks and the wave, the automatic radius, point
+  shapes and arrows, caps and dashes, label anchors by type, the format of
+  values, layers, `text.free`, the base without a style and under the
+  built-in one, roles, hatching, a style track), written and checked by
+  `python -m animageo.native fixtures paint [-o DIR] [--check]`. A test
+  renders every scene and compares the render context of each element with
+  its entry.
+- The style contract for code generation in `animageo/native/style`:
+  `builtin.json` (the built-in style byte for byte) and `keys.v1.json`
+  (`style_keys()`), written and checked by `python -m animageo.native style
+  export [-o DIR] [--check]`.
+
+### Fixed
+
+- A value label of the video (`ValueLabel`, the dynamic value of the
+  `value` and `name_value` labels) prints the text of the still frame: the
+  digits of `labels._format_number` with the precision, stripped trailing
+  zeros (`label_value_strip_zeros`), no thousands separator and no `-0`, so
+  a frame of the video reads 60° where the still frame does. `ValueLabel`
+  gains `strip_zeros` (`False` by default for direct callers), `number_text`
+  and `tex`.
+- An angle filled with the background colour has no fill: the built-in
+  style fills an angle with the background at opacity 1, so a default angle
+  inside a filled figure drew an opaque white sector (a white square for a
+  right angle) over the fill. As on the web canvas, a fill of the
+  background colour is no fill, in SVG, PNG, PDF, EPS and TikZ; the layer
+  stays, transparent.
+
 ## [1.11.0rc2] - 2026-10-13
 
 1.11.0rc1 together with the three patch releases of the stable line made
