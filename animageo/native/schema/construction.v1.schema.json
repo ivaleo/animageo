@@ -97,6 +97,67 @@
             }
           },
           "additionalProperties": false
+        },
+        "axes": {
+          "type": "object",
+          "properties": {
+            "show": {
+              "type": "boolean"
+            },
+            "numbers": {
+              "type": "boolean"
+            },
+            "step": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              ]
+            },
+            "labels": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "string",
+                  "maxLength": 32
+                },
+                "y": {
+                  "type": "string",
+                  "maxLength": 32
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "grid": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "none",
+                "major",
+                "major_minor"
+              ]
+            },
+            "step": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
         }
       }
     },

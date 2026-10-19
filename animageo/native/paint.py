@@ -220,13 +220,19 @@ def style_keys() -> dict:
     type, then its ``rendering``, then the renderer's own); ``None`` — no
     value (a solid stroke, an automatic layer or marker; ``label_anchor``:
     ``rendering.label_anchor`` of the given style, else ``BL``). A fresh
-    copy.
+    copy. 1.6: ``"view": {"section": "rendering", "keys": {…}}`` — the
+    keys of the axes and the grid (``viewDefaults.axes``/``grid``), read
+    from the ``rendering`` section of the style.
     """
     if 'keys' not in _CACHE:
+        from .view import VIEW_STYLE_KEYS
         cfg = _builtin()
         _CACHE['keys'] = {
             'format': STYLE_KEYS_FORMAT,
             'types': {type_: _entry(cfg, type_) for type_ in sorted(_TYPES)},
+            'view': {'section': 'rendering', 'keys': {
+                key: {'unit': unit, 'default': cfg.rendering.get(key, fallback)}
+                for key, (unit, fallback) in sorted(VIEW_STYLE_KEYS.items())}},
         }
     return copy.deepcopy(_CACHE['keys'])
 

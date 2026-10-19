@@ -392,6 +392,37 @@ class _Structure:
         if 'value' in value:
             self.numbers(value['value'], path + '/value', 'a point value', 2)
 
+    def _view_step(self, holder, path):
+        if 'step' not in holder or holder['step'] is None:
+            return
+        step = holder['step']
+        if not _is_number(step) or not step > 0:
+            self.add(path + '/step', 'step must be a positive number or null')
+
+    def view_axes_grid(self, view):
+        """``viewDefaults.axes`` and ``viewDefaults.grid`` (registry 1.6, ``view.py``)."""
+        from .view import AXIS_LABEL_MAX, GRID_KINDS
+        if 'axes' in view and self.object(view['axes'], '/viewDefaults/axes', 'axes'):
+            axes = view['axes']
+            self.keys(axes, '/viewDefaults/axes', 'axes', (), ('show', 'numbers', 'step', 'labels'))
+            for key in ('show', 'numbers'):
+                if key in axes and not isinstance(axes[key], bool):
+                    self.add('/viewDefaults/axes/' + key, f'{key} must be a boolean')
+            self._view_step(axes, '/viewDefaults/axes')
+            if 'labels' in axes and self.object(axes['labels'], '/viewDefaults/axes/labels', 'labels'):
+                labels = axes['labels']
+                self.keys(labels, '/viewDefaults/axes/labels', 'labels', (), ('x', 'y'))
+                for key in ('x', 'y'):
+                    if key in labels and (not isinstance(labels[key], str) or len(labels[key]) > AXIS_LABEL_MAX):
+                        self.add(f'/viewDefaults/axes/labels/{key}',
+                                 f'an axis label must be a string of at most {AXIS_LABEL_MAX} characters')
+        if 'grid' in view and self.object(view['grid'], '/viewDefaults/grid', 'grid'):
+            grid = view['grid']
+            self.keys(grid, '/viewDefaults/grid', 'grid', (), ('kind', 'step'))
+            if 'kind' in grid and grid['kind'] not in GRID_KINDS:
+                self.add('/viewDefaults/grid/kind', f'grid kind must be one of {", ".join(GRID_KINDS)}')
+            self._view_step(grid, '/viewDefaults/grid')
+
     def work_intent(self, intent, path):
         if not self.object(intent, path, 'workIntent'):
             return
@@ -556,6 +587,8 @@ class _Structure:
                 for key in ('rightAngles', 'equalities'):
                     if key in marks and not isinstance(marks[key], bool):
                         self.add('/viewDefaults/autoMarks/' + key, f'{key} must be a boolean')
+        if isinstance(view, dict):
+            self.view_axes_grid(view)
         if 'viewDefaults' in doc and self.object(view, '/viewDefaults', 'viewDefaults') and 'bounds' in view:
             bounds = view['bounds']
             if self.numbers(bounds, '/viewDefaults/bounds', 'bounds', 4):

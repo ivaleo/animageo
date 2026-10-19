@@ -35,7 +35,7 @@ Master schema: `animageo/native/schema/construction.v1.schema.json`
   "operations": {ID: Operation},                 required
   "elements":   {ID: Element},                   required
   "inputs":     {ID: Input},
-  "viewDefaults": {"bounds": [xmin, ymin, xmax, ymax], …},
+  "viewDefaults": {"bounds": [xmin, ymin, xmax, ymax], "axes"?: Axes, "grid"?: Grid, …},
   "workIntent": null | WorkIntent,
   "appearance", "styleBinding", "timeline", "exportDefaults", "bindings", any other key
 }
@@ -67,6 +67,10 @@ Input     = {"kind": "point", "value": [x, y]}                         point.fre
   keys besides the listed ones; the top level allows any key.
 - `viewDefaults.bounds` needs `xmin < xmax` and `ymin < ymax` (checked by the
   library; JSON Schema cannot say it).
+- 1.6: `Axes = {"show"?: bool, "numbers"?: bool, "step"?: number > 0 | null,
+  "labels"?: {"x"?: string ≤ 32, "y"?: string ≤ 32}}`, `Grid = {"kind"?: "none" |
+  "major" | "major_minor", "step"?: number > 0 | null}` — drawn by `native.render`
+  under the elements (view.md); evaluation does not read them.
 - The schema checks the shape of an input value (its `kind`, numbers, a
   `branch` of `-1` or `1`); a usable value also has finite numbers. A free
   element without a usable value of its kind evaluates to `error/schema`
