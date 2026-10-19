@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.11.0rc3] - Unreleased
+## [1.11.0rc3] - 2026-10-19
 
 The contract of the paint between the native renderer and a second one
 (the canvas of the web app): which style keys each element type reads, the
