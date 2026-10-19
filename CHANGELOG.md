@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc7] - 2026-10-19
+
+Fixes of the frame and the video, graphs, conics and space drawings. The
+operation registry stays `1.6` (space `1.0`).
+
+### Added
+
+- `video.duration` of `native.render` — the seconds the video of a
+  timeline of one keyframe holds it (`(0, 600]`, `1` by default); with two
+  keyframes or more the length is the timeline's and a `duration` is a
+  `ValueError` (`docs/native/timeline.md` §3).
+- `animageo.native.space.sheet_layout(export_layout)` (experimental) — the
+  layout a space drawing is drawn under: `content.decoration_scale_source`
+  `output` unless the layout names its own, `None` stays `None`
+  (`docs/native/space.md`).
+
+### Fixed
+
+- A timeline of one keyframe: `render(t)` and the video refused it
+  (`ValueError`, two keyframes were required). Now the frame at any `t` is
+  the state of that keyframe (`t` clamped to it, no effects) and the video
+  is a still of `video.duration` seconds.
+- A value label of the video was narrower than the TeX label of the still
+  and its degree sign was top-aligned: the cached digits were laid out with
+  approximate gaps. Each glyph now stands where TeX puts it — the label
+  with every digit `0` is compiled once per pattern and each digit takes
+  its ink offset against `0` — and the depth below the baseline is that of
+  the TeX label; the video-camera frame equals the vector still around the
+  label (≥ 48 dB in the written frame, before 17.6 dB).
+- The tip of a vector under `fade` and `write`: the fade of the stem set
+  its opacity on the whole family, so the tip took the empty fill of the
+  stroke and both effects left it out for good. Effects now set the
+  opacity of each member on its own: under `fade` the tip has the opacity
+  of the stem, under `write` it is the leaf after the stem and appears once
+  the stem is there (`a ≥ 3/4` for a vector without a label), as manim's
+  `Create` of an arrow draws its tip (`docs/keyframes.md`).
+- `conic.equation` kept the rounding noise of its coefficients:
+  `x²/9 + y²/4 = 1` read `B = 1.4e-14` and gave the ellipse the axis
+  `[1, -1.3e-16]`. A coefficient within the noise rule of the kernel of the
+  largest one (`1e-13` of it, `generator.noiseRule` of `numeric.json`) is
+  `0` (`docs/native/ops/conic.equation.md`). The fixtures do not change.
+- Labels and points of a space drawing are in pixels of the sheet: the
+  plane document of a flat scene takes the extent of the picture for its
+  source view, so the default `frame` decorations followed the frame and a
+  large sheet of a section plane made the labels up to twice as small.
+  `space.render` draws under `space.sheet_layout`; a caller that draws the
+  plane document of `space.to_document` itself passes its layout through
+  `sheet_layout` too. The space fixtures gain the scene
+  `section_cube_far_plane`.
+- A smooth graph `y = f(x)` was drawn in pieces: the clip of
+  `function_runs` gave an uncut end as `xa + 1·(xb − xa)`, not always
+  `xb`, so the run broke at that seam and a dash started anew on each
+  piece. An uncut end is now the sample itself, and the last cell ends
+  exactly at the end of the cut, so a graph limited by its domain no longer
+  loses its last piece past the end. A smooth graph inside the window is
+  one run; the curves fixtures do not change.
+
 ## [1.11.0rc6] - 2026-10-19
 
 The operation registry is `1.6` (wave G2): graphs `y = f(x)`, conics, the
