@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc6] - 2026-10-19
+
 The operation registry is `1.6` (wave G2): graphs `y = f(x)`, conics, the
 axes and grid of the view. A document of `1.5` evaluates and draws as
-before; one of `1.6` is `newer_registry` for an older library.
+before; one of `1.6` is `newer_registry` for an older library. The
+experimental `animageo.native.space` has a registry of its own, `1.0`.
 
 ### Added
 
