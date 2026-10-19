@@ -436,6 +436,16 @@ def test_document_of_the_flat_scene_is_valid_native():
     assert doc['viewDefaults']['bounds'] == flat['bounds']
 
 
+def test_document_of_the_flat_scene_sets_only_keys_its_elements_read():
+    flat = space.flat_scene(cube_scene(), ortho(-60, 25))
+    paint = native.resolve_paint(space.to_document(flat))
+    assert [d for d in paint['diagnostics'] if d['code'] == 'style_key_ineffective'] == []
+    # a polygon is layered by z_index alone: the fill lies at it
+    fills = [e for e in paint['elements'].values() if e['type'] == 'polygon']
+    assert len(fills) == len(flat['fills'])
+    assert all(e['fill']['z'] == e['z'] for e in fills)
+
+
 def test_hidden_look_none_drops_hidden_pieces():
     flat = space.flat_scene(cube_scene(), ortho(-60, 25))
     doc = space.to_document(flat, look={'hidden': 'none'})

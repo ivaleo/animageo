@@ -350,7 +350,7 @@ def to_document(flat, *, look=None, document_id='space', registry_version=None) 
         tiers[tier] = rank + 1
         z = Z_TIERS[tier] + rank * Z_STEP
         overrides = dict(FILLS[f['role']])
-        overrides.update({'stroke_opacity': 0.0, 'z_index': z, 'z_index_fill': z})
+        overrides.update({'stroke_opacity': 0.0, 'z_index': z})     # a polygon's fill lies at its z_index
         vertices = [helper(p) for p in f['polygon']]
         add('polygon.by_points', {'vertices': {'kind': 'list', 'items': [ref(v) for v in vertices]}},
             'polygon', 'polygon', {'label': {'mode': 'none'}, 'overrides': overrides}, new_id('f'))
