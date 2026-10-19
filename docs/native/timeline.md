@@ -155,6 +155,15 @@ events over them. The interval of `t` is `[t_k, t_{k+1})`, as in the video
   labels are TeX in the vector still and the cairosvg PNG; the video-camera
   PNG below draws them with the cached digits of the video
   (`rendering.fast_value_labels`), so it is the video's frame to the pixel.
+  1.11.0rc7: the cached digits stand where the TeX of the label puts its
+  glyphs (`ui.ValueLabel`: the label with every digit `0` compiled once per
+  pattern, the ink offset of each digit against `0` at the same pen
+  position; prefix, sign, point and suffix at their places in the pattern),
+  so the label of the video is the label of the still — of one width, the
+  degree sign raised as TeX raises it. Measured
+  (`test_native_frame_equals_video.py`): the video-camera PNG equals the
+  cairosvg PNG of the SVG still to the pixel (PSNR ∞) around an angle value
+  label, the frame the video writes is ≥ 48 dB around it; before, 17.6 dB.
 - Explicit `inputs` are on top of the timeline in the still and in the video
   alike: the bridged timeline loses the values of those elements
   (`rendering._bridged_timeline`).

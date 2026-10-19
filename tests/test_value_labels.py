@@ -292,3 +292,83 @@ a.style.label_value_precision = {precision}
         scene._value_labels_dynamic = True
         label = scene.CreateMObject(scene.geo.element("a"))[-1]
         assert label.number_text == "60"
+
+
+# ── The video draws a value label as the frame does ───────────
+
+def _glyph_boxes(mobj):
+    """The ink box of every glyph, relative to the lower-left corner of the
+    label, in reading order."""
+    corner = mobj.get_corner([-1, -1, 0])[:2]
+    return [np.concatenate([leaf.get_corner([-1, -1, 0])[:2] - corner, leaf.get_corner([1, 1, 0])[:2] - corner])
+            for leaf in mobj.family_members_with_points()]
+
+
+_LAYOUTS = (
+    (r"$\alpha = $", r"^{\circ}", True, 61.0, 0),
+    (r"$\alpha = $", r"^{\circ}", True, 37.5, 1),
+    (r"$\angle B = $", r"^{\circ}", True, 108.25, 2),
+    (None, r"^{\circ}", True, 9.0, 0),
+    (r"$AB = $", None, False, 4.17, 2),
+    (r"$x = $", None, False, -12.5, 1),
+    (None, None, False, 1234.5, 1),
+    (r"$S = $", r"\text{ см}^2", False, 7.25, 2),
+)
+
+
+class TestValueLabelGlyphsAreTheTex:
+    """A ``ValueLabel`` puts every glyph where the ``Tex`` of its static label
+    (``tex``) puts it: the prefix, each digit, the sign, the point and the
+    suffix — the label of a video frame is the label of the still frame, not
+    a lookalike of other widths and spacing (1.11.0rc7)."""
+
+    @pytest.mark.parametrize("prefix, suffix, raised, value, places", _LAYOUTS)
+    def test_glyph_boxes_equal_the_tex(self, prefix, suffix, raised, value, places):
+        from manim import Tex
+
+        from animageo.ui import RusTex, ValueLabel, correctedLabel
+
+        for font_size in (24, 48):
+            vl = ValueLabel(value=value, prefix_tex=prefix, suffix_tex=suffix, suffix_raised=raised,
+                            num_decimal_places=places, strip_zeros=True, font_size=font_size)
+            tex = Tex(correctedLabel(vl.tex), tex_template=RusTex).set(font_size=font_size)
+            got, want = _glyph_boxes(vl), _glyph_boxes(tex)
+            assert len(got) == len(want), vl.tex
+            tol = 2e-4 * font_size / 48
+            for g, w in zip(got, want):
+                assert np.allclose(g, w, atol=tol), (vl.tex, g, w)
+
+    def test_set_value_keeps_the_frame_and_the_tex_layout(self):
+        from manim import Tex
+
+        from animageo.ui import RusTex, ValueLabel, correctedLabel
+
+        vl = ValueLabel(value=7.0, prefix_tex=r"$\alpha = $", suffix_tex=r"^{\circ}", suffix_raised=True,
+                        num_decimal_places=1, strip_zeros=True, font_size=40)
+        vl.shift([1.25, -0.5, 0])
+        prefix_at = vl.prefix.get_corner([-1, -1, 0]).copy()
+        for value in (11.0, 104.5, 7.0):
+            vl.set_value(value)
+            assert np.allclose(vl.prefix.get_corner([-1, -1, 0]), prefix_at)
+            tex = Tex(correctedLabel(vl.tex), tex_template=RusTex).set(font_size=40)
+            for g, w in zip(_glyph_boxes(vl), _glyph_boxes(tex)):
+                assert np.allclose(g, w, atol=2e-4), (vl.tex, g, w)
+
+    def test_parts_keep_their_font_size(self):
+        from animageo.ui import ValueLabel
+
+        vl = ValueLabel(value=61.0, prefix_tex=r"$\alpha = $", suffix_tex=r"^{\circ}", suffix_raised=True,
+                        num_decimal_places=0, font_size=36)
+        for part in (vl.prefix, vl.value, vl.suffix):
+            assert part.font_size == pytest.approx(36, rel=1e-9)
+
+    def test_baseline_depth_is_that_of_the_tex(self):
+        from manim import Tex
+
+        from animageo.ui import RusTex, ValueLabel, _label_baseline_depth_mu, correctedLabel
+
+        for value in (61.0, 9.0, 1.0):
+            vl = ValueLabel(value=value, prefix_tex=r"$\alpha = $", suffix_tex=r"^{\circ}",
+                            suffix_raised=True, num_decimal_places=0, font_size=48)
+            tex = Tex(correctedLabel(vl.tex), tex_template=RusTex).set(font_size=48)
+            assert _label_baseline_depth_mu(vl, 48) == pytest.approx(_label_baseline_depth_mu(tex, 48), abs=1e-6)

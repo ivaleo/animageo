@@ -188,6 +188,46 @@ def test_explicit_inputs_win_over_the_timeline_in_the_still_and_the_video():
     _assert_frames(doc, timeline, [0, 4, 8], inputs=inputs)
 
 
+def _vector_still(doc, timeline, t):
+    """The PNG of the static export at ``t`` (cairosvg of the SVG, its value
+    labels in TeX) on white, and the report."""
+    from PIL import Image
+    with tempfile.NamedTemporaryFile(suffix='.png') as f:
+        result = native.render(doc, fmt='png', out=f.name, t=t, timeline=timeline)
+        image = Image.open(f.name).convert('RGBA')
+    white = Image.new('RGBA', image.size, (255, 255, 255, 255))
+    return np.asarray(Image.alpha_composite(white, image)), result.report
+
+
+def test_the_value_label_of_the_video_is_the_label_of_the_still():
+    """The angle value label of a video frame (cached digits) is the TeX
+    label of the still at that time: the same glyphs in the same places
+    (1.11.0rc7; before: a narrower label, its degree sign top-aligned —
+    17.6 dB around the label of this scene). At the pixel size of the
+    canvas the video-camera PNG at ``t`` is the PNG of the SVG still to the
+    pixel; the frame the video writes is within its own anti-aliasing of it
+    (≥ 48 dB around the label, ≥ 76 dB on the whole)."""
+    doc = _triangle()
+    timeline = {'version': 2, 'keyframes': [
+        {'t': 0, 'values': {'C': [1.5, 3.5]}},
+        {'t': 1, 'values': {'C': [-2.0, 3.0]}, 'easing': 'linear'},
+    ]}
+    frames = [0, 3, 6, 9]
+    video, _count, times = _video_frames(doc, timeline, set(frames), quality='medium')
+    for n in frames:
+        where = f'frame {n} (t = {times[n]:.3f})'
+        still, report = _vector_still(doc, timeline, times[n])
+        camera, _ = _still(doc, timeline, times[n], quality='medium')
+        assert video[n].shape == camera.shape == still.shape
+        x0, y0, x1, y1 = report['elements']['alpha']['label']['box']
+        box = (slice(max(int(y0) - 3, 0), int(y1) + 4), slice(max(int(x0) - 3, 0), int(x1) + 4))
+        assert _psnr(camera[box], still[box]) >= 60, where
+        assert _psnr(camera, still) >= 60, where
+        label = _psnr(video[n][box], still[box])
+        assert label >= 45, f'{where}: the value label {label:.1f} dB'
+        assert _psnr(video[n], still) >= 60, where
+
+
 def test_the_vector_still_draws_the_state_of_the_video_frame():
     """The SVG still at ``t`` and the video frame are one state: the same
     mobjects in the same places, the same label texts (TeX in the still,

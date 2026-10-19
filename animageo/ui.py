@@ -154,6 +154,57 @@ from .labels import _NONASCII_SCRIPT_RE, _TEX_SYMBOLS, _brace_nonascii_scripts, 
 
 _GLYPHS_WARMED = False
 
+# The exact layout of a ValueLabel (1.11.0rc7): per TeX template, the ink
+# offset of each digit against ``0`` at the same pen position; per pattern
+# (the label with every digit ``0``), the glyph boxes and the baseline —
+# both at DEFAULT_FONT_SIZE, measured once.
+_DIGIT_OFFSETS = {}
+_PATTERN_PROBES = {}
+
+
+def _digit_offsets(tex_template):
+    """``{digit: (dx, dy)}`` at ``DEFAULT_FONT_SIZE``: where the ink of a
+    digit starts against the ink of ``0`` typeset at the same pen position —
+    from ``$00123456789$`` (the two zeros give the advance, one for every
+    digit of the font). ``None`` when it cannot be measured."""
+    key = id(tex_template)
+    if key not in _DIGIT_OFFSETS:
+        offsets = None
+        try:
+            leaves = Tex('$00123456789$', tex_template=tex_template).family_members_with_points()
+            if len(leaves) == 11:
+                lefts = [float(m.get_corner(DL)[0]) for m in leaves]
+                bottoms = [float(m.get_corner(DL)[1]) for m in leaves]
+                advance = lefts[1] - lefts[0]
+                offsets = {str(d): (lefts[d + 1] - lefts[0] - (d + 1) * advance, bottoms[d + 1] - bottoms[0])
+                           for d in range(10)}
+        except Exception:
+            logger.debug('digit offsets: the atlas did not compile', exc_info=True)
+        _DIGIT_OFFSETS[key] = offsets
+    return _DIGIT_OFFSETS[key]
+
+
+def _pattern_probe(tex_string, tex_template):
+    """``[x0, y0, x1, y1]`` of every glyph of ``tex_string`` at
+    ``DEFAULT_FONT_SIZE`` in the frame of its pen: compiled between two
+    ``.`` (``.`` + label + ``.``), ``x`` from the ink of the first dot (a
+    fixed step before the start of the label, whatever the label), ``y``
+    from the baseline (the bottom of the dots, as
+    ``_label_baseline_depth_mu`` probes a label) — the same frame for every
+    pattern of a label. ``None`` when it does not compile."""
+    key = (id(tex_template), tex_string)
+    if key not in _PATTERN_PROBES:
+        probe = None
+        try:
+            tex = Tex('.', tex_string, '.', tex_template=tex_template)
+            pen = np.array([float(tex[0].get_corner(DL)[0]), float(tex[2].get_corner(DOWN)[1])])
+            probe = [np.concatenate([m.get_corner(DL)[:2] - pen, m.get_corner(UR)[:2] - pen])
+                     for m in tex[1].family_members_with_points()]
+        except Exception:
+            logger.debug('value label pattern %r did not compile', tex_string, exc_info=True)
+        _PATTERN_PROBES[key] = probe
+    return _PATTERN_PROBES[key]
+
 
 def prewarm_decimal_glyphs():
     """Compile the digit/sign/dot glyphs once so the first animated frame does
@@ -257,13 +308,22 @@ class ValueLabel(VGroup):
             ).set(font_size=font_size)
             self.add(self.suffix)
 
+        self._tex_template = tex_template
+        self._frame = None          # where the pattern frame sits (exact layout)
+        self._first_target = None   # the lower-left corner the first glyph was put at
+        self._depth = None          # ink below the baseline, MU (exact layout)
         self._layout()
         self.set_z_index(z_index)
 
-    def _layout(self):
-        """Place the number after the prefix and the suffix after the number,
-        baseline-aligned (degree suffix top-aligned). Anchored on the prefix
-        (or the number) so the left edge stays put as the number reflows."""
+    def _layout(self, frame=None):
+        """Place the glyphs where the ``Tex`` of :attr:`tex` puts them
+        (:meth:`_exact_layout`, 1.11.0rc7); when that cannot be measured, the
+        approximate layout of before: the number after the prefix and the
+        suffix after the number, baseline-aligned (degree suffix top-aligned),
+        anchored on the prefix (or the number)."""
+        if self._exact_layout(frame):
+            return
+        self._depth = None
         h = max(self.value.height, 1e-3)
         gap = 0.34 * h   # ≈ one TeX medmuskip after the '=' sign
         if self.prefix is not None:
@@ -275,10 +335,97 @@ class ValueLabel(VGroup):
                 self.suffix.next_to(self.value, RIGHT, buff=0.5 * gap, aligned_edge=DOWN)
 
     def set_value(self, number):
-        """Update the displayed number in place (no LaTeX recompile)."""
+        """Update the displayed number in place (no LaTeX recompile of the
+        digits; a new count of digits measures its pattern once, cached).
+        The frame of the label stays put: the prefix does not move."""
+        frame = self._current_frame()
         self.value.set_value(number)
-        self._layout()
+        self._layout(frame)
         return self
+
+    @property
+    def baseline_depth_mu(self):
+        """How far the ink goes below the baseline, MU — that of the
+        ``Tex`` of :attr:`tex` (``_label_baseline_depth_mu``); ``None`` with
+        the approximate layout."""
+        return self._depth
+
+    def _current_frame(self):
+        """The offset of the pattern frame as the label stands now (moved
+        by its placement): the first glyph against where it was put."""
+        if self._frame is None or self._first_target is None:
+            return None
+        leaves = self.family_members_with_points()
+        if not leaves:
+            return None
+        return self._frame + (leaves[0].get_corner(DL)[:2] - self._first_target)
+
+    def _exact_layout(self, frame=None):
+        """Every glyph where the ``Tex`` of :attr:`tex` puts it.
+
+        The digits are cached glyphs of the ``DecimalNumber``; their places
+        come from the *pattern* of the label — :attr:`tex` with every digit
+        ``0``, compiled once per pattern (with a ``.`` on the baseline, as
+        ``_label_baseline_depth_mu`` probes it, :func:`_pattern_probe`) and
+        cached — and the ink offset of each digit against ``0`` at the same
+        pen position (:func:`_digit_offsets`; the digits of the font are of
+        one width). The prefix and the suffix glyphs go to their places in
+        the pattern. ``frame`` — where the pen of the pattern sits, on the
+        baseline (``None``: the origin); the same for every pattern, so the
+        prefix stays put as the number reflows.
+        ``False`` when the pattern does not map glyph for glyph onto the
+        parts (the caller lays them out approximately)."""
+        text = self.number_text
+        chars = list(self.value.submobjects)
+        if len(chars) != len(text) or any(len(c.family_members_with_points()) != 1 for c in chars):
+            return False
+        offsets = _digit_offsets(self._tex_template)
+        if offsets is None:
+            return False
+        from .labels import _math_inner, _math_wrap
+        prefix = _math_inner(self._prefix_tex) if self._prefix_tex else ''
+        suffix = _math_inner(self._suffix_tex) if self._suffix_tex else ''
+        pattern = ''.join('0' if ch.isdigit() else ch for ch in text)
+        probe = _pattern_probe(correctedLabel(_math_wrap(prefix + pattern + suffix)), self._tex_template)
+        if probe is None:
+            return False
+        boxes = probe
+        head = self.prefix.family_members_with_points() if self.prefix is not None else []
+        tail = self.suffix.family_members_with_points() if self.suffix is not None else []
+        if len(boxes) != len(head) + len(chars) + len(tail):
+            return False
+        k = float(self._font_size) / DEFAULT_FONT_SIZE
+        origin = np.zeros(2) if frame is None else np.asarray(frame, dtype=float)
+        boxes = [np.asarray(b) * k + np.concatenate([origin, origin]) for b in boxes]
+        tol = 1e-3 * k + 1e-6
+
+        def same_size(leaf, box):
+            lo, hi = leaf.get_corner(DL)[:2], leaf.get_corner(UR)[:2]
+            return np.allclose(hi - lo, box[2:] - box[:2], atol=tol)
+
+        number_boxes = boxes[len(head):len(head) + len(chars)]
+        pairs = list(zip(head, boxes[:len(head)])) + list(zip(tail, boxes[len(head) + len(chars):]))
+        if not all(same_size(leaf, box) for leaf, box in pairs):
+            return False
+        if not all(ch.isdigit() or same_size(c, box) for ch, c, box in zip(text, chars, number_boxes)):
+            return False
+
+        parts = [p for p in (self.prefix, self.value, self.suffix) if p is not None]
+        heights = [p.height for p in parts]
+        for leaf, box in pairs:
+            centre = (box[:2] + box[2:]) / 2.0
+            leaf.shift(np.append(centre - leaf.get_center()[:2], 0.0))
+        for ch, c, box in zip(text, chars, number_boxes):
+            target = box[:2] + (np.asarray(offsets[ch]) * k if ch.isdigit() else 0.0)
+            c.shift(np.append(target - c.get_corner(DL)[:2], 0.0))
+        # the glyphs moved, none was scaled: the parts keep their font size
+        for part, height in zip(parts, heights):
+            if height > 1e-12 and part.height > 1e-12:
+                part.initial_height *= part.height / height
+        self._frame = origin
+        self._first_target = self.family_members_with_points()[0].get_corner(DL)[:2].copy()
+        self._depth = max(origin[1] - float(self.get_corner(DL)[1]), 0.0)
+        return True
 
     def get_value(self):
         return self.value.get_value()
@@ -324,9 +471,13 @@ def _label_baseline_depth_mu(mobj, font_size):
     neighbours when anchored by bbox bottom. The depth is measured once per
     tex string by compiling it next to a baseline probe glyph ('.', zero
     depth) in a single LaTeX run and cached as a ratio of the compile-time
-    font size. ValueLabel and probe failures fall back to 0 (bottom ==
+    font size. A ValueLabel gives the depth its exact layout measured (that
+    of the Tex of its label); probe failures fall back to 0 (bottom ==
     baseline, exact for capital letters and digits).
     """
+    if isinstance(mobj, ValueLabel):
+        # the depth of the Tex of its label, measured by its exact layout
+        return mobj.baseline_depth_mu or 0.0
     tex_string = getattr(mobj, 'tex_string', None)
     if not tex_string or not font_size:
         return 0.0
