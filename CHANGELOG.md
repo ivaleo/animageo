@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc5] - 2026-10-19
+
+### Fixed
+
+- The ticks and arcs an equality mark (`mark.equal_segments`,
+  `mark.equal_angles`) puts on its targets follow the mark in the frame
+  `render(t)` and in the video: they are drawn while the mark is in the
+  frame, as any element is — from the start of the entrance that shows it
+  to the end of the exit that takes it — and inside the window of its
+  effect as the effect draws the mark (`fade` — their opacity, `create` —
+  their stroke up to the progress); the angle's own arc stays. A mark hidden in the document puts
+  its ticks from the frame that shows it. In 1.11.0rc4 the frame and the
+  video kept the ticks of the document's visibility at every `t` (the video
+  did so in 1.11.0rc3 too); the static drawing is unchanged
+  (`docs/native/timeline.md` §3).
+
 ## [1.11.0rc4] - 2026-10-19
 
 A still frame at `t` is the frame of the video at `t`, and the two
