@@ -170,13 +170,41 @@ def prewarm_decimal_glyphs():
     _GLYPHS_WARMED = True
 
 
+class _LabelNumber(DecimalNumber):
+    """A :class:`~manim.DecimalNumber` whose digits are the text of the static
+    label (``labels._format_number``): ``num_decimal_places`` places, trailing
+    zeros stripped when ``strip_zeros``, no thousands separator, no ``-0``. A
+    value that is not finite keeps manim's text (``nan``, ``inf``): the TeX of
+    the static label (``\\infty``) is no string of glyphs."""
+
+    def __init__(self, number=0.0, *, strip_zeros=False, **kwargs):
+        self.strip_zeros = bool(strip_zeros)
+        super().__init__(number, group_with_commas=False, **kwargs)
+
+    def _get_num_string(self, number):
+        import math
+        from .labels import _format_number
+        try:
+            value = float(number)
+        except (TypeError, ValueError):
+            return super()._get_num_string(number)
+        if not math.isfinite(value):
+            return super()._get_num_string(number)
+        return _format_number(value, self.num_decimal_places, self.strip_zeros)
+
+
 class ValueLabel(VGroup):
     r"""A label of the form ``prefix value suffix`` whose numeric ``value`` is
     drawn with a :class:`~manim.DecimalNumber` so it updates without a LaTeX
     recompile.
 
     Mirrors the layout of the equivalent single ``Tex`` (``$\alpha = 90^\circ$``)
-    while keeping the number as a separate, cheaply-updatable mobject.
+    while keeping the number as a separate, cheaply-updatable mobject. The
+    digits are those of the static label (1.11.0rc3): ``num_decimal_places``
+    places, trailing zeros stripped with ``strip_zeros`` (the label of a
+    scene passes its ``label_value_strip_zeros``), no thousands separator —
+    so a frame of the video reads as the still frame (``60°``, not
+    ``60.0°``); :attr:`tex` is that static label.
 
     Args:
         value: Initial numeric value.
@@ -184,8 +212,9 @@ class ValueLabel(VGroup):
         suffix_tex: Static trailing TeX inner (e.g. ``^{\circ}``) or ``None``.
         suffix_raised: Align the suffix to the top of the number (degree
             superscript) instead of the baseline (unit).
-        num_decimal_places: Fixed decimals; fixed width avoids jitter while the
-            value animates.
+        num_decimal_places: Decimal places of the value (``label_value_precision``).
+        strip_zeros: Strip trailing zeros (and a trailing point) as the static
+            label does; ``False`` keeps ``num_decimal_places`` fixed.
         color / font_size: Applied to every part.
         z_index: Stacking order.
 
@@ -196,13 +225,15 @@ class ValueLabel(VGroup):
 
     def __init__(self, value=0.0, prefix_tex=None, suffix_tex=None,
                  suffix_raised=False, num_decimal_places=1, color=None,
-                 font_size=48, z_index=0, tex_template=None, **kwargs):
+                 font_size=48, z_index=0, tex_template=None, strip_zeros=False, **kwargs):
         super().__init__(**kwargs)
         prewarm_decimal_glyphs()
         tex_template = tex_template or RusTex
         self._font_size = font_size
         self._color = color
         self._suffix_raised = suffix_raised
+        self._prefix_tex = prefix_tex
+        self._suffix_tex = suffix_tex
 
         self.prefix = None
         if prefix_tex:
@@ -211,10 +242,11 @@ class ValueLabel(VGroup):
             ).set(font_size=font_size)
             self.add(self.prefix)
 
-        dn_kwargs = {'num_decimal_places': num_decimal_places, 'font_size': font_size}
+        dn_kwargs = {'num_decimal_places': num_decimal_places, 'font_size': font_size,
+                     'strip_zeros': strip_zeros}
         if color is not None:
             dn_kwargs['color'] = color
-        self.value = DecimalNumber(value, **dn_kwargs)
+        self.value = _LabelNumber(value, **dn_kwargs)
         self.add(self.value)
 
         self.suffix = None
@@ -250,6 +282,20 @@ class ValueLabel(VGroup):
 
     def get_value(self):
         return self.value.get_value()
+
+    @property
+    def number_text(self) -> str:
+        """The digits drawn for the current value (``labels._format_number``)."""
+        return self.value._get_num_string(self.value.number)
+
+    @property
+    def tex(self) -> str:
+        """The TeX of the static label this one stands for: ``prefix``, the
+        digits and ``suffix`` in one ``$…$`` (``labels.resolve_label_text``)."""
+        from .labels import _math_inner, _math_wrap
+        prefix = _math_inner(self._prefix_tex) if self._prefix_tex else ''
+        suffix = _math_inner(self._suffix_tex) if self._suffix_tex else ''
+        return _math_wrap(prefix + self.number_text + suffix)
 
 
 def _resolve_label_edge(elem, anchor, align_edge):
@@ -442,8 +488,9 @@ def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=D
 
     When ``dynamic`` is True and ``label_spec`` carries a live numeric value, a
     fast :class:`ValueLabel` (DecimalNumber-backed) is built so per-frame value
-    changes don't trigger a LaTeX recompile. Otherwise a plain ``Tex`` is used
-    (full fidelity, trailing-zero stripping) — the default for static export.
+    changes don't trigger a LaTeX recompile; its digits are the text of the
+    ``Tex`` label. Otherwise a plain ``Tex`` is used — the default for static
+    export.
 
     Args:
         anchor: Label anchor point — which part of the label is placed at
@@ -476,6 +523,7 @@ def create_label(elem, pos, col_label, font_size, zz_label, ptUnit, align_edge=D
                 suffix_tex=label_spec.suffix_tex,
                 suffix_raised=label_spec.suffix_raised,
                 num_decimal_places=label_spec.num_decimal_places,
+                strip_zeros=label_spec.strip_zeros,
                 color=col_label, font_size=font_size, z_index=zz_label,
             )
         except Exception as e:

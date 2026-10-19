@@ -232,7 +232,8 @@ class AnimaGeoScene(MovingCameraScene):
         # When True, value-bearing labels rebuilt during animation use the fast
         # DecimalNumber-backed ValueLabel (no LaTeX recompile per frame) instead
         # of a full Tex. Toggled around animation playback; static render/export
-        # keeps the Tex path for trailing-zero fidelity. See _value_labels_fast.
+        # keeps the Tex path. Both print the same text (labels._format_number,
+        # 1.11.0rc3). See _value_labels_fast.
         self._value_labels_dynamic = False
         
     def mobject(self, name): 

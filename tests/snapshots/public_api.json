@@ -696,11 +696,13 @@
   },
   "ValueLabel": {
    "kind": "class",
-   "signature": "(value=0.0, prefix_tex=None, suffix_tex=None, suffix_raised=False, num_decimal_places=1, color=None, font_size=48, z_index=0, tex_template=None, **kwargs)",
+   "signature": "(value=0.0, prefix_tex=None, suffix_tex=None, suffix_raised=False, num_decimal_places=1, color=None, font_size=48, z_index=0, tex_template=None, strip_zeros=False, **kwargs)",
    "members": {
     "animation_overrides": "attribute",
     "get_value": "(self)",
-    "set_value": "(self, number)"
+    "number_text": "property",
+    "set_value": "(self, number)",
+    "tex": "property"
    }
   },
   "Z_ANGLE": {

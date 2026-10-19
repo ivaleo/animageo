@@ -58,8 +58,9 @@ class LabelSpec:
     num_decimal_places:
         Fixed decimal places for the DecimalNumber.
     strip_zeros:
-        Whether the Tex fallback strips trailing zeros (DecimalNumber keeps
-        fixed decimals so animated labels do not jitter in width).
+        Whether trailing zeros are stripped (``label_value_strip_zeros``):
+        the Tex label and, since 1.11.0rc3, the DecimalNumber of the video
+        (``ui.ValueLabel``) print the same text.
     suffix_tex:
         Static trailing TeX (e.g. ``^{\\circ}``) or ``None``.
     suffix_raised:

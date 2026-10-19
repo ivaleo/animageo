@@ -223,3 +223,72 @@ a.style.label_mode = '{mode}'
         assert scene._value_labels_dynamic is True
         scene.clearUpdater(x)
         assert scene._value_labels_dynamic is False
+
+
+# ── The video prints a value as the frame does (P-4) ────────────────
+
+_VALUES = (60.0, 41.6, 45.25)
+_PRECISIONS = (0, 1, 2)
+
+
+class TestValueLabelMatchesFrame:
+    """The digits of a ``ValueLabel`` (the video) are the text of the static
+    label (the frame, ``labels._format_number``): precision, stripped zeros,
+    no thousands separator, no ``-0``."""
+
+    @pytest.mark.parametrize("precision", _PRECISIONS)
+    @pytest.mark.parametrize("value", _VALUES)
+    def test_number_text_is_the_frame_text(self, value, precision):
+        from animageo.labels import _format_number
+        from animageo.ui import ValueLabel
+
+        vl = ValueLabel(value=value, num_decimal_places=precision, strip_zeros=True, font_size=40)
+        assert vl.number_text == _format_number(value, precision, True)
+        vl.set_value(value + 1000)
+        assert vl.number_text == _format_number(value + 1000, precision, True)
+
+    def test_fixed_decimals_without_strip(self):
+        from animageo.ui import ValueLabel
+
+        vl = ValueLabel(value=60.0, num_decimal_places=1, strip_zeros=False, font_size=40)
+        assert vl.number_text == "60.0"
+        vl.set_value(-0.01)
+        assert vl.number_text == "0.0"
+        vl.set_value(1234.5)
+        assert vl.number_text == "1234.5"
+
+    def _angle_scene(self, degrees, precision):
+        from animageo.animageo import AnimaGeoScene
+
+        rad = math.radians(degrees)
+        scene = AnimaGeoScene()
+        scene.putCode(f"""
+A = Point(0,0)
+B = Point(3,0)
+C = Point({3 * math.cos(rad)!r},{3 * math.sin(rad)!r})
+a = Angle(B, A, C)
+a.style.label_visible = True
+a.style.label_mode = 'label_value'
+a.style.label_value_precision = {precision}
+""")
+        return scene
+
+    @pytest.mark.parametrize("precision", _PRECISIONS)
+    @pytest.mark.parametrize("degrees", _VALUES)
+    def test_video_label_text_equals_the_frame_label(self, degrees, precision):
+        from animageo.labels import resolve_label_text
+        from animageo.ui import ValueLabel
+
+        scene = self._angle_scene(degrees, precision)
+        elem = scene.geo.element("a")
+        frame = resolve_label_text(scene, elem)
+        scene._value_labels_dynamic = True
+        label = scene.CreateMObject(elem)[-1]
+        assert isinstance(label, ValueLabel)
+        assert label.tex == frame
+
+    def test_sixty_degrees_is_not_sixty_point_zero(self):
+        scene = self._angle_scene(60.0, 1)
+        scene._value_labels_dynamic = True
+        label = scene.CreateMObject(scene.geo.element("a"))[-1]
+        assert label.number_text == "60"
