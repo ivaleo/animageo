@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import math
 
+from .numeric import decision_margin
 from .values import Undefined
 
 __all__ = [
@@ -304,7 +305,10 @@ def equation_coeffs(q, ctx):
     four :data:`EQUATION_CHECKS`; the largest misfit there, divided by the
     largest coefficient, above ``tol.decide_scalar`` (decision
     ``not_quadratic``) or a point where ``q`` has no value is
-    ``not_quadratic``.
+    ``not_quadratic``. A coefficient that is rounding noise of the largest
+    one (``|v| ≤ N · tol.decide_scalar / decisionMargin``, the noise rule
+    of ``numeric.json``) is ``0`` (1.11.0rc7: ``B`` of ``x²/9 + y²/4 = 1``
+    read ``1.4e-14`` against ``N = 100`` and turned the axis by ``1e-16``).
     """
     scale = ctx.tol.scale
 
@@ -333,6 +337,8 @@ def equation_coeffs(q, ctx):
     ctx.decide('not_quadratic', misfit / n, ctx.tol.decide_scalar)
     if misfit / n > ctx.tol.decide_scalar:
         return Undefined('not_quadratic')
+    noise = n * ctx.tol.decide_scalar / decision_margin()
+    coeffs = [0.0 if abs(v) <= noise else v for v in coeffs]
     return coeffs, (0.0, 0.0, scale)
 
 

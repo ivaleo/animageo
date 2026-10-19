@@ -227,6 +227,28 @@ def test_equation_kinds():
     assert v == {'kind': 'ellipse', 'c': [0.0, 0.0], 'axis': [1.0, 0.0], 'a': 5.0, 'b': 5.0}
 
 
+def test_equation_coefficients_carry_no_rounding_noise():
+    """A coefficient read at points that is rounding noise of the others
+    (``|v| ≤ N · tol.decide / decisionMargin``, the noise rule of the
+    kernel) is 0 (1.11.0rc7): ``x²/9 + y²/4 = 1`` reads ``B = 1.4e-14``
+    against ``N = 100``, which turned the axis to ``[1, -1.3e-16]``."""
+    from animageo.native.kernel.checks import _QuietContext
+    from animageo.native.kernel.numeric import tolerances
+    ctx = _QuietContext(tolerances(20.0))
+
+    def q(x, y):
+        return x * x / 9 + y * y / 4 - 1
+    coeffs, frame = geo.equation_coeffs(q, ctx)
+    assert coeffs[1] == 0.0 and coeffs[3] == 0.0 and coeffs[4] == 0.0
+    v = value(ev(Doc().equation('e', _ellipse_equation())), 'e')
+    assert v['axis'] == [1.0, 0.0]
+    assert v['c'] == [0.0, 0.0]
+    assert v['kind'] == 'ellipse' and v['a'] == approx(3.0) and v['b'] == approx(2.0)
+    # a small coefficient that is no noise stays
+    coeffs, _ = geo.equation_coeffs(lambda x, y: x * x + y * y + 1e-9 * x * y - 1, ctx)
+    assert coeffs[1] == approx(1e-9 * 400)
+
+
 @pytest.mark.parametrize('tree, why', [
     (op('+', op('^', X, n(3)), Y), 'not_quadratic'),
     (op('-', {'fn': 'sin', 'args': [X]}, Y), 'not_quadratic'),

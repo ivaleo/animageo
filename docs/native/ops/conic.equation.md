@@ -27,7 +27,16 @@ Frame `(0, 0, S)` (`S` the scale of the case): `q'(x', y') = q(S·x', S·y')`.
     q' has no value at one of the ten points               → "not_quadratic"
     N = 0:  misfit > 0 → "not_quadratic", else "degenerate_conic"
     misfit / N > tol.decide (scalar)                        → "not_quadratic"
+    every coefficient with |v| ≤ N · tol.decide (scalar) / decisionMargin → 0
     else the coefficients (A … F) in the frame (0, 0, S)
+
+The zeroing (1.11.0rc7) drops the rounding noise of the reading: `B` is
+`q'(1, 1)` less five other readings, and `x²/9 + y²/4 = 1` gave `B =
+1.4e-14` against `N = 100`, which turned the axis of the ellipse to `[1,
+-1.3e-16]`. The bound is the noise rule of the kernel (`decisionMargin` of
+`numeric.json`, `generator.noiseRule`: `1e-13` of `N`), a thousand times
+below `tol.decide`, the bound of every decision of
+[Classification](#classification).
 
 ## Classification
 
