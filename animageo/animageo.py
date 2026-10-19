@@ -33,7 +33,7 @@ from .style.import_policy import ImportPolicy
 from .style.config import StyleConfig, resolve_style_input
 from .style.config import style_path_for_geostyle as _style_path_for_geostyle
 from .style.resolver import resolve as _resolve_style
-from .style.colorspace import COLOR_SPACES, same_color
+from .style.colorspace import COLOR_SPACES, same_color as _same_color
 from .labels import resolve_label_text, resolve_label_spec
 from .ui import (
     RusTex, correctedLabel, create_label, round_corners_vmobject,
@@ -3428,7 +3428,7 @@ class AnimaGeoScene(MovingCameraScene):
         # canvas): the built-in style fills an angle with the background at
         # opacity 1, which would cover the fill of the figure the angle sits in.
         # The layer stays (transparent) so ``become`` keeps its structure.
-        op_f = 0.0 if same_color(ctx.col_f, self.style.background) else ctx.op_f
+        op_f = 0.0 if _same_color(ctx.col_f, self.style.background) else ctx.op_f
 
         if right_mark:
             ar_cfg = self.style_config.overlay.angle_radius
