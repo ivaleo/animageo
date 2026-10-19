@@ -117,6 +117,7 @@ Steps of a construction (steps.md) and time by element ID (timeline.md).
 - `class StepsTimeline(keyframes, steps=<factory>, duration=0.0)` — The result of `steps_timeline()`: `keyframes` — a timeline v2 with ID keys; `steps` — `[{stepId, start, end, elementIds, text}]`; `duration` — the time of the last keyframe.
 - `steps_timeline(doc, *, lag=0.3, duration=0.5, pause=0.6, effects=None, start=0.0)` — The construction step by step (plan L3 §5.4; docs/native/timeline.md §4).
 - `sample_timeline(doc, timeline, t)` — `{t, inputs, visible}` of `timeline` at time `t` (module docstring).
+- `timeline_effects(doc, timeline, t)` — `{id: {phase, effect, progress, present}}`: the enter and exit effects the video plays at `t` (1.11.0; docs/native/timeline.md §3).
 - `timeline_to_bridge(doc, timeline)` — The classic keyframe JSON v2 of `timeline` for the scene of the bridge.
 
 ## Text

@@ -110,38 +110,70 @@ the bridge builds (`kernel/bridge.py`):
   interval the classic lerps the clamped ends, the kernel clamps the lerp —
   the same while both ends are in range.
 
-`native.render(doc, …, t=…, timeline=…)` (static formats): the document
-with the inputs of `sample_timeline` (explicit `inputs` on top) and its
-`visible` written to `appearance.<id>.visible`, then the usual export — the
-frame of the playback at `t` with no effect in progress. The report gains
-`t` and `visible`; hidden elements have `visible: false` and no box.
+`native.render(doc, …, t=…, timeline=…)` (static formats; 1.11.0,
+`native.has("render.t.effects")`) is the frame of the video at `t`: the
+document loaded as the video loads it (`loadDocument`, explicit `inputs`),
+then `seek_keyframes(bridged, t)` — the classic playback without playing:
+the sequence prepared as `play_keyframes` prepares it (style tracks, the
+effects of `bind_visibility`, the label snapshots of every keyframe), every
+interval before the one holding `t` left as its last frame leaves it
+(values, styles and their finalizers, label offsets, the camera, the
+elements its effects bring in and take out), then the frame of that
+interval at its progress. Both paths draw a frame with one function,
+`AnimaGeoScene._keyframe_frame`: values, geometry, styles, label offsets,
+the mobjects, then the enter/exit effects, the camera and the emphasis
+events over them. The interval of `t` is `[t_k, t_{k+1})`, as in the video
+(its frame `k` shows `t_k + k/fps`); the last one is held to its end.
 
-1.9.0a5, `styles` and `@camera` in `render(t)`: `timeline_extras(doc,
-timeline)` keeps of the bridged timeline only `styles`, `values["@camera"]`,
-`easing` and `defaults`; the loaded scene then gets them as the playback
-leaves them — every interval before the one containing `t` played to its
-end (classic style interpolators at 1, their finalizers, the camera at 1),
-then the style and camera interpolators of that interval at its progress
-(the colour space of `rendering.color_interpolation`). A style set at a
-keyframe is held after it, as in the video. The camera moves the frame
-of the manim camera: it shows in the video-camera PNG below (and the
-video); the vector exports (SVG, PDF, EPS, TikZ) and the cairosvg PNG draw
-the export frame of the style and ignore it, as the classic `exportSVG`
-after `apply_keyframes_at` does (the report stays in the export frame too).
-`sample_timeline` stays
-`{t, inputs, visible}`: styles and the camera are classic state (colour
-interpolation, baselines from the resolved style), not inputs of the
-kernel, so they are applied by the renderer, not sampled.
+- Effects. A change of visibility at keyframe `k+1` plays inside
+  `[t_k, t_{k+1}]`, from `t_k + at` for `duration` (`keyframes.md`): an
+  element that enters there is drawn from `t_k + at` on, in its effect
+  (`fade`, `create`, `grow`, `write`, `none`) until the window ends, in full
+  after it — before the keyframe that makes it visible. An element its
+  effect shows nothing of yet (an entrance not begun, an exit done) is left
+  out of the frame (no mobject, no box).
+- Events (`indicate`, `flash`, `circumscribe`) are drawn in their window.
+  1.11.0: the overlay of `flash` and `circumscribe` is rebuilt from its
+  target every frame (it follows a moving target), overlays stack by the
+  order of their events, and an overlay leaves the frame when its window
+  closes (before, the video held it to the end of the interval).
+- Labels: placed as the video places them, snapshots interpolated. Value
+  labels are TeX in the vector still and the cairosvg PNG; the video-camera
+  PNG below draws them with the cached digits of the video
+  (`rendering.fast_value_labels`), so it is the video's frame to the pixel.
+- Explicit `inputs` are on top of the timeline in the still and in the video
+  alike: the bridged timeline loses the values of those elements
+  (`rendering._bridged_timeline`).
+- The camera moves the frame of the manim camera: it shows in the
+  video-camera PNG (and the video); the vector exports (SVG, PDF, EPS, TikZ)
+  and the cairosvg PNG draw the export frame of the style. TikZ draws an
+  element in an effect in full.
 
-Not in a still frame, by design:
+The report gains `t` and `visible` of `sample_timeline` (carried forward:
+an element is `visible` from its keyframe on, as the web's
+`keyframe_visibility_parity.json`) and `effects` — `{id: {phase, effect,
+progress}}` of the effects of the interval that have begun
+(`timeline_effects`): an element entering with `progress > 0` is drawn
+though `visible` is still `false`. Its boxes are those of the elements in
+the frame. `resolve_paint(t=…)` draws the same presence and gives the entry
+`effect`.
 
-- `events` (`flash`, `circumscribe`, `indicate`, …) — emphasis of the
-  playback that restores itself when its window ends; a frame at `t` is the
-  state without it (the video draws it).
-- the progress of an `enter`/`exit` effect — an element is visible from its
-  keyframe on (the carry-forward of the web, `keyframe_visibility_parity.json`);
-  a still frame never shows a half-drawn `create` or a half-faded `fade`.
-  Frames for comparison with a video are taken outside effects.
+`timeline_effects(doc, timeline, t)` (1.11.0, `native.has("timeline.effects")`,
+manim-free) — `{id: {phase, effect, progress, present}}`: the effects of
+the interval of the frame at `t` by the rule of
+`KeyframeSequence.bind_visibility` (the spec of keyframe `k+1`, else
+`defaults.enter`/`defaults.exit`, else `fade` 0.4 s; `at` clamped to the
+interval, the duration cut at its end); `progress` — `(t − t_k − at) /
+duration` in `[0, 1]` (a zero duration: `1` from `at` on); `present` —
+`progress > 0` for an entrance, `< 1` for an exit. Numbers have no effects.
+The web's `sampleTimeline(...).effects` follows the same rule.
+
+1.9.0a5–1.10: `render(t)` drew the document with the inputs and the
+carried-forward visibility of `sample_timeline` plus the styles and the
+camera (`timeline_extras`), with no effect and no event: an element
+entering before its keyframe was missing from the still for the rest of
+the interval. `timeline_extras(doc, timeline)` remains — the styles and
+`@camera` of the bridged timeline, which `resolve_paint` reads.
 
 `render(fmt="png", video={fps?, quality})` (1.9.0a5, `native.has("render.frame")`):
 the frame through the camera of the video — a scene loaded under the pixel
@@ -161,7 +193,18 @@ a timeline: `ValueError("timeline_required")`. `video={fps, quality}`
 a video: `{format, documentId, kernel, fmt, video: {fps, quality, width,
 height, duration}, t, visible}` (`t`, `visible` of the last keyframe).
 
-Measured (1.9.0a5, `test_native_l3a4_render_manim.py`, 20 frames of
+Measured (1.11.0, `test_native_frame_equals_video.py`): the frames the
+video writes, taken from the renderer before the codec, against
+`render(t, fmt="png", video=…)` at the time of each frame (the rule above)
+— identical (PSNR ∞) on 77 of 85 frames of seven timelines: steps of a
+construction, every enter and exit effect inside its window, an element
+entering before its keyframe, events with a moving camera; ≥ 78 dB on the
+others (labels placed at keyframes, value labels, explicit inputs). The
+test guards ≥ 60 dB on every frame, inside the windows too. Before (1.10,
+the same harness): 27–48 dB inside the windows of effects and 30 dB for the
+rest of an interval whose element enters before its keyframe.
+
+Earlier (1.9.0a5, `test_native_l3a4_render_manim.py`, 20 frames of
 `tests/native/frames/*.json`): an MP4 frame `n` against `render(t=n/fps,
 fmt="png", video=…)` — PSNR 45.7 dB – ∞ on all 20 frames; 17 frames have
 ≤ 0.1 % of pixels off by more than 16/255, three (`paths` 3 and 5, `number`

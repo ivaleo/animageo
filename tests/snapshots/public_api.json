@@ -70,6 +70,7 @@
    "steps_split",
    "steps_timeline",
    "style_keys",
+   "timeline_effects",
    "timeline_to_bridge",
    "validate"
   ],
@@ -175,7 +176,11 @@
      "convert.command_synonyms",
      "convert.ggb_expressions",
      "style_keys",
-     "resolve_paint"
+     "resolve_paint",
+     "label.halo",
+     "label.parts",
+     "timeline.effects",
+     "render.t.effects"
     ]
    },
    "ImportRefused": {
@@ -444,6 +449,10 @@
     "kind": "function",
     "signature": "()"
    },
+   "timeline_effects": {
+    "kind": "function",
+    "signature": "(doc, timeline, t)"
+   },
    "timeline_to_bridge": {
     "kind": "function",
     "signature": "(doc, timeline)"
@@ -522,6 +531,7 @@
     "reloadPolicy": "(self, import_policy)",
     "resetScene": "(self)",
     "reveal_construction": "(self, lag=0.3, duration=0.5, effect=None, play=True)",
+    "seek_keyframes": "(self, keyframes_data, t, *, video_labels=False)",
     "setElementStyle": "(self, names, *, update=True, **props)",
     "setStyle": "(self, style)",
     "setVisible": "(self, names, visible, *, update=True)",

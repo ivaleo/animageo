@@ -401,10 +401,13 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
     standalone document).
 
     1.9.0a4 (docs/native/timeline.md §3): ``t`` with ``timeline`` (keyframes
-    by element ID) renders the frame at time ``t``: the document with the
-    inputs and the visibility of ``sample_timeline`` (``inputs`` on top);
-    the report gains ``t`` and ``visible``, boxes are those of the drawn
-    elements. ``fmt`` ``mp4``, ``gif``, ``webm``, ``mov``: the video of
+    by element ID) renders the frame at time ``t``; 1.11.0: the frame of the
+    video — the document loaded as the video loads it and
+    ``seek_keyframes`` of the bridged timeline (effects, events, labels
+    placed at keyframes; ``inputs`` on top of the timeline in both); the
+    report gains ``t`` and ``visible`` of ``sample_timeline`` and
+    ``effects`` (those of the interval that have begun), boxes are those of
+    the elements in the frame. ``fmt`` ``mp4``, ``gif``, ``webm``, ``mov``: the video of
     ``timeline`` (required: ``ValueError("timeline_required")``) played by
     the classic ``play_keyframes`` on the scene of the bridge
     (``timeline_to_bridge``), manim + ffmpeg; ``video={fps, quality}``
@@ -416,8 +419,10 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
     1.9.0a5: ``fmt="png"`` with ``video`` — the frame as the video draws it:
     the manim camera of the video (its pixel size, ``quality``; ``fps`` is
     checked and not used) instead of cairosvg of the SVG; with ``t`` and
-    ``timeline`` it is the frame of the video at ``t`` (an MP4 frame matches
-    it at ≥ 45 dB, docs/native/timeline.md §3). The report gains ``video``
+    ``timeline`` it is the frame of the video at ``t``, its value labels
+    drawn with the cached digits of the video too (the frame the video
+    writes, before the codec, matches it at ≥ 60 dB, mostly to the pixel;
+    docs/native/timeline.md §3). The report gains ``video``
     ``{quality, width, height}``; its boxes stay in pixels of the canvas.
     Without ``video`` a PNG is cairosvg of the SVG, as before.
     """
@@ -442,10 +447,6 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
             raise ValueError('native.render: t and timeline go together')
         from .timeline import sample_timeline
         sample = sample_timeline(doc, timeline, t)
-        merged = dict(sample['inputs'])
-        merged.update(inputs or {})
-        inputs = merged
-        doc = document_at(doc, sample)
     AnimaGeoScene = _import_scene()
 
     if out is None:
@@ -453,11 +454,13 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         os.close(fd)
     out = os.path.abspath(os.fspath(out))
 
-    extras = timeline_extras(doc, timeline) if sample is not None else None
     if frame_size is not None:
-        scene = _camera_png(AnimaGeoScene, doc, style_config, inputs, layout, frame_size, out, extras, t)
+        scene = _camera_png(AnimaGeoScene, doc, style_config, inputs, layout, frame_size, out,
+                            timeline if sample is not None else None, t)
+    elif sample is not None:
+        scene = _still_scene(doc, style_config, inputs, layout, timeline, t, scene_class=AnimaGeoScene)
     else:
-        scene = _load(AnimaGeoScene, doc, style_config, inputs, layout, extras, t)
+        scene = _load(AnimaGeoScene, doc, style_config, inputs, layout)
     if frame_size is not None:
         pass  # written by _camera_png
     elif fmt == 'svg':
@@ -480,13 +483,26 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
             cairosvg.svg2png(url=svg_path, write_to=out)
         finally:
             os.unlink(svg_path)
+    if sample is not None:
+        merged = dict(sample['inputs'])
+        merged.update(inputs or {})
+        inputs = merged
     body = build_report(scene, doc, fmt=fmt, inputs=inputs) if report else None
     if body is not None and frame_size is not None:
         body['video'] = {'quality': frame_size[2], 'width': frame_size[0], 'height': frame_size[1]}
     if body is not None and sample is not None:
         body['t'] = sample['t']
         body['visible'] = sample['visible']
+        body['effects'] = _report_effects(doc, timeline, t)
     return RenderResult(path=out, fmt=fmt, report=body)
+
+
+def _report_effects(doc, timeline, t) -> dict:
+    """``effects`` of the report of ``render(t)``: ``{id: {phase, effect,
+    progress}}`` of the effects that have begun (``timeline_effects``)."""
+    from .timeline import timeline_effects
+    return {el_id: {'phase': e['phase'], 'effect': e['effect'], 'progress': e['progress']}
+            for el_id, e in sorted(timeline_effects(doc, timeline, t).items()) if e['progress'] > 0}
 
 
 def _even(v: float) -> int:
@@ -507,7 +523,7 @@ def timeline_extras(doc, timeline):
     """The ``styles`` and ``@camera`` of ``timeline`` as a classic keyframe
     JSON v2 (names of the bridge, ``easing`` and ``defaults`` kept; values,
     visibility, effects and events dropped), or ``None`` when it has neither
-    (``render(t)``, 1.9.0a5)."""
+    (1.9.0a5; read by ``resolve_paint`` at ``t``)."""
     from .timeline import timeline_to_bridge
     bridge = timeline_to_bridge(doc, timeline)
     keyframes, found = [], False
@@ -531,56 +547,64 @@ def timeline_extras(doc, timeline):
     return out
 
 
-def _apply_extras(scene, extras, t) -> None:
-    """Write the styles and the camera of ``extras`` at time ``t`` into a
-    loaded scene as the playback leaves them: every interval before the one
-    containing ``t`` played to its end (style interpolators at 1, their
-    finalizers, camera at 1), then the classic style and camera
-    interpolators of that interval at its progress."""
-    from ..keyframes import KeyframeSequence
-    seq = KeyframeSequence.from_json(extras, scene.geo)
-    if seq.has_style_tracks():
-        seq.bind_style_tracks(get_element=scene.geo.element, resolve=scene._style_track_baseline,
-                              color_space=scene.style.rendering.get('color_interpolation', 'oklab'))
-    kfs = seq.keyframes
-    t = max(kfs[0].t, min(float(t), kfs[-1].t))
-    index = next((i for i, iv in enumerate(seq.intervals) if iv.start_t <= t <= iv.end_t), 0)
-    for done in seq.intervals[:index]:
-        touched = scene._apply_style_interps(done, 1.0)
-        if touched:
-            scene.updateGeoElements({name: True for name in touched})
-        scene._finalize_style_interval(done)
-        if done.camera_interp:
-            scene._apply_camera(done.camera_interp.at(1.0))
-    interval = seq.intervals[index]
-    p = 0.0 if interval.duration <= 0 else (t - interval.start_t) / interval.duration
-    updates = {name: True for name in scene._apply_style_interps(interval, p)}
-    if interval.camera_interp:
-        scene._apply_camera(interval.camera_interp.at(p))
-    if updates:
-        scene.updateGeoElements(updates)
+def _bridged_timeline(doc, timeline, inputs=None) -> dict:
+    """The classic keyframes of ``timeline`` for the scene of the bridge
+    (``timeline_to_bridge``) without the values of the elements ``inputs``
+    sets: explicit inputs are on top of the timeline in the still and in the
+    video alike."""
+    from .kernel.bridge import build_names
+    from .timeline import timeline_to_bridge
+    doc = as_document(doc)
+    bridge = timeline_to_bridge(doc, timeline)
+    if inputs:
+        names = build_names(doc.elements).by_id
+        fixed = {names[el_id] for el_id in inputs if el_id in names}
+        for kf in bridge['keyframes']:
+            values = kf.get('values')
+            if values:
+                for name in fixed:
+                    values.pop(name, None)
+                if not values:
+                    del kf['values']
+    return bridge
 
 
-def _load(scene_class, doc, style_config, inputs, layout, extras, t):
+def _load(scene_class, doc, style_config, inputs, layout):
     scene = scene_class()
     scene.loadDocument(doc, style=style_config, inputs=inputs,
                        reference=layout.get('reference'), content=layout.get('content'),
                        export=layout.get('export'))
-    if extras is not None:
-        _apply_extras(scene, extras, t)
     return scene
 
 
-def _camera_png(scene_class, doc, style_config, inputs, layout, size, out, extras=None, t=None):
+def _still_scene(doc, style_config, inputs, layout, timeline, t, *, scene_class=None, video_labels=False):
+    """The scene of the frame of the video at ``t`` (``render(t=…)``,
+    1.11.0): the document loaded as the video loads it, then
+    ``seek_keyframes`` of its bridged timeline — the frame function of the
+    playback at ``t``; ``video_labels`` — value labels with the cached
+    digits of the video (the video-camera PNG)."""
+    doc = as_document(doc)
+    scene = _load(scene_class or _import_scene(), doc, style_config, inputs, layout)
+    scene.native_effects = scene.seek_keyframes(_bridged_timeline(doc, timeline, inputs), t,
+                                                video_labels=video_labels)
+    return scene
+
+
+def _camera_png(scene_class, doc, style_config, inputs, layout, size, out, timeline=None, t=None):
     """Write the frame of ``doc`` as the manim camera of the video draws it
     (``render(fmt="png", video=…)``, 1.9.0a5): a scene loaded under the
-    pixel size of the video, one ``update_frame``, the camera image; returns
-    the scene (for the report)."""
+    pixel size of the video (with ``timeline``: at ``t``, as the video
+    draws it, its value labels too), one ``update_frame``, the camera image;
+    returns the scene (for the report)."""
     from manim import tempconfig
     width, height, _quality = size
     with tempconfig({'pixel_width': width, 'pixel_height': height, 'disable_caching': True,
                      'verbosity': 'ERROR', 'progress_bar': 'none', 'write_to_movie': False}):
-        frame = _load(scene_class, doc, style_config, inputs, layout, extras, t)
+        if timeline is not None:
+            frame = _still_scene(doc, style_config, inputs, layout, timeline, t, scene_class=scene_class,
+                                 video_labels=True)
+        else:
+            frame = _load(scene_class, doc, style_config, inputs, layout)
         frame.renderer.update_frame(frame, ignore_skipping=True)
         frame.renderer.camera.get_image().convert('RGBA').save(out, format='PNG')
     return frame
@@ -590,8 +614,8 @@ def _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report,
     """The video of ``timeline`` (``render`` with a video ``fmt``)."""
     import glob
     import shutil
-    from .timeline import normalize_timeline, sample_timeline, timeline_to_bridge
-    bridge = timeline_to_bridge(doc, timeline)
+    from .timeline import normalize_timeline, sample_timeline
+    bridge = _bridged_timeline(doc, timeline, inputs)
     if len(bridge['keyframes']) < 2:
         raise ValueError('timeline: a video needs at least two keyframes')
     end = normalize_timeline(doc, timeline)['keyframes'][-1]['t']

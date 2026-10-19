@@ -54,6 +54,12 @@ same values on every path (``|d| < 2π``). A number is clamped to the
 ``min``/``max`` of its operation at each keyframe. Number elements (classic
 ``Var``) are dropped from visibility maps.
 
+``timeline_effects(doc, timeline, t)`` (1.11.0) — the enter and exit effects
+the video plays at ``t`` (docs/native/timeline.md §3): a change of
+visibility at keyframe ``k+1`` plays in the interval ``[t_k, t_{k+1}]``,
+from ``t_k + at`` for ``duration``; the frame at ``t`` is that of the
+interval holding it, ``[t_k, t_{k+1})`` (the last one up to its end).
+
 ``steps_timeline(doc, *, lag, duration, pause, effects, start)`` — the
 construction step by step (plan L3 §5.4; docs/native/timeline.md §4).
 """
@@ -67,7 +73,7 @@ from ..easing import EASING_FUNCTIONS
 from .document import as_document, bound_producer
 
 __all__ = ['TIMELINE_FORMAT', 'DIRECTIONS', 'STEP_EFFECTS', 'StepsTimeline', 'sample_timeline',
-           'steps_timeline', 'timeline_to_bridge', 'normalize_timeline', 'appearance_visible']
+           'steps_timeline', 'timeline_effects', 'timeline_to_bridge', 'normalize_timeline', 'appearance_visible']
 
 TIMELINE_FORMAT = 'animageo-timeline/v1'
 DIRECTIONS = ('short', 'long', 'cw', 'ccw')
@@ -84,6 +90,9 @@ STEP_EFFECTS = {
 # The entrance effects of the keyframe JSON v2 (``keyframes.ENTER_EFFECTS``;
 # repeated here so ``steps_timeline`` stays free of the classic code).
 ENTER_EFFECTS = ('fade', 'none', 'create', 'grow', 'write')
+EXIT_EFFECTS = ('fade', 'none', 'uncreate', 'shrink')
+# ``keyframes.DEFAULT_EFFECT_DURATION``: an effect without a duration, s
+EFFECT_DURATION = 0.4
 # Types without a drawing of their own (a classic ``Var``): never in a step timeline.
 UNDRAWN = frozenset({'number'})
 
@@ -302,6 +311,75 @@ def sample_timeline(doc, timeline, t) -> dict:
             break
         visible.update(kf['visible'])
     return {'t': t, 'inputs': inputs, 'visible': visible}
+
+
+# ── effects ──────────────────────────────────────────────────────────────
+
+def _effect_spec(spec, default):
+    """``(effect, duration, at)`` of an ``enter``/``exit`` spec (a name or an
+    object; ``keyframes._normalize_effect``), else of ``default``."""
+    if spec is None:
+        spec = default if default is not None else 'fade'
+    if isinstance(spec, str):
+        spec = {'effect': spec}
+    if not isinstance(spec, dict):
+        raise ValueError(f'timeline: an effect is a name or an object, got {spec!r}')
+    return (spec.get('effect', 'fade'), _number(spec.get('duration', EFFECT_DURATION), 'effect duration'),
+            _number(spec.get('at', 0.0), 'effect at'))
+
+
+def timeline_effects(doc, timeline, t) -> dict:
+    """``{id: {"phase", "effect", "progress", "present"}}`` — the enter and
+    exit effects of the interval of the video frame at ``t`` (module
+    docstring), by the rule of the classic playback
+    (``KeyframeSequence.bind_visibility``): an element whose visibility at
+    keyframe ``k+1`` differs from its visibility before (keyframe 0, else
+    ``appearance.<id>.visible``) enters (``phase`` ``"enter"``) or exits
+    (``"exit"``) with the ``enter``/``exit`` spec of keyframe ``k+1`` for it,
+    else ``defaults.enter``/``defaults.exit``, else ``fade``; ``at`` is
+    clamped to the interval, the duration (default 0.4 s) cut at its end.
+    ``progress`` — ``(t − t_k − at) / duration`` in ``[0, 1]`` (a zero
+    duration: ``1`` from ``at`` on); ``present`` — whether the element is in
+    the frame: ``progress > 0`` for an entrance, ``< 1`` for an exit (an
+    element without an effect is present as ``sample_timeline`` says).
+    Elements that are not drawn (numbers) have no effects."""
+    doc = as_document(doc)
+    norm = normalize_timeline(doc, timeline)
+    keyframes = norm['keyframes']
+    t = _number(t, 't')
+    if len(keyframes) < 2:
+        return {}
+    t = max(keyframes[0]['t'], min(t, keyframes[-1]['t']))
+    k = next((i for i in range(len(keyframes) - 1) if t < keyframes[i + 1]['t']), len(keyframes) - 2)
+    defaults = timeline.get('defaults') or {}
+    drawn = {el_id for el_id, el in doc.elements.items() if el['type'] not in UNDRAWN}
+    running = dict(keyframes[0]['visible'])
+    out = {}
+    for i in range(k + 1):
+        kf, nxt = keyframes[i], keyframes[i + 1]
+        duration = nxt['t'] - kf['t']
+        changes = []
+        for el_id, flag in nxt['visible'].items():
+            before = running.get(el_id, appearance_visible(doc, el_id))
+            running[el_id] = flag
+            if before != flag and el_id in drawn:
+                changes.append((el_id, flag))
+        if i < k:
+            continue
+        local = t - kf['t']
+        for el_id, flag in changes:
+            phase = 'enter' if flag else 'exit'
+            spec = (nxt['raw'].get(phase) or {}).get(el_id)
+            effect, length, at = _effect_spec(spec, defaults.get(phase))
+            at = min(max(at, 0.0), duration)
+            length = max(min(length, duration - at), 0.0)
+            if length <= 0:
+                progress = 1.0 if local >= at else 0.0
+            else:
+                progress = min(max((local - at) / length, 0.0), 1.0)
+            out[el_id] = {'phase': phase, 'effect': effect, 'progress': progress,
+                          'present': progress > 0 if flag else progress < 1}
+    return out
 
 
 # ── bridge ───────────────────────────────────────────────────────────────

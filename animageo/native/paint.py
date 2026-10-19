@@ -491,9 +491,12 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
     style pixels, without manim.
 
     ``style_config``, ``export_layout`` and ``inputs`` are those of
-    ``native.render``; ``t`` with ``timeline`` — the frame at ``t``: inputs
-    and visibility of ``sample_timeline`` and the style tracks of the
-    timeline (its camera does not change the paint). Returns
+    ``native.render``; ``t`` with ``timeline`` — the frame of the video at
+    ``t``: inputs and visibility of ``sample_timeline``, an element in an
+    enter or exit effect drawn as ``timeline_effects`` says (``present``;
+    its entry gains ``effect`` ``{phase, effect, progress}`` once the effect
+    has begun, the paint is that of the element in full), and the style
+    tracks of the timeline (its camera does not change the paint). Returns
     ``{"format": "animageo-paint/v1", "background", "ptUnit",
     "ptUnitStyle", "t", "elements": {id: entry}, "order": [id, …],
     "diagnostics"}``: ``ptUnit`` — output pixels per world unit,
@@ -538,12 +541,16 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
     if t is not None or timeline is not None:
         if t is None or timeline is None:
             raise ValueError('native.resolve_paint: t and timeline go together')
-        from .timeline import sample_timeline
+        from .timeline import sample_timeline, timeline_effects
         sample = sample_timeline(doc, timeline, t)
         merged = dict(sample['inputs'])
         merged.update(inputs or {})
         inputs = merged
-        doc = document_at(doc, sample)
+        effects = timeline_effects(doc, timeline, t)
+        # the frame of the video: an element in its effect is in it as the effect says
+        present = dict(sample['visible'])
+        present.update({el_id: e['present'] for el_id, e in effects.items()})
+        doc = document_at(doc, {'visible': present})
     check_inputs(doc, inputs)
     ev = evaluate(doc, inputs=inputs)
 
@@ -591,6 +598,9 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
         entry = {'type': type_, 'styleType': style_type,
                  'style': _TYPES.get(style_type, (None, ()))[0], 'drawn': False}
         elements[el_id] = entry
+        effect = effects.get(el_id) if sample is not None else None
+        if effect is not None and effect['progress'] > 0:
+            entry['effect'] = {'phase': effect['phase'], 'effect': effect['effect'], 'progress': _r(effect['progress'])}
         if not isinstance(elem, geo.Element) or not geo.is_drawn(elem.data):
             continue
         if not resolve(final, elem, 'visible', default=getattr(elem, 'visible', True)):

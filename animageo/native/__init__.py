@@ -23,6 +23,7 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     native.steps(doc), native.describe(doc)  # steps and their text (docs/native/steps.md)
     native.has("locus")                      # features by stage (native.FEATURES)
     native.sample_timeline(doc, timeline, t) # {t, inputs, visible} by ID (docs/native/timeline.md)
+    native.timeline_effects(doc, timeline, t)  # {id: {phase, effect, progress, present}} of the video at t
     native.evaluate(doc, t=1.5, timeline=tl) # the document at time t, ev.visible
     native.steps_timeline(doc)               # StepsTimeline(keyframes, steps, duration)
     native.from_ggb("a.ggb", id_namespace=ns)   # (document | None, import_report.v1) (docs/native/import.md)
@@ -74,7 +75,7 @@ from .sampling import check_general
 from .conditions.apply import (ConditionResult, Refusal, apply_condition, condition_candidates, release_condition,
                                shape_conditions)
 from .conditions.marks import AutoMarks, add_auto_marks, auto_marks, auto_sources
-from .timeline import StepsTimeline, sample_timeline, steps_timeline, timeline_to_bridge
+from .timeline import StepsTimeline, sample_timeline, steps_timeline, timeline_effects, timeline_to_bridge
 from .convert import ConvertError, ImportRefused, from_construction, from_ggb
 from .paint import resolve_paint, style_keys
 
@@ -86,7 +87,8 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'render.frame', 'from_ggb', 'from_construction', 'import_report.v1', 'appearance.hatch',
             'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document', 'convert.formula',
             'import_report.text_template', 'import_report.text_literals', 'convert.command_synonyms',
-            'convert.ggb_expressions', 'style_keys', 'resolve_paint')
+            'convert.ggb_expressions', 'style_keys', 'resolve_paint', 'label.halo', 'label.parts',
+            'timeline.effects', 'render.t.effects')
 
 
 def has(feature: str) -> bool:
@@ -123,7 +125,15 @@ def has(feature: str) -> bool:
     warning ``style_key_ineffective`` of ``appearance_plan`` and the tick sizes
     of an equality mark on its targets; ``resolve_paint`` — :func:`resolve_paint`,
     the fixtures ``animageo-paint-parity/v1`` and the style contract
-    ``native/style``)."""
+    ``native/style``; 1.11.0: ``label.halo`` — the keys ``label_halo_px``,
+    ``label_halo_color``, ``label_halo_opacity`` drawn by the renderer and
+    ``label.halo`` of :func:`resolve_paint`; ``label.parts`` — ``label.parts``
+    of :func:`resolve_paint` and the TeX rule of the underscore of a name;
+    ``timeline.effects`` — :func:`timeline_effects`, ``effect`` and the
+    presence of :func:`resolve_paint` at ``t``; ``render.t.effects`` —
+    ``render(t=…)`` is the frame of the video at ``t``: effects, events and
+    labels placed at keyframes as the video draws them, the report gains
+    ``effects``)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION
@@ -194,6 +204,7 @@ __all__ = [
     'StepsTimeline',
     'sample_timeline',
     'steps_timeline',
+    'timeline_effects',
     'timeline_to_bridge',
     'steps_split',
     'style_keys',

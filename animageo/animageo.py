@@ -4,7 +4,7 @@ import json
 import math
 import logging
 import traceback
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from types import SimpleNamespace
 import numpy as np
 import tempfile
@@ -1843,41 +1843,15 @@ class AnimaGeoScene(MovingCameraScene):
         Args:
             keyframes_data: dict (JSON) or KeyframeSequence instance
         """
-        if isinstance(keyframes_data, dict):
-            seq = KeyframeSequence.from_json(keyframes_data, self.geo)
-        else:
-            seq = keyframes_data
+        seq, layouts = self._prepare_keyframes(keyframes_data)
         logger.info("Playing %d keyframes", len(seq.keyframes))
-
-        if seq.has_style_tracks():
-            color_space = self.style.rendering.get('color_interpolation', 'oklab')
-            if color_space not in COLOR_SPACES:
-                raise ValueError(
-                    f"rendering.color_interpolation must be one of {COLOR_SPACES}, "
-                    f"got {color_space!r}"
-                )
-            seq.bind_style_tracks(
-                get_element=self.geo.element,
-                resolve=self._style_track_baseline,
-                color_space=color_space,
-            )
-
         use_v2_visibility = (seq.version >= 2)
-        if use_v2_visibility:
-            seq.bind_visibility(get_element=self.geo.element)
-
-        layouts = self._bind_label_snapshots(seq)
-        use_snapshots = layouts is not None
 
         # Value-bearing labels animate via fast DecimalNumber-backed ValueLabels
         # for the whole sequence (no LaTeX recompile per frame, no engine swap
         # mid-animation). Pre-warm the digit glyph cache before the first frame.
         with self._dynamic_value_labels():
-            self._apply_keyframe_state(seq.keyframes[0], seq.element_info)
-
-            if use_snapshots and layouts and layouts[0]:
-                from .label_placement import apply_label_layout
-                apply_label_layout(self, layouts[0], rerender=True)
+            self._start_keyframes(seq, layouts)
 
             for i, interval in enumerate(seq.intervals):
                 if use_v2_visibility and (interval.enter_effects or interval.exit_effects):
@@ -1895,10 +1869,7 @@ class AnimaGeoScene(MovingCameraScene):
                     if plays:
                         self.play(*plays, run_time=0.4)
 
-                has_labels = bool(interval.label_interps) or bool(interval.dynamic_angle_params)
-                has_styles = bool(interval.style_interps)
-                if (not interval.interpolators and not has_labels and not has_styles
-                        and interval.camera_interp is None and not interval.events):
+                if self._interval_holds_still(interval):
                     if interval.duration > 0:
                         self.wait(interval.duration)
                     self._finalize_style_interval(interval)
@@ -1906,6 +1877,212 @@ class AnimaGeoScene(MovingCameraScene):
 
                 self._play_keyframe_interval(interval)
                 self._finalize_style_interval(interval)
+
+    def _prepare_keyframes(self, keyframes_data):
+        """``(seq, layouts)`` of a playback: the parsed sequence with its style
+        tracks and (v2) visibility effects bound, and the label snapshots of
+        every keyframe (``None`` when off) — :meth:`play_keyframes` and
+        :meth:`seek_keyframes`."""
+        if isinstance(keyframes_data, dict):
+            seq = KeyframeSequence.from_json(keyframes_data, self.geo)
+        else:
+            seq = keyframes_data
+        if seq.has_style_tracks():
+            color_space = self.style.rendering.get('color_interpolation', 'oklab')
+            if color_space not in COLOR_SPACES:
+                raise ValueError(
+                    f"rendering.color_interpolation must be one of {COLOR_SPACES}, "
+                    f"got {color_space!r}"
+                )
+            seq.bind_style_tracks(
+                get_element=self.geo.element,
+                resolve=self._style_track_baseline,
+                color_space=color_space,
+            )
+        if seq.version >= 2:
+            seq.bind_visibility(get_element=self.geo.element)
+        return seq, self._bind_label_snapshots(seq)
+
+    def _start_keyframes(self, seq, layouts):
+        """The scene at the first keyframe, before the first interval plays."""
+        self._apply_keyframe_state(seq.keyframes[0], seq.element_info)
+        if layouts is not None and layouts and layouts[0]:
+            from .label_placement import apply_label_layout
+            apply_label_layout(self, layouts[0], rerender=True)
+
+    def seek_keyframes(self, keyframes_data, t, *, video_labels=False):
+        """Put the scene in the state of the frame :meth:`play_keyframes`
+        draws at playhead time ``t`` (clamped to the keyframes), without
+        playing: the sequence prepared as for the playback, every interval
+        before the one holding ``t`` played to its end (the state its last
+        frame leaves: values, styles and their finalizers, label offsets, the
+        camera, the elements its effects bring and take), then the frame of
+        that interval at ``(t − start) / duration`` — the same
+        :meth:`_keyframe_frame` the playback draws each frame with, enter and
+        exit effects and emphasis events included. The interval holding ``t``
+        is ``[start, end)`` as in the video (its frame ``k`` shows
+        ``start + k/fps``); the last one is held to its end.
+
+        An element its effect shows nothing of yet (an entrance not begun, an
+        exit done) is left out of the scene, as it draws no pixel. Value
+        labels are TeX, as in a still export, unless ``video_labels`` — then
+        the cached digits of the video (``rendering.fast_value_labels``), for a
+        frame that is the video's to the pixel. Returns the effects of the
+        frame: ``{name: (phase, kind, progress)}``.
+        """
+        seq, layouts = self._prepare_keyframes(keyframes_data)
+        kfs = seq.keyframes
+        t = max(kfs[0].t, min(float(t), kfs[-1].t))
+        with (self._dynamic_value_labels() if video_labels else nullcontext()):
+            self._start_keyframes(seq, layouts)
+            if not seq.intervals:
+                return {}
+            index = next((i for i, iv in enumerate(seq.intervals) if t < iv.end_t),
+                         len(seq.intervals) - 1)
+            for interval in seq.intervals[:index]:
+                self._seek_interval(seq, interval, 1.0, final=True)
+            interval = seq.intervals[index]
+            p = 1.0 if interval.duration <= 0 else min(max((t - interval.start_t) / interval.duration, 0.0), 1.0)
+            return self._seek_interval(seq, interval, p, final=False)
+
+    def _seek_interval(self, seq, interval, p, *, final):
+        """One interval of :meth:`seek_keyframes`: its frame at ``p``; with
+        ``final`` the state the playback leaves after it."""
+        effects = seq.version >= 2 and bool(interval.enter_effects or interval.exit_effects)
+        if effects:
+            self._reveal_entering(interval)
+        else:
+            # the legacy show/hide of a v1 sequence (0.4 s plays before the interval)
+            for name in interval.show:
+                elem = self.geo.element(name)
+                if elem is not None:
+                    elem.visible = True
+            for name in interval.hide:
+                elem = self.geo.element(name)
+                if elem is not None:
+                    elem.visible = False
+            if interval.show or interval.hide:
+                self.updateGeoElements(list(interval.show) + list(interval.hide))
+        state = {}
+        if not effects and self._interval_holds_still(interval):
+            self._finalize_style_interval(interval)
+            return state
+        if final:
+            self._keyframe_frame(interval, 1.0, {}, effects=effects, events=False)
+            if effects:
+                self._remove_exited(interval)
+            self._finalize_style_interval(interval)
+            return state
+        self._keyframe_frame(interval, p, {}, effects=effects, events=True)
+        if effects:
+            t_abs = p * interval.duration
+            for spec in list(interval.enter_effects) + list(interval.exit_effects):
+                raw = self._effect_alpha(spec, t_abs)
+                progress = raw if spec.direction == 'in' else 1.0 - raw
+                state[spec.name] = ('enter' if spec.direction == 'in' else 'exit', spec.kind, progress)
+                if raw <= 0:
+                    elem = self.geo.element(spec.name)
+                    if elem is not None:
+                        elem.visible = False
+                    mobj = self.mobject(spec.name)
+                    if mobj is not None:
+                        self.remove(mobj)
+        return state
+
+    @staticmethod
+    def _interval_holds_still(interval):
+        """Whether an interval without effects changes nothing (the playback
+        waits through it, no frame is rebuilt)."""
+        return (not interval.interpolators and not interval.label_interps
+                and not interval.dynamic_angle_params and not interval.style_interps
+                and interval.camera_interp is None and not interval.events)
+
+    def _reveal_entering(self, interval):
+        """Make the elements an interval brings in present at its start
+        (transparent until their effect starts)."""
+        for e in interval.enter_effects:
+            elem = self.geo.element(e.name)
+            if elem is not None:
+                elem.visible = True
+        entering = [e.name for e in interval.enter_effects]
+        if entering:
+            self.updateGeoElements(entering)
+
+    def _remove_exited(self, interval):
+        """Hide and remove the elements an interval took out, at its end."""
+        for e in interval.exit_effects:
+            elem = self.geo.element(e.name)
+            if elem is not None:
+                elem.visible = False
+            m = self.mobject(e.name)
+            if m is not None:
+                self.remove(m)
+
+    def _keyframe_frame(self, interval, p, active_events, *, effects=True, events=True):
+        """The scene at progress ``p`` of ``interval``: one frame of the
+        playback (:meth:`_play_keyframe_interval`,
+        :meth:`_play_keyframe_interval_v2`) and the still of
+        :meth:`seek_keyframes`.
+
+        Order: values, geometry rebuild, style tracks, then label offsets
+        (after the rebuild, so ``ang.side1/2/p`` are fresh when
+        ``compute_angle_label_center`` runs), the mobjects of everything
+        touched in one ``updateGeoElements``; then the enter/exit effects
+        (``effects``) over the fresh mobjects, the camera, and the emphasis
+        events (``events``) last. Effect and event targets are rebuilt every
+        frame so their transform starts from a fresh mobject — otherwise an
+        untouched target is never re-become'd and the transform (e.g.
+        indicate's scale) compounds instead of restoring itself.
+        """
+        from .label_placement import compute_angle_label_offset_px
+
+        t_abs = p * interval.duration
+        touched = set()
+        for interp in interval.interpolators:
+            self._apply_interp_value(interp.name, interp.kind, interp.at(p))
+            touched.add(interp.name)
+
+        updates = self.geo.rebuild()
+        for name in touched:
+            updates[name] = updates.get(name, True)
+        for name in self._apply_style_interps(interval, p):
+            updates[name] = updates.get(name, True)
+
+        ptUnit = _style_ptUnit(self.style)
+        ptUnit_ggb = self.style.export.get('ptUnit_ggb', ptUnit)
+        for li in interval.label_interps:
+            elem = self.geo.element(li.name)
+            if elem is None or not self._element_visible(elem):
+                continue
+            ox, oy = li.at(p)
+            elem.style['label_offset_px'] = [float(ox), float(oy)]
+            updates[li.name] = updates.get(li.name, True)
+        for name, ap in interval.dynamic_angle_params.items():
+            elem = self.geo.element(name)
+            if elem is None or not self._element_visible(elem):
+                continue
+            elem.style['label_offset_px'] = list(
+                compute_angle_label_offset_px(elem.data, ap, ptUnit, ptUnit_ggb))
+            updates[name] = updates.get(name, True)
+
+        if effects:
+            for e in list(interval.enter_effects) + list(interval.exit_effects):
+                updates[e.name] = updates.get(e.name, True)
+        for spec in interval.events:
+            for name in spec.targets:
+                updates[name] = updates.get(name, True)
+
+        self.updateGeoElements(updates)
+
+        if effects:
+            for e in list(interval.enter_effects) + list(interval.exit_effects):
+                self._apply_effect_alpha(e.name, e.kind, self._effect_alpha(e, t_abs))
+
+        if interval.camera_interp:
+            self._apply_camera(interval.camera_interp.at(p))
+
+        if events:
+            self._apply_events(interval, t_abs, active_events)
 
     def _bind_label_snapshots(self, seq, indices=None):
         """Auto-place labels at every keyframe and let them interpolate.
@@ -2055,79 +2232,16 @@ class AnimaGeoScene(MovingCameraScene):
 
         The updater lives on a sentinel Mobject (not on the animated tracker),
         because manim does not deliver intermediate values to updaters attached
-        to the mobject being animated.
-
-        Order within ``on_frame``: geometry rebuild first, then label offsets
-        (so ``ang.side1/2/p`` are fresh when ``compute_angle_label_center`` runs).
-        Label names are merged into the ``updates`` dict so a single
-        ``updateGeoElements`` call rebuilds both geometry and labels.
+        to the mobject being animated. Each frame is :meth:`_keyframe_frame`
+        (no enter/exit effects on this path).
         """
-        from .label_placement import compute_angle_label_offset_px
-
         progress = ValueTracker(0)
         sentinel = Mobject()   # invisible carrier for the updater
-        interps = interval.interpolators
-        label_interps = interval.label_interps
-        dynamic_angle_params = interval.dynamic_angle_params
-        geo_ref = self.geo
         scene_ref = self
-
-        ptUnit = _style_ptUnit(self.style)
-        ptUnit_ggb = self.style.export.get('ptUnit_ggb', ptUnit)
-
         active_events = {}
 
         def on_frame(mob):
-            t = progress.get_value()
-            t_abs = t * interval.duration
-            touched = set()
-            for interp in interps:
-                val = interp.at(t)
-                scene_ref._apply_interp_value(interp.name, interp.kind, val)
-                touched.add(interp.name)
-
-            updates = geo_ref.rebuild()
-            for name in touched:
-                updates[name] = updates.get(name, True)
-
-            for name in scene_ref._apply_style_interps(interval, t):
-                updates[name] = updates.get(name, True)
-
-            # Label offsets must be written AFTER geo.rebuild so that
-            # ang.side1/2/p are up to date for compute_angle_label_center.
-            for li in label_interps:
-                elem = geo_ref.element(li.name)
-                if elem is None or not scene_ref._element_visible(elem):
-                    continue
-                ox, oy = li.at(t)
-                elem.style['label_offset_px'] = [float(ox), float(oy)]
-                updates[li.name] = updates.get(li.name, True)
-
-            for name, ap in dynamic_angle_params.items():
-                elem = geo_ref.element(name)
-                if elem is None or not scene_ref._element_visible(elem):
-                    continue
-                elem.style['label_offset_px'] = list(
-                    compute_angle_label_offset_px(elem.data, ap, ptUnit, ptUnit_ggb)
-                )
-                updates[name] = updates.get(name, True)
-
-            # Ensure emphasis-event targets are (re)rendered this frame so
-            # the adapter always transforms a fresh mobject — otherwise a
-            # target that isn't otherwise touched is never re-become'd, and
-            # the transform (e.g. indicate's scale) compounds every frame
-            # instead of self-restoring once the event window closes.
-            for spec in interval.events:
-                for _nm in spec.targets:
-                    updates[_nm] = updates.get(_nm, True)
-
-            scene_ref.updateGeoElements(updates)
-
-            if interval.camera_interp:
-                scene_ref._apply_camera(interval.camera_interp.at(t))
-
-            # Emphasis events LAST — transform the freshly rebuilt mobjects.
-            scene_ref._apply_events(interval, t_abs, active_events)
+            scene_ref._keyframe_frame(interval, progress.get_value(), active_events, effects=False)
 
         sentinel.add_updater(on_frame)
         self.add(progress, sentinel)
@@ -2142,110 +2256,33 @@ class AnimaGeoScene(MovingCameraScene):
 
     def _play_keyframe_interval_v2(self, interval):
         """v2 interval playback: geometry + style + labels + enter/exit effects
-        in one exact-duration play(). Entering elements are made present at the
-        interval start (transparent until their effect starts); exiting elements
-        are removed at the interval end.
+        in one exact-duration play(), each frame :meth:`_keyframe_frame`.
+        Entering elements are made present at the interval start (transparent
+        until their effect starts); exiting elements are removed at the
+        interval end.
         """
-        from .label_placement import compute_angle_label_offset_px
-
         # Lifecycle: reveal entering elements now (present-but-faded); their
         # first-frame alpha keeps them invisible until the effect starts.
-        for e in interval.enter_effects:
-            elem = self.geo.element(e.name)
-            if elem is not None:
-                elem.visible = True
-        entering = [e.name for e in interval.enter_effects]
-        if entering:
-            self.updateGeoElements(entering)
+        self._reveal_entering(interval)
 
         progress = ValueTracker(0)
         sentinel = Mobject()
-        interps = interval.interpolators
-        label_interps = interval.label_interps
-        dynamic_angle_params = interval.dynamic_angle_params
-        enter_effects = interval.enter_effects
-        exit_effects = interval.exit_effects
-        duration = interval.duration
-        geo_ref = self.geo
         scene_ref = self
-        ptUnit = _style_ptUnit(self.style)
-        ptUnit_ggb = self.style.export.get('ptUnit_ggb', ptUnit)
         active_events = {}
 
         def on_frame(mob):
-            t = progress.get_value()
-            t_abs = t * duration
-            touched = set()
-            for interp in interps:
-                scene_ref._apply_interp_value(interp.name, interp.kind, interp.at(t))
-                touched.add(interp.name)
-
-            updates = geo_ref.rebuild()
-            for name in touched:
-                updates[name] = updates.get(name, True)
-            for name in scene_ref._apply_style_interps(interval, t):
-                updates[name] = updates.get(name, True)
-
-            for li in label_interps:
-                elem = geo_ref.element(li.name)
-                if elem is None or not scene_ref._element_visible(elem):
-                    continue
-                ox, oy = li.at(t)
-                elem.style['label_offset_px'] = [float(ox), float(oy)]
-                updates[li.name] = updates.get(li.name, True)
-            for name, ap in dynamic_angle_params.items():
-                elem = geo_ref.element(name)
-                if elem is None or not scene_ref._element_visible(elem):
-                    continue
-                elem.style['label_offset_px'] = list(
-                    compute_angle_label_offset_px(elem.data, ap, ptUnit, ptUnit_ggb))
-                updates[name] = updates.get(name, True)
-
-            # Ensure effect targets are (re)rendered this frame so the adapter
-            # transforms a fresh full-opacity mobject.
-            for e in enter_effects:
-                updates[e.name] = updates.get(e.name, True)
-            for e in exit_effects:
-                updates[e.name] = updates.get(e.name, True)
-
-            # Same for emphasis-event targets — otherwise a target that isn't
-            # otherwise touched is never re-become'd, and the transform (e.g.
-            # indicate's scale) compounds every frame instead of
-            # self-restoring once the event window closes.
-            for spec in interval.events:
-                for _nm in spec.targets:
-                    updates[_nm] = updates.get(_nm, True)
-
-            scene_ref.updateGeoElements(updates)
-
-            # Effects LAST — multiply over the freshly-become'd mobjects.
-            for e in enter_effects:
-                scene_ref._apply_effect_alpha(e.name, e.kind, scene_ref._effect_alpha(e, t_abs))
-            for e in exit_effects:
-                scene_ref._apply_effect_alpha(e.name, e.kind, scene_ref._effect_alpha(e, t_abs))
-
-            if interval.camera_interp:
-                scene_ref._apply_camera(interval.camera_interp.at(t))
-
-            # Emphasis events LAST — transform the freshly rebuilt mobjects.
-            scene_ref._apply_events(interval, t_abs, active_events)
+            scene_ref._keyframe_frame(interval, progress.get_value(), active_events, effects=True)
 
         sentinel.add_updater(on_frame)
         self.add(progress, sentinel)
-        self.play(progress.animate(rate_func=linear).set_value(1), run_time=duration)
+        self.play(progress.animate(rate_func=linear).set_value(1), run_time=interval.duration)
         sentinel.clear_updaters()
         self.remove(progress, sentinel)
         for m in list(active_events.values()):
             self.remove(m)
 
         # Lifecycle end: hide + remove exited elements.
-        for e in exit_effects:
-            elem = self.geo.element(e.name)
-            if elem is not None:
-                elem.visible = False
-            m = self.mobject(e.name)
-            if m is not None:
-                self.remove(m)
+        self._remove_exited(interval)
 
     def _effect_alpha(self, spec, t_abs):
         """Visible-fraction of an enter/exit effect at absolute interval time.
@@ -2485,17 +2522,17 @@ class AnimaGeoScene(MovingCameraScene):
             return None
         return None
 
-    def _event_additive(self, spec, env, t_abs, active):
+    def _event_additive(self, spec, env, t_abs, active, order=0):
         """Additive (overlay) emphasis events: ``flash`` / ``circumscribe``.
 
         Unlike ``_event_indicate`` (which transforms the target's own
         mobject in place, self-restoring because ``updateGeoElements``
         re-``become()``s it every frame), these effects add a NEW temp
         decoration mobject on top of the target and fade it in/out with
-        the envelope bump (see ``_event_envelope``) — it persists across
-        frames on its own, so it must be explicitly removed once the
-        window closes to keep the scene byte-identical to the no-event
-        case.
+        the envelope bump (see ``_event_envelope``). The overlay is rebuilt
+        from the target every frame and persists across frames on its own,
+        so it must be explicitly removed once the window closes to keep the
+        scene byte-identical to the no-event case.
 
         Keyed by ``id(spec)`` (unique per event/interval, stable across
         the whole window) rather than target name, so two concurrent
@@ -2509,6 +2546,15 @@ class AnimaGeoScene(MovingCameraScene):
 
         if env <= 0:
             if temp is not None:
+                # A mobject removed during a play() stays among manim's moving
+                # mobjects and is drawn until the play ends: clear it first
+                # (as updateGeoElements does), or the overlay holds its last
+                # opacity to the end of the interval.
+                try:
+                    temp.set_stroke(opacity=0)
+                    temp.set_fill(opacity=0)
+                except Exception:
+                    pass
                 try:
                     self.remove(temp)
                 except Exception:
@@ -2516,20 +2562,35 @@ class AnimaGeoScene(MovingCameraScene):
                 active.pop(key, None)
             return
 
+        # The overlay is built from the target as this frame draws it (it
+        # follows a moving or rescaled target), so a frame depends on its
+        # time only — the still of seek_keyframes draws the video's frame.
+        if not spec.targets:
+            return
+        target = self.mobject(spec.targets[0])
+        overlay = self._make_event_overlay(spec, target) if target is not None else None
+        if overlay is None:
+            if temp is not None:
+                try:
+                    temp.set_stroke(opacity=0)
+                    temp.set_fill(opacity=0)
+                except Exception:
+                    pass
+            return
+        # Overlays of one interval stack by the order of their events, not
+        # by the frame each appeared in.
+        overlay.set_z_index(overlay.z_index + order * 1e-3)
         if temp is None:
-            if not spec.targets:
-                return
-            target = self.mobject(spec.targets[0])
-            if target is None:
-                return
-            temp = self._make_event_overlay(spec, target)
-            if temp is None:
-                return
+            temp = overlay
             try:
                 self.add(temp)
             except Exception:
                 return
             active[key] = temp
+        else:
+            temp.become(overlay)
+            for sub_old, sub_new in zip(temp.get_family(), overlay.get_family()):
+                sub_old.z_index = sub_new.z_index
 
         try:
             temp.set_stroke(opacity=env)
@@ -2550,13 +2611,13 @@ class AnimaGeoScene(MovingCameraScene):
         only mutates the live mobject, which is why the effect vanishes on
         its own once the event window (see ``_event_envelope``) closes.
         """
-        for spec in getattr(interval, 'events', []):
+        for order, spec in enumerate(getattr(interval, 'events', [])):
             env = self._event_envelope(spec, t_abs)
             if spec.effect == 'indicate':
                 for name in spec.targets:
                     self._event_indicate(self.mobject(name), env, spec)
             else:
-                self._event_additive(spec, env, t_abs, active)   # Task 3
+                self._event_additive(spec, env, t_abs, active, order=order)
 
     def _apply_style_interps(self, interval, t):
         """Write interpolated style-track values for *interval* at progress t.
