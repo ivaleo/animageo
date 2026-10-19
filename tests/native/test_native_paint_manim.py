@@ -1,7 +1,8 @@
 """The renderer draws the paint ``native.resolve_paint`` reports (1.11.0rc3):
 for every scene of the fixtures ``animageo-paint-parity/v1`` the render
 context of each drawn element (``_build_render_ctx``) and what it draws —
-the layers of the fill and the label, the size and the shape of a point, the
+the colour, opacity, width and cap of the stroke layer, the font size of the
+label text, the layers of the fill and the label, the size and the shape of a point, the
 hatch, the lines or the wave of the ticks, the radii of the arcs of an angle
 and the corners of a right-angle square, the dash patterns. A scene with a
 timeline is the frame ``render(t)`` draws (1.11.0): the document loaded as
@@ -103,6 +104,8 @@ def test_the_renderer_draws_the_paint(case, drawn):
             assert stroke['widthPx'] == pytest.approx(ctx.lw * unit / 100), where
             if stroke['cap'] is not None:
                 assert stroke['cap'] == ctx.cap, where
+            hidden = (entry.get('point') or {}).get('display') == 'only_labels'
+            _assert_drawn_stroke(stroke, group, unit, where, hidden=hidden, alpha=_fade_alpha(entry))
             if stroke.get('dash') is not None:
                 assert [stroke['dash']['onPx'], stroke['dash']['offPx']] == pytest.approx(list(ctx.dash_px)), where
             else:
@@ -148,6 +151,69 @@ def test_the_renderer_draws_the_paint(case, drawn):
             assert label['z'] == pytest.approx(ctx.zz_label, abs=1e-9), where
             drawn_label = [m for m in group.get_family() if getattr(m, '_animageo_is_label', False)]
             assert drawn_label and drawn_label[0].z_index == pytest.approx(label['z'], abs=1e-9), where
+            sizes = _drawn_font_sizes(drawn_label[0])
+            assert sizes, where
+            for size in sizes:
+                assert label['fontSizePx'] * GGB_FONT_SCALE / unit == pytest.approx(size, rel=1e-6), where
+
+
+def _fade_alpha(entry):
+    """The factor a fade of the frame puts on the opacity of what is drawn:
+    ``progress`` of an entrance, ``1 − progress`` of an exit (``effect`` of
+    the entry; the other effects draw part of the element, not less of it)."""
+    effect = entry.get('effect')
+    if effect is None or effect['effect'] != 'fade':
+        return 1.0
+    return effect['progress'] if effect['phase'] == 'enter' else 1.0 - effect['progress']
+
+
+def _assert_drawn_stroke(stroke, group, unit, where, hidden=False, alpha=1.0):
+    """The stroke the renderer draws: the first glyph-free layer of the
+    element at the layer of its stroke (the line of a segment, the outline of
+    a polygon or a point, the arc of an angle; ticks, labels and halos come
+    after it or sit apart) — its colour, opacity (times the fade of the frame,
+    ``alpha``), width and cap. A point of ``points_display: only_labels``
+    (``point.display``) is drawn transparent."""
+    from manim import ManimColor
+
+    from animageo.animageo import _CAP_MAP
+    layers = [m for m in group.family_members_with_points()
+              if not _in_label(m, group) and abs(m.z_index - stroke['z']) < 1e-9]
+    assert layers, where
+    layer = layers[0]
+    if hidden:
+        assert (layer.get_stroke_opacity(), layer.get_fill_opacity()) == (0, 0), where
+        return
+    if stroke['color'] is not None:
+        assert ManimColor(stroke['color']).to_hex() == layer.get_stroke_color().to_hex(), where
+    assert stroke['opacity'] * alpha == pytest.approx(layer.get_stroke_opacity()), where
+    assert stroke['widthPx'] == pytest.approx(layer.get_stroke_width() * unit / 100), where
+    if stroke['cap'] is not None:
+        assert _CAP_MAP[stroke['cap']] == layer.cap_style, where
+
+
+def _in_label(mob, group):
+    """Whether ``mob`` belongs to a label (or its halo) of ``group``."""
+    return any(mob in m.get_family() for m in group.get_family()
+               if getattr(m, '_animageo_is_label', False))
+
+
+def _drawn_font_sizes(label):
+    """The font size of each text piece of a drawn label: the ``Tex`` itself,
+    or the prefix, the number and the suffix of a ``ValueLabel`` — measured
+    from what is drawn (the height against the height at creation)."""
+    from manim import DecimalNumber, SingleStringMathTex
+
+    from animageo.ui import ValueLabel
+    if isinstance(label, ValueLabel):
+        parts = [p for p in (label.prefix, label.value, label.suffix) if p is not None]
+    else:
+        parts = [label]
+    sizes = []
+    for part in parts:
+        assert isinstance(part, (SingleStringMathTex, DecimalNumber)), type(part)
+        sizes.append(part.font_size)
+    return sizes
 
 
 def _ends(mob):
