@@ -6,13 +6,15 @@ picture units with y up (a prototype format; it may change)::
 
     {"format": "animageo-flat-scene/0", "camera": {…}, "scale": S,
      "bounds": [xmin, ymin, xmax, ymax], "unit": px per picture unit,
+     "solids":  [id, …],                                          # far to near
      "fills":   [{"id", "source", "role": "face" | "section" | "plane",
+                  "solid": id (faces and sections),
                   "facing": "front" | "back" (faces only),
                   "polygon": [[x, y], …], "depth"}, …],          # far to near
      "strokes": [{"id", "source", "role": "edge" | "section" | "aux" | "plane",
                   "pieces": [{"a": [x, y], "b": [x, y], "t": [t0, t1],
                               "visibility": "visible" | "hidden",
-                              "occluders": n}, …]}, …],
+                              "occluders": n, "hiddenBy": [id, …]}, …]}, …],
      "points":  [{"id", "source", "name", "at": [x, y], "depth",
                   "visibility": "visible" | "hidden"}, …],
      "diagnostics": [{"code", "id", …}, …]}
@@ -21,8 +23,10 @@ Rules of the drawing (the school ones): a solid hides what lies behind it;
 the edges of a section take the visibility of the faces they lie on; planes
 hide nothing, their sheets are hidden by solids like any line. Fills come in
 painting order: the sheets of planes, then for every solid from the far one
-to the near one its back faces, its sections and its front faces (a
-prototype rule: solids that overlap in depth are not split).
+to the near one (``solids``, by the depth of the centre) its back faces, its
+sections and its front faces (a prototype rule: solids that overlap in depth
+are not split). ``hiddenBy`` of a piece — the solids that hide it, far to
+near (its own solid first for a hidden edge of a solid); empty when seen.
 
 :func:`to_document` turns the flat scene into an ``animageo-construction/v1``
 document of the plane: free points, segments for the pieces and polygons
@@ -151,6 +155,9 @@ def flat_scene(scene: SpaceScene, camera, *, min_piece_px=0.9, source_width=800.
     occluders = {s.id: ConvexOccluder(s.solid, projector) for s in scene.solids}
     facing = {s.id: face_facing(s.solid, projector) for s in scene.solids}
 
+    order = sorted(scene.solids, key=lambda s: -projector.project(s.solid.centre)[2])
+    rank = {s.id: k for k, s in enumerate(order)}
+
     def others(owner):
         return [occ for sid, occ in occluders.items() if sid != owner]
 
@@ -158,21 +165,29 @@ def flat_scene(scene: SpaceScene, camera, *, min_piece_px=0.9, source_width=800.
         pa, pb = projector.project(a), projector.project(b)
         length_px = vec.norm((pb[0] - pa[0], pb[1] - pa[1], 0.0)) * unit
         min_t = min(1.0, min_piece_px / length_px) if length_px > 0 else 1.0
-        spans = [(0.0, 1.0)] if own_hidden else []
-        spans += [occ.hidden_interval(a, b) for occ in (others(owner) if owner else occluders.values())]
+        hiders = [(owner, (0.0, 1.0))] if own_hidden else []
+        for sid, occ in occluders.items():
+            span = occ.hidden_interval(a, b) if sid != owner else None
+            if span is not None:
+                hiders.append((sid, span))
         out = []
-        for piece in pieces(spans, min_t):
+        for piece in pieces([span for _, span in hiders], min_t):
+            by = sorted({sid for sid, (h0, h1) in hiders if min(h1, piece.t1) > max(h0, piece.t0)},
+                        key=rank.get) if piece.hidden else []
             out.append({'a': _xy(projector.project(vec.lerp(a, b, piece.t0))),
                         'b': _xy(projector.project(vec.lerp(a, b, piece.t1))),
                         't': [piece.t0, piece.t1],
                         'visibility': 'hidden' if piece.hidden else 'visible',
-                        'occluders': piece.occluders})
+                        'occluders': piece.occluders,
+                        'hiddenBy': by})
         return {'id': stroke_id, 'source': source, 'role': role, 'pieces': out}
 
-    def fill(fill_id, source, role, polygon, facing_state=None):
+    def fill(fill_id, source, role, polygon, facing_state=None, solid=None):
         pts = [projector.project(p) for p in polygon]
         out = {'id': fill_id, 'source': source, 'role': role, 'polygon': [_xy(p) for p in pts],
                'depth': sum(p[2] for p in pts) / len(pts)}
+        if solid is not None:
+            out['solid'] = solid
         if facing_state is not None:
             out['facing'] = facing_state
         return out
@@ -186,16 +201,15 @@ def flat_scene(scene: SpaceScene, camera, *, min_piece_px=0.9, source_width=800.
             fills.append(fill(pl.id, pl.id, 'plane', corners))
     fills = far_first(fills)
 
-    order = sorted(scene.solids, key=lambda s: -projector.project(s.solid.centre)[2])
     for item in order:
         poly, sid = item.solid, item.id
         states = facing[sid]
-        back = [fill(f'{sid}.face.{k}', sid, 'face', [poly.vertices[i] for i in ring], 'back')
+        back = [fill(f'{sid}.face.{k}', sid, 'face', [poly.vertices[i] for i in ring], 'back', sid)
                 for k, ring in enumerate(poly.faces) if states[k] == 'back']
-        front = [fill(f'{sid}.face.{k}', sid, 'face', [poly.vertices[i] for i in ring], 'front')
+        front = [fill(f'{sid}.face.{k}', sid, 'face', [poly.vertices[i] for i in ring], 'front', sid)
                  for k, ring in enumerate(poly.faces) if states[k] == 'front']
         fills += far_first(back)
-        fills += [fill(cut.id, cut.id, 'section', list(r.polygon))
+        fills += [fill(cut.id, cut.id, 'section', list(r.polygon), solid=sid)
                   for cut, r in cuts if cut.solid == sid and r.state == 'defined']
         fills += far_first(front)
 
@@ -243,7 +257,8 @@ def flat_scene(scene: SpaceScene, camera, *, min_piece_px=0.9, source_width=800.
         points.append(point(p.id, p.id, p.name, tuple(p.at), False, None))
 
     return {'format': FLAT_SCENE_FORMAT, 'camera': camera.to_dict(), 'scale': scale, 'bounds': bounds,
-            'unit': unit, 'fills': fills, 'strokes': strokes, 'points': points, 'diagnostics': diagnostics}
+            'unit': unit, 'solids': [s.id for s in order], 'fills': fills, 'strokes': strokes,
+            'points': points, 'diagnostics': diagnostics}
 
 
 # ── the native document of a flat scene ─────────────────────────────────
@@ -288,9 +303,18 @@ FILLS = {
     'section': {'fill': 'presets.color.accent_light', 'fill_opacity': 0.7},
     'plane': {'fill': 'presets.color.shade', 'fill_opacity': 0.6},
 }
-# Painting order: a z tier per kind (fills of one tier go far to near);
-# hidden pieces lie over the fill of a section, under the front faces.
-Z_TIERS = {'plane': 0.0, 'back': 1.0, 'section': 2.0, 'hidden': 3.0, 'front': 4.0, 'visible': 5.0}
+# Painting order (the z_index of the document): the sheets of planes; then
+# every solid from the far one to the near one — its back faces, its
+# sections, the hidden pieces it is the farthest solid to hide (the first of
+# ``hiddenBy``), its front faces; then every visible piece. A layer is
+# ``rank·Z_RANK + tier`` (rank 0 — the sheets, 1, 2, … — the solids of
+# ``flat["solids"]``) mapped into ``[Z_LOW, Z_LOW + Z_ROOM)``: under the
+# points and labels (z 50) for any number of solids. Fills of one layer go
+# far to near by ``Z_STEP``. A hidden piece lies over the fill of a section:
+# a dash under it would vanish.
+Z_TIERS = {'plane': 0, 'back': 1, 'section': 2, 'hidden': 3, 'front': 4}
+Z_RANK = 10
+Z_LOW, Z_ROOM = 0.1, 45.0
 Z_STEP = 1e-4
 
 
@@ -341,14 +365,21 @@ def to_document(flat, *, look=None, document_id='space', registry_version=None) 
     def ref(el_id):
         return {'kind': 'ref', 'elementId': el_id}
 
-    tiers = {}
+    rank = {sid: k + 1 for k, sid in enumerate(flat['solids'])}
+    top = (len(rank) + 1) * Z_RANK                    # the layer of visible pieces
+
+    def z_of(layer):
+        return Z_LOW + layer * Z_ROOM / (top + 1)
+
+    seen = {}
     for f in flat['fills']:
         if f['role'] == 'face' and faces_look == 'none':
             continue
-        tier = f.get('facing', f['role']) if f['role'] == 'face' else f['role']
-        rank = tiers.get(tier, 0)
-        tiers[tier] = rank + 1
-        z = Z_TIERS[tier] + rank * Z_STEP
+        tier = f['facing'] if f['role'] == 'face' else f['role']
+        layer = rank.get(f.get('solid'), 0) * Z_RANK + Z_TIERS[tier]
+        k = seen.get(layer, 0)
+        seen[layer] = k + 1
+        z = z_of(layer) + k * Z_STEP
         overrides = dict(FILLS[f['role']])
         overrides.update({'stroke_opacity': 0.0, 'z_index': z})     # a polygon's fill lies at its z_index
         vertices = [helper(p) for p in f['polygon']]
@@ -363,7 +394,11 @@ def to_document(flat, *, look=None, document_id='space', registry_version=None) 
             overrides = dict(ROLE_STROKES.get(s['role'], {}))
             if hidden:
                 overrides.update(HIDDEN_LOOKS[hidden_look])
-            overrides['z_index'] = Z_TIERS['hidden' if hidden else 'visible']
+            if hidden:
+                overrides['z_index'] = z_of(min(rank[sid] for sid in piece['hiddenBy']) * Z_RANK
+                                            + Z_TIERS['hidden'])
+            else:
+                overrides['z_index'] = z_of(top)
             a, b = helper(piece['a']), helper(piece['b'])
             add('segment.by_points', {'a': ref(a), 'b': ref(b)}, 'segment', 'segment',
                 {'label': {'mode': 'none'}, 'overrides': overrides}, new_id('s'))

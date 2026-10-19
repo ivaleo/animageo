@@ -533,3 +533,60 @@ def test_a_solid_behind_another_is_partly_hidden():
     assert by_cube > 0
     cube_edges = [s for s in flat['strokes'] if s['source'] == 'cube']
     assert all(len(s['pieces']) == 1 for s in cube_edges)    # the pyramid behind hides nothing of the cube
+
+
+def _document_layers(flat, doc):
+    """The z of every fill and piece of ``flat`` in ``doc`` (``native.resolve_paint``):
+    ``fills`` in the order of ``flat['fills']``, ``pieces`` as ``(stroke, piece, z)``."""
+    paint = native.resolve_paint(doc)
+    z = {el_id: entry['z'] for el_id, entry in paint['elements'].items() if entry.get('drawn')}
+    fills = [z[f'f{k}'] for k in range(1, len(flat['fills']) + 1)]
+    pieces, k = [], 0
+    for s in flat['strokes']:
+        for piece in s['pieces']:
+            k += 1
+            pieces.append((s, piece, z[f's{k}']))
+    points = [z[el_id] for el_id, e in doc['elements'].items()
+              if e['type'] == 'point' and e['displayName']]
+    return fills, pieces, points
+
+
+def test_a_solid_behind_another_lies_under_it_in_the_document():
+    cube = space.cube(size=2)
+    pyr = space.pyramid([(0.5, 3, 0), (2.5, 3, 0), (2.5, 5, 0), (0.5, 5, 0)], (1.5, 4, 3.5))
+    cam = ortho(-90, 12, target=(1, 2.5, 1))           # the eye looks along +y: the pyramid is behind
+    scene = space.SpaceScene(solids=[space.SceneSolid('cube', cube), space.SceneSolid('pyr', pyr)])
+    flat = space.flat_scene(scene, cam)
+    assert flat['solids'] == ['pyr', 'cube']            # far to near
+    assert {f['solid'] for f in flat['fills']} == {'pyr', 'cube'}
+    fills, pieces, points = _document_layers(flat, space.to_document(flat))
+    layer = {}
+    for f, z in zip(flat['fills'], fills):
+        layer.setdefault((f['solid'], f.get('facing', f['role'])), []).append(z)
+    # every fill of the far solid — its front faces too — lies under the back faces of the near one
+    assert max(layer['pyr', 'front']) < min(layer['cube', 'back'])
+    assert max(layer['pyr', 'back']) < min(layer['pyr', 'front'])
+    assert max(layer['cube', 'back']) < min(layer['cube', 'front'])
+    hidden = [(s, p, z) for s, p, z in pieces if p['visibility'] == 'hidden']
+    by_cube = [z for s, p, z in hidden if s['source'] == 'pyr' and p['hiddenBy'] == ['cube']]
+    own = [z for s, p, z in hidden if p['hiddenBy'][0] == 'pyr']
+    assert by_cube and own
+    # a piece lies under the front faces of the farthest solid that hides it, over its back faces
+    assert all(max(layer['cube', 'back']) < z < min(layer['cube', 'front']) for z in by_cube)
+    assert all(max(layer['pyr', 'back']) < z < min(layer['pyr', 'front']) for z in own)
+    assert all(p['hiddenBy'] == [] for s, p, z in pieces if p['visibility'] == 'visible')
+    visible = [z for s, p, z in pieces if p['visibility'] == 'visible']
+    assert min(visible) > max(fills + [z for s, p, z in hidden])
+    assert max(visible) < min(points)                   # the points and their labels stay on top
+
+
+def test_many_solids_keep_lines_under_the_points():
+    solids = [space.SceneSolid(f'c{k}', space.prism([(3 * k, 0, 0), (3 * k + 2, 0, 0), (3 * k + 2, 2, 0),
+                                                    (3 * k, 2, 0)], (0, 0, 2))) for k in range(8)]
+    flat = space.flat_scene(space.SpaceScene(solids=solids), ortho(-20, 25, target=(12, 1, 1)))
+    assert len(flat['solids']) == 8
+    fills, pieces, points = _document_layers(flat, space.to_document(flat))
+    assert max(fills + [z for _, _, z in pieces]) < min(points)
+    rank = {sid: k for k, sid in enumerate(flat['solids'])}
+    by_solid = sorted((rank[f['solid']], z) for f, z in zip(flat['fills'], fills))
+    assert [z for _, z in by_solid] == sorted(fills)    # the solids far to near, one after another
