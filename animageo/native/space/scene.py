@@ -134,13 +134,15 @@ def _policy(appearance, el_id) -> str:
 
 
 def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_px=MIN_PIECE_PX,
-               source_width=SOURCE_WIDTH) -> dict:
+               source_width=SOURCE_WIDTH, evaluated=None) -> dict:
     """The flat scene of the space document ``doc`` seen by ``camera`` (a
     :class:`~.camera.Camera`, its dict, or ``None`` — ``viewDefaults.camera``).
 
     ``plane_look`` — ``sheet`` | ``corners`` | ``trace`` (``space.plane.look``
-    of the style). ``ValueError("behind_eye")`` when a perspective eye has a
-    drawn point behind or beside it; ``ValueError("empty")`` when nothing is
+    of the style). ``evaluated`` — the result of :func:`~.evaluate.evaluate`
+    of ``doc`` with ``inputs`` when the caller has it (a camera orbit
+    evaluates once). ``ValueError("behind_eye")`` when a perspective eye has
+    a drawn point behind or beside it; ``ValueError("empty")`` when nothing is
     drawn.
     """
     if plane_look not in PLANE_LOOKS:
@@ -150,7 +152,7 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
         camera = camera_of(doc)
     elif isinstance(camera, dict):
         camera = Camera.from_dict(camera)
-    result = evaluate(doc, inputs=inputs)
+    result = evaluated if evaluated is not None else evaluate(doc, inputs=inputs)
     states = result.elements
     elements, ops = doc.elements, doc.operations
     appearance = doc.data.get('appearance') or {}
