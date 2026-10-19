@@ -21,7 +21,9 @@ picture units with y up (a prototype format; it may change)::
 
 Rules of the drawing (the school ones): a solid hides what lies behind it;
 the edges of a section take the visibility of the faces they lie on; planes
-hide nothing, their sheets are hidden by solids like any line. Fills come in
+hide nothing, their sheets are hidden by solids like any line; a line seen
+end-on (along the view ray, of zero length on the sheet) keeps its entry
+with no pieces. Fills come in
 painting order: the sheets of planes, then for every solid from the far one
 to the near one (``solids``, by the depth of the centre) its back faces, its
 sections and its front faces (a prototype rule: solids that overlap in depth
@@ -43,7 +45,7 @@ from . import vec
 from .camera import Projector
 from .section import plane_sheet, section, section_visibility
 from .solids import scale_of
-from .visibility import ConvexOccluder, edge_visibility, face_facing, pieces, vertex_visibility
+from .visibility import DECIDE_TOL, ConvexOccluder, edge_visibility, face_facing, pieces, vertex_visibility
 
 __all__ = ['FLAT_SCENE_FORMAT', 'HIDDEN_LOOKS', 'FACE_LOOKS', 'SceneSolid', 'SceneSection', 'SceneSegment',
            'ScenePoint', 'ScenePlane', 'SpaceScene', 'flat_scene', 'to_document', 'render']
@@ -175,8 +177,10 @@ def flat_scene(scene: SpaceScene, camera, *, min_piece_px=MIN_PIECE_PX, source_w
 
     def stroke(stroke_id, source, role, a, b, own_hidden, owner):
         pa, pb = projector.project(a), projector.project(b)
-        length_px = vec.norm((pb[0] - pa[0], pb[1] - pa[1], 0.0)) * unit
-        min_t = min(1.0, min_piece_px / length_px) if length_px > 0 else 1.0
+        length = vec.norm((pb[0] - pa[0], pb[1] - pa[1], 0.0))
+        if length <= DECIDE_TOL * scale:             # seen end-on (along the view ray): nothing to draw
+            return {'id': stroke_id, 'source': source, 'role': role, 'pieces': []}
+        min_t = min(1.0, min_piece_px / (length * unit))
         hiders = [(owner, (0.0, 1.0))] if own_hidden else []
         for sid, occ in occluders.items():
             span = occ.hidden_interval(a, b) if sid != owner else None

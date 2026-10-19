@@ -31,11 +31,12 @@ from dataclasses import dataclass
 
 from . import vec
 
-__all__ = ['FACING_TOL', 'DECIDE_TOL', 'face_facing', 'edge_visibility', 'vertex_visibility',
+__all__ = ['FACING_TOL', 'DECIDE_TOL', 'SIDE_TOL', 'face_facing', 'edge_visibility', 'vertex_visibility',
            'ConvexOccluder', 'Piece', 'pieces']
 
 FACING_TOL = 1e-10         # cosine: a face closer to edge-on is ``side``
 DECIDE_TOL = 1e-10         # times the scale of the solid: a point this close to a plane is on it
+SIDE_TOL = 1e-12           # a side normal shorter than this (times S, or S² in perspective) is none
 
 
 def face_facing(poly, projector) -> tuple:
@@ -74,13 +75,17 @@ class ConvexOccluder:
                 planes.append((poly.normals[k], a, -tol))
             elif state == 'side':
                 planes.append((poly.normals[k], a, tol))
+        # a side normal is a length (parallel: edge × unit view) or an area
+        # (perspective: the two rays from the eye); below this the edge runs
+        # along the view and its side plane is the plane of a side face
+        degenerate = SIDE_TOL * poly.scale * (1.0 if projector.parallel else poly.scale)
         for e in poly.edges:
             states = [facing[f] for f in e.faces]
             if 'front' not in states or all(s == 'front' for s in states):
                 continue
             q1, q2 = poly.vertices[e.a], poly.vertices[e.b]
             m = projector.side_normal(q1, q2)
-            if vec.norm(m) <= 1e-12 * poly.scale * poly.scale:
+            if vec.norm(m) <= degenerate:
                 continue
             m = vec.unit(m)
             if vec.dot(m, vec.sub(poly.centre, q1)) > 0:
@@ -88,6 +93,13 @@ class ConvexOccluder:
             planes.append((m, q1, tol))
         # without a front face the eye is inside the solid: it hides nothing here
         self._planes = tuple(planes) if 'front' in facing else None
+
+    @property
+    def planes(self):
+        """The half-spaces of the shadow volume, ``(normal, point, offset)``:
+        a point ``p`` is inside when ``normal·(p − point) − offset ≤ 0``;
+        ``None`` when the solid hides nothing."""
+        return self._planes
 
     def hidden_interval(self, a, b):
         """``(t0, t1)`` — the part of the segment ``a + t·(b − a)``, ``t`` in

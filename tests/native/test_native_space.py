@@ -632,3 +632,105 @@ def test_hidden_opacity_multiplies_the_opacity_of_the_line(monkeypatch):
     assert seen['aux', 'hidden'] == {round(0.5 * multiplier, 12)}
     assert seen['edge', 'hidden'] == {round(multiplier, 12)}
     assert seen['edge', 'visible'] == {1.0}
+
+
+# ── degenerate views and cuts ───────────────────────────────────────────
+
+def _along_the_view(projector, a, b):
+    d = vec.sub(b, a)
+    return vec.norm(vec.cross(d, projector.toward_eye(a))) <= 1e-12 * vec.norm(d)
+
+
+@pytest.mark.parametrize('cam', [ortho(-60, 90), ortho(-90, 0), ortho(0, 0)], ids=['top', 'front', 'side'])
+def test_a_line_along_the_view_ray_has_no_pieces(cam):
+    cube = space.cube(size=2)
+    proj = space.Projector(cam)
+    ray = (vec.add((0.5, 0.5, 0.5), vec.mul(proj.toward_eye((0, 0, 0)), -3.0)),
+           vec.add((0.5, 0.5, 0.5), vec.mul(proj.toward_eye((0, 0, 0)), 3.0)))
+    scene = space.SpaceScene(solids=[space.SceneSolid('cube', cube)],
+                             segments=[space.SceneSegment('ray', *ray)])
+    flat = space.flat_scene(scene, cam)
+    ends = {f'cube.edge.{cube.labels[e.a]}-{cube.labels[e.b]}': (cube.vertices[e.a], cube.vertices[e.b])
+            for e in cube.edges}
+    end_on = {i for i, (a, b) in ends.items() if _along_the_view(proj, a, b)}
+    assert len(end_on) == 4
+    for s in flat['strokes']:
+        if s['id'] in end_on or s['id'] == 'ray':
+            assert s['pieces'] == [], s['id']
+        else:
+            assert s['pieces'], s['id']
+    doc = space.to_document(flat)
+    assert all(r['state'] == 'defined' for r in native.evaluate(native.load(doc)).elements.values())
+    for el_id, op in ((e, doc['operations'][f'op_{e}']) for e, el in doc['elements'].items()
+                      if el['type'] == 'segment'):
+        a, b = (doc['inputs'][op['args'][k]['elementId']]['value'] for k in ('a', 'b'))
+        assert a != b, el_id
+
+
+def test_faces_seen_edge_on():
+    cube = space.cube(size=2)
+    cam = ortho(-90, 0)                                  # the eye on −y: only the faces y = 0 and y = 2 are not side
+    proj = space.Projector(cam)
+    states = space.face_facing(cube, proj)
+    assert sorted(states) == ['back', 'front', 'side', 'side', 'side', 'side']
+    flat = space.flat_scene(space.SpaceScene(solids=[space.SceneSolid('cube', cube)]), cam)
+    assert sorted(f['facing'] for f in flat['fills']) == ['back', 'front']
+    seen = {s['id']: [p['visibility'] for p in s['pieces']] for s in flat['strokes'] if s['pieces']}
+    assert len(seen) == 8                                # four edges run along the view
+    front = {i for i, v in seen.items() if v == ['visible']}
+    assert len(front) == 4 and len([v for v in seen.values() if v == ['hidden']]) == 4
+    for i in front:                                      # the edges of the face y = 0
+        a, b = (cube.vertex(n) for n in i.split('.')[-1].split('-'))
+        assert a[1] == b[1] == 0
+    # a line behind the cube at the height of its top face (seen edge-on): the shadow holds its boundary
+    occ = space.ConvexOccluder(cube, proj)
+    t0, t1 = occ.hidden_interval((-1, 3, 2), (3, 3, 2))
+    assert (t0, t1) == (pytest.approx(0.25), pytest.approx(0.75))
+    assert occ.hidden_interval((-1, 3, 2 + 1e-6), (3, 3, 2 + 1e-6)) is None
+
+
+def test_a_plane_through_vertices_of_the_solid():
+    cube = space.cube(size=2)
+    b, d, a1 = cube.vertex('B'), cube.vertex('D'), cube.vertex('A_1')
+    cut = space.section(cube, space.Plane.through(b, d, a1))
+    assert cut.state == 'defined' and len(cut.polygon) == 3      # each vertex once, not once per edge
+    assert {tuple(p) for p in cut.polygon} == {tuple(b), tuple(d), tuple(a1)}
+    assert all(len(faces) == 1 for faces in cut.edge_faces)       # each side on one face of the cube
+    cam = ortho(-60, 25)
+    scene = space.SpaceScene(solids=[space.SceneSolid('cube', cube)],
+                             sections=[space.SceneSection('cut', 'cube', cut.plane)])
+    flat = space.flat_scene(scene, cam)
+    assert flat['diagnostics'] == []
+    assert len([s for s in flat['strokes'] if s['role'] == 'section']) == 3
+    assert [f['role'] for f in flat['fills']].count('section') == 1
+    facing = space.face_facing(cube, space.Projector(cam))
+    for s, faces in zip((s for s in flat['strokes'] if s['role'] == 'section'), cut.edge_faces):
+        visible = any(facing[f] == 'front' for f in faces)
+        assert [p['visibility'] for p in s['pieces']] == ['visible' if visible else 'hidden']
+
+
+def test_a_plane_through_an_edge_only_touches_the_solid():
+    cube = space.cube(size=2)
+    plane = space.Plane((0, 0, 0), (1, 1, 0))            # holds the edge AA_1 and nothing else of the cube
+    cut = space.section(cube, plane)
+    assert (cut.state, cut.reason) == ('undefined', 'touch')
+    scene = space.SpaceScene(solids=[space.SceneSolid('cube', cube)],
+                             sections=[space.SceneSection('cut', 'cube', plane)])
+    flat = space.flat_scene(scene, ortho(-60, 25))
+    assert flat['diagnostics'] == [{'code': 'section_undefined', 'id': 'cut', 'reason': 'touch'}]
+    assert [s for s in flat['strokes'] if s['role'] == 'section'] == []
+    assert [f for f in flat['fills'] if f['role'] == 'section'] == []
+
+
+@pytest.mark.parametrize('size', [2e-3, 2e3])
+def test_the_shadow_volume_does_not_depend_on_the_unit_of_length(size):
+    """A vertical edge seen almost end-on (1e-9 rad from the view) keeps its
+    side plane whatever the unit: the threshold of a side normal follows its
+    dimension (a length in a parallel projection)."""
+    cam = ortho(-60, 90 - math.degrees(1e-9))
+
+    def planes(k):
+        cube = space.cube(size=k)
+        return len(space.ConvexOccluder(cube, space.Projector(cam)).planes)
+
+    assert planes(size) == planes(2.0)
