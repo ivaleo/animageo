@@ -76,6 +76,7 @@ from .conditions.apply import (ConditionResult, Refusal, apply_condition, condit
 from .conditions.marks import AutoMarks, add_auto_marks, auto_marks, auto_sources
 from .timeline import StepsTimeline, sample_timeline, steps_timeline, timeline_to_bridge
 from .convert import ConvertError, ImportRefused, from_construction, from_ggb
+from .paint import style_keys
 
 # Features of this library by stage of plan L3 (``has``): the web asks for a
 # feature instead of comparing versions.
@@ -85,7 +86,7 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'render.frame', 'from_ggb', 'from_construction', 'import_report.v1', 'appearance.hatch',
             'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document', 'convert.formula',
             'import_report.text_template', 'import_report.text_literals', 'convert.command_synonyms',
-            'convert.ggb_expressions')
+            'convert.ggb_expressions', 'style_keys')
 
 
 def has(feature: str) -> bool:
@@ -118,7 +119,9 @@ def has(feature: str) -> bool:
     ``.ggb`` is ``AngularBisector``; ``convert.ggb_expressions`` — a number of
     a ``.ggb`` by an expression GeoGebra writes and the classic parser does
     not take (``sqrt(a)``, ``sin(a)``, ``2a``, ``a²``, ``abs(r - 7)``) is
-    ``number.expression``)."""
+    ``number.expression``; 1.11.0rc3: ``style_keys`` — :func:`style_keys`, the
+    warning ``style_key_ineffective`` of ``appearance_plan`` and the tick sizes
+    of an equality mark on its targets)."""
     return feature in FEATURES
 
 __registry_version__ = REGISTRY_VERSION
@@ -190,6 +193,7 @@ __all__ = [
     'steps_timeline',
     'timeline_to_bridge',
     'steps_split',
+    'style_keys',
     'validate',
 ]
 

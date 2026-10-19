@@ -788,6 +788,22 @@ offsetWorld?}, overrides?}}`. Each element gets:
 - `overrides`: element style keys (stroke, fill, points, labels, ticks,
   arrows, angles, `z_index`, `z_index_fill`; the list is
   `rendering.APPEARANCE_STYLE_KEYS`). Other keys are not applied.
+  1.11.0rc3 (`has("style_keys")`): `native.style_keys()` is the contract
+  by type — `{format: "animageo-style-keys/v1", types: {type: {style, keys:
+  {key: {unit, default, values?}}, transfers?}}}`, `type` a document type or
+  a mark by its operation (`mark.right_angle`, `mark.equal_segments`,
+  `mark.equal_angles`), `style` the classic style type (`sector` →
+  `circlesector`, `polyline` and `locus` → `locuscurve`, `mark.right_angle`
+  → `angle`, `null` for what is not drawn), `unit` one of `color`, `px`,
+  `opacity`, `ratio`, `deg`, `count`, `enum`, `bool`, `number`, `string`,
+  `default` the value under the built-in style. A key the element does not
+  read is applied and reported as `style_key_ineffective` (below): the
+  stroke of a polygon and of a sector is solid, the fill of a polygon lies
+  at its `z_index` (no `z_index_fill`), a circle has no caps, an angle no
+  ticks, a polyline or a locus no label, a text only `label_color`,
+  `font_size_px` and `z_index`, a right-angle mark draws the square (no
+  `tick_count`, `arc_shift_px`), a number, an expression or a template
+  nothing.
   1.10.0a2 (`has("appearance.hatch")`): the hatching of a polygon, circle or
   sector — `fill_pattern` (`solid`, `hatch`, `crosshatch`, `dots`, `none`),
   `hatch_angle_deg`, `hatch_spacing_px`, `hatch_width_px`, `hatch_color`
@@ -803,7 +819,12 @@ Marks (registry 1.3, `native.appearance_plan`):
   elements of its list argument, in order (`rendering.mark_targets`). An
   explicit `overrides.tick_count` of a target wins; of several marks on one
   target, the first mark in ID order wins. A hidden or undefined mark puts
-  nothing;
+  nothing. 1.11.0rc3: the `overrides` of the sizes of the ticks
+  (`tick_length_px`, `tick_width_px`, `tick_shift_px`, `tick_style`,
+  `tick_radius_px`) of `mark.equal_segments` and `arc_shift_px` of
+  `mark.equal_angles` go to the targets the same way (an explicit key of a
+  target wins); any other key of an equality mark draws nothing and is
+  reported (`mark_transfers_only`);
 - a visible, defined right-angle mark gets `right_angle_marker = true`
   unless its `overrides` set it.
 
@@ -832,7 +853,12 @@ point) is left as it is. A `.ggb` and a DSL scene keep the classic offset
 Problems are reported, not raised, in `report.diagnostics`:
 `{code: "unknown_element", elementId}`, `{code: "bad_label_mode",
 elementId, mode}`, `{code: "bad_label_offset", elementId}`,
-`{code: "unknown_style_key", elementId, key}`.
+`{code: "unknown_style_key", elementId, key}`, `{code:
+"style_key_ineffective", elementId, key, type, reason}` (1.11.0rc3; `type`
+of `style_keys()`, `reason` — `not_read`: the drawing of the type does not
+read the key, `not_drawn`: the element is not drawn, `mark_transfers_only`:
+an equality mark passes only `transfers`). The keys of a role are not
+reported: a role is written for every type.
 
 ### 9.4 `native.render`
 

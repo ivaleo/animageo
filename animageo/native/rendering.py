@@ -194,8 +194,17 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
     on one target the first in ID order wins; a visible, defined right-angle
     mark gets ``right_angle_marker = True`` unless overridden. Definedness
     comes from ``evaluated`` (an ``Evaluated``) or a fresh ``evaluate`` with
-    ``inputs``.
+    ``inputs``. The ``overrides`` of an equality mark in
+    :data:`~animageo.native.paint.MARK_TRANSFERS` (the sizes of the ticks,
+    the spacing of the arcs; 1.11.0rc3) go to its targets the same way.
+
+    An override the element does not read (:func:`~animageo.native.paint.style_keys`)
+    is applied and reported as ``style_key_ineffective`` with ``reason``
+    ``not_read``, ``not_drawn`` or ``mark_transfers_only``
+    (:func:`~animageo.native.paint.ineffective_reason`; 1.11.0rc3). The keys
+    of a role are not reported: a role is written for every type.
     """
+    from .paint import MARK_TRANSFERS, ineffective_reason, style_type_of
     doc = as_document(doc)
     appearance = doc.data.get('appearance')
     appearance = appearance if isinstance(appearance, dict) else {}
@@ -248,9 +257,14 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
                                         'role': role})
         overrides = entry.get('overrides')
         if isinstance(overrides, dict):
+            style_type = style_type_of(doc, el_id)
             for key in sorted(overrides):
                 if key in APPEARANCE_STYLE_KEYS:
                     style[key] = overrides[key]
+                    reason = ineffective_reason(style_type, key)
+                    if reason is not None:
+                        diagnostics.append({'code': 'style_key_ineffective', 'elementId': el_id, 'key': key,
+                                            'type': style_type, 'reason': reason})
                 else:
                     diagnostics.append({'code': 'unknown_style_key', 'elementId': el_id, 'key': key})
         plan[el_id] = {'visible': visible if isinstance(visible, bool) else True, 'style': style}
@@ -268,8 +282,13 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
             if kind == 'right_angle':
                 plan[mark_id]['style'].setdefault('right_angle_marker', True)
                 continue
+            overrides = (appearance.get(mark_id) or {}).get('overrides')
+            passed = {key: overrides[key] for key in MARK_TRANSFERS.get(style_type_of(doc, mark_id), ())
+                      if isinstance(overrides, dict) and key in overrides}
             for target in targets.get(mark_id, ()):
                 plan[target]['style'].setdefault('tick_count', count)
+                for key, value in sorted(passed.items()):
+                    plan[target]['style'].setdefault(key, value)
     return plan, diagnostics
 
 

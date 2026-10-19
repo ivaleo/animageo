@@ -68,6 +68,7 @@
    "steps_merge",
    "steps_split",
    "steps_timeline",
+   "style_keys",
    "timeline_to_bridge",
    "validate"
   ],
@@ -171,7 +172,8 @@
      "import_report.text_template",
      "import_report.text_literals",
      "convert.command_synonyms",
-     "convert.ggb_expressions"
+     "convert.ggb_expressions",
+     "style_keys"
     ]
    },
    "ImportRefused": {
@@ -431,6 +433,10 @@
    "steps_timeline": {
     "kind": "function",
     "signature": "(doc, *, lag=0.3, duration=0.5, pause=0.6, effects=None, start=0.0)"
+   },
+   "style_keys": {
+    "kind": "function",
+    "signature": "()"
    },
    "timeline_to_bridge": {
     "kind": "function",
