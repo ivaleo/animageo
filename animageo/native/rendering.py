@@ -259,10 +259,11 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
         overrides = entry.get('overrides')
         if isinstance(overrides, dict):
             style_type = style_type_of(doc, el_id)
+            given = {**style, **overrides}
             for key in sorted(overrides):
                 if key in APPEARANCE_STYLE_KEYS:
                     style[key] = overrides[key]
-                    reason = ineffective_reason(style_type, key)
+                    reason = ineffective_reason(style_type, key, given)
                     if reason is not None:
                         diagnostics.append({'code': 'style_key_ineffective', 'elementId': el_id, 'key': key,
                                             'type': style_type, 'reason': reason})

@@ -139,6 +139,18 @@ class TestIneffective:
         _, diagnostics = plan_of(b.doc)
         assert warnings(diagnostics) == []
 
+    def test_a_right_angle_mark_drawn_as_arcs_reads_their_keys(self):
+        """``right_angle_marker: false`` draws the mark as the arcs of an
+        angle: their count and spacing are read, the square's are not."""
+        b = zoo()
+        b.doc['appearance'] = {'ra': {'overrides': {'right_angle_marker': False, 'tick_count': 2,
+                                                    'arc_shift_px': 3, 'tick_length_px': 4}}}
+        _, diagnostics = plan_of(b.doc)
+        assert warnings(diagnostics) == [('ra', 'tick_length_px', 'not_read')]
+        b.doc['appearance'] = {'ra': {'overrides': {'right_angle_marker': True, 'tick_count': 2}}}
+        _, diagnostics = plan_of(b.doc)
+        assert warnings(diagnostics) == [('ra', 'tick_count', 'not_read')]
+
     def test_role_keys_are_not_warned(self):
         b = zoo()
         b.doc['appearance'] = {'T': {'role': 'aux'}, 'n': {'role': 'aux'}}

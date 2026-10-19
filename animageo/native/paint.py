@@ -82,7 +82,8 @@ _TYPES = {
     'polyline': ('locuscurve', _STROKE + _DASH + ('z_index',)),
     'locus': ('locuscurve', _STROKE + _DASH + ('z_index',)),
     'angle': ('angle', _STROKE + _FILL + _ANGLE + ('z_index',) + _LABEL + _VALUE),
-    # a right-angle mark draws the square: no arcs to count or space
+    # a right-angle mark draws the square: no arcs to count or space (with
+    # ``right_angle_marker: false`` it reads the keys of an angle, ``ineffective_reason``)
     'mark.right_angle': ('angle', _STROKE + _FILL + tuple(k for k in _ANGLE if k not in ('tick_count', 'arc_shift_px'))
                          + ('z_index',) + _LABEL + _VALUE),
     'text': ('text', ('label_color', 'font_size_px', 'z_index') + _HALO),
@@ -147,15 +148,20 @@ def style_type_of(doc, el_id):
     return name if name in _TYPES else None
 
 
-def ineffective_reason(type_, key):
+def ineffective_reason(type_, key, style=None):
     """Why ``key`` of ``appearance.overrides`` does nothing on an element of
     :func:`style_keys` type ``type_``, or ``None`` when it is read (or the
     type is unknown): ``not_drawn`` — the element is not drawn (a number, an
     expression, a template); ``mark_transfers_only`` — an equality mark
     passes only :data:`MARK_TRANSFERS` to its targets; ``not_read`` — the
-    renderer of the type does not read the key."""
+    renderer of the type does not read the key. ``style`` — the keys the
+    element is given (1.11.0): a right-angle mark with ``right_angle_marker:
+    false`` is drawn as the arcs of an angle and reads the keys of an
+    angle."""
     if type_ not in _TYPES:
         return None
+    if type_ == 'mark.right_angle' and (style or {}).get('right_angle_marker') is False:
+        type_ = 'angle'
     if type_ in MARK_TRANSFERS:
         return None if key in MARK_TRANSFERS[type_] else 'mark_transfers_only'
     style, keys = _TYPES[type_]

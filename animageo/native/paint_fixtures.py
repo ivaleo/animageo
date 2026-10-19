@@ -192,6 +192,9 @@ def _angles():
     d = _triangle('right_angle_by_size', c=(0, 3)).angle('alpha', 'B', 'A', 'C')
     d.overrides('alpha', right_angle_joint='miter', right_angle_size_px=12)
     out.append(('right_angle_by_size', d, None))
+    d = _triangle('right_angle_arcs', c=(0, 3)).right_mark('ra', 'B', 'A', 'C')
+    d.overrides('ra', right_angle_marker=False, tick_count=2, arc_shift_px=3)
+    out.append(('right_angle_arcs', d, None))
     d = _triangle('reflex').angle('alpha', 'B', 'A', 'C').angle('beta', 'C', 'B', 'A')
     d.overrides('alpha', angle_range='reflex', arc_size_px=10)
     out.append(('reflex', d, None))
@@ -328,7 +331,18 @@ def _timeline():
         {'t': 1, 'styles': {'a': {'stroke': '#ff0000', 'stroke_width_px': 3}}, 'easing': 'linear'},
         {'t': 2, 'values': {'C': [2, 4]}, 'easing': 'linear'},
     ]}
-    return [(f'style_track_{t}', d, None, timeline, t) for t in (0, 0.5, 1, 1.5)]
+    out = [(f'style_track_{t}', d, None, timeline, t) for t in (0, 0.5, 1, 1.5)]
+    # effects: T enters in [0.2, 0.8] (its fill a track), a leaves in [1, 1.4] (its cap a discrete track)
+    d = _triangle('effects').segment('a', 'A', 'B').polygon('T', 'A', 'B', 'C')
+    d.overrides('a', stroke_width_px=4).overrides('T', fill='#4a90d9', fill_opacity=0.35)
+    timeline = {'version': 2, 'keyframes': [
+        {'t': 0, 'visible': {'T': False}, 'styles': {'a': {'stroke_linecap': 'butt'}}},
+        {'t': 1, 'visible': {'T': True}, 'enter': {'T': {'effect': 'fade', 'duration': 0.6, 'at': 0.2}},
+         'styles': {'T': {'fill': '#d05456'}, 'a': {'stroke_linecap': 'round'}}},
+        {'t': 2, 'visible': {'a': False}, 'exit': {'a': 'fade'}},
+    ]}
+    out += [(f'effects_{t}', d, None, timeline, t) for t in (0.1, 0.5, 1.2, 2)]
+    return out
 
 
 THEMES = (('paint_ticks', _ticks), ('paint_angles', _angles), ('paint_points', _points),

@@ -860,7 +860,9 @@ elementId, mode}`, `{code: "bad_label_offset", elementId}`,
 of `style_keys()`, `reason` — `not_read`: the drawing of the type does not
 read the key, `not_drawn`: the element is not drawn, `mark_transfers_only`:
 an equality mark passes only `transfers`). The keys of a role are not
-reported: a role is written for every type.
+reported: a role is written for every type. A right-angle mark given
+`right_angle_marker: false` is drawn as the arcs of an angle and reads the
+keys of `angle` (its `tick_count`, `arc_shift_px`; 1.11.0).
 
 ### 9.4 `native.render`
 
@@ -1105,8 +1107,15 @@ in a filled triangle (`wedge`), point shapes, `points_display`, arrows,
 caps, dashes and their fit, label anchors by type and their overrides, the
 format of values, layers, `text.free`, the zoo of types without a style,
 under the built-in style and a preset, roles, hatching, a dark background,
-a style track of a timeline. A test renders each scene without a timeline
-and compares the render context of every element with its entry.
+a style track of a timeline, a right-angle mark drawn as arcs (1.11.0), the
+enter and exit effects of a timeline with a style track and a discrete one
+(1.11.0). A test renders each scene — a scene with a timeline as the frame
+`render(t)` draws — and compares with the entry of every element its render
+context and what it draws: the layers of the fill and the label, the size
+and shape of a point, the hatch (spacing, angle, width, colour), the lines
+or the corners of the wave of the ticks, the radii of the arcs and the
+corners of the right-angle square, the font size, the dash patterns, and
+that an element not drawn is not in the frame.
 
 The style contract for code generation (`animageo/native/style`, `python -m
 animageo.native style export [-o DIR] [--check]`): `builtin.json` — the
