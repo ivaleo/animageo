@@ -381,6 +381,35 @@ def test_runs_clip_to_the_window():
     assert len(smooth) == 1 and smooth[0][0][0] == -4 and smooth[0][-1][0] == 4
 
 
+@pytest.mark.parametrize('ast, x_range, y_range', [
+    (fn('sin', X), (-3.7, 5.3), (-2.1, 3.3)),
+    (fn('sin', X), (-10, 10), (-6, 6)),
+    (fn('cos', op('*', n(3), X)), (-4, 4), (-4, 4)),
+    (op('/', power(X, 3), n(7)), (-4, 4), (-4, 4)),
+    (op('/', power(X, 3), n(7)), (-1.3, 2.9), (-1.1, 1.7)),
+])
+def test_runs_of_a_smooth_graph_are_one_run(ast, x_range, y_range):
+    # A graph inside the widened window over the whole x-range is one
+    # polyline: each run is drawn on its own and a dash restarts at its start.
+    runs = function_runs(_value(ast), x_range, y_range)
+    assert len(runs) == 1
+    assert runs[0][0][0] == x_range[0] and runs[0][-1][0] == x_range[1]
+
+
+@pytest.mark.parametrize('hi', [2.9, 1.3, 0.7, 2.1, 1.7])
+def test_runs_reach_the_end_of_the_domain(hi):
+    runs = function_runs(_value(fn('sin', X), hi=hi), (-4, 5), (-2, 2))
+    assert len(runs) == 1 and runs[0][0][0] == -4 and runs[0][-1] == (hi, math.sin(hi))
+
+
+def test_runs_of_a_graph_that_leaves_the_window_end_at_its_edge():
+    runs = function_runs(_value(fn('tan', X)), (-4, 4), (-1, 1))
+    assert len(runs) == 3                  # three branches between the poles ±π/2
+    for run in runs:
+        assert all(-3.0 - 1e-12 <= y <= 3.0 + 1e-12 for _x, y in run)
+        assert abs(run[-1][1] - 3.0) < 1e-12 or run[-1][0] == 4
+
+
 def test_runs_respect_domain_and_gaps():
     runs = function_runs(_value(fn('sqrt', X)), (-4, 4), (-4, 4))
     assert len(runs) == 1 and runs[0][0][0] >= 0

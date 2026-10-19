@@ -235,7 +235,10 @@ def function_samples(value, bounds, count: int = SAMPLE_COUNT) -> list:
 
 
 def _clip(p, q, y0, y1):
-    """The part of the segment ``p q`` with ``y0 ≤ y ≤ y1``, or ``None``."""
+    """The part of the segment ``p q`` with ``y0 ≤ y ≤ y1``, or ``None``.
+
+    An end that is not cut is ``p`` or ``q`` itself, not ``xa + 1·(xb − xa)``:
+    the next segment starts at that very point, so the run goes on."""
     (xa, ya), (xb, yb) = p, q
     t0, t1 = 0.0, 1.0
     dy = yb - ya
@@ -254,7 +257,9 @@ def _clip(p, q, y0, y1):
     if t0 > t1:
         return None
     dx = xb - xa
-    return (xa + t0 * dx, ya + t0 * dy), (xa + t1 * dx, ya + t1 * dy)
+    a = (xa, ya) if t0 == 0.0 else (xa + t0 * dx, ya + t0 * dy)
+    b = (xb, yb) if t1 == 1.0 else (xa + t1 * dx, ya + t1 * dy)
+    return a, b
 
 
 def function_runs(value, x_range, y_range) -> list:
@@ -266,7 +271,9 @@ def function_runs(value, x_range, y_range) -> list:
     has none, or when the midpoint is farther than :data:`DRAW_FLATNESS` of
     the height from the chord; a finest cell with one end undefined, or
     whose ends differ by more than :data:`DRAW_JUMP` of the height, is a
-    gap (a discontinuity is not joined)."""
+    gap (a discontinuity is not joined). The cells end exactly at the ends
+    of the cut, and a smooth graph inside the window is one run (a dash goes
+    on along it)."""
     cut = search_interval(float(x_range[0]), float(x_range[1]), value['domain'])
     if cut is None:
         return []
@@ -281,6 +288,7 @@ def function_runs(value, x_range, y_range) -> list:
     y_hi = float(y_range[1]) + height
     points = []                 # (x, y | None, gap before)
     xs = grid(lo, hi, DRAW_CELLS)
+    xs[-1] = hi                 # not lo + n·(hi − lo)/n: past the end of a domain f has no value
     first = (xs[0], f(xs[0]))
     points.append((first[0], first[1], False))
 

@@ -39,5 +39,7 @@ the canvas cut by the domain, 256 equal cells, a cell halved (at most 8
 times) while an end or its midpoint has no value or the midpoint is farther
 than `10⁻³` of the canvas height from the chord; a finest cell with an end
 without a value or a jump above `0.05` of the height is a gap. The runs are
-clipped to the canvas height widened by itself on each side. Style keys as a
-locus (no label).
+clipped to the canvas height widened by itself on each side. The cells end
+exactly at the ends of the cut, and an end that the clip does not cut is the
+sample itself, so a smooth graph inside the canvas is one run (one polyline:
+a dash goes on along it). Style keys as a locus (no label).
