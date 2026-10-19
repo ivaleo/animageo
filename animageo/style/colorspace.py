@@ -35,6 +35,27 @@ def is_hex_color(value):
         return False
 
 
+def as_hex(value):
+    """``'#rrggbb'`` of a hex string or of a colour object with ``to_hex()``
+    (a ``ManimColor``); ``None`` for anything else (``"stroke"``, ``None``)."""
+    to_hex = getattr(value, 'to_hex', None)
+    if callable(to_hex):
+        try:
+            value = to_hex()
+        except Exception:   # noqa: BLE001 — an odd colour object is no colour
+            return None
+    try:
+        return normalize_hex(value)
+    except (ValueError, TypeError):
+        return None
+
+
+def same_color(a, b):
+    """True when ``a`` and ``b`` are the same opaque colour (:func:`as_hex`)."""
+    ha = as_hex(a)
+    return ha is not None and ha == as_hex(b)
+
+
 def _hex_to_rgb01(hex_color):
     h = normalize_hex(hex_color)
     return tuple(int(h[i:i + 2], 16) / 255.0 for i in (1, 3, 5))

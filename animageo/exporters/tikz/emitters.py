@@ -29,10 +29,12 @@ from ...geo.lib_elements import (
     resolve_text_position, text_to_display_latex, textify_cyrillic,
 )
 from ...label_placement import compute_effective_arc_size_px
+from ...style.colorspace import same_color
 from .context import TikzContext
 from .document import fmt_num
 from .style_map import (
     anchor_for,
+    background_color,
     fill_options,
     stroke_default,
     stroke_options,
@@ -425,7 +427,9 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
     if right_marker is None:
         right_marker = bool(np.isclose(angle, math.pi / 2))
 
-    has_fill = _fill_opacity(ctx, elem) > 0
+    # a fill of the background colour is no fill (as the renderer, 1.11.0rc3)
+    has_fill = _fill_opacity(ctx, elem) > 0 and not same_color(
+        ctx.resolve(elem, "fill", default=background_color(ctx)), background_color(ctx))
 
     if right_marker:
         right_size_px = ctx.resolve(elem, "right_angle_size_px", default=arc_size_resolved)

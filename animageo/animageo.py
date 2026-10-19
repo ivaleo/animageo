@@ -33,7 +33,7 @@ from .style.import_policy import ImportPolicy
 from .style.config import StyleConfig, resolve_style_input
 from .style.config import style_path_for_geostyle as _style_path_for_geostyle
 from .style.resolver import resolve as _resolve_style
-from .style.colorspace import COLOR_SPACES
+from .style.colorspace import COLOR_SPACES, same_color
 from .labels import resolve_label_text, resolve_label_spec
 from .ui import (
     RusTex, correctedLabel, create_label, round_corners_vmobject,
@@ -3424,6 +3424,12 @@ class AnimaGeoScene(MovingCameraScene):
         if right_mark is None:
             right_mark = np.isclose(angle, PI / 2)
 
+        # A fill of the background colour is no fill (1.11.0rc3, as the web
+        # canvas): the built-in style fills an angle with the background at
+        # opacity 1, which would cover the fill of the figure the angle sits in.
+        # The layer stays (transparent) so ``become`` keeps its structure.
+        op_f = 0.0 if same_color(ctx.col_f, self.style.background) else ctx.op_f
+
         if right_mark:
             ar_cfg = self.style_config.overlay.angle_radius
             if ar_cfg.get('enabled', False) and ar_cfg.get('apply_to_right', False):
@@ -3445,7 +3451,7 @@ class AnimaGeoScene(MovingCameraScene):
             p3 = [p[0] + n2[0], p[1] + n2[1], 0]
             arr.append(Polygon(
                 p, p1, p2, p3,
-                color=ctx.col_f, stroke_width=0, fill_opacity=ctx.op_f,
+                color=ctx.col_f, stroke_width=0, fill_opacity=op_f,
             ).set_z_index(ctx.zz))
             arr.append(VMobject(
                 color=ctx.col_s, fill_opacity=0,
@@ -3455,7 +3461,7 @@ class AnimaGeoScene(MovingCameraScene):
         else:
             arr.append(AnnularSector(
                 inner_radius=0, outer_radius=r, angle=angle,
-                color=ctx.col_f, fill_opacity=ctx.op_f,
+                color=ctx.col_f, fill_opacity=op_f,
             ).set_z_index(ctx.zz)
              .rotate(rotation_angle, about_point=ORIGIN)
              .shift([p[0], p[1], 0]))
