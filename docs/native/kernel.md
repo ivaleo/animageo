@@ -1338,7 +1338,8 @@ Time by element ID: the contract is `docs/native/timeline.md`. In short:
   `ev.t` and `ev.visible`.
 - `timeline_to_bridge` — IDs → `e_<hex>`, unwrapped `tparam`;
   `render(t=…, timeline=…)` for static formats, `mp4`, `gif`, `webm`,
-  `mov` with `video={fps, quality}` (`ValueError("timeline_required")`).
+  `mov` with `video={fps, quality, duration}` (`ValueError("timeline_required")`;
+  `duration` — the still of a timeline of one keyframe, 1.11.0rc7).
 - `steps_timeline(doc, *, lag, duration, pause, effects, start) →
   StepsTimeline(keyframes, steps, duration)`.
 - Fixtures `animageo-timeline/v1` (`fixtures timeline`); the steps fixtures

@@ -80,7 +80,11 @@ VIDEO_FORMATS = ('mp4', 'gif', 'webm', 'mov')
 RENDER_FORMATS = STATIC_FORMATS + VIDEO_FORMATS
 # video={quality}: the scale of the pixel size of the canvas (1.9.0a4)
 VIDEO_QUALITY = {'low': 0.5, 'medium': 1.0, 'high': 1.5, 'production': 2.0}
-VIDEO_DEFAULTS = {'fps': 30, 'quality': 'medium'}
+VIDEO_DEFAULTS = {'fps': 30, 'quality': 'medium', 'duration': None}
+# a timeline of one keyframe (1.11.0rc7): the video is a still of
+# video.duration seconds, HOLD_DURATION by default, at most MAX_HOLD_DURATION
+HOLD_DURATION = 1.0
+MAX_HOLD_DURATION = 600.0
 LAYOUT_KEYS = ('reference', 'content', 'export')
 SOURCE_WIDTH = 800.0
 OVERLAP_SHARE = 0.15
@@ -418,7 +422,7 @@ def _check_video(video) -> dict:
     if video is None:
         return out
     if not isinstance(video, dict):
-        raise ValueError('video must be a mapping {fps, quality}')
+        raise ValueError('video must be a mapping {fps, quality, duration}')
     unknown = sorted(set(video) - set(VIDEO_DEFAULTS))
     if unknown:
         raise ValueError(f'video: unknown keys {unknown}; allowed: {sorted(VIDEO_DEFAULTS)}')
@@ -428,6 +432,11 @@ def _check_video(video) -> dict:
         raise ValueError(f'video.fps must be a number in [1, 120], got {fps!r}')
     if out['quality'] not in VIDEO_QUALITY:
         raise ValueError(f'video.quality must be one of {list(VIDEO_QUALITY)}, got {out["quality"]!r}')
+    duration = out['duration']
+    if duration is not None and (isinstance(duration, bool) or not isinstance(duration, (int, float))
+                                 or not 0 < duration <= MAX_HOLD_DURATION):
+        raise ValueError(f'video.duration must be a number of seconds in (0, {MAX_HOLD_DURATION:g}], '
+                         f'got {duration!r}')
     return out
 
 
@@ -471,6 +480,11 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
     ``production`` — 0.5, 1, 1.5, 2 times the canvas in pixels); the
     report of a video is short: ``video`` ``{fps, quality, width, height,
     duration}``, and ``t``/``visible`` of the last keyframe.
+
+    1.11.0rc7: a timeline of one keyframe — ``render(t)`` is the state of
+    that keyframe for any ``t``; its video is a still of ``video.duration``
+    seconds (1 by default, at most 600; with two keyframes or more
+    ``duration`` is a ``ValueError`` — the timeline sets the length).
 
     1.9.0a5: ``fmt="png"`` with ``video`` — the frame as the video draws it:
     the manim camera of the video (its pixel size, ``quality``; ``fps`` is
@@ -633,15 +647,21 @@ def timeline_extras(doc, timeline):
     return out
 
 
-def _bridged_timeline(doc, timeline, inputs=None) -> dict:
+def _bridged_timeline(doc, timeline, inputs=None, *, hold=HOLD_DURATION) -> dict:
     """The classic keyframes of ``timeline`` for the scene of the bridge
     (``timeline_to_bridge``) without the values of the elements ``inputs``
     sets: explicit inputs are on top of the timeline in the still and in the
-    video alike."""
+    video alike. A timeline of one keyframe gets a second one ``hold``
+    seconds later that changes nothing (1.11.0rc7): the classic sequence
+    needs two, its one interval holds the state of the keyframe still — the
+    video is a still of ``hold`` seconds, the frame at any ``t`` is that
+    state."""
     from .kernel.bridge import build_names
     from .timeline import timeline_to_bridge
     doc = as_document(doc)
     bridge = timeline_to_bridge(doc, timeline)
+    if len(bridge['keyframes']) == 1:
+        bridge['keyframes'].append({'t': float(bridge['keyframes'][0]['t']) + float(hold)})
     if inputs:
         names = build_names(doc.elements).by_id
         fixed = {names[el_id] for el_id in inputs if el_id in names}
@@ -705,10 +725,14 @@ def _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report,
     import glob
     import shutil
     from .timeline import normalize_timeline, sample_timeline
-    bridge = _bridged_timeline(doc, timeline, inputs)
-    if len(bridge['keyframes']) < 2:
-        raise ValueError('timeline: a video needs at least two keyframes')
-    end = normalize_timeline(doc, timeline)['keyframes'][-1]['t']
+    keyframes = normalize_timeline(doc, timeline)['keyframes']
+    if len(keyframes) > 1 and video['duration'] is not None:
+        raise ValueError('video.duration applies to a timeline of one keyframe only '
+                         '(the length of a video is that of its timeline)')
+    hold = HOLD_DURATION if video['duration'] is None else float(video['duration'])
+    bridge = _bridged_timeline(doc, timeline, inputs, hold=hold)
+    start, end = keyframes[0]['t'], keyframes[-1]['t']
+    duration = end - start if len(keyframes) > 1 else hold
     AnimaGeoScene = _import_scene()
     from manim import tempconfig
     from ..render_config import configure_render
@@ -748,7 +772,7 @@ def _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report,
         body = {'format': REPORT_FORMAT, 'documentId': doc.document_id,
                 'kernel': {'library': __version__, 'registry': REGISTRY_VERSION}, 'fmt': fmt,
                 'video': {'fps': video['fps'], 'quality': video['quality'], 'width': width, 'height': height,
-                          'duration': end - normalize_timeline(doc, timeline)['keyframes'][0]['t']},
+                          'duration': duration},
                 't': sample['t'], 'visible': sample['visible']}
     return RenderResult(path=out, fmt=fmt, report=body)
 

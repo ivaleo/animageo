@@ -33,7 +33,9 @@ A timeline is the keyframe JSON v2 of the classic library
 - An ID that is not in the document is skipped everywhere (an element
   deleted after the keyframe was saved).
 - Keyframes are sorted by `t`; times must be strictly increasing; at least
-  one keyframe (a video needs two).
+  one keyframe. A timeline of one keyframe (1.11.0rc7) is a still: the
+  frame at any `t` is the state of that keyframe, the video holds it for
+  `video.duration` seconds (§3).
 
 ## 2. `sample_timeline(doc, timeline, t) → {t, inputs, visible}` (contract)
 
@@ -201,11 +203,21 @@ web); `video` with another static format is a `ValueError`.
 `fmt ∈ {"mp4", "gif", "webm", "mov"}` — the video of the timeline: the
 document loaded by `loadDocument`, the bridged timeline played by
 `play_keyframes`, manim + ffmpeg (`render_config.configure_render`). Without
-a timeline: `ValueError("timeline_required")`. `video={fps, quality}`
-(optional; `fps` 30, `quality` `low` | `medium` | `high` | `production` —
-0.5, 1, 1.5, 2 times the canvas in pixels, rounded to even). The report of
-a video: `{format, documentId, kernel, fmt, video: {fps, quality, width,
-height, duration}, t, visible}` (`t`, `visible` of the last keyframe).
+a timeline: `ValueError("timeline_required")`. `video={fps, quality,
+duration}` (optional; `fps` 30, `quality` `low` | `medium` | `high` |
+`production` — 0.5, 1, 1.5, 2 times the canvas in pixels, rounded to even).
+The report of a video: `{format, documentId, kernel, fmt, video: {fps,
+quality, width, height, duration}, t, visible}` (`t`, `visible` of the last
+keyframe).
+
+One keyframe (1.11.0rc7): the bridged timeline gets a second keyframe
+`duration` seconds after the first that changes nothing, so the one
+interval holds the state still (`play_keyframes` waits through it): the
+video is `int(duration · fps)` frames of that state, `render(t)` at any
+`t` is the same state (`t` clamped to the keyframe, the report `t` is its
+time, `effects` empty). `video.duration` — seconds in `(0, 600]`, `1` by
+default; it applies to a timeline of one keyframe only (with two keyframes
+or more the length is the timeline's, a `duration` is a `ValueError`).
 
 Measured (1.11.0, `test_native_frame_equals_video.py`): the frames the
 video writes, taken from the renderer before the codec, against
