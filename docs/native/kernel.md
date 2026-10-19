@@ -630,6 +630,8 @@ python -m animageo.native evaluate <doc.json> [--inputs case.json] [--checks] [-
 python -m animageo.native validate <doc.json> [--json]          # exit 1 when there are issues
 python -m animageo.native commands fixtures|parse|print …       # «Команды», commands.md §10
 python -m animageo.native fixtures timeline [--check]           # animageo-timeline/v1, timeline.md §5
+python -m animageo.native fixtures paint [--check]              # animageo-paint-parity/v1, §9.8
+python -m animageo.native style export [--check]               # native/style: builtin.json, keys.v1.json, §9.8
 python -m animageo.native steps|describe|timeline <doc.json> …  # timeline.md §5
 python -m animageo.native from-ggb <file.ggb> [-o …] [--report …] # import.md §7
 python -m animageo.native convert map [--check]                 # import.md §1
@@ -1031,6 +1033,78 @@ LaTeX fails. On a seeded corpus of 2000 labels
 (`tests/native/label_corpus.py`) the boxes equal manim's within 1 %.
 `scripts/native/build_label_metrics.py` rebuilds the file from the TeX
 installation (manim, `latex`, `dvisvgm`, `kpsewhich`); `--check` compares.
+
+### 9.8 Paint without manim (`native.resolve_paint`, 1.11.0rc3)
+
+`resolve_paint(doc, style_config=None, t=None, *, timeline=None,
+inputs=None, export_layout=None)` (`has("resolve_paint")`) is the paint
+`native.render` draws each element with, read through the same appearance
+plan and style resolver as the renderer, without manim (the classic graph
+of §9.2, as `layout_labels`). `t` with `timeline`: the inputs and the
+visibility of `sample_timeline` and the style tracks of the timeline at `t`
+(its `@camera` does not change the paint). It returns
+
+    {"format": "animageo-paint/v1", "background": "#ffffff",
+     "ptUnit": 100.0, "ptUnitStyle": 100.0, "t": null,
+     "elements": {id: entry}, "order": [id, …], "diagnostics": […]}
+
+`ptUnit` — output pixels per world unit, `ptUnitStyle` — style pixels per
+world unit (a decoration of `n` px is `n / ptUnitStyle` world units),
+`order` — the drawn elements by their layer, bottom up, `diagnostics` —
+those of `appearance_plan` (§9.3). Every element has an entry: `type`,
+`styleType` (the type of `style_keys()`), `style` (the classic style type),
+`drawn`; a drawn element also has `z` (its layer, the construction order
+breaking ties by `1e-6`) and, by type:
+
+- `stroke`: `color`, `opacity`, `widthPx`, `cap` (`null` where the type has
+  none), `z`, and `dash` — `null` or `{onPx, offPx, fit, drawn}`: the
+  nominal pattern, how the renderer fits it to the path (`ends` — a dash at
+  both ends of a segment, a vector or an arc; `closed` — whole periods on a
+  circle or a closed polyline; `none` — from the start of a line, a ray or an
+  open polyline) and the pattern drawn `{onPx, offPx, offsetPx}`, shortened
+  by round and square caps (`null` for a vector: the renderer measures the
+  stem of its arrow). The fit is computed on the exact length; the renderer
+  measures its Bézier path, within `1e-3` of it for a circle or an arc;
+- `fill`: `color` (`null` — nothing is drawn), `opacity` as drawn,
+  `isBackground`, `z`, and for a polygon, circle or sector `pattern` and
+  `hatch` (`{pattern, angleDeg, spacingPx, widthPx, color, opacity}` or
+  `null`). An angle or a right-angle mark filled with the background colour
+  has no fill (1.11.0rc3); a polygon, a circle, an arc or a sector filled
+  with it is drawn (opaque) — `isBackground` tells it;
+- `point`: `sizePx`, `shape`, `display` (`rendering.points_display`);
+- `arrow` (a vector): `lengthPx`, `widthPx`;
+- `ticks` (a segment, a vector): `count`, `style`, `lengthPx`, `widthPx`,
+  `shiftPx`, `radiusPx`, and the lines `[[x1, y1, x2, y2], …]` or the
+  corners of the wave `wave` with its `cornerRadius` (world units);
+- `angle` (an angle, a right-angle mark): `range`, `autoRadius`,
+  `arcSizePx` (the base), `radiusPx` (after `overlay.angle_radius`),
+  `arcs`, `arcShiftPx`, `arcRadiiPx` or, for a right angle, `rightSizePx`
+  and the corners of the square `square` (world units), `shownSize`,
+  `right`, `joint`;
+- `label`: `shown`, `color`, `fontSizePx`, `anchor` (`label_anchor` →
+  `rendering.label_anchor` of the given style → `BL`), `radialOffsetPx`
+  (angles), and for a shown label `z`, `text`, `spotWorld`, `offsetWorld`
+  (the placement solver is not run: `layout_labels` does); a text has only
+  `color` and `fontSizePx`;
+- `value` (types with a value): `precision`, `stripZeros`, `separator`,
+  `angleUnit`.
+
+Fixtures `animageo-paint-parity/v1` (`animageo/native/parity/v1/paint`,
+`python -m animageo.native fixtures paint [-o DIR] [--check]`): one file per
+theme, `{format, id, registry, generatedBy, cases: [{name, document, style,
+t, timeline, expect}]}`, `expect` — `resolve_paint` of the case; numbers
+compare with `1e-9`. The scenes: ticks 1/2/3, the wave and the sizes of a
+mark, arcs and the automatic radius, right angles, a reflex angle, an angle
+in a filled triangle (`wedge`), point shapes, `points_display`, arrows,
+caps, dashes and their fit, label anchors by type and their overrides, the
+format of values, layers, `text.free`, the zoo of types without a style,
+under the built-in style and a preset, roles, hatching, a dark background,
+a style track of a timeline. A test renders each scene without a timeline
+and compares the render context of every element with its entry.
+
+The style contract for code generation (`animageo/native/style`, `python -m
+animageo.native style export [-o DIR] [--check]`): `builtin.json` — the
+built-in style byte for byte, `keys.v1.json` — `style_keys()` (§9.3).
 
 ## 10. Floating point and determinism
 

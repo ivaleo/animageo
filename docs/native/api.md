@@ -135,6 +135,7 @@ Rendering needs manim; label layout does not (kernel.md §9).
 - `render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None, inputs=None, t=None, timeline=None, report=True, video=None)` — Render `doc` to `out` (a temporary file when `None`).
 - `source_view(doc)` — `{ptWidth, ptHeight, ptUnit, ptXZero, ptYZero}` of `viewDefaults.bounds`.
 - `layout_labels(doc, ev=None, *, inputs=None, style_config=None, export_layout=None, backend='metrics', place=None)` — Label positions of `doc` as `native.render` would draw them, without manim.
+- `resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None, export_layout=None)` — The paint `native.render` draws each element with, in style pixels, without manim (1.11.0rc3; kernel.md §9.8).
 - `style_keys()` — The keys of `appearance.overrides` each element type reads: unit, default under the built-in style, and the keys an equality mark passes to its targets (1.11.0rc3; kernel.md §9).
 
 ## Import
@@ -159,5 +160,6 @@ From a `.ggb` and from the classic graph (import.md).
 | `from-ggb FILE.ggb` | the document and `import_report.v1` |
 | `convert map --check` | the GGB command → operation table (`convert/dsl_map.json`) |
 | `registry index --check` | `ops/v1/INDEX.json` matches the records |
-| `fixtures verify`, `fixtures conditions --check`, `fixtures timeline --check` | the parity fixtures are up to date (manim for render fixtures) |
+| `fixtures verify`, `fixtures conditions --check`, `fixtures timeline --check`, `fixtures paint --check` | the parity fixtures are up to date (manim for render fixtures) |
+| `style export [--check]` | the style contract `native/style` (`builtin.json`, `keys.v1.json`) |
 | `commands fixtures --check` | the fixtures of «Команды» |

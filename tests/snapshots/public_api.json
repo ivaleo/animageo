@@ -57,6 +57,7 @@
    "release_condition",
    "rename",
    "render",
+   "resolve_paint",
    "run_checks",
    "sample_timeline",
    "shape_conditions",
@@ -173,7 +174,8 @@
      "import_report.text_literals",
      "convert.command_synonyms",
      "convert.ggb_expressions",
-     "style_keys"
+     "style_keys",
+     "resolve_paint"
     ]
    },
    "ImportRefused": {
@@ -389,6 +391,10 @@
    "render": {
     "kind": "function",
     "signature": "(doc, *, style_config=None, export_layout=None, fmt='svg', out=None, inputs=None, t=None, timeline=None, report=True, video=None)"
+   },
+   "resolve_paint": {
+    "kind": "function",
+    "signature": "(doc, style_config=None, t=None, *, timeline=None, inputs=None, export_layout=None)"
    },
    "run_checks": {
     "kind": "function",

@@ -1,0 +1,5922 @@
+{
+ "format": "animageo-paint-parity/v1",
+ "id": "paint_base",
+ "registry": "1.5",
+ "generatedBy": "animageo 1.11.0rc2",
+ "cases": [
+  {
+   "name": "zoo_no_style",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "zoo_no_style",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_D": {
+      "id": "op_D",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "D"
+       }
+      ]
+     },
+     "op_s": {
+      "id": "op_s",
+      "op": "segment.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "s"
+       }
+      ]
+     },
+     "op_u": {
+      "id": "op_u",
+      "op": "segment.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "u"
+       }
+      ]
+     },
+     "op_l": {
+      "id": "op_l",
+      "op": "line.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "D"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "l"
+       }
+      ]
+     },
+     "op_r": {
+      "id": "op_r",
+      "op": "ray.by_points",
+      "args": {
+       "origin": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "through": {
+        "kind": "ref",
+        "elementId": "D"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "ray",
+        "elementId": "r"
+       }
+      ]
+     },
+     "op_v": {
+      "id": "op_v",
+      "op": "vector.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "vector",
+        "elementId": "v"
+       }
+      ]
+     },
+     "op_c": {
+      "id": "op_c",
+      "op": "circle.center_point",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "through": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "circle",
+        "elementId": "c"
+       }
+      ]
+     },
+     "op_T": {
+      "id": "op_T",
+      "op": "polygon.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "T"
+       }
+      ]
+     },
+     "op_k": {
+      "id": "op_k",
+      "op": "arc.center_two_points",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "arc",
+        "elementId": "k"
+       }
+      ]
+     },
+     "op_q": {
+      "id": "op_q",
+      "op": "sector.center_two_points",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "sector",
+        "elementId": "q"
+       }
+      ]
+     },
+     "op_w": {
+      "id": "op_w",
+      "op": "polyline.by_points",
+      "args": {
+       "points": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         },
+         {
+          "kind": "ref",
+          "elementId": "D"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polyline",
+        "elementId": "w"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     },
+     "op_beta": {
+      "id": "op_beta",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "beta"
+       }
+      ]
+     },
+     "op_ra": {
+      "id": "op_ra",
+      "op": "mark.right_angle",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "ra"
+       }
+      ]
+     },
+     "op_mk": {
+      "id": "op_mk",
+      "op": "mark.equal_segments",
+      "args": {
+       "segments": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "s"
+         },
+         {
+          "kind": "ref",
+          "elementId": "u"
+         }
+        ]
+       },
+       "count": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "mk"
+       }
+      ]
+     },
+     "op_ma": {
+      "id": "op_ma",
+      "op": "mark.equal_angles",
+      "args": {
+       "angles": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "alpha"
+         },
+         {
+          "kind": "ref",
+          "elementId": "beta"
+         }
+        ]
+       },
+       "count": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "ma"
+       }
+      ]
+     },
+     "op_n": {
+      "id": "op_n",
+      "op": "number.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "number",
+        "elementId": "n"
+       }
+      ]
+     },
+     "op_t": {
+      "id": "op_t",
+      "op": "text.free",
+      "args": {
+       "text": {
+        "kind": "template",
+        "value": "Zoo"
+       },
+       "anchor": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "refs": {
+        "kind": "list",
+        "items": []
+       }
+      },
+      "outputs": [
+       {
+        "slot": "text",
+        "elementId": "t"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op_D",
+       "slot": "point"
+      }
+     },
+     "s": {
+      "id": "s",
+      "type": "segment",
+      "displayName": "s",
+      "producer": {
+       "operationId": "op_s",
+       "slot": "segment"
+      }
+     },
+     "u": {
+      "id": "u",
+      "type": "segment",
+      "displayName": "u",
+      "producer": {
+       "operationId": "op_u",
+       "slot": "segment"
+      }
+     },
+     "l": {
+      "id": "l",
+      "type": "line",
+      "displayName": "l",
+      "producer": {
+       "operationId": "op_l",
+       "slot": "line"
+      }
+     },
+     "r": {
+      "id": "r",
+      "type": "ray",
+      "displayName": "r",
+      "producer": {
+       "operationId": "op_r",
+       "slot": "ray"
+      }
+     },
+     "v": {
+      "id": "v",
+      "type": "vector",
+      "displayName": "v",
+      "producer": {
+       "operationId": "op_v",
+       "slot": "vector"
+      }
+     },
+     "c": {
+      "id": "c",
+      "type": "circle",
+      "displayName": "c",
+      "producer": {
+       "operationId": "op_c",
+       "slot": "circle"
+      }
+     },
+     "T": {
+      "id": "T",
+      "type": "polygon",
+      "displayName": "T",
+      "producer": {
+       "operationId": "op_T",
+       "slot": "polygon"
+      }
+     },
+     "k": {
+      "id": "k",
+      "type": "arc",
+      "displayName": "k",
+      "producer": {
+       "operationId": "op_k",
+       "slot": "arc"
+      }
+     },
+     "q": {
+      "id": "q",
+      "type": "sector",
+      "displayName": "q",
+      "producer": {
+       "operationId": "op_q",
+       "slot": "sector"
+      }
+     },
+     "w": {
+      "id": "w",
+      "type": "polyline",
+      "displayName": "w",
+      "producer": {
+       "operationId": "op_w",
+       "slot": "polyline"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     },
+     "beta": {
+      "id": "beta",
+      "type": "angle",
+      "displayName": "beta",
+      "producer": {
+       "operationId": "op_beta",
+       "slot": "angle"
+      }
+     },
+     "ra": {
+      "id": "ra",
+      "type": "mark",
+      "displayName": "ra",
+      "producer": {
+       "operationId": "op_ra",
+       "slot": "mark"
+      }
+     },
+     "mk": {
+      "id": "mk",
+      "type": "mark",
+      "displayName": "mk",
+      "producer": {
+       "operationId": "op_mk",
+       "slot": "mark"
+      }
+     },
+     "ma": {
+      "id": "ma",
+      "type": "mark",
+      "displayName": "ma",
+      "producer": {
+       "operationId": "op_ma",
+       "slot": "mark"
+      }
+     },
+     "n": {
+      "id": "n",
+      "type": "number",
+      "displayName": "n",
+      "producer": {
+       "operationId": "op_n",
+       "slot": "number"
+      }
+     },
+     "t": {
+      "id": "t",
+      "type": "text",
+      "displayName": "t",
+      "producer": {
+       "operationId": "op_t",
+       "slot": "text"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       4,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1,
+       3
+      ]
+     },
+     "D": {
+      "kind": "point",
+      "value": [
+       5,
+       3
+      ]
+     },
+     "n": {
+      "kind": "number",
+      "value": 2.5
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {}
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        4.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.0,
+        3.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "D": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000005
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000005,
+       "text": "$D$",
+       "spotWorld": [
+        5.0,
+        3.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "T": {
+      "type": "polygon",
+      "styleType": "polygon",
+      "style": "polygon",
+      "drawn": true,
+      "z": 0.010006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 5.000006
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010006,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000007,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100007
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000007
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 2,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.249045772,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        18.5,
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "beta": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000008,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100008
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000008
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 2,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.785398163,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        18.5,
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "c": {
+      "type": "circle",
+      "styleType": "circle",
+      "style": "circle",
+      "drawn": true,
+      "z": 4.000009,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000009,
+       "dash": null
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010009,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "k": {
+      "type": "arc",
+      "styleType": "arc",
+      "style": "arc",
+      "drawn": true,
+      "z": 5.00001,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.00001,
+       "dash": null
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.01001
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "l": {
+      "type": "line",
+      "styleType": "line",
+      "style": "line",
+      "drawn": true,
+      "z": 4.000011,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 4.000011,
+       "dash": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      }
+     },
+     "ma": {
+      "type": "mark",
+      "styleType": "mark.equal_angles",
+      "style": null,
+      "drawn": false
+     },
+     "mk": {
+      "type": "mark",
+      "styleType": "mark.equal_segments",
+      "style": null,
+      "drawn": false
+     },
+     "n": {
+      "type": "number",
+      "styleType": "number",
+      "style": null,
+      "drawn": false
+     },
+     "q": {
+      "type": "sector",
+      "styleType": "sector",
+      "style": "circlesector",
+      "drawn": true,
+      "z": 5.000013,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.000013
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010013,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "r": {
+      "type": "ray",
+      "styleType": "ray",
+      "style": "ray",
+      "drawn": true,
+      "z": 4.000014,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 4.000014,
+       "dash": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      }
+     },
+     "ra": {
+      "type": "mark",
+      "styleType": "mark.right_angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000015,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100015
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000015
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.892546881,
+       "right": true,
+       "joint": "auto",
+       "rightSizePx": 17.0,
+       "square": [
+        [
+         4.038013156,
+         0.114039467
+        ],
+        [
+         3.917805003,
+         0.114039467
+        ],
+        [
+         3.879791847,
+         0.0
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "s": {
+      "type": "segment",
+      "styleType": "segment",
+      "style": "segment",
+      "drawn": true,
+      "z": 5.000016,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.000016,
+       "dash": null
+      },
+      "ticks": {
+       "count": 2,
+       "style": "line",
+       "lengthPx": 9.0,
+       "widthPx": 1.5,
+       "shiftPx": 2.0,
+       "radiusPx": null,
+       "lines": [
+        [
+         1.99,
+         0.045,
+         1.99,
+         -0.045
+        ],
+        [
+         2.01,
+         0.045,
+         2.01,
+         -0.045
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "t": {
+      "type": "text",
+      "styleType": "text",
+      "style": "text",
+      "drawn": true,
+      "z": 50.000017,
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 16.0
+      }
+     },
+     "u": {
+      "type": "segment",
+      "styleType": "segment",
+      "style": "segment",
+      "drawn": true,
+      "z": 5.000018,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.000018,
+       "dash": null
+      },
+      "ticks": {
+       "count": 2,
+       "style": "line",
+       "lengthPx": 9.0,
+       "widthPx": 1.5,
+       "shiftPx": 2.0,
+       "radiusPx": null,
+       "lines": [
+        [
+         2.475251263,
+         1.461109127,
+         2.538890873,
+         1.524748737
+        ],
+        [
+         2.461109127,
+         1.475251263,
+         2.524748737,
+         1.538890873
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "v": {
+      "type": "vector",
+      "styleType": "vector",
+      "style": "vector",
+      "drawn": true,
+      "z": 5.00002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.00002,
+       "dash": null
+      },
+      "arrow": {
+       "lengthPx": 11.0,
+       "widthPx": 7.5
+      },
+      "ticks": {
+       "count": 0,
+       "style": "line",
+       "lengthPx": 9.0,
+       "widthPx": 1.5,
+       "shiftPx": 2.0,
+       "radiusPx": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "w": {
+      "type": "polyline",
+      "styleType": "polyline",
+      "style": "locuscurve",
+      "drawn": true,
+      "z": 4.000021,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000021,
+       "dash": null
+      }
+     }
+    },
+    "order": [
+     "T",
+     "alpha",
+     "beta",
+     "ra",
+     "c",
+     "l",
+     "r",
+     "w",
+     "k",
+     "q",
+     "s",
+     "u",
+     "v",
+     "A",
+     "B",
+     "C",
+     "D",
+     "t"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "zoo_builtin",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "zoo_builtin",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_D": {
+      "id": "op_D",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "D"
+       }
+      ]
+     },
+     "op_s": {
+      "id": "op_s",
+      "op": "segment.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "s"
+       }
+      ]
+     },
+     "op_u": {
+      "id": "op_u",
+      "op": "segment.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "u"
+       }
+      ]
+     },
+     "op_l": {
+      "id": "op_l",
+      "op": "line.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "D"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "l"
+       }
+      ]
+     },
+     "op_r": {
+      "id": "op_r",
+      "op": "ray.by_points",
+      "args": {
+       "origin": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "through": {
+        "kind": "ref",
+        "elementId": "D"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "ray",
+        "elementId": "r"
+       }
+      ]
+     },
+     "op_v": {
+      "id": "op_v",
+      "op": "vector.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "vector",
+        "elementId": "v"
+       }
+      ]
+     },
+     "op_c": {
+      "id": "op_c",
+      "op": "circle.center_point",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "through": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "circle",
+        "elementId": "c"
+       }
+      ]
+     },
+     "op_T": {
+      "id": "op_T",
+      "op": "polygon.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "T"
+       }
+      ]
+     },
+     "op_k": {
+      "id": "op_k",
+      "op": "arc.center_two_points",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "arc",
+        "elementId": "k"
+       }
+      ]
+     },
+     "op_q": {
+      "id": "op_q",
+      "op": "sector.center_two_points",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "sector",
+        "elementId": "q"
+       }
+      ]
+     },
+     "op_w": {
+      "id": "op_w",
+      "op": "polyline.by_points",
+      "args": {
+       "points": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         },
+         {
+          "kind": "ref",
+          "elementId": "D"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polyline",
+        "elementId": "w"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     },
+     "op_beta": {
+      "id": "op_beta",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "beta"
+       }
+      ]
+     },
+     "op_ra": {
+      "id": "op_ra",
+      "op": "mark.right_angle",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "ra"
+       }
+      ]
+     },
+     "op_mk": {
+      "id": "op_mk",
+      "op": "mark.equal_segments",
+      "args": {
+       "segments": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "s"
+         },
+         {
+          "kind": "ref",
+          "elementId": "u"
+         }
+        ]
+       },
+       "count": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "mk"
+       }
+      ]
+     },
+     "op_ma": {
+      "id": "op_ma",
+      "op": "mark.equal_angles",
+      "args": {
+       "angles": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "alpha"
+         },
+         {
+          "kind": "ref",
+          "elementId": "beta"
+         }
+        ]
+       },
+       "count": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "ma"
+       }
+      ]
+     },
+     "op_n": {
+      "id": "op_n",
+      "op": "number.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "number",
+        "elementId": "n"
+       }
+      ]
+     },
+     "op_t": {
+      "id": "op_t",
+      "op": "text.free",
+      "args": {
+       "text": {
+        "kind": "template",
+        "value": "Zoo"
+       },
+       "anchor": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "refs": {
+        "kind": "list",
+        "items": []
+       }
+      },
+      "outputs": [
+       {
+        "slot": "text",
+        "elementId": "t"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op_D",
+       "slot": "point"
+      }
+     },
+     "s": {
+      "id": "s",
+      "type": "segment",
+      "displayName": "s",
+      "producer": {
+       "operationId": "op_s",
+       "slot": "segment"
+      }
+     },
+     "u": {
+      "id": "u",
+      "type": "segment",
+      "displayName": "u",
+      "producer": {
+       "operationId": "op_u",
+       "slot": "segment"
+      }
+     },
+     "l": {
+      "id": "l",
+      "type": "line",
+      "displayName": "l",
+      "producer": {
+       "operationId": "op_l",
+       "slot": "line"
+      }
+     },
+     "r": {
+      "id": "r",
+      "type": "ray",
+      "displayName": "r",
+      "producer": {
+       "operationId": "op_r",
+       "slot": "ray"
+      }
+     },
+     "v": {
+      "id": "v",
+      "type": "vector",
+      "displayName": "v",
+      "producer": {
+       "operationId": "op_v",
+       "slot": "vector"
+      }
+     },
+     "c": {
+      "id": "c",
+      "type": "circle",
+      "displayName": "c",
+      "producer": {
+       "operationId": "op_c",
+       "slot": "circle"
+      }
+     },
+     "T": {
+      "id": "T",
+      "type": "polygon",
+      "displayName": "T",
+      "producer": {
+       "operationId": "op_T",
+       "slot": "polygon"
+      }
+     },
+     "k": {
+      "id": "k",
+      "type": "arc",
+      "displayName": "k",
+      "producer": {
+       "operationId": "op_k",
+       "slot": "arc"
+      }
+     },
+     "q": {
+      "id": "q",
+      "type": "sector",
+      "displayName": "q",
+      "producer": {
+       "operationId": "op_q",
+       "slot": "sector"
+      }
+     },
+     "w": {
+      "id": "w",
+      "type": "polyline",
+      "displayName": "w",
+      "producer": {
+       "operationId": "op_w",
+       "slot": "polyline"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     },
+     "beta": {
+      "id": "beta",
+      "type": "angle",
+      "displayName": "beta",
+      "producer": {
+       "operationId": "op_beta",
+       "slot": "angle"
+      }
+     },
+     "ra": {
+      "id": "ra",
+      "type": "mark",
+      "displayName": "ra",
+      "producer": {
+       "operationId": "op_ra",
+       "slot": "mark"
+      }
+     },
+     "mk": {
+      "id": "mk",
+      "type": "mark",
+      "displayName": "mk",
+      "producer": {
+       "operationId": "op_mk",
+       "slot": "mark"
+      }
+     },
+     "ma": {
+      "id": "ma",
+      "type": "mark",
+      "displayName": "ma",
+      "producer": {
+       "operationId": "op_ma",
+       "slot": "mark"
+      }
+     },
+     "n": {
+      "id": "n",
+      "type": "number",
+      "displayName": "n",
+      "producer": {
+       "operationId": "op_n",
+       "slot": "number"
+      }
+     },
+     "t": {
+      "id": "t",
+      "type": "text",
+      "displayName": "t",
+      "producer": {
+       "operationId": "op_t",
+       "slot": "text"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       4,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1,
+       3
+      ]
+     },
+     "D": {
+      "kind": "point",
+      "value": [
+       5,
+       3
+      ]
+     },
+     "n": {
+      "kind": "number",
+      "value": 2.5
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {}
+   },
+   "style": {
+    "name": "builtin",
+    "version": 1,
+    "_comment": "Package-shipped baseline. Loaded unconditionally by StyleConfig.load; user JSON files are deep-merged on top. All *_px values are pixels; the renderer divides by ptUnit_style at draw time. Opinionated per-type fills are the user JSON's job: they apply via overlay or defaults merge.",
+    "presets": {
+     "color": {
+      "main": "#000000",
+      "light": "#cccccc",
+      "accent": "#d05456",
+      "accent_light": "#f6e0db",
+      "aux": "#808080",
+      "black": "#000000",
+      "white": "#ffffff",
+      "shade": "#eeeeee",
+      "background": "#ffffff",
+      "strong": "#000000"
+     },
+     "point_size": {
+      "main": 6,
+      "bold": 9,
+      "aux": 4
+     },
+     "line_width": {
+      "main": 1.5,
+      "bold": 2.5,
+      "aux": 0.75
+     },
+     "angle_radius": {
+      "main": 17,
+      "bold": 24,
+      "aux": 12,
+      "shift": 1.5,
+      "right": 17
+     },
+     "tick": {
+      "main": {
+       "tick_length_px": 9,
+       "tick_width_px": 1.5,
+       "tick_shift_px": 2
+      }
+     },
+     "arrow": {
+      "main": {
+       "arrow_length_px": 11,
+       "arrow_width_px": 7.5
+      }
+     },
+     "font_size": {
+      "main": 14,
+      "bold": 16,
+      "aux": 12
+     }
+    },
+    "defaults": {
+     "point": {
+      "size_px": "presets.point_size.main",
+      "fill": "presets.color.strong",
+      "stroke": "presets.color.strong",
+      "stroke_width_px": 0,
+      "fill_opacity": 1,
+      "stroke_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main",
+      "point_shape": "circle"
+     },
+     "segment": {
+      "$include": "presets.tick.main",
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "stroke_linecap": "butt",
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "line": {
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "ray": {
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "vector": {
+      "$include": [
+       "presets.tick.main",
+       "presets.arrow.main"
+      ],
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "angle": {
+      "arc_size_px": "presets.angle_radius.main",
+      "arc_shift_px": "presets.angle_radius.shift",
+      "right_angle_size_px": "presets.angle_radius.right",
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.aux",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main",
+      "label_radial_offset_px": 0,
+      "tick_count": 1
+     },
+     "polygon": {
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "fill_pattern": "solid",
+      "hatch_angle_deg": 45,
+      "hatch_spacing_px": 6,
+      "hatch_width_px": 0.75,
+      "hatch_color": "stroke",
+      "hatch_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "circle": {
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "fill_pattern": "solid",
+      "hatch_angle_deg": 45,
+      "hatch_spacing_px": 6,
+      "hatch_width_px": 0.75,
+      "hatch_color": "stroke",
+      "hatch_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "arc": {
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "circlesector": {
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "fill_pattern": "solid",
+      "hatch_angle_deg": 45,
+      "hatch_spacing_px": 6,
+      "hatch_width_px": 0.75,
+      "hatch_color": "stroke",
+      "hatch_opacity": 1,
+      "sector_sides": false,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "conic": {
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "function": {
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "implicitcurve": {
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "fill": "presets.color.background",
+      "fill_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "region": {
+      "_comment": "Regions (region.*, L4) fill or hatch without a stroke by default.",
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 0,
+      "fill": "presets.color.strong",
+      "fill_opacity": 0.15,
+      "fill_pattern": "solid",
+      "hatch_angle_deg": 45,
+      "hatch_spacing_px": 6,
+      "hatch_width_px": 0.75,
+      "hatch_color": "stroke",
+      "hatch_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "locuscurve": {
+      "stroke": "presets.color.strong",
+      "stroke_width_px": "presets.line_width.main",
+      "stroke_opacity": 1,
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.main"
+     },
+     "decoration": {
+      "_comment": "Shared sub-defaults for tick-marks on segments/angles and arrow heads on vectors/rays. Callers merge these into the relevant type as needed.",
+      "$include": "presets.tick.main"
+     },
+     "text": {
+      "label_color": "presets.color.strong",
+      "font_size_px": "presets.font_size.bold"
+     }
+    },
+    "overlay": {
+     "per_type": {},
+     "per_name": {},
+     "angle_radius": {
+      "enabled": false,
+      "exp": 0.25,
+      "pivot_rad": 1.5707963267948966,
+      "min_px": 12,
+      "max_arm_fraction": 0.65,
+      "apply_to_right": false
+     },
+     "label_placement": {
+      "enabled": false,
+      "distance_px": 6,
+      "padding_px": 2,
+      "angle_gap_arc_px": 3,
+      "angle_gap_sides_px": 3,
+      "w_anchor": 1.0,
+      "w_label": 10.0,
+      "w_geom": 8.0,
+      "dynamic_angles": false,
+      "keyframe_snapshots": false,
+      "canonicalize_anchor": false,
+      "interpolation": "linear",
+      "ema_alpha": 0.2,
+      "anchor_flip_frames": 6,
+      "solver_every_n_frames": 2
+     }
+    },
+    "roles": {
+     "_comment": "Style roles of a native document (appearance.<id>.role, 1.9.0a1); 'point' holds the keys of a point. Mirror of animageo.style.schema.ROLE_DEFAULTS.",
+     "given": {
+      "stroke": "presets.color.main",
+      "point": {
+       "fill": "presets.color.strong"
+      }
+     },
+     "aux": {
+      "stroke": "presets.color.aux",
+      "stroke_width_px": "presets.line_width.aux",
+      "stroke_dash_ratio": 0.5,
+      "point": {
+       "size_px": "presets.point_size.aux"
+      }
+     },
+     "sought": {
+      "stroke": "presets.color.accent",
+      "stroke_width_px": "presets.line_width.bold",
+      "point": {
+       "fill": "presets.color.accent",
+       "size_px": "presets.point_size.bold"
+      }
+     }
+    },
+    "rendering": {
+     "background": "presets.color.background",
+     "line_cap": "butt",
+     "dash_period_px": 10,
+     "right_angle_joint": "auto",
+     "polygon_boundary_layer": null,
+     "points_display": "auto",
+     "label_anchor": "BC",
+     "label_value_precision": 1
+    }
+   },
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BC",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.0,
+        0.06
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BC",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        4.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.0,
+        0.06
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BC",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.0,
+        3.0
+       ],
+       "offsetWorld": [
+        0.0,
+        0.06
+       ]
+      }
+     },
+     "D": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000005
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BC",
+       "z": 50.000005,
+       "text": "$D$",
+       "spotWorld": [
+        5.0,
+        3.0
+       ],
+       "offsetWorld": [
+        0.0,
+        0.06
+       ]
+      }
+     },
+     "T": {
+      "type": "polygon",
+      "styleType": "polygon",
+      "style": "polygon",
+      "drawn": true,
+      "z": 0.010006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 5.000006
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010006,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000007,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100007
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000007
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 2,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.249045772,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        18.5,
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "beta": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000008,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100008
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000008
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 2,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.785398163,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        18.5,
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "c": {
+      "type": "circle",
+      "styleType": "circle",
+      "style": "circle",
+      "drawn": true,
+      "z": 4.000009,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000009,
+       "dash": null
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010009,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "k": {
+      "type": "arc",
+      "styleType": "arc",
+      "style": "arc",
+      "drawn": true,
+      "z": 5.00001,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.00001,
+       "dash": null
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.01001
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "l": {
+      "type": "line",
+      "styleType": "line",
+      "style": "line",
+      "drawn": true,
+      "z": 4.000011,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 4.000011,
+       "dash": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC"
+      }
+     },
+     "ma": {
+      "type": "mark",
+      "styleType": "mark.equal_angles",
+      "style": null,
+      "drawn": false
+     },
+     "mk": {
+      "type": "mark",
+      "styleType": "mark.equal_segments",
+      "style": null,
+      "drawn": false
+     },
+     "n": {
+      "type": "number",
+      "styleType": "number",
+      "style": null,
+      "drawn": false
+     },
+     "q": {
+      "type": "sector",
+      "styleType": "sector",
+      "style": "circlesector",
+      "drawn": true,
+      "z": 5.000013,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.000013
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010013,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "r": {
+      "type": "ray",
+      "styleType": "ray",
+      "style": "ray",
+      "drawn": true,
+      "z": 4.000014,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 4.000014,
+       "dash": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC"
+      }
+     },
+     "ra": {
+      "type": "mark",
+      "styleType": "mark.right_angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000015,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100015
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000015
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.892546881,
+       "right": true,
+       "joint": "auto",
+       "rightSizePx": 17.0,
+       "square": [
+        [
+         4.038013156,
+         0.114039467
+        ],
+        [
+         3.917805003,
+         0.114039467
+        ],
+        [
+         3.879791847,
+         0.0
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "s": {
+      "type": "segment",
+      "styleType": "segment",
+      "style": "segment",
+      "drawn": true,
+      "z": 5.000016,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.000016,
+       "dash": null
+      },
+      "ticks": {
+       "count": 2,
+       "style": "line",
+       "lengthPx": 9.0,
+       "widthPx": 1.5,
+       "shiftPx": 2.0,
+       "radiusPx": null,
+       "lines": [
+        [
+         1.99,
+         0.045,
+         1.99,
+         -0.045
+        ],
+        [
+         2.01,
+         0.045,
+         2.01,
+         -0.045
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "t": {
+      "type": "text",
+      "styleType": "text",
+      "style": "text",
+      "drawn": true,
+      "z": 50.000017,
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 16.0
+      }
+     },
+     "u": {
+      "type": "segment",
+      "styleType": "segment",
+      "style": "segment",
+      "drawn": true,
+      "z": 5.000018,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.000018,
+       "dash": null
+      },
+      "ticks": {
+       "count": 2,
+       "style": "line",
+       "lengthPx": 9.0,
+       "widthPx": 1.5,
+       "shiftPx": 2.0,
+       "radiusPx": null,
+       "lines": [
+        [
+         2.475251263,
+         1.461109127,
+         2.538890873,
+         1.524748737
+        ],
+        [
+         2.461109127,
+         1.475251263,
+         2.524748737,
+         1.538890873
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "v": {
+      "type": "vector",
+      "styleType": "vector",
+      "style": "vector",
+      "drawn": true,
+      "z": 5.00002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.00002,
+       "dash": null
+      },
+      "arrow": {
+       "lengthPx": 11.0,
+       "widthPx": 7.5
+      },
+      "ticks": {
+       "count": 0,
+       "style": "line",
+       "lengthPx": 9.0,
+       "widthPx": 1.5,
+       "shiftPx": 2.0,
+       "radiusPx": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "w": {
+      "type": "polyline",
+      "styleType": "polyline",
+      "style": "locuscurve",
+      "drawn": true,
+      "z": 4.000021,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000021,
+       "dash": null
+      }
+     }
+    },
+    "order": [
+     "T",
+     "alpha",
+     "beta",
+     "ra",
+     "c",
+     "l",
+     "r",
+     "w",
+     "k",
+     "q",
+     "s",
+     "u",
+     "v",
+     "A",
+     "B",
+     "C",
+     "D",
+     "t"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "zoo_book",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "zoo_book",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_D": {
+      "id": "op_D",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "D"
+       }
+      ]
+     },
+     "op_s": {
+      "id": "op_s",
+      "op": "segment.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "s"
+       }
+      ]
+     },
+     "op_u": {
+      "id": "op_u",
+      "op": "segment.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "u"
+       }
+      ]
+     },
+     "op_l": {
+      "id": "op_l",
+      "op": "line.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "D"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "l"
+       }
+      ]
+     },
+     "op_r": {
+      "id": "op_r",
+      "op": "ray.by_points",
+      "args": {
+       "origin": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "through": {
+        "kind": "ref",
+        "elementId": "D"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "ray",
+        "elementId": "r"
+       }
+      ]
+     },
+     "op_v": {
+      "id": "op_v",
+      "op": "vector.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "vector",
+        "elementId": "v"
+       }
+      ]
+     },
+     "op_c": {
+      "id": "op_c",
+      "op": "circle.center_point",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "through": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "circle",
+        "elementId": "c"
+       }
+      ]
+     },
+     "op_T": {
+      "id": "op_T",
+      "op": "polygon.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "T"
+       }
+      ]
+     },
+     "op_k": {
+      "id": "op_k",
+      "op": "arc.center_two_points",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "arc",
+        "elementId": "k"
+       }
+      ]
+     },
+     "op_q": {
+      "id": "op_q",
+      "op": "sector.center_two_points",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "sector",
+        "elementId": "q"
+       }
+      ]
+     },
+     "op_w": {
+      "id": "op_w",
+      "op": "polyline.by_points",
+      "args": {
+       "points": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         },
+         {
+          "kind": "ref",
+          "elementId": "D"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polyline",
+        "elementId": "w"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     },
+     "op_beta": {
+      "id": "op_beta",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "beta"
+       }
+      ]
+     },
+     "op_ra": {
+      "id": "op_ra",
+      "op": "mark.right_angle",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "ra"
+       }
+      ]
+     },
+     "op_mk": {
+      "id": "op_mk",
+      "op": "mark.equal_segments",
+      "args": {
+       "segments": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "s"
+         },
+         {
+          "kind": "ref",
+          "elementId": "u"
+         }
+        ]
+       },
+       "count": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "mk"
+       }
+      ]
+     },
+     "op_ma": {
+      "id": "op_ma",
+      "op": "mark.equal_angles",
+      "args": {
+       "angles": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "alpha"
+         },
+         {
+          "kind": "ref",
+          "elementId": "beta"
+         }
+        ]
+       },
+       "count": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "ma"
+       }
+      ]
+     },
+     "op_n": {
+      "id": "op_n",
+      "op": "number.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "number",
+        "elementId": "n"
+       }
+      ]
+     },
+     "op_t": {
+      "id": "op_t",
+      "op": "text.free",
+      "args": {
+       "text": {
+        "kind": "template",
+        "value": "Zoo"
+       },
+       "anchor": {
+        "kind": "ref",
+        "elementId": "D"
+       },
+       "refs": {
+        "kind": "list",
+        "items": []
+       }
+      },
+      "outputs": [
+       {
+        "slot": "text",
+        "elementId": "t"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op_D",
+       "slot": "point"
+      }
+     },
+     "s": {
+      "id": "s",
+      "type": "segment",
+      "displayName": "s",
+      "producer": {
+       "operationId": "op_s",
+       "slot": "segment"
+      }
+     },
+     "u": {
+      "id": "u",
+      "type": "segment",
+      "displayName": "u",
+      "producer": {
+       "operationId": "op_u",
+       "slot": "segment"
+      }
+     },
+     "l": {
+      "id": "l",
+      "type": "line",
+      "displayName": "l",
+      "producer": {
+       "operationId": "op_l",
+       "slot": "line"
+      }
+     },
+     "r": {
+      "id": "r",
+      "type": "ray",
+      "displayName": "r",
+      "producer": {
+       "operationId": "op_r",
+       "slot": "ray"
+      }
+     },
+     "v": {
+      "id": "v",
+      "type": "vector",
+      "displayName": "v",
+      "producer": {
+       "operationId": "op_v",
+       "slot": "vector"
+      }
+     },
+     "c": {
+      "id": "c",
+      "type": "circle",
+      "displayName": "c",
+      "producer": {
+       "operationId": "op_c",
+       "slot": "circle"
+      }
+     },
+     "T": {
+      "id": "T",
+      "type": "polygon",
+      "displayName": "T",
+      "producer": {
+       "operationId": "op_T",
+       "slot": "polygon"
+      }
+     },
+     "k": {
+      "id": "k",
+      "type": "arc",
+      "displayName": "k",
+      "producer": {
+       "operationId": "op_k",
+       "slot": "arc"
+      }
+     },
+     "q": {
+      "id": "q",
+      "type": "sector",
+      "displayName": "q",
+      "producer": {
+       "operationId": "op_q",
+       "slot": "sector"
+      }
+     },
+     "w": {
+      "id": "w",
+      "type": "polyline",
+      "displayName": "w",
+      "producer": {
+       "operationId": "op_w",
+       "slot": "polyline"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     },
+     "beta": {
+      "id": "beta",
+      "type": "angle",
+      "displayName": "beta",
+      "producer": {
+       "operationId": "op_beta",
+       "slot": "angle"
+      }
+     },
+     "ra": {
+      "id": "ra",
+      "type": "mark",
+      "displayName": "ra",
+      "producer": {
+       "operationId": "op_ra",
+       "slot": "mark"
+      }
+     },
+     "mk": {
+      "id": "mk",
+      "type": "mark",
+      "displayName": "mk",
+      "producer": {
+       "operationId": "op_mk",
+       "slot": "mark"
+      }
+     },
+     "ma": {
+      "id": "ma",
+      "type": "mark",
+      "displayName": "ma",
+      "producer": {
+       "operationId": "op_ma",
+       "slot": "mark"
+      }
+     },
+     "n": {
+      "id": "n",
+      "type": "number",
+      "displayName": "n",
+      "producer": {
+       "operationId": "op_n",
+       "slot": "number"
+      }
+     },
+     "t": {
+      "id": "t",
+      "type": "text",
+      "displayName": "t",
+      "producer": {
+       "operationId": "op_t",
+       "slot": "text"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       4,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1,
+       3
+      ]
+     },
+     "D": {
+      "kind": "point",
+      "value": [
+       5,
+       3
+      ]
+     },
+     "n": {
+      "kind": "number",
+      "value": 2.5
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "s": {
+      "label": {
+       "mode": "name"
+      }
+     },
+     "alpha": {
+      "label": {
+       "mode": "value"
+      }
+     }
+    }
+   },
+   "style": {
+    "name": "book_blue",
+    "version": 0.1,
+    "presets": {
+     "point_size": {
+      "main": 2.8346456692916,
+      "bold": 4.2519685039374,
+      "aux": 2.1259842519687
+     },
+     "line_width": {
+      "main": 1,
+      "bold": 1.5,
+      "aux": 0.75
+     },
+     "color": {
+      "main": "#4d87c6",
+      "light": "#d6e5f6",
+      "accent": "#f15b5b",
+      "accent_light": "#fdddd7",
+      "aux": "#b1b3b6",
+      "black": "#000000",
+      "white": "#ffffff"
+     },
+     "angle_radius": {
+      "main": 10,
+      "shift": 1.5,
+      "right": 10
+     },
+     "tick": {
+      "main": {
+       "tick_length_px": 6,
+       "tick_width_px": 1,
+       "tick_shift_px": 2
+      }
+     },
+     "arrow": {
+      "main": {
+       "arrow_length_px": 8,
+       "arrow_width_px": 5
+      }
+     },
+     "font_size": {
+      "main": 10.5
+     }
+    },
+    "defaults": {
+     "angle": {
+      "stroke_width_px": 0.75
+     }
+    },
+    "rendering": {
+     "line_cap": "butt",
+     "right_angle_joint": "round",
+     "polygon_boundary_layer": "top",
+     "points_display": "auto"
+    },
+    "import": {
+     "colors": {
+      "#1565c0": "presets.color.main",
+      "#1565c0 0.1": "presets.color.light 1",
+      "#d32f2f": "presets.color.accent",
+      "#d32f2f 0.1": "presets.color.accent_light 1",
+      "#616161": "#000000",
+      "#000000 0.6": "#2581b5",
+      "#000000 0.1": "presets.color.white 1",
+      "#1565c0 0": "presets.color.white 1",
+      "#d32f2f 0": "presets.color.white 1"
+     },
+     "point_size": {
+      "5": "presets.point_size.main"
+     },
+     "line_width": {
+      "5": "presets.line_width.main"
+     }
+    }
+   },
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 2.834645669,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.031235189,
+        0.031235189
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 2.834645669,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        4.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.031235189,
+        0.031235189
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 2.834645669,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.0,
+        3.0
+       ],
+       "offsetWorld": [
+        0.031235189,
+        0.031235189
+       ]
+      }
+     },
+     "D": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000005
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 2.834645669,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000005,
+       "text": "$D$",
+       "spotWorld": [
+        5.0,
+        3.0
+       ],
+       "offsetWorld": [
+        0.031235189,
+        0.031235189
+       ]
+      }
+     },
+     "T": {
+      "type": "polygon",
+      "styleType": "polygon",
+      "style": "polygon",
+      "drawn": true,
+      "z": 0.010006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.0,
+       "cap": null,
+       "z": 5.000006
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010006,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000007,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100007
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000007
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 10.0,
+       "radiusPx": 10.0,
+       "arcs": 2,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.249045772,
+       "right": false,
+       "joint": "round",
+       "arcRadiiPx": [
+        11.5,
+        10.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": true,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0,
+       "z": 50.000007,
+       "text": "$71.6^{\\circ}$",
+       "spotWorld": [
+        0.093292851,
+        0.067241683
+       ],
+       "offsetWorld": [
+        0.0,
+        0.0
+       ]
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "beta": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000008,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100008
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000008
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 10.0,
+       "radiusPx": 10.0,
+       "arcs": 2,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.785398163,
+       "right": false,
+       "joint": "round",
+       "arcRadiiPx": [
+        11.5,
+        10.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "c": {
+      "type": "circle",
+      "styleType": "circle",
+      "style": "circle",
+      "drawn": true,
+      "z": 4.000009,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.0,
+       "cap": null,
+       "z": 4.000009,
+       "dash": null
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010009,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "k": {
+      "type": "arc",
+      "styleType": "arc",
+      "style": "arc",
+      "drawn": true,
+      "z": 5.00001,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.0,
+       "cap": "butt",
+       "z": 5.00001,
+       "dash": null
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.01001
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "l": {
+      "type": "line",
+      "styleType": "line",
+      "style": "line",
+      "drawn": true,
+      "z": 4.000011,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.0,
+       "cap": "butt",
+       "z": 4.000011,
+       "dash": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": false,
+       "anchor": "BL"
+      }
+     },
+     "ma": {
+      "type": "mark",
+      "styleType": "mark.equal_angles",
+      "style": null,
+      "drawn": false
+     },
+     "mk": {
+      "type": "mark",
+      "styleType": "mark.equal_segments",
+      "style": null,
+      "drawn": false
+     },
+     "n": {
+      "type": "number",
+      "styleType": "number",
+      "style": null,
+      "drawn": false
+     },
+     "q": {
+      "type": "sector",
+      "styleType": "sector",
+      "style": "circlesector",
+      "drawn": true,
+      "z": 5.000013,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.0,
+       "cap": "butt",
+       "z": 5.000013
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010013,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "r": {
+      "type": "ray",
+      "styleType": "ray",
+      "style": "ray",
+      "drawn": true,
+      "z": 4.000014,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.0,
+       "cap": "butt",
+       "z": 4.000014,
+       "dash": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": false,
+       "anchor": "BL"
+      }
+     },
+     "ra": {
+      "type": "mark",
+      "styleType": "mark.right_angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000015,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100015
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000015
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 10.0,
+       "radiusPx": 10.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.892546881,
+       "right": true,
+       "joint": "round",
+       "rightSizePx": 10.0,
+       "square": [
+        [
+         4.02236068,
+         0.067082039
+        ],
+        [
+         3.951650002,
+         0.067082039
+        ],
+        [
+         3.929289322,
+         0.0
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "s": {
+      "type": "segment",
+      "styleType": "segment",
+      "style": "segment",
+      "drawn": true,
+      "z": 5.000016,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.0,
+       "cap": "butt",
+       "z": 5.000016,
+       "dash": null
+      },
+      "ticks": {
+       "count": 2,
+       "style": "line",
+       "lengthPx": 6.0,
+       "widthPx": 1.0,
+       "shiftPx": 2.0,
+       "radiusPx": null,
+       "lines": [
+        [
+         1.99,
+         0.03,
+         1.99,
+         -0.03
+        ],
+        [
+         2.01,
+         0.03,
+         2.01,
+         -0.03
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000016,
+       "text": "$s$",
+       "spotWorld": [
+        2.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.0,
+        0.0
+       ]
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "t": {
+      "type": "text",
+      "styleType": "text",
+      "style": "text",
+      "drawn": true,
+      "z": 50.000017,
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 16.0
+      }
+     },
+     "u": {
+      "type": "segment",
+      "styleType": "segment",
+      "style": "segment",
+      "drawn": true,
+      "z": 5.000018,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.0,
+       "cap": "butt",
+       "z": 5.000018,
+       "dash": null
+      },
+      "ticks": {
+       "count": 2,
+       "style": "line",
+       "lengthPx": 6.0,
+       "widthPx": 1.0,
+       "shiftPx": 2.0,
+       "radiusPx": null,
+       "lines": [
+        [
+         2.485857864,
+         1.471715729,
+         2.528284271,
+         1.514142136
+        ],
+        [
+         2.471715729,
+         1.485857864,
+         2.514142136,
+         1.528284271
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "v": {
+      "type": "vector",
+      "styleType": "vector",
+      "style": "vector",
+      "drawn": true,
+      "z": 5.00002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.0,
+       "cap": "butt",
+       "z": 5.00002,
+       "dash": null
+      },
+      "arrow": {
+       "lengthPx": 8.0,
+       "widthPx": 5.0
+      },
+      "ticks": {
+       "count": 0,
+       "style": "line",
+       "lengthPx": 6.0,
+       "widthPx": 1.0,
+       "shiftPx": 2.0,
+       "radiusPx": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 10.5,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "w": {
+      "type": "polyline",
+      "styleType": "polyline",
+      "style": "locuscurve",
+      "drawn": true,
+      "z": 4.000021,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.0,
+       "cap": null,
+       "z": 4.000021,
+       "dash": null
+      }
+     }
+    },
+    "order": [
+     "T",
+     "alpha",
+     "beta",
+     "ra",
+     "c",
+     "l",
+     "r",
+     "w",
+     "k",
+     "q",
+     "s",
+     "u",
+     "v",
+     "A",
+     "B",
+     "C",
+     "D",
+     "t"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "roles",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "roles",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_a": {
+      "id": "op_a",
+      "op": "segment.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "a"
+       }
+      ]
+     },
+     "op_b": {
+      "id": "op_b",
+      "op": "segment.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "b"
+       }
+      ]
+     },
+     "op_c": {
+      "id": "op_c",
+      "op": "circle.center_point",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "through": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "circle",
+        "elementId": "c"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "a": {
+      "id": "a",
+      "type": "segment",
+      "displayName": "a",
+      "producer": {
+       "operationId": "op_a",
+       "slot": "segment"
+      }
+     },
+     "b": {
+      "id": "b",
+      "type": "segment",
+      "displayName": "b",
+      "producer": {
+       "operationId": "op_b",
+       "slot": "segment"
+      }
+     },
+     "c": {
+      "id": "c",
+      "type": "circle",
+      "displayName": "c",
+      "producer": {
+       "operationId": "op_c",
+       "slot": "circle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1.5,
+       3.5
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "a": {
+      "role": "given"
+     },
+     "b": {
+      "role": "aux"
+     },
+     "c": {
+      "role": "sought"
+     },
+     "C": {
+      "role": "aux"
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 4.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.5,
+        3.5
+       ],
+       "offsetWorld": [
+        0.035355339,
+        0.035355339
+       ]
+      }
+     },
+     "a": {
+      "type": "segment",
+      "styleType": "segment",
+      "style": "segment",
+      "drawn": true,
+      "z": 5.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.000005,
+       "dash": null
+      },
+      "ticks": {
+       "count": 0,
+       "style": "line",
+       "lengthPx": 9.0,
+       "widthPx": 1.5,
+       "shiftPx": 2.0,
+       "radiusPx": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "b": {
+      "type": "segment",
+      "styleType": "segment",
+      "style": "segment",
+      "drawn": true,
+      "z": 5.000006,
+      "stroke": {
+       "color": "#808080",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": "butt",
+       "z": 5.000006,
+       "dash": {
+        "onPx": 5.0,
+        "offPx": 5.0,
+        "fit": "ends",
+        "drawn": {
+         "onPx": 4.999744917,
+         "offPx": 4.999744917,
+         "offsetPx": 0.0
+        }
+       }
+      },
+      "ticks": {
+       "count": 0,
+       "style": "line",
+       "lengthPx": 9.0,
+       "widthPx": 1.5,
+       "shiftPx": 2.0,
+       "radiusPx": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "c": {
+      "type": "circle",
+      "styleType": "circle",
+      "style": "circle",
+      "drawn": true,
+      "z": 4.000007,
+      "stroke": {
+       "color": "#d05456",
+       "opacity": 1.0,
+       "widthPx": 2.5,
+       "cap": null,
+       "z": 4.000007,
+       "dash": null
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010007,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "c",
+     "a",
+     "b",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "hatch",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "hatch",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_T": {
+      "id": "op_T",
+      "op": "polygon.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "T"
+       }
+      ]
+     },
+     "op_c": {
+      "id": "op_c",
+      "op": "circle.center_point",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "through": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "circle",
+        "elementId": "c"
+       }
+      ]
+     },
+     "op_q": {
+      "id": "op_q",
+      "op": "sector.center_two_points",
+      "args": {
+       "center": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "sector",
+        "elementId": "q"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "T": {
+      "id": "T",
+      "type": "polygon",
+      "displayName": "T",
+      "producer": {
+       "operationId": "op_T",
+       "slot": "polygon"
+      }
+     },
+     "c": {
+      "id": "c",
+      "type": "circle",
+      "displayName": "c",
+      "producer": {
+       "operationId": "op_c",
+       "slot": "circle"
+      }
+     },
+     "q": {
+      "id": "q",
+      "type": "sector",
+      "displayName": "q",
+      "producer": {
+       "operationId": "op_q",
+       "slot": "sector"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1.5,
+       3.5
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "T": {
+      "overrides": {
+       "fill_pattern": "hatch",
+       "hatch_angle_deg": 30
+      }
+     },
+     "c": {
+      "overrides": {
+       "fill_pattern": "crosshatch",
+       "hatch_color": "#d05456"
+      }
+     },
+     "q": {
+      "overrides": {
+       "fill_pattern": "dots",
+       "hatch_spacing_px": 4,
+       "fill": "#eeeeee"
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.5,
+        3.5
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "T": {
+      "type": "polygon",
+      "styleType": "polygon",
+      "style": "polygon",
+      "drawn": true,
+      "z": 0.010005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 5.000005
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010005,
+       "pattern": "hatch",
+       "hatch": {
+        "pattern": "hatch",
+        "angleDeg": 30.0,
+        "spacingPx": 6.0,
+        "widthPx": 0.75,
+        "color": "#000000",
+        "opacity": 1.0
+       }
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "c": {
+      "type": "circle",
+      "styleType": "circle",
+      "style": "circle",
+      "drawn": true,
+      "z": 4.000006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000006,
+       "dash": null
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010006,
+       "pattern": "crosshatch",
+       "hatch": {
+        "pattern": "crosshatch",
+        "angleDeg": 45.0,
+        "spacingPx": 6.0,
+        "widthPx": 0.75,
+        "color": "#d05456",
+        "opacity": 1.0
+       }
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "q": {
+      "type": "sector",
+      "styleType": "sector",
+      "style": "circlesector",
+      "drawn": true,
+      "z": 5.000007,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": "butt",
+       "z": 5.000007
+      },
+      "fill": {
+       "color": "#eeeeee",
+       "opacity": 1.0,
+       "isBackground": false,
+       "z": 0.010007,
+       "pattern": "dots",
+       "hatch": {
+        "pattern": "dots",
+        "angleDeg": 45.0,
+        "spacingPx": 4.0,
+        "widthPx": 0.75,
+        "color": "#000000",
+        "opacity": 1.0
+       }
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "T",
+     "c",
+     "q",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "dark",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "dark",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_T": {
+      "id": "op_T",
+      "op": "polygon.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "T"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "T": {
+      "id": "T",
+      "type": "polygon",
+      "displayName": "T",
+      "producer": {
+       "operationId": "op_T",
+       "slot": "polygon"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1.5,
+       3.5
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {}
+   },
+   "style": {
+    "presets": {
+     "color": {
+      "background": "#1e1e1e",
+      "strong": "#f0f0f0"
+     }
+    }
+   },
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#1e1e1e",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#f0f0f0",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#f0f0f0",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#f0f0f0",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#f0f0f0",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#f0f0f0",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#f0f0f0",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#f0f0f0",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#f0f0f0",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#f0f0f0",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.5,
+        3.5
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "T": {
+      "type": "polygon",
+      "styleType": "polygon",
+      "style": "polygon",
+      "drawn": true,
+      "z": 0.010005,
+      "stroke": {
+       "color": "#f0f0f0",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 5.000005
+      },
+      "fill": {
+       "color": "#1e1e1e",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010005,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#f0f0f0",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000006,
+      "stroke": {
+       "color": "#f0f0f0",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100006
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000006
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.165904541,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#f0f0f0",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "T",
+     "alpha",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  }
+ ]
+}

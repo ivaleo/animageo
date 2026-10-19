@@ -1,0 +1,3737 @@
+{
+ "format": "animageo-paint-parity/v1",
+ "id": "paint_angles",
+ "registry": "1.5",
+ "generatedBy": "animageo 1.11.0rc2",
+ "cases": [
+  {
+   "name": "arcs_2",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "arcs_2",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     },
+     "op_beta": {
+      "id": "op_beta",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "beta"
+       }
+      ]
+     },
+     "op_m": {
+      "id": "op_m",
+      "op": "mark.equal_angles",
+      "args": {
+       "angles": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "alpha"
+         },
+         {
+          "kind": "ref",
+          "elementId": "beta"
+         }
+        ]
+       },
+       "count": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "m"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     },
+     "beta": {
+      "id": "beta",
+      "type": "angle",
+      "displayName": "beta",
+      "producer": {
+       "operationId": "op_beta",
+       "slot": "angle"
+      }
+     },
+     "m": {
+      "id": "m",
+      "type": "mark",
+      "displayName": "m",
+      "producer": {
+       "operationId": "op_m",
+       "slot": "mark"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1.5,
+       3.5
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {}
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.5,
+        3.5
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 2,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.165904541,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        18.5,
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "beta": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100006
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000006
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 2,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.785398163,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        18.5,
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "m": {
+      "type": "mark",
+      "styleType": "mark.equal_angles",
+      "style": null,
+      "drawn": false
+     }
+    },
+    "order": [
+     "alpha",
+     "beta",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "arcs_3",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "arcs_3",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     },
+     "op_beta": {
+      "id": "op_beta",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "beta"
+       }
+      ]
+     },
+     "op_m": {
+      "id": "op_m",
+      "op": "mark.equal_angles",
+      "args": {
+       "angles": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "alpha"
+         },
+         {
+          "kind": "ref",
+          "elementId": "beta"
+         }
+        ]
+       },
+       "count": {
+        "kind": "number",
+        "value": 3
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "m"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     },
+     "beta": {
+      "id": "beta",
+      "type": "angle",
+      "displayName": "beta",
+      "producer": {
+       "operationId": "op_beta",
+       "slot": "angle"
+      }
+     },
+     "m": {
+      "id": "m",
+      "type": "mark",
+      "displayName": "m",
+      "producer": {
+       "operationId": "op_m",
+       "slot": "mark"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1.5,
+       3.5
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {}
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.5,
+        3.5
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 3,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.165904541,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        20.0,
+        18.5,
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "beta": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100006
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000006
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 3,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.785398163,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        20.0,
+        18.5,
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "m": {
+      "type": "mark",
+      "styleType": "mark.equal_angles",
+      "style": null,
+      "drawn": false
+     }
+    },
+    "order": [
+     "alpha",
+     "beta",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "auto_radius",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "auto_radius",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     },
+     "op_beta": {
+      "id": "op_beta",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "beta"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     },
+     "beta": {
+      "id": "beta",
+      "type": "angle",
+      "displayName": "beta",
+      "producer": {
+       "operationId": "op_beta",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1.5,
+       3.5
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {}
+   },
+   "style": {
+    "overlay": {
+     "angle_radius": {
+      "enabled": true
+     }
+    }
+   },
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.5,
+        3.5
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 18.315262278,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.165904541,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        18.315262278
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "beta": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100006
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000006
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 20.216520955,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.785398163,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        20.216520955
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "alpha",
+     "beta",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "auto_radius_narrow",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "auto_radius_narrow",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     },
+     "op_gamma": {
+      "id": "op_gamma",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "gamma"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     },
+     "gamma": {
+      "id": "gamma",
+      "type": "angle",
+      "displayName": "gamma",
+      "producer": {
+       "operationId": "op_gamma",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       5.5,
+       0.6
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "gamma": {
+      "overrides": {
+       "auto_radius": false
+      }
+     }
+    }
+   },
+   "style": {
+    "overlay": {
+     "angle_radius": {
+      "enabled": true
+     }
+    }
+   },
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        5.5,
+        0.6
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 33.148222905,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.108661216,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        33.148222905
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "gamma": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100006
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000006
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": false,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.767396835,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "alpha",
+     "gamma",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "right_angle",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "right_angle",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_ra": {
+      "id": "op_ra",
+      "op": "mark.right_angle",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "ra"
+       }
+      ]
+     },
+     "op_beta": {
+      "id": "op_beta",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "beta"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "ra": {
+      "id": "ra",
+      "type": "mark",
+      "displayName": "ra",
+      "producer": {
+       "operationId": "op_ra",
+       "slot": "mark"
+      }
+     },
+     "beta": {
+      "id": "beta",
+      "type": "angle",
+      "displayName": "beta",
+      "producer": {
+       "operationId": "op_beta",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       0,
+       3
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {}
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        0.0,
+        3.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "beta": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.5404195,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "ra": {
+      "type": "mark",
+      "styleType": "mark.right_angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100006
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000006
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.570796327,
+       "right": true,
+       "joint": "auto",
+       "rightSizePx": 17.0,
+       "square": [
+        [
+         0.120208153,
+         0.0
+        ],
+        [
+         0.120208153,
+         0.120208153
+        ],
+        [
+         0.0,
+         0.120208153
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "beta",
+     "ra",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "right_angle_auto",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "right_angle_auto",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_ra": {
+      "id": "op_ra",
+      "op": "mark.right_angle",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "mark",
+        "elementId": "ra"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "ra": {
+      "id": "ra",
+      "type": "mark",
+      "displayName": "ra",
+      "producer": {
+       "operationId": "op_ra",
+       "slot": "mark"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       0,
+       3
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {}
+   },
+   "style": {
+    "overlay": {
+     "angle_radius": {
+      "enabled": true,
+      "apply_to_right": true
+     }
+    }
+   },
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        0.0,
+        3.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "ra": {
+      "type": "mark",
+      "styleType": "mark.right_angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.570796327,
+       "right": true,
+       "joint": "auto",
+       "rightSizePx": 17.0,
+       "square": [
+        [
+         0.120208153,
+         0.0
+        ],
+        [
+         0.120208153,
+         0.120208153
+        ],
+        [
+         0.0,
+         0.120208153
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "ra",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "right_angle_by_size",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "right_angle_by_size",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       0,
+       3
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "alpha": {
+      "overrides": {
+       "right_angle_joint": "miter",
+       "right_angle_size_px": 12
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        0.0,
+        3.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.570796327,
+       "right": true,
+       "joint": "miter",
+       "rightSizePx": 12.0,
+       "square": [
+        [
+         0.084852814,
+         0.0
+        ],
+        [
+         0.084852814,
+         0.084852814
+        ],
+        [
+         0.0,
+         0.084852814
+        ]
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "alpha",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "reflex",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "reflex",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     },
+     "op_beta": {
+      "id": "op_beta",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "beta"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     },
+     "beta": {
+      "id": "beta",
+      "type": "angle",
+      "displayName": "beta",
+      "producer": {
+       "operationId": "op_beta",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1.5,
+       3.5
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "alpha": {
+      "overrides": {
+       "angle_range": "reflex",
+       "arc_size_px": 10
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.5,
+        3.5
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "reflex",
+       "autoRadius": true,
+       "arcSizePx": 10.0,
+       "radiusPx": 10.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 5.117280767,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        10.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "beta": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100006
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000006
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.785398163,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "alpha",
+     "beta",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "wedge",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "wedge",
+    "operationRegistryVersion": "1.5",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_T": {
+      "id": "op_T",
+      "op": "polygon.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "T"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     },
+     "op_beta": {
+      "id": "op_beta",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "beta"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "T": {
+      "id": "T",
+      "type": "polygon",
+      "displayName": "T",
+      "producer": {
+       "operationId": "op_T",
+       "slot": "polygon"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     },
+     "beta": {
+      "id": "beta",
+      "type": "angle",
+      "displayName": "beta",
+      "producer": {
+       "operationId": "op_beta",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       1.5,
+       3.5
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "T": {
+      "overrides": {
+       "fill": "#4a90d9",
+       "fill_opacity": 0.35
+      }
+     },
+     "beta": {
+      "overrides": {
+       "fill": "#d05456",
+       "fill_opacity": 0.5
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "spotWorld": [
+        1.5,
+        3.5
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "T": {
+      "type": "polygon",
+      "styleType": "polygon",
+      "style": "polygon",
+      "drawn": true,
+      "z": 0.010005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 5.000005
+      },
+      "fill": {
+       "color": "#4a90d9",
+       "opacity": 0.35,
+       "isBackground": false,
+       "z": 0.010005,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100006
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000006
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 1.165904541,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "beta": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000007,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100007
+      },
+      "fill": {
+       "color": "#d05456",
+       "opacity": 0.5,
+       "isBackground": false,
+       "z": 3.000007
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 17.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.785398163,
+       "right": false,
+       "joint": "auto",
+       "arcRadiiPx": [
+        17.0
+       ]
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "T",
+     "alpha",
+     "beta",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  }
+ ]
+}

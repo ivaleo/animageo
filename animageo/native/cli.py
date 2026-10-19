@@ -4,6 +4,8 @@
     python -m animageo.native fixtures verify <fixtures…>
     python -m animageo.native fixtures conditions [-o <root>] [--check]
     python -m animageo.native fixtures timeline [-o <dir>] [--check]
+    python -m animageo.native fixtures paint [-o <dir>] [--check]
+    python -m animageo.native style export [-o <dir>] [--check]
     python -m animageo.native registry index [--check]
     python -m animageo.native evaluate <doc.json> [--inputs case.json] [--canonical]
     python -m animageo.native validate <doc.json>
@@ -20,8 +22,8 @@
 
 Exit codes: 0 success; 1 verify mismatches, validate issues (invalid JSON
 included), an out-of-date registry index or a refused scene, out-of-date
-commands fixtures, a commands text with errors, out-of-date timeline
-fixtures, ``from-ggb --mode strict`` with objects that do not translate, a
+commands fixtures, a commands text with errors, out-of-date timeline or
+paint fixtures, an out-of-date style contract (``style export --check``), ``from-ggb --mode strict`` with objects that do not translate, a
 problem of the GGB command table (``convert map --check``), a corpus that
 differs from its expectations (``convert corpus verify``); 2 an input that
 cannot be used (a missing file or directory; for ``evaluate`` a document that
@@ -101,6 +103,34 @@ def _cmd_fixtures_timeline(args) -> int:
         _out(f'{files} fixtures, {cases} cases, {len(problems) + len(mismatches)} mismatches')
         return 1 if problems or mismatches else 0
     for path in write_fixtures(root):
+        _out(str(path))
+    return 0
+
+
+def _cmd_fixtures_paint(args) -> int:
+    from .paint_fixtures import DEFAULT_DIR, check_fixtures, verify_fixtures, write_fixtures
+    root = Path(args.out) if args.out else DEFAULT_DIR
+    if args.check:
+        problems = check_fixtures(root)
+        files, cases, mismatches = verify_fixtures(root)
+        for item in problems + mismatches:
+            _out(f'stale: {item}')
+        _out(f'{files} fixtures, {cases} cases, {len(problems) + len(mismatches)} mismatches')
+        return 1 if problems or mismatches else 0
+    for path in write_fixtures(root):
+        _out(str(path))
+    return 0
+
+
+def _cmd_style_export(args) -> int:
+    from .paint import check_style_contract, write_style_contract
+    if args.check:
+        problems = check_style_contract(args.out)
+        for item in problems:
+            _out(f'stale: {item}')
+        _out(f'{len(problems)} problems')
+        return 1 if problems else 0
+    for path in write_style_contract(args.out):
         _out(str(path))
     return 0
 
@@ -437,6 +467,18 @@ def build_parser() -> argparse.ArgumentParser:
     ft.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/timeline)')
     ft.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
     ft.set_defaults(func=_cmd_fixtures_timeline)
+
+    fp = fsub.add_parser('paint', help='write (or --check) the animageo-paint-parity/v1 fixtures')
+    fp.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/paint)')
+    fp.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
+    fp.set_defaults(func=_cmd_fixtures_paint)
+
+    sty = sub.add_parser('style', help='the style contract for code generation (native/style)')
+    stysub = sty.add_subparsers(dest='action', required=True)
+    sx = stysub.add_parser('export', help='write (or --check) builtin.json and keys.v1.json')
+    sx.add_argument('-o', '--out', help='directory (default: the shipped native/style)')
+    sx.add_argument('--check', action='store_true', help='only check; exit 1 when out of date')
+    sx.set_defaults(func=_cmd_style_export)
 
     reg = sub.add_parser('registry', help='operation registry ops/v1')
     rsub = reg.add_subparsers(dest='action', required=True)

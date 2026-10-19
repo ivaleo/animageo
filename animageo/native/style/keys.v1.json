@@ -1,0 +1,1136 @@
+{
+ "format": "animageo-style-keys/v1",
+ "types": {
+  "angle": {
+   "style": "angle",
+   "keys": {
+    "angle_range": {
+     "unit": "enum",
+     "default": "minor",
+     "values": [
+      "minor",
+      "reflex"
+     ]
+    },
+    "arc_shift_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "arc_size_px": {
+     "unit": "px",
+     "default": 17
+    },
+    "auto_radius": {
+     "unit": "bool",
+     "default": true
+    },
+    "fill": {
+     "unit": "color",
+     "default": "#ffffff"
+    },
+    "fill_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_angle_unit": {
+     "unit": "enum",
+     "default": "degree",
+     "values": [
+      "degree",
+      "radian"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "label_radial_offset_px": {
+     "unit": "px",
+     "default": 0
+    },
+    "label_value_precision": {
+     "unit": "count",
+     "default": 1
+    },
+    "label_value_separator": {
+     "unit": "string",
+     "default": " = "
+    },
+    "label_value_strip_zeros": {
+     "unit": "bool",
+     "default": true
+    },
+    "right_angle_joint": {
+     "unit": "enum",
+     "default": "auto",
+     "values": [
+      "auto",
+      "bevel",
+      "miter",
+      "round"
+     ]
+    },
+    "right_angle_marker": {
+     "unit": "bool",
+     "default": null
+    },
+    "right_angle_size_px": {
+     "unit": "px",
+     "default": 17
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 0.75
+    },
+    "tick_count": {
+     "unit": "count",
+     "default": 1
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  },
+  "arc": {
+   "style": "arc",
+   "keys": {
+    "fill": {
+     "unit": "color",
+     "default": "#ffffff"
+    },
+    "fill_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "label_value_precision": {
+     "unit": "count",
+     "default": 1
+    },
+    "label_value_separator": {
+     "unit": "string",
+     "default": " = "
+    },
+    "label_value_strip_zeros": {
+     "unit": "bool",
+     "default": true
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_dash_period_px": {
+     "unit": "px",
+     "default": 10
+    },
+    "stroke_dash_ratio": {
+     "unit": "ratio",
+     "default": null
+    },
+    "stroke_linecap": {
+     "unit": "enum",
+     "default": "butt",
+     "values": [
+      "butt",
+      "round",
+      "square"
+     ]
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    },
+    "z_index_fill": {
+     "unit": "number",
+     "default": 0.01
+    }
+   }
+  },
+  "circle": {
+   "style": "circle",
+   "keys": {
+    "fill": {
+     "unit": "color",
+     "default": "#ffffff"
+    },
+    "fill_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "fill_pattern": {
+     "unit": "enum",
+     "default": "solid",
+     "values": [
+      "solid",
+      "hatch",
+      "crosshatch",
+      "dots",
+      "none"
+     ]
+    },
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "hatch_angle_deg": {
+     "unit": "deg",
+     "default": 45
+    },
+    "hatch_color": {
+     "unit": "color",
+     "default": "stroke"
+    },
+    "hatch_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "hatch_spacing_px": {
+     "unit": "px",
+     "default": 6
+    },
+    "hatch_width_px": {
+     "unit": "px",
+     "default": 0.75
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "label_value_precision": {
+     "unit": "count",
+     "default": 1
+    },
+    "label_value_separator": {
+     "unit": "string",
+     "default": " = "
+    },
+    "label_value_strip_zeros": {
+     "unit": "bool",
+     "default": true
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_dash_period_px": {
+     "unit": "px",
+     "default": 10
+    },
+    "stroke_dash_ratio": {
+     "unit": "ratio",
+     "default": null
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    },
+    "z_index_fill": {
+     "unit": "number",
+     "default": 0.01
+    }
+   }
+  },
+  "expr": {
+   "style": null,
+   "keys": {}
+  },
+  "line": {
+   "style": "line",
+   "keys": {
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_dash_period_px": {
+     "unit": "px",
+     "default": 10
+    },
+    "stroke_dash_ratio": {
+     "unit": "ratio",
+     "default": null
+    },
+    "stroke_linecap": {
+     "unit": "enum",
+     "default": "butt",
+     "values": [
+      "butt",
+      "round",
+      "square"
+     ]
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  },
+  "locus": {
+   "style": "locuscurve",
+   "keys": {
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_dash_period_px": {
+     "unit": "px",
+     "default": 10
+    },
+    "stroke_dash_ratio": {
+     "unit": "ratio",
+     "default": null
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  },
+  "mark.equal_angles": {
+   "style": null,
+   "keys": {},
+   "transfers": [
+    "arc_shift_px"
+   ]
+  },
+  "mark.equal_segments": {
+   "style": null,
+   "keys": {},
+   "transfers": [
+    "tick_length_px",
+    "tick_radius_px",
+    "tick_shift_px",
+    "tick_style",
+    "tick_width_px"
+   ]
+  },
+  "mark.right_angle": {
+   "style": "angle",
+   "keys": {
+    "angle_range": {
+     "unit": "enum",
+     "default": "minor",
+     "values": [
+      "minor",
+      "reflex"
+     ]
+    },
+    "arc_size_px": {
+     "unit": "px",
+     "default": 17
+    },
+    "auto_radius": {
+     "unit": "bool",
+     "default": true
+    },
+    "fill": {
+     "unit": "color",
+     "default": "#ffffff"
+    },
+    "fill_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_angle_unit": {
+     "unit": "enum",
+     "default": "degree",
+     "values": [
+      "degree",
+      "radian"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "label_radial_offset_px": {
+     "unit": "px",
+     "default": 0
+    },
+    "label_value_precision": {
+     "unit": "count",
+     "default": 1
+    },
+    "label_value_separator": {
+     "unit": "string",
+     "default": " = "
+    },
+    "label_value_strip_zeros": {
+     "unit": "bool",
+     "default": true
+    },
+    "right_angle_joint": {
+     "unit": "enum",
+     "default": "auto",
+     "values": [
+      "auto",
+      "bevel",
+      "miter",
+      "round"
+     ]
+    },
+    "right_angle_marker": {
+     "unit": "bool",
+     "default": null
+    },
+    "right_angle_size_px": {
+     "unit": "px",
+     "default": 17
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 0.75
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  },
+  "number": {
+   "style": null,
+   "keys": {}
+  },
+  "point": {
+   "style": "point",
+   "keys": {
+    "fill": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "fill_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "point_shape": {
+     "unit": "enum",
+     "default": "circle",
+     "values": [
+      "circle",
+      "square",
+      "diamond",
+      "triangle_up",
+      "triangle_down",
+      "triangle_left",
+      "triangle_right",
+      "cross",
+      "plus"
+     ]
+    },
+    "size_px": {
+     "unit": "px",
+     "default": 6
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 0
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  },
+  "polygon": {
+   "style": "polygon",
+   "keys": {
+    "fill": {
+     "unit": "color",
+     "default": "#ffffff"
+    },
+    "fill_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "fill_pattern": {
+     "unit": "enum",
+     "default": "solid",
+     "values": [
+      "solid",
+      "hatch",
+      "crosshatch",
+      "dots",
+      "none"
+     ]
+    },
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "hatch_angle_deg": {
+     "unit": "deg",
+     "default": 45
+    },
+    "hatch_color": {
+     "unit": "color",
+     "default": "stroke"
+    },
+    "hatch_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "hatch_spacing_px": {
+     "unit": "px",
+     "default": 6
+    },
+    "hatch_width_px": {
+     "unit": "px",
+     "default": 0.75
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "label_value_precision": {
+     "unit": "count",
+     "default": 1
+    },
+    "label_value_separator": {
+     "unit": "string",
+     "default": " = "
+    },
+    "label_value_strip_zeros": {
+     "unit": "bool",
+     "default": true
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  },
+  "polyline": {
+   "style": "locuscurve",
+   "keys": {
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_dash_period_px": {
+     "unit": "px",
+     "default": 10
+    },
+    "stroke_dash_ratio": {
+     "unit": "ratio",
+     "default": null
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  },
+  "ray": {
+   "style": "ray",
+   "keys": {
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_dash_period_px": {
+     "unit": "px",
+     "default": 10
+    },
+    "stroke_dash_ratio": {
+     "unit": "ratio",
+     "default": null
+    },
+    "stroke_linecap": {
+     "unit": "enum",
+     "default": "butt",
+     "values": [
+      "butt",
+      "round",
+      "square"
+     ]
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  },
+  "sector": {
+   "style": "circlesector",
+   "keys": {
+    "fill": {
+     "unit": "color",
+     "default": "#ffffff"
+    },
+    "fill_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "fill_pattern": {
+     "unit": "enum",
+     "default": "solid",
+     "values": [
+      "solid",
+      "hatch",
+      "crosshatch",
+      "dots",
+      "none"
+     ]
+    },
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "hatch_angle_deg": {
+     "unit": "deg",
+     "default": 45
+    },
+    "hatch_color": {
+     "unit": "color",
+     "default": "stroke"
+    },
+    "hatch_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "hatch_spacing_px": {
+     "unit": "px",
+     "default": 6
+    },
+    "hatch_width_px": {
+     "unit": "px",
+     "default": 0.75
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "label_value_precision": {
+     "unit": "count",
+     "default": 1
+    },
+    "label_value_separator": {
+     "unit": "string",
+     "default": " = "
+    },
+    "label_value_strip_zeros": {
+     "unit": "bool",
+     "default": true
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_linecap": {
+     "unit": "enum",
+     "default": "butt",
+     "values": [
+      "butt",
+      "round",
+      "square"
+     ]
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    },
+    "z_index_fill": {
+     "unit": "number",
+     "default": 0.01
+    }
+   }
+  },
+  "segment": {
+   "style": "segment",
+   "keys": {
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "label_value_precision": {
+     "unit": "count",
+     "default": 1
+    },
+    "label_value_separator": {
+     "unit": "string",
+     "default": " = "
+    },
+    "label_value_strip_zeros": {
+     "unit": "bool",
+     "default": true
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_dash_period_px": {
+     "unit": "px",
+     "default": 10
+    },
+    "stroke_dash_ratio": {
+     "unit": "ratio",
+     "default": null
+    },
+    "stroke_linecap": {
+     "unit": "enum",
+     "default": "butt",
+     "values": [
+      "butt",
+      "round",
+      "square"
+     ]
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "tick_count": {
+     "unit": "count",
+     "default": 0
+    },
+    "tick_length_px": {
+     "unit": "px",
+     "default": 9
+    },
+    "tick_radius_px": {
+     "unit": "px",
+     "default": null
+    },
+    "tick_shift_px": {
+     "unit": "px",
+     "default": 2
+    },
+    "tick_style": {
+     "unit": "enum",
+     "default": "line",
+     "values": [
+      "line",
+      "wave"
+     ]
+    },
+    "tick_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  },
+  "template": {
+   "style": null,
+   "keys": {}
+  },
+  "text": {
+   "style": "text",
+   "keys": {
+    "font_size_px": {
+     "unit": "px",
+     "default": 16
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  },
+  "vector": {
+   "style": "vector",
+   "keys": {
+    "arrow_length_px": {
+     "unit": "px",
+     "default": 11
+    },
+    "arrow_width_px": {
+     "unit": "px",
+     "default": 7.5
+    },
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "label_value_precision": {
+     "unit": "count",
+     "default": 1
+    },
+    "label_value_separator": {
+     "unit": "string",
+     "default": " = "
+    },
+    "label_value_strip_zeros": {
+     "unit": "bool",
+     "default": true
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_dash_period_px": {
+     "unit": "px",
+     "default": 10
+    },
+    "stroke_dash_ratio": {
+     "unit": "ratio",
+     "default": null
+    },
+    "stroke_linecap": {
+     "unit": "enum",
+     "default": "butt",
+     "values": [
+      "butt",
+      "round",
+      "square"
+     ]
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "tick_count": {
+     "unit": "count",
+     "default": 0
+    },
+    "tick_length_px": {
+     "unit": "px",
+     "default": 9
+    },
+    "tick_radius_px": {
+     "unit": "px",
+     "default": null
+    },
+    "tick_shift_px": {
+     "unit": "px",
+     "default": 2
+    },
+    "tick_style": {
+     "unit": "enum",
+     "default": "line",
+     "values": [
+      "line",
+      "wave"
+     ]
+    },
+    "tick_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
+  }
+ }
+}

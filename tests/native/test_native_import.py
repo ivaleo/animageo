@@ -64,6 +64,22 @@ print('LABELS', len(out), 'LOADED', loaded)
     assert 'LOADED []' in proc.stdout and 'LABELS 0' not in proc.stdout
 
 
+def test_style_keys_and_resolve_paint_without_manim():
+    code = _BLOCKER + f"""
+import json
+import animageo.native as native
+with open('animageo/native/parity/v1/paint/paint_base.json', encoding='utf-8') as fh:
+    case = json.load(fh)['cases'][0]
+keys = native.style_keys()
+out = native.resolve_paint(case['document'], case['style'])
+loaded = sorted(m for m in sys.modules if m == {BLOCKED!r} or m.startswith({BLOCKED!r} + '.') or m == {CLASSIC!r})
+print('PAINT', len(keys['types']), len(out['elements']), out == case['expect'], 'LOADED', loaded)
+"""
+    proc = _run(code)
+    assert proc.returncode == 0, proc.stderr
+    assert 'LOADED []' in proc.stdout and ' True ' in proc.stdout, proc.stdout
+
+
 def test_bridge_loads_geo_only_when_used():
     code = _BLOCKER + f"""
 import json
@@ -129,6 +145,12 @@ LAZY_ALLOWED = {
     'animageo/native/convert/construction.py': (GEO,),
     'animageo/native/convert/mapping.py': (GEO,),
     'animageo/native/convert/style.py': ('animageo.style',),
+    # 1.11.0rc3: the defaults of style_keys from the built-in style; resolve_paint reads the
+    # classic graph through the resolver, as layout_labels
+    'animageo/native/paint.py': (GEO, 'animageo.style', 'animageo.dash', 'animageo.keyframes',
+                                 'animageo.label_placement', 'animageo.labels', 'animageo.hatch',
+                                 'animageo.export_layout'),
+    'animageo/native/paint_fixtures.py': ('animageo.style',),
 }
 
 
