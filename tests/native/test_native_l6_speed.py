@@ -2,7 +2,8 @@
 §16 L6), on two documents:
 
 - the chain of the L0 contract (midpoints, lines, intersections);
-- a mix of every operation of the registry: the parity scenes merged
+- a mix of every operation of the registry: the parity scenes (and the
+  fixtures of graphs and conics) merged
   under prefixed IDs, chosen greedily to cover all ops, then filled to 300.
   A locus samples its mover (≈ 8–18 ms each, its own budget in
   ``test_native_l3a1_ops.py``), so the mix holds one locus.
@@ -19,7 +20,9 @@ from animageo import native
 from tests.native.test_native_l3a2_budgets import _p95
 from tests.native.test_native_perf import chain_document
 
-SCENES = Path(__file__).resolve().parents[2] / 'animageo' / 'native' / 'parity' / 'v1' / 'scenes'
+PARITY = Path(__file__).resolve().parents[2] / 'animageo' / 'native' / 'parity' / 'v1'
+SCENES = PARITY / 'scenes'
+CURVES = PARITY / 'curves'                            # registry 1.6: graphs and conics
 BUDGET_S = 0.050
 TARGET_OPS = 300
 
@@ -42,7 +45,7 @@ def _prefixed(value, prefix):
 
 def _scenes():
     out = []
-    for path in sorted(SCENES.glob('*.json')):
+    for path in sorted(SCENES.glob('*.json')) + sorted(CURVES.glob('*.json')):
         doc = json.loads(path.read_text(encoding='utf-8'))['document']
         if native.validate(doc):
             continue                                  # scenes of broken documents
@@ -53,7 +56,7 @@ def _scenes():
 
 def mix_document(target=TARGET_OPS):
     """Every op of the registry (one locus), ``target`` operations or more."""
-    doc = {'format': 'animageo-construction/v1', 'documentId': 'mix', 'operationRegistryVersion': '1.5',
+    doc = {'format': 'animageo-construction/v1', 'documentId': 'mix', 'operationRegistryVersion': native.__registry_version__,
            'operations': {}, 'elements': {}, 'inputs': {}, 'viewDefaults': {'bounds': [-10, -10, 10, 10]}}
     scenes = _scenes()
     covered, loci, used = set(), 0, 0

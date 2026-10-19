@@ -6,7 +6,10 @@
       "text": "Отмечаем точку {point}"
     },
     "point_on_path": {
-      "text": "Отмечаем точку {point} на {path}"
+      "text": "Отмечаем точку {point} на {path}",
+      "ops": {
+        "point.on_function": "Отмечаем точку {point} на графике {function}"
+      }
     },
     "midpoint": {
       "text": "Отмечаем середину {point} отрезка {a}{b}"
@@ -18,7 +21,10 @@
         "intersect.circle_circle": "Отмечаем точки {out:first,second} пересечения {first} и {second}",
         "intersect.other_than": "Отмечаем вторую точку {point} пересечения {first} и {second}",
         "intersect.nearest": "Отмечаем точку {point} пересечения {first} и {second}, ближайшую к {near}",
-        "intersect.line_sector": "Отмечаем точки {out:arc.1,arc.2,side.1,side.2} пересечения {line} с границей {sector}"
+        "intersect.line_sector": "Отмечаем точки {out:arc.1,arc.2,side.1,side.2} пересечения {line} с границей {sector}",
+        "intersect.function_function": "Отмечаем точки {out:point} пересечения графиков {first} и {second}",
+        "intersect.function_line": "Отмечаем точки {out:point} пересечения графика {function} и {line}",
+        "intersect.line_conic": "Отмечаем точки {out:first,second} пересечения {line} и {conic}"
       }
     },
     "segment": {
@@ -114,7 +120,10 @@
       "text": "Опускаем перпендикуляр из точки {point} на {base} и отмечаем его основание {foot}"
     },
     "center": {
-      "text": "Отмечаем центр {center} фигуры {of}"
+      "text": "Отмечаем центр {center} фигуры {of}",
+      "ops": {
+        "conic.center": "Отмечаем центр {center} кривой {conic}"
+      }
     },
     "closest_point": {
       "text": "Отмечаем точку {foot} на {path}, ближайшую к {point}"
@@ -291,6 +300,33 @@
           "text": "Строим геометрическое место {locus} точки {trace} при изменении числа {mover}"
         }
       ]
+    },
+    "function": {
+      "text": "Строим график функции {function}"
+    },
+    "function_root": {
+      "text": "Отмечаем нули {out:root} функции {function} на промежутке от {a} до {b}"
+    },
+    "function_extremum": {
+      "text": "Отмечаем экстремумы {out:extremum} функции {function} на промежутке от {a} до {b}"
+    },
+    "conic": {
+      "text": "Строим кривую второго порядка {conic}",
+      "ops": {
+        "conic.ellipse_foci_point": "Строим эллипс {conic} с фокусами {f1} и {f2}, проходящий через {through}",
+        "conic.hyperbola_foci_point": "Строим гиперболу {conic} с фокусами {f1} и {f2}, проходящую через {through}",
+        "conic.parabola_focus_directrix": "Строим параболу {conic} с фокусом {focus} и директрисой {directrix}",
+        "conic.five_points": "Строим кривую второго порядка {conic} через точки {a}, {b}, {c}, {d}, {e}",
+        "conic.equation": "Строим кривую второго порядка {conic}, заданную уравнением"
+      }
+    },
+    "conic_part": {
+      "text": "Отмечаем элементы кривой {conic}",
+      "ops": {
+        "conic.foci": "Отмечаем фокусы {out:first,second} кривой {conic}",
+        "conic.vertices": "Отмечаем вершины {out:first,second,third,fourth} кривой {conic}",
+        "conic.axes": "Проводим оси {out:focal,conjugate} кривой {conic}"
+      }
     }
   },
   "given": {

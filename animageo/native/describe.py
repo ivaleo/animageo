@@ -227,9 +227,17 @@ def _fill(template, op, namer, extra) -> str:
     args = op['args']
     outputs = {o['slot']: o['elementId'] for o in op['outputs'] if o['elementId'] in namer.doc.elements}
 
+    def out(slot):
+        if slot in outputs:
+            return [outputs[slot]]
+        # a repeated output by its base name (registry 1.6: root → root.1, root.2, …)
+        found = [(int(s.partition('.')[2]), e) for s, e in outputs.items()
+                 if s.partition('.')[0] == slot and s.partition('.')[2].isdigit()]
+        return [e for _k, e in sorted(found)]
+
     def one(key):
         if key.startswith('out:'):
-            return ', '.join(namer.name(outputs[s]) for s in key[4:].split(',') if s in outputs)
+            return ', '.join(namer.name(e) for s in key[4:].split(',') for e in out(s))
         if key in extra:
             return extra[key]
         if key in args:

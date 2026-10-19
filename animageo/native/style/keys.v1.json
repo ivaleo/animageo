@@ -347,9 +347,114 @@
     }
    }
   },
+  "conic": {
+   "style": "conic",
+   "keys": {
+    "fill": {
+     "unit": "color",
+     "default": "#ffffff"
+    },
+    "fill_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "label_halo_color": {
+     "unit": "color",
+     "default": null
+    },
+    "label_halo_opacity": {
+     "unit": "opacity",
+     "default": 1.0
+    },
+    "label_halo_px": {
+     "unit": "px",
+     "default": 0.0
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_dash_period_px": {
+     "unit": "px",
+     "default": 10
+    },
+    "stroke_dash_ratio": {
+     "unit": "ratio",
+     "default": null
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    },
+    "z_index_fill": {
+     "unit": "number",
+     "default": 0.01
+    }
+   }
+  },
   "expr": {
    "style": null,
    "keys": {}
+  },
+  "function": {
+   "style": "function",
+   "keys": {
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_dash_period_px": {
+     "unit": "px",
+     "default": 10
+    },
+    "stroke_dash_ratio": {
+     "unit": "ratio",
+     "default": null
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    }
+   }
   },
   "line": {
    "style": "line",
@@ -1274,6 +1379,51 @@
      "unit": "number",
      "default": null
     }
+   }
+  }
+ },
+ "view": {
+  "section": "rendering",
+  "keys": {
+   "axes_color": {
+    "unit": "color",
+    "default": "#808080"
+   },
+   "axes_font_size_px": {
+    "unit": "px",
+    "default": 10
+   },
+   "axes_opacity": {
+    "unit": "opacity",
+    "default": 1
+   },
+   "axes_tick_length_px": {
+    "unit": "px",
+    "default": 4
+   },
+   "axes_width_px": {
+    "unit": "px",
+    "default": 0.75
+   },
+   "grid_color": {
+    "unit": "color",
+    "default": "#cccccc"
+   },
+   "grid_minor_opacity": {
+    "unit": "opacity",
+    "default": 0.6
+   },
+   "grid_minor_width_px": {
+    "unit": "px",
+    "default": 0.25
+   },
+   "grid_opacity": {
+    "unit": "opacity",
+    "default": 1
+   },
+   "grid_width_px": {
+    "unit": "px",
+    "default": 0.5
    }
   }
  }

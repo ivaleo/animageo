@@ -5,6 +5,7 @@
     python -m animageo.native fixtures conditions [-o <root>] [--check]
     python -m animageo.native fixtures timeline [-o <dir>] [--check]
     python -m animageo.native fixtures paint [-o <dir>] [--check]
+    python -m animageo.native fixtures curves [-o <dir>] [--check]
     python -m animageo.native style export [-o <dir>] [--check]
     python -m animageo.native registry index [--check]
     python -m animageo.native evaluate <doc.json> [--inputs case.json] [--canonical]
@@ -22,8 +23,8 @@
 
 Exit codes: 0 success; 1 verify mismatches, validate issues (invalid JSON
 included), an out-of-date registry index or a refused scene, out-of-date
-commands fixtures, a commands text with errors, out-of-date timeline or
-paint fixtures, an out-of-date style contract (``style export --check``), ``from-ggb --mode strict`` with objects that do not translate, a
+commands fixtures, a commands text with errors, out-of-date timeline,
+paint or curves fixtures, an out-of-date style contract (``style export --check``), ``from-ggb --mode strict`` with objects that do not translate, a
 problem of the GGB command table (``convert map --check``), a corpus that
 differs from its expectations (``convert corpus verify``); 2 an input that
 cannot be used (a missing file or directory; for ``evaluate`` a document that
@@ -109,6 +110,21 @@ def _cmd_fixtures_timeline(args) -> int:
 
 def _cmd_fixtures_paint(args) -> int:
     from .paint_fixtures import DEFAULT_DIR, check_fixtures, verify_fixtures, write_fixtures
+    root = Path(args.out) if args.out else DEFAULT_DIR
+    if args.check:
+        problems = check_fixtures(root)
+        files, cases, mismatches = verify_fixtures(root)
+        for item in problems + mismatches:
+            _out(f'stale: {item}')
+        _out(f'{files} fixtures, {cases} cases, {len(problems) + len(mismatches)} mismatches')
+        return 1 if problems or mismatches else 0
+    for path in write_fixtures(root):
+        _out(str(path))
+    return 0
+
+
+def _cmd_fixtures_curves(args) -> int:
+    from .curves_fixtures import DEFAULT_DIR, check_fixtures, verify_fixtures, write_fixtures
     root = Path(args.out) if args.out else DEFAULT_DIR
     if args.check:
         problems = check_fixtures(root)
@@ -472,6 +488,11 @@ def build_parser() -> argparse.ArgumentParser:
     fp.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/paint)')
     fp.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
     fp.set_defaults(func=_cmd_fixtures_paint)
+
+    fv = fsub.add_parser('curves', help='write (or --check) the parity fixtures of graphs and conics (registry 1.6)')
+    fv.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/curves)')
+    fv.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
+    fv.set_defaults(func=_cmd_fixtures_curves)
 
     sty = sub.add_parser('style', help='the style contract for code generation (native/style)')
     stysub = sty.add_subparsers(dest='action', required=True)

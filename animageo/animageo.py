@@ -1154,6 +1154,7 @@ class AnimaGeoScene(MovingCameraScene):
         self.geo = geo.Construction()
         self._label_tracker = None
         self._construction_source = {'kind': 'unknown'}
+        self.native_view = None
         self.label_point_clearance = False
         self.export_frame_exact = False
         self._reset_mark_decorations()
@@ -1255,6 +1256,8 @@ class AnimaGeoScene(MovingCameraScene):
         self.geo = construction
         self.native_names = names
         self._construction_source = {'kind': 'native', 'documentId': doc.document_id}
+        from .native.view import view_settings
+        self.native_view = view_settings(doc)
         self.label_point_clearance = True
         self.export_frame_exact = True
         construction.log_unsupported = bool(debug)
@@ -3140,7 +3143,15 @@ class AnimaGeoScene(MovingCameraScene):
         return grid
 
     def addCoordinateBackground(self):
-        """Render imported GeoGebra grid/axes as a quiet background layer."""
+        """Render imported GeoGebra grid/axes as a quiet background layer.
+
+        A native document with ``viewDefaults.axes``/``grid`` (registry 1.6)
+        draws its own (:meth:`_addNativeViewBackground`); without them it
+        draws nothing, as before.
+        """
+        native_view = getattr(self, 'native_view', None)
+        if native_view is not None:
+            return self._addNativeViewBackground(native_view)
         export = self.style.export
         if not (export.get('showGrid') or export.get('showAxes')):
             return None
@@ -3280,6 +3291,81 @@ class AnimaGeoScene(MovingCameraScene):
         self.add(group)
         return group
     
+    def _addNativeViewBackground(self, settings):
+        """The axes and grid of a native document (``native/view.py``): grid
+        lines under everything, the axes with their ticks, numbers and names;
+        colours and widths from the ``rendering`` section of the style
+        (``axes_*``, ``grid_*``)."""
+        from .native.view import view_layout, view_style
+
+        old = self.mobject('_coordinate_background')
+        if old is not None:
+            self.remove(old)
+        left, bottom, right, top = self._export_canvas_bounds()
+        st = view_style(getattr(self.style_config, 'rendering', None))
+        ptUnit = _style_ptUnit(self.style)
+        layout = view_layout(settings, (left, bottom, right, top), margin=st['axes_font_size_px'] / ptUnit)
+        group = VGroup(name='_coordinate_background')
+
+        def line(a, b, color, width_px, opacity, z):
+            group.add(Line([a[0], a[1], 0], [b[0], b[1], 0], color=color,
+                           stroke_width=stroke_width_to_manim(width_px, ptUnit),
+                           stroke_opacity=opacity).set_z_index(z))
+
+        for kind, width, opacity, z in (('minor', st['grid_minor_width_px'], st['grid_minor_opacity'], -21),
+                                        ('major', st['grid_width_px'], st['grid_opacity'], -20)):
+            lines = layout['grid'][kind]
+            for x in lines['x']:
+                line((x, bottom), (x, top), st['grid_color'], width, opacity, z)
+            for y in lines['y']:
+                line((left, y), (right, y), st['grid_color'], width, opacity, z)
+
+        color, width, opacity = st['axes_color'], st['axes_width_px'], st['axes_opacity']
+        tick = st['axes_tick_length_px'] / 2 / ptUnit
+        font_size = st['axes_font_size_px'] * GGB_FONT_SCALE / ptUnit
+        gap = (st['axes_tick_length_px'] / 2 + 2) / ptUnit
+        if layout['axes']['x']:
+            line((left, 0), (right, 0), color, width, opacity, -10)
+            for x in layout['ticks']['x']:
+                line((x, -tick), (x, tick), color, width, opacity, -10)
+        if layout['axes']['y']:
+            line((0, bottom), (0, top), color, width, opacity, -10)
+            for y in layout['ticks']['y']:
+                line((-tick, y), (tick, y), color, width, opacity, -10)
+        for value, text in layout['numbers']['x']:
+            label = Text(text, font_size=font_size, color=color).set_opacity(opacity)
+            label.move_to([value, -gap, 0]).shift(DOWN * label.height / 2)
+            group.add(label.set_z_index(-9))
+        for value, text in layout['numbers']['y']:
+            label = Text(text, font_size=font_size, color=color).set_opacity(opacity)
+            label.move_to([-gap, value, 0]).shift(LEFT * label.width / 2)
+            group.add(label.set_z_index(-9))
+        for axis, text in layout['labels'].items():
+            if text is None:
+                continue
+            label = Text(text, font_size=font_size * 1.2, color=color, slant=ITALIC).set_opacity(opacity)
+            if axis == 'x':
+                label.move_to([right - gap, gap, 0]).shift(LEFT * label.width / 2 + UP * label.height / 2)
+            else:
+                label.move_to([gap, top - gap, 0]).shift(RIGHT * label.width / 2 + DOWN * label.height / 2)
+            group.add(label.set_z_index(-9))
+        if len(group) == 0:
+            return None
+        self.add(group)
+        return group
+
+    def _export_canvas_bounds(self):
+        """``(left, bottom, right, top)`` of the export canvas (SVG, PDF,
+        TikZ with ``export_frame_exact``): the integer pixel size of
+        ``style.export`` from its origin; the camera frame otherwise."""
+        export = self.style.export or {}
+        if not getattr(self, 'export_frame_exact', False) or not export.get('ptUnit'):
+            return self._get_scene_bounds(padding=0)
+        unit = float(export['ptUnit'])
+        ox, oy = float(export['ptXZero']), float(export['ptYZero'])
+        width, height = int(export['ptWidth']), int(export['ptHeight'])
+        return (-ox / unit, (oy - height) / unit, (width - ox) / unit, oy / unit)
+
     def _get_scene_bounds(self, padding=0.1):
         """Return (left, bottom, right, top) of the current camera viewport in
         scene coordinates.
@@ -4191,6 +4277,9 @@ class AnimaGeoScene(MovingCameraScene):
         ctype = conic.type
         if ctype == ConicType.EMPTY:
             return None
+        # registry 1.6: a kernel conic fills below its stroke, as a circle
+        # (fill at z_index_fill), and hangs its label off the curve
+        native = getattr(conic, 'native_value', None)
 
         left, bottom, right_x, top_y = self._get_scene_bounds()
         viewport = (left, bottom, right_x, top_y)
@@ -4210,11 +4299,16 @@ class AnimaGeoScene(MovingCameraScene):
             res = conic.as_circle()
             if res is not None:
                 center, radius = res
+                if native is not None:
+                    arr.append(Circle(
+                        arc_center=[float(center[0]), float(center[1]), 0], radius=radius,
+                        fill_color=ctx.col_f, fill_opacity=ctx.op_f, stroke_opacity=0, stroke_width=0,
+                    ).set_z_index(ctx.zz_fill))
                 circ = Circle(
                     arc_center=[float(center[0]), float(center[1]), 0],
                     radius=radius,
                     color=ctx.col_s, fill_color=ctx.col_f,
-                    fill_opacity=ctx.op_f, stroke_opacity=ctx.op_s,
+                    fill_opacity=0 if native is not None else ctx.op_f, stroke_opacity=ctx.op_s,
                     stroke_width=ctx.lw,
                 ).set_z_index(ctx.zz)
                 arr.append(self._dash_stroke(circ, ctx, 'closed'))
@@ -4225,10 +4319,15 @@ class AnimaGeoScene(MovingCameraScene):
                 a_semi, b_semi = params['semi_axes']
                 cx, cy = params['center']
                 rot = params['rotation']
+                if native is not None:
+                    arr.append(Ellipse(
+                        width=2 * a_semi, height=2 * b_semi,
+                        fill_color=ctx.col_f, fill_opacity=ctx.op_f, stroke_opacity=0, stroke_width=0,
+                    ).rotate(rot).move_to([float(cx), float(cy), 0]).set_z_index(ctx.zz_fill))
                 ell = Ellipse(
                     width=2 * a_semi, height=2 * b_semi,
                     color=ctx.col_s, fill_color=ctx.col_f,
-                    fill_opacity=ctx.op_f, stroke_opacity=ctx.op_s,
+                    fill_opacity=0 if native is not None else ctx.op_f, stroke_opacity=ctx.op_s,
                     stroke_width=ctx.lw,
                 ).rotate(rot).move_to([float(cx), float(cy), 0]).set_z_index(ctx.zz)
                 arr.append(self._dash_stroke(ell, ctx, 'closed'))
@@ -4299,7 +4398,13 @@ class AnimaGeoScene(MovingCameraScene):
 
         if not arr:
             return None
-        if ctx.has_label and ctx.ggb_label_point is not None:
+        if ctx.has_label and native is not None:
+            # registry 1.6: a kernel conic hangs its label off a point of the
+            # curve, the anchor label_placement._get_anchor uses
+            from .native.kernel.conic import label_anchor
+            ax, ay = label_anchor(native)
+            self._append_label(arr, elem, [float(ax), float(ay), 0], ctx)
+        elif ctx.has_label and ctx.ggb_label_point is not None:
             # Ellipse/circle conics drew no label. Only the applet-placed one is
             # reproducible: the placement solver has no anchor for conics.
             self._append_label(arr, elem, [0.0, 0.0, 0], ctx)
@@ -4311,6 +4416,15 @@ class AnimaGeoScene(MovingCameraScene):
         left, bottom, right_x, top_y = self._get_scene_bounds()
         viewport = (left, bottom, right_x, top_y)
         segment_mu = 3.0 / ptUnit
+
+        native = getattr(func, 'native_value', None)
+        if native is not None:
+            # A native function (registry 1.6): the kernel sampler, gaps at
+            # discontinuities and outside the domain, no sympy.
+            from .native.kernel.function import function_runs
+            arr = [self._curve_polyline(run, ctx)
+                   for run in function_runs(native, (left, right_x), (bottom, top_y)) if len(run) >= 2]
+            return VGroup(*arr, name=elem.name) if arr else None
 
         x_range = (left, right_x)
         if func.explicit_domain is not None:

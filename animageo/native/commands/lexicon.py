@@ -54,6 +54,7 @@ __all__ = [
     'LexiconError',
     'Position',
     'default_lexicon',
+    'deferred_op',
     'lexicon_hash',
     'lexicon_problems',
     'normalize_name',
@@ -61,6 +62,15 @@ __all__ = [
 
 LEXICON_FORMAT = 'animageo-lexicon/v1'
 INPUT = '$input'
+# Registry 1.6: functions and conics have no command yet («Команды» do not
+# parse the expression of a function); the printer prints their lines with a
+# warning, as an expression (commands.md §8).
+DEFERRED_PREFIXES = ('function.', 'conic.', 'intersect.function_', 'intersect.line_conic', 'point.on_function')
+
+
+def deferred_op(op: str) -> bool:
+    """Whether ``op`` has no command in «Команды» yet (registry 1.6: functions and conics)."""
+    return op.startswith(DEFERRED_PREFIXES)
 DEFAULT_PATH = Path(__file__).with_name('lexicon.v1.json')
 
 # Argument kinds a position accepts, besides element types: a number

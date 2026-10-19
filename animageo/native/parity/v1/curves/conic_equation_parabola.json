@@ -1,0 +1,461 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_equation_parabola",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc5",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_equation_parabola",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_k": {
+    "id": "op_k",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "k"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_q": {
+    "id": "op_q",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "y"
+          },
+          {
+           "op": "*",
+           "args": [
+            {
+             "ref": 0
+            },
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 1
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "k"
+       },
+       {
+        "kind": "ref",
+        "elementId": "c"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "q"
+     }
+    ]
+   },
+   "op_t": {
+    "id": "op_t",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "var": "y"
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 4
+          },
+          {
+           "op": "+",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "var": "y"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "t"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "k": {
+    "id": "k",
+    "type": "number",
+    "displayName": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "number"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "number",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "number"
+    }
+   },
+   "q": {
+    "id": "q",
+    "type": "conic",
+    "displayName": "q",
+    "producer": {
+     "operationId": "op_q",
+     "slot": "conic"
+    }
+   },
+   "t": {
+    "id": "t",
+    "type": "conic",
+    "displayName": "t",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "conic"
+    }
+   }
+  },
+  "inputs": {
+   "k": {
+    "kind": "number",
+    "value": 1.0
+   },
+   "c": {
+    "kind": "number",
+    "value": 0.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "unit",
+   "scale": 20.0,
+   "expect": {
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "t": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.707106781,
+       0.707106781
+      ],
+      "p": 1.414213562
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "shifted",
+   "inputs": {
+    "k": {
+     "kind": "number",
+     "value": 0.5
+    },
+    "c": {
+     "kind": "number",
+     "value": 2.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.5,
+      "unit": "scalar"
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       -2.0,
+       -2.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 1.0
+     }
+    },
+    "t": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.707106781,
+       0.707106781
+      ],
+      "p": 1.414213562
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "downwards",
+   "inputs": {
+    "k": {
+     "kind": "number",
+     "value": -0.25
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -0.25,
+      "unit": "scalar"
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       -1.0
+      ],
+      "p": 2.0
+     }
+    },
+    "t": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.707106781,
+       0.707106781
+      ],
+      "p": 1.414213562
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "line",
+   "inputs": {
+    "k": {
+     "kind": "number",
+     "value": 0.0
+    },
+    "c": {
+     "kind": "number",
+     "value": 1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "q": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "degenerate_conic"
+    },
+    "t": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.707106781,
+       0.707106781
+      ],
+      "p": 1.414213562
+     }
+    }
+   },
+   "checks": {}
+  }
+ ]
+}

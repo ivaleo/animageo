@@ -1087,6 +1087,10 @@ def _get_anchor(elem, scene=None):
     elif isinstance(d, geo.Vector):
         if hasattr(d, 'endpoints') and d.endpoints is not None:
             return ((d.endpoints[0] + d.endpoints[1]) / 2)[:2]
+    native = getattr(d, 'native_value', None)
+    if native is not None and isinstance(native, dict) and native.get('kind') in ('ellipse', 'hyperbola', 'parabola'):
+        from .native.kernel.conic import label_anchor     # a kernel conic (registry 1.6): a point of the curve
+        return np.array(label_anchor(native), dtype=float)
     return np.zeros(2)
 
 

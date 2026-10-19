@@ -14,7 +14,7 @@ path parameter — and nothing descriptive (phrases, checks, status, math)::
 
     signatureHash = "sha256:" + sha256(canonical({
         "op": op,
-        "inputs":  [{"slot", "type", "list": bool = false, "min": int | null}],
+        "inputs":  [{"slot", "type", "list": bool = false, "min": int | null, "vars"?: [str]}],  # vars only when set
         "params":  [{"slot", "type", "unit": str | null}],   # optional/default are outside
         "outputs": [{"slot", "type", "repeat": str | null, "like"?: str}],  # like only when set
         "free": {...} | null,
@@ -49,7 +49,7 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.5'
+REGISTRY_VERSION = '1.6'
 REPEAT_MAX = 100
 # A free input of these kinds is optional: absent from ``inputs``, it takes this value.
 FREE_INPUT_DEFAULTS = {'angle': {'kind': 'angle', 'value': 0.0}}
@@ -98,15 +98,7 @@ def signature(record: dict) -> dict:
     branch = record.get('branch')
     return {
         'op': record['op'],
-        'inputs': [
-            {
-                'slot': item['slot'],
-                'type': item['type'],
-                'list': bool(item.get('list', False)),
-                'min': item.get('min'),
-            }
-            for item in record.get('inputs', [])
-        ],
+        'inputs': [_input_signature(item) for item in record.get('inputs', [])],
         'params': [
             {'slot': item['slot'], 'type': item['type'], 'unit': item.get('unit')}
             for item in record.get('params', [])
@@ -117,6 +109,13 @@ def signature(record: dict) -> dict:
         'orientation': record.get('orientation'),
         'pathParam': record.get('pathParam'),
     }
+
+
+def _input_signature(item: dict) -> dict:
+    out = {'slot': item['slot'], 'type': item['type'], 'list': bool(item.get('list', False)), 'min': item.get('min')}
+    if item.get('vars'):                       # registry 1.6: absent from older records, so their hashes stay
+        out['vars'] = list(item['vars'])
+    return out
 
 
 def _output_signature(item: dict) -> dict:

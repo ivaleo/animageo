@@ -14,6 +14,8 @@ _ATOM = 5
 
 
 def _level(node) -> int:
+    if 'if' in node or 'var' in node:
+        return _ATOM
     if 'op' in node:
         return _LEVEL[node['op']]
     if 'num' in node and node['num'] < 0:
@@ -37,6 +39,10 @@ def _text(node, names) -> str:
         return names[k] if k < len(names) else f'refs[{k}]'
     if 'fn' in node:
         return f"{node['fn']}({', '.join(_text(a, names) for a in node['args'])})"
+    if 'var' in node:           # registry 1.6: the variable of a function
+        return node['var']
+    if 'if' in node:
+        return f"If({', '.join(_cond_text(c, names) if i == 0 else _text(c, names) for i, c in enumerate(node['if']))})"
     name = node['op']
     args = node['args']
     if name == 'neg':
@@ -48,6 +54,17 @@ def _text(node, names) -> str:
     level = _LEVEL[name]
     return (_wrap(_text(left, names), _level(left) < level) + _SIGN[name]
             + _wrap(_text(right, names), _level(right) <= level or _level(right) == _LEVEL['neg']))
+
+
+def _cond_text(node, names) -> str:
+    if 'cmp' in node:
+        a, b = node['args']
+        return f"{_text(a, names)} {node['cmp']} {_text(b, names)}"
+    if 'not' in node:
+        return f"!({_cond_text(node['not'][0], names)})"
+    kind = 'and' if 'and' in node else 'or'
+    sign = ' && ' if kind == 'and' else ' || '
+    return sign.join(f'({_cond_text(c, names)})' for c in node[kind])
 
 
 def to_text(ast, names=()) -> str:

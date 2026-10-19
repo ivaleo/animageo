@@ -17,10 +17,11 @@ The templates of ``text.free`` (``"Угол {0}"``) live here too
 (:mod:`.template`): a string with inserts ``{k}`` into ``refs``.
 """
 from .evaluate import ExprError, evaluate
+from .function import compile_function
 from .printer import to_text
 from .template import MAX_TEMPLATE_LENGTH, format_value, split_template, template_problems
-from .validate import CONSTANTS, FUNCTIONS, MAX_DEPTH, MAX_INTEGER_POWER, MAX_NODES, OPERATORS, problems
+from .validate import COMPARISONS, CONSTANTS, FUNCTIONS, MAX_DEPTH, MAX_INTEGER_POWER, MAX_NODES, OPERATORS, problems
 
-__all__ = ['CONSTANTS', 'ExprError', 'FUNCTIONS', 'MAX_DEPTH', 'MAX_INTEGER_POWER', 'MAX_NODES',
-           'MAX_TEMPLATE_LENGTH', 'OPERATORS', 'evaluate', 'format_value', 'problems', 'split_template',
+__all__ = ['COMPARISONS', 'CONSTANTS', 'ExprError', 'FUNCTIONS', 'MAX_DEPTH', 'MAX_INTEGER_POWER', 'MAX_NODES',
+           'MAX_TEMPLATE_LENGTH', 'OPERATORS', 'compile_function', 'evaluate', 'format_value', 'problems', 'split_template',
            'template_problems', 'to_text']

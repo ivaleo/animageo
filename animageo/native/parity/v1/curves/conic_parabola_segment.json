@@ -1,0 +1,469 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_parabola_segment",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc5",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_parabola_segment",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_F": {
+    "id": "op_F",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_D": {
+    "id": "op_D",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "D"
+     }
+    ]
+   },
+   "op_dl": {
+    "id": "op_dl",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "C"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "D"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "dl"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "conic.parabola_focus_directrix",
+    "args": {
+     "focus": {
+      "kind": "ref",
+      "elementId": "F"
+     },
+     "directrix": {
+      "kind": "ref",
+      "elementId": "dl"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "p"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "F": {
+    "id": "F",
+    "type": "point",
+    "displayName": "F",
+    "producer": {
+     "operationId": "op_F",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "D": {
+    "id": "D",
+    "type": "point",
+    "displayName": "D",
+    "producer": {
+     "operationId": "op_D",
+     "slot": "point"
+    }
+   },
+   "dl": {
+    "id": "dl",
+    "type": "segment",
+    "displayName": "dl",
+    "producer": {
+     "operationId": "op_dl",
+     "slot": "segment"
+    }
+   },
+   "p": {
+    "id": "p",
+    "type": "conic",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "conic"
+    }
+   }
+  },
+  "inputs": {
+   "F": {
+    "kind": "point",
+    "value": [
+     0.0,
+     1.0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     -1.0,
+     -1.0
+    ]
+   },
+   "D": {
+    "kind": "point",
+    "value": [
+     1.0,
+     -1.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "short",
+   "scale": 20.0,
+   "expect": {
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": -1.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": -1.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "dl": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -1.0,
+       -1.0
+      ],
+      "b": [
+       1.0,
+       -1.0
+      ],
+      "length": 2.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 2.0
+     }
+    }
+   },
+   "checks": {
+    "op_dl:ends": "passed",
+    "op_p:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "far",
+   "inputs": {
+    "C": {
+     "kind": "point",
+     "value": [
+      -2.0,
+      0.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      0.0,
+      -2.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 0.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -2.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "dl": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -2.0,
+       0.0
+      ],
+      "b": [
+       0.0,
+       -2.0
+      ],
+      "length": 2.828427125
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       -0.75,
+       0.25
+      ],
+      "axis": [
+       0.707106781,
+       0.707106781
+      ],
+      "p": 2.121320344
+     }
+    }
+   },
+   "checks": {
+    "op_dl:ends": "passed",
+    "op_p:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "down",
+   "inputs": {
+    "F": {
+     "kind": "point",
+     "value": [
+      0.0,
+      -3.0
+     ]
+    },
+    "C": {
+     "kind": "point",
+     "value": [
+      3.0,
+      0.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      4.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 0.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -3.0
+     }
+    },
+    "dl": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       3.0,
+       0.0
+      ],
+      "b": [
+       4.0,
+       0.0
+      ],
+      "length": 1.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       -1.5
+      ],
+      "axis": [
+       0.0,
+       -1.0
+      ],
+      "p": 3.0
+     }
+    }
+   },
+   "checks": {
+    "op_dl:ends": "passed",
+    "op_p:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "point",
+   "inputs": {
+    "C": {
+     "kind": "point",
+     "value": [
+      0.0,
+      -1.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "dl": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       0.0,
+       -1.0
+      ],
+      "b": [
+       0.0,
+       -1.0
+      ],
+      "length": 0.0
+     }
+    },
+    "p": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "zero_length"
+    }
+   },
+   "checks": {
+    "op_dl:ends": "passed"
+   }
+  }
+ ]
+}

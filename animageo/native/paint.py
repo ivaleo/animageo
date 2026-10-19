@@ -81,6 +81,10 @@ _TYPES = {
     'polygon': ('polygon', _STROKE + _FILL + _HATCH + ('z_index',) + _LABEL + _VALUE),
     'polyline': ('locuscurve', _STROKE + _DASH + ('z_index',)),
     'locus': ('locuscurve', _STROKE + _DASH + ('z_index',)),
+    # registry 1.6: a graph is a sampled curve without a label; a conic is
+    # drawn as the classic Conic (an ellipse filled, the label on the curve)
+    'function': ('function', _STROKE + _DASH + ('z_index',)),
+    'conic': ('conic', _STROKE + _DASH + _FILL + ('z_index', 'z_index_fill') + _LABEL),
     'angle': ('angle', _STROKE + _FILL + _ANGLE + ('z_index',) + _LABEL + _VALUE),
     # a right-angle mark draws the square: no arcs to count or space (with
     # ``right_angle_marker: false`` it reads the keys of an angle, ``ineffective_reason``)
@@ -220,13 +224,19 @@ def style_keys() -> dict:
     type, then its ``rendering``, then the renderer's own); ``None`` — no
     value (a solid stroke, an automatic layer or marker; ``label_anchor``:
     ``rendering.label_anchor`` of the given style, else ``BL``). A fresh
-    copy.
+    copy. 1.6: ``"view": {"section": "rendering", "keys": {…}}`` — the
+    keys of the axes and the grid (``viewDefaults.axes``/``grid``), read
+    from the ``rendering`` section of the style.
     """
     if 'keys' not in _CACHE:
+        from .view import VIEW_STYLE_KEYS
         cfg = _builtin()
         _CACHE['keys'] = {
             'format': STYLE_KEYS_FORMAT,
             'types': {type_: _entry(cfg, type_) for type_ in sorted(_TYPES)},
+            'view': {'section': 'rendering', 'keys': {
+                key: {'unit': unit, 'default': cfg.rendering.get(key, fallback)}
+                for key, (unit, fallback) in sorted(VIEW_STYLE_KEYS.items())}},
         }
     return copy.deepcopy(_CACHE['keys'])
 
@@ -344,6 +354,10 @@ def _dash(final, elem, type_, data, unit, width_px, cap):
         length = float(data.radius) * ((a1 - a0) % (2 * math.pi))
     elif type_ == 'circle' and isinstance(data, geo.Circle):
         length = 2 * math.pi * float(data.radius)
+    elif type_ == 'function':           # open runs (``_curve_polyline``)
+        fit = 'none'
+    elif type_ == 'conic':              # the renderer measures an ellipse; branches are open runs
+        fit = 'closed' if _conic_kind(data) == 'ellipse' else 'none'
     drawn = None
     if fit == 'none' or length is not None:
         cap_mu = width_px / unit if cap in ('round', 'square') else 0.0
@@ -352,6 +366,11 @@ def _dash(final, elem, type_, data, unit, width_px, cap):
         drawn = {'onPx': _r(pattern.on * unit), 'offPx': _r(pattern.off * unit),
                  'offsetPx': _r(pattern.offset * unit)}
     return {'onPx': _r(on_px), 'offPx': _r(off_px), 'fit': fit, 'drawn': drawn}
+
+
+def _conic_kind(data):
+    native = getattr(data, 'native_value', None)
+    return native.get('kind') if isinstance(native, dict) else None
 
 
 def _ticks(type_, data, unit, value):
@@ -641,10 +660,11 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
                 stroke['z'] = _r(max(_Z_STROKE + tie, _num(z) + tie + 0.1))
             elif style_type in ('angle', 'mark.right_angle'):
                 stroke['z'] = _r(_num(z) + tie + 0.1)
-            if style_type in _DASH_FIT or style_type in ('polyline', 'locus'):
+            if style_type in _DASH_FIT or style_type in ('polyline', 'locus', 'function', 'conic'):
                 stroke['dash'] = _dash(final, elem, style_type, data, unit, width_px, cap)
             entry['stroke'] = stroke
-        if style_type in _FILLED or style_type in ('angle', 'mark.right_angle', 'point'):
+        if style_type in _FILLED or style_type in ('angle', 'mark.right_angle', 'point') \
+                or (style_type == 'conic' and _conic_kind(data) == 'ellipse'):
             color = _color(value('fill', fill_default))
             opacity = _num(value('fill_opacity', 1), 1)
             from ..style.colorspace import same_color
@@ -652,7 +672,7 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             if style_type in ('angle', 'mark.right_angle') and is_bg:
                 opacity = 0.0
             fill = {'color': color if opacity > 0 else None, 'opacity': _r(opacity), 'isBackground': is_bg}
-            if style_type in ('circle', 'arc', 'sector'):
+            if style_type in ('circle', 'arc', 'sector', 'conic'):
                 fill['z'] = _r(_num(value('z_index_fill', _Z_FILL), _Z_FILL) + tie)
             elif style_type in ('polygon', 'angle', 'mark.right_angle'):
                 fill['z'] = entry['z']
@@ -680,7 +700,7 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             entry['ticks'] = _ticks(style_type, data, unit, value)
         if style_type in ('angle', 'mark.right_angle'):
             entry['angle'] = _angle(final, elem, data, unit, value)
-        if style_type not in ('polyline', 'locus'):
+        if style_type not in ('polyline', 'locus', 'function'):
             entry['label'] = _label(final, elem, value, style_type, z_label)
         if style_type in _WITH_VALUE:
             entry['value'] = _value_format(final, value)

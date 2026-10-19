@@ -308,7 +308,27 @@ GRAPH_OPS = frozenset({'locus.of_point'})
 # Slots that may be undefined without skipping the checks of their operation
 # (registry 1.5): the extension of an altitude is absent in every acute
 # triangle, the checks use the altitude and the foot only.
-CHECK_OPTIONAL_SLOTS = {'triangle.altitude': frozenset({'extension'})}
+CHECK_OPTIONAL_SLOTS = {
+    'triangle.altitude': frozenset({'extension'}),
+    # registry 1.6: the repeated slots of a search (``root.k`` by the base name)
+    # are absent beyond the solutions found; the checks measure the defined ones
+    'function.root': frozenset({'root'}),
+    'function.extremum': frozenset({'extremum'}),
+    'intersect.function_function': frozenset({'point'}),
+    'intersect.function_line': frozenset({'point'}),
+    # a parabola has one focus, one vertex and one axis; a line parallel to
+    # the axis of a parabola or to an asymptote meets the conic once
+    'conic.foci': frozenset({'second'}),
+    'conic.vertices': frozenset({'second', 'third', 'fourth'}),
+    'intersect.line_conic': frozenset({'second'}),
+}
+
+
+def check_optional(op_name: str, slot: str) -> bool:
+    """Whether an undefined ``slot`` of ``op_name`` leaves its checks on
+    (:data:`CHECK_OPTIONAL_SLOTS`, a repeated slot by its base name)."""
+    optional = CHECK_OPTIONAL_SLOTS.get(op_name, ())
+    return slot in optional or slot.partition('.')[0] in optional
 
 
 @dataclass
@@ -423,7 +443,8 @@ def _argument_status(op, record, doc, reg):
         params[item['slot']] = float(arg['value'])
     if exprs or templates:
         count = next((len(ids) for slot, _is_list, ids in resolved if slot == 'refs'), None)
-        if any(expr_problems(ast, count) for ast in exprs.values()) \
+        variables = {item['slot']: item.get('vars') or () for item in record['inputs']}
+        if any(expr_problems(ast, count, variables[slot]) for slot, ast in exprs.items()) \
                 or any(template_problems(s, count) for s in templates.values()):
             return ('error', 'formula')
     return Arguments(resolved, literals, params, exprs, templates)
@@ -526,7 +547,8 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
         if op['op'] in GRAPH_OPS:
             scope = GraphScope(doc, reg, op_id, resolved, states, values_in, bound, deps, order, tol,
                                _decisions)
-        ctx = OpContext(tol, input=free_input, operation_id=op_id, decisions=_decisions, scope=scope)
+        ctx = OpContext(tol, input=free_input, operation_id=op_id, decisions=_decisions, scope=scope,
+                        bounds=doc.bounds)
         try:
             result = IMPLEMENTATIONS[op['op']](args, ctx)
         except Exception as exc:  # an implementation bug must not stop the evaluation
@@ -555,13 +577,14 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
                 states[el_id] = state_record('undefined', type_, 'non_finite')
             else:
                 states[el_id] = defined_record(type_, value, details.get(slot))
-        optional = CHECK_OPTIONAL_SLOTS.get(op['op'], ())
         for slot, value in result.items():
-            if slot in optional and isinstance(value, Undefined):
+            if isinstance(value, Undefined) and check_optional(op['op'], slot):
                 continue
             if isinstance(value, Undefined) or not is_finite_value(value):
                 all_defined = False
                 break
+        if result and all(isinstance(v, Undefined) for v in result.values()):
+            all_defined = False                       # a search that found nothing has nothing to check
         if all_defined:
             computed[op_id] = (op['op'], args, result)
 
@@ -573,8 +596,8 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
     for el_id, el in elements.items():
         if states[el_id]['state'] != 'defined':
             op_id = el['producer']['operationId']
-            optional = CHECK_OPTIONAL_SLOTS.get(ops[op_id]['op'], ()) if op_id in ops else ()
-            if el['producer']['slot'] in optional and states[el_id]['state'] == 'undefined':
+            if op_id in ops and check_optional(ops[op_id]['op'], el['producer']['slot']) \
+                    and states[el_id]['state'] == 'undefined':
                 continue
             computed.pop(op_id, None)
 

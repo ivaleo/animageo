@@ -1072,6 +1072,153 @@ def _locus_on_trace(args, result, tol):
     return error
 
 
+# ── registry 1.6: functions ──────────────────────────────────────────────
+
+def _off_graph(value, points) -> float:
+    """The largest ``|y − f(x)|`` of the defined ``points`` (``∞`` where ``f`` has no value)."""
+    from .function import evaluator
+    f = evaluator(value)
+    error = 0.0
+    for p in points:
+        if isinstance(p, Undefined) or p is None:
+            continue
+        y = f(p['x'])
+        if y is None:
+            return math.inf
+        error = max(error, abs(p['y'] - y))
+    return error
+
+
+@register_check('function.root', 'on_graph')
+def _root_on_graph(args, result, tol):
+    return _off_graph(args['function'].value, result.values())
+
+
+@register_check('function.extremum', 'on_graph')
+def _extremum_on_graph(args, result, tol):
+    return _off_graph(args['function'].value, result.values())
+
+
+@register_check('point.on_function', 'on_graph')
+def _on_function_on_graph(args, result, tol):
+    return _off_graph(args['function'].value, (result['point'],))
+
+
+@register_check('intersect.function_function', 'on_both')
+def _function_function_on_both(args, result, tol):
+    return max(_off_graph(args['first'].value, result.values()), _off_graph(args['second'].value, result.values()))
+
+
+@register_check('intersect.function_line', 'on_both')
+def _function_line_on_both(args, result, tol):
+    error = _off_graph(args['function'].value, result.values())
+    c = carrier(args['line'], _QuietContext(tol))
+    if isinstance(c, Undefined):
+        return math.inf
+    for p in result.values():
+        if not isinstance(p, Undefined) and p is not None:
+            error = max(error, distance_to_carrier(p['x'], p['y'], c))
+    return error
+
+
+# ── conics (registry 1.6) ─────────────────────────────────────────────
+
+def _off_conic(value, points) -> float:
+    """The largest focal residual (:func:`..conic.residual`) of the defined ``points``."""
+    from .conic import residual
+    error = 0.0
+    for p in points:
+        if isinstance(p, Undefined) or p is None:
+            continue
+        error = max(error, residual(value, p['x'], p['y']))
+    return error
+
+
+def _foci_match(args, value) -> float:
+    from .conic import foci
+    fs = foci(value)
+    (x1, y1), (x2, y2) = _xy(args['f1'].value), _xy(args['f2'].value)
+    return max(math.hypot(fs[0][0] - x1, fs[0][1] - y1), math.hypot(fs[1][0] - x2, fs[1][1] - y2))
+
+
+@register_check('conic.ellipse_foci_point', 'on_curve')
+@register_check('conic.hyperbola_foci_point', 'on_curve')
+def _foci_point_on_curve(args, result, tol):
+    return _off_conic(result['conic'], (args['through'].value,))
+
+
+@register_check('conic.ellipse_foci_point', 'foci')
+@register_check('conic.hyperbola_foci_point', 'foci')
+def _foci_point_foci(args, result, tol):
+    return _foci_match(args, result['conic'])
+
+
+@register_check('conic.parabola_focus_directrix', 'focus_directrix')
+def _parabola_focus_directrix(args, result, tol):
+    from .conic import foci
+    value = result['conic']
+    c = carrier(args['directrix'], _QuietContext(tol))
+    if isinstance(c, Undefined):
+        return math.inf
+    fx, fy = foci(value)[0]
+    x, y = _xy(args['focus'].value)
+    ux, uy = value['axis']
+    vx, vy = value['vertex']
+    h = value['p'] / 2
+    return max(math.hypot(fx - x, fy - y), distance_to_carrier(vx - h * ux, vy - h * uy, c),
+               value['p'] * abs(ux * c.dx + uy * c.dy))
+
+
+@register_check('conic.five_points', 'on_curve')
+def _five_points_on_curve(args, result, tol):
+    return _off_conic(result['conic'], [args[slot].value for slot in ('a', 'b', 'c', 'd', 'e')])
+
+
+@register_check('conic.foci', 'focal')
+def _foci_focal(args, result, tol):
+    """Each focus lies on the axis line, at ``a`` from the end of the minor
+    axis (ellipse), at ``√(a² + b²)`` from the centre (hyperbola), at
+    ``p/2`` from the vertex (parabola)."""
+    value = args['conic'].value
+    ux, uy = value['axis']
+    error = 0.0
+    for f in result.values():
+        if isinstance(f, Undefined) or f is None:
+            continue
+        x, y = _xy(f)
+        if value['kind'] == 'parabola':
+            vx, vy = value['vertex']
+            error = max(error, abs(math.hypot(x - vx, y - vy) - value['p'] / 2), abs((x - vx) * uy - (y - vy) * ux))
+            continue
+        cx, cy = value['c']
+        a = value['a']
+        b = value['b']
+        if value['kind'] == 'ellipse':
+            nx, ny = -uy, ux
+            measured = abs(math.hypot(x - (cx + b * nx), y - (cy + b * ny)) - a)
+        else:
+            measured = abs(math.hypot(x - cx, y - cy) - math.hypot(a, b))
+        error = max(error, measured, abs((x - cx) * uy - (y - cy) * ux))
+    return error
+
+
+@register_check('conic.vertices', 'on_curve')
+def _vertices_on_curve(args, result, tol):
+    return _off_conic(args['conic'].value, result.values())
+
+
+@register_check('intersect.line_conic', 'on_both')
+def _line_conic_on_both(args, result, tol):
+    error = _off_conic(args['conic'].value, result.values())
+    c = carrier(args['line'], _QuietContext(tol))
+    if isinstance(c, Undefined):
+        return math.inf
+    for p in result.values():
+        if not isinstance(p, Undefined) and p is not None:
+            error = max(error, distance_to_carrier(p['x'], p['y'], c))
+    return error
+
+
 def run_checks(evaluated, keys=None) -> CheckReport:
     """Run the registry checks over an :class:`~.evaluate.Evaluated` result.
 

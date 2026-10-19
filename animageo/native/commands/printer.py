@@ -24,7 +24,7 @@ from ..kernel.evaluate import _order
 from ..registry import FREE_INPUT_DEFAULTS, registry
 from .build import HELPER_OPS, helper_key, is_helper, pair_op
 from .issues import CommandIssue, LineError, ambiguous_name
-from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, Lexicon, as_lexicon
+from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, Lexicon, as_lexicon, deferred_op
 from .naming import TakenKeys, next_name, pair_readings, polygon_side_names
 from .numbers import format_number
 from .resolve import resolve
@@ -567,16 +567,18 @@ class _Printer:
                 return f'{prefix}{text}', info
         call = self._call(op, record)
         if call is None:
-            # an operation that does not fit its registry record: print what it
-            # has in registry slot order, so the parser names the problem
+            # an operation that does not fit its registry record (or has no
+            # command yet, registry 1.6): print what it has in registry slot
+            # order, so the parser names the problem
             args = op.get('args') or {}
             order = [i['slot'] for i in record.get('inputs', ())] + [p['slot'] for p in record.get('params', ())]
             parts = []
             for slot in order + sorted(set(args) - set(order)):
                 if slot in args:
                     parts.extend(t for t, _k, _p in self._arg(args[slot], None))
-            self._warn('unprintable_operation', line_no, column,
-                       f'операция {op["op"]} не соответствует реестру')
+            message = 'функции и коники в «Командах» будут позже' if deferred_op(op['op']) else \
+                f'операция {op["op"]} не соответствует реестру'
+            self._warn('unprintable_operation', line_no, column, message)
             return f"{prefix}{op['op']}({', '.join(parts)})", info
         command, parts, dropped = call
         text = f'{prefix}{command}('

@@ -33,6 +33,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 OPS_DIR = REPO_ROOT / 'animageo' / 'native' / 'ops' / 'v1'
 FROZEN_PATH = Path(__file__).with_name('registry_frozen_1_0.json')
 FROZEN_VERSION = '1.5'
+NEXT = '1.7'           # a version above the registry now (TestRules)
 SERVICE = ('_types', '_policies', '_reasons', '_numeric')
 
 
@@ -153,7 +154,13 @@ def test_the_package_reports_the_version():
 
 
 class TestRules:
-    """The checker itself, on changed copies of the registry."""
+    """The checker itself, on changed copies of the registry, against the
+    registry as it is now taken as frozen (registry 1.6 is above the frozen
+    1.5, so a copy of 1.5 itself is no longer at hand)."""
+
+    @pytest.fixture
+    def frozen(self):
+        return summary(current())
 
     def state(self):
         return copy.deepcopy(current())
@@ -168,18 +175,18 @@ class TestRules:
 
     def test_a_changed_phrase_with_a_new_version_and_since(self, frozen):
         state = self.state()
-        state['version'] = '1.6'
+        state['version'] = NEXT
         state['records']['point.midpoint']['phrases']['ru'] += ' '
         assert self.problems(frozen, state) == [
-            'point.midpoint: record changed, its since is 1.0, not the new version 1.6']
-        state['records']['point.midpoint']['since'] = '1.6'
+            'point.midpoint: record changed, its since is 1.0, not the new version 1.7']
+        state['records']['point.midpoint']['since'] = NEXT
         assert self.problems(frozen, state) == []
 
     def test_a_changed_signature(self, frozen):
         state = self.state()
-        state['version'] = '1.6'
+        state['version'] = NEXT
         record = state['records']['point.midpoint']
-        record['since'] = '1.6'
+        record['since'] = NEXT
         record['inputs'][0]['type'] = 'segment'
         assert self.problems(frozen, state) == [
             'point.midpoint: signature changed (a 1.0 op keeps its signature; add a new op)']
@@ -192,7 +199,7 @@ class TestRules:
         state['records']['point.midpoint']['status'] = 'deprecated'
         assert self.problems(frozen, state) == [
             'point.midpoint: status stable → deprecated (only beta → stable, or deprecated with a new registry version)']
-        state['version'] = '1.6'
+        state['version'] = NEXT
         assert self.problems(frozen, state) == []
 
     def test_a_removed_op(self, frozen):
@@ -207,9 +214,9 @@ class TestRules:
         new['op'] = 'point.new'
         state['records']['point.new'] = new
         assert self.problems(frozen, state) == ['point.new: new op without a new registry version']
-        state['version'] = '1.6'
-        assert self.problems(frozen, state) == ['point.new: new op with since 1.0 (must be above 1.5)']
-        new['since'] = '1.6'
+        state['version'] = NEXT
+        assert self.problems(frozen, state) == ['point.new: new op with since 1.0 (must be above 1.6)']
+        new['since'] = NEXT
         assert self.problems(frozen, state) == []
 
     def test_catalogs(self, frozen):
@@ -220,7 +227,7 @@ class TestRules:
         assert self.problems(frozen, state) == [f'_reasons.reasons.{key}: changed without a new registry version']
         reasons['a_new_reason'] = {}
         assert self.problems(frozen, state)[-1] == '_reasons.reasons.a_new_reason: added without a new registry version'
-        state['version'] = '1.6'
+        state['version'] = NEXT
         assert self.problems(frozen, state) == []
         del reasons[key]
         assert self.problems(frozen, state) == [f'_reasons.reasons.{key}: removed from the catalog']

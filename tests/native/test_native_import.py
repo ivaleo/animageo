@@ -132,7 +132,8 @@ def _resolved_imports(path):
 # Modules that reach the classic code on purpose, inside functions only
 # (``import animageo.native`` never loads it).
 LAZY_ALLOWED = {
-    'animageo/native/kernel/bridge.py': (GEO, 'numpy'),
+    # registry 1.6: a native function is a classic Function with its own style proxy
+    'animageo/native/kernel/bridge.py': (GEO, 'numpy', 'animageo.style.proxy'),
     # 1.9.0a4: video — manim (tempconfig) and render_config inside _render_video;
     # 1.9.0a5: styles and @camera at t — the classic KeyframeSequence inside _apply_extras
     'animageo/native/rendering.py': (CLASSIC, GEO, 'animageo.labels', 'cairosvg', BLOCKED, 'animageo.render_config',
@@ -151,6 +152,8 @@ LAZY_ALLOWED = {
                                  'animageo.label_placement', 'animageo.labels', 'animageo.hatch',
                                  'animageo.export_layout'),
     'animageo/native/paint_fixtures.py': ('animageo.style',),
+    # registry 1.6 (view axes and grid): the colours of the style keys as hex
+    'animageo/native/view.py': ('animageo.style.colorspace',),
 }
 
 

@@ -11,6 +11,7 @@ from animageo.native.cli import main
 from tests.native.conftest import EXPECTED_DIR, SCENES_DIR, DocBuilder, point_input, read_json
 
 SCENES = sorted(p.name for p in SCENES_DIR.glob('*.json'))
+CURVES_DIR = EXPECTED_DIR.parent / 'curves'
 REQUIRED_SCENES = {
     'basic_points', 'segment_line', 'circle', 'intersect_lines', 'intersect_segments',
     'polygon_triangle', 'polygon_quad', 'upstream_chain', 'graph_errors',
@@ -100,10 +101,17 @@ def native_version():
     return animageo.__version__
 
 
+def _coverage_fixtures():
+    """The fixtures of the library set and, registry 1.6, those of graphs and
+    conics (``parity/v1/curves``, ``fixtures curves``)."""
+    out = [read_json(EXPECTED_DIR / name) for name in SCENES]
+    out += [read_json(path) for path in sorted(CURVES_DIR.glob('*.json'))]
+    return out
+
+
 def _defined_cases_by_op():
     counts = Counter()
-    for name in SCENES:
-        fixture = read_json(EXPECTED_DIR / name)
+    for fixture in _coverage_fixtures():
         ops = fixture['document']['operations']
         elements = fixture['document']['elements']
         for case in fixture['cases']:
@@ -121,8 +129,8 @@ def test_at_least_three_defined_cases_per_op():
 
 def test_every_reason_is_covered():
     seen = set()
-    for name in SCENES:
-        for case in read_json(EXPECTED_DIR / name)['cases']:
+    for fixture in _coverage_fixtures():
+        for case in fixture['cases']:
             seen.update(rec['reason'] for rec in case['expect'].values() if rec['state'] != 'defined')
     for op, record in native.registry().ops.items():
         assert set(record['undefined']) <= seen, op
@@ -131,8 +139,7 @@ def test_every_reason_is_covered():
 
 def test_every_reason_of_every_op_is_covered():
     seen = {}
-    for name in SCENES:
-        fixture = read_json(EXPECTED_DIR / name)
+    for fixture in _coverage_fixtures():
         ops = fixture['document']['operations']
         elements = fixture['document']['elements']
         for case in fixture['cases']:

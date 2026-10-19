@@ -1,0 +1,421 @@
+[
+  {
+    "op": "conic.ellipse_foci_point",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "f1",
+        "type": "point"
+      },
+      {
+        "slot": "f2",
+        "type": "point"
+      },
+      {
+        "slot": "through",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "degenerate_conic",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_curve",
+        "text": "through lies on the ellipse: | |XF1| + |XF2| - 2a | over the foci of the result"
+      },
+      {
+        "id": "foci",
+        "text": "the foci of the result are f1 and f2 (the larger distance)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "conic",
+    "phrases": {
+      "ru": "{conic} — эллипс с фокусами {f1}, {f2}, проходящий через {through}"
+    },
+    "math": "docs/native/ops/conic.ellipse_foci_point.md",
+    "signatureHash": "sha256:36ddcf296139b0c09a72aa3848c4a189206810d4217700cb89d9ab3d0033cf8a"
+  },
+  {
+    "op": "conic.hyperbola_foci_point",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "f1",
+        "type": "point"
+      },
+      {
+        "slot": "f2",
+        "type": "point"
+      },
+      {
+        "slot": "through",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "degenerate_conic",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_curve",
+        "text": "through lies on the hyperbola: | ||XF1| - |XF2|| - 2a | over the foci of the result"
+      },
+      {
+        "id": "foci",
+        "text": "the foci of the result are f1 and f2 (the larger distance)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "conic",
+    "phrases": {
+      "ru": "{conic} — гипербола с фокусами {f1}, {f2}, проходящая через {through}"
+    },
+    "math": "docs/native/ops/conic.hyperbola_foci_point.md",
+    "signatureHash": "sha256:557264e57e1eeadf9261dfe9e22d0160fbc847e70a07e73977de2ebe9e0dffba"
+  },
+  {
+    "op": "conic.parabola_focus_directrix",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "focus",
+        "type": "point"
+      },
+      {
+        "slot": "directrix",
+        "type": "linear"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "zero_length",
+      "degenerate_conic",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "focus_directrix",
+        "text": "the focus of the result is focus and its directrix is the carrier of directrix: the larger of the focus distance, the distance of the directrix point vertex - (p/2) axis to the carrier and p |axis . dir|"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "conic",
+    "phrases": {
+      "ru": "{conic} — парабола с фокусом {focus} и директрисой {directrix}"
+    },
+    "math": "docs/native/ops/conic.parabola_focus_directrix.md",
+    "signatureHash": "sha256:69b9f66775d86c1b90b2545c5cb75d4c2f1b506fecba7c0de2b46c1d15e70621"
+  },
+  {
+    "op": "conic.five_points",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      },
+      {
+        "slot": "d",
+        "type": "point"
+      },
+      {
+        "slot": "e",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident_points",
+      "degenerate_conic",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_curve",
+        "text": "the five points lie on the conic: the largest focal residual (docs/native/ops/conic.five_points.md)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "conic",
+    "phrases": {
+      "ru": "{conic} — коника через точки {a}, {b}, {c}, {d}, {e}"
+    },
+    "math": "docs/native/ops/conic.five_points.md",
+    "signatureHash": "sha256:78f40308bd8ff41f3982836e5aa2390d1592e14ab4b4df9923e8d253280b602c"
+  },
+  {
+    "op": "conic.equation",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "expr",
+        "type": "expr",
+        "vars": [
+          "x",
+          "y"
+        ]
+      },
+      {
+        "slot": "refs",
+        "type": "number",
+        "list": true,
+        "min": 0
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "not_quadratic",
+      "degenerate_conic",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "conic",
+    "phrases": {
+      "ru": "{conic} — коника, заданная уравнением"
+    },
+    "math": "docs/native/ops/conic.equation.md",
+    "signatureHash": "sha256:43e4ab0fecb9cf05353a34e1938bba28dada1d5f8bcfc4ff86d41d1af0b7e0e1"
+  },
+  {
+    "op": "conic.center",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "center",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "not_central",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "center",
+    "phrases": {
+      "ru": "{center} — центр {conic}"
+    },
+    "math": "docs/native/ops/conic.center.md",
+    "signatureHash": "sha256:61b48ccdcf7d742a1c5e58bd14ebb79320e2491d7b80f3c17b13d9d673dbd535"
+  },
+  {
+    "op": "conic.foci",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "first",
+        "type": "point"
+      },
+      {
+        "slot": "second",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "conic_axis_order",
+      "slots": [
+        "first",
+        "second"
+      ],
+      "text": "first = c - e axis, second = c + e axis (e the focal half-distance); a parabola has first only (second is branch_absent), a circle gives its centre twice"
+    },
+    "undefined": [
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "focal",
+        "text": "every defined focus lies on the axis line, at a from the end c + b n of the minor axis (ellipse), at sqrt(a^2 + b^2) from the centre (hyperbola), at p/2 from the vertex (parabola)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "conic_part",
+    "phrases": {
+      "ru": "{first}, {second} — фокусы {conic}"
+    },
+    "math": "docs/native/ops/conic.foci.md",
+    "signatureHash": "sha256:c2ded955091ec752bd1e5d1da31d72410600a5ee5ca3a0a5d325cec778aba7c5"
+  },
+  {
+    "op": "conic.vertices",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "first",
+        "type": "point"
+      },
+      {
+        "slot": "second",
+        "type": "point"
+      },
+      {
+        "slot": "third",
+        "type": "point"
+      },
+      {
+        "slot": "fourth",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "conic_axis_order",
+      "slots": [
+        "first",
+        "second",
+        "third",
+        "fourth"
+      ],
+      "text": "ellipse: first, second = c -/+ a axis, third, fourth = c -/+ b n (n the axis turned by +90 degrees); hyperbola: first, second; parabola: first = vertex; the rest are branch_absent"
+    },
+    "undefined": [
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_curve",
+        "text": "every defined vertex lies on the conic: the largest focal residual"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "conic_part",
+    "phrases": {
+      "ru": "{first}, {second}, {third}, {fourth} — вершины {conic}"
+    },
+    "math": "docs/native/ops/conic.vertices.md",
+    "signatureHash": "sha256:66ad2e08a54061894a38d2cd3aba395c571b9c4ddb74d98668e363fb310c87bc"
+  },
+  {
+    "op": "conic.axes",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "focal",
+        "type": "line"
+      },
+      {
+        "slot": "conjugate",
+        "type": "line"
+      }
+    ],
+    "branch": {
+      "policy": "conic_axis_order",
+      "slots": [
+        "focal",
+        "conjugate"
+      ],
+      "text": "focal: through the centre (vertex) along axis; conjugate: through the centre along n; a parabola has no conjugate axis (branch_absent)"
+    },
+    "undefined": [
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "conic_part",
+    "phrases": {
+      "ru": "{focal}, {conjugate} — оси {conic}"
+    },
+    "math": "docs/native/ops/conic.axes.md",
+    "signatureHash": "sha256:1c96c87965f0ed6de03520a982f968858d30bfbb8bf0e5601704270dbc9cc472"
+  }
+]

@@ -52,7 +52,15 @@ L2A5_OPS = {
 L3A1_OPS = {'triangle.altitude', 'triangle.median', 'triangle.bisector', 'triangle.centroid',
             'triangle.incenter', 'triangle.circumcenter', 'triangle.orthocenter', 'triangle.excenters',
             'locus.of_point'}
-ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS
+# Registry 1.6 (wave G2): functions y = f(x)
+G2_FUNCTION_OPS = {'function.expr', 'function.root', 'function.extremum', 'intersect.function_function',
+                   'intersect.function_line', 'point.on_function'}
+# Registry 1.6 (wave G2): conics
+G2_CONIC_OPS = {'conic.ellipse_foci_point', 'conic.hyperbola_foci_point', 'conic.parabola_focus_directrix',
+                'conic.five_points', 'conic.equation', 'conic.center', 'conic.foci', 'conic.vertices',
+                'conic.axes', 'intersect.line_conic'}
+G2_OPS = G2_FUNCTION_OPS | G2_CONIC_OPS
+ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were
 # (1.4 is frozen since 1.8.1; new operations go to 1.5).
 L0_HASHES = {
@@ -148,16 +156,16 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.5'
-    assert registry().version == '1.5'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.5'
+    assert native.__registry_version__ == '1.6'
+    assert registry().version == '1.6'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.6'
 
 
 def test_ops_and_files():
     reg = registry()
     assert set(reg.ops) == ALL_OPS
     assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark',
-                               'arc', 'measure', 'transform', 'text', 'triangle', 'locus'}
+                               'arc', 'measure', 'transform', 'text', 'triangle', 'locus', 'function', 'conic'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
@@ -194,10 +202,11 @@ def test_record_fields(op):
     record = registry().get(op)
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free'}
     assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors', 'intersect.nearest')
-                                else 'stable')
+                                or op in G2_OPS else 'stable')
     if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
                   'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle',
-                  'text.free'):
+                  'text.free', 'function.expr', 'function.root', 'function.extremum',
+                  'intersect.function_function', 'intersect.function_line'):
         assert record['params'] == []
     for param in record['params']:
         assert {'slot', 'type', 'unit', 'text'} <= set(param) <= {'slot', 'type', 'unit', 'optional',
@@ -446,7 +455,8 @@ def test_types_and_policies_catalogs():
     reg = registry()
     assert reg.types['ray']['value'] == {'origin': 'length', 'dir': 'scalar'}
     assert set(reg.policies) == {'single', 'line_param_order', 'circle_side', 'other_than',
-                                 'tangent_side', 'bisector_kind', 'vertex_index', 'sector_sides', 'nearest_to'}
+                                 'tangent_side', 'bisector_kind', 'vertex_index', 'sector_sides', 'nearest_to',
+                                 'roots_ascending', 'conic_axis_order'}
     assert set(reg.paths) == set(reg.families['path'])
     kinds = {'segment': 'affine', 'line': 'affine', 'ray': 'affine', 'circle': 'angle', 'polygon': 'perimeter',
              'arc': 'arc', 'sector': 'sector', 'polyline': 'polyline'}

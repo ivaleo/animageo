@@ -35,7 +35,7 @@ Master schema: `animageo/native/schema/construction.v1.schema.json`
   "operations": {ID: Operation},                 required
   "elements":   {ID: Element},                   required
   "inputs":     {ID: Input},
-  "viewDefaults": {"bounds": [xmin, ymin, xmax, ymax], …},
+  "viewDefaults": {"bounds": [xmin, ymin, xmax, ymax], "axes"?: Axes, "grid"?: Grid, …},
   "workIntent": null | WorkIntent,
   "appearance", "styleBinding", "timeline", "exportDefaults", "bindings", any other key
 }
@@ -67,6 +67,10 @@ Input     = {"kind": "point", "value": [x, y]}                         point.fre
   keys besides the listed ones; the top level allows any key.
 - `viewDefaults.bounds` needs `xmin < xmax` and `ymin < ymax` (checked by the
   library; JSON Schema cannot say it).
+- 1.6: `Axes = {"show"?: bool, "numbers"?: bool, "step"?: number > 0 | null,
+  "labels"?: {"x"?: string ≤ 32, "y"?: string ≤ 32}}`, `Grid = {"kind"?: "none" |
+  "major" | "major_minor", "step"?: number > 0 | null}` — drawn by `native.render`
+  under the elements (view.md); evaluation does not read them.
 - The schema checks the shape of an input value (its `kind`, numbers, a
   `branch` of `-1` or `1`); a usable value also has finite numbers. A free
   element without a usable value of its kind evaluates to `error/schema`
@@ -631,6 +635,7 @@ python -m animageo.native validate <doc.json> [--json]          # exit 1 when th
 python -m animageo.native commands fixtures|parse|print …       # «Команды», commands.md §10
 python -m animageo.native fixtures timeline [--check]           # animageo-timeline/v1, timeline.md §5
 python -m animageo.native fixtures paint [--check]              # animageo-paint-parity/v1, §9.8
+python -m animageo.native fixtures curves [--check]             # parity/v1/curves: graphs and conics, §14
 python -m animageo.native style export [--check]               # native/style: builtin.json, keys.v1.json, §9.8
 python -m animageo.native steps|describe|timeline <doc.json> …  # timeline.md §5
 python -m animageo.native from-ggb <file.ggb> [-o …] [--report …] # import.md §7
@@ -1339,3 +1344,81 @@ Time by element ID: the contract is `docs/native/timeline.md`. In short:
 - Fixtures `animageo-timeline/v1` (`fixtures timeline`); the steps fixtures
   carry `expect.timeline`; CLI `steps`, `describe`, `timeline`;
   `native.has`: `timeline`, `steps_timeline`, `render.t`, `render.video`.
+
+## 14. Registry 1.6: functions and conics (wave G2)
+
+Operations `since: "1.6"`, `beta` (formulas, decisions and checks in
+`docs/native/ops/<op>.md`). The view keys `axes` and `grid` of
+`viewDefaults` are [view.md](view.md).
+
+| op | inputs → outputs | undefined | checks |
+|---|---|---|---|
+| `function.expr` | `expr: expr` (`vars: ["x"]`), `refs: number[]`; params `min`, `max` (optional) → `function` | `empty_range`, `upstream` | — |
+| `function.root` | `function, a: number, b: number`; param `count` (default 1) → `root.1 … root.count: point` | `empty_range`, `coincident`, `no_root_in_window`, `branch_absent`, `upstream` | `on_graph` |
+| `function.extremum` | `function, a, b`; `count` → `extremum.k: point` (`detail.kind`: `max`, `min`) | `empty_range`, `no_root_in_window`, `branch_absent`, `upstream` | `on_graph` |
+| `intersect.function_function` | `first, second: function`; `count` → `point.k` | `no_intersection`, `coincident`, `branch_absent`, `upstream` | `on_both` |
+| `intersect.function_line` | `function, line: linear`; `count` → `point.k` | `no_intersection`, `coincident`, `outside_part`, `zero_length`, `branch_absent`, `upstream` | `on_both` |
+| `point.on_function` | `function`; free `pathParameter` (x) → `point` | `out_of_domain`, `upstream` | `on_graph` |
+| `conic.ellipse_foci_point` | `f1, f2, through: point` → `conic` | `degenerate_conic`, `upstream` | `on_curve`, `foci` |
+| `conic.hyperbola_foci_point` | `f1, f2, through: point` → `conic` | `coincident_points`, `degenerate_conic`, `upstream` | `on_curve`, `foci` |
+| `conic.parabola_focus_directrix` | `focus: point, directrix: linear` → `conic` | `zero_length`, `degenerate_conic`, `upstream` | `focus_directrix` |
+| `conic.five_points` | `a … e: point` → `conic` | `coincident_points`, `degenerate_conic`, `upstream` | `on_curve` |
+| `conic.equation` | `expr: expr` (`vars: ["x", "y"]`), `refs: number[]` → `conic` | `not_quadratic`, `degenerate_conic`, `upstream` | — |
+| `conic.center` | `conic` → `center: point` | `not_central`, `upstream` | — |
+| `conic.foci` | `conic` → `first, second: point` | `branch_absent`, `upstream` | `focal` |
+| `conic.vertices` | `conic` → `first … fourth: point` | `branch_absent`, `upstream` | `on_curve` |
+| `conic.axes` | `conic` → `focal, conjugate: line` | `branch_absent`, `upstream` | — |
+| `intersect.line_conic` | `line: linear, conic` → `first, second: point` | `no_intersection`, `outside_part`, `zero_length`, `branch_absent`, `upstream` | `on_both` |
+
+- Type `function`: `{expr, refs, domain: [lo | null, hi | null]}` (`refs`,
+  `domain` — length; `expr` compares exactly); in no family.
+- Type `conic`: ellipse `{kind, c, axis, a, b}` (`a ≥ b`, a circle has
+  `a == b`, `axis = [1, 0]`), hyperbola `{kind, c, axis, a, b}`, parabola
+  `{kind, vertex, axis, p}` (`axis` towards the focus, `p` focus–directrix);
+  `kind` compares exactly; in no family. A degenerate conic is not a value
+  (`degenerate_conic`). The classification of coefficients (equation, five
+  points) is [conic.equation](ops/conic.equation.md#classification); policy
+  `conic_axis_order` for the parts. New noise decisions: `degenerate`,
+  `parabola`, `circle`, `axis_orientation`, `not_quadratic`.
+- An input of a record may list `vars` (`function.expr`: `["x"]`): its `expr`
+  argument takes the nodes of [expr.md §5](expr.md); `vars` enters the
+  signature only when present (the hashes of older records stay).
+- Searches run on the grid of 512 cells with bisection and golden section
+  ([function.root](ops/function.root.md)); policy `roots_ascending`: by `x`,
+  a double root in two slots (`detail.multiplicity: 2`). The intersections
+  search the x-range of the window `B4` of `viewDefaults.bounds`
+  (`OpContext.bounds`). A missing repeated slot does not skip the checks of
+  its operation (`CHECK_OPTIONAL_SLOTS` by the base name of the slot); an
+  operation with no defined output (a search that found nothing) has no
+  checks, as in 2D.
+- Bridge: a classic `Function` without sympy (`bridge.native_function`),
+  drawn by `kernel/function.py::function_runs` (manim and TikZ); the `x` of
+  `point.on_function` is the `tparam` of its classic element. A conic is a
+  classic `Conic` of `kernel/conic.py::matrix` with the type of its `kind`
+  (`bridge.native_conic`); its label hangs off `conic.label_anchor`
+  (ellipse `c + b·n`, hyperbola `c + a·axis`, parabola the vertex).
+- «Команды»: no commands for functions and conics yet
+  (`commands.lexicon.deferred_op`); the printer prints their lines with the
+  warning `unprintable_operation` («функции и коники в «Командах» будут позже»).
+- The DSL map lists them in `opsWithoutClassic`.
+- `style_keys()` and `resolve_paint` (types `function`, `conic`): a graph
+  reads the stroke, the dash and `z_index`, draws no label (a dash fits
+  `none`, open runs); a conic reads the stroke, the dash, the fill,
+  `z_index`, `z_index_fill` and the label keys — an ellipse (a circle) has
+  its fill below the stroke at `z_index_fill` as a circle and a closed dash
+  measured by the renderer (`drawn: null`), a hyperbola or a parabola has
+  no fill and open runs (`fit: none`); the label spot is
+  `conic.label_anchor`. Fixtures `paint_curves.json`.
+- Parity fixtures `parity/v1/curves/*.json` (`fixtures curves [-o DIR]
+  [--check]`, `animageo/native/curves_fixtures.py`): 14 scenes of graphs
+  (`fn_*`) and 17 of conics (`conic_*`), every op of 1.6 in three defined
+  cases or more and each of its reasons. The shape is that of
+  `parity/v1/expected` (`fixtures verify` reads them); a case of a document
+  with graphs also has `samples` — `{elementId: [[x, y | null], …]}`,
+  `function_samples` of each defined graph at 33 equal steps over the
+  x-range of the bounds cut by the domain (`[]` when the cut is empty).
+  Inputs are rounded to 6 decimals, expectations and samples to 9 (a fresh
+  build is byte-identical away from libm noise); numbers compare with
+  `tol.parity`. `--check` compares a fresh build (the `generatedBy` label
+  aside) and replays every case. The coverage tests of the parity set and
+  the registry mix of L6 read them with `parity/v1/expected`.

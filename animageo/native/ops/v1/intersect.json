@@ -329,5 +329,180 @@
     },
     "math": "docs/native/ops/intersect.nearest.md",
     "signatureHash": "sha256:ed8cbe159e5f9027d5c19caee8752dc360a3e7ed7db0ce30a722e182b92d2d31"
+  },
+  {
+    "op": "intersect.function_function",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "function"
+      },
+      {
+        "slot": "second",
+        "type": "function"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 1,
+        "text": "number of slots, a whole number 1..100 (default 1); outside it the operation has no output slots"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "branch": {
+      "policy": "roots_ascending",
+      "slots": [
+        "point"
+      ],
+      "text": "point.k is the k-th common point by x in the window B4 of the bounds; a tangency fills two slots"
+    },
+    "undefined": [
+      "no_intersection",
+      "coincident",
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "every defined point lies on both graphs: the largest |y - f(x)| over the two functions"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{point} — точки пересечения графиков {first} и {second}"
+    },
+    "math": "docs/native/ops/intersect.function_function.md",
+    "signatureHash": "sha256:989197f22defd4d2563965c73a5ada60e27bdb80430767ef03abbdb77c093830"
+  },
+  {
+    "op": "intersect.function_line",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      },
+      {
+        "slot": "line",
+        "type": "linear"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 1,
+        "text": "number of slots, a whole number 1..100 (default 1); outside it the operation has no output slots"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "branch": {
+      "policy": "roots_ascending",
+      "slots": [
+        "point"
+      ],
+      "text": "point.k is the k-th common point by x in the window B4 of the bounds, fixed on the carrier line before the part filter; a tangency fills two slots"
+    },
+    "undefined": [
+      "no_intersection",
+      "coincident",
+      "outside_part",
+      "zero_length",
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "every defined point lies on the graph and on the carrier line: the larger of |y - f(x)| and the distance to the carrier"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{point} — точки пересечения графика {function} и {line}"
+    },
+    "math": "docs/native/ops/intersect.function_line.md",
+    "signatureHash": "sha256:8f3df17ee8795b5fb33a8fd23825da54cec385892b7edf5975ca47ea61dbf4d6"
+  },
+  {
+    "op": "intersect.line_conic",
+    "status": "beta",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "line",
+        "type": "linear"
+      },
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "first",
+        "type": "point"
+      },
+      {
+        "slot": "second",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "line_param_order",
+      "slots": [
+        "first",
+        "second"
+      ],
+      "text": "first has the smaller parameter along the orientation of line; slots are fixed on the carrier before the part filter; a tangency fills both slots; one common point (a line parallel to the axis of a parabola or to an asymptote) fills first, second is branch_absent"
+    },
+    "undefined": [
+      "no_intersection",
+      "outside_part",
+      "zero_length",
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "every defined point lies on both inputs: the larger of the distance to the carrier line and the focal residual of the conic"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{first}, {second} — точки пересечения {line} и {conic}"
+    },
+    "math": "docs/native/ops/intersect.line_conic.md",
+    "signatureHash": "sha256:5c8b43984d7edc2e1ab5cdfaff44c00b745b90a00f459e9607e1dc5c5e717bb6"
   }
 ]

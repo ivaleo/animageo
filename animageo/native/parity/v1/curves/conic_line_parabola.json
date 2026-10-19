@@ -1,0 +1,791 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_line_parabola",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc5",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_line_parabola",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_F": {
+    "id": "op_F",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_D": {
+    "id": "op_D",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "D"
+     }
+    ]
+   },
+   "op_dl": {
+    "id": "op_dl",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "C"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "D"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "dl"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "conic.parabola_focus_directrix",
+    "args": {
+     "focus": {
+      "kind": "ref",
+      "elementId": "F"
+     },
+     "directrix": {
+      "kind": "ref",
+      "elementId": "dl"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "p"
+     }
+    ]
+   },
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_l": {
+    "id": "op_l",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "l"
+     }
+    ]
+   },
+   "op_s": {
+    "id": "op_s",
+    "op": "intersect.line_conic",
+    "args": {
+     "line": {
+      "kind": "ref",
+      "elementId": "l"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "first",
+      "elementId": "s1"
+     },
+     {
+      "slot": "second",
+      "elementId": "s2"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "F": {
+    "id": "F",
+    "type": "point",
+    "displayName": "F",
+    "producer": {
+     "operationId": "op_F",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "D": {
+    "id": "D",
+    "type": "point",
+    "displayName": "D",
+    "producer": {
+     "operationId": "op_D",
+     "slot": "point"
+    }
+   },
+   "dl": {
+    "id": "dl",
+    "type": "line",
+    "displayName": "dl",
+    "producer": {
+     "operationId": "op_dl",
+     "slot": "line"
+    }
+   },
+   "p": {
+    "id": "p",
+    "type": "conic",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "conic"
+    }
+   },
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "l": {
+    "id": "l",
+    "type": "line",
+    "displayName": "l",
+    "producer": {
+     "operationId": "op_l",
+     "slot": "line"
+    }
+   },
+   "s1": {
+    "id": "s1",
+    "type": "point",
+    "displayName": "s1",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "first"
+    }
+   },
+   "s2": {
+    "id": "s2",
+    "type": "point",
+    "displayName": "s2",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "second"
+    }
+   }
+  },
+  "inputs": {
+   "F": {
+    "kind": "point",
+    "value": [
+     0.0,
+     1.0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     -1.0,
+     -1.0
+    ]
+   },
+   "D": {
+    "kind": "point",
+    "value": [
+     1.0,
+     -1.0
+    ]
+   },
+   "A": {
+    "kind": "point",
+    "value": [
+     -6.0,
+     4.0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     6.0,
+     4.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "chord",
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -6.0,
+      "y": 4.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 6.0,
+      "y": 4.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": -1.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": -1.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "dl": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -1.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       4.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 2.0
+     }
+    },
+    "s1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 4.0
+     }
+    },
+    "s2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 4.0
+     }
+    }
+   },
+   "checks": {
+    "op_dl:through_a": "passed",
+    "op_dl:through_b": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_p:focus_directrix": "passed",
+    "op_s:on_both": "passed"
+   }
+  },
+  {
+   "name": "along_axis",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      2.0,
+      0.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": -1.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": -1.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "dl": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -1.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       2.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 2.0
+     }
+    },
+    "s1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "s2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_dl:through_a": "passed",
+    "op_dl:through_b": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_p:focus_directrix": "passed",
+    "op_s:on_both": "passed"
+   }
+  },
+  {
+   "name": "tangent",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      0.0,
+      -1.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      1.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": -1.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": -1.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "dl": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -1.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.5,
+       -0.5
+      ],
+      "dir": [
+       0.707106781,
+       0.707106781
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 2.0
+     }
+    },
+    "s1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     },
+     "detail": {
+      "multiplicity": 2
+     }
+    },
+    "s2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     },
+     "detail": {
+      "multiplicity": 2
+     }
+    }
+   },
+   "checks": {
+    "op_dl:through_a": "passed",
+    "op_dl:through_b": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_p:focus_directrix": "passed",
+    "op_s:on_both": "passed"
+   }
+  },
+  {
+   "name": "miss",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      0.0,
+      -2.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      1.0,
+      -2.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -2.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": -2.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": -1.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": -1.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "dl": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -1.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -2.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 2.0
+     }
+    },
+    "s1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "s2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    }
+   },
+   "checks": {
+    "op_dl:through_a": "passed",
+    "op_dl:through_b": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_p:focus_directrix": "passed"
+   }
+  }
+ ]
+}

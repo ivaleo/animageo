@@ -1,0 +1,816 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "fn_graph_line_kinds",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc5",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "fn_graph_line_kinds",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_l": {
+    "id": "op_l",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "l"
+     }
+    ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "num": 1
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "intersect.function_line",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "line": {
+      "kind": "ref",
+      "elementId": "l"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point.1",
+      "elementId": "p1"
+     },
+     {
+      "slot": "point.2",
+      "elementId": "p2"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "l": {
+    "id": "l",
+    "type": "line",
+    "displayName": "l",
+    "producer": {
+     "operationId": "op_l",
+     "slot": "line"
+    }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "p1": {
+    "id": "p1",
+    "type": "point",
+    "displayName": "p1",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "point.1"
+    }
+   },
+   "p2": {
+    "id": "p2",
+    "type": "point",
+    "displayName": "p2",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "point.2"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0.0,
+     1.0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     2.0,
+     1.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -4,
+    -2,
+    4,
+    4
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "on_line",
+   "scale": 8.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "num": 1
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       1.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "p1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "p2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    }
+   },
+   "checks": {
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -4.0,
+      1.0
+     ],
+     [
+      -3.75,
+      1.0
+     ],
+     [
+      -3.5,
+      1.0
+     ],
+     [
+      -3.25,
+      1.0
+     ],
+     [
+      -3.0,
+      1.0
+     ],
+     [
+      -2.75,
+      1.0
+     ],
+     [
+      -2.5,
+      1.0
+     ],
+     [
+      -2.25,
+      1.0
+     ],
+     [
+      -2.0,
+      1.0
+     ],
+     [
+      -1.75,
+      1.0
+     ],
+     [
+      -1.5,
+      1.0
+     ],
+     [
+      -1.25,
+      1.0
+     ],
+     [
+      -1.0,
+      1.0
+     ],
+     [
+      -0.75,
+      1.0
+     ],
+     [
+      -0.5,
+      1.0
+     ],
+     [
+      -0.25,
+      1.0
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.25,
+      1.0
+     ],
+     [
+      0.5,
+      1.0
+     ],
+     [
+      0.75,
+      1.0
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.25,
+      1.0
+     ],
+     [
+      1.5,
+      1.0
+     ],
+     [
+      1.75,
+      1.0
+     ],
+     [
+      2.0,
+      1.0
+     ],
+     [
+      2.25,
+      1.0
+     ],
+     [
+      2.5,
+      1.0
+     ],
+     [
+      2.75,
+      1.0
+     ],
+     [
+      3.0,
+      1.0
+     ],
+     [
+      3.25,
+      1.0
+     ],
+     [
+      3.5,
+      1.0
+     ],
+     [
+      3.75,
+      1.0
+     ],
+     [
+      4.0,
+      1.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "crossing",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      2.0,
+      3.0
+     ]
+    }
+   },
+   "scale": 8.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 3.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "num": 1
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.5,
+       0.5
+      ],
+      "dir": [
+       0.707106781,
+       0.707106781
+      ]
+     }
+    },
+    "p1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "p2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_p:on_both": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -4.0,
+      1.0
+     ],
+     [
+      -3.75,
+      1.0
+     ],
+     [
+      -3.5,
+      1.0
+     ],
+     [
+      -3.25,
+      1.0
+     ],
+     [
+      -3.0,
+      1.0
+     ],
+     [
+      -2.75,
+      1.0
+     ],
+     [
+      -2.5,
+      1.0
+     ],
+     [
+      -2.25,
+      1.0
+     ],
+     [
+      -2.0,
+      1.0
+     ],
+     [
+      -1.75,
+      1.0
+     ],
+     [
+      -1.5,
+      1.0
+     ],
+     [
+      -1.25,
+      1.0
+     ],
+     [
+      -1.0,
+      1.0
+     ],
+     [
+      -0.75,
+      1.0
+     ],
+     [
+      -0.5,
+      1.0
+     ],
+     [
+      -0.25,
+      1.0
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.25,
+      1.0
+     ],
+     [
+      0.5,
+      1.0
+     ],
+     [
+      0.75,
+      1.0
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.25,
+      1.0
+     ],
+     [
+      1.5,
+      1.0
+     ],
+     [
+      1.75,
+      1.0
+     ],
+     [
+      2.0,
+      1.0
+     ],
+     [
+      2.25,
+      1.0
+     ],
+     [
+      2.5,
+      1.0
+     ],
+     [
+      2.75,
+      1.0
+     ],
+     [
+      3.0,
+      1.0
+     ],
+     [
+      3.25,
+      1.0
+     ],
+     [
+      3.5,
+      1.0
+     ],
+     [
+      3.75,
+      1.0
+     ],
+     [
+      4.0,
+      1.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "parallel",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      0.0,
+      2.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      2.0,
+      2.0
+     ]
+    }
+   },
+   "scale": 8.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 2.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 2.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "num": 1
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       2.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "p1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "p2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    }
+   },
+   "checks": {
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -4.0,
+      1.0
+     ],
+     [
+      -3.75,
+      1.0
+     ],
+     [
+      -3.5,
+      1.0
+     ],
+     [
+      -3.25,
+      1.0
+     ],
+     [
+      -3.0,
+      1.0
+     ],
+     [
+      -2.75,
+      1.0
+     ],
+     [
+      -2.5,
+      1.0
+     ],
+     [
+      -2.25,
+      1.0
+     ],
+     [
+      -2.0,
+      1.0
+     ],
+     [
+      -1.75,
+      1.0
+     ],
+     [
+      -1.5,
+      1.0
+     ],
+     [
+      -1.25,
+      1.0
+     ],
+     [
+      -1.0,
+      1.0
+     ],
+     [
+      -0.75,
+      1.0
+     ],
+     [
+      -0.5,
+      1.0
+     ],
+     [
+      -0.25,
+      1.0
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.25,
+      1.0
+     ],
+     [
+      0.5,
+      1.0
+     ],
+     [
+      0.75,
+      1.0
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.25,
+      1.0
+     ],
+     [
+      1.5,
+      1.0
+     ],
+     [
+      1.75,
+      1.0
+     ],
+     [
+      2.0,
+      1.0
+     ],
+     [
+      2.25,
+      1.0
+     ],
+     [
+      2.5,
+      1.0
+     ],
+     [
+      2.75,
+      1.0
+     ],
+     [
+      3.0,
+      1.0
+     ],
+     [
+      3.25,
+      1.0
+     ],
+     [
+      3.5,
+      1.0
+     ],
+     [
+      3.75,
+      1.0
+     ],
+     [
+      4.0,
+      1.0
+     ]
+    ]
+   }
+  }
+ ]
+}

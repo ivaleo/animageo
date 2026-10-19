@@ -1,0 +1,1148 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "fn_graph_parts",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc5",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "fn_graph_parts",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_s": {
+    "id": "op_s",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "s"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_D": {
+    "id": "op_D",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "D"
+     }
+    ]
+   },
+   "op_h": {
+    "id": "op_h",
+    "op": "ray.by_points",
+    "args": {
+     "origin": {
+      "kind": "ref",
+      "elementId": "C"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "D"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "ray",
+      "elementId": "h"
+     }
+    ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "intersect.function_line",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "line": {
+      "kind": "ref",
+      "elementId": "s"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point.1",
+      "elementId": "p1"
+     },
+     {
+      "slot": "point.2",
+      "elementId": "p2"
+     }
+    ]
+   },
+   "op_q": {
+    "id": "op_q",
+    "op": "intersect.function_line",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "line": {
+      "kind": "ref",
+      "elementId": "h"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point.1",
+      "elementId": "q1"
+     },
+     {
+      "slot": "point.2",
+      "elementId": "q2"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "s": {
+    "id": "s",
+    "type": "segment",
+    "displayName": "s",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "segment"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "D": {
+    "id": "D",
+    "type": "point",
+    "displayName": "D",
+    "producer": {
+     "operationId": "op_D",
+     "slot": "point"
+    }
+   },
+   "h": {
+    "id": "h",
+    "type": "ray",
+    "displayName": "h",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "ray"
+    }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "p1": {
+    "id": "p1",
+    "type": "point",
+    "displayName": "p1",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "point.1"
+    }
+   },
+   "p2": {
+    "id": "p2",
+    "type": "point",
+    "displayName": "p2",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "point.2"
+    }
+   },
+   "q1": {
+    "id": "q1",
+    "type": "point",
+    "displayName": "q1",
+    "producer": {
+     "operationId": "op_q",
+     "slot": "point.1"
+    }
+   },
+   "q2": {
+    "id": "q2",
+    "type": "point",
+    "displayName": "q2",
+    "producer": {
+     "operationId": "op_q",
+     "slot": "point.2"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0.0,
+     1.0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     5.0,
+     1.0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     0.0,
+     4.0
+    ]
+   },
+   "D": {
+    "kind": "point",
+    "value": [
+     1.0,
+     4.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -4,
+    -1,
+    6,
+    6
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "half",
+   "scale": 10.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 1.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "ray",
+     "value": {
+      "origin": [
+       0.0,
+       4.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "p1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "line"
+     }
+    },
+    "p2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "q1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "line"
+     }
+    },
+    "q2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 4.0
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       0.0,
+       1.0
+      ],
+      "b": [
+       5.0,
+       1.0
+      ],
+      "length": 5.0
+     }
+    }
+   },
+   "checks": {
+    "op_h:origin": "passed",
+    "op_h:through": "passed",
+    "op_p:on_both": "passed",
+    "op_q:on_both": "passed",
+    "op_s:ends": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -4.0,
+      16.0
+     ],
+     [
+      -3.6875,
+      13.59765625
+     ],
+     [
+      -3.375,
+      11.390625
+     ],
+     [
+      -3.0625,
+      9.37890625
+     ],
+     [
+      -2.75,
+      7.5625
+     ],
+     [
+      -2.4375,
+      5.94140625
+     ],
+     [
+      -2.125,
+      4.515625
+     ],
+     [
+      -1.8125,
+      3.28515625
+     ],
+     [
+      -1.5,
+      2.25
+     ],
+     [
+      -1.1875,
+      1.41015625
+     ],
+     [
+      -0.875,
+      0.765625
+     ],
+     [
+      -0.5625,
+      0.31640625
+     ],
+     [
+      -0.25,
+      0.0625
+     ],
+     [
+      0.0625,
+      0.00390625
+     ],
+     [
+      0.375,
+      0.140625
+     ],
+     [
+      0.6875,
+      0.47265625
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.3125,
+      1.72265625
+     ],
+     [
+      1.625,
+      2.640625
+     ],
+     [
+      1.9375,
+      3.75390625
+     ],
+     [
+      2.25,
+      5.0625
+     ],
+     [
+      2.5625,
+      6.56640625
+     ],
+     [
+      2.875,
+      8.265625
+     ],
+     [
+      3.1875,
+      10.16015625
+     ],
+     [
+      3.5,
+      12.25
+     ],
+     [
+      3.8125,
+      14.53515625
+     ],
+     [
+      4.125,
+      17.015625
+     ],
+     [
+      4.4375,
+      19.69140625
+     ],
+     [
+      4.75,
+      22.5625
+     ],
+     [
+      5.0625,
+      25.62890625
+     ],
+     [
+      5.375,
+      28.890625
+     ],
+     [
+      5.6875,
+      32.34765625
+     ],
+     [
+      6.0,
+      36.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "whole",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      -3.0,
+      4.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      3.0,
+      4.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      4.0
+     ]
+    }
+   },
+   "scale": 10.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 4.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 4.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "ray",
+     "value": {
+      "origin": [
+       0.0,
+       4.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    },
+    "p1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 4.0
+     }
+    },
+    "p2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 4.0
+     }
+    },
+    "q1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 4.0
+     }
+    },
+    "q2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "line"
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -3.0,
+       4.0
+      ],
+      "b": [
+       3.0,
+       4.0
+      ],
+      "length": 6.0
+     }
+    }
+   },
+   "checks": {
+    "op_h:origin": "passed",
+    "op_h:through": "passed",
+    "op_p:on_both": "passed",
+    "op_q:on_both": "passed",
+    "op_s:ends": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -4.0,
+      16.0
+     ],
+     [
+      -3.6875,
+      13.59765625
+     ],
+     [
+      -3.375,
+      11.390625
+     ],
+     [
+      -3.0625,
+      9.37890625
+     ],
+     [
+      -2.75,
+      7.5625
+     ],
+     [
+      -2.4375,
+      5.94140625
+     ],
+     [
+      -2.125,
+      4.515625
+     ],
+     [
+      -1.8125,
+      3.28515625
+     ],
+     [
+      -1.5,
+      2.25
+     ],
+     [
+      -1.1875,
+      1.41015625
+     ],
+     [
+      -0.875,
+      0.765625
+     ],
+     [
+      -0.5625,
+      0.31640625
+     ],
+     [
+      -0.25,
+      0.0625
+     ],
+     [
+      0.0625,
+      0.00390625
+     ],
+     [
+      0.375,
+      0.140625
+     ],
+     [
+      0.6875,
+      0.47265625
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.3125,
+      1.72265625
+     ],
+     [
+      1.625,
+      2.640625
+     ],
+     [
+      1.9375,
+      3.75390625
+     ],
+     [
+      2.25,
+      5.0625
+     ],
+     [
+      2.5625,
+      6.56640625
+     ],
+     [
+      2.875,
+      8.265625
+     ],
+     [
+      3.1875,
+      10.16015625
+     ],
+     [
+      3.5,
+      12.25
+     ],
+     [
+      3.8125,
+      14.53515625
+     ],
+     [
+      4.125,
+      17.015625
+     ],
+     [
+      4.4375,
+      19.69140625
+     ],
+     [
+      4.75,
+      22.5625
+     ],
+     [
+      5.0625,
+      25.62890625
+     ],
+     [
+      5.375,
+      28.890625
+     ],
+     [
+      5.6875,
+      32.34765625
+     ],
+     [
+      6.0,
+      36.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "point",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      0.5,
+      2.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      0.5,
+      2.0
+     ]
+    }
+   },
+   "scale": 10.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.5,
+      "y": 2.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.5,
+      "y": 2.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "ray",
+     "value": {
+      "origin": [
+       0.0,
+       4.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "p1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "zero_length"
+    },
+    "p2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "zero_length"
+    },
+    "q1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "line"
+     }
+    },
+    "q2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 4.0
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       0.5,
+       2.0
+      ],
+      "b": [
+       0.5,
+       2.0
+      ],
+      "length": 0.0
+     }
+    }
+   },
+   "checks": {
+    "op_h:origin": "passed",
+    "op_h:through": "passed",
+    "op_q:on_both": "passed",
+    "op_s:ends": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -4.0,
+      16.0
+     ],
+     [
+      -3.6875,
+      13.59765625
+     ],
+     [
+      -3.375,
+      11.390625
+     ],
+     [
+      -3.0625,
+      9.37890625
+     ],
+     [
+      -2.75,
+      7.5625
+     ],
+     [
+      -2.4375,
+      5.94140625
+     ],
+     [
+      -2.125,
+      4.515625
+     ],
+     [
+      -1.8125,
+      3.28515625
+     ],
+     [
+      -1.5,
+      2.25
+     ],
+     [
+      -1.1875,
+      1.41015625
+     ],
+     [
+      -0.875,
+      0.765625
+     ],
+     [
+      -0.5625,
+      0.31640625
+     ],
+     [
+      -0.25,
+      0.0625
+     ],
+     [
+      0.0625,
+      0.00390625
+     ],
+     [
+      0.375,
+      0.140625
+     ],
+     [
+      0.6875,
+      0.47265625
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.3125,
+      1.72265625
+     ],
+     [
+      1.625,
+      2.640625
+     ],
+     [
+      1.9375,
+      3.75390625
+     ],
+     [
+      2.25,
+      5.0625
+     ],
+     [
+      2.5625,
+      6.56640625
+     ],
+     [
+      2.875,
+      8.265625
+     ],
+     [
+      3.1875,
+      10.16015625
+     ],
+     [
+      3.5,
+      12.25
+     ],
+     [
+      3.8125,
+      14.53515625
+     ],
+     [
+      4.125,
+      17.015625
+     ],
+     [
+      4.4375,
+      19.69140625
+     ],
+     [
+      4.75,
+      22.5625
+     ],
+     [
+      5.0625,
+      25.62890625
+     ],
+     [
+      5.375,
+      28.890625
+     ],
+     [
+      5.6875,
+      32.34765625
+     ],
+     [
+      6.0,
+      36.0
+     ]
+    ]
+   }
+  }
+ ]
+}

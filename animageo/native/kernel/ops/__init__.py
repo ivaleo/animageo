@@ -35,16 +35,20 @@ class OpContext:
     the fixture generator uses them to refuse near-degenerate cases.
     ``scope`` — the graph of the evaluation for an operation that reads more
     than its arguments (registry 1.5: ``locus.of_point``), else ``None``.
+    ``bounds`` — ``viewDefaults.bounds`` of the document (``None``: the
+    default bounds); registry 1.6: the search window of the intersections
+    of functions.
     """
 
-    __slots__ = ('tol', 'input', 'operation_id', 'decisions', 'scope')
+    __slots__ = ('tol', 'input', 'operation_id', 'decisions', 'scope', 'bounds')
 
-    def __init__(self, tol, *, input=None, operation_id=None, decisions=None, scope=None):
+    def __init__(self, tol, *, input=None, operation_id=None, decisions=None, scope=None, bounds=None):
         self.tol = tol
         self.input = input
         self.operation_id = operation_id
         self.decisions = decisions
         self.scope = scope
+        self.bounds = bounds
 
     def decide(self, name: str, value: float, tol: float) -> None:
         if self.decisions is not None:
@@ -52,3 +56,4 @@ class OpContext:
 
 
 from . import angle, arc, circle, intersect, line, locus, mark, measure, number, point, polygon, text, transform, triangle  # noqa: E402,F401,E501  (registration)
+from . import conic, function  # noqa: E402,F401  (registration, registry 1.6)

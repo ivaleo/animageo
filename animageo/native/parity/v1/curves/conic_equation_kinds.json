@@ -1,0 +1,432 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_equation_kinds",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc5",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_equation_kinds",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_t": {
+    "id": "op_t",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "t"
+     }
+    ]
+   },
+   "op_cubic": {
+    "id": "op_cubic",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 3
+          }
+         ]
+        },
+        {
+         "var": "y"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "cubic"
+     }
+    ]
+   },
+   "op_wave": {
+    "id": "op_wave",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "fn": "sin",
+         "args": [
+          {
+           "var": "x"
+          }
+         ]
+        },
+        {
+         "var": "y"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "wave"
+     }
+    ]
+   },
+   "op_root": {
+    "id": "op_root",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "fn": "sqrt",
+         "args": [
+          {
+           "var": "x"
+          }
+         ]
+        },
+        {
+         "var": "y"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "root"
+     }
+    ]
+   },
+   "op_xy": {
+    "id": "op_xy",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "var": "y"
+          }
+         ]
+        },
+        {
+         "ref": 0
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "t"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "xy"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "t": {
+    "id": "t",
+    "type": "number",
+    "displayName": "t",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "number"
+    }
+   },
+   "cubic": {
+    "id": "cubic",
+    "type": "conic",
+    "displayName": "cubic",
+    "producer": {
+     "operationId": "op_cubic",
+     "slot": "conic"
+    }
+   },
+   "wave": {
+    "id": "wave",
+    "type": "conic",
+    "displayName": "wave",
+    "producer": {
+     "operationId": "op_wave",
+     "slot": "conic"
+    }
+   },
+   "root": {
+    "id": "root",
+    "type": "conic",
+    "displayName": "root",
+    "producer": {
+     "operationId": "op_root",
+     "slot": "conic"
+    }
+   },
+   "xy": {
+    "id": "xy",
+    "type": "conic",
+    "displayName": "xy",
+    "producer": {
+     "operationId": "op_xy",
+     "slot": "conic"
+    }
+   }
+  },
+  "inputs": {
+   "t": {
+    "kind": "number",
+    "value": 1.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "unit",
+   "scale": 20.0,
+   "expect": {
+    "cubic": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "root": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "t": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    },
+    "wave": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "xy": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.707106781,
+       0.707106781
+      ],
+      "a": 1.414213562,
+      "b": 1.414213562
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "wide",
+   "inputs": {
+    "t": {
+     "kind": "number",
+     "value": 4.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "cubic": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "root": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "t": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.0,
+      "unit": "scalar"
+     }
+    },
+    "wave": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "xy": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.707106781,
+       0.707106781
+      ],
+      "a": 2.828427125,
+      "b": 2.828427125
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "negative",
+   "inputs": {
+    "t": {
+     "kind": "number",
+     "value": -2.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "cubic": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "root": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "t": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -2.0,
+      "unit": "scalar"
+     }
+    },
+    "wave": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "xy": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       -0.707106781,
+       0.707106781
+      ],
+      "a": 2.0,
+      "b": 2.0
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "cross",
+   "inputs": {
+    "t": {
+     "kind": "number",
+     "value": 0.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "cubic": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "root": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "t": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "wave": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "not_quadratic"
+    },
+    "xy": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "degenerate_conic"
+    }
+   },
+   "checks": {}
+  }
+ ]
+}
