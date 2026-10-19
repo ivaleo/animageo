@@ -396,3 +396,30 @@ def test_conics_are_drawn(tmp_path):
     native.render(d.doc, out=tmp_path / 'c.tikz', fmt='tikz', report=False)
     tikz = (tmp_path / 'c.tikz').read_text()
     assert 'ellipse (' in tikz and 'circle (' in tikz
+
+
+# ── paint (registry 1.6) ──────────────────────────────────────────────────
+
+def test_paint_of_conics():
+    d = _label(_scene())
+    d.doc['appearance']['e']['overrides'] = {'fill_opacity': 0.5, 'stroke_dash_ratio': 0.5}
+    d.doc['appearance']['h']['overrides'] = {'stroke_dash_ratio': 0.5}
+    paint = native.resolve_paint(d.doc)['elements']
+    e, h, p = paint['e'], paint['h'], paint['p']
+    assert e['style'] == h['style'] == 'conic'
+    assert e['fill']['opacity'] == 0.5 and e['fill']['z'] < e['stroke']['z']
+    assert e['stroke']['dash']['fit'] == 'closed' and e['stroke']['dash']['drawn'] is None
+    assert 'fill' not in h and h['stroke']['dash']['fit'] == 'none' and 'fill' not in p
+    assert e['label']['shown'] and e['label']['spotWorld'] == [0.0, 3.0]
+    assert native.style_keys()['types']['conic']['style'] == 'conic'
+
+
+def test_paint_of_a_function_has_no_label():
+    d = Doc()
+    d.op('op_f', 'function.expr', {'expr': expr_arg({'fn': 'sin', 'args': [X]}), 'refs': refs()},
+         [('function', 'f', 'function')])
+    d.doc['elements']['f']['displayName'] = 'f'
+    d.doc['appearance'] = {'f': {'label': {'mode': 'name'}, 'overrides': {'stroke_dash_ratio': 0.5}}}
+    f = native.resolve_paint(d.doc)['elements']['f']
+    assert f['style'] == 'function' and 'label' not in f and f['stroke']['dash']['fit'] == 'none'
+    assert native.paint.ineffective_reason('function', 'label_color') == 'not_read'

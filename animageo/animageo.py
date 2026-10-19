@@ -4277,6 +4277,9 @@ class AnimaGeoScene(MovingCameraScene):
         ctype = conic.type
         if ctype == ConicType.EMPTY:
             return None
+        # registry 1.6: a kernel conic fills below its stroke, as a circle
+        # (fill at z_index_fill), and hangs its label off the curve
+        native = getattr(conic, 'native_value', None)
 
         left, bottom, right_x, top_y = self._get_scene_bounds()
         viewport = (left, bottom, right_x, top_y)
@@ -4296,11 +4299,16 @@ class AnimaGeoScene(MovingCameraScene):
             res = conic.as_circle()
             if res is not None:
                 center, radius = res
+                if native is not None:
+                    arr.append(Circle(
+                        arc_center=[float(center[0]), float(center[1]), 0], radius=radius,
+                        fill_color=ctx.col_f, fill_opacity=ctx.op_f, stroke_opacity=0, stroke_width=0,
+                    ).set_z_index(ctx.zz_fill))
                 circ = Circle(
                     arc_center=[float(center[0]), float(center[1]), 0],
                     radius=radius,
                     color=ctx.col_s, fill_color=ctx.col_f,
-                    fill_opacity=ctx.op_f, stroke_opacity=ctx.op_s,
+                    fill_opacity=0 if native is not None else ctx.op_f, stroke_opacity=ctx.op_s,
                     stroke_width=ctx.lw,
                 ).set_z_index(ctx.zz)
                 arr.append(self._dash_stroke(circ, ctx, 'closed'))
@@ -4311,10 +4319,15 @@ class AnimaGeoScene(MovingCameraScene):
                 a_semi, b_semi = params['semi_axes']
                 cx, cy = params['center']
                 rot = params['rotation']
+                if native is not None:
+                    arr.append(Ellipse(
+                        width=2 * a_semi, height=2 * b_semi,
+                        fill_color=ctx.col_f, fill_opacity=ctx.op_f, stroke_opacity=0, stroke_width=0,
+                    ).rotate(rot).move_to([float(cx), float(cy), 0]).set_z_index(ctx.zz_fill))
                 ell = Ellipse(
                     width=2 * a_semi, height=2 * b_semi,
                     color=ctx.col_s, fill_color=ctx.col_f,
-                    fill_opacity=ctx.op_f, stroke_opacity=ctx.op_s,
+                    fill_opacity=0 if native is not None else ctx.op_f, stroke_opacity=ctx.op_s,
                     stroke_width=ctx.lw,
                 ).rotate(rot).move_to([float(cx), float(cy), 0]).set_z_index(ctx.zz)
                 arr.append(self._dash_stroke(ell, ctx, 'closed'))
@@ -4385,7 +4398,6 @@ class AnimaGeoScene(MovingCameraScene):
 
         if not arr:
             return None
-        native = getattr(conic, 'native_value', None)
         if ctx.has_label and native is not None:
             # registry 1.6: a kernel conic hangs its label off a point of the
             # curve, the anchor label_placement._get_anchor uses

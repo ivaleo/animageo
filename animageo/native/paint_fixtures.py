@@ -11,7 +11,8 @@ expectations are what this library gives. The scenes: ticks 1/2/3 and the
 wave, the automatic radius of an angle, point shapes and arrows, caps and
 dashes with their fit, label anchors by type, the format of values, the
 layers, ``text.free``, the base without a style and under the built-in one,
-roles, hatching, a style track of a timeline.
+roles, hatching, a style track of a timeline; registry 1.6: graphs and
+conics (``paint_curves``).
 """
 from __future__ import annotations
 
@@ -113,6 +114,17 @@ class _Doc:
     def text(self, el_id, template, anchor, *refs):
         return self.op('text.free', {'text': {'kind': 'template', 'value': template}, 'anchor': _ref(anchor),
                                      'refs': _refs(*refs)}, [('text', el_id, 'text')])
+
+    def function(self, el_id, ast, lo=None, hi=None):
+        args = {'expr': {'kind': 'expr', 'ast': ast}, 'refs': _refs()}
+        if lo is not None:
+            args['min'] = _num(lo)
+        if hi is not None:
+            args['max'] = _num(hi)
+        return self.op('function.expr', args, [('function', el_id, 'function')])
+
+    def conic(self, el_id, name, **slots):
+        return self.op(name, {k: _ref(v) for k, v in slots.items()}, [('conic', el_id, 'conic')])
 
     def look(self, el_id, **entry):
         self.doc['appearance'].setdefault(el_id, {}).update(entry)
@@ -345,10 +357,40 @@ def _timeline():
     return out
 
 
+_X = {'var': 'x'}
+
+
+def _curves():
+    """Registry 1.6: graphs (open runs, no label) and conics (an ellipse
+    filled below its stroke, branches open, labels on the curve)."""
+    out = []
+    sine = {'fn': 'sin', 'args': [_X]}
+    hyper = {'op': '/', 'args': [{'num': 1}, _X]}
+    d = _Doc('curves_functions', bounds=(-4, -3, 4, 3)).function('f', sine).function('g', hyper, lo=-3, hi=3)
+    d.overrides('g', stroke='#1f77b4', stroke_dash_ratio=0.5, stroke_width_px=2).label('f')
+    out.append(('functions', d, None))
+    d = _Doc('curves_conics', bounds=(-8, -6, 8, 8)).free('F1', -4, 0).free('F2', 4, 0).free('P', 0, 3)
+    d.conic('e', 'conic.ellipse_foci_point', f1='F1', f2='F2', through='P')
+    d.free('G1', -2, 5).free('G2', 2, 5).free('Q', 1, 5)
+    d.conic('h', 'conic.hyperbola_foci_point', f1='G1', f2='G2', through='Q')
+    d.free('F', 0, -3).free('C', -1, -5).free('D', 1, -5).line('dl', 'C', 'D')
+    d.conic('p', 'conic.parabola_focus_directrix', focus='F', directrix='dl')
+    for el_id in ('e', 'h', 'p'):
+        d.label(el_id)
+    d.overrides('e', fill='#ffcc00', fill_opacity=0.4, stroke_dash_ratio=0.6)
+    d.overrides('h', stroke_dash_ratio=0.5, stroke='#d62728').overrides('p', z_index=7, stroke_width_px=3)
+    out.append(('conics', d, None))
+    d = _Doc('curves_circle', bounds=(-4, -4, 4, 4)).free('O', 0, 0).free('A', 2, 0).free('B', 0, 2)
+    d.conic('k', 'conic.ellipse_foci_point', f1='O', f2='O', through='A').circle('c', 'O', 'B')
+    d.label('k').overrides('k', z_index_fill=0.5, fill='#2ca02c', fill_opacity=0.3)
+    out.append(('circle_and_conic_circle', d, None))
+    return out
+
+
 THEMES = (('paint_ticks', _ticks), ('paint_angles', _angles), ('paint_points', _points),
           ('paint_dashes', _dashes), ('paint_labels', _labels), ('paint_values', _values),
           ('paint_layers', _layers), ('paint_text', _texts), ('paint_base', _base),
-          ('paint_timeline', _timeline))
+          ('paint_timeline', _timeline), ('paint_curves', _curves))
 
 
 def _expect(document, style, timeline, t) -> dict:

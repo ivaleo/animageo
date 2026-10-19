@@ -1398,3 +1398,11 @@ Operations `since: "1.6"`, `beta` (formulas, decisions and checks in
   (`commands.lexicon.deferred_op`); the printer prints their lines with the
   warning `unprintable_operation` («функции и коники в «Командах» будут позже»).
 - The DSL map lists them in `opsWithoutClassic`.
+- `style_keys()` and `resolve_paint` (types `function`, `conic`): a graph
+  reads the stroke, the dash and `z_index`, draws no label (a dash fits
+  `none`, open runs); a conic reads the stroke, the dash, the fill,
+  `z_index`, `z_index_fill` and the label keys — an ellipse (a circle) has
+  its fill below the stroke at `z_index_fill` as a circle and a closed dash
+  measured by the renderer (`drawn: null`), a hyperbola or a parabola has
+  no fill and open runs (`fit: none`); the label spot is
+  `conic.label_anchor`. Fixtures `paint_curves.json`.
