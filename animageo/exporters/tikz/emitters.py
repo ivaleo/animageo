@@ -259,7 +259,8 @@ def _emit_ticks(ctx: TikzContext, elem, p1, p2, normal, labels=None) -> None:
     if length_mu <= 0:
         return
     m = (np.asarray(p1, float) + np.asarray(p2, float)) / 2
-    opts = stroke_options(ctx, elem, width_px=width_px, with_dash=False)
+    # ticks end butt, whatever the cap of their segment (as the renderer draws them)
+    opts = stroke_options(ctx, elem, width_px=width_px, with_cap=False, with_dash=False)
     half = n * length_mu / 2
     for i in range(num):
         d = shift_mu * ((1 - num) * 0.5 + i)

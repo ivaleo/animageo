@@ -23,6 +23,20 @@ ANCHOR_MAP = {
 # manim line-cap name → TikZ ``line cap=``.
 CAP_MAP = {"butt": "butt", "round": "round", "square": "rect", None: "butt"}
 
+# The strokes ``stroke_linecap`` ends, as the renderer caps them (its segment,
+# line, ray, vector, arc and sector builders): every other stroke — ticks, a
+# polyline, a locus, a curve, the arcs of an angle — is butt.
+CAPPED_TYPES = ("Segment", "Line", "Ray", "Vector", "Arc", "CircleSector")
+
+
+def capped(ctx: TikzContext, elem) -> bool:
+    """Whether ``stroke_linecap`` ends the stroke of ``elem`` (a sector drawn
+    with its sides is a closed path)."""
+    kind = type(getattr(elem, "data", None)).__name__
+    if kind == "CircleSector":
+        return ctx.resolve(elem, "sector_sides", default=False) is not True
+    return kind in CAPPED_TYPES
+
 
 def stroke_default(ctx: TikzContext) -> str:
     return str(getattr(ctx.scene.style, "strong", "#000000"))
@@ -95,7 +109,7 @@ def stroke_options(
     opts.append(f"line width={fmt_num(lw_pt, ctx.opt.size_precision)}pt")
 
     cap = None
-    if with_cap:
+    if with_cap and capped(ctx, elem):
         cap = ctx.resolve(elem, "stroke_linecap",
                           default=ctx.scene.style.rendering.get("line_cap", "butt"))
         tikz_cap = CAP_MAP.get(cap, "butt")

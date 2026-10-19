@@ -184,9 +184,20 @@ class DashCamera(MovingCamera):
     A dashed stroke is one path carrying an ``animageo.dash.DashPattern``
     (in MU, the camera context's user space); manim's camera knows nothing
     about it, so set the cairo dash around each stroke and reset it after.
+
+    Caps and joins as the SVG export draws them (``svg_parser._apply_stroke``):
+    manim's camera leaves the context alone for ``AUTO``, so a stroke without
+    a cap or join of its own took those of the stroke drawn before it (ticks
+    after a round-capped segment, a polyline after a halo); ``AUTO`` is
+    ``butt`` and ``miter``, as cairo starts and the SVG writes.
     """
 
     def apply_stroke(self, ctx, vmobject, background=False):
+        import cairo
+        if getattr(vmobject, 'cap_style', None) in (None, CapStyleType.AUTO):
+            ctx.set_line_cap(cairo.LINE_CAP_BUTT)
+        if getattr(vmobject, 'joint_type', None) in (None, LineJointType.AUTO):
+            ctx.set_line_join(cairo.LINE_JOIN_MITER)
         dashed = apply_cairo_dash(ctx, vmobject)
         try:
             return super().apply_stroke(ctx, vmobject, background)
