@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.11.0] - Unreleased
+## [1.11.0rc4] - 2026-10-19
 
 A still frame at `t` is the frame of the video at `t`, and the two
 renderers — the library and a canvas reading `resolve_paint` — set one
@@ -18,6 +18,11 @@ and the four flags.
 
 ### Added
 
+- `AnimaGeoScene.seek_keyframes(keyframes, t, *, video_labels=False)` — the
+  scene put in the state of the frame `play_keyframes` draws at `t`, without
+  playing; returns the effects of the frame `{name: (phase, kind,
+  progress)}`. `video_labels` sets value labels with the cached digits of
+  the video.
 - `native.timeline_effects(doc, timeline, t)` — `{id: {phase, effect,
   progress, present}}`: the enter and exit effects the video plays in the
   interval holding `t` (a change of visibility at keyframe `k+1` plays in
