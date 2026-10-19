@@ -1,0 +1,39 @@
+[
+  {
+    "op": "section.plane_polyhedron",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "plane",
+        "type": "plane"
+      },
+      {
+        "slot": "solid",
+        "type": "polyhedron"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "section",
+        "type": "section"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "outside",
+      "touch"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "section",
+    "phrases": {
+      "ru": "{section} — сечение {solid} плоскостью {plane}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:2c64fedb116fda3e483c5d27b6eba520e16d05d6e1ceb8b7b5419b4a3e712663"
+  }
+]

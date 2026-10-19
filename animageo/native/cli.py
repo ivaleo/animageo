@@ -195,9 +195,10 @@ def _cmd_timeline(args) -> int:
 
 
 def _cmd_registry_index(args) -> int:
-    changed = write_index(check=args.check)
+    from .space.registry import space_registry_problems, write_space_index
+    changed = write_index(check=args.check) + write_space_index(check=args.check)
     if args.check:
-        problems = [p for p in registry_problems() if 'INDEX.json' not in p]
+        problems = [p for p in registry_problems() + space_registry_problems() if 'INDEX.json' not in p]
         for name in changed:
             _out(f'out of date: {name}')
         for problem in problems:

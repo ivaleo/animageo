@@ -1,0 +1,42 @@
+[
+  {
+    "op": "plane.by_points",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point3"
+      },
+      {
+        "slot": "b",
+        "type": "point3"
+      },
+      {
+        "slot": "c",
+        "type": "point3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "plane",
+        "type": "plane"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "collinear_points"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "plane",
+    "phrases": {
+      "ru": "{plane} — плоскость {a}{b}{c}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:2fad0f35218fc53a1dab5cfa16692afae3f9e90a8b16413ec791f0c4f837522c"
+  }
+]

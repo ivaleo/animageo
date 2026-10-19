@@ -1,0 +1,91 @@
+{
+  "types": {
+    "point3": {
+      "value": {
+        "x": "length",
+        "y": "length",
+        "z": "length"
+      },
+      "text": "point3 {x, y, z}: a point of space, z up (the ground is the plane Oxy)"
+    },
+    "segment3": {
+      "value": {
+        "a": "length",
+        "b": "length",
+        "length": "length"
+      },
+      "text": "segment3 {a: [x, y, z], b: [x, y, z], length}; a and b in definition order"
+    },
+    "polygon3": {
+      "value": {
+        "vertices": "length",
+        "normal": "scalar",
+        "area": "area"
+      },
+      "text": "polygon3 {vertices: [[x, y, z], ...], normal: [x, y, z], area}: a planar polygon of space in definition order; normal is the unit normal by the right hand of that order (of a face of a solid: the outward one), area is unsigned"
+    },
+    "plane": {
+      "value": {
+        "p": "length",
+        "n": "scalar"
+      },
+      "text": "plane {p: [x, y, z], n: [x, y, z]}: p is the projection of the origin, n the unit normal oriented by the definition"
+    },
+    "polyhedron": {
+      "value": {
+        "vertices": "length",
+        "faces": null,
+        "edges": null,
+        "area": "area",
+        "volume": "volume"
+      },
+      "text": "polyhedron {vertices: [[x, y, z], ...], faces: [[i, ...], ...], edges: [[i, j], ...], area, volume}: a convex closed solid; faces are vertex index cycles counterclockwise seen from outside, edges index pairs, both in the canonical order of the operation (its face.k and edge.k outputs); area is the surface, volume positive"
+    },
+    "section": {
+      "value": {
+        "polygon": "length",
+        "faces": null
+      },
+      "text": "section {polygon: [[x, y, z], ...], faces: [[k, ...], ...]}: the polygon a plane cuts from a solid, counterclockwise about the normal of the plane; faces[i] are the indices of the faces of the solid side i lies on (two when it runs along an edge)"
+    }
+  },
+  "families": {
+    "path3": [
+      "segment3"
+    ],
+    "surface": [
+      "polygon3"
+    ]
+  },
+  "paths": {
+    "segment3": {
+      "kind": "affine",
+      "min": 0,
+      "max": 1,
+      "outside": "clamp",
+      "default": 0.5,
+      "frames": {
+        "*": {
+          "origin": "value.a",
+          "vector": "value.b - value.a"
+        }
+      },
+      "text": "P = a + t (b - a); t is clamped to [0, 1]"
+    }
+  },
+  "inputKinds": {
+    "point3": {
+      "value": "[x, y, z]",
+      "text": "the input of point3.free: three finite numbers"
+    },
+    "pathParameter": {
+      "value": "t",
+      "text": "as in the plane: the parameter of a point on a path"
+    },
+    "surfaceParameter": {
+      "value": "[u, v]",
+      "text": "the input of point3.on_surface: P = P0 + u (P1 - P0) + v (Pn - P0) in the frame of the first corner of the face (Pn its last vertex); not clamped"
+    }
+  },
+  "volumeUnit": "a value of kind volume compares within parity.length * S^3"
+}
