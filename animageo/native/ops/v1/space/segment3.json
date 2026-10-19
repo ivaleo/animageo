@@ -1,0 +1,37 @@
+[
+  {
+    "op": "segment3.by_points",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point3"
+      },
+      {
+        "slot": "b",
+        "type": "point3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "segment",
+        "type": "segment3"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "segment",
+    "phrases": {
+      "ru": "{segment} — отрезок {a}{b}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:5530fd530ef7ba04b2e99523d3d112f83e9c96afa16b2a7195940752d25eeb4c"
+  }
+]

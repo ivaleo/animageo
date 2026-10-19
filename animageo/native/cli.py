@@ -6,6 +6,7 @@
     python -m animageo.native fixtures timeline [-o <dir>] [--check]
     python -m animageo.native fixtures paint [-o <dir>] [--check]
     python -m animageo.native fixtures curves [-o <dir>] [--check]
+    python -m animageo.native fixtures space [-o <dir>] [--check]
     python -m animageo.native style export [-o <dir>] [--check]
     python -m animageo.native registry index [--check]
     python -m animageo.native evaluate <doc.json> [--inputs case.json] [--canonical]
@@ -24,7 +25,7 @@
 Exit codes: 0 success; 1 verify mismatches, validate issues (invalid JSON
 included), an out-of-date registry index or a refused scene, out-of-date
 commands fixtures, a commands text with errors, out-of-date timeline,
-paint or curves fixtures, an out-of-date style contract (``style export --check``), ``from-ggb --mode strict`` with objects that do not translate, a
+paint, curves or space fixtures, an out-of-date style contract (``style export --check``), ``from-ggb --mode strict`` with objects that do not translate, a
 problem of the GGB command table (``convert map --check``), a corpus that
 differs from its expectations (``convert corpus verify``); 2 an input that
 cannot be used (a missing file or directory; for ``evaluate`` a document that
@@ -138,6 +139,21 @@ def _cmd_fixtures_curves(args) -> int:
     return 0
 
 
+def _cmd_fixtures_space(args) -> int:
+    from .space.fixtures import DEFAULT_DIR, check_fixtures, verify_fixtures, write_fixtures
+    root = Path(args.out) if args.out else DEFAULT_DIR
+    if args.check:
+        problems = check_fixtures(root)
+        files, cases, mismatches = verify_fixtures(root)
+        for item in problems + mismatches:
+            _out(f'stale: {item}')
+        _out(f'{files} fixtures, {cases} cases, {len(problems) + len(mismatches)} mismatches')
+        return 1 if problems or mismatches else 0
+    for path in write_fixtures(root):
+        _out(str(path))
+    return 0
+
+
 def _cmd_style_export(args) -> int:
     from .paint import check_style_contract, write_style_contract
     if args.check:
@@ -211,9 +227,10 @@ def _cmd_timeline(args) -> int:
 
 
 def _cmd_registry_index(args) -> int:
-    changed = write_index(check=args.check)
+    from .space.registry import SPACE_REGISTRY_VERSION, space_registry_problems, write_space_index
+    changed = write_index(check=args.check) + write_space_index(check=args.check)
     if args.check:
-        problems = [p for p in registry_problems() if 'INDEX.json' not in p]
+        problems = [p for p in registry_problems() + space_registry_problems() if 'INDEX.json' not in p]
         for name in changed:
             _out(f'out of date: {name}')
         for problem in problems:
@@ -221,12 +238,12 @@ def _cmd_registry_index(args) -> int:
         if changed or problems:
             _out('run: python -m animageo.native registry index')
             return 1
-        _out(f'registry {REGISTRY_VERSION}: index is up to date')
+        _out(f'registry {REGISTRY_VERSION} (space {SPACE_REGISTRY_VERSION}): index is up to date')
         return 0
     for name in changed:
         _out(f'updated {name}')
     if not changed:
-        _out(f'registry {REGISTRY_VERSION}: nothing to update')
+        _out(f'registry {REGISTRY_VERSION} (space {SPACE_REGISTRY_VERSION}): nothing to update')
     return 0
 
 
@@ -493,6 +510,11 @@ def build_parser() -> argparse.ArgumentParser:
     fv.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/curves)')
     fv.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
     fv.set_defaults(func=_cmd_fixtures_curves)
+
+    fs = fsub.add_parser('space', help='write (or --check) the animageo-space-parity/v1 fixtures (experimental)')
+    fs.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/space)')
+    fs.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
+    fs.set_defaults(func=_cmd_fixtures_space)
 
     sty = sub.add_parser('style', help='the style contract for code generation (native/style)')
     stysub = sty.add_subparsers(dest='action', required=True)

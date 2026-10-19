@@ -1,0 +1,255 @@
+[
+  {
+    "op": "polyhedron.cube",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point3"
+      },
+      {
+        "slot": "b",
+        "type": "point3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "solid",
+        "type": "polyhedron"
+      },
+      {
+        "slot": "vertex",
+        "type": "point3",
+        "count": {
+          "per": null,
+          "times": 0,
+          "plus": 6
+        }
+      },
+      {
+        "slot": "edge",
+        "type": "segment3",
+        "count": {
+          "per": null,
+          "times": 0,
+          "plus": 12
+        }
+      },
+      {
+        "slot": "face",
+        "type": "polygon3",
+        "count": {
+          "per": null,
+          "times": 0,
+          "plus": 6
+        }
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "coincident_points"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "solid",
+    "phrases": {
+      "ru": "{solid} — куб с ребром {a}{b}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:a8a8b41641aa66804a6df1a0591bd3bb09bda598a01732439dc3bb79b9d3c1bd"
+  },
+  {
+    "op": "polyhedron.prism",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "base",
+        "type": "point3",
+        "list": true,
+        "min": 3
+      },
+      {
+        "slot": "top",
+        "type": "point3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "solid",
+        "type": "polyhedron"
+      },
+      {
+        "slot": "vertex",
+        "type": "point3",
+        "count": {
+          "per": "base",
+          "times": 1,
+          "plus": -1
+        }
+      },
+      {
+        "slot": "edge",
+        "type": "segment3",
+        "count": {
+          "per": "base",
+          "times": 3,
+          "plus": 0
+        }
+      },
+      {
+        "slot": "face",
+        "type": "polygon3",
+        "count": {
+          "per": "base",
+          "times": 1,
+          "plus": 2
+        }
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "collinear_points",
+      "not_planar",
+      "not_convex",
+      "flat"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "solid",
+    "phrases": {
+      "ru": "{solid} — призма с основанием {base}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:874c8a8a82c2443668d493f368bae739c275427f918ee618dcc069b21c3b4911"
+  },
+  {
+    "op": "polyhedron.pyramid",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "base",
+        "type": "point3",
+        "list": true,
+        "min": 3
+      },
+      {
+        "slot": "apex",
+        "type": "point3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "solid",
+        "type": "polyhedron"
+      },
+      {
+        "slot": "edge",
+        "type": "segment3",
+        "count": {
+          "per": "base",
+          "times": 2,
+          "plus": 0
+        }
+      },
+      {
+        "slot": "face",
+        "type": "polygon3",
+        "count": {
+          "per": "base",
+          "times": 1,
+          "plus": 1
+        }
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "collinear_points",
+      "not_planar",
+      "not_convex",
+      "flat"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "solid",
+    "phrases": {
+      "ru": "{solid} — пирамида {base}{apex}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:8230e8ab6d4daf074c03ea24790db66cde7472d5695019f5e2a960cced92d721"
+  },
+  {
+    "op": "polyhedron.tetrahedron",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point3"
+      },
+      {
+        "slot": "b",
+        "type": "point3"
+      },
+      {
+        "slot": "c",
+        "type": "point3"
+      },
+      {
+        "slot": "d",
+        "type": "point3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "solid",
+        "type": "polyhedron"
+      },
+      {
+        "slot": "edge",
+        "type": "segment3",
+        "count": {
+          "per": null,
+          "times": 0,
+          "plus": 6
+        }
+      },
+      {
+        "slot": "face",
+        "type": "polygon3",
+        "count": {
+          "per": null,
+          "times": 0,
+          "plus": 4
+        }
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "collinear_points",
+      "flat"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "solid",
+    "phrases": {
+      "ru": "{solid} — тетраэдр {a}{b}{c}{d}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:af5521bec531b9f0b07cf2a334f395c2537728ed776f89d6c3ab0831d09b8e0d"
+  }
+]

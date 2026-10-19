@@ -1,0 +1,132 @@
+[
+  {
+    "op": "point3.free",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      }
+    ],
+    "free": {
+      "kind": "point3"
+    },
+    "branch": null,
+    "undefined": [],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "free_point",
+    "phrases": {
+      "ru": "{point} — точка"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:22d47bb1387534cfca2b9d198e9f16dceb39755802f38401fab021718ce649c3"
+  },
+  {
+    "op": "point3.on_path",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "path",
+        "type": "path3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      }
+    ],
+    "free": {
+      "kind": "pathParameter"
+    },
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": "carrier/v1",
+    "stepKind": "point_on_path",
+    "phrases": {
+      "ru": "{point} — точка на {path}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:2b518faa4fdf2aaf24c2197cd04c94cb6881a1fc6ba4e6664ad8c9e1c080ffa2"
+  },
+  {
+    "op": "point3.on_surface",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "surface",
+        "type": "surface"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      }
+    ],
+    "free": {
+      "kind": "surfaceParameter"
+    },
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "point_on_surface",
+    "phrases": {
+      "ru": "{point} — точка на грани {surface}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:eb50f8de6cc4ed5084bdde76db3cab9285d0e714d3c7f87c0b4724a5915d5c15"
+  },
+  {
+    "op": "point3.midpoint",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point3"
+      },
+      {
+        "slot": "b",
+        "type": "point3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "midpoint",
+    "phrases": {
+      "ru": "{point} — середина отрезка {a}{b}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:174af9fd6fdc5ef0f39aa2533fb376d5831fbc9e6fd0f7fc0b62804dfecab674"
+  }
+]

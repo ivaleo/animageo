@@ -17,6 +17,7 @@ from tests.native.conftest import NATIVE_DIR, REPO_ROOT
 DATA_DIRS = [
     ('schema',),
     ('ops', 'v1'),
+    ('ops', 'v1', 'space'),
     ('parity', 'v1'),
     ('parity', 'v1', 'scenes'),
     ('parity', 'v1', 'expected'),
@@ -34,6 +35,7 @@ DATA_DIRS = [
     ('parity', 'v1', 'marks'),
     ('parity', 'v1', 'paint'),
     ('parity', 'v1', 'curves'),
+    ('parity', 'v1', 'space'),
     ('style',),
 ]
 PACKAGE_DIR = REPO_ROOT / 'animageo'

@@ -1,0 +1,42 @@
+[
+  {
+    "op": "polygon3.by_points",
+    "status": "experimental",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "vertices",
+        "type": "point3",
+        "list": true,
+        "min": 3
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "polygon",
+        "type": "polygon3"
+      },
+      {
+        "slot": "side",
+        "type": "segment3",
+        "repeat": "vertices"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "collinear_points",
+      "not_planar"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "polygon",
+    "phrases": {
+      "ru": "{polygon} — многоугольник {vertices}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:887cf190c191b0c66425ec666d4cc1750219d421f077afa51dd64679898952b0"
+  }
+]
