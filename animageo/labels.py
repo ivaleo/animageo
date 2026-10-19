@@ -156,9 +156,17 @@ def _default_label_text(scene, elem) -> str:
 # is A₁2 — and ``_{…}`` the group; ``^`` likewise raises. An underscore or a
 # caret with nothing to index (at the end, before a space, another script
 # sign or a closing brace, before an unclosed brace) is the character itself,
-# and so is a brace without its pair: the name always compiles.
+# and so are a brace without its pair and the signs ``% # & $ ~``: a name of
+# letters (Latin, Greek, Cyrillic), digits and ASCII signs compiles; a
+# backslash starts a TeX command, kept as written. An index of Cyrillic is
+# one letter too (``S_бок`` is S with б, then ок; ``textify_cyrillic``).
 
 _LITERAL_SCRIPT = {'_': r'\_', '^': r'\text{\textasciicircum}'}
+# the signs TeX reads as commands in math mode (a comment, a macro
+# parameter, an alignment tab, the end of math, a tie), written as the
+# characters; a replacement of more than one token is braced, so it is one
+# argument of a script
+_LITERAL_SIGN = {'%': r'\%', '#': r'\#', '&': r'\&', '$': r'{\text{\textdollar}}', '~': r'{\sim}'}
 
 
 def _balanced_braces(name: str) -> set:
@@ -201,8 +209,8 @@ def _script_takes(name: str, i: int, paired: set) -> bool:
 
 def name_tex(name: str) -> str:
     """The TeX (inside ``$…$``) of a label name: the name as it is, with an
-    underscore, a caret or a brace that would not compile written as the
-    character itself (module notes above)."""
+    underscore, a caret or a brace that would not compile and the signs
+    ``% # & $ ~`` written as the characters (module notes above)."""
     paired = _balanced_braces(name)
     out, i = [], 0
     while i < len(name):
@@ -218,6 +226,8 @@ def name_tex(name: str) -> str:
             continue
         if ch in '{}':
             out.append(ch if i in paired else '\\' + ch)
+        elif ch in _LITERAL_SIGN:
+            out.append(_LITERAL_SIGN[ch])
         elif ch in '_^':
             out.append(ch if _script_takes(name, i, paired) else _LITERAL_SCRIPT[ch])
         else:
@@ -291,8 +301,8 @@ def _parse_atom(name, i, end, script, paired, out) -> int:
         if script is not None:
             raise _NoParts      # a script of a script
         return _parse_atom(name, i + 1, end, 'sub' if ch == '_' else 'sup', paired, out)
-    if ch == "'":
-        out.append(('′', script))
+    if ch in "'~":
+        out.append(('′' if ch == "'" else '∼', script))
         return i + 1
     out.append((ch, script))
     return i + 1

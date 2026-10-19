@@ -176,6 +176,8 @@ class TestNonAsciiScripts:
         ('$Б_1$', r'$\text{Б}_1$'),
         (r'$\overline{Б}$', r'$\overline{\text{Б}}$'),
         ('$A_Б$', r'$A_{\text{Б}}$'),          # braced: ``_\text`` would break
+        ('$S_бок$', r'$S_{\text{б}}\text{ок}$'),  # one letter is the index, as in Latin
+        ('$S_{бок}$', r'$S_{\text{бок}}$'),
         ('$x^Б$', r'$x^{\text{Б}}$'),
         (r'$\angle БВГ$', r'$\angle \text{БВГ}$'),
     ])

@@ -756,16 +756,19 @@ def latex_escape_text(s):
 # **nothing** (``$Б_1$`` showed a lone "1"; a sentence lost the whole ``$…$``
 # run). Verified for both the manim path (latex→dvisvgm) and TikZ (pdflatex).
 # Text mode has the glyphs. Directly under ``_``/``^`` the wrap is braced too:
-# ``A_\text{Б}`` would feed the script the bare ``\text`` token.
-_CYRILLIC_RUN_RE = re.compile(r'(?:(?<!\\)([_^]))?([Ѐ-ԯ]+)')
+# ``A_\text{Б}`` would feed the script the bare ``\text`` token. An unbraced
+# script takes one letter, as a Latin one does and GeoGebra shows it
+# (``S_бок`` is S with the index б, then ок; ``S_{бок}`` indexes the word).
+_CYRILLIC_RUN_RE = re.compile(r'(?<!\\)([_^])([Ѐ-ԯ])|([Ѐ-ԯ]+)')
 _MATH_SEGMENT_RE = re.compile(r'(\$[^$]*\$)')
 
 
 def _wrap_cyrillic_runs(math_segment):
     def wrap(m):
-        script, run = m.group(1), m.group(2)
-        text = r'\text{' + run + '}'
-        return script + '{' + text + '}' if script else text
+        script, letter, run = m.groups()
+        if script:
+            return script + r'{\text{' + letter + '}}'
+        return r'\text{' + run + '}'
     return _CYRILLIC_RUN_RE.sub(wrap, math_segment)
 
 

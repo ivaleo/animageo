@@ -27,6 +27,15 @@ from animageo.native.paint_fixtures import _Doc
     (r'A\_1', r'A\_1'),             # an escaped underscore stays
     ('A^2', 'A^2'),
     ('A^', r'A\text{\textasciicircum}'),
+    # the signs TeX reads as commands in math mode are the characters
+    ('A%B', r'A\%B'),
+    ('A#1', r'A\#1'),
+    ('A&B', r'A\&B'),
+    ('A$B', r'A{\text{\textdollar}}B'),
+    ('A~B', r'A{\sim}B'),
+    ('P_%', r'P_\%'),
+    ('P_$', r'P_{\text{\textdollar}}'),
+    (r'A\%', r'A\%'),               # an escaped sign stays
 ])
 def test_the_underscore_of_a_name(name, tex):
     assert name_tex(name) == tex
@@ -50,9 +59,27 @@ def _runs(parts):
     ('A_', [('A', True, None), ('_', False, None)]),
     ('Точка', [('Точка', False, None)]),
     ('x^2', [('x', True, None), ('2', False, 'sup')]),
+    # a Cyrillic index is one letter, as a Latin one (GeoGebra)
+    ('S_бок', [('S', True, None), ('б', False, 'sub'), ('ок', False, None)]),
+    ('S_{бок}', [('S', True, None), ('бок', False, 'sub')]),
+    ('A%B', [('A', True, None), ('%', False, None), ('B', True, None)]),
+    ('A~B', [('A', True, None), ('∼', False, None), ('B', True, None)]),
+    ('P_$', [('P', True, None), ('$', False, 'sub')]),
 ])
 def test_the_parts_of_a_name(name, runs):
     assert _runs(label_parts_of_name(name)) == runs
+
+
+@pytest.mark.parametrize('name, tex', [
+    ('S_бок', r'$S_{\text{б}}\text{ок}$'),
+    ('S_{бок}', r'$S_{\text{бок}}$'),
+    ('Б_1', r'$\text{Б}_1$'),
+    ('S_бок2', r'$S_{\text{б}}\text{ок}2$'),
+])
+def test_the_tex_of_a_cyrillic_index_is_that_of_the_parts(name, tex):
+    """The TeX the renderer compiles indexes what the parts index."""
+    from animageo.labels import correctedLabel
+    assert correctedLabel('$' + name_tex(name) + '$') == tex
 
 
 def test_a_name_with_an_unknown_command_has_no_parts():

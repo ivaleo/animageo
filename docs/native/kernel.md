@@ -785,12 +785,15 @@ offsetWorld?}, overrides?}}`. Each element gets:
   label text, `none` → no label. `name` and `name_value` need a non-empty
   `displayName`; `displayName` is the label name. 1.11.0
   (`has("label.parts")`): a name is TeX in math mode, as GeoGebra shows it —
-  `_x` indexes the one character (or command) after it (`A_12` is A₁2),
-  `_{…}` a group, `^` raises the same way; an `_` or `^` with nothing to
-  take (at the end, before a space, another script sign or a closing brace)
-  and a brace without its pair are the character itself, so every name
-  compiles (`labels.name_tex`). The still, the video and `resolve_paint`
-  (`label.text`, `label.parts`, §9.8) set one text;
+  `_x` indexes the one character (or command) after it (`A_12` is A₁2,
+  `S_бок` is S with the index б), `_{…}` a group, `^` raises the same way;
+  an `_` or `^` with nothing to take (at the end, before a space, another
+  script sign or a closing brace), a brace without its pair and the signs
+  `% # & $ ~` are the characters themselves (`~` is `∼`), so a name of
+  letters (Latin, Greek, Cyrillic), digits and ASCII signs compiles; a
+  backslash starts a TeX command, kept as written (`labels.name_tex`). The
+  still, the video and `resolve_paint` (`label.text`, `label.parts`, §9.8)
+  set one text;
 - `offsetWorld: [dx, dy]` (world units, y up) → `label_offset_px =
   [dx·ptUnit, dy·ptUnit]` of the source view, and the label is locked
   against automatic placement;

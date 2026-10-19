@@ -66,7 +66,9 @@ def _halo_paths(svg_text, color):
 
 
 @pytest.mark.parametrize('name', ['A_1', 'A_12', 'B_{12}', 'angle_C', 'a_', 'b__2', 'A_}', 'A_{1', 'A^',
-                                  r'\alpha_1', 'my_ point', 'Точка_1', 'A_Δ'])
+                                  r'\alpha_1', 'my_ point', 'Точка_1', 'A_Δ', 'S_бок',
+                                  'A%B', 'A#1', 'A&B', 'A$B', 'A~B', 'P_%', 'P_$', 'P_~',
+                                  'A!"#$%&\'()*+,-./:;<=>?@[]^_`{|}~B'])
 def test_a_name_compiles(name):
     from manim import Tex
 

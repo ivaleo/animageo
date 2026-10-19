@@ -62,9 +62,11 @@ and the four flags.
 - Explicit `inputs` are on top of the timeline in the video too (as in the
   still): the timeline no longer moves an element whose value is given.
 - A label name is TeX in math mode, as GeoGebra shows it: `_x` indexes one
-  character, `_{…}` a group, `^` likewise; an `_` or `^` with nothing to
-  take and a brace without its pair are the character itself, so every
-  name compiles, and the still, the video and `resolve_paint` set the same
+  character (a Cyrillic one too: `S_бок` is S with the index б), `_{…}` a
+  group, `^` likewise; an `_` or `^` with nothing to take, a brace without
+  its pair and the signs `% # & $ ~` are the characters themselves, so a
+  name of letters, digits and ASCII signs compiles (a backslash starts a
+  TeX command), and the still, the video and `resolve_paint` set the same
   text.
 - Line caps: `stroke_linecap` (default `rendering.line_cap`) ends a
   segment, a line, a ray, a vector, an arc and a sector without its sides;
