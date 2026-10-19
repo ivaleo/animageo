@@ -386,7 +386,7 @@ def cube_scene():
 
 def test_flat_scene_of_a_cube():
     flat = space.flat_scene(cube_scene(), ortho(-60, 25))
-    assert flat['format'] == space.FLAT_SCENE_FORMAT
+    assert flat['format'] == 'animageo-flat-scene/0'          # the prototype format
     edges = [s for s in flat['strokes'] if s['role'] == 'edge']
     assert len(edges) == 12
     hidden = sorted(s['id'] for s in edges if all(p['visibility'] == 'hidden' for p in s['pieces']))

@@ -484,6 +484,9 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
     """
     if fmt not in RENDER_FORMATS:
         raise NotImplementedError(f'format {fmt!r}: native.render writes {", ".join(RENDER_FORMATS)}')
+    space_doc = _space_document(doc)
+    if space_doc is not None:
+        return _render_space(space_doc, style_config, export_layout, fmt, out, inputs, t, timeline, report, video)
     layout = _check_layout(export_layout)
     doc = as_document(doc)
     from .kernel.evaluate import check_inputs
@@ -551,6 +554,30 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         body['visible'] = sample['visible']
         body['effects'] = _report_effects(doc, timeline, t)
     return RenderResult(path=out, fmt=fmt, report=body)
+
+
+def _space_document(doc):
+    """The parsed source of ``doc`` when it is a space document (``space:
+    "space"``, experimental, registry 1.6), else ``None``."""
+    from .document import NativeDocument, _read_source
+    if isinstance(doc, NativeDocument):
+        data = doc.data
+    else:
+        try:
+            data = _read_source(doc)
+        except Exception:      # the plane path reports the error
+            return None
+    return data if isinstance(data, dict) and data.get('space') == 'space' else None
+
+
+def _render_space(doc, style_config, export_layout, fmt, out, inputs, t, timeline, report, video):
+    """``native.render`` of a space document: :func:`animageo.native.space.bridge.render`
+    (stills only in 3D-1)."""
+    if fmt in VIDEO_FORMATS or video is not None or t is not None or timeline is not None:
+        raise NotImplementedError('space: video and the time of a timeline are not drawn yet (experimental)')
+    from .space.bridge import render as space_render
+    return space_render(doc, out, fmt=fmt, style_config=style_config, export_layout=export_layout,
+                        inputs=inputs, report=report)
 
 
 def _report_effects(doc, timeline, t) -> dict:

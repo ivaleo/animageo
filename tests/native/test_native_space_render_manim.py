@@ -48,3 +48,20 @@ def test_tikz_and_the_none_look(tmp_path):
     assert len(re.findall(r'dash pattern', tikz)) == 6
     space.render(flat, tmp_path / 'plain.svg', look={'hidden': 'none', 'faces': 'none'})
     assert 'stroke-dasharray' not in (tmp_path / 'plain.svg').read_text(encoding='utf-8')
+
+
+def test_native_render_draws_a_space_document(tmp_path):
+    """``native.render`` hands a space document to the bridge: one path."""
+    from animageo.native import render
+    from animageo.native.space.build import SpaceBuilder
+
+    b = SpaceBuilder('cube', camera={'azimuthDeg': -60, 'elevationDeg': 25, 'target': [1, 1, 1]})
+    b.point('A', 0, 0, 0)
+    b.point('B', 2, 0, 0)
+    b.cube('K', 'A', 'B', vertices=['C', 'D', 'A_1', 'B_1', 'C_1', 'D_1'])
+    out = render(b.data(), out=tmp_path / 'cube.svg', report=True)
+    text = (tmp_path / 'cube.svg').read_text(encoding='utf-8')
+    assert text.count('stroke-dasharray') >= 3          # the three hidden edges at D
+    assert 'K_edge_3--1' in out.report['elements']
+    with pytest.raises(NotImplementedError):
+        render(b.data(), out=tmp_path / 'cube.mp4', fmt='mp4', timeline={})

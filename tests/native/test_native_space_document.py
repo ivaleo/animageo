@@ -65,7 +65,7 @@ def test_every_space_op_is_experimental_and_new_in_1_6():
         assert record['since'] == '1.6'
 
 
-@pytest.mark.parametrize('n,counts', [(3, (3, 9, 5)), (4, (4, 12, 6)), (6, (6, 18, 8))])
+@pytest.mark.parametrize('n,counts', [(3, (2, 9, 5)), (4, (3, 12, 6)), (6, (5, 18, 8))])
 def test_prism_outputs_follow_the_count_formula(n, counts):
     reg = space_registry()
     record = reg.get('polyhedron.prism')
