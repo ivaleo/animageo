@@ -434,7 +434,9 @@ def to_document(flat, *, look=None, document_id='space', registry_version=None) 
 
 def render(flat, out=None, *, fmt='svg', look=None, style_config=None, export_layout=None, report=False):
     """Draw ``flat`` with :func:`animageo.native.render` (needs manim):
-    ``svg``, ``png``, ``pdf``, ``eps``, ``tikz``, ``tex``."""
+    ``svg``, ``png``, ``pdf``, ``eps``, ``tikz``, ``tex``; labels in pixels
+    of the sheet (:func:`.bridge.sheet_layout`)."""
     from ..rendering import render as native_render
-    return native_render(to_document(flat, look=look), style_config=style_config, export_layout=export_layout,
-                         fmt=fmt, out=out, report=report)
+    from .bridge import sheet_layout
+    return native_render(to_document(flat, look=look), style_config=style_config,
+                         export_layout=sheet_layout(export_layout), fmt=fmt, out=out, report=report)

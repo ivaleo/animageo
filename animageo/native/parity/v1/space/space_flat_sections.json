@@ -2379,6 +2379,2519 @@
    ]
   },
   {
+   "name": "section_cube_far_plane",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "cube_far_plane",
+    "operationRegistryVersion": "1.0",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-K": {
+      "id": "op-K",
+      "op": "polyhedron.cube",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "solid",
+        "elementId": "K"
+       },
+       {
+        "slot": "vertex.1",
+        "elementId": "C"
+       },
+       {
+        "slot": "vertex.2",
+        "elementId": "D"
+       },
+       {
+        "slot": "vertex.3",
+        "elementId": "A_1"
+       },
+       {
+        "slot": "vertex.4",
+        "elementId": "B_1"
+       },
+       {
+        "slot": "vertex.5",
+        "elementId": "C_1"
+       },
+       {
+        "slot": "vertex.6",
+        "elementId": "D_1"
+       },
+       {
+        "slot": "edge.1",
+        "elementId": "K_edge_1"
+       },
+       {
+        "slot": "edge.2",
+        "elementId": "K_edge_2"
+       },
+       {
+        "slot": "edge.3",
+        "elementId": "K_edge_3"
+       },
+       {
+        "slot": "edge.4",
+        "elementId": "K_edge_4"
+       },
+       {
+        "slot": "edge.5",
+        "elementId": "K_edge_5"
+       },
+       {
+        "slot": "edge.6",
+        "elementId": "K_edge_6"
+       },
+       {
+        "slot": "edge.7",
+        "elementId": "K_edge_7"
+       },
+       {
+        "slot": "edge.8",
+        "elementId": "K_edge_8"
+       },
+       {
+        "slot": "edge.9",
+        "elementId": "K_edge_9"
+       },
+       {
+        "slot": "edge.10",
+        "elementId": "K_edge_10"
+       },
+       {
+        "slot": "edge.11",
+        "elementId": "K_edge_11"
+       },
+       {
+        "slot": "edge.12",
+        "elementId": "K_edge_12"
+       },
+       {
+        "slot": "face.1",
+        "elementId": "K_face_1"
+       },
+       {
+        "slot": "face.2",
+        "elementId": "K_face_2"
+       },
+       {
+        "slot": "face.3",
+        "elementId": "K_face_3"
+       },
+       {
+        "slot": "face.4",
+        "elementId": "K_face_4"
+       },
+       {
+        "slot": "face.5",
+        "elementId": "K_face_5"
+       },
+       {
+        "slot": "face.6",
+        "elementId": "K_face_6"
+       }
+      ]
+     },
+     "op-U": {
+      "id": "op-U",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "U"
+       }
+      ]
+     },
+     "op-V": {
+      "id": "op-V",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "V"
+       }
+      ]
+     },
+     "op-W": {
+      "id": "op-W",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "W"
+       }
+      ]
+     },
+     "op-P": {
+      "id": "op-P",
+      "op": "plane.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "U"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "V"
+       },
+       "c": {
+        "kind": "ref",
+        "elementId": "W"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "plane",
+        "elementId": "P"
+       }
+      ]
+     },
+     "op-S": {
+      "id": "op-S",
+      "op": "section.plane_polyhedron",
+      "args": {
+       "plane": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "solid": {
+        "kind": "ref",
+        "elementId": "K"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "section",
+        "elementId": "S"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "K": {
+      "id": "K",
+      "type": "polyhedron",
+      "displayName": "K",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "solid"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.1"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point3",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.2"
+      }
+     },
+     "A_1": {
+      "id": "A_1",
+      "type": "point3",
+      "displayName": "A_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.3"
+      }
+     },
+     "B_1": {
+      "id": "B_1",
+      "type": "point3",
+      "displayName": "B_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.4"
+      }
+     },
+     "C_1": {
+      "id": "C_1",
+      "type": "point3",
+      "displayName": "C_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.5"
+      }
+     },
+     "D_1": {
+      "id": "D_1",
+      "type": "point3",
+      "displayName": "D_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.6"
+      }
+     },
+     "K_edge_1": {
+      "id": "K_edge_1",
+      "type": "segment3",
+      "displayName": "K_edge_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.1"
+      }
+     },
+     "K_edge_2": {
+      "id": "K_edge_2",
+      "type": "segment3",
+      "displayName": "K_edge_2",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.2"
+      }
+     },
+     "K_edge_3": {
+      "id": "K_edge_3",
+      "type": "segment3",
+      "displayName": "K_edge_3",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.3"
+      }
+     },
+     "K_edge_4": {
+      "id": "K_edge_4",
+      "type": "segment3",
+      "displayName": "K_edge_4",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.4"
+      }
+     },
+     "K_edge_5": {
+      "id": "K_edge_5",
+      "type": "segment3",
+      "displayName": "K_edge_5",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.5"
+      }
+     },
+     "K_edge_6": {
+      "id": "K_edge_6",
+      "type": "segment3",
+      "displayName": "K_edge_6",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.6"
+      }
+     },
+     "K_edge_7": {
+      "id": "K_edge_7",
+      "type": "segment3",
+      "displayName": "K_edge_7",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.7"
+      }
+     },
+     "K_edge_8": {
+      "id": "K_edge_8",
+      "type": "segment3",
+      "displayName": "K_edge_8",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.8"
+      }
+     },
+     "K_edge_9": {
+      "id": "K_edge_9",
+      "type": "segment3",
+      "displayName": "K_edge_9",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.9"
+      }
+     },
+     "K_edge_10": {
+      "id": "K_edge_10",
+      "type": "segment3",
+      "displayName": "K_edge_10",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.10"
+      }
+     },
+     "K_edge_11": {
+      "id": "K_edge_11",
+      "type": "segment3",
+      "displayName": "K_edge_11",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.11"
+      }
+     },
+     "K_edge_12": {
+      "id": "K_edge_12",
+      "type": "segment3",
+      "displayName": "K_edge_12",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.12"
+      }
+     },
+     "K_face_1": {
+      "id": "K_face_1",
+      "type": "polygon3",
+      "displayName": "K_face_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.1"
+      }
+     },
+     "K_face_2": {
+      "id": "K_face_2",
+      "type": "polygon3",
+      "displayName": "K_face_2",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.2"
+      }
+     },
+     "K_face_3": {
+      "id": "K_face_3",
+      "type": "polygon3",
+      "displayName": "K_face_3",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.3"
+      }
+     },
+     "K_face_4": {
+      "id": "K_face_4",
+      "type": "polygon3",
+      "displayName": "K_face_4",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.4"
+      }
+     },
+     "K_face_5": {
+      "id": "K_face_5",
+      "type": "polygon3",
+      "displayName": "K_face_5",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.5"
+      }
+     },
+     "K_face_6": {
+      "id": "K_face_6",
+      "type": "polygon3",
+      "displayName": "K_face_6",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.6"
+      }
+     },
+     "U": {
+      "id": "U",
+      "type": "point3",
+      "displayName": "U",
+      "producer": {
+       "operationId": "op-U",
+       "slot": "point"
+      }
+     },
+     "V": {
+      "id": "V",
+      "type": "point3",
+      "displayName": "V",
+      "producer": {
+       "operationId": "op-V",
+       "slot": "point"
+      }
+     },
+     "W": {
+      "id": "W",
+      "type": "point3",
+      "displayName": "W",
+      "producer": {
+       "operationId": "op-W",
+       "slot": "point"
+      }
+     },
+     "P": {
+      "id": "P",
+      "type": "plane",
+      "displayName": "P",
+      "producer": {
+       "operationId": "op-P",
+       "slot": "plane"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "section",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op-S",
+       "slot": "section"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       0.0,
+       0.0
+      ]
+     },
+     "U": {
+      "kind": "point3",
+      "value": [
+       3.0,
+       0.0,
+       0.0
+      ]
+     },
+     "V": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       3.0,
+       0.0
+      ]
+     },
+     "W": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       4.5
+      ]
+     }
+    }
+   },
+   "planeLook": "sheet",
+   "views": [
+    {
+     "name": "ortho-a",
+     "camera": {
+      "projection": "orthographic",
+      "azimuthDeg": -60,
+      "elevationDeg": 25,
+      "target": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "cube_far_plane",
+      "camera": {
+       "projection": "orthographic",
+       "azimuthDeg": -60,
+       "elevationDeg": 25,
+       "target": [
+        1.0,
+        1.0,
+        1.0
+       ]
+      },
+      "scale": 11.691342951,
+      "bounds": [
+       -3.371234892,
+       -3.758885342,
+       2.68822219,
+       5.947310299
+      ],
+      "unit": 132.025029517,
+      "solids": [
+       "K"
+      ],
+      "fills": [
+       {
+        "id": "P",
+        "part": null,
+        "role": "plane",
+        "polygon": [
+         [
+          2.018829387,
+          -3.089492539
+         ],
+         [
+          0.37171507,
+          -0.491609771
+         ],
+         [
+          -2.701842089,
+          5.277917496
+         ],
+         [
+          -1.054727772,
+          2.680034729
+         ]
+        ],
+        "depth": -0.611205746,
+        "layer": 0
+       },
+       {
+        "id": "K_face_5",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          1.366025404,
+          -0.751618767
+         ],
+         [
+          -0.366025404,
+          -0.329000505
+         ],
+         [
+          -0.366025404,
+          1.483615069
+         ],
+         [
+          1.366025404,
+          1.060996807
+         ]
+        ],
+        "depth": 0.784885567,
+        "layer": 11
+       },
+       {
+        "id": "K_face_6",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          -0.366025404,
+          -0.329000505
+         ],
+         [
+          -1.366025404,
+          -1.060996807
+         ],
+         [
+          -1.366025404,
+          0.751618767
+         ],
+         [
+          -0.366025404,
+          1.483615069
+         ]
+        ],
+        "depth": 0.453153894,
+        "layer": 11
+       },
+       {
+        "id": "K_face_1",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          -1.366025404,
+          -1.060996807
+         ],
+         [
+          -0.366025404,
+          -0.329000505
+         ],
+         [
+          1.366025404,
+          -0.751618767
+         ],
+         [
+          0.366025404,
+          -1.483615069
+         ]
+        ],
+        "depth": 0.422618262,
+        "layer": 11
+       },
+       {
+        "id": "S",
+        "part": null,
+        "role": "section",
+        "solid": "K",
+        "polygon": [
+         [
+          0.866025404,
+          -1.117616918
+         ],
+         [
+          0.5,
+          -0.540309636
+         ],
+         [
+          -0.366025404,
+          1.030461175
+         ],
+         [
+          -0.53269207,
+          1.361615685
+         ],
+         [
+          0.077350269,
+          0.399436882
+         ],
+         [
+          0.366025404,
+          -0.124153388
+         ]
+        ],
+        "depth": -0.033577302,
+        "layer": 12
+       },
+       {
+        "id": "K_face_2",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          -1.366025404,
+          0.751618767
+         ],
+         [
+          0.366025404,
+          0.329000505
+         ],
+         [
+          1.366025404,
+          1.060996807
+         ],
+         [
+          -0.366025404,
+          1.483615069
+         ]
+        ],
+        "depth": -0.422618262,
+        "layer": 14
+       },
+       {
+        "id": "K_face_4",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          0.366025404,
+          -1.483615069
+         ],
+         [
+          1.366025404,
+          -0.751618767
+         ],
+         [
+          1.366025404,
+          1.060996807
+         ],
+         [
+          0.366025404,
+          0.329000505
+         ]
+        ],
+        "depth": -0.453153894,
+        "layer": 14
+       },
+       {
+        "id": "K_face_3",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          -1.366025404,
+          -1.060996807
+         ],
+         [
+          0.366025404,
+          -1.483615069
+         ],
+         [
+          0.366025404,
+          0.329000505
+         ],
+         [
+          -1.366025404,
+          0.751618767
+         ]
+        ],
+        "depth": -0.784885567,
+        "layer": 14
+       }
+      ],
+      "strokes": [
+       {
+        "id": "K_edge_1",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.366025404,
+           -1.060996807
+          ],
+          "b": [
+           0.366025404,
+           -1.483615069
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_2",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.366025404,
+           -1.483615069
+          ],
+          "b": [
+           1.366025404,
+           -0.751618767
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_3",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.366025404,
+           -0.751618767
+          ],
+          "b": [
+           -0.366025404,
+           -0.329000505
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_4",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.366025404,
+           -1.060996807
+          ],
+          "b": [
+           -0.366025404,
+           -0.329000505
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_5",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.366025404,
+           0.751618767
+          ],
+          "b": [
+           0.366025404,
+           0.329000505
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_6",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.366025404,
+           0.329000505
+          ],
+          "b": [
+           1.366025404,
+           1.060996807
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_7",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.366025404,
+           1.060996807
+          ],
+          "b": [
+           -0.366025404,
+           1.483615069
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_8",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.366025404,
+           0.751618767
+          ],
+          "b": [
+           -0.366025404,
+           1.483615069
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_9",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.366025404,
+           -1.060996807
+          ],
+          "b": [
+           -1.366025404,
+           0.751618767
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_10",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.366025404,
+           -1.483615069
+          ],
+          "b": [
+           0.366025404,
+           0.329000505
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_11",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.366025404,
+           -0.751618767
+          ],
+          "b": [
+           1.366025404,
+           1.060996807
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_12",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.366025404,
+           -0.329000505
+          ],
+          "b": [
+           -0.366025404,
+           1.483615069
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.1",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.866025404,
+           -1.117616918
+          ],
+          "b": [
+           0.5,
+           -0.540309636
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.2",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.5,
+           -0.540309636
+          ],
+          "b": [
+           -0.366025404,
+           1.030461175
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.3",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.366025404,
+           1.030461175
+          ],
+          "b": [
+           -0.53269207,
+           1.361615685
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.4",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.53269207,
+           1.361615685
+          ],
+          "b": [
+           0.077350269,
+           0.399436882
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.5",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.077350269,
+           0.399436882
+          ],
+          "b": [
+           0.366025404,
+           -0.124153388
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.6",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.366025404,
+           -0.124153388
+          ],
+          "b": [
+           0.866025404,
+           -1.117616918
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.1",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           2.018829387,
+           -3.089492539
+          ],
+          "b": [
+           0.799494398,
+           -1.166317369
+          ],
+          "t": [
+           0.0,
+           0.740285587
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         },
+         {
+          "a": [
+           0.799494398,
+           -1.166317369
+          ],
+          "b": [
+           0.37171507,
+           -0.491609771
+          ],
+          "t": [
+           0.740285587,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.2",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           0.37171507,
+           -0.491609771
+          ],
+          "b": [
+           -0.592296918,
+           1.317985158
+          ],
+          "t": [
+           0.0,
+           0.313647002
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         },
+         {
+          "a": [
+           -0.592296918,
+           1.317985158
+          ],
+          "b": [
+           -2.701842089,
+           5.277917496
+          ],
+          "t": [
+           0.313647002,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.3",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -2.701842089,
+           5.277917496
+          ],
+          "b": [
+           -1.054727772,
+           2.680034729
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.4",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -1.054727772,
+           2.680034729
+          ],
+          "b": [
+           2.018829387,
+           -3.089492539
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -1.366025404,
+         -1.060996807
+        ],
+        "depth": 0.090886588,
+        "visibility": "visible"
+       },
+       {
+        "id": "A_1",
+        "name": "A_1",
+        "at": [
+         -1.366025404,
+         0.751618767
+        ],
+        "depth": -0.754349935,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         0.366025404,
+         -1.483615069
+        ],
+        "depth": -0.815421199,
+        "visibility": "visible"
+       },
+       {
+        "id": "B_1",
+        "name": "B_1",
+        "at": [
+         0.366025404,
+         0.329000505
+        ],
+        "depth": -1.660657722,
+        "visibility": "visible"
+       },
+       {
+        "id": "C",
+        "name": "C",
+        "at": [
+         1.366025404,
+         -0.751618767
+        ],
+        "depth": 0.754349935,
+        "visibility": "visible"
+       },
+       {
+        "id": "C_1",
+        "name": "C_1",
+        "at": [
+         1.366025404,
+         1.060996807
+        ],
+        "depth": -0.090886588,
+        "visibility": "visible"
+       },
+       {
+        "id": "D",
+        "name": "D",
+        "at": [
+         -0.366025404,
+         -0.329000505
+        ],
+        "depth": 1.660657722,
+        "visibility": "hidden"
+       },
+       {
+        "id": "D_1",
+        "name": "D_1",
+        "at": [
+         -0.366025404,
+         1.483615069
+        ],
+        "depth": 0.815421199,
+        "visibility": "visible"
+       },
+       {
+        "id": "U",
+        "name": "U",
+        "at": [
+         1.232050808,
+         -1.6949242
+        ],
+        "depth": -1.268575093,
+        "visibility": "visible"
+       },
+       {
+        "id": "V",
+        "name": "V",
+        "at": [
+         0.133974596,
+         0.036997645
+        ],
+        "depth": 2.44554329,
+        "visibility": "hidden"
+       },
+       {
+        "id": "W",
+        "name": "W",
+        "at": [
+         -1.366025404,
+         3.017388235
+        ],
+        "depth": -1.81089559,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    },
+    {
+     "name": "ortho-b",
+     "camera": {
+      "projection": "orthographic",
+      "azimuthDeg": 35,
+      "elevationDeg": 40,
+      "target": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "cube_far_plane",
+      "camera": {
+       "projection": "orthographic",
+       "azimuthDeg": 35,
+       "elevationDeg": 40,
+       "target": [
+        1.0,
+        1.0,
+        1.0
+       ]
+      },
+      "scale": 11.691342951,
+      "bounds": [
+       -4.102937757,
+       -3.397970846,
+       3.980149953,
+       5.760696259
+      ],
+      "unit": 98.972079581,
+      "solids": [
+       "K"
+      ],
+      "fills": [
+       {
+        "id": "P",
+        "part": null,
+        "role": "plane",
+        "polygon": [
+         [
+          -2.918760424,
+          -2.766338632
+         ],
+         [
+          3.348517738,
+          -2.056000321
+         ],
+         [
+          2.795972621,
+          5.129064045
+         ],
+         [
+          -3.471305542,
+          4.418725734
+         ]
+        ],
+        "depth": -0.536761534,
+        "layer": 0
+       },
+       {
+        "id": "K_face_1",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          -0.245575608,
+          0.129184168
+         ],
+         [
+          1.392728481,
+          -0.608191485
+         ],
+         [
+          0.245575608,
+          -1.661273054
+         ],
+         [
+          -1.392728481,
+          -0.923897401
+         ]
+        ],
+        "depth": 0.64278761,
+        "layer": 11
+       },
+       {
+        "id": "K_face_6",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          1.392728481,
+          -0.608191485
+         ],
+         [
+          -0.245575608,
+          0.129184168
+         ],
+         [
+          -0.245575608,
+          1.661273054
+         ],
+         [
+          1.392728481,
+          0.923897401
+         ]
+        ],
+        "depth": 0.627506872,
+        "layer": 11
+       },
+       {
+        "id": "K_face_3",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          -0.245575608,
+          0.129184168
+         ],
+         [
+          -1.392728481,
+          -0.923897401
+         ],
+         [
+          -1.392728481,
+          0.608191485
+         ],
+         [
+          -0.245575608,
+          1.661273054
+         ]
+        ],
+        "depth": 0.439385042,
+        "layer": 11
+       },
+       {
+        "id": "S",
+        "part": null,
+        "role": "section",
+        "solid": "K",
+        "polygon": [
+         [
+          -0.573576436,
+          -1.292585228
+         ],
+         [
+          0.819152044,
+          -1.13473227
+         ],
+         [
+          1.392728481,
+          0.54087518
+         ],
+         [
+          1.119677799,
+          1.046793343
+         ],
+         [
+          -1.201536335,
+          0.78370508
+         ],
+         [
+          -1.392728481,
+          0.225169264
+         ]
+        ],
+        "depth": -0.225674814,
+        "layer": 12
+       },
+       {
+        "id": "K_face_5",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          0.245575608,
+          -1.661273054
+         ],
+         [
+          1.392728481,
+          -0.608191485
+         ],
+         [
+          1.392728481,
+          0.923897401
+         ],
+         [
+          0.245575608,
+          -0.129184168
+         ]
+        ],
+        "depth": -0.439385042,
+        "layer": 14
+       },
+       {
+        "id": "K_face_4",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          -1.392728481,
+          -0.923897401
+         ],
+         [
+          0.245575608,
+          -1.661273054
+         ],
+         [
+          0.245575608,
+          -0.129184168
+         ],
+         [
+          -1.392728481,
+          0.608191485
+         ]
+        ],
+        "depth": -0.627506872,
+        "layer": 14
+       },
+       {
+        "id": "K_face_2",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          -0.245575608,
+          1.661273054
+         ],
+         [
+          -1.392728481,
+          0.608191485
+         ],
+         [
+          0.245575608,
+          -0.129184168
+         ],
+         [
+          1.392728481,
+          0.923897401
+         ]
+        ],
+        "depth": -0.64278761,
+        "layer": 14
+       }
+      ],
+      "strokes": [
+       {
+        "id": "K_edge_1",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.245575608,
+           0.129184168
+          ],
+          "b": [
+           -1.392728481,
+           -0.923897401
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_2",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.392728481,
+           -0.923897401
+          ],
+          "b": [
+           0.245575608,
+           -1.661273054
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_3",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.245575608,
+           -1.661273054
+          ],
+          "b": [
+           1.392728481,
+           -0.608191485
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_4",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.245575608,
+           0.129184168
+          ],
+          "b": [
+           1.392728481,
+           -0.608191485
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_5",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.245575608,
+           1.661273054
+          ],
+          "b": [
+           -1.392728481,
+           0.608191485
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_6",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.392728481,
+           0.608191485
+          ],
+          "b": [
+           0.245575608,
+           -0.129184168
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_7",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.245575608,
+           -0.129184168
+          ],
+          "b": [
+           1.392728481,
+           0.923897401
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_8",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.245575608,
+           1.661273054
+          ],
+          "b": [
+           1.392728481,
+           0.923897401
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_9",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.245575608,
+           0.129184168
+          ],
+          "b": [
+           -0.245575608,
+           1.661273054
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_10",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.392728481,
+           -0.923897401
+          ],
+          "b": [
+           -1.392728481,
+           0.608191485
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_11",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.245575608,
+           -1.661273054
+          ],
+          "b": [
+           0.245575608,
+           -0.129184168
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_12",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.392728481,
+           -0.608191485
+          ],
+          "b": [
+           1.392728481,
+           0.923897401
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.1",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.573576436,
+           -1.292585228
+          ],
+          "b": [
+           0.819152044,
+           -1.13473227
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.2",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.819152044,
+           -1.13473227
+          ],
+          "b": [
+           1.392728481,
+           0.54087518
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.3",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.392728481,
+           0.54087518
+          ],
+          "b": [
+           1.119677799,
+           1.046793343
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.4",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.119677799,
+           1.046793343
+          ],
+          "b": [
+           -1.201536335,
+           0.78370508
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.5",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.201536335,
+           0.78370508
+          ],
+          "b": [
+           -1.392728481,
+           0.225169264
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.6",
+        "role": "section",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.392728481,
+           0.225169264
+          ],
+          "b": [
+           -0.573576436,
+           -1.292585228
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.1",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -2.918760424,
+           -2.766338632
+          ],
+          "b": [
+           3.348517738,
+           -2.056000321
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.2",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           3.348517738,
+           -2.056000321
+          ],
+          "b": [
+           2.795972621,
+           5.129064045
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.3",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           2.795972621,
+           5.129064045
+          ],
+          "b": [
+           -3.471305542,
+           4.418725734
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.4",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -3.471305542,
+           4.418725734
+          ],
+          "b": [
+           -2.918760424,
+           -2.766338632
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -0.245575608,
+         0.129184168
+        ],
+        "depth": 1.709679523,
+        "visibility": "hidden"
+       },
+       {
+        "id": "A_1",
+        "name": "A_1",
+        "at": [
+         -0.245575608,
+         1.661273054
+        ],
+        "depth": 0.424104304,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         -1.392728481,
+         -0.923897401
+        ],
+        "depth": 0.45466578,
+        "visibility": "visible"
+       },
+       {
+        "id": "B_1",
+        "name": "B_1",
+        "at": [
+         -1.392728481,
+         0.608191485
+        ],
+        "depth": -0.83090944,
+        "visibility": "visible"
+       },
+       {
+        "id": "C",
+        "name": "C",
+        "at": [
+         0.245575608,
+         -1.661273054
+        ],
+        "depth": -0.424104304,
+        "visibility": "visible"
+       },
+       {
+        "id": "C_1",
+        "name": "C_1",
+        "at": [
+         0.245575608,
+         -0.129184168
+        ],
+        "depth": -1.709679523,
+        "visibility": "visible"
+       },
+       {
+        "id": "D",
+        "name": "D",
+        "at": [
+         1.392728481,
+         -0.608191485
+        ],
+        "depth": 0.83090944,
+        "visibility": "visible"
+       },
+       {
+        "id": "D_1",
+        "name": "D_1",
+        "at": [
+         1.392728481,
+         0.923897401
+        ],
+        "depth": -0.45466578,
+        "visibility": "visible"
+       },
+       {
+        "id": "U",
+        "name": "U",
+        "at": [
+         -1.966304917,
+         -1.450438186
+        ],
+        "depth": -0.172841092,
+        "visibility": "visible"
+       },
+       {
+        "id": "V",
+        "name": "V",
+        "at": [
+         2.211880525,
+         -0.976879312
+        ],
+        "depth": 0.391524398,
+        "visibility": "visible"
+       },
+       {
+        "id": "W",
+        "name": "W",
+        "at": [
+         -0.245575608,
+         3.576384162
+        ],
+        "depth": -1.182864721,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    }
+   ]
+  },
+  {
    "name": "section_cube_quad",
    "document": {
     "format": "animageo-construction/v1",

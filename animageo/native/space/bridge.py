@@ -51,7 +51,7 @@ from .flat import PLANE_LOOKS, Z_LOW, Z_RANK, Z_ROOM, Z_STEP
 from .scene import flat_scene
 
 __all__ = ['SPACE_STYLE_DEFAULTS', 'HIDDEN_LOOKS', 'FACE_LOOKS', 'space_style', 'to_document', 'render',
-           'piece_id']
+           'piece_id', 'sheet_layout']
 
 SPACE_STYLE_DEFAULTS = {
     'hidden': {'look': 'dashpale', 'stroke_dash_ratio': 0.55, 'stroke_dash_period_px': 8.0},
@@ -263,16 +263,39 @@ def _plane_style(style_config):
     return style_config
 
 
+def sheet_layout(export_layout):
+    """The placement ``export_layout`` of :func:`animageo.native.render` for
+    the plane document of a flat scene: its decorations — labels, points,
+    strokes — in pixels of the sheet (1.11.0rc7). The source view of that
+    document is the extent of the picture (``flat_scene.bounds``), so the
+    default ``frame`` decorations followed the frame: a large sheet of a
+    plane or another camera made the labels smaller. Here
+    ``content.decoration_scale_source`` is ``output`` (``export_layout.py``:
+    the style pixels on the sheet, times ``prominence``) unless the layout
+    names its own; ``None`` stays ``None`` (no layout: the canvas is the
+    source view, its pixels are the style's). A copy; the argument is not
+    changed."""
+    if export_layout is None:
+        return None
+    out = dict(export_layout)
+    content = dict(out.get('content') or {})
+    content.setdefault('decoration_scale_source', 'output')
+    out['content'] = content
+    return out
+
+
 def render(doc, out=None, *, fmt='svg', style_config=None, export_layout=None, camera=None, inputs=None,
            report=True):
     """Draw the space document ``doc`` (``camera`` — ``viewDefaults.camera``
     unless given) with :func:`animageo.native.render` (needs manim): ``svg``,
-    ``png``, ``pdf``, ``eps``, ``tikz``, ``tex``. The report's elements are
-    those of the plane document (:func:`to_document`)."""
+    ``png``, ``pdf``, ``eps``, ``tikz``, ``tex``, under
+    :func:`sheet_layout` of ``export_layout`` (labels in pixels of the
+    sheet). The report's elements are those of the plane document
+    (:func:`to_document`)."""
     from ..rendering import render as native_render
     doc = as_space_document(doc)
     space = space_style(style_config)
     flat = flat_scene(doc, camera, inputs=inputs, plane_look=space['plane']['look'])
     plane = to_document(flat, doc, style_config=style_config)
-    return native_render(plane, style_config=_plane_style(style_config), export_layout=export_layout, fmt=fmt,
-                         out=out, report=report)
+    return native_render(plane, style_config=_plane_style(style_config), export_layout=sheet_layout(export_layout),
+                         fmt=fmt, out=out, report=report)

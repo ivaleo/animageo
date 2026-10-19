@@ -38,7 +38,7 @@ from __future__ import annotations
 
 from . import vec
 from . import flat as _flat
-from .bridge import FACE_LOOKS, HIDDEN_LOOKS, SPACE_STYLE_DEFAULTS, space_style
+from .bridge import FACE_LOOKS, HIDDEN_LOOKS, SPACE_STYLE_DEFAULTS, sheet_layout, space_style
 from .bridge import render as _render_document
 from .bridge import to_document as _document_of_flat
 from .build import SpaceBuilder
@@ -91,7 +91,7 @@ __all__ = [
     'vec',
     'SPACE_REGISTRY_VERSION', 'space_registry', 'is_space', 'load', 'validate', 'camera_of', 'evaluate',
     'SpaceBuilder', 'FLAT_SCENE_FORMAT', 'flat_scene', 'to_document', 'render',
-    'HIDDEN_LOOKS', 'FACE_LOOKS', 'SPACE_STYLE_DEFAULTS', 'space_style',
+    'HIDDEN_LOOKS', 'FACE_LOOKS', 'SPACE_STYLE_DEFAULTS', 'space_style', 'sheet_layout',
     'PROJECTIONS', 'Camera', 'Projector',
     'Plane', 'Edge', 'Polyhedron', 'polyhedron', 'cube', 'prism', 'pyramid', 'tetrahedron', 'scale_of',
     'face_facing', 'edge_visibility', 'vertex_visibility', 'ConvexOccluder', 'Piece', 'pieces',

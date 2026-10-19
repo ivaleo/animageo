@@ -101,7 +101,23 @@ visible pieces at `(len(solids) + 1)·10`. `appearance.<id>.visibility`:
 `native.render(space_doc, …)` (or `space.render`) draws the flat scene as a
 plane document (`space.to_document(flat, doc)`) with the same renderer:
 SVG, PNG, PDF, EPS, TikZ. Pieces are segments `<id>--<k>`, fills polygons
-`<id>`, points keep their IDs. The style section `space` of `style_config`
+`<id>`, points keep their IDs.
+
+Labels, points and strokes are in pixels of the sheet (1.11.0rc7): the
+style pixels on the output, times `prominence`, whatever the frame reaches.
+The source view of the plane document is the extent of the picture
+(`viewDefaults.bounds` = `bounds` of the flat scene), so the default
+`frame` decorations followed it — a large sheet of a section plane or
+another camera made the labels up to twice as small. `space.render` draws
+under `space.sheet_layout(export_layout)`: `content.decoration_scale_source`
+`output` unless the layout names its own (`export_layout.py`); `None` stays
+`None` (the canvas is the source view, its pixels are the style's). A
+caller that draws the plane document of `to_document` itself passes its
+layout through `sheet_layout` too. The scenes `section_cube_triangle` and
+`section_cube_far_plane` of the fixtures are the pair the rule is checked
+on (`test_native_space_render_manim.py`).
+
+The style section `space` of `style_config`
 (spec §3.5; it joins the style schema after P2):
 
 | key | default |

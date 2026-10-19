@@ -65,3 +65,76 @@ def test_native_render_draws_a_space_document(tmp_path):
     assert 'K_edge_3--1' in out.report['elements']
     with pytest.raises(NotImplementedError):
         render(b.data(), out=tmp_path / 'cube.mp4', fmt='mp4', timeline={})
+
+
+# ── labels in pixels of the sheet (1.11.0rc7) ────────────────────────────
+
+SHEET = {'export': {'size': [960, 540], 'fit': 'contain'},
+         'content': {'source': 'rendered_bounds', 'padding': 27, 'label_bounds': 'reserve'}}
+
+
+def _cut_document(far, azimuth=-60):
+    """A cube cut by a plane through U, V, W — ``far`` times the near
+    triangle, so the sheet of the plane grows with ``far``: the scenes
+    ``section_cube_triangle`` (1) and ``section_cube_far_plane`` (3) of the
+    space fixtures, the names of A, B and U shown."""
+    from animageo.native.space.build import SpaceBuilder
+    from animageo.native.space.fixtures import _cube
+
+    b = SpaceBuilder('cut', camera={'projection': 'orthographic', 'azimuthDeg': azimuth, 'elevationDeg': 25,
+                                    'target': [1, 1, 1]})
+    _cube(b)
+    for name, p in zip('UVW', ((far, 0, 0), (0, far, 0), (0, 0, 1.5 * far))):
+        b.point(name, *p)
+    b.plane('P', 'U', 'V', 'W')
+    b.section('S', 'P', 'K')
+    data = b.data()
+    for el_id in ('A', 'B', 'U'):
+        data.setdefault('appearance', {}).setdefault(el_id, {})['label'] = {'mode': 'name'}
+    return data
+
+
+def _decoration_px(report):
+    """The width and height of the labels of A and U and the size of the point A, px."""
+    out = []
+    for el_id in ('A', 'U'):
+        x0, y0, x1, y1 = report['elements'][el_id]['label']['box']
+        out += [x1 - x0, y1 - y0]
+    x0, _, x1, _ = report['elements']['A']['box']
+    return out + [x1 - x0]
+
+
+def test_labels_and_points_are_in_pixels_of_the_sheet(tmp_path):
+    """The size of a label (and of a point) on the sheet does not depend on
+    how far the frame reaches: a sheet of the plane three times as large, or
+    another camera, leaves them as they are — the style pixels of the sheet,
+    as drawn without a layout. Before, they followed the frame (``frame``
+    decorations of a plane document whose source view is the extent of the
+    picture): 6.8 px wide against 4.4 px."""
+    from animageo.native import render
+
+    plain = _decoration_px(render(_cut_document(1), out=tmp_path / 'plain.svg').report)
+    for far, azimuth in ((1, -60), (3, -60), (1, 35)):
+        got = _decoration_px(render(_cut_document(far, azimuth), out=tmp_path / f'{far}.svg',
+                                    export_layout=SHEET).report)
+        assert got == pytest.approx(plain, abs=3e-3), (far, azimuth)      # the report rounds to 0.001 px
+
+
+def test_a_caller_drawing_the_plane_document_takes_the_sheet_layout(tmp_path):
+    """The plane document of a flat scene drawn by ``native.render`` under
+    ``space.sheet_layout`` is the drawing of ``space.render``; a layout that
+    names its own decoration basis keeps it."""
+    from animageo.native import render
+
+    doc = _cut_document(3)
+    flat = space.flat_scene(doc)
+    plane = space.to_document(flat, doc)
+    layout = space.sheet_layout(SHEET)
+    assert layout['content']['decoration_scale_source'] == 'output'
+    assert 'decoration_scale_source' not in SHEET['content']        # the layout of the caller is not changed
+    own = render(plane, out=tmp_path / 'plane.svg', export_layout=layout).report
+    assert _decoration_px(own) == pytest.approx(
+        _decoration_px(render(doc, out=tmp_path / 'space.svg', export_layout=SHEET).report), abs=1e-9)
+    framed = {**SHEET, 'content': {**SHEET['content'], 'decoration_scale_source': 'frame'}}
+    assert space.sheet_layout(framed)['content']['decoration_scale_source'] == 'frame'
+    assert space.sheet_layout(None) is None

@@ -354,7 +354,10 @@ def _flat_solids():
 
 def _flat_sections():
     out = []
+    # far_plane: the triangle of cube_triangle three times as far, a sheet of the plane far beyond the
+    # cube — the frame reaches three times as far, the labels keep their pixels (test_native_space_render_manim)
     for name, (a, bb, c), cams in (('cube_triangle', ((1, 0, 0), (0, 1, 0), (0, 0, 1.5)), ('ortho-a', 'ortho-b')),
+                                   ('cube_far_plane', ((3, 0, 0), (0, 3, 0), (0, 0, 4.5)), ('ortho-a', 'ortho-b')),
                                    ('cube_quad', ((0, 0, 0.5), (2, 0, 1.5), (0, 2, 0.5)), ('ortho-a', 'persp')),
                                    ('cube_pentagon', ((1, 0, 0), (0, 1.5, 0), (2, 2, 1.25)), ('ortho-a', 'oblique')),
                                    ('cube_hexagon', ((1, 0, 0), (2, 1, 0), (0, 2, 1.5)),
