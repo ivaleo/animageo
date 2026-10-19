@@ -58,7 +58,9 @@ and the four flags.
   The PNG with `video` draws value labels with the cached digits of the
   video and matches the frame the video writes to the pixel (at least
   60 dB); before, the still dropped the effects and the events (27–48 dB
-  inside their windows).
+  inside their windows). The frame builds the mobject of each element it
+  draws once and none of the others, and places labels only at the
+  keyframes it reads.
 - Explicit `inputs` are on top of the timeline in the video too (as in the
   still): the timeline no longer moves an element whose value is given.
 - A label name is TeX in math mode, as GeoGebra shows it: `_x` indexes one

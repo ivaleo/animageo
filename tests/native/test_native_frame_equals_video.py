@@ -4,6 +4,7 @@ so the video-camera PNG at ``t`` equals the frame the video writes, before the
 codec, inside the windows of the effects and the events too; the vector still
 draws the same state (its value labels in TeX, the video's with cached
 digits)."""
+import copy
 import tempfile
 
 import numpy as np
@@ -318,3 +319,97 @@ def test_the_video_file_takes_the_explicit_inputs(tmp_path):
         assert psnr >= 30, (n, psnr)
         if n:
             assert psnr > _psnr(got, moved) + 3, n
+
+
+# ── the frame is played without drawing ────────────────────────────────
+
+SNAPSHOTS = {'overlay': {'label_placement': {'enabled': True, 'keyframe_snapshots': True}}}
+
+STEPS = {'version': 2, 'keyframes': [
+    {'t': 0, 'values': {'C': [1.5, 3.5]}, 'visible': {'k': False, 'b': False}},
+    {'t': 1, 'values': {'C': [3.0, 4.0]}},
+    {'t': 2, 'values': {'C': [4.5, 2.0]}, 'visible': {'b': True}},
+    {'t': 3, 'values': {'C': [2.0, 3.0]}, 'visible': {'k': True}},
+    {'t': 4, 'values': {'C': [1.0, 2.5]}},
+    {'t': 5, 'values': {'C': [3.5, 3.5]}},
+]}
+
+
+def _scene_state(scene):
+    """The label placement and the points of what a scene draws, by element
+    name (a hidden element draws nothing, its label included)."""
+    out = {}
+    for elem in scene.geo.elements:
+        mobj = scene.mobject(elem.name)
+        if mobj is None or mobj not in scene.mobjects:
+            continue
+        out[elem.name] = (
+            {k: elem.style.get(k) for k in ('label_offset_px', 'label_anchor', '_auto_placed')},
+            [np.round(m.points, 9).tolist() for m in mobj.family_members_with_points()])
+    return out
+
+
+@pytest.mark.parametrize('t, needed', [(0.5, {0, 1}), (2.5, {0, 2, 3}), (3.2, {0, 2, 3, 4}),
+                                       (4.7, {0, 2, 4, 5}), (5.0, {0, 2, 4, 5})])
+def test_the_frame_reads_the_snapshots_it_needs_only(t, needed, monkeypatch):
+    """The label snapshots of the keyframes the frame needs — the start, the
+    two ends of its interval, the first layout of each label it shows (the
+    anchor of a label is that of its first layout; ``b`` is shown at
+    keyframe 2) — give the frame of the full pass; the others are not
+    computed."""
+    from animageo.animageo import AnimaGeoScene
+    from animageo.native import rendering
+    from animageo.native.document import as_document
+    d = _triangle()
+    d['appearance'].setdefault('b', {})['label'] = {'mode': 'name'}
+    doc = as_document(d)
+    bridge = rendering._bridged_timeline(doc, STEPS)
+    bridge['keyframes'][0]['hide'] = ['e_b']
+    bridge['keyframes'][2]['show'] = ['e_b']
+    computed = []
+    layouts = AnimaGeoScene._compute_keyframe_label_layouts
+
+    def spy(self, seq, cfg, indices=None, frame=None):
+        out = layouts(self, seq, cfg, indices=indices, frame=frame)
+        computed.append({k for k, layout in enumerate(out) if layout})
+        return out
+
+    def seek():
+        scene = AnimaGeoScene()
+        scene.loadDocument(doc, style=SNAPSHOTS)
+        scene.seek_keyframes(copy.deepcopy(bridge), t)
+        return scene
+
+    monkeypatch.setattr(AnimaGeoScene, '_compute_keyframe_label_layouts', spy)
+    lazy = seek()
+    prepare = AnimaGeoScene._prepare_keyframes
+    monkeypatch.setattr(AnimaGeoScene, '_prepare_keyframes',
+                        lambda self, data, frame=None: prepare(self, data))
+    full = seek()
+    assert _scene_state(lazy) == _scene_state(full)
+    assert computed == [needed, set(range(len(bridge['keyframes'])))]
+
+
+def test_seek_builds_each_mobject_once(monkeypatch):
+    """The still at ``t`` builds the mobject of each element it draws once,
+    and none of what it does not draw: a scene played to ``t`` touches an
+    element many times, the frame draws it once."""
+    from animageo.animageo import AnimaGeoScene
+    from animageo.native import rendering
+    from animageo.native.document import as_document
+    doc = as_document(_triangle())
+    built = []
+    create = AnimaGeoScene.CreateMObject
+
+    def spy(self, elem, *args, **kwargs):
+        mobj = create(self, elem, *args, **kwargs)
+        if mobj is not None:
+            built.append(elem.name)
+        return mobj
+
+    monkeypatch.setattr(AnimaGeoScene, 'CreateMObject', spy)
+    for t in (0.5, 2.5, 4.7):
+        built.clear()
+        scene = rendering._still_scene(doc, None, None, {}, STEPS, t)
+        drawn = sorted(m.name for m in scene.mobjects if m.name in {e.name for e in scene.geo.elements})
+        assert sorted(built) == drawn, t

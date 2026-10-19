@@ -586,10 +586,15 @@ def _still_scene(doc, style_config, inputs, layout, timeline, t, *, scene_class=
     1.11.0): the document loaded as the video loads it, then
     ``seek_keyframes`` of its bridged timeline — the frame function of the
     playback at ``t``; ``video_labels`` — value labels with the cached
-    digits of the video (the video-camera PNG)."""
+    digits of the video (the video-camera PNG). The mobjects the load
+    builds are built with those of the frame, once (``_deferring_builds``)."""
     doc = as_document(doc)
-    scene = _load(scene_class or _import_scene(), doc, style_config, inputs, layout)
-    scene.seek_keyframes(_bridged_timeline(doc, timeline, inputs), t, video_labels=video_labels)
+    scene = (scene_class or _import_scene())()
+    with scene._deferring_builds():
+        scene.loadDocument(doc, style=style_config, inputs=inputs,
+                           reference=layout.get('reference'), content=layout.get('content'),
+                           export=layout.get('export'))
+        scene.seek_keyframes(_bridged_timeline(doc, timeline, inputs), t, video_labels=video_labels)
     return scene
 
 

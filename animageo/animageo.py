@@ -246,6 +246,11 @@ class AnimaGeoScene(MovingCameraScene):
         # keeps the Tex path. Both print the same text (labels._format_number,
         # 1.11.0rc3). See _value_labels_fast.
         self._value_labels_dynamic = False
+        # While :meth:`seek_keyframes` plays the state of a frame, the builds
+        # of addGeoElement/updateGeoElements are recorded here
+        # ({name: (elem, z_auto, dynamic)}) and made once, before the effects
+        # of the frame (:meth:`_deferring_builds`).
+        self._deferred_builds = None
         
     def mobject(self, name): 
         for mobj in self.mobjects: 
@@ -263,6 +268,9 @@ class AnimaGeoScene(MovingCameraScene):
         self.add(mobj)
     
     def addGeoElement(self, elem):
+        if self._deferred_builds is not None:
+            self._defer_build(elem, z_auto=True)
+            return
         mobj = self.CreateMObject(elem, z_auto = True)
         if mobj is not None and self._element_visible(elem):
             self.add(mobj)
@@ -442,30 +450,86 @@ class AnimaGeoScene(MovingCameraScene):
                     if (not elem.ggb_style.get('label_dynamic_caption')
                             or not _resolve_style(self, elem, 'label_dynamic_caption')):
                         continue
+            if self._deferred_builds is not None:
+                self._defer_build(elem, z_auto=False)
+                continue
+            self._update_mobject(elem)
 
-            mobj = self.mobject(elem.name)   
-            mobj_new = self.CreateMObject(elem)
-            
-            if mobj is None and mobj_new is None: continue
-         
-            needRemove = False if mobj is None     else (mobj_new is None) or (type(elem.data) == geo.Polygon) or (not self._element_visible(elem))
-            needAdd = False    if mobj_new is None else (mobj is None)     or (type(elem.data) == geo.Polygon)
+    def _update_mobject(self, elem, z_auto=False):
+        """Rebuild the mobject of ``elem`` in the scene (``updateGeoElements``)."""
+        mobj = self.mobject(elem.name)   
+        mobj_new = self.CreateMObject(elem, z_auto=z_auto)
+        
+        if mobj is None and mobj_new is None:
+            return
+     
+        needRemove = False if mobj is None     else (mobj_new is None) or (type(elem.data) == geo.Polygon) or (not self._element_visible(elem))
+        needAdd = False    if mobj_new is None else (mobj is None)     or (type(elem.data) == geo.Polygon)
 
-            if needRemove:
-                mobj.set_opacity(0)
-                self.remove(mobj)
-            if needAdd:
-                self.addOrdered(mobj_new)
-            if not needRemove and not needAdd:
-                mobj.become(mobj_new)
-                # become() copies points/draw style but not z_index, the cap
-                # or the dash pattern — carry them so style changes (incl.
-                # keyframe tracks, solid <-> dashed) take effect.
-                for sub_old, sub_new in zip(mobj.get_family(), mobj_new.get_family()):
-                    sub_old.z_index = sub_new.z_index
-                    if hasattr(sub_new, 'cap_style'):
-                        sub_old.cap_style = sub_new.cap_style
-                    set_dash(sub_old, get_dash(sub_new))
+        if needRemove:
+            mobj.set_opacity(0)
+            self.remove(mobj)
+        if needAdd:
+            self.addOrdered(mobj_new)
+        if not needRemove and not needAdd:
+            mobj.become(mobj_new)
+            # become() copies points/draw style but not z_index, the cap
+            # or the dash pattern — carry them so style changes (incl.
+            # keyframe tracks, solid <-> dashed) take effect.
+            for sub_old, sub_new in zip(mobj.get_family(), mobj_new.get_family()):
+                sub_old.z_index = sub_new.z_index
+                if hasattr(sub_new, 'cap_style'):
+                    sub_old.cap_style = sub_new.cap_style
+                set_dash(sub_old, get_dash(sub_new))
+
+    def _defer_build(self, elem, *, z_auto):
+        """Record the build of ``elem`` (the last one wins): how it is built —
+        ``z_auto`` (at load) and the value labels of the moment
+        (``_value_labels_dynamic``) — is kept for :meth:`_flush_builds`."""
+        self._deferred_builds.pop(elem.name, None)
+        self._deferred_builds[elem.name] = (elem, z_auto, self._value_labels_dynamic)
+
+    @contextmanager
+    def _deferring_builds(self):
+        """Record the mobject builds instead of making them, until
+        :meth:`_flush_builds` (or the end of the block): the playback of the
+        state of a frame touches an element many times, the frame draws it
+        once. Each element is then built as its last build would have built it
+        (at load: the auto z tier; the value labels of that moment) and put in
+        the scene as ``addGeoElement``/``updateGeoElements`` put it. Nested
+        blocks belong to the outer one."""
+        if self._deferred_builds is not None:
+            yield
+            return
+        self._deferred_builds = {}
+        try:
+            yield
+        finally:
+            self._flush_builds()
+
+    def _flush_builds(self, skip=()):
+        """Make the builds :meth:`_deferring_builds` recorded and stop
+        recording; the elements ``skip`` names are left out of the scene."""
+        pending, self._deferred_builds = self._deferred_builds, None
+        if not pending:
+            return
+        dynamic_before = self._value_labels_dynamic
+        try:
+            for elem, z_auto, dynamic in pending.values():
+                if elem.name in skip:
+                    mobj = self.mobject(elem.name)
+                    if mobj is not None:
+                        self.remove(mobj)
+                    continue
+                self._value_labels_dynamic = dynamic
+                if z_auto and self.mobject(elem.name) is None:
+                    mobj = self.CreateMObject(elem, z_auto=True)
+                    if mobj is not None and self._element_visible(elem):
+                        self.add(mobj)
+                else:
+                    self._update_mobject(elem, z_auto=z_auto)
+        finally:
+            self._value_labels_dynamic = dynamic_before
 
     def addVar(self, name, value = 0):
         new_tracker = NamedValueTracker(name, value)
@@ -1699,13 +1763,22 @@ class AnimaGeoScene(MovingCameraScene):
         if update_scene and touched:
             self.updateGeoElements(touched)
 
-    def _compute_keyframe_label_layouts(self, seq, cfg, indices=None):
+    def _compute_keyframe_label_layouts(self, seq, cfg, indices=None, frame=None):
         """Run ``compute_label_layout`` at every keyframe. Restores state after.
 
         Walks keyframes carrying-forward values and visibility (matching the
         semantics of ``_build_intervals``). At each keyframe: apply, rebuild,
         snapshot layout. After the pass, restore saved values + visibility
         and do a full rebuild so the scene is identical to before the call.
+
+        ``indices`` — only those keyframes (the others ``{}``). ``frame`` — an
+        interval index: only the keyframes its frame reads, so the frame is
+        the one of the full pass: the first (its layout is put at the start),
+        the two ends of the interval, and for each label of the ends absent
+        from the first layout its first layout before the interval (the
+        anchor of a label is that of its first layout). A limited-path
+        Intersect takes its slots from the history of the rebuilds: with one,
+        ``frame`` makes the full pass.
         """
         from .label_placement import compute_label_layout, clear_bbox_cache
         from .keyframes import _parse_value
@@ -1738,31 +1811,85 @@ class AnimaGeoScene(MovingCameraScene):
 
         clear_bbox_cache()
 
-        # Carry-forward running state, starting from current construction values
-        running_raw = dict(saved_raw)
-        running_vis = dict(saved_visibility)
-        running_styles = {}
+        def walk(want, seen=None):
+            """Carry the state forward keyframe by keyframe from the saved one;
+            a layout where ``want(index, visibility)`` (``None``: stop)."""
+            running_raw = dict(saved_raw)
+            running_vis = dict(saved_visibility)
+            running_styles = {}
+            out = {}
+            for kf_index, kf in enumerate(seq.keyframes):
+                # Override with this keyframe's values
+                for name, raw_value in kf.values.items():
+                    running_raw[name] = raw_value
+                for name in kf.show:
+                    running_vis[name] = True
+                for name in kf.hide:
+                    running_vis[name] = False
+                for name, props in kf.styles.items():
+                    running_styles.setdefault(name, {}).update(props)
 
-        layouts = []
-        for kf_index, kf in enumerate(seq.keyframes):
-            # Override with this keyframe's values
-            for name, raw_value in kf.values.items():
-                running_raw[name] = raw_value
-            for name in kf.show:
-                running_vis[name] = True
-            for name in kf.hide:
-                running_vis[name] = False
-            for name, props in kf.styles.items():
-                running_styles.setdefault(name, {}).update(props)
+                # Apply to geo
+                for name, raw_value in running_raw.items():
+                    info = element_info.get(name) or seq.element_info.get(name)
+                    if info is None:
+                        logger.warning(
+                            "play_keyframes: skipping value for '%s' — element "
+                            "is no longer independent (was it rebound or removed "
+                            "between sequence parse and playback?)",
+                            name,
+                        )
+                        continue
+                    try:
+                        kind, val, _dir = _parse_value(name, raw_value, info, self.geo)
+                    except (KeyError, ValueError, TypeError) as e:
+                        logger.warning(
+                            "play_keyframes: bad keyframe value for '%s' (%r): %s",
+                            name, raw_value, e,
+                        )
+                        continue
+                    self._apply_interp_value(name, kind, val)
+                for name, vis in running_vis.items():
+                    e = self.geo.element(name)
+                    if e is not None:
+                        e.visible = vis
+                for name, props in running_styles.items():
+                    elem = self.geo.element(name)
+                    if elem is None:
+                        continue
+                    for k, v in props.items():
+                        if v is not None:
+                            elem.style[k] = v
 
-            # Apply to geo
-            for name, raw_value in running_raw.items():
-                info = element_info.get(name) or seq.element_info.get(name)
+                go = want(kf_index, running_vis)
+                if go is None:
+                    break
+                if not go:
+                    # A single-frame preview needs only its interval's two ends.
+                    continue
+                self.geo.rebuild()
+                out[kf_index] = compute_label_layout(
+                    self, cfg=cfg, canonicalize=canonicalize,
+                )
+                if seen is not None:
+                    seen(out[kf_index])
+            return out
+
+        def restore():
+            for (name, key), (had, val) in saved_styles.items():
+                elem = self.geo.element(name)
+                if elem is None:
+                    continue
+                if had:
+                    elem.style[key] = val
+                else:
+                    elem.style.pop(key, None)
+            for name, raw_value in saved_raw.items():
+                info = element_info.get(name)
                 if info is None:
                     logger.warning(
-                        "play_keyframes: skipping value for '%s' — element "
-                        "is no longer independent (was it rebound or removed "
-                        "between sequence parse and playback?)",
+                        "play_keyframes: cannot restore '%s' — element disappeared "
+                        "from the construction during the snapshot pass",
                         name,
                     )
                     continue
@@ -1770,65 +1897,42 @@ class AnimaGeoScene(MovingCameraScene):
                     kind, val, _dir = _parse_value(name, raw_value, info, self.geo)
                 except (KeyError, ValueError, TypeError) as e:
                     logger.warning(
-                        "play_keyframes: bad keyframe value for '%s' (%r): %s",
+                        "play_keyframes: restore parse error for '%s' (%r): %s",
                         name, raw_value, e,
                     )
                     continue
                 self._apply_interp_value(name, kind, val)
-            for name, vis in running_vis.items():
+            for name, vis in saved_visibility.items():
                 e = self.geo.element(name)
                 if e is not None:
                     e.visible = vis
-            for name, props in running_styles.items():
-                elem = self.geo.element(name)
-                if elem is None:
-                    continue
-                for k, v in props.items():
-                    if v is not None:
-                        elem.style[k] = v
+            for binding, state in saved_intersections:
+                binding.restore(state)
 
-            if indices is not None and kf_index not in indices:
-                # A single-frame preview needs only its interval's two ends.
-                layouts.append({})
-                continue
-            self.geo.rebuild()
-            layouts.append(compute_label_layout(
-                self, cfg=cfg, canonicalize=canonicalize,
-            ))
+        # A limited-path Intersect takes its slots from the history of the
+        # rebuilds: its frame is that of the full pass.
+        limited = any(getattr(getattr(cmd, '_ggb_intersection', None), 'initial_limited', False)
+                      for cmd in self.geo.commands)
+        if indices is None and frame is not None and not limited:
+            ends = {0, frame, frame + 1}
+            found = walk(lambda k, _vis: (k in ends) if k <= frame + 1 else None)
+            # the labels of the frame first placed between the start and the
+            # interval: their first layouts give their anchors
+            wanted = (set(found.get(frame) or {}) | set(found.get(frame + 1) or {})) - set(found.get(0) or {})
+            if wanted and frame > 1:
+                restore()
+                found.update(walk(
+                    lambda k, vis: None if k >= frame or not wanted else
+                    (k > 0 and any(vis.get(name) for name in wanted)),
+                    seen=lambda layout: wanted.difference_update(layout)))
+        elif indices is not None:
+            found = walk(lambda k, _vis: k in indices)
+        else:
+            found = walk(lambda _k, _vis: True)
+        layouts = [found.get(k, {}) for k in range(len(seq.keyframes))]
 
         # Restore original state
-        for (name, key), (had, val) in saved_styles.items():
-            elem = self.geo.element(name)
-            if elem is None:
-                continue
-            if had:
-                elem.style[key] = val
-            else:
-                elem.style.pop(key, None)
-        for name, raw_value in saved_raw.items():
-            info = element_info.get(name)
-            if info is None:
-                logger.warning(
-                    "play_keyframes: cannot restore '%s' — element disappeared "
-                    "from the construction during the snapshot pass",
-                    name,
-                )
-                continue
-            try:
-                kind, val, _dir = _parse_value(name, raw_value, info, self.geo)
-            except (KeyError, ValueError, TypeError) as e:
-                logger.warning(
-                    "play_keyframes: restore parse error for '%s' (%r): %s",
-                    name, raw_value, e,
-                )
-                continue
-            self._apply_interp_value(name, kind, val)
-        for name, vis in saved_visibility.items():
-            e = self.geo.element(name)
-            if e is not None:
-                e.visible = vis
-        for binding, state in saved_intersections:
-            binding.restore(state)
+        restore()
         self.geo.rebuild(full=True)
 
         return layouts
@@ -1889,11 +1993,12 @@ class AnimaGeoScene(MovingCameraScene):
                 self._play_keyframe_interval(interval)
                 self._finalize_style_interval(interval)
 
-    def _prepare_keyframes(self, keyframes_data):
+    def _prepare_keyframes(self, keyframes_data, frame=None):
         """``(seq, layouts)`` of a playback: the parsed sequence with its style
         tracks and (v2) visibility effects bound, and the label snapshots of
         every keyframe (``None`` when off) — :meth:`play_keyframes` and
-        :meth:`seek_keyframes`."""
+        :meth:`seek_keyframes`; with ``frame`` (an interval index) the
+        snapshots the frame of that interval needs only (the others ``{}``)."""
         if isinstance(keyframes_data, dict):
             seq = KeyframeSequence.from_json(keyframes_data, self.geo)
         else:
@@ -1912,7 +2017,7 @@ class AnimaGeoScene(MovingCameraScene):
             )
         if seq.version >= 2:
             seq.bind_visibility(get_element=self.geo.element)
-        return seq, self._bind_label_snapshots(seq)
+        return seq, self._bind_label_snapshots(seq, frame=frame)
 
     def _start_keyframes(self, seq, layouts):
         """The scene at the first keyframe, before the first interval plays."""
@@ -1940,16 +2045,24 @@ class AnimaGeoScene(MovingCameraScene):
         the cached digits of the video (``rendering.fast_value_labels``), for a
         frame that is the video's to the pixel. Returns the effects of the
         frame: ``{name: (phase, kind, progress)}``.
+
+        The state is played without drawing: the mobjects are built once,
+        each as its last build in the playback builds it, before the effects
+        and the events of the frame (:meth:`_deferring_builds`); the label
+        snapshots are computed at the keyframes the frame needs only
+        (:meth:`_compute_keyframe_label_layouts`, ``frame``).
         """
-        seq, layouts = self._prepare_keyframes(keyframes_data)
-        kfs = seq.keyframes
+        if isinstance(keyframes_data, dict):
+            keyframes_data = KeyframeSequence.from_json(keyframes_data, self.geo)
+        kfs = keyframes_data.keyframes
         t = max(kfs[0].t, min(float(t), kfs[-1].t))
-        with (self._dynamic_value_labels() if video_labels else _nullcontext()):
+        index = next((i for i, iv in enumerate(keyframes_data.intervals) if t < iv.end_t),
+                     max(len(keyframes_data.intervals) - 1, 0))
+        with (self._dynamic_value_labels() if video_labels else _nullcontext()), self._deferring_builds():
+            seq, layouts = self._prepare_keyframes(keyframes_data, frame=index)
             self._start_keyframes(seq, layouts)
             if not seq.intervals:
                 return {}
-            index = next((i for i, iv in enumerate(seq.intervals) if t < iv.end_t),
-                         len(seq.intervals) - 1)
             for interval in seq.intervals[:index]:
                 self._seek_interval(seq, interval, 1.0, final=True)
             interval = seq.intervals[index]
@@ -1984,7 +2097,17 @@ class AnimaGeoScene(MovingCameraScene):
                 self._remove_exited(interval)
             self._finalize_style_interval(interval)
             return state
-        self._keyframe_frame(interval, p, {}, effects=effects, events=True)
+        self._keyframe_state(interval, p, effects=effects)
+        hidden = set()
+        if effects:
+            # what an effect shows nothing of is not built (it is taken out
+            # below), unless an event of the frame is drawn from it
+            t_abs = p * interval.duration
+            targets = {name for spec in interval.events for name in spec.targets}
+            hidden = {spec.name for spec in list(interval.enter_effects) + list(interval.exit_effects)
+                      if spec.name not in targets and self._effect_alpha(spec, t_abs) <= 0}
+        self._flush_builds(skip=hidden)
+        self._keyframe_effects(interval, p, {}, effects=effects, events=True)
         if effects:
             t_abs = p * interval.duration
             for spec in list(interval.enter_effects) + list(interval.exit_effects):
@@ -2045,9 +2168,14 @@ class AnimaGeoScene(MovingCameraScene):
         untouched target is never re-become'd and the transform (e.g.
         indicate's scale) compounds instead of restoring itself.
         """
+        self._keyframe_state(interval, p, effects=effects)
+        self._keyframe_effects(interval, p, active_events, effects=effects, events=events)
+
+    def _keyframe_state(self, interval, p, *, effects=True):
+        """The first half of :meth:`_keyframe_frame`: the state at ``p`` and
+        the mobjects of everything touched."""
         from .label_placement import compute_angle_label_offset_px
 
-        t_abs = p * interval.duration
         touched = set()
         for interp in interval.interpolators:
             self._apply_interp_value(interp.name, interp.kind, interp.at(p))
@@ -2085,6 +2213,10 @@ class AnimaGeoScene(MovingCameraScene):
 
         self.updateGeoElements(updates)
 
+    def _keyframe_effects(self, interval, p, active_events, *, effects=True, events=True):
+        """The second half of :meth:`_keyframe_frame`: the enter/exit effects
+        over the fresh mobjects, the camera, the emphasis events."""
+        t_abs = p * interval.duration
         if effects:
             for e in list(interval.enter_effects) + list(interval.exit_effects):
                 self._apply_effect_alpha(e.name, e.kind, self._effect_alpha(e, t_abs))
@@ -2095,7 +2227,7 @@ class AnimaGeoScene(MovingCameraScene):
         if events:
             self._apply_events(interval, t_abs, active_events)
 
-    def _bind_label_snapshots(self, seq, indices=None):
+    def _bind_label_snapshots(self, seq, indices=None, frame=None):
         """Auto-place labels at every keyframe and let them interpolate.
 
         Snapshots ARE auto-placement, only sampled at keyframes, so they run
@@ -2114,14 +2246,16 @@ class AnimaGeoScene(MovingCameraScene):
         from the interpolators, so it gets the snapshot's anchor and the
         auto-placed flag up front — otherwise the renderer reads the solver's
         offset as an applet labelOffset. ``indices`` limits the snapshots to
-        those keyframes (a single-frame preview needs only its interval).
+        those keyframes (a single-frame preview needs only its interval);
+        ``frame`` to those the frame of that interval needs
+        (:meth:`_compute_keyframe_label_layouts`).
 
         Returns the per-keyframe layouts, or ``None`` when snapshots are off.
         """
         cfg = self.style_config.overlay.label_placement
         if not (cfg.get('enabled', False) and cfg.get('keyframe_snapshots', False)):
             return None
-        layouts = self._compute_keyframe_label_layouts(seq, cfg, indices=indices)
+        layouts = self._compute_keyframe_label_layouts(seq, cfg, indices=indices, frame=frame)
         seq.attach_label_layouts(layouts)
         seq.drop_style_key('label_offset_px')
         flagged = set()
