@@ -21,9 +21,9 @@ the eye.
 
 **Pieces** (:func:`pieces`): the union of the hidden intervals of a segment
 cut into alternating visible and hidden pieces; a gap or a bit shorter than
-``min_t`` (the share of the segment that is ``min_piece_px`` long on the
-sheet) merges into its neighbour, so tiny pieces do not flicker while the
-camera turns.
+``min_t`` (the share of the segment that is ``min_piece_px`` long in px of
+the reference frame of the flat scene, :func:`~.flat.flat_scene`) merges
+into its neighbour, so tiny pieces do not flicker while the camera turns.
 """
 from __future__ import annotations
 

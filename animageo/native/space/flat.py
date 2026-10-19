@@ -50,6 +50,11 @@ __all__ = ['FLAT_SCENE_FORMAT', 'HIDDEN_LOOKS', 'FACE_LOOKS', 'SceneSolid', 'Sce
 
 FLAT_SCENE_FORMAT = 'animageo-flat-scene/0'
 MARGIN = 0.08                     # of the larger side of the picture, on every side
+# The reference frame: the bounds of the flat scene across SOURCE_WIDTH px —
+# the source view ``native.render`` draws the document in
+# (``animageo.native.rendering.SOURCE_WIDTH``), the px of the style keys.
+SOURCE_WIDTH = 800.0
+MIN_PIECE_PX = 0.9                # px of the reference frame
 
 
 @dataclass(frozen=True)
@@ -112,9 +117,16 @@ def _xy(projected):
     return [projected[0], projected[1]]
 
 
-def flat_scene(scene: SpaceScene, camera, *, min_piece_px=0.9, source_width=800.0) -> dict:
+def flat_scene(scene: SpaceScene, camera, *, min_piece_px=MIN_PIECE_PX, source_width=SOURCE_WIDTH) -> dict:
     """The flat scene of ``scene`` seen by ``camera``; ``ValueError("behind_eye")``
-    when a perspective eye has a point of the scene behind or beside it."""
+    when a perspective eye has a point of the scene behind or beside it.
+
+    ``min_piece_px`` — a gap or a bit of a line shorter than this merges
+    into its neighbour; it is in px of the reference frame: the bounds of
+    the flat scene across ``source_width`` px (``unit`` px per picture
+    unit), not of a canvas zoom or an export size, so that every kernel
+    that draws the scene cuts the same pieces.
+    """
     projector = Projector(camera)
     solids = {s.id: s for s in scene.solids}
     if len(solids) != len(scene.solids):
@@ -280,7 +292,8 @@ def _ground_trace(corners):
 
 
 # The look of a hidden piece (``look["hidden"]``); the default is pale
-# dashes (``dashpale``).
+# dashes (``dashpale``). ``stroke_opacity`` is a multiplier of the opacity
+# of the line (of ``ROLE_STROKES``, 1 when its role sets none).
 HIDDEN_LOOKS = {
     'dashpale': {'stroke_dash_ratio': 0.55, 'stroke_dash_period_px': 8.0, 'stroke_opacity': 0.55},
     'dash': {'stroke_dash_ratio': 0.55, 'stroke_dash_period_px': 8.0},
@@ -393,7 +406,10 @@ def to_document(flat, *, look=None, document_id='space', registry_version=None) 
                 continue
             overrides = dict(ROLE_STROKES.get(s['role'], {}))
             if hidden:
+                opacity = overrides.get('stroke_opacity', 1.0)
                 overrides.update(HIDDEN_LOOKS[hidden_look])
+                if 'stroke_opacity' in HIDDEN_LOOKS[hidden_look]:
+                    overrides['stroke_opacity'] = opacity * HIDDEN_LOOKS[hidden_look]['stroke_opacity']
             if hidden:
                 overrides['z_index'] = z_of(min(rank[sid] for sid in piece['hiddenBy']) * Z_RANK
                                             + Z_TIERS['hidden'])

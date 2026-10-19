@@ -590,3 +590,45 @@ def test_many_solids_keep_lines_under_the_points():
     rank = {sid: k for k, sid in enumerate(flat['solids'])}
     by_solid = sorted((rank[f['solid']], z) for f, z in zip(flat['fills'], fills))
     assert [z for _, z in by_solid] == sorted(fills)    # the solids far to near, one after another
+
+
+def test_pieces_merge_by_px_of_the_reference_frame():
+    """The merge threshold is in px of the reference frame — the source view
+    ``native.render`` draws the document in (``SOURCE_WIDTH`` across the
+    bounds) — whatever the zoom of a canvas or the size of an export."""
+    from animageo.native import rendering
+    from animageo.native.space import flat as flat_module
+    assert flat_module.SOURCE_WIDTH == rendering.SOURCE_WIDTH
+    cube = space.cube(size=2)
+    delta = 0.0035                                      # the bit of the segment left of the cube
+    scene = space.SpaceScene(solids=[space.SceneSolid('cube', cube)],
+                             segments=[space.SceneSegment('s', (-delta, 4, 1), (3, 4, 1))])
+    cam = ortho(-90, 0)
+    flat = space.flat_scene(scene, cam)
+    assert flat['unit'] == pytest.approx(rendering.source_view(space.to_document(flat))['ptUnit'])
+    bit_px = delta * flat['unit']
+    assert 0.5 < bit_px < 0.9
+
+    def states(min_piece_px):
+        stroke = space.flat_scene(scene, cam, min_piece_px=min_piece_px)['strokes']
+        return [p['visibility'] for p in next(s for s in stroke if s['id'] == 's')['pieces']]
+
+    assert states(bit_px * 1.01) == ['hidden', 'visible']
+    assert states(bit_px * 0.99) == ['visible', 'hidden', 'visible']
+
+
+def test_hidden_opacity_multiplies_the_opacity_of_the_line(monkeypatch):
+    from animageo.native.space import flat as flat_module
+    multiplier = flat_module.HIDDEN_LOOKS['dashpale']['stroke_opacity']
+    monkeypatch.setitem(flat_module.ROLE_STROKES, 'aux', {'stroke_opacity': 0.5})
+    flat = space.flat_scene(cube_scene(), ortho(-60, 25))
+    doc = space.to_document(flat)
+    k, seen = 0, {}
+    for s in flat['strokes']:
+        for piece in s['pieces']:
+            k += 1
+            seen.setdefault((s['role'], piece['visibility']), set()).add(
+                round(doc['appearance'][f's{k}']['overrides'].get('stroke_opacity', 1.0), 12))
+    assert seen['aux', 'hidden'] == {round(0.5 * multiplier, 12)}
+    assert seen['edge', 'hidden'] == {round(multiplier, 12)}
+    assert seen['edge', 'visible'] == {1.0}
