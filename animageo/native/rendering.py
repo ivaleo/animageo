@@ -108,6 +108,7 @@ APPEARANCE_STYLE_KEYS = frozenset({
     # labels
     'label_color', 'label_anchor', 'label_radial_offset_px', 'font_size_px',
     'label_value_precision', 'label_value_strip_zeros', 'label_value_separator', 'label_angle_unit',
+    'label_halo_px', 'label_halo_color', 'label_halo_opacity',
     # ticks and arrows
     'tick_count', 'tick_style', 'tick_length_px', 'tick_width_px', 'tick_shift_px', 'tick_radius_px',
     'arrow_length_px', 'arrow_width_px',

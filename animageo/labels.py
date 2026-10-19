@@ -144,8 +144,291 @@ def _display_name(scene, elem) -> str:
 
 
 def _default_label_text(scene, elem) -> str:
-    """``$...$`` fallback label text using the display name (primes/subscripts)."""
-    return "$" + _display_name(scene, elem) + "$"
+    """``$...$`` fallback label text using the display name (primes/subscripts,
+    the underscore by :func:`name_tex`)."""
+    return "$" + name_tex(_display_name(scene, elem)) + "$"
+
+
+# ── Names as TeX and labels as parts (1.11.0) ──────────────────────────────
+#
+# A name is read as TeX reads it in math mode, as GeoGebra shows it: ``_x``
+# indexes the one character (or command) after it — ``A_1`` is A₁, ``A_12``
+# is A₁2 — and ``_{…}`` the group; ``^`` likewise raises. An underscore or a
+# caret with nothing to index (at the end, before a space, another script
+# sign or a closing brace, before an unclosed brace) is the character itself,
+# and so is a brace without its pair: the name always compiles.
+
+_LITERAL_SCRIPT = {'_': r'\_', '^': r'\text{\textasciicircum}'}
+
+
+def _balanced_braces(name: str) -> set:
+    """Positions of the braces of ``name`` that have their pair (an escaped
+    ``\\{`` or ``\\}`` is no brace)."""
+    paired, stack, i = set(), [], 0
+    while i < len(name):
+        ch = name[i]
+        if ch == '\\':
+            i += 2
+            continue
+        if ch == '{':
+            stack.append(i)
+        elif ch == '}' and stack:
+            paired.add(stack.pop())
+            paired.add(i)
+        i += 1
+    return paired
+
+
+def _command_end(name: str, i: int) -> int:
+    """End of the TeX command starting with the backslash at ``i``."""
+    j = i + 1
+    if j < len(name) and name[j].isascii() and name[j].isalpha():
+        while j < len(name) and name[j].isascii() and name[j].isalpha():
+            j += 1
+        return j
+    return min(j + 1, len(name))
+
+
+def _script_takes(name: str, i: int, paired: set) -> bool:
+    """Whether the ``_`` or ``^`` at ``i`` has something to index."""
+    if i + 1 >= len(name):
+        return False
+    nxt = name[i + 1]
+    if nxt.isspace() or nxt in '_^}':
+        return False
+    return nxt != '{' or (i + 1) in paired
+
+
+def name_tex(name: str) -> str:
+    """The TeX (inside ``$…$``) of a label name: the name as it is, with an
+    underscore, a caret or a brace that would not compile written as the
+    character itself (module notes above)."""
+    paired = _balanced_braces(name)
+    out, i = [], 0
+    while i < len(name):
+        ch = name[i]
+        if ch == '\\':
+            if i + 1 >= len(name):
+                out.append(r'\backslash')
+                i += 1
+                continue
+            end = _command_end(name, i)
+            out.append(name[i:end])
+            i = end
+            continue
+        if ch in '{}':
+            out.append(ch if i in paired else '\\' + ch)
+        elif ch in '_^':
+            out.append(ch if _script_takes(name, i, paired) else _LITERAL_SCRIPT[ch])
+        else:
+            out.append(ch)
+        i += 1
+    return ''.join(out)
+
+
+_GREEK = {
+    'alpha': 'α', 'beta': 'β', 'gamma': 'γ', 'delta': 'δ', 'epsilon': 'ϵ', 'varepsilon': 'ε', 'zeta': 'ζ',
+    'eta': 'η', 'theta': 'θ', 'vartheta': 'ϑ', 'iota': 'ι', 'kappa': 'κ', 'lambda': 'λ', 'mu': 'μ', 'nu': 'ν',
+    'xi': 'ξ', 'pi': 'π', 'varpi': 'ϖ', 'rho': 'ρ', 'varrho': 'ϱ', 'sigma': 'σ', 'varsigma': 'ς', 'tau': 'τ',
+    'upsilon': 'υ', 'phi': 'ϕ', 'varphi': 'φ', 'chi': 'χ', 'psi': 'ψ', 'omega': 'ω',
+    'Gamma': 'Γ', 'Delta': 'Δ', 'Theta': 'Θ', 'Lambda': 'Λ', 'Xi': 'Ξ', 'Pi': 'Π', 'Sigma': 'Σ',
+    'Upsilon': 'Υ', 'Phi': 'Φ', 'Psi': 'Ψ', 'Omega': 'Ω',
+}
+_COMMAND_CHARS = dict(_GREEK, prime='′', infty='∞', circ='°', degree='°', cdot='·', times='×', approx='≈',
+                      neq='≠', ne='≠', leq='≤', le='≤', geq='≥', ge='≥', pm='±', angle='∠', triangle='△',
+                      perp='⊥', parallel='∥', sim='∼')
+_ESCAPED_CHARS = {'_': '_', '{': '{', '}': '}', ' ': ' ', ',': ' ', ';': ' ', '!': '', '%': '%', '#': '#',
+                  '&': '&', '$': '$'}
+# math italic: Latin letters and lowercase Greek; digits, capital Greek,
+# Cyrillic (set upright in \text) and signs are upright
+_ITALIC_GREEK = frozenset('αβγδϵεζηθϑικλμνξπϖρϱσςτυϕφχψω')
+
+
+def _italic(ch: str) -> bool:
+    return (ch.isascii() and ch.isalpha()) or ch in _ITALIC_GREEK
+
+
+class _NoParts(Exception):
+    pass
+
+
+def _parse_name(name, i, end, script, paired, out):
+    """Append ``(char, script)`` of ``name[i:end]`` to ``out``."""
+    while i < end:
+        i = _parse_atom(name, i, end, script, paired, out)
+
+
+def _parse_atom(name, i, end, script, paired, out) -> int:
+    ch = name[i]
+    if ch == '\\':
+        if i + 1 >= end:
+            out.append(('\\', script))
+            return i + 1
+        stop = _command_end(name, i)
+        word = name[i + 1:stop]
+        char = _COMMAND_CHARS.get(word) if word[:1].isalpha() else _ESCAPED_CHARS.get(word)
+        if char is None:
+            raise _NoParts
+        if char:
+            out.append((char, script))
+        return stop
+    if ch == '{':
+        if i not in paired:
+            out.append(('{', script))
+            return i + 1
+        close = next(j for j in sorted(paired) if j > i and name[j] == '}' and _group_close(name, i) == j)
+        _parse_name(name, i + 1, close, script, paired, out)
+        return close + 1
+    if ch == '}':
+        if i in paired:         # the end of a group handled by its opening brace
+            return i + 1
+        out.append(('}', script))
+        return i + 1
+    if ch in '_^':
+        if not _script_takes(name, i, paired):
+            out.append((ch, script))
+            return i + 1
+        if script is not None:
+            raise _NoParts      # a script of a script
+        return _parse_atom(name, i + 1, end, 'sub' if ch == '_' else 'sup', paired, out)
+    if ch == "'":
+        out.append(('′', script))
+        return i + 1
+    out.append((ch, script))
+    return i + 1
+
+
+def _group_close(name, i) -> int:
+    depth, j = 0, i
+    while j < len(name):
+        c = name[j]
+        if c == '\\':
+            j += 2
+            continue
+        if c == '{':
+            depth += 1
+        elif c == '}':
+            depth -= 1
+            if depth == 0:
+                return j
+        j += 1
+    return -1
+
+
+def _merge_parts(chars) -> list:
+    parts = []
+    for char, script, italic in chars:
+        if parts and parts[-1]['italic'] == italic and parts[-1]['script'] == script:
+            parts[-1]['text'] += char
+        else:
+            parts.append({'text': char, 'italic': italic, 'script': script})
+    return parts
+
+
+def label_parts_of_name(name: str):
+    """The parts of a label name as TeX sets it (:func:`name_tex`):
+    ``[{"text", "italic", "script"}]`` — ``script`` ``"sub"``, ``"sup"`` or
+    ``None``, adjacent characters of one look merged; Latin letters and
+    lowercase Greek italic, the rest upright, a prime ``′``. ``None`` when the
+    name holds a TeX command other than a Greek letter or a common sign, or a
+    script inside a script."""
+    out = []
+    try:
+        _parse_name(name, 0, len(name), None, _balanced_braces(name), out)
+    except _NoParts:
+        return None
+    return _merge_parts((char, script, _italic(char)) for char, script in out)
+
+
+def label_parts_of_value(tex: str):
+    """The parts of a formatted value (:func:`format_label_value`): upright,
+    a minus sign ``−``, ``°`` for the degree, ``∞``; ``None`` for TeX it does
+    not know."""
+    text = str(tex)
+    unit = ''
+    if text.endswith(r'^{\circ}'):
+        text, unit = text[:-len(r'^{\circ}')], '°'
+    mrm = re.fullmatch(r'\\mathrm\{([^{}\\]*)\}', text)
+    if mrm:
+        text = mrm.group(1)
+    elif text in (r'\infty', r'-\infty'):
+        text = text.replace(r'\infty', '∞')
+    elif '\\' in text or '{' in text or '^' in text or '_' in text:
+        return None
+    if text.startswith('-'):
+        text = '−' + text[1:]
+    return _merge_parts((c, None, False) for c in text + unit)
+
+
+def _separator_parts(separator: str):
+    out = []
+    try:
+        _parse_name(separator, 0, len(separator), None, _balanced_braces(separator), out)
+    except _NoParts:
+        return None
+    return _merge_parts((char, script, False) for char, script in out)
+
+
+def resolve_label_parts(scene, elem):
+    """The parts of the label :func:`resolve_label_text` gives (name, value or
+    both with the separator) — see :func:`label_parts_of_name` — or ``None``
+    when its text is not made of them (a caption, a dynamic caption, TeX the
+    parts do not cover)."""
+    is_name = _label_text(scene, elem) == _default_label_text(scene, elem)
+    name = label_parts_of_name(_display_name(scene, elem)) if is_name else None
+    mode = normalize_label_mode(_resolve_style(scene, elem, "label_mode", default=LABEL_MODE_LABEL))
+    if mode == LABEL_MODE_LABEL:
+        return name
+    formatted = format_label_value(scene, elem)
+    if formatted is None:
+        return name
+    value = label_parts_of_value(formatted)
+    if mode == LABEL_MODE_VALUE:
+        return value
+    separator = _separator_parts(str(_resolve_style(scene, elem, "label_value_separator", default=" = ")))
+    if name is None or value is None or separator is None:
+        return None
+    return _merge_parts((p['text'], p['script'], p['italic']) for p in name + separator + value)
+
+
+# ── The halo of a label (1.11.0) ───────────────────────────────────────────
+
+DEFAULT_LABEL_HALO_PX = 0.0
+
+
+def resolve_label_halo(scene, elem) -> dict:
+    """``{"widthPx", "color", "opacity"}`` of the halo of a label: a stroke of
+    ``widthPx`` style pixels (half of it outside the glyphs) drawn under the
+    glyphs. The keys ``label_halo_px``, ``label_halo_color``,
+    ``label_halo_opacity`` of the element (its style chain), else of the
+    ``rendering`` section, else ``0`` (no halo), the background colour and
+    ``1``."""
+    from .style.colorspace import as_hex
+    cfg = getattr(scene, 'style_config', None)
+    rendering = getattr(cfg, 'rendering', None) or {}
+    presets = getattr(cfg, 'presets', None) or {}
+    background = (presets.get('color') or {}).get('background') or '#ffffff'
+
+    def expand(value):
+        if isinstance(value, str) and hasattr(cfg, 'resolve_ref'):
+            return cfg.resolve_ref(value)
+        return value
+
+    def number(value, fallback):
+        try:
+            out = float(value)
+        except (TypeError, ValueError):
+            return fallback
+        return out if math.isfinite(out) else fallback
+
+    width = number(_resolve_style(scene, elem, 'label_halo_px',
+                                  default=expand(rendering.get('label_halo_px', DEFAULT_LABEL_HALO_PX))),
+                   DEFAULT_LABEL_HALO_PX)
+    color = _resolve_style(scene, elem, 'label_halo_color', default=expand(rendering.get('label_halo_color')))
+    color = as_hex(color) or as_hex(background) or '#ffffff'
+    opacity = number(_resolve_style(scene, elem, 'label_halo_opacity',
+                                    default=expand(rendering.get('label_halo_opacity', 1.0))), 1.0)
+    return {'widthPx': max(width, 0.0), 'color': color, 'opacity': min(max(opacity, 0.0), 1.0)}
 
 
 def _label_text(scene, elem) -> str:

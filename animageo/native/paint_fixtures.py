@@ -253,6 +253,21 @@ def _labels():
     out.append(('label_anchor_overrides', d, None))
     d = _triangle('label_offsets').look('A', label={'mode': 'name', 'offsetWorld': [0.3, -0.2]})
     out.append(('label_offsets', d, None))
+    # the underscore: one character, a group, nothing to index
+    d = _triangle('label_names').segment('a', 'A', 'B').segment('b', 'B', 'C').angle('alpha', 'B', 'A', 'C')
+    for el_id, name in (('A', 'A_1'), ('B', 'B_{12}'), ('C', 'angle_C'), ('a', 'a_'), ('b', 'b__2'),
+                        ('alpha', '\\alpha_1')):
+        d.doc['elements'][el_id]['displayName'] = name
+    d.label('a').label('b', 'name_value').label('alpha', 'name_value')
+    out.append(('label_names', d, None))
+    # the halo: of the style, of an element, on a dark background
+    d = _triangle('label_halo').segment('a', 'A', 'B').angle('alpha', 'B', 'A', 'C').text('t', 'x', 'C')
+    d.label('a').label('alpha', 'value')
+    d.overrides('a', label_halo_px=4, label_halo_color='#ffee00', label_halo_opacity=0.5)
+    out.append(('label_halo', d, {'rendering': {'label_halo_px': 3}}))
+    out.append(('label_halo_dark', copy.deepcopy(d),
+                {'presets': {'color': {'background': '#1e1e1e', 'strong': '#f0f0f0'}},
+                 'rendering': {'label_halo_px': 2, 'label_halo_opacity': 0.8}}))
     return out
 
 

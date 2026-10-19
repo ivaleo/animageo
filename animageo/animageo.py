@@ -34,7 +34,7 @@ from .style.config import StyleConfig, resolve_style_input
 from .style.config import style_path_for_geostyle as _style_path_for_geostyle
 from .style.resolver import resolve as _resolve_style
 from .style.colorspace import COLOR_SPACES, same_color as _same_color
-from .labels import resolve_label_text, resolve_label_spec
+from .labels import resolve_label_halo, resolve_label_text, resolve_label_spec
 from .ui import (
     RusTex, correctedLabel, create_label, round_corners_vmobject,
     ShowText, NumberedFrame, FixedLabel, CustomArrowTip, LABEL_ANCHORS,
@@ -2278,7 +2278,8 @@ class AnimaGeoScene(MovingCameraScene):
         alpha = 0.0 if alpha < 0 else (1.0 if alpha > 1 else alpha)
         for sub in mobj.family_members_with_points():
             has_fill = getattr(sub, 'get_fill_opacity', lambda: 0)() > 0
-            if has_fill:
+            # the halo of a label fades with its filled glyphs
+            if has_fill or getattr(sub, '_animageo_is_halo', False):
                 # Filled sub-mobject: fade it in rather than partial-draw.
                 try:
                     sub.set_fill(opacity=sub.get_fill_opacity() * alpha)
@@ -2333,14 +2334,28 @@ class AnimaGeoScene(MovingCameraScene):
         a mobject with no glyph substructure.
         """
         alpha = 0.0 if alpha < 0 else (1.0 if alpha > 1 else alpha)
-        leaves = list(mobj.family_members_with_points())
+        family = list(mobj.family_members_with_points())
+        leaves = [leaf for leaf in family if not getattr(leaf, '_animageo_is_halo', False)]
         if not leaves:
             self._effect_fade(mobj, alpha)
             return
         n = len(leaves)
         show = int(round(alpha * n))
+        hidden = set()
         for i, leaf in enumerate(leaves):
             self._effect_fade(leaf, 1.0 if i < show else 0.0)
+            if i >= show:
+                hidden.add(id(leaf))
+        # the halo of a glyph (``_add_label_halo``: one copy per glyph, in
+        # order) shows with its glyph
+        for owner in mobj.get_family():
+            for group in owner.submobjects:
+                if not getattr(group, '_animageo_is_halo_group', False):
+                    continue
+                glyphs = [leaf for leaf in owner.family_members_with_points()
+                          if not getattr(leaf, '_animageo_is_halo', False)]
+                for glyph, ring in zip(glyphs, group.family_members_with_points()):
+                    self._effect_fade(ring, 0.0 if id(glyph) in hidden else 1.0)
 
     def _apply_effect_alpha(self, name, kind, alpha):
         """Transform the current mobject for *name* by *alpha* per effect *kind*.
@@ -3022,6 +3037,7 @@ class AnimaGeoScene(MovingCameraScene):
             and label_spec is not None
             and label_spec.has_dynamic_value
         )
+        label_halo = resolve_label_halo(self, elem)
         label_offset_px = _resolve_style(self, elem, 'label_offset_px', default=None)
         auto_placed = bool(elem.style.get('_auto_placed'))
         if has_label and getattr(self, 'label_point_clearance', False):
@@ -3137,6 +3153,7 @@ class AnimaGeoScene(MovingCameraScene):
             has_label=has_label,
             label_spec=label_spec,
             label_dynamic=label_dynamic,
+            label_halo=label_halo,
             label_roff=label_roff,
             strich_len=strich_len_mu,
             strich_width=strich_width,
@@ -3238,6 +3255,7 @@ class AnimaGeoScene(MovingCameraScene):
         )
         if label is None:
             return None
+        self._add_label_halo(label, ctx)
         # The spot the label is attached to (scene units), for render reports.
         label._animageo_label_anchor = (float(pos[0]), float(pos[1]))
         # P2-A: draw the leader connector (attach → anchor, scene MU) for a
@@ -3256,6 +3274,38 @@ class AnimaGeoScene(MovingCameraScene):
                 logger.debug("leader render failed for %s",
                              getattr(elem, 'name', '?'), exc_info=True)
         return label
+
+    def _add_label_halo(self, label, ctx):
+        """Put the halo of a label (``ctx.label_halo``, ``labels.resolve_label_halo``)
+        under its glyphs: a copy of each glyph, unfilled, stroked ``widthPx``
+        style pixels wide with round joints and caps, first in the label so it
+        is drawn before the glyphs at the same layer. The copies are tagged
+        ``_animageo_is_halo``; the effects of the video reveal each with its
+        glyph."""
+        halo = getattr(ctx, 'label_halo', None)
+        if not halo or halo['widthPx'] <= 0 or halo['opacity'] <= 0:
+            return
+        glyphs = [leaf for leaf in label.family_members_with_points()
+                  if not getattr(leaf, '_animageo_is_halo', False)]
+        if not glyphs:
+            return
+        width = stroke_width_to_manim(halo['widthPx'], ctx.ptUnit_style)
+        copies = []
+        for glyph in glyphs:
+            ring = glyph.copy()
+            ring.submobjects = []
+            ring.set_fill(opacity=0)
+            ring.set_stroke(color=ManimColor(halo['color']), width=width, opacity=halo['opacity'])
+            ring.set_stroke(width=0, background=True)
+            ring.joint_type = LineJointType.ROUND
+            ring.cap_style = CapStyleType.ROUND
+            ring.z_index = glyph.z_index
+            ring._animageo_is_halo = True
+            copies.append(ring)
+        group = VGroup(*copies)
+        group.z_index = label.z_index
+        group._animageo_is_halo_group = True
+        label.add_to_back(group)
 
     # ── Contrast-aware label colour (P1-C, rendering half) ───────────────
     def _label_contrast_mode(self) -> str:
@@ -4044,6 +4094,7 @@ class AnimaGeoScene(MovingCameraScene):
                        tex_template=RusTex)
         mobj.set(font_size=ctx.font_size)
         mobj.set_z_index(ctx.zz)
+        self._add_label_halo(mobj, ctx)
 
         base = geo.resolve_text_position(self.geo, text)
         pos = np.array([float(base[0]), float(base[1]), 0.0])

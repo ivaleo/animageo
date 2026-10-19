@@ -70,6 +70,10 @@ def test_the_renderer_draws_the_paint(case):
             assert (angle['range'], angle['arcs'], angle['arcShiftPx'], angle['joint']) == \
                 (ctx.angle_range, ctx.tick_count, ctx.arc_shift_px, ctx.ra_joint), where
         label = entry.get('label')
+        if label is not None:
+            halo = ctx.label_halo
+            assert (label['halo']['widthPx'], label['halo']['color'], label['halo']['opacity']) == \
+                (pytest.approx(halo['widthPx']), halo['color'], pytest.approx(halo['opacity'])), where
         if label is not None and label.get('shown'):
             assert ctx.has_label, where
             assert label['anchor'] == (ctx.label_anchor or 'BL'), where

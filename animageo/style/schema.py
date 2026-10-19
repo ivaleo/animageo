@@ -142,7 +142,10 @@ JSON Style File Structure
         "fast_value_labels":      <bool>,         # default true
         "label_contrast":         "off"|"auto",   # default off (P1-C: recolour
                                                   # labels on low-contrast fills)
-        "label_contrast_threshold": <float>       # default 0.35 luminance gap
+        "label_contrast_threshold": <float>,      # default 0.35 luminance gap
+        "label_halo_px":          <float>,        # default 0: no halo (1.11.0)
+        "label_halo_color":       <"#hex"|ref>,   # default the background
+        "label_halo_opacity":     <float>         # default 1
     },
 
 # rendering.fast_value_labels (default true): during animation, labels that show
@@ -204,6 +207,18 @@ Visibility / labels
   ``label_value_precision``, ``label_value_strip_zeros``,
   ``label_angle_unit``, ``label_value_separator``, ``label_color``,
   ``label_anchor``, ``label_placement_locked``
+- ``label_halo_px``, ``label_halo_color``, ``label_halo_opacity`` (1.11.0):
+  the halo of a label (of a free text — of the text): a stroke of its glyphs
+  ``label_halo_px`` style pixels wide (half outside the glyph), round joints,
+  under the glyphs, in SVG, PDF, PNG, EPS and video (not TikZ). Fall back to
+  ``rendering.label_halo_*``; defaults ``0`` (none), the background colour,
+  ``1`` (``labels.resolve_label_halo``).
+
+A label name is TeX of math mode (``labels.name_tex``): ``_x`` indexes one
+character or command (``A_1``, ``A_\\alpha``; ``A_12`` is A₁2), ``_{…}`` the
+group, ``^`` raises likewise; an underscore or caret with nothing to index
+(at the end, before a space, another script sign or a closing brace) and a
+brace without its pair are the characters themselves.
 
 Stroke (SVG-compatible)
 - ``stroke``, ``stroke_width_px``, ``stroke_opacity``,

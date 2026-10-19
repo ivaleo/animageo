@@ -40,6 +40,9 @@ class StyleProxy(dict):
     label_hint_px: List[float]         # [dx, dy] soft desired label centre, from the
                                        # element's anchor; read by auto-placement only
     label_radial_offset_px: float      # radial offset for angle labels
+    label_halo_px: float               # halo stroke under the glyphs, px (0 = none)
+    label_halo_color: str              # halo colour (default: the background)
+    label_halo_opacity: float          # halo opacity (default 1)
 
     # ── Stroke (lines / curves / boundaries) — SVG-compatible ────
     stroke: str                        # hex '#rrggbb'

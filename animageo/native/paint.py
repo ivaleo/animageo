@@ -35,12 +35,13 @@ _VALUE_ENUMS = {
     'label_angle_unit': ('degree', 'radian'),
 }
 _UNITS = {
-    'stroke': 'color', 'fill': 'color', 'label_color': 'color', 'hatch_color': 'color',
+    'stroke': 'color', 'fill': 'color', 'label_color': 'color', 'hatch_color': 'color', 'label_halo_color': 'color',
     'stroke_width_px': 'px', 'stroke_dash_period_px': 'px', 'size_px': 'px', 'font_size_px': 'px',
     'label_radial_offset_px': 'px', 'tick_length_px': 'px', 'tick_width_px': 'px', 'tick_shift_px': 'px',
     'tick_radius_px': 'px', 'arrow_length_px': 'px', 'arrow_width_px': 'px', 'arc_size_px': 'px',
     'arc_shift_px': 'px', 'right_angle_size_px': 'px', 'hatch_spacing_px': 'px', 'hatch_width_px': 'px',
-    'stroke_opacity': 'opacity', 'fill_opacity': 'opacity', 'hatch_opacity': 'opacity',
+    'label_halo_px': 'px',
+    'stroke_opacity': 'opacity', 'fill_opacity': 'opacity', 'hatch_opacity': 'opacity', 'label_halo_opacity': 'opacity',
     'stroke_dash_ratio': 'ratio',
     'hatch_angle_deg': 'deg',
     'tick_count': 'count', 'label_value_precision': 'count',
@@ -56,7 +57,9 @@ _DASH = ('stroke_dash_ratio', 'stroke_dash_period_px')
 _FILL = ('fill', 'fill_opacity')
 _HATCH = ('fill_pattern', 'hatch_angle_deg', 'hatch_spacing_px', 'hatch_width_px', 'hatch_color', 'hatch_opacity')
 _TICKS = ('tick_count', 'tick_style', 'tick_length_px', 'tick_width_px', 'tick_shift_px', 'tick_radius_px')
-_LABEL = ('label_color', 'font_size_px', 'label_anchor')
+# the halo of a label: a stroke of its glyphs under them (``labels.resolve_label_halo``)
+_HALO = ('label_halo_px', 'label_halo_color', 'label_halo_opacity')
+_LABEL = ('label_color', 'font_size_px', 'label_anchor') + _HALO
 _VALUE = ('label_value_precision', 'label_value_strip_zeros', 'label_value_separator')
 _ANGLE = ('angle_range', 'arc_size_px', 'arc_shift_px', 'tick_count', 'auto_radius', 'right_angle_marker',
           'right_angle_size_px', 'right_angle_joint', 'label_radial_offset_px', 'label_angle_unit')
@@ -82,7 +85,7 @@ _TYPES = {
     # a right-angle mark draws the square: no arcs to count or space
     'mark.right_angle': ('angle', _STROKE + _FILL + tuple(k for k in _ANGLE if k not in ('tick_count', 'arc_shift_px'))
                          + ('z_index',) + _LABEL + _VALUE),
-    'text': ('text', ('label_color', 'font_size_px', 'z_index')),
+    'text': ('text', ('label_color', 'font_size_px', 'z_index') + _HALO),
     'mark.equal_segments': (None, ()),
     'mark.equal_angles': (None, ()),
     'number': (None, ()),
@@ -119,6 +122,10 @@ _RENDERER_DEFAULTS = {
 _RENDERING_DEFAULTS = {
     'label_value_precision': ('label_value_precision', 1),
     'stroke_dash_period_px': ('dash_period_px', 10),
+    # ``None`` colour — the background colour
+    'label_halo_px': ('label_halo_px', 0.0),
+    'label_halo_color': ('label_halo_color', None),
+    'label_halo_opacity': ('label_halo_opacity', 1.0),
 }
 
 _CACHE = {}
@@ -454,10 +461,12 @@ def _value_format(final, value):
 
 def _label(final, elem, value, type_, z_label):
     from ..label_placement import ANCHOR_EDGES
-    from ..labels import resolve_label_text
+    from ..labels import resolve_label_halo, resolve_label_parts, resolve_label_text
     from .labels.layout import _label_geometry, _shown
     out = {'color': _color(value('label_color', '#000000')),
            'fontSizePx': _r(_num(value('font_size_px', 14.0), 14.0))}
+    halo = resolve_label_halo(final, elem)
+    out['halo'] = {'widthPx': _r(halo['widthPx']), 'color': halo['color'], 'opacity': _r(halo['opacity'])}
     if type_ == 'text':             # the text itself
         return out
     shown = _shown(final, elem)
@@ -471,6 +480,7 @@ def _label(final, elem, value, type_, z_label):
         out['z'] = z_label
         spot, _center, _half, off, _ = _label_geometry(final, elem, None)
         out['text'] = resolve_label_text(final, elem)
+        out['parts'] = resolve_label_parts(final, elem)
         out['spotWorld'] = [_r(spot[0]), _r(spot[1])]
         out['offsetWorld'] = [_r(off[0]), _r(off[1])]
     return out
@@ -500,8 +510,12 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
     ``arrow`` ``{lengthPx, widthPx}``, ``ticks`` (count, style, sizes, the
     lines or the wave in world units), ``angle`` (range, base and effective
     radius, arcs or the right-angle square), ``label`` ``{shown, color,
-    fontSizePx, anchor, radialOffsetPx, text, spotWorld, offsetWorld}`` (the
-    placement solver is not run: :func:`layout_labels` does) and ``value``
+    fontSizePx, halo, anchor, radialOffsetPx, text, parts, spotWorld,
+    offsetWorld}`` (the placement solver is not run: :func:`layout_labels`
+    does; ``halo`` ``{widthPx, color, opacity}`` — ``labels.resolve_label_halo``,
+    ``widthPx`` ``0`` draws none; ``parts`` — the runs of ``text``
+    ``[{text, italic, script}]``, ``labels.resolve_label_parts``, ``None`` for
+    a caption; a free text has ``color``, ``fontSizePx`` and ``halo``) and ``value``
     ``{precision, stripZeros, separator, angleUnit}``.
     """
     from types import SimpleNamespace
