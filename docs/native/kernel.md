@@ -783,13 +783,27 @@ offsetWorld?}, overrides?}}`. Each element gets:
   (as on the web canvas). `name` → classic `label`, `value` → `value`,
   `name_value` → `label_value`, `caption` → `label` with `text` as the
   label text, `none` → no label. `name` and `name_value` need a non-empty
-  `displayName`; `displayName` is the label name;
+  `displayName`; `displayName` is the label name. 1.11.0
+  (`has("label.parts")`): a name is TeX in math mode, as GeoGebra shows it —
+  `_x` indexes the one character (or command) after it (`A_12` is A₁2),
+  `_{…}` a group, `^` raises the same way; an `_` or `^` with nothing to
+  take (at the end, before a space, another script sign or a closing brace)
+  and a brace without its pair are the character itself, so every name
+  compiles (`labels.name_tex`). The still, the video and `resolve_paint`
+  (`label.text`, `label.parts`, §9.8) set one text;
 - `offsetWorld: [dx, dy]` (world units, y up) → `label_offset_px =
   [dx·ptUnit, dy·ptUnit]` of the source view, and the label is locked
   against automatic placement;
 - `overrides`: element style keys (stroke, fill, points, labels, ticks,
   arrows, angles, `z_index`, `z_index_fill`; the list is
   `rendering.APPEARANCE_STYLE_KEYS`). Other keys are not applied.
+  1.11.0 (`has("label.halo")`): the halo of a label — `label_halo_px` (the
+  width of a stroke of its glyphs drawn under them, style px, half of it
+  outside; `0` draws none), `label_halo_color` (default the background
+  colour), `label_halo_opacity` (default `1`); an element without them takes
+  `rendering.label_halo_*` of the style; the built-in style has no halo. It
+  is drawn in SVG, PDF, EPS, PNG and the video (the `write` and `create`
+  effects reveal it with its glyph), not in TikZ.
   1.11.0rc3 (`has("style_keys")`): `native.style_keys()` is the contract
   by type — `{format: "animageo-style-keys/v1", types: {type: {style, keys:
   {key: {unit, default, values?}}, transfers?}}}`, `type` a document type or
@@ -885,6 +899,10 @@ render(doc, *, style_config=None, export_layout=None, fmt="svg", out=None,
   `RuntimeError("native.render needs manim …")`; no cairosvg for PNG →
   `RuntimeError`.
 - `report=False` → `RenderResult.report is None`.
+- `t` with `timeline` (1.11.0, `has("render.t.effects")`): the frame of the
+  video at `t` — effects, events, labels placed at keyframes and explicit
+  `inputs` as the video draws them; the report gains `t`, `visible` and
+  `effects` (`docs/native/timeline.md` §3).
 
 All argument errors are raised before anything is drawn. Manim writes its
 LaTeX cache under `media/` of the working directory; a sandbox should run
@@ -1044,7 +1062,12 @@ inputs=None, export_layout=None)` (`has("resolve_paint")`) is the paint
 plan and style resolver as the renderer, without manim (the classic graph
 of §9.2, as `layout_labels`). `t` with `timeline`: the inputs and the
 visibility of `sample_timeline` and the style tracks of the timeline at `t`
-(its `@camera` does not change the paint). It returns
+(its `@camera` does not change the paint); 1.11.0: the presence of the frame
+of the video — an element in an enter or exit effect is drawn as
+`timeline_effects` says (`present`: an entrance begun, an exit not done,
+before the keyframe that changes its visibility), and its entry gains
+`effect` `{phase, effect, progress}` once the effect has begun (the paint
+is that of the element in full; `docs/native/timeline.md` §3). It returns
 
     {"format": "animageo-paint/v1", "background": "#ffffff",
      "ptUnit": 100.0, "ptUnitStyle": 100.0, "t": null,
@@ -1089,11 +1112,15 @@ breaking ties by `1e-6`) and, by type:
   `arcs`, `arcShiftPx`, `arcRadiiPx` or, for a right angle, `rightSizePx`
   and the corners of the square `square` (world units), `shownSize`,
   `right`, `joint`;
-- `label`: `shown`, `color`, `fontSizePx`, `anchor` (`label_anchor` →
+- `label`: `shown`, `color`, `fontSizePx`, `halo` (1.11.0: `{widthPx,
+  color, opacity}`, `widthPx` `0` — none), `anchor` (`label_anchor` →
   `rendering.label_anchor` of the given style → `BL`), `radialOffsetPx`
-  (angles), and for a shown label `z`, `text`, `spotWorld`, `offsetWorld`
-  (the placement solver is not run: `layout_labels` does); a text has only
-  `color` and `fontSizePx`;
+  (angles), and for a shown label `z`, `text`, `parts` (1.11.0: the runs of
+  `text` `[{text, italic, script}]` — `script` `sub`, `sup` or `null`;
+  Latin letters and lowercase Greek italic, digits, signs and values
+  upright; `null` for a caption or TeX the runs do not cover), `spotWorld`,
+  `offsetWorld` (the placement solver is not run: `layout_labels` does); a
+  text has only `color`, `fontSizePx` and `halo`;
 - `value` (types with a value): `precision`, `stripZeros`, `separator`,
   `angleUnit`.
 

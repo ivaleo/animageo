@@ -7,6 +7,85 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0] - Unreleased
+
+A still frame at `t` is the frame of the video at `t`, and the two
+renderers — the library and a canvas reading `resolve_paint` — set one
+label text and one rule for line caps. The operation registry stays `1.5`.
+New `native.has` flags: `label.halo`, `label.parts`, `timeline.effects`,
+`render.t.effects`. The public API snapshot gains `native.timeline_effects`
+and the four flags.
+
+### Added
+
+- `native.timeline_effects(doc, timeline, t)` — `{id: {phase, effect,
+  progress, present}}`: the enter and exit effects the video plays in the
+  interval holding `t` (a change of visibility at keyframe `k+1` plays in
+  `[t_k + at, t_k + at + duration]`), without manim
+  (`docs/native/timeline.md` §3).
+- The halo of a label: `label_halo_px` (a stroke of the glyphs drawn under
+  them, style px; `0` — none), `label_halo_color` (default the background),
+  `label_halo_opacity`, with `rendering.label_halo_*` as the fallback; the
+  built-in style draws none. Drawn in SVG, PDF, EPS, PNG and the video
+  (`write` and `create` reveal it with its glyph), not in TikZ; the keys are
+  in `style_keys()` for every type with a label and for a text.
+- `resolve_paint`: `label.halo` `{widthPx, color, opacity}` (also of a
+  text) and `label.parts` — the runs of the label text `[{text, italic,
+  script}]` (Latin letters and lowercase Greek italic, digits, signs and
+  values upright, `script` `sub`/`sup`), for a canvas to set the label as
+  the library does.
+- `resolve_paint` at `t`: an element in an enter or exit effect is drawn
+  as the video draws it (an entrance begun, an exit not done), and its
+  entry gains `effect` `{phase, effect, progress}`; the report of
+  `render(t)` gains `effects`.
+- Paint fixtures: names with indices, halos, a right-angle mark drawn as
+  arcs, the enter and exit effects of a timeline with a style track and a
+  discrete one (52 scenes). The test of the renderer against
+  `resolve_paint` covers the scenes with a timeline (as the frame
+  `render(t)` draws) and compares what is drawn: the layers of the fill and
+  the label, point size and shape, the hatch, the tick lines and the
+  corners of the wave, the radii of the arcs of an angle, the right-angle
+  square, the font size.
+
+### Changed
+
+- `native.render(t=…, timeline=…)` is the frame of the video at `t`: the
+  document loaded as the video loads it, then the timeline played up to `t`
+  without playing (`AnimaGeoScene.seek_keyframes`), the still and the video
+  drawing a frame with one function. Elements inside their enter and exit
+  effects, emphasis events, labels placed at keyframes and the camera are
+  drawn at `t`; an element entering before its keyframe is in the frame.
+  The PNG with `video` draws value labels with the cached digits of the
+  video and matches the frame the video writes to the pixel (at least
+  60 dB); before, the still dropped the effects and the events (27–48 dB
+  inside their windows).
+- Explicit `inputs` are on top of the timeline in the video too (as in the
+  still): the timeline no longer moves an element whose value is given.
+- A label name is TeX in math mode, as GeoGebra shows it: `_x` indexes one
+  character, `_{…}` a group, `^` likewise; an `_` or `^` with nothing to
+  take and a brace without its pair are the character itself, so every
+  name compiles, and the still, the video and `resolve_paint` set the same
+  text.
+- Line caps: `stroke_linecap` (default `rendering.line_cap`) ends a
+  segment, a line, a ray, a vector, an arc and a sector without its sides;
+  every other stroke and the ticks of a segment end butt — in SVG, PDF, EPS,
+  PNG, TikZ, the video and `resolve_paint` alike. The default stays `butt`.
+
+### Fixed
+
+- The video: a stroke without a cap or join of its own took those of the
+  stroke drawn before it (ticks after a round-capped segment, a polyline
+  after a round right-angle join); now butt and mitre, as the SVG.
+- TikZ capped every stroke — a polyline, the arcs of an angle, the ticks —
+  with the cap of the style.
+- The video: the overlay of `flash` and `circumscribe` stayed on screen at
+  its last opacity until the end of the interval after its window closed;
+  it now follows a moving target, and overlays stack by the order of their
+  events.
+- A right-angle mark with `right_angle_marker: false` (drawn as the arcs
+  of an angle) no longer reports its `tick_count` and `arc_shift_px` as
+  ineffective overrides.
+
 ## [1.11.0rc3] - 2026-10-19
 
 The contract of the paint between the native renderer and a second one
