@@ -2,7 +2,8 @@
 
 `viewDefaults.axes` and `viewDefaults.grid` of an `animageo-construction/v1`
 document ask `native.render` to draw coordinate axes and a grid under the
-elements. Evaluation does not read them. Code: `animageo/native/view.py`
+elements (`native.has("view_axes_grid")`, 1.11.0rc6). Evaluation does
+not read them. Code: `animageo/native/view.py`
 (manim-free), drawing — `AnimaGeoScene._addNativeViewBackground` (SVG, PNG,
 PDF, EPS, video) and the TikZ exporter.
 

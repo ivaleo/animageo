@@ -57,7 +57,7 @@ The operation registry `ops/v1` (kernel.md §4) and what this library can do.
 - `registry()` — The registry shipped with this library (cached).
 - `signature_hash(record)` — `"sha256:<hex>"` of the canonical JSON of `signature()`.
 - `FEATURES` — The names `has()` knows, a tuple of strings. A feature is added with the release that brings it and is never removed.
-- `has(feature)` — Whether this library has `feature` (one of `FEATURES`). A consumer checks a feature before it uses it, so it can run on an older library; the release that brought each feature is in the CHANGELOG.
+- `has(feature)` — Whether this library has `feature` (one of `FEATURES`). A consumer checks a feature before it uses it, so it can run on an older library; the release that brought each feature is in the CHANGELOG. It also answers the experimental features, kept outside `FEATURES` and this snapshot (`native.EXPERIMENTAL_FEATURES`): `space` — `animageo.native.space` (`space.md`).
 
 ## Evaluation and checks
 

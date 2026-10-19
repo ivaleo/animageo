@@ -40,6 +40,9 @@ before; one of `1.6` is `newer_registry` for an older library.
   and dash, no label; a conic: stroke, dash, fill below the stroke, label).
 - Fixtures: `parity/v1/curves` (14 scenes of graphs, 17 of conics, graph
   samples; `fixtures curves [--check]`) and `paint_curves.json`.
+- Features `native.has("view_axes_grid")`, `native.has("functions")`,
+  `native.has("conics")` (in `native.FEATURES`; the public API snapshot
+  gains these three names in the value of `FEATURES`).
 - Not yet: «Команды» for graphs and conics (the printer warns), a locus with
   `point.on_function` as its mover, the `x` of `point.on_function` animated
   in the video.
@@ -73,7 +76,9 @@ before; one of `1.6` is `newer_registry` for an older library.
     (hidden, face, section, plane looks) with the defaults of the spec;
   - fixtures `animageo-space-parity/v1` in `parity/v1/space`
     (`python -m animageo.native fixtures space [--check]`) and the flicker
-    metric `space.flicker`.
+    metric `space.flicker`;
+  - `native.has("space")` — an experimental feature, in
+    `native.EXPERIMENTAL_FEATURES` outside `FEATURES` and the snapshot.
 
 ### Changed
 

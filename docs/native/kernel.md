@@ -1349,7 +1349,8 @@ Time by element ID: the contract is `docs/native/timeline.md`. In short:
 
 Operations `since: "1.6"`, `beta` (formulas, decisions and checks in
 `docs/native/ops/<op>.md`). The view keys `axes` and `grid` of
-`viewDefaults` are [view.md](view.md).
+`viewDefaults` are [view.md](view.md). Features (1.11.0rc6):
+`has("functions")`, `has("conics")`, `has("view_axes_grid")`.
 
 | op | inputs → outputs | undefined | checks |
 |---|---|---|---|

@@ -22,6 +22,7 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     native.print_commands(doc).text          # document → «Команды» (docs/native/commands.md)
     native.steps(doc), native.describe(doc)  # steps and their text (docs/native/steps.md)
     native.has("locus")                      # features by stage (native.FEATURES)
+    native.has("space")                      # experimental: animageo.native.space (docs/native/space.md)
     native.sample_timeline(doc, timeline, t) # {t, inputs, visible} by ID (docs/native/timeline.md)
     native.timeline_effects(doc, timeline, t)  # {id: {phase, effect, progress, present}} of the video at t
     native.evaluate(doc, t=1.5, timeline=tl) # the document at time t, ev.visible
@@ -88,7 +89,11 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document', 'convert.formula',
             'import_report.text_template', 'import_report.text_literals', 'convert.command_synonyms',
             'convert.ggb_expressions', 'style_keys', 'resolve_paint', 'label.halo', 'label.parts',
-            'timeline.effects', 'render.t.effects')
+            'timeline.effects', 'render.t.effects', 'view_axes_grid', 'functions', 'conics')
+
+# Experimental features (``has`` answers them): outside ``FEATURES`` and the
+# public API snapshot, they may change or go without deprecation.
+EXPERIMENTAL_FEATURES = ('space',)
 
 
 def has(feature: str) -> bool:
@@ -133,8 +138,17 @@ def has(feature: str) -> bool:
     presence of :func:`resolve_paint` at ``t``; ``render.t.effects`` —
     ``render(t=…)`` is the frame of the video at ``t``: effects, events and
     labels placed at keyframes as the video draws them, the report gains
-    ``effects``)."""
-    return feature in FEATURES
+    ``effects``; 1.11.0rc6, registry 1.6: ``view_axes_grid`` —
+    ``viewDefaults.axes`` and ``viewDefaults.grid`` drawn by the renderer
+    and the style keys ``axes_*``, ``grid_*`` (``docs/native/view.md``);
+    ``functions`` — graphs ``y = f(x)``: the type ``function``,
+    ``function.expr``, ``function.root``, ``function.extremum``,
+    ``intersect.function_function``, ``intersect.function_line``,
+    ``point.on_function``; ``conics`` — the type ``conic``, ``conic.*`` and
+    ``intersect.line_conic``). Experimental, one of
+    :data:`EXPERIMENTAL_FEATURES`: ``space`` — :mod:`animageo.native.space`,
+    the space registry 1.0 (``docs/native/space.md``)."""
+    return feature in FEATURES or feature in EXPERIMENTAL_FEATURES
 
 __registry_version__ = REGISTRY_VERSION
 

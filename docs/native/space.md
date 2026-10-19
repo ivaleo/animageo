@@ -2,7 +2,9 @@
 
 **Experimental.** The space registry `1.0`, the space document, the flat
 scene `/1` and the fixtures may change without a deprecation period; the
-plane (its registry `REGISTRY_VERSION`, `native.*`) does not change. The
+plane (its registry `REGISTRY_VERSION`, `native.*`) does not change.
+`native.has("space")` says that the package is there (an experimental
+feature, outside `native.FEATURES` and the public API snapshot). The
 browser kernel of the web app repeats §2–§5 in TypeScript; the fixtures
 `animageo-space-parity/v1` (`parity/v1/space`) are the reference.
 
