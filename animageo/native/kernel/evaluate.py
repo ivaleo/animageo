@@ -583,6 +583,8 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
             if isinstance(value, Undefined) or not is_finite_value(value):
                 all_defined = False
                 break
+        if result and all(isinstance(v, Undefined) for v in result.values()):
+            all_defined = False                       # a search that found nothing has nothing to check
         if all_defined:
             computed[op_id] = (op['op'], args, result)
 

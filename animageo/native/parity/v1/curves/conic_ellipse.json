@@ -1,0 +1,385 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_ellipse",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc4",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_ellipse",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_F1": {
+    "id": "op_F1",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F1"
+     }
+    ]
+   },
+   "op_F2": {
+    "id": "op_F2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F2"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_e": {
+    "id": "op_e",
+    "op": "conic.ellipse_foci_point",
+    "args": {
+     "f1": {
+      "kind": "ref",
+      "elementId": "F1"
+     },
+     "f2": {
+      "kind": "ref",
+      "elementId": "F2"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "P"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "e"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "F1": {
+    "id": "F1",
+    "type": "point",
+    "displayName": "F1",
+    "producer": {
+     "operationId": "op_F1",
+     "slot": "point"
+    }
+   },
+   "F2": {
+    "id": "F2",
+    "type": "point",
+    "displayName": "F2",
+    "producer": {
+     "operationId": "op_F2",
+     "slot": "point"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "e": {
+    "id": "e",
+    "type": "conic",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "conic"
+    }
+   }
+  },
+  "inputs": {
+   "F1": {
+    "kind": "point",
+    "value": [
+     -3.0,
+     0.0
+    ]
+   },
+   "F2": {
+    "kind": "point",
+    "value": [
+     3.0,
+     0.0
+    ]
+   },
+   "P": {
+    "kind": "point",
+    "value": [
+     0.0,
+     4.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "axes",
+   "scale": 20.0,
+   "expect": {
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed"
+   }
+  },
+  {
+   "name": "turned",
+   "inputs": {
+    "F1": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    },
+    "F2": {
+     "kind": "point",
+     "value": [
+      3.0,
+      3.0
+     ]
+    },
+    "P": {
+     "kind": "point",
+     "value": [
+      0.0,
+      4.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 3.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       2.0,
+       2.0
+      ],
+      "axis": [
+       0.707106781,
+       0.707106781
+      ],
+      "a": 3.16227766,
+      "b": 2.828427125
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed"
+   }
+  },
+  {
+   "name": "circle",
+   "inputs": {
+    "F1": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    },
+    "F2": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    },
+    "P": {
+     "kind": "point",
+     "value": [
+      4.0,
+      5.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 5.0
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       1.0,
+       1.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 5.0
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed"
+   }
+  },
+  {
+   "name": "between",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "e": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "degenerate_conic"
+    }
+   },
+   "checks": {}
+  }
+ ]
+}

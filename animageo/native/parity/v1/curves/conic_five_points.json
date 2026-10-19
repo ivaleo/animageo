@@ -1,0 +1,933 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_five_points",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc4",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_five_points",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_D": {
+    "id": "op_D",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "D"
+     }
+    ]
+   },
+   "op_E": {
+    "id": "op_E",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "E"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "conic.five_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     },
+     "c": {
+      "kind": "ref",
+      "elementId": "C"
+     },
+     "d": {
+      "kind": "ref",
+      "elementId": "D"
+     },
+     "e": {
+      "kind": "ref",
+      "elementId": "E"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "c"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "D": {
+    "id": "D",
+    "type": "point",
+    "displayName": "D",
+    "producer": {
+     "operationId": "op_D",
+     "slot": "point"
+    }
+   },
+   "E": {
+    "id": "E",
+    "type": "point",
+    "displayName": "E",
+    "producer": {
+     "operationId": "op_E",
+     "slot": "point"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "conic",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "conic"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     3.0,
+     0.0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     -3.0,
+     0.0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     0.0,
+     2.0
+    ]
+   },
+   "D": {
+    "kind": "point",
+    "value": [
+     0.0,
+     -2.0
+    ]
+   },
+   "E": {
+    "kind": "point",
+    "value": [
+     1.8,
+     1.6
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "ellipse",
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 2.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -2.0
+     }
+    },
+    "E": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.8,
+      "y": 1.6
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    }
+   },
+   "checks": {
+    "op_c:on_curve": "passed"
+   }
+  },
+  {
+   "name": "circle",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      5.0,
+      0.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      0.0,
+      5.0
+     ]
+    },
+    "C": {
+     "kind": "point",
+     "value": [
+      -5.0,
+      0.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      3.0,
+      4.0
+     ]
+    },
+    "E": {
+     "kind": "point",
+     "value": [
+      -4.0,
+      -3.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 4.0
+     }
+    },
+    "E": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": -3.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 5.0
+     }
+    }
+   },
+   "checks": {
+    "op_c:on_curve": "passed"
+   }
+  },
+  {
+   "name": "hyperbola",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      2.0,
+      0.5
+     ]
+    },
+    "C": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      -2.0,
+      -0.5
+     ]
+    },
+    "E": {
+     "kind": "point",
+     "value": [
+      4.0,
+      0.25
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.5
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": -1.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": -0.5
+     }
+    },
+    "E": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 0.25
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.707106781,
+       0.707106781
+      ],
+      "a": 1.414213562,
+      "b": 1.414213562
+     }
+    }
+   },
+   "checks": {
+    "op_c:on_curve": "passed"
+   }
+  },
+  {
+   "name": "parabola",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      0.0,
+      0.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    },
+    "C": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      1.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      2.0,
+      4.0
+     ]
+    },
+    "E": {
+     "kind": "point",
+     "value": [
+      -2.0,
+      4.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 1.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 4.0
+     }
+    },
+    "E": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 4.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    }
+   },
+   "checks": {
+    "op_c:on_curve": "passed"
+   }
+  },
+  {
+   "name": "repeated",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      3.0,
+      0.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      3.0,
+      0.0
+     ]
+    },
+    "C": {
+     "kind": "point",
+     "value": [
+      0.0,
+      2.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      0.0,
+      -2.0
+     ]
+    },
+    "E": {
+     "kind": "point",
+     "value": [
+      1.8,
+      1.6
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 2.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -2.0
+     }
+    },
+    "E": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.8,
+      "y": 1.6
+     }
+    },
+    "c": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "degenerate_conic"
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "one_place",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    },
+    "C": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    },
+    "E": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "E": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "c": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "coincident_points"
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "four_on_a_line",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      -2.0,
+      0.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      0.0
+     ]
+    },
+    "C": {
+     "kind": "point",
+     "value": [
+      1.0,
+      0.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      2.0,
+      0.0
+     ]
+    },
+    "E": {
+     "kind": "point",
+     "value": [
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "E": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "c": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "degenerate_conic"
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "two_lines",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      0.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      0.0,
+      0.0
+     ]
+    },
+    "C": {
+     "kind": "point",
+     "value": [
+      1.0,
+      0.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      0.0,
+      1.0
+     ]
+    },
+    "E": {
+     "kind": "point",
+     "value": [
+      0.0,
+      2.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "E": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 2.0
+     }
+    },
+    "c": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "degenerate_conic"
+    }
+   },
+   "checks": {}
+  }
+ ]
+}

@@ -444,3 +444,12 @@ def test_commands_print_functions_with_a_warning():
 def test_steps_describe_functions():
     d = Doc().function('f', op('-', power(X, 2), n(2))).roots('r', 'f', -3, 3, count=2)
     assert 'нули r1, r2 функции f' in '\n'.join(native.describe(d.doc))
+
+
+def test_a_search_that_finds_nothing_has_no_checks():
+    """As in 2D, an operation with no defined output has nothing to check."""
+    e = ev(Doc().function('f', op('+', power(X, 2), n(1))).roots('r', 'f', -1, 2, count=2))
+    assert run_checks(e).results == {}
+    d = Doc().function('f', power(X, 2)).free('A', 0.5, 2).free('B', 0.5, 2).segment('s', 'A', 'B')
+    e = ev(_fl(d, 's'))
+    assert e.elements['p1']['reason'] == 'zero_length' and 'op_p:on_both' not in run_checks(e).results

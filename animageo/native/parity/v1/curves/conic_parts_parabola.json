@@ -1,0 +1,758 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_parts_parabola",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc4",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_parts_parabola",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_F": {
+    "id": "op_F",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_D": {
+    "id": "op_D",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "D"
+     }
+    ]
+   },
+   "op_dl": {
+    "id": "op_dl",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "C"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "D"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "dl"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "conic.parabola_focus_directrix",
+    "args": {
+     "focus": {
+      "kind": "ref",
+      "elementId": "F"
+     },
+     "directrix": {
+      "kind": "ref",
+      "elementId": "dl"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "p"
+     }
+    ]
+   },
+   "op_O": {
+    "id": "op_O",
+    "op": "conic.center",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "center",
+      "elementId": "O"
+     }
+    ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "conic.foci",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "first",
+      "elementId": "f1"
+     },
+     {
+      "slot": "second",
+      "elementId": "f2"
+     }
+    ]
+   },
+   "op_v": {
+    "id": "op_v",
+    "op": "conic.vertices",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "first",
+      "elementId": "v1"
+     },
+     {
+      "slot": "second",
+      "elementId": "v2"
+     },
+     {
+      "slot": "third",
+      "elementId": "v3"
+     },
+     {
+      "slot": "fourth",
+      "elementId": "v4"
+     }
+    ]
+   },
+   "op_x": {
+    "id": "op_x",
+    "op": "conic.axes",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "focal",
+      "elementId": "x_focal"
+     },
+     {
+      "slot": "conjugate",
+      "elementId": "x_conj"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "F": {
+    "id": "F",
+    "type": "point",
+    "displayName": "F",
+    "producer": {
+     "operationId": "op_F",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "D": {
+    "id": "D",
+    "type": "point",
+    "displayName": "D",
+    "producer": {
+     "operationId": "op_D",
+     "slot": "point"
+    }
+   },
+   "dl": {
+    "id": "dl",
+    "type": "line",
+    "displayName": "dl",
+    "producer": {
+     "operationId": "op_dl",
+     "slot": "line"
+    }
+   },
+   "p": {
+    "id": "p",
+    "type": "conic",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "conic"
+    }
+   },
+   "O": {
+    "id": "O",
+    "type": "point",
+    "displayName": "O",
+    "producer": {
+     "operationId": "op_O",
+     "slot": "center"
+    }
+   },
+   "f1": {
+    "id": "f1",
+    "type": "point",
+    "displayName": "f1",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "first"
+    }
+   },
+   "f2": {
+    "id": "f2",
+    "type": "point",
+    "displayName": "f2",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "second"
+    }
+   },
+   "v1": {
+    "id": "v1",
+    "type": "point",
+    "displayName": "v1",
+    "producer": {
+     "operationId": "op_v",
+     "slot": "first"
+    }
+   },
+   "v2": {
+    "id": "v2",
+    "type": "point",
+    "displayName": "v2",
+    "producer": {
+     "operationId": "op_v",
+     "slot": "second"
+    }
+   },
+   "v3": {
+    "id": "v3",
+    "type": "point",
+    "displayName": "v3",
+    "producer": {
+     "operationId": "op_v",
+     "slot": "third"
+    }
+   },
+   "v4": {
+    "id": "v4",
+    "type": "point",
+    "displayName": "v4",
+    "producer": {
+     "operationId": "op_v",
+     "slot": "fourth"
+    }
+   },
+   "x_focal": {
+    "id": "x_focal",
+    "type": "line",
+    "displayName": "x_focal",
+    "producer": {
+     "operationId": "op_x",
+     "slot": "focal"
+    }
+   },
+   "x_conj": {
+    "id": "x_conj",
+    "type": "line",
+    "displayName": "x_conj",
+    "producer": {
+     "operationId": "op_x",
+     "slot": "conjugate"
+    }
+   }
+  },
+  "inputs": {
+   "F": {
+    "kind": "point",
+    "value": [
+     0.0,
+     1.0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     -1.0,
+     -1.0
+    ]
+   },
+   "D": {
+    "kind": "point",
+    "value": [
+     1.0,
+     -1.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "up",
+   "scale": 20.0,
+   "expect": {
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": -1.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": -1.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "O": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "not_central"
+    },
+    "dl": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -1.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "f1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "f2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 2.0
+     }
+    },
+    "v1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "v2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "v3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "v4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "x_conj": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "x_focal": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_dl:through_a": "passed",
+    "op_dl:through_b": "passed",
+    "op_f:focal": "passed",
+    "op_p:focus_directrix": "passed",
+    "op_v:on_curve": "passed"
+   }
+  },
+  {
+   "name": "right",
+   "inputs": {
+    "F": {
+     "kind": "point",
+     "value": [
+      2.0,
+      0.0
+     ]
+    },
+    "C": {
+     "kind": "point",
+     "value": [
+      0.0,
+      0.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "O": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "not_central"
+    },
+    "dl": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "f1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "f2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       1.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "v1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "v2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "v3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "v4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "x_conj": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "x_focal": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_dl:through_a": "passed",
+    "op_dl:through_b": "passed",
+    "op_f:focal": "passed",
+    "op_p:focus_directrix": "passed",
+    "op_v:on_curve": "passed"
+   }
+  },
+  {
+   "name": "turned",
+   "inputs": {
+    "F": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    },
+    "C": {
+     "kind": "point",
+     "value": [
+      0.0,
+      -2.0
+     ]
+    },
+    "D": {
+     "kind": "point",
+     "value": [
+      -2.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -2.0
+     }
+    },
+    "D": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 0.0
+     }
+    },
+    "F": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "O": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "not_central"
+    },
+    "dl": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.0,
+       -1.0
+      ],
+      "dir": [
+       -0.707106781,
+       0.707106781
+      ]
+     }
+    },
+    "f1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "f2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.707106781,
+       0.707106781
+      ],
+      "p": 2.828427125
+     }
+    },
+    "v1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "v2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "v3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "v4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "x_conj": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "x_focal": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.707106781,
+       0.707106781
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_dl:through_a": "passed",
+    "op_dl:through_b": "passed",
+    "op_f:focal": "passed",
+    "op_p:focus_directrix": "passed",
+    "op_v:on_curve": "passed"
+   }
+  }
+ ]
+}

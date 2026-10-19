@@ -1,0 +1,1055 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "fn_root_kinds",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc4",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "fn_root_kinds",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_pole": {
+    "id": "op_pole",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "/",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0.3
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "pole"
+     }
+    ]
+   },
+   "op_rp": {
+    "id": "op_rp",
+    "op": "function.root",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "pole"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "rp1"
+     }
+    ]
+   },
+   "op_jump": {
+    "id": "op_jump",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0.3
+          }
+         ]
+        },
+        {
+         "num": -1
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "jump"
+     }
+    ]
+   },
+   "op_rj": {
+    "id": "op_rj",
+    "op": "function.root",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "jump"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "rj1"
+     }
+    ]
+   },
+   "op_zero": {
+    "id": "op_zero",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 0
+        },
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "zero"
+     }
+    ]
+   },
+   "op_rz": {
+    "id": "op_rz",
+    "op": "function.root",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "zero"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "rz1"
+     }
+    ]
+   },
+   "op_square": {
+    "id": "op_square",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "^",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1.3
+          }
+         ]
+        },
+        {
+         "num": 2
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "square"
+     }
+    ]
+   },
+   "op_rs": {
+    "id": "op_rs",
+    "op": "function.root",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "square"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "rs1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "rs2"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "pole": {
+    "id": "pole",
+    "type": "function",
+    "displayName": "pole",
+    "producer": {
+     "operationId": "op_pole",
+     "slot": "function"
+    }
+   },
+   "rp1": {
+    "id": "rp1",
+    "type": "point",
+    "displayName": "rp1",
+    "producer": {
+     "operationId": "op_rp",
+     "slot": "root.1"
+    }
+   },
+   "jump": {
+    "id": "jump",
+    "type": "function",
+    "displayName": "jump",
+    "producer": {
+     "operationId": "op_jump",
+     "slot": "function"
+    }
+   },
+   "rj1": {
+    "id": "rj1",
+    "type": "point",
+    "displayName": "rj1",
+    "producer": {
+     "operationId": "op_rj",
+     "slot": "root.1"
+    }
+   },
+   "zero": {
+    "id": "zero",
+    "type": "function",
+    "displayName": "zero",
+    "producer": {
+     "operationId": "op_zero",
+     "slot": "function"
+    }
+   },
+   "rz1": {
+    "id": "rz1",
+    "type": "point",
+    "displayName": "rz1",
+    "producer": {
+     "operationId": "op_rz",
+     "slot": "root.1"
+    }
+   },
+   "square": {
+    "id": "square",
+    "type": "function",
+    "displayName": "square",
+    "producer": {
+     "operationId": "op_square",
+     "slot": "function"
+    }
+   },
+   "rs1": {
+    "id": "rs1",
+    "type": "point",
+    "displayName": "rs1",
+    "producer": {
+     "operationId": "op_rs",
+     "slot": "root.1"
+    }
+   },
+   "rs2": {
+    "id": "rs2",
+    "type": "point",
+    "displayName": "rs2",
+    "producer": {
+     "operationId": "op_rs",
+     "slot": "root.2"
+    }
+   }
+  },
+  "inputs": {},
+  "viewDefaults": {
+   "bounds": [
+    -2,
+    -3,
+    3,
+    3
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "default",
+   "scale": 6.0,
+   "expect": {
+    "jump": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0.3
+          }
+         ]
+        },
+        {
+         "num": -1
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "pole": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "/",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0.3
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "rj1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root_in_window"
+    },
+    "rp1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root_in_window"
+    },
+    "rs1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.3,
+      "y": 0.0
+     },
+     "detail": {
+      "multiplicity": 2
+     }
+    },
+    "rs2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.3,
+      "y": 0.0
+     },
+     "detail": {
+      "multiplicity": 2
+     }
+    },
+    "rz1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "square": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1.3
+          }
+         ]
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "zero": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 0
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_rs:on_graph": "passed"
+   },
+   "samples": {
+    "jump": [
+     [
+      -2.0,
+      -1.0
+     ],
+     [
+      -1.84375,
+      -1.0
+     ],
+     [
+      -1.6875,
+      -1.0
+     ],
+     [
+      -1.53125,
+      -1.0
+     ],
+     [
+      -1.375,
+      -1.0
+     ],
+     [
+      -1.21875,
+      -1.0
+     ],
+     [
+      -1.0625,
+      -1.0
+     ],
+     [
+      -0.90625,
+      -1.0
+     ],
+     [
+      -0.75,
+      -1.0
+     ],
+     [
+      -0.59375,
+      -1.0
+     ],
+     [
+      -0.4375,
+      -1.0
+     ],
+     [
+      -0.28125,
+      -1.0
+     ],
+     [
+      -0.125,
+      -1.0
+     ],
+     [
+      0.03125,
+      -1.0
+     ],
+     [
+      0.1875,
+      -1.0
+     ],
+     [
+      0.34375,
+      1.0
+     ],
+     [
+      0.5,
+      1.0
+     ],
+     [
+      0.65625,
+      1.0
+     ],
+     [
+      0.8125,
+      1.0
+     ],
+     [
+      0.96875,
+      1.0
+     ],
+     [
+      1.125,
+      1.0
+     ],
+     [
+      1.28125,
+      1.0
+     ],
+     [
+      1.4375,
+      1.0
+     ],
+     [
+      1.59375,
+      1.0
+     ],
+     [
+      1.75,
+      1.0
+     ],
+     [
+      1.90625,
+      1.0
+     ],
+     [
+      2.0625,
+      1.0
+     ],
+     [
+      2.21875,
+      1.0
+     ],
+     [
+      2.375,
+      1.0
+     ],
+     [
+      2.53125,
+      1.0
+     ],
+     [
+      2.6875,
+      1.0
+     ],
+     [
+      2.84375,
+      1.0
+     ],
+     [
+      3.0,
+      1.0
+     ]
+    ],
+    "pole": [
+     [
+      -2.0,
+      -0.434782609
+     ],
+     [
+      -1.84375,
+      -0.466472303
+     ],
+     [
+      -1.6875,
+      -0.503144654
+     ],
+     [
+      -1.53125,
+      -0.546075085
+     ],
+     [
+      -1.375,
+      -0.597014925
+     ],
+     [
+      -1.21875,
+      -0.658436214
+     ],
+     [
+      -1.0625,
+      -0.733944954
+     ],
+     [
+      -0.90625,
+      -0.829015544
+     ],
+     [
+      -0.75,
+      -0.952380952
+     ],
+     [
+      -0.59375,
+      -1.118881119
+     ],
+     [
+      -0.4375,
+      -1.355932203
+     ],
+     [
+      -0.28125,
+      -1.720430108
+     ],
+     [
+      -0.125,
+      -2.352941176
+     ],
+     [
+      0.03125,
+      -3.720930233
+     ],
+     [
+      0.1875,
+      -8.888888889
+     ],
+     [
+      0.34375,
+      22.857142857
+     ],
+     [
+      0.5,
+      5.0
+     ],
+     [
+      0.65625,
+      2.807017544
+     ],
+     [
+      0.8125,
+      1.951219512
+     ],
+     [
+      0.96875,
+      1.495327103
+     ],
+     [
+      1.125,
+      1.212121212
+     ],
+     [
+      1.28125,
+      1.01910828
+     ],
+     [
+      1.4375,
+      0.879120879
+     ],
+     [
+      1.59375,
+      0.77294686
+     ],
+     [
+      1.75,
+      0.689655172
+     ],
+     [
+      1.90625,
+      0.622568093
+     ],
+     [
+      2.0625,
+      0.567375887
+     ],
+     [
+      2.21875,
+      0.521172638
+     ],
+     [
+      2.375,
+      0.481927711
+     ],
+     [
+      2.53125,
+      0.448179272
+     ],
+     [
+      2.6875,
+      0.418848168
+     ],
+     [
+      2.84375,
+      0.393120393
+     ],
+     [
+      3.0,
+      0.37037037
+     ]
+    ],
+    "square": [
+     [
+      -2.0,
+      10.89
+     ],
+     [
+      -1.84375,
+      9.883164062
+     ],
+     [
+      -1.6875,
+      8.92515625
+     ],
+     [
+      -1.53125,
+      8.015976562
+     ],
+     [
+      -1.375,
+      7.155625
+     ],
+     [
+      -1.21875,
+      6.344101562
+     ],
+     [
+      -1.0625,
+      5.58140625
+     ],
+     [
+      -0.90625,
+      4.867539062
+     ],
+     [
+      -0.75,
+      4.2025
+     ],
+     [
+      -0.59375,
+      3.586289063
+     ],
+     [
+      -0.4375,
+      3.01890625
+     ],
+     [
+      -0.28125,
+      2.500351563
+     ],
+     [
+      -0.125,
+      2.030625
+     ],
+     [
+      0.03125,
+      1.609726563
+     ],
+     [
+      0.1875,
+      1.23765625
+     ],
+     [
+      0.34375,
+      0.914414063
+     ],
+     [
+      0.5,
+      0.64
+     ],
+     [
+      0.65625,
+      0.414414063
+     ],
+     [
+      0.8125,
+      0.23765625
+     ],
+     [
+      0.96875,
+      0.109726563
+     ],
+     [
+      1.125,
+      0.030625
+     ],
+     [
+      1.28125,
+      0.000351563
+     ],
+     [
+      1.4375,
+      0.01890625
+     ],
+     [
+      1.59375,
+      0.086289062
+     ],
+     [
+      1.75,
+      0.2025
+     ],
+     [
+      1.90625,
+      0.367539062
+     ],
+     [
+      2.0625,
+      0.58140625
+     ],
+     [
+      2.21875,
+      0.844101562
+     ],
+     [
+      2.375,
+      1.155625
+     ],
+     [
+      2.53125,
+      1.515976562
+     ],
+     [
+      2.6875,
+      1.92515625
+     ],
+     [
+      2.84375,
+      2.383164062
+     ],
+     [
+      3.0,
+      2.89
+     ]
+    ],
+    "zero": [
+     [
+      -2.0,
+      0.0
+     ],
+     [
+      -1.84375,
+      0.0
+     ],
+     [
+      -1.6875,
+      0.0
+     ],
+     [
+      -1.53125,
+      0.0
+     ],
+     [
+      -1.375,
+      0.0
+     ],
+     [
+      -1.21875,
+      0.0
+     ],
+     [
+      -1.0625,
+      0.0
+     ],
+     [
+      -0.90625,
+      0.0
+     ],
+     [
+      -0.75,
+      0.0
+     ],
+     [
+      -0.59375,
+      0.0
+     ],
+     [
+      -0.4375,
+      0.0
+     ],
+     [
+      -0.28125,
+      0.0
+     ],
+     [
+      -0.125,
+      0.0
+     ],
+     [
+      0.03125,
+      0.0
+     ],
+     [
+      0.1875,
+      0.0
+     ],
+     [
+      0.34375,
+      0.0
+     ],
+     [
+      0.5,
+      0.0
+     ],
+     [
+      0.65625,
+      0.0
+     ],
+     [
+      0.8125,
+      0.0
+     ],
+     [
+      0.96875,
+      0.0
+     ],
+     [
+      1.125,
+      0.0
+     ],
+     [
+      1.28125,
+      0.0
+     ],
+     [
+      1.4375,
+      0.0
+     ],
+     [
+      1.59375,
+      0.0
+     ],
+     [
+      1.75,
+      0.0
+     ],
+     [
+      1.90625,
+      0.0
+     ],
+     [
+      2.0625,
+      0.0
+     ],
+     [
+      2.21875,
+      0.0
+     ],
+     [
+      2.375,
+      0.0
+     ],
+     [
+      2.53125,
+      0.0
+     ],
+     [
+      2.6875,
+      0.0
+     ],
+     [
+      2.84375,
+      0.0
+     ],
+     [
+      3.0,
+      0.0
+     ]
+    ]
+   }
+  }
+ ]
+}

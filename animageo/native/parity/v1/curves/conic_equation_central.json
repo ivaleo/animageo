@@ -1,0 +1,688 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_equation_central",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc4",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_equation_central",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_a": {
+    "id": "op_a",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "a"
+     }
+    ]
+   },
+   "op_b": {
+    "id": "op_b",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "b"
+     }
+    ]
+   },
+   "op_s": {
+    "id": "op_s",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "s"
+     }
+    ]
+   },
+   "op_k": {
+    "id": "op_k",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "k"
+     }
+    ]
+   },
+   "op_q": {
+    "id": "op_q",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "op": "^",
+             "args": [
+              {
+               "ref": 0
+              },
+              {
+               "num": 2
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "*",
+             "args": [
+              {
+               "ref": 2
+              },
+              {
+               "op": "^",
+               "args": [
+                {
+                 "var": "y"
+                },
+                {
+                 "num": 2
+                }
+               ]
+              }
+             ]
+            },
+            {
+             "op": "^",
+             "args": [
+              {
+               "ref": 1
+              },
+              {
+               "num": 2
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "a"
+       },
+       {
+        "kind": "ref",
+        "elementId": "b"
+       },
+       {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "q"
+     }
+    ]
+   },
+   "op_o": {
+    "id": "op_o",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "y"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 0
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "k"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "o"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "a": {
+    "id": "a",
+    "type": "number",
+    "displayName": "a",
+    "producer": {
+     "operationId": "op_a",
+     "slot": "number"
+    }
+   },
+   "b": {
+    "id": "b",
+    "type": "number",
+    "displayName": "b",
+    "producer": {
+     "operationId": "op_b",
+     "slot": "number"
+    }
+   },
+   "s": {
+    "id": "s",
+    "type": "number",
+    "displayName": "s",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "number"
+    }
+   },
+   "k": {
+    "id": "k",
+    "type": "number",
+    "displayName": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "number"
+    }
+   },
+   "q": {
+    "id": "q",
+    "type": "conic",
+    "displayName": "q",
+    "producer": {
+     "operationId": "op_q",
+     "slot": "conic"
+    }
+   },
+   "o": {
+    "id": "o",
+    "type": "conic",
+    "displayName": "o",
+    "producer": {
+     "operationId": "op_o",
+     "slot": "conic"
+    }
+   }
+  },
+  "inputs": {
+   "a": {
+    "kind": "number",
+    "value": 3.0
+   },
+   "b": {
+    "kind": "number",
+    "value": 2.0
+   },
+   "s": {
+    "kind": "number",
+    "value": 1.0
+   },
+   "k": {
+    "kind": "number",
+    "value": -4.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "ellipse",
+   "scale": 20.0,
+   "expect": {
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 3.0,
+      "unit": "scalar"
+     }
+    },
+    "b": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -4.0,
+      "unit": "scalar"
+     }
+    },
+    "o": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 2.0
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "circle",
+   "inputs": {
+    "a": {
+     "kind": "number",
+     "value": 2.0
+    },
+    "k": {
+     "kind": "number",
+     "value": -9.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    "b": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -9.0,
+      "unit": "scalar"
+     }
+    },
+    "o": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 3.0
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 2.0
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "hyperbola",
+   "inputs": {
+    "s": {
+     "kind": "number",
+     "value": -1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 3.0,
+      "unit": "scalar"
+     }
+    },
+    "b": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -4.0,
+      "unit": "scalar"
+     }
+    },
+    "o": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 2.0
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "tall_hyperbola",
+   "inputs": {
+    "a": {
+     "kind": "number",
+     "value": 2.0
+    },
+    "b": {
+     "kind": "number",
+     "value": 4.0
+    },
+    "s": {
+     "kind": "number",
+     "value": -1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    "b": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.0,
+      "unit": "scalar"
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -4.0,
+      "unit": "scalar"
+     }
+    },
+    "o": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 2.0
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 4.0
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "lines",
+   "inputs": {
+    "s": {
+     "kind": "number",
+     "value": 0.0
+    },
+    "k": {
+     "kind": "number",
+     "value": 4.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 3.0,
+      "unit": "scalar"
+     }
+    },
+    "b": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.0,
+      "unit": "scalar"
+     }
+    },
+    "o": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "degenerate_conic"
+    },
+    "q": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "degenerate_conic"
+    },
+    "s": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {}
+  }
+ ]
+}

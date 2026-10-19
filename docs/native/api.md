@@ -161,6 +161,6 @@ From a `.ggb` and from the classic graph (import.md).
 | `from-ggb FILE.ggb` | the document and `import_report.v1` |
 | `convert map --check` | the GGB command → operation table (`convert/dsl_map.json`) |
 | `registry index --check` | `ops/v1/INDEX.json` matches the records |
-| `fixtures verify`, `fixtures conditions --check`, `fixtures timeline --check`, `fixtures paint --check` | the parity fixtures are up to date (manim for render fixtures) |
+| `fixtures verify`, `fixtures conditions --check`, `fixtures timeline --check`, `fixtures paint --check`, `fixtures curves --check` | the parity fixtures are up to date (manim for render fixtures) |
 | `style export [--check]` | the style contract `native/style` (`builtin.json`, `keys.v1.json`) |
 | `commands fixtures --check` | the fixtures of «Команды» |

@@ -1,0 +1,248 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "fn_empty_domain",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc4",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "fn_empty_domain",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "var": "x"
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     },
+     "min": {
+      "kind": "number",
+      "value": 2
+     },
+     "max": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_r": {
+    "id": "op_r",
+    "op": "function.root",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1
+     },
+     "b": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "r1"
+     }
+    ]
+   },
+   "op_g": {
+    "id": "op_g",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "var": "x"
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     },
+     "min": {
+      "kind": "number",
+      "value": 5
+     },
+     "max": {
+      "kind": "number",
+      "value": 6
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "g"
+     }
+    ]
+   },
+   "op_s": {
+    "id": "op_s",
+    "op": "function.root",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "g"
+     },
+     "a": {
+      "kind": "number",
+      "value": 0
+     },
+     "b": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "s1"
+     }
+    ]
+   },
+   "op_m": {
+    "id": "op_m",
+    "op": "function.extremum",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "g"
+     },
+     "a": {
+      "kind": "number",
+      "value": 0
+     },
+     "b": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "m1"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "r1": {
+    "id": "r1",
+    "type": "point",
+    "displayName": "r1",
+    "producer": {
+     "operationId": "op_r",
+     "slot": "root.1"
+    }
+   },
+   "g": {
+    "id": "g",
+    "type": "function",
+    "displayName": "g",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "function"
+    }
+   },
+   "s1": {
+    "id": "s1",
+    "type": "point",
+    "displayName": "s1",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "root.1"
+    }
+   },
+   "m1": {
+    "id": "m1",
+    "type": "point",
+    "displayName": "m1",
+    "producer": {
+     "operationId": "op_m",
+     "slot": "extremum.1"
+    }
+   }
+  },
+  "inputs": {},
+  "viewDefaults": {
+   "bounds": [
+    -4,
+    -4,
+    4,
+    4
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "default",
+   "scale": 8.0,
+   "expect": {
+    "f": {
+     "state": "undefined",
+     "type": "function",
+     "reason": "empty_range"
+    },
+    "g": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "var": "x"
+      },
+      "refs": [],
+      "domain": [
+       5.0,
+       6.0
+      ]
+     }
+    },
+    "m1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "empty_range"
+    },
+    "r1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "f"
+    },
+    "s1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "empty_range"
+    }
+   },
+   "checks": {},
+   "samples": {
+    "g": []
+   }
+  }
+ ]
+}
