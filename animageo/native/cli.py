@@ -211,7 +211,7 @@ def _cmd_timeline(args) -> int:
 
 
 def _cmd_registry_index(args) -> int:
-    from .space.registry import space_registry_problems, write_space_index
+    from .space.registry import SPACE_REGISTRY_VERSION, space_registry_problems, write_space_index
     changed = write_index(check=args.check) + write_space_index(check=args.check)
     if args.check:
         problems = [p for p in registry_problems() + space_registry_problems() if 'INDEX.json' not in p]
@@ -222,12 +222,12 @@ def _cmd_registry_index(args) -> int:
         if changed or problems:
             _out('run: python -m animageo.native registry index')
             return 1
-        _out(f'registry {REGISTRY_VERSION}: index is up to date')
+        _out(f'registry {REGISTRY_VERSION} (space {SPACE_REGISTRY_VERSION}): index is up to date')
         return 0
     for name in changed:
         _out(f'updated {name}')
     if not changed:
-        _out(f'registry {REGISTRY_VERSION}: nothing to update')
+        _out(f'registry {REGISTRY_VERSION} (space {SPACE_REGISTRY_VERSION}): nothing to update')
     return 0
 
 
