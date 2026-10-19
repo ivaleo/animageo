@@ -1,0 +1,4379 @@
+{
+ "format": "animageo-space-parity/v1",
+ "id": "space_values_reasons",
+ "kind": "values",
+ "registry": "1.6",
+ "generatedBy": "animageo 1.11.0rc4",
+ "cases": [
+  {
+   "name": "cube_coincident",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "cube_coincident",
+    "operationRegistryVersion": "1.6",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-K": {
+      "id": "op-K",
+      "op": "polyhedron.cube",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "solid",
+        "elementId": "K"
+       },
+       {
+        "slot": "vertex.1",
+        "elementId": "C"
+       },
+       {
+        "slot": "vertex.2",
+        "elementId": "D"
+       },
+       {
+        "slot": "vertex.3",
+        "elementId": "A_1"
+       },
+       {
+        "slot": "vertex.4",
+        "elementId": "B_1"
+       },
+       {
+        "slot": "vertex.5",
+        "elementId": "C_1"
+       },
+       {
+        "slot": "vertex.6",
+        "elementId": "D_1"
+       },
+       {
+        "slot": "edge.1",
+        "elementId": "K_edge_1"
+       },
+       {
+        "slot": "edge.2",
+        "elementId": "K_edge_2"
+       },
+       {
+        "slot": "edge.3",
+        "elementId": "K_edge_3"
+       },
+       {
+        "slot": "edge.4",
+        "elementId": "K_edge_4"
+       },
+       {
+        "slot": "edge.5",
+        "elementId": "K_edge_5"
+       },
+       {
+        "slot": "edge.6",
+        "elementId": "K_edge_6"
+       },
+       {
+        "slot": "edge.7",
+        "elementId": "K_edge_7"
+       },
+       {
+        "slot": "edge.8",
+        "elementId": "K_edge_8"
+       },
+       {
+        "slot": "edge.9",
+        "elementId": "K_edge_9"
+       },
+       {
+        "slot": "edge.10",
+        "elementId": "K_edge_10"
+       },
+       {
+        "slot": "edge.11",
+        "elementId": "K_edge_11"
+       },
+       {
+        "slot": "edge.12",
+        "elementId": "K_edge_12"
+       },
+       {
+        "slot": "face.1",
+        "elementId": "K_face_1"
+       },
+       {
+        "slot": "face.2",
+        "elementId": "K_face_2"
+       },
+       {
+        "slot": "face.3",
+        "elementId": "K_face_3"
+       },
+       {
+        "slot": "face.4",
+        "elementId": "K_face_4"
+       },
+       {
+        "slot": "face.5",
+        "elementId": "K_face_5"
+       },
+       {
+        "slot": "face.6",
+        "elementId": "K_face_6"
+       }
+      ]
+     },
+     "op-M": {
+      "id": "op-M",
+      "op": "point3.midpoint",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "M"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "K": {
+      "id": "K",
+      "type": "polyhedron",
+      "displayName": "K",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "solid"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.1"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point3",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.2"
+      }
+     },
+     "A_1": {
+      "id": "A_1",
+      "type": "point3",
+      "displayName": "A_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.3"
+      }
+     },
+     "B_1": {
+      "id": "B_1",
+      "type": "point3",
+      "displayName": "B_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.4"
+      }
+     },
+     "C_1": {
+      "id": "C_1",
+      "type": "point3",
+      "displayName": "C_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.5"
+      }
+     },
+     "D_1": {
+      "id": "D_1",
+      "type": "point3",
+      "displayName": "D_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.6"
+      }
+     },
+     "K_edge_1": {
+      "id": "K_edge_1",
+      "type": "segment3",
+      "displayName": "K_edge_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.1"
+      }
+     },
+     "K_edge_2": {
+      "id": "K_edge_2",
+      "type": "segment3",
+      "displayName": "K_edge_2",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.2"
+      }
+     },
+     "K_edge_3": {
+      "id": "K_edge_3",
+      "type": "segment3",
+      "displayName": "K_edge_3",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.3"
+      }
+     },
+     "K_edge_4": {
+      "id": "K_edge_4",
+      "type": "segment3",
+      "displayName": "K_edge_4",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.4"
+      }
+     },
+     "K_edge_5": {
+      "id": "K_edge_5",
+      "type": "segment3",
+      "displayName": "K_edge_5",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.5"
+      }
+     },
+     "K_edge_6": {
+      "id": "K_edge_6",
+      "type": "segment3",
+      "displayName": "K_edge_6",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.6"
+      }
+     },
+     "K_edge_7": {
+      "id": "K_edge_7",
+      "type": "segment3",
+      "displayName": "K_edge_7",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.7"
+      }
+     },
+     "K_edge_8": {
+      "id": "K_edge_8",
+      "type": "segment3",
+      "displayName": "K_edge_8",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.8"
+      }
+     },
+     "K_edge_9": {
+      "id": "K_edge_9",
+      "type": "segment3",
+      "displayName": "K_edge_9",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.9"
+      }
+     },
+     "K_edge_10": {
+      "id": "K_edge_10",
+      "type": "segment3",
+      "displayName": "K_edge_10",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.10"
+      }
+     },
+     "K_edge_11": {
+      "id": "K_edge_11",
+      "type": "segment3",
+      "displayName": "K_edge_11",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.11"
+      }
+     },
+     "K_edge_12": {
+      "id": "K_edge_12",
+      "type": "segment3",
+      "displayName": "K_edge_12",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.12"
+      }
+     },
+     "K_face_1": {
+      "id": "K_face_1",
+      "type": "polygon3",
+      "displayName": "K_face_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.1"
+      }
+     },
+     "K_face_2": {
+      "id": "K_face_2",
+      "type": "polygon3",
+      "displayName": "K_face_2",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.2"
+      }
+     },
+     "K_face_3": {
+      "id": "K_face_3",
+      "type": "polygon3",
+      "displayName": "K_face_3",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.3"
+      }
+     },
+     "K_face_4": {
+      "id": "K_face_4",
+      "type": "polygon3",
+      "displayName": "K_face_4",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.4"
+      }
+     },
+     "K_face_5": {
+      "id": "K_face_5",
+      "type": "polygon3",
+      "displayName": "K_face_5",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.5"
+      }
+     },
+     "K_face_6": {
+      "id": "K_face_6",
+      "type": "polygon3",
+      "displayName": "K_face_6",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.6"
+      }
+     },
+     "M": {
+      "id": "M",
+      "type": "point3",
+      "displayName": "M",
+      "producer": {
+       "operationId": "op-M",
+       "slot": "point"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 1.0,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 1.0,
+       "z": 1.0
+      }
+     },
+     "A_1": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 1.0,
+       "z": 1.0
+      }
+     },
+     "B_1": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "C": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "C_1": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "D": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "D_1": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "K": {
+      "state": "undefined",
+      "type": "polyhedron",
+      "reason": "coincident_points"
+     },
+     "K_edge_1": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_10": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_11": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_12": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_2": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_3": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_4": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_5": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_6": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_7": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_8": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_9": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_face_1": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "K_face_2": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "K_face_3": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "K_face_4": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "K_face_5": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "K_face_6": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "M": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "upstream",
+      "cause": "C"
+     }
+    }
+   }
+  },
+  {
+   "name": "prism_flat",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "prism_flat",
+    "operationRegistryVersion": "1.6",
+    "space": "space",
+    "operations": {
+     "op-P0": {
+      "id": "op-P0",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "P0"
+       }
+      ]
+     },
+     "op-P1": {
+      "id": "op-P1",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "P1"
+       }
+      ]
+     },
+     "op-P2": {
+      "id": "op-P2",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "P2"
+       }
+      ]
+     },
+     "op-P3": {
+      "id": "op-P3",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "P3"
+       }
+      ]
+     },
+     "op-T": {
+      "id": "op-T",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "T"
+       }
+      ]
+     },
+     "op-Z": {
+      "id": "op-Z",
+      "op": "polyhedron.prism",
+      "args": {
+       "base": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "P0"
+         },
+         {
+          "kind": "ref",
+          "elementId": "P1"
+         },
+         {
+          "kind": "ref",
+          "elementId": "P2"
+         },
+         {
+          "kind": "ref",
+          "elementId": "P3"
+         }
+        ]
+       },
+       "top": {
+        "kind": "ref",
+        "elementId": "T"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "solid",
+        "elementId": "Z"
+       },
+       {
+        "slot": "vertex.1",
+        "elementId": "Z_vertex_1"
+       },
+       {
+        "slot": "vertex.2",
+        "elementId": "Z_vertex_2"
+       },
+       {
+        "slot": "vertex.3",
+        "elementId": "Z_vertex_3"
+       },
+       {
+        "slot": "edge.1",
+        "elementId": "Z_edge_1"
+       },
+       {
+        "slot": "edge.2",
+        "elementId": "Z_edge_2"
+       },
+       {
+        "slot": "edge.3",
+        "elementId": "Z_edge_3"
+       },
+       {
+        "slot": "edge.4",
+        "elementId": "Z_edge_4"
+       },
+       {
+        "slot": "edge.5",
+        "elementId": "Z_edge_5"
+       },
+       {
+        "slot": "edge.6",
+        "elementId": "Z_edge_6"
+       },
+       {
+        "slot": "edge.7",
+        "elementId": "Z_edge_7"
+       },
+       {
+        "slot": "edge.8",
+        "elementId": "Z_edge_8"
+       },
+       {
+        "slot": "edge.9",
+        "elementId": "Z_edge_9"
+       },
+       {
+        "slot": "edge.10",
+        "elementId": "Z_edge_10"
+       },
+       {
+        "slot": "edge.11",
+        "elementId": "Z_edge_11"
+       },
+       {
+        "slot": "edge.12",
+        "elementId": "Z_edge_12"
+       },
+       {
+        "slot": "face.1",
+        "elementId": "Z_face_1"
+       },
+       {
+        "slot": "face.2",
+        "elementId": "Z_face_2"
+       },
+       {
+        "slot": "face.3",
+        "elementId": "Z_face_3"
+       },
+       {
+        "slot": "face.4",
+        "elementId": "Z_face_4"
+       },
+       {
+        "slot": "face.5",
+        "elementId": "Z_face_5"
+       },
+       {
+        "slot": "face.6",
+        "elementId": "Z_face_6"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "P0": {
+      "id": "P0",
+      "type": "point3",
+      "displayName": "P0",
+      "producer": {
+       "operationId": "op-P0",
+       "slot": "point"
+      }
+     },
+     "P1": {
+      "id": "P1",
+      "type": "point3",
+      "displayName": "P1",
+      "producer": {
+       "operationId": "op-P1",
+       "slot": "point"
+      }
+     },
+     "P2": {
+      "id": "P2",
+      "type": "point3",
+      "displayName": "P2",
+      "producer": {
+       "operationId": "op-P2",
+       "slot": "point"
+      }
+     },
+     "P3": {
+      "id": "P3",
+      "type": "point3",
+      "displayName": "P3",
+      "producer": {
+       "operationId": "op-P3",
+       "slot": "point"
+      }
+     },
+     "T": {
+      "id": "T",
+      "type": "point3",
+      "displayName": "T",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "point"
+      }
+     },
+     "Z": {
+      "id": "Z",
+      "type": "polyhedron",
+      "displayName": "Z",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "solid"
+      }
+     },
+     "Z_vertex_1": {
+      "id": "Z_vertex_1",
+      "type": "point3",
+      "displayName": "Z_vertex_1",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "vertex.1"
+      }
+     },
+     "Z_vertex_2": {
+      "id": "Z_vertex_2",
+      "type": "point3",
+      "displayName": "Z_vertex_2",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "vertex.2"
+      }
+     },
+     "Z_vertex_3": {
+      "id": "Z_vertex_3",
+      "type": "point3",
+      "displayName": "Z_vertex_3",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "vertex.3"
+      }
+     },
+     "Z_edge_1": {
+      "id": "Z_edge_1",
+      "type": "segment3",
+      "displayName": "Z_edge_1",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.1"
+      }
+     },
+     "Z_edge_2": {
+      "id": "Z_edge_2",
+      "type": "segment3",
+      "displayName": "Z_edge_2",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.2"
+      }
+     },
+     "Z_edge_3": {
+      "id": "Z_edge_3",
+      "type": "segment3",
+      "displayName": "Z_edge_3",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.3"
+      }
+     },
+     "Z_edge_4": {
+      "id": "Z_edge_4",
+      "type": "segment3",
+      "displayName": "Z_edge_4",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.4"
+      }
+     },
+     "Z_edge_5": {
+      "id": "Z_edge_5",
+      "type": "segment3",
+      "displayName": "Z_edge_5",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.5"
+      }
+     },
+     "Z_edge_6": {
+      "id": "Z_edge_6",
+      "type": "segment3",
+      "displayName": "Z_edge_6",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.6"
+      }
+     },
+     "Z_edge_7": {
+      "id": "Z_edge_7",
+      "type": "segment3",
+      "displayName": "Z_edge_7",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.7"
+      }
+     },
+     "Z_edge_8": {
+      "id": "Z_edge_8",
+      "type": "segment3",
+      "displayName": "Z_edge_8",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.8"
+      }
+     },
+     "Z_edge_9": {
+      "id": "Z_edge_9",
+      "type": "segment3",
+      "displayName": "Z_edge_9",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.9"
+      }
+     },
+     "Z_edge_10": {
+      "id": "Z_edge_10",
+      "type": "segment3",
+      "displayName": "Z_edge_10",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.10"
+      }
+     },
+     "Z_edge_11": {
+      "id": "Z_edge_11",
+      "type": "segment3",
+      "displayName": "Z_edge_11",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.11"
+      }
+     },
+     "Z_edge_12": {
+      "id": "Z_edge_12",
+      "type": "segment3",
+      "displayName": "Z_edge_12",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "edge.12"
+      }
+     },
+     "Z_face_1": {
+      "id": "Z_face_1",
+      "type": "polygon3",
+      "displayName": "Z_face_1",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "face.1"
+      }
+     },
+     "Z_face_2": {
+      "id": "Z_face_2",
+      "type": "polygon3",
+      "displayName": "Z_face_2",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "face.2"
+      }
+     },
+     "Z_face_3": {
+      "id": "Z_face_3",
+      "type": "polygon3",
+      "displayName": "Z_face_3",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "face.3"
+      }
+     },
+     "Z_face_4": {
+      "id": "Z_face_4",
+      "type": "polygon3",
+      "displayName": "Z_face_4",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "face.4"
+      }
+     },
+     "Z_face_5": {
+      "id": "Z_face_5",
+      "type": "polygon3",
+      "displayName": "Z_face_5",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "face.5"
+      }
+     },
+     "Z_face_6": {
+      "id": "Z_face_6",
+      "type": "polygon3",
+      "displayName": "Z_face_6",
+      "producer": {
+       "operationId": "op-Z",
+       "slot": "face.6"
+      }
+     }
+    },
+    "inputs": {
+     "P0": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       0.0,
+       0.0
+      ]
+     },
+     "P1": {
+      "kind": "point3",
+      "value": [
+       6.123233995736766e-17,
+       1.0,
+       0.0
+      ]
+     },
+     "P2": {
+      "kind": "point3",
+      "value": [
+       -1.0,
+       1.2246467991473532e-16,
+       0.0
+      ]
+     },
+     "P3": {
+      "kind": "point3",
+      "value": [
+       -1.8369701987210297e-16,
+       -1.0,
+       0.0
+      ]
+     },
+     "T": {
+      "kind": "point3",
+      "value": [
+       3.0,
+       2.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 5.0,
+    "elements": {
+     "P0": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "P1": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 1.0,
+       "z": 0.0
+      }
+     },
+     "P2": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": -1.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "P3": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": -1.0,
+       "z": 0.0
+      }
+     },
+     "T": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 3.0,
+       "y": 2.0,
+       "z": 0.0
+      }
+     },
+     "Z": {
+      "state": "undefined",
+      "type": "polyhedron",
+      "reason": "flat"
+     },
+     "Z_edge_1": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_10": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_11": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_12": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_2": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_3": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_4": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_5": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_6": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_7": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_8": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_edge_9": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "Z_face_1": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "flat"
+     },
+     "Z_face_2": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "flat"
+     },
+     "Z_face_3": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "flat"
+     },
+     "Z_face_4": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "flat"
+     },
+     "Z_face_5": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "flat"
+     },
+     "Z_face_6": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "flat"
+     },
+     "Z_vertex_1": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "flat"
+     },
+     "Z_vertex_2": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "flat"
+     },
+     "Z_vertex_3": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "flat"
+     }
+    }
+   }
+  },
+  {
+   "name": "pyramid_not_convex",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "pyramid_not_convex",
+    "operationRegistryVersion": "1.6",
+    "space": "space",
+    "operations": {
+     "op-Q0": {
+      "id": "op-Q0",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "Q0"
+       }
+      ]
+     },
+     "op-Q1": {
+      "id": "op-Q1",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "Q1"
+       }
+      ]
+     },
+     "op-Q2": {
+      "id": "op-Q2",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "Q2"
+       }
+      ]
+     },
+     "op-Q3": {
+      "id": "op-Q3",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "Q3"
+       }
+      ]
+     },
+     "op-S": {
+      "id": "op-S",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "S"
+       }
+      ]
+     },
+     "op-Y": {
+      "id": "op-Y",
+      "op": "polyhedron.pyramid",
+      "args": {
+       "base": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "Q0"
+         },
+         {
+          "kind": "ref",
+          "elementId": "Q1"
+         },
+         {
+          "kind": "ref",
+          "elementId": "Q2"
+         },
+         {
+          "kind": "ref",
+          "elementId": "Q3"
+         }
+        ]
+       },
+       "apex": {
+        "kind": "ref",
+        "elementId": "S"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "solid",
+        "elementId": "Y"
+       },
+       {
+        "slot": "edge.1",
+        "elementId": "Y_edge_1"
+       },
+       {
+        "slot": "edge.2",
+        "elementId": "Y_edge_2"
+       },
+       {
+        "slot": "edge.3",
+        "elementId": "Y_edge_3"
+       },
+       {
+        "slot": "edge.4",
+        "elementId": "Y_edge_4"
+       },
+       {
+        "slot": "edge.5",
+        "elementId": "Y_edge_5"
+       },
+       {
+        "slot": "edge.6",
+        "elementId": "Y_edge_6"
+       },
+       {
+        "slot": "edge.7",
+        "elementId": "Y_edge_7"
+       },
+       {
+        "slot": "edge.8",
+        "elementId": "Y_edge_8"
+       },
+       {
+        "slot": "face.1",
+        "elementId": "Y_face_1"
+       },
+       {
+        "slot": "face.2",
+        "elementId": "Y_face_2"
+       },
+       {
+        "slot": "face.3",
+        "elementId": "Y_face_3"
+       },
+       {
+        "slot": "face.4",
+        "elementId": "Y_face_4"
+       },
+       {
+        "slot": "face.5",
+        "elementId": "Y_face_5"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "Q0": {
+      "id": "Q0",
+      "type": "point3",
+      "displayName": "Q0",
+      "producer": {
+       "operationId": "op-Q0",
+       "slot": "point"
+      }
+     },
+     "Q1": {
+      "id": "Q1",
+      "type": "point3",
+      "displayName": "Q1",
+      "producer": {
+       "operationId": "op-Q1",
+       "slot": "point"
+      }
+     },
+     "Q2": {
+      "id": "Q2",
+      "type": "point3",
+      "displayName": "Q2",
+      "producer": {
+       "operationId": "op-Q2",
+       "slot": "point"
+      }
+     },
+     "Q3": {
+      "id": "Q3",
+      "type": "point3",
+      "displayName": "Q3",
+      "producer": {
+       "operationId": "op-Q3",
+       "slot": "point"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "point3",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op-S",
+       "slot": "point"
+      }
+     },
+     "Y": {
+      "id": "Y",
+      "type": "polyhedron",
+      "displayName": "Y",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "solid"
+      }
+     },
+     "Y_edge_1": {
+      "id": "Y_edge_1",
+      "type": "segment3",
+      "displayName": "Y_edge_1",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.1"
+      }
+     },
+     "Y_edge_2": {
+      "id": "Y_edge_2",
+      "type": "segment3",
+      "displayName": "Y_edge_2",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.2"
+      }
+     },
+     "Y_edge_3": {
+      "id": "Y_edge_3",
+      "type": "segment3",
+      "displayName": "Y_edge_3",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.3"
+      }
+     },
+     "Y_edge_4": {
+      "id": "Y_edge_4",
+      "type": "segment3",
+      "displayName": "Y_edge_4",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.4"
+      }
+     },
+     "Y_edge_5": {
+      "id": "Y_edge_5",
+      "type": "segment3",
+      "displayName": "Y_edge_5",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.5"
+      }
+     },
+     "Y_edge_6": {
+      "id": "Y_edge_6",
+      "type": "segment3",
+      "displayName": "Y_edge_6",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.6"
+      }
+     },
+     "Y_edge_7": {
+      "id": "Y_edge_7",
+      "type": "segment3",
+      "displayName": "Y_edge_7",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.7"
+      }
+     },
+     "Y_edge_8": {
+      "id": "Y_edge_8",
+      "type": "segment3",
+      "displayName": "Y_edge_8",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.8"
+      }
+     },
+     "Y_face_1": {
+      "id": "Y_face_1",
+      "type": "polygon3",
+      "displayName": "Y_face_1",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "face.1"
+      }
+     },
+     "Y_face_2": {
+      "id": "Y_face_2",
+      "type": "polygon3",
+      "displayName": "Y_face_2",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "face.2"
+      }
+     },
+     "Y_face_3": {
+      "id": "Y_face_3",
+      "type": "polygon3",
+      "displayName": "Y_face_3",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "face.3"
+      }
+     },
+     "Y_face_4": {
+      "id": "Y_face_4",
+      "type": "polygon3",
+      "displayName": "Y_face_4",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "face.4"
+      }
+     },
+     "Y_face_5": {
+      "id": "Y_face_5",
+      "type": "polygon3",
+      "displayName": "Y_face_5",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "face.5"
+      }
+     }
+    },
+    "inputs": {
+     "Q0": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "Q1": {
+      "kind": "point3",
+      "value": [
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     "Q2": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       1.0,
+       0.0
+      ]
+     },
+     "Q3": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       4.0,
+       0.0
+      ]
+     },
+     "S": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       1.0,
+       2.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 6.0,
+    "elements": {
+     "Q0": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "Q1": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 4.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "Q2": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 2.0,
+       "y": 1.0,
+       "z": 0.0
+      }
+     },
+     "Q3": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 2.0,
+       "y": 4.0,
+       "z": 0.0
+      }
+     },
+     "S": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 1.0,
+       "z": 2.0
+      }
+     },
+     "Y": {
+      "state": "undefined",
+      "type": "polyhedron",
+      "reason": "not_convex"
+     },
+     "Y_edge_1": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_convex"
+     },
+     "Y_edge_2": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_convex"
+     },
+     "Y_edge_3": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_convex"
+     },
+     "Y_edge_4": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_convex"
+     },
+     "Y_edge_5": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_convex"
+     },
+     "Y_edge_6": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_convex"
+     },
+     "Y_edge_7": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_convex"
+     },
+     "Y_edge_8": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_convex"
+     },
+     "Y_face_1": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_convex"
+     },
+     "Y_face_2": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_convex"
+     },
+     "Y_face_3": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_convex"
+     },
+     "Y_face_4": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_convex"
+     },
+     "Y_face_5": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_convex"
+     }
+    }
+   }
+  },
+  {
+   "name": "pyramid_not_planar",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "pyramid_not_planar",
+    "operationRegistryVersion": "1.6",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-C": {
+      "id": "op-C",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op-D": {
+      "id": "op-D",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "D"
+       }
+      ]
+     },
+     "op-S": {
+      "id": "op-S",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "S"
+       }
+      ]
+     },
+     "op-Y": {
+      "id": "op-Y",
+      "op": "polyhedron.pyramid",
+      "args": {
+       "base": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         },
+         {
+          "kind": "ref",
+          "elementId": "D"
+         }
+        ]
+       },
+       "apex": {
+        "kind": "ref",
+        "elementId": "S"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "solid",
+        "elementId": "Y"
+       },
+       {
+        "slot": "edge.1",
+        "elementId": "Y_edge_1"
+       },
+       {
+        "slot": "edge.2",
+        "elementId": "Y_edge_2"
+       },
+       {
+        "slot": "edge.3",
+        "elementId": "Y_edge_3"
+       },
+       {
+        "slot": "edge.4",
+        "elementId": "Y_edge_4"
+       },
+       {
+        "slot": "edge.5",
+        "elementId": "Y_edge_5"
+       },
+       {
+        "slot": "edge.6",
+        "elementId": "Y_edge_6"
+       },
+       {
+        "slot": "edge.7",
+        "elementId": "Y_edge_7"
+       },
+       {
+        "slot": "edge.8",
+        "elementId": "Y_edge_8"
+       },
+       {
+        "slot": "face.1",
+        "elementId": "Y_face_1"
+       },
+       {
+        "slot": "face.2",
+        "elementId": "Y_face_2"
+       },
+       {
+        "slot": "face.3",
+        "elementId": "Y_face_3"
+       },
+       {
+        "slot": "face.4",
+        "elementId": "Y_face_4"
+       },
+       {
+        "slot": "face.5",
+        "elementId": "Y_face_5"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-C",
+       "slot": "point"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point3",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op-D",
+       "slot": "point"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "point3",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op-S",
+       "slot": "point"
+      }
+     },
+     "Y": {
+      "id": "Y",
+      "type": "polyhedron",
+      "displayName": "Y",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "solid"
+      }
+     },
+     "Y_edge_1": {
+      "id": "Y_edge_1",
+      "type": "segment3",
+      "displayName": "Y_edge_1",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.1"
+      }
+     },
+     "Y_edge_2": {
+      "id": "Y_edge_2",
+      "type": "segment3",
+      "displayName": "Y_edge_2",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.2"
+      }
+     },
+     "Y_edge_3": {
+      "id": "Y_edge_3",
+      "type": "segment3",
+      "displayName": "Y_edge_3",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.3"
+      }
+     },
+     "Y_edge_4": {
+      "id": "Y_edge_4",
+      "type": "segment3",
+      "displayName": "Y_edge_4",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.4"
+      }
+     },
+     "Y_edge_5": {
+      "id": "Y_edge_5",
+      "type": "segment3",
+      "displayName": "Y_edge_5",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.5"
+      }
+     },
+     "Y_edge_6": {
+      "id": "Y_edge_6",
+      "type": "segment3",
+      "displayName": "Y_edge_6",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.6"
+      }
+     },
+     "Y_edge_7": {
+      "id": "Y_edge_7",
+      "type": "segment3",
+      "displayName": "Y_edge_7",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.7"
+      }
+     },
+     "Y_edge_8": {
+      "id": "Y_edge_8",
+      "type": "segment3",
+      "displayName": "Y_edge_8",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "edge.8"
+      }
+     },
+     "Y_face_1": {
+      "id": "Y_face_1",
+      "type": "polygon3",
+      "displayName": "Y_face_1",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "face.1"
+      }
+     },
+     "Y_face_2": {
+      "id": "Y_face_2",
+      "type": "polygon3",
+      "displayName": "Y_face_2",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "face.2"
+      }
+     },
+     "Y_face_3": {
+      "id": "Y_face_3",
+      "type": "polygon3",
+      "displayName": "Y_face_3",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "face.3"
+      }
+     },
+     "Y_face_4": {
+      "id": "Y_face_4",
+      "type": "polygon3",
+      "displayName": "Y_face_4",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "face.4"
+      }
+     },
+     "Y_face_5": {
+      "id": "Y_face_5",
+      "type": "polygon3",
+      "displayName": "Y_face_5",
+      "producer": {
+       "operationId": "op-Y",
+       "slot": "face.5"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       0.0,
+       0.0
+      ]
+     },
+     "C": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       2.0,
+       0.0
+      ]
+     },
+     "D": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       2.0,
+       1.0
+      ]
+     },
+     "S": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       1.0,
+       3.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 4.123105626,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 2.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "C": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 2.0,
+       "y": 2.0,
+       "z": 0.0
+      }
+     },
+     "D": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 2.0,
+       "z": 1.0
+      }
+     },
+     "S": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 1.0,
+       "z": 3.0
+      }
+     },
+     "Y": {
+      "state": "undefined",
+      "type": "polyhedron",
+      "reason": "not_planar"
+     },
+     "Y_edge_1": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_planar"
+     },
+     "Y_edge_2": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_planar"
+     },
+     "Y_edge_3": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_planar"
+     },
+     "Y_edge_4": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_planar"
+     },
+     "Y_edge_5": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_planar"
+     },
+     "Y_edge_6": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_planar"
+     },
+     "Y_edge_7": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_planar"
+     },
+     "Y_edge_8": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "not_planar"
+     },
+     "Y_face_1": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_planar"
+     },
+     "Y_face_2": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_planar"
+     },
+     "Y_face_3": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_planar"
+     },
+     "Y_face_4": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_planar"
+     },
+     "Y_face_5": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_planar"
+     }
+    }
+   }
+  },
+  {
+   "name": "tetra_flat",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "tetra_flat",
+    "operationRegistryVersion": "1.6",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-C": {
+      "id": "op-C",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op-D": {
+      "id": "op-D",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "D"
+       }
+      ]
+     },
+     "op-T": {
+      "id": "op-T",
+      "op": "polyhedron.tetrahedron",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "c": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "d": {
+        "kind": "ref",
+        "elementId": "D"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "solid",
+        "elementId": "T"
+       },
+       {
+        "slot": "edge.1",
+        "elementId": "T_edge_1"
+       },
+       {
+        "slot": "edge.2",
+        "elementId": "T_edge_2"
+       },
+       {
+        "slot": "edge.3",
+        "elementId": "T_edge_3"
+       },
+       {
+        "slot": "edge.4",
+        "elementId": "T_edge_4"
+       },
+       {
+        "slot": "edge.5",
+        "elementId": "T_edge_5"
+       },
+       {
+        "slot": "edge.6",
+        "elementId": "T_edge_6"
+       },
+       {
+        "slot": "face.1",
+        "elementId": "T_face_1"
+       },
+       {
+        "slot": "face.2",
+        "elementId": "T_face_2"
+       },
+       {
+        "slot": "face.3",
+        "elementId": "T_face_3"
+       },
+       {
+        "slot": "face.4",
+        "elementId": "T_face_4"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-C",
+       "slot": "point"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point3",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op-D",
+       "slot": "point"
+      }
+     },
+     "T": {
+      "id": "T",
+      "type": "polyhedron",
+      "displayName": "T",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "solid"
+      }
+     },
+     "T_edge_1": {
+      "id": "T_edge_1",
+      "type": "segment3",
+      "displayName": "T_edge_1",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "edge.1"
+      }
+     },
+     "T_edge_2": {
+      "id": "T_edge_2",
+      "type": "segment3",
+      "displayName": "T_edge_2",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "edge.2"
+      }
+     },
+     "T_edge_3": {
+      "id": "T_edge_3",
+      "type": "segment3",
+      "displayName": "T_edge_3",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "edge.3"
+      }
+     },
+     "T_edge_4": {
+      "id": "T_edge_4",
+      "type": "segment3",
+      "displayName": "T_edge_4",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "edge.4"
+      }
+     },
+     "T_edge_5": {
+      "id": "T_edge_5",
+      "type": "segment3",
+      "displayName": "T_edge_5",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "edge.5"
+      }
+     },
+     "T_edge_6": {
+      "id": "T_edge_6",
+      "type": "segment3",
+      "displayName": "T_edge_6",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "edge.6"
+      }
+     },
+     "T_face_1": {
+      "id": "T_face_1",
+      "type": "polygon3",
+      "displayName": "T_face_1",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "face.1"
+      }
+     },
+     "T_face_2": {
+      "id": "T_face_2",
+      "type": "polygon3",
+      "displayName": "T_face_2",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "face.2"
+      }
+     },
+     "T_face_3": {
+      "id": "T_face_3",
+      "type": "polygon3",
+      "displayName": "T_face_3",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "face.3"
+      }
+     },
+     "T_face_4": {
+      "id": "T_face_4",
+      "type": "polygon3",
+      "displayName": "T_face_4",
+      "producer": {
+       "operationId": "op-T",
+       "slot": "face.4"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       0.0,
+       0.0
+      ]
+     },
+     "C": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       2.0,
+       0.0
+      ]
+     },
+     "D": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 2.828427125,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 2.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "C": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 2.0,
+       "z": 0.0
+      }
+     },
+     "D": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 1.0,
+       "z": 0.0
+      }
+     },
+     "T": {
+      "state": "undefined",
+      "type": "polyhedron",
+      "reason": "flat"
+     },
+     "T_edge_1": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "T_edge_2": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "T_edge_3": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "T_edge_4": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "T_edge_5": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "T_edge_6": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "flat"
+     },
+     "T_face_1": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "flat"
+     },
+     "T_face_2": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "flat"
+     },
+     "T_face_3": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "flat"
+     },
+     "T_face_4": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "flat"
+     }
+    }
+   }
+  },
+  {
+   "name": "polygon_collinear",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "polygon_collinear",
+    "operationRegistryVersion": "1.6",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-C": {
+      "id": "op-C",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op-Q": {
+      "id": "op-Q",
+      "op": "polygon3.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "Q"
+       },
+       {
+        "slot": "side.1",
+        "elementId": "Q_side_1"
+       },
+       {
+        "slot": "side.2",
+        "elementId": "Q_side_2"
+       },
+       {
+        "slot": "side.3",
+        "elementId": "Q_side_3"
+       }
+      ]
+     },
+     "op-P": {
+      "id": "op-P",
+      "op": "plane.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "c": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "plane",
+        "elementId": "P"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-C",
+       "slot": "point"
+      }
+     },
+     "Q": {
+      "id": "Q",
+      "type": "polygon3",
+      "displayName": "Q",
+      "producer": {
+       "operationId": "op-Q",
+       "slot": "polygon"
+      }
+     },
+     "Q_side_1": {
+      "id": "Q_side_1",
+      "type": "segment3",
+      "displayName": "Q_side_1",
+      "producer": {
+       "operationId": "op-Q",
+       "slot": "side.1"
+      }
+     },
+     "Q_side_2": {
+      "id": "Q_side_2",
+      "type": "segment3",
+      "displayName": "Q_side_2",
+      "producer": {
+       "operationId": "op-Q",
+       "slot": "side.2"
+      }
+     },
+     "Q_side_3": {
+      "id": "Q_side_3",
+      "type": "segment3",
+      "displayName": "Q_side_3",
+      "producer": {
+       "operationId": "op-Q",
+       "slot": "side.3"
+      }
+     },
+     "P": {
+      "id": "P",
+      "type": "plane",
+      "displayName": "P",
+      "producer": {
+       "operationId": "op-P",
+       "slot": "plane"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "C": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 3.464101615,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 1.0,
+       "z": 1.0
+      }
+     },
+     "C": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 2.0,
+       "y": 2.0,
+       "z": 2.0
+      }
+     },
+     "P": {
+      "state": "undefined",
+      "type": "plane",
+      "reason": "collinear_points"
+     },
+     "Q": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "collinear_points"
+     },
+     "Q_side_1": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "b": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "length": 1.732050808
+      }
+     },
+     "Q_side_2": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "b": [
+        2.0,
+        2.0,
+        2.0
+       ],
+       "length": 1.732050808
+      }
+     },
+     "Q_side_3": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        2.0,
+        2.0,
+        2.0
+       ],
+       "b": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "length": 3.464101615
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "polygon_not_planar",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "polygon_not_planar",
+    "operationRegistryVersion": "1.6",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-C": {
+      "id": "op-C",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op-D": {
+      "id": "op-D",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "D"
+       }
+      ]
+     },
+     "op-Q": {
+      "id": "op-Q",
+      "op": "polygon3.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         },
+         {
+          "kind": "ref",
+          "elementId": "D"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "Q"
+       },
+       {
+        "slot": "side.1",
+        "elementId": "Q_side_1"
+       },
+       {
+        "slot": "side.2",
+        "elementId": "Q_side_2"
+       },
+       {
+        "slot": "side.3",
+        "elementId": "Q_side_3"
+       },
+       {
+        "slot": "side.4",
+        "elementId": "Q_side_4"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-C",
+       "slot": "point"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point3",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op-D",
+       "slot": "point"
+      }
+     },
+     "Q": {
+      "id": "Q",
+      "type": "polygon3",
+      "displayName": "Q",
+      "producer": {
+       "operationId": "op-Q",
+       "slot": "polygon"
+      }
+     },
+     "Q_side_1": {
+      "id": "Q_side_1",
+      "type": "segment3",
+      "displayName": "Q_side_1",
+      "producer": {
+       "operationId": "op-Q",
+       "slot": "side.1"
+      }
+     },
+     "Q_side_2": {
+      "id": "Q_side_2",
+      "type": "segment3",
+      "displayName": "Q_side_2",
+      "producer": {
+       "operationId": "op-Q",
+       "slot": "side.2"
+      }
+     },
+     "Q_side_3": {
+      "id": "Q_side_3",
+      "type": "segment3",
+      "displayName": "Q_side_3",
+      "producer": {
+       "operationId": "op-Q",
+       "slot": "side.3"
+      }
+     },
+     "Q_side_4": {
+      "id": "Q_side_4",
+      "type": "segment3",
+      "displayName": "Q_side_4",
+      "producer": {
+       "operationId": "op-Q",
+       "slot": "side.4"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       0.0,
+       0.0
+      ]
+     },
+     "C": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       2.0,
+       0.0
+      ]
+     },
+     "D": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       2.0,
+       1.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 3.0,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 2.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "C": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 2.0,
+       "y": 2.0,
+       "z": 0.0
+      }
+     },
+     "D": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 2.0,
+       "z": 1.0
+      }
+     },
+     "Q": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "not_planar"
+     },
+     "Q_side_1": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "b": [
+        2.0,
+        0.0,
+        0.0
+       ],
+       "length": 2.0
+      }
+     },
+     "Q_side_2": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        2.0,
+        0.0,
+        0.0
+       ],
+       "b": [
+        2.0,
+        2.0,
+        0.0
+       ],
+       "length": 2.0
+      }
+     },
+     "Q_side_3": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        2.0,
+        2.0,
+        0.0
+       ],
+       "b": [
+        0.0,
+        2.0,
+        1.0
+       ],
+       "length": 2.236067977
+      }
+     },
+     "Q_side_4": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        0.0,
+        2.0,
+        1.0
+       ],
+       "b": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "length": 2.236067977
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "upstream_chain",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "upstream_chain",
+    "operationRegistryVersion": "1.6",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-K": {
+      "id": "op-K",
+      "op": "polyhedron.cube",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "solid",
+        "elementId": "K"
+       },
+       {
+        "slot": "vertex.1",
+        "elementId": "C"
+       },
+       {
+        "slot": "vertex.2",
+        "elementId": "D"
+       },
+       {
+        "slot": "vertex.3",
+        "elementId": "A_1"
+       },
+       {
+        "slot": "vertex.4",
+        "elementId": "B_1"
+       },
+       {
+        "slot": "vertex.5",
+        "elementId": "C_1"
+       },
+       {
+        "slot": "vertex.6",
+        "elementId": "D_1"
+       },
+       {
+        "slot": "edge.1",
+        "elementId": "K_edge_1"
+       },
+       {
+        "slot": "edge.2",
+        "elementId": "K_edge_2"
+       },
+       {
+        "slot": "edge.3",
+        "elementId": "K_edge_3"
+       },
+       {
+        "slot": "edge.4",
+        "elementId": "K_edge_4"
+       },
+       {
+        "slot": "edge.5",
+        "elementId": "K_edge_5"
+       },
+       {
+        "slot": "edge.6",
+        "elementId": "K_edge_6"
+       },
+       {
+        "slot": "edge.7",
+        "elementId": "K_edge_7"
+       },
+       {
+        "slot": "edge.8",
+        "elementId": "K_edge_8"
+       },
+       {
+        "slot": "edge.9",
+        "elementId": "K_edge_9"
+       },
+       {
+        "slot": "edge.10",
+        "elementId": "K_edge_10"
+       },
+       {
+        "slot": "edge.11",
+        "elementId": "K_edge_11"
+       },
+       {
+        "slot": "edge.12",
+        "elementId": "K_edge_12"
+       },
+       {
+        "slot": "face.1",
+        "elementId": "K_face_1"
+       },
+       {
+        "slot": "face.2",
+        "elementId": "K_face_2"
+       },
+       {
+        "slot": "face.3",
+        "elementId": "K_face_3"
+       },
+       {
+        "slot": "face.4",
+        "elementId": "K_face_4"
+       },
+       {
+        "slot": "face.5",
+        "elementId": "K_face_5"
+       },
+       {
+        "slot": "face.6",
+        "elementId": "K_face_6"
+       }
+      ]
+     },
+     "op-M": {
+      "id": "op-M",
+      "op": "point3.on_path",
+      "args": {
+       "path": {
+        "kind": "ref",
+        "elementId": "K_edge_9"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "M"
+       }
+      ]
+     },
+     "op-F": {
+      "id": "op-F",
+      "op": "point3.on_surface",
+      "args": {
+       "surface": {
+        "kind": "ref",
+        "elementId": "K_face_1"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "F"
+       }
+      ]
+     },
+     "op-X": {
+      "id": "op-X",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "X"
+       }
+      ]
+     },
+     "op-s": {
+      "id": "op-s",
+      "op": "segment3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "M"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "X"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "s"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "K": {
+      "id": "K",
+      "type": "polyhedron",
+      "displayName": "K",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "solid"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.1"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point3",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.2"
+      }
+     },
+     "A_1": {
+      "id": "A_1",
+      "type": "point3",
+      "displayName": "A_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.3"
+      }
+     },
+     "B_1": {
+      "id": "B_1",
+      "type": "point3",
+      "displayName": "B_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.4"
+      }
+     },
+     "C_1": {
+      "id": "C_1",
+      "type": "point3",
+      "displayName": "C_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.5"
+      }
+     },
+     "D_1": {
+      "id": "D_1",
+      "type": "point3",
+      "displayName": "D_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.6"
+      }
+     },
+     "K_edge_1": {
+      "id": "K_edge_1",
+      "type": "segment3",
+      "displayName": "K_edge_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.1"
+      }
+     },
+     "K_edge_2": {
+      "id": "K_edge_2",
+      "type": "segment3",
+      "displayName": "K_edge_2",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.2"
+      }
+     },
+     "K_edge_3": {
+      "id": "K_edge_3",
+      "type": "segment3",
+      "displayName": "K_edge_3",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.3"
+      }
+     },
+     "K_edge_4": {
+      "id": "K_edge_4",
+      "type": "segment3",
+      "displayName": "K_edge_4",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.4"
+      }
+     },
+     "K_edge_5": {
+      "id": "K_edge_5",
+      "type": "segment3",
+      "displayName": "K_edge_5",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.5"
+      }
+     },
+     "K_edge_6": {
+      "id": "K_edge_6",
+      "type": "segment3",
+      "displayName": "K_edge_6",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.6"
+      }
+     },
+     "K_edge_7": {
+      "id": "K_edge_7",
+      "type": "segment3",
+      "displayName": "K_edge_7",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.7"
+      }
+     },
+     "K_edge_8": {
+      "id": "K_edge_8",
+      "type": "segment3",
+      "displayName": "K_edge_8",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.8"
+      }
+     },
+     "K_edge_9": {
+      "id": "K_edge_9",
+      "type": "segment3",
+      "displayName": "K_edge_9",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.9"
+      }
+     },
+     "K_edge_10": {
+      "id": "K_edge_10",
+      "type": "segment3",
+      "displayName": "K_edge_10",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.10"
+      }
+     },
+     "K_edge_11": {
+      "id": "K_edge_11",
+      "type": "segment3",
+      "displayName": "K_edge_11",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.11"
+      }
+     },
+     "K_edge_12": {
+      "id": "K_edge_12",
+      "type": "segment3",
+      "displayName": "K_edge_12",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.12"
+      }
+     },
+     "K_face_1": {
+      "id": "K_face_1",
+      "type": "polygon3",
+      "displayName": "K_face_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.1"
+      }
+     },
+     "K_face_2": {
+      "id": "K_face_2",
+      "type": "polygon3",
+      "displayName": "K_face_2",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.2"
+      }
+     },
+     "K_face_3": {
+      "id": "K_face_3",
+      "type": "polygon3",
+      "displayName": "K_face_3",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.3"
+      }
+     },
+     "K_face_4": {
+      "id": "K_face_4",
+      "type": "polygon3",
+      "displayName": "K_face_4",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.4"
+      }
+     },
+     "K_face_5": {
+      "id": "K_face_5",
+      "type": "polygon3",
+      "displayName": "K_face_5",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.5"
+      }
+     },
+     "K_face_6": {
+      "id": "K_face_6",
+      "type": "polygon3",
+      "displayName": "K_face_6",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.6"
+      }
+     },
+     "M": {
+      "id": "M",
+      "type": "point3",
+      "displayName": "M",
+      "producer": {
+       "operationId": "op-M",
+       "slot": "point"
+      }
+     },
+     "F": {
+      "id": "F",
+      "type": "point3",
+      "displayName": "F",
+      "producer": {
+       "operationId": "op-F",
+       "slot": "point"
+      }
+     },
+     "X": {
+      "id": "X",
+      "type": "point3",
+      "displayName": "X",
+      "producer": {
+       "operationId": "op-X",
+       "slot": "point"
+      }
+     },
+     "s": {
+      "id": "s",
+      "type": "segment3",
+      "displayName": "s",
+      "producer": {
+       "operationId": "op-s",
+       "slot": "segment"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "M": {
+      "kind": "pathParameter",
+      "value": 0.5
+     },
+     "F": {
+      "kind": "surfaceParameter",
+      "value": [
+       0.5,
+       0.5
+      ]
+     },
+     "X": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 1.732050808,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "A_1": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "B_1": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "C": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "C_1": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "D": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "D_1": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "F": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "upstream",
+      "cause": "K_face_1"
+     },
+     "K": {
+      "state": "undefined",
+      "type": "polyhedron",
+      "reason": "coincident_points"
+     },
+     "K_edge_1": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_10": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_11": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_12": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_2": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_3": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_4": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_5": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_6": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_7": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_8": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_edge_9": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "coincident_points"
+     },
+     "K_face_1": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "K_face_2": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "K_face_3": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "K_face_4": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "K_face_5": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "K_face_6": {
+      "state": "undefined",
+      "type": "polygon3",
+      "reason": "coincident_points"
+     },
+     "M": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "upstream",
+      "cause": "K_edge_9"
+     },
+     "X": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 1.0,
+       "z": 1.0
+      }
+     },
+     "s": {
+      "state": "undefined",
+      "type": "segment3",
+      "reason": "upstream",
+      "cause": "K_edge_9"
+     }
+    }
+   }
+  },
+  {
+   "name": "plane_op_in_space",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "plane_op_in_space",
+    "operationRegistryVersion": "1.6",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-X": {
+      "id": "op-X",
+      "op": "point.midpoint",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "X"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "X": {
+      "id": "X",
+      "type": "point",
+      "displayName": "X",
+      "producer": {
+       "operationId": "op-X",
+       "slot": "point"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       0.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 1.0,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "X": {
+      "state": "unsupported",
+      "type": "point",
+      "reason": "space_unsupported"
+     }
+    }
+   }
+  },
+  {
+   "name": "newer_registry",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "newer_registry",
+    "operationRegistryVersion": "1.7",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-X": {
+      "id": "op-X",
+      "op": "point3.on_line",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "X"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "X": {
+      "id": "X",
+      "type": "point",
+      "displayName": "X",
+      "producer": {
+       "operationId": "op-X",
+       "slot": "point"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       0.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 1.0,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "X": {
+      "state": "unsupported",
+      "type": "point",
+      "reason": "newer_registry"
+     }
+    }
+   }
+  },
+  {
+   "name": "cycle",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "cycle",
+    "operationRegistryVersion": "1.6",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-s": {
+      "id": "op-s",
+      "op": "segment3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "m"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "s"
+       }
+      ]
+     },
+     "op-m": {
+      "id": "op-m",
+      "op": "point3.on_path",
+      "args": {
+       "path": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "m"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "s": {
+      "id": "s",
+      "type": "segment3",
+      "displayName": "s",
+      "producer": {
+       "operationId": "op-s",
+       "slot": "segment"
+      }
+     },
+     "m": {
+      "id": "m",
+      "type": "point3",
+      "displayName": "m",
+      "producer": {
+       "operationId": "op-m",
+       "slot": "point"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       0.0,
+       0.0
+      ]
+     },
+     "m": {
+      "kind": "pathParameter",
+      "value": 0.5
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 1.0,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "m": {
+      "state": "error",
+      "type": "point3",
+      "reason": "cycle"
+     },
+     "s": {
+      "state": "error",
+      "type": "segment3",
+      "reason": "cycle"
+     }
+    }
+   }
+  }
+ ]
+}

@@ -5,6 +5,7 @@
     python -m animageo.native fixtures conditions [-o <root>] [--check]
     python -m animageo.native fixtures timeline [-o <dir>] [--check]
     python -m animageo.native fixtures paint [-o <dir>] [--check]
+    python -m animageo.native fixtures space [-o <dir>] [--check]
     python -m animageo.native style export [-o <dir>] [--check]
     python -m animageo.native registry index [--check]
     python -m animageo.native evaluate <doc.json> [--inputs case.json] [--canonical]
@@ -109,6 +110,21 @@ def _cmd_fixtures_timeline(args) -> int:
 
 def _cmd_fixtures_paint(args) -> int:
     from .paint_fixtures import DEFAULT_DIR, check_fixtures, verify_fixtures, write_fixtures
+    root = Path(args.out) if args.out else DEFAULT_DIR
+    if args.check:
+        problems = check_fixtures(root)
+        files, cases, mismatches = verify_fixtures(root)
+        for item in problems + mismatches:
+            _out(f'stale: {item}')
+        _out(f'{files} fixtures, {cases} cases, {len(problems) + len(mismatches)} mismatches')
+        return 1 if problems or mismatches else 0
+    for path in write_fixtures(root):
+        _out(str(path))
+    return 0
+
+
+def _cmd_fixtures_space(args) -> int:
+    from .space.fixtures import DEFAULT_DIR, check_fixtures, verify_fixtures, write_fixtures
     root = Path(args.out) if args.out else DEFAULT_DIR
     if args.check:
         problems = check_fixtures(root)
@@ -473,6 +489,11 @@ def build_parser() -> argparse.ArgumentParser:
     fp.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/paint)')
     fp.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
     fp.set_defaults(func=_cmd_fixtures_paint)
+
+    fs = fsub.add_parser('space', help='write (or --check) the animageo-space-parity/v1 fixtures (experimental)')
+    fs.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/space)')
+    fs.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
+    fs.set_defaults(func=_cmd_fixtures_space)
 
     sty = sub.add_parser('style', help='the style contract for code generation (native/style)')
     stysub = sty.add_subparsers(dest='action', required=True)
