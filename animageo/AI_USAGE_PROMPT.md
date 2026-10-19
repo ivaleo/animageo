@@ -1065,6 +1065,20 @@ gives the same IDs); `native.validate(doc)` lists the problems of a document
 a newer release. Every public name and signature: `docs/native/api.md`;
 the command line: `python -m animageo.native --help`.
 
+Registry `1.6` (`native.__registry_version__`; documents built by hand, not
+yet by «Команды»): graphs — `function.expr` (`expr` an expression AST of `x`
+with `vars: ["x"]`, `refs`, optional `min`/`max`), `function.root`,
+`function.extremum` (in `[a, b]`, `count` slots `root.k` / `extremum.k`),
+`intersect.function_function`, `intersect.function_line`, `point.on_function`
+(input `{"kind": "pathParameter", "value": x}`); conics —
+`conic.ellipse_foci_point`, `conic.hyperbola_foci_point` (`f1, f2, through`),
+`conic.parabola_focus_directrix` (`focus, directrix`), `conic.five_points`
+(`a … e`), `conic.equation` (an expression of `x`, `y` equal to 0),
+`conic.center`, `conic.foci`, `conic.vertices`, `conic.axes`,
+`intersect.line_conic`. Axes and a grid: `viewDefaults.axes: {}`,
+`viewDefaults.grid: {"kind": "major"}`. Inputs and outputs of each op:
+`docs/native/kernel.md` §14 and `docs/native/ops/<op>.md`.
+
 ---
 
 ## Further reading

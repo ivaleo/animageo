@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+The operation registry is `1.6` (wave G2): graphs `y = f(x)`, conics, the
+axes and grid of the view. A document of `1.5` evaluates and draws as
+before; one of `1.6` is `newer_registry` for an older library.
+
+### Added
+
+- `viewDefaults.axes` and `viewDefaults.grid` — coordinate axes (ticks,
+  numbers, names) and a grid (`major`, `major_minor`) under the elements in
+  SVG, PDF, EPS, PNG, TikZ and the video; an automatic step from the bounds;
+  style keys `axes_*`, `grid_*` of `rendering` (`style_keys()["view"]`);
+  without them the output is that of 1.5 (`docs/native/view.md`).
+- Graphs: type `function` `{expr, refs, domain}`; `function.expr` (an
+  expression of `x` — the AST of `number.expression` with `var`, `if`,
+  `cmp`, `and`, `or`, `not`, refs to numbers, optional `min`/`max`),
+  `function.root`, `function.extremum` (in `[a, b]`, `count` slots `root.k`,
+  `extremum.k` by `x`, a double root in two slots), `intersect.function_function`,
+  `intersect.function_line` (in the window of the bounds), `point.on_function`
+  (a free point by its `x`). Searches are a deterministic grid with
+  bisection and golden section (`docs/native/ops/function.*.md`).
+- Conics: type `conic` (ellipse `{kind, c, axis, a, b}`, hyperbola, parabola
+  `{kind, vertex, axis, p}`); `conic.ellipse_foci_point`,
+  `conic.hyperbola_foci_point`, `conic.parabola_focus_directrix`,
+  `conic.five_points`, `conic.equation` (an expression of `x`, `y` read as a
+  quadratic, `not_quadratic` otherwise), the parts `conic.center`,
+  `conic.foci`, `conic.vertices`, `conic.axes` and `intersect.line_conic`;
+  reasons `degenerate_conic`, `not_quadratic`, `not_central`
+  (`docs/native/ops/conic.*.md`).
+- Graphs and conics are drawn by `native.render` (classic `Function`,
+  `Conic` through the bridge; a conic label on the curve), have steps and
+  descriptions, `style_keys()` and `resolve_paint` entries (a graph: stroke
+  and dash, no label; a conic: stroke, dash, fill below the stroke, label).
+- Fixtures: `parity/v1/curves` (14 scenes of graphs, 17 of conics, graph
+  samples; `fixtures curves [--check]`) and `paint_curves.json`.
+- Not yet: «Команды» for graphs and conics (the printer warns), a locus with
+  `point.on_function` as its mover, the `x` of `point.on_function` animated
+  in the video.
+
+### Changed
+
+- An operation with no defined output (a search that found nothing) has no
+  checks.
+
 ## [1.11.0rc5] - 2026-10-19
 
 ### Fixed
