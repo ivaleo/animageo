@@ -1,4 +1,4 @@
-"""The contract of style keys by element type (P-8, 1.11.0rc3).
+"""The contract of style keys by element type (1.11.0rc3).
 
 ``native.style_keys()`` lists, for every element type of the document, the
 keys of ``appearance.overrides`` its renderer reads, with their unit and
@@ -194,3 +194,9 @@ class TestMarkTransfer:
                                'mz': {'overrides': {'tick_length_px': 20}}}
         plan, _ = plan_of(b.doc)
         assert plan['s']['style']['tick_length_px'] == 14 and plan['s']['style']['tick_count'] == 2
+
+    def test_an_entry_that_is_not_an_object_passes_nothing(self):
+        b = zoo()
+        b.doc['appearance'] = {'mk': ['x']}
+        plan, _ = plan_of(b.doc)
+        assert plan['s']['style']['tick_count'] == 2 and 'tick_length_px' not in plan['s']['style']

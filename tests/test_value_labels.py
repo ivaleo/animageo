@@ -225,7 +225,7 @@ a.style.label_mode = '{mode}'
         assert scene._value_labels_dynamic is False
 
 
-# ── The video prints a value as the frame does (P-4) ────────────────
+# ── The video prints a value as the frame does ────────────────
 
 _VALUES = (60.0, 41.6, 45.25)
 _PRECISIONS = (0, 1, 2)

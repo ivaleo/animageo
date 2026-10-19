@@ -282,7 +282,8 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
             if kind == 'right_angle':
                 plan[mark_id]['style'].setdefault('right_angle_marker', True)
                 continue
-            overrides = (appearance.get(mark_id) or {}).get('overrides')
+            entry = appearance.get(mark_id)
+            overrides = entry.get('overrides') if isinstance(entry, dict) else None
             passed = {key: overrides[key] for key in MARK_TRANSFERS.get(style_type_of(doc, mark_id), ())
                       if isinstance(overrides, dict) and key in overrides}
             for target in targets.get(mark_id, ()):

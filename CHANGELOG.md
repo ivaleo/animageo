@@ -53,7 +53,8 @@ flags and the keyword `strip_zeros` of `ValueLabel`.
   values, layers, `text.free`, the base without a style and under the
   built-in one, roles, hatching, a style track), written and checked by
   `python -m animageo.native fixtures paint [-o DIR] [--check]`. A test
-  renders every scene and compares the render context of each element with
+  renders each scene without a timeline (40 of 44) and compares the stroke,
+  fill, label and marker fields of the render context of each element with
   its entry.
 - The style contract for code generation in `animageo/native/style`:
   `builtin.json` (the built-in style byte for byte) and `keys.v1.json`
@@ -62,6 +63,9 @@ flags and the keyword `strip_zeros` of `ValueLabel`.
 
 ### Fixed
 
+- An `appearance` entry of a mark that is not an object no longer breaks
+  `render`, `resolve_paint` and `loadDocument` (the keys a mark passes to
+  its targets are read from object entries only).
 - A value label of the video (`ValueLabel`, the dynamic value of the
   `value` and `name_value` labels) prints the text of the still frame: the
   digits of `labels._format_number` with the precision, stripped trailing
@@ -74,7 +78,7 @@ flags and the keyword `strip_zeros` of `ValueLabel`.
   inside a filled figure drew an opaque white sector (a white square for a
   right angle) over the fill. As on the web canvas, a fill of the
   background colour is no fill, in SVG, PNG, PDF, EPS and TikZ; the layer
-  stays, transparent.
+  stays, transparent. The JSXGraph exporter still draws that fill.
 
 ## [1.11.0rc2] - 2026-10-13
 

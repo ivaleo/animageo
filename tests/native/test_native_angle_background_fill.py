@@ -1,4 +1,4 @@
-"""An angle filled with the background colour has no fill (P-5, 1.11.0rc3).
+"""An angle filled with the background colour has no fill (1.11.0rc3).
 
 The built-in style fills an angle with ``presets.color.background`` at
 opacity 1. Drawn as is, the sector (and the square of a right angle) is an
@@ -23,7 +23,7 @@ FILL_OPACITY = 0.35
 
 def wedge(right=False):
     """A filled triangle ABC with the angles at A and B in the built-in style
-    (the ``wedge`` scene of the parity review); ``right`` makes the angle at A
+    (the ``wedge`` scene of the paint fixtures); ``right`` makes the angle at A
     a right one."""
     b = DocBuilder('wedge', bounds=(-1, -1, 6, 4.5), registry_version='1.1')
     b.free('A', 0, 0).free('B', 5, 0).free('C', 0 if right else 1.5, 3.5)
@@ -59,6 +59,7 @@ def test_same_color():
 
 @pytest.mark.parametrize('right', [False, True])
 def test_pixels_inside_the_sector_are_the_fill_of_the_triangle(tmp_path, right):
+    pytest.importorskip('cairosvg')
     result = native.render(wedge(right), fmt='png', out=tmp_path / 'w.png')
     report = result.report
     # inside the arc of the angle at A (17 px of the style) on its bisector,
@@ -73,6 +74,7 @@ def test_pixels_inside_the_sector_are_the_fill_of_the_triangle(tmp_path, right):
 
 
 def test_an_explicit_fill_is_drawn(tmp_path):
+    pytest.importorskip('cairosvg')
     doc = wedge()
     doc['appearance']['alpha']['overrides'] = {'fill': '#d05456', 'fill_opacity': 1}
     result = native.render(doc, fmt='png', out=tmp_path / 'w.png')

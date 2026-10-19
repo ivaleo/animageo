@@ -1,6 +1,6 @@
 """``native.resolve_paint``: the paint of the renderer without manim, its
 fixtures ``animageo-paint-parity/v1`` and the style contract ``native/style``
-(P-8, P-9, 1.11.0rc3)."""
+(1.11.0rc3)."""
 import json
 import math
 
