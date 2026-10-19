@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (experimental)
+
+- `animageo.native.space` — space drawings, 3D-1 minimum (experimental: may
+  change without deprecation; the plane, registry `1.5` and the public API
+  snapshot do not change; `docs/native/space.md`):
+  - registry `1.6` in `native/ops/v1/space` (`SPACE_REGISTRY_VERSION`):
+    `point3.free`, `point3.on_path`, `point3.on_surface`, `point3.midpoint`,
+    `segment3.by_points`, `polygon3.by_points`, `plane.by_points`,
+    `polyhedron.cube`, `polyhedron.prism`, `polyhedron.pyramid`,
+    `polyhedron.tetrahedron`, `section.plane_polyhedron`; types `point3`,
+    `segment3`, `polygon3`, `plane`, `polyhedron`, `section`; reasons
+    `outside`, `touch`, `flat`, `not_convex`, `not_planar`,
+    `space_unsupported` (and `skew`, `coplanar`, `same_plane` for later
+    operations); outputs repeated by a formula (`count`);
+  - the space document (`"space": "space"`, `viewDefaults.camera`,
+    `viewDefaults.ground`, `point3` and surface parameter inputs):
+    `space.load`, `space.validate`, `space.evaluate` (states and reasons by
+    element ID, as `native.evaluate`), `space.SpaceBuilder`;
+  - the flat scene `animageo-flat-scene/1` (`space.flat_scene(doc,
+    camera)`): pieces and fills by element ID with their layers;
+  - `native.render` of a space document draws it through the plane renderer
+    (`space.render`, `space.to_document`); the style section `space`
+    (hidden, face, section, plane looks) with the defaults of the spec;
+  - fixtures `animageo-space-parity/v1` in `parity/v1/space`
+    (`python -m animageo.native fixtures space [--check]`) and the flicker
+    metric `space.flicker`.
+
 ## [1.11.0rc5] - 2026-10-19
 
 ### Fixed

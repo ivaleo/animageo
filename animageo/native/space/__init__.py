@@ -1,31 +1,38 @@
-"""``animageo.native.space`` — a prototype of space (3D) drawings.
+"""``animageo.native.space`` — space (3D) drawings. **Experimental.**
 
-**Experimental.** Not a part of the document contract: the operation
-registry has no types of space yet, and every name here may change. The
-package is pure Python (no numpy, no manim at import time) so that a
-browser kernel can repeat it formula for formula.
+Registry ``1.6``, the space document, the flat scene ``/1`` and the
+fixtures may change without a deprecation period; nothing here is a part of
+the plane contract (registry ``1.5``, ``native.*``, the public API
+snapshot). Pure Python (no numpy, no manim at import time), so the browser
+kernel repeats it formula for formula. Reference: ``docs/native/space.md``.
 
 The path of a drawing::
 
-    solids and planes of space ──► camera (Projector) ──► visibility
-        ──► flat scene (pieces of lines seen or hidden, fills far to near,
-            points) ──► a native document of the plane ──► native.render
+    space document (space: "space", registry 1.6)
+        ──► evaluate (values by element ID)
+        ──► camera (viewDefaults.camera) ──► visibility
+        ──► flat scene /1 (pieces seen or hidden, fills far to near, points)
+        ──► a plane document ──► native.render (SVG, PNG, PDF, EPS, TikZ)
 
-    from animageo.native import space
+    from animageo.native import render, space
 
-    cube = space.cube(size=2)
-    cut = space.Plane.through((1, 0, 0), (2, 1, 0), (2, 2, 1))
-    scene = space.SpaceScene(solids=[space.SceneSolid('cube', cube)],
-                             sections=[space.SceneSection('cut', 'cube', cut)])
-    camera = space.Camera(azimuth_deg=-60, elevation_deg=25, target=(1, 1, 1))
-    flat = space.flat_scene(scene, camera)          # animageo-flat-scene/0
-    doc = space.to_document(flat)                   # animageo-construction/v1
-    space.render(flat, 'cube.svg')                  # needs manim
+    b = space.SpaceBuilder('cube', camera={'azimuthDeg': -60, 'elevationDeg': 25, 'target': [1, 1, 1]})
+    b.point('A', 0, 0, 0); b.point('B', 2, 0, 0)
+    cube = b.cube('K', 'A', 'B', vertices=['C', 'D', 'A_1', 'B_1', 'C_1', 'D_1'])
+    doc = b.data()
+    space.evaluate(doc)                     # animageo-evaluated/v1, registry 1.6
+    flat = space.flat_scene(doc)            # animageo-flat-scene/1
+    render(doc, out='cube.svg')             # native.render hands it to space.render (needs manim)
 
-Modules: :mod:`.vec` (vectors), :mod:`.camera` (camera, projector),
-:mod:`.solids` (planes, convex polyhedra), :mod:`.visibility` (faces,
-edges, shadow volumes, pieces), :mod:`.section` (sections, plane sheets),
-:mod:`.flat` (the flat scene, its document and rendering).
+Modules: :mod:`.registry` (registry 1.6), :mod:`.document` (load, validate),
+:mod:`.build` (a builder), :mod:`.ops` and :mod:`.evaluate` (the kernel),
+:mod:`.vec`, :mod:`.camera`, :mod:`.solids`, :mod:`.visibility`,
+:mod:`.section` (the formulas), :mod:`.scene` (the flat scene ``/1``),
+:mod:`.bridge` (the plane document, the style of space, rendering),
+:mod:`.fixtures` (``animageo-space-parity/v1``), :mod:`.flicker` (the flicker
+metric). :mod:`.flat` is the prototype path of 3D-0 (``SpaceScene`` →
+``animageo-flat-scene/0``), kept for its tests: ``flat_scene``,
+``to_document`` and ``render`` of the package take either.
 """
 from __future__ import annotations
 
