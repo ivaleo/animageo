@@ -19,11 +19,13 @@ three more places (spec §2.1):
 Inputs: ``{"kind": "point3", "value": [x, y, z]}`` (``point3.free``),
 ``{"kind": "pathParameter", "value": t}`` (``point3.on_path``) and
 ``{"kind": "surfaceParameter", "value": [u, v]}`` (``point3.on_surface``);
-the plane ``point`` input is refused. The operations are those of registry
-1.6 (:mod:`.registry`); an operation of the plane is ``space_unsupported``.
+the plane ``point`` input is refused. The operations are those of the
+space registry 1.0 (:mod:`.registry`, a version line of its own:
+``operationRegistryVersion`` ``"1.0"``); an operation of the plane is
+``space_unsupported``.
 
 :func:`load` checks the structure with the rules of the plane plus the ones
-above; :func:`validate` adds the graph rules against registry 1.6.
+above; :func:`validate` adds the graph rules against the space registry.
 """
 from __future__ import annotations
 
@@ -171,7 +173,7 @@ def camera_of(doc) -> Camera:
 
 def validate(doc) -> list:
     """All issues of a space document: structure first, then the graph rules
-    against registry 1.6. Codes: ``schema``, ``id_mismatch``,
+    against the space registry 1.0. Codes: ``schema``, ``id_mismatch``,
     ``space_unsupported`` (a plane operation), ``unknown_slot``,
     ``missing_slot``, ``dangling_ref``, ``type_mismatch``,
     ``producer_mismatch``, ``cycle``, ``input_not_free``, ``missing_input``

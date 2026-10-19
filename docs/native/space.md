@@ -1,15 +1,17 @@
 # Space (experimental): `animageo.native.space`
 
-**Experimental.** Registry `1.6`, the space document, the flat scene `/1` and
-the fixtures may change without a deprecation period; the plane (registry
-`1.5`, `native.*`) does not change. The browser kernel of the web app
-repeats §2–§5 in TypeScript; the fixtures `animageo-space-parity/v1`
-(`parity/v1/space`) are the reference.
+**Experimental.** The space registry `1.0`, the space document, the flat
+scene `/1` and the fixtures may change without a deprecation period; the
+plane (its registry `REGISTRY_VERSION`, `native.*`) does not change. The
+browser kernel of the web app repeats §2–§5 in TypeScript; the fixtures
+`animageo-space-parity/v1` (`parity/v1/space`) are the reference.
 
 ## 1. The document
 
 A space document is `animageo-construction/v1` with `"space": "space"` and
-`operationRegistryVersion` `"1.6"`. `viewDefaults.camera` is the view of
+`operationRegistryVersion` `"1.0"` — the version of the space registry,
+a line of its own: the plane registry is `1.6`, a space document of `1.1`
+is `newer_registry` for this library. `viewDefaults.camera` is the view of
 the export (`projection` `orthographic` | `oblique` | `perspective`,
 `azimuthDeg`, `elevationDeg`, `target`, `distance`, `oblique {angleDeg,
 ratio}`); `viewDefaults.ground` (`look` `none` | `sheet` | `grid`, `size`)
@@ -19,13 +21,16 @@ the ground is `Oxy`. Inputs: `point3 [x, y, z]`, `pathParameter t`,
 `space.load`, `space.validate` (codes of the plane plus `space_unsupported`
 for an operation of the plane).
 
-## 2. Registry 1.6
+## 2. The space registry 1.0
 
 `animageo/native/ops/v1/space`: the groups `point3`, `segment3`,
 `polygon3`, `plane`, `polyhedron`, `section`, the types and reasons added to
-those of the plane, `INDEX.json` (`registryVersion 1.6`, `extends 1.5`).
-The plane registry does not read this folder. An output may repeat by a
-formula: `count {per, times, plus}` — `N = times · n(per) + plus`.
+those of the plane, `INDEX.json` (`registryVersion 1.0`, `extends` — the
+plane `REGISTRY_VERSION` whose catalogs it adds to, `1.6`;
+`SPACE_REGISTRY_VERSION`). `registry index --check` checks both and says
+`registry 1.6 (space 1.0)`. The plane registry does not read this folder.
+An output may repeat by a formula: `count {per, times, plus}` —
+`N = times · n(per) + plus`.
 
 | op | inputs | outputs | reasons |
 |---|---|---|---|

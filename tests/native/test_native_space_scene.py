@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import pytest
 
+from animageo.native import REGISTRY_VERSION
 from animageo.native.document import validate as validate_plane
 from animageo.native.space.bridge import HIDDEN_LOOKS, piece_id, space_style, to_document
 from animageo.native.space.build import SpaceBuilder
@@ -127,7 +128,7 @@ def test_plane_document_is_valid_and_keeps_ids():
     flat = flat_scene(doc)
     plane = to_document(flat, doc)
     assert [i for i in validate_plane(plane) if i.severity == 'error'] == []
-    assert plane['operationRegistryVersion'] == '1.5'
+    assert plane['operationRegistryVersion'] == REGISTRY_VERSION
     for p in flat['points']:
         assert plane['elements'][p['id']]['displayName'] == doc['elements'][p['id']]['displayName']
     assert piece_id('S', 'side.3', 1) in plane['elements']

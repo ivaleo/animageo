@@ -1,25 +1,28 @@
-"""The operation registry of space: registry ``1.6`` (experimental).
+"""The operation registry of space: space registry ``1.0`` (experimental).
 
-Registry ``1.5`` is the frozen contract of the plane (1.0); space adds to it
-by registry ``1.6``, only by addition. The operations of space live in
-``animageo/native/ops/v1/space`` next to the plane groups:
+The space registry has a version line of its own, apart from the plane one
+(``REGISTRY_VERSION``, ``1.6`` with graphs and conics): a space document
+(``"space": "space"``) carries ``operationRegistryVersion`` ``"1.0"`` and is
+read against this registry only. Space adds to the catalogs of the plane
+registry it is shipped with (``extends``), only by addition. The operations
+of space live in ``animageo/native/ops/v1/space`` next to the plane groups:
 
 - ``<group>.json`` — operation records (``point3``, ``segment3``,
   ``polygon3``, ``plane``, ``polyhedron``, ``section``), the same fields as
   a plane record (:mod:`animageo.native.registry`);
 - ``_types.json`` — the types, families and paths of space, added to those
   of the plane;
-- ``_reasons.json`` — the reasons of registry 1.6, added to the plane
-  catalog;
-- ``INDEX.json`` — generated: ``{registryVersion: "1.6", extends: "1.5",
-  ops: {op: signatureHash}}`` (``python -m animageo.native registry index``
-  refreshes it with the plane one).
+- ``_reasons.json`` — the reasons of the space registry 1.0, added to the
+  plane catalog;
+- ``INDEX.json`` — generated: ``{registryVersion: "1.0", extends: <the plane
+  REGISTRY_VERSION>, ops: {op: signatureHash}}`` (``python -m
+  animageo.native registry index`` refreshes it with the plane one).
 
 The plane registry (:func:`animageo.native.registry`, ``REGISTRY_VERSION``)
 does not see these files: a plane document, its fixtures and the version
-the web stamps into a new plane work stay ``1.5``.
+the web stamps into a new plane work stay those of the plane.
 
-**Repeat by a formula** (new in 1.6): an output may carry ``count``
+**Repeat by a formula** (new in space 1.0): an output may carry ``count``
 ``{"per": slot | null, "times": k, "plus": c}`` — the output declares the
 slots ``<slot>.1`` … ``<slot>.N`` with ``N = k·n + c``, ``n`` being the
 repeat count of the slot ``per`` by the plane rule (the items of a list
@@ -37,14 +40,15 @@ from importlib import resources
 from pathlib import Path
 
 from ..canonical import sha256_of
-from ..registry import Registry, _version_tuple, registry, signature
+from ..registry import REGISTRY_VERSION, Registry, _version_tuple, registry, signature
 
 __all__ = ['SPACE_REGISTRY_VERSION', 'BASE_REGISTRY_VERSION', 'SpaceRegistry', 'space_registry',
            'space_signature', 'space_signature_hash', 'build_space_index', 'space_registry_problems',
            'write_space_index', 'PLANE_OPS_IN_SPACE']
 
-SPACE_REGISTRY_VERSION = '1.6'
-BASE_REGISTRY_VERSION = '1.5'
+SPACE_REGISTRY_VERSION = '1.0'
+# The plane registry whose catalogs (types, families, paths, reasons) space extends.
+BASE_REGISTRY_VERSION = REGISTRY_VERSION
 _INDEX_FILE = 'INDEX.json'
 _REPEAT_SLOT = re.compile(r'^(?P<base>[A-Za-z_][A-Za-z0-9_]*)\.(?P<index>[1-9][0-9]*)$')
 # Plane operations a space document may hold: none yet (§2.3 of the spec —
@@ -79,8 +83,8 @@ def space_signature_hash(record: dict) -> str:
 
 
 class SpaceRegistry(Registry):
-    """The registry of a space document: the operations of 1.6 and the
-    catalogs of the plane with the additions of 1.6."""
+    """The registry of a space document: the operations of space 1.0 and
+    the catalogs of the plane with the additions of space 1.0."""
 
     def output_count(self, record: dict, out: dict, args: dict, graph=None) -> int:
         """The number of slots of the ``count`` output ``out`` for ``args``."""
@@ -174,7 +178,7 @@ def _load(directory) -> SpaceRegistry:
 
 @lru_cache(maxsize=1)
 def space_registry() -> SpaceRegistry:
-    """The registry 1.6 of space shipped with this library (cached)."""
+    """The space registry 1.0 shipped with this library (cached)."""
     return _load(_ops_dir())
 
 
@@ -188,7 +192,7 @@ def build_space_index(reg: SpaceRegistry | None = None) -> dict:
 
 
 def space_registry_problems(reg: SpaceRegistry | None = None) -> list:
-    """Inconsistencies of the files of registry 1.6, as strings."""
+    """Inconsistencies of the files of the space registry 1.0, as strings."""
     reg = reg or space_registry()
     problems = []
     known = set(reg.types) | set(reg.families)

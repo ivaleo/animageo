@@ -1,4 +1,4 @@
-"""The kernel of space: operations of registry 1.6 evaluated by ID (3D-1)."""
+"""The kernel of space: operations of the space registry 1.0 evaluated by ID (3D-1)."""
 from __future__ import annotations
 
 import math
@@ -194,7 +194,7 @@ def test_scale_and_tolerances():
     b.point('A', 0, 0, 0)
     b.point('B', 30, 40, 120)
     result = evaluate(b.data())
-    assert result.scale == 130.0 and result.registry == '1.6'
+    assert result.scale == 130.0 and result.registry == '1.0'
 
 
 def test_compare_space_values_by_kind():

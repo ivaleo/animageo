@@ -275,7 +275,7 @@ def _reasons():
     doc['elements']['X'] = {'id': 'X', 'type': 'point', 'displayName': 'X',
                             'producer': {'operationId': 'op-X', 'slot': 'point'}}
     out.append(('plane_op_in_space', doc))
-    doc = dict(doc, operationRegistryVersion='1.7', documentId='newer_registry')
+    doc = dict(doc, operationRegistryVersion='1.1', documentId='newer_registry')
     doc['operations'] = dict(doc['operations'])
     doc['operations']['op-X'] = dict(doc['operations']['op-X'], op='point3.on_line')
     out.append(('newer_registry', doc))

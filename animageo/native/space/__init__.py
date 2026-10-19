@@ -1,14 +1,14 @@
 """``animageo.native.space`` — space (3D) drawings. **Experimental.**
 
-Registry ``1.6``, the space document, the flat scene ``/1`` and the
-fixtures may change without a deprecation period; nothing here is a part of
-the plane contract (registry ``1.5``, ``native.*``, the public API
-snapshot). Pure Python (no numpy, no manim at import time), so the browser
+The space registry ``1.0`` (a version line of its own), the space
+document, the flat scene ``/1`` and the fixtures may change without a
+deprecation period; nothing here is a part of the plane contract (the plane
+registry ``REGISTRY_VERSION``, ``native.*``, the public API snapshot). Pure Python (no numpy, no manim at import time), so the browser
 kernel repeats it formula for formula. Reference: ``docs/native/space.md``.
 
 The path of a drawing::
 
-    space document (space: "space", registry 1.6)
+    space document (space: "space", space registry 1.0)
         ──► evaluate (values by element ID)
         ──► camera (viewDefaults.camera) ──► visibility
         ──► flat scene /1 (pieces seen or hidden, fills far to near, points)
@@ -20,11 +20,11 @@ The path of a drawing::
     b.point('A', 0, 0, 0); b.point('B', 2, 0, 0)
     cube = b.cube('K', 'A', 'B', vertices=['C', 'D', 'A_1', 'B_1', 'C_1', 'D_1'])
     doc = b.data()
-    space.evaluate(doc)                     # animageo-evaluated/v1, registry 1.6
+    space.evaluate(doc)                     # animageo-evaluated/v1, registry 1.0
     flat = space.flat_scene(doc)            # animageo-flat-scene/1
     render(doc, out='cube.svg')             # native.render hands it to space.render (needs manim)
 
-Modules: :mod:`.registry` (registry 1.6), :mod:`.document` (load, validate),
+Modules: :mod:`.registry` (space registry 1.0), :mod:`.document` (load, validate),
 :mod:`.build` (a builder), :mod:`.ops` and :mod:`.evaluate` (the kernel),
 :mod:`.vec`, :mod:`.camera`, :mod:`.solids`, :mod:`.visibility`,
 :mod:`.section` (the formulas), :mod:`.scene` (the flat scene ``/1``),

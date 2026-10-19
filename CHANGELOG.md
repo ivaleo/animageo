@@ -47,9 +47,13 @@ before; one of `1.6` is `newer_registry` for an older library.
 ### Added (experimental)
 
 - `animageo.native.space` — space drawings, 3D-1 minimum (experimental: may
-  change without deprecation; the plane, registry `1.5` and the public API
+  change without deprecation; the plane, its registry and the public API
   snapshot do not change; `docs/native/space.md`):
-  - registry `1.6` in `native/ops/v1/space` (`SPACE_REGISTRY_VERSION`):
+  - the space registry `1.0` in `native/ops/v1/space`
+    (`SPACE_REGISTRY_VERSION`, a version line of its own: a space document
+    carries `operationRegistryVersion` `"1.0"`; `INDEX.json` extends the
+    plane registry `1.6`; `registry index --check` checks both,
+    «registry 1.6 (space 1.0)»):
     `point3.free`, `point3.on_path`, `point3.on_surface`, `point3.midpoint`,
     `segment3.by_points`, `polygon3.by_points`, `plane.by_points`,
     `polyhedron.cube`, `polyhedron.prism`, `polyhedron.pyramid`,

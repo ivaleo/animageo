@@ -1,4 +1,4 @@
-"""Implementations of the operations of space (registry 1.6).
+"""Implementations of the operations of space (space registry 1.0).
 
 Each takes the resolved arguments (``Input`` s of
 :mod:`animageo.native.kernel.values`) and an ``OpContext`` and returns

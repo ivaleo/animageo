@@ -33,7 +33,7 @@ def test_counts_of_the_3d1_gate(shipped):
     projections = {v['camera']['projection'] for c in flats for v in c['views']}
     assert projections == {'orthographic', 'oblique', 'perspective'}
     for f in shipped.values():
-        assert f['format'] == 'animageo-space-parity/v1' and f['registry'] == '1.6'
+        assert f['format'] == 'animageo-space-parity/v1' and f['registry'] == '1.0'
 
 
 def test_numbers_are_rounded_to_nine_decimals(shipped):
