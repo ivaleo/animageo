@@ -500,9 +500,12 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
 
 def _report_effects(doc, timeline, t) -> dict:
     """``effects`` of the report of ``render(t)``: ``{id: {phase, effect,
-    progress}}`` of the effects that have begun (``timeline_effects``)."""
+    progress}}`` of the effects that have begun (``timeline_effects``, the
+    effects the frame draws — ``seek_keyframes`` plays the same), ``progress``
+    rounded as ``resolve_paint`` rounds it."""
+    from .paint import _r
     from .timeline import timeline_effects
-    return {el_id: {'phase': e['phase'], 'effect': e['effect'], 'progress': e['progress']}
+    return {el_id: {'phase': e['phase'], 'effect': e['effect'], 'progress': _r(e['progress'])}
             for el_id, e in sorted(timeline_effects(doc, timeline, t).items()) if e['progress'] > 0}
 
 
@@ -586,8 +589,7 @@ def _still_scene(doc, style_config, inputs, layout, timeline, t, *, scene_class=
     digits of the video (the video-camera PNG)."""
     doc = as_document(doc)
     scene = _load(scene_class or _import_scene(), doc, style_config, inputs, layout)
-    scene.native_effects = scene.seek_keyframes(_bridged_timeline(doc, timeline, inputs), t,
-                                                video_labels=video_labels)
+    scene.seek_keyframes(_bridged_timeline(doc, timeline, inputs), t, video_labels=video_labels)
     return scene
 
 

@@ -224,3 +224,97 @@ def _in_label(root, leaf):
         if getattr(node, '_animageo_is_label', False) and leaf in node.get_family():
             return True
     return False
+
+
+# ── the effects of the frame: the report, the playback, the contract ─────
+
+GRID = {'version': 2, 'defaults': {'exit': {'effect': 'uncreate', 'duration': 0.3}}, 'keyframes': [
+    {'t': 0, 'visible': {'b': False, 'C': False, 'k': False}},
+    {'t': 2, 'visible': {'b': True, 'C': True}, 'enter': {'C': {'effect': 'grow', 'duration': 1, 'at': 0.5}}},
+    # a window longer than its interval is cut at its end
+    {'t': 3, 'visible': {'a': False, 'k': True}, 'enter': {'k': {'effect': 'create', 'duration': 3, 'at': 0.5}}},
+    # a zero duration: done from its start
+    {'t': 3.5, 'visible': {'b': False}, 'exit': {'b': {'effect': 'fade', 'duration': 0}}},
+    {'t': 4.5, 'visible': {'b': True}, 'enter': {'b': {'effect': 'write', 'duration': 0.6, 'at': 0.2}}},
+]}
+
+
+def _effects_doc():
+    d = _Doc('effects').free('A', 0, 0).free('B', 5, 0).free('C', 1.5, 3.5)
+    d.segment('a', 'B', 'C').segment('b', 'C', 'A').circle('k', 'A', 'B')
+    d.label('b')
+    return d.doc
+
+
+def test_the_playback_plays_the_effects_of_the_contract():
+    """``seek_keyframes`` (the frame function of the video) and
+    ``timeline_effects`` (the contract ``resolve_paint`` and the report
+    read, without manim) give the same effects on a grid of times: the same
+    elements, phases, kinds and progress."""
+    from animageo.native import rendering
+    from animageo.native.document import as_document
+    from animageo.native.timeline import timeline_effects
+    doc = as_document(_effects_doc())
+    bridge = rendering._bridged_timeline(doc, GRID)
+    times = sorted(set(np.round(np.linspace(0, 4.5, 46), 9)) | {2.5, 3.0, 3.5, 3.55, 4.5})
+    seen = set()
+    for t in times:
+        scene = rendering._load(rendering._import_scene(), doc, None, None, {})
+        names = scene.native_names.by_id
+        got = scene.seek_keyframes(bridge, t)
+        expect = {names[el_id]: e for el_id, e in timeline_effects(doc, GRID, t).items()}
+        assert set(got) == set(expect), t
+        for name, (phase, kind, progress) in got.items():
+            e = expect[name]
+            assert (phase, kind) == (e['phase'], e['effect']), (t, name)
+            assert progress == pytest.approx(e['progress'], abs=1e-9), (t, name)
+            seen.add((name, kind, 0 < progress < 1))
+    # the grid passes inside every window
+    assert {(kind, inside) for _name, kind, inside in seen} >= {
+        ('fade', True), ('grow', True), ('create', True), ('uncreate', True), ('write', True), ('fade', False)}
+
+
+def test_the_report_rounds_the_progress_of_an_effect_as_resolve_paint():
+    from animageo.native.paint import resolve_paint
+    doc = _effects_doc()
+    t = 0.5 + 1 / 3                              # C: grow at 1/3 of its window
+    report = native.render(doc, fmt='svg', t=t, timeline=GRID).report
+    paint = resolve_paint(doc, None, t, timeline=GRID)['elements']
+    assert report['effects']['C'] == paint['C']['effect']
+    assert report['effects']['C']['progress'] == round(1 / 3, 9)
+
+
+needs_ffmpeg = pytest.mark.skipif(__import__('shutil').which('ffmpeg') is None, reason='ffmpeg is not installed')
+
+
+@pytest.mark.slow
+@needs_ffmpeg
+def test_the_video_file_takes_the_explicit_inputs(tmp_path):
+    """``render(fmt="mp4", inputs=…)`` — the video the library writes, not
+    a harness: an element whose value is given stays put although the
+    timeline moves it, its frames are the stills ``render(t, png, video,
+    inputs)`` (up to the codec) and not those of the timeline alone."""
+    import subprocess
+
+    from PIL import Image
+    doc = _triangle()
+    timeline = {'version': 2, 'keyframes': [
+        {'t': 0, 'values': {'C': [1.5, 3.5], 'B': [5, 0]}},
+        {'t': 1, 'values': {'C': [3.0, 4.0], 'B': [6, 1]}},
+    ]}
+    inputs = {'B': {'kind': 'point', 'value': [4.0, -0.5]}}
+    video = {'fps': FPS, 'quality': 'low'}
+    result = native.render(doc, fmt='mp4', out=tmp_path / 'v.mp4', timeline=timeline, inputs=inputs, video=video)
+    assert result.fmt == 'mp4' and result.report['video']['fps'] == FPS
+    for n in (0, 5, 9):
+        frame = tmp_path / f'f{n}.png'
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(tmp_path / 'v.mp4'), '-vf',
+                        f'select=eq(n\\,{n})', '-vframes', '1', str(frame)], check=True)
+        got = np.asarray(Image.open(frame).convert('RGBA'))
+        fixed, _ = _still(doc, timeline, n / FPS, inputs=inputs)
+        moved, _ = _still(doc, timeline, n / FPS)
+        assert got.shape == fixed.shape
+        psnr = _psnr(got, fixed)
+        assert psnr >= 30, (n, psnr)
+        if n:
+            assert psnr > _psnr(got, moved) + 3, n

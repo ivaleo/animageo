@@ -153,7 +153,9 @@ The report gains `t` and `visible` of `sample_timeline` (carried forward:
 an element is `visible` from its keyframe on, as the web's
 `keyframe_visibility_parity.json`) and `effects` — `{id: {phase, effect,
 progress}}` of the effects of the interval that have begun
-(`timeline_effects`): an element entering with `progress > 0` is drawn
+(`timeline_effects`, `progress` to 9 places as in `resolve_paint`; the
+playback plays the same effects, `seek_keyframes`): an element entering
+with `progress > 0` is drawn
 though `visible` is still `false`. Its boxes are those of the elements in
 the frame. `resolve_paint(t=…)` draws the same presence and gives the entry
 `effect`.
