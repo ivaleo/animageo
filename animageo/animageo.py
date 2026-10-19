@@ -4,7 +4,7 @@ import json
 import math
 import logging
 import traceback
-from contextlib import contextmanager, nullcontext
+from contextlib import contextmanager, nullcontext as _nullcontext
 from types import SimpleNamespace
 import numpy as np
 import tempfile
@@ -34,7 +34,7 @@ from .style.config import StyleConfig, resolve_style_input
 from .style.config import style_path_for_geostyle as _style_path_for_geostyle
 from .style.resolver import resolve as _resolve_style
 from .style.colorspace import COLOR_SPACES, same_color as _same_color
-from .labels import resolve_label_halo, resolve_label_text, resolve_label_spec
+from .labels import resolve_label_halo as _resolve_label_halo, resolve_label_text, resolve_label_spec
 from .ui import (
     RusTex, correctedLabel, create_label, round_corners_vmobject,
     ShowText, NumberedFrame, FixedLabel, CustomArrowTip, LABEL_ANCHORS,
@@ -1944,7 +1944,7 @@ class AnimaGeoScene(MovingCameraScene):
         seq, layouts = self._prepare_keyframes(keyframes_data)
         kfs = seq.keyframes
         t = max(kfs[0].t, min(float(t), kfs[-1].t))
-        with (self._dynamic_value_labels() if video_labels else nullcontext()):
+        with (self._dynamic_value_labels() if video_labels else _nullcontext()):
             self._start_keyframes(seq, layouts)
             if not seq.intervals:
                 return {}
@@ -3109,7 +3109,7 @@ class AnimaGeoScene(MovingCameraScene):
             and label_spec is not None
             and label_spec.has_dynamic_value
         )
-        label_halo = resolve_label_halo(self, elem)
+        label_halo = _resolve_label_halo(self, elem)
         label_offset_px = _resolve_style(self, elem, 'label_offset_px', default=None)
         auto_placed = bool(elem.style.get('_auto_placed'))
         if has_label and getattr(self, 'label_point_clearance', False):
