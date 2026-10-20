@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc8] - 2026-10-21
+
+The radius of the arcs of an equal-angles mark, and the section of a hidden
+solid. The operation registry stays `1.6` (space `1.0`).
+
+### Added
+
+- `arc_size_px` of `mark.equal_angles` goes to the angles of the mark, like
+  its `arc_shift_px`: the radius of their arcs (the innermost one); an
+  explicit `arc_size_px` of an angle wins. `native.style_keys()` lists it
+  in the `transfers` of the mark, so it is no longer reported as
+  `style_key_ineffective` (`mark_transfers_only`); the paint fixture
+  `arcs_mark_sizes` covers it (`docs/native/kernel.md` §9.3).
+
+### Fixed
+
+- `space.flat_scene` raised `KeyError` when a solid was hidden
+  (`appearance.<id>.visible: false`) and its section shown: the frame, the
+  plane document and the render of such a drawing failed. The section of a
+  solid that is not drawn is now a plane figure — its fill at rank 0 with
+  the sheets of planes, no `solid` key, its sides hidden only by the solids
+  that are drawn (`docs/native/space.md` §4); the space fixture
+  `section_hidden_solid` covers it.
+
+Fixtures changed in the version label only, besides the two new cases.
+
 ## [1.11.0rc7] - 2026-10-19
 
 Fixes of the frame and the video, graphs, conics and space drawings. The
