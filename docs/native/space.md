@@ -94,7 +94,9 @@ nothing. Pieces: hidden intervals merged, a gap or a bit shorter than
 (plane 0, back faces 1, sections 2, hidden pieces 3, front faces 4);
 visible pieces at `(len(solids) + 1)·10`. `appearance.<id>.visibility`:
 `auto` | `strict` (the rules) | `always` (never hidden);
-`appearance.<id>.visible: false` — not drawn (a hidden solid hides nothing).
+`appearance.<id>.visible: false` — not drawn (a hidden solid hides nothing;
+its section, if shown, is a plane figure — rank 0, no `solid`, its sides
+hidden only by the solids that are drawn; 1.11.0rc8).
 
 ## 5. Drawing and style
 
