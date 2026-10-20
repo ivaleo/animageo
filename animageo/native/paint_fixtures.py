@@ -191,6 +191,11 @@ def _angles():
         d = _triangle(f'arcs_{count}').angle('alpha', 'B', 'A', 'C').angle('beta', 'C', 'B', 'A')
         d.equal_angles('m', 'alpha', 'beta', count=count)
         out.append((f'arcs_{count}', d, None))
+    # 1.11.0rc8: the radius of the arcs of a mark reaches its angles; an angle's own wins
+    d = _triangle('arcs_mark_sizes').angle('alpha', 'B', 'A', 'C').angle('beta', 'C', 'B', 'A')
+    d.equal_angles('m', 'alpha', 'beta', count=2).overrides('m', arc_size_px=24, arc_shift_px=3)
+    d.overrides('beta', arc_size_px=12)
+    out.append(('arcs_mark_sizes', d, None))
     auto = {'overlay': {'angle_radius': {'enabled': True}}}
     d = _triangle('auto_radius').angle('alpha', 'B', 'A', 'C').angle('beta', 'C', 'B', 'A')
     out.append(('auto_radius', d, auto))

@@ -99,11 +99,12 @@ _TYPES = {
 }
 
 # The keys an equality mark passes to its targets (as its count becomes their
-# ``tick_count``): the sizes of the ticks of a segment, the spacing of the arcs
-# of an angle. An explicit key of the target wins.
+# ``tick_count``): the sizes of the ticks of a segment, the spacing and
+# (1.11.0rc8) the radius of the arcs of an angle. An explicit key of the
+# target wins.
 MARK_TRANSFERS = {
     'mark.equal_segments': ('tick_length_px', 'tick_radius_px', 'tick_shift_px', 'tick_style', 'tick_width_px'),
-    'mark.equal_angles': ('arc_shift_px',),
+    'mark.equal_angles': ('arc_shift_px', 'arc_size_px'),
 }
 
 # Defaults the built-in style leaves to the renderer (``_build_render_ctx``,

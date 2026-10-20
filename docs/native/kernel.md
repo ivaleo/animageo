@@ -847,8 +847,9 @@ Marks (registry 1.3, `native.appearance_plan`):
   (`tick_length_px`, `tick_width_px`, `tick_shift_px`, `tick_style`,
   `tick_radius_px`) of `mark.equal_segments` and `arc_shift_px` of
   `mark.equal_angles` go to the targets the same way (an explicit key of a
-  target wins); any other key of an equality mark draws nothing and is
-  reported (`mark_transfers_only`);
+  target wins); 1.11.0rc8: so does `arc_size_px` of `mark.equal_angles` —
+  the radius of the arcs of its angles (the innermost arc); any other key
+  of an equality mark draws nothing and is reported (`mark_transfers_only`);
 - a visible, defined right-angle mark gets `right_angle_marker = true`
   unless its `overrides` set it.
 

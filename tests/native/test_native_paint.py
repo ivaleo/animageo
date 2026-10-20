@@ -71,6 +71,16 @@ class TestResolvePaint:
             assert math.hypot(x2 - x1, y2 - y1) == pytest.approx(14 / 100)
         assert resolve_paint(zoo().doc)['elements']['s']['ticks']['lengthPx'] == 9
 
+    def test_the_arc_radius_of_a_mark_reaches_its_angles(self):
+        """1.11.0rc8: ``arc_size_px`` of ``mark.equal_angles`` is the radius of
+        the arcs of its angles; an angle's own radius wins."""
+        b = zoo()
+        b.doc['appearance'] = {'ma': {'overrides': {'arc_size_px': 24}}, 'beta': {'overrides': {'arc_size_px': 12}}}
+        out = resolve_paint(b.doc)['elements']
+        assert out['alpha']['angle']['arcSizePx'] == 24 and out['alpha']['angle']['arcs'] == 2
+        assert out['beta']['angle']['arcSizePx'] == 12
+        assert resolve_paint(zoo().doc)['elements']['alpha']['angle']['arcSizePx'] == 17
+
     def test_an_angle_of_the_background_has_no_fill(self):
         out = resolve_paint(zoo().doc)['elements']
         assert out['alpha']['fill'] == {'color': None, 'opacity': 0.0, 'isBackground': True,

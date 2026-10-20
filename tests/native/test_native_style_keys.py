@@ -54,7 +54,7 @@ class TestStyleKeys:
             assert keys['types'][type_]['keys'] == {}
         assert keys['types']['mark.equal_segments']['transfers'] == [
             'tick_length_px', 'tick_radius_px', 'tick_shift_px', 'tick_style', 'tick_width_px']
-        assert keys['types']['mark.equal_angles']['transfers'] == ['arc_shift_px']
+        assert keys['types']['mark.equal_angles']['transfers'] == ['arc_shift_px', 'arc_size_px']
 
     def test_every_key_is_accepted_and_read_somewhere(self):
         types = native.style_keys()['types']
@@ -191,6 +191,19 @@ class TestMarkTransfer:
         plan, diagnostics = plan_of(b.doc)
         assert warnings(diagnostics) == []
         assert plan['alpha']['style']['arc_shift_px'] == 4 and plan['beta']['style']['arc_shift_px'] == 4
+
+    def test_arc_size_of_equal_angles(self):
+        """1.11.0rc8: the radius of the arcs goes to the angles of the mark
+        too (the base radius of its arcs); an angle's own radius wins."""
+        b = zoo()
+        b.doc['appearance'] = {'ma': {'overrides': {'arc_size_px': 24}}}
+        plan, diagnostics = plan_of(b.doc)
+        assert warnings(diagnostics) == []
+        assert plan['alpha']['style']['arc_size_px'] == 24 and plan['beta']['style']['arc_size_px'] == 24
+        b.doc['appearance'] = {'ma': {'overrides': {'arc_size_px': 24}},
+                               'beta': {'overrides': {'arc_size_px': 30}}}
+        plan, _ = plan_of(b.doc)
+        assert plan['alpha']['style']['arc_size_px'] == 24 and plan['beta']['style']['arc_size_px'] == 30
 
     def test_a_hidden_mark_passes_nothing(self):
         b = zoo()
