@@ -25,7 +25,9 @@ of its own: ``side.k`` of a section (its k-th side), ``border.k``,
 
 Drawn are the defined elements whose ``appearance.<id>.visible`` is not
 ``false`` (an edge or a face also needs its solid drawn); a solid that is
-not drawn hides nothing. Undefined elements are listed in ``diagnostics``
+not drawn hides nothing, and a section of it is a plane figure (1.11.0rc8):
+drawn like a polygon (rank 0, no ``solid``), its sides hidden only by the
+solids that are drawn. Undefined elements are listed in ``diagnostics``
 (``not_defined`` with ``state`` and ``reason``).
 
 The rules of visibility are those of :mod:`.visibility` (spec §3.3): a face
@@ -300,6 +302,9 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
         if elements[el_id]['type'] == 'polygon3' and el_id not in face_owner:
             ground.append(fill(el_id, None, 'polygon', [tuple(p) for p in value(el_id)['vertices']],
                                Z_TIERS['plane']))
+    # a section of a solid that is not drawn is a plane figure, like a polygon
+    ground += [fill(cid, None, 'section', list(cut.polygon), Z_TIERS['plane'])
+               for cid, sid, cut in sections if sid not in by_id]
     fills = far_first(ground)
     faces_of = {}
     for el_id, (sid, k) in face_owner.items():
@@ -327,6 +332,10 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
             strokes.append(stroke(el_id, None, 'edge', poly.vertices[e.a], poly.vertices[e.b], not seen[k], sid,
                                   solid=sid))
     for cid, sid, cut in sections:
+        if sid not in by_id:                          # its solid is not drawn: only the others hide it
+            for k, (p, q) in enumerate(cut.edges(), 1):
+                strokes.append(stroke(cid, f'side.{k}', 'section', p, q, False, None))
+            continue
         poly = by_id[sid][0]
         seen = section_visibility(poly, cut, projector, facing[sid])
         for k, ((p, q), visible) in enumerate(zip(cut.edges(), seen), 1):

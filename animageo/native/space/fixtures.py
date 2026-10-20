@@ -376,6 +376,11 @@ def _flat_sections():
         return 'Y'
     _n, b = _cut('pyramid', pyramid, (0.5, 0, 0), (0.5, 1, 0), (-0.5, 0, 1.5))
     out.append(('section_pyramid', b, [0, 0, 1], ('ortho-a', 'persp')))
+    # 1.11.0rc8: the cube hidden, its section shown — a plane figure
+    _n, b = _cut('hidden_solid', _cube_solid, (0, 0, 0.5), (2, 0, 1.5), (0, 2, 0.5))
+    doc = b.data()
+    doc['appearance'] = {'K': {'visible': False}}
+    out.append(('section_hidden_solid', doc, [1, 1, 1], ('ortho-a', 'persp')))
     return out
 
 

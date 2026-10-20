@@ -95,6 +95,28 @@ def test_visibility_policy_and_hidden_elements():
         flat_scene(doc)
 
 
+def test_a_section_of_a_hidden_solid_is_a_plane_figure():
+    """1.11.0rc8: the solid hidden, its section shown — the section is drawn
+    as a polygon (rank 0: its fill with the sheets, its sides hidden only by
+    the solids that are drawn), not a KeyError."""
+    doc = cube_doc()
+    doc['appearance'] = {'K': {'visible': False}}
+    flat = flat_scene(doc)
+    assert flat['solids'] == []
+    fills = [f for f in flat['fills'] if f['id'] == 'S']
+    assert len(fills) == 1 and fills[0]['role'] == 'section' and fills[0]['layer'] == 0
+    assert 'solid' not in fills[0]
+    sides = [s for s in flat['strokes'] if s['id'] == 'S']
+    assert [s['part'] for s in sides] == ['side.1', 'side.2', 'side.3', 'side.4']
+    for side in sides:
+        assert 'solid' not in side and side['role'] == 'section'
+        assert [p['visibility'] for p in side['pieces']] == ['visible'] and side['pieces'][0]['layer'] == 10
+    shown = flat_scene(cube_doc())
+    assert [f['polygon'] for f in shown['fills'] if f['id'] == 'S'] == [fills[0]['polygon']]
+    plane = to_document(flat, doc)
+    assert [i for i in validate_plane(plane) if i.severity == 'error'] == []
+
+
 def test_undefined_elements_are_diagnosed_not_drawn():
     b = SpaceBuilder('bad')
     b.point('A', 0, 0, 0)

@@ -17187,6 +17187,1380 @@
      }
     }
    ]
+  },
+  {
+   "name": "section_hidden_solid",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "hidden_solid",
+    "operationRegistryVersion": "1.0",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-K": {
+      "id": "op-K",
+      "op": "polyhedron.cube",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "solid",
+        "elementId": "K"
+       },
+       {
+        "slot": "vertex.1",
+        "elementId": "C"
+       },
+       {
+        "slot": "vertex.2",
+        "elementId": "D"
+       },
+       {
+        "slot": "vertex.3",
+        "elementId": "A_1"
+       },
+       {
+        "slot": "vertex.4",
+        "elementId": "B_1"
+       },
+       {
+        "slot": "vertex.5",
+        "elementId": "C_1"
+       },
+       {
+        "slot": "vertex.6",
+        "elementId": "D_1"
+       },
+       {
+        "slot": "edge.1",
+        "elementId": "K_edge_1"
+       },
+       {
+        "slot": "edge.2",
+        "elementId": "K_edge_2"
+       },
+       {
+        "slot": "edge.3",
+        "elementId": "K_edge_3"
+       },
+       {
+        "slot": "edge.4",
+        "elementId": "K_edge_4"
+       },
+       {
+        "slot": "edge.5",
+        "elementId": "K_edge_5"
+       },
+       {
+        "slot": "edge.6",
+        "elementId": "K_edge_6"
+       },
+       {
+        "slot": "edge.7",
+        "elementId": "K_edge_7"
+       },
+       {
+        "slot": "edge.8",
+        "elementId": "K_edge_8"
+       },
+       {
+        "slot": "edge.9",
+        "elementId": "K_edge_9"
+       },
+       {
+        "slot": "edge.10",
+        "elementId": "K_edge_10"
+       },
+       {
+        "slot": "edge.11",
+        "elementId": "K_edge_11"
+       },
+       {
+        "slot": "edge.12",
+        "elementId": "K_edge_12"
+       },
+       {
+        "slot": "face.1",
+        "elementId": "K_face_1"
+       },
+       {
+        "slot": "face.2",
+        "elementId": "K_face_2"
+       },
+       {
+        "slot": "face.3",
+        "elementId": "K_face_3"
+       },
+       {
+        "slot": "face.4",
+        "elementId": "K_face_4"
+       },
+       {
+        "slot": "face.5",
+        "elementId": "K_face_5"
+       },
+       {
+        "slot": "face.6",
+        "elementId": "K_face_6"
+       }
+      ]
+     },
+     "op-U": {
+      "id": "op-U",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "U"
+       }
+      ]
+     },
+     "op-V": {
+      "id": "op-V",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "V"
+       }
+      ]
+     },
+     "op-W": {
+      "id": "op-W",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "W"
+       }
+      ]
+     },
+     "op-P": {
+      "id": "op-P",
+      "op": "plane.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "U"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "V"
+       },
+       "c": {
+        "kind": "ref",
+        "elementId": "W"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "plane",
+        "elementId": "P"
+       }
+      ]
+     },
+     "op-S": {
+      "id": "op-S",
+      "op": "section.plane_polyhedron",
+      "args": {
+       "plane": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "solid": {
+        "kind": "ref",
+        "elementId": "K"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "section",
+        "elementId": "S"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "K": {
+      "id": "K",
+      "type": "polyhedron",
+      "displayName": "K",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "solid"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.1"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point3",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.2"
+      }
+     },
+     "A_1": {
+      "id": "A_1",
+      "type": "point3",
+      "displayName": "A_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.3"
+      }
+     },
+     "B_1": {
+      "id": "B_1",
+      "type": "point3",
+      "displayName": "B_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.4"
+      }
+     },
+     "C_1": {
+      "id": "C_1",
+      "type": "point3",
+      "displayName": "C_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.5"
+      }
+     },
+     "D_1": {
+      "id": "D_1",
+      "type": "point3",
+      "displayName": "D_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.6"
+      }
+     },
+     "K_edge_1": {
+      "id": "K_edge_1",
+      "type": "segment3",
+      "displayName": "K_edge_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.1"
+      }
+     },
+     "K_edge_2": {
+      "id": "K_edge_2",
+      "type": "segment3",
+      "displayName": "K_edge_2",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.2"
+      }
+     },
+     "K_edge_3": {
+      "id": "K_edge_3",
+      "type": "segment3",
+      "displayName": "K_edge_3",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.3"
+      }
+     },
+     "K_edge_4": {
+      "id": "K_edge_4",
+      "type": "segment3",
+      "displayName": "K_edge_4",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.4"
+      }
+     },
+     "K_edge_5": {
+      "id": "K_edge_5",
+      "type": "segment3",
+      "displayName": "K_edge_5",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.5"
+      }
+     },
+     "K_edge_6": {
+      "id": "K_edge_6",
+      "type": "segment3",
+      "displayName": "K_edge_6",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.6"
+      }
+     },
+     "K_edge_7": {
+      "id": "K_edge_7",
+      "type": "segment3",
+      "displayName": "K_edge_7",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.7"
+      }
+     },
+     "K_edge_8": {
+      "id": "K_edge_8",
+      "type": "segment3",
+      "displayName": "K_edge_8",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.8"
+      }
+     },
+     "K_edge_9": {
+      "id": "K_edge_9",
+      "type": "segment3",
+      "displayName": "K_edge_9",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.9"
+      }
+     },
+     "K_edge_10": {
+      "id": "K_edge_10",
+      "type": "segment3",
+      "displayName": "K_edge_10",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.10"
+      }
+     },
+     "K_edge_11": {
+      "id": "K_edge_11",
+      "type": "segment3",
+      "displayName": "K_edge_11",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.11"
+      }
+     },
+     "K_edge_12": {
+      "id": "K_edge_12",
+      "type": "segment3",
+      "displayName": "K_edge_12",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.12"
+      }
+     },
+     "K_face_1": {
+      "id": "K_face_1",
+      "type": "polygon3",
+      "displayName": "K_face_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.1"
+      }
+     },
+     "K_face_2": {
+      "id": "K_face_2",
+      "type": "polygon3",
+      "displayName": "K_face_2",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.2"
+      }
+     },
+     "K_face_3": {
+      "id": "K_face_3",
+      "type": "polygon3",
+      "displayName": "K_face_3",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.3"
+      }
+     },
+     "K_face_4": {
+      "id": "K_face_4",
+      "type": "polygon3",
+      "displayName": "K_face_4",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.4"
+      }
+     },
+     "K_face_5": {
+      "id": "K_face_5",
+      "type": "polygon3",
+      "displayName": "K_face_5",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.5"
+      }
+     },
+     "K_face_6": {
+      "id": "K_face_6",
+      "type": "polygon3",
+      "displayName": "K_face_6",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.6"
+      }
+     },
+     "U": {
+      "id": "U",
+      "type": "point3",
+      "displayName": "U",
+      "producer": {
+       "operationId": "op-U",
+       "slot": "point"
+      }
+     },
+     "V": {
+      "id": "V",
+      "type": "point3",
+      "displayName": "V",
+      "producer": {
+       "operationId": "op-V",
+       "slot": "point"
+      }
+     },
+     "W": {
+      "id": "W",
+      "type": "point3",
+      "displayName": "W",
+      "producer": {
+       "operationId": "op-W",
+       "slot": "point"
+      }
+     },
+     "P": {
+      "id": "P",
+      "type": "plane",
+      "displayName": "P",
+      "producer": {
+       "operationId": "op-P",
+       "slot": "plane"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "section",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op-S",
+       "slot": "section"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       0.0,
+       0.0
+      ]
+     },
+     "U": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.5
+      ]
+     },
+     "V": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       0.0,
+       1.5
+      ]
+     },
+     "W": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       2.0,
+       0.5
+      ]
+     }
+    },
+    "appearance": {
+     "K": {
+      "visible": false
+     }
+    }
+   },
+   "planeLook": "sheet",
+   "views": [
+    {
+     "name": "ortho-a",
+     "camera": {
+      "projection": "orthographic",
+      "azimuthDeg": -60,
+      "elevationDeg": 25,
+      "target": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "hidden_solid",
+      "camera": {
+       "projection": "orthographic",
+       "azimuthDeg": -60,
+       "elevationDeg": 25,
+       "target": [
+        1.0,
+        1.0,
+        1.0
+       ]
+      },
+      "scale": 4.69041576,
+      "bounds": [
+       -2.376884203,
+       -1.811461166,
+       2.376884203,
+       1.811461166
+      ],
+      "unit": 168.28754197,
+      "solids": [],
+      "fills": [
+       {
+        "id": "S",
+        "part": null,
+        "role": "section",
+        "polygon": [
+         [
+          -0.366025404,
+          0.124153388
+         ],
+         [
+          -1.366025404,
+          -0.607842913
+         ],
+         [
+          0.366025404,
+          -0.124153388
+         ],
+         [
+          1.366025404,
+          0.607842913
+         ]
+        ],
+        "depth": 0.0,
+        "layer": 0
+       },
+       {
+        "id": "P",
+        "part": null,
+        "role": "plane",
+        "polygon": [
+         [
+          -0.549038106,
+          0.186230082
+         ],
+         [
+          -2.049038106,
+          -0.91176437
+         ],
+         [
+          0.549038106,
+          -0.186230082
+         ],
+         [
+          2.049038106,
+          0.91176437
+         ]
+        ],
+        "depth": 0.0,
+        "layer": 0
+       }
+      ],
+      "strokes": [
+       {
+        "id": "S",
+        "part": "side.1",
+        "role": "section",
+        "pieces": [
+         {
+          "a": [
+           -0.366025404,
+           0.124153388
+          ],
+          "b": [
+           -1.366025404,
+           -0.607842913
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.2",
+        "role": "section",
+        "pieces": [
+         {
+          "a": [
+           -1.366025404,
+           -0.607842913
+          ],
+          "b": [
+           0.366025404,
+           -0.124153388
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.3",
+        "role": "section",
+        "pieces": [
+         {
+          "a": [
+           0.366025404,
+           -0.124153388
+          ],
+          "b": [
+           1.366025404,
+           0.607842913
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.4",
+        "role": "section",
+        "pieces": [
+         {
+          "a": [
+           1.366025404,
+           0.607842913
+          ],
+          "b": [
+           -0.366025404,
+           0.124153388
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.1",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -0.549038106,
+           0.186230082
+          ],
+          "b": [
+           -2.049038106,
+           -0.91176437
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.2",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -2.049038106,
+           -0.91176437
+          ],
+          "b": [
+           0.549038106,
+           -0.186230082
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.3",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           0.549038106,
+           -0.186230082
+          ],
+          "b": [
+           2.049038106,
+           0.91176437
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.4",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           2.049038106,
+           0.91176437
+          ],
+          "b": [
+           -0.549038106,
+           0.186230082
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -1.366025404,
+         -1.060996807
+        ],
+        "depth": 0.090886588,
+        "visibility": "visible"
+       },
+       {
+        "id": "A_1",
+        "name": "A_1",
+        "at": [
+         -1.366025404,
+         0.751618767
+        ],
+        "depth": -0.754349935,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         0.366025404,
+         -1.483615069
+        ],
+        "depth": -0.815421199,
+        "visibility": "visible"
+       },
+       {
+        "id": "B_1",
+        "name": "B_1",
+        "at": [
+         0.366025404,
+         0.329000505
+        ],
+        "depth": -1.660657722,
+        "visibility": "visible"
+       },
+       {
+        "id": "C",
+        "name": "C",
+        "at": [
+         1.366025404,
+         -0.751618767
+        ],
+        "depth": 0.754349935,
+        "visibility": "visible"
+       },
+       {
+        "id": "C_1",
+        "name": "C_1",
+        "at": [
+         1.366025404,
+         1.060996807
+        ],
+        "depth": -0.090886588,
+        "visibility": "visible"
+       },
+       {
+        "id": "D",
+        "name": "D",
+        "at": [
+         -0.366025404,
+         -0.329000505
+        ],
+        "depth": 1.660657722,
+        "visibility": "visible"
+       },
+       {
+        "id": "D_1",
+        "name": "D_1",
+        "at": [
+         -0.366025404,
+         1.483615069
+        ],
+        "depth": 0.815421199,
+        "visibility": "visible"
+       },
+       {
+        "id": "U",
+        "name": "U",
+        "at": [
+         -1.366025404,
+         -0.607842913
+        ],
+        "depth": -0.120422543,
+        "visibility": "visible"
+       },
+       {
+        "id": "V",
+        "name": "V",
+        "at": [
+         0.366025404,
+         -0.124153388
+        ],
+        "depth": -1.449348592,
+        "visibility": "visible"
+       },
+       {
+        "id": "W",
+        "name": "W",
+        "at": [
+         -0.366025404,
+         0.124153388
+        ],
+        "depth": 1.449348592,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    },
+    {
+     "name": "persp",
+     "camera": {
+      "projection": "perspective",
+      "azimuthDeg": -50,
+      "elevationDeg": 22,
+      "distance": 14,
+      "target": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "hidden_solid",
+      "camera": {
+       "projection": "perspective",
+       "azimuthDeg": -50,
+       "elevationDeg": 22,
+       "target": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "distance": 14
+      },
+      "scale": 4.69041576,
+      "bounds": [
+       -2.434983321,
+       -1.896804402,
+       2.468052342,
+       1.702302879
+      ],
+      "unit": 163.164222129,
+      "solids": [],
+      "fills": [
+       {
+        "id": "P",
+        "part": null,
+        "role": "plane",
+        "polygon": [
+         [
+          -0.159380652,
+          0.082971423
+         ],
+         [
+          -2.09684293,
+          -0.758711168
+         ],
+         [
+          0.220107561,
+          -0.114585034
+         ],
+         [
+          2.129911951,
+          0.770676697
+         ]
+        ],
+        "depth": 14.0,
+        "layer": 0
+       },
+       {
+        "id": "S",
+        "part": null,
+        "role": "section",
+        "polygon": [
+         [
+          -0.111375102,
+          0.057980379
+         ],
+         [
+          -1.401521959,
+          -0.507119702
+         ],
+         [
+          0.137976454,
+          -0.071828685
+         ],
+         [
+          1.416218802,
+          0.512437534
+         ]
+        ],
+        "depth": 14.0,
+        "layer": 0
+       }
+      ],
+      "strokes": [
+       {
+        "id": "S",
+        "part": "side.1",
+        "role": "section",
+        "pieces": [
+         {
+          "a": [
+           -0.111375102,
+           0.057980379
+          ],
+          "b": [
+           -1.401521959,
+           -0.507119702
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.2",
+        "role": "section",
+        "pieces": [
+         {
+          "a": [
+           -1.401521959,
+           -0.507119702
+          ],
+          "b": [
+           0.137976454,
+           -0.071828685
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.3",
+        "role": "section",
+        "pieces": [
+         {
+          "a": [
+           0.137976454,
+           -0.071828685
+          ],
+          "b": [
+           1.416218802,
+           0.512437534
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "S",
+        "part": "side.4",
+        "role": "section",
+        "pieces": [
+         {
+          "a": [
+           1.416218802,
+           0.512437534
+          ],
+          "b": [
+           -0.111375102,
+           0.057980379
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.1",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -0.159380652,
+           0.082971423
+          ],
+          "b": [
+           -2.09684293,
+           -0.758711168
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.2",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -2.09684293,
+           -0.758711168
+          ],
+          "b": [
+           0.220107561,
+           -0.114585034
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.3",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           0.220107561,
+           -0.114585034
+          ],
+          "b": [
+           2.129911951,
+           0.770676697
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "P",
+        "part": "border.4",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           2.129911951,
+           0.770676697
+          ],
+          "b": [
+           -0.159380652,
+           0.082971423
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -1.383113565,
+         -0.955587872
+        ],
+        "depth": 14.260324847,
+        "visibility": "visible"
+       },
+       {
+        "id": "A_1",
+        "name": "A_1",
+        "at": [
+         -1.459809469,
+         0.912889684
+        ],
+        "depth": 13.511111661,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         0.132043779,
+         -1.558664012
+        ],
+        "depth": 13.06836026,
+        "visibility": "visible"
+       },
+       {
+        "id": "B_1",
+        "name": "B_1",
+        "at": [
+         0.140074281,
+         0.453924697
+        ],
+        "depth": 12.319147073,
+        "visibility": "visible"
+       },
+       {
+        "id": "C",
+        "name": "C",
+        "at": [
+         1.361294827,
+         -0.851283698
+        ],
+        "depth": 14.488888339,
+        "visibility": "visible"
+       },
+       {
+        "id": "C_1",
+        "name": "C_1",
+        "at": [
+         1.435525114,
+         0.991798811
+        ],
+        "depth": 13.739675153,
+        "visibility": "visible"
+       },
+       {
+        "id": "D",
+        "name": "D",
+        "at": [
+         -0.110044758,
+         -0.356611029
+        ],
+        "depth": 15.680852927,
+        "visibility": "visible"
+       },
+       {
+        "id": "D_1",
+        "name": "D_1",
+        "at": [
+         -0.115566388,
+         1.364162489
+        ],
+        "depth": 14.93163974,
+        "visibility": "visible"
+       },
+       {
+        "id": "U",
+        "name": "U",
+        "at": [
+         -1.401521959,
+         -0.507119702
+        ],
+        "depth": 14.073021551,
+        "visibility": "visible"
+       },
+       {
+        "id": "V",
+        "name": "V",
+        "at": [
+         0.137976454,
+         -0.071828685
+        ],
+        "depth": 12.50645037,
+        "visibility": "visible"
+       },
+       {
+        "id": "W",
+        "name": "W",
+        "at": [
+         -0.111375102,
+         0.057980379
+        ],
+        "depth": 15.49354963,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    }
+   ]
   }
  ]
 }
