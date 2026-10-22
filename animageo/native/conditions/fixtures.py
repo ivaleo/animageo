@@ -27,6 +27,7 @@ import copy
 import json
 from pathlib import Path
 
+from .._fixture_compare import same_fixture
 from ..canonical import canonical_json
 from ..registry import REGISTRY_VERSION
 
@@ -456,12 +457,20 @@ def write_fixtures(root=DEFAULT_ROOT) -> list:
 
 
 def check_fixtures(root=DEFAULT_ROOT) -> list:
-    """Paths whose content differs from a fresh build (missing included)."""
+    """Paths differing from a fresh build, allowing only float roundoff."""
     root = Path(root)
     problems = []
     for rel, data in build_fixtures().items():
         path = root / rel
-        if not path.exists() or path.read_text(encoding='utf-8') != _text(data):
+        if not path.exists():
+            problems.append(str(path))
+            continue
+        try:
+            old = json.loads(path.read_text(encoding='utf-8'))
+        except ValueError:
+            problems.append(str(path))
+            continue
+        if not same_fixture(old, data):
             problems.append(str(path))
     return problems
 
@@ -469,7 +478,7 @@ def check_fixtures(root=DEFAULT_ROOT) -> list:
 # ── replay (what the web does with a fixture) ────────────────────────────
 
 def _same(a, b) -> bool:
-    return canonical_json(a) == canonical_json(b)
+    return same_fixture(a, b)
 
 
 def replay_case(fmt: str, case: dict) -> dict:

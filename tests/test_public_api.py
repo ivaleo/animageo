@@ -15,6 +15,7 @@ objects whose text differs between Python versions); a default is its
 """
 from __future__ import annotations
 
+from enum import Enum
 import importlib.util
 import inspect
 import json
@@ -96,7 +97,8 @@ def describe(obj) -> dict:
         return {'kind': 'module', 'module': obj.__name__}
     if inspect.isclass(obj):
         entry = {'kind': 'exception' if issubclass(obj, BaseException) else 'class'}
-        own_init = any((getattr(k, '__module__', '') or '').startswith('animageo')
+        own_init = not issubclass(obj, Enum) and any(
+                       (getattr(k, '__module__', '') or '').startswith('animageo')
                        and ('__init__' in vars(k) or '__new__' in vars(k)
                             or '__dataclass_fields__' in vars(k))
                        for k in obj.__mro__)
@@ -184,6 +186,13 @@ class TestNative:
 
 @pytest.mark.skipif(not _manim_available(), reason='requires optional dependency manim')
 class TestTopLevel:
+    def test_enum_lookup_has_no_library_defined_constructor(self):
+        from animageo import ConicType
+        # EnumType installs Enum.__new__, whose inspect.signature changed in
+        # Python 3.13. It is stdlib implementation, not an animageo signature.
+        assert 'signature' not in describe(ConicType)
+        assert ConicType(ConicType.CIRCLE.value) is ConicType.CIRCLE
+
     def test_own_names_and_signatures(self, snapshot):
         assert _diff(snapshot['top'], top_api()) == []
 

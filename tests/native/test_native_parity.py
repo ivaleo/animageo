@@ -7,6 +7,7 @@ import pytest
 
 from animageo import native
 from animageo.native import parity
+from animageo.native._fixture_compare import same_fixture
 from animageo.native.cli import main
 from tests.native.conftest import EXPECTED_DIR, SCENES_DIR, DocBuilder, point_input, read_json
 
@@ -79,7 +80,14 @@ def test_generate_reproduces_the_committed_fixtures(tmp_path):
     written = parity.generate([SCENES_DIR], tmp_path)
     assert sorted(p.name for p in written) == SCENES
     for name in SCENES:
-        assert (tmp_path / name).read_bytes() == (EXPECTED_DIR / name).read_bytes(), name
+        fresh = read_json(tmp_path / name)
+        saved = read_json(EXPECTED_DIR / name)
+        # Inputs are authored data; only computed expectations may have
+        # platform roundoff. Verification below also applies tol.parity.
+        assert fresh['document'] == saved['document'], name
+        assert [c.get('inputs') for c in fresh['cases']] == [c.get('inputs') for c in saved['cases']], name
+        assert same_fixture(saved, fresh), name
+        assert parity.verify_fixture(saved, name) == []
 
 
 def test_fixture_shape():

@@ -16,7 +16,6 @@ this module (``test_native_l5_corpus.py`` compares them); after a change::
 from __future__ import annotations
 
 import io
-import math
 import sys
 import zipfile
 from pathlib import Path
@@ -272,7 +271,8 @@ def _synthetic() -> dict:
             lambda: ggb_bytes(point('A', 0.0, 0.0) + point('B', 3.0, 4.0) + command('Segment', ['A', 'B'], ['s'])
                               + element('segment', 's', extra='<coords x="4" y="-3" z="0"/>')
                               + element('numeric', 'a', extra=f'<value val="4"/>{_SLIDER}')
-                              + _number('r', 'sqrt(a)', 2.0) + _number('si', 'sin(a)', math.sin(4.0))
+                              # Saved XML value, independent of the generator's libm.
+                              + _number('r', 'sqrt(a)', 2.0) + _number('si', 'sin(a)', -0.7568024953079282)
                               + _number('d', '2a', 8.0) + _number('q', 'a²', 16.0)
                               + _number('m', 'abs(a - 7)', 3.0) + _number('u', 'sqrt(a) d - 4', 12.0)
                               + _number('fl', 'floor(a)', 4.0) + _number('h', 's / 2', 2.5))),

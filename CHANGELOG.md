@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Freshness and replay checks of numeric fixtures tolerate libm differences of
+  `1e-12` (absolute or relative) while structure, states and integer counters
+  are still compared exactly. Canonicalisation and hashes are unchanged.
+- The historical easing snapshot is kept: libm-based functions are compared
+  within 8 ULP, algebraic functions and boundary values bit for bit. Animation
+  formulas are unchanged. The `sin(4)` value in the synthetic GGB generator is
+  pinned so it reproduces the stored XML on both macOS and Linux.
+- The public API snapshot includes `ValueLabel.baseline_depth_mu` added in rc7;
+  the constructor signature provided by the standard `Enum` is no longer treated
+  as the library's own signature.
+
 ## [1.11.0rc8] - 2026-10-21
 
 The radius of the arcs of an equal-angles mark, and the section of a hidden

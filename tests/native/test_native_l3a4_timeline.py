@@ -6,6 +6,7 @@ import copy
 import gc
 import json
 import math
+import struct
 import time
 from pathlib import Path
 
@@ -32,15 +33,54 @@ def timeline(*keyframes, **top):
 
 # ── easing.py ────────────────────────────────────────────────────────────
 
-def test_easing_values_bitwise_as_in_keyframes_of_1_9_0a3():
-    """The functions left ``keyframes.py`` for the leaf ``easing.py`` with the
-    same values bit for bit (snapshot of 1.9.0a3 on a grid of 205 points)."""
+# One ULP in cos becomes up to eight output ULPs after 1 - cos on
+# this historical grid. Darwin/glibc differ at 33 of its 3485 values,
+# by at most 2**-52 in absolute progress, well below 1e-12 timeline parity.
+# Only functions using transcendental libm calls get this allowance.
+_LIBM_EASINGS = {'ease_in_sine', 'ease_out_sine', 'ease_in_out_sine',
+                 'rush_into', 'rush_from', 'ease_out_elastic'}
+
+
+def _within_easing_ulps(actual, expected, limit):
+    if not math.isfinite(actual) or not math.isfinite(expected):
+        return False
+    def ordered(value):
+        bits = struct.unpack('>q', struct.pack('>d', value))[0]
+        return bits if bits >= 0 else -(bits + 2**63)
+    return abs(ordered(actual) - ordered(expected)) <= limit
+
+
+def test_easing_values_match_keyframes_of_1_9_0a3():
+    """Keep the historical snapshot; bound platform libm roundoff in ULPs.
+
+    Algebraic easing and the clamped endpoints still match bit for bit.
+    Cross-platform client/server parity is numeric, not a binary libm ABI.
+    """
     snap = read_json(SNAPSHOTS / 'easing_grid_1.9.0a3.json')
     grid = [float.fromhex(h) for h in snap['t']]
     assert sorted(snap['values']) == sorted(easing.EASING_FUNCTIONS)
     for name, values in snap['values'].items():
         fn = easing.EASING_FUNCTIONS[name]
-        assert [float(fn(t)).hex() for t in grid] == values, name
+        assert len(values) == len(grid), name
+        for t, value in zip(grid, values):
+            actual = float(fn(t))
+            limit = 8 if name in _LIBM_EASINGS and 0 < t < 1 else 0
+            if limit:
+                assert _within_easing_ulps(actual, float.fromhex(value), limit), (name, t, actual.hex(), value)
+            else:
+                assert actual.hex() == value, (name, t, actual.hex(), value)
+
+
+def test_easing_snapshot_rejects_errors_beyond_eight_ulps():
+    expected = float.fromhex('0x1.086bd7058e8e8p-4')
+    actual = expected
+    for _ in range(8):
+        actual = math.nextafter(actual, math.inf)
+    assert _within_easing_ulps(actual, expected, 8)
+    assert not _within_easing_ulps(math.nextafter(actual, math.inf), expected, 8)
+    assert not _within_easing_ulps(actual, expected, 0)
+    assert not _within_easing_ulps(math.nan, expected, 8)
+    assert not _within_easing_ulps(math.inf, expected, 8)
 
 
 def test_keyframes_uses_the_easing_module():

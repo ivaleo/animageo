@@ -461,6 +461,13 @@ condition on that receiver.
 the fixtures. `--check` compares them with a fresh build and replays every
 case from its inputs (`replay_case`). The web does the same.
 
+Freshness and replay checks compare computed real numbers with an absolute or
+relative tolerance of `1e-12`: the last bits of libm may differ between macOS
+and Linux. This tolerance is stricter than `tol.parity` and handles subtraction
+of nearly equal numbers near zero. Keys, array order, strings, states, refusal
+reasons, booleans and integer counters are compared exactly. Canonical JSON,
+document hashes and stored references are not rounded.
+
 | Format | Cases |
 |---|---|
 | `animageo-recipes/v1` | `recipes/{recipes,refusals,two,release,shapes}.json`, 132 cases. Apply cases: `expect {refusal, document, values, shift, check}`. A release case has `release` (and `withValues`: whether `ev` is passed). A shape case has `shape {polygon, shape}` and `expect.conditions` |
