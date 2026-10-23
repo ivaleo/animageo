@@ -1,0 +1,322 @@
+{
+  "contract": "native-text-free-inline-math-v1",
+  "stage": "Filled text after template/ref resolution; math segment text excludes its delimiters.",
+  "cases": [
+    {
+      "id": "plain",
+      "raw": "Дано 50% & {x}_1",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "Дано 50% & {x}_1"
+        }
+      ],
+      "display_latex": "Дано 50\\% \\& \\{x\\}\\_1",
+      "appearance": "Literal prose; braces, percent, ampersand and underscore stay visible."
+    },
+    {
+      "id": "formula",
+      "raw": "$x^2$",
+      "segments": [
+        {
+          "kind": "math",
+          "text": "x^2"
+        }
+      ],
+      "display_latex": "$x^2$",
+      "appearance": "A formula with a superscript; no visible delimiters."
+    },
+    {
+      "id": "mixed",
+      "raw": "Площадь: $\\frac{x^{2}}{y}$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "Площадь: "
+        },
+        {
+          "kind": "math",
+          "text": "\\frac{x^{2}}{y}"
+        }
+      ],
+      "display_latex": "Площадь: $\\frac{x^{2}}{y}$",
+      "appearance": "Upright prose followed by a fraction."
+    },
+    {
+      "id": "escaped_pair",
+      "raw": "\\$x\\$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "\\$x\\$"
+        }
+      ],
+      "display_latex": "\\textbackslash{}\\$x\\textbackslash{}\\$",
+      "appearance": "Both backslashes and both dollars are visible; x is prose."
+    },
+    {
+      "id": "adjacent_formulas",
+      "raw": "$x$$y$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "$x$$y$"
+        }
+      ],
+      "display_latex": "\\$x\\$\\$y\\$",
+      "appearance": "All four dollars are visible; x and y are prose."
+    },
+    {
+      "id": "double_delimiters",
+      "raw": "$$x$$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "$$x$$"
+        }
+      ],
+      "display_latex": "\\$\\$x\\$\\$",
+      "appearance": "All four dollars are visible; x is prose."
+    },
+    {
+      "id": "trailing_unpaired",
+      "raw": "$x$ и $",
+      "segments": [
+        {
+          "kind": "math",
+          "text": "x"
+        },
+        {
+          "kind": "plain",
+          "text": " и $"
+        }
+      ],
+      "display_latex": "$x$ и \\$",
+      "appearance": "Math x followed by prose and one visible dollar."
+    },
+    {
+      "id": "separated_formulas",
+      "raw": "$x$ $y$",
+      "segments": [
+        {
+          "kind": "math",
+          "text": "x"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "math",
+          "text": "y"
+        }
+      ],
+      "display_latex": "$x$ $y$",
+      "appearance": "Two formulas separated by a prose space."
+    },
+    {
+      "id": "blank_pair",
+      "raw": "$ $",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "$ $"
+        }
+      ],
+      "display_latex": "\\$ \\$",
+      "appearance": "Two visible dollars and a space."
+    },
+    {
+      "id": "blank_tab",
+      "raw": "$\t$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "$\t$"
+        }
+      ],
+      "display_latex": "\\$\t\\$",
+      "appearance": "Two visible dollars with intervening literal whitespace."
+    },
+    {
+      "id": "empty_pair",
+      "raw": "$$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "$$"
+        }
+      ],
+      "display_latex": "\\$\\$",
+      "appearance": "Two visible dollars."
+    },
+    {
+      "id": "unpaired_open",
+      "raw": "$x",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "$x"
+        }
+      ],
+      "display_latex": "\\$x",
+      "appearance": "A visible dollar followed by prose x."
+    },
+    {
+      "id": "unpaired_close",
+      "raw": "x$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "x$"
+        }
+      ],
+      "display_latex": "x\\$",
+      "appearance": "Prose x followed by a visible dollar."
+    },
+    {
+      "id": "triple_run",
+      "raw": "$$$x$$$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "$$$x$$$"
+        }
+      ],
+      "display_latex": "\\$\\$\\$x\\$\\$\\$",
+      "appearance": "All six dollars are visible; x is prose."
+    },
+    {
+      "id": "cancel_pending",
+      "raw": "$x$$ $y$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "$x$$ "
+        },
+        {
+          "kind": "math",
+          "text": "y"
+        }
+      ],
+      "display_latex": "\\$x\\$\\$ $y$",
+      "appearance": "The double-dollar run cancels the first opener; only y is math."
+    },
+    {
+      "id": "even_backslashes",
+      "raw": "\\\\$x$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "\\\\"
+        },
+        {
+          "kind": "math",
+          "text": "x"
+        }
+      ],
+      "display_latex": "\\textbackslash{}\\textbackslash{}$x$",
+      "appearance": "Two visible backslashes followed by math x."
+    },
+    {
+      "id": "odd_backslashes",
+      "raw": "\\\\\\$x$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "\\\\\\$x$"
+        }
+      ],
+      "display_latex": "\\textbackslash{}\\textbackslash{}\\textbackslash{}\\$x\\$",
+      "appearance": "Three visible backslashes and both dollars; x is prose."
+    },
+    {
+      "id": "escaped_dollar_in_math",
+      "raw": "$\\text{price \\$5}$",
+      "segments": [
+        {
+          "kind": "math",
+          "text": "\\text{price \\$5}"
+        }
+      ],
+      "display_latex": "$\\text{price \\$5}$",
+      "appearance": "Math containing the text price $5; the escaped dollar does not close math."
+    },
+    {
+      "id": "literal_before_index",
+      "raw": "Цена \\$5; $S_{бок}$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "Цена \\$5; "
+        },
+        {
+          "kind": "math",
+          "text": "S_{бок}"
+        }
+      ],
+      "display_latex": "Цена \\textbackslash{}\\$5; $S_{бок}$",
+      "appearance": "Visible backslash and dollar in prose, followed by S with a Cyrillic subscript."
+    },
+    {
+      "id": "escaped_candidate_closer",
+      "raw": "$x\\$",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "$x\\$"
+        }
+      ],
+      "display_latex": "\\$x\\textbackslash{}\\$",
+      "appearance": "The escaped dollar cannot close the opener; the whole string stays prose."
+    },
+    {
+      "id": "even_before_closer",
+      "raw": "$x\\\\$",
+      "segments": [
+        {
+          "kind": "math",
+          "text": "x\\\\"
+        }
+      ],
+      "display_latex": "$x\\\\$",
+      "appearance": "An even backslash run does not escape the closing dollar; TeX must be valid."
+    },
+    {
+      "id": "bare_tex",
+      "raw": "\\(x^2\\)",
+      "segments": [
+        {
+          "kind": "plain",
+          "text": "\\(x^2\\)"
+        }
+      ],
+      "display_latex": "\\textbackslash{}(x\\textasciicircum{}2\\textbackslash{})",
+      "appearance": "Backslashes, parentheses and caret stay literal; no math."
+    },
+    {
+      "id": "math_lf",
+      "raw": "$Б\\\n$",
+      "segments": [
+        {
+          "kind": "math",
+          "text": "Б\\\n"
+        }
+      ],
+      "display_latex": "$Б\\\n$",
+      "appearance": "One Cyrillic math letter; backslash plus LF is a TeX control space."
+    },
+    {
+      "id": "math_crlf",
+      "raw": "$S_{бок}\\\r\n$",
+      "segments": [
+        {
+          "kind": "math",
+          "text": "S_{бок}\\\r\n"
+        }
+      ],
+      "display_latex": "$S_{бок}\\\r\n$",
+      "appearance": "S with all three Cyrillic index letters; escaped CRLF is retained."
+    }
+  ]
+}

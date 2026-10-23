@@ -221,6 +221,52 @@ class TestNonAsciiScripts:
         from animageo.ui import textify_cyrillic
         assert textify_cyrillic(content) == expected
 
+    @pytest.mark.parametrize('newline', ['\n', '\r\n'], ids=['lf', 'crlf'])
+    @pytest.mark.parametrize('body, expected', [
+        ('Б', r'\text{Б}'),
+        ('S_{бок}', r'S_{\text{бок}}'),
+        ('S_бок', r'S_{\text{б}}\text{ок}'),
+    ], ids=['letter', 'braced-index', 'unbraced-index'])
+    def test_escaped_newline_keeps_cyrillic_in_the_math_scope(self, newline, body, expected):
+        from animageo.ui import textify_cyrillic
+
+        ending = '\\' + newline + '$'
+        assert textify_cyrillic('$' + body + ending) == '$' + expected + ending
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n'], ids=['lf', 'crlf'])
+    @pytest.mark.parametrize('slash_count', range(6))
+    def test_escaped_newline_preserves_opening_dollar_parity(self, newline, slash_count):
+        from animageo.ui import textify_cyrillic
+
+        prefix = '\\' * slash_count
+        ending = '\\' + newline + '$'
+        source = prefix + '$Б' + ending
+        expected = source if slash_count % 2 else prefix + r'$\text{Б}' + ending
+        assert textify_cyrillic(source) == expected
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n'], ids=['lf', 'crlf'])
+    @pytest.mark.parametrize('slash_count', range(1, 7))
+    def test_escaped_newline_preserves_inner_dollar_parity(self, newline, slash_count):
+        from animageo.ui import textify_cyrillic
+
+        slashes = '\\' * slash_count
+        ending = '\\' + newline + '$'
+        source = '$Б' + slashes + '$В' + ending
+        # An even run closes the first formula; an odd run keeps its dollar
+        # literal and the second Cyrillic letter inside the original scope.
+        second = r'\text{В}' if slash_count % 2 else 'В'
+        expected = r'$\text{Б}' + slashes + '$' + second + ending
+        assert textify_cyrillic(source) == expected
+
+    @pytest.mark.parametrize('newline', ['\n', '\r\n'], ids=['lf', 'crlf'])
+    def test_literal_dollars_survive_escaped_newline(self, newline):
+        from animageo.ui import textify_cyrillic
+
+        ending = '\\' + newline + '$'
+        source = r'Цена \$5; $S_{бок}+\$5' + ending
+        expected = r'Цена \$5; $S_{\text{бок}}+\$5' + ending
+        assert textify_cyrillic(source) == expected
+
     @latex_required
     @pytest.mark.parametrize('label', [
         '$Б$', '$Б_1$', '$БВ$', r'$\overline{Б}$', r'$\angle Б$', '$A_Б$',

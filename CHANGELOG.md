@@ -13,7 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   TikZ/TeX exports, including mixed prose and math. Text outside math stays
   escaped; template braces, dynamic inserts and the existing modes of
   classic and imported `Text` are preserved. Literal escaped dollars no
-  longer shift the math scopes used to preserve Cyrillic glyphs.
+  longer shift the math scopes used to preserve Cyrillic glyphs, including
+  math with a backslash followed by LF or CRLF. Escaped, blank, repeated
+  and unmatched dollar delimiters stay literal under the documented native
+  contract; parity with the web canvas on these edges awaits a client fix.
 
 ## [1.11.0rc9] - 2026-10-23
 

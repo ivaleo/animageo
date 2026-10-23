@@ -45,7 +45,7 @@ itself, for example in `BigInt`: `v = m · 2^e` with integers `m`, `e`, then
 ## Display
 
 Native SVG/PNG and TikZ/TeX rendering recognises paired, non-empty single
-`$…$` spans in the filled string as inline LaTeX math, like the web canvas.
+`$…$` spans in the filled string as inline LaTeX math.
 Text outside those spans is escaped as literal prose, including Cyrillic,
 braces, backslashes and LaTeX-special characters (`%`, `&`, `_`, etc.).
 Bare TeX commands and `\(…\)` do not enable math. An unmatched dollar,
@@ -55,6 +55,37 @@ need a separator, for example `$x$ $y$`. A dollar preceded by an odd number
 of backslashes is literal; outside math the backslashes themselves remain
 literal too. Use `$…$` only for intentional formulas, not paired currency
 symbols.
+
+The following scopes apply **after** template/ref resolution. `plain(s)`
+keeps every character of `s` visible, including backslashes and dollars;
+`math(s)` typesets `s` as LaTeX and consumes its surrounding dollars.
+Backslashes in the table are literal characters, not JSON escapes.
+
+| Filled text | Ordered segments | Expected appearance |
+|---|---|---|
+| `\$x\$` | `plain(\$x\$)` | Both backslashes and dollars visible; prose x |
+| `$x$$y$` | `plain($x$$y$)` | Four dollars visible; prose x and y |
+| `$$x$$` | `plain($$x$$)` | Four dollars visible; prose x |
+| `$x$ и $` | `math(x)`, `plain( и $)` | Math x, prose, final visible dollar |
+| `$x$ $y$` | `math(x)`, `plain( )`, `math(y)` | Two formulas separated by a space |
+| `$ $` / `$$` | One plain segment | Both dollars visible |
+| `$x` / `x$` | One plain segment | Unmatched dollar visible |
+| `$x$$ $y$` | `plain($x$$ )`, `math(y)` | Cancelled opener stays visible; only y is math |
+| `\\$x$` | `plain(\\)`, `math(x)` | Two backslashes visible before math x |
+| `\\\$x$` | One plain segment | Three backslashes and both dollars visible |
+| `$\text{price \$5}$` | `math(\text{price \$5})` | Text “price $5” inside math |
+
+The complete finite example set, including LF/CRLF and Cyrillic indices,
+is [text_free_delimiters.json](../../../tests/native/fixtures/text_free_delimiters.json).
+It records raw filled strings, plain/math segments, expected display LaTeX
+and appearance; library tests exercise the template, JSON, kernel and
+native-to-classic display boundary for every case.
+
+**Client compatibility:** the current web canvas uses a simpler dollar
+split and differs on escaped, repeated and unmatched delimiters. These
+examples define the native contract; full canvas parity requires a separate
+client change to both MathJax and the simple label/fallback paths. Until
+then, those edge cases can display differently in the canvas and exports.
 
 For example, the template
 `Площадь 50%: $\frac{{x^{{2}}}}{{y_{{1}}}}$` displays the prose `Площадь 50%:`

@@ -760,7 +760,8 @@ def latex_escape_text(s):
 # script takes one letter, as a Latin one does and GeoGebra shows it
 # (``S_бок`` is S with the index б, then ок; ``S_{бок}`` indexes the word).
 _CYRILLIC_RUN_RE = re.compile(r'(?<!\\)([_^])([Ѐ-ԯ])|([Ѐ-ԯ]+)')
-_MATH_SEGMENT_RE = re.compile(r'(?<!\\)(?:\\\\)*\$(?:\\.|[^\\$])*\$')
+# Backslash + newline is TeX control space and belongs to the same math scope.
+_MATH_SEGMENT_RE = re.compile(r'(?<!\\)(?:\\\\)*\$(?:\\[\s\S]|[^\\$])*\$')
 
 
 def _wrap_cyrillic_runs(math_segment):

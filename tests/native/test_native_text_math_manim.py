@@ -8,11 +8,12 @@ import pytest
 pytest.importorskip('manim')
 pytestmark = pytest.mark.manim
 
-from manim import tempconfig  # noqa: E402
+from manim import Tex, tempconfig  # noqa: E402
 from PIL import Image  # noqa: E402
 
 from animageo import AnimaGeoScene, native  # noqa: E402
 from animageo.geo.lib_elements import Text, latex_escape_text, textify_cyrillic  # noqa: E402
+from animageo.ui import RusTex  # noqa: E402
 from tests.native.test_native_l2a5_text import text_doc  # noqa: E402
 
 
@@ -131,6 +132,37 @@ def test_literal_dollar_does_not_hide_a_cyrillic_math_index():
     actual = scene.mobject(scene.native_names.by_id['t'])
     # Explicit text mode is an independent oracle for the Cyrillic glyphs.
     expected = classic_control(scene, r'Цена \textbackslash{}\$5; $S_{\text{бок}}$')
+    np.testing.assert_allclose(points(actual), points(expected), atol=1e-9)
+
+
+@pytest.mark.parametrize('mode', ['native', 'classic'])
+@pytest.mark.parametrize('newline', ['\n', '\r\n'], ids=['lf', 'crlf'])
+@pytest.mark.parametrize('body, text_mode_body, glyph_count', [
+    ('Б', r'\text{Б}', 1),
+    ('S_{бок}', r'S_{\text{бок}}', 4),
+], ids=['letter', 'index'])
+def test_escaped_newline_preserves_cyrillic_glyphs_and_contours(
+        mode, newline, body, text_mode_body, glyph_count):
+    source = '$' + body + '\\' + newline + '$'
+    scene = AnimaGeoScene()
+    scene.loadDocument(drawing(source))
+    if mode == 'native':
+        actual = scene.mobject(scene.native_names.by_id['t'])
+    else:
+        actual = classic_control(scene, source)
+        text = scene.geo.element(scene.native_names.by_id['t']).data
+        assert text.is_latex and not getattr(text, '_native_inline_math', False)
+
+    assert actual is not None
+    assert len(actual.family_members_with_points()) == glyph_count
+    # Compile explicit text mode directly, bypassing textify_cyrillic and the
+    # library renderer so the oracle cannot silently lose the same glyphs.
+    expected = Tex(
+        '$' + text_mode_body + '\\' + newline + '$',
+        tex_template=RusTex, font_size=actual[0].font_size,
+    )
+    assert len(expected.family_members_with_points()) == glyph_count
+    expected.move_to(actual.get_center())
     np.testing.assert_allclose(points(actual), points(expected), atol=1e-9)
 
 
