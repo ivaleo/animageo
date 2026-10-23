@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc10] - 2026-10-24
+
 ### Fixed
 
 - Native `text.free` renders paired inline `$…$` formulas in SVG, PNG and
