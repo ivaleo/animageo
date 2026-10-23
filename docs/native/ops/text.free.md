@@ -19,8 +19,9 @@ stand for the braces themselves. An insert is a decimal index only (`{0}`,
 `{12}`, no sign, no leading zero, no spaces); anything else after `{`, a
 lone `}` or an insert outside `refs` is the issue `formula` of `validate`
 (path `…/args/text/value`) and the state `error/formula`. Nothing in a
-template is evaluated; the result has no markup — escaping for LaTeX or
-HTML is the renderer's job.
+template is evaluated; the filled string preserves its characters —
+interpreting inline math and escaping for LaTeX or HTML is the renderer's
+job (see Display below).
 
 The value is `{anchor: [x, y], text, parts}`: `anchor` — the point,
 `text` — the filled template, `parts` — the pieces in order, `{text}` for a
@@ -40,6 +41,32 @@ it takes the larger magnitude (`(0.125).toFixed(2)` is `0.13`,
 `(-2.5).toFixed(0)` is `-3`). A TypeScript kernel rounds the exact value
 itself, for example in `BigInt`: `v = m · 2^e` with integers `m`, `e`, then
 `m · 10^decimals · 2^e` rounded half to even.
+
+## Display
+
+Native SVG/PNG and TikZ/TeX rendering recognises paired, non-empty single
+`$…$` spans in the filled string as inline LaTeX math, like the web canvas.
+Text outside those spans is escaped as literal prose, including Cyrillic,
+braces, backslashes and LaTeX-special characters (`%`, `&`, `_`, etc.).
+Bare TeX commands and `\(…\)` do not enable math. An unmatched dollar,
+a blank pair (`$ $`) or a run of two or more dollars (`$$`) stays literal;
+a `$$` run also cancels a pending unmatched opener. Adjacent formulas
+need a separator, for example `$x$ $y$`. A dollar preceded by an odd number
+of backslashes is literal; outside math the backslashes themselves remain
+literal too. Use `$…$` only for intentional formulas, not paired currency
+symbols.
+
+For example, the template
+`Площадь 50%: $\frac{{x^{{2}}}}{{y_{{1}}}}$` displays the prose `Площадь 50%:`
+followed by a fraction with a superscript and a subscript. Template braces
+are still doubled; a dynamic numerator can be written as
+`$\frac{{{0}^{{2}}}}{{y}}$` with the number in `refs[0]`. The JSON document,
+kernel `text`/`parts` and template/ref semantics do not change.
+
+The SVG/PNG renderer falls back to the original string escaped as plain
+text if LaTeX compilation fails. TeX exports retain the formula and require
+valid LaTeX. Classic Python `Text` and imported GeoGebra text keep their
+existing plain, raw-LaTeX and implicit-math modes.
 
 ## Value
 

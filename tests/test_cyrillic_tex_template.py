@@ -211,6 +211,16 @@ class TestNonAsciiScripts:
         assert (textify_cyrillic('Отрезок $БВ$ равен $5$')
                 == r'Отрезок $\text{БВ}$ равен $5$')
 
+    @pytest.mark.parametrize('content, expected', [
+        (r'Цена \$5; $S_{бок}$', r'Цена \$5; $S_{\text{бок}}$'),
+        (r'$\text{Цена \$5}, S_{бок}$', r'$\text{\text{Цена} \$5}, S_{\text{бок}}$'),
+        (r'\\$Б$', r'\\$\text{Б}$'),
+        (r'\$Б\$', r'\$Б\$'),
+    ])
+    def test_literal_dollars_do_not_shift_cyrillic_math_scopes(self, content, expected):
+        from animageo.ui import textify_cyrillic
+        assert textify_cyrillic(content) == expected
+
     @latex_required
     @pytest.mark.parametrize('label', [
         '$Б$', '$Б_1$', '$БВ$', r'$\overline{Б}$', r'$\angle Б$', '$A_Б$',

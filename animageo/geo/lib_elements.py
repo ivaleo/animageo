@@ -760,7 +760,7 @@ def latex_escape_text(s):
 # script takes one letter, as a Latin one does and GeoGebra shows it
 # (``S_бок`` is S with the index б, then ок; ``S_{бок}`` indexes the word).
 _CYRILLIC_RUN_RE = re.compile(r'(?<!\\)([_^])([Ѐ-ԯ])|([Ѐ-ԯ]+)')
-_MATH_SEGMENT_RE = re.compile(r'(\$[^$]*\$)')
+_MATH_SEGMENT_RE = re.compile(r'(?<!\\)(?:\\\\)*\$(?:\\.|[^\\$])*\$')
 
 
 def _wrap_cyrillic_runs(math_segment):
@@ -780,9 +780,7 @@ def textify_cyrillic(s):
     renderer and the TikZ exporter (JSXGraph renders labels via MathJax, which
     has Cyrillic in math and needs no rewriting).
     """
-    parts = _MATH_SEGMENT_RE.split(s)
-    return ''.join(_wrap_cyrillic_runs(p) if p.startswith('$') else p
-                   for p in parts)
+    return _MATH_SEGMENT_RE.sub(lambda m: _wrap_cyrillic_runs(m.group()), s)
 
 
 _EXPLICIT_MATH_RE = re.compile(
@@ -791,16 +789,61 @@ _EXPLICIT_MATH_RE = re.compile(
 )
 
 
+def _inline_math_to_latex(content):
+    """Native text: keep paired single-dollar math, escape every other part.
+
+    Backslashes are literal outside math; an odd run before a dollar keeps
+    that dollar literal too. Empty pairs, unmatched dollars and ``$$`` runs
+    stay text. A double-dollar run also ends a pending unmatched opener.
+    This mode is deliberately separate from classic/imported raw LaTeX.
+    """
+    parts = []
+    plain_start = 0
+    opening = None
+    backslashes = 0
+    i = 0
+    while i < len(content):
+        ch = content[i]
+        if ch != '$':
+            backslashes = backslashes + 1 if ch == '\\' else 0
+            i += 1
+            continue
+        escaped = backslashes % 2
+        backslashes = 0
+        if escaped:
+            i += 1
+            continue
+        if content.startswith('$$', i):
+            opening = None
+            while i < len(content) and content[i] == '$':
+                i += 1
+            continue
+        if opening is None:
+            opening = i
+        else:
+            if content[opening + 1:i].strip():
+                parts.append(latex_escape_text(content[plain_start:opening]))
+                parts.append(content[opening:i + 1])
+                plain_start = i + 1
+            opening = None
+        i += 1
+    parts.append(latex_escape_text(content[plain_start:]))
+    return ''.join(parts)
+
+
 def text_to_display_latex(construction, text, decimals):
     """Resolve a :class:`Text` to a LaTeX-ready display string, shared by the
     manim renderer and exporters. Plain texts are escaped. Imported GeoGebra
     formulas get math delimiters only when no explicit math scope exists;
     already-delimited or mixed LaTeX and Python-created texts pass through.
+    Native texts keep only paired inline ``$…$`` math; their prose is escaped.
     Non-breaking spaces collapse to regular spaces.
     Returns ``''`` for empty/blank content."""
     content = resolve_text_string(construction, text, decimals).replace('\xa0', ' ')
     if not content.strip():
         return ''
+    if getattr(text, '_native_inline_math', False):
+        return _inline_math_to_latex(content)
     if not text.is_latex:
         return latex_escape_text(content)
     if getattr(text, 'latex_math_mode', False) and not _EXPLICIT_MATH_RE.search(content):

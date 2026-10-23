@@ -39,6 +39,8 @@ no geometry of its own, the renderer draws its ticks on the targets.
 A text (``text.free``, 1.4 a5) is a classic ``Text`` with one literal
 segment — the filled template — and its top-left corner at the anchor; an
 ``expr`` tree or a template is a constant of the command, like a param.
+Its display mode recognises inline ``$…$`` math and escapes the remaining
+text; the stored string and the modes of other classic texts are unchanged.
 
 Registry 1.5: an altitude on a line or ray side receives the side's two
 defining points (``ends`` input, see ``evaluate.side_end_slots``) as extra
@@ -297,8 +299,9 @@ def to_classic(type_: str, value, *, sides=None, scale=None):
             obj = AngleSize(float(value['value']))
         else:
             obj = Measure(float(value['value']), _MEASURE_DIMENSION.get(unit, 0))
-    elif type_ == 'text':               # a plain classic text of the filled template, top-left at the anchor
+    elif type_ == 'text':               # filled template, top-left at the anchor
         obj = Text([('str', value['text'])], position=value['anchor'])
+        obj._native_inline_math = True
     elif type_ == 'function':
         obj = native_function(value)
     elif type_ == 'conic':

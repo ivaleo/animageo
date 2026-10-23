@@ -72,6 +72,83 @@ def text_doc(template, *refs, decimals=None, anchor='A'):
 
 
 class TestTextFree:
+    @pytest.mark.parametrize('content', [
+        r'$\frac{x^{2}}{y}$',
+        r'Площадь $\frac{x^{2}}{y_{1}}$',
+    ])
+    def test_inline_math_reaches_the_display_boundary(self, content):
+        from animageo.geo.lib_elements import resolve_text_string, text_to_display_latex
+        from animageo.native.kernel.bridge import to_classic
+
+        template = content.replace('{', '{{').replace('}', '}}')
+        doc = text_doc(template).doc
+        assert native.validate(doc) == []
+        value = native.evaluate(native.load(native.canonical_json(doc))).elements['t']['value']
+        text = to_classic('text', value)
+        assert resolve_text_string(None, text, 2) == content
+        assert text_to_display_latex(None, text, 2) == content
+
+    @pytest.mark.parametrize('content, expected', [
+        ('Дано: AB = 5', 'Дано: AB = 5'),
+        (r'Цена $5; {x} [y] \frac (a_b) & 50%',
+         r'Цена \$5; \{x\} [y] \textbackslash{}frac (a\_b) \& 50\%'),
+        (r'50% & S_1 = $\frac{x^{2}}{y}$ # {ok}',
+         r'50\% \& S\_1 = $\frac{x^{2}}{y}$ \# \{ok\}'),
+        (r'$x$ и $y_{1}$; z^2', r'$x$ и $y_{1}$; z\textasciicircum{}2'),
+        (r'\(x^2\)', r'\textbackslash{}(x\textasciicircum{}2\textbackslash{})'),
+        (r'\$x\$', r'\textbackslash{}\$x\textbackslash{}\$'),
+        (r'\\$x^2$', r'\textbackslash{}\textbackslash{}$x^2$'),
+        (r'$\text{price \$5}$', r'$\text{price \$5}$'),
+        ('$$x$$', r'\$\$x\$\$'),
+        ('$x$$y$', r'\$x\$\$y\$'),
+        ('$ $', r'\$ \$'),
+        ('$x$ и $', r'$x$ и \$'),
+        ('строка\n50% & {x}', 'строка\n50\\% \\& \\{x\\}'),
+        ('\xa0 ', ''),
+    ])
+    def test_native_display_escapes_only_the_plain_parts(self, content, expected):
+        from animageo.geo.lib_elements import resolve_text_string, text_to_display_latex
+        from animageo.native.kernel.bridge import from_classic, to_classic
+
+        value = {'text': content, 'anchor': [1, 2], 'parts': [{'text': content}]}
+        text = to_classic('text', value)
+        assert resolve_text_string(None, text, 2) == content
+        assert from_classic('text', text) == value
+        assert text_to_display_latex(None, text, 2) == expected
+
+    def test_math_and_template_refs_follow_incremental_rebuild(self):
+        from animageo.geo.lib_elements import Point, resolve_text_string, text_to_display_latex
+        from animageo.native.kernel.bridge import build_construction, from_classic
+
+        doc = text_doc(r'Дано {{x}}: $\frac{{{0}^{{2}}}}{{y_{{1}}}}$, A = {1}', 'a', 'A').doc
+        assert native.validate(doc) == []
+        geo, names = build_construction(doc)
+        geo.rebuild(full=True)
+        for number, point in [(0.125, [1, 2]), (3.5, [-1, 0.5])]:
+            geo.update(names.by_id['a'], number)
+            geo.update(names.by_id['A'], Point(point))
+            geo.rebuild()
+            text = geo.objectByName(names.by_id['t']).data
+            value = native.evaluate(doc, inputs={'a': number_input(number), 'A': point_input(*point)}).elements['t']['value']
+            assert from_classic('text', text) == value
+            assert resolve_text_string(geo, text, 2) == value['text']
+            assert text_to_display_latex(geo, text, 2) == value['text'].replace('{x}', r'\{x\}')
+            assert text.position == pytest.approx(point)
+
+    def test_markup_and_code_stay_template_data(self):
+        from animageo.geo.lib_elements import latex_escape_text, text_to_display_latex
+        from animageo.native.kernel.bridge import build_construction
+
+        content = r'<script>bad()</script> __import__("os"); \input{missing} {x} $x^{2}$'
+        doc = text_doc(content.replace('{', '{{').replace('}', '}}')).doc
+        operations = native.canonical_json(doc['operations'])
+        assert native.validate(doc) == []
+        geo, names = build_construction(doc)
+        geo.rebuild(full=True)
+        text = geo.objectByName(names.by_id['t']).data
+        assert native.canonical_json(doc['operations']) == operations
+        assert text_to_display_latex(geo, text, 2) == latex_escape_text(content[:-7]) + '$x^{2}$'
+
     def test_value(self):
         doc = text_doc('a = {0}, угол = {1}, A{2} {{x}}', 'a', 'm', 'A').doc
         assert native.validate(doc) == []

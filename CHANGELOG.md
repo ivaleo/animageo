@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Native `text.free` renders paired inline `$…$` formulas in SVG, PNG and
+  TikZ/TeX exports, including mixed prose and math. Text outside math stays
+  escaped; template braces, dynamic inserts and the existing modes of
+  classic and imported `Text` are preserved. Literal escaped dollars no
+  longer shift the math scopes used to preserve Cyrillic glyphs.
+
 ## [1.11.0rc9] - 2026-10-23
 
 Numeric fixture and easing snapshot checks across libm builds. The operation
