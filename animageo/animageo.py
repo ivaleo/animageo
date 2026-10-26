@@ -40,6 +40,7 @@ from .ui import (
     prewarm_decimal_glyphs, ValueLabel, install_cyrillic_tex_template,
     textify_cyrillic,
 )
+from .ui import greek_to_tex as _greek_to_tex
 from manim import *
 
 from .parsers.svg_parser import *
@@ -4010,7 +4011,9 @@ class AnimaGeoScene(MovingCameraScene):
         # Cyrillic inside the text's own ``$…$`` would compile to nothing —
         # the T2A math alphabet has no Cyrillic glyphs. Text mode has them.
         # Renderer-only: the TikZ/JSXGraph exporters keep the raw string.
-        tex_str = textify_cyrillic(tex_str)
+        # Greek letters likewise: T2A text has no glyphs for them, and raw in
+        # math they do not compile either (``greek_to_tex``).
+        tex_str = textify_cyrillic(_greek_to_tex(tex_str))
 
         try:
             mobj = Tex(tex_str, color=ctx.col_label, tex_template=RusTex)
@@ -4020,7 +4023,7 @@ class AnimaGeoScene(MovingCameraScene):
             raw = geo.resolve_text_string(self.geo, text, decimals).replace('\xa0', ' ')
             logger.warning("Text '%s': LaTeX compile failed (%s); "
                            "falling back to escaped plain text", elem.name, e)
-            mobj = Tex(geo.latex_escape_text(raw), color=ctx.col_label,
+            mobj = Tex(_greek_to_tex(geo.latex_escape_text(raw)), color=ctx.col_label,
                        tex_template=RusTex)
         mobj.set(font_size=ctx.font_size)
         mobj.set_z_index(ctx.zz)

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Labels and free texts with Greek letters outside math (`γ`, `ω_1`,
+  `cos α`, `угол φ`, a bare `\alpha`) compile: under the T2A template such
+  a letter, with its index and primes, is set in math (`$\gamma$`). Math
+  segments, Cyrillic text and escaped `\$` stay as written. These labels
+  used to be dropped silently, as was their plain-text fallback.
+- A TeX body that fails to compile is remembered for the process and not
+  compiled again on every render (manim caches successful bodies only).
+
 ## [1.7.16] - 2026-10-07
 
 ### Fixed
