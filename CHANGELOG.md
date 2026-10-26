@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.17] - 2026-10-26
+
 ### Fixed
 
 - Labels and free texts with Greek letters outside math (`γ`, `ω_1`,
