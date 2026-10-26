@@ -77,6 +77,7 @@ _TYPES = {
     # the stroke of a sector is solid; its cap counts without ``sector_sides``
     'sector': ('circlesector', _STROKE + ('stroke_linecap',) + _FILL + _HATCH + ('z_index', 'z_index_fill')
                + _LABEL + _VALUE),
+    'circlesegment': ('circlesegment', _STROKE + _FILL + _HATCH + ('z_index', 'z_index_fill') + _LABEL + _VALUE),
     # the fill of a polygon lies at its ``z_index``, the stroke is solid
     'polygon': ('polygon', _STROKE + _FILL + _HATCH + ('z_index',) + _LABEL + _VALUE),
     'polyline': ('locuscurve', _STROKE + _DASH + ('z_index',)),
@@ -248,7 +249,7 @@ PAINT_FORMAT = 'animageo-paint/v1'
 
 # ``_Z_AUTO_BY_TYPE`` of ``animageo.py`` (by the exact classic class; others
 # lie at ``Z_FILL``), copied here to stay manim-free; a test compares the two.
-_Z_AUTO_BY_CLASS = {'Polygon': 0.01, 'CircleSector': 0.01, 'Angle': 3.0, 'Segment': 5.0, 'Circle': 5.0,
+_Z_AUTO_BY_CLASS = {'Polygon': 0.01, 'CircleSector': 0.01, 'CircleSegment': 0.01, 'Angle': 3.0, 'Segment': 5.0, 'Circle': 5.0,
                     'Arc': 5.0, 'Point': 50.0, 'Text': 50.0}
 _Z_FILL = 0.01
 _Z_FILL_LABEL = 0.1
@@ -259,9 +260,9 @@ _Z_ORDER_EPSILON = 1e-6
 _DASH_FIT = {'segment': 'ends', 'vector': 'ends', 'arc': 'ends', 'circle': 'closed', 'line': 'none',
              'ray': 'none'}
 _CAPPED = ('segment', 'line', 'ray', 'vector', 'arc', 'sector')
-_FILLED = ('circle', 'arc', 'sector', 'polygon')
-_HATCHED = ('circle', 'sector', 'polygon')
-_WITH_VALUE = ('segment', 'vector', 'circle', 'arc', 'sector', 'polygon', 'angle', 'mark.right_angle')
+_FILLED = ('circle', 'arc', 'sector', 'circlesegment', 'polygon')
+_HATCHED = ('circle', 'sector', 'circlesegment', 'polygon')
+_WITH_VALUE = ('segment', 'vector', 'circle', 'arc', 'sector', 'circlesegment', 'polygon', 'angle', 'mark.right_angle')
 
 
 def _num(value, default=0.0):
@@ -549,6 +550,7 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
     """
     from types import SimpleNamespace
 
+    from ..dash import element_dash_px
     from ..export_layout import normalize_content_options, rendered_view_from_bounds, \
         source_view_from_bounds_px, static_export_dict
     from ..geo import construction as geo
@@ -654,6 +656,8 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
                 if style_type in _CAPPED else None
             if style_type == 'sector' and value('sector_sides', False) is True:
                 cap = None
+            if element_dash_px(final, elem) is not None and cap is not None:
+                cap = 'butt'
             stroke = {'color': _color(value('stroke', stroke_default)),
                       'opacity': _r(_num(value('stroke_opacity', 1), 1)),
                       'widthPx': _r(width_px), 'cap': cap, 'z': entry['z']}
@@ -673,7 +677,7 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             if style_type in ('angle', 'mark.right_angle') and is_bg:
                 opacity = 0.0
             fill = {'color': color if opacity > 0 else None, 'opacity': _r(opacity), 'isBackground': is_bg}
-            if style_type in ('circle', 'arc', 'sector', 'conic'):
+            if style_type in ('circle', 'arc', 'sector', 'circlesegment', 'conic'):
                 fill['z'] = _r(_num(value('z_index_fill', _Z_FILL), _Z_FILL) + tie)
             elif style_type in ('polygon', 'angle', 'mark.right_angle'):
                 fill['z'] = entry['z']

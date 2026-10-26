@@ -130,7 +130,7 @@ def image(type_: str, v: dict, m: Map) -> dict:
     if type_ == 'circle':
         cx, cy = m.point(*v['c'])
         return {'image': {'c': [cx, cy], 'r': v['r'] * m.scale}}
-    if type_ in ('arc', 'sector'):
+    if type_ in ('arc', 'sector', 'circlesegment'):
         cx, cy = m.point(*v['c'])
         sweep = v['a1'] - v['a0']
         a0 = reduce_angle(m.turn(v['a1'] if m.reverses else v['a0']))

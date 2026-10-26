@@ -14,6 +14,7 @@ that runs to the end of the line.
 from __future__ import annotations
 
 import unicodedata
+import json
 from dataclasses import dataclass
 
 from .issues import LineError
@@ -56,6 +57,14 @@ def tokenize(line: str):
             continue
         if ch == '#':
             return tokens, i + 1
+        if ch == '"':
+            try:
+                value, end = json.JSONDecoder().raw_decode(line[i:])
+            except ValueError:
+                raise LineError('syntax', i + 1, 'незакрытая или неверная строка') from None
+            tokens.append(Token('string', value, i + 1, i + end + 1))
+            i += end
+            continue
         multi = next((rep for src, rep in _MULTI if line.startswith(src, i)), None)
         if multi is not None:
             size = next(len(src) for src, rep in _MULTI if line.startswith(src, i))

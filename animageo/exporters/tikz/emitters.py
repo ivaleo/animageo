@@ -260,7 +260,7 @@ def _emit_ticks(ctx: TikzContext, elem, p1, p2, normal, labels=None) -> None:
         return
     m = (np.asarray(p1, float) + np.asarray(p2, float)) / 2
     # ticks end butt, whatever the cap of their segment (as the renderer draws them)
-    opts = stroke_options(ctx, elem, width_px=width_px, with_cap=False, with_dash=False)
+    opts = stroke_options(ctx, elem, width_px=width_px, with_cap=False, with_dash=False, extra=['line cap=butt'])
     half = n * length_mu / 2
     for i in range(num):
         d = shift_mu * ((1 - num) * 0.5 + i)
@@ -343,6 +343,21 @@ def emit_arc(ctx: TikzContext, elem, labels: List[str]) -> None:
     mid = (a1 + a2) / 2
     lx, ly = _arc_start(cx, cy, r + 0.7, mid)
     emit_label(ctx, elem, lx, ly, labels, default_anchor="center")
+
+
+def emit_circlesegment(ctx: TikzContext, elem, labels: List[str]) -> None:
+    cx, cy = map(float, elem.data.center)
+    r = float(elem.data.radius)
+    a0, a1 = elem.data.angles
+    sx, sy = _arc_start(cx, cy, r, a0)
+    path = (f"{_coord(ctx, sx, sy)} arc ({ctx.doc.num(math.degrees(a0))}:"
+            f"{ctx.doc.num(math.degrees(a1))}:{ctx.doc.num(r)}) -- cycle;")
+    solid = _fill_pattern(ctx, elem, {'circlesegment': (cx, cy, r, a0, a1)})
+    if solid and _fill_opacity(ctx, elem) > 0:
+        ctx.doc.line(f"\\fill[{fill_options(ctx, elem)}] {path}")
+    ctx.doc.line(f"\\draw[{stroke_options(ctx, elem, with_dash=False, with_cap=False)}] {path}")
+    lx, ly = _arc_start(cx, cy, 0.7 * r, (a0 + a1) / 2)
+    emit_label(ctx, elem, lx, ly, labels, default_anchor='center')
 
 
 def emit_circlesector(ctx: TikzContext, elem, labels: List[str]) -> None:
@@ -679,6 +694,7 @@ EMITTERS = {
     "circle": emit_circle,
     "arc": emit_arc,
     "circlesector": emit_circlesector,
+    "circlesegment": emit_circlesegment,
     "polygon": emit_polygon,
     "angle": emit_angle,
     "conic": emit_conic,

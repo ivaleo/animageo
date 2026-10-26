@@ -58,9 +58,8 @@ def dash_options(ctx: TikzContext, elem, *, width_px=None, cap=None) -> Optional
 
     The renderer's nominal pattern: ``stroke_dash_ratio`` of the period in
     style px (``stroke_dash_period_px`` → ``rendering.dash_period_px`` → 10),
-    sized like line widths (``size_pt``). With a round/square ``cap`` every
-    dash grows by the line width, so the drawn dash is shortened and phased
-    to keep the visible one nominal — as in the SVG. No fit to the path
+    sized like line widths (``size_pt``). Dashes have butt caps in every
+    export. No fit to the path
     length: TikZ starts the pattern at each path's start.
     """
     dash_px = element_dash_px(
@@ -68,14 +67,7 @@ def dash_options(ctx: TikzContext, elem, *, width_px=None, cap=None) -> Optional
     if dash_px is None:
         return None
     on_px, off_px = dash_px
-    cap_extent = 0.0
-    if cap in ("round", "square") and width_px:
-        try:
-            cap_extent = max(0.0, float(width_px))
-        except (TypeError, ValueError):
-            cap_extent = 0.0
-    pat = dash_pattern(0.0, ctx.size_pt(on_px), ctx.size_pt(off_px),
-                       cap_extent_mu=ctx.size_pt(cap_extent))
+    pat = dash_pattern(0.0, ctx.size_pt(on_px), ctx.size_pt(off_px))
     p = ctx.opt.size_precision
     out = f"dash pattern=on {fmt_num(pat.on, p)}pt off {fmt_num(pat.off, p)}pt"
     if pat.offset:
@@ -112,6 +104,8 @@ def stroke_options(
     if with_cap and capped(ctx, elem):
         cap = ctx.resolve(elem, "stroke_linecap",
                           default=ctx.scene.style.rendering.get("line_cap", "butt"))
+        if with_dash and element_dash_px(ctx.scene, elem, resolve=lambda e, k, d=None: ctx.resolve(e, k, default=d)):
+            cap = 'butt'
         tikz_cap = CAP_MAP.get(cap, "butt")
         if tikz_cap != "butt":
             opts.append(f"line cap={tikz_cap}")
@@ -119,6 +113,7 @@ def stroke_options(
     if with_dash:
         d = dash_options(ctx, elem, width_px=width_px, cap=cap)
         if d:
+            opts.append('line cap=butt')
             opts.append(d)
 
     if extra:

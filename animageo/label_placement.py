@@ -746,7 +746,9 @@ def _collect_obstacles(scene, *, angle_marker_obstacle=False):
             # to the other side). Sampled as
             # a polyline over the actual angular span, like angle markers.
             a_start, a_end = d.angles
-            span = (a_end - a_start) % (2 * pi)
+            span = a_end - a_start if isinstance(d, geo.CircleSegment) else (a_end - a_start) % (2 * pi)
+            if isinstance(d, geo.CircleSegment) and span <= 0:
+                continue
             if span < 1e-9:
                 circles.append((d.center[:2].copy(), d.radius))
                 circ_dashed.append(dashed)
@@ -756,6 +758,9 @@ def _collect_obstacles(scene, *, angle_marker_obstacle=False):
                 for k in range(len(pts) - 1):
                     segments.append((pts[k], pts[k + 1]))
                     seg_dashed.append(dashed)
+                if isinstance(d, geo.CircleSegment):
+                    segments.append((pts[-1].copy(), pts[0].copy()))
+                    seg_dashed.append(False)
                 if isinstance(d, geo.CircleSector):
                     c2 = d.center[:2].copy()
                     segments.append((c2, pts[0].copy()))
@@ -1021,6 +1026,11 @@ def _collect_fills(scene):
         d = elem.data
         if isinstance(d, geo.Polygon):
             fills.append(('poly', np.asarray(d.vertices)[:, :2].copy(), op, lum))
+        elif isinstance(d, geo.CircleSegment):
+            a_start, a_end = d.angles
+            if a_end > a_start:
+                pts = _sample_arc(d.center[:2], d.radius, a_start, a_end - a_start, 36)
+                fills.append(('poly', pts, op, lum))
         elif isinstance(d, geo.CircleSector):
             a_start, a_end = d.angles
             pts = _sample_arc(d.center[:2], d.radius, a_start, a_end - a_start, 18)

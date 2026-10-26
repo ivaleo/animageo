@@ -141,3 +141,18 @@ def sector_three_points(args, ctx):
 @op('sector.on_circle')
 def sector_on_circle(args, ctx):
     return {'sector': _on_circle(args, ctx)}
+
+
+@op('sector.segment')
+def circle_segment(args, ctx):
+    if 'arc' in args:
+        return {'segment': dict(args['arc'].value)}
+    circle = args['circle'].value
+    tol = ctx.tol.decide_length
+    for slot in ('a', 'b'):
+        p = args[slot].value
+        error = math.hypot(p['x'] - circle['c'][0], p['y'] - circle['c'][1]) - circle['r']
+        ctx.decide('not_on_curve', error, tol)
+        if abs(error) > tol:
+            return {'segment': Undefined('not_on_curve')}
+    return {'segment': _on_circle(args, ctx)}

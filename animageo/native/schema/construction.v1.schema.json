@@ -224,7 +224,8 @@
             "list",
             "number",
             "expr",
-            "template"
+            "template",
+            "string"
           ]
         }
       },
@@ -243,6 +244,9 @@
         },
         {
           "$ref": "#/$defs/templateArgument"
+        },
+        {
+          "$ref": "#/$defs/stringArgument"
         }
       ]
     },
@@ -700,6 +704,22 @@
           "$ref": "#/$defs/id"
         },
         "kind": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "stringArgument": {
+      "type": "object",
+      "required": [
+        "kind",
+        "value"
+      ],
+      "properties": {
+        "kind": {
+          "const": "string"
+        },
+        "value": {
           "type": "string"
         }
       },

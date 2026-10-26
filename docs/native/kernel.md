@@ -1094,15 +1094,17 @@ breaking ties by `1e-6`) and, by type:
   default `rendering.line_cap`, for a segment, a line, a ray, a vector, an
   arc and a sector without its sides; `null` — butt — for every other stroke:
   a polyline, a locus, a curve, the arcs of an angle, a right-angle mark; the
-  ticks of a segment are butt whatever its cap; 1.11.0: the SVG, PDF, EPS,
+  ticks of a segment are butt whatever its cap; since 1.11.0rc12 every
+  dashed stroke is butt too, even under an explicit round or square cap.
+  The SVG, PDF, EPS,
   PNG, TikZ and the frames of the video draw these caps, and a stroke without
   a cap or join of its own no longer takes those of the stroke drawn before
   it in the video), `z`, and `dash` — `null` or `{onPx, offPx, fit, drawn}`: the
   nominal pattern, how the renderer fits it to the path (`ends` — a dash at
   both ends of a segment, a vector or an arc; `closed` — whole periods on a
   circle or a closed polyline; `none` — from the start of a line, a ray or an
-  open polyline) and the pattern drawn `{onPx, offPx, offsetPx}`, shortened
-  by round and square caps (`null` for a vector: the renderer measures the
+  open polyline) and the pattern drawn `{onPx, offPx, offsetPx}`
+  (`null` for a vector: the renderer measures the
   stem of its arrow). The fit is computed on the exact length; the renderer
   measures its Bézier path, within `1e-3` of it for a circle or an arc;
 - `fill`: `color` (`null` — nothing is drawn), `opacity` as drawn,

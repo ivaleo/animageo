@@ -100,6 +100,7 @@ _CAP_MAP = {
 _Z_AUTO_BY_TYPE = {
     geo.Polygon:      Z_FILL,
     geo.CircleSector: Z_FILL,
+    geo.CircleSegment: Z_FILL,
     geo.Angle:        Z_ANGLE,
     geo.Segment:      Z_STROKE,
     geo.Circle:       Z_STROKE,
@@ -2462,6 +2463,7 @@ class AnimaGeoScene(MovingCameraScene):
             _geo.Point: 'fade', _geo.Segment: 'create', _geo.Line: 'create',
             _geo.Ray: 'create', _geo.Vector: 'create', _geo.Circle: 'create',
             _geo.Arc: 'create', _geo.Polygon: 'fade', _geo.CircleSector: 'fade',
+            _geo.CircleSegment: 'fade',
             _geo.Angle: 'fade', _geo.Text: 'write',
             _geo.Conic: 'create', _geo.Function: 'create', _geo.ImplicitCurve: 'create',
         }
@@ -3497,6 +3499,8 @@ class AnimaGeoScene(MovingCameraScene):
             self, elem, 'stroke_linecap',
             default=style.rendering.get('line_cap', 'butt'),
         )
+        if dash_px:
+            cap = 'butt'
         ra_joint = _resolve_style(
             self, elem, 'right_angle_joint',
             default=style.rendering.get('right_angle_joint', 'auto'),
@@ -3609,21 +3613,18 @@ class AnimaGeoScene(MovingCameraScene):
         partial reveals uncover finished dashes. ``fit``: ``'ends'`` — open
         path of finite length, a dash on both ends; ``'closed'`` — a whole
         number of periods, no seam; ``'none'`` — the nominal pattern from the
-        path start (lines clipped by the viewport, sampled curves). Round and
-        square caps lengthen every dash by the line width; ``dash_pattern``
-        shortens the drawn dash so the visible one stays nominal.
+        path start (lines clipped by the viewport, sampled curves).
+        Dashes always have butt caps, independently of the element style.
         """
         if not ctx.dash_px:
             return vm
+        vm.cap_style = CapStyleType.BUTT
         on_px, off_px = ctx.dash_px
-        cap_extent = 0.0
-        if getattr(vm, 'cap_style', None) in (CapStyleType.ROUND, CapStyleType.SQUARE):
-            cap_extent = vm.get_stroke_width() * CAIRO_LINE_WIDTH_MULTIPLE
         length = path_length(vm.points) if fit != 'none' else 0.0
         set_dash(vm, dash_pattern(
             length, on_px / ctx.ptUnit_style, off_px / ctx.ptUnit_style,
             closed=(fit == 'closed'), fit_ends=(fit == 'ends'),
-            cap_extent_mu=cap_extent, phase_mu=phase_mu,
+            phase_mu=phase_mu,
         ))
         return vm
 
@@ -4003,6 +4004,7 @@ class AnimaGeoScene(MovingCameraScene):
             ).set_stroke(
                 color=ctx.col_s, width=ctx.strich_width, opacity=ctx.op_s,
             ).set_z_index(ctx.zz)
+            wave.cap_style = CapStyleType.BUTT
             if ctx.mark is not None:
                 wave._animageo_mark = ctx.mark      # the ticks of an equality mark
             arr.append(wave)
@@ -4013,6 +4015,7 @@ class AnimaGeoScene(MovingCameraScene):
             [m[0] - dn[0], m[1] - dn[1], 0],
             color=ctx.col_s, stroke_width=ctx.strich_width,
             stroke_opacity=ctx.op_s,
+            cap_style=CapStyleType.BUTT,
         ).set_z_index(ctx.zz)
         for i in range(num):
             d = ctx.strich_rshift * ((1 - num) * 0.5 + i)
@@ -4144,6 +4147,24 @@ class AnimaGeoScene(MovingCameraScene):
                 start_angle=a1, angle=a2 - a1,
             ).point_from_proportion(0.5)
             self._append_label(arr, elem, label_pos, ctx)
+        return VGroup(*arr, name=elem.name)
+
+    def _render_circlesegment(self, elem, ctx):
+        c = [float(elem.data.center[0]), float(elem.data.center[1]), 0]
+        a0, a1 = elem.data.angles
+        r = float(elem.data.radius)
+        path = Arc(arc_center=c, radius=r, start_angle=a0, angle=a1 - a0,
+                   fill_color=ctx.col_f, fill_opacity=ctx.op_f, stroke_width=0)
+        path.close_path()
+        fill = self._fill_pattern_layer(
+            elem, ctx, {'circlesegment': (c[0], c[1], r, a0, a1)}, path.set_z_index(ctx.zz_fill))
+        stroke = path.copy().set_fill(opacity=0).set_stroke(
+            color=ctx.col_s, width=ctx.lw, opacity=ctx.op_s).set_z_index(ctx.zz)
+        arr = [fill, stroke]
+        if ctx.has_label:
+            mid = (a0 + a1) / 2
+            self._append_label(arr, elem, [c[0] + 0.7 * r * math.cos(mid),
+                                          c[1] + 0.7 * r * math.sin(mid), 0], ctx)
         return VGroup(*arr, name=elem.name)
 
     def _render_circlesector(self, elem, ctx):

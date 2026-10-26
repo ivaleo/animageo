@@ -248,6 +248,35 @@ def ray_by_vector(args, ctx):
 TANGENT_SLOTS = ('tangent.1', 'tangent.2', 'touch.1', 'touch.2')
 
 
+@op('line.common_tangents')
+def common_tangents(args, ctx):
+    first, second = args['first'].value, args['second'].value
+    kind, index = args['kind'], args['index']
+    if kind not in ('external', 'internal') or index not in (0, 1):
+        return {'line': Undefined('invalid_parameter')}
+    x, y = first['c']
+    wx, wy = second['c'][0] - x, second['c'][1] - y
+    distance = math.hypot(wx, wy)
+    r1, r2 = first['r'], second['r']
+    tol = ctx.tol.decide_length
+    ctx.decide('concentric', distance, tol)
+    if distance <= tol:
+        ctx.decide('coincident', r1 - r2, tol)
+        return {'line': Undefined('coincident' if abs(r1 - r2) <= tol else 'branch_absent')}
+    # A common unit normal n satisfies n·(c2-c1) = r1 - sign*r2.
+    delta = r1 - (r2 if kind == 'external' else -r2)
+    gap = distance - abs(delta)
+    ctx.decide('tangent', gap, tol)
+    if gap < -tol or (abs(gap) <= tol and index == 1):
+        return {'line': Undefined('branch_absent')}
+    q = max(-1.0, min(1.0, delta / distance))
+    h = 0.0 if abs(gap) <= tol else math.sqrt(max(0.0, (distance - abs(delta)) * (distance + abs(delta)))) / distance
+    sign = 1.0 if index == 0 else -1.0
+    ux, uy = wx / distance, wy / distance
+    nx, ny = q * ux - sign * h * uy, q * uy + sign * h * ux
+    return {'line': line_through(x + r1 * nx, y + r1 * ny, ny, -nx)}
+
+
 @op('line.tangents_from_point')
 def tangents_from_point(args, ctx):
     p = args['point'].value

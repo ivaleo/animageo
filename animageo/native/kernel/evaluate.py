@@ -50,7 +50,7 @@ from ..document import (
 )
 from ..expr import problems as expr_problems
 from ..expr import template_problems
-from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, free_slot, registry
+from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, free_slot, input_set_matches, registry
 from . import paths
 from .numeric import Tolerances, scene_scale, tolerances
 from .ops import IMPLEMENTATIONS, OpContext
@@ -382,7 +382,8 @@ def _argument_status(op, record, doc, reg):
     ``type_mismatch``, dangling reference → ``dangling_ref``, element type
     not fitting → ``type_mismatch``; a ``number`` slot also takes a number
     literal, an ``expr`` or ``template`` slot takes only an argument of that
-    kind); then params in registry order (not a number → ``type_mismatch``, a
+    kind); an inputSets record requires exactly one alternative; then params
+    in registry order (wrong literal kind → ``type_mismatch``, a
     required one missing → ``schema``); last, a tree or a template that the
     rules refuse (with the item count of ``refs``) → ``error/formula``.
     """
@@ -395,9 +396,13 @@ def _argument_status(op, record, doc, reg):
     literals = {}
     exprs = {}
     templates = {}
+    if not input_set_matches(record, args):
+        return ('error', 'schema')
     for item in record['inputs']:
         arg = args.get(item['slot'])
         if arg is None:
+            if 'inputSets' in record:
+                continue
             return ('error', 'schema')
         if not item.get('list') and item['type'] == 'number' and arg.get('kind') == 'number':
             literals[item['slot']] = float(arg['value'])
@@ -436,11 +441,11 @@ def _argument_status(op, record, doc, reg):
             if not item.get('optional', False):
                 return ('error', 'schema')
             default = item.get('default')
-            params[item['slot']] = None if default is None else float(default)
+            params[item['slot']] = default if item['type'] == 'string' or default is None else float(default)
             continue
-        if arg.get('kind') != 'number':
+        if arg.get('kind') != item['type']:
             return ('error', 'type_mismatch')
-        params[item['slot']] = float(arg['value'])
+        params[item['slot']] = arg['value'] if item['type'] == 'string' else float(arg['value'])
     if exprs or templates:
         count = next((len(ids) for slot, _is_list, ids in resolved if slot == 'refs'), None)
         variables = {item['slot']: item.get('vars') or () for item in record['inputs']}

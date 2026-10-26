@@ -95,7 +95,7 @@ def describe(data):
             return [arg(i) for i in a['items']]
         if a['kind'] == 'expr':
             return a['ast']
-        if a['kind'] == 'template':
+        if a['kind'] in ('template', 'string'):
             return a['value']
         return float(a['value'])
 

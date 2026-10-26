@@ -161,4 +161,4 @@ def test_tikz_caps_only_the_capped_strokes(style):
     assert cap_of('plot coordinates {(5,0)(6,3)(1.5,3.5)}') is None   # w: a polyline
     assert cap_of('(0.17,0) arc') is None                       # alpha: the arc of an angle
     ticks = [opts for opts, path in draws if path.startswith('(2.49,') or path.startswith('(2.51,')]
-    assert len(ticks) == 2 and not any('line cap' in opts for opts in ticks)
+    assert len(ticks) == 2 and all('line cap=butt' in opts for opts in ticks)

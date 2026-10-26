@@ -198,16 +198,17 @@ class TestFit:
 
 
 class TestCaps:
-    def test_round_cap_visible_dash_is_nominal(self):
+    def test_round_style_still_gives_butt_dashes(self):
         code = POINTS + ("x = Segment(A, B)\nx.style.stroke_dash_ratio = 0.65\n"
                          "x.style.stroke_linecap = 'round'\nx.style.stroke_width_px = 3")
         s = _scene(code)
         seg = _stroke(s, "x")
         pat = get_dash(seg)
-        w = seg.get_stroke_width() * 0.01
         L = float(np.linalg.norm(np.array([4.0, 2.0])))
         nominal = dash_pattern(L, 6.5 / 60, 3.5 / 60, fit_ends=True)
-        assert pat.on + w == pytest.approx(nominal.on)
+        from manim import CapStyleType
+        assert seg.cap_style == CapStyleType.BUTT
+        assert pat.on == pytest.approx(nominal.on)
         assert pat.period == pytest.approx(nominal.period)
 
     def test_butt_cap_unchanged(self):
@@ -353,12 +354,12 @@ class TestTikZ:
         assert off == pytest.approx(7 * 0.75, abs=0.01)
         assert "dash phase" not in tex
 
-    def test_round_cap_compensated(self):
+    def test_round_style_still_gives_butt_dashes(self):
         s = _scene(POINTS + "x = Line(A, B)\nx.style.stroke_dash_ratio = 0.65\n"
                             "x.style.stroke_linecap = 'round'\nx.style.stroke_width_px = 2")
         tex = s.exportTikZ()
-        m = re.search(r"dash pattern=on ([\d.]+)pt off ([\d.]+)pt, dash phase=([\d.]+)pt", tex)
-        on, off, phase = (float(g) for g in m.groups())
-        assert on + 2 * 0.75 == pytest.approx(6.5 * 0.75, abs=0.01)
+        m = re.search(r"dash pattern=on ([\d.]+)pt off ([\d.]+)pt", tex)
+        on, off = (float(g) for g in m.groups())
+        assert on == pytest.approx(6.5 * 0.75, abs=0.01)
         assert on + off == pytest.approx(10 * 0.75, abs=0.01)
-        assert phase == pytest.approx(10 * 0.75 - 0.75, abs=0.01)
+        assert 'dash phase=' not in tex and 'line cap=round' not in tex

@@ -66,7 +66,7 @@ PHRASES_PATH = Path(__file__).resolve().parent / 'phrases' / 'ru.v1.json'
 _TABLE = None
 _PLACEHOLDER = re.compile(r'\{([^{}]+)\}')
 _ENDS = {'segment.by_points': ('a', 'b'), 'line.by_points': ('a', 'b'), 'ray.by_points': ('origin', 'through'),
-         'vector.by_points': ('a', 'b')}
+         'vector.by_points': ('a', 'b'), 'triangle.cevian': ('vertex', 'point')}
 _FOOT = {'triangle.altitude': 'foot', 'triangle.median': 'midpoint', 'triangle.bisector': 'foot'}
 
 
@@ -201,6 +201,10 @@ def _triangle_polygon(namer, points):
 
 
 def _when(cond, op, namer, extra) -> bool:
+    if cond == 'circle_segment_points':
+        return op['op'] == 'sector.segment' and 'circle' in op['args']
+    if cond == 'cevian_polygon':
+        return op['op'] == 'triangle.cevian' and 'polygon' in op['args']
     if cond == 'triangle_vertices':
         points = _triangle_points(op, namer)
         vertices = _triangle_polygon(namer, points) if points else None

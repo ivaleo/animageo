@@ -244,7 +244,7 @@ def to_classic(type_: str, value, *, sides=None, scale=None):
     """
     if value is None:
         return None
-    from ...geo.lib_elements import Angle, Arc, Circle, CircleSector, Line, LocusCurve, Point, Polygon, Ray, \
+    from ...geo.lib_elements import Angle, Arc, Circle, CircleSector, CircleSegment, Line, LocusCurve, Point, Polygon, Ray, \
         Segment, Text, Vector
     from ...geo.lib_vars import AngleSize, Measure
     import numpy as np
@@ -266,8 +266,8 @@ def to_classic(type_: str, value, *, sides=None, scale=None):
         obj = Circle(np.array(value['c'], dtype=float), value['r'])
     elif type_ == 'polygon':
         obj = Polygon(value['vertices'])
-    elif type_ in ('arc', 'sector'):
-        cls = Arc if type_ == 'arc' else CircleSector
+    elif type_ in ('arc', 'sector', 'circlesegment'):
+        cls = {'arc': Arc, 'sector': CircleSector, 'circlesegment': CircleSegment}[type_]
         obj = cls(np.array(value['c'], dtype=float), value['r'], [value['a0'], value['a1']])
         obj.angles = [float(value['a0']), float(value['a1'])]     # the kernel angles (a full arc stays full)
     elif type_ == 'polyline':
@@ -352,7 +352,7 @@ def from_classic(type_: str, obj):
     if type_ == 'vector':
         (ax, ay), (bx, by) = (map(float, p) for p in obj.endpoints)
         return {'a': [ax, ay], 'b': [bx, by], 'length': math.hypot(bx - ax, by - ay)}
-    if type_ in ('arc', 'sector'):
+    if type_ in ('arc', 'sector', 'circlesegment'):
         from .ops.angle import TWO_PI, normalize_angle
         a0 = normalize_angle(float(obj.angles[0]))
         sweep = min(max(float(obj.angles[1]) - float(obj.angles[0]), 0.0), TWO_PI)

@@ -21,6 +21,77 @@ from .intersect import carrier
 ALTITUDE_SLOTS = ('altitude', 'foot', 'extension')
 
 
+def triangle_points(args):
+    """Three point values, or an undefined result for a non-triangle polygon."""
+    if 'polygon' not in args:
+        return tuple(args[k].value for k in ('a', 'b', 'c'))
+    vertices = args['polygon'].value['vertices']
+    if len(vertices) != 3:
+        return Undefined('invalid_parameter')
+    return tuple({'x': x, 'y': y} for x, y in vertices)
+
+
+def euler_centers(args, ctx):
+    """The common O, H, R calculation of the nine-point circle and Euler line."""
+    points = triangle_points(args)
+    if isinstance(points, Undefined):
+        return points
+    a, b, c = points
+    o = circumcenter(a, b, c, ctx)
+    if isinstance(o, Undefined):
+        return o
+    h = (((a['x'] + b['x']) + c['x']) - 2 * o[0],
+         ((a['y'] + b['y']) + c['y']) - 2 * o[1])
+    return o, h
+
+
+@op('triangle.cevian')
+def cevian(args, ctx):
+    if 'polygon' in args:
+        points = triangle_points(args)
+        if isinstance(points, Undefined):
+            return {'cevian': points}
+        index = args['index']
+        if index is None or index not in (1, 2, 3):
+            return {'cevian': Undefined('index_out_of_range')}
+        k = int(index) - 1
+        v, a, b = points[k], points[(k + 1) % 3], points[(k + 2) % 3]
+        # The same clamping as a point on the opposite segment.
+        t = 0.5 if args['t'] is None else max(0.0, min(1.0, args['t']))
+        p = {'x': a['x'] + t * (b['x'] - a['x']), 'y': a['y'] + t * (b['y'] - a['y'])}
+    else:
+        v, p = args['vertex'].value, args['point'].value
+    length = math.hypot(p['x'] - v['x'], p['y'] - v['y'])
+    ctx.decide('zero_length', length, ctx.tol.decide_length)
+    if length <= ctx.tol.decide_length:
+        return {'cevian': Undefined('zero_length')}
+    return {'cevian': {'a': [v['x'], v['y']], 'b': [p['x'], p['y']], 'length': length}}
+
+
+@op('circle.nine_point')
+def nine_point(args, ctx):
+    centers = euler_centers(args, ctx)
+    if isinstance(centers, Undefined):
+        return {'circle': centers}
+    o, h = centers
+    return {'circle': {'c': [(o[0] + h[0]) / 2, (o[1] + h[1]) / 2], 'r': o[2] / 2}}
+
+
+@op('line.euler')
+def euler(args, ctx):
+    from .line import line_through
+    centers = euler_centers(args, ctx)
+    if isinstance(centers, Undefined):
+        return {'line': centers}
+    o, h = centers
+    dx, dy = h[0] - o[0], h[1] - o[1]
+    length = math.hypot(dx, dy)
+    ctx.decide('euler_centers', length, ctx.tol.decide_length)
+    if length <= ctx.tol.decide_length:
+        return {'line': Undefined('coincident_points')}
+    return {'line': line_through(o[0], o[1], dx / length, dy / length)}
+
+
 def side_ends(side: Input):
     """The ends ``((ax, ay), (bx, by))`` of a side: the ends of a segment; for a
     line or a ray the two defining points of its producer frame
@@ -140,14 +211,11 @@ def circumcenter_point(args, ctx):
 
 @op('triangle.orthocenter')
 def orthocenter(args, ctx):
-    a = args['a'].value
-    b = args['b'].value
-    c = args['c'].value
-    o = circumcenter(a, b, c, ctx)
-    if isinstance(o, Undefined):
-        return {'point': o}
-    return {'point': {'x': ((a['x'] + b['x']) + c['x']) - 2 * o[0],
-                      'y': ((a['y'] + b['y']) + c['y']) - 2 * o[1]}}
+    centers = euler_centers(args, ctx)
+    if isinstance(centers, Undefined):
+        return {'point': centers}
+    _o, h = centers
+    return {'point': {'x': h[0], 'y': h[1]}}
 
 
 @op('triangle.excenters')

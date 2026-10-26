@@ -1,0 +1,557 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "school_euler",
+  "registry": "1.6",
+  "generatedBy": "animageo 1.11.0rc12",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "school_euler",
+    "operationRegistryVersion": "1.6",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_T": {
+        "id": "op_T",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "T"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "line.euler",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "line.euler",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "T"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "q"
+          }
+        ]
+      },
+      "op_bad_polygon": {
+        "id": "op_bad_polygon",
+        "op": "line.euler",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "bad_polygon"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "T": {
+        "id": "T",
+        "type": "polygon",
+        "displayName": "T",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "polygon"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "polygon",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "polygon"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "line",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "line"
+        }
+      },
+      "q": {
+        "id": "q",
+        "type": "line",
+        "displayName": "q",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "line"
+        }
+      },
+      "bad_polygon": {
+        "id": "bad_polygon",
+        "type": "line",
+        "displayName": "bad_polygon",
+        "producer": {
+          "operationId": "op_bad_polygon",
+          "slot": "line"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          3
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          3,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_C",
+          "op_D"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_Q",
+        "kind": "op",
+        "operationIds": [
+          "op_Q"
+        ],
+        "elementIds": [
+          "Q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_T",
+        "kind": "op",
+        "operationIds": [
+          "op_T"
+        ],
+        "elementIds": [
+          "T"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_bad_polygon",
+        "kind": "op",
+        "operationIds": [
+          "op_bad_polygon"
+        ],
+        "elementIds": [
+          "bad_polygon"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_q",
+        "kind": "op",
+        "operationIds": [
+          "op_q"
+        ],
+        "elementIds": [
+          "q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_s",
+        "kind": "op",
+        "operationIds": [
+          "op_s"
+        ],
+        "elementIds": [
+          "s"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B, C, D.",
+      "2. Строим многоугольник ABDC.",
+      "3. Строим треугольник ABC.",
+      "4. Проводим прямую Эйлера bad_polygon треугольника ABDC.",
+      "5. Проводим прямую Эйлера q треугольника ABC.",
+      "6. Проводим прямую Эйлера s треугольника ABC."
+    ],
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "C": false,
+              "D": false,
+              "Q": false,
+              "T": false,
+              "bad_polygon": false,
+              "q": false,
+              "s": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "C": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 2.5,
+            "visible": {
+              "Q": true
+            },
+            "enter": {
+              "Q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "T": true
+            },
+            "enter": {
+              "T": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.7,
+            "visible": {
+              "bad_polygon": true
+            },
+            "enter": {
+              "bad_polygon": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.8,
+            "visible": {
+              "q": true
+            },
+            "enter": {
+              "q": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.8999999999999995,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_Q",
+          "start": 2.0,
+          "end": 2.5,
+          "elementIds": [
+            "Q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_T",
+          "start": 3.1,
+          "end": 3.6,
+          "elementIds": [
+            "T"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_bad_polygon",
+          "start": 4.2,
+          "end": 4.7,
+          "elementIds": [
+            "bad_polygon"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_q",
+          "start": 5.3,
+          "end": 5.8,
+          "elementIds": [
+            "q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 6.3999999999999995,
+          "end": 6.8999999999999995,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 6.8999999999999995
+    }
+  }
+}

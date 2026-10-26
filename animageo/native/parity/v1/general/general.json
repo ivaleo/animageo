@@ -1,6 +1,2281 @@
 {
  "cases": [
   {
+   "check": "nine-point",
+   "document": {
+    "documentId": "general-school",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "G": {
+      "displayName": "G",
+      "id": "G",
+      "producer": {
+       "operationId": "op_centroid",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "S": {
+      "displayName": "S",
+      "id": "S",
+      "producer": {
+       "operationId": "op_boundary",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "arc": {
+      "displayName": "arc",
+      "id": "arc",
+      "producer": {
+       "operationId": "op_arc",
+       "slot": "arc"
+      },
+      "type": "arc"
+     },
+     "c1": {
+      "displayName": "c1",
+      "id": "c1",
+      "producer": {
+       "operationId": "op_c1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "c2": {
+      "displayName": "c2",
+      "id": "c2",
+      "producer": {
+       "operationId": "op_c2",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "cevian": {
+      "displayName": "cevian",
+      "id": "cevian",
+      "producer": {
+       "operationId": "op_cevian",
+       "slot": "cevian"
+      },
+      "type": "segment"
+     },
+     "euler": {
+      "displayName": "euler",
+      "id": "euler",
+      "producer": {
+       "operationId": "op_euler",
+       "slot": "line"
+      },
+      "type": "line"
+     },
+     "nine": {
+      "displayName": "nine",
+      "id": "nine",
+      "producer": {
+       "operationId": "op_nine",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "segment": {
+      "displayName": "segment",
+      "id": "segment",
+      "producer": {
+       "operationId": "op_segment",
+       "slot": "segment"
+      },
+      "type": "circlesegment"
+     },
+     "tangent": {
+      "displayName": "tangent",
+      "id": "tangent",
+      "producer": {
+       "operationId": "op_tangent",
+       "slot": "line"
+      },
+      "type": "line"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       4,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       0,
+       3
+      ]
+     },
+     "S": {
+      "kind": "pathParameter",
+      "value": 1.5
+     }
+    },
+    "operationRegistryVersion": "1.6",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {},
+      "id": "op_C",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_arc": {
+      "args": {
+       "a": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "C",
+        "kind": "ref"
+       },
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       }
+      },
+      "id": "op_arc",
+      "op": "arc.center_two_points",
+      "outputs": [
+       {
+        "elementId": "arc",
+        "slot": "arc"
+       }
+      ]
+     },
+     "op_boundary": {
+      "args": {
+       "path": {
+        "elementId": "segment",
+        "kind": "ref"
+       }
+      },
+      "id": "op_boundary",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "S",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 1
+       }
+      },
+      "id": "op_c1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_c2": {
+      "args": {
+       "center": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 1
+       }
+      },
+      "id": "op_c2",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c2",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_centroid": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_centroid",
+      "op": "triangle.centroid",
+      "outputs": [
+       {
+        "elementId": "G",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_cevian": {
+      "args": {
+       "point": {
+        "elementId": "M",
+        "kind": "ref"
+       },
+       "vertex": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_cevian",
+      "op": "triangle.cevian",
+      "outputs": [
+       {
+        "elementId": "cevian",
+        "slot": "cevian"
+       }
+      ]
+     },
+     "op_euler": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_euler",
+      "op": "line.euler",
+      "outputs": [
+       {
+        "elementId": "euler",
+        "slot": "line"
+       }
+      ]
+     },
+     "op_nine": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_nine",
+      "op": "circle.nine_point",
+      "outputs": [
+       {
+        "elementId": "nine",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_segment": {
+      "args": {
+       "arc": {
+        "elementId": "arc",
+        "kind": "ref"
+       }
+      },
+      "id": "op_segment",
+      "op": "sector.segment",
+      "outputs": [
+       {
+        "elementId": "segment",
+        "slot": "segment"
+       }
+      ]
+     },
+     "op_tangent": {
+      "args": {
+       "first": {
+        "elementId": "c1",
+        "kind": "ref"
+       },
+       "second": {
+        "elementId": "c2",
+        "kind": "ref"
+       }
+      },
+      "id": "op_tangent",
+      "op": "line.common_tangents",
+      "outputs": [
+       {
+        "elementId": "tangent",
+        "slot": "line"
+       }
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "counterexample": null,
+    "failed": 0,
+    "inconclusive": 0,
+    "passed": 50,
+    "seed": "12345",
+    "status": "passed",
+    "undefined": 0
+   },
+   "name": "school-nine-point",
+   "seed": "12345",
+   "statement": {
+    "kind": "on",
+    "object": {
+     "ref": "nine"
+    },
+    "point": {
+     "ref": "M"
+    }
+   },
+   "trials": 50
+  },
+  {
+   "check": "euler",
+   "document": {
+    "documentId": "general-school",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "G": {
+      "displayName": "G",
+      "id": "G",
+      "producer": {
+       "operationId": "op_centroid",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "S": {
+      "displayName": "S",
+      "id": "S",
+      "producer": {
+       "operationId": "op_boundary",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "arc": {
+      "displayName": "arc",
+      "id": "arc",
+      "producer": {
+       "operationId": "op_arc",
+       "slot": "arc"
+      },
+      "type": "arc"
+     },
+     "c1": {
+      "displayName": "c1",
+      "id": "c1",
+      "producer": {
+       "operationId": "op_c1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "c2": {
+      "displayName": "c2",
+      "id": "c2",
+      "producer": {
+       "operationId": "op_c2",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "cevian": {
+      "displayName": "cevian",
+      "id": "cevian",
+      "producer": {
+       "operationId": "op_cevian",
+       "slot": "cevian"
+      },
+      "type": "segment"
+     },
+     "euler": {
+      "displayName": "euler",
+      "id": "euler",
+      "producer": {
+       "operationId": "op_euler",
+       "slot": "line"
+      },
+      "type": "line"
+     },
+     "nine": {
+      "displayName": "nine",
+      "id": "nine",
+      "producer": {
+       "operationId": "op_nine",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "segment": {
+      "displayName": "segment",
+      "id": "segment",
+      "producer": {
+       "operationId": "op_segment",
+       "slot": "segment"
+      },
+      "type": "circlesegment"
+     },
+     "tangent": {
+      "displayName": "tangent",
+      "id": "tangent",
+      "producer": {
+       "operationId": "op_tangent",
+       "slot": "line"
+      },
+      "type": "line"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       4,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       0,
+       3
+      ]
+     },
+     "S": {
+      "kind": "pathParameter",
+      "value": 1.5
+     }
+    },
+    "operationRegistryVersion": "1.6",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {},
+      "id": "op_C",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_arc": {
+      "args": {
+       "a": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "C",
+        "kind": "ref"
+       },
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       }
+      },
+      "id": "op_arc",
+      "op": "arc.center_two_points",
+      "outputs": [
+       {
+        "elementId": "arc",
+        "slot": "arc"
+       }
+      ]
+     },
+     "op_boundary": {
+      "args": {
+       "path": {
+        "elementId": "segment",
+        "kind": "ref"
+       }
+      },
+      "id": "op_boundary",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "S",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 1
+       }
+      },
+      "id": "op_c1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_c2": {
+      "args": {
+       "center": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 1
+       }
+      },
+      "id": "op_c2",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c2",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_centroid": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_centroid",
+      "op": "triangle.centroid",
+      "outputs": [
+       {
+        "elementId": "G",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_cevian": {
+      "args": {
+       "point": {
+        "elementId": "M",
+        "kind": "ref"
+       },
+       "vertex": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_cevian",
+      "op": "triangle.cevian",
+      "outputs": [
+       {
+        "elementId": "cevian",
+        "slot": "cevian"
+       }
+      ]
+     },
+     "op_euler": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_euler",
+      "op": "line.euler",
+      "outputs": [
+       {
+        "elementId": "euler",
+        "slot": "line"
+       }
+      ]
+     },
+     "op_nine": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_nine",
+      "op": "circle.nine_point",
+      "outputs": [
+       {
+        "elementId": "nine",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_segment": {
+      "args": {
+       "arc": {
+        "elementId": "arc",
+        "kind": "ref"
+       }
+      },
+      "id": "op_segment",
+      "op": "sector.segment",
+      "outputs": [
+       {
+        "elementId": "segment",
+        "slot": "segment"
+       }
+      ]
+     },
+     "op_tangent": {
+      "args": {
+       "first": {
+        "elementId": "c1",
+        "kind": "ref"
+       },
+       "second": {
+        "elementId": "c2",
+        "kind": "ref"
+       }
+      },
+      "id": "op_tangent",
+      "op": "line.common_tangents",
+      "outputs": [
+       {
+        "elementId": "tangent",
+        "slot": "line"
+       }
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "counterexample": null,
+    "failed": 0,
+    "inconclusive": 0,
+    "passed": 50,
+    "seed": "12345",
+    "status": "passed",
+    "undefined": 0
+   },
+   "name": "school-euler",
+   "seed": "12345",
+   "statement": {
+    "kind": "on",
+    "object": {
+     "ref": "euler"
+    },
+    "point": {
+     "ref": "G"
+    }
+   },
+   "trials": 50
+  },
+  {
+   "check": "cevian",
+   "document": {
+    "documentId": "general-school",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "G": {
+      "displayName": "G",
+      "id": "G",
+      "producer": {
+       "operationId": "op_centroid",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "S": {
+      "displayName": "S",
+      "id": "S",
+      "producer": {
+       "operationId": "op_boundary",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "arc": {
+      "displayName": "arc",
+      "id": "arc",
+      "producer": {
+       "operationId": "op_arc",
+       "slot": "arc"
+      },
+      "type": "arc"
+     },
+     "c1": {
+      "displayName": "c1",
+      "id": "c1",
+      "producer": {
+       "operationId": "op_c1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "c2": {
+      "displayName": "c2",
+      "id": "c2",
+      "producer": {
+       "operationId": "op_c2",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "cevian": {
+      "displayName": "cevian",
+      "id": "cevian",
+      "producer": {
+       "operationId": "op_cevian",
+       "slot": "cevian"
+      },
+      "type": "segment"
+     },
+     "euler": {
+      "displayName": "euler",
+      "id": "euler",
+      "producer": {
+       "operationId": "op_euler",
+       "slot": "line"
+      },
+      "type": "line"
+     },
+     "nine": {
+      "displayName": "nine",
+      "id": "nine",
+      "producer": {
+       "operationId": "op_nine",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "segment": {
+      "displayName": "segment",
+      "id": "segment",
+      "producer": {
+       "operationId": "op_segment",
+       "slot": "segment"
+      },
+      "type": "circlesegment"
+     },
+     "tangent": {
+      "displayName": "tangent",
+      "id": "tangent",
+      "producer": {
+       "operationId": "op_tangent",
+       "slot": "line"
+      },
+      "type": "line"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       4,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       0,
+       3
+      ]
+     },
+     "S": {
+      "kind": "pathParameter",
+      "value": 1.5
+     }
+    },
+    "operationRegistryVersion": "1.6",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {},
+      "id": "op_C",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_arc": {
+      "args": {
+       "a": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "C",
+        "kind": "ref"
+       },
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       }
+      },
+      "id": "op_arc",
+      "op": "arc.center_two_points",
+      "outputs": [
+       {
+        "elementId": "arc",
+        "slot": "arc"
+       }
+      ]
+     },
+     "op_boundary": {
+      "args": {
+       "path": {
+        "elementId": "segment",
+        "kind": "ref"
+       }
+      },
+      "id": "op_boundary",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "S",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 1
+       }
+      },
+      "id": "op_c1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_c2": {
+      "args": {
+       "center": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 1
+       }
+      },
+      "id": "op_c2",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c2",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_centroid": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_centroid",
+      "op": "triangle.centroid",
+      "outputs": [
+       {
+        "elementId": "G",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_cevian": {
+      "args": {
+       "point": {
+        "elementId": "M",
+        "kind": "ref"
+       },
+       "vertex": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_cevian",
+      "op": "triangle.cevian",
+      "outputs": [
+       {
+        "elementId": "cevian",
+        "slot": "cevian"
+       }
+      ]
+     },
+     "op_euler": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_euler",
+      "op": "line.euler",
+      "outputs": [
+       {
+        "elementId": "euler",
+        "slot": "line"
+       }
+      ]
+     },
+     "op_nine": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_nine",
+      "op": "circle.nine_point",
+      "outputs": [
+       {
+        "elementId": "nine",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_segment": {
+      "args": {
+       "arc": {
+        "elementId": "arc",
+        "kind": "ref"
+       }
+      },
+      "id": "op_segment",
+      "op": "sector.segment",
+      "outputs": [
+       {
+        "elementId": "segment",
+        "slot": "segment"
+       }
+      ]
+     },
+     "op_tangent": {
+      "args": {
+       "first": {
+        "elementId": "c1",
+        "kind": "ref"
+       },
+       "second": {
+        "elementId": "c2",
+        "kind": "ref"
+       }
+      },
+      "id": "op_tangent",
+      "op": "line.common_tangents",
+      "outputs": [
+       {
+        "elementId": "tangent",
+        "slot": "line"
+       }
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "counterexample": null,
+    "failed": 0,
+    "inconclusive": 0,
+    "passed": 50,
+    "seed": "12345",
+    "status": "passed",
+    "undefined": 0
+   },
+   "name": "school-cevian",
+   "seed": "12345",
+   "statement": {
+    "kind": "on",
+    "object": {
+     "ref": "cevian"
+    },
+    "point": {
+     "ref": "M"
+    }
+   },
+   "trials": 50
+  },
+  {
+   "check": "circle-segment",
+   "document": {
+    "documentId": "general-school",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "G": {
+      "displayName": "G",
+      "id": "G",
+      "producer": {
+       "operationId": "op_centroid",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "S": {
+      "displayName": "S",
+      "id": "S",
+      "producer": {
+       "operationId": "op_boundary",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "arc": {
+      "displayName": "arc",
+      "id": "arc",
+      "producer": {
+       "operationId": "op_arc",
+       "slot": "arc"
+      },
+      "type": "arc"
+     },
+     "c1": {
+      "displayName": "c1",
+      "id": "c1",
+      "producer": {
+       "operationId": "op_c1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "c2": {
+      "displayName": "c2",
+      "id": "c2",
+      "producer": {
+       "operationId": "op_c2",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "cevian": {
+      "displayName": "cevian",
+      "id": "cevian",
+      "producer": {
+       "operationId": "op_cevian",
+       "slot": "cevian"
+      },
+      "type": "segment"
+     },
+     "euler": {
+      "displayName": "euler",
+      "id": "euler",
+      "producer": {
+       "operationId": "op_euler",
+       "slot": "line"
+      },
+      "type": "line"
+     },
+     "nine": {
+      "displayName": "nine",
+      "id": "nine",
+      "producer": {
+       "operationId": "op_nine",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "segment": {
+      "displayName": "segment",
+      "id": "segment",
+      "producer": {
+       "operationId": "op_segment",
+       "slot": "segment"
+      },
+      "type": "circlesegment"
+     },
+     "tangent": {
+      "displayName": "tangent",
+      "id": "tangent",
+      "producer": {
+       "operationId": "op_tangent",
+       "slot": "line"
+      },
+      "type": "line"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       4,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       0,
+       3
+      ]
+     },
+     "S": {
+      "kind": "pathParameter",
+      "value": 1.5
+     }
+    },
+    "operationRegistryVersion": "1.6",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {},
+      "id": "op_C",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_arc": {
+      "args": {
+       "a": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "C",
+        "kind": "ref"
+       },
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       }
+      },
+      "id": "op_arc",
+      "op": "arc.center_two_points",
+      "outputs": [
+       {
+        "elementId": "arc",
+        "slot": "arc"
+       }
+      ]
+     },
+     "op_boundary": {
+      "args": {
+       "path": {
+        "elementId": "segment",
+        "kind": "ref"
+       }
+      },
+      "id": "op_boundary",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "S",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 1
+       }
+      },
+      "id": "op_c1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_c2": {
+      "args": {
+       "center": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 1
+       }
+      },
+      "id": "op_c2",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c2",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_centroid": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_centroid",
+      "op": "triangle.centroid",
+      "outputs": [
+       {
+        "elementId": "G",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_cevian": {
+      "args": {
+       "point": {
+        "elementId": "M",
+        "kind": "ref"
+       },
+       "vertex": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_cevian",
+      "op": "triangle.cevian",
+      "outputs": [
+       {
+        "elementId": "cevian",
+        "slot": "cevian"
+       }
+      ]
+     },
+     "op_euler": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_euler",
+      "op": "line.euler",
+      "outputs": [
+       {
+        "elementId": "euler",
+        "slot": "line"
+       }
+      ]
+     },
+     "op_nine": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_nine",
+      "op": "circle.nine_point",
+      "outputs": [
+       {
+        "elementId": "nine",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_segment": {
+      "args": {
+       "arc": {
+        "elementId": "arc",
+        "kind": "ref"
+       }
+      },
+      "id": "op_segment",
+      "op": "sector.segment",
+      "outputs": [
+       {
+        "elementId": "segment",
+        "slot": "segment"
+       }
+      ]
+     },
+     "op_tangent": {
+      "args": {
+       "first": {
+        "elementId": "c1",
+        "kind": "ref"
+       },
+       "second": {
+        "elementId": "c2",
+        "kind": "ref"
+       }
+      },
+      "id": "op_tangent",
+      "op": "line.common_tangents",
+      "outputs": [
+       {
+        "elementId": "tangent",
+        "slot": "line"
+       }
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "counterexample": null,
+    "failed": 0,
+    "inconclusive": 0,
+    "passed": 50,
+    "seed": "12345",
+    "status": "passed",
+    "undefined": 0
+   },
+   "name": "school-circle-segment",
+   "seed": "12345",
+   "statement": {
+    "kind": "on",
+    "object": {
+     "ref": "segment"
+    },
+    "point": {
+     "ref": "S"
+    }
+   },
+   "trials": 50
+  },
+  {
+   "check": "common-tangents",
+   "document": {
+    "documentId": "general-school",
+    "elements": {
+     "A": {
+      "displayName": "A",
+      "id": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "B": {
+      "displayName": "B",
+      "id": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "C": {
+      "displayName": "C",
+      "id": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "G": {
+      "displayName": "G",
+      "id": "G",
+      "producer": {
+       "operationId": "op_centroid",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "M": {
+      "displayName": "M",
+      "id": "M",
+      "producer": {
+       "operationId": "op_M",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "S": {
+      "displayName": "S",
+      "id": "S",
+      "producer": {
+       "operationId": "op_boundary",
+       "slot": "point"
+      },
+      "type": "point"
+     },
+     "arc": {
+      "displayName": "arc",
+      "id": "arc",
+      "producer": {
+       "operationId": "op_arc",
+       "slot": "arc"
+      },
+      "type": "arc"
+     },
+     "c1": {
+      "displayName": "c1",
+      "id": "c1",
+      "producer": {
+       "operationId": "op_c1",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "c2": {
+      "displayName": "c2",
+      "id": "c2",
+      "producer": {
+       "operationId": "op_c2",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "cevian": {
+      "displayName": "cevian",
+      "id": "cevian",
+      "producer": {
+       "operationId": "op_cevian",
+       "slot": "cevian"
+      },
+      "type": "segment"
+     },
+     "euler": {
+      "displayName": "euler",
+      "id": "euler",
+      "producer": {
+       "operationId": "op_euler",
+       "slot": "line"
+      },
+      "type": "line"
+     },
+     "nine": {
+      "displayName": "nine",
+      "id": "nine",
+      "producer": {
+       "operationId": "op_nine",
+       "slot": "circle"
+      },
+      "type": "circle"
+     },
+     "segment": {
+      "displayName": "segment",
+      "id": "segment",
+      "producer": {
+       "operationId": "op_segment",
+       "slot": "segment"
+      },
+      "type": "circlesegment"
+     },
+     "tangent": {
+      "displayName": "tangent",
+      "id": "tangent",
+      "producer": {
+       "operationId": "op_tangent",
+       "slot": "line"
+      },
+      "type": "line"
+     }
+    },
+    "format": "animageo-construction/v1",
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       4,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       0,
+       3
+      ]
+     },
+     "S": {
+      "kind": "pathParameter",
+      "value": 1.5
+     }
+    },
+    "operationRegistryVersion": "1.6",
+    "operations": {
+     "op_A": {
+      "args": {},
+      "id": "op_A",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "A",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_B": {
+      "args": {},
+      "id": "op_B",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "B",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_C": {
+      "args": {},
+      "id": "op_C",
+      "op": "point.free",
+      "outputs": [
+       {
+        "elementId": "C",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_M": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       }
+      },
+      "id": "op_M",
+      "op": "point.midpoint",
+      "outputs": [
+       {
+        "elementId": "M",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_arc": {
+      "args": {
+       "a": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "C",
+        "kind": "ref"
+       },
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       }
+      },
+      "id": "op_arc",
+      "op": "arc.center_two_points",
+      "outputs": [
+       {
+        "elementId": "arc",
+        "slot": "arc"
+       }
+      ]
+     },
+     "op_boundary": {
+      "args": {
+       "path": {
+        "elementId": "segment",
+        "kind": "ref"
+       }
+      },
+      "id": "op_boundary",
+      "op": "point.on_path",
+      "outputs": [
+       {
+        "elementId": "S",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_c1": {
+      "args": {
+       "center": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 1
+       }
+      },
+      "id": "op_c1",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c1",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_c2": {
+      "args": {
+       "center": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "radius": {
+        "kind": "number",
+        "value": 1
+       }
+      },
+      "id": "op_c2",
+      "op": "circle.center_radius",
+      "outputs": [
+       {
+        "elementId": "c2",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_centroid": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_centroid",
+      "op": "triangle.centroid",
+      "outputs": [
+       {
+        "elementId": "G",
+        "slot": "point"
+       }
+      ]
+     },
+     "op_cevian": {
+      "args": {
+       "point": {
+        "elementId": "M",
+        "kind": "ref"
+       },
+       "vertex": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_cevian",
+      "op": "triangle.cevian",
+      "outputs": [
+       {
+        "elementId": "cevian",
+        "slot": "cevian"
+       }
+      ]
+     },
+     "op_euler": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_euler",
+      "op": "line.euler",
+      "outputs": [
+       {
+        "elementId": "euler",
+        "slot": "line"
+       }
+      ]
+     },
+     "op_nine": {
+      "args": {
+       "a": {
+        "elementId": "A",
+        "kind": "ref"
+       },
+       "b": {
+        "elementId": "B",
+        "kind": "ref"
+       },
+       "c": {
+        "elementId": "C",
+        "kind": "ref"
+       }
+      },
+      "id": "op_nine",
+      "op": "circle.nine_point",
+      "outputs": [
+       {
+        "elementId": "nine",
+        "slot": "circle"
+       }
+      ]
+     },
+     "op_segment": {
+      "args": {
+       "arc": {
+        "elementId": "arc",
+        "kind": "ref"
+       }
+      },
+      "id": "op_segment",
+      "op": "sector.segment",
+      "outputs": [
+       {
+        "elementId": "segment",
+        "slot": "segment"
+       }
+      ]
+     },
+     "op_tangent": {
+      "args": {
+       "first": {
+        "elementId": "c1",
+        "kind": "ref"
+       },
+       "second": {
+        "elementId": "c2",
+        "kind": "ref"
+       }
+      },
+      "id": "op_tangent",
+      "op": "line.common_tangents",
+      "outputs": [
+       {
+        "elementId": "tangent",
+        "slot": "line"
+       }
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -6,
+      -4,
+      6,
+      4
+     ]
+    }
+   },
+   "expect": {
+    "counterexample": null,
+    "failed": 0,
+    "inconclusive": 0,
+    "passed": 50,
+    "seed": "12345",
+    "status": "passed",
+    "undefined": 0
+   },
+   "name": "school-common-tangents",
+   "seed": "12345",
+   "statement": {
+    "a": {
+     "ref": "tangent"
+    },
+    "b": {
+     "ref": "c1"
+    },
+    "kind": "tangent"
+   },
+   "trials": 50
+  },
+  {
    "check": "c1",
    "document": {
     "conditions": [
@@ -5178,7 +7453,7 @@
      },
      "D": {
       "kind": "pathParameter",
-      "value": 2.568086285167209
+      "value": 2.5680862851672095
      },
      "O": {
       "kind": "point",
@@ -6121,7 +8396,7 @@
       "C": {
        "kind": "point",
        "value": [
-        0.036425858025708024,
+        0.03642585802570802,
         2.0366626051337313
        ]
       },
@@ -9877,7 +12152,7 @@
        "kind": "point",
        "value": [
         -4.414760869183047,
-        1.5651514688880872
+        1.5651514688880868
        ]
       },
       "B": {
@@ -9890,7 +12165,7 @@
       "C": {
        "kind": "point",
        "value": [
-        1.8212929012854013,
+        1.8212929012854011,
         3.833130256686566
        ]
       },
@@ -10177,7 +12452,7 @@
       "C": {
        "kind": "point",
        "value": [
-        0.18212929012854012,
+        0.1821292901285401,
         2.1833130256686566
        ]
       },
@@ -10464,7 +12739,7 @@
       "C": {
        "kind": "point",
        "value": [
-        0.018212929012854012,
+        0.01821292901285401,
         2.0183313025668657
        ]
       },
@@ -10511,7 +12786,7 @@
   }
  ],
  "format": "animageo-general/v1",
- "generatedBy": "animageo 1.11.0rc11",
+ "generatedBy": "animageo 1.11.0rc12",
  "id": "general",
  "registry": "1.6"
 }

@@ -35,7 +35,7 @@ _CONIC_CONSTRAINTS = {
 # Other data — a number, an equality mark of a native document, no value —
 # is not drawn.
 DRAW_ORDER = (
-    (CircleSector, Polygon),
+    (CircleSector, CircleSegment, Polygon),
     (Angle,),
     (Circle, Arc, Segment, Vector, Line, Ray, LocusCurve, Conic, Function, ImplicitCurve),
     (Point,),

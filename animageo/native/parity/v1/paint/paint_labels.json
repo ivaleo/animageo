@@ -2,7 +2,7 @@
  "format": "animageo-paint-parity/v1",
  "id": "paint_labels",
  "registry": "1.6",
- "generatedBy": "animageo 1.11.0rc11",
+ "generatedBy": "animageo 1.11.0rc12",
  "cases": [
   {
    "name": "label_anchors",
@@ -249,6 +249,22 @@
        {
         "slot": "sector",
         "elementId": "q"
+       }
+      ]
+     },
+     "op_sg": {
+      "id": "op_sg",
+      "op": "sector.segment",
+      "args": {
+       "arc": {
+        "kind": "ref",
+        "elementId": "k"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "sg"
        }
       ]
      },
@@ -563,6 +579,15 @@
       "producer": {
        "operationId": "op_q",
        "slot": "sector"
+      }
+     },
+     "sg": {
+      "id": "sg",
+      "type": "circlesegment",
+      "displayName": "sg",
+      "producer": {
+       "operationId": "op_sg",
+       "slot": "segment"
       }
      },
      "w": {
@@ -1554,12 +1579,51 @@
        "angleUnit": "degree"
       }
      },
+     "sg": {
+      "type": "circlesegment",
+      "styleType": "circlesegment",
+      "style": "circlesegment",
+      "drawn": true,
+      "z": 5.000017,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 5.000017
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010017,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
      "t": {
       "type": "text",
       "styleType": "text",
       "style": "text",
       "drawn": true,
-      "z": 50.000017,
+      "z": 50.000018,
       "label": {
        "color": "#000000",
        "fontSizePx": 16.0,
@@ -1575,13 +1639,13 @@
       "styleType": "segment",
       "style": "segment",
       "drawn": true,
-      "z": 5.000018,
+      "z": 5.000019,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": "butt",
-       "z": 5.000018,
+       "z": 5.000019,
        "dash": null
       },
       "ticks": {
@@ -1629,13 +1693,13 @@
       "styleType": "vector",
       "style": "vector",
       "drawn": true,
-      "z": 5.00002,
+      "z": 5.000021,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": "butt",
-       "z": 5.00002,
+       "z": 5.000021,
        "dash": null
       },
       "arrow": {
@@ -1660,7 +1724,7 @@
        },
        "shown": true,
        "anchor": "BL",
-       "z": 50.00002,
+       "z": 50.000021,
        "text": "$v$",
        "parts": [
         {
@@ -1690,13 +1754,13 @@
       "styleType": "polyline",
       "style": "locuscurve",
       "drawn": true,
-      "z": 4.000021,
+      "z": 4.000022,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": null,
-       "z": 4.000021,
+       "z": 4.000022,
        "dash": null
       }
      }
@@ -1713,6 +1777,7 @@
      "k",
      "q",
      "s",
+     "sg",
      "u",
      "v",
      "A",
@@ -1969,6 +2034,22 @@
        {
         "slot": "sector",
         "elementId": "q"
+       }
+      ]
+     },
+     "op_sg": {
+      "id": "op_sg",
+      "op": "sector.segment",
+      "args": {
+       "arc": {
+        "kind": "ref",
+        "elementId": "k"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "sg"
        }
       ]
      },
@@ -2283,6 +2364,15 @@
       "producer": {
        "operationId": "op_q",
        "slot": "sector"
+      }
+     },
+     "sg": {
+      "id": "sg",
+      "type": "circlesegment",
+      "displayName": "sg",
+      "producer": {
+       "operationId": "op_sg",
+       "slot": "segment"
       }
      },
      "w": {
@@ -3279,12 +3369,51 @@
        "angleUnit": "degree"
       }
      },
+     "sg": {
+      "type": "circlesegment",
+      "styleType": "circlesegment",
+      "style": "circlesegment",
+      "drawn": true,
+      "z": 5.000017,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 5.000017
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010017,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "BC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
      "t": {
       "type": "text",
       "styleType": "text",
       "style": "text",
       "drawn": true,
-      "z": 50.000017,
+      "z": 50.000018,
       "label": {
        "color": "#000000",
        "fontSizePx": 16.0,
@@ -3300,13 +3429,13 @@
       "styleType": "segment",
       "style": "segment",
       "drawn": true,
-      "z": 5.000018,
+      "z": 5.000019,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": "butt",
-       "z": 5.000018,
+       "z": 5.000019,
        "dash": null
       },
       "ticks": {
@@ -3354,13 +3483,13 @@
       "styleType": "vector",
       "style": "vector",
       "drawn": true,
-      "z": 5.00002,
+      "z": 5.000021,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": "butt",
-       "z": 5.00002,
+       "z": 5.000021,
        "dash": null
       },
       "arrow": {
@@ -3385,7 +3514,7 @@
        },
        "shown": true,
        "anchor": "BC",
-       "z": 50.00002,
+       "z": 50.000021,
        "text": "$v$",
        "parts": [
         {
@@ -3415,13 +3544,13 @@
       "styleType": "polyline",
       "style": "locuscurve",
       "drawn": true,
-      "z": 4.000021,
+      "z": 4.000022,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": null,
-       "z": 4.000021,
+       "z": 4.000022,
        "dash": null
       }
      }
@@ -3438,6 +3567,7 @@
      "k",
      "q",
      "s",
+     "sg",
      "u",
      "v",
      "A",

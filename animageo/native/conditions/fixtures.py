@@ -278,6 +278,28 @@ def _general_fixtures() -> list:
         case['expect'] = _general_expect(result)
         cases.append(case)
 
+    school = _Doc('general-school')
+    school.free('A', 0, 0).free('B', 4, 0).free('C', 0, 3)
+    school.two('point.midpoint', 'M', 'A', 'B', 'point', out='point')
+    abc = {k.lower(): _r(k) for k in 'ABC'}
+    school.op('op_nine', 'circle.nine_point', abc, [('circle', 'nine', 'circle')])
+    school.op('op_euler', 'line.euler', abc, [('line', 'euler', 'line')])
+    school.op('op_centroid', 'triangle.centroid', abc, [('point', 'G', 'point')])
+    school.op('op_cevian', 'triangle.cevian', {'vertex': _r('C'), 'point': _r('M')}, [('cevian', 'cevian', 'segment')])
+    school.op('op_arc', 'arc.center_two_points', {'center': _r('A'), 'a': _r('B'), 'b': _r('C')}, [('arc', 'arc', 'arc')])
+    school.op('op_segment', 'sector.segment', {'arc': _r('arc')}, [('segment', 'segment', 'circlesegment')])
+    school.op('op_boundary', 'point.on_path', {'path': _r('segment')}, [('point', 'S', 'point')])
+    school.doc['inputs']['S'] = {'kind': 'pathParameter', 'value': 1.5}
+    for e, center in (('c1', 'A'), ('c2', 'B')):
+        school.op('op_' + e, 'circle.center_radius', {'center': _r(center), 'radius': {'kind': 'number', 'value': 1}},
+                  [('circle', e, 'circle')])
+    school.op('op_tangent', 'line.common_tangents', {'first': _r('c1'), 'second': _r('c2')}, [('line', 'tangent', 'line')])
+    for name, point, obj in [('nine-point', 'M', 'nine'), ('euler', 'G', 'euler'),
+                             ('cevian', 'M', 'cevian'), ('circle-segment', 'S', 'segment')]:
+        add('school-' + name, school.doc, name, {'kind': 'on', 'point': P(point), 'object': P(obj)}, seed=12345)
+    add('school-common-tangents', school.doc, 'common-tangents',
+        {'kind': 'tangent', 'a': P('tangent'), 'b': P('c1')}, seed=12345)
+
     for name, st in RECIPE_CASES:
         r = apply_condition(_base(1), {'statement': st, 'mode': 'construct'})
         if r.refusal is None:

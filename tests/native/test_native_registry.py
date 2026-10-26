@@ -60,7 +60,8 @@ G2_CONIC_OPS = {'conic.ellipse_foci_point', 'conic.hyperbola_foci_point', 'conic
                 'conic.five_points', 'conic.equation', 'conic.center', 'conic.foci', 'conic.vertices',
                 'conic.axes', 'intersect.line_conic'}
 G2_OPS = G2_FUNCTION_OPS | G2_CONIC_OPS
-ALL_OPS = L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
+SCHOOL_B_OPS = {'line.common_tangents', 'sector.segment', 'triangle.cevian', 'circle.nine_point', 'line.euler'}
+ALL_OPS = SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were
 # (1.4 is frozen since 1.8.1; new operations go to 1.5).
 L0_HASHES = {
@@ -200,18 +201,18 @@ def test_l0_records_unchanged():
 @pytest.mark.parametrize('op', sorted(ALL_OPS))
 def test_record_fields(op):
     record = registry().get(op)
-    assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free'}
+    assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free', 'inputSets'}
     assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors', 'intersect.nearest')
                                 or op in G2_OPS else 'stable')
     if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
                   'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle',
                   'text.free', 'function.expr', 'function.root', 'function.extremum',
-                  'intersect.function_function', 'intersect.function_line'):
+                  'intersect.function_function', 'intersect.function_line', 'line.common_tangents', 'triangle.cevian'):
         assert record['params'] == []
     for param in record['params']:
         assert {'slot', 'type', 'unit', 'text'} <= set(param) <= {'slot', 'type', 'unit', 'optional',
                                                                    'default', 'text'}
-        assert param['type'] == 'number'
+        assert param['type'] == ('string' if op == 'line.common_tangents' and param['slot'] == 'kind' else 'number')
     branch = record['branch']
     assert branch is None or (set(branch) >= {'policy', 'slots', 'text'}
                               and branch['policy'] in registry().policies)
@@ -287,13 +288,13 @@ def test_contract_table():
         'linear': ['line', 'segment', 'ray'],
         'circular': ['circle', 'arc'],
         'curve': ['line', 'segment', 'ray', 'circle', 'arc'],
-        'path': ['line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'polyline'],
-        'round': ['circle', 'arc', 'sector'],
+        'path': ['line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'circlesegment', 'polyline'],
+        'round': ['circle', 'arc', 'sector', 'circlesegment'],
         'vertexed': ['segment', 'polyline', 'polygon'],
         'measurable': ['segment', 'vector', 'polyline', 'arc'],
-        'bounded': ['polygon', 'circle', 'sector'],
-        'figure': ['point', 'line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'polyline'],
-        'transformable': ['point', 'segment', 'ray', 'line', 'vector', 'circle', 'arc', 'sector', 'polygon'],
+        'bounded': ['polygon', 'circle', 'sector', 'circlesegment'],
+        'figure': ['point', 'line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'circlesegment', 'polyline'],
+        'transformable': ['point', 'segment', 'ray', 'line', 'vector', 'circle', 'arc', 'sector', 'circlesegment', 'polygon'],
         'insertable': ['number', 'point'],
         'locus_driver': ['point', 'number'],      # registry 1.5
     }
@@ -444,7 +445,7 @@ def test_registry_problems_catch_bad_params(tmp_path):
     (copy_dir / 'number.json').write_text(json.dumps(number))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
-    assert "point.projection: param 'strict' must have type 'number'" in problems
+    assert "point.projection: param 'strict' must have type 'number' or 'string'" in problems
     assert "point.projection: param 'strict' is required and has a default" in problems
     assert "number.free: param 'min' default must be a number" in problems
     assert not any("'max'" in p for p in problems)
@@ -459,7 +460,7 @@ def test_types_and_policies_catalogs():
                                  'roots_ascending', 'conic_axis_order'}
     assert set(reg.paths) == set(reg.families['path'])
     kinds = {'segment': 'affine', 'line': 'affine', 'ray': 'affine', 'circle': 'angle', 'polygon': 'perimeter',
-             'arc': 'arc', 'sector': 'sector', 'polyline': 'polyline'}
+             'arc': 'arc', 'sector': 'sector', 'circlesegment': 'circlesegment', 'polyline': 'polyline'}
     assert {t: reg.paths[t]['kind'] for t in reg.paths} == kinds
     assert reg.paths['segment']['default'] == 0.5 and reg.paths['line']['default'] == 0.5
     assert reg.paths['circle']['default'] == math.pi / 4

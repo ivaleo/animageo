@@ -347,6 +347,117 @@
     }
    }
   },
+  "circlesegment": {
+   "style": "circlesegment",
+   "keys": {
+    "fill": {
+     "unit": "color",
+     "default": "#ffffff"
+    },
+    "fill_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "fill_pattern": {
+     "unit": "enum",
+     "default": "solid",
+     "values": [
+      "solid",
+      "hatch",
+      "crosshatch",
+      "dots",
+      "none"
+     ]
+    },
+    "font_size_px": {
+     "unit": "px",
+     "default": 14
+    },
+    "hatch_angle_deg": {
+     "unit": "deg",
+     "default": 45
+    },
+    "hatch_color": {
+     "unit": "color",
+     "default": "stroke"
+    },
+    "hatch_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "hatch_spacing_px": {
+     "unit": "px",
+     "default": 6
+    },
+    "hatch_width_px": {
+     "unit": "px",
+     "default": 0.75
+    },
+    "label_anchor": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "TL",
+      "TC",
+      "TR",
+      "ML",
+      "MC",
+      "MR",
+      "BL",
+      "BC",
+      "BR"
+     ]
+    },
+    "label_color": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "label_halo_color": {
+     "unit": "color",
+     "default": null
+    },
+    "label_halo_opacity": {
+     "unit": "opacity",
+     "default": 1.0
+    },
+    "label_halo_px": {
+     "unit": "px",
+     "default": 0.0
+    },
+    "label_value_precision": {
+     "unit": "count",
+     "default": 1
+    },
+    "label_value_separator": {
+     "unit": "string",
+     "default": " = "
+    },
+    "label_value_strip_zeros": {
+     "unit": "bool",
+     "default": true
+    },
+    "stroke": {
+     "unit": "color",
+     "default": "#000000"
+    },
+    "stroke_opacity": {
+     "unit": "opacity",
+     "default": 1
+    },
+    "stroke_width_px": {
+     "unit": "px",
+     "default": 1.5
+    },
+    "z_index": {
+     "unit": "number",
+     "default": null
+    },
+    "z_index_fill": {
+     "unit": "number",
+     "default": 0.01
+    }
+   }
+  },
   "conic": {
    "style": "conic",
    "keys": {

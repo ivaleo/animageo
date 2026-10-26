@@ -22,7 +22,7 @@ from pathlib import Path
 from .canonical import canonical_json, sha256_of
 from .expr import MAX_TEMPLATE_LENGTH, template_problems
 from .expr import problems as expr_problems
-from .registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, free_slot, registry
+from .registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, free_slot, input_set_matches, registry
 
 __all__ = [
     'DOCUMENT_FORMAT',
@@ -291,6 +291,10 @@ class _Structure:
             self.keys(arg, path, 'a number argument', ('kind', 'value'), ('kind', 'value'), operationId=op_id)
             if 'value' in arg and not _is_number(arg['value']):
                 self.add(path + '/value', 'value must be a number', operationId=op_id)
+        elif kind == 'string':
+            self.keys(arg, path, 'a string argument', ('kind', 'value'), ('kind', 'value'), operationId=op_id)
+            if 'value' in arg:
+                self.string(arg['value'], path + '/value', 'value')
         elif kind == 'expr':           # registry 1.4 (a5): the tree itself is checked by validate (formula)
             self.keys(arg, path, 'an expr argument', ('kind', 'ast'), ('kind', 'ast'), operationId=op_id)
             if 'ast' in arg:
@@ -837,6 +841,9 @@ def validate(doc) -> list:
                                 operationId=op_id, severity='warning'))
         args = op['args']
         if record is not None:
+            if not input_set_matches(record, args):
+                issues.append(Issue('missing_slot', path + '/args',
+                                    f"{op['op']} needs exactly one of {record['inputSets']}", operationId=op_id))
             declared = {item['slot'] for item in record['inputs']} | {item['slot'] for item in record['params']}
             for slot in sorted(args):
                 if slot not in declared:
@@ -847,6 +854,8 @@ def validate(doc) -> list:
                 spath = path + '/args' + _pointer(slot)
                 arg = args.get(slot)
                 if arg is None:
+                    if 'inputSets' in record:
+                        continue
                     issues.append(Issue('missing_slot', spath, f"{op['op']} needs argument {slot!r}",
                                         operationId=op_id))
                     continue
@@ -903,8 +912,8 @@ def validate(doc) -> list:
                     if not item.get('optional', False):
                         issues.append(Issue('missing_slot', spath, f"{op['op']} needs parameter {slot!r}",
                                             operationId=op_id))
-                elif arg['kind'] != 'number':
-                    issues.append(Issue('type_mismatch', spath, f'parameter {slot!r} must be a number',
+                elif arg['kind'] != item['type']:
+                    issues.append(Issue('type_mismatch', spath, f"parameter {slot!r} must be a {item['type']}",
                                         operationId=op_id))
         else:
             for slot in sorted(args):

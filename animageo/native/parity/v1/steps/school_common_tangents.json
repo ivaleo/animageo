@@ -1,0 +1,769 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "school_common_tangents",
+  "registry": "1.6",
+  "generatedBy": "animageo 1.11.0rc12",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "school_common_tangents",
+    "operationRegistryVersion": "1.6",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_d": {
+        "id": "op_d",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "d"
+          }
+        ]
+      },
+      "op_external0": {
+        "id": "op_external0",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "external"
+          },
+          "index": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "external0"
+          }
+        ]
+      },
+      "op_external1": {
+        "id": "op_external1",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "external"
+          },
+          "index": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "external1"
+          }
+        ]
+      },
+      "op_internal0": {
+        "id": "op_internal0",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "internal"
+          },
+          "index": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "internal0"
+          }
+        ]
+      },
+      "op_internal1": {
+        "id": "op_internal1",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "internal"
+          },
+          "index": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "internal1"
+          }
+        ]
+      },
+      "op_bad_kind": {
+        "id": "op_bad_kind",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "other"
+          },
+          "index": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "bad_kind"
+          }
+        ]
+      },
+      "op_bad_index": {
+        "id": "op_bad_index",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "external"
+          },
+          "index": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "bad_index"
+          }
+        ]
+      },
+      "op_same": {
+        "id": "op_same",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "same"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "displayName": "P",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        }
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "displayName": "c",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        }
+      },
+      "d": {
+        "id": "d",
+        "type": "circle",
+        "displayName": "d",
+        "producer": {
+          "operationId": "op_d",
+          "slot": "circle"
+        }
+      },
+      "external0": {
+        "id": "external0",
+        "type": "line",
+        "displayName": "external0",
+        "producer": {
+          "operationId": "op_external0",
+          "slot": "line"
+        }
+      },
+      "external1": {
+        "id": "external1",
+        "type": "line",
+        "displayName": "external1",
+        "producer": {
+          "operationId": "op_external1",
+          "slot": "line"
+        }
+      },
+      "internal0": {
+        "id": "internal0",
+        "type": "line",
+        "displayName": "internal0",
+        "producer": {
+          "operationId": "op_internal0",
+          "slot": "line"
+        }
+      },
+      "internal1": {
+        "id": "internal1",
+        "type": "line",
+        "displayName": "internal1",
+        "producer": {
+          "operationId": "op_internal1",
+          "slot": "line"
+        }
+      },
+      "bad_kind": {
+        "id": "bad_kind",
+        "type": "line",
+        "displayName": "bad_kind",
+        "producer": {
+          "operationId": "op_bad_kind",
+          "slot": "line"
+        }
+      },
+      "bad_index": {
+        "id": "bad_index",
+        "type": "line",
+        "displayName": "bad_index",
+        "producer": {
+          "operationId": "op_bad_index",
+          "slot": "line"
+        }
+      },
+      "same": {
+        "id": "same",
+        "type": "line",
+        "displayName": "same",
+        "producer": {
+          "operationId": "op_same",
+          "slot": "line"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "P": {
+        "kind": "point",
+        "value": [
+          6,
+          0
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_O",
+          "op_P"
+        ],
+        "elementIds": [
+          "O",
+          "P"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c",
+        "kind": "op",
+        "operationIds": [
+          "op_c"
+        ],
+        "elementIds": [
+          "c"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_d",
+        "kind": "op",
+        "operationIds": [
+          "op_d"
+        ],
+        "elementIds": [
+          "d"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_bad_index",
+        "kind": "op",
+        "operationIds": [
+          "op_bad_index"
+        ],
+        "elementIds": [
+          "bad_index"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_bad_kind",
+        "kind": "op",
+        "operationIds": [
+          "op_bad_kind"
+        ],
+        "elementIds": [
+          "bad_kind"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_external0",
+        "kind": "op",
+        "operationIds": [
+          "op_external0"
+        ],
+        "elementIds": [
+          "external0"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_external1",
+        "kind": "op",
+        "operationIds": [
+          "op_external1"
+        ],
+        "elementIds": [
+          "external1"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_internal0",
+        "kind": "op",
+        "operationIds": [
+          "op_internal0"
+        ],
+        "elementIds": [
+          "internal0"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_internal1",
+        "kind": "op",
+        "operationIds": [
+          "op_internal1"
+        ],
+        "elementIds": [
+          "internal1"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_same",
+        "kind": "op",
+        "operationIds": [
+          "op_same"
+        ],
+        "elementIds": [
+          "same"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки O, P.",
+      "2. Строим окружность c с центром O и радиусом 2.",
+      "3. Строим окружность d с центром P и радиусом 1.",
+      "4. Проводим общую касательную bad_index окружностей c и d.",
+      "5. Проводим общую касательную bad_kind окружностей c и d.",
+      "6. Проводим общую касательную external0 окружностей c и d.",
+      "7. Проводим общую касательную external1 окружностей c и d.",
+      "8. Проводим общую касательную internal0 окружностей c и d.",
+      "9. Проводим общую касательную internal1 окружностей c и d.",
+      "10. Проводим общую касательную same окружностей c и c."
+    ],
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "O": false,
+              "P": false,
+              "c": false,
+              "d": false,
+              "bad_index": false,
+              "bad_kind": false,
+              "external0": false,
+              "external1": false,
+              "internal0": false,
+              "internal1": false,
+              "same": false
+            }
+          },
+          {
+            "t": 0.8,
+            "visible": {
+              "O": true,
+              "P": true
+            },
+            "enter": {
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "P": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              }
+            }
+          },
+          {
+            "t": 1.9,
+            "visible": {
+              "c": true
+            },
+            "enter": {
+              "c": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.0,
+            "visible": {
+              "d": true
+            },
+            "enter": {
+              "d": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.1,
+            "visible": {
+              "bad_index": true
+            },
+            "enter": {
+              "bad_index": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.199999999999999,
+            "visible": {
+              "bad_kind": true
+            },
+            "enter": {
+              "bad_kind": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.299999999999999,
+            "visible": {
+              "external0": true
+            },
+            "enter": {
+              "external0": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.399999999999999,
+            "visible": {
+              "external1": true
+            },
+            "enter": {
+              "external1": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 8.499999999999998,
+            "visible": {
+              "internal0": true
+            },
+            "enter": {
+              "internal0": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 9.599999999999998,
+            "visible": {
+              "internal1": true
+            },
+            "enter": {
+              "internal1": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 10.699999999999998,
+            "visible": {
+              "same": true
+            },
+            "enter": {
+              "same": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 0.8,
+          "elementIds": [
+            "O",
+            "P"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c",
+          "start": 1.4,
+          "end": 1.9,
+          "elementIds": [
+            "c"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_d",
+          "start": 2.5,
+          "end": 3.0,
+          "elementIds": [
+            "d"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_bad_index",
+          "start": 3.6,
+          "end": 4.1,
+          "elementIds": [
+            "bad_index"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_bad_kind",
+          "start": 4.699999999999999,
+          "end": 5.199999999999999,
+          "elementIds": [
+            "bad_kind"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_external0",
+          "start": 5.799999999999999,
+          "end": 6.299999999999999,
+          "elementIds": [
+            "external0"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_external1",
+          "start": 6.899999999999999,
+          "end": 7.399999999999999,
+          "elementIds": [
+            "external1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_internal0",
+          "start": 7.999999999999998,
+          "end": 8.499999999999998,
+          "elementIds": [
+            "internal0"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_internal1",
+          "start": 9.099999999999998,
+          "end": 9.599999999999998,
+          "elementIds": [
+            "internal1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_same",
+          "start": 10.199999999999998,
+          "end": 10.699999999999998,
+          "elementIds": [
+            "same"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 10.699999999999998
+    }
+  }
+}

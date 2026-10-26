@@ -48,6 +48,15 @@
       "value": {"c": "length", "r": "length", "a0": "scalar", "a1": "scalar"},
       "text": "sector {c: [x, y], r, a0, a1}: the region bounded by the arc {c, r, a0, a1} and the radii to its ends; a1 = a0 + 2 pi is the full disc"
     },
+    "circlesegment": {
+      "value": {
+        "c": "length",
+        "r": "length",
+        "a0": "scalar",
+        "a1": "scalar"
+      },
+      "text": "circlesegment {c: [x, y], r, a0, a1}: the region bounded by the counterclockwise arc and its chord; zero sweep is defined, a full sweep is the disc"
+    },
     "polyline": {
       "value": {"vertices": "length", "length": "length"},
       "text": "polyline {vertices: [[x, y], ...], length}; at least two vertices in definition order, length is the sum of the links"
@@ -90,13 +99,13 @@
     "linear": ["line", "segment", "ray"],
     "circular": ["circle", "arc"],
     "curve": ["line", "segment", "ray", "circle", "arc"],
-    "path": ["line", "segment", "ray", "circle", "polygon", "arc", "sector", "polyline"],
-    "round": ["circle", "arc", "sector"],
+    "path": ["line", "segment", "ray", "circle", "polygon", "arc", "sector", "circlesegment", "polyline"],
+    "round": ["circle", "arc", "sector", "circlesegment"],
     "vertexed": ["segment", "polyline", "polygon"],
     "measurable": ["segment", "vector", "polyline", "arc"],
-    "bounded": ["polygon", "circle", "sector"],
-    "figure": ["point", "line", "segment", "ray", "circle", "polygon", "arc", "sector", "polyline"],
-    "transformable": ["point", "segment", "ray", "line", "vector", "circle", "arc", "sector", "polygon"],
+    "bounded": ["polygon", "circle", "sector", "circlesegment"],
+    "figure": ["point", "line", "segment", "ray", "circle", "polygon", "arc", "sector", "circlesegment", "polyline"],
+    "transformable": ["point", "segment", "ray", "line", "vector", "circle", "arc", "sector", "circlesegment", "polygon"],
     "insertable": ["number", "point"],
     "locus_driver": ["point", "number"]
   },
@@ -146,6 +155,14 @@
       "kind": "sector", "min": 0, "max": 3, "outside": "wrap", "default": 0.5,
       "text": "t wraps to [0, 3): [0, 1] the arc as for arc, [1, 2] the radius from S1 to c, [2, 3) the radius from c to S0, S_i = c + r (cos a_i, sin a_i)"
     },
+    "circlesegment": {
+      "kind": "circlesegment",
+      "min": 0,
+      "max": 2,
+      "outside": "wrap",
+      "default": 0.5,
+      "text": "t wraps to [0,2): [0,1] the counterclockwise arc, [1,2) the chord from its end to its start"
+    },
     "polyline": {
       "kind": "polyline", "min": 0, "max": "n - 1", "outside": "clamp", "default": 0.5,
       "text": "t is clamped to [0, n - 1]; k = floor(t) picks the link from vertex k + 1 to vertex k + 2 (the last link at t = n - 1), the fraction t - k runs along it"
@@ -157,6 +174,7 @@
     "perimeter": "t' = t - n floor(t / n), t' < 0 gives t' + n, t' >= n gives 0; k = floor(t'), f = t' - k; P = V[k] + f (V[(k + 1) mod n] - V[k])",
     "arc": "t' = clamp(t, 0, 1); phi = a0 + t' (a1 - a0); P = c + r (cos phi, sin phi)",
     "sector": "t' = t - 3 floor(t / 3), t' < 0 gives t' + 3, t' >= 3 gives 0; t' <= 1: the arc at t'; 1 < t' <= 2: P = S1 + (t' - 1)(c - S1); t' > 2: P = c + (t' - 2)(S0 - c)",
+    "circlesegment": "t wraps to [0,2); t <= 1: the arc at t; otherwise S1 + (t-1)(S0-S1)",
     "polyline": "t' = clamp(t, 0, n - 1); k = min(floor(t'), n - 2), f = t' - k; P = V[k] + f (V[k + 1] - V[k])"
   },
   "units": {

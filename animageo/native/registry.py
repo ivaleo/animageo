@@ -21,6 +21,7 @@ path parameter — and nothing descriptive (phrases, checks, status, math)::
         "branch": branch.policy | null,
         "orientation": str | null,
         "pathParam": ... | null,
+        "inputSets"?: [[input slot, ...], ...],  # only on operations with alternative signatures
     }))
 """
 from __future__ import annotations
@@ -96,7 +97,7 @@ def _read_json(entry):
 def signature(record: dict) -> dict:
     """The part of a registry record that the signature hash covers."""
     branch = record.get('branch')
-    return {
+    out = {
         'op': record['op'],
         'inputs': [_input_signature(item) for item in record.get('inputs', [])],
         'params': [
@@ -109,6 +110,18 @@ def signature(record: dict) -> dict:
         'orientation': record.get('orientation'),
         'pathParam': record.get('pathParam'),
     }
+    if 'inputSets' in record:
+        out['inputSets'] = record['inputSets']
+    return out
+
+
+def input_set_matches(record: dict, args: dict) -> bool:
+    """Whether the supplied input slots are one of the declared alternatives."""
+    choices = record.get('inputSets')
+    if choices is None:
+        return True
+    supplied = set(args) & {i['slot'] for i in record['inputs']}
+    return any(supplied == set(choice) for choice in choices)
 
 
 def _input_signature(item: dict) -> dict:
@@ -338,6 +351,15 @@ def registry_problems(reg: Registry | None = None) -> list:
         for item in record.get('inputs', []) + record.get('outputs', []):
             if item['type'] not in known_types:
                 problems.append(f"{op}: unknown type {item['type']!r} of slot {item['slot']!r}")
+        choices = record.get('inputSets')
+        if choices is not None:
+            slots = {item['slot'] for item in record.get('inputs', [])}
+            if not isinstance(choices, list) or not choices or any(
+                    not isinstance(c, list) or not c or not all(isinstance(s, str) for s in c)
+                    or len(c) != len(set(c)) or not set(c) <= slots for c in choices):
+                problems.append(f'{op}: inputSets must list nonempty subsets of input slots')
+            elif set().union(*(set(c) for c in choices)) != slots:
+                problems.append(f'{op}: inputSets leave input slots unreachable')
         problems.extend(_output_problems(op, record))
         branch = record.get('branch')
         policy = branch.get('policy') if isinstance(branch, dict) else None
@@ -371,15 +393,16 @@ def _output_problems(op: str, record: dict) -> list:
 
 
 def _param_problems(op: str, record: dict) -> list:
-    """Params are numbers; an optional param may have a numeric default, a required one has none."""
+    """Params are number or string literals; defaults must fit their type."""
     out = []
     for param in record.get('params', []):
         slot = param['slot']
-        if param['type'] != 'number':
-            out.append(f"{op}: param {slot!r} must have type 'number'")
+        if param['type'] not in ('number', 'string'):
+            out.append(f"{op}: param {slot!r} must have type 'number' or 'string'")
         has_default = 'default' in param
-        if has_default and (isinstance(param['default'], bool) or not isinstance(param['default'], (int, float))):
-            out.append(f'{op}: param {slot!r} default must be a number')
+        expected = str if param['type'] == 'string' else (int, float)
+        if has_default and (isinstance(param['default'], bool) or not isinstance(param['default'], expected)):
+            out.append(f"{op}: param {slot!r} default must be a {param['type']}")
         if not param.get('optional', False) and has_default:
             out.append(f'{op}: param {slot!r} is required and has a default')
     return out

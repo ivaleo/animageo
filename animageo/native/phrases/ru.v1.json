@@ -327,6 +327,33 @@
         "conic.vertices": "Отмечаем вершины {out:first,second,third,fourth} кривой {conic}",
         "conic.axes": "Проводим оси {out:focal,conjugate} кривой {conic}"
       }
+    },
+    "line_common_tangents": {
+      "text": "Проводим общую касательную {line} окружностей {first} и {second}"
+    },
+    "sector_segment": {
+      "text": "Строим сегмент круга {segment} по дуге {arc}",
+      "context": [
+        {
+          "when": "circle_segment_points",
+          "text": "Строим сегмент круга {segment} окружности {circle} от {a} до {b}"
+        }
+      ]
+    },
+    "triangle_cevian": {
+      "text": "Проводим чевиану {cevian} из {vertex} в {point}",
+      "context": [
+        {
+          "when": "cevian_polygon",
+          "text": "Проводим чевиану {cevian} треугольника {polygon} из вершины с номером {index}"
+        }
+      ]
+    },
+    "circle_nine_point": {
+      "text": "Строим окружность девяти точек {circle} треугольника {a}{b}{c}{polygon}"
+    },
+    "line_euler": {
+      "text": "Проводим прямую Эйлера {line} треугольника {a}{b}{c}{polygon}"
     }
   },
   "given": {

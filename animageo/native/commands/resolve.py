@@ -12,11 +12,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .issues import LineError
-from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, Entry, normalize_name
+from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, STR, Entry, normalize_name
 
 __all__ = ['Resolution', 'assign', 'resolve', 'kind_text', 'signature_text', 'closest_name', 'levenshtein']
 
-_LITERALS = frozenset({NUM, PT})
+_LITERALS = frozenset({NUM, PT, STR})
 
 _TYPE_TEXT = {
     'point': 'точка', 'line': 'прямая', 'segment': 'отрезок', 'ray': 'луч', 'vector': 'вектор',
@@ -26,6 +26,7 @@ _TYPE_TEXT = {
     NUM: 'число', PT: 'координаты', NOT: '«не A»', PAIR: 'пара точек', ANGLE3: '∠ABC',
     'pathParameter': 'параметр на пути',
     'arc': 'дуга', 'sector': 'сектор', 'polyline': 'ломаная',
+    'circlesegment': 'сегмент круга', STR: 'строка',
     'round': 'окружность, дуга или сектор', 'vertexed': 'отрезок, ломаная или многоугольник',
     'measurable': 'отрезок, вектор, ломаная или дуга', 'bounded': 'многоугольник, круг или сектор',
     'figure': 'точка, линия, окружность, дуга, сектор или многоугольник',

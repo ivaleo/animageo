@@ -748,5 +748,126 @@
     },
     "math": "docs/native/ops/segment.midline.md",
     "signatureHash": "sha256:f9080853fc77c5cc00a537bf594f03c540fc03671e77400a704223f1b336c394"
+  },
+  {
+    "op": "line.common_tangents",
+    "status": "stable",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "circle"
+      },
+      {
+        "slot": "second",
+        "type": "circle"
+      }
+    ],
+    "params": [
+      {
+        "slot": "kind",
+        "type": "string",
+        "unit": null,
+        "text": "external or internal",
+        "optional": true,
+        "default": "external"
+      },
+      {
+        "slot": "index",
+        "type": "number",
+        "unit": null,
+        "text": "Branch 0 or 1; a double tangent occupies only branch 0",
+        "optional": true,
+        "default": 0
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "branch_absent",
+      "coincident",
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "tangent_both",
+        "text": "The distance of each center from the line equals its radius"
+      }
+    ],
+    "orientation": "normal_turned_clockwise",
+    "pathParam": null,
+    "stepKind": "line_common_tangents",
+    "phrases": {
+      "ru": "{line} — общая касательная окружностей {first} и {second}"
+    },
+    "math": "docs/native/ops/line.common_tangents.md",
+    "signatureHash": "sha256:d251b78c16266ddcc3ebd93e9faf4062eb2ee7e6af96354e8f2f9173a74b26c0"
+  },
+  {
+    "op": "line.euler",
+    "status": "stable",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      },
+      {
+        "slot": "polygon",
+        "type": "polygon"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "invalid_parameter",
+      "coincident_points",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "centers",
+        "text": "The line passes through the circumcenter and orthocenter"
+      }
+    ],
+    "orientation": "circumcenter_to_orthocenter",
+    "pathParam": null,
+    "stepKind": "line_euler",
+    "phrases": {
+      "ru": "{line} — прямая Эйлера треугольника {a}{b}{c}{polygon}"
+    },
+    "math": "docs/native/ops/line.euler.md",
+    "signatureHash": "sha256:27890e7e72fa9d3bfcb818360cc1a8de342aba48db593dd6d5728fe554558f40",
+    "inputSets": [
+      [
+        "a",
+        "b",
+        "c"
+      ],
+      [
+        "polygon"
+      ]
+    ]
   }
 ]

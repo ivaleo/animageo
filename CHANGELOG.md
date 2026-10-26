@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc12] - 2026-10-26
+
+### Added
+
+- Native school constructions: `line.common_tangents` (external/internal,
+  branch 0/1), `sector.segment`, `triangle.cevian`, `circle.nine_point`
+  and `line.euler`, with construction steps, Russian command names and
+  parity fixtures. Triangle operations accept three points or a triangle
+  polygon; a cevian accepts its two ends or a polygon, vertex index and
+  side parameter. The registry stays `1.6`; existing signature hashes stay.
+- `circlesegment` values preserve the counterclockwise arc and close it by
+  its chord, with area/perimeter/radius measures, boundary points,
+  transformations, hatching and SVG/PNG/PDF/TikZ/video rendering. They
+  are excluded from the `curve` intersection family.
+- Registry input alternatives and string parameters (`kind: "string"`),
+  including quoted strings in construction commands.
+
+### Fixed
+
+- Dashes and equality ticks always have butt caps in every export, even
+  when the element style requests round or square caps. Solid strokes
+  keep their configured caps.
+- Missing common-tangent branches return `undefined/branch_absent`;
+  coincident circles return `undefined/coincident`. At tangency only
+  index 0 exists in that pair. A degenerate triangle has no nine-point
+  circle or Euler line; coincident circumcenter and orthocenter have no
+  Euler line.
+
 ## [1.11.0rc11] - 2026-10-26
 
 ### Fixed

@@ -875,7 +875,7 @@ def _image_error(op_name, args, result, tol):
         c = f(*v['c'])
         s = f(v['c'][0] + v['r'], v['c'][1])
         return max(_dist(c, _pt(img['c'])), abs(_dist(c, s) - img['r']))
-    elif obj.type in ('arc', 'sector'):
+    elif obj.type in ('arc', 'sector', 'circlesegment'):
         c = f(*v['c'])
         s0 = f(v['c'][0] + v['r'] * math.cos(v['a0']), v['c'][1] + v['r'] * math.sin(v['a0']))
         s1 = f(v['c'][0] + v['r'] * math.cos(v['a1']), v['c'][1] + v['r'] * math.sin(v['a1']))
@@ -991,6 +991,53 @@ def _bisector_on_side(args, result, tol):
 
 def _abc(args):
     return _xy(args['a'].value), _xy(args['b'].value), _xy(args['c'].value)
+
+
+@register_check('line.common_tangents', 'tangent_both')
+def _common_tangents(args, result, tol):
+    line = result['line']
+    return max(abs(_distance_to_line(*args[k].value['c'], line) - args[k].value['r'])
+               for k in ('first', 'second'))
+
+
+@register_check('sector.segment', 'arc')
+def _circle_segment(args, result, tol):
+    value = result['segment']
+    source = args['arc'].value if 'arc' in args else args['circle'].value
+    error = max(_dist(value['c'], source['c']), abs(value['r'] - source['r']))
+    if 'arc' in args:
+        return max(error, abs(value['a0'] - source['a0']) * tol.scale,
+                   abs(value['a1'] - source['a1']) * tol.scale)
+    return max(error, *(_dist((value['c'][0] + value['r'] * math.cos(value[k]),
+                              value['c'][1] + value['r'] * math.sin(value[k])), _xy(args[s].value))
+                         for k, s in (('a0', 'a'), ('a1', 'b'))))
+
+
+@register_check('triangle.cevian', 'ends')
+def _cevian_ends(args, result, tol):
+    seg = result['cevian']
+    if 'vertex' in args:
+        return max(_dist(seg['a'], _xy(args['vertex'].value)), _dist(seg['b'], _xy(args['point'].value)))
+    vs = args['polygon'].value['vertices']
+    k = int(args['index']) - 1
+    return max(_dist(seg['a'], vs[k]), _segment_distance(*seg['b'], *vs[(k + 1) % 3], *vs[(k + 2) % 3]))
+
+
+@register_check('circle.nine_point', 'side_midpoints')
+def _nine_point_midpoints(args, result, tol):
+    from .ops.triangle import triangle_points
+    points = triangle_points(args)
+    circle = result['circle']
+    return max(abs(math.hypot((a['x'] + b['x']) / 2 - circle['c'][0],
+                              (a['y'] + b['y']) / 2 - circle['c'][1]) - circle['r'])
+               for a, b in zip(points, points[1:] + points[:1]))
+
+
+@register_check('line.euler', 'centers')
+def _euler_centers(args, result, tol):
+    from .ops.triangle import euler_centers
+    o, h = euler_centers(args, _QuietContext(tol))
+    return max(_distance_to_line(o[0], o[1], result['line']), _distance_to_line(*h, result['line']))
 
 
 @register_check('triangle.centroid', 'medians')

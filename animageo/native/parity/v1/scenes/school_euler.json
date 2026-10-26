@@ -1,0 +1,387 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "school_euler",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "school_euler",
+    "operationRegistryVersion": "1.6",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_T": {
+        "id": "op_T",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "T"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "line.euler",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "line.euler",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "T"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "q"
+          }
+        ]
+      },
+      "op_bad_polygon": {
+        "id": "op_bad_polygon",
+        "op": "line.euler",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "Q"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "bad_polygon"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "T": {
+        "id": "T",
+        "type": "polygon",
+        "displayName": "T",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "polygon"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "polygon",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "polygon"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "line",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "line"
+        }
+      },
+      "q": {
+        "id": "q",
+        "type": "line",
+        "displayName": "q",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "line"
+        }
+      },
+      "bad_polygon": {
+        "id": "bad_polygon",
+        "type": "line",
+        "displayName": "bad_polygon",
+        "producer": {
+          "operationId": "op_bad_polygon",
+          "slot": "line"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          3
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          3,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "right"
+    },
+    {
+      "name": "scalene",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            1,
+            3
+          ]
+        }
+      }
+    },
+    {
+      "name": "obtuse",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            -2,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "name": "collinear",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            2,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "collapsed",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "equilateral",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -1,
+            0
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            1,
+            0
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            1.7320508075688772
+          ]
+        }
+      }
+    }
+  ]
+}

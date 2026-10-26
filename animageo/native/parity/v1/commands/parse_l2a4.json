@@ -1,10 +1,1373 @@
 {
   "format": "animageo-commands/v1",
   "id": "parse_l2a4",
-  "lexiconHash": "sha256:1410111f96af706f06b5029dcc4887d67a5c0b0b94db24455c22a9b217fc4d45",
+  "lexiconHash": "sha256:e7191729c5c4b537d885fa7c32b9b01ddf08e51b39733977862049a5aa958867",
   "registry": "1.6",
-  "generatedBy": "animageo 1.11.0rc11",
+  "generatedBy": "animageo 1.11.0rc12",
   "cases": [
+    {
+      "name": "line_common_tangents_1",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nc = Окружность(A, B)\nd = Окружность(C, D)\nl = Общие касательные(c, d, \"external\", 0)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "A",
+              "through": "B"
+            },
+            "outputs": {
+              "circle": "c"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "C",
+              "through": "D"
+            },
+            "outputs": {
+              "circle": "d"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.common_tangents",
+            "args": {
+              "first": "c",
+              "second": "d",
+              "kind": "external",
+              "index": 0.0
+            },
+            "outputs": {
+              "line": "l"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "c"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "d"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              "l"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nc = Окружность(A, B)\nd = Окружность(C, D)\nl = Общие касательные(c, d, \"external\", 0)"
+      }
+    },
+    {
+      "name": "line_common_tangents_2",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nc = Окружность(A, B)\nd = Окружность(C, D)\nОбщие касательные(c, d, \"internal\", 1)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "A",
+              "through": "B"
+            },
+            "outputs": {
+              "circle": "c"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "C",
+              "through": "D"
+            },
+            "outputs": {
+              "circle": "d"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.common_tangents",
+            "args": {
+              "first": "c",
+              "second": "d",
+              "kind": "internal",
+              "index": 1.0
+            },
+            "outputs": {
+              "line": "a"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "c"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "d"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              "a"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nc = Окружность(A, B)\nd = Окружность(C, D)\na = Общие касательные(c, d, \"internal\", 1)"
+      }
+    },
+    {
+      "name": "sector_segment_1",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nk = ДугаОкружности(A, B, C)\ns = Сегмент круга(k)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "arc.center_two_points",
+            "args": {
+              "center": "A",
+              "a": "B",
+              "b": "C"
+            },
+            "outputs": {
+              "arc": "k"
+            },
+            "hidden": false
+          },
+          {
+            "op": "sector.segment",
+            "args": {
+              "arc": "k"
+            },
+            "outputs": {
+              "segment": "s"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "k"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nk = ДугаОкружности(A, B, C)\ns = Сегмент круга(k)"
+      }
+    },
+    {
+      "name": "sector_segment_2",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nc = Окружность(A, B)\nСегмент круга(c, B, C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.center_point",
+            "args": {
+              "center": "A",
+              "through": "B"
+            },
+            "outputs": {
+              "circle": "c"
+            },
+            "hidden": false
+          },
+          {
+            "op": "sector.segment",
+            "args": {
+              "circle": "c",
+              "a": "B",
+              "b": "C"
+            },
+            "outputs": {
+              "segment": "a"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "c"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "a"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nc = Окружность(A, B)\na = Сегмент круга(c, B, C)"
+      }
+    },
+    {
+      "name": "triangle_cevian_1",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nM = Середина(B, C)\ns = Чевиана(A, M)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "B",
+              "b": "C"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "triangle.cevian",
+            "args": {
+              "vertex": "A",
+              "point": "M"
+            },
+            "outputs": {
+              "cevian": "s"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "s"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nM = Середина(B, C)\ns = Чевиана(A, M)"
+      }
+    },
+    {
+      "name": "triangle_cevian_2",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nT = Многоугольник(A, B, C)\nЧевиана(T, 1, 0.25)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "T",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "triangle.cevian",
+            "args": {
+              "polygon": "T",
+              "index": 1.0,
+              "t": 0.25
+            },
+            "outputs": {
+              "cevian": "d"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "T",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "d"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nT, c, a, b = Многоугольник(A, B, C)\nd = Чевиана(T, 1, 0.25)"
+      }
+    },
+    {
+      "name": "circle_nine_point_1",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nk = Окружность девяти точек(A, B, C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.nine_point",
+            "args": {
+              "a": "A",
+              "b": "B",
+              "c": "C"
+            },
+            "outputs": {
+              "circle": "k"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "k"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nk = Окружность девяти точек(A, B, C)"
+      }
+    },
+    {
+      "name": "circle_nine_point_2",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nT = Многоугольник(A, B, C)\nОкружность девяти точек(T)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "T",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "circle.nine_point",
+            "args": {
+              "polygon": "T"
+            },
+            "outputs": {
+              "circle": "d"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "T",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "d"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nT, c, a, b = Многоугольник(A, B, C)\nd = Окружность девяти точек(T)"
+      }
+    },
+    {
+      "name": "line_euler_1",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nl = Прямая Эйлера(A, B, C)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.euler",
+            "args": {
+              "a": "A",
+              "b": "B",
+              "c": "C"
+            },
+            "outputs": {
+              "line": "l"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "l"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nl = Прямая Эйлера(A, B, C)"
+      }
+    },
+    {
+      "name": "line_euler_2",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nT = Многоугольник(A, B, C)\nПрямая Эйлера(T)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "D"
+            },
+            "hidden": false
+          },
+          {
+            "op": "polygon.by_points",
+            "args": {
+              "vertices": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "outputs": {
+              "polygon": "T",
+              "side.1": "c",
+              "side.2": "a",
+              "side.3": "b"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.euler",
+            "args": {
+              "polygon": "T"
+            },
+            "outputs": {
+              "line": "d"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "D": {
+            "kind": "point",
+            "value": [
+              5.0,
+              4.0
+            ]
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "D"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "T",
+              "c",
+              "a",
+              "b"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "d"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nT, c, a, b = Многоугольник(A, B, C)\nd = Прямая Эйлера(T)"
+      }
+    },
     {
       "name": "angle_between_lines_1",
       "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nD = (5, 4)\nα = УголМеждуПрямыми(AB, AC)",

@@ -92,7 +92,16 @@
     {"name": "ПроверкаКонцикличности", "aliases": ["AreConcyclic"], "check": "concyclic"},
     {"name": "ПроверкаКонкурентности", "aliases": ["AreConcurrent"], "check": "concurrent"},
     {"name": "ПроверкаРавенства", "aliases": ["AreCongruent"], "check": "congruent"},
-    {"name": "ПроверкаСовпадения", "aliases": ["AreEqual"], "check": "coincident"}
+    {"name": "ПроверкаСовпадения", "aliases": ["AreEqual"], "check": "coincident"},
+    {"name": "Общие касательные", "aliases": [], "op": "line.common_tangents", "form": ["first", "second", "kind", "index"]},
+    {"name": "Сегмент круга", "aliases": [], "op": "sector.segment", "form": ["arc"]},
+    {"name": "Сегмент круга", "aliases": [], "op": "sector.segment", "form": ["circle", "a", "b"]},
+    {"name": "Чевиана", "aliases": [], "op": "triangle.cevian", "form": ["vertex", "point"]},
+    {"name": "Чевиана", "aliases": [], "op": "triangle.cevian", "form": ["polygon", "index", "t"]},
+    {"name": "Окружность девяти точек", "aliases": [], "op": "circle.nine_point", "form": ["a", "b", "c"]},
+    {"name": "Окружность девяти точек", "aliases": [], "op": "circle.nine_point", "form": ["polygon"]},
+    {"name": "Прямая Эйлера", "aliases": [], "op": "line.euler", "form": ["a", "b", "c"]},
+    {"name": "Прямая Эйлера", "aliases": [], "op": "line.euler", "form": ["polygon"]}
 ],
 "keywords": {
     "condition": ["Условие", "Condition"],

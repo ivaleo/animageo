@@ -147,6 +147,7 @@ def _zoo(doc_id):
     d = _Doc(doc_id).free('A', 0, 0).free('B', 4, 0).free('C', 1, 3).free('D', 5, 3)
     d.segment('s', 'A', 'B').segment('u', 'B', 'C').line('l', 'C', 'D').ray('r', 'A', 'D').vector('v', 'C', 'A')
     d.circle('c', 'D', 'B').polygon('T', 'A', 'B', 'C').arc('k', 'D', 'B', 'C').sector('q', 'A', 'B', 'C')
+    d.op('sector.segment', {'arc': _ref('k')}, [('segment', 'sg', 'circlesegment')])
     d.polyline('w', 'A', 'C', 'D').angle('alpha', 'B', 'A', 'C').angle('beta', 'C', 'B', 'A')
     d.right_mark('ra', 'D', 'B', 'A').equal_segments('mk', 's', 'u', count=2)
     d.equal_angles('ma', 'alpha', 'beta', count=2)

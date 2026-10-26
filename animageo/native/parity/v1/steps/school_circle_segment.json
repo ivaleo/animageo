@@ -1,0 +1,617 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "school_circle_segment",
+  "registry": "1.6",
+  "generatedBy": "animageo 1.11.0rc12",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "school_circle_segment",
+    "operationRegistryVersion": "1.6",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_arc": {
+        "id": "op_arc",
+        "op": "arc.on_circle",
+        "args": {
+          "circle": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "arc",
+            "elementId": "arc"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "sector.segment",
+        "args": {
+          "arc": {
+            "kind": "ref",
+            "elementId": "arc"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "sector.segment",
+        "args": {
+          "circle": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "q"
+          }
+        ]
+      },
+      "op_area": {
+        "id": "op_area",
+        "op": "measure.area",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "area"
+          }
+        ]
+      },
+      "op_perimeter": {
+        "id": "op_perimeter",
+        "op": "measure.perimeter",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "perimeter"
+          }
+        ]
+      },
+      "op_radius": {
+        "id": "op_radius",
+        "op": "measure.radius",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "radius"
+          }
+        ]
+      },
+      "op_M": {
+        "id": "op_M",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "s"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "M"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "displayName": "c",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        }
+      },
+      "arc": {
+        "id": "arc",
+        "type": "arc",
+        "displayName": "arc",
+        "producer": {
+          "operationId": "op_arc",
+          "slot": "arc"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "circlesegment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "q": {
+        "id": "q",
+        "type": "circlesegment",
+        "displayName": "q",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "segment"
+        }
+      },
+      "area": {
+        "id": "area",
+        "type": "number",
+        "displayName": "area",
+        "producer": {
+          "operationId": "op_area",
+          "slot": "number"
+        }
+      },
+      "perimeter": {
+        "id": "perimeter",
+        "type": "number",
+        "displayName": "perimeter",
+        "producer": {
+          "operationId": "op_perimeter",
+          "slot": "number"
+        }
+      },
+      "radius": {
+        "id": "radius",
+        "type": "number",
+        "displayName": "radius",
+        "producer": {
+          "operationId": "op_radius",
+          "slot": "number"
+        }
+      },
+      "M": {
+        "id": "M",
+        "type": "point",
+        "displayName": "M",
+        "producer": {
+          "operationId": "op_M",
+          "slot": "point"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "A": {
+        "kind": "point",
+        "value": [
+          2,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          0,
+          2
+        ]
+      },
+      "M": {
+        "kind": "pathParameter",
+        "value": 1.5
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_O"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "O"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_c",
+        "kind": "op",
+        "operationIds": [
+          "op_c"
+        ],
+        "elementIds": [
+          "c"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_arc",
+        "kind": "op",
+        "operationIds": [
+          "op_arc"
+        ],
+        "elementIds": [
+          "arc"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_q",
+        "kind": "op",
+        "operationIds": [
+          "op_q"
+        ],
+        "elementIds": [
+          "q"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_s",
+        "kind": "op",
+        "operationIds": [
+          "op_s"
+        ],
+        "elementIds": [
+          "s"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_M",
+        "kind": "op",
+        "operationIds": [
+          "op_M"
+        ],
+        "elementIds": [
+          "M"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_area",
+        "kind": "op",
+        "operationIds": [
+          "op_area"
+        ],
+        "elementIds": [
+          "area"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_perimeter",
+        "kind": "op",
+        "operationIds": [
+          "op_perimeter"
+        ],
+        "elementIds": [
+          "perimeter"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_radius",
+        "kind": "op",
+        "operationIds": [
+          "op_radius"
+        ],
+        "elementIds": [
+          "radius"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B, O.",
+      "2. Строим окружность c с центром O и радиусом 2.",
+      "3. Строим дугу arc окружности c от A до B.",
+      "4. Строим сегмент круга q окружности c от A до B.",
+      "5. Строим сегмент круга s по дуге arc.",
+      "6. Отмечаем точку M на s.",
+      "7. Находим площадь s.",
+      "8. Находим периметр s.",
+      "9. Находим радиус s."
+    ],
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "O": false,
+              "c": false,
+              "arc": false,
+              "q": false,
+              "s": false,
+              "M": false
+            }
+          },
+          {
+            "t": 1.1,
+            "visible": {
+              "A": true,
+              "B": true,
+              "O": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "O": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "c": true
+            },
+            "enter": {
+              "c": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.3000000000000003,
+            "visible": {
+              "arc": true
+            },
+            "enter": {
+              "arc": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.4,
+            "visible": {
+              "q": true
+            },
+            "enter": {
+              "q": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.5,
+            "visible": {
+              "s": true
+            },
+            "enter": {
+              "s": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.6,
+            "visible": {
+              "M": true
+            },
+            "enter": {
+              "M": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.1,
+          "elementIds": [
+            "A",
+            "B",
+            "O"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_c",
+          "start": 1.7000000000000002,
+          "end": 2.2,
+          "elementIds": [
+            "c"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_arc",
+          "start": 2.8000000000000003,
+          "end": 3.3000000000000003,
+          "elementIds": [
+            "arc"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_q",
+          "start": 3.9000000000000004,
+          "end": 4.4,
+          "elementIds": [
+            "q"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_s",
+          "start": 5.0,
+          "end": 5.5,
+          "elementIds": [
+            "s"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_M",
+          "start": 6.1,
+          "end": 6.6,
+          "elementIds": [
+            "M"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 6.6
+    }
+  }
+}

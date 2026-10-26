@@ -481,6 +481,20 @@ class Arc(Circle):
             x_angle += 2*np.pi
         return a1 <= x_angle <= a2
 
+class CircleSegment(Arc):
+    """The filled region bounded by an arc and its chord."""
+
+    def __init__(self, center, r, angles):
+        super().__init__(center, r, angles)
+        self.angles = [float(a) for a in angles]
+
+    def contains(self, x):
+        if Arc.contains(self, x):
+            return True
+        a, b = [self.center + self.radius * np.array([np.cos(t), np.sin(t)]) for t in self.angles]
+        return Segment(a, b).contains(np.asarray(x, dtype=float))
+
+
 class CircleSector(Circle):
     def __init__(self, center, r, angles):
         super().__init__(center, r)

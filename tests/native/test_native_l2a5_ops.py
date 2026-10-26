@@ -93,8 +93,8 @@ def test_contract_table():
         assert summary('measure.' + name) == (ins, [], [('number', 'number')], ['upstream'], [], None, None,
                                               'stable')
     assert reg.families['measurable'] == ['segment', 'vector', 'polyline', 'arc']
-    assert reg.families['bounded'] == ['polygon', 'circle', 'sector']
-    assert reg.families['figure'] == ['point'] + reg.families['path'][:5] + ['arc', 'sector', 'polyline']
+    assert reg.families['bounded'] == ['polygon', 'circle', 'sector', 'circlesegment']
+    assert reg.families['figure'] == ['point'] + reg.families['path'][:5] + ['arc', 'sector', 'circlesegment', 'polyline']
 
 
 # ── angles ───────────────────────────────────────────────────────────────

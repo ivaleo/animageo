@@ -1,0 +1,1297 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "school_common_tangents",
+  "registry": "1.6",
+  "generatedBy": "animageo 1.11.0rc12",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "school_common_tangents",
+    "operationRegistryVersion": "1.6",
+    "operations": {
+      "op_O": {
+        "id": "op_O",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "O"
+          }
+        ]
+      },
+      "op_P": {
+        "id": "op_P",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "P"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "O"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_d": {
+        "id": "op_d",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "P"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "d"
+          }
+        ]
+      },
+      "op_external0": {
+        "id": "op_external0",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "external"
+          },
+          "index": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "external0"
+          }
+        ]
+      },
+      "op_external1": {
+        "id": "op_external1",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "external"
+          },
+          "index": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "external1"
+          }
+        ]
+      },
+      "op_internal0": {
+        "id": "op_internal0",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "internal"
+          },
+          "index": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "internal0"
+          }
+        ]
+      },
+      "op_internal1": {
+        "id": "op_internal1",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "internal"
+          },
+          "index": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "internal1"
+          }
+        ]
+      },
+      "op_bad_kind": {
+        "id": "op_bad_kind",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "other"
+          },
+          "index": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "bad_kind"
+          }
+        ]
+      },
+      "op_bad_index": {
+        "id": "op_bad_index",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "d"
+          },
+          "kind": {
+            "kind": "string",
+            "value": "external"
+          },
+          "index": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "bad_index"
+          }
+        ]
+      },
+      "op_same": {
+        "id": "op_same",
+        "op": "line.common_tangents",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "c"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "same"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "O": {
+        "id": "O",
+        "type": "point",
+        "displayName": "O",
+        "producer": {
+          "operationId": "op_O",
+          "slot": "point"
+        }
+      },
+      "P": {
+        "id": "P",
+        "type": "point",
+        "displayName": "P",
+        "producer": {
+          "operationId": "op_P",
+          "slot": "point"
+        }
+      },
+      "c": {
+        "id": "c",
+        "type": "circle",
+        "displayName": "c",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "circle"
+        }
+      },
+      "d": {
+        "id": "d",
+        "type": "circle",
+        "displayName": "d",
+        "producer": {
+          "operationId": "op_d",
+          "slot": "circle"
+        }
+      },
+      "external0": {
+        "id": "external0",
+        "type": "line",
+        "displayName": "external0",
+        "producer": {
+          "operationId": "op_external0",
+          "slot": "line"
+        }
+      },
+      "external1": {
+        "id": "external1",
+        "type": "line",
+        "displayName": "external1",
+        "producer": {
+          "operationId": "op_external1",
+          "slot": "line"
+        }
+      },
+      "internal0": {
+        "id": "internal0",
+        "type": "line",
+        "displayName": "internal0",
+        "producer": {
+          "operationId": "op_internal0",
+          "slot": "line"
+        }
+      },
+      "internal1": {
+        "id": "internal1",
+        "type": "line",
+        "displayName": "internal1",
+        "producer": {
+          "operationId": "op_internal1",
+          "slot": "line"
+        }
+      },
+      "bad_kind": {
+        "id": "bad_kind",
+        "type": "line",
+        "displayName": "bad_kind",
+        "producer": {
+          "operationId": "op_bad_kind",
+          "slot": "line"
+        }
+      },
+      "bad_index": {
+        "id": "bad_index",
+        "type": "line",
+        "displayName": "bad_index",
+        "producer": {
+          "operationId": "op_bad_index",
+          "slot": "line"
+        }
+      },
+      "same": {
+        "id": "same",
+        "type": "line",
+        "displayName": "same",
+        "producer": {
+          "operationId": "op_same",
+          "slot": "line"
+        }
+      }
+    },
+    "inputs": {
+      "O": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "P": {
+        "kind": "point",
+        "value": [
+          6,
+          0
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "separate",
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 6.0,
+            "y": 0.0
+          }
+        },
+        "bad_index": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "bad_kind": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              6.0,
+              0.0
+            ],
+            "r": 1.0
+          }
+        },
+        "external0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.3333333333333333,
+              1.9720265943665387
+            ],
+            "dir": [
+              0.9860132971832694,
+              -0.16666666666666666
+            ]
+          }
+        },
+        "external1": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.3333333333333333,
+              -1.9720265943665387
+            ],
+            "dir": [
+              -0.9860132971832694,
+              -0.16666666666666666
+            ]
+          }
+        },
+        "internal0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.0,
+              1.7320508075688774
+            ],
+            "dir": [
+              0.8660254037844387,
+              -0.5
+            ]
+          }
+        },
+        "internal1": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.0,
+              -1.7320508075688774
+            ],
+            "dir": [
+              -0.8660254037844387,
+              -0.5
+            ]
+          }
+        },
+        "same": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident"
+        }
+      },
+      "checks": {
+        "op_c:matches": "passed",
+        "op_d:matches": "passed",
+        "op_external0:tangent_both": "passed",
+        "op_external1:tangent_both": "passed",
+        "op_internal0:tangent_both": "passed",
+        "op_internal1:tangent_both": "passed"
+      }
+    },
+    {
+      "name": "oblique",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            6,
+            4
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 6.0,
+            "y": 4.0
+          }
+        },
+        "bad_index": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "bad_kind": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              6.0,
+              4.0
+            ],
+            "r": 1.0
+          }
+        },
+        "external0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.8679120659296693,
+              1.801868098894504
+            ],
+            "dir": [
+              0.900934049447252,
+              0.43395603296483465
+            ]
+          }
+        },
+        "external1": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.329450527468131,
+              -1.4941757912021965
+            ],
+            "dir": [
+              -0.7470878956010982,
+              -0.6647252637340655
+            ]
+          }
+        },
+        "internal0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.31652900373876924,
+              1.974793505608154
+            ],
+            "dir": [
+              0.987396752804077,
+              0.15826450186938462
+            ]
+          }
+        },
+        "internal1": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.701144388354154,
+              -1.0517165825312311
+            ],
+            "dir": [
+              -0.5258582912656156,
+              -0.850572194177077
+            ]
+          }
+        },
+        "same": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident"
+        }
+      },
+      "checks": {
+        "op_c:matches": "passed",
+        "op_d:matches": "passed",
+        "op_external0:tangent_both": "passed",
+        "op_external1:tangent_both": "passed",
+        "op_internal0:tangent_both": "passed",
+        "op_internal1:tangent_both": "passed"
+      }
+    },
+    {
+      "name": "other_side",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            -5,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -5.0,
+            "y": 0.0
+          }
+        },
+        "bad_index": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "bad_kind": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              -5.0,
+              0.0
+            ],
+            "r": 1.0
+          }
+        },
+        "external0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.4,
+              -1.9595917942265424
+            ],
+            "dir": [
+              -0.9797958971132712,
+              0.2
+            ]
+          }
+        },
+        "external1": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.4,
+              1.9595917942265424
+            ],
+            "dir": [
+              0.9797958971132712,
+              0.2
+            ]
+          }
+        },
+        "internal0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -1.2,
+              -1.6
+            ],
+            "dir": [
+              -0.8,
+              0.6
+            ]
+          }
+        },
+        "internal1": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -1.2,
+              1.6
+            ],
+            "dir": [
+              0.8,
+              0.6
+            ]
+          }
+        },
+        "same": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident"
+        }
+      },
+      "checks": {
+        "op_c:matches": "passed",
+        "op_d:matches": "passed",
+        "op_external0:tangent_both": "passed",
+        "op_external1:tangent_both": "passed",
+        "op_internal0:tangent_both": "passed",
+        "op_internal1:tangent_both": "passed"
+      }
+    },
+    {
+      "name": "intersect",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            2,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "bad_index": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "bad_kind": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              2.0,
+              0.0
+            ],
+            "r": 1.0
+          }
+        },
+        "external0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.0,
+              1.7320508075688772
+            ],
+            "dir": [
+              0.8660254037844386,
+              -0.5
+            ]
+          }
+        },
+        "external1": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.0,
+              -1.7320508075688772
+            ],
+            "dir": [
+              -0.8660254037844386,
+              -0.5
+            ]
+          }
+        },
+        "internal0": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "internal1": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "same": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident"
+        }
+      },
+      "checks": {
+        "op_c:matches": "passed",
+        "op_d:matches": "passed",
+        "op_external0:tangent_both": "passed",
+        "op_external1:tangent_both": "passed"
+      }
+    },
+    {
+      "name": "external_touch",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            3,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 0.0
+          }
+        },
+        "bad_index": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "bad_kind": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              3.0,
+              0.0
+            ],
+            "r": 1.0
+          }
+        },
+        "external0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.6666666666666666,
+              1.885618083164127
+            ],
+            "dir": [
+              0.9428090415820635,
+              -0.3333333333333333
+            ]
+          }
+        },
+        "external1": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.6666666666666666,
+              -1.885618083164127
+            ],
+            "dir": [
+              -0.9428090415820635,
+              -0.3333333333333333
+            ]
+          }
+        },
+        "internal0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              -1.0
+            ]
+          }
+        },
+        "internal1": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "same": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident"
+        }
+      },
+      "checks": {
+        "op_c:matches": "passed",
+        "op_d:matches": "passed",
+        "op_external0:tangent_both": "passed",
+        "op_external1:tangent_both": "passed",
+        "op_internal0:tangent_both": "passed"
+      }
+    },
+    {
+      "name": "internal_touch",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            1,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          }
+        },
+        "bad_index": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "bad_kind": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              0.0
+            ],
+            "r": 1.0
+          }
+        },
+        "external0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              -1.0
+            ]
+          }
+        },
+        "external1": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "internal0": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "internal1": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "same": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident"
+        }
+      },
+      "checks": {
+        "op_c:matches": "passed",
+        "op_d:matches": "passed",
+        "op_external0:tangent_both": "passed"
+      }
+    },
+    {
+      "name": "inside",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            0.5,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 0.0
+          }
+        },
+        "bad_index": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "bad_kind": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.5,
+              0.0
+            ],
+            "r": 1.0
+          }
+        },
+        "external0": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "external1": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "internal0": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "internal1": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "same": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident"
+        }
+      },
+      "checks": {
+        "op_c:matches": "passed",
+        "op_d:matches": "passed"
+      }
+    },
+    {
+      "name": "concentric",
+      "inputs": {
+        "P": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "O": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "P": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "bad_index": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "bad_kind": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "invalid_parameter"
+        },
+        "c": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "d": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 1.0
+          }
+        },
+        "external0": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "external1": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "internal0": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "internal1": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "same": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "coincident"
+        }
+      },
+      "checks": {
+        "op_c:matches": "passed",
+        "op_d:matches": "passed"
+      }
+    }
+  ]
+}

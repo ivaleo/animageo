@@ -14,6 +14,7 @@ from tests.native.conftest import EXPECTED_DIR, SCENES_DIR, DocBuilder, point_in
 SCENES = sorted(p.name for p in SCENES_DIR.glob('*.json'))
 CURVES_DIR = EXPECTED_DIR.parent / 'curves'
 REQUIRED_SCENES = {
+    'school_common_tangents', 'school_circle_segment', 'school_cevian', 'school_nine_point', 'school_euler',
     'basic_points', 'segment_line', 'circle', 'intersect_lines', 'intersect_segments',
     'polygon_triangle', 'polygon_quad', 'upstream_chain', 'graph_errors',
     # registry 1.1

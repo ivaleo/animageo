@@ -45,6 +45,9 @@ def area(args, ctx):
         a = v['area']
     elif of.type == 'circle':
         a = math.pi * v['r'] * v['r']
+    elif of.type == 'circlesegment':
+        sweep = v['a1'] - v['a0']
+        a = v['r'] * v['r'] * (sweep - math.sin(sweep)) / 2
     else:
         a = v['r'] * v['r'] * (v['a1'] - v['a0']) / 2
     return {'number': {'value': a, 'unit': 'area'}}
@@ -62,6 +65,9 @@ def perimeter(args, ctx):
             p = p + math.hypot(vs[(i + 1) % n][0] - vs[i][0], vs[(i + 1) % n][1] - vs[i][1])
     elif of.type == 'circle':
         p = TWO_PI * v['r']
+    elif of.type == 'circlesegment':
+        sweep = v['a1'] - v['a0']
+        p = v['r'] * (sweep + 2 * abs(math.sin(sweep / 2)))
     else:
         p = v['r'] * (v['a1'] - v['a0']) + 2 * v['r']
     return {'number': _length(p)}

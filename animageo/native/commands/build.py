@@ -26,7 +26,7 @@ from ..edit import EditError, _effects, _finish, delete, name_key, redefine, val
 from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, registry
 from .issues import CommandIssue, LineError, ambiguous_name
 from .lexer import tokenize
-from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, Lexicon, as_lexicon, normalize_name
+from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, PT, STR, Lexicon, as_lexicon, normalize_name
 from .naming import TakenKeys, next_name, pair_readings, polygon_side_names, suggest_name
 from .resolve import closest_name, kind_text, resolve
 from .syntax import parse_line
@@ -423,6 +423,8 @@ class _Builder:
         self._unknown(text, column)
 
     def _arg_kind(self, arg):
+        if arg.kind == 'string':
+            return STR, arg.value
         if arg.kind == 'number':
             return NUM, arg.value
         if arg.kind == 'point':
@@ -443,6 +445,8 @@ class _Builder:
         return PAIR, self._split_or_fail(arg.text, arg.name_column, 2)
 
     def _arg_json(self, position, kind, payload):
+        if kind == STR:
+            return {'kind': 'string', 'value': payload}
         if kind == NUM:
             return {'kind': 'number', 'value': payload}
         if kind == PAIR:
@@ -473,6 +477,9 @@ class _Builder:
             return _Request('angle.by_points', reg.get('angle.by_points'), args, None, '∠')
         entries = self.lex.lookup(st.command)
         if not entries:
+            string = next((a for a in st.args if a.kind == 'string'), None)
+            if string is not None:
+                raise LineError('syntax', string.column, 'строковый аргумент неизвестной команды')
             hint = closest_name(st.command, self.lex.names())
             raise LineError('unknown_command', st.command_column, f'нет команды {st.command}', hint=hint)
         kinds, payloads = [], []
@@ -496,7 +503,7 @@ class _Builder:
                 else:
                     args[position.slot] = self._arg_json(position, kinds[taken], payloads[taken])
             elif position.kind == 'param':
-                args[position.slot] = {'kind': 'number', 'value': payloads[taken]}
+                args[position.slot] = {'kind': position.type, 'value': payloads[taken]}
             else:
                 value = payloads[taken]
         free_input = None

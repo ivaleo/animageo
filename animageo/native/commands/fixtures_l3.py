@@ -45,6 +45,14 @@ W = R + 'O = (4, 2.5)\nw = Окружность(O, 0.8)\n'
 
 def _ops_cases():
     two = {
+        'line.common_tangents': ('c = {circle.center_point}(A, B)\nd = {circle.center_point}(C, D)\nl = {op}(c, d, "external", 0)',
+                                 'c = {circle.center_point}(A, B)\nd = {circle.center_point}(C, D)\n{op}(c, d, "internal", 1)'),
+        'sector.segment': ('k = {arc.center_two_points}(A, B, C)\ns = {op}(k)',
+                           'c = {circle.center_point}(A, B)\n{op}(c, B, C)'),
+        'triangle.cevian': ('M = {point.midpoint}(B, C)\ns = {op}(A, M)',
+                            'T = {polygon.by_points}(A, B, C)\n{op}(T, 1, 0.25)'),
+        'circle.nine_point': ('k = {op}(A, B, C)', 'T = {polygon.by_points}(A, B, C)\n{op}(T)'),
+        'line.euler': ('l = {op}(A, B, C)', 'T = {polygon.by_points}(A, B, C)\n{op}(T)'),
         'angle.between_lines': ('α = {op}(AB, AC)', 'l = {line.by_points}(A, B)\nm = {line.by_points}(A, C)\n{op}(l, m)'),
         'angle.between_vectors': ('u = {vector.by_points}(A, B)\nv = {vector.by_points}(A, C)\nα = {op}(u, v)',
                                   'u = {vector.by_points}(B, C)\nv = {vector.by_points}(B, A)\n{op}(u, v)'),

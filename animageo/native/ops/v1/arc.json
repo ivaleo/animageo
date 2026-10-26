@@ -362,5 +362,64 @@
     },
     "math": "docs/native/ops/sector.on_circle.md",
     "signatureHash": "sha256:308f1afd6b02ad3aa4dd3d0cffcbfe1e74babfab0cc45e3011c1f81c1f7dea2a"
+  },
+  {
+    "op": "sector.segment",
+    "status": "stable",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "arc",
+        "type": "arc"
+      },
+      {
+        "slot": "circle",
+        "type": "circle"
+      },
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "segment",
+        "type": "circlesegment"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "not_on_curve",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "arc",
+        "text": "The circular boundary is the supplied arc with the supplied endpoints"
+      }
+    ],
+    "orientation": "counterclockwise",
+    "pathParam": null,
+    "stepKind": "sector_segment",
+    "phrases": {
+      "ru": "{segment} — сегмент круга по дуге {arc}"
+    },
+    "math": "docs/native/ops/sector.segment.md",
+    "signatureHash": "sha256:e795482a87d9e8d73140e1d2a70d5b3113e6b54ba779e487a8af88b788638c83",
+    "inputSets": [
+      [
+        "arc"
+      ],
+      [
+        "circle",
+        "a",
+        "b"
+      ]
+    ]
   }
 ]

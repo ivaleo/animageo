@@ -84,7 +84,7 @@ STEP_EFFECTS = {
     'point': 'fade',
     'segment': 'create', 'line': 'create', 'ray': 'create', 'vector': 'create', 'circle': 'create',
     'arc': 'create', 'polyline': 'create', 'locus': 'create',
-    'polygon': 'fade', 'sector': 'fade', 'angle': 'fade', 'mark': 'fade',
+    'polygon': 'fade', 'sector': 'fade', 'circlesegment': 'fade', 'angle': 'fade', 'mark': 'fade',
     'text': 'write',
 }
 # The entrance effects of the keyframe JSON v2 (``keyframes.ENTER_EFFECTS``;
@@ -198,6 +198,8 @@ def _path_periods(doc, ids) -> dict:
             out[el_id] = TWO_PI
         elif spec['kind'] == 'sector':
             out[el_id] = 3.0
+        elif spec['kind'] == 'circlesegment':
+            out[el_id] = 2.0
         else:                                   # perimeter: n of the polygon now
             if ev is None:
                 from .kernel.evaluate import evaluate

@@ -9,8 +9,9 @@ that the library applies; commands.md §2.
              | "(" number "," number ")"          → point.free
              | number [ "°" ]                       → number.free
              | "∠" name                             → angle.by_points
-    arg    ::= name | number [ "°" ] | "не" name | "∠" name | "(" number "," number ")"
+    arg    ::= name | number [ "°" ] | string | "не" name | "∠" name | "(" number "," number ")"
     number ::= [ "+" | "-" ] digits
+    string ::= a JSON double-quoted string (for a registry string parameter)
 
 A command name may be several words (``Серединный перпендикуляр``). The rest
 of the grammar — ``Условие``, ``Проверить``, equations, functions,
@@ -190,6 +191,8 @@ def _parse_arg(tokens, column: int) -> Arg:
     if not tokens:
         raise LineError('syntax', column, 'пустой аргумент')
     first = tokens[0]
+    if len(tokens) == 1 and first.kind == 'string':
+        return Arg('string', first.column, value=first.text)
     if '=' in _top_syms(tokens):
         raise LineError('forbidden', first.column, f'«ключ = значение» {_LATER}')
     if len(tokens) == 1 and first.kind == 'name':
@@ -246,6 +249,10 @@ def _parse_right(tokens, line: int, names, column_eq: int) -> Statement:
             _forbidden_expression(tokens, first.column)
         command = ' '.join(t.text for t in tokens[:k])
         inner = tokens[k + 1:close]
+        if normalize_name(command) == 'текст':
+            string = next((t for t in inner if t.kind == 'string'), None)
+            if string is not None:
+                raise LineError('syntax', string.column, 'надписи в «Командах» будут позже')
         args = []
         if inner:
             for part, sep in _split_top(inner, ','):

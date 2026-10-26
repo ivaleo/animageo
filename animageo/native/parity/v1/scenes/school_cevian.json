@@ -1,0 +1,511 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "school_cevian",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "school_cevian",
+    "operationRegistryVersion": "1.6",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_T": {
+        "id": "op_T",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "T"
+          }
+        ]
+      },
+      "op_Q": {
+        "id": "op_Q",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "Q"
+          }
+        ]
+      },
+      "op_side": {
+        "id": "op_side",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "side"
+          }
+        ]
+      },
+      "op_M": {
+        "id": "op_M",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "side"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "M"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "triangle.cevian",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "point": {
+            "kind": "ref",
+            "elementId": "M"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "cevian",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_q": {
+        "id": "op_q",
+        "op": "triangle.cevian",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "T"
+          },
+          "index": {
+            "kind": "number",
+            "value": 1
+          },
+          "t": {
+            "kind": "number",
+            "value": 0.25
+          }
+        },
+        "outputs": [
+          {
+            "slot": "cevian",
+            "elementId": "q"
+          }
+        ]
+      },
+      "op_bad_index": {
+        "id": "op_bad_index",
+        "op": "triangle.cevian",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "T"
+          },
+          "index": {
+            "kind": "number",
+            "value": 0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "cevian",
+            "elementId": "bad_index"
+          }
+        ]
+      },
+      "op_zero": {
+        "id": "op_zero",
+        "op": "triangle.cevian",
+        "args": {
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "point": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "cevian",
+            "elementId": "zero"
+          }
+        ]
+      },
+      "op_bad_polygon": {
+        "id": "op_bad_polygon",
+        "op": "triangle.cevian",
+        "args": {
+          "polygon": {
+            "kind": "ref",
+            "elementId": "Q"
+          },
+          "index": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "cevian",
+            "elementId": "bad_polygon"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "T": {
+        "id": "T",
+        "type": "polygon",
+        "displayName": "T",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "polygon"
+        }
+      },
+      "Q": {
+        "id": "Q",
+        "type": "polygon",
+        "displayName": "Q",
+        "producer": {
+          "operationId": "op_Q",
+          "slot": "polygon"
+        }
+      },
+      "side": {
+        "id": "side",
+        "type": "segment",
+        "displayName": "side",
+        "producer": {
+          "operationId": "op_side",
+          "slot": "segment"
+        }
+      },
+      "M": {
+        "id": "M",
+        "type": "point",
+        "displayName": "M",
+        "producer": {
+          "operationId": "op_M",
+          "slot": "point"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "cevian"
+        }
+      },
+      "q": {
+        "id": "q",
+        "type": "segment",
+        "displayName": "q",
+        "producer": {
+          "operationId": "op_q",
+          "slot": "cevian"
+        }
+      },
+      "bad_index": {
+        "id": "bad_index",
+        "type": "segment",
+        "displayName": "bad_index",
+        "producer": {
+          "operationId": "op_bad_index",
+          "slot": "cevian"
+        }
+      },
+      "zero": {
+        "id": "zero",
+        "type": "segment",
+        "displayName": "zero",
+        "producer": {
+          "operationId": "op_zero",
+          "slot": "cevian"
+        }
+      },
+      "bad_polygon": {
+        "id": "bad_polygon",
+        "type": "segment",
+        "displayName": "bad_polygon",
+        "producer": {
+          "operationId": "op_bad_polygon",
+          "slot": "cevian"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          0,
+          3
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          3,
+          3
+        ]
+      },
+      "M": {
+        "kind": "pathParameter",
+        "value": 0.25
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "right"
+    },
+    {
+      "name": "scalene",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            1,
+            3
+          ]
+        }
+      }
+    },
+    {
+      "name": "obtuse",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            -2,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "name": "collinear",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            2,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "collapsed",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "equilateral",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -1,
+            0
+          ]
+        },
+        "B": {
+          "kind": "point",
+          "value": [
+            1,
+            0
+          ]
+        },
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            1.7320508075688772
+          ]
+        }
+      }
+    }
+  ]
+}

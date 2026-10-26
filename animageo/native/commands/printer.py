@@ -24,7 +24,7 @@ from ..kernel.evaluate import _order
 from ..registry import FREE_INPUT_DEFAULTS, registry
 from .build import HELPER_OPS, helper_key, is_helper, pair_op
 from .issues import CommandIssue, LineError, ambiguous_name
-from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, Lexicon, as_lexicon, deferred_op
+from .lexicon import ANGLE3, INPUT, NOT, NUM, PAIR, STR, Lexicon, as_lexicon, deferred_op
 from .naming import TakenKeys, next_name, pair_readings, polygon_side_names
 from .numbers import format_number
 from .resolve import resolve
@@ -305,6 +305,8 @@ class _Printer:
             return [('?', '', True)]
         if arg.get('kind') == 'number':
             return [(format_number(arg.get('value')), NUM, False)]
+        if arg.get('kind') == 'string':
+            return [(json.dumps(arg.get('value'), ensure_ascii=False), STR, False)]
         if arg.get('kind') == 'expr':
             return [('выражение', '', True)]
         if arg.get('kind') == 'template':
@@ -368,7 +370,7 @@ class _Printer:
                 cells.append([(t, k, p, position) for t, k, p in self._arg(args[position.slot], position)])
             elif position.kind == 'param':
                 arg = args.get(position.slot)
-                cells.append(None if arg is None else [(format_number(arg.get('value')), NUM, False, position)])
+                cells.append(None if arg is None else [(t, k, p, position) for t, k, p in self._arg(arg, position)])
             else:
                 cells.append(None if value is None else [(format_number(value), NUM, False, position)])
         present = [i for i, c in enumerate(cells) if c is not None]

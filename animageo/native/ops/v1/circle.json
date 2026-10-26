@@ -329,5 +329,65 @@
     },
     "math": "docs/native/ops/circle.excircle.md",
     "signatureHash": "sha256:5be3ce87c71c4854792c68651eb54442966ec7fe3b28048459632b48a8a7995d"
+  },
+  {
+    "op": "circle.nine_point",
+    "status": "stable",
+    "since": "1.6",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point"
+      },
+      {
+        "slot": "b",
+        "type": "point"
+      },
+      {
+        "slot": "c",
+        "type": "point"
+      },
+      {
+        "slot": "polygon",
+        "type": "polygon"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "circle",
+        "type": "circle"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "collinear_points",
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "side_midpoints",
+        "text": "The circle passes through the midpoints of all three triangle sides"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "circle_nine_point",
+    "phrases": {
+      "ru": "{circle} — окружность девяти точек треугольника {a}{b}{c}{polygon}"
+    },
+    "math": "docs/native/ops/circle.nine_point.md",
+    "signatureHash": "sha256:f21c03fea87274230b740159127a10cf0147efb13caaf3ada403042a96b219b2",
+    "inputSets": [
+      [
+        "a",
+        "b",
+        "c"
+      ],
+      [
+        "polygon"
+      ]
+    ]
   }
 ]

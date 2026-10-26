@@ -147,7 +147,7 @@ def _normal_range(region, n):
     if 'polygon' in region:
         values = [n[0] * x + n[1] * y for x, y in region['polygon']]
         return min(values), max(values)
-    key = 'circle' if 'circle' in region else 'sector'
+    key = next(key for key in ('circle', 'sector', 'circlesegment') if key in region)
     cx, cy, r = region[key][:3]
     mid = n[0] * cx + n[1] * cy
     return mid - r, mid + r
@@ -158,6 +158,18 @@ def _intervals(region, n, u, c):
         return _intervals_polygon(region['polygon'], n, u, c)
     if 'circle' in region:
         part = _disc_interval(*region['circle'], n, u, c)
+        return [part] if part else []
+    if 'circlesegment' in region:
+        cx, cy, r, a0, a1 = region['circlesegment']
+        disc = _disc_interval(cx, cy, r, n, u, c)
+        if a1 - a0 >= 2 * math.pi:
+            return [disc] if disc else []
+        if a1 <= a0:
+            return []
+        # The region is to the left of the chord directed from S1 to S0.
+        x1, y1 = cx + r * math.cos(a1), cy + r * math.sin(a1)
+        x0, y0 = cx + r * math.cos(a0), cy + r * math.sin(a0)
+        part = _clip(disc, _half_plane((x0 - x1, y0 - y1), x1, y1, n, u, c, 1.0))
         return [part] if part else []
     return _intervals_sector(*region['sector'], n, u, c)
 

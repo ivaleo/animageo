@@ -237,12 +237,20 @@ def _arc_nearest(elem, xy):
     c = np.asarray(elem.data.center[:2], dtype=float)
     r = float(elem.data.radius)
     a1, a2 = elem.data.angles
-    sweep = (a2 - a1) if isinstance(elem.data, geo.CircleSector) else (a2 - a1) % (2 * math.pi)
+    sweep = (a2 - a1) if isinstance(elem.data, (geo.CircleSector, geo.CircleSegment)) else (a2 - a1) % (2 * math.pi)
     v = xy - c
     if _in_span(math.atan2(v[1], v[0]), a1, sweep):
         return _on_circle(c, r, xy)
     ends = [c + r * np.array([math.cos(a), math.sin(a)]) for a in (a1, a1 + sweep)]
     return min(ends, key=lambda q: float(np.linalg.norm(q - xy)))
+
+
+def _nearest_circle_segment(elem, xy):
+    arc = _arc_nearest(elem, xy)
+    c, r = elem.data.center[:2], elem.data.radius
+    ends = [c + r * np.array([math.cos(a), math.sin(a)]) for a in elem.data.angles]
+    chord = _clamp_to_segment(*ends, xy)
+    return min((arc, chord), key=lambda q: float(np.linalg.norm(q - xy)))
 
 
 def _nearest_segment_like(elem, xy):
@@ -319,6 +327,7 @@ _NEAREST = (
     (geo.Ray, _nearest_ray),
     (geo.Polygon, _nearest_polygon),
     (geo.CircleSector, _nearest_sector),
+    (geo.CircleSegment, _nearest_circle_segment),
     (geo.Arc, _arc_nearest),
     (geo.Circle, _nearest_circle),
     (geo.Conic, _nearest_conic),

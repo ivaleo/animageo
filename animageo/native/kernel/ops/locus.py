@@ -127,6 +127,8 @@ def _path_range(scope, mover_op, ctx):
         return 0.0, float(len(value['vertices'])), True
     if type_ == 'sector':
         return 0.0, 3.0, True
+    if type_ == 'circlesegment':
+        return 0.0, 2.0, True
     if type_ in ('line', 'ray'):
         f = _path_frame(path_id, doc.elements, doc.operations, scope.states)
         box = window(doc.bounds or default_bounds())

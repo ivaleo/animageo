@@ -112,7 +112,7 @@ def frame(type_: str, value: dict, producer_op: str | None = None, producer_args
         return Frame('angle', (value['c'][0], value['c'][1]), radius=value['r'])
     if kind == 'perimeter':
         return Frame('perimeter', vertices=tuple((v[0], v[1]) for v in value['vertices']))
-    if kind in ('arc', 'sector'):
+    if kind in ('arc', 'sector', 'circlesegment'):
         return Frame(kind, (value['c'][0], value['c'][1]), lo=value['a0'], hi=value['a1'], radius=value['r'])
     if kind == 'polyline':
         return Frame('polyline', vertices=tuple((v[0], v[1]) for v in value['vertices']))
@@ -157,6 +157,8 @@ def parameter_range(f: Frame) -> tuple:
         return 0.0, 1.0
     if f.kind == 'sector':
         return 0.0, 3.0
+    if f.kind == 'circlesegment':
+        return 0.0, 2.0
     return 0.0, float(len(f.vertices) - 1)
 
 
@@ -170,6 +172,14 @@ def point_at(f: Frame, t: float) -> dict:
     if f.kind == 'arc':
         x, y = _arc_xy(f, _clamp(t, 0.0, 1.0))
         return {'x': x, 'y': y}
+    if f.kind == 'circlesegment':
+        w = _wrap(t, 2)
+        if w <= 1:
+            x, y = _arc_xy(f, w)
+            return {'x': x, 'y': y}
+        s0, s1 = _sector_ends(f)
+        return {'x': s1[0] + (w - 1) * (s0[0] - s1[0]),
+                'y': s1[1] + (w - 1) * (s0[1] - s1[1])}
     if f.kind == 'sector':
         w = _wrap(t, 3)
         if w <= 1:
@@ -241,6 +251,9 @@ def _sector_candidates(f: Frame, x: float, y: float, tol: float) -> list:
     cx, cy = f.origin
     frac, dist = arc_fraction(cx, cy, f.radius, f.lo, f.hi, x, y, tol)
     s0, s1 = _sector_ends(f)
+    if f.kind == 'circlesegment':
+        g, d = _segment_param(x, y, s1[0], s1[1], s0[0], s0[1])
+        return [(dist, frac), (d, 1 + g)]
     g1, d1 = _segment_param(x, y, s1[0], s1[1], cx, cy)
     g0, d0 = _segment_param(x, y, cx, cy, s0[0], s0[1])
     return [(dist, frac), (d1, 1 + g1), (d0, 2 + g0)]
@@ -273,11 +286,12 @@ def project(f: Frame, x: float, y: float, tol: float) -> float:
         return theta
     if f.kind == 'arc':
         return arc_fraction(f.origin[0], f.origin[1], f.radius, f.lo, f.hi, x, y, tol)[0]
-    if f.kind == 'sector':
+    if f.kind in ('sector', 'circlesegment'):
         cands = _sector_candidates(f, x, y, tol)
         dmin = min(d for d, _ in cands)
         best = min(t for d, t in cands if d <= dmin + tol)
-        return 0.0 if best >= 3 else best
+        period = 2 if f.kind == 'circlesegment' else 3
+        return 0.0 if best >= period else best
     n = len(f.vertices)
     links = n if f.kind == 'perimeter' else n - 1
     sides = []
@@ -317,7 +331,7 @@ def distance_to_path(x: float, y: float, type_: str, value: dict) -> float:
         return min(_segment_param(x, y, *vs[k], *vs[k + 1])[1] for k in range(len(vs) - 1))
     if type_ == 'arc':
         return arc_fraction(value['c'][0], value['c'][1], value['r'], value['a0'], value['a1'], x, y, 0.0)[1]
-    if type_ == 'sector':
-        f = Frame('sector', (value['c'][0], value['c'][1]), lo=value['a0'], hi=value['a1'], radius=value['r'])
+    if type_ in ('sector', 'circlesegment'):
+        f = Frame(type_, (value['c'][0], value['c'][1]), lo=value['a0'], hi=value['a1'], radius=value['r'])
         return min(d for d, _t in _sector_candidates(f, x, y, 0.0))
     raise ValueError(f'{type_!r} is not a path type')

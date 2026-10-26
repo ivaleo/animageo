@@ -77,6 +77,7 @@ DEFAULT_PATH = Path(__file__).with_name('lexicon.v1.json')
 # literal, a point literal ``(x, y)``, ``не A`` (the known point of an
 # intersection), a pair of points ``BC`` and three points ``∠ABC``.
 NUM, PT, NOT, PAIR, ANGLE3 = '#num', '#pt', '#not', '#pair', '#angle3'
+STR = '#string'
 
 # Words of the grammar (plan L3 §4.5); ``given`` and ``relation`` are
 # additions of 1.9.0a3: a comment line «# Дано» opens the explicit «Дано»
@@ -186,7 +187,8 @@ def _positions(record: dict, form) -> tuple:
     if branch.get('policy') == 'other_than':
         known = 'known'
     if form is None:
-        form = [i['slot'] for i in record.get('inputs', ())] + [p['slot'] for p in record.get('params', ())]
+        form = record.get('inputSets', [[i['slot'] for i in record.get('inputs', ())]])[0] \
+            + [p['slot'] for p in record.get('params', ())]
     out = []
     for item in form:
         if item == INPUT:
@@ -198,7 +200,7 @@ def _positions(record: dict, form) -> tuple:
                                 min=int(spec.get('min') or 1), known=item == known))
         else:
             spec = params[item]
-            out.append(Position('param', item, 'number', optional=bool(spec.get('optional')),
+            out.append(Position('param', item, spec['type'], optional=bool(spec.get('optional')),
                                 default=spec.get('default')))
     return tuple(out)
 
@@ -214,7 +216,7 @@ def _default_min_args(positions) -> int:
 def _accept_set(pos: Position) -> frozenset:
     reg = registry()
     if pos.kind == 'param':
-        return frozenset({NUM})
+        return frozenset({STR if pos.type == 'string' else NUM})
     if pos.kind == INPUT:
         return frozenset({PT}) if pos.type == 'point' else frozenset({NUM})
     if pos.known:
@@ -272,7 +274,10 @@ def _entry_problems(i: int, entry, reg) -> list:
         if len(set(form)) != len(form):
             problems.append(f'{where}: form repeats a slot')
         missing = [s for s in inputs if s not in form]
-        if missing:
+        selected = set(form) & set(inputs)
+        if record.get('inputSets') is not None and not any(selected == set(c) for c in record['inputSets']):
+            problems.append(f'{where}: form must select exactly one input set')
+        elif missing and 'inputSets' not in record:
             problems.append(f'{where}: form leaves out the input slots {missing}')
         if problems:
             return problems
@@ -493,6 +498,10 @@ class Lexicon:
         reg = registry()
         record = reg.get(name)
         if record is not None:
+            if 'inputSets' in record:
+                params = [p['slot'] for p in record.get('params', ())]
+                positions = [_positions(record, choice + params) for choice in record['inputSets']]
+                return [Entry(-1, name, (), name, p, _default_min_args(p)) for p in positions]
             form = None
             if record.get('free'):
                 form = ([i['slot'] for i in record.get('inputs', ())] + [INPUT]
