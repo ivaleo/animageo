@@ -142,7 +142,7 @@ G2_FUNCTION_OPS = {'function.expr', 'function.root', 'function.extremum', 'inter
 
 def test_registry_records():
     reg = registry()
-    assert reg.version == '1.6'
+    assert reg.version == '1.7'
     for name in G2_FUNCTION_OPS:
         record = reg.get(name)
         assert record['status'] == 'beta' and record['since'] == '1.6'

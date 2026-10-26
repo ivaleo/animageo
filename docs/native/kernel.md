@@ -152,13 +152,20 @@ The text `JSON.stringify` prints after object keys are sorted:
 table `animageo/native/parity/v1/canonical.json` is a list of
 `{"value", "canonical"}` pairs that both kernels must reproduce.
 
-## 4. Registry `ops/v1` (version 1.5)
+## 4. Registry `ops/v1` (version 1.7)
 
 Registry 1.4 is frozen since animageo 1.8.1: the records of 1.0–1.4 and their
 `signatureHash` stay as they are (`beta` is a descriptive status outside the
 hash and may become `stable`); a new operation or a changed signature goes to
 registry 1.5. Registry 1.5 (animageo 1.9.0a1) adds the operations of a
 triangle and the locus (§11).
+
+Registry 1.6 (animageo 1.11.0rc5–rc11) adds functions and conics (§14)
+and is frozen. Registry 1.7 (animageo 1.11.0rc12) adds common tangents,
+circular segments, cevians, the nine-point circle and the Euler line.
+These five operations have `since: "1.7"`; records and signature hashes
+of operations from 1.0–1.6 stay unchanged. A 1.7 document opened with rc11
+reports an unknown school operation as `newer_registry`.
 
 **Registry 1.5 is the 1.0 contract** (animageo 1.11.0rc1;
 `tests/native/test_registry_frozen_1_0.py`, snapshot
@@ -254,6 +261,11 @@ a new registry version. `beta` may become `stable` at any time.
 | `transform.reflect_point` | 1.4 (a5) | `obj: transformable, point: point` → `image`, `side.i`, `vertex.k` | `vertex_index` |
 | `transform.dilate` | 1.4 (a5) | `obj: transformable, factor: number, center: point` → `image`, `side.i`, `vertex.k` | `vertex_index` |
 | `intersect.nearest` (beta) | 1.4 (a5) | `first, second: curve, near: point` → `point` (the solution nearest to `near`) | `nearest_to` |
+| `line.common_tangents` | 1.7 | `first, second: circle`; params `kind`, `index` → `line` | — |
+| `sector.segment` | 1.7 | `arc: arc` or `circle: circle, a, b: point` → `segment: circlesegment` | — |
+| `triangle.cevian` | 1.7 | `vertex, point: point` or `polygon: polygon`; params `index`, `t` → `cevian: segment` | — |
+| `circle.nine_point` | 1.7 | `a, b, c: point` or `polygon: polygon` → `circle` | — |
+| `line.euler` | 1.7 | `a, b, c: point` or `polygon: polygon` → `line` | — |
 
 - A slot type may be a family (`_types.json` → `families`):
 
@@ -295,15 +307,16 @@ a new registry version. `beta` may become `stable` at any time.
   (default null), branch: branch.policy or null, orientation, pathParam}))`;
   the hashes of the 1.0 records did not change in 1.1, nor those of the
   1.0 and 1.1 records in 1.2, nor those of the earlier records in 1.3 and
-  1.4 (a test pins them);
-- params (`type: "number"` only) are op settings written in `args` as
-  number literals: `optional` (default `false`) and `default` (a number or
-  absent) are outside the hash. An absent optional param reaches the
+  1.4; registries 1.5, 1.6 and 1.7 also preserve all earlier signatures
+  (tests pin them);
+- params (`type: "number"`, or since 1.7 `"string"`) are op settings written
+  in `args` as matching literals: `optional` (default `false`) and `default`
+  (a matching literal or absent) are outside the hash. An absent optional param reaches the
   implementation as its `default`, or as nothing (`None`/`null`) without
   one; whether a value is allowed (`strict ∈ {0, 1}`, `min ≤ max`) is the
   op's decision, `undefined/invalid_parameter`. The registry check refuses a
-  param that is not a number, a non-numeric `default` and a required param
-  with a `default`;
+  param with an unsupported type, a `default` of the wrong type and a
+  required param with a `default`;
 - `INDEX.json = {registryVersion, ops: {op: signatureHash}}`, written by
   `python -m animageo.native registry index` and checked by `--check`.
 

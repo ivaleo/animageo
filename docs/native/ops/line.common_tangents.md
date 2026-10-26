@@ -13,4 +13,6 @@ direction (ny,-nx). `line.p` is the projection of the origin.
 No tangent of the selected kind, concentric unequal circles, or a missing
 second branch at tangency: `undefined/branch_absent`. Coincident circles:
 `undefined/coincident`. Tangency within the kernel length tolerance gives
-one line at index 0. Invalid kind or index: `undefined/invalid_parameter`.
+one line at index 0 with `detail: {"multiplicity": 2}`; its direction is
+unit and its normal points along the line of centers (with the sign of
+delta). Invalid kind or index: `undefined/invalid_parameter`.

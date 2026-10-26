@@ -16,24 +16,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and `line.euler`, with construction steps, Russian command names and
   parity fixtures. Triangle operations accept three points or a triangle
   polygon; a cevian accepts its two ends or a polygon, vertex index and
-  side parameter. The registry stays `1.6`; existing signature hashes stay.
+  side parameter. These operations require registry `1.7`; existing
+  signature hashes stay.
 - `circlesegment` values preserve the counterclockwise arc and close it by
   its chord, with area/perimeter/radius measures, boundary points,
   transformations, hatching and SVG/PNG/PDF/TikZ/video rendering. They
   are excluded from the `curve` intersection family.
 - Registry input alternatives and string parameters (`kind: "string"`),
   including quoted strings in construction commands.
+- Missing common-tangent branches return `undefined/branch_absent`;
+  coincident circles return `undefined/coincident`. At tangency only
+  index 0 exists in that pair, with `multiplicity: 2`. A degenerate
+  triangle has no nine-point circle or Euler line; coincident circumcenter
+  and orthocenter have no Euler line.
 
 ### Fixed
 
-- Dashes and equality ticks always have butt caps in every export, even
+- Dashes and equality ticks always have `butt` caps in every export, even
   when the element style requests round or square caps. Solid strokes
   keep their configured caps.
-- Missing common-tangent branches return `undefined/branch_absent`;
-  coincident circles return `undefined/coincident`. At tangency only
-  index 0 exists in that pair. A degenerate triangle has no nine-point
-  circle or Euler line; coincident circumcenter and orthocenter have no
-  Euler line.
 
 ## [1.11.0rc11] - 2026-10-26
 

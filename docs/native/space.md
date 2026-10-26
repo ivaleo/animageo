@@ -28,9 +28,9 @@ for an operation of the plane).
 `animageo/native/ops/v1/space`: the groups `point3`, `segment3`,
 `polygon3`, `plane`, `polyhedron`, `section`, the types and reasons added to
 those of the plane, `INDEX.json` (`registryVersion 1.0`, `extends` — the
-plane `REGISTRY_VERSION` whose catalogs it adds to, `1.6`;
+plane `REGISTRY_VERSION` whose catalogs it adds to, `1.7`;
 `SPACE_REGISTRY_VERSION`). `registry index --check` checks both and says
-`registry 1.6 (space 1.0)`. The plane registry does not read this folder.
+`registry 1.7 (space 1.0)`. The plane registry does not read this folder.
 An output may repeat by a formula: `count {per, times, plus}` —
 `N = times · n(per) + plus`.
 

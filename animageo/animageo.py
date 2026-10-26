@@ -4154,7 +4154,8 @@ class AnimaGeoScene(MovingCameraScene):
         a0, a1 = elem.data.angles
         r = float(elem.data.radius)
         path = Arc(arc_center=c, radius=r, start_angle=a0, angle=a1 - a0,
-                   fill_color=ctx.col_f, fill_opacity=ctx.op_f, stroke_width=0)
+                   fill_color=ctx.col_f, fill_opacity=ctx.op_f, stroke_width=0,
+                   joint_type=LineJointType.ROUND)
         path.close_path()
         fill = self._fill_pattern_layer(
             elem, ctx, {'circlesegment': (c[0], c[1], r, a0, a1)}, path.set_z_index(ctx.zz_fill))
@@ -4163,8 +4164,9 @@ class AnimaGeoScene(MovingCameraScene):
         arr = [fill, stroke]
         if ctx.has_label:
             mid = (a0 + a1) / 2
-            self._append_label(arr, elem, [c[0] + 0.7 * r * math.cos(mid),
-                                          c[1] + 0.7 * r * math.sin(mid), 0], ctx)
+            label_radius = r * (1 + math.cos((a1 - a0) / 2)) / 2
+            self._append_label(arr, elem, [c[0] + label_radius * math.cos(mid),
+                                          c[1] + label_radius * math.sin(mid), 0], ctx)
         return VGroup(*arr, name=elem.name)
 
     def _render_circlesector(self, elem, ctx):

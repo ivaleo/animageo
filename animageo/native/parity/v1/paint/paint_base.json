@@ -1,7 +1,7 @@
 {
  "format": "animageo-paint-parity/v1",
  "id": "paint_base",
- "registry": "1.6",
+ "registry": "1.7",
  "generatedBy": "animageo 1.11.0rc12",
  "cases": [
   {
@@ -9,7 +9,7 @@
    "document": {
     "format": "animageo-construction/v1",
     "documentId": "zoo_no_style",
-    "operationRegistryVersion": "1.6",
+    "operationRegistryVersion": "1.7",
     "operations": {
      "op_A": {
       "id": "op_A",
@@ -252,22 +252,6 @@
        }
       ]
      },
-     "op_sg": {
-      "id": "op_sg",
-      "op": "sector.segment",
-      "args": {
-       "arc": {
-        "kind": "ref",
-        "elementId": "k"
-       }
-      },
-      "outputs": [
-       {
-        "slot": "segment",
-        "elementId": "sg"
-       }
-      ]
-     },
      "op_w": {
       "id": "op_w",
       "op": "polyline.by_points",
@@ -461,6 +445,22 @@
         "elementId": "t"
        }
       ]
+     },
+     "op_z_sg": {
+      "id": "op_z_sg",
+      "op": "sector.segment",
+      "args": {
+       "arc": {
+        "kind": "ref",
+        "elementId": "k"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "sg"
+       }
+      ]
      }
     },
     "elements": {
@@ -581,15 +581,6 @@
        "slot": "sector"
       }
      },
-     "sg": {
-      "id": "sg",
-      "type": "circlesegment",
-      "displayName": "sg",
-      "producer": {
-       "operationId": "op_sg",
-       "slot": "segment"
-      }
-     },
      "w": {
       "id": "w",
       "type": "polyline",
@@ -660,6 +651,15 @@
       "producer": {
        "operationId": "op_t",
        "slot": "text"
+      }
+     },
+     "sg": {
+      "id": "sg",
+      "type": "circlesegment",
+      "displayName": "sg",
+      "producer": {
+       "operationId": "op_z_sg",
+       "slot": "segment"
       }
      }
     },
@@ -1380,19 +1380,19 @@
       "styleType": "circlesegment",
       "style": "circlesegment",
       "drawn": true,
-      "z": 5.000017,
+      "z": 5.000022,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": null,
-       "z": 5.000017
+       "z": 5.000022
       },
       "fill": {
        "color": "#ffffff",
        "opacity": 1.0,
        "isBackground": true,
-       "z": 0.010017,
+       "z": 0.010022,
        "pattern": "solid",
        "hatch": null
       },
@@ -1419,7 +1419,7 @@
       "styleType": "text",
       "style": "text",
       "drawn": true,
-      "z": 50.000018,
+      "z": 50.000017,
       "label": {
        "color": "#000000",
        "fontSizePx": 16.0,
@@ -1435,13 +1435,13 @@
       "styleType": "segment",
       "style": "segment",
       "drawn": true,
-      "z": 5.000019,
+      "z": 5.000018,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": "butt",
-       "z": 5.000019,
+       "z": 5.000018,
        "dash": null
       },
       "ticks": {
@@ -1489,13 +1489,13 @@
       "styleType": "vector",
       "style": "vector",
       "drawn": true,
-      "z": 5.000021,
+      "z": 5.00002,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": "butt",
-       "z": 5.000021,
+       "z": 5.00002,
        "dash": null
       },
       "arrow": {
@@ -1533,13 +1533,13 @@
       "styleType": "polyline",
       "style": "locuscurve",
       "drawn": true,
-      "z": 4.000022,
+      "z": 4.000021,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": null,
-       "z": 4.000022,
+       "z": 4.000021,
        "dash": null
       }
      }
@@ -1556,9 +1556,9 @@
      "k",
      "q",
      "s",
-     "sg",
      "u",
      "v",
+     "sg",
      "A",
      "B",
      "C",
@@ -1573,7 +1573,7 @@
    "document": {
     "format": "animageo-construction/v1",
     "documentId": "zoo_builtin",
-    "operationRegistryVersion": "1.6",
+    "operationRegistryVersion": "1.7",
     "operations": {
      "op_A": {
       "id": "op_A",
@@ -1816,22 +1816,6 @@
        }
       ]
      },
-     "op_sg": {
-      "id": "op_sg",
-      "op": "sector.segment",
-      "args": {
-       "arc": {
-        "kind": "ref",
-        "elementId": "k"
-       }
-      },
-      "outputs": [
-       {
-        "slot": "segment",
-        "elementId": "sg"
-       }
-      ]
-     },
      "op_w": {
       "id": "op_w",
       "op": "polyline.by_points",
@@ -2025,6 +2009,22 @@
         "elementId": "t"
        }
       ]
+     },
+     "op_z_sg": {
+      "id": "op_z_sg",
+      "op": "sector.segment",
+      "args": {
+       "arc": {
+        "kind": "ref",
+        "elementId": "k"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "sg"
+       }
+      ]
      }
     },
     "elements": {
@@ -2145,15 +2145,6 @@
        "slot": "sector"
       }
      },
-     "sg": {
-      "id": "sg",
-      "type": "circlesegment",
-      "displayName": "sg",
-      "producer": {
-       "operationId": "op_sg",
-       "slot": "segment"
-      }
-     },
      "w": {
       "id": "w",
       "type": "polyline",
@@ -2224,6 +2215,15 @@
       "producer": {
        "operationId": "op_t",
        "slot": "text"
+      }
+     },
+     "sg": {
+      "id": "sg",
+      "type": "circlesegment",
+      "displayName": "sg",
+      "producer": {
+       "operationId": "op_z_sg",
+       "slot": "segment"
       }
      }
     },
@@ -3268,19 +3268,19 @@
       "styleType": "circlesegment",
       "style": "circlesegment",
       "drawn": true,
-      "z": 5.000017,
+      "z": 5.000022,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": null,
-       "z": 5.000017
+       "z": 5.000022
       },
       "fill": {
        "color": "#ffffff",
        "opacity": 1.0,
        "isBackground": true,
-       "z": 0.010017,
+       "z": 0.010022,
        "pattern": "solid",
        "hatch": null
       },
@@ -3307,7 +3307,7 @@
       "styleType": "text",
       "style": "text",
       "drawn": true,
-      "z": 50.000018,
+      "z": 50.000017,
       "label": {
        "color": "#000000",
        "fontSizePx": 16.0,
@@ -3323,13 +3323,13 @@
       "styleType": "segment",
       "style": "segment",
       "drawn": true,
-      "z": 5.000019,
+      "z": 5.000018,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": "butt",
-       "z": 5.000019,
+       "z": 5.000018,
        "dash": null
       },
       "ticks": {
@@ -3377,13 +3377,13 @@
       "styleType": "vector",
       "style": "vector",
       "drawn": true,
-      "z": 5.000021,
+      "z": 5.00002,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": "butt",
-       "z": 5.000021,
+       "z": 5.00002,
        "dash": null
       },
       "arrow": {
@@ -3421,13 +3421,13 @@
       "styleType": "polyline",
       "style": "locuscurve",
       "drawn": true,
-      "z": 4.000022,
+      "z": 4.000021,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.5,
        "cap": null,
-       "z": 4.000022,
+       "z": 4.000021,
        "dash": null
       }
      }
@@ -3444,9 +3444,9 @@
      "k",
      "q",
      "s",
-     "sg",
      "u",
      "v",
+     "sg",
      "A",
      "B",
      "C",
@@ -3461,7 +3461,7 @@
    "document": {
     "format": "animageo-construction/v1",
     "documentId": "zoo_book",
-    "operationRegistryVersion": "1.6",
+    "operationRegistryVersion": "1.7",
     "operations": {
      "op_A": {
       "id": "op_A",
@@ -3704,22 +3704,6 @@
        }
       ]
      },
-     "op_sg": {
-      "id": "op_sg",
-      "op": "sector.segment",
-      "args": {
-       "arc": {
-        "kind": "ref",
-        "elementId": "k"
-       }
-      },
-      "outputs": [
-       {
-        "slot": "segment",
-        "elementId": "sg"
-       }
-      ]
-     },
      "op_w": {
       "id": "op_w",
       "op": "polyline.by_points",
@@ -3913,6 +3897,22 @@
         "elementId": "t"
        }
       ]
+     },
+     "op_z_sg": {
+      "id": "op_z_sg",
+      "op": "sector.segment",
+      "args": {
+       "arc": {
+        "kind": "ref",
+        "elementId": "k"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "sg"
+       }
+      ]
      }
     },
     "elements": {
@@ -4033,15 +4033,6 @@
        "slot": "sector"
       }
      },
-     "sg": {
-      "id": "sg",
-      "type": "circlesegment",
-      "displayName": "sg",
-      "producer": {
-       "operationId": "op_sg",
-       "slot": "segment"
-      }
-     },
      "w": {
       "id": "w",
       "type": "polyline",
@@ -4112,6 +4103,15 @@
       "producer": {
        "operationId": "op_t",
        "slot": "text"
+      }
+     },
+     "sg": {
+      "id": "sg",
+      "type": "circlesegment",
+      "displayName": "sg",
+      "producer": {
+       "operationId": "op_z_sg",
+       "slot": "segment"
       }
      }
     },
@@ -4952,19 +4952,19 @@
       "styleType": "circlesegment",
       "style": "circlesegment",
       "drawn": true,
-      "z": 5.000017,
+      "z": 5.000022,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.0,
        "cap": null,
-       "z": 5.000017
+       "z": 5.000022
       },
       "fill": {
        "color": "#ffffff",
        "opacity": 1.0,
        "isBackground": true,
-       "z": 0.010017,
+       "z": 0.010022,
        "pattern": "solid",
        "hatch": null
       },
@@ -4991,7 +4991,7 @@
       "styleType": "text",
       "style": "text",
       "drawn": true,
-      "z": 50.000018,
+      "z": 50.000017,
       "label": {
        "color": "#000000",
        "fontSizePx": 16.0,
@@ -5007,13 +5007,13 @@
       "styleType": "segment",
       "style": "segment",
       "drawn": true,
-      "z": 5.000019,
+      "z": 5.000018,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.0,
        "cap": "butt",
-       "z": 5.000019,
+       "z": 5.000018,
        "dash": null
       },
       "ticks": {
@@ -5061,13 +5061,13 @@
       "styleType": "vector",
       "style": "vector",
       "drawn": true,
-      "z": 5.000021,
+      "z": 5.00002,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.0,
        "cap": "butt",
-       "z": 5.000021,
+       "z": 5.00002,
        "dash": null
       },
       "arrow": {
@@ -5105,13 +5105,13 @@
       "styleType": "polyline",
       "style": "locuscurve",
       "drawn": true,
-      "z": 4.000022,
+      "z": 4.000021,
       "stroke": {
        "color": "#000000",
        "opacity": 1.0,
        "widthPx": 1.0,
        "cap": null,
-       "z": 4.000022,
+       "z": 4.000021,
        "dash": null
       }
      }
@@ -5128,9 +5128,9 @@
      "k",
      "q",
      "s",
-     "sg",
      "u",
      "v",
+     "sg",
      "A",
      "B",
      "C",
@@ -5145,7 +5145,7 @@
    "document": {
     "format": "animageo-construction/v1",
     "documentId": "roles",
-    "operationRegistryVersion": "1.6",
+    "operationRegistryVersion": "1.7",
     "operations": {
      "op_A": {
       "id": "op_A",
@@ -5655,7 +5655,7 @@
    "document": {
     "format": "animageo-construction/v1",
     "documentId": "hatch",
-    "operationRegistryVersion": "1.6",
+    "operationRegistryVersion": "1.7",
     "operations": {
      "op_A": {
       "id": "op_A",
@@ -6195,7 +6195,7 @@
    "document": {
     "format": "animageo-construction/v1",
     "documentId": "dark",
-    "operationRegistryVersion": "1.6",
+    "operationRegistryVersion": "1.7",
     "operations": {
      "op_A": {
       "id": "op_A",

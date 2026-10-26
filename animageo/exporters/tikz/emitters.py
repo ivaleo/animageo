@@ -356,7 +356,8 @@ def emit_circlesegment(ctx: TikzContext, elem, labels: List[str]) -> None:
     if solid and _fill_opacity(ctx, elem) > 0:
         ctx.doc.line(f"\\fill[{fill_options(ctx, elem)}] {path}")
     ctx.doc.line(f"\\draw[{stroke_options(ctx, elem, with_dash=False, with_cap=False)}] {path}")
-    lx, ly = _arc_start(cx, cy, 0.7 * r, (a0 + a1) / 2)
+    label_radius = r * (1 + math.cos((a1 - a0) / 2)) / 2
+    lx, ly = _arc_start(cx, cy, label_radius, (a0 + a1) / 2)
     emit_label(ctx, elem, lx, ly, labels, default_anchor='center')
 
 

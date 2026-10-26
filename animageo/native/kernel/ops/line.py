@@ -269,12 +269,14 @@ def common_tangents(args, ctx):
     ctx.decide('tangent', gap, tol)
     if gap < -tol or (abs(gap) <= tol and index == 1):
         return {'line': Undefined('branch_absent')}
-    q = max(-1.0, min(1.0, delta / distance))
-    h = 0.0 if abs(gap) <= tol else math.sqrt(max(0.0, (distance - abs(delta)) * (distance + abs(delta)))) / distance
+    touching = abs(gap) <= tol
+    q = math.copysign(1.0, delta) if touching else max(-1.0, min(1.0, delta / distance))
+    h = 0.0 if touching else math.sqrt(max(0.0, (distance - abs(delta)) * (distance + abs(delta)))) / distance
     sign = 1.0 if index == 0 else -1.0
     ux, uy = wx / distance, wy / distance
     nx, ny = q * ux - sign * h * uy, q * uy + sign * h * ux
-    return {'line': line_through(x + r1 * nx, y + r1 * ny, ny, -nx)}
+    line = line_through(x + r1 * nx, y + r1 * ny, ny, -nx)
+    return {'line': Detailed(line, {'multiplicity': 2}) if touching else line}
 
 
 @op('line.tangents_from_point')

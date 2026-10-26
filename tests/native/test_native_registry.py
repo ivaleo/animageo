@@ -62,8 +62,8 @@ G2_CONIC_OPS = {'conic.ellipse_foci_point', 'conic.hyperbola_foci_point', 'conic
 G2_OPS = G2_FUNCTION_OPS | G2_CONIC_OPS
 SCHOOL_B_OPS = {'line.common_tangents', 'sector.segment', 'triangle.cevian', 'circle.nine_point', 'line.euler'}
 ALL_OPS = SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
-# Registries 1.1–1.4 extend 1.0: earlier records and their hashes stay as they were
-# (1.4 is frozen since 1.8.1; new operations go to 1.5).
+# Registries 1.1–1.7 extend 1.0: earlier operations keep their signatures.
+# Registry 1.6 is frozen since 1.11.0rc5; new school operations go to 1.7.
 L0_HASHES = {
     'circle.center_point': 'sha256:f3b2e070e9310312708009adfc04cfd7411128d482a4b7522f7320af35ca9810',
     'intersect.line_line': 'sha256:be74b127f909906e8dfe346f7ad79043e483defde31d0aac29628ae550f925d2',
@@ -150,6 +150,36 @@ REGISTRY_1_4_HASHES = {     # frozen at 1.8.1: 1.4 records keep their signatures
     'transform.rotate': 'sha256:d4217dff3414aeeb04e23551a999a3fac706e6a9ed716dd7210bdb922086c1bc',
     'transform.translate': 'sha256:e01e8feba29536aed49dc73897abff38588d4fb4b302abfd1555ef0ee4abc06f',
 }
+REGISTRY_1_5_HASHES = {     # frozen at registry 1.5
+    'locus.of_point': 'sha256:9c8bcc1eb0d5c74546855b4b573922cb44209c0393e3f9b442e78d0851bf4f07',
+    'triangle.altitude': 'sha256:89682cb1b93e5cf0e6cc2a3aa65647b7bcdb3b4b0fcbaa8bc02dda1e814e903c',
+    'triangle.bisector': 'sha256:8948173089746c28d14855f75f1b0332e82f330380c82100010b134599735a59',
+    'triangle.centroid': 'sha256:8886459aed7e1d4522bfedc79a85df4690521eae3b17ced5ca37efa91258a2fa',
+    'triangle.circumcenter': 'sha256:91efe1f8a625d0d920ed5fc6967658275a325ef7c274f35ec9c646d23a725686',
+    'triangle.excenters': 'sha256:a88f7a6c350cf922c26ab870d4338bfb602f0ffb04ae55dfadbdd5863a49f952',
+    'triangle.incenter': 'sha256:e72161477ef4adce85ad95d07f21768abd9e1fa0ae7f7b6749d603c97ce4e643',
+    'triangle.median': 'sha256:c425bcddb91881124985940e8d7a0bb4ecf7f9d22e2a8e76d80f6245bd24d21d',
+    'triangle.orthocenter': 'sha256:35b4854d8ca761ecd6f92827d0cbc6a3f9a7b4713a21f45488022f519e92e247',
+}
+
+REGISTRY_1_6_HASHES = {     # frozen at registry 1.6
+    'conic.axes': 'sha256:1c96c87965f0ed6de03520a982f968858d30bfbb8bf0e5601704270dbc9cc472',
+    'conic.center': 'sha256:61b48ccdcf7d742a1c5e58bd14ebb79320e2491d7b80f3c17b13d9d673dbd535',
+    'conic.ellipse_foci_point': 'sha256:36ddcf296139b0c09a72aa3848c4a189206810d4217700cb89d9ab3d0033cf8a',
+    'conic.equation': 'sha256:43e4ab0fecb9cf05353a34e1938bba28dada1d5f8bcfc4ff86d41d1af0b7e0e1',
+    'conic.five_points': 'sha256:78f40308bd8ff41f3982836e5aa2390d1592e14ab4b4df9923e8d253280b602c',
+    'conic.foci': 'sha256:c2ded955091ec752bd1e5d1da31d72410600a5ee5ca3a0a5d325cec778aba7c5',
+    'conic.hyperbola_foci_point': 'sha256:557264e57e1eeadf9261dfe9e22d0160fbc847e70a07e73977de2ebe9e0dffba',
+    'conic.parabola_focus_directrix': 'sha256:69b9f66775d86c1b90b2545c5cb75d4c2f1b506fecba7c0de2b46c1d15e70621',
+    'conic.vertices': 'sha256:66ad2e08a54061894a38d2cd3aba395c571b9c4ddb74d98668e363fb310c87bc',
+    'function.expr': 'sha256:333c52964319c9e8e42870a3fd5bec84fe0d8d954f310fc54fcaf26a40e8f60e',
+    'function.extremum': 'sha256:b58f29a49f2029587d4fc90b1c39ca23f6f39ace1bff49ec973bb357ae7f0430',
+    'function.root': 'sha256:ba26a9c2b7e0ddc3ae2f258b08f940914b2d99a6a0925e64ca7fde806a8fad01',
+    'intersect.function_function': 'sha256:989197f22defd4d2563965c73a5ada60e27bdb80430767ef03abbdb77c093830',
+    'intersect.function_line': 'sha256:8f3df17ee8795b5fb33a8fd23825da54cec385892b7edf5975ca47ea61dbf4d6',
+    'intersect.line_conic': 'sha256:5c8b43984d7edc2e1ab5cdfaff44c00b745b90a00f459e9607e1dc5c5e717bb6',
+    'point.on_function': 'sha256:8f5a007b4941c0d2dad142edf43098aba9af98e4401cb6aa56f77440fdb933f9',
+}
 RECORD_FIELDS = {
     'op', 'status', 'since', 'inputs', 'params', 'outputs', 'branch', 'undefined', 'checks',
     'orientation', 'pathParam', 'stepKind', 'phrases', 'math', 'signatureHash',
@@ -157,9 +187,9 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.6'
-    assert registry().version == '1.6'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.6'
+    assert native.__registry_version__ == '1.7'
+    assert registry().version == '1.7'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.7'
 
 
 def test_ops_and_files():
@@ -196,6 +226,15 @@ def test_l0_records_unchanged():
         assert reg.get(op)['signatureHash'] == digest
         assert reg.index['ops'][op] == digest
         assert reg.get(op)['since'] == '1.4'
+
+
+def test_registry_1_5_and_1_6_signatures_stay_frozen():
+    reg = registry()
+    for version, hashes in (('1.5', REGISTRY_1_5_HASHES), ('1.6', REGISTRY_1_6_HASHES)):
+        assert {op for op, record in reg.ops.items() if record['since'] == version} == set(hashes)
+        for op, digest in hashes.items():
+            assert signature_hash(reg.get(op)) == reg.index['ops'][op] == digest
+    assert {op for op, record in reg.ops.items() if record['since'] == '1.7'} == SCHOOL_B_OPS
 
 
 @pytest.mark.parametrize('op', sorted(ALL_OPS))

@@ -1,5 +1,7 @@
 """School constructions, circular segments and export caps (1.11.0rc12)."""
 import math
+import importlib
+from dataclasses import replace
 import xml.etree.ElementTree as ET
 
 import pytest
@@ -16,7 +18,7 @@ def call(b, name, args, type_, slot=None, element='result'):
 
 
 def triangle(name, points=((0, 0), (4, 0), (0, 3)), polygon=False):
-    b = DocBuilder(registry_version='1.6')
+    b = DocBuilder(registry_version='1.7')
     for k, xy in zip('ABC', points):
         b.free(k, *xy)
     b.polygon('T', 'A', 'B', 'C')
@@ -37,7 +39,7 @@ def reason(b, expected):
 
 
 def tangent(c2=(6, 0), radii=(2, 1), kind='external', index=0):
-    b = DocBuilder(registry_version='1.6').free('O', 0, 0).free('P', *c2)
+    b = DocBuilder(registry_version='1.7').free('O', 0, 0).free('P', *c2)
     for e, center, radius in zip(('c', 'd'), ('O', 'P'), radii):
         call(b, 'circle.center_radius', {'center': ref(center), 'radius': num(radius)}, 'circle', element=e)
     call(b, 'line.common_tangents', {'first': ref('c'), 'second': ref('d'),
@@ -103,6 +105,63 @@ def test_common_tangent_branch_counts(c2, kind, count):
             reason(b, 'branch_absent')
 
 
+@pytest.mark.parametrize('radii', [(2, 1), (1, 2)])
+@pytest.mark.parametrize('kind', ['external', 'internal'])
+@pytest.mark.parametrize('offset', [-0.5, 0, 0.5])
+@pytest.mark.parametrize('axis', [(1, 0), (0.6, 0.8)])
+def test_common_tangent_touch_point_unit_direction_and_multiplicity(radii, kind, offset, axis):
+    from animageo.native.kernel.numeric import tolerances
+    tol = tolerances(20).decide_length
+    delta = radii[0] - (radii[1] if kind == 'external' else -radii[1])
+    distance = abs(delta) + offset * tol
+    center = tuple(distance * coord for coord in axis)
+    b = tangent(center, radii, kind)
+    rec = native.evaluate(b.doc).elements['result']
+    assert rec['state'] == 'defined'
+    assert rec['detail'] == {'multiplicity': 2}
+    line = rec['value']
+    normal = tuple(math.copysign(1, delta) * coord for coord in axis)
+    touch = tuple(radii[0] * coord for coord in normal)
+    assert line['p'] == pytest.approx(touch, abs=1e-14, rel=0)
+    assert line['dir'] == pytest.approx([normal[1], -normal[0]], abs=1e-14, rel=0)
+    assert math.hypot(*line['dir']) == pytest.approx(1, abs=1e-14, rel=0)
+    assert native.run_checks(native.evaluate(b.doc)).ok
+    reason(tangent(center, radii, kind, 1), 'branch_absent')
+
+
+@pytest.mark.parametrize('radii', [(2, 1), (1, 2)])
+@pytest.mark.parametrize('kind', ['external', 'internal'])
+def test_common_tangents_outside_touch_tolerance(radii, kind):
+    from animageo.native.kernel.numeric import tolerances
+    tol = tolerances(20).decide_length
+    boundary = abs(radii[0] - radii[1]) if kind == 'external' else sum(radii)
+    for index in (0, 1):
+        reason(tangent((boundary - 4 * tol, 0), radii, kind, index), 'branch_absent')
+        b = tangent((boundary + 4 * tol, 0), radii, kind, index)
+        line = value(b)
+        assert math.hypot(*line['dir']) == pytest.approx(1, abs=1e-14, rel=0)
+        assert 'detail' not in native.evaluate(b.doc).elements['result']
+        for center, radius in [((0, 0), radii[0]), ((boundary + 4 * tol, 0), radii[1])]:
+            x, y = center[0] - line['p'][0], center[1] - line['p'][1]
+            assert abs(x * line['dir'][1] - y * line['dir'][0]) == pytest.approx(radius, abs=1e-14, rel=0)
+
+
+def test_euler_document_is_newer_registry_for_rc11(monkeypatch):
+    document_module = importlib.import_module('animageo.native.document')
+    evaluate_module = importlib.import_module('animageo.native.kernel.evaluate')
+    reg = native.registry()
+    rc11 = replace(reg, version='1.6', ops={op: record for op, record in reg.ops.items()
+                                          if tuple(map(int, record['since'].split('.'))) <= (1, 6)})
+    monkeypatch.setattr(document_module, 'REGISTRY_VERSION', '1.6')
+    monkeypatch.setattr(document_module, 'registry', lambda: rc11)
+    monkeypatch.setattr(evaluate_module, 'registry', lambda: rc11)
+    b = triangle('line.euler')
+    issues = native.validate(b.doc)
+    assert issues and {issue.code for issue in issues} == {'newer_registry'}
+    rec = native.evaluate(b.doc).elements['result']
+    assert (rec['state'], rec['reason']) == ('unsupported', 'newer_registry')
+
+
 @pytest.mark.parametrize('kind', ['external', 'internal'])
 def test_coincident_circles(kind):
     reason(tangent((0, 0), (2, 2), kind), 'coincident')
@@ -116,7 +175,7 @@ def test_invalid_tangent_selector(kind, index):
 @pytest.mark.parametrize('index,t,end', [(1, 0.25, [3, 0.75]), (2, 0.5, [0, 1.5]),
     (3, 1, [4, 0]), (1, -1, [4, 0]), (1, 2, [0, 3])])
 def test_cevian_polygon(index, t, end):
-    b = DocBuilder(registry_version='1.6').free('A', 0, 0).free('B', 4, 0).free('C', 0, 3)
+    b = DocBuilder(registry_version='1.7').free('A', 0, 0).free('B', 4, 0).free('C', 0, 3)
     b.polygon('T', 'A', 'B', 'C')
     call(b, 'triangle.cevian', {'polygon': ref('T'), 'index': num(index), 't': num(t)}, 'segment', 'cevian')
     seg = value(b)
@@ -126,7 +185,7 @@ def test_cevian_polygon(index, t, end):
 
 
 def test_cevian_point_and_zero_length():
-    b = DocBuilder(registry_version='1.6').free('A', 0, 0).free('B', 4, 0).free('C', 0, 3)
+    b = DocBuilder(registry_version='1.7').free('A', 0, 0).free('B', 4, 0).free('C', 0, 3)
     b.segment('s', 'B', 'C').on_path('M', 's', 0.25)
     call(b, 'triangle.cevian', {'vertex': ref('A'), 'point': ref('M')}, 'segment', 'cevian')
     assert value(b)['b'] == [3, 0.75]
@@ -135,7 +194,7 @@ def test_cevian_point_and_zero_length():
 
 
 def segment_scene(sweep=math.pi / 2, from_circle=False):
-    b = DocBuilder(registry_version='1.6').free('O', 0, 0).free('A', 2, 0)
+    b = DocBuilder(registry_version='1.7').free('O', 0, 0).free('A', 2, 0)
     b.free('B', 2 * math.cos(sweep), 2 * math.sin(sweep))
     call(b, 'circle.center_radius', {'center': ref('O'), 'radius': num(2)}, 'circle', element='c')
     call(b, 'arc.on_circle', {'circle': ref('c'), 'a': ref('A'), 'b': ref('B')}, 'arc', element='arc')
@@ -250,12 +309,42 @@ def test_segment_exports_closed_chord_and_hatching(tmp_path):
 
 
 @pytest.mark.manim
+@pytest.mark.parametrize('sweep', [math.pi / 6, math.pi / 2, 3 * math.pi / 2])
+def test_segment_round_join_and_label_stays_between_chord_and_arc(sweep, monkeypatch):
+    pytest.importorskip('manim')
+    from manim import LineJointType
+    from animageo.animageo import AnimaGeoScene
+    from animageo.exporters.tikz import emitters
+    b = segment_scene(sweep)
+    b.doc['appearance'] = {e: {'visible': False} for e in ('O', 'A', 'B', 'c', 'arc')}
+    b.doc['appearance']['result'] = {'label': {'mode': 'name'}}
+    positions = []
+    monkeypatch.setattr(AnimaGeoScene, '_append_label',
+                        lambda self, arr, elem, pos, ctx: positions.append(pos))
+    scene = AnimaGeoScene()
+    scene.loadDocument(b.doc)
+    stroke = scene.mobject('e_result')[1]
+    assert stroke.joint_type == LineJointType.ROUND
+    assert positions
+    x, y = positions[-1][:2]
+    along_bisector = x * math.cos(sweep / 2) + y * math.sin(sweep / 2)
+    assert 2 * math.cos(sweep / 2) < along_bisector < 2
+    assert x * math.sin(sweep / 2) - y * math.cos(sweep / 2) == pytest.approx(0, abs=1e-14)
+    tikz_positions = []
+    monkeypatch.setattr(emitters, 'emit_label',
+                        lambda ctx, elem, lx, ly, labels, **kwargs: tikz_positions.append([lx, ly]))
+    tex = scene.exportTikZ()
+    assert 'line join=round' in tex
+    assert tikz_positions[-1] == pytest.approx([x, y])
+
+
+@pytest.mark.manim
 @pytest.mark.parametrize('cap', ['round', 'square'])
 def test_dash_and_tick_caps_keep_solid_caps(cap, tmp_path):
     pytest.importorskip('manim')
     from manim import CapStyleType
     from animageo.animageo import AnimaGeoScene
-    b = DocBuilder(registry_version='1.6').free('A', 0, 0).free('B', 4, 0).free('C', 0, 1).free('D', 4, 1)
+    b = DocBuilder(registry_version='1.7').free('A', 0, 0).free('B', 4, 0).free('C', 0, 1).free('D', 4, 1)
     b.segment('dashed', 'A', 'B').segment('solid', 'C', 'D')
     b.doc['appearance'] = {e: {'visible': False} for e in 'ABCD'}
     b.doc['appearance'].update({e: {'overrides': {'stroke_linecap': cap, 'tick_count': 2}} for e in ('dashed', 'solid')})
@@ -279,6 +368,8 @@ def test_dash_and_tick_caps_keep_solid_caps(cap, tmp_path):
     native.render(b.doc, fmt='tikz', out=out)
     strokes = [line for line in out.read_text().splitlines() if '\\draw[' in line]
     assert all('line cap=round' not in line and 'line cap=rect' not in line for line in strokes if 'dash pattern=' in line)
+    expected_cap = 'round' if cap == 'round' else 'rect'
+    assert any('dash pattern=' not in line and f'line cap={expected_cap}' in line for line in strokes)
 
 
 def test_full_disc_segment_and_hatch_clipping():

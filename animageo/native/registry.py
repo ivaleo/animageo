@@ -50,7 +50,7 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.6'
+REGISTRY_VERSION = '1.7'
 REPEAT_MAX = 100
 # A free input of these kinds is optional: absent from ``inputs``, it takes this value.
 FREE_INPUT_DEFAULTS = {'angle': {'kind': 'angle', 'value': 0.0}}

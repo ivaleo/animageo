@@ -9,7 +9,7 @@ from animageo.native.cli import main
 from animageo.native.parity import PARITY_FORMAT, verify
 
 CURVES = curves_fixtures.DEFAULT_DIR
-from tests.native.test_native_registry import G2_OPS
+G2_OPS = {op for op, record in native.registry().ops.items() if record['since'] == '1.6'}
 
 
 def _fixtures():

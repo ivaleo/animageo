@@ -3,6 +3,7 @@ fixtures ``animageo-paint-parity/v1`` and the style contract ``native/style``
 (1.11.0rc3)."""
 import json
 import math
+import copy
 
 import pytest
 
@@ -27,6 +28,17 @@ def test_a_fixture_case_replays():
     case['expect']['elements']['a']['ticks']['lengthPx'] += 1
     n, mismatches = paint_fixtures.verify_fixture(fixture)
     assert n == len(fixture['cases']) and len(mismatches) == 1 and 'lengthPx' in mismatches[0]
+
+
+def test_zoo_segment_preserves_existing_elements_and_layers():
+    doc = paint_fixtures._zoo('zoo_layers').doc
+    before = copy.deepcopy(doc)
+    producer = before['elements'].pop('sg')['producer']['operationId']
+    del before['operations'][producer]
+    old = resolve_paint(before)
+    new = resolve_paint(doc)
+    assert {el: record for el, record in new['elements'].items() if el != 'sg'} == old['elements']
+    assert [el for el in new['order'] if el != 'sg'] == old['order']
 
 
 def test_the_style_contract_is_up_to_date():
