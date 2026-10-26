@@ -17,10 +17,12 @@ from manim import (
 from .constants import GGB_FONT_SCALE
 from .geo.lib_elements import latex_escape_text, textify_cyrillic
 from .style import hasParam
-from . import _tex_security
+from . import _tex_failure_cache, _tex_security
 
 # every Tex of a label compiles with -no-shell-escape (1.11.0rc1)
 _tex_security.install()
+# a body that failed to compile is not compiled again in the process
+_tex_failure_cache.install()
 
 logger = logging.getLogger(__name__)
 
@@ -135,7 +137,9 @@ def install_cyrillic_tex_template(force=False):
 
 # The label TeX helpers live in ``animageo.labels`` (manim-free: the native
 # label layout uses them too); re-exported here for existing imports.
-from .labels import _NONASCII_SCRIPT_RE, _TEX_SYMBOLS, _brace_nonascii_scripts, correctedLabel  # noqa: E402,F401
+from .labels import (  # noqa: E402,F401
+    _NONASCII_SCRIPT_RE, _TEX_SYMBOLS, _brace_nonascii_scripts, correctedLabel, mathify_text_symbols,
+)
 
 
 # ── Fast value labels (DecimalNumber-backed) ───────────────────────────
@@ -600,7 +604,7 @@ def _place_label(mobj, elem, pos, edge, ptUnit, ptUnit_ggb, ggb_font_px,
 def _label_plain_text(label):
     """Strip math delimiters and escape what is left, so a label whose LaTeX
     does not compile can still be shown as readable plain text."""
-    return latex_escape_text(label.replace('$', '').strip())
+    return mathify_text_symbols(latex_escape_text(label.replace('$', '').strip()))
 
 
 def _compile_label_tex(label, col_label, font_size, zz_label, name):

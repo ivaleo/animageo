@@ -34,7 +34,7 @@ from .style.config import StyleConfig, resolve_style_input
 from .style.config import style_path_for_geostyle as _style_path_for_geostyle
 from .style.resolver import resolve as _resolve_style
 from .style.colorspace import COLOR_SPACES, same_color as _same_color
-from .labels import resolve_label_halo as _resolve_label_halo, resolve_label_text, resolve_label_spec
+from .labels import greek_to_tex as _greek_to_tex, resolve_label_halo as _resolve_label_halo, resolve_label_text, resolve_label_spec
 from .ui import (
     RusTex, correctedLabel, create_label, round_corners_vmobject,
     ShowText, NumberedFrame, FixedLabel, CustomArrowTip, LABEL_ANCHORS,
@@ -4544,7 +4544,9 @@ class AnimaGeoScene(MovingCameraScene):
         # Cyrillic inside the text's own ``$…$`` would compile to nothing —
         # the T2A math alphabet has no Cyrillic glyphs. Text mode has them.
         # Renderer-only: the TikZ/JSXGraph exporters keep the raw string.
-        tex_str = textify_cyrillic(tex_str)
+        # Greek letters likewise: T2A text has no glyphs for them, and raw in
+        # math they do not compile either (``greek_to_tex``).
+        tex_str = textify_cyrillic(_greek_to_tex(tex_str))
 
         try:
             mobj = Tex(tex_str, color=ctx.col_label, tex_template=RusTex)
@@ -4554,7 +4556,7 @@ class AnimaGeoScene(MovingCameraScene):
             raw = geo.resolve_text_string(self.geo, text, decimals).replace('\xa0', ' ')
             logger.warning("Text '%s': LaTeX compile failed (%s); "
                            "falling back to escaped plain text", elem.name, e)
-            mobj = Tex(geo.latex_escape_text(raw), color=ctx.col_label,
+            mobj = Tex(_greek_to_tex(geo.latex_escape_text(raw)), color=ctx.col_label,
                        tex_template=RusTex)
         mobj.set(font_size=ctx.font_size)
         mobj.set_z_index(ctx.zz)

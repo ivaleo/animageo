@@ -729,11 +729,197 @@ _TEX_SYMBOLS = {
 }
 
 
+def _char_tex_table() -> dict:
+    """Unicode character → TeX, the first entry of :data:`_TEX_SYMBOLS` for a
+    character winning (``ϑ`` → ``\\theta``, as the labels always had it), plus
+    the Greek letters that table lacks (``θ ϕ ϵ ϱ``)."""
+    table = {}
+    for tex, char in _TEX_SYMBOLS.items():
+        table.setdefault(char, tex)
+    for char, tex in (('θ', r'\theta'), ('ϕ', r'\phi'), ('ϵ', r'\epsilon'), ('ϱ', r'\varrho')):
+        table.setdefault(char, tex)
+    return table
+
+
+_CHAR_TEX = _char_tex_table()
+# Greek letters as TeX-only Unicode: the basic block and the variant forms.
+_GREEK_LETTERS = frozenset(
+    [chr(c) for c in range(0x0391, 0x03AA) if c != 0x03A2]
+    + [chr(c) for c in range(0x03B1, 0x03CA)] + list('ϑϕϖϵϱ'))
+# Characters that leave text mode: Greek letters and the symbols
+# ``correctedLabel`` turns into math-only commands. Not ``~`` (a tie in text)
+# nor ``°`` (``\degree`` is not defined; T2A has the glyph).
+_TEXT_TO_MATH_CHARS = frozenset(
+    ch for ch in (set(_CHAR_TEX) | _GREEK_LETTERS) if ch not in ('~', '°'))
+# Bare commands that are math-only: Greek letters and the label symbols.
+_MATH_COMMANDS = frozenset(
+    (set(_COMMAND_CHARS)            # Greek letters and the name symbols
+     | {tex[1:] for tex in _TEX_SYMBOLS if re.fullmatch(r'\\[A-Za-z]+', tex)})
+    - {'degree', 'mathbf'})         # not defined / takes an argument
+_MATH_ENVIRONMENTS = frozenset((
+    'math', 'displaymath', 'equation', 'equation*', 'align', 'align*', 'alignat',
+    'alignat*', 'flalign', 'flalign*', 'gather', 'gather*', 'multline', 'multline*'))
+_BEGIN_RE = re.compile(r'\\begin\{([A-Za-z*]+)\}')
+_COMMAND_RE = re.compile(r'\\([A-Za-z]+|.)', re.S)
+
+
+def _close_of(s: str, start: int, close: str) -> int:
+    """End of the math scope opened before ``start``: the index after the
+    first ``close`` not escaped by a backslash, or ``len(s)`` without one
+    (an unclosed scope runs to the end, as TeX reads it)."""
+    i = start
+    while i < len(s):
+        if s.startswith(close, i):
+            return i + len(close)
+        i += 2 if s[i] == '\\' else 1
+    return len(s)
+
+
+def _split_math(s: str) -> list:
+    """``[(is_math, chunk)]`` of ``s``: ``$…$``, ``$$…$$``, ``\\(…\\)``,
+    ``\\[…\\]``, ``\\ensuremath{…}`` and the math environments are math; an
+    escaped ``\\$`` is text. The chunks join back to ``s``."""
+    parts, start, i = [], 0, 0
+
+    def text_until(j):
+        if j > start:
+            parts.append((False, s[start:j]))
+
+    while i < len(s):
+        ch = s[i]
+        end = None
+        if ch == '$':
+            close = '$$' if s.startswith('$$', i) else '$'
+            end = _close_of(s, i + len(close), close)
+        elif ch == '\\':
+            if s.startswith((r'\(', r'\['), i):
+                end = _close_of(s, i + 2, r'\)' if s[i + 1] == '(' else r'\]')
+            elif s.startswith(r'\ensuremath{', i):
+                end = _group_close(s, i + len(r'\ensuremath'))
+                end = len(s) if end < 0 else end + 1
+            else:
+                m = _BEGIN_RE.match(s, i)
+                if m and m.group(1) in _MATH_ENVIRONMENTS:
+                    end = _close_of(s, m.end(), r'\end{' + m.group(1) + '}')
+            if end is None:
+                i += 2
+                continue
+        if end is None:
+            i += 1
+            continue
+        text_until(i)
+        parts.append((True, s[i:end]))
+        start = i = end
+    text_until(len(s))
+    return parts
+
+
+def _math_symbols_to_tex(math: str, chars) -> str:
+    """The characters of ``chars`` in ``math`` as their TeX commands; a
+    command followed by a letter gets a space (``αx`` → ``\\alpha x``)."""
+    out = []
+    for k, ch in enumerate(math):
+        tex = _CHAR_TEX.get(ch) if ch in chars else None
+        if tex is None:
+            out.append(ch)
+            continue
+        nxt = math[k + 1] if k + 1 < len(math) else ''
+        if tex[-1].isalpha() and nxt.isascii() and nxt.isalpha():
+            tex += ' '
+        out.append(tex)
+    return ''.join(out)
+
+
+def _text_math_token(text: str, i: int) -> int:
+    """End of the math-only token at ``i`` of a text chunk (a Greek letter or
+    a label symbol, or a bare math command), or ``-1``."""
+    ch = text[i]
+    if ch in _TEXT_TO_MATH_CHARS:
+        return i + 1
+    if ch == '\\':
+        m = _COMMAND_RE.match(text, i)
+        if m and m.group(1) in _MATH_COMMANDS:
+            return m.end()
+    return -1
+
+
+def _script_end(text: str, i: int) -> int:
+    """End of the primes and sub/superscripts attached at ``i`` (``ω_1``,
+    ``α'``, ``\\alpha_{12}^2``); ``i`` when none is."""
+    while i < len(text):
+        if text[i] == "'":
+            i += 1
+            continue
+        if text[i] not in '_^' or i + 1 >= len(text):
+            break
+        arg = text[i + 1]
+        if arg == '{':
+            close = _group_close(text, i + 1)
+            if close < 0:
+                break
+            i = close + 1
+        elif arg == '\\':
+            m = _COMMAND_RE.match(text, i + 1)
+            if not m:
+                break
+            i = m.end()
+        elif arg.isspace() or arg in '_^{}$%#&~':
+            break
+        else:
+            i += 2
+    return i
+
+
+def _mathify_text_chunk(text: str) -> str:
+    out, i = [], 0
+    while i < len(text):
+        end = _text_math_token(text, i)
+        if end < 0:
+            if text[i] == '\\':
+                m = _COMMAND_RE.match(text, i)
+                end = m.end() if m else i + 1
+                out.append(text[i:end])
+                i = end
+            else:
+                out.append(text[i])
+                i += 1
+            continue
+        start = i
+        while end >= 0:          # adjacent tokens share one math run: αβ
+            i = _script_end(text, end)
+            end = _text_math_token(text, i) if i < len(text) else -1
+        out.append('$' + _math_symbols_to_tex(text[start:i], _CHAR_TEX) + '$')
+    return ''.join(out)
+
+
+def mathify_text_symbols(tex: str) -> str:
+    """Typeset the Greek letters (and label math symbols) of the *text-mode*
+    parts of ``tex`` in math: ``cos α`` → ``cos $\\alpha$``, ``ω_1`` →
+    ``$\\omega_1$``, a bare ``\\alpha`` → ``$\\alpha$``.
+
+    ``RusTex`` sets text in T2A, which has no Greek glyphs, and the commands
+    are math-only, so such a label did not compile at all. Math
+    segments, Cyrillic, escaped dollars and other commands stay as written.
+    """
+    return ''.join(chunk if is_math else _mathify_text_chunk(chunk)
+                   for is_math, chunk in _split_math(tex))
+
+
+def greek_to_tex(tex: str) -> str:
+    """:func:`mathify_text_symbols`, and the Unicode Greek letters inside math
+    as their commands (``$γ$`` → ``$\\gamma$``; raw, they do not compile under
+    ``RusTex`` either). For free texts, whose other characters stay raw."""
+    return ''.join(_math_symbols_to_tex(chunk, _GREEK_LETTERS) if is_math else _mathify_text_chunk(chunk)
+                   for is_math, chunk in _split_math(tex))
+
+
 def correctedLabel(label):
-    """Replace Unicode math symbols with their TeX equivalents in a label string."""
+    """Replace Unicode math symbols with their TeX equivalents in a label
+    string; Greek letters of the text-mode part go to math
+    (:func:`mathify_text_symbols`)."""
     from .geo.lib_elements import textify_cyrillic
-    for tex, unicode_char in _TEX_SYMBOLS.items():
-        label = re.sub(re.escape(unicode_char), re.sub(r'\\', r'\\\\', tex), label)
+    label = ''.join(_math_symbols_to_tex(chunk, _CHAR_TEX) if is_math else _mathify_text_chunk(chunk)
+                    for is_math, chunk in _split_math(label))
     return _brace_nonascii_scripts(textify_cyrillic(label))
 
 
