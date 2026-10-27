@@ -16,6 +16,11 @@ from animageo.native.paint_fixtures import _Doc
     ('A_1', 'A_1'),                 # one character is the index, as in TeX and GeoGebra
     ('A_12', 'A_12'),               # A₁2: a longer index needs braces
     ('A_{12}', 'A_{12}'),
+    ('A₁', 'A_{1}'),
+    ('B₁₂', 'B_{12}'),
+    ('M₀', 'M_{0}'),
+    ('A₀₁₂₃₄₅₆₇₈₉', 'A_{0123456789}'),
+    ('A₁B₁', 'A_{1}B_{1}'),
     ('angle_B', 'angle_B'),
     ("A'", "A'"),
     (r'\alpha_1', r'\alpha_1'),
@@ -50,6 +55,13 @@ def _runs(parts):
     ('A_1', [('A', True, None), ('1', False, 'sub')]),
     ('A_12', [('A', True, None), ('1', False, 'sub'), ('2', False, None)]),
     ('A_{12}', [('A', True, None), ('12', False, 'sub')]),
+    ('A₁', [('A', True, None), ('1', False, 'sub')]),
+    ('B₁₂', [('B', True, None), ('12', False, 'sub')]),
+    ('M₀', [('M', True, None), ('0', False, 'sub')]),
+    ('A₀₁₂₃₄₅₆₇₈₉', [('A', True, None), ('0123456789', False, 'sub')]),
+    ('A₁B₁', [('A', True, None), ('1', False, 'sub'), ('B', True, None), ('1', False, 'sub')]),
+    ('α₁', [('α', True, None), ('1', False, 'sub')]),
+    ('Б₀', [('Б', False, None), ('0', False, 'sub')]),
     ('angle_B', [('angle', True, None), ('B', True, 'sub')]),
     ('A_{1b}', [('A', True, None), ('1', False, 'sub'), ('b', True, 'sub')]),
     ("A'", [('A', True, None), ('′', False, None)]),
@@ -105,6 +117,23 @@ def test_resolve_paint_gives_the_parts_of_a_label():
     assert _runs(els['b']['label']['parts']) == [('4.9', False, None)]
     assert _runs(els['alpha']['label']['parts']) == [('66.8°', False, None)]
     assert els['C']['label']['parts'] is None            # a caption is TeX as written
+
+
+@pytest.mark.parametrize('name, reference', [('A₁', 'A_{1}'), ('B₁₂', 'B_{12}'), ('M₀', 'M_{0}')])
+def test_unicode_subscript_name_paint_and_layout_match_tex(name, reference):
+    doc = _Doc('subscript-typography').free('P', 0, 0).doc
+
+    def label(display_name):
+        doc['elements']['P']['displayName'] = display_name
+        paint = resolve_paint(doc)['elements']['P']['label']
+        box = native.layout_labels(doc, backend='metrics')['P']['box']
+        return paint, box
+
+    actual, actual_box = label(name)
+    expected, expected_box = label(reference)
+    assert actual['text'] == expected['text']
+    assert actual['parts'] == expected['parts']
+    assert actual_box == pytest.approx(expected_box, abs=0.01)
 
 
 def test_the_parts_of_a_value():

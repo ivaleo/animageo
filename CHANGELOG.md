@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc14] - 2026-10-27
+
+### Fixed
+
+- Labels with Unicode subscript digits (`A₁`, `B₁₂`, `M₀`) render in SVG,
+  PNG and video without LaTeX errors. Consecutive subscript digits form
+  one TeX index (`B_{12}`); label parts and layout measure the same index.
+  Text captions and the plain-text fallback support these digits too.
+
 ## [1.11.0rc13] - 2026-10-27
 
 ### Added

@@ -2,6 +2,8 @@
 gives, and the halo ``resolve_paint`` reports is drawn — a stroke of the
 label's glyphs under them, in SVG, PNG and the video, revealed by the effects
 of the video with its glyphs."""
+import logging
+from pathlib import Path
 import re
 
 import pytest
@@ -75,6 +77,47 @@ def test_a_name_compiles(name):
     from animageo.labels import correctedLabel, name_tex
     from animageo.ui import RusTex
     Tex(correctedLabel('$' + name_tex(name) + '$'), tex_template=RusTex)
+
+
+@pytest.mark.parametrize('name, reference', [('A₁', 'A_{1}'), ('B₁₂', 'B_{12}'), ('M₀', 'M_{0}')])
+def test_unicode_subscript_name_reaches_the_svg(name, reference, tmp_path, caplog):
+    doc = _Doc('subscript').free('P', 0, 0).doc
+
+    def render(display_name, filename):
+        doc['elements']['P']['displayName'] = display_name
+        result = native.render(doc, fmt='svg', out=tmp_path / filename, report=True)
+        assert len(_paths(Path(result.path).read_text(encoding='utf-8'))) > 1
+        label = result.report['elements']['P']['label']
+        assert label is not None
+        x0, y0, x1, y1 = label['box']
+        return x1 - x0, y1 - y0
+
+    with caplog.at_level(logging.WARNING, logger='animageo.ui'):
+        actual = render(name, 'unicode.svg')
+        expected = render(reference, 'tex.svg')
+    assert actual == pytest.approx(expected, abs=0.01)
+    assert 'LaTeX compile failed' not in caplog.text
+    assert 'plain-text fallback failed' not in caplog.text
+
+
+@pytest.mark.parametrize('caption', ['A₁B₁', '$A₁B₁$'])
+def test_unicode_subscript_caption_reaches_the_svg(caption, tmp_path, caplog):
+    d = _Doc('subscript-caption').free('P', 0, 0)
+    d.look('P', label={'mode': 'caption', 'text': caption})
+    with caplog.at_level(logging.WARNING, logger='animageo.ui'):
+        result = native.render(d.doc, fmt='svg', out=tmp_path / 'caption.svg', report=True)
+    assert result.report['elements']['P']['label'] is not None
+    assert len(_paths(Path(result.path).read_text(encoding='utf-8'))) == 5  # point and four glyphs
+    assert 'LaTeX compile failed' not in caplog.text
+    assert 'plain-text fallback failed' not in caplog.text
+
+
+def test_unicode_subscripts_compile_in_plain_text_fallback():
+    from manim import Tex
+
+    from animageo.ui import RusTex, _label_plain_text
+    label = Tex(_label_plain_text('A₁B₁'), tex_template=RusTex)
+    assert len(label.family_members_with_points()) == 4
 
 
 def test_no_halo_by_default():

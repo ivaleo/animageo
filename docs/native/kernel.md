@@ -805,6 +805,8 @@ offsetWorld?}, overrides?}}`. Each element gets:
   (`has("label.parts")`): a name is TeX in math mode, as GeoGebra shows it —
   `_x` indexes the one character (or command) after it (`A_12` is A₁2,
   `S_бок` is S with the index б), `_{…}` a group, `^` raises the same way;
+  consecutive Unicode subscript digits form one index (`B₁₂` is `B_{12}`),
+  with ASCII digits and `script: "sub"` in `label.parts`;
   an `_` or `^` with nothing to take (at the end, before a space, another
   script sign or a closing brace), a brace without its pair and the signs
   `% # & $ ~` are the characters themselves (`~` is `∼`), so a name of

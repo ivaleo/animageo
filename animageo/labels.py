@@ -168,6 +168,14 @@ _LITERAL_SCRIPT = {'_': r'\_', '^': r'\text{\textasciicircum}'}
 # argument of a script
 _LITERAL_SIGN = {'%': r'\%', '#': r'\#', '&': r'\&', '$': r'{\text{\textdollar}}', '~': r'{\sim}'}
 
+_SUBSCRIPT_DIGITS = str.maketrans('₀₁₂₃₄₅₆₇₈₉', '0123456789')
+_UNICODE_SUBSCRIPT_RE = re.compile('[₀-₉]+')
+
+
+def _unicode_subscripts_to_tex(text: str) -> str:
+    """A run of Unicode subscript digits is one TeX index: B₁₂ → B_{12}."""
+    return _UNICODE_SUBSCRIPT_RE.sub(lambda m: '_{' + m.group().translate(_SUBSCRIPT_DIGITS) + '}', text)
+
 
 def _balanced_braces(name: str) -> set:
     """Positions of the braces of ``name`` that have their pair (an escaped
@@ -210,7 +218,9 @@ def _script_takes(name: str, i: int, paired: set) -> bool:
 def name_tex(name: str) -> str:
     """The TeX (inside ``$…$``) of a label name: the name as it is, with an
     underscore, a caret or a brace that would not compile and the signs
-    ``% # & $ ~`` written as the characters (module notes above)."""
+    ``% # & $ ~`` written as the characters (module notes above). Unicode
+    subscript digits form a braced index: ``B₁₂`` → ``B_{12}``."""
+    name = _unicode_subscripts_to_tex(name)
     paired = _balanced_braces(name)
     out, i = [], 0
     while i < len(name):
@@ -342,6 +352,7 @@ def label_parts_of_name(name: str):
     lowercase Greek italic, the rest upright, a prime ``′``. ``None`` when the
     name holds a TeX command other than a Greek letter or a common sign, or a
     script inside a script."""
+    name = _unicode_subscripts_to_tex(name)
     out = []
     try:
         _parse_name(name, 0, len(name), None, _balanced_braces(name), out)
@@ -746,11 +757,11 @@ _CHAR_TEX = _char_tex_table()
 _GREEK_LETTERS = frozenset(
     [chr(c) for c in range(0x0391, 0x03AA) if c != 0x03A2]
     + [chr(c) for c in range(0x03B1, 0x03CA)] + list('ϑϕϖϵϱ'))
-# Characters that leave text mode: Greek letters and the symbols
+# Characters that leave text mode: Greek letters, subscript digits and the symbols
 # ``correctedLabel`` turns into math-only commands. Not ``~`` (a tie in text)
 # nor ``°`` (``\degree`` is not defined; T2A has the glyph).
 _TEXT_TO_MATH_CHARS = frozenset(
-    ch for ch in (set(_CHAR_TEX) | _GREEK_LETTERS) if ch not in ('~', '°'))
+    ch for ch in (set(_CHAR_TEX) | _GREEK_LETTERS | set('₀₁₂₃₄₅₆₇₈₉')) if ch not in ('~', '°'))
 # Bare commands that are math-only: Greek letters and the label symbols.
 _MATH_COMMANDS = frozenset(
     (set(_COMMAND_CHARS)            # Greek letters and the name symbols
@@ -815,8 +826,9 @@ def _split_math(s: str) -> list:
 
 
 def _math_symbols_to_tex(math: str, chars) -> str:
-    """The characters of ``chars`` in ``math`` as their TeX commands; a
+    """Unicode subscript digits as indices, ``chars`` as TeX commands; a
     command followed by a letter gets a space (``αx`` → ``\\alpha x``)."""
+    math = _unicode_subscripts_to_tex(math)
     out = []
     for k, ch in enumerate(math):
         tex = _CHAR_TEX.get(ch) if ch in chars else None
@@ -832,7 +844,7 @@ def _math_symbols_to_tex(math: str, chars) -> str:
 
 def _text_math_token(text: str, i: int) -> int:
     """End of the math-only token at ``i`` of a text chunk (a Greek letter or
-    a label symbol, or a bare math command), or ``-1``."""
+    a label symbol, a subscript digit or a bare math command), or ``-1``."""
     ch = text[i]
     if ch in _TEXT_TO_MATH_CHARS:
         return i + 1
@@ -893,7 +905,7 @@ def _mathify_text_chunk(text: str) -> str:
 
 
 def mathify_text_symbols(tex: str) -> str:
-    """Typeset the Greek letters (and label math symbols) of the *text-mode*
+    """Typeset Greek letters, subscript digits and label math symbols of the *text-mode*
     parts of ``tex`` in math: ``cos α`` → ``cos $\\alpha$``, ``ω_1`` →
     ``$\\omega_1$``, a bare ``\\alpha`` → ``$\\alpha$``.
 
@@ -908,14 +920,15 @@ def mathify_text_symbols(tex: str) -> str:
 def greek_to_tex(tex: str) -> str:
     """:func:`mathify_text_symbols`, and the Unicode Greek letters inside math
     as their commands (``$γ$`` → ``$\\gamma$``; raw, they do not compile under
-    ``RusTex`` either). For free texts, whose other characters stay raw."""
+    ``RusTex`` either). Unicode subscript digits become indices too; other
+    free-text symbols stay raw."""
     return ''.join(_math_symbols_to_tex(chunk, _GREEK_LETTERS) if is_math else _mathify_text_chunk(chunk)
                    for is_math, chunk in _split_math(tex))
 
 
 def correctedLabel(label):
     """Replace Unicode math symbols with their TeX equivalents in a label
-    string; Greek letters of the text-mode part go to math
+    string; Greek letters and subscript digits of the text-mode part go to math
     (:func:`mathify_text_symbols`)."""
     from .geo.lib_elements import textify_cyrillic
     label = ''.join(_math_symbols_to_tex(chunk, _CHAR_TEX) if is_math else _mathify_text_chunk(chunk)
