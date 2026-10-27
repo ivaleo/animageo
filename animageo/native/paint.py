@@ -92,20 +92,21 @@ _TYPES = {
     'mark.right_angle': ('angle', _STROKE + _FILL + tuple(k for k in _ANGLE if k not in ('tick_count', 'arc_shift_px'))
                          + ('z_index',) + _LABEL + _VALUE),
     'text': ('text', ('label_color', 'font_size_px', 'z_index') + _HALO),
-    'mark.equal_segments': (None, ()),
-    'mark.equal_angles': (None, ()),
+    'mark.equal_segments': (None, ('stroke', 'tick_count')),
+    'mark.equal_angles': (None, ('stroke', 'tick_count')),
     'number': (None, ()),
     'expr': (None, ()),
     'template': (None, ()),
 }
 
-# The keys an equality mark passes to its targets (as its count becomes their
-# ``tick_count``): the sizes of the ticks of a segment, the spacing and
-# (1.11.0rc8) the radius of the arcs of an angle. An explicit key of the
-# target wins.
+# The appearance keys an equality mark contributes to its targets.
+# Sizes and count keep the target's explicit priority. Since 1.11.0rc13
+# stroke uses a separate decoration channel, never the target body's style;
+# tick_count overrides the drawn count only, not the operation's value.
 MARK_TRANSFERS = {
-    'mark.equal_segments': ('tick_length_px', 'tick_radius_px', 'tick_shift_px', 'tick_style', 'tick_width_px'),
-    'mark.equal_angles': ('arc_shift_px', 'arc_size_px'),
+    'mark.equal_segments': ('stroke', 'tick_count', 'tick_length_px', 'tick_radius_px', 'tick_shift_px',
+                            'tick_style', 'tick_width_px'),
+    'mark.equal_angles': ('stroke', 'tick_count', 'arc_shift_px', 'arc_size_px'),
 }
 
 # Defaults the built-in style leaves to the renderer (``_build_render_ctx``,
@@ -200,7 +201,9 @@ def _entry(cfg, type_):
     style, keys = _TYPES[type_]
     out = {'style': style, 'keys': {}}
     for key in sorted(keys):
-        item = {'unit': _UNITS[key], 'default': _default(cfg, style, key)}
+        item = {'unit': _UNITS[key], 'default': None if type_ in MARK_TRANSFERS else _default(cfg, style, key)}
+        if type_ in MARK_TRANSFERS and key == 'tick_count':
+            item['values'] = [0, 1, 2, 3]
         values = _VALUE_ENUMS.get(key)
         if key == 'point_shape':
             from ..style.enums import POINT_SHAPES
@@ -221,7 +224,9 @@ def style_keys() -> dict:
     "values"]}}[, "transfers": [key, …]]}}}``. ``type`` is a document type,
     a mark by its operation (``mark.right_angle``, ``mark.equal_segments``,
     ``mark.equal_angles``); a type that is not drawn has no keys, an
-    equality mark lists the keys it passes to its targets. ``default`` is
+    equality mark lists the keys it contributes to its targets. Its own
+    stroke and tick_count default to None (target stroke / semantic count).
+    ``default`` is
     the value under the built-in style (its ``defaults`` of the classic
     type, then its ``rendering``, then the renderer's own); ``None`` — no
     value (a solid stroke, an automatic layer or marker; ``label_anchor``:
@@ -444,6 +449,8 @@ def _angle(final, elem, data, unit, value):
     shown = 2 * math.pi - size if (angle_range == 'minor' and size > math.pi) or \
         (angle_range == 'reflex' and size < math.pi) else size
     right = value('right_angle_marker', None)
+    if getattr(elem, '_native_mark_explicit', False):
+        right = False
     if right is None:
         right = abs(shown - math.pi / 2) <= 1e-8 + 1e-5 * math.pi / 2     # numpy.isclose of the renderer
     right = bool(right)
@@ -471,6 +478,42 @@ def _angle(final, elem, data, unit, value):
     else:
         out['arcRadiiPx'] = [_r(radius_px + (arcs - 1 - i) * shift_px) for i in range(max(arcs, 0))]
     return out
+
+
+def _decoration(final, elem, type_, unit, value, stroke_color):
+    """Effective equality paint shared by paint and rendered-frame reports.
+
+    Owners are document IDs even when classic names differ from them.
+    """
+    owner = getattr(elem, '_native_mark_id', None)
+    if owner is None:
+        return None
+    out = {'owner': owner, 'color': _color(getattr(elem, '_native_mark_stroke', None) or stroke_color)}
+    if type_ in ('segment', 'vector'):
+        ticks = _ticks(type_, elem.data, unit, value)
+        out.update({k: v for k, v in ticks.items() if k not in ('lines', 'wave', 'cornerRadius')})
+        if ticks.get('cornerRadius') is not None:
+            out['radiusPx'] = _r(ticks['cornerRadius'] * unit)
+        out['kind'] = 'ticks'
+    elif type_ == 'angle':
+        angle = _angle(final, elem, elem.data, unit, value)
+        out.update({k: angle[k] for k in ('arcSizePx', 'radiusPx', 'arcShiftPx')})
+        out.update(kind='square' if angle['right'] else 'arcs', count=1 if angle['right'] else angle['arcs'],
+                   widthPx=_r(_num(value('stroke_width_px', 1), 1)))
+    else:
+        return None
+    return out
+
+
+def _scene_decoration(scene, elem, type_):
+    """Resolve a rendered scene through the same lazy classic boundary as paint."""
+    from ..label_placement import _style_ptUnit
+    from ..style.resolver import resolve
+
+    def value(key, default=None):
+        return resolve(scene, elem, key, default=default)
+
+    return _decoration(scene, elem, type_, _style_ptUnit(scene.style), value, value('stroke', scene.style.strong))
 
 
 def _value_format(final, value):
@@ -547,6 +590,9 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
     ``[{text, italic, script}]``, ``labels.resolve_label_parts``, ``None`` for
     a caption; a free text has ``color``, ``fontSizePx`` and ``halo``) and ``value``
     ``{precision, stripZeros, separator, angleUnit}``.
+    Equality targets also have ``decoration``: its document-ID ``owner``,
+    actual ``color``, ``count`` and sizes in style pixels,
+    separately from the target's ``stroke`` and ``fill``.
     """
     from types import SimpleNamespace
 
@@ -705,6 +751,9 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             entry['ticks'] = _ticks(style_type, data, unit, value)
         if style_type in ('angle', 'mark.right_angle'):
             entry['angle'] = _angle(final, elem, data, unit, value)
+        decoration = _decoration(final, elem, style_type, unit, value, entry.get('stroke', {}).get('color'))
+        if decoration is not None:
+            entry['decoration'] = decoration
         if style_type not in ('polyline', 'locus', 'function'):
             entry['label'] = _label(final, elem, value, style_type, z_label)
         if style_type in _WITH_VALUE:

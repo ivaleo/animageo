@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0rc13] - 2026-10-27
+
+### Added
+
+- Independent native equality-mark paint: `appearance[markId].overrides.stroke`
+  (`#RRGGBB`) colours the ticks/arcs without changing the target's stroke or
+  fill. `tick_count` (`0..3`, integer) controls the drawn count; `0` hides the
+  decoration, and the operation's semantic `count` and equality checks stay
+  unchanged. On a right angle an explicit `tick_count` draws that many arcs
+  instead of the square; a colour alone keeps the square. Omitting the keys
+  restores the previous appearance. Target count
+  and size overrides retain priority; the first visible, defined mark by ID
+  owns the colour, including its fallback to target stroke. These channels
+  follow the mark's visibility and effects when seeking or rendering a timeline.
+- Equality targets in `resolve_paint` and render reports include `decoration`
+  with its owning mark ID, actual colour, count and sizes. Existing paint
+  fields remain compatible without the new overrides. The exported style
+  contract includes both keys for downstream override/schema generation.
+
+### Fixed
+
+- An initially undefined equality mark restores its decoration when it becomes
+  defined in a timeline, including when its semantic `count` uses the default.
+- GGB import keeps an acyclic construction when damaged protocol breakpoints
+  form cyclic step groups. It reports `protocol_steps_dropped` and restores
+  dependency-ordered steps instead of raising an internal error.
+
 ## [1.11.0rc12] - 2026-10-26
 
 ### Added

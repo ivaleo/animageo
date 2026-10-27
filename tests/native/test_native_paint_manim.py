@@ -105,7 +105,12 @@ def test_the_renderer_draws_the_paint(case, drawn):
             if stroke['cap'] is not None:
                 assert stroke['cap'] == ctx.cap, where
             hidden = (entry.get('point') or {}).get('display') == 'only_labels'
-            _assert_drawn_stroke(stroke, group, unit, where, hidden=hidden, alpha=_fade_alpha(entry))
+            angle = entry.get('angle')
+            actual_stroke = dict(stroke)
+            if angle is not None and entry.get('decoration') is not None:
+                actual_stroke['color'] = entry['decoration']['color']
+            if angle is None or angle['right'] or angle['arcs'] > 0:
+                _assert_drawn_stroke(actual_stroke, group, unit, where, hidden=hidden, alpha=_fade_alpha(entry))
             if stroke.get('dash') is not None:
                 assert [stroke['dash']['onPx'], stroke['dash']['offPx']] == pytest.approx(list(ctx.dash_px)), where
             else:
@@ -129,6 +134,9 @@ def test_the_renderer_draws_the_paint(case, drawn):
             assert ticks['widthPx'] == pytest.approx(ctx.strich_width * unit / 100), where
             assert ticks['shiftPx'] == pytest.approx(ctx.strich_rshift * unit), where
             _assert_ticks(ticks, group, drawn['wave'].get(name), where)
+            if ticks['count'] > 0 and entry.get('decoration') is not None:
+                color = ManimColor(entry['decoration']['color']).to_hex()
+                assert all(m.get_stroke_color().to_hex() == color for m in group.submobjects[1:1 + ticks['count']]), where
         if 'arrow' in entry:
             assert entry['arrow']['lengthPx'] == pytest.approx(ctx.arrow_height * unit), where
             assert entry['arrow']['widthPx'] == pytest.approx(ctx.arrow_width * unit), where

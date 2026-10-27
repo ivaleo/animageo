@@ -478,7 +478,7 @@ class AnimaGeoScene(MovingCameraScene):
         """Put on the targets the keys of the marks in the frame (and take
         those of the others off); returns the targets whose keys changed."""
         from .native.kernel.bridge import NativeMark
-        from .native.rendering import _mark_style
+        from .native.rendering import _mark_style, _write_mark_key
         present = set()
         for mark, _targets in self._mark_decor:
             elem = self.geo.element(mark)
@@ -495,9 +495,9 @@ class AnimaGeoScene(MovingCameraScene):
             if elem is not None:
                 for key in have:
                     if key not in want:
-                        elem.style.pop(key, None)
+                        _write_mark_key(elem, key, None, remove=True)
                 for key, value in want.items():
-                    elem.style[key] = value
+                    _write_mark_key(elem, key, value)
             changed.add(target)
         self._mark_applied, self._mark_owner = desired, owner
         return changed
@@ -3524,6 +3524,8 @@ class AnimaGeoScene(MovingCameraScene):
         # the equality mark whose ticks the element draws, and the ticks
         # (arcs of an angle) it draws without it (1.11.0rc5)
         mark = self._mark_owner.get(elem.name)
+        tick_color = getattr(elem, '_native_mark_stroke', None) or col_s
+        mark_explicit = bool(getattr(elem, '_native_mark_explicit', False))
         own_ticks = tick_count
         if mark is not None and 'tick_count' in elem.style:
             given = elem.style.pop('tick_count')
@@ -3536,6 +3538,8 @@ class AnimaGeoScene(MovingCameraScene):
         angle_range = _resolve_style(self, elem, 'angle_range', default='minor') or 'minor'
         arc_shift_px = _resolve_style(self, elem, 'arc_shift_px', default=0.0)
         right_angle_marker = _resolve_style(self, elem, 'right_angle_marker', default=None)
+        if mark_explicit:
+            right_angle_marker = False
         auto_radius = _resolve_style(self, elem, 'auto_radius', default=True)
 
         zz = _resolve_style(self, elem, 'z_index', default=None)
@@ -3590,7 +3594,7 @@ class AnimaGeoScene(MovingCameraScene):
             arrow_width=arrow_w_mu,
             arrow_height=arrow_h_mu,
             tick_count=tick_count,
-            mark=mark, own_ticks=own_ticks,
+            mark=mark, own_ticks=own_ticks, tick_color=tick_color, mark_explicit=mark_explicit,
             tick_style=tick_style,
             tick_radius_px=tick_radius_px,
             angle_range=angle_range,
@@ -3875,7 +3879,7 @@ class AnimaGeoScene(MovingCameraScene):
             angle_range=ctx.angle_range, auto_radius=ctx.auto_radius,
         ) / ptUnit
         arc_shift_px = ctx.arc_shift_px
-        r += (ctx.tick_count - 1) \
+        r += ((max(1, ctx.tick_count) if ctx.mark_explicit else ctx.tick_count) - 1) \
              * arc_shift_px / ptUnit
         if r < 0.001:
             r = 0.2
@@ -3931,7 +3935,7 @@ class AnimaGeoScene(MovingCameraScene):
                 color=ctx.col_f, stroke_width=0, fill_opacity=op_f,
             ).set_z_index(ctx.zz))
             arr.append(VMobject(
-                color=ctx.col_s, fill_opacity=0,
+                color=ctx.tick_color, fill_opacity=0,
                 stroke_width=ctx.lw, stroke_opacity=ctx.op_s,
                 joint_type=_JOINT_MAP[ctx.ra_joint],
             ).set_points_as_corners([p1, p2, p3]).set_z_index(ctx.zz + 0.1))
@@ -3946,11 +3950,11 @@ class AnimaGeoScene(MovingCameraScene):
                 arc = Angle(
                     *lines, radius=r - i * arc_shift_px / ptUnit,
                     other_angle=False,
-                    color=ctx.col_s, fill_opacity=0,
+                    color=ctx.tick_color, fill_opacity=0,
                     stroke_width=ctx.lw, stroke_opacity=ctx.op_s,
                 ).set_z_index(ctx.zz + 0.1)
                 # the outer arcs are the mark's, the inner ones the angle's own
-                if ctx.mark is not None and i < ctx.tick_count - ctx.own_ticks:
+                if ctx.mark is not None and (ctx.mark_explicit or i < ctx.tick_count - ctx.own_ticks):
                     arc._animageo_mark = ctx.mark
                 arr.append(arc)
 
@@ -4002,7 +4006,7 @@ class AnimaGeoScene(MovingCameraScene):
             wave = round_corners_vmobject(
                 points, radius=radius, components_per_rounded_corner=8,
             ).set_stroke(
-                color=ctx.col_s, width=ctx.strich_width, opacity=ctx.op_s,
+                color=ctx.tick_color, width=ctx.strich_width, opacity=ctx.op_s,
             ).set_z_index(ctx.zz)
             wave.cap_style = CapStyleType.BUTT
             if ctx.mark is not None:
@@ -4013,7 +4017,7 @@ class AnimaGeoScene(MovingCameraScene):
         line = Line(
             [m[0] + dn[0], m[1] + dn[1], 0],
             [m[0] - dn[0], m[1] - dn[1], 0],
-            color=ctx.col_s, stroke_width=ctx.strich_width,
+            color=ctx.tick_color, stroke_width=ctx.strich_width,
             stroke_opacity=ctx.op_s,
             cap_style=CapStyleType.BUTT,
         ).set_z_index(ctx.zz)

@@ -544,6 +544,33 @@ class _Structure:
             if 'kind' in mark:
                 self.string(mark['kind'], mpath + '/kind', 'kind')
 
+    def mark_appearance(self, doc, key, entry):
+        """The two typed overrides of an equality mark; other looks stay open.
+
+        This check needs the producer operation, which JSON Schema cannot
+        follow from an appearance ID. The reusable schema is in
+        construction.v1.schema.json#/$defs/equalityMarkOverrides.
+        """
+        elements, operations = doc.get('elements'), doc.get('operations')
+        el = elements.get(key) if isinstance(elements, dict) else None
+        if not isinstance(el, dict) or el.get('type') != 'mark':
+            return
+        producer = el.get('producer')
+        op_id = producer.get('operationId') if isinstance(producer, dict) else None
+        op = operations.get(op_id) if isinstance(operations, dict) and isinstance(op_id, str) else None
+        if not isinstance(op, dict) or op.get('op') not in ('mark.equal_segments', 'mark.equal_angles'):
+            return
+        overrides = entry.get('overrides') if isinstance(entry, dict) else None
+        if not isinstance(overrides, dict):
+            return
+        path = '/appearance' + _pointer(key) + '/overrides'
+        if 'stroke' in overrides and (not isinstance(overrides['stroke'], str) or
+                                     re.fullmatch(r'#[0-9a-fA-F]{6}', overrides['stroke']) is None):
+            self.add(path + '/stroke', 'equality mark stroke must be a 6-digit hex color')
+        if 'tick_count' in overrides and (type(overrides['tick_count']) is not int or
+                                         overrides['tick_count'] not in range(4)):
+            self.add(path + '/tick_count', 'equality mark tick_count must be an integer from 0 to 3')
+
     def document(self, doc):
         self.keys(doc, '', 'the document', _REQUIRED)
         if 'format' in doc and doc['format'] != DOCUMENT_FORMAT:
@@ -573,6 +600,7 @@ class _Structure:
                     self.add('/appearance' + _pointer(key) + '/locked', 'locked must be a boolean')
                 if isinstance(entry, dict) and 'role' in entry and not isinstance(entry['role'], str):
                     self.add('/appearance' + _pointer(key) + '/role', 'role must be a string')
+                self.mark_appearance(doc, key, entry)
         if 'steps' in doc:
             self.steps(doc['steps'], '/steps')
         if 'conditions' in doc:

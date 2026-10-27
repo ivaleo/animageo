@@ -861,10 +861,43 @@ Marks (registry 1.3, `native.appearance_plan`):
   `tick_radius_px`) of `mark.equal_segments` and `arc_shift_px` of
   `mark.equal_angles` go to the targets the same way (an explicit key of a
   target wins); 1.11.0rc8: so does `arc_size_px` of `mark.equal_angles` —
-  the radius of the arcs of its angles (the innermost arc); any other key
-  of an equality mark draws nothing and is reported (`mark_transfers_only`);
+  the radius of the arcs of its angles (the innermost arc).
+  1.11.0rc13: `appearance[markId].overrides.stroke` is a six-digit hex colour
+  (`#RRGGBB`) of the ticks/arcs only; the target's stroke and fill keep their
+  own styles. `overrides.tick_count` is an integer from `0` to `3`: the drawn
+  count, independent of the operation's semantic `count` (`1`, `2`, `3`).
+  `0` draws no decoration. Omitting either override restores the target's
+  stroke or the semantic count. On a right angle `tick_count` draws arcs
+  instead of the square; a colour alone keeps the square. A target's own
+  count and size overrides still win. Other keys are reported as `mark_transfers_only`;
 - a visible, defined right-angle mark gets `right_angle_marker = true`
   unless its `overrides` set it.
+
+For several equality marks on a target, the first visible, defined mark in
+ID order owns the colour channel, even if it has no colour override (the
+target's stroke is then used). Count and sizes retain the per-key rule:
+the target's own key wins, then the first mark supplying that key. Hiding
+or undefining a mark removes its contribution; showing it restores it.
+No style is written back into the document or the equality value. Marks
+remain decorations, while construction conditions remain `recipes/v1`.
+
+`appearance_plan` keeps the target's body `style` separate from
+`decoration: {owner, stroke, explicit}`. `stroke: null` means target stroke;
+`explicit` means a colour or count override is present. The existing
+count/size keys remain in `style` for compatibility. The bridge keeps the
+colour channel outside the body's style resolver. With a new override an
+equal-angle mark draws its requested number of arcs even at 90 degrees,
+including when the target's ordinary decoration is a square. The fill colour and opacity
+are unchanged. `load` rejects invalid colour/count overrides on equality
+marks; `$defs/equalityMarkOverrides` in the construction schema is the
+reusable schema for clients that have resolved the producer operation.
+Other appearance entries retain their existing, open style contract.
+
+`native/style/keys.v1.json` (from `python -m animageo.native style export`)
+lists the new keys in `keys` and `transfers`; count values are `0..3`, and
+both defaults are `null`. This is the source for the web's generated
+`OVERRIDE_KEYS`, TypeScript and schema; consumers regenerate from the
+exported contract rather than maintaining their own allow-list.
 
 An element that is not drawn (§9.2: undefined, a number, an equality mark)
 has no label: it is neither drawn nor seen by automatic placement
@@ -1136,6 +1169,15 @@ breaking ties by `1e-6`) and, by type:
   `arcs`, `arcShiftPx`, `arcRadiiPx` or, for a right angle, `rightSizePx`
   and the corners of the square `square` (world units), `shownSize`,
   `right`, `joint`;
+- `decoration` (1.11.0rc13, a drawn equality target): `owner` (mark document
+  ID), `color`, `count`, `kind` (`ticks`, `arcs`, or `square`),
+  and actual dimensions in style pixels. Ticks report `style`, `lengthPx`,
+  `widthPx`, `shiftPx`, `radiusPx`; arcs report `arcSizePx`, `radiusPx`,
+  `arcShiftPx`, `widthPx`. The same entry is in `render().report.elements`.
+  It is absent when no visible, defined mark contributes. Existing paint
+  fields and diagnostic warnings keep their rc12 values without new
+  overrides; `decoration` is additive. Use its colour to compare a mark,
+  rather than the target's body `stroke.color`;
 - `label`: `shown`, `color`, `fontSizePx`, `halo` (1.11.0: `{widthPx,
   color, opacity}`, `widthPx` `0` — none), `anchor` (`label_anchor` →
   `rendering.label_anchor` of the given style → `BL`), `radialOffsetPx`

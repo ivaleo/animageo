@@ -260,7 +260,8 @@ def _emit_ticks(ctx: TikzContext, elem, p1, p2, normal, labels=None) -> None:
         return
     m = (np.asarray(p1, float) + np.asarray(p2, float)) / 2
     # ticks end butt, whatever the cap of their segment (as the renderer draws them)
-    opts = stroke_options(ctx, elem, width_px=width_px, with_cap=False, with_dash=False, extra=['line cap=butt'])
+    opts = stroke_options(ctx, elem, width_px=width_px, with_cap=False, with_dash=False,
+                          color_override=getattr(elem, '_native_mark_stroke', None), extra=['line cap=butt'])
     half = n * length_mu / 2
     for i in range(num):
         d = shift_mu * ((1 - num) * 0.5 + i)
@@ -427,8 +428,9 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
         angle_range=angle_range, auto_radius=auto_radius,
     ) / ps
     arc_shift_mu = float(ctx.resolve(elem, "arc_shift_px", default=0.0) or 0.0) / ps
-    tick_count = int(ctx.resolve(elem, "tick_count", default=1) or 1)
-    r += (tick_count - 1) * arc_shift_mu
+    explicit = bool(getattr(elem, '_native_mark_explicit', False))
+    tick_count = int(ctx.resolve(elem, "tick_count", default=1) or (0 if explicit else 1))
+    r += ((max(1, tick_count) if explicit else tick_count) - 1) * arc_shift_mu
     if r < 0.001:
         r = 0.2
 
@@ -441,8 +443,12 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
     a0d, a1d = math.degrees(a0), math.degrees(a1)
 
     right_marker = ctx.resolve(elem, "right_angle_marker", default=None)
+    if explicit:
+        right_marker = False
     if right_marker is None:
         right_marker = bool(np.isclose(angle, math.pi / 2))
+    decoration_opts = stroke_options(ctx, elem, with_dash=False,
+                                    color_override=getattr(elem, '_native_mark_stroke', None))
 
     # a fill of the background colour is no fill (as the renderer, 1.11.0rc3)
     has_fill = _fill_opacity(ctx, elem) > 0 and not same_color(
@@ -465,7 +471,7 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
                 f"-- {_coord(ctx, *p2)} -- {_coord(ctx, *p3)} -- cycle;"
             )
         ctx.doc.line(
-            f"\\draw[{stroke_options(ctx, elem, with_dash=False)}] "
+            f"\\draw[{decoration_opts}] "
             f"{_coord(ctx, *p1)} -- {_coord(ctx, *p2)} -- {_coord(ctx, *p3)};"
         )
     else:
@@ -475,8 +481,8 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
                 f"\\fill[{fill_options(ctx, elem)}] ({ctx.doc.num(px)},{ctx.doc.num(py)}) -- "
                 f"{_coord(ctx, sx, sy)} arc ({ctx.doc.num(a0d)}:{ctx.doc.num(a1d)}:{ctx.doc.num(r)}) -- cycle;"
             )
-        opts = stroke_options(ctx, elem, with_dash=False)
-        for i in range(max(1, tick_count)):
+        opts = decoration_opts
+        for i in range(max(0 if explicit else 1, tick_count)):
             ri = r - i * arc_shift_mu
             if ri <= 0:
                 continue

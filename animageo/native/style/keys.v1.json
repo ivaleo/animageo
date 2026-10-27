@@ -671,16 +671,50 @@
   },
   "mark.equal_angles": {
    "style": null,
-   "keys": {},
+   "keys": {
+    "stroke": {
+     "unit": "color",
+     "default": null
+    },
+    "tick_count": {
+     "unit": "count",
+     "default": null,
+     "values": [
+      0,
+      1,
+      2,
+      3
+     ]
+    }
+   },
    "transfers": [
     "arc_shift_px",
-    "arc_size_px"
+    "arc_size_px",
+    "stroke",
+    "tick_count"
    ]
   },
   "mark.equal_segments": {
    "style": null,
-   "keys": {},
+   "keys": {
+    "stroke": {
+     "unit": "color",
+     "default": null
+    },
+    "tick_count": {
+     "unit": "count",
+     "default": null,
+     "values": [
+      0,
+      1,
+      2,
+      3
+     ]
+    }
+   },
    "transfers": [
+    "stroke",
+    "tick_count",
     "tick_length_px",
     "tick_radius_px",
     "tick_shift_px",

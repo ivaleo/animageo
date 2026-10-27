@@ -50,11 +50,15 @@ class TestStyleKeys:
         keys = native.style_keys()
         assert keys['format'] == 'animageo-style-keys/v1'
         assert set(keys['types']) == set(DRAWN) | set(NOT_DRAWN)
-        for type_ in NOT_DRAWN:
+        for type_ in ('number', 'expr', 'template'):
             assert keys['types'][type_]['keys'] == {}
         assert keys['types']['mark.equal_segments']['transfers'] == [
-            'tick_length_px', 'tick_radius_px', 'tick_shift_px', 'tick_style', 'tick_width_px']
-        assert keys['types']['mark.equal_angles']['transfers'] == ['arc_shift_px', 'arc_size_px']
+            'stroke', 'tick_count', 'tick_length_px', 'tick_radius_px', 'tick_shift_px', 'tick_style', 'tick_width_px']
+        assert keys['types']['mark.equal_angles']['transfers'] == ['arc_shift_px', 'arc_size_px', 'stroke', 'tick_count']
+        for mark in ('mark.equal_segments', 'mark.equal_angles'):
+            assert keys['types'][mark]['keys']['stroke'] == {'unit': 'color', 'default': None}
+            assert keys['types'][mark]['keys']['tick_count'] == {'unit': 'count', 'default': None,
+                                                               'values': [0, 1, 2, 3]}
 
     def test_every_key_is_accepted_and_read_somewhere(self):
         types = native.style_keys()['types']
@@ -113,8 +117,6 @@ class TestIneffective:
         ('t', 'stroke', 'not_read'),
         ('ra', 'tick_count', 'not_read'),
         ('n', 'stroke', 'not_drawn'),
-        ('mk', 'stroke', 'mark_transfers_only'),
-        ('mk', 'tick_count', 'mark_transfers_only'),
         ('ma', 'tick_length_px', 'mark_transfers_only'),
     ])
     def test_warned(self, el_id, key, reason):

@@ -80,6 +80,7 @@ def stroke_options(
     elem,
     *,
     color_default: Optional[str] = None,
+    color_override: Optional[str] = None,
     width_px: Optional[float] = None,
     with_dash: bool = True,
     with_cap: bool = True,
@@ -88,7 +89,7 @@ def stroke_options(
     """Build the option list for a stroked path (without surrounding ``[]``)."""
     opts: List[str] = []
 
-    col = ctx.resolve(elem, "stroke", default=color_default or stroke_default(ctx))
+    col = color_override or ctx.resolve(elem, "stroke", default=color_default or stroke_default(ctx))
     opts.append(f"draw={ctx.doc.color(col)}")
 
     op = _opacity(ctx.resolve(elem, "stroke_opacity", default=1.0))

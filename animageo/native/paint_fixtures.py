@@ -184,6 +184,11 @@ def _ticks():
     d = _triangle('ticks_override').segment('a', 'B', 'C').vector('v', 'A', 'B')
     d.overrides('a', tick_count=2).overrides('v', tick_count=1)
     out.append(('ticks_override', d, None))
+    for count in (0, 2, 3):
+        d = _triangle(f'ticks_mark_paint_{count}').segment('a', 'B', 'C').segment('b', 'C', 'A')
+        d.equal_segments('m', 'a', 'b').overrides('m', stroke='#9933cc', tick_count=count, tick_length_px=14)
+        d.overrides('a', stroke='#112233', tick_length_px=6)
+        out.append((f'ticks_mark_paint_{count}', d, None))
     return out
 
 
@@ -198,6 +203,11 @@ def _angles():
     d.equal_angles('m', 'alpha', 'beta', count=2).overrides('m', arc_size_px=24, arc_shift_px=3)
     d.overrides('beta', arc_size_px=12)
     out.append(('arcs_mark_sizes', d, None))
+    for count in (0, 2, 3):
+        d = _triangle(f'arcs_mark_paint_{count}').angle('alpha', 'B', 'A', 'C').angle('beta', 'C', 'B', 'A')
+        d.equal_angles('m', 'alpha', 'beta').overrides('m', stroke='#9933cc', tick_count=count, arc_size_px=24)
+        d.overrides('alpha', stroke='#112233', fill='#ffcc00', fill_opacity=0.4, arc_size_px=12)
+        out.append((f'arcs_mark_paint_{count}', d, None))
     auto = {'overlay': {'angle_radius': {'enabled': True}}}
     d = _triangle('auto_radius').angle('alpha', 'B', 'A', 'C').angle('beta', 'C', 'B', 'A')
     out.append(('auto_radius', d, auto))
@@ -361,6 +371,17 @@ def _timeline():
         {'t': 2, 'visible': {'a': False}, 'exit': {'a': 'fade'}},
     ]}
     out += [(f'effects_{t}', d, None, timeline, t) for t in (0.1, 0.5, 1.2, 2)]
+    d = _triangle('mark_paint_time').segment('a', 'A', 'B').segment('b', 'B', 'C')
+    d.angle('alpha', 'B', 'A', 'C').angle('beta', 'C', 'B', 'A')
+    d.equal_segments('m', 'a', 'b').equal_angles('n', 'alpha', 'beta')
+    d.overrides('m', stroke='#9933cc', tick_count=2).overrides('n', stroke='#9933cc', tick_count=3)
+    timeline = {'version': 2, 'keyframes': [
+        {'t': 0, 'visible': {'m': False, 'n': False}},
+        {'t': 1, 'visible': {'m': True, 'n': True}},
+        {'t': 2, 'visible': {'m': False, 'n': False}},
+        {'t': 3, 'visible': {'m': True, 'n': True}},
+    ]}
+    out += [(f'mark_paint_time_{t}', d, None, timeline, t) for t in (0, 1, 2, 3)]
     return out
 
 

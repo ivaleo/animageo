@@ -445,9 +445,17 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     if steps:
         doc['steps'] = [{'id': make_id(ns, f'step:{k}'), 'kind': 'group', 'operationIds': ops}
                         for k, ops in enumerate(steps, 1)]
+    protocol_steps_dropped = False
     if doc['operations'] or empty_document:
         from ..document import load, validate
         issues = [i for i in validate(load(doc, strict=False)) if getattr(i, 'severity', 'error') == 'error']
+        if any(i.code == 'step_cycle' for i in issues):
+            # Damaged XML can interleave an acyclic construction across
+            # breakpoints so that the protocol groups form a cycle. Keep
+            # its geometry and let native.steps order individual operations.
+            doc.pop('steps', None)
+            protocol_steps_dropped = True
+            issues = [i for i in validate(load(doc, strict=False)) if getattr(i, 'severity', 'error') == 'error']
         if issues:
             raise RuntimeError('from_ggb built an invalid document: '
                                + '; '.join(f'{i.code} {i.path}' for i in issues[:3]))
@@ -500,6 +508,9 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
             entry['names'] = names[:50]
         drop_list.append(entry)
     warnings = []
+    if protocol_steps_dropped:
+        warnings.append({'code': 'protocol_steps_dropped',
+                         'detail': 'Construction protocol groups contradict the dependency order.'})
     for w in tr.warnings:
         warnings.append({'code': w['code'], **({'ggb_name': display.get(w['name'], w['name'])}
                                                  if w.get('name') else {})})

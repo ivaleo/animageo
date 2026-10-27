@@ -149,6 +149,14 @@ events over them. The interval of `t` is `[t_k, t_{k+1})`, as in the video
   frame that shows it. Before (1.11.0rc4) the frame and the video kept the
   ticks of the visibility of the document at every `t`; in 1.11.0rc3 the
   still read the visibility at `t`, its video drew the static ticks.
+  1.11.0rc13: a mark's independent `stroke` and `tick_count` follow this
+  same presence rule and are restored on seeking, including backwards.
+  Without these overrides the effect keeps the rc12 ownership of the outer
+  arcs. With either override, all contributed arcs belong to the mark's
+  effect; when it leaves, the target's own arcs and colour return. Target
+  count/size overrides retain priority. The target body's stroke and fill
+  never take the mark's colour. A frame report's `decoration` identifies
+  the contributing mark and its actual colour, count and sizes.
 - Events (`indicate`, `flash`, `circumscribe`) are drawn in their window.
   1.11.0: the overlay of `flash` and `circumscribe` is rebuilt from its
   target every frame (it follows a moving target), overlays stack by the

@@ -247,6 +247,10 @@ braces (`t_{AB}`) is one name.
 `seq` of the operations follows the construction protocol (the XML order);
 `steps` (groups) appear only when the XML has breakpoints — a step is the
 protocol up to a breakpoint inclusive, the rest is the last step.
+If a damaged file interleaves dependencies so these groups form a step
+cycle, the import keeps the geometry, omits the conflicting explicit groups
+and reports `protocol_steps_dropped`. `native.steps` then orders individual
+operations by their dependencies (1.11.0rc13).
 
 ## 6. Untrusted input (plan §7)
 

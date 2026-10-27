@@ -29,6 +29,15 @@ Whether the segments really are equal is not part of the value: the `equal`
 check reports it. A `failed` check is a warning; the mark stays defined, so
 a drawing that has stopped matching the claim is visible as such.
 
+## Appearance (1.11.0rc13)
+
+`appearance[markId].overrides.stroke: "#RRGGBB"` colours only the ticks;
+`tick_count: 0|1|2|3` sets their drawn count (`0` hides them). Omitting the
+keys restores the target's stroke / semantic `count`. The equality value
+and checks are unchanged. Target count and size overrides win; the first
+visible, defined mark in ID order owns the colour. See
+[appearance priorities and diagnostics](../kernel.md#93-appearance).
+
 ## Degeneracy decisions
 
 None.

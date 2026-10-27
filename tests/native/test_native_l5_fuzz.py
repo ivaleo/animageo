@@ -465,6 +465,13 @@ def test_cycles_and_broken_references(case):
     assert names, case
 
 
+def test_interleaved_protocol_groups_regression():
+    # Found by the rc13 full run; rc12 also raised step_cycle for this seed.
+    doc, rep = imported(ggb_bytes(xml=_mutated_xml(202610271009)), 'interleaved protocol groups')
+    assert doc is not None and 'steps' not in doc
+    assert 'protocol_steps_dropped' in {w['code'] for w in rep['warnings']}
+
+
 def test_a_long_chain_does_not_overflow_the_stack():
     body = point('P0', 0.0, 0.0) + point('Z', 1.0, 0.0)
     for i in range(1, 1200):

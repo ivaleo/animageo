@@ -600,6 +600,20 @@ def test_seq_and_steps_from_breakpoints():
     assert 'steps' not in doc
 
 
+def test_breakpoints_with_forward_references_do_not_make_a_step_cycle():
+    # The graph is A,Z -> B -> M; the damaged protocol groups A,M | Z,B.
+    body = (point('A', 0.0, 0.0) + point('M', 1.0, 0.0, extra='<breakpoint val="true"/>')
+            + point('Z', 4.0, 0.0) + command('Midpoint', ['A', 'Z'], ['B']) + point('B', 2.0, 0.0)
+            + command('Midpoint', ['B', 'A'], ['M']))
+    doc, rep = _import(ggb_bytes(body))
+    assert 'steps' not in doc
+    assert {w['code'] for w in rep['warnings']} == {'protocol_steps_dropped'}
+    op_of = {e['ggb_name']: doc['elements'][e['native_ids'][0]]['producer']['operationId'] for e in rep['elements']}
+    order = [o for step in native.steps(doc) for o in step.operationIds]
+    assert order.index(op_of['A']) < order.index(op_of['B']) < order.index(op_of['M'])
+    assert order.index(op_of['Z']) < order.index(op_of['B'])
+
+
 def test_strict_mode():
     path = REPO_ROOT / 'tests/fixtures/label_anchor_types.ggb'
     with pytest.raises(native.ConvertError) as exc:

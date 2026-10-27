@@ -202,6 +202,11 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
     ``inputs``. The ``overrides`` of an equality mark in
     :data:`~animageo.native.paint.MARK_TRANSFERS` (the sizes of the ticks,
     the spacing of the arcs; 1.11.0rc3) go to its targets the same way.
+    1.11.0rc13: a mark's ``tick_count`` (integer 0..3) replaces its drawn
+    count, not its semantic value. Its ``stroke`` (#RRGGBB) is held in the
+    target entry's separate ``decoration`` (owner, stroke, explicit); it
+    never changes the body's stroke or fill. The first visible, defined
+    mark by ID owns this channel, including its fallback to target stroke.
     This is the static drawing; the frame of a timeline puts on the targets
     the keys of the marks in that frame (1.11.0rc5, ``docs/native/timeline.md`` §3).
 
@@ -220,7 +225,8 @@ def _mark_style(decorations, present) -> tuple:
     """``({targetId: {key: value}}, {targetId: markId})`` — the keys the
     equality marks ``present`` put on their targets, composed as
     :func:`appearance_plan` composes them (the first mark in ID order wins a
-    key), and the mark whose ``tick_count`` each target draws.
+    key), and the mark whose ``tick_count`` each target draws. Internal
+    ``_mark_*`` keys go to decoration attributes, not element style.
     ``decorations`` — those of :func:`_appearance_plan`."""
     keys, owner = {}, {}
     for mark_id, targets, _applied in decorations:
@@ -235,14 +241,31 @@ def _mark_style(decorations, present) -> tuple:
     return keys, owner
 
 
+# Internal decoration channels never enter the body's style resolver.
+_MARK_ATTRIBUTES = {'_mark_stroke': '_native_mark_stroke', '_mark_id': '_native_mark_id',
+                    '_mark_explicit': '_native_mark_explicit'}
+
+
+def _write_mark_key(elem, key, value, *, remove=False):
+    attr = _MARK_ATTRIBUTES.get(key)
+    if attr is not None:
+        setattr(elem, attr, None if remove else value)
+    elif remove:
+        elem.style.pop(key, None)
+    else:
+        elem.style[key] = value
+
+
 def _mark_count(doc, mark_id, record):
-    """The count of an equality mark: its value, else (undefined) the literal of its op."""
+    """The count: its value, else (undefined) the op's literal or default."""
     if record.get('state') == 'defined':
         return record['value']['count']
     from .document import bound_producer
     from .kernel.ops.mark import COUNTS
     producer = bound_producer(doc, mark_id)
     arg = doc.operations[producer].get('args', {}).get('count') if producer is not None else None
+    if arg is None:
+        return 1  # both equality operations default to one, also before they become defined
     value = arg.get('value') if isinstance(arg, dict) and arg.get('kind') == 'number' else None
     return int(value) if isinstance(value, (int, float)) and value in COUNTS else None
 
@@ -252,7 +275,8 @@ def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> t
     (1.11.0rc5): ``[(markId, {targetId: {key: value}}, applied)]`` in ID
     order — the keys each mark puts on its targets while it is in the frame
     (``tick_count`` and its :data:`~animageo.native.paint.MARK_TRANSFERS`
-    without the keys a target sets itself), whatever its visibility in the
+    without the count/size keys a target sets itself, plus the separate
+    decoration channels), whatever its visibility in the
     document; ``applied`` — the plan puts them (the mark is visible and
     defined). The frame of a timeline puts those of the marks it shows
     (``AnimaGeoScene._sync_mark_decorations``)."""
@@ -343,14 +367,24 @@ def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> t
             overrides = entry.get('overrides') if isinstance(entry, dict) else None
             passed = {key: overrides[key] for key in MARK_TRANSFERS.get(style_type_of(doc, mark_id), ())
                       if isinstance(overrides, dict) and key in overrides}
+            # A missing stroke occupies the channel too: a later mark must
+            # not colour the first mark's ticks. Target stroke is the fallback.
+            stroke = passed.pop('stroke', None)
+            # Only a drawn count is explicit: a colour alone keeps the square of a right angle.
+            explicit = isinstance(overrides, dict) and 'tick_count' in overrides
             keys = {'tick_count': count, **dict(sorted(passed.items()))}
+            keys.update(_mark_stroke=stroke, _mark_id=mark_id, _mark_explicit=explicit)
             decorations.append((mark_id, {target: {k: v for k, v in keys.items() if k not in own[target]}
                                           for target in targets[mark_id]},
                                 defined and plan[mark_id]['visible']))
         style, _owner = _mark_style(decorations, {mark_id for mark_id, _t, applied in decorations if applied})
         for target, keys in style.items():
             for key, value in keys.items():
-                plan[target]['style'].setdefault(key, value)
+                if key in _MARK_ATTRIBUTES:
+                    plan[target].setdefault('decoration', {})[key.removeprefix('_mark_')] = value
+                else:
+                    plan[target]['style'].setdefault(key, value)
+            plan[target]['decoration']['owner'] = plan[target]['decoration'].pop('id')
     return plan, diagnostics, decorations
 
 
@@ -371,6 +405,10 @@ def apply_appearance(construction, names, plan) -> None:
             elem.visible = entry['visible']
         for key, value in entry['style'].items():
             elem.style[key] = value
+        decoration = entry.get('decoration', {})
+        for key, attr in _MARK_ATTRIBUTES.items():
+            field = 'owner' if key == '_mark_id' else key.removeprefix('_mark_')
+            setattr(elem, attr, decoration.get(field))
         if not isinstance(elem, geo.Element) or not geo.is_drawn(elem.data):
             elem.style['label_visible'] = False
 
@@ -890,6 +928,7 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
     """The ``animageo-render-report/v1`` of a scene loaded by ``loadDocument``."""
     from .. import __version__
     from .kernel.evaluate import evaluate
+    from .paint import _scene_decoration, style_type_of
     from .registry import REGISTRY_VERSION
 
     doc = as_document(doc)
@@ -914,6 +953,9 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
         if role is not None:
             record['role'] = role
         if mobj is not None:
+            decoration = _scene_decoration(scene, elem, style_type_of(doc, el_id))
+            if decoration is not None:
+                record['decoration'] = decoration
             box = _leaf_boxes(mobj, labels=False)
             if states[el_id]['state'] == 'defined' and states[el_id]['type'] == 'locus':
                 box = _locus_box(states[el_id]['value'])
