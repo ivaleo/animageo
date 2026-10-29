@@ -28,6 +28,7 @@ from xml.etree import ElementTree
 
 import pytest
 
+from animageo import native
 from animageo.native.convert import LIMITS, ImportRefused, from_ggb
 from tests.native.conftest import REPO_ROOT
 from tests.native.ggb_synth import command, element, expression, ggb_bytes, ggb_xml, line_style, point, triangle
@@ -121,7 +122,7 @@ def rich_body() -> str:
             + command('Circle', ['A', 'n'], ['c2']) + element('conic', 'c2', extra='<matrix A0="1" A1="1" A2="-4"'
                                                                                    ' A3="0" A4="0" A5="0"/>')
             + expression('d', 'Distance(A, B) + 2 n') + element('numeric', 'd', extra='<value val="8"/>')
-            + command('Ellipse', ['A', 'B', 'C'], ['e'])
+            + command('Ellipse', ['A', 'B', '3'], ['e'])      # by a semi-axis: still no op
             + element('conic', 'e', extra='<matrix A0="1" A1="2" A2="-9" A3="0" A4="0" A5="0"/>')
             + command('Point', ['e'], ['P']) + point('P', 3.0, 0.0)
             + expression('f', 'x^2') + element('function', 'f')
@@ -416,7 +417,15 @@ def test_markup_in_captions_and_texts(caption):
     q = _by_name(rep)['Q']
     assert q['category'] == 'editable'
     assert q['label']['caption'] == caption[:500]
-    assert _by_name(rep)['T']['category'] in ('picture', 'unsupported')
+    t = _by_name(rep)['T']
+    assert t['category'] in ('picture', 'unsupported', 'editable')
+    if t['category'] == 'editable':
+        # data, not markup: the literal survives verbatim (a LaTeX text as math), nothing is evaluated
+        assert t['value_check'] == 'passed'
+        shown = native.evaluate(doc).elements[t['native_ids'][0]]['value']['text']
+        assert caption.replace('"', '') in shown and len(shown) <= len(caption) + 2
+    else:
+        assert t['native_ids'] == []
     if doc is not None:
         app = doc['appearance'][q['native_ids'][0]]
         assert app['label']['text'] == caption       # data: escaping is the renderer's business

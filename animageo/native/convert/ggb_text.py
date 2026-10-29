@@ -4,6 +4,7 @@ from __future__ import annotations
 import copy
 import math
 import re
+import unicodedata
 
 from .construction import Record
 from .keys import element_id, operation_id
@@ -28,6 +29,9 @@ _ESCAPES = frozenset(' ,:;!%&#_{}$|')
 
 def inline_tex(text, latex):
     """Return native inline math only when the source has the same meaning."""
+    if any(unicodedata.category(ch)[0] == 'C' and ch not in '\n\t' for ch in text):
+        # direction overrides, zero-width and private characters: not a text the renderers agree on
+        raise ValueError('управляющий символ в тексте')
     if not latex:
         if '$' in text:
             raise ValueError('обычный текст с долларом требует буквального отображения')

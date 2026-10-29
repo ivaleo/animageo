@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Native GeoGebra import distinguishes standard TeX from unknown user macros.
   Supported mathematical and plain texts become editable `text.free` templates
   after checking their displayed value and anchor; object inserts stay live,
-  hidden texts stay hidden, and unsupported syntax keeps an explicit fallback.
+  hidden texts stay hidden, and unsupported syntax or control characters keep
+  an explicit fallback.
 - Native import translates focal ellipses and hyperbolas, parabolas, five-point
   conics, numeric conic equations and conic parts through existing registry ops.
   Line/conic intersections retain their chosen branches when inputs move.

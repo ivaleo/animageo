@@ -60,11 +60,17 @@ def test_dynamic_segment_length_uses_live_measure():
 
 
 @pytest.mark.parametrize('source', [r'\myMacro{x}', r'\def\x{1}\x', r'\input{file}', r'\frac{1}{2', '$$x$$', '$x',
-                                    'a & b', r'x % y', '#1', r'\frac{1}{2} \\ x'])
+                                    'a & b', r'x % y', '#1', r'\frac{1}{2} \\ x', '\u202e', 'a\u200bb'])
 def test_unknown_or_malformed_tex_has_reason_and_no_editable_copy(source):
     doc, items = imported(text('t', '"' + source + '"'))
     assert doc is None
     assert items['t']['category'] == 'picture' and items['t']['reason'] == 'latex_macros'
+    assert items['t']['detail'] and items['t']['native_ids'] == []
+
+
+def test_plain_text_with_control_characters_stays_a_picture():
+    doc, items = imported(text('t', '"right\u202eleft"', latex=False))
+    assert items['t']['category'] == 'picture' and items['t']['reason'] == 'fixed_text'
     assert items['t']['detail'] and items['t']['native_ids'] == []
 
 
