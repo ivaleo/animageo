@@ -7,6 +7,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0] - 2026-10-29
+
+Stable release of the native kernel and the classic renderer from
+1.11.0rc1–rc14, including the fixes of the stable 1.7.15–1.7.17 line.
+The plane operation registry is `1.7`; the experimental space registry
+is `1.0`. Detailed candidate entries follow below.
+
+### Added
+
+- Native documents, deterministic evaluation, construction steps, checks,
+  commands, GGB import and conversion, timelines and SVG/PNG/PDF/EPS/TikZ
+  and video rendering. The public API and operation signatures have
+  compatibility snapshots and a deprecation policy.
+- Native graphs, conics, axes and grids; common tangents, circle segments,
+  cevians, the nine-point circle and Euler line. Experimental space
+  constructions include polyhedra and plane sections.
+- Shared style and paint contracts (`style_keys`, `resolve_paint`), label
+  halos and typography runs, equality-mark colour and drawn tick count,
+  and timeline effects available to downstream renderers.
+
+### Fixed
+
+- Greek letters in text-mode captions and free texts (`γ`, `ω_1`,
+  `cos α`, a bare `\alpha`) render in classic and native scenes;
+  failed TeX bodies are cached for the process (1.7.17). Unicode
+  subscript digits (`A₁`, `B₁₂`) render as TeX indices too.
+- Native free texts support inline math and preserve Cyrillic glyphs,
+  literal escaped dollars and delimiter semantics. Dynamic value labels
+  match the static text, glyph spacing and baseline.
+- Still frames and video agree on timeline state, effects, labels,
+  equality marks, vector tips, line caps and transparent angle fills.
+  Hidden solids no longer prevent their sections from rendering.
+- GeoGebra dynamic captions and delimiter-free imported LaTeX formulas
+  resolve correctly (1.7.15). Saved intersection coordinates and stable
+  solution slots preserve the chosen branch; missing declared outputs
+  become undefined and update dependents (1.7.16). Indexed sector/line
+  intersections retain GeoGebra's arc-only numbering.
+- Damaged cyclic GGB protocol groups fall back to dependency-ordered
+  construction steps. Numeric fixture checks tolerate libm rounding
+  differences while keeping structural comparisons exact.
+
+### Changed
+
+- Package imports are lazy; the classic API remains available without
+  importing manim until needed. Deprecated API removal targets 2.0.
+- Classic geometry fixes cover degenerate constructions, missing command
+  outputs, signature aliases, vector values and polygon equality; see
+  the compatibility table under 1.11.0rc1.
+
+### Security
+
+- Label TeX compiles with `-no-shell-escape`. GGB code parsing and native
+  kernel checks restrict executable input; kernel checks cover indirect
+  execution and imports as well.
+
 ## [1.11.0rc14] - 2026-10-27
 
 ### Fixed
