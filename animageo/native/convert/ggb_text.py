@@ -85,6 +85,40 @@ def _source_ok(expr, labels):
     return len(expr) <= 10000 and re.fullmatch(r'\s*' + token + r'(?:\s*\+\s*' + token + r')*\s*', expr) is not None
 
 
+def snapshot_captions(infos, point_of, view, decimals, classic_of, split):
+    """Freeze referenced GeoText values, including hidden/unplaced sources.
+
+    Reuse the saved-value text evaluation, without requiring a live native
+    text or introducing a dependency from the caption owner to its source.
+    """
+    from .ggb import text_extras
+    by_name = {info['label']: info for info in infos}
+    snapshots = {}
+    for info in infos:
+        if 'dynamic_caption' not in info:
+            continue
+        ref = info['dynamic_caption']
+        if ref not in snapshots:
+            try:
+                source = by_name.get(ref)
+                if not source or source['type'] != 'text':
+                    raise ValueError('источник динамической подписи не является GeoText')
+                if source.get('command') != 'Expression' or not source.get('inputs') or not _source_ok(
+                        source['inputs'][0], by_name):
+                    raise ValueError('выражение текста подписи не поддерживается')
+                value = text_extras(source, by_name, point_of, view, decimals, classic_of, split)
+                if 'shown' not in value:
+                    raise ValueError('текущее значение текста подписи не получено')
+                shown = inline_tex(value['shown'], source.get('latex'))
+                if not source.get('latex') and '\\' in shown:
+                    inline_tex(shown, True)  # labels also accept bare TeX commands
+                snapshots[ref] = ('caption_snapshot', shown)
+            except ValueError as exc:
+                snapshots[ref] = ('caption_error', str(exc))
+        key, value = snapshots[ref]
+        info[key] = value
+
+
 def promote_texts(doc, entries, namespace):
     """Promote only texts whose shown value and anchor evaluate exactly.
 

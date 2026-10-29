@@ -36,7 +36,7 @@ PURPOSE = {
                          'M': ('closure', 'depends_on_unsupported')},
     'formula_argument': {"I'": ('picture', 'formula_unsupported'), 'M': ('picture', 'depends_on_unsupported')},
     'dropped_effects': {'all': 'editable',
-                        'dropped': {'conditional_visibility', 'dynamic_color', 'animation', 'layers'}},
+                        'dropped': {'conditional_visibility', 'dynamic_color', 'animation'}},
     'random_point': {'R': ('picture', 'random_point')},
     'style_labels': {'all': 'editable'},
     'ui_objects': {'tf': ('unsupported', 'ui_object'), 'cb': ('unsupported', 'ui_object'), 'n': ('editable', None)},

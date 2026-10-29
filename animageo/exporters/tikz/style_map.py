@@ -66,6 +66,12 @@ def dash_options(ctx: TikzContext, elem, *, width_px=None, cap=None) -> Optional
         ctx.scene, elem, resolve=lambda e, k, d=None: ctx.resolve(e, k, default=d))
     if dash_px is None:
         return None
+    from ...dash import explicit_dash_px
+    if explicit_dash_px(ctx.resolve(elem, 'stroke_dash_pattern_px', default=None)):
+        p = ctx.opt.size_precision
+        return 'dash pattern=' + ' '.join(
+            f'{"on" if i % 2 == 0 else "off"} {fmt_num(ctx.size_pt(v), p)}pt'
+            for i, v in enumerate(dash_px))
     on_px, off_px = dash_px
     pat = dash_pattern(0.0, ctx.size_pt(on_px), ctx.size_pt(off_px))
     p = ctx.opt.size_precision

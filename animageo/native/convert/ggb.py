@@ -276,6 +276,12 @@ def scan(root) -> dict:
             lm = node.find('labelMode')
             if lm is not None and lm.attrib.get('val', '').lstrip('-').isdigit():
                 info['label_mode'] = int(lm.attrib['val'])
+            offset = node.find('labelOffset')
+            if offset is not None:
+                info['label_offset'] = [_float(offset.attrib.get(k)) for k in ('x', 'y')]
+            dynamic_caption = node.find('dynamicCaption')
+            if dynamic_caption is not None:
+                info['dynamic_caption'] = dynamic_caption.attrib.get('val', '')
             cap = node.find('caption')
             if cap is not None:
                 info['caption'] = cap.attrib.get('val', '')
@@ -299,9 +305,13 @@ def scan(root) -> dict:
                     if v is not None:
                         info[key] = int(v) if key != 'point_size' else v
             layer = node.find('layer')
-            if layer is not None and _float(layer.attrib.get('val')) not in (None, 0):
-                info['layer'] = int(_float(layer.attrib.get('val')))
-                drop('layers', label)
+            if layer is not None:
+                level = _float(layer.attrib.get('val'))
+                if level is None or level not in range(10):
+                    info['layer_invalid'] = layer.attrib.get('val', '')[:80]
+                    drop('layers', label)
+                elif level:
+                    info['layer'] = int(level)
             coords = node.find('coords')
             if coords is not None:
                 c = {k: _float(v) for k, v in coords.attrib.items()}
@@ -318,6 +328,7 @@ def scan(root) -> dict:
             if slider is not None:
                 info['slider'] = {k: _float(slider.attrib.get(k)) for k in ('min', 'max', 'step')
                                   if slider.attrib.get(k) is not None}
+                info['slider_raw'] = dict(slider.attrib)
             sp = node.find('startPoint')
             if sp is not None:
                 if 'exp' in sp.attrib:
@@ -339,8 +350,12 @@ def scan(root) -> dict:
             if node.find('dynamicColor') is not None:
                 drop('dynamic_color', label)
             anim = node.find('animation')
-            if anim is not None and anim.attrib.get('playing') == 'true':
-                drop('animation', label)
+            if anim is not None:
+                info['animation'] = dict(anim.attrib)
+                if slider is not None and 'step' in anim.attrib:
+                    info['slider']['step'] = _float(anim.attrib['step'])
+                if anim.attrib.get('playing') == 'true':
+                    drop('animation', label)
             bp = node.find('breakpoint')
             if bp is not None and bp.attrib.get('val') == 'true':
                 info['breakpoint'] = True

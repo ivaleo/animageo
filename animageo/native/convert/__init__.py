@@ -224,7 +224,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     from .ggb_expr import ExprError, names_in, parse_number
     from ..document import iter_refs
     from .keys import make_id
-    from .style import appearance, ggb_style, label_of
+    from .style import appearance, ggb_style, label_of, layer_overrides, property_warnings
     if mode not in ('strict', 'partial'):
         raise ValueError('mode must be strict or partial')
     ns = namespace_of(id_namespace)
@@ -268,6 +268,11 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         el = constr.element(norm[label]) if label in norm else None
         return getattr(el, 'data', None)
 
+    from .ggb_text import snapshot_captions
+    snapshot_captions(infos, point_of, sc['view'], sc.get('decimals'), classic_of, split_text_parts)
+    properties = [w for info in infos for w in property_warnings(info, sc['view'])]
+    invalid_sliders = {w['ggb_name'] for w in properties if w['code'] == 'slider_range_dropped'}
+
     diag_outputs = {}
     for d in getattr(constr, 'command_diagnostics', []):
         for o in d.get('outputs', []):
@@ -304,7 +309,10 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
             if v and v['value'] is not None:
                 ctx.free_points[n] = v['value']
         if t in ('numeric', 'angle') and info.get('value') is not None:
-            ctx.free_numbers[n] = {'value': info['value'], 'angle': t == 'angle', **info.get('slider', {})}
+            slider = info.get('slider', {})
+            if info['label'] in invalid_sliders:
+                slider = {}
+            ctx.free_numbers[n] = {'value': info['value'], 'angle': t == 'angle', **slider}
         reason = None
         if info.get('script'):
             reason = ('script', 'объект со скриптом GeoGebra (скрипт не переносится)')
@@ -331,7 +339,11 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
                       else f'команда {command} не переносится')
         if reason:
             ctx.forced[n] = reason
-        app = appearance(info, None)
+        app = appearance(info, t, view=sc['view'])
+        if (app.get('label') or {}).get('mode') in ('value', 'name_value') and t != 'numeric':
+            decimals = sc.get('decimals')
+            if decimals is not None and 0 <= decimals <= 15 and decimals == int(decimals):
+                app.setdefault('overrides', {})['label_value_precision'] = int(decimals)
         if app:
             ctx.appearance[n] = app
     _read_formulas(infos, norm, ctx, built_by_command, parse_number, ExprError)
@@ -441,9 +453,24 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
                            else f'аргумент задан выражением: {exprs[0]}')
     categorize(entries)
     settle(entries, refs_of)
+    for e in entries:
+        if e['category'] == 'editable' and e['info'].get('show_label') and 'caption_snapshot' in e['info']:
+            # Geometry stays live; a frozen caption is not a fully editable import.
+            e.update(category='differs', reason='value_unchecked', value_check='not_checked',
+                     detail='Сохранён текущий текст динамической подписи; подпись не пересчитывается.')
     keep = {nid for e in entries if e['category'] in ('editable', 'differs') for nid in e['native_ids']}
     # an editable/differs element produced together with a dropped one keeps only its own element
     _prune(doc, keep | {helper for nid in keep for helper in helpers.get(nid, ())})
+    if any(info.get('layer') for info in infos):
+        for e in entries:
+            if e['category'] in ('editable', 'differs'):
+                for nid in e['native_ids']:
+                    el = doc['elements'].get(nid)
+                    if el and el['type'] not in ('number', 'expr', 'template', 'mark'):
+                        doc['appearance'].setdefault(nid, {}).setdefault('overrides', {}).update(
+                            layer_overrides(e['info'], el['type']))
+            elif e['info'].get('layer'):
+                sc['dropped'].setdefault('layers', []).append(e['name'])
     # steps from breakpoints of the construction protocol
     steps = []
     group = []
@@ -507,8 +534,9 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
                 item['delta'] = rec.delta
         lab = label_of(info, None)
         if lab is not None:
+            caption = lab.get('text', info.get('caption'))
             item['label'] = {'visible': lab['mode'] != 'none', 'mode': lab['mode'],
-                             **({'caption': info['caption'][:500]} if info.get('caption') else {})}
+                             **({'caption': caption[:500]} if caption is not None else {})}
         st = ggb_style(info)
         if st:
             item['ggb_style'] = st
@@ -528,7 +556,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         if names:
             entry['names'] = names[:50]
         drop_list.append(entry)
-    warnings = []
+    warnings = list(properties)
     if protocol_steps_dropped:
         warnings.append({'code': 'protocol_steps_dropped',
                          'detail': 'Construction protocol groups contradict the dependency order.'})

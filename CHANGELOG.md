@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Native GeoGebra import preserves the pixel lengths of short/long dashes,
+  dots and dash-dot strokes, including width and opacity. Explicit dash
+  sequences stay unchanged by path fitting in SVG/PDF/EPS, TikZ and video.
+- Nonzero GeoGebra layers carry the order of fills, strokes and labels into
+  native appearance. Label modes, visibility and offsets are retained where
+  supported; unsupported value/caption modes have explicit warnings.
+- Dynamic GeoGebra captions retain the current displayed value of their
+  referenced text as a static native caption. The import reports the frozen
+  label as simplified; unknown text/TeX and control characters have explicit
+  reasons when a caption cannot be retained.
+- Slider steps are read from the animation settings alongside numeric bounds.
+  Invalid or dynamic bounds, slider UI and automatic animation settings
+  (playing, speed, type and step) are reported instead of silently discarded.
+
 ## [1.11.1] - 2026-10-29
 
 ### Fixed

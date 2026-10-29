@@ -428,7 +428,12 @@ def test_markup_in_captions_and_texts(caption):
         assert t['native_ids'] == []
     if doc is not None:
         app = doc['appearance'][q['native_ids'][0]]
-        assert app['label']['text'] == caption       # data: escaping is the renderer's business
+        if any(w['code'] == 'label_caption_unsupported' and w.get('ggb_name') == 'Q'
+               for w in rep['warnings']):
+            # GeoGebra substitutions stay in the report; native cannot render them faithfully.
+            assert app['label']['mode'] == 'none'
+        else:
+            assert app['label']['text'] == caption  # data: escaping is the renderer's business
 
 
 def _quote(text: str) -> str:

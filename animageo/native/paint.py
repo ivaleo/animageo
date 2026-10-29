@@ -42,7 +42,7 @@ _UNITS = {
     'arc_shift_px': 'px', 'right_angle_size_px': 'px', 'hatch_spacing_px': 'px', 'hatch_width_px': 'px',
     'label_halo_px': 'px',
     'stroke_opacity': 'opacity', 'fill_opacity': 'opacity', 'hatch_opacity': 'opacity', 'label_halo_opacity': 'opacity',
-    'stroke_dash_ratio': 'ratio',
+    'stroke_dash_ratio': 'ratio', 'stroke_dash_pattern_px': 'px[]', 'z_index_label': 'number',
     'hatch_angle_deg': 'deg',
     'tick_count': 'count', 'label_value_precision': 'count',
     'point_shape': 'enum', 'stroke_linecap': 'enum', 'tick_style': 'enum', 'angle_range': 'enum',
@@ -53,13 +53,13 @@ _UNITS = {
 }
 
 _STROKE = ('stroke', 'stroke_width_px', 'stroke_opacity')
-_DASH = ('stroke_dash_ratio', 'stroke_dash_period_px')
+_DASH = ('stroke_dash_ratio', 'stroke_dash_period_px', 'stroke_dash_pattern_px')
 _FILL = ('fill', 'fill_opacity')
 _HATCH = ('fill_pattern', 'hatch_angle_deg', 'hatch_spacing_px', 'hatch_width_px', 'hatch_color', 'hatch_opacity')
 _TICKS = ('tick_count', 'tick_style', 'tick_length_px', 'tick_width_px', 'tick_shift_px', 'tick_radius_px')
 # the halo of a label: a stroke of its glyphs under them (``labels.resolve_label_halo``)
 _HALO = ('label_halo_px', 'label_halo_color', 'label_halo_opacity')
-_LABEL = ('label_color', 'font_size_px', 'label_anchor') + _HALO
+_LABEL = ('label_color', 'font_size_px', 'label_anchor', 'z_index_label') + _HALO
 _VALUE = ('label_value_precision', 'label_value_strip_zeros', 'label_value_separator')
 _ANGLE = ('angle_range', 'arc_size_px', 'arc_shift_px', 'tick_count', 'auto_radius', 'right_angle_marker',
           'right_angle_size_px', 'right_angle_joint', 'label_radial_offset_px', 'label_angle_unit')
@@ -341,6 +341,11 @@ def _dash(final, elem, type_, data, unit, width_px, cap):
     nominal = element_dash_px(final, elem)
     if nominal is None:
         return None
+    from ..dash import explicit_dash_px
+    from ..style.resolver import resolve
+    if explicit_dash_px(resolve(final, elem, 'stroke_dash_pattern_px', default=None)):
+        return {'patternPx': [_r(v) for v in nominal], 'fit': 'none',
+                'drawn': {'patternPx': [_r(v) for v in nominal], 'offsetPx': 0.0}}
     on_px, off_px = nominal
     fit = _DASH_FIT.get(type_)
     length = None
@@ -691,7 +696,8 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             z = _Z_AUTO_BY_CLASS.get(type(data).__name__, _Z_FILL)
         tie = construction.elements.index(elem) * _Z_ORDER_EPSILON
         entry['z'] = _r(_num(z) + tie)
-        z_label = _r((_Z_FILL_LABEL if _num(z) == _Z_FILL else _Z_LABEL) + tie)
+        default_label_z = _Z_FILL_LABEL if _num(z) == _Z_FILL else _Z_LABEL
+        z_label = _r(_num(value('z_index_label', None), default_label_z) + tie)
         layers.append((_num(z) + tie, el_id))
         point = style_type == 'point'
         stroke_default = strong              # ``_build_render_ctx``: ``style.strong``, a point filled with it

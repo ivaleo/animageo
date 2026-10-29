@@ -14,6 +14,9 @@ Style contract (the web relies on these names):
 - ``stroke_dash_period_px`` — dash + gap in style pixels (the unit of
   ``stroke_width_px``); becomes MU through ``/ ptUnit_style``, so it follows the
   style prominence and not the zoom of the geometry.
+- ``stroke_dash_pattern_px`` — an explicit sequence of 2 or 4 style-pixel
+  lengths, preferred to ratio/period and never fitted to the path; ``[]``
+  explicitly selects a solid stroke.
 - ``rendering.dash_period_px`` — style-wide fallback period, default 10.
 """
 from __future__ import annotations
@@ -32,6 +35,8 @@ __all__ = [
     'dash_period_px',
     'rendering_dash_period_px',
     'element_dash_px',
+    'explicit_dash_px',
+    'explicit_pattern',
     'dash_pattern',
     'path_length',
     'set_dash',
@@ -59,15 +64,22 @@ class DashPattern:
 
     ``offset`` is the position inside the pattern where the path starts
     (cairo ``set_dash`` offset / SVG ``stroke-dashoffset`` / TikZ
-    ``dash phase``), normalised to ``[0, on + off)``.
+    ``dash phase``), normalised to ``[0, period)``. ``tail`` holds the
+    optional second on/off pair of a dash-dot stroke; ``lengths`` gives
+    the complete cairo/SVG sequence.
     """
     on: float
     off: float
     offset: float = 0.0
+    tail: tuple = ()
+
+    @property
+    def lengths(self) -> tuple:
+        return (self.on, self.off) + self.tail
 
     @property
     def period(self) -> float:
-        return self.on + self.off
+        return sum(self.lengths)
 
 
 def _finite_number(value) -> Optional[float]:
@@ -118,8 +130,22 @@ def rendering_dash_period_px(scene) -> float:
     return DEFAULT_DASH_PERIOD_PX
 
 
-def element_dash_px(scene, elem, resolve=None) -> Optional[Tuple[float, float]]:
-    """Nominal ``(dash_px, gap_px)`` of an element in style pixels, or ``None``.
+def explicit_dash_px(value):
+    """A bounded, even sequence of positive style-pixel lengths, or None."""
+    if not isinstance(value, (list, tuple)) or len(value) not in (2, 4):
+        return None
+    values = tuple(_finite_number(v) for v in value)
+    return values if all(v is not None and 0 < v <= 10000 for v in values) else None
+
+
+def explicit_pattern(lengths, unit=1.0, phase=0.0):
+    """Keep an explicit pixel pattern unchanged by path fitting."""
+    values = tuple(v / unit for v in lengths)
+    return DashPattern(values[0], values[1], phase % sum(values), values[2:])
+
+
+def element_dash_px(scene, elem, resolve=None) -> Optional[Tuple[float, ...]]:
+    """Nominal on/off lengths (2 or 4) in style pixels, or ``None``.
 
     ``resolve(elem, key, default)`` defaults to the style resolver; exporters
     pass their own context's ``resolve`` (same chain).
@@ -129,6 +155,9 @@ def element_dash_px(scene, elem, resolve=None) -> Optional[Tuple[float, float]]:
 
         def resolve(e, key, default=None):
             return _resolve(scene, e, key, default=default)
+    explicit = resolve(elem, 'stroke_dash_pattern_px', None)
+    if explicit is not None:
+        return explicit_dash_px(explicit)
     r = dash_ratio(resolve(elem, 'stroke_dash_ratio', None))
     if r is None:
         return None
@@ -230,5 +259,5 @@ def apply_cairo_dash(ctx, mobject) -> bool:
     if pattern is None:
         ctx.set_dash([])
         return False
-    ctx.set_dash([pattern.on, pattern.off], pattern.offset)
+    ctx.set_dash(list(pattern.lengths), pattern.offset)
     return True

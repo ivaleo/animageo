@@ -3494,7 +3494,7 @@ class AnimaGeoScene(MovingCameraScene):
         # decoration the period becomes MU through ptUnit_style, so it follows
         # the style prominence, not the zoom of the geometry.
         dash = dash_ratio(_resolve_style(self, elem, 'stroke_dash_ratio', default=None))
-        dash_px = element_dash_px(self, elem) if dash is not None else None
+        dash_px = element_dash_px(self, elem)
         cap = _resolve_style(
             self, elem, 'stroke_linecap',
             default=style.rendering.get('line_cap', 'butt'),
@@ -3561,13 +3561,16 @@ class AnimaGeoScene(MovingCameraScene):
             except (TypeError, ValueError):
                 return value
 
-        zz_label = Z_FILL_LABEL if zz == Z_FILL else Z_LABEL
+        zz_label = _resolve_style(self, elem, 'z_index_label', default=None)
+        if zz_label is None:
+            zz_label = Z_FILL_LABEL if zz == Z_FILL else Z_LABEL
         zz = _ordered_z(zz)
         zz_fill = _ordered_z(zz_fill)
         zz_stroke = Z_STROKE + z_tie
         zz_label = zz_label + z_tie
 
         return SimpleNamespace(
+            dash_explicit=_resolve_style(self, elem, 'stroke_dash_pattern_px', default=None) is not None,
             style=style,
             ptUnit=ptUnit, ptUnit_style=ptUnit_style, ptUnit_ggb=ptUnit_ggb,
             col_s=col_s, col_f=col_f,
@@ -3623,6 +3626,10 @@ class AnimaGeoScene(MovingCameraScene):
         if not ctx.dash_px:
             return vm
         vm.cap_style = CapStyleType.BUTT
+        from .dash import explicit_pattern
+        if ctx.dash_explicit:
+            set_dash(vm, explicit_pattern(ctx.dash_px, ctx.ptUnit_style, phase_mu))
+            return vm
         on_px, off_px = ctx.dash_px
         length = path_length(vm.points) if fit != 'none' else 0.0
         set_dash(vm, dash_pattern(

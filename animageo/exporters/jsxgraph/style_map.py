@@ -61,6 +61,8 @@ def _dash_value(ctx: JsxContext, elem) -> Optional[int]:
         ctx.scene, elem, resolve=lambda e, k, d=None: ctx.resolve(e, k, default=d))
     if dash_px is None:
         return None
+    if len(dash_px) == 4:
+        return 6  # JSXGraph's dash-dot preset; exact lengths belong to static exports.
     on, off = dash_px
 
     def dist(pattern):

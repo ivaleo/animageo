@@ -220,14 +220,75 @@ expression it cannot parse) is not editable.
 Each entry also carries `command`, `signature`, `detail` (Russian), `ggb_value`,
 `native_value`, `delta`, `label {visible, mode, caption?}`, `ggb_style` (keys
 of `appearance.overrides` the classic `loadGGB` would give: colours 6-digit
-hex, thickness / 2 px, point size × 2 px, dash 0.65, the point shape,
+hex, thickness / 2 px, point size × 2 px, exact dash sequences, the point shape,
 `angle_range`), `hidden`, `layer`. The document carries `appearance.visible`
-and `appearance.label` only; the colours are the web's decision (decision 8).
+and `appearance.label`; layer order and value-label precision also use
+`appearance.overrides`. The colours are the web's decision (decision 8).
 `dropped`: `script` (a non-default global `ggbOnInit` too), `animation`,
 `conditional_visibility`, `dynamic_color`, `layers`, `3d`, `cas`, `image`
 with `names` (≤ 50). `warnings`: `{code, ggb_name?, detail?}`.
 `document_hash` is `native.content_hash` of the document.
 `report_problems(report, document)` checks the rules the schema cannot.
+
+### Imported appearance and sliders
+
+`lineStyle` types 0, 10, 15, 20 and 30 use the pixel sequences of
+[GeoGebra's `EuclidianStatic.getStroke`](https://github.com/geogebra/geogebra/blob/main/source/shared/common/src/main/java/org/geogebra/common/euclidian/EuclidianStatic.java).
+For width `w = thickness / 2`, the sequences are solid (`[]`),
+`[4+w, 4]`, `[8+w, 8]`, `[w, 3]` and `[8+w, 4, w, 4]`.
+`ggb_style.stroke_dash_pattern_px` is authoritative. Its 2 or 4 positive
+lengths are style pixels; an empty array explicitly selects a solid stroke.
+Unlike `stroke_dash_ratio` / `stroke_dash_period_px`, an explicit sequence
+is never fitted to path ends or a closed circumference. SVG, PDF, EPS, TikZ
+and the video camera use the same lengths. JSXGraph uses its nearest fixed
+preset, including preset 6 for dash-dot. Ratio and period remain in the
+report for older consumers; they approximate dash-dot. Unknown line styles,
+and dashed polygon/angle/sector outlines unsupported by the renderer, have
+`line_style_unsupported` warnings.
+
+If any object has a nonzero layer, imported drawn elements receive separate
+`z_index`, `z_index_fill` and `z_index_label` values, with 100 native z units
+between consecutive GeoGebra layers. This places every fill, outline and
+label above the previous layer. Invalid layers and layers of untranslated
+objects remain `dropped: layers`; translated layers do not.
+
+Label modes 0–3 map to `name`, `name_value`, `value` and `caption`.
+Scalar values of segments, vectors, polygons and angles remain live and
+use the file's decimal precision. Dynamic captions referencing GeoText keep
+that text's current displayed value as a static `caption`, including hidden
+text sources and texts without a native anchor. The same saved-value text
+evaluation and conservative TeX checks as editable text import apply.
+Visible frozen captions have `label_caption_simplified` warnings and keep
+their live geometry, while their report entries are `differs` with reason
+`value_unchecked`, `value_check: not_checked` and the explicit detail
+that the caption does not recompute. They count as `simplified` in audits.
+Missing/unknown text expressions, unsupported TeX commands (including file
+access) and control characters hide the caption with a specific
+`label_caption_unsupported` reason. Hidden captions remain hidden without
+simplifying their geometry. Coordinate/equation labels, caption+value
+(mode 9) without a resolved dynamic caption, and `%n`/`%v`/coordinate
+caption substitutions also have explicit warnings and a hidden label.
+Visibility is retained. `labelOffset` becomes `label.offsetWorld`, divided
+by the source view's x/y scales with its screen Y inverted. A missing or
+invalid scale has `label_offset_dropped`; the displacement is relative to
+the native label anchor, not a claim of pixel-identical GeoGebra placement.
+
+Numeric slider bounds come from `<slider min max>` and their step from
+`<animation step>` (the legacy `slider step` is also accepted). Numeric
+literal bounds and positive steps go to `number.free` / `number.angle`.
+Dynamic, nonfinite or inconsistent bounds and invalid steps have
+`slider_range_dropped`; the saved number remains editable without these
+constraints. Native number operations retain a step for UI consumers and
+clamp to bounds; they do not quantize values. The slider bar and its label
+are not drawn and have `slider_display_dropped`. No timeline is synthesized:
+`playing=true` is `dropped: animation`, while
+`animation_settings_dropped` lists playing, speed, type and step even for
+a paused animation.
+
+Consumers must accept the new explicit dash sequence and label z key, and
+retain layer/precision overrides when choosing their own colours. The web
+integration needs its generated style contract and its validation/semantic
+key lists updated together; older consumers can only use the ratio fallback.
 
 `ggb_value` of a text (1.10.0a2, `native.has("import_report.text_template")`)
 is `{kind: "text", text, anchor, anchor_ref?, screen?, template?, refs?,

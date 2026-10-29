@@ -7,17 +7,25 @@ from animageo.native import parity
 from animageo.native._fixture_compare import same_fixture
 from tests.native.conftest import NATIVE_DIR, REPO_ROOT
 from tests.native.ggb_synth import command, point
+from tests.native.ggb_imp5 import slider_body, labels_body, layers_body
 from tests.native.test_native_ggb_conics import conic_branch_body, equation_body, regular_body
 from tests.native.test_native_ggb_inline import eid, imported
 from tests.native.test_native_ggb_texts import text_body
 
 NAMES = ('ggb_text_math', 'ggb_conic_ellipse', 'ggb_conic_hyperbola', 'ggb_conic_parabola',
-         'ggb_conic_equation', 'ggb_regular_outputs', 'ggb_axis_projection')
+         'ggb_conic_equation', 'ggb_regular_outputs', 'ggb_axis_projection',
+         'ggb_slider', 'ggb_labels', 'ggb_layers')
 
 
 def import_scene(name):
     kind = name.rsplit('_', 1)[-1].capitalize()
-    if name == 'ggb_text_math':
+    if name == 'ggb_slider':
+        body = slider_body()
+        changes = [{'n': ('number', -10.)}, {'n': ('number', 4.)}, {'n': ('number', 10.)}]
+    elif name in ('ggb_labels', 'ggb_layers'):
+        body = labels_body() if name == 'ggb_labels' else layers_body()
+        changes = [{'B': ('point', [6., 0.])}, {'A': ('point', [-1., 2.])}]
+    elif name == 'ggb_text_math':
         body = text_body()
         changes = [{'n': ('number', 4.25), 'A': ('point', [-2., 5.])}, {'n': ('number', -2.)}]
     elif name == 'ggb_conic_equation':

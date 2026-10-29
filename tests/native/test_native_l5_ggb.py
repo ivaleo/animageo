@@ -295,8 +295,8 @@ def test_dropped_and_warnings():
     body += '<cascell><inputCell><expression value="x+1"/></inputCell></cascell>'
     _, rep = _import(ggb_bytes(body))
     kinds = {d['kind']: d for d in rep['dropped']}
-    assert set(kinds) == {'conditional_visibility', 'dynamic_color', 'animation', 'layers', 'cas'}
-    assert kinds['layers']['names'] == ['Q'] and 'names' not in kinds['cas']
+    assert set(kinds) == {'conditional_visibility', 'dynamic_color', 'animation', 'cas'}
+    assert 'names' not in kinds['cas']
     assert _by_name(rep)['Q']['layer'] == 2
     codes = {(w['code'], w.get('ggb_name')) for w in rep['warnings']}
     assert ('conditional_visibility_dropped', 'M') in codes and ('animation_dropped', 'M') in codes
@@ -311,7 +311,8 @@ def test_style_and_labels():
                                                                '<caption val="основание"/>'))
     doc, rep = _import(ggb_bytes(body))
     e = _by_name(rep)
-    assert e['s']['ggb_style'] == {'label_color': '#ff0000', 'stroke': '#ff0000', 'stroke_dash_ratio': 0.65,
+    assert e['s']['ggb_style'] == {'label_color': '#ff0000', 'stroke': '#ff0000', 'stroke_dash_ratio': 11 / 19,
+                                   'stroke_dash_period_px': 19., 'stroke_dash_pattern_px': [11., 8.],
                                    'stroke_opacity': 1.0, 'stroke_width_px': 3.0}
     assert e['s']['label'] == {'visible': True, 'mode': 'caption', 'caption': 'основание'}
     assert e['A']['ggb_style']['size_px'] == 10.0
@@ -327,7 +328,7 @@ def test_style_and_labels():
 
 
 # the keys of ggb_style and the classic elem.ggb_style they come from
-STYLE_KEYS = ('fill', 'fill_opacity', 'stroke', 'stroke_opacity', 'stroke_width_px', 'stroke_dash_ratio',
+STYLE_KEYS = ('fill', 'fill_opacity', 'stroke', 'stroke_opacity', 'stroke_width_px',
               'size_px', 'point_shape', 'label_color', 'tick_count', 'angle_range')
 
 
@@ -335,7 +336,7 @@ STYLE_KEYS = ('fill', 'fill_opacity', 'stroke', 'stroke_opacity', 'stroke_width_
     'triangle_editable', 'intersections', 'style_labels', 'dropped_effects', 'macro', 'regular_polygon')))
 def test_ggb_style_is_that_of_the_classic(rel):
     """``ggb_style`` is what the classic ``loadGGB`` puts in ``elem.ggb_style``,
-    key for key — a shape without fill too (alpha 0: ``fill_opacity`` 0, not
+    except exact dash patterns (checked against GeoGebra in IMP-5); a shape without fill too (alpha 0: ``fill_opacity`` 0, not
     the default fill of the style; 1.10.0a2)."""
     from animageo.geo.construction import Construction
     from animageo.parsers import ggb_parser
@@ -349,7 +350,7 @@ def test_ggb_style_is_that_of_the_classic(rel):
         if el is None or e['category'] not in ('editable', 'differs'):
             continue
         classic = {k: el.ggb_style[k] for k in STYLE_KEYS if k in el.ggb_style}
-        assert set(e.get('ggb_style', {})) == set(classic), e['ggb_name']
+        assert {k for k in e.get('ggb_style', {}) if not k.startswith('stroke_dash_')} == set(classic), e['ggb_name']
         for key, value in classic.items():
             assert e['ggb_style'][key] == (pytest.approx(value, abs=1e-6) if isinstance(value, float) else value), \
                 (e['ggb_name'], key)

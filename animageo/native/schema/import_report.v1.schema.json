@@ -109,7 +109,7 @@
         },
         "ggb_style": {"type": "object", "description": "keys of appearance.overrides converted from the GGB style (colours 6-digit hex); the document does not carry them"},
         "hidden": {"const": true, "description": "the object is hidden in GGB (the document carries appearance.visible = false)"},
-        "layer": {"type": "integer", "description": "GGB layer other than 0 (dropped: layers)"}
+        "layer": {"type": "integer", "description": "GGB layer other than 0; editable drawn objects carry its fill, stroke and label order in appearance overrides. Untranslated objects retain dropped: layers."}
       },
       "allOf": [
         {
