@@ -1,0 +1,569 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_intersect_outputs",
+  "registry": "1.7",
+  "generatedBy": "animageo 1.11.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_intersect_outputs",
+    "operationRegistryVersion": "1.7",
+    "operations": {
+      "ec6aeb85-6d6f-563b-946c-334913eddbfd": {
+        "id": "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+          }
+        ],
+        "seq": 1
+      },
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          }
+        ],
+        "seq": 2
+      },
+      "a602bd3f-ef10-501b-96fc-4f0b3a651add": {
+        "id": "a602bd3f-ef10-501b-96fc-4f0b3a651add",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          }
+        ],
+        "seq": 3
+      },
+      "80a2c862-e465-51f8-ae72-fd439625606c": {
+        "id": "80a2c862-e465-51f8-ae72-fd439625606c",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "06a17f48-500f-58b8-8cda-395c93ed8b20"
+          }
+        ],
+        "seq": 4
+      },
+      "796b9b47-93fa-56bc-a2be-23b5b3aea50c": {
+        "id": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 2.0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        ],
+        "seq": 5
+      },
+      "e9fba105-df77-53b8-97f5-40d89980b343": {
+        "id": "e9fba105-df77-53b8-97f5-40d89980b343",
+        "op": "intersect.line_circle",
+        "args": {
+          "line": {
+            "kind": "ref",
+            "elementId": "06a17f48-500f-58b8-8cda-395c93ed8b20"
+          },
+          "circle": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "second",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          },
+          {
+            "slot": "first",
+            "elementId": "144ee267-fa12-5106-89c3-3ffdc1eac273"
+          }
+        ],
+        "seq": 6
+      },
+      "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b": {
+        "id": "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "144ee267-fa12-5106-89c3-3ffdc1eac273"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d"
+          }
+        ],
+        "seq": 7
+      }
+    },
+    "elements": {
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "id": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1",
+        "type": "point",
+        "producer": {
+          "operationId": "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "id": "0d178f00-10cc-5e64-b3a7-004058ad2948",
+        "type": "point",
+        "producer": {
+          "operationId": "a602bd3f-ef10-501b-96fc-4f0b3a651add",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "id": "06a17f48-500f-58b8-8cda-395c93ed8b20",
+        "type": "segment",
+        "producer": {
+          "operationId": "80a2c862-e465-51f8-ae72-fd439625606c",
+          "slot": "segment"
+        },
+        "displayName": "s"
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "id": "951608cb-59a9-55d1-902a-0c49772efb03",
+        "type": "circle",
+        "producer": {
+          "operationId": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "slot": "circle"
+        },
+        "displayName": "k"
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "id": "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "second"
+        },
+        "displayName": "P"
+      },
+      "144ee267-fa12-5106-89c3-3ffdc1eac273": {
+        "id": "144ee267-fa12-5106-89c3-3ffdc1eac273",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "first"
+        },
+        "displayName": "U"
+      },
+      "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+        "id": "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d",
+        "type": "point",
+        "producer": {
+          "operationId": "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b",
+          "slot": "point"
+        },
+        "displayName": "M"
+      }
+    },
+    "inputs": {
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "kind": "point",
+        "value": [
+          0.0,
+          0.0
+        ]
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "kind": "point",
+        "value": [
+          0.0,
+          0.0
+        ]
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "kind": "point",
+        "value": [
+          3.0,
+          0.0
+        ]
+      }
+    },
+    "appearance": {
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "144ee267-fa12-5106-89c3-3ffdc1eac273": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": "O",
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A",
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": "B",
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": "s",
+        "951608cb-59a9-55d1-902a-0c49772efb03": "k",
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": "P",
+        "144ee267-fa12-5106-89c3-3ffdc1eac273": "U",
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": "M"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              3.0,
+              0.0
+            ],
+            "length": 3.0
+          }
+        },
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 0.0
+          }
+        },
+        "144ee267-fa12-5106-89c3-3ffdc1eac273": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "outside_part",
+          "detail": {
+            "slot": "line"
+          }
+        },
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "upstream",
+          "cause": "144ee267-fa12-5106-89c3-3ffdc1eac273"
+        }
+      },
+      "checks": {
+        "796b9b47-93fa-56bc-a2be-23b5b3aea50c:matches": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:ends": "passed"
+      }
+    },
+    {
+      "name": "recovered",
+      "inputs": {
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "kind": "point",
+          "value": [
+            -3.0,
+            0.0
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              0.0
+            ],
+            "b": [
+              3.0,
+              0.0
+            ],
+            "length": 6.0
+          }
+        },
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 0.0
+          }
+        },
+        "144ee267-fa12-5106-89c3-3ffdc1eac273": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 0.0
+          }
+        },
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 0.0
+          }
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b:equidistant": "passed",
+        "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b:collinear": "passed",
+        "796b9b47-93fa-56bc-a2be-23b5b3aea50c:matches": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:ends": "passed",
+        "e9fba105-df77-53b8-97f5-40d89980b343:on_both": "passed"
+      }
+    },
+    {
+      "name": "missing",
+      "inputs": {
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "kind": "point",
+          "value": [
+            3.0,
+            3.0
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.0,
+              3.0
+            ],
+            "b": [
+              3.0,
+              0.0
+            ],
+            "length": 3.0
+          }
+        },
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 0.0
+          }
+        },
+        "144ee267-fa12-5106-89c3-3ffdc1eac273": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "no_intersection"
+        },
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 3.0
+          }
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              0.0,
+              0.0
+            ],
+            "r": 2.0
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "no_intersection"
+        },
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "upstream",
+          "cause": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+        }
+      },
+      "checks": {
+        "796b9b47-93fa-56bc-a2be-23b5b3aea50c:matches": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:ends": "passed"
+      }
+    }
+  ]
+}

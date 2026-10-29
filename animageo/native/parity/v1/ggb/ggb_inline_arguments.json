@@ -1,0 +1,1498 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_inline_arguments",
+  "registry": "1.7",
+  "generatedBy": "animageo 1.11.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_inline_arguments",
+    "operationRegistryVersion": "1.7",
+    "operations": {
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          }
+        ],
+        "seq": 1
+      },
+      "a602bd3f-ef10-501b-96fc-4f0b3a651add": {
+        "id": "a602bd3f-ef10-501b-96fc-4f0b3a651add",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          }
+        ],
+        "seq": 2
+      },
+      "3e32c16f-c8fc-5a97-9c0e-199d37afc97e": {
+        "id": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882"
+          }
+        ],
+        "seq": 3
+      },
+      "a768ac95-7422-591e-871e-7ed780013ba1": {
+        "id": "a768ac95-7422-591e-871e-7ed780013ba1",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+          }
+        ],
+        "seq": 5
+      },
+      "f6bbc4cc-39a5-56f7-b7ac-0ad1c1c3e119": {
+        "id": "f6bbc4cc-39a5-56f7-b7ac-0ad1c1c3e119",
+        "op": "vector.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a"
+          }
+        ],
+        "seq": 4
+      },
+      "1027bdec-642f-5f5e-b2d2-66e776659ab0": {
+        "id": "1027bdec-642f-5f5e-b2d2-66e776659ab0",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "faf54c4c-ea8f-525f-8b09-fc7f8ced011c"
+          }
+        ]
+      },
+      "03574c50-8a52-5a6d-994e-418dbb0538a4": {
+        "id": "03574c50-8a52-5a6d-994e-418dbb0538a4",
+        "op": "number.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "+",
+              "args": [
+                {
+                  "num": 1.0
+                },
+                {
+                  "fn": "max",
+                  "args": [
+                    {
+                      "ref": 0
+                    },
+                    {
+                      "num": 0.0
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "d9bf280e-2b3e-5978-8e4f-07fd5765d521"
+          }
+        ]
+      },
+      "27530780-1a12-5da0-b0b4-75086e034e99": {
+        "id": "27530780-1a12-5da0-b0b4-75086e034e99",
+        "op": "transform.dilate",
+        "args": {
+          "obj": {
+            "kind": "ref",
+            "elementId": "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a"
+          },
+          "factor": {
+            "kind": "ref",
+            "elementId": "d9bf280e-2b3e-5978-8e4f-07fd5765d521"
+          },
+          "center": {
+            "kind": "ref",
+            "elementId": "faf54c4c-ea8f-525f-8b09-fc7f8ced011c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "image",
+            "elementId": "be6918f5-930b-5986-98f9-dbfdbba1379c"
+          }
+        ]
+      },
+      "8ea06848-7f90-5159-ae3f-0d446780940d": {
+        "id": "8ea06848-7f90-5159-ae3f-0d446780940d",
+        "op": "transform.translate",
+        "args": {
+          "obj": {
+            "kind": "ref",
+            "elementId": "faf54c4c-ea8f-525f-8b09-fc7f8ced011c"
+          },
+          "vector": {
+            "kind": "ref",
+            "elementId": "be6918f5-930b-5986-98f9-dbfdbba1379c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "image",
+            "elementId": "6fc314a7-3ce8-57f2-8bd8-2c05810930a3"
+          }
+        ]
+      },
+      "3706d9eb-5999-5369-aed5-61655b9cfeb6": {
+        "id": "3706d9eb-5999-5369-aed5-61655b9cfeb6",
+        "op": "number.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "+",
+              "args": [
+                {
+                  "num": 1.0
+                },
+                {
+                  "fn": "max",
+                  "args": [
+                    {
+                      "op": "neg",
+                      "args": [
+                        {
+                          "ref": 0
+                        }
+                      ]
+                    },
+                    {
+                      "num": 0.0
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "8b5c118e-ab1d-5fe5-9eae-2f51cf6ceb70"
+          }
+        ]
+      },
+      "2abf4158-71f0-56a3-b058-48ce7cae669e": {
+        "id": "2abf4158-71f0-56a3-b058-48ce7cae669e",
+        "op": "transform.dilate",
+        "args": {
+          "obj": {
+            "kind": "ref",
+            "elementId": "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a"
+          },
+          "factor": {
+            "kind": "ref",
+            "elementId": "8b5c118e-ab1d-5fe5-9eae-2f51cf6ceb70"
+          },
+          "center": {
+            "kind": "ref",
+            "elementId": "faf54c4c-ea8f-525f-8b09-fc7f8ced011c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "image",
+            "elementId": "a0a03689-7a59-5a77-854f-77c5317aaccf"
+          }
+        ]
+      },
+      "f8e9817a-681c-5203-ae2b-c2e445388aa1": {
+        "id": "f8e9817a-681c-5203-ae2b-c2e445388aa1",
+        "op": "transform.translate",
+        "args": {
+          "obj": {
+            "kind": "ref",
+            "elementId": "faf54c4c-ea8f-525f-8b09-fc7f8ced011c"
+          },
+          "vector": {
+            "kind": "ref",
+            "elementId": "a0a03689-7a59-5a77-854f-77c5317aaccf"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "image",
+            "elementId": "592c17c5-a97d-5166-8582-7347e2815dd6"
+          }
+        ]
+      },
+      "fa96a2cb-45bd-5103-9fcb-fe7a98a42e46": {
+        "id": "fa96a2cb-45bd-5103-9fcb-fe7a98a42e46",
+        "op": "vector.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "592c17c5-a97d-5166-8582-7347e2815dd6"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "6fc314a7-3ce8-57f2-8bd8-2c05810930a3"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "b12f1acf-c415-53c9-aa1f-74760bb954ef"
+          }
+        ],
+        "seq": 7
+      },
+      "0841a1b6-01bc-527f-9d1c-784830e20079": {
+        "id": "0841a1b6-01bc-527f-9d1c-784830e20079",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "8ab90dcd-8aff-5cde-944e-89794b7a803e"
+          }
+        ]
+      },
+      "2717511b-4d5d-5cb9-beba-5574f120fcaf": {
+        "id": "2717511b-4d5d-5cb9-beba-5574f120fcaf",
+        "op": "vector.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "8ab90dcd-8aff-5cde-944e-89794b7a803e"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "8ab90dcd-8aff-5cde-944e-89794b7a803e"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "b0567780-96bb-5546-ad05-e28ef8a4983c"
+          }
+        ]
+      },
+      "c80ef23e-dfc3-5332-97d9-27d50314c019": {
+        "id": "c80ef23e-dfc3-5332-97d9-27d50314c019",
+        "op": "transform.translate",
+        "args": {
+          "obj": {
+            "kind": "ref",
+            "elementId": "b12f1acf-c415-53c9-aa1f-74760bb954ef"
+          },
+          "vector": {
+            "kind": "ref",
+            "elementId": "b0567780-96bb-5546-ad05-e28ef8a4983c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "image",
+            "elementId": "8aa5475f-73e6-5049-a06e-b19de1456d15"
+          }
+        ],
+        "seq": 8
+      },
+      "0979b979-5d7e-53a6-993f-89311acc2c5e": {
+        "id": "0979b979-5d7e-53a6-993f-89311acc2c5e",
+        "op": "transform.translate",
+        "args": {
+          "obj": {
+            "kind": "ref",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          },
+          "vector": {
+            "kind": "ref",
+            "elementId": "8aa5475f-73e6-5049-a06e-b19de1456d15"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "image",
+            "elementId": "b0793190-4d40-5b9e-9533-366aaede1eeb"
+          }
+        ],
+        "seq": 6
+      }
+    },
+    "elements": {
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "id": "0d178f00-10cc-5e64-b3a7-004058ad2948",
+        "type": "point",
+        "producer": {
+          "operationId": "a602bd3f-ef10-501b-96fc-4f0b3a651add",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+        "id": "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882",
+        "type": "point",
+        "producer": {
+          "operationId": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+          "slot": "point"
+        },
+        "displayName": "C"
+      },
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "id": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0",
+        "type": "number",
+        "producer": {
+          "operationId": "a768ac95-7422-591e-871e-7ed780013ba1",
+          "slot": "number"
+        },
+        "displayName": "a"
+      },
+      "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a": {
+        "id": "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a",
+        "type": "vector",
+        "producer": {
+          "operationId": "f6bbc4cc-39a5-56f7-b7ac-0ad1c1c3e119",
+          "slot": "vector"
+        },
+        "displayName": "u"
+      },
+      "faf54c4c-ea8f-525f-8b09-fc7f8ced011c": {
+        "id": "faf54c4c-ea8f-525f-8b09-fc7f8ced011c",
+        "type": "point",
+        "displayName": "",
+        "producer": {
+          "operationId": "1027bdec-642f-5f5e-b2d2-66e776659ab0",
+          "slot": "point"
+        }
+      },
+      "d9bf280e-2b3e-5978-8e4f-07fd5765d521": {
+        "id": "d9bf280e-2b3e-5978-8e4f-07fd5765d521",
+        "type": "number",
+        "displayName": "",
+        "producer": {
+          "operationId": "03574c50-8a52-5a6d-994e-418dbb0538a4",
+          "slot": "number"
+        }
+      },
+      "be6918f5-930b-5986-98f9-dbfdbba1379c": {
+        "id": "be6918f5-930b-5986-98f9-dbfdbba1379c",
+        "type": "vector",
+        "displayName": "",
+        "producer": {
+          "operationId": "27530780-1a12-5da0-b0b4-75086e034e99",
+          "slot": "image"
+        }
+      },
+      "6fc314a7-3ce8-57f2-8bd8-2c05810930a3": {
+        "id": "6fc314a7-3ce8-57f2-8bd8-2c05810930a3",
+        "type": "point",
+        "displayName": "",
+        "producer": {
+          "operationId": "8ea06848-7f90-5159-ae3f-0d446780940d",
+          "slot": "image"
+        }
+      },
+      "8b5c118e-ab1d-5fe5-9eae-2f51cf6ceb70": {
+        "id": "8b5c118e-ab1d-5fe5-9eae-2f51cf6ceb70",
+        "type": "number",
+        "displayName": "",
+        "producer": {
+          "operationId": "3706d9eb-5999-5369-aed5-61655b9cfeb6",
+          "slot": "number"
+        }
+      },
+      "a0a03689-7a59-5a77-854f-77c5317aaccf": {
+        "id": "a0a03689-7a59-5a77-854f-77c5317aaccf",
+        "type": "vector",
+        "displayName": "",
+        "producer": {
+          "operationId": "2abf4158-71f0-56a3-b058-48ce7cae669e",
+          "slot": "image"
+        }
+      },
+      "592c17c5-a97d-5166-8582-7347e2815dd6": {
+        "id": "592c17c5-a97d-5166-8582-7347e2815dd6",
+        "type": "point",
+        "displayName": "",
+        "producer": {
+          "operationId": "f8e9817a-681c-5203-ae2b-c2e445388aa1",
+          "slot": "image"
+        }
+      },
+      "b12f1acf-c415-53c9-aa1f-74760bb954ef": {
+        "id": "b12f1acf-c415-53c9-aa1f-74760bb954ef",
+        "type": "vector",
+        "producer": {
+          "operationId": "fa96a2cb-45bd-5103-9fcb-fe7a98a42e46",
+          "slot": "vector"
+        },
+        "displayName": ""
+      },
+      "8ab90dcd-8aff-5cde-944e-89794b7a803e": {
+        "id": "8ab90dcd-8aff-5cde-944e-89794b7a803e",
+        "type": "point",
+        "displayName": "",
+        "producer": {
+          "operationId": "0841a1b6-01bc-527f-9d1c-784830e20079",
+          "slot": "point"
+        }
+      },
+      "b0567780-96bb-5546-ad05-e28ef8a4983c": {
+        "id": "b0567780-96bb-5546-ad05-e28ef8a4983c",
+        "type": "vector",
+        "displayName": "",
+        "producer": {
+          "operationId": "2717511b-4d5d-5cb9-beba-5574f120fcaf",
+          "slot": "vector"
+        }
+      },
+      "8aa5475f-73e6-5049-a06e-b19de1456d15": {
+        "id": "8aa5475f-73e6-5049-a06e-b19de1456d15",
+        "type": "vector",
+        "producer": {
+          "operationId": "c80ef23e-dfc3-5332-97d9-27d50314c019",
+          "slot": "image"
+        },
+        "displayName": ""
+      },
+      "b0793190-4d40-5b9e-9533-366aaede1eeb": {
+        "id": "b0793190-4d40-5b9e-9533-366aaede1eeb",
+        "type": "point",
+        "producer": {
+          "operationId": "0979b979-5d7e-53a6-993f-89311acc2c5e",
+          "slot": "image"
+        },
+        "displayName": "T"
+      }
+    },
+    "inputs": {
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "kind": "point",
+        "value": [
+          1.0,
+          2.0
+        ]
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "kind": "point",
+        "value": [
+          3.0,
+          4.0
+        ]
+      },
+      "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+        "kind": "point",
+        "value": [
+          2.0,
+          0.0
+        ]
+      },
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "kind": "number",
+        "value": 2.0
+      },
+      "faf54c4c-ea8f-525f-8b09-fc7f8ced011c": {
+        "kind": "point",
+        "value": [
+          0.0,
+          0.0
+        ]
+      },
+      "8ab90dcd-8aff-5cde-944e-89794b7a803e": {
+        "kind": "point",
+        "value": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "appearance": {
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "b0793190-4d40-5b9e-9533-366aaede1eeb": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "592c17c5-a97d-5166-8582-7347e2815dd6": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "8aa5475f-73e6-5049-a06e-b19de1456d15": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "be6918f5-930b-5986-98f9-dbfdbba1379c": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "b12f1acf-c415-53c9-aa1f-74760bb954ef": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "6fc314a7-3ce8-57f2-8bd8-2c05810930a3": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "a0a03689-7a59-5a77-854f-77c5317aaccf": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "8b5c118e-ab1d-5fe5-9eae-2f51cf6ceb70": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "d9bf280e-2b3e-5978-8e4f-07fd5765d521": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "faf54c4c-ea8f-525f-8b09-fc7f8ced011c": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "8ab90dcd-8aff-5cde-944e-89794b7a803e": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "b0567780-96bb-5546-ad05-e28ef8a4983c": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A",
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": "B",
+        "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": "C",
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": "a",
+        "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a": "u",
+        "b0793190-4d40-5b9e-9533-366aaede1eeb": "T"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 16.0,
+      "expect": {
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 4.0
+          }
+        },
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "592c17c5-a97d-5166-8582-7347e2815dd6": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -4.0
+          }
+        },
+        "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "6fc314a7-3ce8-57f2-8bd8-2c05810930a3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -12.0
+          }
+        },
+        "8aa5475f-73e6-5049-a06e-b19de1456d15": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -1.0,
+              -4.0
+            ],
+            "b": [
+              -3.0,
+              -12.0
+            ],
+            "length": 8.246211251235321
+          }
+        },
+        "8ab90dcd-8aff-5cde-944e-89794b7a803e": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "8b5c118e-ab1d-5fe5-9eae-2f51cf6ceb70": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.0,
+            "unit": "scalar"
+          }
+        },
+        "a0a03689-7a59-5a77-854f-77c5317aaccf": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              4.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 4.123105625617661
+          }
+        },
+        "b0567780-96bb-5546-ad05-e28ef8a4983c": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              0.0,
+              0.0
+            ],
+            "length": 0.0
+          }
+        },
+        "b0793190-4d40-5b9e-9533-366aaede1eeb": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -6.0
+          }
+        },
+        "b12f1acf-c415-53c9-aa1f-74760bb954ef": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -1.0,
+              -4.0
+            ],
+            "b": [
+              -3.0,
+              -12.0
+            ],
+            "length": 8.246211251235321
+          }
+        },
+        "be6918f5-930b-5986-98f9-dbfdbba1379c": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              9.0,
+              12.0
+            ],
+            "b": [
+              6.0,
+              0.0
+            ],
+            "length": 12.36931687685298
+          }
+        },
+        "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              4.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 4.123105625617661
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0,
+            "unit": "scalar"
+          }
+        },
+        "d9bf280e-2b3e-5978-8e4f-07fd5765d521": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.0,
+            "unit": "scalar"
+          }
+        },
+        "faf54c4c-ea8f-525f-8b09-fc7f8ced011c": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "0979b979-5d7e-53a6-993f-89311acc2c5e:image": "passed",
+        "2717511b-4d5d-5cb9-beba-5574f120fcaf:ends": "passed",
+        "27530780-1a12-5da0-b0b4-75086e034e99:image": "passed",
+        "2abf4158-71f0-56a3-b058-48ce7cae669e:image": "passed",
+        "8ea06848-7f90-5159-ae3f-0d446780940d:image": "passed",
+        "c80ef23e-dfc3-5332-97d9-27d50314c019:image": "passed",
+        "f6bbc4cc-39a5-56f7-b7ac-0ad1c1c3e119:ends": "passed",
+        "f8e9817a-681c-5203-ae2b-c2e445388aa1:image": "passed",
+        "fa96a2cb-45bd-5103-9fcb-fe7a98a42e46:ends": "passed"
+      }
+    },
+    {
+      "name": "zero",
+      "inputs": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "kind": "number",
+          "value": 0.0
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 4.0
+          }
+        },
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "592c17c5-a97d-5166-8582-7347e2815dd6": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -4.0
+          }
+        },
+        "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "6fc314a7-3ce8-57f2-8bd8-2c05810930a3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -4.0
+          }
+        },
+        "8aa5475f-73e6-5049-a06e-b19de1456d15": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -1.0,
+              -4.0
+            ],
+            "b": [
+              -1.0,
+              -4.0
+            ],
+            "length": 0.0
+          }
+        },
+        "8ab90dcd-8aff-5cde-944e-89794b7a803e": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "8b5c118e-ab1d-5fe5-9eae-2f51cf6ceb70": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.0,
+            "unit": "scalar"
+          }
+        },
+        "a0a03689-7a59-5a77-854f-77c5317aaccf": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              4.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 4.123105625617661
+          }
+        },
+        "b0567780-96bb-5546-ad05-e28ef8a4983c": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              0.0,
+              0.0
+            ],
+            "length": 0.0
+          }
+        },
+        "b0793190-4d40-5b9e-9533-366aaede1eeb": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "b12f1acf-c415-53c9-aa1f-74760bb954ef": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -1.0,
+              -4.0
+            ],
+            "b": [
+              -1.0,
+              -4.0
+            ],
+            "length": 0.0
+          }
+        },
+        "be6918f5-930b-5986-98f9-dbfdbba1379c": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              4.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 4.123105625617661
+          }
+        },
+        "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              4.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 4.123105625617661
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "scalar"
+          }
+        },
+        "d9bf280e-2b3e-5978-8e4f-07fd5765d521": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.0,
+            "unit": "scalar"
+          }
+        },
+        "faf54c4c-ea8f-525f-8b09-fc7f8ced011c": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "0979b979-5d7e-53a6-993f-89311acc2c5e:image": "passed",
+        "2717511b-4d5d-5cb9-beba-5574f120fcaf:ends": "passed",
+        "27530780-1a12-5da0-b0b4-75086e034e99:image": "passed",
+        "2abf4158-71f0-56a3-b058-48ce7cae669e:image": "passed",
+        "8ea06848-7f90-5159-ae3f-0d446780940d:image": "passed",
+        "c80ef23e-dfc3-5332-97d9-27d50314c019:image": "passed",
+        "f6bbc4cc-39a5-56f7-b7ac-0ad1c1c3e119:ends": "passed",
+        "f8e9817a-681c-5203-ae2b-c2e445388aa1:image": "passed",
+        "fa96a2cb-45bd-5103-9fcb-fe7a98a42e46:ends": "passed"
+      }
+    },
+    {
+      "name": "negative",
+      "inputs": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "kind": "number",
+          "value": -2.0
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 4.0
+          }
+        },
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "592c17c5-a97d-5166-8582-7347e2815dd6": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -12.0
+          }
+        },
+        "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "6fc314a7-3ce8-57f2-8bd8-2c05810930a3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": -4.0
+          }
+        },
+        "8aa5475f-73e6-5049-a06e-b19de1456d15": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -3.0,
+              -12.0
+            ],
+            "b": [
+              -1.0,
+              -4.0
+            ],
+            "length": 8.246211251235321
+          }
+        },
+        "8ab90dcd-8aff-5cde-944e-89794b7a803e": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "8b5c118e-ab1d-5fe5-9eae-2f51cf6ceb70": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.0,
+            "unit": "scalar"
+          }
+        },
+        "a0a03689-7a59-5a77-854f-77c5317aaccf": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              9.0,
+              12.0
+            ],
+            "b": [
+              6.0,
+              0.0
+            ],
+            "length": 12.36931687685298
+          }
+        },
+        "b0567780-96bb-5546-ad05-e28ef8a4983c": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              0.0,
+              0.0
+            ],
+            "length": 0.0
+          }
+        },
+        "b0793190-4d40-5b9e-9533-366aaede1eeb": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 10.0
+          }
+        },
+        "b12f1acf-c415-53c9-aa1f-74760bb954ef": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -3.0,
+              -12.0
+            ],
+            "b": [
+              -1.0,
+              -4.0
+            ],
+            "length": 8.246211251235321
+          }
+        },
+        "be6918f5-930b-5986-98f9-dbfdbba1379c": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              4.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 4.123105625617661
+          }
+        },
+        "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              3.0,
+              4.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 4.123105625617661
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -2.0,
+            "unit": "scalar"
+          }
+        },
+        "d9bf280e-2b3e-5978-8e4f-07fd5765d521": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.0,
+            "unit": "scalar"
+          }
+        },
+        "faf54c4c-ea8f-525f-8b09-fc7f8ced011c": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "0979b979-5d7e-53a6-993f-89311acc2c5e:image": "passed",
+        "2717511b-4d5d-5cb9-beba-5574f120fcaf:ends": "passed",
+        "27530780-1a12-5da0-b0b4-75086e034e99:image": "passed",
+        "2abf4158-71f0-56a3-b058-48ce7cae669e:image": "passed",
+        "8ea06848-7f90-5159-ae3f-0d446780940d:image": "passed",
+        "c80ef23e-dfc3-5332-97d9-27d50314c019:image": "passed",
+        "f6bbc4cc-39a5-56f7-b7ac-0ad1c1c3e119:ends": "passed",
+        "f8e9817a-681c-5203-ae2b-c2e445388aa1:image": "passed",
+        "fa96a2cb-45bd-5103-9fcb-fe7a98a42e46:ends": "passed"
+      }
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "kind": "point",
+          "value": [
+            4.0,
+            3.0
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 3.0
+          }
+        },
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "592c17c5-a97d-5166-8582-7347e2815dd6": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": -3.0
+          }
+        },
+        "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "6fc314a7-3ce8-57f2-8bd8-2c05810930a3": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -6.0,
+            "y": -9.0
+          }
+        },
+        "8aa5475f-73e6-5049-a06e-b19de1456d15": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -2.0,
+              -3.0
+            ],
+            "b": [
+              -6.0,
+              -9.0
+            ],
+            "length": 7.211102550927978
+          }
+        },
+        "8ab90dcd-8aff-5cde-944e-89794b7a803e": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "8b5c118e-ab1d-5fe5-9eae-2f51cf6ceb70": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.0,
+            "unit": "scalar"
+          }
+        },
+        "a0a03689-7a59-5a77-854f-77c5317aaccf": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              4.0,
+              3.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 3.605551275463989
+          }
+        },
+        "b0567780-96bb-5546-ad05-e28ef8a4983c": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              0.0,
+              0.0
+            ],
+            "length": 0.0
+          }
+        },
+        "b0793190-4d40-5b9e-9533-366aaede1eeb": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": -4.0
+          }
+        },
+        "b12f1acf-c415-53c9-aa1f-74760bb954ef": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              -2.0,
+              -3.0
+            ],
+            "b": [
+              -6.0,
+              -9.0
+            ],
+            "length": 7.211102550927978
+          }
+        },
+        "be6918f5-930b-5986-98f9-dbfdbba1379c": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              12.0,
+              9.0
+            ],
+            "b": [
+              6.0,
+              0.0
+            ],
+            "length": 10.816653826391969
+          }
+        },
+        "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              4.0,
+              3.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 3.605551275463989
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0,
+            "unit": "scalar"
+          }
+        },
+        "d9bf280e-2b3e-5978-8e4f-07fd5765d521": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.0,
+            "unit": "scalar"
+          }
+        },
+        "faf54c4c-ea8f-525f-8b09-fc7f8ced011c": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "0979b979-5d7e-53a6-993f-89311acc2c5e:image": "passed",
+        "2717511b-4d5d-5cb9-beba-5574f120fcaf:ends": "passed",
+        "27530780-1a12-5da0-b0b4-75086e034e99:image": "passed",
+        "2abf4158-71f0-56a3-b058-48ce7cae669e:image": "passed",
+        "8ea06848-7f90-5159-ae3f-0d446780940d:image": "passed",
+        "c80ef23e-dfc3-5332-97d9-27d50314c019:image": "passed",
+        "f6bbc4cc-39a5-56f7-b7ac-0ad1c1c3e119:ends": "passed",
+        "f8e9817a-681c-5203-ae2b-c2e445388aa1:image": "passed",
+        "fa96a2cb-45bd-5103-9fcb-fe7a98a42e46:ends": "passed"
+      }
+    }
+  ]
+}

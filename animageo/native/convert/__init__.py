@@ -276,6 +276,12 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     ctx = Context(namespace=ns, prefix='ggb', mode=mode, display=display, bounds=view_bounds(sc['view']),
                   inline_formulas=True)
     ctx.xml_types = {i['label']: i['type'] for i in infos}
+    for node in root.findall('./construction/command'):
+        inp, out = node.find('input'), node.find('output')
+        if node.get('name') == 'Intersect' and inp is not None and len(inp.attrib) == 2 and out is not None:
+            for attr, label in out.attrib.items():
+                if label in norm and attr.startswith('a') and attr[1:].isdigit():
+                    ctx.output_positions[norm[label]] = int(attr[1:])
     for label in sc['outputs']:
         if label not in labels:
             # defined by a command but without its <element>: not an object of the report, so its
@@ -403,10 +409,21 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         entries.append(e)
     doc = tr.document
 
-    def refs_of(nid):
+    def direct_refs(nid):
         el = doc['elements'].get(nid)
         op = doc['operations'].get(el['producer']['operationId']) if el else None
         return [r for arg in (op or {}).get('args', {}).values() if isinstance(arg, dict) for r in iter_refs(arg)]
+    from .ggb_inline import inline_arguments
+    helpers = inline_arguments(doc, entries, tr.records, direct_refs)
+
+    def refs_of(nid):
+        # Report closure is expressed in source objects, through hidden helpers.
+        private = helpers.get(nid, set())
+        deps = set(direct_refs(nid))
+        for helper in private:
+            deps.update(direct_refs(helper))
+        return sorted(deps - private)
+
     owned = {nid for e in entries for nid in e['native_ids']}
     for e in entries:
         if e['status'] == 'translated' and e['info'].get('command') not in macro_names and any(
@@ -422,7 +439,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     settle(entries, refs_of)
     keep = {nid for e in entries if e['category'] in ('editable', 'differs') for nid in e['native_ids']}
     # an editable/differs element produced together with a dropped one keeps only its own element
-    _prune(doc, keep)
+    _prune(doc, keep | {helper for nid in keep for helper in helpers.get(nid, ())})
     # steps from breakpoints of the construction protocol
     steps = []
     group = []

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Native GeoGebra import retains hidden dependencies of inline `Translate`,
+  `Segment`, `Line` and `OrthogonalLine` arguments, including coordinate
+  literals, nested commands and negated or scaled vectors. Imported results
+  continue to update when their source points or numbers move.
+- Intersection outputs are assigned to distinct solution slots together,
+  including undefined and omitted outputs. Dependent intersections use the
+  resolved upstream branches; mismatched saved values remain reported.
+
 ## [1.11.0] - 2026-10-29
 
 Stable release of the native kernel and the classic renderer from

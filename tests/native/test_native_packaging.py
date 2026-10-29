@@ -36,6 +36,7 @@ DATA_DIRS = [
     ('parity', 'v1', 'paint'),
     ('parity', 'v1', 'curves'),
     ('parity', 'v1', 'space'),
+    ('parity', 'v1', 'ggb'),
     ('style',),
 ]
 PACKAGE_DIR = REPO_ROOT / 'animageo'

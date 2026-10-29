@@ -1,0 +1,529 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "ggb_intersect_outputs",
+  "registry": "1.7",
+  "generatedBy": "animageo 1.11.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_intersect_outputs",
+    "operationRegistryVersion": "1.7",
+    "operations": {
+      "ec6aeb85-6d6f-563b-946c-334913eddbfd": {
+        "id": "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+          }
+        ],
+        "seq": 1
+      },
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          }
+        ],
+        "seq": 2
+      },
+      "a602bd3f-ef10-501b-96fc-4f0b3a651add": {
+        "id": "a602bd3f-ef10-501b-96fc-4f0b3a651add",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          }
+        ],
+        "seq": 3
+      },
+      "80a2c862-e465-51f8-ae72-fd439625606c": {
+        "id": "80a2c862-e465-51f8-ae72-fd439625606c",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "06a17f48-500f-58b8-8cda-395c93ed8b20"
+          }
+        ],
+        "seq": 4
+      },
+      "796b9b47-93fa-56bc-a2be-23b5b3aea50c": {
+        "id": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+          },
+          "radius": {
+            "kind": "number",
+            "value": 2.0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        ],
+        "seq": 5
+      },
+      "e9fba105-df77-53b8-97f5-40d89980b343": {
+        "id": "e9fba105-df77-53b8-97f5-40d89980b343",
+        "op": "intersect.line_circle",
+        "args": {
+          "line": {
+            "kind": "ref",
+            "elementId": "06a17f48-500f-58b8-8cda-395c93ed8b20"
+          },
+          "circle": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "second",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          },
+          {
+            "slot": "first",
+            "elementId": "144ee267-fa12-5106-89c3-3ffdc1eac273"
+          }
+        ],
+        "seq": 6
+      },
+      "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b": {
+        "id": "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "144ee267-fa12-5106-89c3-3ffdc1eac273"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d"
+          }
+        ],
+        "seq": 7
+      }
+    },
+    "elements": {
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "id": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1",
+        "type": "point",
+        "producer": {
+          "operationId": "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "id": "0d178f00-10cc-5e64-b3a7-004058ad2948",
+        "type": "point",
+        "producer": {
+          "operationId": "a602bd3f-ef10-501b-96fc-4f0b3a651add",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "id": "06a17f48-500f-58b8-8cda-395c93ed8b20",
+        "type": "segment",
+        "producer": {
+          "operationId": "80a2c862-e465-51f8-ae72-fd439625606c",
+          "slot": "segment"
+        },
+        "displayName": "s"
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "id": "951608cb-59a9-55d1-902a-0c49772efb03",
+        "type": "circle",
+        "producer": {
+          "operationId": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "slot": "circle"
+        },
+        "displayName": "k"
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "id": "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "second"
+        },
+        "displayName": "P"
+      },
+      "144ee267-fa12-5106-89c3-3ffdc1eac273": {
+        "id": "144ee267-fa12-5106-89c3-3ffdc1eac273",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "first"
+        },
+        "displayName": "U"
+      },
+      "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+        "id": "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d",
+        "type": "point",
+        "producer": {
+          "operationId": "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b",
+          "slot": "point"
+        },
+        "displayName": "M"
+      }
+    },
+    "inputs": {
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "kind": "point",
+        "value": [
+          0.0,
+          0.0
+        ]
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "kind": "point",
+        "value": [
+          0.0,
+          0.0
+        ]
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "kind": "point",
+        "value": [
+          3.0,
+          0.0
+        ]
+      }
+    },
+    "appearance": {
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "144ee267-fa12-5106-89c3-3ffdc1eac273": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": "O",
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A",
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": "B",
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": "s",
+        "951608cb-59a9-55d1-902a-0c49772efb03": "k",
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": "P",
+        "144ee267-fa12-5106-89c3-3ffdc1eac273": "U",
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": "M"
+      }
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+          "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "a602bd3f-ef10-501b-96fc-4f0b3a651add"
+        ],
+        "elementIds": [
+          "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1",
+          "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+          "0d178f00-10cc-5e64-b3a7-004058ad2948"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:80a2c862-e465-51f8-ae72-fd439625606c",
+        "kind": "op",
+        "operationIds": [
+          "80a2c862-e465-51f8-ae72-fd439625606c"
+        ],
+        "elementIds": [
+          "06a17f48-500f-58b8-8cda-395c93ed8b20"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "kind": "op",
+        "operationIds": [
+          "796b9b47-93fa-56bc-a2be-23b5b3aea50c"
+        ],
+        "elementIds": [
+          "951608cb-59a9-55d1-902a-0c49772efb03"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:e9fba105-df77-53b8-97f5-40d89980b343",
+        "kind": "op",
+        "operationIds": [
+          "e9fba105-df77-53b8-97f5-40d89980b343"
+        ],
+        "elementIds": [
+          "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+          "144ee267-fa12-5106-89c3-3ffdc1eac273"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b",
+        "kind": "op",
+        "operationIds": [
+          "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b"
+        ],
+        "elementIds": [
+          "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки O, A, B.",
+      "2. Строим отрезок AB.",
+      "3. Строим окружность k с центром O и радиусом 2.",
+      "4. Отмечаем точки U, P пересечения s и k.",
+      "5. Отмечаем середину M отрезка PU."
+    ],
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": false,
+              "4c92d719-9afb-5248-9ad1-f5008e4e5184": false,
+              "0d178f00-10cc-5e64-b3a7-004058ad2948": false,
+              "06a17f48-500f-58b8-8cda-395c93ed8b20": false,
+              "951608cb-59a9-55d1-902a-0c49772efb03": false,
+              "dd71a4a4-9e17-57b9-a97f-df26e330e72a": false,
+              "144ee267-fa12-5106-89c3-3ffdc1eac273": false,
+              "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": false
+            }
+          },
+          {
+            "t": 1.1,
+            "visible": {
+              "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": true,
+              "4c92d719-9afb-5248-9ad1-f5008e4e5184": true,
+              "0d178f00-10cc-5e64-b3a7-004058ad2948": true
+            },
+            "enter": {
+              "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 2.2,
+            "visible": {
+              "06a17f48-500f-58b8-8cda-395c93ed8b20": true
+            },
+            "enter": {
+              "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.3000000000000003,
+            "visible": {
+              "951608cb-59a9-55d1-902a-0c49772efb03": true
+            },
+            "enter": {
+              "951608cb-59a9-55d1-902a-0c49772efb03": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.7,
+            "visible": {
+              "dd71a4a4-9e17-57b9-a97f-df26e330e72a": true,
+              "144ee267-fa12-5106-89c3-3ffdc1eac273": true
+            },
+            "enter": {
+              "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "144ee267-fa12-5106-89c3-3ffdc1eac273": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 5.8,
+            "visible": {
+              "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": true
+            },
+            "enter": {
+              "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.1,
+          "elementIds": [
+            "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1",
+            "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+            "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:80a2c862-e465-51f8-ae72-fd439625606c",
+          "start": 1.7000000000000002,
+          "end": 2.2,
+          "elementIds": [
+            "06a17f48-500f-58b8-8cda-395c93ed8b20"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "start": 2.8000000000000003,
+          "end": 3.3000000000000003,
+          "elementIds": [
+            "951608cb-59a9-55d1-902a-0c49772efb03"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:e9fba105-df77-53b8-97f5-40d89980b343",
+          "start": 3.9000000000000004,
+          "end": 4.7,
+          "elementIds": [
+            "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+            "144ee267-fa12-5106-89c3-3ffdc1eac273"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b",
+          "start": 5.3,
+          "end": 5.8,
+          "elementIds": [
+            "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 5.8
+    }
+  }
+}

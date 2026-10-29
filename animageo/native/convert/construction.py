@@ -96,6 +96,7 @@ class Context:
     # classic name → (AST v1, classic names of its refs): the expression of a number of a .ggb read by the
     # import itself (:mod:`.ggb_expr`, 1.10.0a3) — built where the classic does not translate it
     formulas: dict = field(default_factory=dict)
+    output_positions: dict = field(default_factory=dict)  # unindexed GGB output label → original slot index
 
 
 @dataclass
@@ -504,6 +505,9 @@ class _Builder:
             rec = self.records.get(name)
             if rec is not None and rec.status in ('untranslated', 'closure'):
                 raise _Untranslated('depends_on_unsupported', deps=[name])
+        from .ggb_inline import vector_expression
+        if len(recs) == 1 and vector_expression(self, sig, inputs, recs[0]):
+            return
         if row is None:
             same = [k for k in self.table.commands if k.rpartition('_')[0] == sig.rpartition('_')[0]
                     and 'op' in self.table.commands[k]]
@@ -572,6 +576,8 @@ class _Builder:
             slots = list(out_spec)
         elif 'byValue' in out_spec:
             cands = out_spec['byValue']
+            if index is not None and index >= len(cands):
+                raise _Untranslated('unsupported_signature', 'номер выхода вне допустимого диапазона')
             slots = [cands[index]] if index is not None and index < len(cands) else list(cands)
         elif out_spec.get('pattern') == 'polygon_sides':
             slots = ['polygon'] + [f'side.{k}' for k in range(1, len(inputs) + 1)]
@@ -587,6 +593,9 @@ class _Builder:
         bound = []
         for n, (name, rec) in enumerate(zip(outs, recs)):
             slot = slots[n] if n < len(slots) else None
+            if isinstance(out_spec, dict) and 'byValue' in out_spec and index is None:
+                position = self.ctx.output_positions.get(name, n)
+                slot = slots[position] if position < len(slots) else None
             if slot is None:
                 rec.status, rec.reason, rec.detail = 'untranslated', 'unsupported_signature', 'лишний выход команды'
                 continue
@@ -685,61 +694,52 @@ def _resolve_by_value(builder: _Builder, doc, scale: float):
     from ..kernel.evaluate import evaluate
     if not builder.by_value:
         return {}
-    probe = copy.deepcopy(builder.doc)
-    probe_ids = {}
+    from itertools import permutations
     for op_id, info in builder.by_value.items():
+        # Earlier bindings may feed this operation. Probe the updated graph,
+        # rather than evaluating every intersection with provisional ancestors.
+        probe = copy.deepcopy(builder.doc)
         op = probe['operations'][op_id]
         record = builder.reg.ops[op['op']]
-        have = {o['slot'] for o in op['outputs']}
+        probe_ids = {out['slot']: out['elementId'] for out in op['outputs']}
         for n, slot in enumerate(info['slots']):
-            if slot in have:
-                probe_ids[(op_id, slot)] = next(o['elementId'] for o in op['outputs'] if o['slot'] == slot)
+            if slot in probe_ids:
                 continue
-            eid = f'probe{len(probe_ids)}x{n}'
+            eid = f'probe{n}'
             type_ = builder.reg.output_type(record, slot, op['args'], probe)
             probe['elements'][eid] = {'id': eid, 'type': type_, 'producer': {'operationId': op_id, 'slot': slot},
                                       'displayName': ''}
             op['outputs'].append({'slot': slot, 'elementId': eid})
-            probe_ids[(op_id, slot)] = eid
-    ev = evaluate(probe)
-    ambiguous = {}
-    for op_id, info in builder.by_value.items():
+            probe_ids[slot] = eid
+        ev = evaluate(probe)
         values = {}
-        for slot in info['slots']:
-            eid = probe_ids[(op_id, slot)]
+        for slot, eid in probe_ids.items():
             st = ev.elements.get(eid, {})
             type_ = probe['elements'][eid]['type']
             values[slot] = native_report_value(type_, st.get('value')) if st.get('state') == 'defined' else None
-        used = set()
-        new_slots = {}
-        for name, provisional in info['outputs']:
-            rec = builder.records[name]
-            exp = _expected(builder, rec)
-            if exp is None:
-                new_slots[name] = provisional
-                continue
-            matches = [s for s in info['slots'] if values[s] is not None
-                       and compare(exp, values[s], scale)[0] == 'passed']
-            free = [s for s in matches if s not in used]
-            if provisional in free:
-                choice = provisional
-            elif len(free) == 1:
-                choice = free[0]
-            elif len(free) == 2 and compare(values[free[0]], values[free[1]], scale)[0] == 'passed':
-                choice = free[0]     # a tangency: both slots hold the point
-            else:
-                choice = provisional
-                if exp.get('value') is not None or matches:
-                    ambiguous[name] = 'slot_ambiguous' if len(free) != 1 and matches else None
-            used.add(choice)
-            new_slots[name] = choice
-        op = builder.doc['operations'][op_id]
-        for out in op['outputs']:
-            name = next((n for n, _s in info['outputs'] if builder.element_of.get(n) == out['elementId']), None)
-            if name is not None and new_slots.get(name):
-                out['slot'] = new_slots[name]
-                builder.doc['elements'][out['elementId']]['producer']['slot'] = new_slots[name]
-    return {k: v for k, v in ambiguous.items() if v}
+        outputs = info['outputs']
+        expected = [_expected(builder, builder.records[name]) for name, _slot in outputs]
+
+        def score(slots):
+            defined, undefined, original = 0, 0, 0
+            for exp, (_name, provisional), slot in zip(expected, outputs, slots):
+                if exp is not None and compare(exp, values[slot], scale)[0] == 'passed':
+                    if exp.get('value') is None:
+                        undefined += 1
+                    else:
+                        defined += 1
+                original += slot == provisional
+            return defined, undefined, original
+
+        # Solve the whole assignment. A missing/undefined output still reserves
+        # one slot; a finite sibling must never take that same slot a second time.
+        choices = permutations(info['slots'], len(outputs))
+        selected = max(choices, key=score)
+        by_id = {builder.element_of[name]: slot for (name, _old), slot in zip(outputs, selected)}
+        for out in builder.doc['operations'][op_id]['outputs']:
+            out['slot'] = by_id[out['elementId']]
+            builder.doc['elements'][out['elementId']]['producer']['slot'] = out['slot']
+    return {}
 
 
 def _project_on_path(builder: _Builder):
