@@ -188,11 +188,11 @@ def test_a_script_drops_only_its_object():
     assert rep['dropped'] == []
 
 
-def test_texts_are_pictures():
+def test_plain_texts_are_editable():
     _, rep = _import(REPO_ROOT / 'tests/fixtures/text_static.ggb')
     texts = [e for e in rep['elements'] if e['ggb_type'] == 'text']
-    assert texts and all(e['category'] == 'picture' for e in texts)
-    assert {e['reason'] for e in texts} <= {'latex_macros', 'fixed_text'}
+    assert texts and all(e['category'] == 'editable' for e in texts)
+    assert all(e['value_check'] == 'passed' for e in texts)
     assert all(e['ggb_value']['kind'] == 'text' for e in texts)
 
 
@@ -441,10 +441,10 @@ def test_a_fixed_latex_text_refers_to_nothing():
     _, rep = _import(SYNTHETIC['latex_texts'][1]())
     e = _by_name(rep)
     fixed, valued = e['t2'], e['t3']
-    assert (fixed['category'], fixed['reason'], fixed['depends_on']) == ('picture', 'latex_macros', [])
+    assert (fixed['category'], fixed['depends_on']) == ('editable', [])
     assert (fixed['ggb_value']['template'], fixed['ggb_value']['refs']) == (
         '$S = \\frac{{1}}{{2}} a \\cdot h_a, \\; n \\ge 2$', [])
-    assert (valued['category'], valued['depends_on']) == ('picture', ['n'])
+    assert (valued['category'], valued['depends_on']) == ('editable', ['n'])
     assert (valued['ggb_value']['template'], valued['ggb_value']['refs']) == (
         'n = {0}', [{'ggb_name': 'n', 'as': 'number'}])
     # a label with an index in braces
@@ -632,8 +632,8 @@ def test_nothing_to_carry_over():
 
 def test_an_empty_document_on_request():
     # a file of pictures only: the web places them on an empty document (1.10.0a2)
-    pictures = ggb_bytes(expression('t', '"Задача 1"')
-                         + element('text', 't', extra='<startPoint x="1" y="2" z="1"/>')
+    pictures = ggb_bytes(expression('t', r'"\customMacro{1}"')
+                         + element('text', 't', extra='<startPoint x="1" y="2" z="1"/><isLaTeX val="true"/>')
                          + element('point3d', 'P', extra='<coords x="1" y="2" z="3" w="1"/>'))
     doc, rep = _import(pictures)
     assert doc is None

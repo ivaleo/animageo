@@ -1,0 +1,176 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_text_math",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_text_math",
+    "operationRegistryVersion": "1.7",
+    "operations": {
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          }
+        ],
+        "seq": 1
+      },
+      "3ae041bc-1cc2-540b-81e6-23f35867ea31": {
+        "id": "3ae041bc-1cc2-540b-81e6-23f35867ea31",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "666a9962-5c3d-53e1-95f0-e0ac9523916d"
+          }
+        ],
+        "seq": 2
+      },
+      "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913": {
+        "id": "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913",
+        "op": "text.free",
+        "args": {
+          "text": {
+            "kind": "template",
+            "value": "$\\displaystyle \\dfrac{{\\alpha_1}}{{2}} = {0}$"
+          },
+          "anchor": {
+            "kind": "ref",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "666a9962-5c3d-53e1-95f0-e0ac9523916d"
+              }
+            ]
+          },
+          "decimals": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "text",
+            "elementId": "58c35f0a-5076-5742-a395-3c25ac6a87f0"
+          }
+        ],
+        "seq": 3
+      }
+    },
+    "elements": {
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "666a9962-5c3d-53e1-95f0-e0ac9523916d": {
+        "id": "666a9962-5c3d-53e1-95f0-e0ac9523916d",
+        "type": "number",
+        "producer": {
+          "operationId": "3ae041bc-1cc2-540b-81e6-23f35867ea31",
+          "slot": "number"
+        },
+        "displayName": "n"
+      },
+      "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+        "id": "58c35f0a-5076-5742-a395-3c25ac6a87f0",
+        "type": "text",
+        "displayName": "t",
+        "producer": {
+          "operationId": "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913",
+          "slot": "text"
+        }
+      }
+    },
+    "inputs": {
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "kind": "point",
+        "value": [
+          1.0,
+          2.0
+        ]
+      },
+      "666a9962-5c3d-53e1-95f0-e0ac9523916d": {
+        "kind": "number",
+        "value": 3.0
+      }
+    },
+    "appearance": {
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "666a9962-5c3d-53e1-95f0-e0ac9523916d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+        "visible": false,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A",
+        "666a9962-5c3d-53e1-95f0-e0ac9523916d": "n",
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": "t"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved"
+    },
+    {
+      "name": "changed-1",
+      "inputs": {
+        "666a9962-5c3d-53e1-95f0-e0ac9523916d": {
+          "kind": "number",
+          "value": 4.25
+        },
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "kind": "point",
+          "value": [
+            -2.0,
+            5.0
+          ]
+        }
+      }
+    },
+    {
+      "name": "changed-2",
+      "inputs": {
+        "666a9962-5c3d-53e1-95f0-e0ac9523916d": {
+          "kind": "number",
+          "value": -2.0
+        }
+      }
+    }
+  ]
+}

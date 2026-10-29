@@ -77,7 +77,8 @@ def inline_arguments(doc, entries, records, refs_of):
     helpers = {}
     for entry in entries:
         info = entry['info']
-        supported = info.get('command') in allowed or info.get('command') == 'Expression' and info['type'] == 'vector'
+        supported = info.get('command') in allowed or info['type'] == 'text' or \
+            info.get('command') == 'Expression' and info['type'] == 'vector'
         if entry['status'] != 'translated' or not supported:
             continue
         for eid in entry['native_ids']:

@@ -176,3 +176,20 @@ def test_dynamic_formula_exports_the_current_refs(tmp_path):
     assert r'$\frac{3.5^{2}}{y}$' in tex and 'A = (-1, 0.5)' in tex
     assert second.report['elements']['t']['box'] != first.report['elements']['t']['box']
     assert latex_escape_text(r'\frac') not in tex
+
+
+@pytest.mark.parametrize('source', [r'\frac{x^{2}}{2}', r'\[\dfrac{\alpha_1}{2}\]', 'Value $x_1$ is positive'])
+def test_imported_standard_tex_matches_classic_glyph_outlines(source):
+    from tests.native.test_native_ggb_inline import eid, imported
+    from tests.native.test_native_ggb_texts import text
+
+    doc, items = imported(text('t', '"' + source + '"'))
+    assert items['t']['category'] == 'editable'
+    scene = AnimaGeoScene()
+    scene.loadDocument(doc)
+    name = scene.native_names.by_id[eid(items, 't')]
+    actual = scene.mobject(name)
+    elem = scene.geo.element(name)
+    elem.data = Text([('str', source)], position=elem.data.position, is_latex=True, latex_math_mode=True)
+    expected = scene.CreateMObject(elem, z_auto=True)
+    np.testing.assert_allclose(points(actual), points(expected), atol=1e-8)

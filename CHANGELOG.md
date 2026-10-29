@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Native GeoGebra import distinguishes standard TeX from unknown user macros.
+  Supported mathematical and plain texts become editable `text.free` templates
+  after checking their displayed value and anchor; object inserts stay live,
+  hidden texts stay hidden, and unsupported syntax keeps an explicit fallback.
 - Native GeoGebra import retains hidden dependencies of inline `Translate`,
   `Segment`, `Line` and `OrthogonalLine` arguments, including coordinate
   literals, nested commands and negated or scaled vectors. Imported results

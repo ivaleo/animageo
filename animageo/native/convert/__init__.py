@@ -408,6 +408,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
             e['native_ids'] = list(rec.native_ids)
         entries.append(e)
     doc = tr.document
+    from .ggb_text import promote_texts
+    promote_texts(doc, entries, ns)
 
     def direct_refs(nid):
         el = doc['elements'].get(nid)

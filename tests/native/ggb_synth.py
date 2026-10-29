@@ -194,7 +194,7 @@ def _synthetic() -> dict:
             'a zip without geogebra.xml: refused',
             lambda: zip_bytes({'readme.txt': 'not a GeoGebra file'})),
         'pictures_only': (
-            'texts, a LaTeX text and an image only: nothing editable, no document',
+            'plain and LaTeX texts become editable; an image remains unsupported',
             lambda: ggb_bytes(_text('t1', '"Задача 1"', '<startPoint x="1" y="2" z="1"/>')
                               + _text('t2', '"$\\sqrt{2}$"', '<startPoint x="1" y="1" z="1"/>', latex=True)
                               + element('image', 'pic1'))),

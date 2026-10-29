@@ -232,9 +232,15 @@ decimals?, shown?}`:
 - `shown` — the text as the file shows it, from the saved values (the
   classic `resolve_text_string` gives the same).
 
-The web builds `text.free` from these (the anchor — the point of
-`anchor_ref` or a hidden free point at `anchor`); the category of a text does
-not change (`picture`).
+The importer builds `text.free` for supported literal/reference concatenations.
+The anchor is `anchor_ref` or a hidden fixed point at `anchor`; segment lengths,
+polygon areas and geometric angles use hidden measure operations. A text becomes
+`editable` only when its evaluated string and anchor match the saved values.
+Ordinary TeX becomes native inline math, including `\[...\]` as
+`$\displaystyle ...$`; literal braces survive template escaping. Unknown user
+macros, unsupported expressions or delimiters remain `picture` with a reason
+and detail. Visibility is retained. The web may build remaining supported text
+templates from the report after its own value check.
 
 `depends_on` of every object names the objects of the file its definition
 refers to outside the string literals (1.10.0a3,
