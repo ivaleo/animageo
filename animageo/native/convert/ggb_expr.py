@@ -146,7 +146,8 @@ def _negative(node):
 class _Reader:
     """Recursive descent over :func:`_tokens`; ``labels`` — the references in order."""
 
-    def __init__(self, tokens, kinds):
+    def __init__(self, tokens, kinds, variables=()):
+        self.variables = variables
         self.t = tokens
         self.i = 0
         self.kinds = kinds
@@ -292,6 +293,8 @@ class _Reader:
 
     def name(self, name):
         call = self.is_op('(', '[')
+        if name in self.variables:
+            return {'var': name}
         kind = self.kinds.get(name)
         if kind is not None:
             if kind not in NUMBER_KINDS:
@@ -331,7 +334,7 @@ class _Reader:
         raise ExprError('parse_error', f'неизвестное имя {name[:40]}')
 
 
-def parse_number(text: str, kinds: dict):
+def parse_number(text: str, kinds: dict, *, variables=()):
     """``(ast, labels)`` of the expression of a number ``text`` of a ``.ggb``:
     an AST v1 tree whose ``{"ref": k}`` is ``labels[k]``; ``kinds`` — the GGB
     type of every label of the file (a reference must be a ``numeric`` or an
@@ -342,8 +345,8 @@ def parse_number(text: str, kinds: dict):
         raise ExprError('formula_unsupported', 'выражение выходит за пределы формул (expr.md §2)')
     if '"' in text:
         raise ExprError('parse_error', 'строка в выражении числа')
-    reader = _Reader(_tokens(text), kinds)
+    reader = _Reader(_tokens(text), kinds, variables)
     ast = reader.read()
-    if problems(ast, len(reader.labels)):
+    if problems(ast, len(reader.labels), vars=variables):
         raise ExprError('formula_unsupported', 'выражение выходит за пределы формул (expr.md §2)')
     return ast, reader.labels

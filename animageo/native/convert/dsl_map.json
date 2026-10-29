@@ -1,6 +1,6 @@
 {
  "format": "animageo-dsl-map/v1",
- "mapVersion": 3,
+ "mapVersion": 4,
  "registry": "1.7",
  "commands": {
   "abs_i": {
@@ -480,16 +480,29 @@
    "ggb": [
     "Axes"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.axes",
+   "args": [
+    "conic"
+   ],
+   "outputs": {
+    "byValue": [
+     "focal",
+     "conjugate"
+    ]
+   }
   },
   "center_K": {
    "factory": "Center",
    "ggb": [
     "Center"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.center",
+   "args": [
+    "conic"
+   ],
+   "outputs": [
+    "center"
+   ]
   },
   "center_c": {
    "factory": "Center",
@@ -882,8 +895,17 @@
    "ggb": [
     "Conic"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.five_points",
+   "args": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e"
+   ],
+   "outputs": [
+    "conic"
+   ]
   },
   "contained_by_pc": {
    "factory": "ContainedBy",
@@ -1628,8 +1650,15 @@
    "ggb": [
     "Ellipse"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.ellipse_foci_point",
+   "args": [
+    "f1",
+    "f2",
+    "through"
+   ],
+   "outputs": [
+    "conic"
+   ]
   },
   "equality_PP": {
    "factory": "Equality",
@@ -1716,8 +1745,16 @@
    "ggb": [
     "Focus"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.foci",
+   "args": [
+    "conic"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
   },
   "function_T": {
    "factory": "Function",
@@ -1780,8 +1817,15 @@
    "ggb": [
     "Hyperbola"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.hyperbola_foci_point",
+   "args": [
+    "f1",
+    "f2",
+    "through"
+   ],
+   "outputs": [
+    "conic"
+   ]
   },
   "implicit_curve_T": {
    "factory": "ImplicitCurve",
@@ -2219,48 +2263,117 @@
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "conic",
+    "line"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
   },
   "intersect_Kli": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "conic",
+    "line",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_Kr": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "conic",
+    "line"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
   },
   "intersect_Kri": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "conic",
+    "line",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_Ks": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "conic",
+    "line"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
   },
   "intersect_Ksi": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "conic",
+    "line",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_Sl": {
    "factory": "Intersect",
@@ -2578,16 +2691,39 @@
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "line",
+    "conic"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
   },
   "intersect_lKi": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "line",
+    "conic",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_lS": {
    "factory": "Intersect",
@@ -2766,16 +2902,39 @@
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "line",
+    "conic"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
   },
   "intersect_rKi": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "line",
+    "conic",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_rc": {
    "factory": "Intersect",
@@ -2911,16 +3070,39 @@
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "line",
+    "conic"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   }
   },
   "intersect_sKi": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.line_conic",
+   "args": [
+    "line",
+    "conic",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_sc": {
    "factory": "Intersect",
@@ -3608,24 +3790,42 @@
    "ggb": [
     "Parabola"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.parabola_focus_directrix",
+   "args": [
+    "focus",
+    "directrix"
+   ],
+   "outputs": [
+    "conic"
+   ]
   },
   "parabola_pr": {
    "factory": "Parabola",
    "ggb": [
     "Parabola"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.parabola_focus_directrix",
+   "args": [
+    "focus",
+    "directrix"
+   ],
+   "outputs": [
+    "conic"
+   ]
   },
   "parabola_ps": {
    "factory": "Parabola",
    "ggb": [
     "Parabola"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.parabola_focus_directrix",
+   "args": [
+    "focus",
+    "directrix"
+   ],
+   "outputs": [
+    "conic"
+   ]
   },
   "perimeter_P": {
    "factory": "Perimeter",
@@ -5070,8 +5270,18 @@
    "ggb": [
     "Vertex"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.vertices",
+   "args": [
+    "conic"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   }
   }
  },
  "opsWithoutClassic": {
@@ -5080,21 +5290,12 @@
   "angle.by_size": "classic Angle(A, B, α) is not a dispatch key",
   "circle.diameter": "no classic command builds it",
   "circle.excircle": "no classic command builds it",
-  "conic.axes": "registry 1.6: classic conics are not translated yet",
-  "conic.center": "registry 1.6: classic conics are not translated yet",
-  "conic.ellipse_foci_point": "registry 1.6: classic conics are not translated yet",
-  "conic.equation": "registry 1.6: classic conics are not translated yet",
-  "conic.five_points": "registry 1.6: classic conics are not translated yet",
-  "conic.foci": "registry 1.6: classic conics are not translated yet",
-  "conic.hyperbola_foci_point": "registry 1.6: classic conics are not translated yet",
-  "conic.parabola_focus_directrix": "registry 1.6: classic conics are not translated yet",
-  "conic.vertices": "registry 1.6: classic conics are not translated yet",
+  "conic.equation": "GGB conic equations are read as formulas outside the classic command table",
   "function.expr": "registry 1.6: classic functions are not translated yet",
   "function.extremum": "registry 1.6: classic functions are not translated yet",
   "function.root": "registry 1.6: classic functions are not translated yet",
   "intersect.function_function": "registry 1.6: classic functions are not translated yet",
   "intersect.function_line": "registry 1.6: classic functions are not translated yet",
-  "intersect.line_conic": "registry 1.6: classic conics are not translated yet",
   "intersect.nearest": "no classic command builds it",
   "intersect.other_than": "no classic command builds it",
   "line.external_bisector": "no classic command builds it",

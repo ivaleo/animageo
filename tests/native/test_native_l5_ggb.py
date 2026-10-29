@@ -142,7 +142,7 @@ def test_slider_is_a_free_number_with_its_range():
 
 def test_unsupported_and_closure():
     data = ggb_bytes(point('A', 0.0, 0.0) + point('B', 2.0, 0.0) + point('C', 0.0, 3.0)
-                     + command('Ellipse', ['A', 'B', 'C'], ['e'])
+                     + command('Ellipse', ['A', 'B', '3'], ['e'])
                      + element('conic', 'e', extra='<matrix A0="1" A1="2" A2="-9" A3="0" A4="0" A5="0"/>')
                      + command('Point', ['e'], ['P']) + point('P', 3.0, 0.0)
                      + command('Segment', ['A', 'P'], ['s']) + element('segment', 's', extra='<coords x="0" y="1" z="0"/>'))
@@ -405,10 +405,8 @@ def test_arithmetic_of_numbers_is_editable():
     assert native.has('convert.formula')
 
 
-def test_an_expression_argument_is_not_carried():
-    """A command or a formula inside an argument has no object of its own:
-    ``formula_unsupported`` with the expression in ``detail``; the parts of an
-    arithmetic expression go into one formula (1.10.0a2)."""
+def test_circle_expression_arguments_keep_private_dependencies():
+    """Anonymous radius formulas and distance commands keep live refs."""
     circle = lambda label, r: element('conic', label, extra=f'<matrix A0="1" A1="1" A2="{-r * r!r}" A3="0" A4="0" A5="0"/>')
     body = (_numeric('r', 2.0) + point('A', 0.0, 0.0) + point('B', 3.0, 0.0)
             + command('Circle', ['A', 'r/2'], ['c']) + circle('c', 1.0)
@@ -417,15 +415,17 @@ def test_an_expression_argument_is_not_carried():
             + _numeric('m', 6.25, '(r - 7)^2 / 4'))
     doc, rep = _import(ggb_bytes(body))
     e = _by_name(rep)
-    assert {n: (e[n]['category'], e[n]['reason'], e[n].get('detail')) for n in ('c', 'k')} == {
-        'c': ('unsupported', 'formula_unsupported', 'аргумент задан выражением: r/2'),
-        'k': ('unsupported', 'formula_unsupported', 'аргумент задан выражением: Distance(A, B)')}
+    assert all(e[n]['category'] == 'editable' for n in ('c', 'k'))
+    moved = native.evaluate(doc, inputs={e['B']['native_ids'][0]: {'kind': 'point', 'value': [4., 0.]},
+                                        e['r']['native_ids'][0]: {'kind': 'number', 'value': 6.}})
+    assert moved.elements[e['c']['native_ids'][0]]['value']['r'] == 3.
+    assert moved.elements[e['k']['native_ids'][0]]['value']['r'] == 4.
     assert (e['d']['category'], e['d']['reason']) == ('unsupported', 'formula_unsupported')
     assert e['m']['category'] == 'editable'
     op = doc['operations'][doc['elements'][e['m']['native_ids'][0]]['producer']['operationId']]
     assert op['args']['expr']['ast'] == {'op': '/', 'args': [
         {'op': '^', 'args': [{'op': '-', 'args': [{'ref': 0}, {'num': 7.0}]}, {'num': 2.0}]}, {'num': 4.0}]}
-    assert sorted(el['type'] for el in doc['elements'].values()) == ['number', 'number', 'point', 'point']
+    assert sum(el['type'] == 'circle' for el in doc['elements'].values()) == 2
 
 
 def _op_of(doc, entry):

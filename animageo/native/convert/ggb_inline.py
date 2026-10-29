@@ -69,7 +69,8 @@ def inline_arguments(doc, entries, records, refs_of):
     contract of source objects. Their own UUID5 IDs, hidden appearance and
     dependency closure are retained in the candidate document.
     """
-    allowed = {'Translate', 'Segment', 'Line', 'OrthogonalLine', 'Vector'}
+    allowed = {'Translate', 'Segment', 'Line', 'OrthogonalLine', 'Vector', 'Point', 'Intersect', 'Ray',
+               'Circle', 'Rotate', 'Polygon', 'Parabola', 'ClosestPoint', 'Midpoint', 'PerpendicularBisector'}
     named = {eid for entry in entries for eid in entry['native_ids']}
     anonymous = {eid for rec in records.values() if KeyMaker.is_phantom(rec.name) for eid in rec.native_ids}
     anonymous.update(set(doc['elements']) - named - {
@@ -78,7 +79,7 @@ def inline_arguments(doc, entries, records, refs_of):
     for entry in entries:
         info = entry['info']
         supported = info.get('command') in allowed or info['type'] == 'text' or \
-            info.get('command') == 'Expression' and info['type'] == 'vector'
+            info.get('command') == 'Expression' and info['type'] in ('vector', 'conic')
         if entry['status'] != 'translated' or not supported:
             continue
         for eid in entry['native_ids']:

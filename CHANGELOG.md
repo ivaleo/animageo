@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Supported mathematical and plain texts become editable `text.free` templates
   after checking their displayed value and anchor; object inserts stay live,
   hidden texts stay hidden, and unsupported syntax keeps an explicit fallback.
+- Native import translates focal ellipses and hyperbolas, parabolas, five-point
+  conics, numeric conic equations and conic parts through existing registry ops.
+  Line/conic intersections retain their chosen branches when inputs move.
+- Regular-polygon outputs respect their XML slots, including omitted sides and
+  vertices. Constructions on those sides retain hidden vertex dependencies.
+  Implicit coordinate axes and nested circle/intersection arguments remain live;
+  points on paths are projected after resolving their upstream intersections.
+  A bare `pi` argument (`Rotate(B, pi, O)`) is read as its number. The command
+  table is `mapVersion` 4.
 - Native GeoGebra import retains hidden dependencies of inline `Translate`,
   `Segment`, `Line` and `OrthogonalLine` arguments, including coordinate
   literals, nested commands and negated or scaled vectors. Imported results

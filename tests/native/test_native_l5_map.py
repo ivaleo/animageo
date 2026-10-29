@@ -48,11 +48,11 @@ def test_unmapped_rows_say_why_in_russian_for_the_report():
     assert all(any('а' <= ch <= 'я' for ch in text) for text in NOTE_DETAILS.values())
 
 
-def test_conics_and_functions_wait_for_l4():
+def test_conics_use_existing_registry_ops():
     rows = dsl_map().commands
     for key in ('ellipse_ppp', 'parabola_pl', 'hyperbola_ppp'):
         if key in rows:
-            assert rows[key].get('unmapped') == 'no_registry_op'
+            assert rows[key]['op'].startswith('conic.')
 
 
 def test_problems_are_found_in_both_directions():

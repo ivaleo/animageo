@@ -89,6 +89,10 @@ def native_report_value(type_: str, value):
                                              'a0': _f(value['a0']), 'a1': _f(value['a1'])}}
         if type_ == 'polygon':
             return {'kind': 'polygon', 'value': [[_f(x), _f(y)] for x, y in value['vertices']]}
+        if type_ == 'conic':
+            from ..kernel.conic import matrix
+            m = matrix(value)
+            return {'kind': 'conic', 'value': [m[0][0], m[1][1], m[2][2], m[0][1], m[0][2], m[1][2]]}
         if type_ == 'number':
             kind = 'angle' if value.get('unit') == 'angle' else 'number'
             return {'kind': kind, 'value': _f(value['value'])}
@@ -101,7 +105,7 @@ def native_report_value(type_: str, value):
 
 _KIND_OF_TYPE = {'point': 'point', 'segment': 'segment', 'vector': 'vector', 'line': 'line', 'ray': 'ray',
                  'circle': 'circle', 'arc': 'arc', 'sector': 'arc', 'polygon': 'polygon', 'number': 'number',
-                 'angle': 'angle'}
+                 'angle': 'angle', 'conic': 'conic'}
 
 
 def classic_report_value(type_: str, data):
@@ -113,6 +117,9 @@ def classic_report_value(type_: str, data):
         kind = _KIND_OF_TYPE.get(type_)
         return {'kind': kind, 'value': None} if kind else None
     try:
+        if type_ == 'conic' and hasattr(data, 'matrix'):
+            m = data.matrix
+            return {'kind': 'conic', 'value': [float(m[i][j]) for i, j in ((0, 0), (1, 1), (2, 2), (0, 1), (0, 2), (1, 2))]}
         from ..kernel.bridge import from_classic
         out = native_report_value(type_, from_classic(type_, data))
     except Exception:       # noqa: BLE001 — a classic object of another kind: no value
@@ -139,6 +146,18 @@ def _delta(expected: dict, actual: dict, scale: float):
         return None
     if ek == 'point' and ak == 'point':
         return _dist(ev, av)
+    if ek == 'circle' and ak == 'conic':
+        circle = circle_from_matrix(av)
+        return math.inf if circle is None else max(_dist(ev['center'], circle['center']), abs(ev['radius'] - circle['radius']))
+    if ek == 'conic' and ak == 'conic':
+        # Homogeneous matrices may differ by any nonzero scale, including sign.
+        # Compare in scene coordinates so translations do not dominate quadratics.
+        weights = (scale * scale, scale * scale, 1., scale * scale, scale, scale)
+        a, b = ([float(x) * w for x, w in zip(v, weights)] for v in (ev, av))
+        pivot = max(range(6), key=lambda i: abs(a[i]))
+        if not a[pivot] or not b[pivot]:
+            return math.inf
+        return max(abs(x / a[pivot] - y / b[pivot]) for x, y in zip(a, b)) * scale
     if ek in ('number',) and ak in ('number', 'angle'):
         return abs(_f(ev) - _f(av)) * scale / max(1.0, scale, abs(_f(ev)))
     if ek == 'angle' and ak in ('angle', 'number'):

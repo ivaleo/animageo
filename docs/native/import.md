@@ -61,6 +61,17 @@ L4; arithmetic of values — `formula_unsupported`; predicates (`AreParallel`,
 …) — `no_registry_op`; intersections with conics, points by numbers —
 `unsupported_signature`.
 
+The current importer also maps `Ellipse(F1, F2, P)`, `Hyperbola(F1, F2, P)`,
+`Parabola(F, directrix)`, five-point `Conic`, conic centres, foci, vertices,
+axes and line/ray/segment intersections with conics to the existing registry.
+Conic equations such as `y = a*x^2` retain numeric references. Their homogeneous
+matrices are compared with the saved GeoGebra matrices up to a nonzero factor.
+Intersection slots are assigned together by saved value, then kept fixed during
+movement. Branch selection and projection of points on paths follow graph order.
+General conic/conic intersections, conic transformations and points on conics
+still require registry support and keep their fallback reasons. A bare `pi`
+(`π`) argument, as in `Rotate(B, pi, O)`, is read as its number.
+
 1.10.0a2 (`native.has("convert.formula")`): the arithmetic of numbers and
 measures — 24 keys (`+ - * / ^`, the opposite, `Abs`, `Sqrt`, `Sin`, `Cos`,
 `Tan`, `Ctan`, a copy) — is `number.expression`. The other 46 keys of
@@ -70,7 +81,12 @@ angles or segments (`number.expression` takes numbers only and gives a
 number, not an angle). An argument that is an expression with no object of
 its own — `Circle(A, r/2)`, `Circle(A, Distance(A, B))`, a command inside
 a formula — is `formula_unsupported` with the expression in `detail` (a
-document element of no report entry would be needed). GeoGebra writes
+document element of no report entry would be needed). After 1.11.0 the
+arguments of `Translate`, `Segment`, `Line`, `OrthogonalLine`, `Vector`,
+`Point`, `Intersect`, `Ray`, `Circle`, `Rotate`, `Polygon`, `Parabola`,
+`ClosestPoint`, `Midpoint` and `PerpendicularBisector` (and conic equations)
+keep such expressions as hidden, locked helpers outside `native_ids`; their
+results are still value-checked. GeoGebra writes
 `sqrt(a)`, `sin(a)` and `2a`, which the classic parser does not take
 (`parse_error` in 1.10.0a2); `Sqrt(a)`, `Sin(a)` and `2*a` translate.
 

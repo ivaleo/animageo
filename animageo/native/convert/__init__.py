@@ -278,7 +278,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     ctx.xml_types = {i['label']: i['type'] for i in infos}
     for node in root.findall('./construction/command'):
         inp, out = node.find('input'), node.find('output')
-        if node.get('name') == 'Intersect' and inp is not None and len(inp.attrib) == 2 and out is not None:
+        if out is not None:
             for attr, label in out.attrib.items():
                 if label in norm and attr.startswith('a') and attr[1:].isdigit():
                     ctx.output_positions[norm[label]] = int(attr[1:])
@@ -335,6 +335,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         if app:
             ctx.appearance[n] = app
     _read_formulas(infos, norm, ctx, built_by_command, parse_number, ExprError)
+    from .ggb_conic import read_equations
+    read_equations(infos, norm, ctx)
     with _quiet():
         tr = translate(constr, ctx)
     # one entry per <element>

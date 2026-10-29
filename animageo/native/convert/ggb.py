@@ -184,11 +184,17 @@ def parse_xml(data: bytes, *, depth: int = 64):
 def canonical_commands(root) -> None:
     """Rename in place every ``<command>`` of :data:`COMMAND_SYNONYMS` in the
     parsed XML (``geogebra.xml`` or ``geogebra_macro.xml``) — the import only;
-    the classic ``loadGGB`` reads the file as it is."""
+    the classic ``loadGGB`` reads the file as it is. A bare ``pi`` (``π``)
+    argument becomes its number literal: the classic reads ``pi/2`` but not
+    the name alone (``Rotate(B, pi, O)``)."""
     for node in root.iter('command'):
         name = node.attrib.get('name')
         if name in COMMAND_SYNONYMS:
             node.attrib['name'] = COMMAND_SYNONYMS[name]
+        inp = node.find('input')
+        for attr, value in (inp.attrib.items() if inp is not None else ()):
+            if value in ('pi', 'π'):
+                inp.attrib[attr] = repr(math.pi)
 
 
 def _float(v):

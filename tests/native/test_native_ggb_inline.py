@@ -121,3 +121,14 @@ def test_literal_vector_expression_keeps_its_hidden_endpoints():
     doc, items = imported(body)
     assert all(e['category'] == 'editable' for e in items.values())
     assert native.validate(doc) == []
+
+
+@pytest.mark.parametrize('constant', ['pi', 'π', ' pi '])
+def test_bare_pi_argument_is_a_number_literal(constant):
+    body = (point('B', 1., 0.) + point('O', 0., 0.)
+            + command('Rotate', ['B', constant, 'O'], ['B_1']) + point('B_1', -1., 0.))
+    doc, items = imported(body)
+    assert all(e['category'] == 'editable' for e in items.values())
+    assert items['B_1']['value_check'] == 'passed'
+    moved = native.evaluate(doc, inputs={eid(items, 'B'): {'kind': 'point', 'value': [0., 2.]}})
+    assert moved.elements[eid(items, 'B_1')]['value'] == pytest.approx(dict(x=0., y=-2.))

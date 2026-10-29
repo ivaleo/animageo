@@ -58,7 +58,7 @@ def test_a_scene_translates_whole():
 
 
 def test_strict_and_partial():
-    code = SCENE + 'h = Ellipse(A, B, C)\nP = Point(h)\nu = Segment(P, A)\n'
+    code = SCENE + 'h = Ellipse(A, B, 3)\nP = Point(h)\nu = Segment(P, A)\n'
     with pytest.raises(native.ConvertError) as exc:
         native.from_construction(_constr(code), id_namespace=NS)
     assert {i['name'] for i in exc.value.items} == {'h', 'P', 'u'}
@@ -73,7 +73,7 @@ def test_strict_and_partial():
 
 
 def test_nothing_translates():
-    doc, rep = native.from_construction(_constr('h = Ellipse(Point(0, 0), Point(2, 0), Point(0, 3))'),
+    doc, rep = native.from_construction(_constr('h = Ellipse(Point(0, 0), Point(2, 0), 3)'),
                                         id_namespace=NS, mode='partial')
     assert doc is None or not any(x['category'] == 'editable' and x['name'] == 'h' for x in rep['elements'])
 
@@ -110,7 +110,10 @@ VARIANTS = {
     'i': ['2', '3'],
     'm': ['Distance(Point(0, 0), Point(1.5, 0))', 'Distance(Point(1, 1), Point(3, 2))'],
     'A': ['AngleSize(0.7)', 'AngleSize(2.4)'],
+    'K': ['Ellipse(Point(-2, 0), Point(2, 0), Point(0, 3))',
+          'Ellipse(Point(-1, 1), Point(3, 1), Point(1, 4))'],
 }
+VARIANTS['p'].append('Point(-2.3, 2.1)')
 VARIANTS['S'].append('CircleSector(Point(-1, 0), Point(1.5, -1), Point(-2, 2))')
 VARIANTS['C'].append('CircleArc(Point(-1, 0), Point(1.5, -1), Point(-2, 2))')
 OVERRIDE = {
@@ -144,7 +147,8 @@ def _row_scene(key, row, shift=0):
         args.append(VARIANTS[ch][(k + shift) % len(VARIANTS[ch])])
         used[ch] = k + 1
     out = row.get('outputs')
-    target = 'X1, X2' if isinstance(out, dict) and 'byValue' in out and not row.get('index') else 'X'
+    target = ', '.join(f'X{k+1}' for k in range(4 if key == 'vertex_K' else 2)) \
+        if isinstance(out, dict) and 'byValue' in out and not row.get('index') else 'X'
     return f"{target} = {row['factory']}({', '.join(args)})"
 
 
@@ -217,6 +221,15 @@ OTHER = {
     'add_mi': 'X = Add(Div(Distance(Point(1, 1), Point(3, 2)), Distance(Point(0, 0), Point(1.5, 0))), -3)',
     'pow_mi': 'X = Pow(Distance(Point(1, 1), Point(3, 2)), 2)',     # the classic squares a measure only
 }
+for _shift, _overrides in enumerate((OVERRIDE, OTHER)):
+    for _kind, _factory in (('l', 'Line'), ('r', 'Ray'), ('s', 'Segment')):
+        for _order in (_kind + 'K', 'K' + _kind):
+            for _indexed in ('', 'i'):
+                _args = [VARIANTS['K'][_shift] if ch == 'K' else
+                         f'{_factory}(Point(-10, {_shift}), Point(10, {_shift}))' for ch in _order]
+                _overrides['intersect_' + _order + _indexed] = (
+                    ('X' if _indexed else 'X1, X2') + ' = Intersect(' +
+                    ', '.join(_args + ([str(1 + _shift)] if _indexed else [])) + ')')
 # the rows outside the generator: (general, another configuration)
 OWN_SCENES = {
     'polygon': ('X = Polygon(Point(0, 0), Point(4, 0), Point(1, 3))',
@@ -412,6 +425,20 @@ NO_DEGENERACY = {
     'sin_i': 'the sine is defined for every number',
     'cos_i': 'the cosine is defined for every number',
 }
+for _key in ('axes_K', 'center_K', 'focus_K', 'vertex_K'):
+    NO_DEGENERACY[_key] = 'a degenerate conic is not supplied as a defined input to this command'
+DEGENERATE.update({
+    'ellipse_ppp': 'X = Ellipse(Point(-2, 0), Point(2, 0), Point(0, 0))',
+    'hyperbola_ppp': 'X = Hyperbola(Point(-2, 0), Point(2, 0), Point(0, 3))',
+    'conic_ppppp': 'X = Conic(Point(0, 0), Point(1, 0), Point(2, 0), Point(3, 0), Point(4, 0))',
+})
+for _kind, _factory in (('l', 'Line'), ('r', 'Ray'), ('s', 'Segment')):
+    DEGENERATE['parabola_p' + _kind] = f'X = Parabola(Point(1, 0), {_factory}(Point(0, 0), Point(4, 0)))'
+    for _order in (_kind + 'K', 'K' + _kind):
+        for _indexed in ('', 'i'):
+            _args = [VARIANTS['K'][0] if ch == 'K' else f'{_factory}(Point(-1, 9), Point(1, 9))' for ch in _order]
+            DEGENERATE['intersect_' + _order + _indexed] = (
+                ('X' if _indexed else 'X1, X2') + ' = Intersect(' + ', '.join(_args + (['1'] if _indexed else [])) + ')')
 # Degenerate configurations where the classic and the kernel disagree. They are
 # reported as differs — never editable — so «zero falsely editable» holds:
 # at a tangency the classic gives one point (the second output is undefined),
@@ -430,6 +457,7 @@ DEGENERATE_DIFFERS = {
     # plus a number, a cube of a length are undefined there; the kernel has no dimension
     'add_mi', 'add_mm', 'pow_mi', 'sub_mm',
 }
+DEGENERATE_DIFFERS.add('conic_ppppp')
 
 
 def _all_rows():

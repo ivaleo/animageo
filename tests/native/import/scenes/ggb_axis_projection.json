@@ -1,0 +1,193 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_axis_projection",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_axis_projection",
+    "operationRegistryVersion": "1.7",
+    "operations": {
+      "782d8b4a-164e-5d4a-be35-73ca443c6442": {
+        "id": "782d8b4a-164e-5d4a-be35-73ca443c6442",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "aa0da554-e3b9-5844-9858-b685b08ca748"
+          }
+        ]
+      },
+      "061bf186-2016-5e74-ad10-cdb6978013a0": {
+        "id": "061bf186-2016-5e74-ad10-cdb6978013a0",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "7d356592-05e9-5e43-97a3-ca5451d4ecc6"
+          }
+        ]
+      },
+      "744f035e-a8ca-5536-b41b-2fd565394e8c": {
+        "id": "744f035e-a8ca-5536-b41b-2fd565394e8c",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "aa0da554-e3b9-5844-9858-b685b08ca748"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "7d356592-05e9-5e43-97a3-ca5451d4ecc6"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "c37f9282-3434-598d-84ef-001c6c22262a"
+          }
+        ]
+      },
+      "e9fba105-df77-53b8-97f5-40d89980b343": {
+        "id": "e9fba105-df77-53b8-97f5-40d89980b343",
+        "op": "point.on_path",
+        "args": {
+          "path": {
+            "kind": "ref",
+            "elementId": "c37f9282-3434-598d-84ef-001c6c22262a"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          }
+        ],
+        "seq": 1
+      }
+    },
+    "elements": {
+      "aa0da554-e3b9-5844-9858-b685b08ca748": {
+        "id": "aa0da554-e3b9-5844-9858-b685b08ca748",
+        "type": "point",
+        "displayName": "",
+        "producer": {
+          "operationId": "782d8b4a-164e-5d4a-be35-73ca443c6442",
+          "slot": "point"
+        }
+      },
+      "7d356592-05e9-5e43-97a3-ca5451d4ecc6": {
+        "id": "7d356592-05e9-5e43-97a3-ca5451d4ecc6",
+        "type": "point",
+        "displayName": "",
+        "producer": {
+          "operationId": "061bf186-2016-5e74-ad10-cdb6978013a0",
+          "slot": "point"
+        }
+      },
+      "c37f9282-3434-598d-84ef-001c6c22262a": {
+        "id": "c37f9282-3434-598d-84ef-001c6c22262a",
+        "type": "line",
+        "displayName": "",
+        "producer": {
+          "operationId": "744f035e-a8ca-5536-b41b-2fd565394e8c",
+          "slot": "line"
+        }
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "id": "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "point"
+        },
+        "displayName": "P"
+      }
+    },
+    "inputs": {
+      "aa0da554-e3b9-5844-9858-b685b08ca748": {
+        "kind": "point",
+        "value": [
+          0.0,
+          0.0
+        ]
+      },
+      "7d356592-05e9-5e43-97a3-ca5451d4ecc6": {
+        "kind": "point",
+        "value": [
+          1.0,
+          0.0
+        ]
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "kind": "pathParameter",
+        "value": 3.0
+      }
+    },
+    "appearance": {
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "aa0da554-e3b9-5844-9858-b685b08ca748": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "c37f9282-3434-598d-84ef-001c6c22262a": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      },
+      "7d356592-05e9-5e43-97a3-ca5451d4ecc6": {
+        "visible": false,
+        "locked": true,
+        "label": {
+          "mode": "none"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": "P"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved"
+    },
+    {
+      "name": "changed-1",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "pathParameter",
+          "value": -2.0
+        }
+      }
+    },
+    {
+      "name": "changed-2",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "pathParameter",
+          "value": 5.0
+        }
+      }
+    }
+  ]
+}

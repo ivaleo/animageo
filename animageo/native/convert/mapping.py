@@ -28,7 +28,10 @@ reason) and ``seedDropped`` the commands of the web seed not taken (with the
 reason). The table is data of the translator: it has its own ``mapVersion``
 and does not move the dev label of the library. ``mapVersion`` 3
 (1.11.0rc1): the row ``cpx_to_a`` is gone with the classic command (a helper
-of ``lib_elements`` that was no command, kernel spec §15).
+of ``lib_elements`` that was no command, kernel spec §15). ``mapVersion`` 4:
+the conic rows (``Ellipse``, ``Hyperbola``, ``Parabola``, five-point
+``Conic``, ``Center``, ``Focus``, ``Vertex``, ``Axes`` and the line/conic
+``Intersect`` keys) are op rows of the registry 1.6 conic ops.
 """
 from __future__ import annotations
 

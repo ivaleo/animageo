@@ -30,7 +30,7 @@ __all__ = ['ConvertError', 'Record', 'Context', 'Translation', 'translate', 'DOC
 DOCUMENT_BOUNDS = [-10.0, -6.0, 10.0, 6.0]
 AXES = ('xAxis', 'yAxis')
 _XML_SHORTCUTS = {'point': 'p', 'segment': 's', 'line': 'l', 'ray': 'r', 'polygon': 'P', 'vector': 'v',
-                  'numeric': 'i', 'angle': 'A', 'conicpart': 'C'}
+                  'numeric': 'i', 'angle': 'A', 'conicpart': 'C', 'conic': 'K'}
 
 
 class ConvertError(ValueError):
@@ -96,6 +96,7 @@ class Context:
     # classic name → (AST v1, classic names of its refs): the expression of a number of a .ggb read by the
     # import itself (:mod:`.ggb_expr`, 1.10.0a3) — built where the classic does not translate it
     formulas: dict = field(default_factory=dict)
+    equations: set = field(default_factory=set)       # formulas producing conics, with variables x and y
     output_positions: dict = field(default_factory=dict)  # unindexed GGB output label → original slot index
 
 
@@ -321,7 +322,10 @@ class _Builder:
     def arg_for(self, inp, slot, params):
         """The argument of classic input ``inp`` for ``slot`` (or raise)."""
         if isinstance(inp, str) and inp in AXES:
-            raise _Untranslated('no_registry_op', 'оси координат не входят в документ')
+            if self.ctx.prefix != 'ggb':
+                raise _Untranslated('no_registry_op', 'оси координат не входят в документ')
+            from .ggb_conic import axis_ref
+            return axis_ref(self, inp)
         if self.is_object(inp):
             eid = self.element_of.get(inp)
             if eid is not None:
@@ -421,19 +425,21 @@ class _Builder:
                     raise _Untranslated('formula_unsupported', NOTE_DETAILS[
                         'arithmetic of points, vectors, angles or segments (number.expression takes numbers only)'])
                 items.append(_ref(eid))
-            if problems(ast, len(items)):
+            if problems(ast, len(items), vars=('x', 'y') if name in self.ctx.equations else ()):
                 raise _Untranslated('formula_unsupported', 'выражение выходит за пределы формул (expr.md §2)')
         except _Untranslated as exc:
             rec.status = 'closure' if exc.reason == 'depends_on_unsupported' else 'untranslated'
             rec.reason, rec.detail = exc.reason, exc.detail
             return
         op_id = operation_id(self.ns, rec.key)
-        op = {'id': op_id, 'op': 'number.expression',
+        equation = name in self.ctx.equations
+        op = {'id': op_id, 'op': 'conic.equation' if equation else 'number.expression',
               'args': {'expr': {'kind': 'expr', 'ast': copy.deepcopy(ast)}, 'refs': {'kind': 'list', 'items': items}},
               'outputs': []}
         self.doc['operations'][op_id] = op
-        eid = self.add_element(name, rec, op_id, 'number', 'number')
-        op['outputs'].append({'slot': 'number', 'elementId': eid})
+        slot = 'conic' if equation else 'number'
+        eid = self.add_element(name, rec, op_id, slot, slot)
+        op['outputs'].append({'slot': slot, 'elementId': eid})
         rec.op_id = op_id
 
     def segment_ends(self, inp):
@@ -451,6 +457,23 @@ class _Builder:
             items = op['args']['vertices']['items']
             k = int(slot.split('.')[1])
             return items[k - 1], items[k % len(items)]
+        if op['op'] == 'polygon.regular' and slot.startswith('side.'):
+            n = int(op['args']['n']['value'])
+            k = int(slot.split('.')[1])
+
+            def vertex(index):
+                if index <= 2:
+                    return op['args']['a' if index == 1 else 'b']
+                vslot = f'vertex.{index}'
+                existing = next((o['elementId'] for o in op['outputs'] if o['slot'] == vslot), None)
+                if existing is None:
+                    existing = element_id(self.ns, f'{self.records[inp].key}#vertex{index}')
+                    self.doc['elements'][existing] = {'id': existing, 'type': 'point', 'displayName': '',
+                        'producer': {'operationId': op['id'], 'slot': vslot}}
+                    op['outputs'].append({'slot': vslot, 'elementId': existing})
+                return _ref(existing)
+
+            return vertex(k), vertex(k % n + 1)
         raise _Untranslated('unsupported_signature', 'концы отрезка не являются входами документа')
 
     def command(self, cmd):
@@ -499,6 +522,9 @@ class _Builder:
                 self.formula(o)
 
     def build(self, cmd, sig, inputs, outs, recs):
+        if len(outs) == 1 and outs[0] in self.ctx.equations:
+            self.formula(outs[0])
+            return
         row = self.table.lookup(sig)
         # a dependency that did not translate makes the closure first
         for name in (i for i in inputs if isinstance(i, str) and self.is_object(i)):
@@ -593,7 +619,7 @@ class _Builder:
         bound = []
         for n, (name, rec) in enumerate(zip(outs, recs)):
             slot = slots[n] if n < len(slots) else None
-            if isinstance(out_spec, dict) and 'byValue' in out_spec and index is None:
+            if isinstance(out_spec, dict) and index is None and ('byValue' in out_spec or out_spec.get('pattern') == 'regular'):
                 position = self.ctx.output_positions.get(name, n)
                 slot = slots[position] if position < len(slots) else None
             if slot is None:
@@ -691,11 +717,19 @@ def _expected(builder: _Builder, rec: Record):
 
 def _resolve_by_value(builder: _Builder, doc, scale: float):
     """Bind each output of a ``byValue`` operation to the slot whose value matches it."""
-    from ..kernel.evaluate import evaluate
-    if not builder.by_value:
+    from ..kernel.evaluate import evaluate, _order
+    from ..document import op_dependencies
+    if not builder.by_value and not builder.on_path:
         return {}
     from itertools import permutations
-    for op_id, info in builder.by_value.items():
+    paths = {builder.records[name].op_id: (name, eid) for name, eid in builder.on_path
+             if eid in builder.doc['elements']}
+    for op_id in _order(list(builder.doc['operations']), op_dependencies(doc), set()):
+        if op_id in paths:
+            _project_on_path(builder, [paths[op_id]])
+        info = builder.by_value.get(op_id)
+        if info is None:
+            continue
         # Earlier bindings may feed this operation. Probe the updated graph,
         # rather than evaluating every intersection with provisional ancestors.
         probe = copy.deepcopy(builder.doc)
@@ -742,12 +776,9 @@ def _resolve_by_value(builder: _Builder, doc, scale: float):
     return {}
 
 
-def _project_on_path(builder: _Builder):
-    from ..kernel.evaluate import evaluate
-    if not builder.on_path:
-        return
+def _project_on_path(builder: _Builder, points):
     from .. import project
-    for name, eid in builder.on_path:
+    for name, eid in points:
         if eid not in builder.doc['elements']:
             continue
         xy = builder.ctx.free_points.get(name)
@@ -763,7 +794,6 @@ def _project_on_path(builder: _Builder):
             builder.warnings.append({'code': 'path_parameter_default', 'name': name})
             continue
         builder.doc['inputs'][eid] = {'kind': 'pathParameter', 'value': float(t)}
-    evaluate      # noqa: B018 — imported for symmetry with the other passes
 
 
 def translate(constr, ctx: Context) -> Translation:
@@ -798,8 +828,6 @@ def translate(constr, ctx: Context) -> Translation:
         builder.command(cmd)
     for name in pending:
         builder.formula(name)
-    doc = _validate(builder)
-    _project_on_path(builder)
     doc = _validate(builder)
     ev0 = evaluate(doc)
     scale = float(ev0.tolerances.scale)
