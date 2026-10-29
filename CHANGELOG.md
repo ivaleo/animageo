@@ -1654,6 +1654,18 @@ The final release of the native kernel stage L2 (registry 1.4).
   still works without manim. With manim installed nothing changes; the
   classic API is the same as in 1.7.13.
 
+## [1.7.17] - 2026-10-26
+
+### Fixed
+
+- Labels and free texts with Greek letters outside math (`γ`, `ω_1`,
+  `cos α`, `угол φ`, a bare `\alpha`) compile: under the T2A template such
+  a letter, with its index and primes, is set in math (`$\gamma$`). Math
+  segments, Cyrillic text and escaped `\$` stay as written. These labels
+  used to be dropped silently, as was their plain-text fallback.
+- A TeX body that fails to compile is remembered for the process and not
+  compiled again on every render (manim caches successful bodies only).
+
 ## [1.7.16] - 2026-10-07
 
 ### Fixed
