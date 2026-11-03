@@ -94,7 +94,7 @@ def names_in(texts, labels) -> list:
     return out
 
 
-def _tokens(text: str) -> list:
+def _tokens(text: str, *, conditions=False) -> list:
     """``[(kind, value)]``: ``num`` (float), ``name``, ``sup`` (int), ``deg``,
     ``op`` (one of :data:`_OPERATORS` values); ``ExprError`` on anything else."""
     out, i, n = [], 0, len(text)
@@ -104,6 +104,16 @@ def _tokens(text: str) -> list:
             i = m.end()
             continue
         c = text[i]
+        if conditions:
+            pair = text[i:i + 2]
+            if pair in ('<=', '>=', '&&', '||'):
+                out.append(('op', pair))
+                i += 2
+                continue
+            if c in '<>≤≥!':
+                out.append(('op', {'≤': '<=', '≥': '>='}.get(c, c)))
+                i += 1
+                continue
         m = _NUMBER.match(text, i)
         if m:
             try:
