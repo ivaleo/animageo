@@ -36,6 +36,7 @@ from pathlib import Path
 
 from .build import SpaceBuilder
 from .evaluate import compare_space_values, evaluate
+from .fixture_inputs import PRISM_TOP, REGULAR_POINTS, TETRAHEDRON_POINTS
 from .registry import SPACE_REGISTRY_VERSION, space_registry
 from .scene import flat_scene
 
@@ -70,11 +71,12 @@ def _round(value):
 
 
 def _regular(b, n, *, r=1.0, z=0.0, cx=0.0, cy=0.0, phase=0.0, prefix='P'):
-    ids = []
-    for k in range(n):
-        a = phase + 2 * math.pi * k / n
-        ids.append(b.point(f'{prefix}{k}', cx + r * math.cos(a), cy + r * math.sin(a), z))
-    return ids
+    key = (n, r, z, cx, cy, phase)
+    try:
+        points = REGULAR_POINTS[key]
+    except KeyError:
+        raise ValueError(f'unregistered regular fixture seed: {key!r}') from None
+    return [b.point(f'{prefix}{k}', *point) for k, point in enumerate(points)]
 
 
 def _cube(b, a=(0, 0, 0), bb=(2, 0, 0), solid='K', names=CUBE):
@@ -95,7 +97,7 @@ def _solids():
     for n in (3, 4, 5, 6):
         b = SpaceBuilder(f'prism_{n}')
         base = _regular(b, n, phase=0.3)
-        b.point('T', math.cos(0.3) + 0.25, math.sin(0.3) - 0.5, 2.5)
+        b.point('T', *PRISM_TOP)
         b.prism('Z', base, 'T')
         out.append((f'prism_{n}', b))
     b = SpaceBuilder('prism_right')
@@ -121,8 +123,7 @@ def _solids():
     b.tetrahedron('T', 'A', 'B', 'C', 'D')
     out.append(('tetra_corner', b))
     b = SpaceBuilder('tetra_regular')
-    s = math.sqrt(3)
-    for name, p in zip('ABCD', [(0, 0, 0), (2, 0, 0), (1, s, 0), (1, s / 3, 2 * math.sqrt(2 / 3))]):
+    for name, p in zip('ABCD', TETRAHEDRON_POINTS):
         b.point(name, *p)
     b.tetrahedron('T', 'A', 'B', 'C', 'D')
     out.append(('tetra_regular', b))

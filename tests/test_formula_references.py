@@ -396,6 +396,71 @@ class TestImplicitProducts:
             Function.from_string('y = 3x(x + 1)')
 
 
+class TestFactorialImplicitProducts:
+    """Python tokenizers classify a factorial bang as OP or ERRORTOKEN."""
+
+    @pytest.mark.parametrize('token_kind', ['OP', 'ERRORTOKEN'])
+    @pytest.mark.parametrize('right_kind, right_text', [
+        ('NAME', 'x'), ('NUMBER', '2'), ('OP', '('),
+    ])
+    def test_both_factorial_tokens_insert_a_product(self, token_kind, right_kind, right_text):
+        import tokenize
+        from animageo.geo.safe_sympify import _implicit_products
+
+        tokens = [(tokenize.NUMBER, '3'), (getattr(tokenize, token_kind), '!'),
+                  (getattr(tokenize, right_kind), right_text)]
+        assert _implicit_products(tokens, {}, {}) == tokens[:2] + [(tokenize.OP, '*')] + tokens[2:]
+
+    @pytest.mark.parametrize('text, expected', [
+        ('3! x', 18), ('3!x', 18), ('3!(x + 1)', 24), ('3!2', 12),
+        ('2x + 1', 7), ('(x + 1)(x - 1)', 8), ('sin(x)', 'sin'),
+    ])
+    def test_factorial_and_ordinary_expressions(self, text, expected):
+        import sympy as sp
+        from animageo.geo.safe_sympify import safe_sympify
+
+        x = sp.Symbol('x')
+        value = safe_sympify(text, {'x': x}).subs(x, 3)
+        assert value == (sp.sin(3) if expected == 'sin' else expected)
+
+    @pytest.mark.parametrize('token_text', ['?', '$', '@', ' ', ')', '2', "'!'"])
+    def test_other_error_tokens_do_not_start_a_product(self, token_text):
+        from tokenize import ERRORTOKEN, NAME
+        from animageo.geo.safe_sympify import _implicit_products
+
+        tokens = [(ERRORTOKEN, token_text), (NAME, 'x')]
+        assert _implicit_products(tokens, {}, {}) == tokens
+
+    @pytest.mark.parametrize('text', ['"!" x', "'!' x", 'eval(x)! x', '__import__(x)! x'])
+    def test_quoted_bangs_and_forbidden_calls_never_reach_eval(self, text, monkeypatch):
+        import importlib
+        import sympy as sp
+
+        parser = importlib.import_module('animageo.geo.safe_sympify')
+
+        def forbidden_eval(*args, **kwargs):
+            pytest.fail('refused formula reached eval')
+
+        monkeypatch.setattr(parser, 'eval', forbidden_eval, raising=False)
+        with pytest.raises(sp.SympifyError, match='refused: not a formula'):
+            parser.safe_sympify(text)
+
+    @pytest.mark.parametrize('text', ['1001! x', '(10^7)! x', '7^(9^9) x'])
+    def test_implicit_product_retains_evaluation_limits(self, text):
+        import sympy as sp
+        from animageo.geo.safe_sympify import safe_sympify
+
+        with pytest.raises(sp.SympifyError, match='refused:'):
+            safe_sympify(text, {'x': sp.Symbol('x')})
+
+    def test_factorial_product_retains_length_limit(self):
+        import sympy as sp
+        from animageo.geo.safe_sympify import MAX_LENGTH, safe_sympify
+
+        with pytest.raises(sp.SympifyError, match='refused: too long'):
+            safe_sympify('3! x' + ' ' * MAX_LENGTH)
+
+
 class TestSympyNamedNumbers:
     def test_parameters(self):
         assert formula_parameters('y = E*x + gamma', 'function') == ['E', 'gamma']

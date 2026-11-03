@@ -25,6 +25,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Oversized superscript powers and deeply nested signs in literal function
   bounds are rejected by the bounded function parser instead of raising
   conversion overflow or recursion errors.
+- Implicit multiplication after a factorial also handles Python tokenizers
+  that classify `!` as an error token, preserving the existing formula guards.
+- Space parity examples use a finite set of authored source coordinates,
+  shipped in `native/space/fixture_inputs.py`, so their construction inputs
+  do not depend on platform trigonometric or square-root rounding. Saved
+  expectations and kernel tolerances remain unchanged.
+- CI installs CairoSVG for existing PNG tests and the `cm-super` font package
+  for reproducible Cyrillic label metrics.
 
 ## [1.11.2] - 2026-10-29
 

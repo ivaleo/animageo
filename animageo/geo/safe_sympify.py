@@ -17,7 +17,7 @@ import ast
 import builtins
 import keyword
 import re
-from tokenize import NAME, NUMBER, OP, TokenError
+from tokenize import ERRORTOKEN, NAME, NUMBER, OP, TokenError
 
 import sympy as sp
 from sympy.parsing.sympy_parser import (
@@ -49,7 +49,7 @@ def _is_word(tok):
 
 
 def _implied_product(left, right, local_dict):
-    if not (left[0] == NUMBER or left in ((OP, ')'), (OP, '!'))
+    if not (left[0] == NUMBER or left in ((OP, ')'), (OP, '!'), (ERRORTOKEN, '!'))
             or _is_word(left)):
         return False
     if _is_word(right):
