@@ -7,6 +7,7 @@ from animageo.native import REGISTRY_VERSION
 from animageo.native.document import validate as validate_plane
 from animageo.native.space.bridge import HIDDEN_LOOKS, piece_id, space_style, to_document
 from animageo.native.space.build import SpaceBuilder
+from animageo.native.space import scene as scene_module
 from animageo.native.space.scene import FLAT_SCENE_FORMAT, flat_scene
 
 CUBE_NAMES = ['C', 'D', 'A_1', 'B_1', 'C_1', 'D_1']
@@ -115,6 +116,56 @@ def test_a_section_of_a_hidden_solid_is_a_plane_figure():
     assert [f['polygon'] for f in shown['fills'] if f['id'] == 'S'] == [fills[0]['polygon']]
     plane = to_document(flat, doc)
     assert [i for i in validate_plane(plane) if i.severity == 'error'] == []
+
+
+def _python311_left_sum(values):
+    """Isolate the old float reduction at the scene boundary on newer Python."""
+    total = 0.0
+    for value in values:
+        total += value
+    return total
+
+
+@pytest.mark.parametrize('legacy_sum', [False, True], ids=['native-sum', 'python311-left-fold'])
+def test_equal_fill_depth_keeps_exact_id_tie(monkeypatch, legacy_sum):
+    # Both rectangles are centred on the camera target, so their mean depth is
+    # exactly the eye distance. No golden fixture or sum implementation is an oracle.
+    b = SpaceBuilder('equal_fill_depth', camera={'projection': 'perspective', 'azimuthDeg': -50,
+                     'elevationDeg': 22, 'target': [1, 1, 1], 'distance': 14})
+    b.point('A', 0, 0, 0)
+    b.point('B', 2, 0, 0)
+    b.cube('K', 'A', 'B', vertices=CUBE_NAMES)
+    for name, xyz in [('U', (0, 0, .5)), ('V', (2, 0, 1.5)), ('W', (0, 2, .5))]:
+        b.point(name, *xyz)
+    b.plane('P', 'U', 'V', 'W')
+    b.section('S', 'P', 'K')
+    doc = b.data()
+    doc['appearance'] = {'K': {'visible': False}}
+    if legacy_sum:
+        monkeypatch.setattr(scene_module, 'sum', _python311_left_sum, raising=False)
+    fills = flat_scene(doc)['fills']
+    assert [(f['id'], f['role']) for f in fills] == [('P', 'plane'), ('S', 'section')]
+    assert [f['depth'] for f in fills] == [14.0, 14.0]
+
+
+@pytest.mark.parametrize('legacy_sum', [False, True], ids=['native-sum', 'python311-left-fold'])
+@pytest.mark.parametrize('gap', [2.0 ** -40, 2.0], ids=['close-but-unequal', 'separated'])
+def test_unequal_fill_depth_precedes_id_order(monkeypatch, legacy_sum, gap):
+    # An exact axis-aligned projection gives constant depths 14 and 14+gap.
+    # Z must precede A even for a gap below common geometry tolerances.
+    b = SpaceBuilder('unequal_fill_depth', camera={'azimuthDeg': 0, 'elevationDeg': 0,
+                                                 'target': [0, 0, 0]})
+    for name, depth in [('A', 14.0), ('Z', 14.0 + gap)]:
+        points = []
+        for index, (y, z) in enumerate([(-1, -1), (1, -1), (1, 1), (-1, 1)]):
+            points.append(b.point(f'{name}{index}', -depth, y, z))
+        b.polygon(name, *points)
+    if legacy_sum:
+        monkeypatch.setattr(scene_module, 'sum', _python311_left_sum, raising=False)
+    fills = flat_scene(b.data())['fills']
+    assert [f['id'] for f in fills] == ['Z', 'A']
+    assert [f['depth'] for f in fills] == [14.0 + gap, 14.0]
+    assert fills[0]['depth'] > fills[1]['depth']
 
 
 def test_undefined_elements_are_diagnosed_not_drawn():

@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   shipped in `native/space/fixture_inputs.py`, so their construction inputs
   do not depend on platform trigonometric or square-root rounding. Saved
   expectations and kernel tolerances remain unchanged.
+- Space fills use accurately summed vertex depths so equal-depth fills retain their ID order across supported Python versions.
 - CI installs CairoSVG for existing PNG tests and the `cm-super` font package
   for reproducible Cyrillic label metrics.
 

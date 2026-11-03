@@ -53,6 +53,8 @@ visible pieces at ``(len(solids) + 1)·10``. Fills of a layer go far to near.
 """
 from __future__ import annotations
 
+import math
+
 from . import vec
 from .camera import Camera, Projector
 from .document import as_space_document, camera_of
@@ -288,7 +290,7 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
             out['solid'] = solid
         if facing_state is not None:
             out['facing'] = facing_state
-        out.update({'polygon': [_xy(p) for p in pts], 'depth': sum(p[2] for p in pts) / len(pts), 'layer': layer})
+        out.update({'polygon': [_xy(p) for p in pts], 'depth': math.fsum(p[2] for p in pts) / len(pts), 'layer': layer})
         return out
 
     def far_first(items):
