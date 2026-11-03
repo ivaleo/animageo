@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.3] - 2026-11-03
+
+### Fixed
+
+- Native GeoGebra import preserves supported function definitions, nested lazy
+  `If` conditions and live numeric references. Formal variables are normalized
+  without renaming referenced objects or replacing their values with constants.
+- Ordinary functions retain an unbounded domain independently of the saved
+  viewport. Inline `Function` definitions retain supported constant bounds;
+  unsupported dependent bounds remain explicitly reported.
+- Function import reports verify the source expression, ordered reference
+  bindings, source numeric values and domain before marking a function editable.
+- Free `Point(f)` graph points retain their source x parameter and follow live
+  function references, including undefined states and recovery. Dependent point
+  forms and unverified restricted-path semantics remain unsupported.
+- Oversized superscript powers and deeply nested signs in literal function
+  bounds are rejected by the bounded function parser instead of raising
+  conversion overflow or recursion errors.
+
 ## [1.11.2] - 2026-10-29
 
 ### Fixed
@@ -3462,7 +3481,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.8.1...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.11.3...HEAD
+[1.11.3]: https://github.com/ivaleo/animageo/compare/v1.11.2...v1.11.3
 [1.8.1]: https://github.com/ivaleo/animageo/compare/v1.8.1a5...v1.8.1
 [1.8.1a5]: https://github.com/ivaleo/animageo/compare/v1.8.1a4...v1.8.1a5
 [1.8.1a4]: https://github.com/ivaleo/animageo/compare/v1.8.1a3...v1.8.1a4
