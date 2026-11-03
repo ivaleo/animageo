@@ -76,7 +76,7 @@ Backslashes in the table are literal characters, not JSON escapes.
 | `$\text{price \$5}$` | `math(\text{price \$5})` | Text “price $5” inside math |
 
 The complete finite example set, including LF/CRLF and Cyrillic indices,
-is [text_free_delimiters.json](../../../tests/native/fixtures/text_free_delimiters.json).
+is [text_free_delimiters.json](https://github.com/ivaleo/animageo/blob/efee586d84564314cc11ff7911a0218ac865ec00/tests/native/fixtures/text_free_delimiters.json).
 It records raw filled strings, plain/math segments, expected display LaTeX
 and appearance; library tests exercise the template, JSON, kernel and
 native-to-classic display boundary for every case.
