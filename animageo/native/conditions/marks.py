@@ -11,6 +11,10 @@ Contract (shared with the web):
   given order, the marks of one source in the order of the table;
 - a pair ``(source, kind)`` listed in ``suppressedMarks`` gives nothing; nor
   does a source that already has an automatic mark of that kind;
+- a right-angle request reuses a defined, persisted-visible presentation
+  on the same vertex and unordered endpoint IDs: a direct-ref right mark
+  (even failed), or a minor/forced-square direct-ref angle. Existing IDs,
+  appearances and origins stay intact; reflex-only angles are another sector;
 - right angle ``(V, H, X)``: ``X`` is the end of the side farther from ``H``
   now, ``b`` (the second defining point) on a tie;
 - a segment of a mark is an existing ``segment.by_points`` on the same two
@@ -393,6 +397,53 @@ def _has_auto(data, source, kind) -> bool:
     return False
 
 
+def _right_key(op):
+    """Identity of a direct-ref corner, independent of its directed measure."""
+    points = []
+    for slot in ('a', 'vertex', 'b'):
+        arg = (op.get('args') or {}).get(slot)
+        if not isinstance(arg, dict) or arg.get('kind') != 'ref' or not isinstance(arg.get('elementId'), str):
+            return None
+        points.append(arg['elementId'])
+    a, v, b = points
+    return (v, tuple(sorted((a, b)))) if len(set(points)) == 3 else None
+
+
+def _has_right_owner(data, spec, ev, fresh):
+    a, v, b = spec
+    key = (v, tuple(sorted((a, b))))
+    for el_id, el in data['elements'].items():
+        if not _visible(data, el_id):
+            continue
+        op = data['operations'].get(el['producer']['operationId'])
+        if op is None or op['op'] not in ('angle.by_points', 'mark.right_angle') or _right_key(op) != key:
+            continue
+        record = ev.elements.get(el_id, {})
+        if el_id in fresh:
+            # A mark made earlier in this call is absent from ev. Reuse the
+            # kernel's definedness rule and tolerances, not a whole evaluation.
+            from ..kernel.ops import OpContext
+            from ..kernel.ops.angle import unit_sides
+            from ..kernel.values import Undefined
+            points = [ev.elements.get(p, {}) for p in spec]
+            if any(p.get('state') != 'defined' for p in points):
+                continue
+            sides = unit_sides(points[0]['value'], points[1]['value'], points[2]['value'],
+                               OpContext(ev.tolerances))
+            if isinstance(sides, Undefined):
+                continue
+        elif record.get('state') != 'defined':
+            continue
+        if op['op'] == 'mark.right_angle':
+            return True
+        entry = (data.get('appearance') or {}).get(el_id)
+        overrides = entry.get('overrides') if isinstance(entry, dict) else None
+        overrides = overrides if isinstance(overrides, dict) else {}
+        if overrides.get('angle_range') != 'reflex' or overrides.get('right_angle_marker') is True:
+            return True
+    return False
+
+
 def _requests(data, source, ev) -> list:
     table = _table()
     if source in data['operations']:
@@ -428,7 +479,7 @@ def _build(doc, sources, ev, id_factory):
             hint = f'mark_{source}'
             if kind == 'right_angle':
                 a, v, b = spec
-                if len({a, v, b}) < 3:
+                if len({a, v, b}) < 3 or _has_right_owner(data, spec, ev, builder.new_elements):
                     continue
                 builder.add('mark.right_angle', {'a': _ref(a), 'vertex': _ref(v), 'b': _ref(b)}, 'mark', 'mark',
                             hint, source, False)

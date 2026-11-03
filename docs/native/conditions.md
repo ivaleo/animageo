@@ -396,6 +396,21 @@ source in the table. The table is `marks/auto.v1.json`
 - A source is an operation ID or a construct condition ID.
 - A pair `(source, kind)` in `suppressedMarks` gives nothing. Neither does a
   source that already has an automatic mark of that kind.
+- No new right-angle mark is added when a visible, defined presentation has
+  the same vertex ID and the same two endpoint IDs in either order. Only
+  direct-reference `angle.by_points` and `mark.right_angle` producers match;
+  equal coordinates or collinear replacement points do not establish identity.
+  A plain angle owns its default/minor presentation, or an explicitly forced
+  right marker; a reflex-only arc is a different sector. An existing right
+  mark owns its presentation even when its assertion fails. Manual and
+  other-source owners keep their IDs, appearance and origin.
+- `appearance.visible: false` withdraws an owner. Explicit arc or zero
+  decoration settings do not: automatic generation preserves that choice.
+  Source suppression and same-source idempotency still take precedence;
+  eligible marks added earlier in the same call can own later requests.
+  Releasing a condition removes only its own generated objects, never a
+  borrowed owner. Existing authored duplicates are not removed, and a plain
+  angle does not acquire a right-angle assertion by being reused.
 - Degenerate point triples are skipped.
 
 **Helpers.**

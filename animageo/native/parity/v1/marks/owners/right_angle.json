@@ -1,0 +1,4489 @@
+{
+  "format": "animageo-right-angle-owners/v1",
+  "registry": "1.5",
+  "contract": "Source-generation ownership only; hand-authored expectations, no renderer/theme lookup.",
+  "cases": [
+    {
+      "name": "none",
+      "reason": "No existing presentation: the source keeps one auto assertion.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "originSource": "c1"
+          }
+        ],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "minor",
+      "reason": "A visible minor measurement owns presentation without becoming an assertion.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_g": {
+            "id": "op_g",
+            "op": "angle.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "angle",
+                "elementId": "g"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "g": {
+            "id": "g",
+            "type": "angle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_g",
+              "slot": "angle"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "swapped-minor",
+      "reason": "Same vertex and unordered endpoint IDs; directed size is retained.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_g": {
+            "id": "op_g",
+            "op": "angle.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "A"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "angle",
+                "elementId": "g"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "g": {
+            "id": "g",
+            "type": "angle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_g",
+              "slot": "angle"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "reflex-only",
+      "reason": "Reflex arc occupies the other sector.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_g": {
+            "id": "op_g",
+            "op": "angle.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "angle",
+                "elementId": "g"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "g": {
+            "id": "g",
+            "type": "angle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_g",
+              "slot": "angle"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {
+          "g": {
+            "overrides": {
+              "angle_range": "reflex"
+            }
+          }
+        },
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "originSource": "c1"
+          }
+        ],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "reflex-forced-square",
+      "reason": "Persisted forced square claims the minor marker even with reflex range.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_g": {
+            "id": "op_g",
+            "op": "angle.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "angle",
+                "elementId": "g"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "g": {
+            "id": "g",
+            "type": "angle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_g",
+              "slot": "angle"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {
+          "g": {
+            "overrides": {
+              "angle_range": "reflex",
+              "right_angle_marker": true
+            }
+          }
+        },
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "never",
+      "reason": "The user owns the arc choice, not just a right glyph.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_g": {
+            "id": "op_g",
+            "op": "angle.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "angle",
+                "elementId": "g"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "g": {
+            "id": "g",
+            "type": "angle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_g",
+              "slot": "angle"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {
+          "g": {
+            "overrides": {
+              "right_angle_marker": false
+            }
+          }
+        },
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "explicit-zero",
+      "reason": "Explicit zero appearance is intent, not absence of an IR owner.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_g": {
+            "id": "op_g",
+            "op": "angle.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "angle",
+                "elementId": "g"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "g": {
+            "id": "g",
+            "type": "angle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_g",
+              "slot": "angle"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {
+          "g": {
+            "overrides": {
+              "right_angle_marker": false,
+              "tick_count": 0,
+              "stroke_width_px": 0,
+              "stroke_opacity": 0
+            }
+          }
+        },
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "hidden-angle",
+      "reason": "Persisted visible=false withdraws presentation ownership.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_g": {
+            "id": "op_g",
+            "op": "angle.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "angle",
+                "elementId": "g"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "g": {
+            "id": "g",
+            "type": "angle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_g",
+              "slot": "angle"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {
+          "g": {
+            "visible": false
+          }
+        },
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "originSource": "c1"
+          }
+        ],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "manual-true",
+      "reason": "A manual assertion is not replaced or reparented.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_m": {
+            "id": "op_m",
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "m"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "m": {
+            "id": "m",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_m",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {
+            "op_m:right": "passed"
+          },
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "manual-failed",
+      "reason": "add_auto_marks does not enforce geometry; a persisted failed assertion still owns its presentation.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_m": {
+            "id": "op_m",
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "m"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "m": {
+            "id": "m",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_m",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "point",
+            "value": [
+              0.5,
+              1
+            ]
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {
+            "op_m:right": "failed"
+          },
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "manual-failed-never-reflex",
+      "reason": "Assertion ownership survives failed status and an explicit reflex arc.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_m": {
+            "id": "op_m",
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "m"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "m": {
+            "id": "m",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_m",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "point",
+            "value": [
+              0.5,
+              1
+            ]
+          }
+        },
+        "appearance": {
+          "m": {
+            "overrides": {
+              "right_angle_marker": false,
+              "angle_range": "reflex"
+            }
+          }
+        },
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {
+            "op_m:right": "failed"
+          },
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "hidden-manual",
+      "reason": "A hidden other/manual assertion does not claim visible presentation.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_m": {
+            "id": "op_m",
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "m"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "m": {
+            "id": "m",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_m",
+              "slot": "mark"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {
+          "m": {
+            "visible": false
+          }
+        },
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "originSource": "c1"
+          }
+        ],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {
+            "op_m:right": "passed"
+          },
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "other-auto-origin",
+      "reason": "Borrowed auto owner keeps its original source.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_m": {
+            "id": "op_m",
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "m"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "m": {
+            "id": "m",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_m",
+              "slot": "mark"
+            },
+            "origin": {
+              "kind": "auto",
+              "source": "op_k"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "coordinate-alias-is-not-identity",
+      "reason": "Even identical evaluated coordinates do not alias stable point IDs.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_A2": {
+            "id": "op_A2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A2"
+              }
+            ]
+          },
+          "op_B2": {
+            "id": "op_B2",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B2"
+              }
+            ]
+          },
+          "op_V2": {
+            "id": "op_V2",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V2"
+              }
+            ]
+          },
+          "op_g": {
+            "id": "op_g",
+            "op": "angle.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A2"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V2"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B2"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "angle",
+                "elementId": "g"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "A2": {
+            "id": "A2",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A2",
+              "slot": "point"
+            }
+          },
+          "B2": {
+            "id": "B2",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B2",
+              "slot": "point"
+            }
+          },
+          "V2": {
+            "id": "V2",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V2",
+              "slot": "point"
+            }
+          },
+          "g": {
+            "id": "g",
+            "type": "angle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_g",
+              "slot": "angle"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          },
+          "A2": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B2": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V2": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "originSource": "c1"
+          }
+        ],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "undefined-angle",
+      "reason": "Distinct IDs can have coincident points; undefined presentation is not an owner.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_g": {
+            "id": "op_g",
+            "op": "angle.by_points",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "angle",
+                "elementId": "g"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "g": {
+            "id": "g",
+            "type": "angle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_g",
+              "slot": "angle"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 0
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "originSource": "c1"
+          }
+        ],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "same-batch-defined",
+      "reason": "The first source creates the one defined owner for later sources, absent from initial evaluation.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "op_k",
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "originSource": "op_k"
+          }
+        ],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "same-batch-undefined",
+      "reason": "A fresh undefined mark cannot own later requests; no new degeneracy threshold.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 0
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "op_k",
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "originSource": "op_k"
+          },
+          {
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "originSource": "c1"
+          }
+        ],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "same-source-hidden",
+      "reason": "Existing same-source idempotency precedes visible-owner eligibility.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          },
+          "op_m": {
+            "id": "op_m",
+            "op": "mark.right_angle",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "vertex": {
+                "kind": "ref",
+                "elementId": "V"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "mark",
+                "elementId": "m"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          },
+          "m": {
+            "id": "m",
+            "type": "mark",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_m",
+              "slot": "mark"
+            },
+            "origin": {
+              "kind": "auto",
+              "source": "c1"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {
+          "m": {
+            "visible": false
+          }
+        },
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    },
+    {
+      "name": "source-suppressed",
+      "reason": "Explicit source suppression precedes owner creation.",
+      "document": {
+        "format": "animageo-construction/v1",
+        "documentId": "right-owner-contract",
+        "operationRegistryVersion": "1.5",
+        "operations": {
+          "op_A": {
+            "id": "op_A",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "A"
+              }
+            ]
+          },
+          "op_B": {
+            "id": "op_B",
+            "op": "point.free",
+            "args": {},
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "B"
+              }
+            ]
+          },
+          "op_k": {
+            "id": "op_k",
+            "op": "circle.diameter",
+            "args": {
+              "a": {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              "b": {
+                "kind": "ref",
+                "elementId": "B"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "circle",
+                "elementId": "k"
+              }
+            ]
+          },
+          "op_V": {
+            "id": "op_V",
+            "op": "point.on_path",
+            "args": {
+              "path": {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            },
+            "outputs": [
+              {
+                "slot": "point",
+                "elementId": "V"
+              }
+            ]
+          }
+        },
+        "elements": {
+          "A": {
+            "id": "A",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_A",
+              "slot": "point"
+            }
+          },
+          "B": {
+            "id": "B",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_B",
+              "slot": "point"
+            }
+          },
+          "k": {
+            "id": "k",
+            "type": "circle",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_k",
+              "slot": "circle"
+            }
+          },
+          "V": {
+            "id": "V",
+            "type": "point",
+            "displayName": "",
+            "producer": {
+              "operationId": "op_V",
+              "slot": "point"
+            }
+          }
+        },
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              -2,
+              0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              2,
+              0
+            ]
+          },
+          "V": {
+            "kind": "pathParameter",
+            "value": 1.5707963267948966
+          }
+        },
+        "appearance": {},
+        "viewDefaults": {
+          "bounds": [
+            -4,
+            -3,
+            4,
+            3
+          ]
+        },
+        "conditions": [
+          {
+            "id": "c1",
+            "seq": 1,
+            "mode": "construct",
+            "source": "panel",
+            "recipe": "right_angle.vertex",
+            "receiver": "V",
+            "statement": {
+              "kind": "eq",
+              "left": {
+                "angle": [
+                  {
+                    "ref": "A"
+                  },
+                  {
+                    "ref": "V"
+                  },
+                  {
+                    "ref": "B"
+                  }
+                ]
+              },
+              "right": {
+                "deg": 90
+              }
+            },
+            "operationIds": [
+              "op_k",
+              "op_V"
+            ],
+            "receiverOrigin": {
+              "op": "point.free",
+              "args": {},
+              "input": {
+                "point": [
+                  0.5,
+                  1
+                ]
+              }
+            }
+          }
+        ],
+        "suppressedMarks": [
+          {
+            "source": "c1",
+            "kind": "right_angle"
+          }
+        ]
+      },
+      "sources": [
+        "c1"
+      ],
+      "expect": {
+        "newOperations": [],
+        "invariants": {
+          "preserveExistingElements": true,
+          "preserveExistingOperations": true,
+          "preserveAppearance": true,
+          "preserveConditions": true,
+          "assertionChecks": {},
+          "preserveInputs": true
+        }
+      }
+    }
+  ]
+}
