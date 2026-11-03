@@ -6,7 +6,8 @@ import copy
 import math
 import re
 
-from .ggb_expr import ExprError, MAX_CHARS, _NAME, _Reader, _tokens, parse_number
+from .ggb_expr import ExprError, MAX_CHARS, _NAME, _Reader, _tokens
+from ..expr.validate import MAX_INTEGER_POWER
 
 
 @dataclass
@@ -18,10 +19,15 @@ class FunctionSpec:
     domain: list = field(default_factory=lambda: [None, None])
 
 
-class _FunctionReader(_Reader):
-    def __init__(self, tokens, kinds, formal):
-        super().__init__(tokens, kinds, variables=(formal,))
-        self.in_condition = False
+class _BoundedReader(_Reader):
+    """Function-only source guards; the legacy number reader stays unchanged."""
+
+    def __init__(self, tokens, kinds, variables=()):
+        super().__init__(tokens, kinds, variables=variables)
+        # postfix() converts superscript integers to float before AST validation.
+        # Check the integer first, including values too large for a finite float.
+        if any(kind == 'sup' and abs(value) > MAX_INTEGER_POWER for kind, value in tokens):
+            raise ExprError('formula_unsupported', 'superscript exceeds the integer power limit')
 
     def unary(self):
         # The base number reader's unary + does not contribute to AST depth.
@@ -42,6 +48,12 @@ class _FunctionReader(_Reader):
             self.depth -= 1
             return node
         return super().exponent()
+
+
+class _FunctionReader(_BoundedReader):
+    def __init__(self, tokens, kinds, formal):
+        super().__init__(tokens, kinds, variables=(formal,))
+        self.in_condition = False
 
     def primary(self):
         if self.in_condition and self.is_op('('):
@@ -167,6 +179,20 @@ def source_report_value(spec, ctx):
                                          'domain': list(spec.domain)}}
 
 
+def _parse_domain(text, kinds):
+    """The number-expression language with bounded source recursion/conversion."""
+    from ..expr.validate import problems
+
+    text = str(text)
+    if len(text) > MAX_CHARS:
+        raise ExprError('formula_unsupported', 'function domain exceeds expression limits')
+    reader = _BoundedReader(_tokens(text), kinds)
+    ast = reader.read()
+    if problems(ast, len(reader.labels)):
+        raise ExprError('formula_unsupported', 'function domain exceeds expression limits')
+    return ast, reader.labels
+
+
 def read_functions(infos, norm, ctx) -> None:
     """Read source definitions even when classic parsing made no object."""
     from ..expr import evaluate
@@ -192,7 +218,7 @@ def read_functions(infos, norm, ctx) -> None:
                 spec = parse_function(inputs[0], kinds, label=info['label'])
                 domain = []
                 for text in inputs[1:]:
-                    ast, refs = parse_number(text, kinds)
+                    ast, refs = _parse_domain(text, kinds)
                     if refs:
                         raise ExprError('unsupported_signature', 'function domain depends on source objects')
                     domain.append(evaluate(ast))

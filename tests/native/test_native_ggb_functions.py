@@ -606,5 +606,83 @@ def test_function_closure_source_restores_whole_live_chain():
     assert json.loads(expected.read_text()) == expectation(path, name='function_closure.ggb')
 
 
+@pytest.mark.parametrize('body', ['x' + '⁹' * 309, 'x' + '⁹' * 999], ids=['float-overflow', 'max-chars'])
+def test_function_superscript_attack_is_graceful_parser_refusal(body):
+    assert len(body) <= MAX_CHARS
+    with pytest.raises(ExprError) as exc:
+        parsed(body)
+    assert exc.value.reason == 'formula_unsupported'
+
+
+@pytest.mark.parametrize('power', ['⁶⁴', '⁻⁶⁴', '⁺⁶⁴'])
+def test_function_superscript_limit_boundary_remains_supported(power):
+    spec = parsed('x' + power)
+    assert spec.ast == {'op': '^', 'args': [{'var': 'x'}, {'num': -64.0 if '⁻' in power else 64.0}]}
+
+
+@pytest.mark.parametrize('power', ['⁶⁵', '⁻⁶⁵', '⁺⁶⁵'])
+def test_function_superscript_over_limit_is_formula_unsupported(power):
+    with pytest.raises(ExprError) as exc:
+        parsed('x' + power)
+    assert exc.value.reason == 'formula_unsupported'
+
+
+@pytest.fixture(params=[
+    ('body-superscript-overflow', function_source('x' + '⁹' * 309)),
+    ('lower-unary-plus-at-char-limit', command('Function', ['x', '+' * 999 + '1', '2'], ['f'])
+     + element('function', 'f')),
+    ('upper-unary-plus-at-char-limit', command('Function', ['x', '0', '+' * 999 + '1'], ['f'])
+     + element('function', 'f')),
+    ('lower-exponent-plus-at-char-limit', command('Function', ['x', '1^' + '+' * 997 + '1', '2'], ['f'])
+     + element('function', 'f')),
+    ('upper-exponent-plus-at-char-limit', command('Function', ['x', '0', '1^' + '+' * 997 + '1'], ['f'])
+     + element('function', 'f')),
+    ('lower-superscript-overflow', command('Function', ['x', '1' + '⁹' * 309, '2'], ['f'])
+     + element('function', 'f')),
+], ids=lambda case: case[0])
+def function_limit_attack(request):
+    """Anonymous real XML source fixtures; never a replacement native document."""
+    return request.param[1]
+
+
+def test_function_limit_attack_is_graceful_import_refusal(function_limit_attack):
+    doc, items = imported(function_limit_attack)
+    assert items['f']['category'] == 'unsupported'
+    assert items['f']['reason'] == 'formula_unsupported'
+    assert items['f']['native_ids'] == []
+    assert doc is None
+
+
+@pytest.mark.parametrize('lower, upper', [
+    ('+' * 32 + '1', '2'), ('0', '+' * 32 + '1'),
+    ('1^' + '+' * 31 + '1', '2'), ('0', '1^' + '+' * 31 + '1'),
+    ('1⁶⁴', '2'), ('0', '1⁻⁶⁴'),
+])
+def test_function_literal_domain_depth_and_exponent_boundary_is_supported(lower, upper):
+    doc, items = imported(command('Function', ['x', lower, upper], ['f']) + element('function', 'f'))
+    assert items['f']['category'] == 'editable'
+    assert items['f']['value_check'] == 'passed'
+    assert function_value(doc, items)['domain'] == ([0.0, 1.0] if lower == '0' else [1.0, 2.0])
+
+
+@pytest.mark.parametrize('lower, upper', [
+    ('+' * 33 + '1', '2'), ('0', '+' * 33 + '1'),
+    ('1^' + '+' * 32 + '1', '2'), ('0', '1^' + '+' * 32 + '1'),
+    ('1⁶⁵', '2'), ('0', '1⁻⁶⁵'),
+])
+def test_function_literal_domain_over_limit_is_graceful_refusal(lower, upper):
+    doc, items = imported(command('Function', ['x', lower, upper], ['f']) + element('function', 'f'))
+    assert items['f']['category'] == 'unsupported'
+    assert items['f']['reason'] == 'formula_unsupported'
+    assert items['f']['native_ids'] == []
+    assert doc is None
+
+
+def test_function_domain_guard_does_not_change_default_number_parser():
+    assert parse_number('+' * 40 + '1', {}) == ({'num': 1.0}, [])
+    assert parse_number('1^' + '+' * 40 + '1', {}) == (
+        {'op': '^', 'args': [{'num': 1.0}, {'num': 1.0}]}, [])
+
+
 if __name__ == '__main__':
     FUNCTION_FIXTURE.write_text(json.dumps(function_fixture(), ensure_ascii=False, indent=2, allow_nan=False) + '\n')
