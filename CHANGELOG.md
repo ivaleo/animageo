@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.4] - 2026-11-03
+
+### Fixed
+
+- Automatic right-angle marks reuse existing visible minor-angle, forced-square
+  or right-mark presentations with the same vertex and endpoint IDs. Reflex-only
+  arcs remain distinct. Existing assertions, conditions, origins and explicit
+  marker choices are preserved; hidden or undefined presentations and
+  coordinate-only matches do not claim ownership.
+
 ## [1.11.3] - 2026-11-03
 
 ### Fixed
@@ -3490,7 +3500,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.11.3...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.11.4...HEAD
+[1.11.4]: https://github.com/ivaleo/animageo/compare/v1.11.3...v1.11.4
 [1.11.3]: https://github.com/ivaleo/animageo/compare/v1.11.2...v1.11.3
 [1.8.1]: https://github.com/ivaleo/animageo/compare/v1.8.1a5...v1.8.1
 [1.8.1a5]: https://github.com/ivaleo/animageo/compare/v1.8.1a4...v1.8.1a5
