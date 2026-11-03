@@ -12,6 +12,9 @@ Report form of a value (``ggb_value``, ``native_value``): ``{"kind": k,
   ``conic`` — the six GGB matrix entries; ``arc`` — ``{"center", "radius",
   "a0", "a1"}``; ``polygon`` — the vertices;
 - ``text`` — ``{"kind": "text", "text", "anchor": [x, y] | null}``.
+- ``function`` — ``{expr, refs: [number values], domain: [min|null, max|null]}``;
+  checked by source definition and ordered binding identity in ggb_function,
+  not by generic numeric comparison or successful evaluation alone.
 
 :func:`compare` measures a native value against an expected one by its
 kind (distance of points, coefficients of lines, centre and radius, vertices,
@@ -23,6 +26,7 @@ spike C2: GeoGebra writes doubles in full, the classic values agree to
 """
 from __future__ import annotations
 
+import copy
 import math
 
 __all__ = ['TOL_IMPORT', 'compare', 'native_report_value', 'line_coefficients', 'circle_from_matrix',
@@ -96,6 +100,8 @@ def native_report_value(type_: str, value):
         if type_ == 'number':
             kind = 'angle' if value.get('unit') == 'angle' else 'number'
             return {'kind': kind, 'value': _f(value['value'])}
+        if type_ == 'function':
+            return {'kind': 'function', 'value': copy.deepcopy(value)}
         if type_ == 'angle':
             return {'kind': 'angle', 'value': _f(value['size'])}
     except (KeyError, TypeError, ValueError, IndexError):

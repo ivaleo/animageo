@@ -96,6 +96,7 @@ class Context:
     # classic name → (AST v1, classic names of its refs): the expression of a number of a .ggb read by the
     # import itself (:mod:`.ggb_expr`, 1.10.0a3) — built where the classic does not translate it
     formulas: dict = field(default_factory=dict)
+    functions: dict = field(default_factory=dict)     # source name → independently parsed FunctionSpec
     equations: set = field(default_factory=set)       # formulas producing conics, with variables x and y
     output_positions: dict = field(default_factory=dict)  # unindexed GGB output label → original slot index
 
@@ -411,7 +412,12 @@ class _Builder:
         closure, an object that is not a number of the document the reason
         ``formula_unsupported``."""
         from ..expr.validate import problems
-        ast, names = self.ctx.formulas[name]
+        function = self.ctx.functions.get(name)
+        if function is not None:
+            from .ggb_function import source_ref_names
+            ast, names = function.ast, source_ref_names(function, self.ctx)
+        else:
+            ast, names = self.ctx.formulas[name]
         rec = self.record(name, key=self.key_for(name))
         rec.command, rec.signature, rec.inputs = 'Expression', None, list(dict.fromkeys(names))
         rec.status, rec.reason, rec.detail, rec.free = 'translated', None, None, False
@@ -425,7 +431,8 @@ class _Builder:
                     raise _Untranslated('formula_unsupported', NOTE_DETAILS[
                         'arithmetic of points, vectors, angles or segments (number.expression takes numbers only)'])
                 items.append(_ref(eid))
-            if problems(ast, len(items), vars=('x', 'y') if name in self.ctx.equations else ()):
+            variables = ('x',) if function is not None else ('x', 'y') if name in self.ctx.equations else ()
+            if problems(ast, len(items), vars=variables):
                 raise _Untranslated('formula_unsupported', 'выражение выходит за пределы формул (expr.md §2)')
         except _Untranslated as exc:
             rec.status = 'closure' if exc.reason == 'depends_on_unsupported' else 'untranslated'
@@ -433,11 +440,16 @@ class _Builder:
             return
         op_id = operation_id(self.ns, rec.key)
         equation = name in self.ctx.equations
-        op = {'id': op_id, 'op': 'conic.equation' if equation else 'number.expression',
+        op = {'id': op_id, 'op': 'function.expr' if function is not None else
+              'conic.equation' if equation else 'number.expression',
               'args': {'expr': {'kind': 'expr', 'ast': copy.deepcopy(ast)}, 'refs': {'kind': 'list', 'items': items}},
               'outputs': []}
         self.doc['operations'][op_id] = op
-        slot = 'conic' if equation else 'number'
+        if function is not None:
+            for key, value in zip(('min', 'max'), function.domain):
+                if value is not None:
+                    op['args'][key] = _num(value)
+        slot = 'function' if function is not None else 'conic' if equation else 'number'
         eid = self.add_element(name, rec, op_id, slot, slot)
         op['outputs'].append({'slot': slot, 'elementId': eid})
         rec.op_id = op_id
@@ -518,11 +530,11 @@ class _Builder:
         # an expression of a .ggb the classic read but cannot translate (abs of a computed value, …):
         # the formula the import read itself (1.10.0a3)
         for o, rec in zip(outs, recs):
-            if o in self.ctx.formulas and rec.status != 'translated' and not rec.native_ids:
+            if (o in self.ctx.formulas or o in self.ctx.functions) and rec.status != 'translated' and not rec.native_ids:
                 self.formula(o)
 
     def build(self, cmd, sig, inputs, outs, recs):
-        if len(outs) == 1 and outs[0] in self.ctx.equations:
+        if len(outs) == 1 and (outs[0] in self.ctx.equations or outs[0] in self.ctx.functions):
             self.formula(outs[0])
             return
         row = self.table.lookup(sig)
@@ -810,9 +822,10 @@ def translate(constr, ctx: Context) -> Translation:
     free = list(dict.fromkeys(free))          # a name twice (a damaged file): one free object
     # an expression of a .ggb the classic did not parse (its saved value is a free object of the
     # classic): the formula the import read itself, in its place among the commands (1.10.0a3)
-    pending = sorted((n for n in ctx.formulas if n not in produced), key=lambda n: ctx.order.get(n, 10 ** 6))
+    source_formulas = set(ctx.formulas) | set(ctx.functions)
+    pending = sorted((n for n in source_formulas if n not in produced), key=lambda n: ctx.order.get(n, 10 ** 6))
     for name in sorted(free, key=lambda n: ctx.order.get(n, 10 ** 6)):
-        if name in ctx.formulas:
+        if name in source_formulas:
             continue
         obj = constr.objectByName(name)
         if isinstance(obj, Var) and KeyMaker.is_phantom(name):
@@ -840,6 +853,17 @@ def translate(constr, ctx: Context) -> Translation:
         eid = rec.native_ids[0]
         st = ev.elements.get(eid, {})
         rec.native_value = native_report_value(rec.type, st.get('value')) if st.get('state') == 'defined' else None
+        if rec.type == 'function':
+            from .ggb_function import source_ref_names, source_ref_values, verify_function
+            spec = ctx.functions.get(rec.name)
+            names = source_ref_names(spec, ctx) if spec is not None else []
+            expected_ids = [builder.element_of.get(n) for n in names]
+            op = builder.doc['operations'][rec.op_id]
+            actual_ids = [item.get('elementId') for item in op['args']['refs']['items']]
+            rec.expected = ctx.expected.get(rec.name)
+            rec.value_check, rec.delta = verify_function(spec, st.get('value'), actual_ids, expected_ids,
+                source_ref_values(spec, ctx) if spec is not None else None, scale)
+            continue
         if rec.free:
             rec.expected = builder.ctx.expected.get(rec.name) or rec.native_value
             status, delta = compare(rec.expected, rec.native_value, scale)

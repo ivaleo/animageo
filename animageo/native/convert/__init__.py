@@ -349,6 +349,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     _read_formulas(infos, norm, ctx, built_by_command, parse_number, ExprError)
     from .ggb_conic import read_equations
     read_equations(infos, norm, ctx)
+    from .ggb_function import read_functions
+    read_functions(infos, norm, ctx)
     with _quiet():
         tr = translate(constr, ctx)
     # one entry per <element>
@@ -376,10 +378,14 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         n = norm[label]
         rec = tr.records.get(n)
         deps = [d for d in names_in(info.get('inputs', []), labels) if d != label]
+        if n in ctx.functions:
+            deps = list(ctx.functions[n].refs)
         if t == 'text' and info.get('command') == 'Expression':
             info['text'] = _text_of(info['inputs'][0]) if info.get('inputs') else ''
             deps = [d for d in deps if d not in ('text',)]
         value = ggb_value(info, point_of)
+        if n in ctx.functions:
+            value = ctx.expected.get(n)
         if t == 'text' and value is not None:
             value.update(text_extras(info, by_label, point_of, sc['view'], sc.get('decimals'), classic_of,
                                      split_text_parts))

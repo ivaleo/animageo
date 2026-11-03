@@ -162,7 +162,7 @@ def test_unsupported_and_closure():
     (element('textfield', 'tf'), 'tf', 'unsupported', 'ui_object', None),
     (element('point3d', 'P', extra='<coords x="1" y="2" z="3" w="1"/>'), 'P', 'unsupported', '3d', '3d'),
     (command('RandomPointIn', ['t1'], ['R']) + point('R', 1.0, 1.0), 'R', 'picture', 'random_point', None),
-    (expression('f', 'x^2') + element('function', 'f'), 'f', 'unsupported', 'formula_unsupported', None),
+    (expression('f', 'floor(x)') + element('function', 'f'), 'f', 'unsupported', 'formula_unsupported', None),
     (element('image', 'pic1'), 'pic1', 'unsupported', 'image', 'image'),
 ])
 def test_reasons(body, name, category, reason, kind):

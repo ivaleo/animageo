@@ -153,6 +153,51 @@ keeps the dimension of a measure (a length plus an area, a length plus a
 number, a cube of a length are undefined there), the kernel has none. They are
 `differs`, never `editable` (`DEGENERATE_DIFFERS`).
 
+### GeoGebra function definitions
+
+The GGB importer reads source function definitions independently of classic
+parsing. A companion `<element type="function">` accepts a bare body in `x`,
+`f(x) = body`, `f(t) = body`, or `y = body`; an explicit function header must
+match its source label and have one formal variable. Only variable nodes are
+renamed to `x`: labels such as `t_1` remain distinct source objects.
+
+The supported arithmetic and math functions are those of the number-expression
+reader above. Functions additionally accept nested `If(condition, then[, else])`
+and `If[condition, then[, else]]`, comparisons `< <= > >= ≤ ≥`, chained
+comparisons, `&&`, `||`, `!`, and parentheses. Conditions are allowed only in an
+If condition. Evaluation is lazy: unchosen branches and short-circuited
+conditions are not evaluated. If without an else has no value where its
+condition is false. Equality, inequality, CAS commands, lists, coordinates,
+calls to source functions and unknown math functions remain unsupported.
+The text is never executed, and existing expression work limits apply.
+
+Each definition becomes `function.expr`, retaining numeric source objects as
+ordered references, including live `number.expression` results. Equal current
+values never merge two source objects or replace a named number with a literal.
+An angle may be a reference only if its native element is a number with angle
+units; an angle of a figure is not coerced to a number.
+
+Ordinary functions omit `min` and `max`, giving domain `[null, null]`.
+Saved view bounds, zoom, sampling and renderer bounds do not restrict the
+mathematical domain. Formula operations can still be undefined at particular
+values of `x`. The XML command `Function(inline_body, a, b)` retains explicit
+finite literal bounds, evaluated safely from constant ASTs. A named numeric
+bound, including a currently constant object or an expression referring to it,
+is refused. Restricting an existing function object is also outside this subset.
+
+Function report values have the form
+`{"kind":"function","value":{"expr":AST,"refs":[numbers],"domain":[min,max]}}`.
+`ggb_value` comes from the independently parsed source definition and saved
+source numbers. Verification requires exact AST and variable normalization,
+exact ordered source-to-native reference IDs, exact literal domain, and numeric
+reference values within the existing import tolerance. Merely evaluating the
+operation does not prove the definition was preserved. Missing source evidence
+keeps `value_check: "not_checked"` and category `differs` with `value_unchecked`;
+a mismatch gives `failed` and `value_mismatch`. This establishes preservation
+within the supported source language, not equivalence to arbitrary GeoGebra
+expressions. The GGB-specific reader does not extend `from_construction`, change
+`dsl_map.json` promises, or add support for Root, Extremum or function intersections.
+
 ## 2. Keys and IDs
 
 `id = uuid5(id_namespace, key)`. Keys: a `.ggb` object — `ggb:<label>`; a DSL

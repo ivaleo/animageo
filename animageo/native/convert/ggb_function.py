@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import copy
+import math
 import re
 
-from .ggb_expr import ExprError, MAX_CHARS, _NAME, _Reader, _tokens
+from .ggb_expr import ExprError, MAX_CHARS, _NAME, _Reader, _tokens, parse_number
 
 
 @dataclass
@@ -135,3 +137,108 @@ def parse_function(text, kinds, *, label) -> FunctionSpec:
     if problems(ast, len(reader.labels), vars=('x',)):
         raise ExprError('formula_unsupported', 'function exceeds expression limits or condition grammar')
     return FunctionSpec(ast, reader.labels)
+
+
+def source_ref_names(spec, ctx):
+    """Translate source labels by identity, never by their current values."""
+    normalized = {source: name for name, source in ctx.display.items()}
+    return [normalized.get(source, source) for source in spec.refs]
+
+
+def source_ref_values(spec, ctx):
+    """Original XML numbers, independently of emitted or evaluated operations."""
+    out = []
+    for name in source_ref_names(spec, ctx):
+        expected = ctx.expected.get(name)
+        if not expected or expected.get('kind') not in ('number', 'angle'):
+            return None
+        value = expected.get('value')
+        if not isinstance(value, (float, int)) or isinstance(value, bool) or not math.isfinite(value):
+            return None
+        out.append(float(value))
+    return out
+
+
+def source_report_value(spec, ctx):
+    values = source_ref_values(spec, ctx)
+    if values is None:
+        return None
+    return {'kind': 'function', 'value': {'expr': copy.deepcopy(spec.ast), 'refs': values,
+                                         'domain': list(spec.domain)}}
+
+
+def read_functions(infos, norm, ctx) -> None:
+    """Read source definitions even when classic parsing made no object."""
+    from ..expr import evaluate
+    from ..expr.evaluate import ExprError as EvaluationError
+
+    kinds = {info['label']: info['type'] for info in infos}
+    for info in infos:
+        if info['type'] != 'function':
+            continue
+        name = norm[info['label']]
+        forced = ctx.forced.get(name)
+        if forced and forced[0] not in ('parse_error', 'unsupported_signature', 'no_registry_op'):
+            continue
+        command, inputs = info.get('command'), info.get('inputs', [])
+        if command not in ('Expression', 'Function'):
+            continue
+        try:
+            if command == 'Expression' and len(inputs) == 1:
+                spec = parse_function(inputs[0], kinds, label=info['label'])
+            elif command == 'Function' and len(inputs) == 3:
+                if inputs[0].strip() in kinds:
+                    raise ExprError('formula_unsupported', 'Function of a source object is not an inline definition')
+                spec = parse_function(inputs[0], kinds, label=info['label'])
+                domain = []
+                for text in inputs[1:]:
+                    ast, refs = parse_number(text, kinds)
+                    if refs:
+                        raise ExprError('unsupported_signature', 'function domain depends on source objects')
+                    domain.append(evaluate(ast))
+                spec.domain = domain
+            else:
+                raise ExprError('unsupported_signature', 'unsupported source function definition')
+        except (ExprError, EvaluationError) as exc:
+            reason = exc.reason if isinstance(exc, ExprError) else 'formula_unsupported'
+            ctx.forced[name] = (reason, str(exc))
+            continue
+        ctx.forced.pop(name, None)
+        ctx.functions[name] = spec
+        expected = source_report_value(spec, ctx)
+        if expected is not None:
+            ctx.expected[name] = expected
+
+
+def verify_function(spec, native_value, actual_ref_ids, expected_ref_ids, expected_ref_values, scale):
+    """Verify the definition and bindings against source, not successful evaluation.
+
+    Structure, variable normalization, ordered object IDs and domain must match
+    exactly. Ref values use the existing import comparison, with no new tolerance.
+    Missing independent source evidence leaves the definition unchecked.
+    """
+    from .values import compare
+
+    if spec is None or expected_ref_ids is None or expected_ref_values is None:
+        return 'not_checked', None
+    if len(expected_ref_ids) != len(spec.refs) or len(expected_ref_values) != len(spec.refs) or any(
+            value is None or not isinstance(value, (int, float)) or isinstance(value, bool)
+            or not math.isfinite(value) for value in expected_ref_values):
+        return 'not_checked', None
+    if not isinstance(native_value, dict) or actual_ref_ids != expected_ref_ids:
+        return 'failed', None
+    if native_value.get('expr') != spec.ast or native_value.get('domain') != list(spec.domain):
+        return 'failed', None
+    actual = native_value.get('refs')
+    if not isinstance(actual, list) or len(actual) != len(expected_ref_values):
+        return 'failed', None
+    delta = 0.0
+    for expected, value in zip(expected_ref_values, actual):
+        if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value):
+            return 'failed', None
+        status, difference = compare({'kind': 'number', 'value': expected},
+                                     {'kind': 'number', 'value': value}, scale)
+        if status != 'passed':
+            return status, difference
+        delta = max(delta, difference)
+    return 'passed', delta

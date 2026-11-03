@@ -1,5 +1,8 @@
 """Source function grammar: independent AST and mathematical expectations."""
 import math
+import copy
+import json
+from pathlib import Path
 
 import pytest
 
@@ -168,3 +171,299 @@ def test_function_parser_rejects_bounded_work_overflow(text):
 def test_number_parser_default_does_not_gain_conditions(text):
     with pytest.raises(ExprError):
         parse_number(text, {'a': 'numeric', 'b': 'numeric'})
+
+
+# Task 3: the importer, not a handwritten native document, must create these.
+from animageo import native
+from animageo.native.kernel.function import evaluator
+from tests.native.ggb_synth import command, element, expression, ggb_bytes, ggb_xml, point
+from tests.native.test_native_ggb_inline import eid, imported
+from tests.native.test_native_l5_ggb import NS, _check
+
+
+def number(label, value):
+    return element('numeric', label, extra=f'<value val="{value}"/>')
+
+
+def function_source(body, label='f', *, type_=None):
+    return expression(label, body, type_) + element('function', label)
+
+
+def operation(doc, items, name):
+    el = doc['elements'][eid(items, name)]
+    return doc['operations'][el['producer']['operationId']]
+
+
+def function_value(doc, items, name='f', *, inputs=None):
+    state = native.evaluate(doc, inputs=inputs).elements[eid(items, name)]
+    assert state['state'] == 'defined', state
+    return state['value']
+
+
+@pytest.mark.parametrize('type_', [None, 'function'])
+@pytest.mark.parametrize('body', ['a*x²', 'f(t) = a*t²'])
+def test_numeric_reference_moves_function_without_freezing(type_, body):
+    doc, items = imported(number('a', 2) + function_source(body, type_=type_))
+    assert items['f']['category'] == 'editable'
+    assert items['f']['value_check'] == 'passed'
+    assert items['f']['depends_on'] == ['a']
+    op = operation(doc, items, 'f')
+    assert op['op'] == 'function.expr'
+    assert op['args']['expr']['ast'] == {'op': '*', 'args': [
+        {'ref': 0}, {'op': '^', 'args': [{'var': 'x'}, {'num': 2.0}]}]}
+    assert op['args']['refs'] == {'kind': 'list', 'items': [{'kind': 'ref', 'elementId': eid(items, 'a')}]}
+    assert eid(items, 'f') not in doc['inputs']
+    assert items['f']['ggb_value'] == {'kind': 'function', 'value': {
+        'expr': op['args']['expr']['ast'], 'refs': [2.0], 'domain': [None, None]}}
+    for value, want in [(3.0, 12.0), (-1.0, -4.0), (0.0, 0.0), (2.0, 8.0)]:
+        fn = function_value(doc, items, inputs={eid(items, 'a'): {'kind': 'number', 'value': value}})
+        assert evaluator(fn)(2.0) == want
+
+
+def test_equal_numeric_values_keep_distinct_references():
+    doc, items = imported(number('a', 2) + number('b', 2) + function_source('b*x + a'))
+    assert items['f']['category'] == 'editable'
+    assert items['f']['depends_on'] == ['b', 'a']
+    assert operation(doc, items, 'f')['args']['refs']['items'] == [
+        {'kind': 'ref', 'elementId': eid(items, 'b')}, {'kind': 'ref', 'elementId': eid(items, 'a')}]
+    assert evaluator(function_value(doc, items))(3.0) == 8.0
+    assert evaluator(function_value(doc, items, inputs={
+        eid(items, 'a'): {'kind': 'number', 'value': 5.0}}))(3.0) == 11.0
+    assert evaluator(function_value(doc, items, inputs={
+        eid(items, 'b'): {'kind': 'number', 'value': 5.0}}))(3.0) == 17.0
+
+
+def test_plain_function_is_unbounded_and_view_independent():
+    source = ggb_xml(function_source('x²'))
+    docs = []
+    for scale, zero in [(50, 400), (1, 20), (900, 600)]:
+        xml = source.replace(b'scale="50"', f'scale="{scale}"'.encode()).replace(
+            b'xZero="400"', f'xZero="{zero}"'.encode())
+        doc, rep = native.from_ggb(ggb_bytes(xml=xml), id_namespace=NS)
+        _check(doc, rep)
+        items = {e['ggb_name']: e for e in rep['elements']}
+        assert items['f']['category'] == 'editable'
+        op = operation(doc, items, 'f')
+        assert 'min' not in op['args'] and 'max' not in op['args']
+        fn = function_value(doc, items)
+        assert fn['domain'] == [None, None]
+        assert [evaluator(fn)(x) for x in (-10000., 10000.)] == [100000000., 100000000.]
+        docs.append(op['args'])
+    assert docs[0] == docs[1] == docs[2]
+
+
+def test_function_depends_on_live_number_expression():
+    body = (number('a', 4) + expression('b', 'sqrt(a)') + number('b', 2)
+            + function_source('b*x'))
+    doc, items = imported(body)
+    assert items['b']['category'] == items['f']['category'] == 'editable'
+    assert operation(doc, items, 'b')['op'] == 'number.expression'
+    assert operation(doc, items, 'f')['args']['refs']['items'] == [
+        {'kind': 'ref', 'elementId': eid(items, 'b')}]
+    assert evaluator(function_value(doc, items, inputs={
+        eid(items, 'a'): {'kind': 'number', 'value': 9.0}}))(3.0) == 9.0
+
+
+def test_if_undefined_branch_and_upstream():
+    body = (number('a', 4) + expression('b', 'sqrt(a)') + number('b', 2)
+            + function_source('If(x >= 0, b*sqrt(x))'))
+    doc, items = imported(body)
+    assert items['f']['category'] == 'editable'
+    assert evaluator(function_value(doc, items))(-1.0) is None
+    assert evaluator(function_value(doc, items))(9.0) == 6.0
+    bad = native.evaluate(doc, inputs={eid(items, 'a'): {'kind': 'number', 'value': -1.0}})
+    assert bad.elements[eid(items, 'b')]['state'] == 'undefined'
+    assert bad.elements[eid(items, 'f')]['state'] == 'undefined'
+    assert bad.elements[eid(items, 'f')]['reason'] == 'upstream'
+    assert 'value' not in bad.elements[eid(items, 'f')]
+    recovered = function_value(doc, items, inputs={eid(items, 'a'): {'kind': 'number', 'value': 9.0}})
+    assert evaluator(recovered)(9.0) == 9.0
+
+
+def test_inline_literal_restriction_preserves_domain():
+    body = (number('a', 2) + command('Function', ['a*x²', '-sqrt(4)', '2π'], ['f'])
+            + element('function', 'f'))
+    doc, items = imported(body)
+    assert items['f']['category'] == 'editable'
+    assert items['f']['depends_on'] == ['a']
+    op = operation(doc, items, 'f')
+    assert op['args']['min'] == {'kind': 'number', 'value': -2.0}
+    assert op['args']['max']['value'] == pytest.approx(2 * math.pi)
+    fn = function_value(doc, items)
+    assert fn['domain'] == pytest.approx([-2.0, 2 * math.pi])
+    assert evaluator(fn)(-3.0) is None
+    assert evaluator(fn)(0.0) == 0.0
+    assert evaluator(fn)(7.0) is None
+    moved = function_value(doc, items, inputs={eid(items, 'a'): {'kind': 'number', 'value': 3.0}})
+    assert moved['domain'] == fn['domain']
+    assert evaluator(moved)(2.0) == 12.0
+
+
+@pytest.mark.parametrize('inputs', [
+    ['x²', 'a', '3'], ['x²', '-1', 'a'], ['x²', 'a-a-1', '3'],
+    ['g', '-1', '3'], ['x²', '1/0', '3'], ['x²', '-1', '1E309'],
+])
+def test_dynamic_domain_and_function_reference_are_refused(inputs):
+    body = (number('a', 2) + function_source('x²', 'g') + command('Function', inputs, ['f'])
+            + element('function', 'f'))
+    doc, items = imported(body)
+    assert items['g']['category'] == 'editable'
+    assert items['f']['category'] == 'unsupported'
+    assert items['f']['reason'] in ('formula_unsupported', 'unsupported_signature', 'parse_error')
+    assert items['f']['native_ids'] == []
+
+
+def test_non_numeric_angle_element_is_not_coerced_to_number():
+    body = (point('A', 1., 0.) + point('B', 0., 0.) + point('C', 0., 1.)
+            + command('Angle', ['A', 'B', 'C'], ['α'])
+            + element('angle', 'α', extra=f'<value val="{math.pi / 2}"/>')
+            + function_source('sin(α) + x'))
+    doc, items = imported(body)
+    assert items['α']['category'] == 'editable'
+    assert items['f']['category'] == 'unsupported'
+    assert items['f']['reason'] == 'formula_unsupported'
+    assert items['f']['native_ids'] == []
+
+
+def test_function_report_requires_source_verified_bindings():
+    from animageo.native.convert.ggb_function import FunctionSpec, verify_function
+    ast = {'if': [{'cmp': '<', 'args': [{'var': 'x'}, {'num': 0.0}]}, {'ref': 0}, {'ref': 1}]}
+    spec = FunctionSpec(copy.deepcopy(ast), ['a', 'b'], [-2.0, 3.0])
+    value = {'expr': copy.deepcopy(ast), 'refs': [2.0, 2.0], 'domain': [-2.0, 3.0]}
+    args = (spec, value, ['id-a', 'id-b'], ['id-a', 'id-b'], [2.0, 2.0], 10.0)
+    assert verify_function(*args) == ('passed', 0.0)
+    for key, replacement in [
+        ('expr', {'ref': 0}),  # lose the source If condition
+        ('expr', {'if': [{'cmp': '>', 'args': [{'var': 'x'}, {'num': 0.0}]}, {'ref': 0}, {'ref': 1}]}),
+        ('expr', {'if': [{'cmp': '<', 'args': [{'var': 't'}, {'num': 0.0}]}, {'ref': 0}, {'ref': 1}]}),
+        ('domain', [None, None]), ('domain', [-2.0, 4.0]),
+        ('refs', [2.0]), ('refs', [2.0, 3.0]),
+    ]:
+        changed = {**copy.deepcopy(value), key: replacement}
+        assert verify_function(spec, changed, *args[2:])[0] == 'failed', (key, replacement)
+    for wrong_ids in (['id-b', 'id-a'], ['id-a', 'id-a'], ['id-a'], ['id-a', 'id-other']):
+        assert verify_function(spec, value, wrong_ids, *args[3:])[0] == 'failed'
+    for index in (0, 3, 4):  # missing source spec, source mapping, source numeric values
+        missing = list(args)
+        missing[index] = None
+        assert verify_function(*missing) == ('not_checked', None)
+    assert verify_function(spec, value, args[2], args[3], [2.0, None], 10.0) == ('not_checked', None)
+    assert verify_function(spec, None, *args[2:])[0] == 'failed'
+    # Reuse the existing import tolerance for numbers; structure has no tolerance.
+    almost = {**value, 'refs': [2.0 + 1e-8, 2.0]}
+    assert verify_function(spec, almost, *args[2:])[0] == 'passed'
+
+
+def test_unchecked_function_source_remains_differs(monkeypatch):
+    from animageo.native.convert import ggb_function
+    original = ggb_function.read_functions
+
+    def without_numeric_source(infos, norm, ctx):
+        original(infos, norm, ctx)
+        ctx.expected.pop(norm['a'], None)
+
+    monkeypatch.setattr(ggb_function, 'read_functions', without_numeric_source)
+    _doc, items = imported(number('a', 2) + function_source('a*x'))
+    assert items['f']['category'] == 'differs'
+    assert items['f']['reason'] == 'value_unchecked'
+    assert items['f']['value_check'] == 'not_checked'
+
+
+def test_from_construction_does_not_claim_ggb_function_support():
+    from animageo.geo.construction import Construction
+    from animageo.parsers import dsl
+    constr = Construction()
+    dsl.run(constr, 'f = Function("y = x^2")')
+    _doc, report = native.from_construction(constr, mode='partial', id_namespace=NS)
+    item = next(e for e in report['elements'] if e['display'] == 'f')
+    assert item['category'] == 'unsupported'
+    assert item['native_ids'] == []
+
+
+def test_formal_parameter_is_not_a_dependency_on_same_named_object():
+    doc, items = imported(number('t', 99) + number('t_1', 3) + function_source('f(t) = t_1*t²'))
+    assert items['f']['category'] == 'editable'
+    assert items['f']['depends_on'] == ['t_1']
+    assert operation(doc, items, 'f')['args']['refs']['items'] == [
+        {'kind': 'ref', 'elementId': eid(items, 't_1')}]
+    assert evaluator(function_value(doc, items))(2.0) == 12.0
+
+
+FUNCTION_FIXTURE = Path(__file__).with_name('import') / 'scenes' / 'ggb_functions.json'
+
+
+def function_fixture():
+    """Actual importer document + anonymous source + independent expectations.
+
+    Regenerate only this file, explicitly, after a successful targeted test:
+    import this helper and JSON-serialize its return value to FUNCTION_FIXTURE.
+    Existing curve/expr fixtures are unrelated and must not be regenerated.
+    """
+    body = (number('a', 2) + number('b', 2) + function_source('f(t) = a*t² + b')
+            + function_source('If(x < 0, sqrt(-x), sqrt(x))', 'p')
+            + function_source('If(x >= 0, sqrt(x))', 'q')
+            + command('Function', ['a*x', '-2', '3'], ['r']) + element('function', 'r')
+            + expression('u', 'sqrt(a)') + number('u', math.sqrt(2)) + function_source('u*x', 'h'))
+    source = ggb_xml(body)
+    doc, report = native.from_ggb(ggb_bytes(xml=source), id_namespace=NS)
+    _check(doc, report)
+    assert all(e['category'] == 'editable' for e in report['elements'])
+    ids = {e['ggb_name']: e['native_ids'][0] for e in report['elements']}
+    f_ast = {'op': '+', 'args': [
+        {'op': '*', 'args': [{'ref': 0}, {'op': '^', 'args': [{'var': 'x'}, {'num': 2.0}]}]},
+        {'ref': 1}]}
+    return {'format': 'animageo-parity/v1', 'id': 'ggb_functions', 'document': doc,
+            'source': {'xml': source.decode(), 'namespace': str(NS)}, 'sourceIds': ids,
+            'expectedDefinitions': {
+                'f': {'expr': f_ast, 'refs': ['a', 'b'], 'domain': [None, None]},
+                'p': {'expr': {'if': [
+                    {'cmp': '<', 'args': [{'var': 'x'}, {'num': 0.0}]},
+                    {'fn': 'sqrt', 'args': [{'op': 'neg', 'args': [{'var': 'x'}]}]},
+                    {'fn': 'sqrt', 'args': [{'var': 'x'}]}]}, 'refs': [], 'domain': [None, None]},
+                'q': {'expr': {'if': [
+                    {'cmp': '>=', 'args': [{'var': 'x'}, {'num': 0.0}]},
+                    {'fn': 'sqrt', 'args': [{'var': 'x'}]}]}, 'refs': [], 'domain': [None, None]},
+                'r': {'expr': {'op': '*', 'args': [{'ref': 0}, {'var': 'x'}]},
+                      'refs': ['a'], 'domain': [-2.0, 3.0]},
+                'h': {'expr': {'op': '*', 'args': [{'ref': 0}, {'var': 'x'}]},
+                      'refs': ['u'], 'domain': [None, None]}},
+            'cases': [
+                {'name': 'saved', 'samples': {
+                    'f': [[-10000., 200000002.], [0., 2.], [10000., 200000002.]],
+                    'p': [[-4., 2.], [0., 0.], [9., 3.]], 'q': [[-1., None], [4., 2.]],
+                    'r': [[-3., None], [-2., -4.], [2., 4.], [4., None]], 'h': [[2., 2 * math.sqrt(2)]]}},
+                {'name': 'numeric-refs', 'inputs': {ids['a']: {'kind': 'number', 'value': 3.},
+                                                    ids['b']: {'kind': 'number', 'value': 5.}},
+                 'samples': {'f': [[2., 17.]], 'r': [[2., 6.]], 'h': [[3., 3 * math.sqrt(3)]]}},
+                {'name': 'upstream', 'inputs': {ids['a']: {'kind': 'number', 'value': -1.}},
+                 'expectedStates': {'u': {'state': 'undefined', 'reason': 'out_of_domain'},
+                                    'h': {'state': 'undefined', 'reason': 'upstream'}},
+                 'samples': {'f': [[2., -2.]]}},
+            ]}
+
+
+def test_python_emitted_function_fixture_matches_source_and_independent_values():
+    scene = json.loads(FUNCTION_FIXTURE.read_text())
+    assert scene == function_fixture()
+    doc, ids = scene['document'], scene['sourceIds']
+    for name, expected in scene['expectedDefinitions'].items():
+        op = doc['operations'][doc['elements'][ids[name]]['producer']['operationId']]
+        assert op['args']['expr']['ast'] == expected['expr']
+        assert [r['elementId'] for r in op['args']['refs']['items']] == [ids[n] for n in expected['refs']]
+        assert [op['args'].get(k, {}).get('value') for k in ('min', 'max')] == expected['domain']
+    for case in scene['cases']:
+        ev = native.evaluate(doc, inputs=case.get('inputs'))
+        for name, expected in case.get('expectedStates', {}).items():
+            state = ev.elements[ids[name]]
+            assert {k: state[k] for k in expected} == expected
+            if state['state'] != 'defined':
+                assert 'value' not in state
+        for name, samples in case.get('samples', {}).items():
+            fn = evaluator(ev.elements[ids[name]]['value'])
+            for x, expected in samples:
+                actual = fn(x)
+                assert actual is None if expected is None else actual == pytest.approx(expected)
+
+
+if __name__ == '__main__':
+    FUNCTION_FIXTURE.write_text(json.dumps(function_fixture(), ensure_ascii=False, indent=2, allow_nan=False) + '\n')
