@@ -10,35 +10,40 @@ permissions:
 jobs:
   diagnose:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 6
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONNOUSERSITE: '1'
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 2191c185ec8d719fa11b07e4357230f0c8b5580d
+          ref: 55928c30230f12beedb74d555857044501625e29
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
-      - name: Install the existing CI toolchain and approved optional renderer
+          python-version: '3.11.17'
+      # No apt, pip, fonts, manim, pytest, rendering, corpus, or package builds.
+      - name: Prepare read-only source and external payload
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libcairo2-dev libpango1.0-dev pkg-config ffmpeg texlive texlive-latex-extra texlive-fonts-recommended texlive-lang-cyrillic texlive-science dvisvgm
-          python -m pip install -e ".[dev]" cairosvg
-      - name: Write read-only diagnostic payload outside source
-        run: |
-          cat > "$RUNNER_TEMP/ci_platform_probe.py" <<'PYCODE'
+          set -eu
+          test "$(git rev-parse HEAD)" = 55928c30230f12beedb74d555857044501625e29
+          mkdir -p "$RUNNER_TEMP/space311-artifact" "$RUNNER_TEMP/space311-a3"
+          git archive a3ebd215ebb7faae0f83e80bd05e7baf1cb35f75 | tar -x -C "$RUNNER_TEMP/space311-a3"
+          git rev-parse HEAD > "$RUNNER_TEMP/space311-artifact/current-ref.txt"
+          git rev-parse a3ebd215ebb7faae0f83e80bd05e7baf1cb35f75 > "$RUNNER_TEMP/space311-artifact/baseline-ref.txt"
+          cat > "$RUNNER_TEMP/ci-python311-space-probe.py" <<'PYCODE'
           #!/usr/bin/env python3
-          """DRAFT, NOT RUN. Lead-scheduled Linux CI diagnostics, never fixture repair.
+          """Read-only Linux/Python3.11 space depth-order diagnostic.
           
-          Run one mode at a time. Output must be outside the source/artifact tree.
-          Space builds expectations only in memory. Labels repeats the exact 2000-label
-          reference in a separate diagnostic TeX directory; it can take several minutes.
-          No installation, golden/metrics generation, tests, source writes or network.
+          No tests, rendering, installation or source writes. scene.sum is temporarily
+          changed only in this diagnostic process, never vec.sum or builtins.sum.
           """
           import argparse
-          from collections import Counter
+          import builtins
           import hashlib
-          import importlib.metadata
+          import importlib
+          import importlib.abc
           import json
           import math
           import os
@@ -50,216 +55,168 @@ jobs:
           sys.dont_write_bytecode = True
           
           
-          def command(args, cwd=None):
-              try:
-                  p = subprocess.run(args, cwd=cwd, capture_output=True, text=True, timeout=20)
-                  return {'command': args, 'exit': p.returncode, 'stdout': p.stdout.strip(), 'stderr': p.stderr.strip()}
-              except (OSError, subprocess.TimeoutExpired) as exc:
-                  return {'command': args, 'error': str(exc)}
+          def dump(path, value):
+              path.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + '\n')
           
           
-          def sha(path):
-              return hashlib.sha256(path.read_bytes()).hexdigest()
+          def fingerprint(repo):
+              paths = list((repo / 'animageo/native/space').glob('*.py'))
+              paths += list((repo / 'animageo/native/parity/v1/space').glob('*.json'))
+              return {str(p.relative_to(repo)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
           
           
-          def write(path, value):
-              path.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8')
-          
-          
-          def number(value):
-              return isinstance(value, (int, float)) and not isinstance(value, bool)
-          
-          
-          def exact_diffs(old, new, path=''):
-              """Leaf JSON pointers, full precision, without introducing a tolerance."""
+          def differences(old, new, ptr=''):
               if old == new:
                   return []
-              out = []
-              if isinstance(old, dict) and isinstance(new, dict):
-                  for key in sorted(set(old) | set(new)):
-                      ptr = path + '/' + str(key).replace('~', '~0').replace('/', '~1')
-                      if key not in old or key not in new:
-                          out.append({'pointer': ptr, 'kind': 'missing-key', 'old': old.get(key), 'new': new.get(key),
-                                      'old_present': key in old, 'new_present': key in new})
-                      else:
-                          out.extend(exact_diffs(old[key], new[key], ptr))
-                  return out
-              if isinstance(old, list) and isinstance(new, list):
-                  if len(old) != len(new):
-                      out.append({'pointer': path, 'kind': 'list-length', 'old': len(old), 'new': len(new)})
-                  for index, (a, b) in enumerate(zip(old, new)):
-                      out.extend(exact_diffs(a, b, path + '/' + str(index)))
-                  return out
-              row = {'pointer': path, 'old': old, 'new': new, 'kind': 'other'}
-              if number(old) and number(new):
+              if isinstance(old, dict) and isinstance(new, dict) and set(old) == set(new):
+                  return [d for k in sorted(old) for d in differences(old[k], new[k],
+                          ptr + '/' + k.replace('~', '~0').replace('/', '~1'))]
+              if isinstance(old, list) and isinstance(new, list) and len(old) == len(new):
+                  return [d for i, (a, b) in enumerate(zip(old, new)) for d in differences(a, b, ptr + '/' + str(i))]
+              row = {'pointer': ptr, 'old': old, 'new': new, 'source_document': '/document/' in ptr}
+              if all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in (old, new)):
                   a, b = float(old), float(new)
-                  row.update(kind='number', abs_delta=abs(a - b), old_hex=a.hex(), new_hex=b.hex(),
+                  row.update(abs_delta=abs(a - b), old_hex=a.hex(), new_hex=b.hex(),
                              ulps=abs(a - b) / max(math.ulp(a), math.ulp(b)))
               return [row]
           
           
-          SOURCE_PATHS = (
-              'tests/native/test_label_metrics_corpus.py', 'tests/native/label_corpus.py',
-              'animageo/native/labels/tex.py', 'animageo/native/labels/metrics.v1.json',
-              'scripts/native/build_label_metrics.py', 'animageo/ui.py', 'animageo/labels.py',
-              'tests/native/test_native_space_fixtures.py', 'animageo/native/space/fixtures.py',
-              'animageo/native/space/build.py', 'animageo/native/space/vec.py',
-              'animageo/native/parity/v1/space/space_flat_solids.json',
-              'animageo/native/parity/v1/space/space_values_sections.json',
-              'animageo/native/parity/v1/space/space_values_solids.json',
-          )
+          def bits(value):
+              return {'value': float(value), 'hex': float(value).hex()}
           
           
-          def metadata(repo):
-              versions = {}
-              for name in ('animageo', 'numpy', 'manim', 'svgelements', 'fonttools', 'cairosvg'):
-                  try:
-                      versions[name] = importlib.metadata.version(name)
-                  except importlib.metadata.PackageNotFoundError:
-                      versions[name] = None
-              import animageo
-              return {'repo': str(repo), 'git': command(['git', 'rev-parse', 'HEAD'], repo),
-                      'python': sys.version, 'executable': sys.executable, 'platform': platform.platform(),
-                      'machine': platform.machine(), 'libc': platform.libc_ver(), 'versions': versions,
-                      'animageo_source': animageo.__file__, 'animageo_version': animageo.__version__,
-                      'source_sha256': {p: sha(repo / p) for p in SOURCE_PATHS},
-                      'libm_samples': {str(x): {'cos': math.cos(x).hex(), 'sin': math.sin(x).hex()}
-                                      for x in (0.1, 0.2, 0.3, 2 * math.pi / 3)}}
+          class NoClassic(importlib.abc.MetaPathFinder):
+              def find_spec(self, fullname, path=None, target=None):
+                  if fullname == 'manim' or fullname.startswith(('manim.', 'animageo.geo', 'animageo.animageo')):
+                      raise ImportError('Probe forbids classic/render import: ' + fullname)
           
           
-          def space_probe(repo, out):
-              from animageo.native.space import fixtures as fx
-              fresh = fx.build_fixtures()  # memory only; do NOT call write_fixtures
-              summaries = []
-              for name, built in sorted(fresh.items()):
-                  path = fx.DEFAULT_DIR / name
-                  stored = json.loads(path.read_text(encoding='utf-8'))
-                  # Same comparison as check_fixtures: version ignored, JSON-normalize new.
+          def trace_target(fx, scene):
+              target = next(row for _stem, rows in fx.flat_themes() for row in rows if row[0] == 'section_hidden_solid')
+              _name, item, centre, _cameras = target
+              doc = item.data() if hasattr(item, 'data') else item
+              camera = fx._camera('persp', centre)
+              trace = {'fills': [], 'sorts': []}
+          
+              def observer(frame, event, result):
+                  if event != 'return' or frame.f_code.co_filename != scene.__file__:
+                      return
+                  local = frame.f_locals
+                  if frame.f_code.co_name == 'fill' and isinstance(result, dict) and result.get('id') in ('P', 'S'):
+                      z = [p[2] for p in local['pts']]
+                      folded = 0.0
+                      partial = []
+                      for value in z:
+                          folded += value
+                          partial.append(bits(folded))
+                      trace['fills'].append({'id': result['id'], 'role': result['role'],
+                          'world_vertices': [[bits(v) for v in p] for p in local['polygon']],
+                          'projected': [[bits(v) for v in p] for p in local['pts']],
+                          'partial_left_fold': partial, 'builtin_sum': bits(builtins.sum(z)),
+                          'fsum': bits(math.fsum(z)), 'left_mean': bits(folded / len(z)),
+                          'builtin_mean': bits(builtins.sum(z) / len(z)),
+                          'fsum_mean': bits(math.fsum(z) / len(z)), 'actual_depth': bits(result['depth'])})
+                  elif frame.f_code.co_name == 'far_first' and local.get('items'):
+                      trace['sorts'].append({'keys_before': [
+                          {'id': f['id'], 'key': [bits(-f['depth']), f['id'], f['part'] or '']}
+                          for f in local['items']], 'order_after': [f['id'] for f in result]})
+          
+              previous = sys.getprofile()
+              sys.setprofile(observer)
+              try:
+                  raw = scene.flat_scene(doc, camera, plane_look='sheet')
+              finally:
+                  sys.setprofile(previous)
+              trace.update(camera=camera, document=doc, raw_flat_scene=raw)
+              return trace
+          
+          
+          def phase(fx, scene, out, name):
+              target = trace_target(fx, scene)
+              dump(out / (name + '-target-trace.json'), target)
+              fresh = fx.build_fixtures()  # in-memory space cases only
+              changes = {}
+              for filename, value in sorted(fresh.items()):
+                  stored = json.loads((fx.DEFAULT_DIR / filename).read_text())
                   old = {k: v for k, v in stored.items() if k != 'generatedBy'}
-                  new = json.loads(json.dumps({k: v for k, v in built.items() if k != 'generatedBy'}))
-                  differences = exact_diffs(old, new)
-                  for row in differences:
-                      bits = row['pointer'].split('/')
-                      if len(bits) > 2 and bits[1] == 'cases' and bits[2].isdigit():
-                          index = int(bits[2])
-                          row['case'] = old['cases'][index].get('name') if index < len(old['cases']) else None
-                      row['in_source_document'] = '/document/' in row['pointer']
-                  cases, replay = fx.verify_fixture(stored, path.stem)  # existing parity rules unchanged
-                  summary = {'file': name, 'cases': cases, 'exact_differences': len(differences),
-                             'kinds': dict(Counter(r['kind'] for r in differences)),
-                             'source_document_differences': sum(r['in_source_document'] for r in differences),
-                             'replay_mismatches': replay, 'stored_sha256': sha(path)}
-                  summaries.append(summary)
-                  if differences or replay:
-                      write(out / (name + '.diff.json'), {'summary': summary, 'differences': differences})
-                      print(json.dumps({'summary': summary, 'first_differences': differences[:12]}, ensure_ascii=False))
-              write(out / 'space-summary.json', summaries)
-          
-          
-          def labels_probe(repo, out):
-              from manim import config, tempconfig
-              from animageo.ui import RusTex
-              from animageo.labels import correctedLabel
-              from animageo.native.labels import tex
-              from tests.native.label_corpus import corpus
-              from tests.native.test_label_metrics_corpus import FONT_SIZE, BATCH, _tex_dims, _p95
-          
-              tools = {name: command([name, '--version']) for name in ('latex', 'dvisvgm', 'kpsewhich')}
-              fonts = {}
-              for name in ('cmr10.tfm', 'cmmi10.tfm', 'cmsy10.tfm', 'larm1000.tfm', 'larm0700.tfm',
-                           'larm0500.tfm', 'cmr10.pfb', 'cmmi10.pfb', 'sfrm1000.pfb', 'sfrm0700.pfb',
-                           'sfrm0500.pfb', 'psfonts.map'):
-                  found = command(['kpsewhich', name])
-                  p = Path(found.get('stdout', ''))
-                  fonts[name] = {'resolution': found, 'sha256': sha(p) if p.is_file() else None}
-                  if name == 'psfonts.map' and p.is_file():
-                      fonts[name]['t2a_entries'] = [line for line in p.read_text(errors='replace').splitlines()
-                                                   if line.startswith(('larm1000 ', 'larm0700 ', 'larm0500 '))]
-              metric = tex.metrics()
-              raw = corpus()
-              texts = [correctedLabel(s) for s in raw]
-              # Reproduce the existing batch/font/template, never rebuild metrics.v1.json.
-              tex_dir = out / 'tex'
-              tex_dir.mkdir()
-              with tempconfig({'tex_dir': str(tex_dir)}):
-                  reference = _tex_dims(texts)
-                  rows = []
-                  for i, (text, (w, h)) in enumerate(zip(texts, reference)):
-                      mw, mh = tex.measure(text, FONT_SIZE)
-                      rows.append({'index': i, 'batch': i // BATCH, 'raw': raw[i], 'corrected': text,
-                                   'reference': [w, h], 'metrics': [mw, mh],
-                                   'width_error': abs(mw - w) / w, 'height_error': abs(mh - h) / h})
-                  worst_w = sorted(rows, key=lambda r: r['width_error'], reverse=True)[:20]
-                  worst_h = sorted(rows, key=lambda r: r['height_error'], reverse=True)[:20]
-                  chars = sorted({c for row in worst_w + worst_h for c in row['raw'] if '\u0400' <= c <= '\u04ff'})
-                  probes = ['$M$', '$x_1$', r'$\alpha$'] + [f'$\\text{{{c}}}$' for c in chars]
-                  dims = _tex_dims(probes)
-                  glyphs = [{'tex': t, 'reference': list(ref), 'metrics': list(tex.measure(t, FONT_SIZE))}
-                            for t, ref in zip(probes, dims)]
-              data = {'count': len(rows), 'batch': BATCH, 'font_size': FONT_SIZE,
-                      'p95_width': _p95([r['width_error'] for r in rows]),
-                      'p95_height': _p95([r['height_error'] for r in rows]),
-                      'max_width': worst_w[0]['width_error'], 'max_height': worst_h[0]['height_error'],
-                      'worst_width': worst_w, 'worst_height': worst_h, 'glyph_probes': glyphs,
-                      'toolchain': tools, 'font_resolution': fonts, 'tex_template': {
-                          'stored_hash': metric['template'],
-                          'current_hash': 'sha256:' + hashlib.sha256(RusTex.preamble.encode()).hexdigest(),
-                          'muPerPtPerFontSize': metric['muPerPtPerFontSize'], 'compiler': RusTex.tex_compiler},
-                      'renderer': str(config.renderer), 'tex_artifacts': str(tex_dir)}
-              write(out / 'label-rows.json', rows)
-              write(out / 'label-summary.json', data)
-              print(json.dumps(data, ensure_ascii=False))
+                  new = json.loads(json.dumps({k: v for k, v in value.items() if k != 'generatedBy'}))
+                  delta = differences(old, new)
+                  if delta:
+                      changes[filename] = delta
+              files, cases, replay = fx.verify_fixtures()
+              report = {'scene_sum_override': 'sum' in vars(scene), 'freshness': changes,
+                        'files': files, 'cases': cases, 'replay_mismatches': replay,
+                        'target_order': [f['id'] for f in target['raw_flat_scene']['fills']]}
+              dump(out / (name + '-summary.json'), report)
+              print(json.dumps({'phase': name, 'stale_files': list(changes), 'replay_count': len(replay),
+                                'target_order': report['target_order']}), flush=True)
           
           
           def main():
               parser = argparse.ArgumentParser(description=__doc__)
-              parser.add_argument('--mode', choices=('space', 'labels'), required=True)
               parser.add_argument('--repo', type=Path, required=True)
               parser.add_argument('--out', type=Path, required=True)
+              parser.add_argument('--source-ref', required=True)
               args = parser.parse_args()
-              if os.environ.get('GITHUB_ACTIONS') != 'true' or platform.system() != 'Linux':
-                  raise SystemExit('Remote Linux GitHub Actions only; local execution is not authorized.')
+              if os.environ.get('GITHUB_ACTIONS') != 'true' or platform.system() != 'Linux' or sys.version_info[:2] != (3, 11):
+                  raise SystemExit('Remote Linux Python3.11 only; no local execution.')
               repo, out = args.repo.resolve(), args.out.resolve()
               if out.is_relative_to(repo):
-                  raise SystemExit('Diagnostic output must be outside the source/artifact tree.')
+                  raise SystemExit('Output must be outside source/package.')
               out.mkdir(parents=True, exist_ok=False)
-              sys.path.insert(0, str(repo))
               os.chdir(repo)
-              before = metadata(repo)
-              write(out / 'provenance.json', before)
+              sys.path.insert(0, str(repo))
+              sys.meta_path.insert(0, NoClassic())
+              before = fingerprint(repo)
+              dump(out / 'source-before.json', before)
               try:
-                  (space_probe if args.mode == 'space' else labels_probe)(repo, out)
+                  import animageo
+                  fx = importlib.import_module('animageo.native.space.fixtures')
+                  scene = importlib.import_module('animageo.native.space.scene')
+                  dump(out / 'provenance.json', {'requested_source_ref': args.source_ref,
+                      'python': sys.version, 'executable': sys.executable, 'platform': platform.platform(),
+                      'animageo_file': animageo.__file__, 'version': animageo.__version__,
+                      'scene_file': scene.__file__, 'vec_file': scene.vec.__file__,
+                      'scene_sum_original': 'sum' in vars(scene), 'vec_sum_original': 'sum' in vars(scene.vec),
+                      'git': subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True, text=True).stdout.strip()})
+                  if 'sum' in vars(scene):
+                      raise RuntimeError('Unexpected existing scene.sum override; do not mask it.')
+                  phase(fx, scene, out, 'original')
+                  scene.sum = math.fsum
+                  try:
+                      phase(fx, scene, out, 'scene-fsum-only')
+                  finally:
+                      del scene.sum
+                  dump(out / 'override-restored.json', {'scene_sum_absent': 'sum' not in vars(scene),
+                                                        'vec_sum_absent': 'sum' not in vars(scene.vec),
+                                                        'builtin_sum_unchanged': builtins.sum is sum})
               finally:
-                  after = {p: sha(repo / p) for p in SOURCE_PATHS}
-                  write(out / 'source-preservation.json', {'before': before['source_sha256'], 'after': after,
-                                                          'unchanged': before['source_sha256'] == after})
+                  after = fingerprint(repo)
+                  dump(out / 'source-preservation.json', {'before': before, 'after': after, 'unchanged': before == after})
           
           
           if __name__ == '__main__':
               main()
           PYCODE
-      - name: Record environment and extract immutable pre-F1a baseline
+          sha256sum "$RUNNER_TEMP/ci-python311-space-probe.py" > "$RUNNER_TEMP/space311-artifact/probe.sha256"
+      - name: Current55928 space trace and isolated fsum control
+        shell: bash
         run: |
-          mkdir -p "$RUNNER_TEMP/animageo-diag" "$RUNNER_TEMP/animageo-baseline-a3"
-          python -m pip freeze > "$RUNNER_TEMP/animageo-diag/pip-freeze.txt"
-          dpkg-query -W > "$RUNNER_TEMP/animageo-diag/dpkg.txt"
-          git archive a3ebd215ebb7faae0f83e80bd05e7baf1cb35f75 | tar -x -C "$RUNNER_TEMP/animageo-baseline-a3"
-      - name: Exact space diffs on release and baseline
-        run: |
-          python -B "$RUNNER_TEMP/ci_platform_probe.py" --mode space --repo "$GITHUB_WORKSPACE" --out "$RUNNER_TEMP/animageo-diag/current-space"
-          python -B "$RUNNER_TEMP/ci_platform_probe.py" --mode space --repo "$RUNNER_TEMP/animageo-baseline-a3" --out "$RUNNER_TEMP/animageo-diag/baseline-space"
-      - name: Exact metric corpus and font provenance on release and baseline
-        run: |
-          python -B "$RUNNER_TEMP/ci_platform_probe.py" --mode labels --repo "$GITHUB_WORKSPACE" --out "$RUNNER_TEMP/animageo-diag/current-labels"
-          python -B "$RUNNER_TEMP/ci_platform_probe.py" --mode labels --repo "$RUNNER_TEMP/animageo-baseline-a3" --out "$RUNNER_TEMP/animageo-diag/baseline-labels"
-      - name: Controlled font environment experiment only
-        run: |
-          sudo apt-get install -y --no-install-recommends cm-super
-          python -B "$RUNNER_TEMP/ci_platform_probe.py" --mode labels --repo "$GITHUB_WORKSPACE" --out "$RUNNER_TEMP/animageo-diag/current-labels-cm-super"
-      - name: Preserve every diagnostic artifact
+          timeout --signal=TERM --kill-after=5s 90s python "$RUNNER_TEMP/ci-python311-space-probe.py" \
+            --repo "$GITHUB_WORKSPACE" --out "$RUNNER_TEMP/space311-artifact/current" \
+            --source-ref 55928c30230f12beedb74d555857044501625e29 \
+            > "$RUNNER_TEMP/space311-artifact/current.log" 2>&1
+      - name: Baselinea3 same interpreter fresh process and control
         if: always()
-        uses: actions/upload-artifact@v4
+        shell: bash
+        run: |
+          timeout --signal=TERM --kill-after=5s 90s python "$RUNNER_TEMP/ci-python311-space-probe.py" \
+            --repo "$RUNNER_TEMP/space311-a3" --out "$RUNNER_TEMP/space311-artifact/baseline" \
+            --source-ref a3ebd215ebb7faae0f83e80bd05e7baf1cb35f75 \
+            > "$RUNNER_TEMP/space311-artifact/baseline.log" 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: release-platform-diagnostics
-          path: ${{ runner.temp }}/animageo-diag
-          retention-days: 14
+          name: python311-space-causal-probe
+          path: ${{ runner.temp }}/space311-artifact
+          retention-days: 3
