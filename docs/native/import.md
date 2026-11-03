@@ -198,6 +198,24 @@ within the supported source language, not equivalence to arbitrary GeoGebra
 expressions. The GGB-specific reader does not extend `from_construction`, change
 `dsl_map.json` promises, or add support for Root, Extremum or function intersections.
 
+An XML `Point(f)` on an accepted unbounded function without If becomes
+`point.on_function`. Its finite saved abscissa (homogeneous `x/z`) is the free
+`pathParameter` input; its ordinate is always recomputed from the function.
+Changing a numeric reference changes the ordinate at the same abscissa, and
+changing the path input changes both coordinates. Saved coordinates are checked:
+a mismatching ordinate is `differs/value_mismatch`, never a free-point snapshot.
+A pole gives native `out_of_domain`; undefined numeric ancestors propagate
+`upstream`. Recovery recomputes values without retaining the last good position.
+An undefined saved ordinate is acceptable when source `x` remains finite, but
+an absent/non-finite abscissa is refused rather than invented as zero.
+
+`Point(f,t)`, including literal `t`, and tuple points such as `(a,f(a))` or
+`(1,f(1))` remain unsupported: they do not have a free native abscissa with the
+same dependency and editing semantics. Gliders on explicit restricted domains
+or any If function also retain an explicit `unsupported_signature` refusal;
+their source projection/clamping behavior needs separate evidence. Importing
+the function definition alone does not establish that path equivalence.
+
 ## 2. Keys and IDs
 
 `id = uuid5(id_namespace, key)`. Keys: a `.ggb` object — `ggb:<label>`; a DSL

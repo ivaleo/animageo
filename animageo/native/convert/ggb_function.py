@@ -208,6 +208,50 @@ def read_functions(infos, norm, ctx) -> None:
         expected = source_report_value(spec, ctx)
         if expected is not None:
             ctx.expected[name] = expected
+    _read_graph_points(infos, norm, ctx)
+
+
+def _has_if(ast):
+    stack = [ast]
+    while stack:
+        node = stack.pop()
+        if isinstance(node, dict):
+            if 'if' in node:
+                return True
+            stack.extend(node.values())
+        elif isinstance(node, list):
+            stack.extend(node)
+    return False
+
+
+def _read_graph_points(infos, norm, ctx):
+    """Only XML Point(f): saved x is its free input, saved y is a check."""
+    for info in infos:
+        inputs = info.get('inputs', [])
+        if info['type'] != 'point' or info.get('command') != 'Point' or len(inputs) != 1:
+            continue
+        function = norm.get(inputs[0])
+        spec = ctx.functions.get(function)
+        if spec is None:
+            continue
+        name = norm[info['label']]
+        forced = ctx.forced.get(name)
+        if forced and forced[0] not in ('parse_error', 'unsupported_signature', 'no_registry_op'):
+            continue
+        if any(bound is not None for bound in spec.domain) or _has_if(spec.ast):
+            ctx.forced[name] = ('unsupported_signature', 'область/If графика требует проверки исходной path-семантики')
+            continue
+        coords = info.get('coords') or {}
+        x, z = coords.get('x'), coords.get('z')
+        if x is None or z is None or not math.isfinite(x) or not math.isfinite(z) or z == 0:
+            ctx.forced[name] = ('unsupported_signature', 'нет конечной исходной абсциссы свободной точки графика')
+            continue
+        x = x / z
+        if not math.isfinite(x):
+            ctx.forced[name] = ('unsupported_signature', 'нет конечной исходной абсциссы свободной точки графика')
+            continue
+        ctx.forced.pop(name, None)
+        ctx.function_points[name] = function, x
 
 
 def verify_function(spec, native_value, actual_ref_ids, expected_ref_ids, expected_ref_values, scale):

@@ -403,7 +403,12 @@ def function_fixture():
             + function_source('If(x < 0, sqrt(-x), sqrt(x))', 'p')
             + function_source('If(x >= 0, sqrt(x))', 'q')
             + command('Function', ['a*x', '-2', '3'], ['r']) + element('function', 'r')
-            + expression('u', 'sqrt(a)') + number('u', math.sqrt(2)) + function_source('u*x', 'h'))
+            + expression('u', 'sqrt(a)') + number('u', math.sqrt(2)) + function_source('u*x', 'h')
+            + function_source('1/(x-a)', 'g')
+            + command('Point', ['f'], ['P']) + point('P', 3., 20.)
+            + point('A', 0., 0.) + command('Midpoint', ['P', 'A'], ['M']) + point('M', 1.5, 10.)
+            + command('Point', ['g'], ['G']) + point('G', 3., 1.)
+            + command('Point', ['h'], ['H']) + point('H', 1., math.sqrt(2)))
     source = ggb_xml(body)
     doc, report = native.from_ggb(ggb_bytes(xml=source), id_namespace=NS)
     _check(doc, report)
@@ -426,19 +431,42 @@ def function_fixture():
                 'r': {'expr': {'op': '*', 'args': [{'ref': 0}, {'var': 'x'}]},
                       'refs': ['a'], 'domain': [-2.0, 3.0]},
                 'h': {'expr': {'op': '*', 'args': [{'ref': 0}, {'var': 'x'}]},
-                      'refs': ['u'], 'domain': [None, None]}},
+                      'refs': ['u'], 'domain': [None, None]},
+                'g': {'expr': {'op': '/', 'args': [
+                    {'num': 1.0}, {'op': '-', 'args': [{'var': 'x'}, {'ref': 0}]}]},
+                      'refs': ['a'], 'domain': [None, None]}},
             'cases': [
                 {'name': 'saved', 'samples': {
                     'f': [[-10000., 200000002.], [0., 2.], [10000., 200000002.]],
                     'p': [[-4., 2.], [0., 0.], [9., 3.]], 'q': [[-1., None], [4., 2.]],
-                    'r': [[-3., None], [-2., -4.], [2., 4.], [4., None]], 'h': [[2., 2 * math.sqrt(2)]]}},
+                    'r': [[-3., None], [-2., -4.], [2., 4.], [4., None]], 'h': [[2., 2 * math.sqrt(2)]]},
+                 'expectedStates': {
+                     'P': {'state': 'defined', 'value': {'x': 3., 'y': 20.}},
+                     'M': {'state': 'defined', 'value': {'x': 1.5, 'y': 10.}},
+                     'G': {'state': 'defined', 'value': {'x': 3., 'y': 1.}},
+                     'H': {'state': 'defined', 'value': {'x': 1., 'y': math.sqrt(2)}}}},
                 {'name': 'numeric-refs', 'inputs': {ids['a']: {'kind': 'number', 'value': 3.},
                                                     ids['b']: {'kind': 'number', 'value': 5.}},
-                 'samples': {'f': [[2., 17.]], 'r': [[2., 6.]], 'h': [[3., 3 * math.sqrt(3)]]}},
+                 'samples': {'f': [[2., 17.]], 'r': [[2., 6.]], 'h': [[3., 3 * math.sqrt(3)]]},
+                 'expectedStates': {
+                     'P': {'state': 'defined', 'value': {'x': 3., 'y': 32.}},
+                     'M': {'state': 'defined', 'value': {'x': 1.5, 'y': 16.}},
+                     'G': {'state': 'undefined', 'reason': 'out_of_domain'},
+                     'H': {'state': 'defined', 'value': {'x': 1., 'y': math.sqrt(3)}}}},
                 {'name': 'upstream', 'inputs': {ids['a']: {'kind': 'number', 'value': -1.}},
                  'expectedStates': {'u': {'state': 'undefined', 'reason': 'out_of_domain'},
-                                    'h': {'state': 'undefined', 'reason': 'upstream'}},
+                                    'h': {'state': 'undefined', 'reason': 'upstream'},
+                                    'H': {'state': 'undefined', 'reason': 'upstream'},
+                                    'P': {'state': 'defined', 'value': {'x': 3., 'y': -7.}},
+                                    'G': {'state': 'defined', 'value': {'x': 3., 'y': .25}}},
                  'samples': {'f': [[2., -2.]]}},
+                {'name': 'glider-x', 'inputs': {ids['P']: {'kind': 'pathParameter', 'value': -2.},
+                                              ids['G']: {'kind': 'pathParameter', 'value': 2.}},
+                 'expectedStates': {'P': {'state': 'defined', 'value': {'x': -2., 'y': 10.}},
+                                    'M': {'state': 'defined', 'value': {'x': -1., 'y': 5.}},
+                                    'G': {'state': 'undefined', 'reason': 'out_of_domain'}}},
+                {'name': 'recover', 'inputs': {ids['G']: {'kind': 'pathParameter', 'value': 4.}},
+                 'expectedStates': {'G': {'state': 'defined', 'value': {'x': 4., 'y': .5}}}},
             ]}
 
 
@@ -463,6 +491,119 @@ def test_python_emitted_function_fixture_matches_source_and_independent_values()
             for x, expected in samples:
                 actual = fn(x)
                 assert actual is None if expected is None else actual == pytest.approx(expected)
+
+
+def test_free_graph_glider_preserves_x_and_follows_refs():
+    body = (number('a', 2) + function_source('a*x²') + command('Point', ['f'], ['P'])
+            + point('P', 3., 18.))
+    doc, items = imported(body)
+    assert items['P']['category'] == 'editable' and items['P']['value_check'] == 'passed'
+    assert items['P']['depends_on'] == ['f']
+    assert operation(doc, items, 'P')['op'] == 'point.on_function'
+    assert operation(doc, items, 'P')['args'] == {'function': {'kind': 'ref', 'elementId': eid(items, 'f')}}
+    assert doc['inputs'][eid(items, 'P')] == {'kind': 'pathParameter', 'value': 3.0}
+    changes = [({'a': ('number', -1.)}, {'x': 3., 'y': -9.}),
+               ({'P': ('pathParameter', -2.)}, {'x': -2., 'y': 8.}),
+               ({'a': ('number', 3.), 'P': ('pathParameter', 2.)}, {'x': 2., 'y': 12.})]
+    for change, expected in changes:
+        ev = native.evaluate(doc, inputs={eid(items, n): {'kind': kind, 'value': value}
+                                          for n, (kind, value) in change.items()})
+        assert ev.elements[eid(items, 'P')]['value'] == expected
+
+
+def test_graph_glider_undefined_recovers_without_last_value():
+    body = (number('a', 1) + function_source('1/(x-a)') + command('Point', ['f'], ['P'])
+            + point('P', 2., 1.) + point('A', 0., 0.)
+            + command('Midpoint', ['P', 'A'], ['M']) + point('M', 1., .5))
+    doc, items = imported(body)
+    assert items['P']['category'] == items['M']['category'] == 'editable'
+    for a in (2., 1., 2., 0.):
+        ev = native.evaluate(doc, inputs={eid(items, 'a'): {'kind': 'number', 'value': a}})
+        p, m = (ev.elements[eid(items, name)] for name in ('P', 'M'))
+        if a == 2.:
+            assert p['state'] == m['state'] == 'undefined'
+            assert p['reason'] == 'out_of_domain' and m['reason'] == 'upstream'
+            assert 'value' not in p and 'value' not in m
+        else:
+            assert p['value'] == {'x': 2., 'y': 1 / (2 - a)}
+            assert m['value'] == {'x': 1., 'y': .5 / (2 - a)}
+    bad_x = native.evaluate(doc, inputs={eid(items, 'P'): {'kind': 'pathParameter', 'value': 1.}})
+    assert bad_x.elements[eid(items, 'P')]['reason'] == 'out_of_domain'
+    recovered = native.evaluate(doc, inputs={eid(items, 'P'): {'kind': 'pathParameter', 'value': 3.}})
+    assert recovered.elements[eid(items, 'P')]['value'] == {'x': 3., 'y': .5}
+
+
+def test_graph_glider_saved_mismatch_is_differs():
+    doc, items = imported(function_source('x²') + command('Point', ['f'], ['P']) + point('P', 2., 999.))
+    assert items['f']['category'] == 'editable'
+    assert items['P']['category'] == 'differs'
+    assert items['P']['reason'] == 'value_mismatch' and items['P']['value_check'] == 'failed'
+    assert operation(doc, items, 'P')['op'] == 'point.on_function'
+    assert native.evaluate(doc).elements[eid(items, 'P')]['value'] == {'x': 2., 'y': 4.}
+
+
+@pytest.mark.parametrize('definition', [
+    command('Point', ['f', 'a'], ['P']), command('Point', ['f', '0.5'], ['P']),
+    expression('P', '(a, f(a))'), expression('P', '(1, f(1))'),
+])
+def test_number_driven_path_parameter_and_function_tuple_are_not_frozen(definition):
+    doc, items = imported(number('a', 1) + function_source('x²') + definition + point('P', 1., 1.))
+    assert items['f']['category'] == 'editable'
+    assert items['P']['category'] in ('picture', 'unsupported', 'closure')
+    assert items['P']['reason'] in ('formula_unsupported', 'unsupported_signature', 'depends_on_unsupported',
+                                   'no_registry_op', 'parse_error')
+    assert items['P']['native_ids'] == []
+    assert all(el.get('displayName') != 'P' for el in doc['elements'].values())
+
+
+@pytest.mark.parametrize('source', [
+    function_source('If(x >= 0, x²)'),
+    function_source('If(x < 0, -x, x)'),
+    command('Function', ['x²', '-1', '1'], ['f']) + element('function', 'f'),
+])
+def test_if_and_bounded_graph_gliders_keep_explicit_unproven_path_refusal(source):
+    doc, items = imported(source + command('Point', ['f'], ['P']) + point('P', .5, .25))
+    assert items['f']['category'] == 'editable'
+    assert items['P']['category'] == 'picture'
+    assert items['P']['reason'] == 'unsupported_signature'
+    assert items['P']['native_ids'] == []
+
+
+@pytest.mark.parametrize('coords', [
+    '<coords x="NaN" y="NaN" z="1"/>', '<coords x="1" y="1" z="0"/>', '',
+])
+def test_undefined_glider_without_source_x_is_not_invented(coords):
+    doc, items = imported(function_source('x²') + command('Point', ['f'], ['P'])
+                          + element('point', 'P', extra=coords))
+    assert items['f']['category'] == 'editable'
+    assert items['P']['category'] == 'unsupported'
+    assert items['P']['reason'] == 'unsupported_signature'
+    assert items['P']['native_ids'] == []
+    assert not any(op['op'] == 'point.on_function' for op in doc['operations'].values())
+
+
+def test_undefined_glider_with_finite_source_x_can_recover():
+    doc, items = imported(number('a', 2) + function_source('1/(x-a)') + command('Point', ['f'], ['P'])
+                          + element('point', 'P', extra='<coords x="2" y="NaN" z="1"/>'))
+    assert items['P']['category'] == 'editable' and items['P']['value_check'] == 'passed'
+    assert doc['inputs'][eid(items, 'P')]['value'] == 2.
+    assert native.evaluate(doc).elements[eid(items, 'P')]['reason'] == 'out_of_domain'
+    ev = native.evaluate(doc, inputs={eid(items, 'a'): {'kind': 'number', 'value': 1.}})
+    assert ev.elements[eid(items, 'P')]['value'] == {'x': 2., 'y': 1.}
+
+
+def test_function_closure_source_restores_whole_live_chain():
+    path = Path(__file__).with_name('import') / 'synthetic' / 'function_closure.ggb'
+    doc, report = native.from_ggb(path, id_namespace=NS)
+    _check(doc, report)
+    items = {e['ggb_name']: e for e in report['elements']}
+    assert all(e['category'] == 'editable' and e['value_check'] == 'passed' for e in items.values())
+    ev = native.evaluate(doc, inputs={eid(items, 'P'): {'kind': 'pathParameter', 'value': 2.}})
+    assert ev.elements[eid(items, 'P')]['value'] == {'x': 2., 'y': 4.}
+    assert ev.elements[eid(items, 'M')]['value'] == {'x': 1., 'y': 2.}
+    from animageo.native.convert.corpus import expectation
+    expected = path.parent.parent / 'expected' / (report['source']['sha256'] + '.json')
+    assert json.loads(expected.read_text()) == expectation(path, name='function_closure.ggb')
 
 
 if __name__ == '__main__':

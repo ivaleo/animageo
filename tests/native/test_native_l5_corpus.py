@@ -32,8 +32,7 @@ PURPOSE = {
                       'pic1': ('unsupported', 'image'), 'document': True},
     'texts': {'t1': ('editable', None), 'title': ('editable', None), 't2': ('editable', None),
               't3': ('editable', None)},
-    'function_closure': {'f': ('unsupported', 'formula_unsupported'), 'P': ('closure', 'depends_on_unsupported'),
-                         'M': ('closure', 'depends_on_unsupported')},
+    'function_closure': {'all': 'editable'},  # source x², free graph glider and its live dependents
     'formula_argument': {"I'": ('picture', 'formula_unsupported'), 'M': ('picture', 'depends_on_unsupported')},
     'dropped_effects': {'all': 'editable',
                         'dropped': {'conditional_visibility', 'dynamic_color', 'animation'}},

@@ -30,6 +30,18 @@
         ],
         "seq": 2
       },
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          }
+        ],
+        "seq": 11
+      },
       "127523fc-d655-585b-8b1a-d397fbc7352b": {
         "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
         "op": "function.expr",
@@ -297,6 +309,122 @@
           }
         ],
         "seq": 6
+      },
+      "f71f5410-8856-5a69-bc57-14db027b3995": {
+        "id": "f71f5410-8856-5a69-bc57-14db027b3995",
+        "op": "function.expr",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "/",
+              "args": [
+                {
+                  "num": 1.0
+                },
+                {
+                  "op": "-",
+                  "args": [
+                    {
+                      "var": "x"
+                    },
+                    {
+                      "ref": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "function",
+            "elementId": "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+          }
+        ],
+        "seq": 9
+      },
+      "e9fba105-df77-53b8-97f5-40d89980b343": {
+        "id": "e9fba105-df77-53b8-97f5-40d89980b343",
+        "op": "point.on_function",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          }
+        ],
+        "seq": 10
+      },
+      "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b": {
+        "id": "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b",
+        "op": "point.midpoint",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d"
+          }
+        ],
+        "seq": 12
+      },
+      "02b92ad5-89a8-51ee-bf85-ad70ca5f86c7": {
+        "id": "02b92ad5-89a8-51ee-bf85-ad70ca5f86c7",
+        "op": "point.on_function",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "128acdc8-77e4-558b-8201-83b731db0f35"
+          }
+        ],
+        "seq": 13
+      },
+      "0f9731fe-3aac-5d4d-a3bf-a492cc876fc4": {
+        "id": "0f9731fe-3aac-5d4d-a3bf-a492cc876fc4",
+        "op": "point.on_function",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "ad0753b8-c583-5530-a763-0f6847f45a4c"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "02c2bd34-461a-5f55-9c08-02a08e1f070a"
+          }
+        ],
+        "seq": 14
       }
     },
     "elements": {
@@ -317,6 +445,15 @@
           "slot": "number"
         },
         "displayName": "b"
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "point"
+        },
+        "displayName": "A"
       },
       "7381003a-c131-598f-a9bb-43c860a099c4": {
         "id": "7381003a-c131-598f-a9bb-43c860a099c4",
@@ -371,6 +508,51 @@
           "slot": "function"
         },
         "displayName": "r"
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "id": "4178d272-1a5c-503e-b99e-2e3e8769d34a",
+        "type": "function",
+        "producer": {
+          "operationId": "f71f5410-8856-5a69-bc57-14db027b3995",
+          "slot": "function"
+        },
+        "displayName": "g"
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "id": "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+        "id": "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d",
+        "type": "point",
+        "producer": {
+          "operationId": "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b",
+          "slot": "point"
+        },
+        "displayName": "M"
+      },
+      "128acdc8-77e4-558b-8201-83b731db0f35": {
+        "id": "128acdc8-77e4-558b-8201-83b731db0f35",
+        "type": "point",
+        "producer": {
+          "operationId": "02b92ad5-89a8-51ee-bf85-ad70ca5f86c7",
+          "slot": "point"
+        },
+        "displayName": "G"
+      },
+      "02c2bd34-461a-5f55-9c08-02a08e1f070a": {
+        "id": "02c2bd34-461a-5f55-9c08-02a08e1f070a",
+        "type": "point",
+        "producer": {
+          "operationId": "0f9731fe-3aac-5d4d-a3bf-a492cc876fc4",
+          "slot": "point"
+        },
+        "displayName": "H"
       }
     },
     "inputs": {
@@ -381,6 +563,25 @@
       "5eaf3746-e480-594b-812a-e368863cff3e": {
         "kind": "number",
         "value": 2.0
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "kind": "point",
+        "value": [
+          0.0,
+          0.0
+        ]
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "kind": "pathParameter",
+        "value": 3.0
+      },
+      "128acdc8-77e4-558b-8201-83b731db0f35": {
+        "kind": "pathParameter",
+        "value": 3.0
+      },
+      "02c2bd34-461a-5f55-9c08-02a08e1f070a": {
+        "kind": "pathParameter",
+        "value": 1.0
       }
     },
     "appearance": {
@@ -391,6 +592,12 @@
         }
       },
       "5eaf3746-e480-594b-812a-e368863cff3e": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
         "visible": true,
         "label": {
           "mode": "name"
@@ -431,6 +638,36 @@
         "label": {
           "mode": "name"
         }
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "128acdc8-77e4-558b-8201-83b731db0f35": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "02c2bd34-461a-5f55-9c08-02a08e1f070a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
       }
     },
     "viewDefaults": {
@@ -445,17 +682,23 @@
       "legacyNames": {
         "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": "a",
         "5eaf3746-e480-594b-812a-e368863cff3e": "b",
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A",
         "7381003a-c131-598f-a9bb-43c860a099c4": "f",
         "eab8d370-5bdc-5240-859d-addbb3a65f7b": "p",
         "a61ac389-5302-59cd-8eb3-f2d888d36a1a": "q",
         "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a": "u",
         "ad0753b8-c583-5530-a763-0f6847f45a4c": "h",
-        "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": "r"
+        "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": "r",
+        "4178d272-1a5c-503e-b99e-2e3e8769d34a": "g",
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": "P",
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": "M",
+        "128acdc8-77e4-558b-8201-83b731db0f35": "G",
+        "02c2bd34-461a-5f55-9c08-02a08e1f070a": "H"
       }
     }
   },
   "source": {
-    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?><geogebra format=\"5.0\" version=\"5.4.927.1\" app=\"classic\" platform=\"w\"><euclidianView><size width=\"800\" height=\"600\"/><coordSystem xZero=\"400\" yZero=\"300\" scale=\"50\" yscale=\"50\"/></euclidianView><kernel><decimals val=\"2\"/></kernel><construction title=\"\" author=\"\" date=\"\"><element type=\"numeric\" label=\"a\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"2\"/></element><element type=\"numeric\" label=\"b\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"2\"/></element><expression label=\"f\" exp=\"f(t) = a*t² + b\"/><element type=\"function\" label=\"f\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><expression label=\"p\" exp=\"If(x &lt; 0, sqrt(-x), sqrt(x))\"/><element type=\"function\" label=\"p\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><expression label=\"q\" exp=\"If(x &gt;= 0, sqrt(x))\"/><element type=\"function\" label=\"q\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><command name=\"Function\"><input a0=\"a*x\" a1=\"-2\" a2=\"3\"/><output a0=\"r\"/></command><element type=\"function\" label=\"r\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><expression label=\"u\" exp=\"sqrt(a)\"/><element type=\"numeric\" label=\"u\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"1.4142135623730951\"/></element><expression label=\"h\" exp=\"u*x\"/><element type=\"function\" label=\"h\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element></construction></geogebra>",
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?><geogebra format=\"5.0\" version=\"5.4.927.1\" app=\"classic\" platform=\"w\"><euclidianView><size width=\"800\" height=\"600\"/><coordSystem xZero=\"400\" yZero=\"300\" scale=\"50\" yscale=\"50\"/></euclidianView><kernel><decimals val=\"2\"/></kernel><construction title=\"\" author=\"\" date=\"\"><element type=\"numeric\" label=\"a\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"2\"/></element><element type=\"numeric\" label=\"b\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"2\"/></element><expression label=\"f\" exp=\"f(t) = a*t² + b\"/><element type=\"function\" label=\"f\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><expression label=\"p\" exp=\"If(x &lt; 0, sqrt(-x), sqrt(x))\"/><element type=\"function\" label=\"p\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><expression label=\"q\" exp=\"If(x &gt;= 0, sqrt(x))\"/><element type=\"function\" label=\"q\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><command name=\"Function\"><input a0=\"a*x\" a1=\"-2\" a2=\"3\"/><output a0=\"r\"/></command><element type=\"function\" label=\"r\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><expression label=\"u\" exp=\"sqrt(a)\"/><element type=\"numeric\" label=\"u\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"1.4142135623730951\"/></element><expression label=\"h\" exp=\"u*x\"/><element type=\"function\" label=\"h\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><expression label=\"g\" exp=\"1/(x-a)\"/><element type=\"function\" label=\"g\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><command name=\"Point\"><input a0=\"f\"/><output a0=\"P\"/></command><element type=\"point\" label=\"P\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"3.0\" y=\"20.0\" z=\"1\"/></element><element type=\"point\" label=\"A\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"0.0\" y=\"0.0\" z=\"1\"/></element><command name=\"Midpoint\"><input a0=\"P\" a1=\"A\"/><output a0=\"M\"/></command><element type=\"point\" label=\"M\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"1.5\" y=\"10.0\" z=\"1\"/></element><command name=\"Point\"><input a0=\"g\"/><output a0=\"G\"/></command><element type=\"point\" label=\"G\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"3.0\" y=\"1.0\" z=\"1\"/></element><command name=\"Point\"><input a0=\"h\"/><output a0=\"H\"/></command><element type=\"point\" label=\"H\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"1.0\" y=\"1.4142135623730951\" z=\"1\"/></element></construction></geogebra>",
     "namespace": "6f1c5a52-6b5e-4d0c-9d51-4a1c1f3b2e10"
   },
   "sourceIds": {
@@ -466,7 +709,13 @@
     "q": "a61ac389-5302-59cd-8eb3-f2d888d36a1a",
     "r": "0bcae345-19f8-57fc-b2fd-7457a2bb7de5",
     "u": "c2a7fd44-e4bf-5e07-bc35-2a33e5ede40a",
-    "h": "ad0753b8-c583-5530-a763-0f6847f45a4c"
+    "h": "ad0753b8-c583-5530-a763-0f6847f45a4c",
+    "g": "4178d272-1a5c-503e-b99e-2e3e8769d34a",
+    "P": "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+    "A": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+    "M": "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d",
+    "G": "128acdc8-77e4-558b-8201-83b731db0f35",
+    "H": "02c2bd34-461a-5f55-9c08-02a08e1f070a"
   },
   "expectedDefinitions": {
     "f": {
@@ -618,6 +867,34 @@
         null,
         null
       ]
+    },
+    "g": {
+      "expr": {
+        "op": "/",
+        "args": [
+          {
+            "num": 1.0
+          },
+          {
+            "op": "-",
+            "args": [
+              {
+                "var": "x"
+              },
+              {
+                "ref": 0
+              }
+            ]
+          }
+        ]
+      },
+      "refs": [
+        "a"
+      ],
+      "domain": [
+        null,
+        null
+      ]
     }
   },
   "cases": [
@@ -686,6 +963,36 @@
             2.8284271247461903
           ]
         ]
+      },
+      "expectedStates": {
+        "P": {
+          "state": "defined",
+          "value": {
+            "x": 3.0,
+            "y": 20.0
+          }
+        },
+        "M": {
+          "state": "defined",
+          "value": {
+            "x": 1.5,
+            "y": 10.0
+          }
+        },
+        "G": {
+          "state": "defined",
+          "value": {
+            "x": 3.0,
+            "y": 1.0
+          }
+        },
+        "H": {
+          "state": "defined",
+          "value": {
+            "x": 1.0,
+            "y": 1.4142135623730951
+          }
+        }
       }
     },
     {
@@ -719,6 +1026,33 @@
             5.196152422706632
           ]
         ]
+      },
+      "expectedStates": {
+        "P": {
+          "state": "defined",
+          "value": {
+            "x": 3.0,
+            "y": 32.0
+          }
+        },
+        "M": {
+          "state": "defined",
+          "value": {
+            "x": 1.5,
+            "y": 16.0
+          }
+        },
+        "G": {
+          "state": "undefined",
+          "reason": "out_of_domain"
+        },
+        "H": {
+          "state": "defined",
+          "value": {
+            "x": 1.0,
+            "y": 1.7320508075688772
+          }
+        }
       }
     },
     {
@@ -737,6 +1071,24 @@
         "h": {
           "state": "undefined",
           "reason": "upstream"
+        },
+        "H": {
+          "state": "undefined",
+          "reason": "upstream"
+        },
+        "P": {
+          "state": "defined",
+          "value": {
+            "x": 3.0,
+            "y": -7.0
+          }
+        },
+        "G": {
+          "state": "defined",
+          "value": {
+            "x": 3.0,
+            "y": 0.25
+          }
         }
       },
       "samples": {
@@ -746,6 +1098,57 @@
             -2.0
           ]
         ]
+      }
+    },
+    {
+      "name": "glider-x",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "pathParameter",
+          "value": -2.0
+        },
+        "128acdc8-77e4-558b-8201-83b731db0f35": {
+          "kind": "pathParameter",
+          "value": 2.0
+        }
+      },
+      "expectedStates": {
+        "P": {
+          "state": "defined",
+          "value": {
+            "x": -2.0,
+            "y": 10.0
+          }
+        },
+        "M": {
+          "state": "defined",
+          "value": {
+            "x": -1.0,
+            "y": 5.0
+          }
+        },
+        "G": {
+          "state": "undefined",
+          "reason": "out_of_domain"
+        }
+      }
+    },
+    {
+      "name": "recover",
+      "inputs": {
+        "128acdc8-77e4-558b-8201-83b731db0f35": {
+          "kind": "pathParameter",
+          "value": 4.0
+        }
+      },
+      "expectedStates": {
+        "G": {
+          "state": "defined",
+          "value": {
+            "x": 4.0,
+            "y": 0.5
+          }
+        }
       }
     }
   ]

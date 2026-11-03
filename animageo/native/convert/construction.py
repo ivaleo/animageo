@@ -97,6 +97,7 @@ class Context:
     # import itself (:mod:`.ggb_expr`, 1.10.0a3) — built where the classic does not translate it
     formulas: dict = field(default_factory=dict)
     functions: dict = field(default_factory=dict)     # source name → independently parsed FunctionSpec
+    function_points: dict = field(default_factory=dict)  # source point → (function name, saved free x)
     equations: set = field(default_factory=set)       # formulas producing conics, with variables x and y
     output_positions: dict = field(default_factory=dict)  # unindexed GGB output label → original slot index
 
@@ -488,6 +489,25 @@ class _Builder:
             return vertex(k), vertex(k % n + 1)
         raise _Untranslated('unsupported_signature', 'концы отрезка не являются входами документа')
 
+    def source_definition(self, name):
+        if name not in self.ctx.function_points:
+            self.formula(name)
+            return
+        function, x = self.ctx.function_points[name]
+        rec = self.record(name, key=self.key_for(name), command='Point', signature='point_F',
+                          inputs=[function], free=False)
+        function_id = self.element_of.get(function)
+        if function_id is None:
+            rec.status, rec.reason = 'closure', 'depends_on_unsupported'
+            return
+        op_id = operation_id(self.ns, rec.key)
+        op = {'id': op_id, 'op': 'point.on_function', 'args': {'function': _ref(function_id)}, 'outputs': []}
+        self.doc['operations'][op_id] = op
+        eid = self.add_element(name, rec, op_id, 'point', 'point')
+        op['outputs'].append({'slot': 'point', 'elementId': eid})
+        self.doc['inputs'][eid] = {'kind': 'pathParameter', 'value': x}
+        rec.status, rec.reason, rec.detail, rec.op_id = 'translated', None, None, op_id
+
     def command(self, cmd):
         outs = [str(getattr(o, 'name', o)) for o in cmd.outputs if str(getattr(o, 'name', o))]
         if not outs:
@@ -530,12 +550,14 @@ class _Builder:
         # an expression of a .ggb the classic read but cannot translate (abs of a computed value, …):
         # the formula the import read itself (1.10.0a3)
         for o, rec in zip(outs, recs):
-            if (o in self.ctx.formulas or o in self.ctx.functions) and rec.status != 'translated' and not rec.native_ids:
-                self.formula(o)
+            if (o in self.ctx.formulas or o in self.ctx.functions or o in self.ctx.function_points) \
+                    and rec.status != 'translated' and not rec.native_ids:
+                self.source_definition(o)
 
     def build(self, cmd, sig, inputs, outs, recs):
-        if len(outs) == 1 and (outs[0] in self.ctx.equations or outs[0] in self.ctx.functions):
-            self.formula(outs[0])
+        if len(outs) == 1 and (outs[0] in self.ctx.equations or outs[0] in self.ctx.functions
+                              or outs[0] in self.ctx.function_points):
+            self.source_definition(outs[0])
             return
         row = self.table.lookup(sig)
         # a dependency that did not translate makes the closure first
@@ -822,7 +844,7 @@ def translate(constr, ctx: Context) -> Translation:
     free = list(dict.fromkeys(free))          # a name twice (a damaged file): one free object
     # an expression of a .ggb the classic did not parse (its saved value is a free object of the
     # classic): the formula the import read itself, in its place among the commands (1.10.0a3)
-    source_formulas = set(ctx.formulas) | set(ctx.functions)
+    source_formulas = set(ctx.formulas) | set(ctx.functions) | set(ctx.function_points)
     pending = sorted((n for n in source_formulas if n not in produced), key=lambda n: ctx.order.get(n, 10 ** 6))
     for name in sorted(free, key=lambda n: ctx.order.get(n, 10 ** 6)):
         if name in source_formulas:
@@ -837,10 +859,10 @@ def translate(constr, ctx: Context) -> Translation:
     for cmd in constr.commands:
         named = [ctx.order[o] for o in (str(getattr(o, 'name', o)) for o in cmd.outputs) if o in ctx.order]
         while pending and named and ctx.order.get(pending[0], 10 ** 6) < min(named):
-            builder.formula(pending.pop(0))
+            builder.source_definition(pending.pop(0))
         builder.command(cmd)
     for name in pending:
-        builder.formula(name)
+        builder.source_definition(name)
     doc = _validate(builder)
     ev0 = evaluate(doc)
     scale = float(ev0.tolerances.scale)
