@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `drag_singular`. Documents without the hint validate as before.
 - Parity fixtures `animageo-drag-parity/v1` in `native/parity/v1/drag`
   (`python -m animageo.native fixtures drag [--check]`).
+- `auto_marks`, `add_auto_marks`, `apply_condition` and
+  `apply_condition_requests` take `segment_of(data, p, q)` — the caller's rule
+  choosing the existing segment (or polygon side) on two points for the
+  automatic marks of a condition: equal segments, the chord of a bisector and
+  the visible segment of a right-angle request (`docs/native/conditions.md`
+  §6). `None` keeps the previous result.
+- `animageo.native.labels.r4.layout(display_list, view, memory=None, paint=None)` —
+  the label solver of the web client ported to pure Python, with its
+  fixtures, so the client can check its solver against Python. Structural
+  ties (gaps within 1e-9 rad, costs within a relative 1e-12, the half-octant
+  `floor(x + 0.5 + 1e-9)`) are decided by a fixed rule described in the
+  module. Rendering does not use it yet.
 
 ## [1.11.4] - 2026-11-03
 
