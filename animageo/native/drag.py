@@ -60,8 +60,8 @@ STEP_FRACTION = 1e-5
 RANK_EPSILON = 1e-6
 CURVATURE_FLOOR = 1e-2
 ACCEPT_SLACK = 1e-3
-VIA_OPS = ('point.free', 'point.on_path')
-_KINDS = {'point.free': 'point', 'point.on_path': 'pathParameter'}
+VIA_OPS = ('point.free', 'point.on_path', 'point.on_function')
+_KINDS = {'point.free': 'point', 'point.on_path': 'pathParameter', 'point.on_function': 'pathParameter'}
 
 
 @dataclass(frozen=True)
@@ -92,7 +92,8 @@ class _Var:
 
 def _via_kind(doc: NativeDocument, el_id: str):
     """``"point"`` / ``"pathParameter"`` for the element of ``point.free`` /
-    ``point.on_path`` holding the input, else ``None``."""
+    ``point.on_path`` or ``point.on_function`` holding the input, else
+    ``None``."""
     producer = bound_producer(doc, el_id)
     if producer is None:
         return None
@@ -131,7 +132,8 @@ def _via_problems(doc: NativeDocument, el_id: str, via: list, ancestors=None) ->
         if via_id not in doc.elements:
             out.append((i, 'dangling_ref', f'element {via_id!r} does not exist'))
         elif _via_kind(doc, via_id) is None:
-            out.append((i, 'drag_via_not_free', f'{via_id!r} is not a free input (point.free, point.on_path)'))
+            out.append((i, 'drag_via_not_free',
+                        f'{via_id!r} is not a free input (point.free, point.on_path, point.on_function)'))
         else:
             if ancestors is None:
                 ancestors = _ancestors(doc, el_id)
@@ -159,6 +161,22 @@ def _path_range(doc: NativeDocument, states: dict, via_id: str):
     frame = _paths.frame(type_, rec['value'], producer_op, values)
     lo, hi = _paths.parameter_range(frame)
     return frame, lo, hi, spec.get('outside')
+
+
+def _on_function(doc: NativeDocument, el_id: str) -> bool:
+    return doc.operations[bound_producer(doc, el_id)].get('op') == 'point.on_function'
+
+
+def _function_domain(doc: NativeDocument, states: dict, via_id: str):
+    """``(lo, hi)`` (``None`` — open) of the domain of the function of the
+    ``point.on_function`` input ``via_id`` at rest, ``None`` when the
+    function is not defined."""
+    arg = doc.operations[bound_producer(doc, via_id)]['args'].get('function') or {}
+    rec = states.get(arg.get('elementId')) if arg.get('kind') == 'ref' else None
+    if rec is None or rec['state'] != 'defined':
+        return None
+    lo, hi = rec['value']['domain']
+    return lo, hi
 
 
 class _Problem:
@@ -190,6 +208,18 @@ class _Problem:
                 for coord in value['value']:
                     self.vars.append(_Var(via_id, unit, 1.0))
                     self.u0.append(float(coord))
+                continue
+            if _on_function(doc, via_id):
+                domain = _function_domain(doc, rest.elements, via_id)
+                if domain is None:
+                    self.ready = False
+                    return
+                lo, hi = domain
+                x = float(value['value'])
+                x = max(x, lo) if lo is not None else x
+                x = min(x, hi) if hi is not None else x
+                self.vars.append(_Var(via_id, unit, 1.0, lo=lo, hi=hi))
+                self.u0.append(x)
                 continue
             found = _path_range(doc, rest.elements, via_id)
             if found is None:
@@ -491,6 +521,29 @@ def _project(doc, inputs, element_id, target) -> DragResult:
     return DragResult(status, _new_inputs(inputs, {element_id: value}), 0, residual)
 
 
+def _drag_on_function(doc, inputs, element_id, target) -> DragResult:
+    """``point.on_function`` without a hint: the input becomes the x of the
+    target, clamped into the domain (``clamped`` when that moves it); no
+    value of the function there — ``no_convergence``."""
+    rest = evaluate(doc, inputs=inputs)
+    domain = _function_domain(doc, rest.elements, element_id)
+    if domain is None:
+        return DragResult('no_convergence', inputs)
+    lo, hi = domain
+    x = target[0]
+    status = 'ok'
+    if lo is not None and x < lo:
+        x, status = float(lo), 'clamped'
+    if hi is not None and x > hi:
+        x, status = float(hi), 'clamped'
+    new = _new_inputs(inputs, {element_id: {'kind': 'pathParameter', 'value': x}})
+    rec = evaluate(doc, inputs=new).elements[element_id]
+    if rec['state'] != 'defined':
+        return DragResult('no_convergence', inputs)
+    residual = math.hypot(rec['value']['x'] - target[0], rec['value']['y'] - target[1])
+    return DragResult(status, new, 0, residual)
+
+
 def solve(doc, inputs, element_id: str, target, *, max_iterations: int = MAX_ITERATIONS) -> DragResult:
     """:func:`drag` with the number of steps and the residual (for tests and
     diagnostics); ``max_iterations`` limits the Gauss–Newton steps."""
@@ -512,6 +565,8 @@ def solve(doc, inputs, element_id: str, target, *, max_iterations: int = MAX_ITE
             i, code, message = problems[0]
             raise ValueError(f'appearance.{element_id}.drag.via[{i}]: {message} ({code})')
         return _gauss_newton(_Problem(doc, inputs, element_id, via), target, max_iterations)
+    if kind == 'pathParameter' and _on_function(doc, element_id):
+        return _drag_on_function(doc, inputs, element_id, target)
     if kind == 'pathParameter':
         return _project(doc, inputs, element_id, target)
     raise ValueError(f'element {element_id!r} is not free and has no appearance.{element_id}.drag.via')
@@ -530,6 +585,8 @@ def drag(doc, inputs, element_id: str, target) -> dict:
     A free point goes to ``target`` (``ok``); a point on a path without a
     hint takes the parameter of the nearest point of its path (``clamped``
     when it stops at an end of a clamped range away from the target); a
+    point on a graph without a hint takes the x of the target, clamped into
+    the domain (``clamped`` when that moves it); a
     point with ``appearance.<id>.drag.via`` is solved by Gauss–Newton over
     the ``via`` inputs (docs/native/kernel.md §8.1). ``ValueError``: an
     unknown element, not a point, a bad target or ``inputs``, a dependent

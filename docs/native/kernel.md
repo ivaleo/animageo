@@ -139,7 +139,7 @@ only on a structurally valid document.
 | `missing_input` | error | the element of the first output slot of a free op without an input value (not for an `angle` input, which defaults to `0`) |
 | `dangling_ref` | error | 1.12.0: `appearance.<id>.drag` of a missing element (`path` the hint) or a `via` item naming a missing element (`path` the item) |
 | `type_mismatch` | error | 1.12.0: `appearance.<id>.drag` of an element that is not a point |
-| `drag_via_not_free` | error | 1.12.0: a `via` item that is not the input element of `point.free` or `point.on_path` |
+| `drag_via_not_free` | error | 1.12.0: a `via` item that is not the input element of `point.free`, `point.on_path` or `point.on_function` |
 | `drag_via_not_upstream` | error | 1.12.0: a `via` item the point is not built from (the point itself included) |
 | `drag_singular` | warning | 1.12.0: at rest the point moves in fewer than `min(2, dim via)` directions through `via` (§8.1); `path` is `…/drag/via` |
 
@@ -770,10 +770,14 @@ whose `via` fails §2.
    arc, polyline), `t` equals an end of its range and the distance from the
    point at `t` to the target is above `tol`; else `ok`. A path that is not
    defined at rest — `no_convergence`.
-4. Any other point — `ValueError`.
-
-`point.on_function` (registry 1.6) is not a `via` kind and is refused
-without a hint.
+4. The element of `point.on_function` without a hint
+   ([ops/point.on_function.md](ops/point.on_function.md)): the input
+   becomes `x = target.x`, clamped into the domain `[min, max]` of the
+   function at rest where an end is given — `clamped` when `target.x` lies
+   outside it, else `ok`. The function not defined at rest, or the point not
+   defined at the new `x` (no value of `f` there) — `no_convergence`; the
+   nearest `x` with a value is not searched.
+5. Any other point — `ValueError`.
 
 **Variables.** `S` (scene scale) and `tol = tol.decide` (length, `1e-10·S`)
 come from `evaluate(doc, inputs)` at rest. Constants: `STEP_FRACTION =
@@ -787,6 +791,7 @@ input gives `t`. Per variable:
 | coordinate | `STEP_FRACTION · S` | none |
 | `t`, both ends finite | `STEP_FRACTION · (hi − lo)` (`STEP_FRACTION` when `hi = lo`) | clamped (`outside: "clamp"`) or wrapped (`"wrap"`: circle, polygon, sector, circle segment) |
 | `t`, an end infinite (line, ray) | `STEP_FRACTION · S / |v|`, `|v|` the length of the frame vector at rest (`STEP_FRACTION` when `|v| ≤ tol`) | ray clamped at `0`, line none |
+| `x` of `point.on_function` | `STEP_FRACTION · S` (`c = 1`) | clamped into the domain at rest, each end only where given |
 
 `lo, hi` are `parameter_range` of the path frame at rest (§5.5). A clamped
 `t` starts clamped into its range. The column scale is `c = h /
@@ -838,7 +843,7 @@ kept trial is taken when it is within `limit`, else none is.
 
 **Solve.**
 
-1. The inputs of `via` lack a usable value, a path is not defined, `f(u₀)`
+1. The inputs of `via` lack a usable value, a path or a function is not defined, `f(u₀)`
    or its stencil is undefined → `no_convergence`.
 2. `rank₀` = the rank of the stencil at `u₀`; `rank₀ < min(2, dim u)` →
    `singular` (also when the point already is at the target).

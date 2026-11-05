@@ -80,6 +80,38 @@ def foot():
     return via(b, 'F', 'P')
 
 
+X = {'var': 'x'}
+
+
+def _n(v):
+    return {'num': v}
+
+
+def _o(name, *args):
+    return {'op': name, 'args': list(args)}
+
+
+def on_graph(x=1.0, lo=-3, hi=3, ast=None):
+    """``P`` on the graph of ``f`` (``x³/4 − x`` on ``[lo, hi]`` by default); ``Q`` is ``P``
+    reflected in ``O`` (dragged by the x of ``P``)."""
+    b = DocBuilder('graph', registry_version='1.6').free('O', 0, 0)
+    args = {'expr': {'kind': 'expr', 'ast': ast or _o('-', _o('/', _o('^', X, _n(3)), _n(4)), X)},
+            'refs': {'kind': 'list', 'items': []}}
+    if lo is not None:
+        args['min'] = {'kind': 'number', 'value': lo}
+    if hi is not None:
+        args['max'] = {'kind': 'number', 'value': hi}
+    b.op('op_f', 'function.expr', args, [('function', 'f', 'function')])
+    b.op('op_P', 'point.on_function', {'function': ref('f')}, [('point', 'P', 'point')])
+    b.doc['inputs']['P'] = {'kind': 'pathParameter', 'value': x}
+    b.op('op_Q', 'transform.reflect_point', {'obj': ref('P'), 'point': ref('O')}, [('image', 'Q', 'point')])
+    return via(b, 'Q', 'P')
+
+
+def sqrt_graph():
+    return on_graph(x=4, lo=None, hi=None, ast={'fn': 'sqrt', 'args': [X]})
+
+
 # ── native.drag: statuses ────────────────────────────────────────────────
 
 
@@ -128,6 +160,56 @@ class TestDirect:
     def test_bad_inputs_are_refused(self):
         with pytest.raises(ValueError):
             native.drag(parallelogram().doc, {'D': {'kind': 'point', 'value': [0, 0]}}, 'D', (1, 1))
+
+
+class TestOnFunction:
+    """``point.on_function``: the input is the x of the point (ops/point.on_function.md)."""
+
+    def test_direct_drag_takes_the_x_of_the_target(self):
+        b = on_graph()
+        inputs = {}
+        out = native.drag(b.doc, inputs, 'P', (2, 5))
+        assert out == {'status': 'ok', 'inputs': {'P': {'kind': 'pathParameter', 'value': 2.0}}}
+        assert inputs == {}
+
+    def test_direct_drag_is_clamped_to_the_domain(self):
+        b = on_graph()
+        assert native.drag(b.doc, {}, 'P', (5, 0)) == {
+            'status': 'clamped', 'inputs': {'P': {'kind': 'pathParameter', 'value': 3.0}}}
+        assert native.drag(b.doc, {}, 'P', (-7, 0)) == {
+            'status': 'clamped', 'inputs': {'P': {'kind': 'pathParameter', 'value': -3.0}}}
+        assert native.drag(b.doc, {}, 'P', (3, 0))['status'] == 'ok'
+
+    def test_direct_drag_without_a_domain(self):
+        b = on_graph(lo=None, hi=None)
+        out = native.drag(b.doc, {}, 'P', (40, 0))
+        assert out == {'status': 'ok', 'inputs': {'P': {'kind': 'pathParameter', 'value': 40.0}}}
+
+    def test_no_value_at_the_x_is_refused(self):
+        b = sqrt_graph()
+        inputs = {'P': {'kind': 'pathParameter', 'value': 4}}
+        out = native.drag(b.doc, inputs, 'P', (-1, 2))
+        assert out['status'] == 'no_convergence' and out['inputs'] is inputs
+        assert inputs == {'P': {'kind': 'pathParameter', 'value': 4}}
+
+    def test_via_a_point_on_a_graph(self):
+        b = on_graph()
+        target = (-2, -(8 / 4 - 2))           # Q = −P, P = (2, f(2)) = (2, 0)
+        out = native.drag(b.doc, {}, 'Q', target)
+        assert out['status'] == 'ok'
+        assert abs(out['inputs']['P']['value'] - 2) <= 1e-9
+        x, y = point_of(b.doc, out['inputs'], 'Q')
+        assert math.hypot(x - target[0], y - target[1]) <= tol_of(b.doc)
+
+    def test_via_stops_at_the_end_of_the_domain(self):
+        b = on_graph()
+        out = native.drag(b.doc, {}, 'Q', (-3.5, -7))      # past Q(3) = (−3, −3.75): x stops at max = 3
+        assert out['status'] == 'clamped'
+        assert out['inputs'] == {'P': {'kind': 'pathParameter', 'value': 3.0}}
+
+    def test_validate_accepts_it_as_via(self):
+        b = on_graph()
+        assert issues_of(b.doc) == []
 
 
 class TestVia:

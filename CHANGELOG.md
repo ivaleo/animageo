@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `native.drag(doc, inputs, element_id, target)` moves a point towards a target
   by changing input values and reports `ok`, `clamped`, `no_convergence` or
   `singular`; a refusal returns the given inputs unchanged. A free point takes
-  the target, a point on a path is projected, and a dependent point moves
+  the target, a point on a path is projected, a point on a graph takes the x
+  of the target within the domain, and a dependent point moves
   through the free inputs named by the new display hint
   `appearance.<id>.drag.via` (a Gauss–Newton solve fixed in
   `docs/native/kernel.md` §8.1). `has("drag")`.

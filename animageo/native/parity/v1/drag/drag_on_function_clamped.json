@@ -1,0 +1,195 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_on_function_clamped",
+ "generatedBy": "animageo 1.11.4",
+ "text": "the x of the target lies past the domain [-3, 3]: x stops at its end",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_on_function_clamped",
+  "operationRegistryVersion": "1.6",
+  "operations": {
+   "op_O": {
+    "id": "op_O",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "O"
+     }
+    ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "/",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 3
+            }
+           ]
+          },
+          {
+           "num": 4
+          }
+         ]
+        },
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     },
+     "min": {
+      "kind": "number",
+      "value": -3
+     },
+     "max": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.on_function",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_Q": {
+    "id": "op_Q",
+    "op": "transform.reflect_point",
+    "args": {
+     "obj": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "point": {
+      "kind": "ref",
+      "elementId": "O"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "image",
+      "elementId": "Q"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "O": {
+    "id": "O",
+    "type": "point",
+    "displayName": "O",
+    "producer": {
+     "operationId": "op_O",
+     "slot": "point"
+    }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "Q": {
+    "id": "Q",
+    "type": "point",
+    "displayName": "Q",
+    "producer": {
+     "operationId": "op_Q",
+     "slot": "image"
+    }
+   }
+  },
+  "inputs": {
+   "O": {
+    "kind": "point",
+    "value": [
+     0,
+     0
+    ]
+   },
+   "P": {
+    "kind": "pathParameter",
+    "value": 1.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  },
+  "appearance": {
+   "Q": {
+    "drag": {
+     "via": "P"
+    }
+   }
+  }
+ },
+ "inputs": {},
+ "element": "P",
+ "target": [
+  5,
+  0
+ ],
+ "expect": {
+  "status": "clamped",
+  "inputs": {
+   "P": {
+    "kind": "pathParameter",
+    "value": 3.0
+   }
+  }
+ }
+}

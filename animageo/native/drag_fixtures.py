@@ -18,7 +18,9 @@ circle (one parameter: the nearest point it can reach), the same on a
 segment stopped at its end (``clamped``), a midpoint through both ends (the
 least change), an incenter moved through a vertex (several steps), and the
 refusals: an incenter outside its reach (``no_convergence``) and the foot of
-a perpendicular moved through the point it drops from (``singular``).
+a perpendicular moved through the point it drops from (``singular``); a point
+on a graph (``point.on_function``) without a hint (the x of the target, then
+stopped at the end of the domain) and a point reflected from it through its x.
 """
 from __future__ import annotations
 
@@ -142,6 +144,24 @@ def _incenter(doc_id):
     return d.via('I', 'A')
 
 
+_X = {'var': 'x'}
+
+
+def _cubic(doc_id, x=1.0):
+    """``P`` on the graph of ``x³/4 − x`` on ``[−3, 3]``; ``Q`` is ``P`` reflected in ``O``."""
+    def o(name, *args):
+        return {'op': name, 'args': list(args)}
+    d = _Doc(doc_id).free('O', 0, 0)
+    ast = o('-', o('/', o('^', _X, {'num': 3}), {'num': 4}), _X)
+    d.op('function.expr', {'expr': {'kind': 'expr', 'ast': ast}, 'refs': {'kind': 'list', 'items': []},
+                           'min': {'kind': 'number', 'value': -3}, 'max': {'kind': 'number', 'value': 3}},
+         [('function', 'f', 'function')])
+    d.op('point.on_function', {'function': _ref('f')}, [('point', 'P', 'point')])
+    d.doc['inputs']['P'] = _par(x)
+    d.op('transform.reflect_point', {'obj': _ref('P'), 'point': _ref('O')}, [('image', 'Q', 'point')])
+    return d.via('Q', 'P')
+
+
 def _foot():
     d = _Doc('drag_singular').free('P', 1, 3).free('B', -2, -1).free('C', 5, 1)
     d.args('line.by_points', 'l', 'line', a='B', b='C')
@@ -174,6 +194,12 @@ CASES = (
      lambda: _incenter('drag_no_convergence'), {'B': _pt(0, 0)}, 'I', [2, 2.5]),
     ('drag_singular', 'the foot of a perpendicular moves along a fixed line only: rank 1 < 2',
      _foot, {'P': _pt(1, 3)}, 'F', [0, 3]),
+    ('drag_on_function', 'a point on a graph without a hint takes the x of the target',
+     lambda: _cubic('drag_on_function'), {}, 'P', [2, 5]),
+    ('drag_on_function_clamped', 'the x of the target lies past the domain [-3, 3]: x stops at its end',
+     lambda: _cubic('drag_on_function_clamped'), {}, 'P', [5, 0]),
+    ('drag_via_on_function', 'a point reflected from a point on a graph, through its x: Q = -P, x = 2.5',
+     lambda: _cubic('drag_via_on_function'), {}, 'Q', [-2.5, -1.40625]),
 )
 
 
