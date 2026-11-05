@@ -415,10 +415,82 @@ def _curves():
     return out
 
 
+def _on_line(doc_id, b=(2, 1), c_param=1.5):
+    """A line through A and B with a point C on it past B (``point.on_path``)."""
+    d = _Doc(doc_id).free('A', 0, 0).free('B', *b).line('l', 'A', 'B')
+    d.op('point.on_path', {'path': _ref('l')}, [('point', 'C', 'point')])
+    d.doc['inputs']['C'] = {'kind': 'pathParameter', 'value': c_param}
+    return d
+
+
+def _lines():
+    """1.12.0: the visible part of a line or a ray (``line_display``,
+    ``line_overhang_px``, ``visible_range``; ``native.line_display``)."""
+    out = []
+    d = _on_line('lines_by_points').free('D', 1, 4).free('E', 5, 3).line('m', 'D', 'E')
+    d.overrides('l', line_display='incident').label('l')
+    d.overrides('m', line_display='incident', line_overhang_px=30, stroke_dash_ratio=0.5)
+    out.append(('by_points', d, None))
+    d = _on_line('lines_by_points', b=(3, 2)).free('D', 1, 4).free('E', 5, 3).line('m', 'D', 'E')
+    d.doc['inputs']['D'] = {'kind': 'point', 'value': [0.5, 4.5]}
+    d.overrides('l', line_display='incident').label('l')
+    d.overrides('m', line_display='incident', line_overhang_px=30, stroke_dash_ratio=0.5)
+    out.append(('by_points_dragged', d, None))
+    d = _Doc('lines_one_point').free('D', 1, 0).free('E', 3, 1).line('m', 'D', 'E').segment('s', 'D', 'E')
+    d.free('P', 2, 3).free('Q', 5, 2).line('f', 'P', 'D')
+    d.op('line.parallel', {'point': _ref('P'), 'base': _ref('m')}, [('line', 'p', 'line')])
+    d.op('line.perpendicular', {'point': _ref('P'), 'base': _ref('s')}, [('line', 'q', 'line')])
+    d.op('line.parallel', {'point': _ref('Q'), 'base': _ref('f')}, [('line', 'g', 'line')])
+    d.op('line.perpendicular_bisector', {'a': _ref('D'), 'b': _ref('E')}, [('line', 'b', 'line')])
+    for el_id in ('m', 'p', 'q', 'g', 'b'):
+        d.overrides(el_id, line_display='incident')
+    out.append(('one_point', d, None))
+    d = _Doc('lines_intersections').free('A', 0, 1).free('B', 2, 1).line('l', 'A', 'B')
+    d.free('C', 5, 0).free('D', 5, 4).line('k', 'C', 'D').free('O', 4, 3).free('R', 4, 4.5).circle('c', 'O', 'R')
+    d.op('intersect.line_line', {'first': _ref('l'), 'second': _ref('k')}, [('point', 'X', 'point')])
+    d.op('intersect.line_circle', {'line': _ref('k'), 'circle': _ref('c')},
+         [('first', 'Y1', 'point'), ('second', 'Y2', 'point')])
+    # l misses the circle: its intersections are undefined and do not count
+    d.op('intersect.line_circle', {'line': _ref('l'), 'circle': _ref('c')},
+         [('first', 'Z1', 'point'), ('second', 'Z2', 'point')])
+    d.free('P', 2, 4.6).op('point.projection', {'point': _ref('P'), 'base': _ref('k')}, [('foot', 'H', 'point')])
+    for el_id in ('l', 'k'):
+        d.overrides(el_id, line_display='incident')
+    out.append(('intersections', d, None))
+    d = _Doc('lines_ray').free('O', 1, 1).free('T', 2, 2).ray('r', 'O', 'T').free('U', 0, 4).ray('u', 'O', 'U')
+    d.free('C', 4, 0).free('D', 4, 5).line('k', 'C', 'D')
+    d.op('intersect.line_line', {'first': _ref('r'), 'second': _ref('k')}, [('point', 'X', 'point')])
+    d.op('ray.by_vector', {'origin': _ref('O'), 'vector': _ref('w')}, [('ray', 'v', 'ray')])
+    d.vector('w', 'C', 'D')
+    d.overrides('r', line_display='incident', stroke_dash_ratio=0.5)
+    d.overrides('u', line_display='incident', line_overhang_px=0).overrides('v', line_display='incident')
+    out.append(('ray', d, None))
+    d = _Doc('lines_range').free('A', 1, 1).free('B', 3, 2).line('l', 'A', 'B').ray('r', 'A', 'B')
+    d.free('P', 4, 0).op('line.perpendicular', {'point': _ref('P'), 'base': _ref('l')}, [('line', 'q', 'line')])
+    d.overrides('l', visible_range=[-0.5, 1.5]).overrides('r', visible_range=[2, -1])
+    d.overrides('q', visible_range=[-1, 1], line_display='incident')
+    out.append(('visible_range', d, None))
+    d = _Doc('lines_conditions').free('A', 0, 0).free('B', 2, 0).line('l', 'A', 'B').free('P', 5, 0)
+    d.free('Q', -2, 0).free('R', 6, 0).line('k', 'A', 'B')
+    d.doc['conditions'] = [
+        {'id': 'c1', 'mode': 'check', 'statement': {'kind': 'on', 'point': {'ref': 'P'}, 'object': {'ref': 'l'}}},
+        {'id': 'c2', 'mode': 'check', 'statement': {'kind': 'on', 'point': {'ref': 'Q'},
+                                                    'object': {'pair': ['B', 'A']}}}]
+    for el_id in ('l', 'k'):
+        d.overrides(el_id, line_display='incident')
+    out.append(('conditions', d, None))
+    d = _on_line('lines_style').ray('r', 'B', 'A')
+    d.op('line.perpendicular_bisector', {'a': _ref('A'), 'b': _ref('B')}, [('line', 'b', 'line')])
+    style = {'defaults': {'line': {'line_display': 'incident', 'line_overhang_px': 20},
+                          'ray': {'line_display': 'incident', 'line_overhang_px': 8}}}
+    out.append(('style_defaults', d, style))
+    return out
+
+
 THEMES = (('paint_ticks', _ticks), ('paint_angles', _angles), ('paint_points', _points),
           ('paint_dashes', _dashes), ('paint_labels', _labels), ('paint_values', _values),
           ('paint_layers', _layers), ('paint_text', _texts), ('paint_base', _base),
-          ('paint_timeline', _timeline), ('paint_curves', _curves))
+          ('paint_timeline', _timeline), ('paint_curves', _curves), ('paint_lines', _lines))
 
 
 def _expect(document, style, timeline, t) -> dict:

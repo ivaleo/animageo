@@ -641,6 +641,18 @@
      "unit": "px",
      "default": 0.0
     },
+    "line_display": {
+     "unit": "enum",
+     "default": "frame",
+     "values": [
+      "frame",
+      "incident"
+     ]
+    },
+    "line_overhang_px": {
+     "unit": "px",
+     "default": 12.0
+    },
     "stroke": {
      "unit": "color",
      "default": "#000000"
@@ -673,6 +685,10 @@
     "stroke_width_px": {
      "unit": "px",
      "default": 1.5
+    },
+    "visible_range": {
+     "unit": "number[]",
+     "default": null
     },
     "z_index": {
      "unit": "number",
@@ -1169,6 +1185,18 @@
      "unit": "px",
      "default": 0.0
     },
+    "line_display": {
+     "unit": "enum",
+     "default": "frame",
+     "values": [
+      "frame",
+      "incident"
+     ]
+    },
+    "line_overhang_px": {
+     "unit": "px",
+     "default": 12.0
+    },
     "stroke": {
      "unit": "color",
      "default": "#000000"
@@ -1201,6 +1229,10 @@
     "stroke_width_px": {
      "unit": "px",
      "default": 1.5
+    },
+    "visible_range": {
+     "unit": "number[]",
+     "default": null
     },
     "z_index": {
      "unit": "number",

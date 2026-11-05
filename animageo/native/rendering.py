@@ -122,6 +122,8 @@ APPEARANCE_STYLE_KEYS = frozenset({
     'right_angle_joint', 'auto_radius',
     # layers
     'z_index', 'z_index_fill',
+    # the visible part of a line or a ray (1.12.0, ``native.line_display``)
+    'line_display', 'line_overhang_px', 'visible_range',
 })
 
 

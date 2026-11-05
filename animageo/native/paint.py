@@ -33,6 +33,7 @@ _VALUE_ENUMS = {
     'label_anchor': ('TL', 'TC', 'TR', 'ML', 'MC', 'MR', 'BL', 'BC', 'BR'),
     'fill_pattern': ('solid', 'hatch', 'crosshatch', 'dots', 'none'),
     'label_angle_unit': ('degree', 'radian'),
+    'line_display': ('frame', 'incident'),
 }
 _UNITS = {
     'stroke': 'color', 'fill': 'color', 'label_color': 'color', 'hatch_color': 'color', 'label_halo_color': 'color',
@@ -50,6 +51,8 @@ _UNITS = {
     'label_value_strip_zeros': 'bool', 'right_angle_marker': 'bool', 'auto_radius': 'bool',
     'label_value_separator': 'string',
     'z_index': 'number', 'z_index_fill': 'number',
+    # the visible part of a line or a ray (1.12.0, ``native.line_display``)
+    'line_display': 'enum', 'line_overhang_px': 'px', 'visible_range': 'number[]',
 }
 
 _STROKE = ('stroke', 'stroke_width_px', 'stroke_opacity')
@@ -61,6 +64,8 @@ _TICKS = ('tick_count', 'tick_style', 'tick_length_px', 'tick_width_px', 'tick_s
 _HALO = ('label_halo_px', 'label_halo_color', 'label_halo_opacity')
 _LABEL = ('label_color', 'font_size_px', 'label_anchor', 'z_index_label') + _HALO
 _VALUE = ('label_value_precision', 'label_value_strip_zeros', 'label_value_separator')
+# the visible part of a line or a ray (1.12.0, ``native.line_display``)
+_LINE_DISPLAY = ('line_display', 'line_overhang_px', 'visible_range')
 _ANGLE = ('angle_range', 'arc_size_px', 'arc_shift_px', 'tick_count', 'auto_radius', 'right_angle_marker',
           'right_angle_size_px', 'right_angle_joint', 'label_radial_offset_px', 'label_angle_unit')
 
@@ -68,8 +73,8 @@ _ANGLE = ('angle_range', 'arc_size_px', 'arc_shift_px', 'tick_count', 'auto_radi
 _TYPES = {
     'point': ('point', ('size_px', 'point_shape') + _STROKE + _FILL + ('z_index',) + _LABEL),
     'segment': ('segment', _STROKE + ('stroke_linecap',) + _DASH + _TICKS + ('z_index',) + _LABEL + _VALUE),
-    'line': ('line', _STROKE + ('stroke_linecap',) + _DASH + ('z_index',) + _LABEL),
-    'ray': ('ray', _STROKE + ('stroke_linecap',) + _DASH + ('z_index',) + _LABEL),
+    'line': ('line', _STROKE + ('stroke_linecap',) + _DASH + _LINE_DISPLAY + ('z_index',) + _LABEL),
+    'ray': ('ray', _STROKE + ('stroke_linecap',) + _DASH + _LINE_DISPLAY + ('z_index',) + _LABEL),
     'vector': ('vector', _STROKE + ('stroke_linecap',) + _DASH + _TICKS + ('arrow_length_px', 'arrow_width_px')
                + ('z_index',) + _LABEL + _VALUE),
     'circle': ('circle', _STROKE + _DASH + _FILL + _HATCH + ('z_index', 'z_index_fill') + _LABEL + _VALUE),
@@ -125,6 +130,8 @@ _RENDERER_DEFAULTS = {
     # merged with the built-in one): ``label_anchor`` ``None`` is that of the
     # style, else ``BL``
     'stroke_linecap': 'butt', 'right_angle_joint': 'auto', 'label_anchor': None,
+    # ``native.line_display``: drawn to the frame; the overhang of ``incident``
+    'line_display': 'frame', 'line_overhang_px': 12.0, 'visible_range': None,
 }
 # Defaults from the ``rendering`` section of the built-in style (merged).
 _RENDERING_DEFAULTS = {
@@ -521,6 +528,24 @@ def _scene_decoration(scene, elem, type_):
     return _decoration(scene, elem, type_, _style_ptUnit(scene.style), value, value('stroke', scene.style.strong))
 
 
+def _visible_world(doc, el_id, ev, final, construction, names, unit):
+    """``[[x0, y0], [x1, y1]]`` — the visible part of a line or a ray
+    (``line_display: incident``, ``visible_range``; ``native.line_display``)
+    before the frame clips it, or ``None`` — drawn to the frame."""
+    from ..style.resolver import resolve
+    from .line_display import STYLE_KEYS, visible_segment
+
+    def keys(key):
+        elem = construction.objectByName(names.by_id[key])
+        return {k: resolve(final, elem, k, default=None) for k in STYLE_KEYS} if elem is not None else {}
+
+    part = visible_segment(doc, el_id, keys, evaluated=ev, pt_unit_style=unit,
+                           frame=tuple(final._get_scene_bounds()))
+    if part is None:
+        return None
+    return [[_r(part[0][0]), _r(part[0][1])], [_r(part[1][0]), _r(part[1][1])]]
+
+
 def _value_format(final, value):
     from ..labels import DEFAULT_LABEL_VALUE_PRECISION, _rendering_default
     precision = value('label_value_precision',
@@ -582,7 +607,10 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
     An entry: ``type``, ``styleType`` (of :func:`style_keys`), ``style``
     (the classic style type), ``drawn``; for a drawn element ``z`` (its
     layer, construction order breaking ties) and, by type, ``stroke``
-    ``{color, opacity, widthPx, cap, dash}``, ``fill`` ``{color, opacity,
+    ``{color, opacity, widthPx, cap, dash}`` (a line or a ray with a visible
+    part, 1.12.0: also ``visibleWorld`` ``[[x0, y0], [x1, y1]]`` — world
+    units, before the frame clips it, ``native.line_display``; absent — drawn
+    to the frame), ``fill`` ``{color, opacity,
     isBackground, z, hatch}`` (the opacity drawn: an angle filled with the
     background colour has none), ``point`` ``{sizePx, shape, display}``,
     ``arrow`` ``{lengthPx, widthPx}``, ``ticks`` (count, style, sizes, the
@@ -719,6 +747,10 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
                 stroke['z'] = _r(_num(z) + tie + 0.1)
             if style_type in _DASH_FIT or style_type in ('polyline', 'locus', 'function', 'conic'):
                 stroke['dash'] = _dash(final, elem, style_type, data, unit, width_px, cap)
+            if style_type in ('line', 'ray'):
+                visible = _visible_world(doc, el_id, ev, final, construction, names, unit)
+                if visible is not None:
+                    stroke['visibleWorld'] = visible
             entry['stroke'] = stroke
         if style_type in _FILLED or style_type in ('angle', 'mark.right_angle', 'point') \
                 or (style_type == 'conic' and _conic_kind(data) == 'ellipse'):
