@@ -141,7 +141,7 @@ only on a structurally valid document.
 | `type_mismatch` | error | 1.12.0: `appearance.<id>.drag` of an element that is not a point |
 | `drag_via_not_free` | error | 1.12.0: a `via` item that is not the input element of `point.free`, `point.on_path` or `point.on_function` |
 | `drag_via_not_upstream` | error | 1.12.0: a `via` item the point is not built from (the point itself included) |
-| `drag_singular` | warning | 1.12.0: at rest the point moves in fewer than `min(2, dim via)` directions through `via` (§8.1); `path` is `…/drag/via` |
+| `drag_singular` | warning | 1.12.0: at rest the point moves in fewer than `min(2, dim u)` directions through `via`, `dim u` the number of solve variables (a `point` input 2, a path parameter or the x of `point.on_function` 1; §8.1); `path` is `…/drag/via` |
 
 The `drag` checks run only when some entry of `appearance` has a `drag` key;
 a `via` item's `path` is `…/drag/via` for a single ID and `…/drag/via/<i>`
@@ -868,9 +868,10 @@ translation, a midpoint) are solved in one step to rounding (≈ `1e-12·S`).
 The solve evaluates the whole document per probe (`2·dim u` per stencil, at
 most `MAX_HALVINGS + 1` per step).
 
-**Validation** (§2): `via` items must be `point.free` / `point.on_path`
-input elements upstream of the point; `drag_singular` is `rank₀ < min(2,
-dim via)` at the document's own inputs.
+**Validation** (§2): `via` items must be the input elements of
+`point.free`, `point.on_path` or `point.on_function` upstream of the point;
+`drag_singular` is `rank₀ < min(2, dim u)` (`dim u` as above: a `point`
+input 2, a path parameter or an `x` 1) at the document's own inputs.
 
 **Edits.** A hint is display data and never refuses an edit. `redefine`
 (with conditions too) drops from the result every `appearance.<id>.drag`

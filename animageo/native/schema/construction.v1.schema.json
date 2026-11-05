@@ -206,7 +206,7 @@
       }
     },
     "dragHint": {
-      "description": "Drag hint (1.12.0): the point is dragged through the free inputs via (point.free, point.on_path) it is built from; native.drag, docs/native/kernel.md section 8.1. Evaluation does not read it; validate checks the graph rules.",
+      "description": "Drag hint (1.12.0): the point is dragged through the free inputs via (point.free, point.on_path, point.on_function) it is built from; native.drag, docs/native/kernel.md section 8.1. Evaluation does not read it; validate checks the graph rules.",
       "type": "object",
       "required": ["via"],
       "additionalProperties": false,
