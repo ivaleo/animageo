@@ -523,6 +523,7 @@ slot `undefined` instead of moving another solution into it.
 | `vertex_index` (1.4) | `polygon`, `side.i` from `vertex.i` to `vertex.(i + 1)` (`side.n` closes), `vertex.k` from one; `vertex.1 = a`, `vertex.2 = b` exactly; a clockwise input stays clockwise (the area is unsigned) |
 | `sector_sides` (1.4) | `arc.1`, `arc.2` on the arc in the order of the line parameter (fixed on the carrier circle before the part filters), `side.1` on the radius `c → S0`, `side.2` on the radius `c → S1` |
 | `nearest_to` (1.4, a5) | one slot: of the solutions of the base pair (its order, after the part filters) the one nearest to the argument `near`; a distance within `tol.decide` of the best keeps the earlier solution (decision `nearest_tie`); no defined solution → the reason of the first one |
+| `first_curve_order` (1.8) | `first … fourth` in the order along the first input: a circle or an ellipse by the counterclockwise angle of `X − c1` from the direction to the second centre (or vertex) in `[0, 2π)` (`circle_side` for two circles), a hyperbola by branch (`U < 0` first) then along `n`, a parabola along `n`, an arc by its fraction from `a0`; a tangency fills two slots (`multiplicity: 2`), slots beyond the points are `branch_absent`; the slots swap where a point crosses the seam (the ray `c1 → c2`, `a0`) — [intersect.conic_conic](ops/intersect.conic_conic.md) |
 
 **Arc filter** (1.4). An arc in a `circular` slot is intersected as its
 carrier circle; the slots are fixed there, then each slot is kept only on
@@ -1679,3 +1680,39 @@ Operations `since: "1.6"`, `beta` (formulas, decisions and checks in
   `tol.parity`. `--check` compares a fresh build (the `generatedBy` label
   aside) and replays every case. The coverage tests of the parity set and
   the registry mix of L6 read them with `parity/v1/expected`.
+
+## 15. Registry 1.8: common points of conics
+
+Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
+`docs/native/ops/<op>.md`); a document that uses one declares 1.8 (§2).
+
+| op | inputs → outputs | undefined | checks |
+|---|---|---|---|
+| `intersect.conic_conic` | `first, second: conical` → `first … fourth: point` | `no_intersection`, `coincident`, `concentric`, `branch_absent`, `outside_part`, `upstream` | `on_both` |
+
+- Family `conical`: `conic`, `circle`, `arc` (an arc is met as its carrier
+  circle, then filtered, as in §5.4).
+- The common points of two curves are the real roots of a polynomial of
+  degree four at most: one curve (an ellipse or a circle when there is one)
+  is written by a rational parameter and substituted into the canonical
+  equation of the other (`kernel/conic_meet.py`, `kernel/poly.py`). The
+  roots are bracketed by the extrema of the polynomial (the sign-change
+  roots of its derivative, recursively) and bisected; an extremum whose
+  point lies within `tol.decide` of the other curve is a tangency. Two
+  unbounded curves (hyperbolas, parabolas) are searched near the window
+  `B4` only. Policy `first_curve_order`: the order along the first input —
+  counterclockwise from the direction to the second centre (a circle, an
+  ellipse), by branch and along it (a hyperbola), along the parabola, by
+  the fraction of an arc; a tangency in two slots, both
+  `detail.multiplicity: 2`. The slots swap only where a point crosses the
+  seam of the first input (the ray from its centre to the second centre;
+  `a0` of an arc). Two circular inputs give the slots of
+  `intersect.circle_circle`.
+- New noise decisions: `same_curve`, `same_centre`, `seam`.
+- «Команды»: no commands for them yet (`commands.lexicon.deferred_op`, as §14).
+- Parity fixtures: the scenes `meet_*` of `parity/v1/curves`
+  (`curves_fixtures.py`), every reason of the operations, tangency,
+  coincidence, close roots, a miss and the recovery, far coordinates, and
+  `meet_seam`: a point crossing the seam swaps two slots between the cases
+  `near_before` and `after`. The DSL map lists the operations in
+  `opsWithoutClassic` until the GGB import maps them.

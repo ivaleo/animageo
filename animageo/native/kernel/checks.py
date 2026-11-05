@@ -1266,6 +1266,29 @@ def _line_conic_on_both(args, result, tol):
     return error
 
 
+
+# ── common points of conics (registry 1.8) ────────────────────────────
+
+def _off_conical(inp, points) -> float:
+    """The focal residual of a conic, ``| |X − c| − r |`` of a circle or an
+    arc (its carrier circle), for the defined ``points``."""
+    if inp.type == 'conic':
+        return _off_conic(inp.value, points)
+    v = inp.value
+    error = 0.0
+    for p in points:
+        if not isinstance(p, Undefined) and p is not None:
+            x, y = _xy(p)
+            error = max(error, abs(math.hypot(x - v['c'][0], y - v['c'][1]) - v['r']))
+    return error
+
+
+@register_check('intersect.conic_conic', 'on_both')
+def _conic_conic_on_both(args, result, tol):
+    points = list(result.values())
+    return max(_off_conical(args['first'], points), _off_conical(args['second'], points))
+
+
 def run_checks(evaluated, keys=None) -> CheckReport:
     """Run the registry checks over an :class:`~.evaluate.Evaluated` result.
 

@@ -504,5 +504,71 @@
     },
     "math": "docs/native/ops/intersect.line_conic.md",
     "signatureHash": "sha256:5c8b43984d7edc2e1ab5cdfaff44c00b745b90a00f459e9607e1dc5c5e717bb6"
+  },
+  {
+    "op": "intersect.conic_conic",
+    "status": "beta",
+    "since": "1.8",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "conical"
+      },
+      {
+        "slot": "second",
+        "type": "conical"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "first",
+        "type": "point"
+      },
+      {
+        "slot": "second",
+        "type": "point"
+      },
+      {
+        "slot": "third",
+        "type": "point"
+      },
+      {
+        "slot": "fourth",
+        "type": "point"
+      }
+    ],
+    "branch": {
+      "policy": "first_curve_order",
+      "slots": [
+        "first",
+        "second",
+        "third",
+        "fourth"
+      ],
+      "text": "the common points in the order along the first input; a tangency fills two slots, both with detail multiplicity 2; slots beyond the points are branch_absent; slots are fixed on the carrier circle of an arc before the part filter; two circular inputs give the slots of intersect.circle_circle"
+    },
+    "undefined": [
+      "no_intersection",
+      "coincident",
+      "concentric",
+      "branch_absent",
+      "outside_part",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "every defined point lies on both inputs: the largest focal residual of a conic or distance to a circle (| |X - c| - r |)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{first}, {second}, {third}, {fourth} — точки пересечения {first} и {second}"
+    },
+    "math": "docs/native/ops/intersect.conic_conic.md",
+    "signatureHash": "sha256:17dccaf5001c5a0a9aa2153b58136d276b2fa00451084ba4dca148d3a6c1118a"
   }
 ]
