@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reports `needs_newer_registry` when a document uses an operation, or a type
   in a family slot, of a newer registry than it declares. Documents declaring
   registry 1.7 or older read and evaluate as before.
+- `intersect.conic_conic` (registry 1.8): up to four common points of two
+  conics, circles or arcs, in the order along the first input; a tangency
+  fills two slots with `multiplicity: 2`; two circles give the slots of
+  `intersect.circle_circle`.
 
 ## [1.11.4] - 2026-11-03
 

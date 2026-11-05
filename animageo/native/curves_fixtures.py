@@ -193,6 +193,24 @@ class _Doc:
         return self.op('op_' + prefix, 'intersect.line_conic', {'line': _ref(line), 'conic': _ref(conic)},
                        [('first', prefix + '1', 'point'), ('second', prefix + '2', 'point')])
 
+    # registry 1.8: common points of conics
+    def circle(self, el_id, center, through):
+        return self.op('op_' + el_id, 'circle.center_point', {'center': _ref(center), 'through': _ref(through)},
+                       [('circle', el_id, 'circle')])
+
+    def arc(self, el_id, center, a, b):
+        return self.op('op_' + el_id, 'arc.center_two_points', {'center': _ref(center), 'a': _ref(a), 'b': _ref(b)},
+                       [('arc', el_id, 'arc')])
+
+    def meet(self, prefix, first, second):
+        slots = ('first', 'second', 'third', 'fourth')
+        return self.op('op_' + prefix, 'intersect.conic_conic', {'first': _ref(first), 'second': _ref(second)},
+                       [(s, f'{prefix}{k}', 'point') for k, s in enumerate(slots, 1)])
+
+    def circles(self, prefix, first, second):
+        return self.op('op_' + prefix, 'intersect.circle_circle', {'first': _ref(first), 'second': _ref(second)},
+                       [('first', prefix + '1', 'point'), ('second', prefix + '2', 'point')])
+
 
 def _cases(*rows):
     """``(name, {elementId: input})`` → parity scene cases."""
@@ -401,7 +419,73 @@ def _conic_scenes():
     return out
 
 
-SCENES = (_function_scenes, _conic_scenes)
+def _turned(phi_deg, centre=(1.0, 0.0), a=3.0, b=1.5, names=('F1', 'F2', 'P')):
+    """Inputs of an ellipse by its foci and its vertex: the axis at ``phi_deg``."""
+    phi = math.radians(phi_deg)
+    u = (math.cos(phi), math.sin(phi))
+    e = math.sqrt(a * a - b * b)
+    return {name: P(centre[0] + k * u[0], centre[1] + k * u[1]) for name, k in zip(names, (-e, e, a))}
+
+
+def _meet_scenes():
+    """Registry 1.8: ``intersect.conic_conic`` (docs/native/ops/intersect.conic_conic.md)."""
+    out = []
+    # 1. an ellipse (a = 5, b = 4) and a circle, both orders
+    d = _Doc('meet_ellipse_circle').free('F1', -3, 0).free('F2', 3, 0).free('P', 0, 4).ellipse('e', 'F1', 'F2', 'P')
+    d.free('K', 0, 0).free('Q', 4.5, 0).circle('k', 'K', 'Q').meet('m', 'e', 'k').meet('n', 'k', 'e')
+    out.append((d, _cases(('four', None), ('tangent', {'Q': P(4, 0)}), ('close', {'Q': P(4.0001, 0)}),
+                          ('two', {'K': P(5, 0), 'Q': P(6, 0)}), ('inside', {'Q': P(2, 0)}),
+                          ('back', {'K': P(0.5, 0.25), 'Q': P(5, 0.25)}), ('turned', _turned(30, (0, 0), 5, 4)),
+                          ('no_ellipse', {'P': P(1, 0)}))))
+    # 2. the seam: the circle first, an ellipse turning about (1, 0); the
+    # lower point crosses the ray +x near 40.2° and the slots swap
+    d = _Doc('meet_seam').free('O', 0, 0).free('Q', 3, 0).circle('k', 'O', 'Q')
+    for name, value in _turned(30).items():
+        d.free(name, value['value'][0], value['value'][1])
+    d.ellipse('f', 'F1', 'F2', 'P').meet('m', 'k', 'f')
+    out.append((d, _cases(('before', None), ('near_before', _turned(38)), ('after', _turned(42)),
+                          ('later', _turned(50)))))
+    # 3. two ellipses by five points: four points, one point of each kind, the same conic
+    d = _Doc('meet_two_ellipses')
+    for name, (x, y) in zip('ABCDE', ((4, 0), (-4, 0), (0, 2), (0, -2), (2.4, 1.6))):
+        d.free(name, x, y)
+    for name, (x, y) in zip('GHIJL', ((2, 0), (-2, 0), (0, 4), (0, -4), (1.6, 2.4))):
+        d.free(name, x, y)
+    d.five('e', *'ABCDE').five('g', *'GHIJL').meet('m', 'e', 'g').meet('n', 'g', 'e')
+
+    def tall(dx, dy, sx=2, sy=4):
+        return {name: P(dx + x, dy + y) for name, (x, y) in
+                zip('GHIJL', ((sx, 0), (-sx, 0), (0, sy), (0, -sy), (0.8 * sx, 0.6 * sy)))}
+    out.append((d, _cases(('four', None), ('shifted', tall(1, 0.5)), ('apart', tall(9, 0)),
+                          ('same', {name: P(x, y) for name, (x, y) in
+                                    zip('GHIJL', ((0, 2), (0, -2), (4, 0), (-2.4, -1.6), (-4, 0)))}),
+                          ('touching', tall(0, 0, 4, 2.5)))))
+    # 4. a hyperbola, a parabola and a circle
+    d = _Doc('meet_hyperbola_parabola').free('F1', -5, 0).free('F2', 5, 0).free('P', 3, 0)
+    d.hyperbola('h', 'F1', 'F2', 'P').free('F', 4, 0).free('C', 0, -1).free('D', 0, 1).line('dl', 'C', 'D')
+    d.parabola('p', 'F', 'dl').free('K', 0, 0).free('Q', 5, 0).circle('k', 'K', 'Q')
+    d.meet('m', 'p', 'h').meet('n', 'h', 'p').meet('s', 'h', 'k').meet('t', 'p', 'k')
+    out.append((d, _cases(('base', None), ('left', {'F': P(-4, 0)}), ('wide', {'F': P(6, 1), 'Q': P(8, 3)}),
+                          ('far', {'K': P(30, 30), 'Q': P(31, 30)}))))
+    # 5. circles and arcs: the slots of circle_circle, the part filter
+    d = _Doc('meet_circles').free('O', 0, 0).free('A', 3, 0).circle('c', 'O', 'A')
+    d.free('K', 2, 1).free('Q', 4.5, 1).circle('k', 'K', 'Q').meet('m', 'c', 'k').circles('q', 'c', 'k')
+    d.free('B', -3, 0).arc('w', 'O', 'A', 'B').free('F1', -3, 0).free('F2', 3, 0).free('P', 0, 2)
+    d.ellipse('e', 'F1', 'F2', 'P').meet('r', 'e', 'w').meet('s', 'w', 'e')
+    out.append((d, _cases(('two', None), ('far', {'K': P(8, 0), 'Q': P(9, 0)}),
+                          ('concentric', {'K': P(0, 0), 'Q': P(1, 0)}), ('same', {'K': P(0, 0), 'Q': P(0, 3)}),
+                          ('lower_arc', {'A': P(-3, 0), 'B': P(3, 0)}))))
+    # 6. far from the origin
+    d = _Doc('meet_far', bounds=(999990, -1000010, 1000010, -999990))
+    d.free('F1', 999996, -1000000).free('F2', 1000004, -1000000).free('P', 1000005, -1000000)
+    d.ellipse('e', 'F1', 'F2', 'P').free('G1', 1000000, -1000004).free('G2', 1000000, -999996)
+    d.free('R', 1000000, -999995).ellipse('g', 'G1', 'G2', 'R').meet('m', 'e', 'g')
+    out.append((d, _cases(('four', None), ('two', {'G1': P(1000005, -1000004), 'G2': P(1000005, -999996),
+                                                   'R': P(1000005, -999995)}))))
+    return out
+
+
+SCENES = (_function_scenes, _conic_scenes, _meet_scenes)
 
 
 # ── fixtures ─────────────────────────────────────────────────────────────
