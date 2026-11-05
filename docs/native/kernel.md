@@ -103,6 +103,11 @@ Input     = {"kind": "point", "value": [x, y]}                         point.fre
   `load → dump`, covered by the canonical text and `content_hash`, and
   ignored by evaluation and by the renderer. They joined v1 as additive
   fields, so the format name does not change.
+- 1.12.0: an entry of `appearance` may carry `drag: {"via": ID | [ID, …]}`
+  (`via` a non-empty list without repeats, or a single ID; no other key) —
+  the free inputs through which `native.drag` moves a dependent point (§8.1).
+  It is display data: evaluation never reads it; `validate` checks what it
+  names (§2).
 
 `load(source, strict=True)` reads a dict, JSON text, bytes or a path; JSON
 text with `NaN`/`Infinity` or a repeated key is refused. Structural problems
@@ -132,6 +137,15 @@ only on a structurally valid document.
 | `formula` | error | an `expr` tree breaks AST v1 (a node, the whitelist, a limit, a `ref` outside `refs`); `path` points at the node ([expr.md](expr.md) §2). A `template` with a bad brace or an insert outside `refs`; `path` is the template's `value` ([ops/text.free.md](ops/text.free.md)) |
 | `input_not_free` | error | an input value for an element not produced by a free op, or for an element of a free op other than its first output slot |
 | `missing_input` | error | the element of the first output slot of a free op without an input value (not for an `angle` input, which defaults to `0`) |
+| `dangling_ref` | error | 1.12.0: `appearance.<id>.drag` of a missing element (`path` the hint) or a `via` item naming a missing element (`path` the item) |
+| `type_mismatch` | error | 1.12.0: `appearance.<id>.drag` of an element that is not a point |
+| `drag_via_not_free` | error | 1.12.0: a `via` item that is not the input element of `point.free` or `point.on_path` |
+| `drag_via_not_upstream` | error | 1.12.0: a `via` item the point is not built from (the point itself included) |
+| `drag_singular` | warning | 1.12.0: at rest the point moves in fewer than `min(2, dim via)` directions through `via` (§8.1); `path` is `…/drag/via` |
+
+The `drag` checks run only when some entry of `appearance` has a `drag` key;
+a `via` item's `path` is `…/drag/via` for a single ID and `…/drag/via/<i>`
+for a list, its `elementId` the dragged point.
 
 ## 3. Canonical JSON and hash
 
@@ -649,6 +663,7 @@ python -m animageo.native commands fixtures|parse|print …       # «Коман
 python -m animageo.native fixtures timeline [--check]           # animageo-timeline/v1, timeline.md §5
 python -m animageo.native fixtures paint [--check]              # animageo-paint-parity/v1, §9.8
 python -m animageo.native fixtures curves [--check]             # parity/v1/curves: graphs and conics, §14
+python -m animageo.native fixtures drag [-o <dir>] [--check]    # animageo-drag-parity/v1, §8.1
 python -m animageo.native style export [--check]               # native/style: builtin.json, keys.v1.json, §9.8
 python -m animageo.native steps|describe|timeline <doc.json> …  # timeline.md §5
 python -m animageo.native from-ggb <file.ggb> [-o …] [--report …] # import.md §7
@@ -723,6 +738,147 @@ Display names (`valid_name`, at most 32 code points):
 `letter` is a Unicode letter (category L*), `alnum` a letter or a decimal
 digit (Nd): `A`, `AB`, `A1`, `A₁`, `A_1`, `A_{12}`, `α'`, `Точка`.
 Uniqueness compares `name_key`, where `_{x}` equals `_x`.
+
+### 8.1 Drag (`native.drag`, 1.12.0)
+
+`animageo/native/drag.py`; `has("drag")`. `drag(doc, inputs, element_id,
+target) → {"inputs", "status"}` moves the point `element_id` towards
+`target = (x, y)` by changing input values; the document never changes.
+`inputs` are the input values of the case (`{elementId: Input}` as for
+`evaluate`; `None` is none), merged over the document's `inputs`.
+
+| `status` | `inputs` returned |
+|---|---|
+| `ok` | a new dict: a deep copy of the given `inputs` with the moved entries set |
+| `clamped` | the same, a path parameter stopped at an end of its range |
+| `no_convergence` | the given `inputs` object itself, unchanged |
+| `singular` | the given `inputs` object itself, unchanged |
+
+The given `inputs` are never changed. `ValueError`: an unknown element, an
+element that is not a point, a target that is not two finite numbers,
+`inputs` that `evaluate` refuses, a dependent point without a hint, a hint
+whose `via` fails §2.
+
+**Which way.** In this order:
+
+1. The element of `point.free`: its input becomes `target`; `ok`.
+2. A point with `appearance.<id>.drag.via` (§1): Gauss–Newton over the
+   `via` inputs (below).
+3. The element of `point.on_path` without a hint: `t = project(path,
+   target)` (§5.5, as `native.project`), the `branch` of its input kept;
+   `clamped` when the path is clamped (`outside: "clamp"`: segment, ray,
+   arc, polyline), `t` equals an end of its range and the distance from the
+   point at `t` to the target is above `tol`; else `ok`. A path that is not
+   defined at rest — `no_convergence`.
+4. Any other point — `ValueError`.
+
+`point.on_function` (registry 1.6) is not a `via` kind and is refused
+without a hint.
+
+**Variables.** `S` (scene scale) and `tol = tol.decide` (length, `1e-10·S`)
+come from `evaluate(doc, inputs)` at rest. Constants: `STEP_FRACTION =
+1e-5`, `RANK_EPSILON = 1e-6`, `CURVATURE_FLOOR = 1e-2`, `ACCEPT_SLACK =
+1e-3`, `MAX_ITERATIONS = 8`, `MAX_HALVINGS = 4`. The vector `u` joins the
+`via` values in `via` order: a `point` input gives `x, y`, a `pathParameter`
+input gives `t`. Per variable:
+
+| variable | difference step `h` | range |
+|---|---|---|
+| coordinate | `STEP_FRACTION · S` | none |
+| `t`, both ends finite | `STEP_FRACTION · (hi − lo)` (`STEP_FRACTION` when `hi = lo`) | clamped (`outside: "clamp"`) or wrapped (`"wrap"`: circle, polygon, sector, circle segment) |
+| `t`, an end infinite (line, ray) | `STEP_FRACTION · S / |v|`, `|v|` the length of the frame vector at rest (`STEP_FRACTION` when `|v| ≤ tol`) | ray clamped at `0`, line none |
+
+`lo, hi` are `parameter_range` of the path frame at rest (§5.5). A clamped
+`t` starts clamped into its range. The column scale is `c = h /
+(STEP_FRACTION · S)` (`1` for a coordinate). `f(u)` is the point
+`element_id` of `evaluate(doc, inputs ⊕ entries(u))`, *undefined* unless its
+state is `defined`; `entries(u)` writes `{"kind": "point", "value": [x, y]}`
+and `{"kind": "pathParameter", "value": t, "branch"?}` (the `branch` of the
+current input is kept; hyperbola branches are not switched).
+
+**Stencil** at `u` with `p = f(u)`: per variable `j`, `u⁺ = u_j + h`, `u⁻ =
+u_j − h`, then `u⁺ = min(u⁺, hi)`, `u⁻ = max(u⁻, lo)` for a clamped range
+(no clamp for a wrapped one). Width `w = u⁺ − u⁻`; `w ≤ 0` gives the column
+`(0, 0)` without evaluation. Else `col_j = c_j · (f(u⁺) − f(u⁻)) / w`; an
+undefined `f(u±)` makes the whole stencil undefined. With a single variable
+and both `h⁺ = u⁺ − u_j > 0`, `h⁻ = u_j − u⁻ > 0`, the second difference
+`f″ = 2 · ((f(u⁺) − p)/h⁺ − (p − f(u⁻))/h⁻) / w`; else `f″ = (0, 0)`.
+
+**Rank and least-norm step** of the 2×k matrix `Ĵ` of columns `col_j`:
+`F = Σ|col_j|²`, `P = Σ_{i<j} (col_i × col_j)²` (`× ` the 2-D cross
+product; `P = det ĴĴᵀ`, Cauchy–Binet), `σ₁² = (F + √max(F² − 4P, 0)) / 2`,
+`σ₂ = √(P / σ₁²)` (`0` when `σ₁² = 0`). A singular value counts when it is
+above `ε = RANK_EPSILON · max(1, σ₁)`: rank 0 when `σ₁ ≤ ε` (`d = 0`), rank 1
+when `σ₂ ≤ ε` (`d_j = −(col_j · r) / F`), else rank 2 with `a = Σx²`, `b =
+Σxy`, `e = Σy²` over the columns, `w = ((e r_x − b r_y)/P, (a r_y − b
+r_x)/P)`, `d_j = −(col_j · w)`. The step of variable `j` is `δ_j = c_j ·
+d_j` (`r = p − target`).
+
+**Active set.** Start with every variable free; solve on the free columns;
+a free variable of a clamped range with `u_j ≤ lo` and `δ_j < 0`, or `u_j ≥
+hi` and `δ_j > 0`, is frozen (`δ_j = 0`); repeat until none is frozen anew.
+The predicted move is `moved = |Σ_{free j} col_j δ_j / c_j|`; `frozen` is
+whether any variable was frozen.
+
+**Step length** `λ₀`: `1` with two or more variables. With one: `A =
+|col/c|²`, `B = r · f″`; `λ₀ = 1` when `A = 0` or `|B| ≤ CURVATURE_FLOOR ·
+A`; else with `L = max(1, S / moved)`: `λ₀ = L` when `A + B ≤ 0`, else
+`λ₀ = min(A / (A + B), L)` — the Newton step of `|r|²/2` along `δ`. Plain
+Gauss–Newton on a curved path far from the target overshoots or falls
+short by that factor (it converges only linearly); `L` keeps a long step
+within the scene.
+
+**Line search** with `ε = ACCEPT_SLACK · tol`, `limit = |r| + ε`: for `k =
+0 … MAX_HALVINGS`, the trial `ũ = clamp(u + λ₀ 2⁻ᵏ δ)` (clamped ranges
+only) and `q = f(ũ)`; an undefined `q` is skipped. The first defined trial
+is kept; a later one replaces the kept one only when `|q − target| <
+|kept| − ε`; the search stops at a kept `|q − target| ≤ tol`, or at a
+defined trial that does not replace a kept one already within `limit`. The
+kept trial is taken when it is within `limit`, else none is.
+
+**Solve.**
+
+1. The inputs of `via` lack a usable value, a path is not defined, `f(u₀)`
+   or its stencil is undefined → `no_convergence`.
+2. `rank₀` = the rank of the stencil at `u₀`; `rank₀ < min(2, dim u)` →
+   `singular` (also when the point already is at the target).
+3. While `|r| > tol`, fewer than `MAX_ITERATIONS` steps and the stencil is
+   defined: active-set step; `moved ≤ tol` ends (stationary); the line
+   search taking none ends; else `u, p` become the trial, one more step, and
+   when `|r| > tol` the stencil is computed at the new `u` (from its `p`).
+4. Status: `|r| ≤ tol` → `ok`; the last stencil undefined →
+   `no_convergence`; else with the active-set step at the end, `moved ≤ tol`
+   and `frozen` → `clamped`; `moved ≤ tol`, `rank₀ < 2` and not the
+   farthest point → `ok` (the nearest point a single parameter reaches);
+   otherwise `no_convergence`. The farthest point: a single variable with
+   `A + B < −CURVATURE_FLOOR · A` (`A`, `B` as for `λ₀` at the end) — the
+   target straight across a curved path, where the step is zero.
+5. `ok` and `clamped` return `entries(u)`; a wrapped `t` is written back as
+   `t − (hi − lo) · ⌊(t − lo) / (hi − lo)⌋`, and `lo` when that is `≥ hi`
+   or `< lo`.
+
+Affine dependencies (the fourth vertex of a parallelogram, a reflection, a
+translation, a midpoint) are solved in one step to rounding (≈ `1e-12·S`).
+The solve evaluates the whole document per probe (`2·dim u` per stencil, at
+most `MAX_HALVINGS + 1` per step).
+
+**Validation** (§2): `via` items must be `point.free` / `point.on_path`
+input elements upstream of the point; `drag_singular` is `rank₀ < min(2,
+dim via)` at the document's own inputs.
+
+**Fixtures** `animageo/native/parity/v1/drag/*.json`, format
+`animageo-drag-parity/v1`, one case per file: `{format, id, generatedBy,
+text, doc, inputs, element, target, expect: {status, inputs}}` where
+`expect` is `native.drag(doc, inputs, element, target)`. A port compares
+the status exactly; on `no_convergence` and `singular` `expect.inputs`
+equals `inputs` and the call must return the given object; on `ok` and
+`clamped` a new object whose entries match by key, `kind` and `branch`
+exactly and every number within `1e-9` absolute (world units for a point,
+parameter units for a path parameter). Success numbers are written rounded
+to 10 digits. Each document declares the lowest registry version its
+operations need. `python -m animageo.native fixtures drag [-o <dir>]
+[--check]` writes them or checks the shipped ones against the generator;
+`drag_fixtures.verify_fixtures(dir)` replays them.
 
 ## 9. Rendering
 
