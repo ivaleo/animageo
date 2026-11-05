@@ -12,7 +12,8 @@ wave, the automatic radius of an angle, point shapes and arrows, caps and
 dashes with their fit, label anchors by type, the format of values, the
 layers, ``text.free``, the base without a style and under the built-in one,
 roles, hatching, a style track of a timeline; registry 1.6: graphs and
-conics (``paint_curves``).
+conics (``paint_curves``); the angle marker fitted to its sides
+(``paint_angle_fit``, 1.11.5).
 """
 from __future__ import annotations
 
@@ -415,10 +416,56 @@ def _curves():
     return out
 
 
+def _angle_fit():
+    """1.11.5: ``rendering.angle_marker_fit`` — the marker of an angle at most
+    ``k`` of what each side has (graph support), hidden below ``hide_below_px``;
+    the label stays at the fitted radius. ``ptUnit`` 100 at bounds ``(-1, -1, 7, 5)``,
+    200 at ``(-0.5, -0.5, 3.5, 2.5)``."""
+    fit = {'rendering': {'angle_marker_fit': True}}
+
+    def near(doc_id, c=(0.2, 0.2), bounds=(-1, -1, 7, 5)):
+        return _Doc(doc_id, bounds=bounds).free('A', 0, 0).free('B', 3, 0).free('C', *c)
+
+    out = []
+    d = near('fit_clamped').angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_clamped', d, fit))
+    d = near('fit_disabled').angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_disabled', d, {'rendering': {'angle_marker_fit': False}}))
+    d = near('fit_arcs', c=(0.3, 0.3)).angle('alpha', 'B', 'A', 'C').label('alpha')
+    d.overrides('alpha', tick_count=3, arc_shift_px=4)
+    out.append(('fit_arcs', d, fit))
+    d = near('fit_hidden', c=(0.04, 0.04)).angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_hidden', d, fit))
+    for scale, bounds in ((1, (-1, -1, 7, 5)), (2, (-0.5, -0.5, 3.5, 2.5))):
+        d = near(f'fit_scale_{scale}', bounds=bounds).angle('alpha', 'B', 'A', 'C').label('alpha')
+        out.append((f'fit_scale_{scale}', d, fit))
+    d = near('fit_square', c=(0, 0.2)).right_mark('ra', 'B', 'A', 'C')
+    out.append(('fit_square', d, fit))
+    d = near('fit_square_hidden', c=(0, 0.04)).right_mark('ra', 'B', 'A', 'C')
+    out.append(('fit_square_hidden', d, fit))
+    d = near('fit_line').line('l', 'A', 'C').angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_line', d, fit))
+    d = near('fit_ray').ray('r', 'A', 'C').angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_ray', d, fit))
+    d = near('fit_segment').free('D', 0.4, 0.4).segment('s', 'A', 'D').segment('t', 'A', 'B')
+    d.angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_segment', d, fit))
+    d = near('fit_between_lines').line('l', 'A', 'B').line('m', 'A', 'C')
+    d.op('angle.between_lines', {'first': _ref('l'), 'second': _ref('m')}, [('angle', 'alpha', 'angle')])
+    out.append(('fit_between_lines', d.label('alpha'), fit))
+    d = near('fit_unclamped', c=(1.5, 2.5)).angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_unclamped', d, fit))
+    d = near('fit_fraction', c=(0.15, 0.15)).angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_fraction', d, {'rendering': {'angle_marker_fit': {'enabled': True, 'side_fraction': 0.65}}}))
+    d = near('fit_hide_below', c=(0.05, 0.05)).angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_hide_below', d, {'rendering': {'angle_marker_fit': {'enabled': True, 'hide_below_px': 5}}}))
+    return out
+
+
 THEMES = (('paint_ticks', _ticks), ('paint_angles', _angles), ('paint_points', _points),
           ('paint_dashes', _dashes), ('paint_labels', _labels), ('paint_values', _values),
           ('paint_layers', _layers), ('paint_text', _texts), ('paint_base', _base),
-          ('paint_timeline', _timeline), ('paint_curves', _curves))
+          ('paint_timeline', _timeline), ('paint_curves', _curves), ('paint_angle_fit', _angle_fit))
 
 
 def _expect(document, style, timeline, t) -> dict:

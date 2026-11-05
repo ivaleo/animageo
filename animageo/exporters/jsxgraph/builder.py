@@ -319,7 +319,7 @@ def build_board(scene, options) -> BoardModel:
             attrs = _style_for(ctx, out_elem)
             attrs.update(result.attrs)
             create(primary, result.jsx_type, result.parents, attrs)
-            model.coverage.append((primary, "live", cmd.name))
+            model.coverage.append((primary, "live", result.detail or cmd.name))
             # Live congruence tick marks on a segment (JSXGraph has no native
             # tick element → emit live perpendicular dashes tied to the parents).
             if result.jsx_type == "segment":

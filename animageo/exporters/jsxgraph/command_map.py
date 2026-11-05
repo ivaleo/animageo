@@ -17,6 +17,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
+from ...angle_marker import fit_settings, marker_extent, marker_fit
 from ...geo.lib_commands import strCommand
 from .context import JsxContext, Raw
 from .style_map import arrow_attrs
@@ -92,6 +93,7 @@ class Emit:
     jsx_type: str
     parents: List[str]              # JS reference / literal strings
     attrs: Dict[str, object] = field(default_factory=dict)
+    detail: Optional[str] = None    # coverage detail instead of the command name
 
 
 def _two_points(ctx: JsxContext, cmd):
@@ -253,7 +255,18 @@ def emit_angle(ctx, cmd) -> Optional[Emit]:
         export = getattr(ctx.scene.style, "export", {}) or {}
         ptUnit = float(export.get("ptUnit", 1) or 1)
         attrs["radius"] = _angle_radius_px(ctx, oe, angle_range) / ptUnit
-        return Emit(jsx_type, [ctx.ref(ins[0]), ctx.ref(ins[1]), ctx.ref(ins[2])], attrs)
+        detail = None
+        if oe is not None and fit_settings(ctx.scene) is not None:
+            # rendering.angle_marker_fit: the fitted extent as of the export (the
+            # outer arc, or the side of the square — JSXGraph's square side is
+            # its radius); a hidden marker keeps its label, so it goes transparent
+            extent = marker_extent(ctx.scene, oe)
+            fit = marker_fit(ctx.scene, oe, extent)
+            attrs["radius"] = round(max(extent.label_px - fit.delta_px, 0.0), 4) / ptUnit
+            if fit.hidden:
+                attrs.update(strokeOpacity=0, fillOpacity=0)
+            detail = f"{cmd.name}: static marker radius fitted to the sides"
+        return Emit(jsx_type, [ctx.ref(ins[0]), ctx.ref(ins[1]), ctx.ref(ins[2])], attrs, detail)
     return None
 
 

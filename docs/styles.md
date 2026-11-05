@@ -359,6 +359,7 @@ normalized into the semantic schema before merging.
 | `line_cap` | `"butt"` \| `"round"` \| `"square"` | Line endings |
 | `dash_period_px` | number > 0 (px), default `10` | Style-wide dash period (dash + gap) for elements without their own `stroke_dash_period_px` |
 | `right_angle_joint` | `"auto"` \| `"bevel"` \| `"miter"` \| `"round"` | Joint of the right-angle marker's sides |
+| `angle_marker_fit` | `true` or `{enabled, side_fraction, hide_below_px}`, off by default | Keeps an angle marker within the sides it has in the drawing — §8 |
 | `polygon_boundary_layer` | `"top"` \| `null` | `"top"`: polygon outline always above the fill (`z_index=10`) |
 | `points_display` | `"auto"` \| `"only_labels"` \| `"only_points"` | `only_labels` hides the point and shows the label; `only_points` — the reverse |
 | `label_anchor` | `"TL"`/`"TC"`/`"TR"`/`"ML"`/`"MC"`/`"MR"`/`"BL"`/`"BC"`/`"BR"` | Scene-wide default label anchor (when not set per element). Full grid — §7 |
@@ -546,7 +547,7 @@ EPS, video and TikZ show the same lines. The lines are anchored in the plane
 | `arc_size_px` | float (px) | `defaults.angle.arc_size_px` | Base arc radius |
 | `arc_shift_px` | float (px) | `defaults.angle.arc_shift_px` | Radial shift between concentric arcs when `tick_count > 1` |
 | `angle_range` | `"minor"` \| `"reflex"` | From GGB | `"minor"` = the smaller sector (≤π), `"reflex"` = the reflex one (>π) |
-| `right_angle_marker` | bool | Auto: `np.isclose(angle, π/2)` | Force the square right-angle marker |
+| `right_angle_marker` | bool \| `null` | `null`: auto, `np.isclose(angle, π/2)` | `true` — always the square, `false` — always arcs, `null` — auto (on a right-angle mark — the square) |
 | `right_angle_size_px` | float (px) | `defaults.angle.right_angle_size_px` | Size of the square right-angle marker |
 | `tick_count` | int | 1 | Multiple arcs (double, triple arc marks) |
 
@@ -812,6 +813,74 @@ The label automatically follows the new radius: `_collect_labels` and the render
         "max_arm_fraction": 0.55
     }
 }
+```
+
+### Fitting the angle marker to its sides: `rendering.angle_marker_fit`
+
+A marker sized in pixels (`arc_size_px`, several arcs `tick_count` ×
+`arc_shift_px`, `right_angle_size_px`) can be larger than the short side of
+a small drawing and stick out past it. With `angle_marker_fit` on, the
+drawn marker is bounded by the sides; the desired sizes in the style are not
+changed, and nothing is remembered between frames.
+
+| Key | Default | Description |
+|---|---|---|
+| `enabled` | `false` | Opt-in (`"angle_marker_fit": true` turns it on with the defaults). Off, the output is the same as without the key |
+| `side_fraction` | `0.5` | `k`: the marker reaches at most this share of the shorter side |
+| `hide_below_px` | `3` | When the bound leaves the innermost arc (the side of the square) shorter than this, the marker is not drawn |
+
+The rule, in the pixels of the style (the unit of `arc_size_px`):
+
+```
+e_max = k · L · ptUnit_style
+arcs:   e' = min(e, e_max)   e — the outer arc; every arc moves in by e − e', the spacing stays
+square: s' = min(s, e_max)   s — the side of the square (right_angle_size_px / √2)
+hidden: e' < e and the innermost arc (s') < hide_below_px
+```
+
+`L` is the shorter finite support of the two sides in world units;
+`L · ptUnit_style` is its length in style pixels. With decorations of a
+fixed output size (a document's own view,
+`content.decoration_scale_source: "output"`) `ptUnit_style` is the export
+`ptUnit`, so `L` is in output pixels: zooming in lengthens the sides and
+the desired radius comes back. When decorations scale with the output, the
+marker and the sides scale together and the fit does not change.
+
+The support of a side from the vertex `V` towards its defining point `P` is
+read from the construction graph (arguments and producing operations, not
+coordinates):
+
+1. a visible line through `V` and `P`, or a visible ray from `V` through
+   `P`, is drawn — no bound (when it applies together with 2, it wins);
+2. a segment or a polygon side `VP` — `|VP|`;
+3. otherwise — `|VP|` (a segment that only contains `P`, such as `VC` with
+   `P` between, is not looked for);
+4. an angle between lines or vectors (unit sides) — no bound.
+
+A point is on a line when it is an argument the line goes through
+(`Line(A, B)`, the point of a parallel, perpendicular or tangent line, the
+origin and through point of a ray; in a document `line.by_points`,
+`line.parallel`, `line.perpendicular`, `line.tangent_at`, the bisectors'
+`vertex`, `line.tangents_from_point` with its touch point, `ray.*`) or a
+point an operation puts on it (`Intersect`, `Point(path)`, `ClosestPoint`;
+`intersect.*`, `point.on_path`, `point.closest`, `point.projection`). A ray
+counts only from its origin. The defining points: the first and the third
+point of `Angle(A, V, B)` / `angle.by_points` / `mark.right_angle`, the
+given and the constructed point of `angle.by_size`, the neighbouring
+vertices of `measure.polygon_angles`; an angle the graph does not explain
+takes its sides as they are.
+
+The label of an angle stands at the fitted extent `e'` (`s'` for the
+square), also while the marker is hidden — it does not jump when the marker
+disappears, and the narrow-angle push along the sides works as before.
+`animageo.angle_marker.max_desired_px(scene, elem)` gives the largest
+desired `arc_size_px` / `right_angle_size_px` the fit leaves untouched (for
+a drag handle); `native.resolve_paint` reports the fit of each angle in
+`angle.fit` (`docs/native/kernel.md` §9.8). TikZ draws the fitted marker of
+the renderer; JSXGraph gets the fitted radius as of the export (static).
+
+```json
+"rendering": { "angle_marker_fit": { "enabled": true, "side_fraction": 0.5 } }
 ```
 
 ---

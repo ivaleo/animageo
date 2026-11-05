@@ -888,20 +888,29 @@ def _angle_drawn_sector(scene, elem):
     d = elem.data
     ptUnit = _style_ptUnit(scene.style)
     angle_range = _resolve_style(scene, elem, 'angle_range', default='minor') or 'minor'
-    arc_size_resolved = _resolve_style(scene, elem, 'arc_size_px', default=17.0)
-    base_arc = compute_effective_arc_size_px(
-        elem, d, scene.style, base_px=arc_size_resolved, angle_range=angle_range,
-        auto_radius=_resolve_style(scene, elem, 'auto_radius', default=True))
-    ang_rshift_px = scene.style_config.defaults.get('angle', 'arc_shift_px', 0.0)
-    lines = int(_resolve_style(scene, elem, 'tick_count', default=1) or 1)
-    outer_arc_px = _angle_effective_arc_r_px(base_arc, lines, ang_rshift_px)
-    render_r_px = _angle_render_label_radius_px(
-        scene, elem, base_arc, outer_arc_px, angle_range)
+    fitted = _fitted_angle_marker(scene, elem)
+    if fitted is not None:          # rendering.angle_marker_fit: the marker as drawn
+        extent, fit = fitted
+        if fit.hidden:
+            return None
+        right_mark = extent.right
+        render_r_px = extent.label_px - fit.delta_px
+        outer_arc_px = extent.outer_px - fit.delta_px
+    else:
+        arc_size_resolved = _resolve_style(scene, elem, 'arc_size_px', default=17.0)
+        base_arc = compute_effective_arc_size_px(
+            elem, d, scene.style, base_px=arc_size_resolved, angle_range=angle_range,
+            auto_radius=_resolve_style(scene, elem, 'auto_radius', default=True))
+        ang_rshift_px = scene.style_config.defaults.get('angle', 'arc_shift_px', 0.0)
+        lines = int(_resolve_style(scene, elem, 'tick_count', default=1) or 1)
+        outer_arc_px = _angle_effective_arc_r_px(base_arc, lines, ang_rshift_px)
+        render_r_px = _angle_render_label_radius_px(
+            scene, elem, base_arc, outer_arc_px, angle_range)
 
-    effective_angle = _effective_render_angle(d.size, angle_range)
-    right_mark = _resolve_style(scene, elem, 'right_angle_marker', default=None)
-    if right_mark is None:
-        right_mark = bool(np.isclose(effective_angle, pi / 2))
+        effective_angle = _effective_render_angle(d.size, angle_range)
+        right_mark = _resolve_style(scene, elem, 'right_angle_marker', default=None)
+        if right_mark is None:
+            right_mark = bool(np.isclose(effective_angle, pi / 2))
 
     v = np.asarray(d.vertex[:2], dtype=float)
     s1 = np.asarray(d.side1[:2], dtype=float)
@@ -922,6 +931,19 @@ def _angle_drawn_sector(scene, elem):
 
     radius_mu = (render_r_px if right_mark else outer_arc_px) / ptUnit
     return v, start % (2 * pi), span, right_mark, radius_mu, s1, s2
+
+
+def _fitted_angle_marker(scene, elem):
+    """``(MarkerExtent, MarkerFit)`` of an angle under
+    ``rendering.angle_marker_fit`` (:mod:`animageo.angle_marker`), ``None``
+    when the fit is off: the marker as the renderer draws it, and how far it
+    moves in to fit the sides. A hidden marker keeps its label at the
+    fitted extent."""
+    from .angle_marker import fit_settings, marker_extent, marker_fit
+    if fit_settings(scene) is None:
+        return None
+    extent = marker_extent(scene, elem)
+    return extent, marker_fit(scene, elem, extent)
 
 
 def _angle_marker_obstacle_segments(scene, elem):
@@ -1527,6 +1549,17 @@ def _angle_label_params(scene, elem, hw, hh, gap_arc_px=3, gap_sides_px=3) -> An
     ptUnit = _style_ptUnit(scene.style)
     ang_rshift_px = scene.style_config.defaults.get('angle', 'arc_shift_px', 0.0)
     angle_range = _resolve_style(scene, elem, 'angle_range', default='minor') or 'minor'
+    fitted = _fitted_angle_marker(scene, elem)
+    if fitted is not None:          # rendering.angle_marker_fit: from the fitted extent
+        extent, fit = fitted
+        render_r_px = extent.label_px - fit.delta_px
+        label_radial_offset_px = _resolve_style(scene, elem, 'label_radial_offset_px', default=0.0)
+        return AngleParams(
+            arc_r_px=render_r_px * sqrt(2) if extent.right else extent.outer_px - fit.delta_px,
+            half_w=hw, half_h=hh, gap_arc_px=gap_arc_px, gap_sides_px=gap_sides_px,
+            angle_range=angle_range,
+            render_r_px=float(render_r_px) + float(label_radial_offset_px or 0.0),
+        )
     base_arc_px = _resolve_style(scene, elem, 'arc_size_px', default=30)
     base_arc = compute_effective_arc_size_px(
         elem, elem.data, scene.style, base_px=base_arc_px,
@@ -3154,17 +3187,23 @@ def _angle_placement_params(scene, elem, lbl, *, gap_arc_px, gap_sides_px,
     caller decides it.
     """
     angle_range = _resolve_style(scene, elem, 'angle_range', default='minor') or 'minor'
-    base_arc_px = _resolve_style(scene, elem, 'arc_size_px', default=30)
-    base_arc = compute_effective_arc_size_px(
-        elem, elem.data, scene.style, base_px=base_arc_px,
-        angle_range=angle_range,
-        auto_radius=_resolve_style(scene, elem, 'auto_radius', default=True),
-    )
-    lines = int(_resolve_style(scene, elem, 'tick_count', default=1) or 1)
-    outer_arc_px = _angle_effective_arc_r_px(base_arc, lines, ang_rshift_px)
-    render_r_px = _angle_render_label_radius_px(
-        scene, elem, base_arc, outer_arc_px, angle_range,
-    )
+    fitted = _fitted_angle_marker(scene, elem)
+    if fitted is not None:          # rendering.angle_marker_fit: from the fitted extent
+        extent, fit = fitted
+        render_r_px = extent.label_px - fit.delta_px
+        outer_arc_px = render_r_px * sqrt(2) if extent.right else extent.outer_px - fit.delta_px
+    else:
+        base_arc_px = _resolve_style(scene, elem, 'arc_size_px', default=30)
+        base_arc = compute_effective_arc_size_px(
+            elem, elem.data, scene.style, base_px=base_arc_px,
+            angle_range=angle_range,
+            auto_radius=_resolve_style(scene, elem, 'auto_radius', default=True),
+        )
+        lines = int(_resolve_style(scene, elem, 'tick_count', default=1) or 1)
+        outer_arc_px = _angle_effective_arc_r_px(base_arc, lines, ang_rshift_px)
+        render_r_px = _angle_render_label_radius_px(
+            scene, elem, base_arc, outer_arc_px, angle_range,
+        )
     label_radial_offset_px = _resolve_style(
         scene, elem, 'label_radial_offset_px', default=0.0,
     )

@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `rendering.angle_marker_fit` (off by default): the marker of an angle is at
+  most `side_fraction` (0.5) of what each of its sides has — a visible line or
+  ray along the side leaves it unbounded, a visible segment or polygon side
+  between the vertex and the defining point bounds it by that length, otherwise
+  the distance to the defining point. Lengths compare in output pixels with the
+  marker size in style pixels. Every arc moves in by the same amount, the
+  spacing between arcs is kept, and a marker whose inner arc or square side
+  falls below `hide_below_px` (3) is hidden whole. The value label is placed
+  from the fitted size, also when the marker is hidden. The desired sizes stay
+  in the style; `animageo.angle_marker.max_desired_px` gives the largest
+  desired size that still fits. Applied by the renderer, label placement,
+  native paint (`angle.fit`), TikZ and JSXGraph (a static radius).
+
+### Changed
+
+- An explicit `null` `right_angle_marker` on a right-angle mark draws the
+  square, as an absent key does.
+
 ## [1.11.4] - 2026-11-03
 
 ### Fixed

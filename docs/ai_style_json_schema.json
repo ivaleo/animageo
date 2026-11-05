@@ -220,6 +220,20 @@
         },
         "color_interpolation": {
           "enum": ["oklab", "srgb"]
+        },
+        "angle_marker_fit": {
+          "anyOf": [
+            {"type": "boolean"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "side_fraction": {"type": "number", "exclusiveMinimum": 0},
+                "hide_below_px": {"type": "number", "minimum": 0}
+              }
+            }
+          ]
         }
       }
     },

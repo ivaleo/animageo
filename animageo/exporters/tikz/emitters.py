@@ -28,6 +28,7 @@ from ...geo.lib_conic import ConicType
 from ...geo.lib_elements import (
     resolve_text_position, text_to_display_latex, textify_cyrillic,
 )
+from ...angle_marker import fit_settings, marker_extent, marker_fit
 from ...label_placement import compute_effective_arc_size_px
 from ...style.colorspace import same_color
 from .context import TikzContext
@@ -447,6 +448,18 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
         right_marker = False
     if right_marker is None:
         right_marker = bool(np.isclose(angle, math.pi / 2))
+    # rendering.angle_marker_fit: the marker of the renderer (its mode, square
+    # and arcs), moved in to fit the sides or not drawn; the label at its extent
+    fitted = fit_settings(ctx.scene) is not None
+    hidden = False
+    arcs_drawn = max(0 if explicit else 1, tick_count)
+    if fitted:
+        extent = marker_extent(ctx.scene, elem)
+        fit = marker_fit(ctx.scene, elem, extent)
+        right_marker = extent.right
+        r = (extent.label_px - fit.delta_px) / ps
+        hidden = fit.hidden
+        arcs_drawn = extent.count
     decoration_opts = stroke_options(ctx, elem, with_dash=False,
                                     color_override=getattr(elem, '_native_mark_stroke', None))
 
@@ -454,9 +467,11 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
     has_fill = _fill_opacity(ctx, elem) > 0 and not same_color(
         ctx.resolve(elem, "fill", default=background_color(ctx)), background_color(ctx))
 
-    if right_marker:
+    if hidden:
+        pass
+    elif right_marker:
         right_size_px = ctx.resolve(elem, "right_angle_size_px", default=arc_size_resolved)
-        rr = float(right_size_px) / math.sqrt(2) / ps
+        rr = r if fitted else float(right_size_px) / math.sqrt(2) / ps
         s1 = np.asarray(data.side1, float)
         s2 = np.asarray(data.side2, float)
         n1 = s1 * (rr / np.linalg.norm(s1))
@@ -482,7 +497,7 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
                 f"{_coord(ctx, sx, sy)} arc ({ctx.doc.num(a0d)}:{ctx.doc.num(a1d)}:{ctx.doc.num(r)}) -- cycle;"
             )
         opts = decoration_opts
-        for i in range(max(0 if explicit else 1, tick_count)):
+        for i in range(arcs_drawn):
             ri = r - i * arc_shift_mu
             if ri <= 0:
                 continue
