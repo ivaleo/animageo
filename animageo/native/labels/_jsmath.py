@@ -1,12 +1,18 @@
-"""``Math`` of JavaScript as V8 computes it, for the R4 port (``r4.py``).
+"""``Math`` of JavaScript, for the R4 port (``r4.py``).
 
-The client solver decides some ties on the last bits of ``Math.atan2``,
-``Math.hypot`` and ``Math.round`` (a point in the middle of a segment sees
-the line at the angles ``a`` and ``a + π``: which of the two equal gaps is
-"larger" depends on how ``a`` was rounded). The C library of the platform
-rounds differently from V8 in a few per cent of the arguments, so these
-functions follow V8 (``src/base/ieee754.cc``, a port of fdlibm 5.3, and
-``MathHypot`` of ``src/builtins/math.tq``) bit for bit.
+The port computes as the client does, so that its numbers are the client's
+where they can be. The C library of the platform rounds differently from a
+JavaScript engine in a few per cent of the arguments, so:
+
+* ``hypot`` follows ``MathHypot`` of V8 (``src/builtins/math.tq``: scaled
+  by the larger value, a compensated sum) and ``js_round`` ``Math.round``
+  (halves up); both are checked against values computed by V8;
+* ``atan``, ``atan2``, ``sin`` and ``cos`` are fdlibm 5.3 as V8 ports it
+  (``src/base/ieee754.cc``); they are checked against fdlibm's special
+  values and to lie within an ulp of the platform library, not against V8
+  itself. A build that contracts into FMA (Node on arm64) differs from
+  fdlibm in the last bit for some arguments; the tie rule of ``r4.py``
+  keeps ``k`` independent of that.
 
 ``sin`` and ``cos`` reduce the argument as fdlibm for ``|x| <= 2^19·π/2``;
 a larger argument (never an angle of a display list) falls back to the

@@ -1,12 +1,12 @@
-"""R4: the client label solver, ported line for line (pure Python, no manim).
+"""R4: the label solver of the animageo_web client, ported line for line (no manim).
 
-Source: the client solver ``frontend/src/canvas/render/labels/layout.ts`` and
-``labels/geometry.ts`` at ``5d88ff083`` (the solver of ``c91527cc1`` plus the
-origin of the view frame). The reference of that behaviour: constants, order
-of candidates and operations, comparisons and roundings are the TypeScript's,
-so a client checks its solver against fixtures made here (``k`` exactly,
-centres within 0.01 px). Only the solver is ported, not when it is called,
-the drag following or the transition.
+Source: the client's label layout and its geometry, at the version the
+fixtures of ``tests/native/fixtures/labels_r4`` were recorded from (with
+the origin of the view frame). That behaviour is the reference: constants,
+order of candidates and operations, comparisons and roundings are the
+TypeScript's, so the client checks its solver against fixtures made here
+(``k`` exactly, centres within 0.01 px). Only the solver is ported, not
+when it is called, the drag following or the transition.
 
 Units: CSS px of the sheet, y down; a box is ``(l, t, r, b)``; ``edge`` — the
 corner of the box standing at ``(x, y)``, axis y up.
@@ -21,8 +21,8 @@ as V8 (``_jsmath.py``). Input is checked the same way as the JSON shape and
 as dataclasses: a number that is not finite, a missing field or a value of
 a wrong type raises ``ValueError`` (TypeScript would carry a NaN).
 
-Ties — the one change to ``5d88ff083``, agreed with the client, which
-repeats it: structural ties (a point in the middle of a segment or on a
+Ties — the one departure from the recorded version; the client applies
+the same rule: structural ties (a point in the middle of a segment or on a
 line, crossings, regular figures, mirrored places) are decided by a rule,
 not by the last bit of ``atan2``/``hypot`` (another libm, FMA):
 
@@ -106,7 +106,7 @@ __all__ = [
     'segment_hits_box',
 ]
 
-# Constants, TypeScript (layout.ts, geometry.ts) → Python:
+# Constants, TypeScript → Python:
 #   BASE = 1                       _BASE
 #   HYSTERESIS = 0.75              HYSTERESIS        (a new place: 25 % cheaper)
 #   ANCHOR_EPS = 0.5               ANCHOR_EPS        (the anchor did not move)
@@ -128,9 +128,9 @@ __all__ = [
 #   eps = 1.5 (awayOctant)         _AWAY_EPS
 #   64 links, 16 chords            _POLYLINE_LINKS, _ARC_CHORDS
 #   strokeWidth ?? 2 (pad)         _DEFAULT_STROKE   (pad = 1 + width / 2)
-#   (after 5d88ff083) GAP_TIE      _GAP_TIE = 1e-9   (rad, equal gaps)
-#   (after 5d88ff083) OCTANT_TIE   _OCTANT_TIE = 1e-9 (octants, a half octant)
-#   (after 5d88ff083) COST_TIE     _COST_TIE = 1e-12 (relative, equal costs)
+#   (tie rule) GAP_TIE = 1e-9      _GAP_TIE          (rad, equal gaps)
+#   (tie rule) OCTANT_TIE = 1e-9   _OCTANT_TIE       (octants, a half octant)
+#   (tie rule) COST_TIE = 1e-12    _COST_TIE         (relative, equal costs)
 _BASE = 1.0
 HYSTERESIS = 0.75
 ANCHOR_EPS = 0.5
@@ -170,8 +170,8 @@ _INF = math.inf
 # Margin of the (exact) culling of geometry far from every candidate of a
 # label, CSS px: far above any rounding of the hit tests.
 _CULL_MARGIN = 1.0
-# Ties (after 5d88ff083, agreed with the client; the rule is in the module
-# docstring): gaps of awayOctant equal within _GAP_TIE rad, a direction at a
+# Ties (the one departure from the recorded version; the rule is in the
+# module docstring): gaps of awayOctant equal within _GAP_TIE rad, a direction at a
 # half octant within _OCTANT_TIE octants, costs equal within the relative
 # _COST_TIE.
 _GAP_TIE = 1e-9
@@ -236,7 +236,7 @@ def _truthy(v: Any) -> bool:
 
 @dataclass(frozen=True, slots=True)
 class LabelPlace:
-    """How a label is laid out (``LabelPlace`` of ``layout.ts``)."""
+    """How a label is laid out (the client's ``LabelPlace``)."""
 
     kind: str  # 'point' | 'line' | 'measure'
     pinned: bool = False
@@ -531,7 +531,7 @@ def _as_memory(memory) -> dict[str, dict[str, Any]]:
     return out
 
 
-# ------------------------------------------------------- geometry.ts
+# ------------------------------------------------------------ geometry
 
 
 def _seg_hit(x1: float, y1: float, x2: float, y2: float, l: float, t: float, r: float, b: float) -> bool:
@@ -764,7 +764,7 @@ def geometry_pairs(display_list, paint=None) -> list[tuple[str, str]]:
     return [pairs[k] for k in sorted(pairs, key=lambda s: s.encode('utf-16-be', 'surrogatepass'))]
 
 
-# ---------------------------------------------------------- layout.ts
+# -------------------------------------------------------------- layout
 
 
 def _octant(x: float) -> int:
