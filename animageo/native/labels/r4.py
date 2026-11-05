@@ -17,8 +17,9 @@ the anchor it was chosen at. :func:`layout` takes the previous memory (or
 argument.
 
 JavaScript kept on purpose: ``%`` truncated and ``Math.atan2/cos/sin/hypot``
-as V8 (``_jsmath.py``). Numbers must be finite (a ``ValueError``;
-TypeScript would carry a NaN).
+as V8 (``_jsmath.py``). Input is checked the same way as the JSON shape and
+as dataclasses: a number that is not finite, a missing field or a value of
+a wrong type raises ``ValueError`` (TypeScript would carry a NaN).
 
 Ties — the one change to ``5d88ff083``, agreed with the client, which
 repeats it: structural ties (a point in the middle of a segment or on a
@@ -67,6 +68,7 @@ Every other comparison is the reference's.
 """
 from __future__ import annotations
 
+import functools
 import json
 import math
 from collections.abc import Mapping, Sequence
@@ -179,6 +181,26 @@ _COST_BAR = 1 - _COST_TIE
 
 
 # ---------------------------------------------------------------- input
+
+
+# A missing field or a value of a wrong type in the input: a ValueError.
+_SHAPE_ERRORS = (AttributeError, IndexError, KeyError, OverflowError, TypeError)
+
+
+def _input(what: str):
+    """Errors of the input's shape (a missing field, a wrong type) as ``ValueError``."""
+
+    def wrap(fn):
+        @functools.wraps(fn)
+        def checked(*args, **kwargs):
+            try:
+                return fn(*args, **kwargs)
+            except _SHAPE_ERRORS as e:
+                raise ValueError(f'{what}: malformed input ({type(e).__name__}: {e})') from e
+
+        return checked
+
+    return wrap
 
 
 def _num(v: Any, what: str) -> float:
@@ -327,6 +349,7 @@ class DisplayList:
     labels: tuple[Label, ...] = ()
 
     @classmethod
+    @_input('display list')
     def from_dict(cls, d: Mapping[str, Any]) -> 'DisplayList':
         """From the JSON shape of the client's display list (its field names)."""
 
@@ -411,6 +434,7 @@ class Paint:
     sector_sides: frozenset[str] = frozenset()
 
     @classmethod
+    @_input('paint')
     def from_dict(cls, d: Mapping[str, Any]) -> 'Paint':
         """From ``{'byId': {id: {'strokeWidth': w, 'sectorSides': bool}}}`` (the client's ``CanvasPaint``)."""
         by_id = d.get('byId') or {}
@@ -425,41 +449,83 @@ class Paint:
         return cls(widths, frozenset(sides))
 
 
+def _list_dict(dl: DisplayList) -> dict[str, Any]:
+    """The JSON shape of a :class:`DisplayList`, to check it as :meth:`DisplayList.from_dict` does."""
+
+    def place(p):
+        if p is None:
+            return None
+        return {'kind': p.kind, 'pinned': p.pinned, 'reach': p.reach, 'along': p.along}
+
+    return {
+        'points': [{'id': p.id, 'x': p.x, 'y': p.y} for p in dl.points],
+        'linears': [{'id': s.id, 'x1': s.x1, 'y1': s.y1, 'x2': s.x2, 'y2': s.y2, 'kind': s.kind} for s in dl.linears],
+        'circles': [{'id': c.id, 'cx': c.cx, 'cy': c.cy, 'r': c.r} for c in dl.circles],
+        'polygons': [{'id': p.id, 'pts': p.pts} for p in dl.polygons],
+        'arcs': [
+            {'id': a.id, 'cx': a.cx, 'cy': a.cy, 'r': a.r, 'start': a.start, 'sweep': a.sweep, 'kind': a.kind}
+            for a in dl.arcs
+        ],
+        'polylines': [{'id': p.id, 'pts': p.pts} for p in dl.polylines],
+        'angles': [
+            {'id': a.id, 'x': a.x, 'y': a.y, 'start': a.start, 'sweep': a.sweep, 'radii': a.radii,
+             'square': a.square, 'owner': a.owner}
+            for a in dl.angles
+        ],
+        'ticks': [{'id': k.id, 'pts': k.pts, 'width': k.width, 'owner': k.owner} for k in dl.ticks],
+        'labels': [
+            {'id': lb.id, 'ax': lb.ax, 'ay': lb.ay, 'box': lb.box, 'edge': lb.edge, 'place': place(lb.place),
+             'x': lb.x, 'y': lb.y}
+            for lb in dl.labels
+        ],
+    }
+
+
+@_input('display list')
 def _as_list(display_list) -> DisplayList:
     if isinstance(display_list, DisplayList):
-        return display_list
+        # The same checks as the JSON shape: finite numbers, sizes, kinds.
+        return DisplayList.from_dict(_list_dict(display_list))
     if isinstance(display_list, Mapping):
         return DisplayList.from_dict(display_list)
-    raise TypeError('display_list: DisplayList or mapping expected')
+    raise ValueError('display_list: DisplayList or mapping expected')
 
 
+@_input('paint')
 def _as_paint(paint) -> Paint | None:
-    if paint is None or isinstance(paint, Paint):
-        return paint
+    if paint is None:
+        return None
+    if isinstance(paint, Paint):
+        return Paint(
+            {str(key): _num(w, 'strokeWidth') for key, w in paint.stroke_width.items()},
+            frozenset(str(key) for key in paint.sector_sides),
+        )
     if isinstance(paint, Mapping):
         return Paint.from_dict(paint)
-    raise TypeError('paint: Paint, mapping or None expected')
+    raise ValueError('paint: Paint, mapping or None expected')
 
 
+@_input('view')
 def _as_view(view) -> tuple[float, float, float, float]:
     if isinstance(view, Mapping):
         view = LayoutView(view['width'], view['height'], view.get('x'), view.get('y'))
     if not isinstance(view, LayoutView):
-        raise TypeError('view: LayoutView or mapping expected')
+        raise ValueError('view: LayoutView or mapping expected')
     x0 = 0.0 if view.x is None else _num(view.x, 'view x')
     y0 = 0.0 if view.y is None else _num(view.y, 'view y')
     return (x0, y0, x0 + _num(view.width, 'view width'), y0 + _num(view.height, 'view height'))
 
 
+@_input('memory')
 def _as_memory(memory) -> dict[str, dict[str, Any]]:
     out: dict[str, dict[str, Any]] = {}
     if memory is None:
         return out
     if not isinstance(memory, Mapping):
-        raise TypeError('memory: mapping or None expected')
+        raise ValueError('memory: mapping or None expected')
     for key, entry in memory.items():
         k = entry['k']
-        if isinstance(k, bool) or not isinstance(k, (int, float)) or k != int(k):
+        if isinstance(k, bool) or not isinstance(k, (int, float)) or not math.isfinite(k) or k != int(k):
             raise ValueError(f'memory {key!r}: integer k expected, got {k!r}')
         out[str(key)] = {'k': int(k), 'ax': _num(entry['ax'], 'memory ax'), 'ay': _num(entry['ay'], 'memory ay')}
     return out

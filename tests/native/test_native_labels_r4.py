@@ -16,6 +16,7 @@ mirrored places): the rule's ``k``, the same with any input moved by an ulp.
 from __future__ import annotations
 
 import copy
+import dataclasses
 import json
 import math
 import subprocess
@@ -534,6 +535,68 @@ def test_non_finite_input_is_refused():
     lst['labels'][0]['place']['kind'] = 'curve'
     with pytest.raises(ValueError, match='kind'):
         r4.layout(lst, {'width': 640, 'height': 480})
+
+
+def test_dataclass_input_is_checked_as_well():
+    lst = r4.DisplayList.from_dict(_list(CLIENT['layout/style-place'], 0))
+    view = {'width': 640, 'height': 480}
+    label = lst.labels[0]
+    bad_lists = {
+        'finite': [
+            dataclasses.replace(lst, labels=(dataclasses.replace(label, ax=math.nan), *lst.labels[1:])),
+            dataclasses.replace(lst, labels=(dataclasses.replace(label, box=(0.0, 0.0, math.inf, 1.0)), *lst.labels[1:])),
+            dataclasses.replace(lst, linears=(r4.Linear('s', 0, 0, math.inf, 1),)),
+            dataclasses.replace(lst, polygons=(r4.Polygon('p', (0, 0, 1, math.nan)),)),
+        ],
+        'kind': [
+            dataclasses.replace(lst, labels=(dataclasses.replace(label, place=r4.LabelPlace('curve')), *lst.labels[1:])),
+        ],
+        'malformed': [
+            dataclasses.replace(lst, labels=(dataclasses.replace(label, place='point'), *lst.labels[1:])),
+            dataclasses.replace(lst, points=(None,)),
+        ],
+    }
+    for match, lists in bad_lists.items():
+        for bad in lists:
+            with pytest.raises(ValueError, match=match):
+                r4.layout(bad, view)
+    with pytest.raises(ValueError, match='finite'):
+        r4.geometry_pairs(bad_lists['finite'][2])
+    with pytest.raises(ValueError, match='finite'):
+        r4.layout(lst, r4.LayoutView(640, math.nan))
+    with pytest.raises(ValueError, match='finite'):
+        r4.layout(lst, view, None, r4.Paint({'s': math.inf}))
+
+
+def _malformed(change):
+    lst = copy.deepcopy(_list(CLIENT['layout/style-place'], 0))
+    args = {'list': lst, 'view': {'width': 640, 'height': 480}, 'memory': {}, 'paint': None}
+    change(args)
+    return args
+
+
+@pytest.mark.parametrize(
+    'change',
+    [
+        pytest.param(lambda a: a.update(memory={'A': {'k': math.inf, 'ax': 0, 'ay': 0}}), id='memory-k-inf'),
+        pytest.param(lambda a: a.update(memory={'A': {'k': math.nan, 'ax': 0, 'ay': 0}}), id='memory-k-nan'),
+        pytest.param(lambda a: a.update(memory={'A': {'k': 1, 'ax': 0}}), id='memory-without-ay'),
+        pytest.param(lambda a: a.update(memory={'A': 3}), id='memory-entry-not-a-mapping'),
+        pytest.param(lambda a: a.update(memory=[1]), id='memory-not-a-mapping'),
+        pytest.param(lambda a: a['list']['labels'][0].pop('ax'), id='label-without-ax'),
+        pytest.param(lambda a: a['list']['labels'][0].update(place='point'), id='place-a-string'),
+        pytest.param(lambda a: a['list']['points'].append(7), id='point-not-a-mapping'),
+        pytest.param(lambda a: a['view'].pop('width'), id='view-without-width'),
+        pytest.param(lambda a: a.update(view=[640, 480]), id='view-a-list'),
+        pytest.param(lambda a: a.update(list=[1, 2]), id='list-a-list'),
+        pytest.param(lambda a: a.update(paint={'byId': {'A': 3}}), id='paint-entry-not-a-mapping'),
+        pytest.param(lambda a: a.update(paint=[1]), id='paint-a-list'),
+    ],
+)
+def test_malformed_input_is_a_value_error(change):
+    args = _malformed(change)
+    with pytest.raises(ValueError):
+        r4.layout(args['list'], args['view'], args['memory'], args['paint'])
 
 
 def test_no_labels():
