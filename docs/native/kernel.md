@@ -1517,6 +1517,7 @@ Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
 | op | inputs → outputs | undefined | checks |
 |---|---|---|---|
 | `intersect.conic_conic` | `first, second: conical` → `first … fourth: point` | `no_intersection`, `coincident`, `concentric`, `branch_absent`, `outside_part`, `upstream` | `on_both` |
+| `intersect.function_conic` | `function, conic: conical`; `count` → `point.k` | `no_intersection`, `coincident`, `outside_part`, `branch_absent`, `upstream` | `on_both` |
 
 - Family `conical`: `conic`, `circle`, `arc` (an arc is met as its carrier
   circle, then filtered, as in §5.4).
@@ -1537,9 +1538,14 @@ Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
   `a0` of an arc). Two circular inputs give the slots of
   `intersect.circle_circle`.
 - New noise decisions: `same_curve`, `same_centre`, `seam`.
+- `intersect.function_conic` searches `h(x) = measure(x, f(x))` of the
+  conic (its canonical equation over its unit, a length near the curve) on
+  the grid of §14 over the x-range of `B4` cut by the domain, as
+  `intersect.function_function`: policy `roots_ascending`, a tangency in two
+  slots, a point off an arc `outside_part` (`detail.slot: "conic"`).
 - «Команды»: no commands for them yet (`commands.lexicon.deferred_op`, as §14).
 - Parity fixtures: the scenes `meet_*` of `parity/v1/curves`
-  (`curves_fixtures.py`), every reason of the operations, tangency,
+  (`curves_fixtures.py`; `meet_graph_*` for the graphs), every reason of the operations, tangency,
   coincidence, close roots, a miss and the recovery, far coordinates, and
   `meet_seam`: a point crossing the seam swaps two slots between the cases
   `near_before` and `after`. The DSL map lists the operations in

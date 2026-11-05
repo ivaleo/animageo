@@ -62,7 +62,7 @@ G2_CONIC_OPS = {'conic.ellipse_foci_point', 'conic.hyperbola_foci_point', 'conic
 G2_OPS = G2_FUNCTION_OPS | G2_CONIC_OPS
 SCHOOL_B_OPS = {'line.common_tangents', 'sector.segment', 'triangle.cevian', 'circle.nine_point', 'line.euler'}
 # Registry 1.8: common points of conics
-MEET_OPS = {'intersect.conic_conic'}
+MEET_OPS = {'intersect.conic_conic', 'intersect.function_conic'}
 ALL_OPS = MEET_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.7 extend 1.0: earlier operations keep their signatures.
 # Registry 1.6 is frozen since 1.11.0rc5; new school operations go to 1.7.
@@ -249,7 +249,8 @@ def test_record_fields(op):
     if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
                   'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle',
                   'text.free', 'function.expr', 'function.root', 'function.extremum',
-                  'intersect.function_function', 'intersect.function_line', 'line.common_tangents', 'triangle.cevian'):
+                  'intersect.function_function', 'intersect.function_line', 'line.common_tangents', 'triangle.cevian',
+                  'intersect.function_conic'):
         assert record['params'] == []
     for param in record['params']:
         assert {'slot', 'type', 'unit', 'text'} <= set(param) <= {'slot', 'type', 'unit', 'optional',

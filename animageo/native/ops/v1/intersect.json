@@ -570,5 +570,65 @@
     },
     "math": "docs/native/ops/intersect.conic_conic.md",
     "signatureHash": "sha256:17dccaf5001c5a0a9aa2153b58136d276b2fa00451084ba4dca148d3a6c1118a"
+  },
+  {
+    "op": "intersect.function_conic",
+    "status": "beta",
+    "since": "1.8",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      },
+      {
+        "slot": "conic",
+        "type": "conical"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 1,
+        "text": "number of slots, a whole number 1..100 (default 1); outside it the operation has no output slots"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "branch": {
+      "policy": "roots_ascending",
+      "slots": [
+        "point"
+      ],
+      "text": "point.k is the k-th common point by x in the window B4 of the bounds, fixed on the carrier circle of an arc before the part filter; a tangency fills two slots"
+    },
+    "undefined": [
+      "no_intersection",
+      "coincident",
+      "outside_part",
+      "branch_absent",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "every defined point lies on the graph and on the conic: the larger of |y - f(x)| and the focal residual of a conic or | |X - c| - r | of a circle"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "intersection",
+    "phrases": {
+      "ru": "{point} — точки пересечения графика {function} и {conic}"
+    },
+    "math": "docs/native/ops/intersect.function_conic.md",
+    "signatureHash": "sha256:3acee86cf9b0af82a54149197688ab46425415433a28801f20a934c9863a1787"
   }
 ]

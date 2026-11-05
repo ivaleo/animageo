@@ -1,0 +1,5609 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "meet_graph_conic",
+ "registry": "1.8",
+ "generatedBy": "animageo 1.11.4",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "meet_graph_conic",
+  "operationRegistryVersion": "1.8",
+  "operations": {
+   "op_a": {
+    "id": "op_a",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "a"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "a"
+       },
+       {
+        "kind": "ref",
+        "elementId": "c"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_K": {
+    "id": "op_K",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "K"
+     }
+    ]
+   },
+   "op_Q": {
+    "id": "op_Q",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Q"
+     }
+    ]
+   },
+   "op_k": {
+    "id": "op_k",
+    "op": "circle.center_point",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "K"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "Q"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "circle",
+      "elementId": "k"
+     }
+    ]
+   },
+   "op_g": {
+    "id": "op_g",
+    "op": "intersect.function_conic",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "k"
+     },
+     "count": {
+      "kind": "number",
+      "value": 4
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point.1",
+      "elementId": "g1"
+     },
+     {
+      "slot": "point.2",
+      "elementId": "g2"
+     },
+     {
+      "slot": "point.3",
+      "elementId": "g3"
+     },
+     {
+      "slot": "point.4",
+      "elementId": "g4"
+     }
+    ]
+   },
+   "op_F1": {
+    "id": "op_F1",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F1"
+     }
+    ]
+   },
+   "op_F2": {
+    "id": "op_F2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F2"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_e": {
+    "id": "op_e",
+    "op": "conic.ellipse_foci_point",
+    "args": {
+     "f1": {
+      "kind": "ref",
+      "elementId": "F1"
+     },
+     "f2": {
+      "kind": "ref",
+      "elementId": "F2"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "P"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "e"
+     }
+    ]
+   },
+   "op_h": {
+    "id": "op_h",
+    "op": "intersect.function_conic",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "e"
+     },
+     "count": {
+      "kind": "number",
+      "value": 4
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point.1",
+      "elementId": "h1"
+     },
+     {
+      "slot": "point.2",
+      "elementId": "h2"
+     },
+     {
+      "slot": "point.3",
+      "elementId": "h3"
+     },
+     {
+      "slot": "point.4",
+      "elementId": "h4"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_w": {
+    "id": "op_w",
+    "op": "arc.center_two_points",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "K"
+     },
+     "a": {
+      "kind": "ref",
+      "elementId": "Q"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "arc",
+      "elementId": "w"
+     }
+    ]
+   },
+   "op_s": {
+    "id": "op_s",
+    "op": "intersect.function_conic",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "w"
+     },
+     "count": {
+      "kind": "number",
+      "value": 4
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point.1",
+      "elementId": "s1"
+     },
+     {
+      "slot": "point.2",
+      "elementId": "s2"
+     },
+     {
+      "slot": "point.3",
+      "elementId": "s3"
+     },
+     {
+      "slot": "point.4",
+      "elementId": "s4"
+     }
+    ]
+   },
+   "op_q": {
+    "id": "op_q",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "q"
+     }
+    ]
+   },
+   "op_pq": {
+    "id": "op_pq",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "var": "y"
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "pq"
+     }
+    ]
+   },
+   "op_t": {
+    "id": "op_t",
+    "op": "intersect.function_conic",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "q"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "pq"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point.1",
+      "elementId": "t1"
+     },
+     {
+      "slot": "point.2",
+      "elementId": "t2"
+     }
+    ]
+   },
+   "op_l": {
+    "id": "op_l",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 0.5
+        },
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "l"
+     }
+    ]
+   },
+   "op_G1": {
+    "id": "op_G1",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "G1"
+     }
+    ]
+   },
+   "op_G2": {
+    "id": "op_G2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "G2"
+     }
+    ]
+   },
+   "op_R": {
+    "id": "op_R",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "R"
+     }
+    ]
+   },
+   "op_y": {
+    "id": "op_y",
+    "op": "conic.hyperbola_foci_point",
+    "args": {
+     "f1": {
+      "kind": "ref",
+      "elementId": "G1"
+     },
+     "f2": {
+      "kind": "ref",
+      "elementId": "G2"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "R"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "y"
+     }
+    ]
+   },
+   "op_u": {
+    "id": "op_u",
+    "op": "intersect.function_conic",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "l"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "y"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point.1",
+      "elementId": "u1"
+     },
+     {
+      "slot": "point.2",
+      "elementId": "u2"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "a": {
+    "id": "a",
+    "type": "number",
+    "displayName": "a",
+    "producer": {
+     "operationId": "op_a",
+     "slot": "number"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "number",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "number"
+    }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "K": {
+    "id": "K",
+    "type": "point",
+    "displayName": "K",
+    "producer": {
+     "operationId": "op_K",
+     "slot": "point"
+    }
+   },
+   "Q": {
+    "id": "Q",
+    "type": "point",
+    "displayName": "Q",
+    "producer": {
+     "operationId": "op_Q",
+     "slot": "point"
+    }
+   },
+   "k": {
+    "id": "k",
+    "type": "circle",
+    "displayName": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "circle"
+    }
+   },
+   "g1": {
+    "id": "g1",
+    "type": "point",
+    "displayName": "g1",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "point.1"
+    }
+   },
+   "g2": {
+    "id": "g2",
+    "type": "point",
+    "displayName": "g2",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "point.2"
+    }
+   },
+   "g3": {
+    "id": "g3",
+    "type": "point",
+    "displayName": "g3",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "point.3"
+    }
+   },
+   "g4": {
+    "id": "g4",
+    "type": "point",
+    "displayName": "g4",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "point.4"
+    }
+   },
+   "F1": {
+    "id": "F1",
+    "type": "point",
+    "displayName": "F1",
+    "producer": {
+     "operationId": "op_F1",
+     "slot": "point"
+    }
+   },
+   "F2": {
+    "id": "F2",
+    "type": "point",
+    "displayName": "F2",
+    "producer": {
+     "operationId": "op_F2",
+     "slot": "point"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "e": {
+    "id": "e",
+    "type": "conic",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "conic"
+    }
+   },
+   "h1": {
+    "id": "h1",
+    "type": "point",
+    "displayName": "h1",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "point.1"
+    }
+   },
+   "h2": {
+    "id": "h2",
+    "type": "point",
+    "displayName": "h2",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "point.2"
+    }
+   },
+   "h3": {
+    "id": "h3",
+    "type": "point",
+    "displayName": "h3",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "point.3"
+    }
+   },
+   "h4": {
+    "id": "h4",
+    "type": "point",
+    "displayName": "h4",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "point.4"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "w": {
+    "id": "w",
+    "type": "arc",
+    "displayName": "w",
+    "producer": {
+     "operationId": "op_w",
+     "slot": "arc"
+    }
+   },
+   "s1": {
+    "id": "s1",
+    "type": "point",
+    "displayName": "s1",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "point.1"
+    }
+   },
+   "s2": {
+    "id": "s2",
+    "type": "point",
+    "displayName": "s2",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "point.2"
+    }
+   },
+   "s3": {
+    "id": "s3",
+    "type": "point",
+    "displayName": "s3",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "point.3"
+    }
+   },
+   "s4": {
+    "id": "s4",
+    "type": "point",
+    "displayName": "s4",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "point.4"
+    }
+   },
+   "q": {
+    "id": "q",
+    "type": "function",
+    "displayName": "q",
+    "producer": {
+     "operationId": "op_q",
+     "slot": "function"
+    }
+   },
+   "pq": {
+    "id": "pq",
+    "type": "conic",
+    "displayName": "pq",
+    "producer": {
+     "operationId": "op_pq",
+     "slot": "conic"
+    }
+   },
+   "t1": {
+    "id": "t1",
+    "type": "point",
+    "displayName": "t1",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "point.1"
+    }
+   },
+   "t2": {
+    "id": "t2",
+    "type": "point",
+    "displayName": "t2",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "point.2"
+    }
+   },
+   "l": {
+    "id": "l",
+    "type": "function",
+    "displayName": "l",
+    "producer": {
+     "operationId": "op_l",
+     "slot": "function"
+    }
+   },
+   "G1": {
+    "id": "G1",
+    "type": "point",
+    "displayName": "G1",
+    "producer": {
+     "operationId": "op_G1",
+     "slot": "point"
+    }
+   },
+   "G2": {
+    "id": "G2",
+    "type": "point",
+    "displayName": "G2",
+    "producer": {
+     "operationId": "op_G2",
+     "slot": "point"
+    }
+   },
+   "R": {
+    "id": "R",
+    "type": "point",
+    "displayName": "R",
+    "producer": {
+     "operationId": "op_R",
+     "slot": "point"
+    }
+   },
+   "y": {
+    "id": "y",
+    "type": "conic",
+    "displayName": "y",
+    "producer": {
+     "operationId": "op_y",
+     "slot": "conic"
+    }
+   },
+   "u1": {
+    "id": "u1",
+    "type": "point",
+    "displayName": "u1",
+    "producer": {
+     "operationId": "op_u",
+     "slot": "point.1"
+    }
+   },
+   "u2": {
+    "id": "u2",
+    "type": "point",
+    "displayName": "u2",
+    "producer": {
+     "operationId": "op_u",
+     "slot": "point.2"
+    }
+   }
+  },
+  "inputs": {
+   "a": {
+    "kind": "number",
+    "value": 0.25
+   },
+   "c": {
+    "kind": "number",
+    "value": 0.0
+   },
+   "K": {
+    "kind": "point",
+    "value": [
+     0.0,
+     5.0
+    ]
+   },
+   "Q": {
+    "kind": "point",
+    "value": [
+     4.0,
+     3.0
+    ]
+   },
+   "F1": {
+    "kind": "point",
+    "value": [
+     -3.0,
+     0.0
+    ]
+   },
+   "F2": {
+    "kind": "point",
+    "value": [
+     3.0,
+     0.0
+    ]
+   },
+   "P": {
+    "kind": "point",
+    "value": [
+     0.0,
+     4.0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     -4.0,
+     3.0
+    ]
+   },
+   "G1": {
+    "kind": "point",
+    "value": [
+     -5.0,
+     0.0
+    ]
+   },
+   "G2": {
+    "kind": "point",
+    "value": [
+     5.0,
+     0.0
+    ]
+   },
+   "R": {
+    "kind": "point",
+    "value": [
+     3.0,
+     0.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "base",
+   "scale": 20.0,
+   "expect": {
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       0.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.472135955,
+      "y": 5.0
+     }
+    },
+    "g2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 1.0
+     }
+    },
+    "g3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "g4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.472135955,
+      "y": 5.0
+     }
+    },
+    "h1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.417490026,
+      "y": 2.919809519
+     }
+    },
+    "h2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.417490026,
+      "y": 2.919809519
+     }
+    },
+    "h3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "h4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 0.5
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "pq": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "s1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.472135955,
+      "y": 5.0
+     }
+    },
+    "s2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "conic"
+     }
+    },
+    "s3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "conic"
+     }
+    },
+    "s4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.472135955,
+      "y": 5.0
+     }
+    },
+    "t1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "u1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.23615934,
+      "y": -1.61807967
+     }
+    },
+    "u2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.23615934,
+      "y": 1.61807967
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 5.819537698,
+      "a1": 9.88842557
+     }
+    },
+    "y": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_g:on_both": "passed",
+    "op_h:on_both": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_s:on_both": "passed",
+    "op_u:on_both": "passed",
+    "op_w:ends": "passed",
+    "op_y:on_curve": "passed",
+    "op_y:foci": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      25.0
+     ],
+     [
+      -9.375,
+      21.97265625
+     ],
+     [
+      -8.75,
+      19.140625
+     ],
+     [
+      -8.125,
+      16.50390625
+     ],
+     [
+      -7.5,
+      14.0625
+     ],
+     [
+      -6.875,
+      11.81640625
+     ],
+     [
+      -6.25,
+      9.765625
+     ],
+     [
+      -5.625,
+      7.91015625
+     ],
+     [
+      -5.0,
+      6.25
+     ],
+     [
+      -4.375,
+      4.78515625
+     ],
+     [
+      -3.75,
+      3.515625
+     ],
+     [
+      -3.125,
+      2.44140625
+     ],
+     [
+      -2.5,
+      1.5625
+     ],
+     [
+      -1.875,
+      0.87890625
+     ],
+     [
+      -1.25,
+      0.390625
+     ],
+     [
+      -0.625,
+      0.09765625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.09765625
+     ],
+     [
+      1.25,
+      0.390625
+     ],
+     [
+      1.875,
+      0.87890625
+     ],
+     [
+      2.5,
+      1.5625
+     ],
+     [
+      3.125,
+      2.44140625
+     ],
+     [
+      3.75,
+      3.515625
+     ],
+     [
+      4.375,
+      4.78515625
+     ],
+     [
+      5.0,
+      6.25
+     ],
+     [
+      5.625,
+      7.91015625
+     ],
+     [
+      6.25,
+      9.765625
+     ],
+     [
+      6.875,
+      11.81640625
+     ],
+     [
+      7.5,
+      14.0625
+     ],
+     [
+      8.125,
+      16.50390625
+     ],
+     [
+      8.75,
+      19.140625
+     ],
+     [
+      9.375,
+      21.97265625
+     ],
+     [
+      10.0,
+      25.0
+     ]
+    ],
+    "l": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -9.375,
+      -4.6875
+     ],
+     [
+      -8.75,
+      -4.375
+     ],
+     [
+      -8.125,
+      -4.0625
+     ],
+     [
+      -7.5,
+      -3.75
+     ],
+     [
+      -6.875,
+      -3.4375
+     ],
+     [
+      -6.25,
+      -3.125
+     ],
+     [
+      -5.625,
+      -2.8125
+     ],
+     [
+      -5.0,
+      -2.5
+     ],
+     [
+      -4.375,
+      -2.1875
+     ],
+     [
+      -3.75,
+      -1.875
+     ],
+     [
+      -3.125,
+      -1.5625
+     ],
+     [
+      -2.5,
+      -1.25
+     ],
+     [
+      -1.875,
+      -0.9375
+     ],
+     [
+      -1.25,
+      -0.625
+     ],
+     [
+      -0.625,
+      -0.3125
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.3125
+     ],
+     [
+      1.25,
+      0.625
+     ],
+     [
+      1.875,
+      0.9375
+     ],
+     [
+      2.5,
+      1.25
+     ],
+     [
+      3.125,
+      1.5625
+     ],
+     [
+      3.75,
+      1.875
+     ],
+     [
+      4.375,
+      2.1875
+     ],
+     [
+      5.0,
+      2.5
+     ],
+     [
+      5.625,
+      2.8125
+     ],
+     [
+      6.25,
+      3.125
+     ],
+     [
+      6.875,
+      3.4375
+     ],
+     [
+      7.5,
+      3.75
+     ],
+     [
+      8.125,
+      4.0625
+     ],
+     [
+      8.75,
+      4.375
+     ],
+     [
+      9.375,
+      4.6875
+     ],
+     [
+      10.0,
+      5.0
+     ]
+    ],
+    "q": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "tangent",
+   "inputs": {
+    "a": {
+     "kind": "number",
+     "value": 0.0
+    },
+    "c": {
+     "kind": "number",
+     "value": 4.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.0,
+       4.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.358898944,
+      "y": 4.0
+     }
+    },
+    "g2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.358898944,
+      "y": 4.0
+     }
+    },
+    "g3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "g4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "h1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     },
+     "detail": {
+      "multiplicity": 2
+     }
+    },
+    "h2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     },
+     "detail": {
+      "multiplicity": 2
+     }
+    },
+    "h3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "h4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 0.5
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "pq": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "s1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.358898944,
+      "y": 4.0
+     }
+    },
+    "s2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.358898944,
+      "y": 4.0
+     }
+    },
+    "s3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "s4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "t1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "u1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.23615934,
+      "y": -1.61807967
+     }
+    },
+    "u2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.23615934,
+      "y": 1.61807967
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 5.819537698,
+      "a1": 9.88842557
+     }
+    },
+    "y": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_g:on_both": "passed",
+    "op_h:on_both": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_s:on_both": "passed",
+    "op_u:on_both": "passed",
+    "op_w:ends": "passed",
+    "op_y:on_curve": "passed",
+    "op_y:foci": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      4.0
+     ],
+     [
+      -9.375,
+      4.0
+     ],
+     [
+      -8.75,
+      4.0
+     ],
+     [
+      -8.125,
+      4.0
+     ],
+     [
+      -7.5,
+      4.0
+     ],
+     [
+      -6.875,
+      4.0
+     ],
+     [
+      -6.25,
+      4.0
+     ],
+     [
+      -5.625,
+      4.0
+     ],
+     [
+      -5.0,
+      4.0
+     ],
+     [
+      -4.375,
+      4.0
+     ],
+     [
+      -3.75,
+      4.0
+     ],
+     [
+      -3.125,
+      4.0
+     ],
+     [
+      -2.5,
+      4.0
+     ],
+     [
+      -1.875,
+      4.0
+     ],
+     [
+      -1.25,
+      4.0
+     ],
+     [
+      -0.625,
+      4.0
+     ],
+     [
+      0.0,
+      4.0
+     ],
+     [
+      0.625,
+      4.0
+     ],
+     [
+      1.25,
+      4.0
+     ],
+     [
+      1.875,
+      4.0
+     ],
+     [
+      2.5,
+      4.0
+     ],
+     [
+      3.125,
+      4.0
+     ],
+     [
+      3.75,
+      4.0
+     ],
+     [
+      4.375,
+      4.0
+     ],
+     [
+      5.0,
+      4.0
+     ],
+     [
+      5.625,
+      4.0
+     ],
+     [
+      6.25,
+      4.0
+     ],
+     [
+      6.875,
+      4.0
+     ],
+     [
+      7.5,
+      4.0
+     ],
+     [
+      8.125,
+      4.0
+     ],
+     [
+      8.75,
+      4.0
+     ],
+     [
+      9.375,
+      4.0
+     ],
+     [
+      10.0,
+      4.0
+     ]
+    ],
+    "l": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -9.375,
+      -4.6875
+     ],
+     [
+      -8.75,
+      -4.375
+     ],
+     [
+      -8.125,
+      -4.0625
+     ],
+     [
+      -7.5,
+      -3.75
+     ],
+     [
+      -6.875,
+      -3.4375
+     ],
+     [
+      -6.25,
+      -3.125
+     ],
+     [
+      -5.625,
+      -2.8125
+     ],
+     [
+      -5.0,
+      -2.5
+     ],
+     [
+      -4.375,
+      -2.1875
+     ],
+     [
+      -3.75,
+      -1.875
+     ],
+     [
+      -3.125,
+      -1.5625
+     ],
+     [
+      -2.5,
+      -1.25
+     ],
+     [
+      -1.875,
+      -0.9375
+     ],
+     [
+      -1.25,
+      -0.625
+     ],
+     [
+      -0.625,
+      -0.3125
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.3125
+     ],
+     [
+      1.25,
+      0.625
+     ],
+     [
+      1.875,
+      0.9375
+     ],
+     [
+      2.5,
+      1.25
+     ],
+     [
+      3.125,
+      1.5625
+     ],
+     [
+      3.75,
+      1.875
+     ],
+     [
+      4.375,
+      2.1875
+     ],
+     [
+      5.0,
+      2.5
+     ],
+     [
+      5.625,
+      2.8125
+     ],
+     [
+      6.25,
+      3.125
+     ],
+     [
+      6.875,
+      3.4375
+     ],
+     [
+      7.5,
+      3.75
+     ],
+     [
+      8.125,
+      4.0625
+     ],
+     [
+      8.75,
+      4.375
+     ],
+     [
+      9.375,
+      4.6875
+     ],
+     [
+      10.0,
+      5.0
+     ]
+    ],
+    "q": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "close",
+   "inputs": {
+    "a": {
+     "kind": "number",
+     "value": 0.0
+    },
+    "c": {
+     "kind": "number",
+     "value": 3.99
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 3.99,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.0,
+       3.99
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.356592705,
+      "y": 3.99
+     }
+    },
+    "g2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.356592705,
+      "y": 3.99
+     }
+    },
+    "g3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "g4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "h1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -0.353332351,
+      "y": 3.99
+     }
+    },
+    "h2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.353332351,
+      "y": 3.99
+     }
+    },
+    "h3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "h4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 0.5
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "pq": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "s1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.356592705,
+      "y": 3.99
+     }
+    },
+    "s2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.356592705,
+      "y": 3.99
+     }
+    },
+    "s3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "s4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "t1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "u1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.23615934,
+      "y": -1.61807967
+     }
+    },
+    "u2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.23615934,
+      "y": 1.61807967
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 5.819537698,
+      "a1": 9.88842557
+     }
+    },
+    "y": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_g:on_both": "passed",
+    "op_h:on_both": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_s:on_both": "passed",
+    "op_u:on_both": "passed",
+    "op_w:ends": "passed",
+    "op_y:on_curve": "passed",
+    "op_y:foci": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      3.99
+     ],
+     [
+      -9.375,
+      3.99
+     ],
+     [
+      -8.75,
+      3.99
+     ],
+     [
+      -8.125,
+      3.99
+     ],
+     [
+      -7.5,
+      3.99
+     ],
+     [
+      -6.875,
+      3.99
+     ],
+     [
+      -6.25,
+      3.99
+     ],
+     [
+      -5.625,
+      3.99
+     ],
+     [
+      -5.0,
+      3.99
+     ],
+     [
+      -4.375,
+      3.99
+     ],
+     [
+      -3.75,
+      3.99
+     ],
+     [
+      -3.125,
+      3.99
+     ],
+     [
+      -2.5,
+      3.99
+     ],
+     [
+      -1.875,
+      3.99
+     ],
+     [
+      -1.25,
+      3.99
+     ],
+     [
+      -0.625,
+      3.99
+     ],
+     [
+      0.0,
+      3.99
+     ],
+     [
+      0.625,
+      3.99
+     ],
+     [
+      1.25,
+      3.99
+     ],
+     [
+      1.875,
+      3.99
+     ],
+     [
+      2.5,
+      3.99
+     ],
+     [
+      3.125,
+      3.99
+     ],
+     [
+      3.75,
+      3.99
+     ],
+     [
+      4.375,
+      3.99
+     ],
+     [
+      5.0,
+      3.99
+     ],
+     [
+      5.625,
+      3.99
+     ],
+     [
+      6.25,
+      3.99
+     ],
+     [
+      6.875,
+      3.99
+     ],
+     [
+      7.5,
+      3.99
+     ],
+     [
+      8.125,
+      3.99
+     ],
+     [
+      8.75,
+      3.99
+     ],
+     [
+      9.375,
+      3.99
+     ],
+     [
+      10.0,
+      3.99
+     ]
+    ],
+    "l": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -9.375,
+      -4.6875
+     ],
+     [
+      -8.75,
+      -4.375
+     ],
+     [
+      -8.125,
+      -4.0625
+     ],
+     [
+      -7.5,
+      -3.75
+     ],
+     [
+      -6.875,
+      -3.4375
+     ],
+     [
+      -6.25,
+      -3.125
+     ],
+     [
+      -5.625,
+      -2.8125
+     ],
+     [
+      -5.0,
+      -2.5
+     ],
+     [
+      -4.375,
+      -2.1875
+     ],
+     [
+      -3.75,
+      -1.875
+     ],
+     [
+      -3.125,
+      -1.5625
+     ],
+     [
+      -2.5,
+      -1.25
+     ],
+     [
+      -1.875,
+      -0.9375
+     ],
+     [
+      -1.25,
+      -0.625
+     ],
+     [
+      -0.625,
+      -0.3125
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.3125
+     ],
+     [
+      1.25,
+      0.625
+     ],
+     [
+      1.875,
+      0.9375
+     ],
+     [
+      2.5,
+      1.25
+     ],
+     [
+      3.125,
+      1.5625
+     ],
+     [
+      3.75,
+      1.875
+     ],
+     [
+      4.375,
+      2.1875
+     ],
+     [
+      5.0,
+      2.5
+     ],
+     [
+      5.625,
+      2.8125
+     ],
+     [
+      6.25,
+      3.125
+     ],
+     [
+      6.875,
+      3.4375
+     ],
+     [
+      7.5,
+      3.75
+     ],
+     [
+      8.125,
+      4.0625
+     ],
+     [
+      8.75,
+      4.375
+     ],
+     [
+      9.375,
+      4.6875
+     ],
+     [
+      10.0,
+      5.0
+     ]
+    ],
+    "q": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "miss",
+   "inputs": {
+    "c": {
+     "kind": "number",
+     "value": 20.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 20.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       20.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "g2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "g3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "g4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "h1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "h2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "h3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "h4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 0.5
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "pq": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "s1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "s2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "s3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "s4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "t1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "u1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.23615934,
+      "y": -1.61807967
+     }
+    },
+    "u2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.23615934,
+      "y": 1.61807967
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 5.819537698,
+      "a1": 9.88842557
+     }
+    },
+    "y": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_u:on_both": "passed",
+    "op_w:ends": "passed",
+    "op_y:on_curve": "passed",
+    "op_y:foci": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      45.0
+     ],
+     [
+      -9.375,
+      41.97265625
+     ],
+     [
+      -8.75,
+      39.140625
+     ],
+     [
+      -8.125,
+      36.50390625
+     ],
+     [
+      -7.5,
+      34.0625
+     ],
+     [
+      -6.875,
+      31.81640625
+     ],
+     [
+      -6.25,
+      29.765625
+     ],
+     [
+      -5.625,
+      27.91015625
+     ],
+     [
+      -5.0,
+      26.25
+     ],
+     [
+      -4.375,
+      24.78515625
+     ],
+     [
+      -3.75,
+      23.515625
+     ],
+     [
+      -3.125,
+      22.44140625
+     ],
+     [
+      -2.5,
+      21.5625
+     ],
+     [
+      -1.875,
+      20.87890625
+     ],
+     [
+      -1.25,
+      20.390625
+     ],
+     [
+      -0.625,
+      20.09765625
+     ],
+     [
+      0.0,
+      20.0
+     ],
+     [
+      0.625,
+      20.09765625
+     ],
+     [
+      1.25,
+      20.390625
+     ],
+     [
+      1.875,
+      20.87890625
+     ],
+     [
+      2.5,
+      21.5625
+     ],
+     [
+      3.125,
+      22.44140625
+     ],
+     [
+      3.75,
+      23.515625
+     ],
+     [
+      4.375,
+      24.78515625
+     ],
+     [
+      5.0,
+      26.25
+     ],
+     [
+      5.625,
+      27.91015625
+     ],
+     [
+      6.25,
+      29.765625
+     ],
+     [
+      6.875,
+      31.81640625
+     ],
+     [
+      7.5,
+      34.0625
+     ],
+     [
+      8.125,
+      36.50390625
+     ],
+     [
+      8.75,
+      39.140625
+     ],
+     [
+      9.375,
+      41.97265625
+     ],
+     [
+      10.0,
+      45.0
+     ]
+    ],
+    "l": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -9.375,
+      -4.6875
+     ],
+     [
+      -8.75,
+      -4.375
+     ],
+     [
+      -8.125,
+      -4.0625
+     ],
+     [
+      -7.5,
+      -3.75
+     ],
+     [
+      -6.875,
+      -3.4375
+     ],
+     [
+      -6.25,
+      -3.125
+     ],
+     [
+      -5.625,
+      -2.8125
+     ],
+     [
+      -5.0,
+      -2.5
+     ],
+     [
+      -4.375,
+      -2.1875
+     ],
+     [
+      -3.75,
+      -1.875
+     ],
+     [
+      -3.125,
+      -1.5625
+     ],
+     [
+      -2.5,
+      -1.25
+     ],
+     [
+      -1.875,
+      -0.9375
+     ],
+     [
+      -1.25,
+      -0.625
+     ],
+     [
+      -0.625,
+      -0.3125
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.3125
+     ],
+     [
+      1.25,
+      0.625
+     ],
+     [
+      1.875,
+      0.9375
+     ],
+     [
+      2.5,
+      1.25
+     ],
+     [
+      3.125,
+      1.5625
+     ],
+     [
+      3.75,
+      1.875
+     ],
+     [
+      4.375,
+      2.1875
+     ],
+     [
+      5.0,
+      2.5
+     ],
+     [
+      5.625,
+      2.8125
+     ],
+     [
+      6.25,
+      3.125
+     ],
+     [
+      6.875,
+      3.4375
+     ],
+     [
+      7.5,
+      3.75
+     ],
+     [
+      8.125,
+      4.0625
+     ],
+     [
+      8.75,
+      4.375
+     ],
+     [
+      9.375,
+      4.6875
+     ],
+     [
+      10.0,
+      5.0
+     ]
+    ],
+    "q": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "back",
+   "inputs": {
+    "c": {
+     "kind": "number",
+     "value": -0.5
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -0.5,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       -0.5
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.433605108,
+      "y": 4.414213562
+     }
+    },
+    "g2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.888450406,
+      "y": 1.585786438
+     }
+    },
+    "g3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.888450406,
+      "y": 1.585786438
+     }
+    },
+    "g4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.433605108,
+      "y": 4.414213562
+     }
+    },
+    "h1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.613614197,
+      "y": 2.764551891
+     }
+    },
+    "h2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.613614197,
+      "y": 2.764551891
+     }
+    },
+    "h3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "h4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 0.5
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "pq": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "s1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.433605108,
+      "y": 4.414213562
+     }
+    },
+    "s2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "conic"
+     }
+    },
+    "s3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "conic"
+     }
+    },
+    "s4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.433605108,
+      "y": 4.414213562
+     }
+    },
+    "t1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "u1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.23615934,
+      "y": -1.61807967
+     }
+    },
+    "u2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.23615934,
+      "y": 1.61807967
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 5.819537698,
+      "a1": 9.88842557
+     }
+    },
+    "y": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_g:on_both": "passed",
+    "op_h:on_both": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_s:on_both": "passed",
+    "op_u:on_both": "passed",
+    "op_w:ends": "passed",
+    "op_y:on_curve": "passed",
+    "op_y:foci": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      24.5
+     ],
+     [
+      -9.375,
+      21.47265625
+     ],
+     [
+      -8.75,
+      18.640625
+     ],
+     [
+      -8.125,
+      16.00390625
+     ],
+     [
+      -7.5,
+      13.5625
+     ],
+     [
+      -6.875,
+      11.31640625
+     ],
+     [
+      -6.25,
+      9.265625
+     ],
+     [
+      -5.625,
+      7.41015625
+     ],
+     [
+      -5.0,
+      5.75
+     ],
+     [
+      -4.375,
+      4.28515625
+     ],
+     [
+      -3.75,
+      3.015625
+     ],
+     [
+      -3.125,
+      1.94140625
+     ],
+     [
+      -2.5,
+      1.0625
+     ],
+     [
+      -1.875,
+      0.37890625
+     ],
+     [
+      -1.25,
+      -0.109375
+     ],
+     [
+      -0.625,
+      -0.40234375
+     ],
+     [
+      0.0,
+      -0.5
+     ],
+     [
+      0.625,
+      -0.40234375
+     ],
+     [
+      1.25,
+      -0.109375
+     ],
+     [
+      1.875,
+      0.37890625
+     ],
+     [
+      2.5,
+      1.0625
+     ],
+     [
+      3.125,
+      1.94140625
+     ],
+     [
+      3.75,
+      3.015625
+     ],
+     [
+      4.375,
+      4.28515625
+     ],
+     [
+      5.0,
+      5.75
+     ],
+     [
+      5.625,
+      7.41015625
+     ],
+     [
+      6.25,
+      9.265625
+     ],
+     [
+      6.875,
+      11.31640625
+     ],
+     [
+      7.5,
+      13.5625
+     ],
+     [
+      8.125,
+      16.00390625
+     ],
+     [
+      8.75,
+      18.640625
+     ],
+     [
+      9.375,
+      21.47265625
+     ],
+     [
+      10.0,
+      24.5
+     ]
+    ],
+    "l": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -9.375,
+      -4.6875
+     ],
+     [
+      -8.75,
+      -4.375
+     ],
+     [
+      -8.125,
+      -4.0625
+     ],
+     [
+      -7.5,
+      -3.75
+     ],
+     [
+      -6.875,
+      -3.4375
+     ],
+     [
+      -6.25,
+      -3.125
+     ],
+     [
+      -5.625,
+      -2.8125
+     ],
+     [
+      -5.0,
+      -2.5
+     ],
+     [
+      -4.375,
+      -2.1875
+     ],
+     [
+      -3.75,
+      -1.875
+     ],
+     [
+      -3.125,
+      -1.5625
+     ],
+     [
+      -2.5,
+      -1.25
+     ],
+     [
+      -1.875,
+      -0.9375
+     ],
+     [
+      -1.25,
+      -0.625
+     ],
+     [
+      -0.625,
+      -0.3125
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.3125
+     ],
+     [
+      1.25,
+      0.625
+     ],
+     [
+      1.875,
+      0.9375
+     ],
+     [
+      2.5,
+      1.25
+     ],
+     [
+      3.125,
+      1.5625
+     ],
+     [
+      3.75,
+      1.875
+     ],
+     [
+      4.375,
+      2.1875
+     ],
+     [
+      5.0,
+      2.5
+     ],
+     [
+      5.625,
+      2.8125
+     ],
+     [
+      6.25,
+      3.125
+     ],
+     [
+      6.875,
+      3.4375
+     ],
+     [
+      7.5,
+      3.75
+     ],
+     [
+      8.125,
+      4.0625
+     ],
+     [
+      8.75,
+      4.375
+     ],
+     [
+      9.375,
+      4.6875
+     ],
+     [
+      10.0,
+      5.0
+     ]
+    ],
+    "q": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "no_circle",
+   "inputs": {
+    "Q": {
+     "kind": "point",
+     "value": [
+      0.0,
+      5.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       0.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "k"
+    },
+    "g2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "k"
+    },
+    "g3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "k"
+    },
+    "g4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "k"
+    },
+    "h1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.417490026,
+      "y": 2.919809519
+     }
+    },
+    "h2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.417490026,
+      "y": 2.919809519
+     }
+    },
+    "h3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "h4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "k": {
+     "state": "undefined",
+     "type": "circle",
+     "reason": "nonpositive_radius"
+    },
+    "l": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 0.5
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "pq": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "s1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "w"
+    },
+    "s2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "w"
+    },
+    "s3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "w"
+    },
+    "s4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "w"
+    },
+    "t1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident"
+    },
+    "u1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.23615934,
+      "y": -1.61807967
+     }
+    },
+    "u2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.23615934,
+      "y": 1.61807967
+     }
+    },
+    "w": {
+     "state": "undefined",
+     "type": "arc",
+     "reason": "coincident_points"
+    },
+    "y": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_h:on_both": "passed",
+    "op_u:on_both": "passed",
+    "op_y:on_curve": "passed",
+    "op_y:foci": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      25.0
+     ],
+     [
+      -9.375,
+      21.97265625
+     ],
+     [
+      -8.75,
+      19.140625
+     ],
+     [
+      -8.125,
+      16.50390625
+     ],
+     [
+      -7.5,
+      14.0625
+     ],
+     [
+      -6.875,
+      11.81640625
+     ],
+     [
+      -6.25,
+      9.765625
+     ],
+     [
+      -5.625,
+      7.91015625
+     ],
+     [
+      -5.0,
+      6.25
+     ],
+     [
+      -4.375,
+      4.78515625
+     ],
+     [
+      -3.75,
+      3.515625
+     ],
+     [
+      -3.125,
+      2.44140625
+     ],
+     [
+      -2.5,
+      1.5625
+     ],
+     [
+      -1.875,
+      0.87890625
+     ],
+     [
+      -1.25,
+      0.390625
+     ],
+     [
+      -0.625,
+      0.09765625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.09765625
+     ],
+     [
+      1.25,
+      0.390625
+     ],
+     [
+      1.875,
+      0.87890625
+     ],
+     [
+      2.5,
+      1.5625
+     ],
+     [
+      3.125,
+      2.44140625
+     ],
+     [
+      3.75,
+      3.515625
+     ],
+     [
+      4.375,
+      4.78515625
+     ],
+     [
+      5.0,
+      6.25
+     ],
+     [
+      5.625,
+      7.91015625
+     ],
+     [
+      6.25,
+      9.765625
+     ],
+     [
+      6.875,
+      11.81640625
+     ],
+     [
+      7.5,
+      14.0625
+     ],
+     [
+      8.125,
+      16.50390625
+     ],
+     [
+      8.75,
+      19.140625
+     ],
+     [
+      9.375,
+      21.97265625
+     ],
+     [
+      10.0,
+      25.0
+     ]
+    ],
+    "l": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -9.375,
+      -4.6875
+     ],
+     [
+      -8.75,
+      -4.375
+     ],
+     [
+      -8.125,
+      -4.0625
+     ],
+     [
+      -7.5,
+      -3.75
+     ],
+     [
+      -6.875,
+      -3.4375
+     ],
+     [
+      -6.25,
+      -3.125
+     ],
+     [
+      -5.625,
+      -2.8125
+     ],
+     [
+      -5.0,
+      -2.5
+     ],
+     [
+      -4.375,
+      -2.1875
+     ],
+     [
+      -3.75,
+      -1.875
+     ],
+     [
+      -3.125,
+      -1.5625
+     ],
+     [
+      -2.5,
+      -1.25
+     ],
+     [
+      -1.875,
+      -0.9375
+     ],
+     [
+      -1.25,
+      -0.625
+     ],
+     [
+      -0.625,
+      -0.3125
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.3125
+     ],
+     [
+      1.25,
+      0.625
+     ],
+     [
+      1.875,
+      0.9375
+     ],
+     [
+      2.5,
+      1.25
+     ],
+     [
+      3.125,
+      1.5625
+     ],
+     [
+      3.75,
+      1.875
+     ],
+     [
+      4.375,
+      2.1875
+     ],
+     [
+      5.0,
+      2.5
+     ],
+     [
+      5.625,
+      2.8125
+     ],
+     [
+      6.25,
+      3.125
+     ],
+     [
+      6.875,
+      3.4375
+     ],
+     [
+      7.5,
+      3.75
+     ],
+     [
+      8.125,
+      4.0625
+     ],
+     [
+      8.75,
+      4.375
+     ],
+     [
+      9.375,
+      4.6875
+     ],
+     [
+      10.0,
+      5.0
+     ]
+    ],
+    "q": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
+   }
+  }
+ ]
+}
