@@ -194,8 +194,14 @@ def _drawing_bounds(scene, infinite_policy: str, labels: bool, placements: dict)
             for p in data.endpoints:
                 add(p[0], p[1])
         elif isinstance(data, (geo.Line, geo.Ray)):
+            from ..line_display import classic_visible_part, clip_segment
             left, bottom, right, top = scene._get_scene_bounds()
-            ends = data.get_endpoints([(left, bottom), (right, top)])
+            visible = classic_visible_part(scene, elem)
+            if visible is not None:         # the visible part of a document line, clipped
+                drawn = clip_segment(visible, (left, bottom, right, top))
+                ends = None if drawn is None else drawn[:2]
+            else:
+                ends = data.get_endpoints([(left, bottom), (right, top)])
             for p in ends or ():
                 add(p[0], p[1])
         elif isinstance(data, geo.Circle):

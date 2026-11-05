@@ -929,6 +929,7 @@ def _emit_static(ctx, name, cmd_name, dynamic, options, create, model):
         return
 
     d = elem.data
+    note = ""
     try:
         if t == "Point":
             a = point_attrs(ctx, elem)
@@ -937,6 +938,17 @@ def _emit_static(ctx, name, cmd_name, dynamic, options, create, model):
         elif t == "Segment":
             p1, p2 = d.endpoints
             create(name, "segment", [_coord(ctx, p1), _coord(ctx, p2)], base_attrs(ctx, elem))
+        elif t in ("Line", "Ray") and _visible_line_part(ctx, elem) is not None:
+            # a document line with a visible part (line_display / visible_range):
+            # that part, clipped by the board, as a fixed segment
+            from ...native.line_display import clip_segment
+            left, top, right, bottom = ctx.boundingbox()
+            drawn = clip_segment(_visible_line_part(ctx, elem), (left, bottom, right, top))
+            if drawn is None:
+                model.coverage.append((name, "skip", f"{t} off-viewport"))
+                return
+            create(name, "segment", [_coord(ctx, drawn[0]), _coord(ctx, drawn[1])], base_attrs(ctx, elem))
+            note = " — visible part as a static segment"
         elif t in ("Line", "Ray"):
             left, top, right, bottom = ctx.boundingbox()
             ep = d.get_endpoints([(left, bottom), (right, top)])
@@ -983,10 +995,17 @@ def _emit_static(ctx, name, cmd_name, dynamic, options, create, model):
         model.coverage.append((name, "skip", f"{t} ({cmd_name}) — error"))
         return
 
-    model.coverage.append((name, "static", f"{t} ({cmd_name}){flag}"))
+    model.coverage.append((name, "static", f"{t} ({cmd_name}){note}{flag}"))
 
 
 # ── helpers ─────────────────────────────────────────────────────────────────
+
+def _visible_line_part(ctx, elem):
+    """The visible part of a document line or ray (``native.line_display``),
+    ``None`` when it runs to the frame."""
+    from ...native.line_display import classic_visible_part
+    return classic_visible_part(ctx.scene, elem)
+
 
 def _parents_ready(parents, emitted, ctx):
     """Yield True for each parent that is a literal or an already-emitted ref."""

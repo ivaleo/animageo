@@ -682,11 +682,19 @@ def _scene_bounds_corners(scene, padding=0.1):
     return None
 
 
-def _clipped_line_endpoints(scene, line_data):
-    """Return visible line/ray endpoints using the same clipping API as rendering."""
+def _clipped_line_endpoints(scene, line_data, elem=None):
+    """Return visible line/ray endpoints using the same clipping API as rendering
+    (``elem`` given: the visible part of a document line, ``native.line_display``)."""
     corners = _scene_bounds_corners(scene)
     if corners is None:
         return None
+    if elem is not None:
+        from .native.line_display import classic_visible_part, clip_segment
+        visible = classic_visible_part(scene, elem)
+        if visible is not None:
+            (left, bottom), (right, top) = corners
+            drawn = clip_segment(visible, (left, bottom, right, top))
+            return None if drawn is None else [np.asarray(p, dtype=float) for p in drawn[:2]]
     get_endpoints = getattr(line_data, 'get_endpoints', None)
     if not callable(get_endpoints):
         return None
@@ -735,7 +743,7 @@ def _collect_obstacles(scene, *, angle_marker_obstacle=False):
             segments.append((d.endpoints[0][:2].copy(), d.endpoints[1][:2].copy()))
             seg_dashed.append(dashed)
         elif isinstance(d, (geo.Line, geo.Ray)):
-            endpoints = _clipped_line_endpoints(scene, d)
+            endpoints = _clipped_line_endpoints(scene, d, elem)
             if endpoints is not None:
                 segments.append((endpoints[0].copy(), endpoints[1].copy()))
                 seg_dashed.append(dashed)
@@ -1088,7 +1096,7 @@ def _get_anchor(elem, scene=None):
         return d.center[:2].copy()
     elif isinstance(d, (geo.Line, geo.Ray)):
         if scene is not None:
-            endpoints = _clipped_line_endpoints(scene, d)
+            endpoints = _clipped_line_endpoints(scene, d, elem)
             if endpoints is not None:
                 return ((endpoints[0] + endpoints[1]) / 2)[:2]
         return np.zeros(2)

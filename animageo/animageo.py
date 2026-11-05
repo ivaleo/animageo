@@ -4055,16 +4055,30 @@ class AnimaGeoScene(MovingCameraScene):
 
     def _render_line(self, elem, ctx):
         """Render geo.Line; also handles geo.Ray (shared implementation —
-        see ``_render_ray`` alias below).
+        see ``_render_ray`` alias below). Drawn to the frame, or — a line of
+        a document with ``line_display: incident`` or ``visible_range`` — its
+        visible part (``native.line_display``) clipped by the frame.
         """
+        from .native.line_display import classic_visible_part, clip_segment
         left, bottom, right, top = self._get_scene_bounds()
-        endpoints = elem.data.get_endpoints([(left, bottom), (right, top)])
-        if endpoints is None:
-            return None
-        p1, p2 = endpoints
+        visible = classic_visible_part(self, elem)
+        if visible is not None:
+            # ``line_display: incident`` / ``visible_range``: the visible part,
+            # clipped by the frame; dashes start at its start.
+            drawn = clip_segment(visible, (left, bottom, right, top))
+            if drawn is None:
+                return None
+            p1, p2 = (np.array(p, dtype=float) for p in drawn[:2])
+        else:
+            endpoints = elem.data.get_endpoints([(left, bottom), (right, top)])
+            if endpoints is None:
+                return None
+            p1, p2 = endpoints
         arr = []
         phase = 0.0
-        if ctx.dash_px and isinstance(elem.data, geo.Ray):
+        if visible is not None:
+            phase = drawn[2] if ctx.dash_px else 0.0
+        elif ctx.dash_px and isinstance(elem.data, geo.Ray):
             # Dashes start at the vertex, also when the viewport clips it
             # away: run the path away from the vertex and phase the pattern
             # by the clipped-off distance.

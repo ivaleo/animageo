@@ -283,11 +283,19 @@ def emit_segment(ctx: TikzContext, elem, labels: List[str]) -> None:
 
 
 def emit_line(ctx: TikzContext, elem, labels: List[str]) -> None:
+    from ...native.line_display import classic_visible_part, clip_segment
     left, bottom, right, top = ctx.viewport()
-    endpoints = elem.data.get_endpoints([(left, bottom), (right, top)])
-    if endpoints is None:
-        return
-    p1, p2 = endpoints
+    visible = classic_visible_part(ctx.scene, elem)
+    if visible is not None:     # a document line with a visible part: that part, clipped
+        drawn = clip_segment(visible, (left, bottom, right, top))
+        if drawn is None:
+            return
+        p1, p2 = drawn[0], drawn[1]
+    else:
+        endpoints = elem.data.get_endpoints([(left, bottom), (right, top)])
+        if endpoints is None:
+            return
+        p1, p2 = endpoints
     opts = stroke_options(ctx, elem)
     ctx.doc.line(f"\\draw[{opts}] {_coord(ctx, p1[0], p1[1])} -- {_coord(ctx, p2[0], p2[1])};")
     m = (np.asarray(p1, float) + np.asarray(p2, float)) / 2
