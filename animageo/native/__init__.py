@@ -47,6 +47,7 @@ from .document import (
     dump,
     dumps,
     load,
+    min_registry_version,
     validate,
 )
 from .kernel.checks import CheckReport, run_checks
@@ -182,6 +183,7 @@ __all__ = [
     'from_ggb',
     'layout_labels',
     'load',
+    'min_registry_version',
     'parse_commands',
     'print_commands',
     'project',

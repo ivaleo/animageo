@@ -187,9 +187,9 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.7'
-    assert registry().version == '1.7'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.7'
+    assert native.__registry_version__ == '1.8'
+    assert registry().version == '1.8'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.8'
 
 
 def test_ops_and_files():

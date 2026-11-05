@@ -40,7 +40,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import NamedTuple
 
-from ..document import NativeDocument, as_document, iter_refs
+from ..document import NativeDocument, as_document, iter_refs, raise_registry_version
 
 __all__ = ['auto_marks', 'add_auto_marks', 'auto_sources', 'AutoMarks', 'mark_table']
 
@@ -537,6 +537,7 @@ def auto_marks(doc, sources, *, ev=None, id_factory=None) -> list:
 def add_auto_marks(doc, sources, *, ev=None, id_factory=None) -> AutoMarks:
     """:func:`auto_marks` put into a copy of the document."""
     data, builder, warnings = _build(doc, list(sources), ev, id_factory)
+    raise_registry_version(data)       # marks of a later registry raise the version (kernel.md §2)
     return AutoMarks(NativeDocument(data), copy.deepcopy(builder.new_ops), list(builder.new_elements),
                      sorted(set(warnings)))
 

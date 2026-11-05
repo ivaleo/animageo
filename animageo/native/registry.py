@@ -50,7 +50,7 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.7'
+REGISTRY_VERSION = '1.8'
 REPEAT_MAX = 100
 # A free input of these kinds is optional: absent from ``inputs``, it takes this value.
 FREE_INPUT_DEFAULTS = {'angle': {'kind': 'angle', 'value': 0.0}}
@@ -169,6 +169,7 @@ class Registry:
     paths: dict = field(default_factory=dict)
     number_units: dict = field(default_factory=dict)
     mark_kinds: dict = field(default_factory=dict)
+    family_since: dict = field(default_factory=dict)
 
     def get(self, op: str):
         return self.ops.get(op)
@@ -178,6 +179,14 @@ class Registry:
         if element_type == slot_type:
             return True
         return element_type in self.families.get(slot_type, ())
+
+    def member_since(self, slot_type: str, element_type: str):
+        """The registry version since which ``element_type`` fits a slot of the
+        family ``slot_type`` (``_types.json → familySince``, registry 1.8);
+        ``None`` when it always did or does not fit."""
+        if element_type == slot_type:
+            return None
+        return self.family_since.get(slot_type, {}).get(element_type)
 
     def output_type(self, record: dict, slot: str, args: dict | None = None, graph=None):
         """Type of output ``slot`` of ``record``, or ``None`` if there is no such slot.
@@ -306,6 +315,7 @@ def _load(directory) -> Registry:
         paths=service['_types'].get('paths', {}),
         number_units=service['_types'].get('numberUnits', {}),
         mark_kinds=service['_types'].get('markKinds', {}),
+        family_since=service['_types'].get('familySince', {}),
     )
 
 
@@ -333,6 +343,13 @@ def registry_problems(reg: Registry | None = None) -> list:
         for member in members:
             if member not in reg.types:
                 problems.append(f'family {family!r}: unknown type {member!r}')
+    for family, members in reg.family_since.items():
+        for member, since in members.items():
+            if member not in reg.families.get(family, ()):
+                problems.append(f'familySince {family!r}: {member!r} is not a member of the family')
+            version = _version_tuple(since)
+            if version is None or version > _version_tuple(reg.version):
+                problems.append(f'familySince {family!r}: {member!r} since {since!r} is not a registry version')
     for type_ in reg.families.get('path', ()):
         if type_ not in reg.paths:
             problems.append(f'path type {type_!r} has no entry in _types.json paths')

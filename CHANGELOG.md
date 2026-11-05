@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Operation registry 1.8. `native.min_registry_version(doc)` gives the oldest
+  registry a document fits; `from_ggb`, `from_construction`, `parse_commands`
+  and the edits declare that version (an edit only raises it), and `validate`
+  reports `needs_newer_registry` when a document uses an operation, or a type
+  in a family slot, of a newer registry than it declares. Documents declaring
+  registry 1.7 or older read and evaluate as before.
+
 ## [1.11.4] - 2026-11-03
 
 ### Fixed

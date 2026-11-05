@@ -48,6 +48,7 @@
    "layout_labels",
    "load",
    "measure_statement",
+   "min_registry_version",
    "parse_commands",
    "print_commands",
    "project",
@@ -131,7 +132,7 @@
    },
    "Evaluated": {
     "kind": "class",
-    "signature": "(document_id, scale, elements, diagnostics, tolerances, library='', registry='1.7', computed=<factory>, t=None, visible=None)",
+    "signature": "(document_id, scale, elements, diagnostics, tolerances, library='', registry='1.8', computed=<factory>, t=None, visible=None)",
     "members": {
      "library": "attribute",
      "registry": "attribute",
@@ -229,10 +230,11 @@
    },
    "Registry": {
     "kind": "class",
-    "signature": "(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>)",
+    "signature": "(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>, family_since=<factory>)",
     "members": {
      "accepts": "(self, slot_type, element_type)",
      "get": "(self, op)",
+     "member_since": "(self, slot_type, element_type)",
      "output_slots": "(self, record, args, graph=None, _seen=<frozenset>)",
      "output_type": "(self, record, slot, args=None, graph=None)",
      "vertex_count": "(self, graph, element_id, _seen=<frozenset>)"
@@ -266,7 +268,7 @@
    "__registry_version__": {
     "kind": "constant",
     "type": "str",
-    "value": "1.7"
+    "value": "1.8"
    },
    "add_auto_marks": {
     "kind": "function",
@@ -363,6 +365,10 @@
    "measure_statement": {
     "kind": "function",
     "signature": "(doc, statement, ev)"
+   },
+   "min_registry_version": {
+    "kind": "function",
+    "signature": "(doc)"
    },
    "parse_commands": {
     "kind": "function",
@@ -469,7 +475,7 @@
    "REGISTRY_VERSION": {
     "kind": "constant",
     "type": "str",
-    "value": "1.7"
+    "value": "1.8"
    },
    "as_document": {
     "kind": "function",
