@@ -1289,6 +1289,12 @@ def _conic_conic_on_both(args, result, tol):
     return max(_off_conical(args['first'], points), _off_conical(args['second'], points))
 
 
+@register_check('intersect.function_conic', 'on_both')
+def _function_conic_on_both(args, result, tol):
+    points = list(result.values())
+    return max(_off_graph(args['function'].value, points), _off_conical(args['conic'], points))
+
+
 def run_checks(evaluated, keys=None) -> CheckReport:
     """Run the registry checks over an :class:`~.evaluate.Evaluated` result.
 

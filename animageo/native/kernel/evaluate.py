@@ -323,6 +323,7 @@ CHECK_OPTIONAL_SLOTS = {
     'intersect.line_conic': frozenset({'second'}),
     # registry 1.8: fewer common points than four slots
     'intersect.conic_conic': frozenset({'third', 'fourth'}),
+    'intersect.function_conic': frozenset({'point'}),
 }
 
 

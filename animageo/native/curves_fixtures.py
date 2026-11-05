@@ -207,6 +207,10 @@ class _Doc:
         return self.op('op_' + prefix, 'intersect.conic_conic', {'first': _ref(first), 'second': _ref(second)},
                        [(s, f'{prefix}{k}', 'point') for k, s in enumerate(slots, 1)])
 
+    def graph_conic(self, prefix, fn, conic, count=4):
+        return self._search(prefix, 'intersect.function_conic', 'point', {'function': _ref(fn), 'conic': _ref(conic)},
+                            count)
+
     def circles(self, prefix, first, second):
         return self.op('op_' + prefix, 'intersect.circle_circle', {'first': _ref(first), 'second': _ref(second)},
                        [('first', prefix + '1', 'point'), ('second', prefix + '2', 'point')])
@@ -482,6 +486,23 @@ def _meet_scenes():
     d.free('R', 1000000, -999995).ellipse('g', 'G1', 'G2', 'R').meet('m', 'e', 'g')
     out.append((d, _cases(('four', None), ('two', {'G1': P(1000005, -1000004), 'G2': P(1000005, -999996),
                                                    'R': P(1000005, -999995)}))))
+    # 7. a graph y = a·x² + c and a circle, an ellipse, an arc; the graph y = x² on the
+    # parabola y − x² = 0 (binary-exact: coincident); a line graph and a hyperbola
+    d = _Doc('meet_graph_conic').number('a', 0.25).number('c', 0)
+    d.function('f', o('+', o('*', r(0), sq(X)), r(1)), 'a', 'c')
+    d.free('K', 0, 5).free('Q', 4, 3).circle('k', 'K', 'Q').graph_conic('g', 'f', 'k')
+    d.free('F1', -3, 0).free('F2', 3, 0).free('P', 0, 4).ellipse('e', 'F1', 'F2', 'P').graph_conic('h', 'f', 'e')
+    d.free('B', -4, 3).arc('w', 'K', 'Q', 'B').graph_conic('s', 'f', 'w')
+    d.function('q', sq(X)).equation('pq', o('-', Y, sq(X))).graph_conic('t', 'q', 'pq', count=2)
+    d.function('l', o('*', n(0.5), X)).free('G1', -5, 0).free('G2', 5, 0).free('R', 3, 0)
+    d.hyperbola('y', 'G1', 'G2', 'R').graph_conic('u', 'l', 'y', count=2)
+    out.append((d, _cases(('base', None), ('tangent', {'a': N(0), 'c': N(4)}), ('close', {'a': N(0), 'c': N(3.99)}),
+                          ('miss', {'c': N(20)}), ('back', {'c': N(-0.5)}), ('no_circle', {'Q': P(0, 5)}))))
+    # 8. a graph and a circle far from the origin
+    d = _Doc('meet_graph_far', bounds=(999990, -10, 1000010, 10)).number('a', 0.25).number('m', 1000000)
+    d.function('f', o('*', r(0), sq(o('-', X, r(1)))), 'a', 'm')
+    d.free('K', 1000000, 5).free('Q', 1000004, 3).circle('k', 'K', 'Q').graph_conic('g', 'f', 'k')
+    out.append((d, _cases(('four', None), ('miss', {'Q': P(1000000, 7)}), ('touching', {'Q': P(1000000, 9)}))))
     return out
 
 

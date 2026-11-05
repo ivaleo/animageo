@@ -1,0 +1,1097 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "meet_graph_far",
+ "registry": "1.8",
+ "generatedBy": "animageo 1.11.4",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "meet_graph_far",
+  "operationRegistryVersion": "1.8",
+  "operations": {
+   "op_a": {
+    "id": "op_a",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "a"
+     }
+    ]
+   },
+   "op_m": {
+    "id": "op_m",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "m"
+     }
+    ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "ref": 1
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "a"
+       },
+       {
+        "kind": "ref",
+        "elementId": "m"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_K": {
+    "id": "op_K",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "K"
+     }
+    ]
+   },
+   "op_Q": {
+    "id": "op_Q",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Q"
+     }
+    ]
+   },
+   "op_k": {
+    "id": "op_k",
+    "op": "circle.center_point",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "K"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "Q"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "circle",
+      "elementId": "k"
+     }
+    ]
+   },
+   "op_g": {
+    "id": "op_g",
+    "op": "intersect.function_conic",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "k"
+     },
+     "count": {
+      "kind": "number",
+      "value": 4
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point.1",
+      "elementId": "g1"
+     },
+     {
+      "slot": "point.2",
+      "elementId": "g2"
+     },
+     {
+      "slot": "point.3",
+      "elementId": "g3"
+     },
+     {
+      "slot": "point.4",
+      "elementId": "g4"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "a": {
+    "id": "a",
+    "type": "number",
+    "displayName": "a",
+    "producer": {
+     "operationId": "op_a",
+     "slot": "number"
+    }
+   },
+   "m": {
+    "id": "m",
+    "type": "number",
+    "displayName": "m",
+    "producer": {
+     "operationId": "op_m",
+     "slot": "number"
+    }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "K": {
+    "id": "K",
+    "type": "point",
+    "displayName": "K",
+    "producer": {
+     "operationId": "op_K",
+     "slot": "point"
+    }
+   },
+   "Q": {
+    "id": "Q",
+    "type": "point",
+    "displayName": "Q",
+    "producer": {
+     "operationId": "op_Q",
+     "slot": "point"
+    }
+   },
+   "k": {
+    "id": "k",
+    "type": "circle",
+    "displayName": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "circle"
+    }
+   },
+   "g1": {
+    "id": "g1",
+    "type": "point",
+    "displayName": "g1",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "point.1"
+    }
+   },
+   "g2": {
+    "id": "g2",
+    "type": "point",
+    "displayName": "g2",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "point.2"
+    }
+   },
+   "g3": {
+    "id": "g3",
+    "type": "point",
+    "displayName": "g3",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "point.3"
+    }
+   },
+   "g4": {
+    "id": "g4",
+    "type": "point",
+    "displayName": "g4",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "point.4"
+    }
+   }
+  },
+  "inputs": {
+   "a": {
+    "kind": "number",
+    "value": 0.25
+   },
+   "m": {
+    "kind": "number",
+    "value": 1000000.0
+   },
+   "K": {
+    "kind": "point",
+    "value": [
+     1000000.0,
+     5.0
+    ]
+   },
+   "Q": {
+    "kind": "point",
+    "value": [
+     1000004.0,
+     3.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    999990,
+    -10,
+    1000010,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "four",
+   "scale": 20.0,
+   "expect": {
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000000.0,
+      "y": 5.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000004.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "ref": 1
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       1000000.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 999995.527864045,
+      "y": 5.0
+     }
+    },
+    "g2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 999998.0,
+      "y": 1.0
+     }
+    },
+    "g3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000002.0,
+      "y": 1.0
+     }
+    },
+    "g4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000004.472135955,
+      "y": 5.0
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       1000000.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "m": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1000000.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_g:on_both": "passed",
+    "op_k:through_on_circle": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      999990.0,
+      25.0
+     ],
+     [
+      999990.625,
+      21.97265625
+     ],
+     [
+      999991.25,
+      19.140625
+     ],
+     [
+      999991.875,
+      16.50390625
+     ],
+     [
+      999992.5,
+      14.0625
+     ],
+     [
+      999993.125,
+      11.81640625
+     ],
+     [
+      999993.75,
+      9.765625
+     ],
+     [
+      999994.375,
+      7.91015625
+     ],
+     [
+      999995.0,
+      6.25
+     ],
+     [
+      999995.625,
+      4.78515625
+     ],
+     [
+      999996.25,
+      3.515625
+     ],
+     [
+      999996.875,
+      2.44140625
+     ],
+     [
+      999997.5,
+      1.5625
+     ],
+     [
+      999998.125,
+      0.87890625
+     ],
+     [
+      999998.75,
+      0.390625
+     ],
+     [
+      999999.375,
+      0.09765625
+     ],
+     [
+      1000000.0,
+      0.0
+     ],
+     [
+      1000000.625,
+      0.09765625
+     ],
+     [
+      1000001.25,
+      0.390625
+     ],
+     [
+      1000001.875,
+      0.87890625
+     ],
+     [
+      1000002.5,
+      1.5625
+     ],
+     [
+      1000003.125,
+      2.44140625
+     ],
+     [
+      1000003.75,
+      3.515625
+     ],
+     [
+      1000004.375,
+      4.78515625
+     ],
+     [
+      1000005.0,
+      6.25
+     ],
+     [
+      1000005.625,
+      7.91015625
+     ],
+     [
+      1000006.25,
+      9.765625
+     ],
+     [
+      1000006.875,
+      11.81640625
+     ],
+     [
+      1000007.5,
+      14.0625
+     ],
+     [
+      1000008.125,
+      16.50390625
+     ],
+     [
+      1000008.75,
+      19.140625
+     ],
+     [
+      1000009.375,
+      21.97265625
+     ],
+     [
+      1000010.0,
+      25.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "miss",
+   "inputs": {
+    "Q": {
+     "kind": "point",
+     "value": [
+      1000000.0,
+      7.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000000.0,
+      "y": 5.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000000.0,
+      "y": 7.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "ref": 1
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       1000000.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "g2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "g3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "g4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       1000000.0,
+       5.0
+      ],
+      "r": 2.0
+     }
+    },
+    "m": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1000000.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_k:through_on_circle": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      999990.0,
+      25.0
+     ],
+     [
+      999990.625,
+      21.97265625
+     ],
+     [
+      999991.25,
+      19.140625
+     ],
+     [
+      999991.875,
+      16.50390625
+     ],
+     [
+      999992.5,
+      14.0625
+     ],
+     [
+      999993.125,
+      11.81640625
+     ],
+     [
+      999993.75,
+      9.765625
+     ],
+     [
+      999994.375,
+      7.91015625
+     ],
+     [
+      999995.0,
+      6.25
+     ],
+     [
+      999995.625,
+      4.78515625
+     ],
+     [
+      999996.25,
+      3.515625
+     ],
+     [
+      999996.875,
+      2.44140625
+     ],
+     [
+      999997.5,
+      1.5625
+     ],
+     [
+      999998.125,
+      0.87890625
+     ],
+     [
+      999998.75,
+      0.390625
+     ],
+     [
+      999999.375,
+      0.09765625
+     ],
+     [
+      1000000.0,
+      0.0
+     ],
+     [
+      1000000.625,
+      0.09765625
+     ],
+     [
+      1000001.25,
+      0.390625
+     ],
+     [
+      1000001.875,
+      0.87890625
+     ],
+     [
+      1000002.5,
+      1.5625
+     ],
+     [
+      1000003.125,
+      2.44140625
+     ],
+     [
+      1000003.75,
+      3.515625
+     ],
+     [
+      1000004.375,
+      4.78515625
+     ],
+     [
+      1000005.0,
+      6.25
+     ],
+     [
+      1000005.625,
+      7.91015625
+     ],
+     [
+      1000006.25,
+      9.765625
+     ],
+     [
+      1000006.875,
+      11.81640625
+     ],
+     [
+      1000007.5,
+      14.0625
+     ],
+     [
+      1000008.125,
+      16.50390625
+     ],
+     [
+      1000008.75,
+      19.140625
+     ],
+     [
+      1000009.375,
+      21.97265625
+     ],
+     [
+      1000010.0,
+      25.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "touching",
+   "inputs": {
+    "Q": {
+     "kind": "point",
+     "value": [
+      1000000.0,
+      9.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000000.0,
+      "y": 5.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000000.0,
+      "y": 9.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "ref": 1
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       1000000.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 999996.535898359,
+      "y": 3.000000045
+     },
+     "detail": {
+      "multiplicity": 2
+     }
+    },
+    "g2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 999996.535898359,
+      "y": 3.000000045
+     },
+     "detail": {
+      "multiplicity": 2
+     }
+    },
+    "g3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000003.464101588,
+      "y": 2.999999953
+     },
+     "detail": {
+      "multiplicity": 2
+     }
+    },
+    "g4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000003.464101588,
+      "y": 2.999999953
+     },
+     "detail": {
+      "multiplicity": 2
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       1000000.0,
+       5.0
+      ],
+      "r": 4.0
+     }
+    },
+    "m": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1000000.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_g:on_both": "passed",
+    "op_k:through_on_circle": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      999990.0,
+      25.0
+     ],
+     [
+      999990.625,
+      21.97265625
+     ],
+     [
+      999991.25,
+      19.140625
+     ],
+     [
+      999991.875,
+      16.50390625
+     ],
+     [
+      999992.5,
+      14.0625
+     ],
+     [
+      999993.125,
+      11.81640625
+     ],
+     [
+      999993.75,
+      9.765625
+     ],
+     [
+      999994.375,
+      7.91015625
+     ],
+     [
+      999995.0,
+      6.25
+     ],
+     [
+      999995.625,
+      4.78515625
+     ],
+     [
+      999996.25,
+      3.515625
+     ],
+     [
+      999996.875,
+      2.44140625
+     ],
+     [
+      999997.5,
+      1.5625
+     ],
+     [
+      999998.125,
+      0.87890625
+     ],
+     [
+      999998.75,
+      0.390625
+     ],
+     [
+      999999.375,
+      0.09765625
+     ],
+     [
+      1000000.0,
+      0.0
+     ],
+     [
+      1000000.625,
+      0.09765625
+     ],
+     [
+      1000001.25,
+      0.390625
+     ],
+     [
+      1000001.875,
+      0.87890625
+     ],
+     [
+      1000002.5,
+      1.5625
+     ],
+     [
+      1000003.125,
+      2.44140625
+     ],
+     [
+      1000003.75,
+      3.515625
+     ],
+     [
+      1000004.375,
+      4.78515625
+     ],
+     [
+      1000005.0,
+      6.25
+     ],
+     [
+      1000005.625,
+      7.91015625
+     ],
+     [
+      1000006.25,
+      9.765625
+     ],
+     [
+      1000006.875,
+      11.81640625
+     ],
+     [
+      1000007.5,
+      14.0625
+     ],
+     [
+      1000008.125,
+      16.50390625
+     ],
+     [
+      1000008.75,
+      19.140625
+     ],
+     [
+      1000009.375,
+      21.97265625
+     ],
+     [
+      1000010.0,
+      25.0
+     ]
+    ]
+   }
+  }
+ ]
+}
