@@ -544,6 +544,25 @@ class _Structure:
             if 'kind' in mark:
                 self.string(mark['kind'], mpath + '/kind', 'kind')
 
+    def drag(self, hint, path):
+        """``appearance.<id>.drag = {"via": ID | [ID, …]}`` (a list: at least
+        one ID, no repeats); the graph rules are in :func:`validate`."""
+        if not self.object(hint, path, 'drag'):
+            return
+        self.keys(hint, path, 'drag', ('via',), ('via',))
+        if 'via' not in hint:
+            return
+        via = hint['via']
+        if isinstance(via, list):
+            if not via:
+                self.add(path + '/via', 'via must list at least one ID')
+            for i, item in enumerate(via):
+                self.string(item, f'{path}/via/{i}', 'an element ID', ID_RE)
+            if len({v for v in via if isinstance(v, str)}) < len([v for v in via if isinstance(v, str)]):
+                self.add(path + '/via', 'via must not repeat an ID')
+        else:
+            self.string(via, path + '/via', 'via (an element ID or a list of them)', ID_RE)
+
     def mark_appearance(self, doc, key, entry):
         """The two typed overrides of an equality mark; other looks stay open.
 
@@ -600,6 +619,8 @@ class _Structure:
                     self.add('/appearance' + _pointer(key) + '/locked', 'locked must be a boolean')
                 if isinstance(entry, dict) and 'role' in entry and not isinstance(entry['role'], str):
                     self.add('/appearance' + _pointer(key) + '/role', 'role must be a string')
+                if isinstance(entry, dict) and 'drag' in entry:
+                    self.drag(entry['drag'], '/appearance' + _pointer(key) + '/drag')
                 self.mark_appearance(doc, key, entry)
         if 'steps' in doc:
             self.steps(doc['steps'], '/steps')
@@ -834,8 +855,11 @@ def validate(doc) -> list:
     ``unknown_slot``, ``missing_slot``, ``dangling_ref``, ``type_mismatch``,
     ``cycle``, ``input_not_free``, ``missing_input``, ``step_unknown_operation``,
     ``step_duplicate_operation``, ``step_duplicate_id``, ``step_empty``,
-    ``step_cycle`` (errors) and ``unknown_op``, ``newer_registry``,
-    ``seq_duplicate``, ``role_unknown`` (warnings).
+    ``step_cycle``, ``drag_via_not_free``, ``drag_via_not_upstream`` (errors)
+    and ``unknown_op``, ``newer_registry``, ``seq_duplicate``,
+    ``role_unknown``, ``drag_singular`` (warnings). The ``drag`` hints of
+    ``appearance`` (1.12.0) also give ``dangling_ref`` and ``type_mismatch``
+    (``docs/native/kernel.md`` §8.1).
     """
     if not isinstance(doc, NativeDocument):
         doc = load(doc, strict=False)
@@ -1039,6 +1063,9 @@ def validate(doc) -> list:
                 issues.append(Issue('role_unknown', '/appearance' + _pointer(el_id) + '/role',
                                     f"role {entry['role']!r} is not one of {', '.join(ROLES)}",
                                     elementId=el_id if el_id in elements else None, severity='warning'))
+        if any(isinstance(entry, dict) and 'drag' in entry for entry in appearance.values()):
+            from .drag import drag_issues
+            issues.extend(drag_issues(doc))
     if 'steps' in doc.data:
         from .steps import step_issues
         issues.extend(step_issues(doc, check_cycle=not cyclic))

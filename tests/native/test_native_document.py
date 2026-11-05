@@ -380,6 +380,11 @@ def _invalid_documents():
     yield 'appearance type', variant(lambda d: d.__setitem__('appearance', []))
     yield 'locked not bool', variant(lambda d: d.__setitem__('appearance', {'A': {'locked': 1}}))
     yield 'locked string', variant(lambda d: d.__setitem__('appearance', {'A': {'locked': 'true'}}))
+    for label, hint in (('not an object', 'A'), ('without via', {}), ('via number', {'via': 3}),
+                        ('empty via', {'via': []}), ('repeated via', {'via': ['A', 'A']}),
+                        ('via item', {'via': ['A', 4]}), ('via pattern', {'via': 'bad id'}),
+                        ('extra key', {'via': 'A', 'mode': 'solve'})):
+        yield f'drag {label}', variant(lambda d, h=hint: d.__setitem__('appearance', {'M': {'drag': h}}))
 
     def intent(value):
         return variant(lambda d: d.__setitem__('workIntent', value))
@@ -437,6 +442,9 @@ def _valid_documents():
     doc = copy.deepcopy(base)
     doc['workIntent'] = WORK_INTENT
     yield 'work intent', doc
+    doc = copy.deepcopy(base)
+    doc['appearance'] = {'M': {'drag': {'via': 'A'}, 'locked': True}, 'T': {'drag': {'via': ['A', 'B']}}}
+    yield 'drag hints (graph issues, not schema)', doc
     doc = copy.deepcopy(base)
     doc['operations']['op_M']['seq'] = 3
     doc['steps'] = [{'id': 's1', 'kind': 'group', 'title': 'Середина', 'text': 'Отмечаем M',

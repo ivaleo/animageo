@@ -13,6 +13,7 @@ step. See ``docs/native/kernel.md`` and ``docs/native/ops/``.
     ev = native.evaluate(doc)                # Evaluated; ev.to_dict() is animageo-evaluated/v1
     native.check(doc).results                # {"<operationId>:<checkId>": "passed" | …}
     native.project(doc, "P", (x, y))         # path parameter of the nearest point of P's path
+    native.drag(doc, inputs, "D", (x, y))     # {inputs, status}: drag a point (appearance.D.drag.via)
     native.dumps(doc), native.content_hash(doc)
     native.closure(doc, ["A"])               # dependents in topological order
     doc2, effects = native.delete(doc, ["A"])  # pure edits: delete, redefine, rename
@@ -79,6 +80,7 @@ from .conditions.marks import AutoMarks, add_auto_marks, auto_marks, auto_source
 from .timeline import StepsTimeline, sample_timeline, steps_timeline, timeline_effects, timeline_to_bridge
 from .convert import ConvertError, ImportRefused, from_construction, from_ggb
 from .paint import resolve_paint, style_keys
+from .drag import drag
 
 # Features of this library by stage of plan L3 (``has``): the web asks for a
 # feature instead of comparing versions.
@@ -89,7 +91,7 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document', 'convert.formula',
             'import_report.text_template', 'import_report.text_literals', 'convert.command_synonyms',
             'convert.ggb_expressions', 'style_keys', 'resolve_paint', 'label.halo', 'label.parts',
-            'timeline.effects', 'render.t.effects', 'view_axes_grid', 'functions', 'conics')
+            'timeline.effects', 'render.t.effects', 'view_axes_grid', 'functions', 'conics', 'drag')
 
 # Experimental features (``has`` answers them): outside ``FEATURES`` and the
 # public API snapshot, they may change or go without deprecation.
@@ -145,7 +147,9 @@ def has(feature: str) -> bool:
     ``function.expr``, ``function.root``, ``function.extremum``,
     ``intersect.function_function``, ``intersect.function_line``,
     ``point.on_function``; ``conics`` — the type ``conic``, ``conic.*`` and
-    ``intersect.line_conic``). Experimental, one of
+    ``intersect.line_conic``); 1.12.0: ``drag`` — :func:`drag`, the hint
+    ``appearance.<id>.drag.via`` checked by :func:`validate` and the fixtures
+    ``parity/v1/drag`` (``docs/native/kernel.md`` §8.1). Experimental, one of
     :data:`EXPERIMENTAL_FEATURES`: ``space`` — :mod:`animageo.native.space`,
     the space registry 1.0 (``docs/native/space.md``)."""
     return feature in FEATURES or feature in EXPERIMENTAL_FEATURES
@@ -174,6 +178,7 @@ __all__ = [
     'content_hash',
     'delete',
     'dependencies',
+    'drag',
     'dump',
     'dumps',
     'evaluate',

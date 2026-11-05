@@ -59,6 +59,9 @@
           "role": {
             "description": "Style role (1.9.0a1): given, aux or sought; another value is the warning role_unknown and is ignored.",
             "type": "string"
+          },
+          "drag": {
+            "$ref": "#/$defs/dragHint"
           }
         }
       }
@@ -199,6 +202,20 @@
         "tick_count": {
           "type": "integer",
           "enum": [0, 1, 2, 3]
+        }
+      }
+    },
+    "dragHint": {
+      "description": "Drag hint (1.12.0): the point is dragged through the free inputs via (point.free, point.on_path) it is built from; native.drag, docs/native/kernel.md section 8.1. Evaluation does not read it; validate checks the graph rules.",
+      "type": "object",
+      "required": ["via"],
+      "additionalProperties": false,
+      "properties": {
+        "via": {
+          "oneOf": [
+            {"$ref": "#/$defs/id"},
+            {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}
+          ]
         }
       }
     },

@@ -38,6 +38,7 @@
    "delete",
    "dependencies",
    "describe",
+   "drag",
    "dump",
    "dumps",
    "evaluate",
@@ -183,7 +184,8 @@
      "render.t.effects",
      "view_axes_grid",
      "functions",
-     "conics"
+     "conics",
+     "drag"
     ]
    },
    "ImportRefused": {
@@ -323,6 +325,10 @@
    "describe": {
     "kind": "function",
     "signature": "(doc, *, values=False, phrases=None, ev=None, precision=2)"
+   },
+   "drag": {
+    "kind": "function",
+    "signature": "(doc, inputs, element_id, target)"
    },
    "dump": {
     "kind": "function",
