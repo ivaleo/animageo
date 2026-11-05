@@ -1,17 +1,21 @@
 """Dragging a point of a document (``native.drag``; docs/native/kernel.md §8.1).
 
 A free point goes to the target; a point on a path takes the parameter of the
-nearest point of its path. A dependent point moves only through the hint
+nearest point of its path; a point on a graph takes the x of the target
+within the domain. A dependent point moves only through the hint
 ``appearance.<id>.drag.via`` — free inputs (``point.free``,
-``point.on_path``) upstream of it: a Gauss–Newton solve over the joined
-vector of their values moves them so that the point reaches the target, or
-the nearest point it can reach when a single path parameter drives it.
+``point.on_path``, ``point.on_function``) upstream of it: a Gauss–Newton
+solve over the joined vector of their values moves them so that the point
+reaches the target, or the nearest point it can reach when a single path
+parameter or x drives it. A redefine drops a hint it leaves invalid
+(:func:`stale_hints`).
 Evaluation never reads the hint. The algorithm is fixed to the last step so
 that the web port gives the same inputs (fixtures ``parity/v1/drag``):
 
-- variables ``u``: per ``via`` in order, a point gives ``x, y`` and a path
-  parameter ``t``; the scene scale ``S`` and ``tol = tol.decide`` are those
-  of the evaluation at rest (the given ``inputs``);
+- variables ``u``: per ``via`` in order, a point gives ``x, y``, a path
+  parameter ``t`` and a point on a graph its ``x``; the scene scale ``S``
+  and ``tol = tol.decide`` are those of the evaluation at rest (the given
+  ``inputs``);
 - difference step ``h``: ``STEP_FRACTION · S`` for a coordinate;
   ``STEP_FRACTION · (hi − lo)`` for a parameter whose range is bounded on
   both sides, ``STEP_FRACTION · S / |v|`` for an affine path open on a side
@@ -51,7 +55,7 @@ from .registry import free_slot, registry
 
 __all__ = ['ACCEPT_SLACK', 'CURVATURE_FLOOR', 'DRAG_STATUSES', 'MAX_HALVINGS', 'MAX_ITERATIONS', 'RANK_EPSILON', 'STEP_FRACTION',
            'VIA_OPS',
-           'DragResult', 'drag', 'drag_issues', 'drag_via', 'solve']
+           'DragResult', 'drag', 'drag_issues', 'drag_via', 'solve', 'stale_hints']
 
 DRAG_STATUSES = ('ok', 'clamped', 'no_convergence', 'singular')
 MAX_ITERATIONS = 8
@@ -610,6 +614,26 @@ def _rest_rank(doc: NativeDocument, el_id: str, via: list):
     if stencil is None:
         return None
     return _rank(stencil[0]), len(stencil[0])
+
+
+def stale_hints(doc: NativeDocument) -> list:
+    """The keys of ``appearance`` whose ``drag`` hint has an error of
+    :func:`drag_issues` (a missing or non-point owner, a ``via`` item that
+    cannot drive it), sorted — the hints a redefine drops (kernel.md §8.1).
+    ``doc`` is structurally valid."""
+    appearance = doc.data.get('appearance')
+    out = []
+    if not isinstance(appearance, dict):
+        return out
+    for el_id in sorted(appearance):
+        entry = appearance[el_id]
+        if not isinstance(entry, dict) or 'drag' not in entry:
+            continue
+        raw = entry['drag']['via']
+        el = doc.elements.get(el_id)
+        if el is None or el['type'] != 'point' or _via_problems(doc, el_id, [raw] if isinstance(raw, str) else raw):
+            out.append(el_id)
+    return out
 
 
 def drag_issues(doc: NativeDocument) -> list:

@@ -327,6 +327,23 @@ def _users(doc, el_id) -> list:
     return out
 
 
+def _drop_stale_hints(doc: NativeDocument, effects: dict) -> bool:
+    """Remove from ``doc.data`` the ``appearance.<id>.drag`` hints the edit
+    left with an error (display data never refuses an edit; kernel.md §8.1);
+    ``effects.removed.drag`` lists their elements. Whether any went."""
+    appearance = doc.data.get('appearance')
+    if not isinstance(appearance, dict) or not any(
+            isinstance(entry, dict) and 'drag' in entry for entry in appearance.values()):
+        return False
+    from .drag import stale_hints
+    stale = stale_hints(doc)
+    for el_id in stale:
+        del appearance[el_id]['drag']
+    if stale:
+        effects['removed'].setdefault('drag', []).extend(stale)
+    return bool(stale)
+
+
 def redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None) -> EditResult:
     """Replace the definition of operation ``op_id`` keeping its output IDs
     (see :func:`_redefine`). Conditions (1.9.0a2): redefining the operation
@@ -468,6 +485,8 @@ def _redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None, _tak
     else:
         schema = structure_issues(data)
     result = NativeDocument(data, schema)   # ``data`` is already a private copy
+    if not schema and _drop_stale_hints(result, effects):
+        result = NativeDocument(data, schema)
     after = validate(result)
     after_keys = _issue_keys(after)
     # the old document only when needed; with ``_take`` it is gone, so every error is new

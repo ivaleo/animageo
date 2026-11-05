@@ -478,6 +478,44 @@ class TestValidate:
         assert native.evaluate(b.doc).elements == native.evaluate(plain).elements
 
 
+# ── edits ────────────────────────────────────────────────────────────────
+
+
+class TestEdits:
+    """A hint is display data: a redefine that leaves it invalid drops it (``removed.drag``)."""
+
+    def test_a_dragged_point_made_free_drops_its_hint(self):
+        b = midpoint_two()
+        result = native.redefine(b.doc, 'op_M', {'op': 'point.free', 'args': {}},
+                                 inputs={'M': {'kind': 'point', 'value': [2, 1]}})
+        assert 'drag' not in result.document.data['appearance']['M']
+        assert result.effects['removed']['drag'] == ['M']
+        assert native.validate(result.document) == []
+        assert b.doc['appearance']['M']['drag'] == {'via': ['A', 'B']}       # the input is kept
+
+    def test_a_via_input_no_longer_free_drops_the_hint(self):
+        b = parallelogram()
+        result = native.redefine(b.doc, 'op_C', {'op': 'point.midpoint', 'args': {'a': ref('A'), 'b': ref('B')}})
+        assert 'drag' not in result.document.data['appearance']['D']
+        assert result.effects['removed']['drag'] == ['D']
+        assert native.validate(result.document) == []
+
+    def test_a_hint_still_valid_stays(self):
+        b = parallelogram()
+        result = native.redefine(b.doc, 'op_P', {'op': 'polygon.parallelogram',
+                                                 'args': {'a': ref('B'), 'b': ref('A'), 'c': ref('C')}})
+        assert result.document.data['appearance']['D']['drag'] == {'via': 'C'}
+        assert 'drag' not in result.effects['removed']
+
+    def test_with_conditions(self):
+        b = parallelogram()
+        b.doc['conditions'] = [{'id': 'k1', 'mode': 'check',
+                                'statement': {'kind': 'collinear', 'points': [{'ref': 'A'}, {'ref': 'B'}, {'ref': 'D'}]}}]
+        result = native.redefine(b.doc, 'op_C', {'op': 'point.midpoint', 'args': {'a': ref('A'), 'b': ref('B')}})
+        assert 'drag' not in result.document.data['appearance']['D']
+        assert result.effects['removed']['drag'] == ['D']
+
+
 # ── features, fixtures ───────────────────────────────────────────────────
 
 

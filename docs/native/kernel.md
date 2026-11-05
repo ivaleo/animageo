@@ -712,7 +712,8 @@ query lists its result in this order.
 
 When an edit changes `steps` (1.10.0a2), `removed.steps` lists the steps
 that went and `modified.steps` the steps that lost operations; the keys are
-absent otherwise.
+absent otherwise. When a redefine drops drag hints (1.12.0, §8.1),
+`removed.drag` lists their elements; the key is absent otherwise.
 
 Refusal codes:
 
@@ -726,7 +727,7 @@ Refusal codes:
 | `cycle` | redefine | a new argument depends on an output of the operation |
 | `missing_input` | redefine | a free op without an input of its kind in `inputs` or the document |
 | `input_not_free` | redefine | `inputs` names an element that is not a free output of the new op |
-| any `validate` code | redefine | an error the document did not have before |
+| any `validate` code | redefine | an error the document did not have before (never a `drag` hint: §8.1) |
 | `invalid_name` | rename | the name breaks the grammar |
 | `duplicate_name` | rename | another element has the same name key |
 
@@ -870,6 +871,15 @@ most `MAX_HALVINGS + 1` per step).
 **Validation** (§2): `via` items must be `point.free` / `point.on_path`
 input elements upstream of the point; `drag_singular` is `rank₀ < min(2,
 dim via)` at the document's own inputs.
+
+**Edits.** A hint is display data and never refuses an edit. `redefine`
+(with conditions too) drops from the result every `appearance.<id>.drag`
+that has an error of §2 — its point gone or no longer a point, a `via` item
+missing, no longer free (`drag_via_not_free`) or no longer upstream
+(`drag_via_not_upstream`): only the `drag` key goes, the rest of the entry
+stays; `effects.removed.drag` lists those elements (absent when none went).
+A hint with only `drag_singular` stays. `delete` needs no such rule: an
+input of a valid hint is an ancestor of its point, so they go together.
 
 **Fixtures** `animageo/native/parity/v1/drag/*.json`, format
 `animageo-drag-parity/v1`, one case per file: `{format, id, generatedBy,

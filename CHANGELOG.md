@@ -19,7 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `docs/native/kernel.md` §8.1). `has("drag")`.
 - `validate` checks the hint: errors `drag_via_not_free` and
   `drag_via_not_upstream` (plus `dangling_ref` and `type_mismatch`), warning
-  `drag_singular`. Documents without the hint validate as before.
+  `drag_singular`. Documents without the hint validate as before. A hint is
+  display data: `redefine` drops a hint it leaves invalid instead of refusing
+  the edit (`effects.removed.drag`).
 - Parity fixtures `animageo-drag-parity/v1` in `native/parity/v1/drag`
   (`python -m animageo.native fixtures drag [--check]`).
 - `auto_marks`, `add_auto_marks`, `apply_condition` and
