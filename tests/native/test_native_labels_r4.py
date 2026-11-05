@@ -7,9 +7,11 @@ frame with an origin, the three regression scenes with and without the
 default paint, the 50-label bench, the scenes of the parity check) and the
 hysteresis cases; ``synthetic.json`` — random display lists with every
 obstacle kind, paint and memory. Each call was recorded from the client
-solver: its inputs and what it returned. Here every call is replayed:
-``k`` must be equal, centres, boxes and corners within 0.01 px. The
-client's own assertions are then checked on the port's results.
+solver: its inputs and what it returned (a few by the tie rule, as their
+headers say). Here every call is replayed: ``k`` must be equal, centres,
+boxes and corners within 0.01 px. The client's own assertions are then
+checked on the port's results. ``ties.json`` — structural ties (equal gaps,
+mirrored places): the rule's ``k``, the same with any input moved by an ulp.
 """
 from __future__ import annotations
 
@@ -38,6 +40,7 @@ def _cases(name):
 
 CLIENT = _cases('client_cases.json')
 SYNTHETIC = _cases('synthetic.json')
+TIES = _cases('ties.json')
 
 
 def _list(case, step):
@@ -111,7 +114,7 @@ def test_synthetic_case(case_id):
 
 def test_memory_chains_are_consistent():
     """A step's memory is what the previous step returned (the chains were recorded in order)."""
-    for case in [*CLIENT.values(), *SYNTHETIC.values()]:
+    for case in [*CLIENT.values(), *SYNTHETIC.values(), *TIES.values()]:
         prev = None
         for s in case['steps']:
             if prev is not None and s['memory'] is not None and s['memory'] != prev:
@@ -403,6 +406,74 @@ def test_no_memory_equals_empty_memory_and_input_is_not_modified():
     r4.layout(_list(case, 2), s['view'], s['memory'], s['paint'])
     assert s['memory'] == before
     assert _list(case, 2) == lst_before
+
+
+# ---------------------------------------------------------------- ties
+
+
+@pytest.mark.parametrize('case_id', sorted(TIES))
+def test_tie_case(case_id):
+    case = TIES[case_id]
+    for step in range(len(case['steps'])):
+        _check_step(case, step)
+
+
+def _numbers(obj, path=()):
+    """Paths of the measured numbers of an input (not the corner ``edge``, not ``k``)."""
+    if isinstance(obj, bool):
+        return
+    if isinstance(obj, (int, float)):
+        yield path
+    elif isinstance(obj, dict):
+        for key, v in obj.items():
+            if key not in ('edge', 'k'):
+                yield from _numbers(v, (*path, key))
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            yield from _numbers(v, (*path, i))
+
+
+def _nudged(obj, path, to):
+    out = copy.deepcopy(obj)
+    cur = out
+    for key in path[:-1]:
+        cur = cur[key]
+    cur[path[-1]] = math.nextafter(float(cur[path[-1]]), to)
+    return out
+
+
+@pytest.mark.parametrize('case_id', sorted(TIES))
+def test_one_ulp_does_not_change_k(case_id):
+    """Any input moved by one ulp either way: every label keeps its k."""
+    case = TIES[case_id]
+    for step, s in enumerate(case['steps']):
+        expect = {key: e['k'] for key, e in s['expect']['memory'].items()}
+        inputs = {'list': _list(case, step), 'view': s['view'], 'memory': s['memory']}
+        changed = []
+        for path in _numbers(inputs):
+            for to in (math.inf, -math.inf):
+                o = _nudged(inputs, path, to)
+                _, memory, _ = r4.layout(o['list'], o['view'], o['memory'], s['paint'])
+                got = {key: e['k'] for key, e in memory.items()}
+                if got != expect:
+                    changed.append((path, to, got))
+        assert changed == [], f"{case['id']} step {step}"
+
+
+def test_equal_gaps_take_the_first_from_east():
+    # Gaps from the smallest direction in [0, 2π) (a hair below 2π is 0), counter-clockwise.
+    assert _run(TIES['ties/midpoint-horizontal'])[0]['M']['k'] == 2  # above
+    assert _run(TIES['ties/point-on-flat-line'])[0]['P']['k'] == 2  # above
+    assert _run(TIES['ties/midpoint-vertical'])[0]['M']['k'] == 4  # left
+    assert _run(TIES['ties/cross'])[0]['O']['k'] == 1  # north-east
+
+
+def test_equal_costs_keep_the_earlier_place_and_the_remembered_one():
+    # 13 and 15 (outer ring, south-west and south-east) overlap the lower box equally.
+    assert _run(TIES['ties/mirrored-places'])[0]['P']['k'] == 13
+    placements, _, stats = _run(TIES['ties/mirrored-places/remembered'])
+    assert placements['P']['k'] == 15
+    assert stats == {'evaluated': 1, 'moved': 0}
 
 
 # ------------------------------------------------------- determinism

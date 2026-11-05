@@ -17,9 +17,48 @@ the anchor it was chosen at. :func:`layout` takes the previous memory (or
 argument.
 
 JavaScript kept on purpose: ``Math.round`` halves up, ``%`` truncated, and
-``Math.atan2/cos/sin/hypot`` as V8 (``_jsmath.py``) — a point in the middle
-of a segment sees two equal gaps, and the last bit of an angle picks one.
-Numbers must be finite (a ``ValueError``; TypeScript would carry a NaN).
+``Math.atan2/cos/sin/hypot`` as V8 (``_jsmath.py``). Numbers must be finite
+(a ``ValueError``; TypeScript would carry a NaN).
+
+Ties — the one change to ``5d88ff083``, agreed with the client, which
+repeats it: structural ties (a point in the middle of a segment or on a
+line, crossings, regular figures, mirrored places) are decided by a rule,
+not by the last bit of ``atan2``/``hypot`` (another libm, FMA):
+
+* Gaps (``awayOctant``). An angle is normalised as ``n = ((a % 2π) + 2π) %
+  2π``; an ``n > 2π − 1e-9`` is taken as ``n − 2π``. The angles are sorted
+  ascending; gap ``i`` runs from ``n[i]`` to ``n[i + 1]``, the last one to
+  ``n[0] + 2π``. ``W`` is the largest ``b − a`` (no tolerance); the
+  bisector is ``(a + b) / 2`` of the first gap in this order with ``b − a
+  >= W − 1e-9``. So the first equal gap counter-clockwise from east: a
+  point on a horizontal line goes above it, on a vertical one to the left,
+  at a crossing of the two to the north-east.
+* Costs (``best``). Places are tried in the order ``(penalty, index)``,
+  ``index`` being the place in the list below. The best cost starts at the
+  limit: +∞, or with a remembered place its cost (75 % of it if clean). A
+  place replaces it only when ``cost < best · (1 − 1e-12)``; the search
+  stops at the first place with ``1 + penalty >= best · (1 − 1e-12)``. So
+  of equal costs the earlier place wins, and the remembered place wins
+  over an equal one.
+* The list of places (``k``). A point or line label without ``along``:
+  0–7 at ``reach``, direction ``k·45°`` counter-clockwise from east (y up),
+  8–15 the same at ``reach + max(w, h)``. With ``along``: 0–3 on the side
+  ``+n`` at ``t = .5, .35, .65, .2``, 4–7 on the side ``−n`` (``n = (y1 −
+  y2, x2 − x1) / length`` in screen axes), at the gap ``ALONG_GAP``; 8–15
+  the same at ``ALONG_GAP + max(w, h)``. A measure: 0 its own box, 1–8 its
+  box moved by ``0.6·h`` in the direction ``(k − 1)·45°``.
+
+Why these sizes. An angle below 2π has an ulp of 8.9e-16 and libraries
+differ by an ulp or two; an input moved by its ulp (coordinates below 1e5
+px: under 1.5e-11 px) turns a direction seen from 1.5 px or more by under
+1e-11 rad. 1e-9 rad is a hundred times that and still 1e-6 px at 1000 px:
+real gaps are never that close. A cost is 1 + penalty + overlaps, between
+1 and a few hundred, a sum of a few hundred terms at most, each rounded
+once: noise under 1e-13 of it; real differences are steps of the
+penalties (0.02 and up) or overlap fractions of a box (1e-12 of a 100 px²
+box is 1e-10 px²). Every other comparison is the reference's; the octant
+of the bisector is still ``Math.round`` (a bisector at a half octant, as at
+a 45° corner, rounds on its last bit).
 """
 from __future__ import annotations
 
@@ -83,6 +122,8 @@ __all__ = [
 #   eps = 1.5 (awayOctant)         _AWAY_EPS
 #   64 links, 16 chords            _POLYLINE_LINKS, _ARC_CHORDS
 #   strokeWidth ?? 2 (pad)         _DEFAULT_STROKE   (pad = 1 + width / 2)
+#   (after 5d88ff083) GAP_TIE      _GAP_TIE = 1e-9   (rad, equal gaps)
+#   (after 5d88ff083) COST_TIE     _COST_TIE = 1e-12 (relative, equal costs)
 _BASE = 1.0
 HYSTERESIS = 0.75
 ANCHOR_EPS = 0.5
@@ -122,6 +163,12 @@ _INF = math.inf
 # Margin of the (exact) culling of geometry far from every candidate of a
 # label, CSS px: far above any rounding of the hit tests.
 _CULL_MARGIN = 1.0
+# Ties (after 5d88ff083, agreed with the client; the rule is in the module
+# docstring): gaps of awayOctant equal within _GAP_TIE rad, costs equal
+# within the relative _COST_TIE.
+_GAP_TIE = 1e-9
+_COST_TIE = 1e-12
+_COST_BAR = 1 - _COST_TIE
 
 
 # ---------------------------------------------------------------- input
@@ -793,16 +840,27 @@ def _away_octant(ax: float, ay: float, segs: list[float]) -> int | None:
                     angles.append(a + math.pi)
     if not angles:
         return None
-    norm = sorted(math.fmod(math.fmod(a, _TAU) + _TAU, _TAU) for a in angles)
-    best_gap = -1.0
-    best_mid = 0.0
+    norm = []
+    for a in angles:
+        n = math.fmod(math.fmod(a, _TAU) + _TAU, _TAU)
+        # A hair below 2π is the direction 0: the order starts there (a tie).
+        norm.append(n - _TAU if n > _TAU - _GAP_TIE else n)
+    norm.sort()
     count = len(norm)
+    widest = -1.0
     for i in range(count):
         a = norm[i]
         b = norm[i + 1] if i + 1 < count else norm[0] + _TAU
-        if b - a > best_gap:
-            best_gap = b - a
+        if b - a > widest:
+            widest = b - a
+    # Of the gaps as wide as the widest (a tie), the first in this order.
+    best_mid = 0.0
+    for i in range(count):
+        a = norm[i]
+        b = norm[i + 1] if i + 1 < count else norm[0] + _TAU
+        if b - a >= widest - _GAP_TIE:
             best_mid = (a + b) / 2
+            break
     return ((_js_round(best_mid / (math.pi / 4)) % 8) + 8) % 8
 
 
@@ -950,17 +1008,22 @@ def layout(display_list, view, memory=None, paint=None):
         by_penalty = sorted(range(len(boxes)), key=lambda i: (penalties[i], i))
 
         def best(skip: int, limit: float) -> tuple[int, float]:
-            """The cheapest place but ``skip`` below ``limit``; a clean place ends the search."""
+            """The cheapest place but ``skip`` below ``limit``; a clean place ends the search.
+
+            A place is cheaper only by more than the tie (``_COST_TIE``): of
+            equal costs the earlier in ``by_penalty`` (or the limit) wins.
+            """
             best_k = -1
             best_cost = limit
             for k in by_penalty:
                 if k == skip:
                     continue
                 floor = _BASE + penalties[k]
-                if floor >= best_cost:
+                bar = best_cost * _COST_BAR
+                if floor >= bar:
                     break
                 c = floor + _overlap_cost(boxes[k], points, geo, local, view_box, best_cost - floor)
-                if c < best_cost:
+                if c < bar:
                     best_k = k
                     best_cost = c
             return best_k, best_cost
