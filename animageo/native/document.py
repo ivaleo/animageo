@@ -35,6 +35,7 @@ __all__ = [
     'dumps',
     'content_hash',
     'iter_refs',
+    'min_registry_version',
 ]
 
 DOCUMENT_FORMAT = 'animageo-construction/v1'
@@ -840,6 +841,60 @@ def _version_tuple(text):
         return None
 
 
+def _needs(reg, record, args, elements):
+    """``[(version, slot, elementId | None)]`` newer than ``1.0`` that one
+    operation needs: its ``since`` (``elementId`` ``None``), then each
+    reference argument whose type fits its family slot only since a later
+    registry (``familySince``), in the order of the record's inputs."""
+    out = []
+    since = record.get('since')
+    if _version_tuple(since) is not None and _version_tuple(since) > (1, 0):
+        out.append((since, None, None))
+    for item in record.get('inputs', []):
+        for el_id in iter_refs((args or {}).get(item['slot'])):
+            target = elements.get(el_id)
+            if not isinstance(target, dict):
+                continue
+            member = reg.member_since(item['type'], target.get('type'))
+            if member is not None:
+                out.append((member, item['slot'], el_id))
+    return out
+
+
+def min_registry_version(doc) -> str:
+    """The oldest operation registry a document fits (registry 1.8): the newest
+    ``since`` of its operations and of the family members its arguments use
+    (``_types.json → familySince``); ``"1.0"`` for a document without them.
+    Operations this registry does not know are left out. Library writers
+    (``convert``, ``parse_commands``, the edits) declare this version, an
+    edit only ever raising it (docs/native/kernel.md §2)."""
+    from .registry import registry
+    data = doc.data if isinstance(doc, NativeDocument) else doc
+    reg = registry()
+    elements = data.get('elements') or {}
+    best = (1, 0)
+    text = '1.0'
+    for op in (data.get('operations') or {}).values():
+        record = reg.get(op.get('op')) if isinstance(op, dict) else None
+        if record is None:
+            continue
+        for version, _slot, _el in _needs(reg, record, op.get('args'), elements):
+            if _version_tuple(version) > best:
+                best = _version_tuple(version)
+                text = version
+    return text
+
+
+def raise_registry_version(data: dict) -> None:
+    """Raise ``operationRegistryVersion`` of the document data ``data`` (in
+    place) to :func:`min_registry_version` when that is newer; never lower it
+    (an edit, registry 1.8, kernel.md §2)."""
+    declared = _version_tuple(data.get('operationRegistryVersion'))
+    need = min_registry_version(data)
+    if declared is not None and _version_tuple(need) > declared:
+        data['operationRegistryVersion'] = need
+
+
 def is_newer_registry(version) -> bool:
     """True when a document's ``operationRegistryVersion`` is newer than ours."""
     theirs = _version_tuple(version)
@@ -855,11 +910,11 @@ def validate(doc) -> list:
     ``unknown_slot``, ``missing_slot``, ``dangling_ref``, ``type_mismatch``,
     ``cycle``, ``input_not_free``, ``missing_input``, ``step_unknown_operation``,
     ``step_duplicate_operation``, ``step_duplicate_id``, ``step_empty``,
-    ``step_cycle``, ``drag_via_not_free``, ``drag_via_not_upstream`` (errors)
-    and ``unknown_op``, ``newer_registry``, ``seq_duplicate``,
-    ``role_unknown``, ``drag_singular`` (warnings). The ``drag`` hints of
-    ``appearance`` (1.12.0) also give ``dangling_ref`` and ``type_mismatch``
-    (``docs/native/kernel.md`` §8.1).
+    ``step_cycle``, ``drag_via_not_free``, ``drag_via_not_upstream``,
+    ``needs_newer_registry`` (errors) and ``unknown_op``, ``newer_registry``,
+    ``seq_duplicate``, ``role_unknown``, ``drag_singular`` (warnings). The
+    ``drag`` hints of ``appearance`` (1.12.0) also give ``dangling_ref`` and
+    ``type_mismatch`` (``docs/native/kernel.md`` §8.1).
     """
     if not isinstance(doc, NativeDocument):
         doc = load(doc, strict=False)
@@ -882,6 +937,7 @@ def validate(doc) -> list:
                 issues.append(Issue('id_mismatch', f'/{section}{_pointer(key)}/id',
                                     f'key {key!r} differs from id {records[key]["id"]!r}', **{id_key: key}))
 
+    declared_version = None if is_newer_registry(doc.registry_version) else _version_tuple(doc.registry_version)
     bound_by: dict = {}
     for op_id in sorted(ops):
         op = ops[op_id]
@@ -892,6 +948,19 @@ def validate(doc) -> list:
             issues.append(Issue(code, path + '/op', f"operation {op['op']!r} is not in registry {REGISTRY_VERSION}",
                                 operationId=op_id, severity='warning'))
         args = op['args']
+        if record is not None and declared_version is not None:
+            for version, slot, el_id in _needs(reg, record, args, elements):
+                if _version_tuple(version) <= declared_version:
+                    continue
+                if el_id is None:
+                    issues.append(Issue('needs_newer_registry', path + '/op',
+                                        f"{op['op']} needs registry {version}, the document declares "
+                                        f"{doc.registry_version}", operationId=op_id))
+                else:
+                    issues.append(Issue('needs_newer_registry', path + '/args' + _pointer(slot),
+                                        f"{elements[el_id]['type']} {el_id!r} fits slot {slot!r} of {op['op']} "
+                                        f"since registry {version}, the document declares {doc.registry_version}",
+                                        operationId=op_id, elementId=el_id))
         if record is not None:
             if not input_set_matches(record, args):
                 issues.append(Issue('missing_slot', path + '/args',

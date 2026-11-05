@@ -40,6 +40,7 @@ Read, check and write `animageo-construction/v1` (kernel.md §1–§2).
 - `exception LoadError(issues)` — The document cannot be read; `issues` lists the reasons.
 - `load(source, *, strict=True)` — Read a document from a dict, a JSON string, bytes or a path.
 - `validate(doc)` — All issues of a document: structure first, then the graph rules.
+- `min_registry_version(doc)` — The oldest operation registry a document fits (registry 1.8): the newest `since` of its operations and of the family members its arguments use (`_types.json → familySince`); `"1.0"` for a document without them. Library writers (`convert`, `parse_commands`, the edits) declare this version, an edit only ever raising it.
 - `dump(doc)` — The document as a new JSON object (no defaults added, unknown keys kept).
 - `dumps(doc)` — Canonical JSON text of the document (`canonical.py`).
 - `canonical_json(value)` — Return the canonical JSON text of `value` (dict/list/str/number/bool/None).
@@ -51,9 +52,9 @@ Read, check and write `animageo-construction/v1` (kernel.md §1–§2).
 
 The operation registry `ops/v1` (kernel.md §4) and what this library can do.
 
-- `REGISTRY_VERSION = '1.7'`
-- `__registry_version__ = '1.7'`
-- `class Registry(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>)` — The loaded registry: records by op, service catalogs and the index.
+- `REGISTRY_VERSION = '1.8'`
+- `__registry_version__ = '1.8'`
+- `class Registry(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>, family_since=<factory>)` — The loaded registry: records by op, service catalogs and the index.
 - `registry()` — The registry shipped with this library (cached).
 - `signature_hash(record)` — `"sha256:<hex>"` of the canonical JSON of `signature()`.
 - `FEATURES` — The names `has()` knows, a tuple of strings. A feature is added with the release that brings it and is never removed.
@@ -64,7 +65,7 @@ The operation registry `ops/v1` (kernel.md §4) and what this library can do.
 Values, states and reasons (kernel.md §5–§7); checks and the general case (checks.md).
 
 - `EVALUATED_FORMAT = 'animageo-evaluated/v1'`
-- `class Evaluated(document_id, scale, elements, diagnostics, tolerances, library='', registry='1.7', computed=<factory>, t=None, visible=None)` — The result of `evaluate()`; `to_dict()` is `animageo-evaluated/v1`.
+- `class Evaluated(document_id, scale, elements, diagnostics, tolerances, library='', registry='1.8', computed=<factory>, t=None, visible=None)` — The result of `evaluate()`; `to_dict()` is `animageo-evaluated/v1`.
 - `evaluate(doc, *, inputs=None, t=None, timeline=None)` — Values, states and reasons of every element of `doc`.
 - `project(doc, element_id, xy, *, inputs=None)` — The path parameter of the point of a path nearest to `xy`.
 - `drag(doc, inputs, element_id, target)` — Move the point `element_id` towards `target` by changing input values: `{"inputs", "status"}`, `status` one of `ok`, `clamped`, `no_convergence`, `singular`; a refusal returns the given `inputs` object. A dependent point moves through `appearance.<id>.drag.via` (1.12.0, kernel.md §8.1).

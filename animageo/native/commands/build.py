@@ -21,7 +21,7 @@ import uuid
 from typing import NamedTuple
 
 from ..canonical import canonical_json
-from ..document import DOCUMENT_FORMAT, ID_RE, NativeDocument, as_document, iter_refs
+from ..document import DOCUMENT_FORMAT, ID_RE, NativeDocument, as_document, iter_refs, min_registry_version
 from ..edit import EditError, _effects, _finish, delete, name_key, redefine, valid_name
 from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, registry
 from .issues import CommandIssue, LineError, ambiguous_name
@@ -1292,10 +1292,10 @@ class _Builder:
             self.W = delete(NativeDocument(self.W), seeds, mode='operation').document.data
         if self.W.get('appearance') == {} and 'appearance' not in self.base:
             del self.W['appearance']
-        newest = max((_version_tuple((self.reg.get(op.get('op')) or {}).get('since', '0'))
-                      for op in self.W['operations'].values() if self.reg.get(op.get('op'))), default=(0,))
-        if newest > _version_tuple(self.W.get('operationRegistryVersion')):
-            self.W['operationRegistryVersion'] = REGISTRY_VERSION
+        # A new document declares the registry it needs; an edit only raises it (kernel.md §2).
+        need = min_registry_version(self.W)
+        if not self.editing or _version_tuple(need) > _version_tuple(self.W.get('operationRegistryVersion')):
+            self.W['operationRegistryVersion'] = need
 
     def _diff(self) -> dict:
         effects = _effects()

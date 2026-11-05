@@ -304,7 +304,7 @@ class TestParse:
         data = result.document.data
         assert data['format'] == native.DOCUMENT_FORMAT
         assert data['documentId'] == 'doc'
-        assert data['operationRegistryVersion'] == native.__registry_version__
+        assert data['operationRegistryVersion'] == native.min_registry_version(data) == '1.0'
         assert native.validate(result.document) == []
         assert sorted(data['operations']) == ['o1', 'o2', 'o3', 'o4']
         assert producer(result, 'M')['args'] == {'a': {'kind': 'ref', 'elementId': 'e1'},

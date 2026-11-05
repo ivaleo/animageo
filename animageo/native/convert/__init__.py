@@ -15,6 +15,7 @@ import contextlib
 import copy
 import logging
 
+from ..document import min_registry_version
 from .construction import ConvertError, Context, translate
 from .ggb import ImportRefused, LIMITS
 from .keys import namespace_of
@@ -65,6 +66,8 @@ def from_construction(constr, *, mode: str = 'strict', id_namespace, key_of=None
     if mode == 'strict' and rep['untranslated']:
         raise ConvertError(rep['untranslated'])
     doc = tr.document if tr.document['operations'] else None
+    if doc is not None:
+        doc['operationRegistryVersion'] = min_registry_version(doc)      # kernel.md §2
     return doc, rep
 
 
@@ -503,6 +506,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     protocol_steps_dropped = False
     if doc['operations'] or empty_document:
         from ..document import load, validate
+        doc['operationRegistryVersion'] = min_registry_version(doc)      # kernel.md §2
         issues = [i for i in validate(load(doc, strict=False)) if getattr(i, 'severity', 'error') == 'error']
         if any(i.code == 'step_cycle' for i in issues):
             # Damaged XML can interleave an acyclic construction across

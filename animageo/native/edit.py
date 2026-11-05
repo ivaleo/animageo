@@ -29,6 +29,7 @@ from .document import (
     bound_producer,
     cyclic_operations,
     op_dependencies,
+    raise_registry_version,
     structure_issues,
     structure_issues_of,
     validate,
@@ -479,6 +480,7 @@ def _redefine(doc, op_id: str, new_op: dict, *, slot_map=None, inputs=None, _tak
                 elementId=el_id, operationId=op_id, severity='warning').to_dict())
         effects['modified']['operations'] = [o for o in effects['modified']['operations'] if o in data['operations']]
 
+    raise_registry_version(data)       # an edit only raises the version (kernel.md §2)
     if _take:      # the rest of a handed-over document is well formed
         schema = structure_issues_of(data, operations=[op_id], elements=[p[0] for p in pairs],
                                      inputs=list(new_inputs))

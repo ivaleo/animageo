@@ -129,6 +129,7 @@ only on a structurally valid document.
 | `producer_mismatch` | error | an output names a missing element or one that names another producer; an element's producer op is missing or does not bind it |
 | `unknown_op` | warning | the op is not in the registry |
 | `newer_registry` | warning | `operationRegistryVersion` is newer than the library's (also replaces `unknown_op` then) |
+| `needs_newer_registry` | error | registry 1.8: the document declares an older registry than it uses — an operation whose `since` is above `operationRegistryVersion` (`path` is its `op`), or an argument whose element type fits its family slot only since a later registry (`_types.json → familySince`; `path` is the argument). Not reported for a document that declares a registry newer than the library's |
 | `unknown_slot` | error | an argument or output slot the op does not declare (a repeat slot beyond the list length too) |
 | `missing_slot` | error | a declared input slot or a required param has no argument |
 | `dangling_ref` | error | a reference (argument or `inputs` key) to a missing element |
@@ -146,6 +147,19 @@ only on a structurally valid document.
 The `drag` checks run only when some entry of `appearance` has a `drag` key;
 a `via` item's `path` is `…/drag/via` for a single ID and `…/drag/via/<i>`
 for a list, its `elementId` the dragged point.
+
+**The declared registry** (1.8). `min_registry_version(doc)` is the oldest
+registry a document fits: the newest `since` of its operations and of the
+family members its arguments use (`familySince`), `"1.0"` without them;
+operations the library does not know are left out. A document the library
+writes declares it: `from_ggb`, `from_construction` and `parse_commands`
+without `base` write the minimum; `parse_commands` with `base`,
+`redefine` (and so `apply_condition`) and `add_auto_marks` raise
+`operationRegistryVersion` to the minimum when it is higher and never lower
+it. So a document declares 1.8 only when it uses an
+operation or a family member of 1.8, and a reader of registry 1.7 opens
+every other document without `newer_registry`. The fixture generators and
+the experimental space writers declare the library's registry.
 
 ## 3. Canonical JSON and hash
 
@@ -166,7 +180,7 @@ The text `JSON.stringify` prints after object keys are sorted:
 table `animageo/native/parity/v1/canonical.json` is a list of
 `{"value", "canonical"}` pairs that both kernels must reproduce.
 
-## 4. Registry `ops/v1` (version 1.7)
+## 4. Registry `ops/v1` (version 1.8)
 
 Registry 1.4 is frozen since animageo 1.8.1: the records of 1.0–1.4 and their
 `signatureHash` stay as they are (`beta` is a descriptive status outside the
@@ -180,6 +194,12 @@ circular segments, cevians, the nine-point circle and the Euler line.
 These five operations have `since: "1.7"`; records and signature hashes
 of operations from 1.0–1.6 stay unchanged. A 1.7 document opened with rc11
 reports an unknown school operation as `newer_registry`.
+
+Registry 1.8 adds the common points of two conics and of
+a graph and a conic, and the conics and graphs in the `curve` slots of
+`intersect.other_than` and `intersect.nearest` (§15). The records of
+1.0–1.7 and their signature hashes stay unchanged; a document that declares
+1.7 reads and evaluates as before.
 
 **Registry 1.5 is the 1.0 contract** (animageo 1.11.0rc1;
 `tests/native/test_registry_frozen_1_0.py`, snapshot
@@ -321,7 +341,7 @@ a new registry version. `beta` may become `stable` at any time.
   (default null), branch: branch.policy or null, orientation, pathParam}))`;
   the hashes of the 1.0 records did not change in 1.1, nor those of the
   1.0 and 1.1 records in 1.2, nor those of the earlier records in 1.3 and
-  1.4; registries 1.5, 1.6 and 1.7 also preserve all earlier signatures
+  1.4; registries 1.5, 1.6, 1.7 and 1.8 also preserve all earlier signatures
   (tests pin them);
 - params (`type: "number"`, or since 1.7 `"string"`) are op settings written
   in `args` as matching literals: `optional` (default `false`) and `default`
@@ -341,7 +361,10 @@ Service catalogs:
   since 1.3 `markKinds` (mark kind → the operation that makes it; the
   registry check refuses a kind whose operation has no `mark` output) and
   `angles` (the normalisation of a direction, the convex measure and the
-  wrap of a difference of directions, §5);
+  wrap of a difference of directions, §5); since 1.8 `familySince`
+  (`{family: {type: version}}`: a member that joined a family later than
+  the family itself, for `min_registry_version` and
+  `needs_newer_registry`, §2);
 - `_reasons.json`: reason → state;
 - `_policies.json`: branch policies (`single`, `line_param_order`,
   `circle_side`, `other_than`; since 1.4 `tangent_side`, `bisector_kind`,
