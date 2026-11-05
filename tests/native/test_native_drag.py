@@ -403,3 +403,45 @@ def test_has_drag():
     assert native.has('drag') and 'drag' in native.FEATURES and 'drag' in native.__all__
     assert callable(native.drag)
 
+
+def test_shipped_fixtures_are_current_and_replay():
+    from animageo.native.drag_fixtures import DEFAULT_DIR, check_fixtures, verify_fixtures
+    assert check_fixtures(DEFAULT_DIR) == []
+    files, cases, mismatches = verify_fixtures(DEFAULT_DIR)
+    assert mismatches == []
+    assert files == cases and files >= 9
+
+
+def test_fixtures_cover_every_status():
+    from animageo.native.drag_fixtures import build_fixtures
+    statuses = {f['expect']['status'] for f in build_fixtures().values()}
+    assert statuses == {'ok', 'clamped', 'no_convergence', 'singular'}
+    for fixture in build_fixtures().values():
+        if fixture['expect']['status'] in ('no_convergence', 'singular'):
+            assert fixture['expect']['inputs'] == fixture['inputs']
+
+
+def test_cli_check(capsys):
+    from animageo.native.cli import main
+    assert main(['fixtures', 'drag', '--check']) == 0
+    assert '0 mismatches' in capsys.readouterr().out
+
+
+def test_cli_writes_elsewhere(tmp_path, capsys):
+    from animageo.native.cli import main
+    assert main(['fixtures', 'drag', '-o', str(tmp_path)]) == 0
+    assert sorted(p.name for p in tmp_path.glob('*.json'))
+    assert main(['fixtures', 'drag', '-o', str(tmp_path), '--check']) == 0
+    (tmp_path / 'drag_parallelogram.json').write_text('{}', encoding='utf-8')
+    assert main(['fixtures', 'drag', '-o', str(tmp_path), '--check']) == 1
+
+
+def test_a_fixture_mismatch_is_reported():
+    from animageo.native.drag_fixtures import build_fixtures, verify_fixture
+    fixture = copy.deepcopy(build_fixtures()['drag_parallelogram.json'])
+    assert verify_fixture(fixture) == []
+    fixture['expect']['inputs']['C']['value'][0] += 1e-6
+    assert verify_fixture(fixture)
+    fixture = copy.deepcopy(build_fixtures()['drag_parallelogram.json'])
+    fixture['expect']['status'] = 'clamped'
+    assert verify_fixture(fixture)

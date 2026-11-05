@@ -1,0 +1,189 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_translate",
+ "generatedBy": "animageo 1.11.4",
+ "text": "a translated point through the original: one step",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_translate",
+  "operationRegistryVersion": "1.4",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_U": {
+    "id": "op_U",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "U"
+     }
+    ]
+   },
+   "op_V": {
+    "id": "op_V",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "V"
+     }
+    ]
+   },
+   "op_v": {
+    "id": "op_v",
+    "op": "vector.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "U"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "V"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "vector",
+      "elementId": "v"
+     }
+    ]
+   },
+   "op_A1": {
+    "id": "op_A1",
+    "op": "transform.translate",
+    "args": {
+     "obj": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "vector": {
+      "kind": "ref",
+      "elementId": "v"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "image",
+      "elementId": "A1"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "U": {
+    "id": "U",
+    "type": "point",
+    "displayName": "U",
+    "producer": {
+     "operationId": "op_U",
+     "slot": "point"
+    }
+   },
+   "V": {
+    "id": "V",
+    "type": "point",
+    "displayName": "V",
+    "producer": {
+     "operationId": "op_V",
+     "slot": "point"
+    }
+   },
+   "v": {
+    "id": "v",
+    "type": "vector",
+    "displayName": "v",
+    "producer": {
+     "operationId": "op_v",
+     "slot": "vector"
+    }
+   },
+   "A1": {
+    "id": "A1",
+    "type": "point",
+    "displayName": "A1",
+    "producer": {
+     "operationId": "op_A1",
+     "slot": "image"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     1,
+     1
+    ]
+   },
+   "U": {
+    "kind": "point",
+    "value": [
+     0,
+     0
+    ]
+   },
+   "V": {
+    "kind": "point",
+    "value": [
+     2,
+     1
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  },
+  "appearance": {
+   "A1": {
+    "drag": {
+     "via": "A"
+    }
+   }
+  }
+ },
+ "inputs": {},
+ "element": "A1",
+ "target": [
+  -2,
+  0.5
+ ],
+ "expect": {
+  "status": "ok",
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     -4.0,
+     -0.5
+    ]
+   }
+  }
+ }
+}

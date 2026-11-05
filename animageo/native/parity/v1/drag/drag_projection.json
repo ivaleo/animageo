@@ -1,0 +1,215 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_projection",
+ "generatedBy": "animageo 1.11.4",
+ "text": "a point on a segment without a hint: the nearest point of the segment",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_projection",
+  "operationRegistryVersion": "1.4",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_O": {
+    "id": "op_O",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "O"
+     }
+    ]
+   },
+   "op_s": {
+    "id": "op_s",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "s"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "s"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_Q": {
+    "id": "op_Q",
+    "op": "transform.reflect_point",
+    "args": {
+     "obj": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "point": {
+      "kind": "ref",
+      "elementId": "O"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "image",
+      "elementId": "Q"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "O": {
+    "id": "O",
+    "type": "point",
+    "displayName": "O",
+    "producer": {
+     "operationId": "op_O",
+     "slot": "point"
+    }
+   },
+   "s": {
+    "id": "s",
+    "type": "segment",
+    "displayName": "s",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "segment"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "Q": {
+    "id": "Q",
+    "type": "point",
+    "displayName": "Q",
+    "producer": {
+     "operationId": "op_Q",
+     "slot": "image"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0,
+     0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     4,
+     0
+    ]
+   },
+   "O": {
+    "kind": "point",
+    "value": [
+     2,
+     1
+    ]
+   },
+   "P": {
+    "kind": "pathParameter",
+    "value": 0.25
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  },
+  "appearance": {
+   "Q": {
+    "drag": {
+     "via": "P"
+    }
+   }
+  }
+ },
+ "inputs": {},
+ "element": "P",
+ "target": [
+  3,
+  2
+ ],
+ "expect": {
+  "status": "ok",
+  "inputs": {
+   "P": {
+    "kind": "pathParameter",
+    "value": 0.75
+   }
+  }
+ }
+}

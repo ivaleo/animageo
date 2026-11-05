@@ -1,0 +1,215 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_on_path",
+ "generatedBy": "animageo 1.11.4",
+ "text": "one path parameter drives the point: the nearest point it reaches",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_on_path",
+  "operationRegistryVersion": "1.1",
+  "operations": {
+   "op_O": {
+    "id": "op_O",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "O"
+     }
+    ]
+   },
+   "op_R": {
+    "id": "op_R",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "R"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_k": {
+    "id": "op_k",
+    "op": "circle.center_point",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "O"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "R"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "circle",
+      "elementId": "k"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "k"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_M": {
+    "id": "op_M",
+    "op": "point.midpoint",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "C"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "M"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "O": {
+    "id": "O",
+    "type": "point",
+    "displayName": "O",
+    "producer": {
+     "operationId": "op_O",
+     "slot": "point"
+    }
+   },
+   "R": {
+    "id": "R",
+    "type": "point",
+    "displayName": "R",
+    "producer": {
+     "operationId": "op_R",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "k": {
+    "id": "k",
+    "type": "circle",
+    "displayName": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "circle"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "M": {
+    "id": "M",
+    "type": "point",
+    "displayName": "M",
+    "producer": {
+     "operationId": "op_M",
+     "slot": "point"
+    }
+   }
+  },
+  "inputs": {
+   "O": {
+    "kind": "point",
+    "value": [
+     0,
+     0
+    ]
+   },
+   "R": {
+    "kind": "point",
+    "value": [
+     3,
+     0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     1,
+     1
+    ]
+   },
+   "P": {
+    "kind": "pathParameter",
+    "value": 0.5
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  },
+  "appearance": {
+   "M": {
+    "drag": {
+     "via": "P"
+    }
+   }
+  }
+ },
+ "inputs": {},
+ "element": "M",
+ "target": [
+  4,
+  4
+ ],
+ "expect": {
+  "status": "ok",
+  "inputs": {
+   "P": {
+    "kind": "pathParameter",
+    "value": 0.7853981634
+   }
+  }
+ }
+}

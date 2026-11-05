@@ -35,6 +35,7 @@ DATA_DIRS = [
     ('parity', 'v1', 'marks'),
     ('parity', 'v1', 'paint'),
     ('parity', 'v1', 'curves'),
+    ('parity', 'v1', 'drag'),
     ('parity', 'v1', 'space'),
     ('parity', 'v1', 'ggb'),
     ('style',),

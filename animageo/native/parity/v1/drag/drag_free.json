@@ -1,0 +1,192 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_free",
+ "generatedBy": "animageo 1.11.4",
+ "text": "a free point goes to the target",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_parallelogram",
+  "operationRegistryVersion": "1.4",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "polygon.parallelogram",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     },
+     "c": {
+      "kind": "ref",
+      "elementId": "C"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "polygon",
+      "elementId": "P"
+     },
+     {
+      "slot": "vertex",
+      "elementId": "D"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "polygon",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "polygon"
+    }
+   },
+   "D": {
+    "id": "D",
+    "type": "point",
+    "displayName": "D",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "vertex"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0,
+     0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     4,
+     0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     5,
+     3
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  },
+  "appearance": {
+   "D": {
+    "drag": {
+     "via": "C"
+    }
+   }
+  }
+ },
+ "inputs": {
+  "B": {
+   "kind": "point",
+   "value": [
+    4,
+    0.5
+   ]
+  }
+ },
+ "element": "A",
+ "target": [
+  0.5,
+  -1.25
+ ],
+ "expect": {
+  "status": "ok",
+  "inputs": {
+   "B": {
+    "kind": "point",
+    "value": [
+     4,
+     0.5
+    ]
+   },
+   "A": {
+    "kind": "point",
+    "value": [
+     0.5,
+     -1.25
+    ]
+   }
+  }
+ }
+}

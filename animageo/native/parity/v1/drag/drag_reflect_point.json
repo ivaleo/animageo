@@ -1,0 +1,274 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_reflect_point",
+ "generatedBy": "animageo 1.11.4",
+ "text": "a vertex of the reflected triangle through the original vertex: one step",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_reflect_point",
+  "operationRegistryVersion": "1.4",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_O": {
+    "id": "op_O",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "O"
+     }
+    ]
+   },
+   "op_T": {
+    "id": "op_T",
+    "op": "polygon.by_points",
+    "args": {
+     "vertices": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "polygon",
+      "elementId": "T"
+     }
+    ]
+   },
+   "op_T1": {
+    "id": "op_T1",
+    "op": "transform.reflect_point",
+    "args": {
+     "obj": {
+      "kind": "ref",
+      "elementId": "T"
+     },
+     "point": {
+      "kind": "ref",
+      "elementId": "O"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "image",
+      "elementId": "T1"
+     },
+     {
+      "slot": "vertex.1",
+      "elementId": "A1"
+     },
+     {
+      "slot": "vertex.2",
+      "elementId": "B1"
+     },
+     {
+      "slot": "vertex.3",
+      "elementId": "C1"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "O": {
+    "id": "O",
+    "type": "point",
+    "displayName": "O",
+    "producer": {
+     "operationId": "op_O",
+     "slot": "point"
+    }
+   },
+   "T": {
+    "id": "T",
+    "type": "polygon",
+    "displayName": "T",
+    "producer": {
+     "operationId": "op_T",
+     "slot": "polygon"
+    }
+   },
+   "T1": {
+    "id": "T1",
+    "type": "polygon",
+    "displayName": "T1",
+    "producer": {
+     "operationId": "op_T1",
+     "slot": "image"
+    }
+   },
+   "A1": {
+    "id": "A1",
+    "type": "point",
+    "displayName": "A1",
+    "producer": {
+     "operationId": "op_T1",
+     "slot": "vertex.1"
+    }
+   },
+   "B1": {
+    "id": "B1",
+    "type": "point",
+    "displayName": "B1",
+    "producer": {
+     "operationId": "op_T1",
+     "slot": "vertex.2"
+    }
+   },
+   "C1": {
+    "id": "C1",
+    "type": "point",
+    "displayName": "C1",
+    "producer": {
+     "operationId": "op_T1",
+     "slot": "vertex.3"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0,
+     0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     4,
+     0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     1,
+     3
+    ]
+   },
+   "O": {
+    "kind": "point",
+    "value": [
+     2,
+     -1
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  },
+  "appearance": {
+   "A1": {
+    "drag": {
+     "via": "A"
+    }
+   },
+   "B1": {
+    "drag": {
+     "via": "B"
+    }
+   },
+   "C1": {
+    "drag": {
+     "via": "C"
+    }
+   }
+  }
+ },
+ "inputs": {},
+ "element": "A1",
+ "target": [
+  3.25,
+  -2.5
+ ],
+ "expect": {
+  "status": "ok",
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0.75,
+     0.5
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,226 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_singular",
+ "generatedBy": "animageo 1.11.4",
+ "text": "the foot of a perpendicular moves along a fixed line only: rank 1 < 2",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_singular",
+  "operationRegistryVersion": "1.2",
+  "operations": {
+   "op_P": {
+    "id": "op_P",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_l": {
+    "id": "op_l",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "B"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "C"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "l"
+     }
+    ]
+   },
+   "op_m": {
+    "id": "op_m",
+    "op": "line.perpendicular",
+    "args": {
+     "point": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "base": {
+      "kind": "ref",
+      "elementId": "l"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "m"
+     }
+    ]
+   },
+   "op_F": {
+    "id": "op_F",
+    "op": "intersect.line_line",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "m"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "l"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "l": {
+    "id": "l",
+    "type": "line",
+    "displayName": "l",
+    "producer": {
+     "operationId": "op_l",
+     "slot": "line"
+    }
+   },
+   "m": {
+    "id": "m",
+    "type": "line",
+    "displayName": "m",
+    "producer": {
+     "operationId": "op_m",
+     "slot": "line"
+    }
+   },
+   "F": {
+    "id": "F",
+    "type": "point",
+    "displayName": "F",
+    "producer": {
+     "operationId": "op_F",
+     "slot": "point"
+    }
+   }
+  },
+  "inputs": {
+   "P": {
+    "kind": "point",
+    "value": [
+     1,
+     3
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     -2,
+     -1
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     5,
+     1
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  },
+  "appearance": {
+   "F": {
+    "drag": {
+     "via": "P"
+    }
+   }
+  }
+ },
+ "inputs": {
+  "P": {
+   "kind": "point",
+   "value": [
+    1,
+    3
+   ]
+  }
+ },
+ "element": "F",
+ "target": [
+  0,
+  3
+ ],
+ "expect": {
+  "status": "singular",
+  "inputs": {
+   "P": {
+    "kind": "point",
+    "value": [
+     1,
+     3
+    ]
+   }
+  }
+ }
+}

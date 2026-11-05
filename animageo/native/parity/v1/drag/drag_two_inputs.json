@@ -1,0 +1,151 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_two_inputs",
+ "generatedBy": "animageo 1.11.4",
+ "text": "a midpoint through both ends: the least change moves both alike",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_two_inputs",
+  "operationRegistryVersion": "1.0",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_M": {
+    "id": "op_M",
+    "op": "point.midpoint",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "M"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "M": {
+    "id": "M",
+    "type": "point",
+    "displayName": "M",
+    "producer": {
+     "operationId": "op_M",
+     "slot": "point"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0,
+     0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     4,
+     2
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  },
+  "appearance": {
+   "M": {
+    "drag": {
+     "via": [
+      "A",
+      "B"
+     ]
+    }
+   }
+  }
+ },
+ "inputs": {
+  "B": {
+   "kind": "point",
+   "value": [
+    4,
+    2
+   ]
+  }
+ },
+ "element": "M",
+ "target": [
+  3,
+  3
+ ],
+ "expect": {
+  "status": "ok",
+  "inputs": {
+   "B": {
+    "kind": "point",
+    "value": [
+     5.0,
+     4.0
+    ]
+   },
+   "A": {
+    "kind": "point",
+    "value": [
+     1.0,
+     2.0
+    ]
+   }
+  }
+ }
+}
