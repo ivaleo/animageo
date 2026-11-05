@@ -230,7 +230,7 @@ The receiver must be bound by exactly one point variable; other repeated
 points are allowed. The result has one entry per `(recipe, receiver)`, by
 priority and then by form order.
 
-### 4.2 `apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, marks=True)`
+### 4.2 `apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, marks=True, segment_of=None)`
 
 `condition = {statement, mode: "construct", source, shapeId?}`.
 
@@ -369,12 +369,26 @@ entries go. The result has `effects.removed.conditions`.
 
 ## 6. Automatic marks
 
-`auto_marks(doc, sources, *, ev=None, id_factory=None) → [operation]` returns
+`auto_marks(doc, sources, *, ev=None, id_factory=None, segment_of=None) → [operation]` returns
 the new operations: for each source, its helpers and then its mark.
 `add_auto_marks(...) → AutoMarks(document, operations, elements, warnings)`
 returns the document with them added. `auto_sources(doc)` returns every
 source in the table. The table is `marks/auto.v1.json`
 (`animageo-auto-marks/v1`).
+
+**`segment_of`.** An optional `segment_of(data, p, q) → elementId | None`
+(`data` — the raw document dict, `p`, `q` — point IDs) chooses the existing
+segment on two points. It is passed explicitly from `apply_condition`,
+`apply_condition_requests`, `add_auto_marks` and `auto_marks` (no global
+state; thread-safe). It decides both which element a mark of equal segments
+refers to (the chord of `line.angle_bisector` too) and whether a projection
+or a perpendicular has a *visible* segment from the point to the base (the
+library then checks the returned element's visibility). It may return a
+polygon side or any segment-like element, a visible one in preference to a
+hidden one. `None` returned — there is no segment: a hidden helper
+`segment.by_points` is made (equal segments, bisector chord) or the
+right-angle request is skipped. Default (`segment_of=None`): the smallest
+operation ID of a `segment.by_points` on the same two points, either order.
 
 | Source | Mark | Points |
 |---|---|---|

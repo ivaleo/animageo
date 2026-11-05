@@ -55,12 +55,14 @@ def _move(doc, request):
     return NativeDocument(data)
 
 
-def apply_condition_requests(doc, requests, *, id_factory=None, marks: bool = True) -> RequestsResult:
+def apply_condition_requests(doc, requests, *, id_factory=None, marks: bool = True,
+                             segment_of=None) -> RequestsResult:
     """Carry out ``requests`` in order: ``apply`` — :func:`apply_condition`
     (``source: "command"``, the request's receiver); ``release`` —
     :func:`release_condition` at the current position; ``replace`` — release,
     then apply (both or neither); ``move`` — the receiver's parameter becomes
-    the projection of ``point`` onto its place."""
+    the projection of ``point`` onto its place. ``segment_of``: the segment rule
+    of the automatic marks (:func:`add_auto_marks`)."""
     from ..conditions.apply import apply_condition, release_condition
     from ..kernel.evaluate import evaluate
     doc = as_document(doc)
@@ -87,7 +89,8 @@ def apply_condition_requests(doc, requests, *, id_factory=None, marks: bool = Tr
                 doc = released.document
             result = apply_condition(doc, {'statement': request['statement'], 'mode': 'construct',
                                            'source': 'command'},
-                                     receiver=request.get('receiver'), id_factory=id_factory, marks=marks)
+                                     receiver=request.get('receiver'), id_factory=id_factory, marks=marks,
+                                     segment_of=segment_of)
             if result.refusal is not None:
                 doc = start
                 entry['refusal'] = _refusal(result.refusal)

@@ -147,14 +147,14 @@ def _center(data, circle_id):
 # A request: ('right_angle', (A, V, B)) | ('equal_segments', [(P, Q), …])
 #          | ('equal_angles', [(A, V, B), …]) | ('equal_angles_on_line', (a, v, b, line))
 
-def _op_requests(data, op, entry, ev) -> list:
+def _op_requests(data, op, entry, ev, segment_of=None) -> list:
     rule = entry['rule']
     if rule == 'foot':
         v, h, side = _arg_ref(op, entry['point']), _out(op, entry['foot']), _arg_ref(op, entry['side'])
         ends = _ends(data, side) if side else None
         if None in (v, h) or ends is None:
             return []
-        if entry.get('requires') == 'visible_segment' and not _has_segment(data, v, h, visible=True):
+        if entry.get('requires') == 'visible_segment' and not _has_segment(data, v, h, visible=True, segment_of=segment_of):
             return []
         return [('right_angle', (v, h, _far_end(ev, h, ends)))]
     if rule == 'perpendicular':
@@ -209,8 +209,8 @@ def _op_requests(data, op, entry, ev) -> list:
     raise ValueError(f'unknown mark rule {rule!r}')
 
 
-def _has_segment(data, p, q, *, visible=False):
-    seg = _segment_of(data, p, q)
+def _has_segment(data, p, q, *, visible=False, segment_of=None):
+    seg = (segment_of or _segment_of)(data, p, q)
     return seg is not None and (not visible or _visible(data, seg))
 
 
@@ -444,12 +444,12 @@ def _has_right_owner(data, spec, ev, fresh):
     return False
 
 
-def _requests(data, source, ev) -> list:
+def _requests(data, source, ev, segment_of=None) -> list:
     table = _table()
     if source in data['operations']:
         op = data['operations'][source]
         entry = table['ops'].get(op['op'])
-        return _op_requests(data, op, entry, ev) if entry else []
+        return _op_requests(data, op, entry, ev, segment_of) if entry else []
     cond = next((c for c in data.get('conditions') or () if isinstance(c, dict) and c.get('id') == source), None)
     if cond is None:
         raise ValueError(f'{source!r} is neither an operation nor a condition')
@@ -459,7 +459,8 @@ def _requests(data, source, ev) -> list:
     return _condition_requests(cond, entry['mark']) if entry else []
 
 
-def _build(doc, sources, ev, id_factory):
+def _build(doc, sources, ev, id_factory, segment_of=None):
+    find_segment = segment_of or _segment_of
     from ..kernel.evaluate import evaluate
     doc = as_document(doc)
     ev = ev if ev is not None else evaluate(doc)
@@ -471,7 +472,7 @@ def _build(doc, sources, ev, id_factory):
     suppressed = _suppressed(data)
     for source in sources:
         done_kinds = set()
-        for kind, spec in _requests(data, source, ev):
+        for kind, spec in _requests(data, source, ev, segment_of):
             mark_kind = 'equal_angles' if kind == 'equal_angles_on_line' else kind
             if (source, mark_kind) in suppressed or (mark_kind not in done_kinds and _has_auto(data, source, mark_kind)):
                 continue
@@ -488,7 +489,7 @@ def _build(doc, sources, ev, id_factory):
                     continue
                 segments = []
                 for p, q in spec:
-                    seg = _segment_of(data, p, q)
+                    seg = find_segment(data, p, q)
                     if seg is None:
                         seg = builder.add('segment.by_points', {'a': _ref(p), 'b': _ref(q)}, 'segment', 'segment',
                                           f'aux_{source}', source, True)
@@ -502,7 +503,7 @@ def _build(doc, sources, ev, id_factory):
             else:
                 if kind == 'equal_angles_on_line':
                     a, v, b, line = spec
-                    chord = _segment_of(data, a, b) or builder.add(
+                    chord = find_segment(data, a, b) or builder.add(
                         'segment.by_points', {'a': _ref(a), 'b': _ref(b)}, 'segment', 'segment', f'aux_{source}',
                         source, True)
                     f = builder.add('intersect.line_line', {'first': _ref(line), 'second': _ref(chord)}, 'point',
@@ -527,16 +528,23 @@ def _build(doc, sources, ev, id_factory):
     return data, builder, warnings
 
 
-def auto_marks(doc, sources, *, ev=None, id_factory=None) -> list:
+def auto_marks(doc, sources, *, ev=None, id_factory=None, segment_of=None) -> list:
     """The new operations (helpers, then the mark; source by source) of the
-    automatic marks of ``sources`` (operation or condition IDs)."""
-    _data, builder, _warnings = _build(doc, list(sources), ev, id_factory)
+    automatic marks of ``sources`` (operation or condition IDs). ``segment_of``:
+    see :func:`add_auto_marks`."""
+    _data, builder, _warnings = _build(doc, list(sources), ev, id_factory, segment_of)
     return copy.deepcopy(builder.new_ops)
 
 
-def add_auto_marks(doc, sources, *, ev=None, id_factory=None) -> AutoMarks:
-    """:func:`auto_marks` put into a copy of the document."""
-    data, builder, warnings = _build(doc, list(sources), ev, id_factory)
+def add_auto_marks(doc, sources, *, ev=None, id_factory=None, segment_of=None) -> AutoMarks:
+    """:func:`auto_marks` put into a copy of the document.
+
+    ``segment_of(data, p, q) -> elementId | None`` (optional) chooses the
+    existing segment on points ``p``, ``q`` (the raw document ``data``);
+    ``None`` returned — no such segment (a hidden helper is made, and a
+    ``visible_segment`` request is skipped). It is passed down explicitly (no
+    global state). Default: the ``segment.by_points`` rule of the contract."""
+    data, builder, warnings = _build(doc, list(sources), ev, id_factory, segment_of)
     return AutoMarks(NativeDocument(data), copy.deepcopy(builder.new_ops), list(builder.new_elements),
                      sorted(set(warnings)))
 

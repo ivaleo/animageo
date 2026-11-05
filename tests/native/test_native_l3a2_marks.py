@@ -270,3 +270,61 @@ def test_describe_values_of_angles_and_numbers():
     lines = native.describe(b.doc, values=True)
     assert any('∠BAC = ' in line and '°' in line for line in lines)
     assert any('n = 1,25' in line for line in lines)
+
+
+def test_segment_of_default_is_the_plain_rule():
+    b = tri()
+    b.midpoint('M', 'A', 'B').segment('am', 'A', 'M')
+    plain = add_auto_marks(b.doc, ['op_M'])
+    explicit = add_auto_marks(b.doc, ['op_M'], segment_of=None)
+    assert explicit.document.data == plain.document.data
+    assert auto_marks(b.doc, ['op_M'], segment_of=None) == auto_marks(b.doc, ['op_M'])
+
+
+def test_custom_segment_of_picks_a_polygon_side_or_a_visible_segment():
+    b = tri()
+    b.midpoint('M', 'A', 'B').segment('am', 'A', 'M')
+    b.segment('side', 'A', 'M')                          # stands for a polygon side element
+    calls = []
+
+    def rule(data, p, q):
+        calls.append({p, q})
+        return 'side' if {p, q} == {'A', 'M'} else None
+    ops = auto_marks(b.doc, ['op_M'], segment_of=rule)
+    (mark,) = [op for op in ops if op['op'] == 'mark.equal_segments']
+    items = [i['elementId'] for i in mark['args']['segments']['items']]
+    assert items[0] == 'side' and items[1] != 'am'        # the rule's side; the other is a new helper
+    assert {'A', 'M'} in calls and {'M', 'B'} in calls
+    assert any(op['op'] == 'segment.by_points' for op in ops)   # None → a hidden helper
+
+
+def test_custom_segment_of_decides_the_visible_segment_of_a_projection():
+    b = tri()
+    b.projection('H', 'C', 's')
+    assert auto_marks(b.doc, ['op_H']) == []
+    # a rule that finds the side 's' as the segment C–H (visible) gives the mark
+    ops = auto_marks(b.doc, ['op_H'], segment_of=lambda data, p, q: 's' if {p, q} == {'C', 'H'} else None)
+    assert [op['op'] for op in ops] == ['mark.right_angle']
+    # a rule that finds nothing: no mark even if the default would find ch
+    b.segment('ch', 'C', 'H')
+    assert auto_marks(b.doc, ['op_H'], segment_of=lambda data, p, q: None) == []
+    assert auto_marks(b.doc, ['op_H'])
+
+
+def test_segment_of_is_passed_through_apply_condition():
+    st = CONDITIONS[0][0]
+    b = tri()
+    b.free('D', -2, 1.5)
+    b.segment('ac', 'A', 'C')
+    seen = []
+
+    def rule(data, p, q):
+        seen.append({p, q})
+        return None                                       # nothing exists: helpers are made
+    r = apply_condition(b.doc, {'statement': st, 'mode': 'construct'}, segment_of=rule)
+    assert r.refusal is None and seen
+    plain = apply_condition(b.doc, {'statement': st, 'mode': 'construct'})
+    assert 'ac' not in str(r.document.data['operations'][
+        next(o for o, v in r.document.data['operations'].items() if v['op'] == 'mark.equal_segments')]['args'])
+    assert 'ac' in str(plain.document.data['operations'][
+        next(o for o, v in plain.document.data['operations'].items() if v['op'] == 'mark.equal_segments')]['args'])

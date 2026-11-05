@@ -354,7 +354,8 @@ def condition_candidates(doc, statement) -> list:
 
 # ── apply ─────────────────────────────────────────────────────────────────
 
-def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, marks: bool = True) -> ConditionResult:
+def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, marks: bool = True,
+                    segment_of=None) -> ConditionResult:
     """Apply ``condition = {statement, mode: "construct", source, shapeId?}``
     (plan L3 §3.6). Refusals: ``unsupported_condition``,
     ``receiver_not_free``, ``receiver_is_ancestor``, ``too_many_conditions``,
@@ -456,7 +457,8 @@ def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, 
     after = evaluate(new_doc)
     if marks:
         from .marks import add_auto_marks
-        marked = add_auto_marks(new_doc, [cid], ev=after, id_factory=id_factory)
+        marked = add_auto_marks(new_doc, [cid], ev=after, id_factory=id_factory,
+                                 segment_of=segment_of)
         new_doc = marked.document
         effects['added']['operations'] = sorted(set(effects['added']['operations']) |
                                                 {op['id'] for op in marked.operations})

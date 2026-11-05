@@ -92,7 +92,7 @@ Conditions by recipes and automatic marks (conditions.md).
 
 - `class ConditionResult(document, effects, condition, refusal)` — `document` — the new document (the old one on a refusal); `effects` as `redefine()` plus `shift`; `condition` — the entry of `conditions[]`; `refusal` — `Refusal` or `None`.
 - `class Refusal(code, message, options)` — Why a condition was not applied: `code` (conditions.md), a `message` and the `options` the caller may offer instead.
-- `apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, marks=True)` — Apply `condition = {statement, mode: "construct", source, shapeId?}` (plan L3 §3.6). Refusals: `unsupported_condition`, `receiver_not_free`, `receiver_is_ancestor`, `too_many_conditions`, `no_intersection_now`. `marks`: add the automatic marks of the condition (`add_auto_marks()`; the web passes `False` when «Отмечать автоматически» is off).
+- `apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, marks=True, segment_of=None)` — Apply `condition = {statement, mode: "construct", source, shapeId?}` (plan L3 §3.6). Refusals: `unsupported_condition`, `receiver_not_free`, `receiver_is_ancestor`, `too_many_conditions`, `no_intersection_now`. `marks`: add the automatic marks of the condition (`add_auto_marks()`; the web passes `False` when «Отмечать автоматически» is off).
 - `release_condition(doc, condition_id, *, ev=None)` — Remove a condition: the receiver keeps its other constraints (none — `point.free` at its position, from `receiverOrigin` without `ev` and the warning `restored_origin`; one — `point.on_path` on the place left, at the projection); the places and marks of the condition go.
 - `condition_candidates(doc, statement)` — `[{elementId, ok, reason}]` for every point of the statement, in its order: `ok` when it can be the receiver; `reason` `None`, `no_recipe` (no recipe puts it in the receiver's place), `not_free` or `ancestor`. Structural.
 - `shape_conditions(doc, polygon_id, shape)` — `[{statement, receiver}]` that make the `polygon.by_points` `polygon_id` the `shape` (`SHAPES`), in the order to apply them; `[]` for another polygon (the caller refuses with `unsupported_condition`). Structural.
@@ -101,8 +101,8 @@ Conditions by recipes and automatic marks (conditions.md).
 - `measure_statement(doc, statement, ev)` — `(status, error | None, detail | None)` of a statement in the evaluated document `ev`: `passed`, `failed` or `inconclusive` by `tol.check`, `unsupported` for argument types a predicate does not take. `ne` turns `passed` and `failed` round (`not`).
 - `relation(doc, a, b, ev)` — `check.relation`: the predicates of `RELATION_ORDER` that hold (`passed`) for the objects `a` and `b` (element IDs or pairs) in `ev`, in that order.
 - `class AutoMarks(document, operations, elements, warnings)` — `document` with the marks; `operations` — the new operations; `elements` — the new element IDs; `warnings`.
-- `auto_marks(doc, sources, *, ev=None, id_factory=None)` — The new operations (helpers, then the mark; source by source) of the automatic marks of `sources` (operation or condition IDs).
-- `add_auto_marks(doc, sources, *, ev=None, id_factory=None)` — `auto_marks()` put into a copy of the document.
+- `auto_marks(doc, sources, *, ev=None, id_factory=None, segment_of=None)` — The new operations (helpers, then the mark; source by source) of the automatic marks of `sources` (operation or condition IDs).
+- `add_auto_marks(doc, sources, *, ev=None, id_factory=None, segment_of=None)` — `auto_marks()` put into a copy of the document.
 - `auto_sources(doc)` — Every operation whose op is in the table and every construct condition with a recipe in the table — the sources of «Отметить автоматически» for a whole document (operation IDs sorted, then conditions in order).
 
 ## Steps and time

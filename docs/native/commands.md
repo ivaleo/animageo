@@ -33,7 +33,7 @@ lexicon_hash(data) -> "sha256:…"    Lexicon(data)  # raises LexiconError(probl
 next_name(type, taken) -> str       polygon_side_names(vertices, taken) -> [str]
 format_number(x) -> str             is_helper(doc_data, op_id) -> bool
 time_ordered_id() -> str
-apply_condition_requests(doc, requests, *, id_factory=None, marks=True) -> RequestsResult   # §12
+apply_condition_requests(doc, requests, *, id_factory=None, marks=True, segment_of=None) -> RequestsResult   # §12
 printable_document(doc) -> dict    # §12
 ```
 
@@ -676,7 +676,7 @@ obj       ::= the name of an element | a pair of points (AB)
   `no_intersection_now` only when applied.
 - `Отношение(a, b)` — `{line, kind: "relation", a, b}` in `queries`
   (`native.relation` answers it); nothing goes into the document.
-- `apply_condition_requests(doc, requests, *, id_factory=None, marks=True)
+- `apply_condition_requests(doc, requests, *, id_factory=None, marks=True, segment_of=None)
   → RequestsResult(document, results)` carries the requests out in order
   (computational: the sandbox; the browser — the TS copy): `apply` —
   `apply_condition` with `source: "command"` and the receiver; `release` —
