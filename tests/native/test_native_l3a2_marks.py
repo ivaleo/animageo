@@ -328,3 +328,37 @@ def test_segment_of_is_passed_through_apply_condition():
         next(o for o, v in r.document.data['operations'].items() if v['op'] == 'mark.equal_segments')]['args'])
     assert 'ac' in str(plain.document.data['operations'][
         next(o for o, v in plain.document.data['operations'].items() if v['op'] == 'mark.equal_segments')]['args'])
+
+
+def test_bisector_chord_uses_segment_of():
+    b = tri()
+    b.angle_bisector('l', 'A', 'C', 'B')              # the chord is A-B: the segment 's' exists
+    default = auto_marks(b.doc, ['op_l'])
+    assert not any(op['op'] == 'segment.by_points' for op in default)       # 's' is reused
+    seen = []
+
+    def rule(data, p, q):
+        seen.append({p, q})
+        return None
+    ops = auto_marks(b.doc, ['op_l'], segment_of=rule)
+    assert {'A', 'B'} in seen
+    assert any(op['op'] == 'segment.by_points' for op in ops)               # a helper chord is made
+
+
+def test_segment_of_is_passed_through_apply_condition_requests():
+    from animageo.native.commands.requests import apply_condition_requests
+    b = tri()
+    b.free('D', -2, 1.5)
+    b.segment('ac', 'A', 'C')
+    request = {'kind': 'apply', 'statement': CONDITIONS[0][0], 'receiver': None}
+    seen = []
+
+    def rule(data, p, q):
+        seen.append({p, q})
+        return None
+    applied = apply_condition_requests(b.doc, [request], segment_of=rule)
+    assert applied.results[0]['refusal'] is None and seen
+    plain = apply_condition_requests(b.doc, [request])
+    assert 'ac' in str([o['args'] for o in plain.document.data['operations'].values() if o['op'] == 'mark.equal_segments'])
+    assert 'ac' not in str([o['args'] for o in applied.document.data['operations'].values()
+                            if o['op'] == 'mark.equal_segments'])
