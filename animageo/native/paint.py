@@ -797,6 +797,66 @@ def style_contract_files() -> dict:
     return {'builtin.json': Path(BUILTIN_STYLE_PATH).read_bytes(), 'keys.v1.json': keys.encode('utf-8')}
 
 
+PRESET_FORMAT = 'animageo-style-preset/v1'
+PRESET_MANIFEST_FORMAT = 'animageo-style-presets-manifest/v1'
+
+
+def _plain(value):
+    """``value`` without the ``_comment`` keys."""
+    if isinstance(value, dict):
+        return {k: _plain(v) for k, v in value.items() if k != '_comment'}
+    if isinstance(value, list):
+        return [_plain(v) for v in value]
+    return value
+
+
+def resolved_preset(name: str) -> dict:
+    """The packaged preset ``name`` fully resolved: the built-in style with the
+    preset merged on top, every ``presets.<group>.<name>`` reference replaced
+    by its value (the ``presets`` tokens stay), and without the GGB ``import``
+    section. A style a consumer reads without the resolver."""
+    from ..style.config import StyleConfig, resolve_style_input
+    path = resolve_style_input(name)
+    if path == name:
+        raise ValueError(f'unknown style preset {name!r}')
+    cfg = StyleConfig.load(path)
+    merged = _plain(cfg.source)
+    merged.pop('import', None)
+    from ..style.config import _expand_includes_in_type_map
+    if isinstance(merged.get('defaults'), dict):
+        merged['defaults'] = _expand_includes_in_type_map(merged['defaults'], cfg.presets)
+    overlay = merged.get('overlay')
+    if isinstance(overlay, dict):
+        for part in ('per_type', 'per_name'):
+            if part in overlay:
+                overlay[part] = _expand_includes_in_type_map(overlay[part], cfg.presets)
+    out = {'format': PRESET_FORMAT, 'name': name}
+    for key, value in merged.items():
+        if key in ('name', 'version'):
+            continue
+        out[key] = value if key == 'presets' else cfg.resolve_ref(value)
+    return out
+
+
+def style_preset_files() -> dict:
+    """``{file name: bytes}`` of ``animageo/native/style/presets``: one
+    resolved, flat ``book_*.json`` per packaged ``book_*`` preset and
+    ``MANIFEST.json`` with their sha256."""
+    import hashlib
+    import json
+
+    from ..style.config import available_style_presets
+    files = {}
+    for name in available_style_presets():
+        if name.startswith('book_'):
+            files[name + '.json'] = (json.dumps(resolved_preset(name), ensure_ascii=False, indent=1)
+                                     + '\n').encode('utf-8')
+    manifest = {'format': PRESET_MANIFEST_FORMAT,
+                'files': {n: {'sha256': hashlib.sha256(b).hexdigest()} for n, b in sorted(files.items())}}
+    files['MANIFEST.json'] = (json.dumps(manifest, ensure_ascii=False, indent=1) + '\n').encode('utf-8')
+    return files
+
+
 def write_style_contract(directory=None) -> list:
     """Write :func:`style_contract_files` into ``directory`` (default: the
     shipped ``animageo/native/style``); the paths written."""
@@ -808,7 +868,31 @@ def write_style_contract(directory=None) -> list:
         path = directory / name
         path.write_bytes(data)
         written.append(path)
+    presets = directory / 'presets'
+    presets.mkdir(parents=True, exist_ok=True)
+    for name, data in sorted(style_preset_files().items()):
+        path = presets / name
+        path.write_bytes(data)
+        written.append(path)
     return written
+
+
+def check_style_preset_files(directory=None) -> list:
+    """Files of ``<directory>/presets`` that differ from :func:`style_preset_files`."""
+    from pathlib import Path
+    directory = (Path(directory) if directory is not None else _style_dir()) / 'presets'
+    problems = []
+    files = style_preset_files()
+    for name, data in sorted(files.items()):
+        path = directory / name
+        if not path.is_file():
+            problems.append(f'{path}: missing')
+        elif path.read_bytes() != data:
+            problems.append(f'{path}: out of date')
+    for path in sorted(directory.glob('*.json')) if directory.is_dir() else ():
+        if path.name not in files:
+            problems.append(f'{path}: not written here')
+    return problems
 
 
 def check_style_contract(directory=None) -> list:

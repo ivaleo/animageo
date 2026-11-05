@@ -1204,7 +1204,7 @@ format of values, layers, `text.free`, the zoo of types without a style,
 under the built-in style and a preset, roles, hatching, a dark background,
 a style track of a timeline, a right-angle mark drawn as arcs (1.11.0), the
 enter and exit effects of a timeline with a style track and a discrete one
-(1.11.0). A test renders each scene — a scene with a timeline as the frame
+(1.11.0), the merge of a book preset (light, dark) with a chapter overlay (`paint_book`). A test renders each scene — a scene with a timeline as the frame
 `render(t)` draws — and compares with the entry of every element its render
 context and what it draws: the layers of the fill and the label, the size
 and shape of a point, the hatch (spacing, angle, width, colour), the lines
@@ -1214,7 +1214,28 @@ that an element not drawn is not in the frame.
 
 The style contract for code generation (`animageo/native/style`, `python -m
 animageo.native style export [-o DIR] [--check]`): `builtin.json` — the
-built-in style byte for byte, `keys.v1.json` — `style_keys()` (§9.3).
+built-in style byte for byte, `keys.v1.json` — `style_keys()` (§9.3), and
+`presets/` — every packaged `book_*` preset (light and `_dark`) fully
+resolved and flat (`animageo-style-preset/v1`: the built-in style with the
+preset merged on top, `presets.<group>.<name>` references and `$include`
+replaced by values, no GGB `import` section; the `presets` tokens stay) with
+`presets/MANIFEST.json` (`animageo-style-presets-manifest/v1`: the sha256 of
+each file). A consumer copies these files from the wheel byte for byte and
+checks the hashes against the manifest. The sources are the hand-written
+`animageo/style/presets/book_*.json`; they define the colour tokens that the
+roles (§9.3, `presets.color.strong`, …) and the space renderings
+(`shade`, `background`) read. In a dark preset the text (`strong`) has a
+contrast of at least 4.5:1 to `background`, and the lines (`main`, `accent`,
+`aux`, `strong`) at least 3:1 (WCAG relative luminance; checked by a test).
+
+The `overlay` rule (a chapter's or a document's style on a preset): the
+style that applies is `deep_merge(preset, overlay)` — objects merge key by
+key, recursively; a scalar, `null` or an array of the overlay replaces the
+value of the preset whole (arrays are never concatenated). References
+(`presets.color.main`) resolve after the merge, so an overlay that changes a
+token changes every role and default that reads it. Fixture
+`paint_book` (`merge`: the base preset, the overlay and the `space` keys
+`shade`, `background`, `strong` of the result; `style` is the merged style).
 
 ## 10. Floating point and determinism
 

@@ -338,8 +338,10 @@ def _base():
     out = [('zoo_no_style', _zoo('zoo_no_style'), None),
            ('zoo_builtin', _zoo('zoo_builtin'), _builtin_style())]
     d = _zoo('zoo_book').label('s').label('alpha', 'value')
-    out.append(('zoo_book', d, json.loads((Path(__file__).resolve().parents[1] / 'style' / 'presets'
-                                           / 'book_blue.json').read_text(encoding='utf-8'))))
+    book = _preset_json('book_blue')
+    for key in ('shade', 'background', 'strong'):   # the case predates them: they equal the built-in ones
+        book['presets']['color'].pop(key)
+    out.append(('zoo_book', d, book))
     d = _triangle('roles').segment('a', 'A', 'B').segment('b', 'B', 'C').circle('c', 'A', 'B')
     d.look('a', role='given').look('b', role='aux').look('c', role='sought').look('C', role='aux')
     out.append(('roles', d, None))
@@ -415,10 +417,44 @@ def _curves():
     return out
 
 
+_CHAPTER_OVERLAY = {'presets': {'color': {'main': '#2a9d8f', 'shade': '#e3f1ef'}},
+                    'overlay': {'per_type': {'segment': {'stroke_width_px': 2}}},
+                    'rendering': {'label_anchor': 'TC'}}
+
+
+def _preset_json(name) -> dict:
+    return json.loads((Path(__file__).resolve().parents[1] / 'style' / 'presets' / f'{name}.json')
+                      .read_text(encoding='utf-8'))
+
+
+def _book_merge(preset, overlay) -> dict:
+    from ..style.config import deep_merge
+    style = deep_merge(_preset_json(preset), overlay or {})
+    color = style['presets']['color']
+    return {'preset': preset, 'overlay': overlay,
+            'space': {k: color[k] for k in ('shade', 'background', 'strong')}, 'style': style}
+
+
+def _book():
+    """The merge of a book preset and a chapter overlay (``kernel.md`` §9.8):
+    roles given / aux / sought, light and dark, with and without the overlay;
+    ``merge`` records the base preset, the overlay and the ``space`` keys."""
+    out = []
+    for name, overlay in (('light', None), ('light_chapter', _CHAPTER_OVERLAY), ('dark', None),
+                          ('dark_chapter', _CHAPTER_OVERLAY)):
+        preset = 'book_blue' if name.startswith('light') else 'book_blue_dark'
+        d = _triangle('book_' + name).segment('a', 'A', 'B').segment('b', 'B', 'C').circle('c', 'A', 'B')
+        d.polygon('T', 'A', 'B', 'C').label('a').label('c')
+        d.look('a', role='given').look('b', role='aux').look('c', role='sought').look('C', role='sought')
+        merge = _book_merge(preset, overlay)
+        out.append(('book_' + name, d, merge.pop('style'), None, None, merge))
+    return out
+
+
 THEMES = (('paint_ticks', _ticks), ('paint_angles', _angles), ('paint_points', _points),
           ('paint_dashes', _dashes), ('paint_labels', _labels), ('paint_values', _values),
           ('paint_layers', _layers), ('paint_text', _texts), ('paint_base', _base),
-          ('paint_timeline', _timeline), ('paint_curves', _curves))
+          ('paint_timeline', _timeline), ('paint_curves', _curves), ('paint_book', _book))
 
 
 def _expect(document, style, timeline, t) -> dict:
@@ -432,8 +468,11 @@ def _rows(scenes) -> list:
         name, d, style = scene[:3]
         timeline, t = (scene[3], scene[4]) if len(scene) > 3 else (None, None)
         document = d.doc if isinstance(d, _Doc) else d
-        rows.append({'name': name, 'document': document, 'style': style, 't': t, 'timeline': timeline,
-                     'expect': json.loads(json.dumps(_expect(document, style, timeline, t)))})
+        row = {'name': name, 'document': document, 'style': style, 't': t, 'timeline': timeline,
+               'expect': json.loads(json.dumps(_expect(document, style, timeline, t)))}
+        if len(scene) > 5:
+            row['merge'] = scene[5]
+        rows.append(row)
     return rows
 
 
@@ -511,6 +550,14 @@ def verify_fixture(fixture: dict, label: str = '') -> tuple:
     out = []
     for case in fixture.get('cases') or []:
         where = f"{label} [{case.get('name')}]"
+        merge = case.get('merge')
+        if merge:
+            from ..style.config import deep_merge
+            merged = deep_merge(_preset_json(merge['preset']), merge.get('overlay') or {})
+            color = merged['presets']['color']
+            out += _compare(case.get('style'), merged, where + ' merge')
+            out += _compare(merge.get('space'), {k: color[k] for k in ('shade', 'background', 'strong')},
+                            where + ' space')
         try:
             actual = json.loads(json.dumps(_expect(case['document'], case.get('style'), case.get('timeline'),
                                                    case.get('t'))))

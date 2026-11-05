@@ -155,9 +155,9 @@ def _cmd_fixtures_space(args) -> int:
 
 
 def _cmd_style_export(args) -> int:
-    from .paint import check_style_contract, write_style_contract
+    from .paint import check_style_contract, check_style_preset_files, write_style_contract
     if args.check:
-        problems = check_style_contract(args.out)
+        problems = check_style_contract(args.out) + check_style_preset_files(args.out)
         for item in problems:
             _out(f'stale: {item}')
         _out(f'{len(problems)} problems')
@@ -518,7 +518,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     sty = sub.add_parser('style', help='the style contract for code generation (native/style)')
     stysub = sty.add_subparsers(dest='action', required=True)
-    sx = stysub.add_parser('export', help='write (or --check) builtin.json and keys.v1.json')
+    sx = stysub.add_parser('export', help='write (or --check) builtin.json, keys.v1.json and presets/ (book_*.json, MANIFEST.json)')
     sx.add_argument('-o', '--out', help='directory (default: the shipped native/style)')
     sx.add_argument('--check', action='store_true', help='only check; exit 1 when out of date')
     sx.set_defaults(func=_cmd_style_export)
