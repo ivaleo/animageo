@@ -444,18 +444,19 @@ def _nudged(obj, path, to):
 
 @pytest.mark.parametrize('case_id', sorted(TIES))
 def test_one_ulp_does_not_change_k(case_id):
-    """Any input moved by one ulp either way: every label keeps its k."""
+    """Any input moved by one ulp either way: every label keeps its k (and its box)."""
     case = TIES[case_id]
     for step, s in enumerate(case['steps']):
         expect = {key: e['k'] for key, e in s['expect']['memory'].items()}
+        boxes = {lab['id']: lab['box'] for lab in s['expect']['labels']}
         inputs = {'list': _list(case, step), 'view': s['view'], 'memory': s['memory']}
         changed = []
         for path in _numbers(inputs):
             for to in (math.inf, -math.inf):
                 o = _nudged(inputs, path, to)
-                _, memory, _ = r4.layout(o['list'], o['view'], o['memory'], s['paint'])
+                placements, memory, _ = r4.layout(o['list'], o['view'], o['memory'], s['paint'])
                 got = {key: e['k'] for key, e in memory.items()}
-                if got != expect:
+                if got != expect or not all(_close(p['box'], boxes[key]) for key, p in placements.items()):
                     changed.append((path, to, got))
         assert changed == [], f"{case['id']} step {step}"
 
@@ -466,6 +467,21 @@ def test_equal_gaps_take_the_first_from_east():
     assert _run(TIES['ties/point-on-flat-line'])[0]['P']['k'] == 2  # above
     assert _run(TIES['ties/midpoint-vertical'])[0]['M']['k'] == 4  # left
     assert _run(TIES['ties/cross'])[0]['O']['k'] == 1  # north-east
+
+
+def test_half_octant_goes_up():
+    # The bisector at 337.5° is east (8 ≡ 0), not south-east; at 112.5° north-west.
+    assert _run(TIES['ties/half-octant-corner'])[0]['V']['k'] == 0
+    s = _list(TIES['ties/half-octant-along'], 0)['labels'][0]
+    x1, y1, x2, y2 = s['place']['along']
+    n = (y1 - y2, x2 - x1)  # the side +n, screen axes: its normal is at -67.5° (y up)
+    assert n[0] > 0 and n[1] > 0
+    placements = _run(TIES['ties/half-octant-along'])[0]
+    assert placements['s']['k'] == 4  # the side -n (112.5°), t = 0.5: its corner is that of north-west
+    l, t, r, b = placements['s']['box']
+    gap = r4.ALONG_GAP
+    mx, my = x1 + (x2 - x1) * 0.5 - n[0] / math.hypot(*n) * gap, y1 + (y2 - y1) * 0.5 - n[1] / math.hypot(*n) * gap
+    assert (r, b) == pytest.approx((mx, my))  # the corner facing the line: right-bottom
 
 
 def test_equal_costs_keep_the_earlier_place_and_the_remembered_one():

@@ -16,9 +16,9 @@ the anchor it was chosen at. :func:`layout` takes the previous memory (or
 ``None``, the same as empty) and returns the new one without modifying the
 argument.
 
-JavaScript kept on purpose: ``Math.round`` halves up, ``%`` truncated, and
-``Math.atan2/cos/sin/hypot`` as V8 (``_jsmath.py``). Numbers must be finite
-(a ``ValueError``; TypeScript would carry a NaN).
+JavaScript kept on purpose: ``%`` truncated and ``Math.atan2/cos/sin/hypot``
+as V8 (``_jsmath.py``). Numbers must be finite (a ``ValueError``;
+TypeScript would carry a NaN).
 
 Ties — the one change to ``5d88ff083``, agreed with the client, which
 repeats it: structural ties (a point in the middle of a segment or on a
@@ -33,6 +33,12 @@ not by the last bit of ``atan2``/``hypot`` (another libm, FMA):
   >= W − 1e-9``. So the first equal gap counter-clockwise from east: a
   point on a horizontal line goes above it, on a vertical one to the left,
   at a crossing of the two to the north-east.
+* Octants (``awayOctant`` and the side of an ``along`` place). A direction
+  ``a`` (rad, y up) becomes the octant ``((Math.floor(x + 0.5 + 1e-9) % 8)
+  + 8) % 8`` with ``x = a / (π / 4)``, added left to right: the nearest
+  octant, a direction within 1e-9 octant of a half going up (to the next
+  counter-clockwise). So the bisector at a 45° corner (337.5°) is east, the
+  normal of a line at 22.5° (112.5°) is north-west.
 * Costs (``best``). Places are tried in the order ``(penalty, index)``,
   ``index`` being the place in the list below. The best cost starts at the
   limit: +∞, or with a remembered place its cost (75 % of it if clean). A
@@ -56,9 +62,8 @@ real gaps are never that close. A cost is 1 + penalty + overlaps, between
 1 and a few hundred, a sum of a few hundred terms at most, each rounded
 once: noise under 1e-13 of it; real differences are steps of the
 penalties (0.02 and up) or overlap fractions of a box (1e-12 of a 100 px²
-box is 1e-10 px²). Every other comparison is the reference's; the octant
-of the bisector is still ``Math.round`` (a bisector at a half octant, as at
-a 45° corner, rounds on its last bit).
+box is 1e-10 px²). 1e-9 octant is 7.9e-10 rad, the size of the gap tie.
+Every other comparison is the reference's.
 """
 from __future__ import annotations
 
@@ -71,7 +76,6 @@ from typing import Any
 from ._jsmath import atan2 as _atan2
 from ._jsmath import cos as _cos
 from ._jsmath import hypot as _hypot
-from ._jsmath import js_round as _js_round
 from ._jsmath import sin as _sin
 
 __all__ = [
@@ -123,6 +127,7 @@ __all__ = [
 #   64 links, 16 chords            _POLYLINE_LINKS, _ARC_CHORDS
 #   strokeWidth ?? 2 (pad)         _DEFAULT_STROKE   (pad = 1 + width / 2)
 #   (after 5d88ff083) GAP_TIE      _GAP_TIE = 1e-9   (rad, equal gaps)
+#   (after 5d88ff083) OCTANT_TIE   _OCTANT_TIE = 1e-9 (octants, a half octant)
 #   (after 5d88ff083) COST_TIE     _COST_TIE = 1e-12 (relative, equal costs)
 _BASE = 1.0
 HYSTERESIS = 0.75
@@ -164,9 +169,11 @@ _INF = math.inf
 # label, CSS px: far above any rounding of the hit tests.
 _CULL_MARGIN = 1.0
 # Ties (after 5d88ff083, agreed with the client; the rule is in the module
-# docstring): gaps of awayOctant equal within _GAP_TIE rad, costs equal
-# within the relative _COST_TIE.
+# docstring): gaps of awayOctant equal within _GAP_TIE rad, a direction at a
+# half octant within _OCTANT_TIE octants, costs equal within the relative
+# _COST_TIE.
 _GAP_TIE = 1e-9
+_OCTANT_TIE = 1e-9
 _COST_TIE = 1e-12
 _COST_BAR = 1 - _COST_TIE
 
@@ -694,6 +701,11 @@ def geometry_pairs(display_list, paint=None) -> list[tuple[str, str]]:
 # ---------------------------------------------------------- layout.ts
 
 
+def _octant(x: float) -> int:
+    """Octant of ``x`` = angle / 45°: the nearest, a half (within the tie) up."""
+    return ((math.floor(x + 0.5 + _OCTANT_TIE) % 8) + 8) % 8
+
+
 def _octant_dist(a: int, b: int) -> int:
     d = abs(a - b) % 8
     return d if d < 8 - d else 8 - d
@@ -702,7 +714,7 @@ def _octant_dist(a: int, b: int) -> int:
 def _octant_of(dx: float, dy_down: float) -> int:
     """Direction (screen y down) → the nearest of the eight."""
     a = _atan2(-dy_down, dx)
-    return ((_js_round(a / (math.pi / 4)) % 8) + 8) % 8
+    return _octant(a / (math.pi / 4))
 
 
 def _box_at(x, y, w, h, ex, ey) -> tuple[float, float, float, float]:
@@ -861,7 +873,7 @@ def _away_octant(ax: float, ay: float, segs: list[float]) -> int | None:
         if b - a >= widest - _GAP_TIE:
             best_mid = (a + b) / 2
             break
-    return ((_js_round(best_mid / (math.pi / 4)) % 8) + 8) % 8
+    return _octant(best_mid / (math.pi / 4))
 
 
 def _around(ax, ay, reach, w, h, pref, home, extra, boxes, penalties) -> None:
