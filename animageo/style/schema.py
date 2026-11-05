@@ -230,6 +230,16 @@ or ``>= 1`` = solid); ``stroke_dash_period_px`` is dash + gap in style pixels
 default 10). A 0.65 ratio at 10 px draws 6.5 px dashes and 3.5 px gaps. The
 dashed stroke stays one path (SVG ``stroke-dasharray``).
 
+Visible part of a line or a ray (documents only; ``animageo/native/line_display.py``)
+- ``line_display`` ("frame"|"incident", default "frame"): "frame" draws the
+  line to the edge of the frame; "incident" draws it to the outermost points
+  that lie on it by the construction (defining points, points on it,
+  intersections, ``on`` conditions), a ray from its origin
+- ``line_overhang_px`` (default 12): style pixels past the outermost point
+- ``visible_range`` (``[t0, t1]``, default ``None``): the part in the path
+  parameter of the line (``docs/native/kernel.md`` §5.5); wins over
+  ``line_display``. The frame still clips the part.
+
 Fill
 - ``fill``, ``fill_opacity``
 - ``fill_pattern`` ("solid"|"hatch"|"crosshatch"|"dots"|"none"; polygons,

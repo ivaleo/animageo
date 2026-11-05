@@ -850,6 +850,74 @@ offsetWorld?}, overrides?}}`. Each element gets:
   (`overlay.per_type`, `animageo/hatch.py`). An override is the element's
   own style: it wins over the style's `overlay` and draws the pattern on
   this element only, in SVG, PNG, PDF, EPS and TikZ alike.
+  1.12.0: the visible part of a line or a ray — `line_display` (`frame`,
+  the default: to the edge of the frame, as before; `incident`: to the
+  points on it), `line_overhang_px` (style px past the outermost point,
+  default `12`), `visible_range` (`[t0, t1]`, the part in the path
+  parameter of the carrier, §5.5; default `null`). Like every key they may
+  come from the style too (`defaults.line`, `defaults.ray`,
+  `overlay.per_type`). Without them every output is the one before.
+
+**The visible part of a line** (1.12.0, `native.line_display`). The points
+on a line or a ray are read from the graph, never from coordinates — a
+point that only lies on the line numerically does not count:
+
+1. the defining points of its producer: `line.by_points` `a`, `b`;
+   `line.parallel`, `line.perpendicular`, `line.tangent_at`,
+   `line.tangents_from_point` `point`; `line.angle_bisector`,
+   `line.external_bisector` `vertex`; `ray.by_points` `origin`, `through`;
+   `ray.by_vector` `origin`; `ray.at_angle` `vertex` — and the points the
+   same operation puts on it: the touch `touch.k` of `tangent.k` of
+   `line.tangents_from_point`, the `point` of `ray.at_angle`;
+2. every point output of an operation that has the line as an argument and
+   puts its points on each of its linear arguments: `point.on_path`,
+   `point.projection`, `point.closest`, `triangle.altitude` (the foot),
+   `intersect.line_line`, `intersect.line_circle`, `intersect.line_conic`,
+   `intersect.line_sector`, `intersect.function_line`, `intersect.nearest`,
+   `intersect.other_than`;
+3. the point of a condition `{kind: "on", point: {ref: P}, object: O}` of
+   any mode whose object is the line: `{ref: id}`, or `{pair: [A, B]}` (in
+   either order) of a `line.by_points(A, B)` line (a pair is a line, never
+   a ray).
+
+An undefined point does not count (an intersection that does not exist);
+visibility does not matter. Then, with `h = line_overhang_px / ptUnitStyle`
+world units, the carrier `o + s·d` (`d` the unit direction: `dir` of the
+value, `o` its `p`, or the `origin` of a ray) and `s(P) = (P − o)·d` of
+every point on it:
+
+- `visible_range` — two finite numbers, swapped when `t0 > t1` — wins over
+  `line_display`: the part runs from the point of `t0` to the point of `t1`
+  of the frame of the path (§5.5: a line by points from `a` with `v = b − a`,
+  another from `p` with `v = dir`; a ray clamps `t < 0` to `0`); no
+  overhang. Anything else in it is ignored;
+- `line_display` other than `incident` → drawn to the frame;
+- a ray: from its origin to `max(0, max s) + h` when a point other than the
+  origin argument of its producer is on it; otherwise to the frame;
+- a line with two or more points: `[min s − h, max s + h]`;
+- a line with one point made by `line.parallel` or `line.perpendicular`:
+  the length `L` of the visible part of its `base` — a segment: its length;
+  a line or a ray: its own visible part by these rules, or the part of it
+  inside the frame when it is drawn to the frame — centred at the point,
+  `[s − L/2, s + L/2]`, no overhang;
+- any other line (a perpendicular bisector, a tangent without its touch
+  point defined, …) → drawn to the frame.
+
+The part is recomputed on every evaluation (a drag moves it). The frame
+still clips it; a part outside the frame is not drawn. The part runs along
+`d`, so the dashes of a dashed line start at its first end (a ray: at the
+origin). The label of the line hangs from the middle of the drawn part;
+automatic placement sees the drawn part as the obstacle. SVG, PNG, PDF,
+EPS, the video and TikZ draw it; the JSXGraph export draws a line or a ray
+with a part as a static segment and says so in its coverage report
+(`… — visible part as a static segment`). The keys are read on a document
+(`AnimaGeoScene.loadDocument`, `native.render`); a `.ggb` or DSL scene
+ignores them. The pure function is `line_display.visible_segment(doc,
+line_id, style=None, *, inputs=None, evaluated=None, pt_unit_style=None,
+frame=None)` → `((x0, y0), (x1, y1))` before the frame clips it, or `None`
+(`style` — `None` for `appearance.<id>.overrides`, `{id: {key: value}}` or
+a callable `id → {key: value}`; `pt_unit_style` and `frame` default to the
+source view, §9.1); `resolve_paint` reports the same part (§9.8).
 
 Marks (registry 1.3, `native.appearance_plan`):
 
@@ -1154,7 +1222,12 @@ breaking ties by `1e-6`) and, by type:
   open polyline) and the pattern drawn `{onPx, offPx, offsetPx}`
   (`null` for a vector: the renderer measures the
   stem of its arrow). The fit is computed on the exact length; the renderer
-  measures its Bézier path, within `1e-3` of it for a circle or an arc;
+  measures its Bézier path, within `1e-3` of it for a circle or an arc.
+  1.12.0: a line or a ray with a visible part (§9.3) also has
+  `visibleWorld: [[x0, y0], [x1, y1]]` — the part before the frame clips it
+  (world units, its dashes start at `[x0, y0]`); a line drawn to the frame
+  has none. The renderer draws the part clipped by the frame of the export
+  (`_get_scene_bounds`), within `0.01` px;
 - `fill`: `color` (`null` — nothing is drawn), `opacity` as drawn,
   `isBackground`, `z`, and for a polygon, circle or sector `pattern` and
   `hatch` (`{pattern, angleDeg, spacingPx, widthPx, color, opacity}` or
@@ -1204,13 +1277,18 @@ format of values, layers, `text.free`, the zoo of types without a style,
 under the built-in style and a preset, roles, hatching, a dark background,
 a style track of a timeline, a right-angle mark drawn as arcs (1.11.0), the
 enter and exit effects of a timeline with a style track and a discrete one
-(1.11.0). A test renders each scene — a scene with a timeline as the frame
+(1.11.0), the visible part of lines and rays (1.12.0, `paint_lines`: by
+points with a point on the line, the same document with a moved input, a
+parallel and a perpendicular through one point, intersections, rays, an
+explicit `visible_range`, `on` conditions, the keys from the style). A test renders each scene — a scene with a timeline as the frame
 `render(t)` draws — and compares with the entry of every element its render
 context and what it draws: the layers of the fill and the label, the size
 and shape of a point, the hatch (spacing, angle, width, colour), the lines
 or the corners of the wave of the ticks, the radii of the arcs and the
 corners of the right-angle square, the font size, the dash patterns, and
-that an element not drawn is not in the frame.
+that an element not drawn is not in the frame; for `paint_lines` it also
+compares the ends of the drawn stroke of a line with `visibleWorld` clipped
+by the frame, within `0.01` px.
 
 The style contract for code generation (`animageo/native/style`, `python -m
 animageo.native style export [-o DIR] [--check]`): `builtin.json` — the
