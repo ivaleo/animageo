@@ -152,6 +152,8 @@ LAZY_ALLOWED = {
                                  'animageo.label_placement', 'animageo.labels', 'animageo.hatch',
                                  'animageo.export_layout'),
     'animageo/native/paint_fixtures.py': ('animageo.style',),
+    # 1.12.0: the visible part of a line drawn from the classic graph reads its keys through the resolver
+    'animageo/native/line_display.py': ('animageo.style', 'animageo.label_placement'),
     # registry 1.6 (view axes and grid): the colours of the style keys as hex
     'animageo/native/view.py': ('animageo.style.colorspace',),
 }

@@ -713,7 +713,22 @@ def build_construction(doc, *, inputs=None, seed=None):
     for el_id in sorted(elements):      # elements of broken operations
         if el_id not in created:
             construction.add(Element(names.by_id[el_id], None))
+    _attach_line_specs(doc, construction, names)
     return construction, names
+
+
+def _attach_line_specs(doc, construction, names) -> None:
+    """Put the :class:`~animageo.native.line_display.LineSpec` of each line
+    and ray, with classic names, on its classic element (``_native_line``):
+    the renderer reads the points on it by the graph from there."""
+    from ..line_display import line_spec
+    for el_id in sorted(doc.elements):
+        if doc.elements[el_id].get('type') not in ('line', 'ray'):
+            continue
+        spec = line_spec(doc, el_id)
+        elem = construction.objectByName(names.by_id[el_id])
+        if spec is not None and elem is not None:
+            elem._native_line = spec.rename(lambda key: names.by_id.get(key, key))
 
 
 def _slot_key(slot: str):
