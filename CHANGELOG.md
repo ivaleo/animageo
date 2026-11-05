@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-11-05
+
 ### Added
 
 - `native.drag(doc, inputs, element_id, target)` moves a point towards a target
@@ -3530,7 +3532,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.11.4...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.12.0...HEAD
+[1.12.0]: https://github.com/ivaleo/animageo/compare/v1.11.4...v1.12.0
 [1.11.4]: https://github.com/ivaleo/animageo/compare/v1.11.3...v1.11.4
 [1.11.3]: https://github.com/ivaleo/animageo/compare/v1.11.2...v1.11.3
 [1.8.1]: https://github.com/ivaleo/animageo/compare/v1.8.1a5...v1.8.1
