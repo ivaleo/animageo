@@ -684,10 +684,6 @@ def test_function_domain_guard_does_not_change_default_number_parser():
         {'op': '^', 'args': [{'num': 1.0}, {'num': 1.0}]}, [])
 
 
-if __name__ == '__main__':
-    FUNCTION_FIXTURE.write_text(json.dumps(function_fixture(), ensure_ascii=False, indent=2, allow_nan=False) + '\n')
-
-
 # GeoGebra saves a graph with its label in front, ``i: y = (-abs(x)) + 4``.
 @pytest.mark.parametrize('text', ['f: y = a*x²', 'f : y = a*x²', 'f: a*x²', 'f: f(x) = a*x²', 'f: f(t) = a*t²'])
 def test_function_label_header_is_read(text):
@@ -718,3 +714,7 @@ def test_imported_graph_with_label_header_is_editable_and_live():
     assert [evaluator(function_value(doc, items, 'i'))(x) for x in (-2.0, 0.0, 3.0)] == [2.0, 4.0, 1.0]
     moved = function_value(doc, items, 'i', inputs={eid(items, 'a'): {'kind': 'number', 'value': 1.0}})
     assert evaluator(moved)(-2.0) == -1.0
+
+
+if __name__ == '__main__':
+    FUNCTION_FIXTURE.write_text(json.dumps(function_fixture(), ensure_ascii=False, indent=2, allow_nan=False) + '\n')

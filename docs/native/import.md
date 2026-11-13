@@ -243,7 +243,9 @@ expressions. The GGB-specific reader does not extend `from_construction`, change
 `dsl_map.json` promises, or add support for Root, Extremum or function intersections.
 
 An XML `Point(f)` on an accepted function becomes `point.on_function`
-(registry 1.9: also on a literal domain and on an `If`). Its finite saved abscissa (homogeneous `x/z`) is the free
+(since `mapVersion` 6 also on a literal domain and on an `If` — a change of
+the import: the operation is that of registry 1.6, its kernel unchanged, so
+a registry 1.8 consumer evaluates it). Its finite saved abscissa (homogeneous `x/z`) is the free
 `pathParameter` input; its ordinate is always recomputed from the function.
 Changing a numeric reference changes the ordinate at the same abscissa, and
 changing the path input changes both coordinates. Saved coordinates are checked:

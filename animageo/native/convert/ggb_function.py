@@ -249,8 +249,9 @@ def _read_graph_points(infos, norm, ctx):
     """Only XML Point(f): saved x is its free input, saved y is a check.
 
     A domain clamps x and a piecewise ``If`` has no value in its gaps, in
-    GeoGebra as in ``point.on_function`` (registry 1.9): the saved point
-    checks the branch it is on."""
+    GeoGebra as in ``point.on_function`` (map version 6 reads these points;
+    the operation and its kernel are unchanged): the saved point checks the
+    branch it is on."""
     for info in infos:
         inputs = info.get('inputs', [])
         if info['type'] != 'point' or info.get('command') != 'Point' or len(inputs) != 1:
