@@ -4,10 +4,10 @@ Registry 1.1 · group `point` · path parameter `carrier/v1` · see [kernel.md](
 
 | | |
 |---|---|
-| inputs | `path: path` (`line`, `segment`, `ray`, `circle`, `polygon`; 1.4: `arc`, `sector`, `polyline`; 1.7: `circlesegment`; 1.9: `conic`, `function`) |
+| inputs | `path: path` (`line`, `segment`, `ray`, `circle`, `polygon`; 1.4: `arc`, `sector`, `polyline`; 1.7: `circlesegment`; 1.9: `conic`, `function`; 1.10: `locus`) |
 | outputs | `point: point` |
 | free | `{kind: "pathParameter"}` — the value comes from `inputs[elementId]` |
-| undefined | `upstream`; registry 1.9: `path_kind_changed` (a conic), `out_of_domain` (a graph); `non_finite` (any op) |
+| undefined | `upstream`; registry 1.9: `path_kind_changed` (a conic), `out_of_domain` (a graph); 1.10: `empty_locus`, `degenerate_locus`, `discontinuous` (a locus); `non_finite` (any op) |
 | checks | `on_path` |
 
 ## Input
@@ -88,8 +88,55 @@ The parameter is the abscissa, as for `point.on_function`: a domain clamps
 it to its ends (the ends belong to the graph); a gap of a piecewise `If`
 without `else`, a pole or a complex value has no point.
 
+### A locus (registry 1.10)
+
+The ordered `points` of `locus.of_point` form a sampled path. Append the
+first sample when `closed` is true, retaining any `null` samples. With `n`
+samples after that append:
+
+    t' = clamp(t, 0, 1); w = t' · (n − 1)
+    k = min(floor(w), n − 2); f = w − k
+    point = points[k] + f · (points[k + 1] − points[k])
+
+This is GeoGebra's normalized sample-index convention, not arc length or
+the mover parameter in `range`. Each link occupies the same parameter
+interval, even if its length differs. The closing link occupies the last
+interval of a closed locus; `t = 1` reaches the first point. Parameters
+outside `[0,1]` clamp, including on a closed locus.
+
+GeoGebra's [PathNormalizer](https://github.com/geogebra/geogebra/blob/main/source/shared/common/src/main/java/org/geogebra/common/kernel/PathNormalizer.java)
+clamps the supplied fraction before mapping it to the path's parameter
+range; [GeoLocusND](https://github.com/geogebra/geogebra/blob/main/source/shared/common/src/main/java/org/geogebra/common/kernel/geos/GeoLocusND.java)
+uses `[0, sampleCount − 1]` and interpolates neighbouring sample indices.
+
+A `null` endpoint or a distance between neighbours greater than `0.25·S`
+breaks the path, as in rendering. A finite sample at an exact endpoint is
+available; between the ends of a break the point is
+`undefined/discontinuous`. No finite samples gives `empty_locus`; no
+continuous link longer than `tol.decide` gives `degenerate_locus`. Repeated
+samples on an otherwise usable path are allowed. Gaps keep their sample
+indices: neither projection nor dragging compresses the parameter range.
+
+Projection examines each continuous link and every finite sample, clamps
+the projection to the link's endpoints, and returns `(k + f)/(n − 1)`.
+Candidates within `tol.decide` of the minimum distance tie by the smallest
+parameter. An empty or degenerate locus has no projection (`None`). Drag
+uses that same projection, moves continuously within each run and may
+switch to the nearest run across a gap; it never draws a bridge across
+the gap. At an outer endpoint it reports `clamped` if the target is away
+from the endpoint. A hint through a locus point changes the same clamped
+parameter. `Construction.tparam_from_coords` on the native bridge uses
+the native frame, preserving the original indices and closing link.
+
+GeoGebra `Point(locus)` imports to this operation, projecting saved
+`<coords>` onto the current sampled path and comparing the resulting point
+with those coordinates. A mismatch is `differs/value_mismatch`.
+`Point(locus, t)` instead uses the dependent
+[`point.on_locus`](point.on_locus.md) so a numeric reference remains live.
+
 Defaults for a new point (`paths.<type>.default`): segment, line, ray and
 polygon `0.5`, circle `π/4`; 1.9: conic `π/4`, function `0`.
+Registry 1.10: locus `0.5`.
 
 ## Inverse: `native.project(doc, id, (x, y))`
 

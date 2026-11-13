@@ -14,6 +14,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `not_linear` and `degenerate_line` diagnostics, ordinary line rendering
   and intersections, and import of free GeoGebra line formulas with saved
   coefficient and orientation checks.
+- A point on a sampled locus (registry 1.10): `path` now accepts `locus`
+  in `point.on_path` and `point.closest`, with a normalized sample-index
+  parameter, projection, drag and an inverse through the classic bridge.
+  Null samples and large jumps remain breaks; empty and stationary paths
+  report `empty_locus` and `degenerate_locus`. GeoGebra `Point(locus)`
+  imports as a glider; `Point(locus, t)` uses the new dependent
+  `point.on_locus`, retaining a numeric parameter reference. Saved points
+  are checked against `<coords>`; dependent segments remain editable.
+  Parity fixtures cover locus points, gaps, degeneracy, dragging and import.
 
 - Operation registry 1.10: the family `operand` (`number`, `point`, `vector`,
   `function`) and the optional key `result` (`"num"` or `"vec"`) of an `expr`

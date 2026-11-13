@@ -67,7 +67,8 @@ MEET_OPS = {'intersect.conic_conic', 'intersect.function_conic'}
 MARK_18_OPS = {'mark.parallel'}
 REGION_OPS = {'function.area_between', 'region.by_boundary'}
 EXPRESSION_OPS = {'point.expression', 'vector.expression'}      # registry 1.10
-ALL_OPS = EXPRESSION_OPS | REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
+LOCUS_OPS = {'point.on_locus'}      # registry 1.10
+ALL_OPS = LOCUS_OPS | EXPRESSION_OPS | REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.7 extend 1.0: earlier operations keep their signatures.
 # Registry 1.6 is frozen since 1.11.0rc5; new school operations go to 1.7.
 L0_HASHES = {
@@ -243,7 +244,7 @@ def test_registry_1_5_and_1_6_signatures_stay_frozen():
             assert signature_hash(reg.get(op)) == reg.index['ops'][op] == digest
     assert {op for op, record in reg.ops.items() if record['since'] == '1.7'} == SCHOOL_B_OPS
     assert {op for op, record in reg.ops.items() if record['since'] == '1.8'} == MEET_OPS | MARK_18_OPS
-    assert {op for op, record in reg.ops.items() if record['since'] == '1.10'} == EXPRESSION_OPS
+    assert {op for op, record in reg.ops.items() if record['since'] == '1.10'} == EXPRESSION_OPS | LOCUS_OPS
 
 
 @pytest.mark.parametrize('op', sorted(ALL_OPS))
@@ -252,7 +253,7 @@ def test_record_fields(op):
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free', 'inputSets'}
     assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors', 'intersect.nearest')
                                 or op in G2_OPS or op in MEET_OPS or op in MARK_18_OPS or op in REGION_OPS
-                                or op in EXPRESSION_OPS else 'stable')
+                                or op in EXPRESSION_OPS or op in LOCUS_OPS else 'stable')
     if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
                   'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle',
                   'text.free', 'function.expr', 'function.root', 'function.extremum',
@@ -339,7 +340,7 @@ def test_contract_table():
         'circular': ['circle', 'arc'],
         'curve': ['line', 'segment', 'ray', 'circle', 'arc', 'conic', 'function'],    # 1.8: conic, function
         'path': ['line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'circlesegment', 'polyline',
-                 'conic', 'function'],                                                        # 1.9: conic, function
+                 'conic', 'function', 'locus'],                                               # locus since 1.10
         'round': ['circle', 'arc', 'sector', 'circlesegment'],
         'vertexed': ['segment', 'polyline', 'polygon'],
         'measurable': ['segment', 'vector', 'polyline', 'arc'],
@@ -521,7 +522,7 @@ def test_types_and_policies_catalogs():
     assert set(reg.paths) == set(reg.families['path'])
     kinds = {'segment': 'affine', 'line': 'affine', 'ray': 'affine', 'circle': 'angle', 'polygon': 'perimeter',
              'arc': 'arc', 'sector': 'sector', 'circlesegment': 'circlesegment', 'polyline': 'polyline',
-             'conic': 'conic', 'function': 'graph'}     # registry 1.9
+             'conic': 'conic', 'function': 'graph', 'locus': 'locus'}     # registry 1.10
     assert {t: reg.paths[t]['kind'] for t in reg.paths} == kinds
     assert reg.paths['segment']['default'] == 0.5 and reg.paths['line']['default'] == 0.5
     assert reg.paths['circle']['default'] == math.pi / 4

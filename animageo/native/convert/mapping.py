@@ -39,6 +39,8 @@ forms) are op rows of ``intersect.conic_conic``. ``mapVersion`` 6
 the projected parameter, ``closest_point_Kp`` and ``closest_point_Fp``
 (``ClosestPoint`` of a conic and of a graph) are ``point.closest``;
 ``Point(conic, t)`` stays ``unsupported_signature`` as on a circle.
+``mapVersion`` 7 (registry 1.10): ``point_L`` maps to ``point.on_path``;
+explicit locus parameters are read from the source as ``point.on_locus``.
 """
 from __future__ import annotations
 

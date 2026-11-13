@@ -103,7 +103,7 @@ def _incident(items, tol):
     else:
         raise _Unsupported('type')
     x, y = _xy(point)
-    return paths.distance_to_path(x, y, tp, vp)
+    return paths.distance_to_path(x, y, tp, vp, scale=tol.scale)
 
 
 def _linear_or_vector():
@@ -358,6 +358,7 @@ def _placeholder(type_):
         'circlesegment': {'c': [0.0, 0.0], 'r': 1.0, 'a0': 0.0, 'a1': 1.0},
         'polygon': {'vertices': [[0.0, 0.0], [1.0, 0.0], [0.0, 1.0]], 'area': 0.5},
         'polyline': {'vertices': [[0.0, 0.0], [1.0, 0.0]], 'length': 1.0},
+        'locus': {'points': [], 'range': [0.0, 1.0], 'closed': False},
         'angle': {'vertex': [0.0, 0.0], 'a0': 0.0, 'a1': 1.0, 'size': 1.0},
     }.get(type_, {})
 
@@ -428,7 +429,7 @@ def _path_range(doc, op, base_eval) -> dict:
     type_ = doc.elements[path_id]['type']
     try:
         _op, values = producer_values(path_id, doc.elements, doc.operations, base_eval.elements)
-        f = paths.frame(type_, base_eval.elements[path_id]['value'], _op, values)
+        f = paths.frame(type_, base_eval.elements[path_id]['value'], _op, values, scale=base_eval.tolerances.scale)
     except (KeyError, ValueError, TypeError):
         return {}
     lo, hi = paths.parameter_range(f)

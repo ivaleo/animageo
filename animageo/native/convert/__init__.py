@@ -354,6 +354,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     read_equations(infos, norm, ctx)
     from .ggb_function import read_functions
     read_functions(infos, norm, ctx)
+    from .ggb_locus import read_locus_points
+    read_locus_points(infos, norm, ctx)
     from .ggb_inline import read_angle_arguments
     read_angle_arguments(infos, norm, ctx, built_by_command)
     from .ggb_typed import read_expressions

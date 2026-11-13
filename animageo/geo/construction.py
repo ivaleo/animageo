@@ -534,6 +534,9 @@ class Construction:
         if not cmd:
             logger.warning("tparam_from_coords('%s'): no defining command", name)
             return None
+        inverse = getattr(cmd, 'tparam_from_coords', None)
+        if inverse is not None:
+            return inverse(coords)
         pt = Point(coords)
         for inp_name in cmd.inputs:
             inp_obj = self.objectByName(inp_name) if isinstance(inp_name, str) else inp_name

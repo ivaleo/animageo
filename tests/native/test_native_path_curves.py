@@ -49,7 +49,7 @@ def hyperbola(d, el_id='h'):
 
 def test_the_path_family_takes_conics_and_graphs_since_1_9():
     reg = registry()
-    assert reg.families['path'][-2:] == ['conic', 'function']
+    assert reg.families['path'][-3:] == ['conic', 'function', 'locus']
     assert reg.member_since('path', 'conic') == '1.9'
     assert reg.member_since('path', 'function') == '1.9'
     assert reg.member_since('path', 'circle') is None

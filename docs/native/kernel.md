@@ -2225,7 +2225,6 @@ aux`, `origin: {kind: auto, source}`, deleted with its rotation — upstream
 and recovery) with
 `expected` and `steps` by `fixtures generate`.
 
-
 ### 17.5 Lines by equations
 
 [`line.equation`](ops/line.equation.md) reads the scalar AST with numeric
@@ -2250,3 +2249,48 @@ formulas without refs. Unsupported formulas explicitly report
 `differs` for a mismatch. Generator-backed `curves/line_eq_*` cover slope,
 vertical lines, orientation, live numbers, line intersections, every
 undefined reason and recovery; `ggb/ggb_line_equation` covers import parity.
+
+### 17.6 A point on a locus
+
+The family `path` includes `locus` through `familySince.path.locus: "1.10"`.
+`point.on_path` and `point.closest` retain their signatures and their
+original `since` values. A document using a locus in a `path` slot needs
+1.10 (`needs_newer_registry` otherwise). `paths.locus` has kind `locus`,
+range `[0,1]`, outside `clamp`, default `0.5`.
+
+The parameter is the normalized sample index, matching GeoGebra's
+`Point(locus, t)`: after appending the first sample for a closed locus,
+`w = clamp(t,0,1)·(n−1)`, `k = min(floor(w),n−2)` and the fraction `w−k`
+interpolates samples `k` and `k+1`. It is neither arc length nor the mover
+parameter in `locus.range`. A closed locus includes its closing link;
+`t=1` reaches the first sample, and parameters outside the range clamp.
+
+Null samples and links longer than `0.25·S` are breaks, as in drawing.
+Exact finite samples remain available; a parameter inside a break gives
+`undefined/discontinuous`. No finite sample gives `empty_locus`; no
+continuous link longer than `tol.decide` gives `degenerate_locus` (new
+reasons, since 1.10). The sample indices are retained across gaps.
+
+`native.project` / `project_input` project onto every continuous link and
+finite sample, choosing the smallest normalized parameter among distances
+within `tol.decide` of the minimum. An unusable locus has no projection.
+`point.closest` and drag without a hint use the same projection. Drag is
+continuous along each run and can switch to the nearest run, never joining
+across a break; it clamps at outer ends. Drag through a hint adjusts the
+same `[0,1]` parameter. The classic bridge's `tparam_from_coords` uses its
+native frame, including original null indices, scene scale and closure.
+
+[`point.on_locus`](ops/point.on_locus.md) (`since: "1.10"`, beta) takes
+`locus: locus`, `parameter: number` and outputs `point: point`. It has no
+free input, uses the same interpolation, and checks `on_path`; undefined
+reasons are `empty_locus`, `degenerate_locus`, `discontinuous`, `upstream`.
+It represents the dependent `Point(locus, t)` (a finite literal or numeric
+reference); a reference remains a dependency. `Point(locus)` uses the
+free `point.on_path` input projected from saved `<coords>` instead. Both
+imports compare the computed point with the source coordinates and report
+`differs/value_mismatch` when they differ; dependent segments keep live
+point references. Other path imports and expression imports are unchanged.
+
+Fixtures: `path_locus`, `path_locus_gaps`, `path_locus_empty` in `parity/v1/curves`,
+`drag_locus`, `drag_locus_clamped`, `drag_via_locus` in `parity/v1/drag`,
+and `ggb_locus_point` in `parity/v1/ggb`.

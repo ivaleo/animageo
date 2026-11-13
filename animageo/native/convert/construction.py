@@ -98,6 +98,7 @@ class Context:
     formulas: dict = field(default_factory=dict)
     functions: dict = field(default_factory=dict)     # source name → independently parsed FunctionSpec
     function_points: dict = field(default_factory=dict)  # source point → (function name, saved free x)
+    locus_points: dict = field(default_factory=dict)     # source point → (locus name, explicit parameter)
     equations: dict = field(default_factory=dict)     # formula name → conic or line, variables x and y
     output_positions: dict = field(default_factory=dict)  # unindexed GGB output label → original slot index
     # classic output name → (AST v1, classic names of its refs) or ('error', reason, detail): the angle
@@ -510,6 +511,23 @@ class _Builder:
             from .ggb_typed import build_expression
             build_expression(self, name)
             return
+        if name in self.ctx.locus_points:
+            path, parameter = self.ctx.locus_points[name]
+            needs = [path] + ([parameter] if isinstance(parameter, str) else [])
+            rec = self.record(name, key=self.key_for(name), command='Point', signature='point_L',
+                              inputs=needs, free=False)
+            if any(n not in self.element_of for n in needs):
+                rec.status, rec.reason = 'closure', 'depends_on_unsupported'
+                return
+            op_id = operation_id(self.ns, rec.key)
+            arg = _ref(self.element_of[parameter]) if isinstance(parameter, str) else _num(parameter)
+            op = {'id': op_id, 'op': 'point.on_locus',
+                  'args': {'locus': _ref(self.element_of[path]), 'parameter': arg}, 'outputs': []}
+            self.doc['operations'][op_id] = op
+            eid = self.add_element(name, rec, op_id, 'point', 'point')
+            op['outputs'].append({'slot': 'point', 'elementId': eid})
+            rec.status, rec.reason, rec.detail, rec.op_id = 'translated', None, None, op_id
+            return
         if name not in self.ctx.function_points:
             self.formula(name)
             return
@@ -573,7 +591,8 @@ class _Builder:
         # the formula the import read itself (1.10.0a3)
         for o, rec in zip(outs, recs):
             if (o in self.ctx.formulas or o in self.ctx.functions or o in self.ctx.function_points
-                    or o in self.ctx.typed_formulas or o in self.ctx.typed_errors) \
+                    or o in self.ctx.typed_formulas or o in self.ctx.typed_errors
+                    or o in self.ctx.locus_points) \
                     and rec.status != 'translated' and not rec.native_ids:
                 self.source_definition(o)
 
@@ -586,7 +605,7 @@ class _Builder:
                 self.source_definition(outs[0])
                 return
         if len(outs) == 1 and (outs[0] in self.ctx.equations or outs[0] in self.ctx.functions
-                              or outs[0] in self.ctx.function_points):
+                              or outs[0] in self.ctx.function_points or outs[0] in self.ctx.locus_points):
             self.source_definition(outs[0])
             return
         row = self.table.lookup(sig)
@@ -890,7 +909,7 @@ def translate(constr, ctx: Context) -> Translation:
     # an expression of a .ggb the classic did not parse (its saved value is a free object of the
     # classic): the formula the import read itself, in its place among the commands (1.10.0a3)
     source_formulas = (set(ctx.formulas) | set(ctx.functions) | set(ctx.function_points)
-                       | set(ctx.typed_formulas) | set(ctx.typed_errors))
+                       | set(ctx.typed_formulas) | set(ctx.typed_errors) | set(ctx.locus_points))
     pending = sorted((n for n in source_formulas if n not in produced), key=lambda n: ctx.order.get(n, 10 ** 6))
     for name in sorted(free, key=lambda n: ctx.order.get(n, 10 ** 6)):
         if name in source_formulas:

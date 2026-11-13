@@ -283,7 +283,7 @@ def _project(doc, sev, locus, xy):
     if states.get(locus, {}).get('state') != 'defined':
         return None
     producer_op, values = producer_values(locus, doc.elements, doc.operations, states)
-    frame = _paths.frame(type_, states[locus]['value'], producer_op, values)
+    frame = _paths.frame(type_, states[locus]['value'], producer_op, values, scale=sev.tolerances.scale)
     return _paths.nearest_input(frame, float(xy[0]), float(xy[1]), sev.tolerances.decide_length, doc.bounds)
 
 
