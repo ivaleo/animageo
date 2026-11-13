@@ -94,8 +94,6 @@ def caption_owner(*, shown=True):
 @pytest.mark.parametrize('latex, source, expected', [
     (False, '"value = " + n', 'value = 3'),
     (True, r'"\frac{1}{2} = " + n', r'$\frac{1}{2} = 3$'),
-    (False, '""', ''),
-    (False, '"%n is literal text"', '%n is literal text'),
 ])
 def test_dynamic_caption_freezes_hidden_text_and_reports_simplification(latex, source, expected):
     body = (caption_owner() + element('numeric', 'n', extra='<value val="3"/>')
@@ -118,6 +116,24 @@ def test_dynamic_caption_freezes_hidden_text_and_reports_simplification(latex, s
         assert native.resolve_paint(doc, inputs=inputs)['elements'][eid(items, 'A')]['label']['text'] == expected
     assert native.evaluate(doc, inputs={eid(items, 'A'): {'kind': 'point', 'value': [4., 5.]}}).elements[
         eid(items, 'A')]['value'] == {'x': 4., 'y': 5.}
+
+
+@pytest.mark.parametrize('latex, source, expected', [
+    (True, r'"\[\varphi\]"', r'$\displaystyle \varphi$'),
+    (False, '""', ''),
+    (False, '"%n is literal text"', '%n is literal text'),
+    (False, '"a" + "b"', 'ab'),
+])
+def test_constant_dynamic_caption_stays_editable(latex, source, expected):
+    body = caption_owner() + element('numeric', 'n', extra='<value val="3"/>') + text('t', source, latex=latex, show=False)
+    doc, report = native.from_ggb(ggb_bytes(body), id_namespace=NS)
+    _check(doc, report)
+    items = {e['ggb_name']: e for e in report['elements']}
+    owner = items['A']
+    assert owner['category'] == 'editable' and owner.get('reason') != 'value_unchecked'
+    assert owner.get('value_check') != 'not_checked'
+    assert doc['appearance'][eid(items, 'A')]['label'] == {'mode': 'caption', 'text': expected}
+    assert not any(w['code'] == 'label_caption_simplified' for w in report['warnings'])
 
 
 def test_caption_snapshot_does_not_require_a_placeable_or_live_source_text():

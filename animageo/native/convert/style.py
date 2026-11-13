@@ -156,7 +156,8 @@ def property_warnings(info, view):
     if info.get('show_label'):
         mode = info.get('label_mode', 0)
         if 'caption_snapshot' in info:
-            warn('label_caption_simplified', 'Сохранён текущий текст динамической подписи; подпись не пересчитывается.')
+            if not info.get('caption_static'):
+                warn('label_caption_simplified', 'Сохранён текущий текст динамической подписи; подпись не пересчитывается.')
         elif mode not in LABEL_MODES or (mode in (1, 2) and info['type'] not in _VALUE_LABELS):
             warn('label_mode_unsupported', f'Режим подписи GeoGebra {mode} для {info["type"]} не переносится; подпись скрыта.')
         if 'caption_snapshot' not in info and _dynamic_caption(info) and ('dynamic_caption' in info or mode == 3):

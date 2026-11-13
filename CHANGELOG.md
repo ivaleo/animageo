@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Native GGB import: a dynamic caption that refers to a constant text (string
+  literals only, such as `"\[\varphi\]"`) no longer marks its object as not
+  fully editable (`differs` / `value_unchecked`): the saved text is exact and
+  never needs recomputing. Captions that refer to objects stay as before. Since
+  1.11.2 arcs and angles named by such captions were reported as differing.
+
 ## [1.12.0] - 2026-11-05
 
 ### Added

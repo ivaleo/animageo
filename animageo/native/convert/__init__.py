@@ -460,7 +460,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     categorize(entries)
     settle(entries, refs_of)
     for e in entries:
-        if e['category'] == 'editable' and e['info'].get('show_label') and 'caption_snapshot' in e['info']:
+        if e['category'] == 'editable' and e['info'].get('show_label') and 'caption_snapshot' in e['info'] \
+                and not e['info'].get('caption_static'):
             # Geometry stays live; a frozen caption is not a fully editable import.
             e.update(category='differs', reason='value_unchecked', value_check='not_checked',
                      detail='Сохранён текущий текст динамической подписи; подпись не пересчитывается.')

@@ -85,6 +85,12 @@ def _source_ok(expr, labels):
     return len(expr) <= 10000 and re.fullmatch(r'\s*' + token + r'(?:\s*\+\s*' + token + r')*\s*', expr) is not None
 
 
+def _literal_only(expr):
+    # a concatenation of string literals refers to no object: its value never changes
+    rest = re.sub(r'"(?:\\"|[^"])*"', '', expr)
+    return not rest.replace('+', '').strip()
+
+
 def snapshot_captions(infos, point_of, view, decimals, classic_of, split):
     """Freeze referenced GeoText values, including hidden/unplaced sources.
 
@@ -112,11 +118,13 @@ def snapshot_captions(infos, point_of, view, decimals, classic_of, split):
                 shown = inline_tex(value['shown'], source.get('latex'))
                 if not source.get('latex') and '\\' in shown:
                     inline_tex(shown, True)  # labels also accept bare TeX commands
-                snapshots[ref] = ('caption_snapshot', shown)
+                snapshots[ref] = ('caption_snapshot', shown, _literal_only(source['inputs'][0]))
             except ValueError as exc:
-                snapshots[ref] = ('caption_error', str(exc))
-        key, value = snapshots[ref]
+                snapshots[ref] = ('caption_error', str(exc), False)
+        key, value, static = snapshots[ref]
         info[key] = value
+        if static:
+            info['caption_static'] = True  # a constant text: the snapshot never goes stale
 
 
 def promote_texts(doc, entries, namespace):

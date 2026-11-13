@@ -321,7 +321,9 @@ use the file's decimal precision. Dynamic captions referencing GeoText keep
 that text's current displayed value as a static `caption`, including hidden
 text sources and texts without a native anchor. The same saved-value text
 evaluation and conservative TeX checks as editable text import apply.
-Visible frozen captions have `label_caption_simplified` warnings and keep
+A caption whose text refers to no object (string literals only) is constant:
+its snapshot is exact, the element stays `editable` and there is no warning.
+Visible frozen captions of texts that refer to objects have `label_caption_simplified` warnings and keep
 their live geometry, while their report entries are `differs` with reason
 `value_unchecked`, `value_check: not_checked` and the explicit detail
 that the caption does not recompute. They count as `simplified` in audits.
