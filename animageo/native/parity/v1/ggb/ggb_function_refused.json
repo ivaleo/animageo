@@ -1,0 +1,305 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_function_refused",
+  "registry": "1.11",
+  "generatedBy": "animageo 1.15.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_function_refused",
+    "operationRegistryVersion": "1.6",
+    "operations": {
+      "796b9b47-93fa-56bc-a2be-23b5b3aea50c": {
+        "id": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        ],
+        "seq": 1
+      },
+      "127523fc-d655-585b-8b1a-d397fbc7352b": {
+        "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
+        "op": "function.expr",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "fn": "sin",
+              "args": [
+                {
+                  "var": "x"
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "function",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          }
+        ],
+        "seq": 2
+      },
+      "4e819440-ca16-563d-a5d1-82bca00d0d83": {
+        "id": "4e819440-ca16-563d-a5d1-82bca00d0d83",
+        "op": "function.expr",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "var": "x"
+                    },
+                    {
+                      "num": 2.0
+                    }
+                  ]
+                },
+                {
+                  "num": 1.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "function",
+            "elementId": "eab8d370-5bdc-5240-859d-addbb3a65f7b"
+          }
+        ],
+        "seq": 3
+      }
+    },
+    "elements": {
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "id": "951608cb-59a9-55d1-902a-0c49772efb03",
+        "type": "number",
+        "producer": {
+          "operationId": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "slot": "number"
+        },
+        "displayName": "k"
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "id": "7381003a-c131-598f-a9bb-43c860a099c4",
+        "type": "function",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "function"
+        },
+        "displayName": "f"
+      },
+      "eab8d370-5bdc-5240-859d-addbb3a65f7b": {
+        "id": "eab8d370-5bdc-5240-859d-addbb3a65f7b",
+        "type": "function",
+        "producer": {
+          "operationId": "4e819440-ca16-563d-a5d1-82bca00d0d83",
+          "slot": "function"
+        },
+        "displayName": "p"
+      }
+    },
+    "inputs": {
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "kind": "number",
+        "value": 2.0
+      }
+    },
+    "appearance": {
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "eab8d370-5bdc-5240-859d-addbb3a65f7b": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "951608cb-59a9-55d1-902a-0c49772efb03": "k",
+        "7381003a-c131-598f-a9bb-43c860a099c4": "f",
+        "eab8d370-5bdc-5240-859d-addbb3a65f7b": "p"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 16.0,
+      "expect": {
+        "7381003a-c131-598f-a9bb-43c860a099c4": {
+          "state": "defined",
+          "type": "function",
+          "value": {
+            "expr": {
+              "fn": "sin",
+              "args": [
+                {
+                  "var": "x"
+                }
+              ]
+            },
+            "refs": [],
+            "domain": [
+              null,
+              null
+            ]
+          }
+        },
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0,
+            "unit": "scalar"
+          }
+        },
+        "eab8d370-5bdc-5240-859d-addbb3a65f7b": {
+          "state": "defined",
+          "type": "function",
+          "value": {
+            "expr": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "var": "x"
+                    },
+                    {
+                      "num": 2.0
+                    }
+                  ]
+                },
+                {
+                  "num": 1.0
+                }
+              ]
+            },
+            "refs": [],
+            "domain": [
+              null,
+              null
+            ]
+          }
+        }
+      },
+      "checks": {}
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?><geogebra format=\"5.0\" version=\"5.4.927.1\" app=\"classic\" platform=\"w\"><euclidianView><size width=\"800\" height=\"600\"/><coordSystem xZero=\"400\" yZero=\"300\" scale=\"50\" yscale=\"50\"/></euclidianView><kernel><decimals val=\"2\"/></kernel><construction title=\"\" author=\"\" date=\"\"><element type=\"numeric\" label=\"k\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"2\"/></element><expression label=\"f\" exp=\"sin(x)\" type=\"function\"/><element type=\"function\" label=\"f\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><expression label=\"p\" exp=\"x^2-1\" type=\"function\"/><element type=\"function\" label=\"p\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><command name=\"Intersect\"><input a0=\"f\" a1=\"xAxis\"/><output a0=\"Unbounded\"/></command><element type=\"point\" label=\"Unbounded\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"0\" y=\"0\" z=\"1\"/></element><command name=\"Intersect\"><input a0=\"p\" a1=\"xAxis\" a2=\"k\"/><output a0=\"DynamicIndex\"/></command><element type=\"point\" label=\"DynamicIndex\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"0\" y=\"0\" z=\"1\"/></element><command name=\"Intersect\"><input a0=\"f\" a1=\"yAxis\" a2=\"2\"/><output a0=\"MissingOrdinate\"/></command><element type=\"point\" label=\"MissingOrdinate\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"0\" y=\"0\" z=\"1\"/></element><command name=\"Root\"><input a0=\"f\"/><output a0=\"NonPolynomial\"/></command><element type=\"point\" label=\"NonPolynomial\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"0\" y=\"0\" z=\"1\"/></element><command name=\"Root\"><input a0=\"gamma(x)\"/><output a0=\"UnknownFormula\"/></command><element type=\"point\" label=\"UnknownFormula\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"0\" y=\"0\" z=\"1\"/></element></construction></geogebra>",
+    "elements": [
+      {
+        "ggb_name": "k",
+        "ggb_type": "numeric",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "951608cb-59a9-55d1-902a-0c49772efb03"
+        ]
+      },
+      {
+        "ggb_name": "f",
+        "ggb_type": "function",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7381003a-c131-598f-a9bb-43c860a099c4"
+        ]
+      },
+      {
+        "ggb_name": "p",
+        "ggb_type": "function",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "eab8d370-5bdc-5240-859d-addbb3a65f7b"
+        ]
+      },
+      {
+        "ggb_name": "Unbounded",
+        "ggb_type": "point",
+        "category": "picture",
+        "reason": "unsupported_signature",
+        "detail": "polynomial mode requires a native polynomial",
+        "value_check": "not_checked",
+        "native_ids": []
+      },
+      {
+        "ggb_name": "DynamicIndex",
+        "ggb_type": "point",
+        "category": "picture",
+        "reason": "unsupported_signature",
+        "detail": "axis intersection index must be a positive integer literal",
+        "value_check": "not_checked",
+        "native_ids": []
+      },
+      {
+        "ggb_name": "MissingOrdinate",
+        "ggb_type": "point",
+        "category": "picture",
+        "reason": "unsupported_signature",
+        "detail": "the y-axis intersection has only static output 1",
+        "value_check": "not_checked",
+        "native_ids": []
+      },
+      {
+        "ggb_name": "NonPolynomial",
+        "ggb_type": "point",
+        "category": "picture",
+        "reason": "unsupported_signature",
+        "detail": "polynomial mode requires a native polynomial",
+        "value_check": "not_checked",
+        "native_ids": []
+      },
+      {
+        "ggb_name": "UnknownFormula",
+        "ggb_type": "point",
+        "category": "picture",
+        "reason": "formula_unsupported",
+        "detail": "функции gamma нет в формулах",
+        "value_check": "not_checked",
+        "native_ids": []
+      }
+    ]
+  }
+}

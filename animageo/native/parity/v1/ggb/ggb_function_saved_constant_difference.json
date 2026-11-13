@@ -1,0 +1,446 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_function_saved_constant_difference",
+  "registry": "1.11",
+  "generatedBy": "animageo 1.15.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_function_saved_constant_difference",
+    "operationRegistryVersion": "1.11",
+    "operations": {
+      "127523fc-d655-585b-8b1a-d397fbc7352b": {
+        "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
+        "op": "function.expr",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "num": 0.0
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "function",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          }
+        ],
+        "seq": 1
+      },
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "function.roots_polynomial",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          "count": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "root.1",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          }
+        ],
+        "seq": 2
+      },
+      "a602bd3f-ef10-501b-96fc-4f0b3a651add": {
+        "id": "a602bd3f-ef10-501b-96fc-4f0b3a651add",
+        "op": "function.root_near",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          "start": {
+            "kind": "number",
+            "value": 0.0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "root",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          }
+        ],
+        "seq": 3
+      },
+      "3e32c16f-c8fc-5a97-9c0e-199d37afc97e": {
+        "id": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+        "op": "function.root_interval",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          "a": {
+            "kind": "number",
+            "value": -1.0
+          },
+          "b": {
+            "kind": "number",
+            "value": 1.0
+          }
+        },
+        "outputs": [
+          {
+            "slot": "root",
+            "elementId": "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882"
+          }
+        ],
+        "seq": 4
+      },
+      "00e6264a-d5a1-5f26-a9a8-3f178dff4491": {
+        "id": "00e6264a-d5a1-5f26-a9a8-3f178dff4491",
+        "op": "function.roots_interval",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          "a": {
+            "kind": "number",
+            "value": -1.0
+          },
+          "b": {
+            "kind": "number",
+            "value": 1.0
+          },
+          "count": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "root.1",
+            "elementId": "44da8d70-d764-5e62-88a2-9bb031882ec8"
+          }
+        ],
+        "seq": 5
+      },
+      "0bbe7a24-e522-512e-bda0-6d8bd3d1de68": {
+        "id": "0bbe7a24-e522-512e-bda0-6d8bd3d1de68",
+        "op": "function.extrema_polynomial",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          "count": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "extremum.1",
+            "elementId": "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd"
+          }
+        ],
+        "seq": 6
+      },
+      "5262743b-8b75-5332-9939-957c8d302be5": {
+        "id": "5262743b-8b75-5332-9939-957c8d302be5",
+        "op": "function.extrema_interval",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          "a": {
+            "kind": "number",
+            "value": -1.0
+          },
+          "b": {
+            "kind": "number",
+            "value": 1.0
+          },
+          "count": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "extremum.1",
+            "elementId": "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d"
+          }
+        ],
+        "seq": 7
+      }
+    },
+    "elements": {
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "id": "7381003a-c131-598f-a9bb-43c860a099c4",
+        "type": "function",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "function"
+        },
+        "displayName": "f"
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "root.1"
+        },
+        "displayName": "A"
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "id": "0d178f00-10cc-5e64-b3a7-004058ad2948",
+        "type": "point",
+        "producer": {
+          "operationId": "a602bd3f-ef10-501b-96fc-4f0b3a651add",
+          "slot": "root"
+        },
+        "displayName": "B"
+      },
+      "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+        "id": "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882",
+        "type": "point",
+        "producer": {
+          "operationId": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+          "slot": "root"
+        },
+        "displayName": "C"
+      },
+      "44da8d70-d764-5e62-88a2-9bb031882ec8": {
+        "id": "44da8d70-d764-5e62-88a2-9bb031882ec8",
+        "type": "point",
+        "producer": {
+          "operationId": "00e6264a-d5a1-5f26-a9a8-3f178dff4491",
+          "slot": "root.1"
+        },
+        "displayName": "D"
+      },
+      "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": {
+        "id": "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd",
+        "type": "point",
+        "producer": {
+          "operationId": "0bbe7a24-e522-512e-bda0-6d8bd3d1de68",
+          "slot": "extremum.1"
+        },
+        "displayName": "E"
+      },
+      "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+        "id": "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d",
+        "type": "point",
+        "producer": {
+          "operationId": "5262743b-8b75-5332-9939-957c8d302be5",
+          "slot": "extremum.1"
+        },
+        "displayName": "F"
+      }
+    },
+    "inputs": {},
+    "appearance": {
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "44da8d70-d764-5e62-88a2-9bb031882ec8": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10.0,
+        -8.0,
+        10.0,
+        8.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "7381003a-c131-598f-a9bb-43c860a099c4": "f",
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A",
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": "B",
+        "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": "C",
+        "44da8d70-d764-5e62-88a2-9bb031882ec8": "D",
+        "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": "E",
+        "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": "F"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 20.0,
+      "expect": {
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident",
+          "detail": {
+            "stage": "newton"
+          }
+        },
+        "44da8d70-d764-5e62-88a2-9bb031882ec8": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident",
+          "detail": {
+            "stage": "pieces"
+          }
+        },
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident",
+          "detail": {
+            "stage": "isolation"
+          }
+        },
+        "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "coincident",
+          "detail": {
+            "stage": "pieces"
+          }
+        },
+        "7381003a-c131-598f-a9bb-43c860a099c4": {
+          "state": "defined",
+          "type": "function",
+          "value": {
+            "expr": {
+              "num": 0.0
+            },
+            "refs": [],
+            "domain": [
+              null,
+              null
+            ]
+          }
+        },
+        "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "no_extremum"
+        },
+        "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "no_extremum"
+        }
+      },
+      "checks": {}
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<geogebra format=\"5.0\" version=\"5.4.936.0\" app=\"classic\" platform=\"w2d\" id=\"d3d31be4-bc60-4ee4-bf82-c2e299c51e2a\" xsi:noNamespaceSchemaLocation=\"https://www.geogebra.org/apps/xsd/ggb.xsd\" xmlns=\"\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n<gui>\n\t<window width=\"900\" height=\"700\"/>\n\t<perspectives>\n<perspective id=\"tmp\">\n\t<panes>\n\t<pane location=\"\" divider=\"0.4\" orientation=\"1\"/>\n</panes>\n\t<views>\n\t<view id=\"4097\" visible=\"false\" inframe=\"false\" stylebar=\"true\" location=\"1,1,1,1\" size=\"400\" window=\"100,100,700,550\"/>\n\t<view id=\"4\" toolbar=\"0 || 2020 , 2021 , 2022 || 2001 , 2003 , 2002 , 2004 , 2005 || 2040 , 2041 , 2042 , 2044 , 2043\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1,1\" size=\"300\" window=\"100,100,600,400\"/>\n\t<view id=\"8\" toolbar=\"1001 | 1002 | 1003  || 1005 | 1004 || 1006 | 1007 | 1010 || 1008 | 1009 || 6\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1,3\" size=\"300\" window=\"100,100,600,400\"/>\n\t<view id=\"1\" visible=\"true\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"530\" window=\"100,100,600,400\"/>\n\t<view id=\"2\" visible=\"true\" inframe=\"false\" stylebar=\"false\" location=\"3\" size=\"360\" tab=\"ALGEBRA\" window=\"100,100,600,400\"/>\n\t<view id=\"16\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"300\" window=\"50,50,500,500\"/>\n\t<view id=\"32\" visible=\"false\" inframe=\"false\" stylebar=\"true\" location=\"1\" size=\"300\" window=\"50,50,500,500\"/>\n\t<view id=\"64\" toolbar=\"0\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"480\" window=\"50,50,500,500\"/>\n\t<view id=\"128\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"480\" window=\"50,50,500,500\"/>\n\t<view id=\"70\" toolbar=\"0 || 2020 || 2021 || 2022\" visible=\"false\" inframe=\"false\" stylebar=\"true\" location=\"1\" size=\"900\" window=\"50,50,500,500\"/>\n</views>\n\t<toolbar show=\"false\" items=\"0 73 62 | 1 501 67 , 5 19 , 72 75 76 | 2 15 45 , 18 65 , 7 37 | 4 3 8 9 , 13 44 , 58 , 47 | 16 51 64 , 70 | 10 34 53 11 , 24  20 22 , 21 23 | 55 56 57 , 12 | 36 46 , 38 49  50 , 71  14  68 | 30 29 54 32 31 33 | 25 17 26 60 52 61 | 40 41 42 , 27 28 35 , 6\" position=\"1\" help=\"false\"/>\n\t<input show=\"false\" cmd=\"true\" top=\"algebra\"/>\n\t<dockBar show=\"false\" east=\"false\"/>\n</perspective>\n</perspectives>\n\t<labelingStyle val=\"0\"/>\n\t<font size=\"16\"/>\n</gui>\n<euclidianView>\n\t<size width=\"530\" height=\"698\"/>\n\t<coordSystem xZero=\"265\" yZero=\"349\" scale=\"26.5\" yscale=\"43.625\"/>\n\t<evSettings axes=\"true\" grid=\"true\" gridIsBold=\"false\" pointCapturing=\"3\" rightAngleStyle=\"1\" checkboxSize=\"26\" gridType=\"3\"/>\n\t<bgColor r=\"255\" g=\"255\" b=\"255\"/>\n\t<axesColor r=\"28\" g=\"28\" b=\"31\"/>\n\t<gridColor r=\"180\" g=\"179\" b=\"186\"/>\n\t<lineStyle axes=\"1\" grid=\"0\"/>\n\t<axis id=\"0\" show=\"true\" label=\"\" unitLabel=\"\" tickStyle=\"1\" showNumbers=\"true\"/>\n\t<axis id=\"1\" show=\"true\" label=\"\" unitLabel=\"\" tickStyle=\"1\" showNumbers=\"true\"/>\n</euclidianView>\n<algebraView>\n\t<mode val=\"3\"/>\n</algebraView>\n<kernel>\n\t<continuous val=\"false\"/>\n\t<usePathAndRegionParameters val=\"true\"/>\n\t<decimals val=\"2\"/>\n\t<angleUnit val=\"degree\"/>\n\t<algebraStyle val=\"3\" spreadsheet=\"0\"/>\n\t<coordStyle val=\"0\"/>\n</kernel>\n<tableview min=\"0\" max=\"0\" step=\"0\"/>\n<scripting blocked=\"false\" disabled=\"false\"/>\n<construction title=\"\" author=\"\" date=\"\">\n<expression label=\"f\" exp=\"f(x) = 0\" type=\"function\"/>\n<element type=\"function\" label=\"f\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"0\" g=\"0\" b=\"255\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<animation step=\"0.1\" type=\"0\" playing=\"false\"/>\n\t<fixed val=\"true\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<simplifyCoefficients val=\"true\"/>\n</element>\n<command name=\"Root\">\n\t<input a0=\"f\"/>\n\t<output a0=\"A\"/>\n</command>\n<element type=\"point\" label=\"A\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/>\n</element>\n<command name=\"Root\">\n\t<input a0=\"f\" a1=\"0\"/>\n\t<output a0=\"B\"/>\n</command>\n<element type=\"point\" label=\"B\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"0\" y=\"0\" z=\"1\"/>\n</element>\n<command name=\"Root\">\n\t<input a0=\"f\" a1=\"-1\" a2=\"1\"/>\n\t<output a0=\"C\"/>\n</command>\n<element type=\"point\" label=\"C\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"0\" y=\"0\" z=\"1\"/>\n</element>\n<command name=\"Roots\">\n\t<input a0=\"f\" a1=\"-1\" a2=\"1\"/>\n\t<output a0=\"D\"/>\n</command>\n<element type=\"point\" label=\"D\">\n\t<show object=\"true\" label=\"true\" ev=\"4\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/>\n</element>\n<command name=\"Extremum\">\n\t<input a0=\"f\"/>\n\t<output a0=\"E\"/>\n</command>\n<element type=\"point\" label=\"E\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/>\n</element>\n<command name=\"Extremum\">\n\t<input a0=\"f\" a1=\"-1\" a2=\"1\"/>\n\t<output a0=\"F\"/>\n</command>\n<element type=\"point\" label=\"F\">\n\t<show object=\"true\" label=\"true\" ev=\"4\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/>\n</element>\n</construction>\n</geogebra>\n",
+    "elements": [
+      {
+        "ggb_name": "f",
+        "ggb_type": "function",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7381003a-c131-598f-a9bb-43c860a099c4"
+        ]
+      },
+      {
+        "ggb_name": "A",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+        ]
+      },
+      {
+        "ggb_name": "B",
+        "ggb_type": "point",
+        "category": "differs",
+        "reason": "value_mismatch",
+        "value_check": "failed",
+        "native_ids": [
+          "0d178f00-10cc-5e64-b3a7-004058ad2948"
+        ]
+      },
+      {
+        "ggb_name": "C",
+        "ggb_type": "point",
+        "category": "differs",
+        "reason": "value_mismatch",
+        "value_check": "failed",
+        "native_ids": [
+          "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882"
+        ]
+      },
+      {
+        "ggb_name": "D",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "44da8d70-d764-5e62-88a2-9bb031882ec8"
+        ]
+      },
+      {
+        "ggb_name": "E",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd"
+        ]
+      },
+      {
+        "ggb_name": "F",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d"
+        ]
+      }
+    ]
+  }
+}

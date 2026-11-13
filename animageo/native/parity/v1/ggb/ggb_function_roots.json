@@ -1,0 +1,554 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_function_roots",
+  "registry": "1.11",
+  "generatedBy": "animageo 1.15.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_function_roots",
+    "operationRegistryVersion": "1.11",
+    "operations": {
+      "796b9b47-93fa-56bc-a2be-23b5b3aea50c": {
+        "id": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        ],
+        "seq": 1
+      },
+      "127523fc-d655-585b-8b1a-d397fbc7352b": {
+        "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
+        "op": "function.expr",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "var": "x"
+                    },
+                    {
+                      "num": 2.0
+                    }
+                  ]
+                },
+                {
+                  "ref": 0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "function",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          }
+        ],
+        "seq": 2
+      },
+      "34c4c4b5-94ce-57c4-b8e1-b82edc23d419": {
+        "id": "34c4c4b5-94ce-57c4-b8e1-b82edc23d419",
+        "op": "function.roots_polynomial",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          "count": {
+            "kind": "number",
+            "value": 4
+          }
+        },
+        "outputs": [
+          {
+            "slot": "root.2",
+            "elementId": "6082713e-c1a6-52cb-91e9-4c69836b0f1e"
+          },
+          {
+            "slot": "root.1",
+            "elementId": "cf7ab3f8-7caf-5bea-b9e0-f8449ea6896d"
+          },
+          {
+            "slot": "root.4",
+            "elementId": "a50bb1a1-b3a3-5359-a718-bee7ae549548"
+          }
+        ],
+        "seq": 3
+      }
+    },
+    "elements": {
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "id": "951608cb-59a9-55d1-902a-0c49772efb03",
+        "type": "number",
+        "producer": {
+          "operationId": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "slot": "number"
+        },
+        "displayName": "k"
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "id": "7381003a-c131-598f-a9bb-43c860a099c4",
+        "type": "function",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "function"
+        },
+        "displayName": "f"
+      },
+      "6082713e-c1a6-52cb-91e9-4c69836b0f1e": {
+        "id": "6082713e-c1a6-52cb-91e9-4c69836b0f1e",
+        "type": "point",
+        "producer": {
+          "operationId": "34c4c4b5-94ce-57c4-b8e1-b82edc23d419",
+          "slot": "root.2"
+        },
+        "displayName": "Right"
+      },
+      "cf7ab3f8-7caf-5bea-b9e0-f8449ea6896d": {
+        "id": "cf7ab3f8-7caf-5bea-b9e0-f8449ea6896d",
+        "type": "point",
+        "producer": {
+          "operationId": "34c4c4b5-94ce-57c4-b8e1-b82edc23d419",
+          "slot": "root.1"
+        },
+        "displayName": "Left"
+      },
+      "a50bb1a1-b3a3-5359-a718-bee7ae549548": {
+        "id": "a50bb1a1-b3a3-5359-a718-bee7ae549548",
+        "type": "point",
+        "producer": {
+          "operationId": "34c4c4b5-94ce-57c4-b8e1-b82edc23d419",
+          "slot": "root.4"
+        },
+        "displayName": "Spare"
+      }
+    },
+    "inputs": {
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "kind": "number",
+        "value": 1.0
+      }
+    },
+    "appearance": {
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "6082713e-c1a6-52cb-91e9-4c69836b0f1e": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "cf7ab3f8-7caf-5bea-b9e0-f8449ea6896d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "a50bb1a1-b3a3-5359-a718-bee7ae549548": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "951608cb-59a9-55d1-902a-0c49772efb03": "k",
+        "7381003a-c131-598f-a9bb-43c860a099c4": "f",
+        "6082713e-c1a6-52cb-91e9-4c69836b0f1e": "Right",
+        "cf7ab3f8-7caf-5bea-b9e0-f8449ea6896d": "Left",
+        "a50bb1a1-b3a3-5359-a718-bee7ae549548": "Spare"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 16.0,
+      "expect": {
+        "6082713e-c1a6-52cb-91e9-4c69836b0f1e": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "7381003a-c131-598f-a9bb-43c860a099c4": {
+          "state": "defined",
+          "type": "function",
+          "value": {
+            "expr": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "var": "x"
+                    },
+                    {
+                      "num": 2.0
+                    }
+                  ]
+                },
+                {
+                  "ref": 0
+                }
+              ]
+            },
+            "refs": [
+              1.0
+            ],
+            "domain": [
+              null,
+              null
+            ]
+          }
+        },
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.0,
+            "unit": "scalar"
+          }
+        },
+        "a50bb1a1-b3a3-5359-a718-bee7ae549548": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "cf7ab3f8-7caf-5bea-b9e0-f8449ea6896d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 0.0
+          },
+          "detail": {
+            "found": 2
+          }
+        }
+      },
+      "checks": {
+        "34c4c4b5-94ce-57c4-b8e1-b82edc23d419:on_graph": "passed"
+      }
+    },
+    {
+      "name": "merged",
+      "inputs": {
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "kind": "number",
+          "value": 0
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "6082713e-c1a6-52cb-91e9-4c69836b0f1e": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "7381003a-c131-598f-a9bb-43c860a099c4": {
+          "state": "defined",
+          "type": "function",
+          "value": {
+            "expr": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "var": "x"
+                    },
+                    {
+                      "num": 2.0
+                    }
+                  ]
+                },
+                {
+                  "ref": 0
+                }
+              ]
+            },
+            "refs": [
+              0.0
+            ],
+            "domain": [
+              null,
+              null
+            ]
+          }
+        },
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "scalar"
+          }
+        },
+        "a50bb1a1-b3a3-5359-a718-bee7ae549548": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "cf7ab3f8-7caf-5bea-b9e0-f8449ea6896d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "detail": {
+            "found": 1
+          }
+        }
+      },
+      "checks": {
+        "34c4c4b5-94ce-57c4-b8e1-b82edc23d419:on_graph": "passed"
+      }
+    },
+    {
+      "name": "absent",
+      "inputs": {
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "kind": "number",
+          "value": -1
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "6082713e-c1a6-52cb-91e9-4c69836b0f1e": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "no_root"
+        },
+        "7381003a-c131-598f-a9bb-43c860a099c4": {
+          "state": "defined",
+          "type": "function",
+          "value": {
+            "expr": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "var": "x"
+                    },
+                    {
+                      "num": 2.0
+                    }
+                  ]
+                },
+                {
+                  "ref": 0
+                }
+              ]
+            },
+            "refs": [
+              -1.0
+            ],
+            "domain": [
+              null,
+              null
+            ]
+          }
+        },
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -1.0,
+            "unit": "scalar"
+          }
+        },
+        "a50bb1a1-b3a3-5359-a718-bee7ae549548": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "no_root"
+        },
+        "cf7ab3f8-7caf-5bea-b9e0-f8449ea6896d": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "no_root"
+        }
+      },
+      "checks": {}
+    },
+    {
+      "name": "restored",
+      "inputs": {
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "kind": "number",
+          "value": 4
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "6082713e-c1a6-52cb-91e9-4c69836b0f1e": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "7381003a-c131-598f-a9bb-43c860a099c4": {
+          "state": "defined",
+          "type": "function",
+          "value": {
+            "expr": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "^",
+                  "args": [
+                    {
+                      "var": "x"
+                    },
+                    {
+                      "num": 2.0
+                    }
+                  ]
+                },
+                {
+                  "ref": 0
+                }
+              ]
+            },
+            "refs": [
+              4.0
+            ],
+            "domain": [
+              null,
+              null
+            ]
+          }
+        },
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.0,
+            "unit": "scalar"
+          }
+        },
+        "a50bb1a1-b3a3-5359-a718-bee7ae549548": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "cf7ab3f8-7caf-5bea-b9e0-f8449ea6896d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -2.0,
+            "y": 0.0
+          },
+          "detail": {
+            "found": 2
+          }
+        }
+      },
+      "checks": {
+        "34c4c4b5-94ce-57c4-b8e1-b82edc23d419:on_graph": "passed"
+      }
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?><geogebra format=\"5.0\" version=\"5.4.927.1\" app=\"classic\" platform=\"w\"><euclidianView><size width=\"800\" height=\"600\"/><coordSystem xZero=\"400\" yZero=\"300\" scale=\"50\" yscale=\"50\"/></euclidianView><kernel><decimals val=\"2\"/></kernel><construction title=\"\" author=\"\" date=\"\"><element type=\"numeric\" label=\"k\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"1\"/></element><expression label=\"f\" exp=\"x^2-k\" type=\"function\"/><element type=\"function\" label=\"f\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><command name=\"Root\"><input a0=\"f\"/><output a0=\"Right\" a1=\"\" a2=\"Left\" a3=\"Spare\"/></command><element type=\"point\" label=\"Right\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"1\" y=\"0\" z=\"1\"/></element><element type=\"point\" label=\"Left\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"-1\" y=\"0\" z=\"1\"/></element><element type=\"point\" label=\"Spare\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/></element></construction></geogebra>",
+    "elements": [
+      {
+        "ggb_name": "k",
+        "ggb_type": "numeric",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "951608cb-59a9-55d1-902a-0c49772efb03"
+        ]
+      },
+      {
+        "ggb_name": "f",
+        "ggb_type": "function",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7381003a-c131-598f-a9bb-43c860a099c4"
+        ]
+      },
+      {
+        "ggb_name": "Right",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "6082713e-c1a6-52cb-91e9-4c69836b0f1e"
+        ]
+      },
+      {
+        "ggb_name": "Left",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "cf7ab3f8-7caf-5bea-b9e0-f8449ea6896d"
+        ]
+      },
+      {
+        "ggb_name": "Spare",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "a50bb1a1-b3a3-5359-a718-bee7ae549548"
+        ]
+      }
+    ]
+  }
+}

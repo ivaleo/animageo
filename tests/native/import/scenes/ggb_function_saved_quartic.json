@@ -1,0 +1,121 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_function_saved_quartic",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_function_saved_quartic",
+    "operationRegistryVersion": "1.11",
+    "operations": {
+      "4ac3713e-c1a3-5927-bfc1-783e25edd8fd": {
+        "id": "4ac3713e-c1a3-5927-bfc1-783e25edd8fd",
+        "op": "function.expr",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "^",
+              "args": [
+                {
+                  "var": "x"
+                },
+                {
+                  "num": 4.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "function",
+            "elementId": "a7b7b127-5e2c-546f-a968-37f897be685f"
+          }
+        ]
+      },
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "function.extrema_polynomial",
+        "args": {
+          "function": {
+            "kind": "ref",
+            "elementId": "a7b7b127-5e2c-546f-a968-37f897be685f"
+          },
+          "count": {
+            "kind": "number",
+            "value": 1
+          }
+        },
+        "outputs": [
+          {
+            "slot": "extremum.1",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          }
+        ],
+        "seq": 1
+      }
+    },
+    "elements": {
+      "a7b7b127-5e2c-546f-a968-37f897be685f": {
+        "id": "a7b7b127-5e2c-546f-a968-37f897be685f",
+        "type": "function",
+        "displayName": "",
+        "producer": {
+          "operationId": "4ac3713e-c1a3-5927-bfc1-783e25edd8fd",
+          "slot": "function"
+        },
+        "origin": {
+          "kind": "auto",
+          "source": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf"
+        }
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "extremum.1"
+        },
+        "displayName": "A"
+      }
+    },
+    "inputs": {},
+    "appearance": {
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "a7b7b127-5e2c-546f-a968-37f897be685f": {
+        "visible": false,
+        "locked": true,
+        "role": "aux",
+        "label": {
+          "mode": "none"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10.0,
+        -8.0,
+        10.0,
+        8.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved"
+    }
+  ]
+}
