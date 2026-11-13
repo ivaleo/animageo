@@ -721,16 +721,127 @@ def _regions():
     return out
 
 
+def _fill_order_scenes():
+    """Portable domains, explicit layers and stateless frame ordering."""
+    def nested():
+        d = _Doc('nested_circle_and_polygon', bounds=(-4, -4, 4, 4))
+        d.free('A', -.5, -.5).free('B', .5, -.5).free('C', 0, .5).free('O', 0, 0).free('R', 3, 0)
+        d.polygon('inner', 'A', 'B', 'C')
+        d.op('circle.center_point', {'center': _ref('O'), 'through': _ref('R')},
+             [('circle', 'outer', 'circle')], op_id='zz_outer')
+        d.overrides('inner', fill='#ff0000', fill_opacity=1).overrides('outer', fill='#0000ff', fill_opacity=1)
+        return d
+
+    rows = []
+    def add(name, d, style=None, timeline=None, t=None, inputs=None, export_layout=None):
+        rows.append((name, d, style, timeline, t, inputs, export_layout))
+        legacy = copy.deepcopy(style) if style is not None else {}
+        legacy.setdefault('rendering', {})['fill_order'] = 'construction'
+        rows.append((name + '_construction', copy.deepcopy(d), legacy, timeline, t, inputs, export_layout))
+
+    add('nested_circle_and_polygon', nested())
+    d = nested()
+    d.doc['viewDefaults'].update(axes={'show': True}, grid={'kind': 'major_minor'})
+    add('fills_with_axes_and_grid', d)
+    add('stroke_z_keeps_fill_automatic', nested().overrides('outer', z_index=100))
+    add('label_z_keeps_fill_automatic', nested().overrides('outer', z_index_label=-1))
+    for z in (0, -1, .01, .0100000001, 7, 100):
+        tag = str(z).replace('-', 'negative_').replace('.', '_')
+        add('explicit_polygon_fill_layer_' + tag, nested().overrides('inner', z_index_fill=z))
+    add('legacy_polygon_layer', nested().overrides('inner', z_index=7))
+    add('null_fill_preserves_polygon_layer', nested().overrides('inner', z_index=7, z_index_fill=None),
+        {'defaults': {'polygon': {'z_index_fill': -1}}})
+    add('user_default_fill_layer', nested(), {'defaults': {'circle': {'z_index_fill': 7}}})
+    add('overlay_fill_layer', nested(), {'overlay': {'per_type': {'polygon': {'z_index_fill': 7}}}})
+    d = nested().look('outer', role='sought')
+    add('role_fill_layer', d, {'roles': {'sought': {'z_index_fill': 7}}})
+    from .convert.style import layer_overrides
+    for layer in (0, 2):
+        d = nested()
+        d.overrides('outer', **layer_overrides({'layer': layer}, 'circle'))
+        add(f'imported_circle_layer_{layer}', d)
+    for key, val, title in (('fill_opacity', 0, 'transparent'), ('fill_pattern', 'none', 'no_pattern'),
+                            ('fill_pattern', 'hatch', 'hatch'), ('fill', '#ffffff', 'background_fill')):
+        add(title, nested().overrides('outer', **{key: val}))
+    add('hidden_fill', nested().look('outer', visible=False))
+    d = nested().overrides('outer', fill_opacity=0, fill_pattern='crosshatch')
+    add('pattern_without_solid_opacity', d)
+    d = nested()
+    d.doc['inputs']['C']['value'] = [0, -.5]
+    add('zero_polygon_area', d)
+    add('drag_small_circle', nested(), inputs={'R': {'kind': 'point', 'value': [.2, 0]}})
+    add('output_size', nested(), export_layout={'export': {'size': {'width': 240, 'height': 240}}})
+    timeline = {'version': 2, 'keyframes': [{'t': 0, 'values': {'R': [3, 0]}},
+                {'t': 1, 'values': {'R': [.2, 0]}, 'easing': 'linear'}]}
+    for t in (0, .5, 1):
+        add('timeline_area_' + str(t).replace('.', '_'), nested(), timeline=timeline, t=t)
+    for k in (.01, 1, 100):
+        d = nested()
+        d.doc['viewDefaults']['bounds'] = [-4*k, -4*k, 4*k, 4*k]
+        for raw in d.doc['inputs'].values():
+            raw['value'] = [v*k for v in raw['value']]
+        add('scaled_geometry_' + str(k).replace('.', '_'), d)
+    shapes = {
+        'concave_polygon': [(0, 0), (2, 0), (2, 1), (1, 1), (1, 2), (0, 2)],
+        'bow_tie': [(0, 0), (2, 2), (0, 2), (2, 0)],
+        'pentagram': [(math.cos(i*4*math.pi/5), math.sin(i*4*math.pi/5)) for i in range(5)],
+        'double_square': [(0, 0), (2, 0), (2, 2), (0, 2)] * 2,
+        'reverse_square': [(0, 0), (2, 0), (2, 2), (0, 2), (0, 0), (0, 2), (2, 2), (2, 0)],
+    }
+    for title, points in shapes.items():
+        for pattern in ('solid', 'hatch'):
+            d = _Doc(title)
+            for i, (x, y) in enumerate(points):
+                d.free('P' + str(i), x, y)
+            d.polygon('shape', *('P' + str(i) for i in range(len(points))))
+            d.overrides('shape', fill='#ff0000', fill_pattern=pattern)
+            add(title + '_' + pattern, d)
+    for delta, title in ((0, 'equal'), (.75e-9, 'near'), (1.5e-9, 'distinct')):
+        d = _Doc('equal_circle_areas').free('O', 0, 0).free('A', 1, 0).free('B', math.sqrt(1+delta), 0)
+        d.circle('z_first', 'O', 'A').circle('a_second', 'O', 'B')
+        add(title + '_circle_areas', d)
+    d = _Doc('epsilon_chain').free('O', 0, 0)
+    for name, area in (('small', 1-1.5e-9), ('near', 1-.75e-9), ('large', 1)):
+        d.free('P_' + name, math.sqrt(area), 0).circle(name, 'O', 'P_' + name)
+    add('epsilon_group_chain', d)
+    for degrees in (0, 37, 90):
+        d = _Doc('rotated_ellipse', bounds=(-5, -5, 5, 5))
+        a = math.radians(degrees)
+        for name, x, y in (('F1', -2, 0), ('F2', 2, 0), ('P', 0, 1), ('O', 0, 0), ('R', 1, 0)):
+            d.free(name, x*math.cos(a)-y*math.sin(a)+.2, x*math.sin(a)+y*math.cos(a)-.1)
+        d.conic('ellipse', 'conic.ellipse_foci_point', f1='F1', f2='F2', through='P').circle('circle', 'O', 'R')
+        d.overrides('ellipse', z_index=7)
+        add(f'rotated_ellipse_{degrees}', d)
+    for theta in (math.pi/2, math.pi, 3*math.pi/2):
+        d = _Doc('sector_and_circle_segment').free('O', 0, 0).free('A', 2, 0)
+        d.free('B', 2*math.cos(theta), 2*math.sin(theta)).arc('arc', 'O', 'A', 'B').sector('sector', 'O', 'A', 'B')
+        d.op('sector.segment', {'arc': _ref('arc')}, [('segment', 'segment', 'circlesegment')])
+        for name in ('arc', 'sector', 'segment'):
+            d.overrides(name, z_index=7)
+        add('sector_and_circle_segment_' + str(round(theta*180/math.pi)), d)
+    d = _Doc('marker_fill').free('O', 0, 0).free('A', 2, 0).free('B', 0, 2)
+    d.circle('circle', 'O', 'A').angle('marker', 'A', 'O', 'B')
+    d.overrides('marker', fill='#00ff00')
+    add('right_angle_square', copy.deepcopy(d))
+    add('multiple_angle_arcs', copy.deepcopy(d).overrides('marker', right_angle_marker=False, tick_count=3))
+    add('reflex_marker', copy.deepcopy(d).overrides('marker', right_angle_marker=False, angle_range='reflex'))
+    add('explicit_angle_fill_layer', copy.deepcopy(d).overrides('marker', z_index_fill=7))
+    add('marker_fit', copy.deepcopy(d), {'rendering': {'angle_marker_fit': True}})
+    for name, d, style in _regions():
+        add('fill_order_' + name, copy.deepcopy(d), style)
+    return rows
+
+
 THEMES = (('paint_ticks', _ticks), ('paint_angles', _angles), ('paint_points', _points),
           ('paint_dashes', _dashes), ('paint_labels', _labels), ('paint_values', _values),
           ('paint_layers', _layers), ('paint_text', _texts), ('paint_base', _base),
           ('paint_timeline', _timeline), ('paint_curves', _curves), ('paint_angle_fit', _angle_fit),
-          ('paint_marks', _marks), ('paint_regions', _regions))
+          ('paint_marks', _marks), ('paint_regions', _regions), ('paint_fill_order', _fill_order_scenes))
 
 
-def _expect(document, style, timeline, t) -> dict:
+def _expect(document, style, timeline, t, inputs=None, export_layout=None) -> dict:
     from .paint import resolve_paint
-    return resolve_paint(document, style, t, timeline=timeline)
+    return resolve_paint(document, style, t, timeline=timeline, inputs=inputs, export_layout=export_layout)
 
 
 def _rows(scenes) -> list:
@@ -739,8 +850,14 @@ def _rows(scenes) -> list:
         name, d, style = scene[:3]
         timeline, t = (scene[3], scene[4]) if len(scene) > 3 else (None, None)
         document = d.doc if isinstance(d, _Doc) else d
+        inputs = scene[5] if len(scene) > 5 else None
+        export_layout = scene[6] if len(scene) > 6 else None
         rows.append({'name': name, 'document': document, 'style': style, 't': t, 'timeline': timeline,
-                     'expect': json.loads(json.dumps(_expect(document, style, timeline, t)))})
+                     'expect': json.loads(json.dumps(_expect(document, style, timeline, t, inputs, export_layout)))})
+        if inputs is not None:
+            rows[-1]['inputs'] = inputs
+        if export_layout is not None:
+            rows[-1]['export_layout'] = export_layout
     return rows
 
 
@@ -820,7 +937,7 @@ def verify_fixture(fixture: dict, label: str = '') -> tuple:
         where = f"{label} [{case.get('name')}]"
         try:
             actual = json.loads(json.dumps(_expect(case['document'], case.get('style'), case.get('timeline'),
-                                                   case.get('t'))))
+                                                   case.get('t'), case.get('inputs'), case.get('export_layout'))))
         except (KeyError, ValueError) as exc:
             out.append(f'{where}: {exc}')
             continue
