@@ -174,9 +174,10 @@ and columns. The web highlights the name; to refer to the pair instead, the
 user renames the element.
 
 A pair becomes a hidden operation. If the argument's position takes
-`segment` but not `line` (a `segment` slot, a list of segments), the pair
-becomes `segment.by_points(B, C)`. Otherwise (`line`, `linear`, `curve`,
-`path`) it becomes `line.by_points(B, C)`. `∠ABC` becomes
+`segment` but not `line` (a `segment` slot, a list of segments), or is the
+`straight` list of `mark.parallel` (registry 1.8: the chevrons sit on the
+segment), the pair becomes `segment.by_points(B, C)`. Otherwise (`line`,
+`linear`, `curve`, `path`) it becomes `line.by_points(B, C)`. `∠ABC` becomes
 `angle.by_points(A, B, C)`. A hidden element has `displayName: ""` and
 `appearance[id].visible = false`.
 
@@ -313,7 +314,7 @@ triangle:
 | Многоугольник | Polygon | `polygon.by_points` |
 | Параметр | Ползунок, Slider | `number.free` (`$input?, min?, max?, step?`) |
 | Угол | Angle | `angle.by_points` |
-| ОтметкаРавныхОтрезков, ОтметкаРавныхУглов, ПрямойУгол | — | `mark.equal_segments`, `mark.equal_angles`, `mark.right_angle` |
+| ОтметкаРавныхОтрезков, ОтметкаРавныхУглов, ПрямойУгол, ОтметкаПараллельных | — | `mark.equal_segments`, `mark.equal_angles`, `mark.right_angle`, `mark.parallel` (1.8) |
 | Высота | Altitude | `triangle.altitude` (`vertex, side`) |
 | Медиана | Median | `triangle.median` (`vertex, side`) |
 | Биссектриса | AngleBisector | `triangle.bisector` (`vertex, side`) |

@@ -365,6 +365,16 @@ def _equal_angles(args, result, tol):
     return max(abs(m - measures[0]) for m in measures) * tol.scale
 
 
+@register_check('mark.parallel', 'parallel')
+def _mark_parallel(args, result, tol):
+    from .relations import _direction, _Inconclusive
+    try:
+        u = [_direction(inp.type, inp.value, tol) for inp in args['lines']]
+    except _Inconclusive:
+        return math.inf             # a segment or a vector of no length has no direction
+    return max(abs(u[0][0] * d[1] - u[0][1] * d[0]) for d in u) * tol.scale
+
+
 @register_check('mark.right_angle', 'right')
 def _right_angle(args, result, tol):
     sides = unit_sides(args['a'].value, args['vertex'].value, args['b'].value, _QuietContext(tol))

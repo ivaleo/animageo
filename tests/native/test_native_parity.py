@@ -29,7 +29,7 @@ REQUIRED_SCENES = {
     'projection', 'parallel_perpendicular', 'perpendicular_bisector', 'angle_bisector', 'vector_points',
     'circle_center_radius', 'circle_three_points', 'number_free', 'on_path_l2_lines', 'l2a1_chain',
     # registry 1.3
-    'angle_points', 'angle_zero_wrap', 'marks_equal_segments', 'marks_equal_angles', 'marks_right_angle',
+    'angle_points', 'angle_zero_wrap', 'marks_equal_segments', 'marks_equal_angles', 'marks_right_angle', 'marks_parallel',
     'incircle', 'incircle_touch_chain', 'a3_chain',
     # registry 1.4
     'l2a4_divide', 'l2a4_center', 'l2a4_closest', 'l2a4_at_distance', 'l2a4_vertex', 'l2a4_bisectors_lines',

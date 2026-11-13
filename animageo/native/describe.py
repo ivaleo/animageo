@@ -148,8 +148,8 @@ class _Namer:
                 refs = [self._ref(op, s) for s in ('a', 'vertex', 'b')]
                 if all(refs):
                     return '∠' + ''.join(self.name(r) for r in refs)
-            if op['op'] in ('mark.equal_segments', 'mark.equal_angles'):
-                slot = 'segments' if op['op'] == 'mark.equal_segments' else 'angles'
+            if op['op'] in ('mark.equal_segments', 'mark.equal_angles', 'mark.parallel'):
+                slot = {'mark.equal_segments': 'segments', 'mark.equal_angles': 'angles'}.get(op['op'], 'lines')
                 return self.join(list(iter_refs(op['args'].get(slot) or {})))
         if type_ in ('segment', 'line', 'ray', 'vector') and (name is None or self._hidden(el_id)):
             ends = self.ends(el_id)

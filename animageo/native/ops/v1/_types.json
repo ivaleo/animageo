@@ -88,7 +88,7 @@
       "text": "expr: the type of an input slot that takes the argument {kind: \"expr\", ast} (AST v1, docs/native/expr.md), not of an element; {ref: k} reads item k of the list input refs of the same operation"
     }
   },
-  "markKinds": {"equal_segments": "mark.equal_segments", "equal_angles": "mark.equal_angles", "right_angle": "mark.right_angle"},
+  "markKinds": {"equal_segments": "mark.equal_segments", "equal_angles": "mark.equal_angles", "right_angle": "mark.right_angle", "parallel": "mark.parallel"},
   "angles": {
     "normalize": "theta = atan2(y, x); theta < 0 gives theta + 2 pi; theta >= 2 pi gives 0; -0 gives 0",
     "convex": "the convex measure of an angle is m(size) = size when size <= pi, else 2 pi - size",
@@ -108,7 +108,8 @@
     "figure": ["point", "line", "segment", "ray", "circle", "polygon", "arc", "sector", "circlesegment", "polyline"],
     "transformable": ["point", "segment", "ray", "line", "vector", "circle", "arc", "sector", "circlesegment", "polygon"],
     "insertable": ["number", "point"],
-    "locus_driver": ["point", "number"]
+    "locus_driver": ["point", "number"],
+    "straight": ["line", "segment", "ray", "vector"]
   },
   "familySince": {
     "curve": {"conic": "1.8", "function": "1.8"}

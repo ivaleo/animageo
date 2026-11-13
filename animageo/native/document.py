@@ -52,7 +52,7 @@ STEP_KINDS = ('given', 'group', 'condition')     # explicit steps of a document 
 ROLES = ('given', 'aux', 'sought')               # appearance.<id>.role (1.9.0a1)
 CONDITION_MODES = ('construct', 'check')                                         # conditions[] (1.9.0a2)
 CONDITION_SOURCES = ('panel', 'command', 'sketch', 'assistant', 'shape', 'tool')
-MARK_KINDS = ('right_angle', 'equal_segments', 'equal_angles')                  # suppressedMarks[].kind
+MARK_KINDS = ('right_angle', 'equal_segments', 'equal_angles', 'parallel')                  # suppressedMarks[].kind
 
 
 @dataclass(frozen=True)
@@ -565,11 +565,13 @@ class _Structure:
             self.string(via, path + '/via', 'via (an element ID or a list of them)', ID_RE)
 
     def mark_appearance(self, doc, key, entry):
-        """The two typed overrides of an equality mark; other looks stay open.
+        """The two typed overrides of an equality or a parallel mark; other
+        looks stay open.
 
         This check needs the producer operation, which JSON Schema cannot
-        follow from an appearance ID. The reusable schema is in
-        construction.v1.schema.json#/$defs/equalityMarkOverrides.
+        follow from an appearance ID. The reusable schemas are in
+        construction.v1.schema.json#/$defs/equalityMarkOverrides and
+        #/$defs/parallelMarkOverrides.
         """
         elements, operations = doc.get('elements'), doc.get('operations')
         el = elements.get(key) if isinstance(elements, dict) else None
@@ -578,18 +580,23 @@ class _Structure:
         producer = el.get('producer')
         op_id = producer.get('operationId') if isinstance(producer, dict) else None
         op = operations.get(op_id) if isinstance(operations, dict) and isinstance(op_id, str) else None
-        if not isinstance(op, dict) or op.get('op') not in ('mark.equal_segments', 'mark.equal_angles'):
+        if not isinstance(op, dict) or op.get('op') not in ('mark.equal_segments', 'mark.equal_angles',
+                                                             'mark.parallel'):
             return
         overrides = entry.get('overrides') if isinstance(entry, dict) else None
         if not isinstance(overrides, dict):
             return
         path = '/appearance' + _pointer(key) + '/overrides'
+        what, count = ('parallel mark', 'parallel_count') if op['op'] == 'mark.parallel' \
+            else ('equality mark', 'tick_count')
         if 'stroke' in overrides and (not isinstance(overrides['stroke'], str) or
                                      re.fullmatch(r'#[0-9a-fA-F]{6}', overrides['stroke']) is None):
-            self.add(path + '/stroke', 'equality mark stroke must be a 6-digit hex color')
-        if 'tick_count' in overrides and (type(overrides['tick_count']) is not int or
-                                         overrides['tick_count'] not in range(4)):
-            self.add(path + '/tick_count', 'equality mark tick_count must be an integer from 0 to 3')
+            self.add(path + '/stroke', f'{what} stroke must be a 6-digit hex color')
+        if count in overrides and (type(overrides[count]) is not int or overrides[count] not in range(4)):
+            self.add(path + '/' + count, f'{what} {count} must be an integer from 0 to 3')
+        if op['op'] == 'mark.parallel' and 'parallel_direction' in overrides and \
+                overrides['parallel_direction'] not in ('forward', 'backward'):
+            self.add(path + '/parallel_direction', "parallel mark parallel_direction must be 'forward' or 'backward'")
 
     def document(self, doc):
         self.keys(doc, '', 'the document', _REQUIRED)

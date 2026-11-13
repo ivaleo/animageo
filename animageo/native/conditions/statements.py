@@ -415,7 +415,8 @@ def mark_statement(doc, op_id):
     """The statement a mark operation asserts, or ``None``:
     ``mark.right_angle(a, vertex, b)`` — ``vertex a ⟂ vertex b``;
     ``mark.equal_segments`` — the lengths of the first two segments;
-    ``mark.equal_angles`` — the sizes of the first two angles (a mark of more
+    ``mark.equal_angles`` — the sizes of the first two angles;
+    ``mark.parallel`` — the first two lines are parallel (a mark of more
     targets compares the first with each, see :func:`mark_statements`)."""
     items = mark_statements(doc, op_id)
     return items[0] if items else None
@@ -438,6 +439,9 @@ def mark_statements(doc, op_id) -> list:
         leaf = 'len' if slot == 'segments' else 'angle'
         return [{'kind': 'eq', 'left': {leaf: {'ref': targets[0]}}, 'right': {leaf: {'ref': t}}}
                 for t in targets[1:]]
+    if op['op'] == 'mark.parallel':
+        targets = list(iter_refs(args.get('lines') or {}))
+        return [{'kind': 'parallel', 'a': {'ref': targets[0]}, 'b': {'ref': t}} for t in targets[1:]]
     return []
 
 

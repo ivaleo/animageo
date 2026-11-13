@@ -316,6 +316,7 @@ a new registry version. `beta` may become `stable` at any time.
   | `figure` (1.4, a5) | `point` and the `path` types |
   | `transformable` (1.4, a5) | `point`, `segment`, `ray`, `line`, `vector`, `circle`, `arc`, `sector`, `polygon` |
   | `insertable` (1.4, a5) | `number`, `point` |
+  | `straight` (1.8) | `line`, `segment`, `ray`, `vector` |
 
   An arc in a `circular` slot (`intersect.line_circle`,
   `intersect.circle_circle`, `intersect.other_than`) is intersected as its
@@ -394,7 +395,7 @@ Record = {"state": "defined", "type", "value", "detail"?}
 | vector | `{a: [x, y], b: [x, y], length}` — `a` the start, `b` the end; a zero vector is defined |
 | number | `{value, unit}` — `unit` one of `scalar`, `length`, `area`, `angle` (radians), `count` |
 | angle | `{vertex: [x, y], a0, a1, size}` — radians; `a0 ∈ [0, 2π)` the direction of the first side from `+x`, `size ∈ [0, 2π)` counter-clockwise from the first side to the second, `a1 = a0 + size` (not normalised) |
-| mark | `{kind, count}` — `kind` one of `markKinds` (`equal_segments`, `equal_angles`, `right_angle`), `count` an integer `1…3` (`1` for a right angle) |
+| mark | `{kind, count}` — `kind` one of `markKinds` (`equal_segments`, `equal_angles`, `right_angle`, `parallel` since 1.8), `count` an integer `1…3` (`1` for a right angle) |
 | arc | `{c: [x, y], r, a0, a1}` — radians, counter-clockwise from `a0` to `a1`; `a0 ∈ [0, 2π)`, `a1 ∈ [a0, a0 + 2π]`; a zero sweep is defined, `a1 = a0 + 2π` is the full circle |
 | sector | `{c: [x, y], r, a0, a1}` — the region of the arc `{c, r, a0, a1}` and the radii to its ends `S0`, `S1`; `a1 = a0 + 2π` is the full disc |
 | polyline | `{vertices: [[x, y], …], length}` — at least two vertices in definition order, `length` the sum of the links |
@@ -1744,7 +1745,7 @@ Operations `since: "1.6"`, `beta` (formulas, decisions and checks in
   aside) and replays every case. The coverage tests of the parity set and
   the registry mix of L6 read them with `parity/v1/expected`.
 
-## 15. Registry 1.8: common points of conics and graphs
+## 15. Registry 1.8: common points of conics and graphs; the parallel mark
 
 Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
 `docs/native/ops/<op>.md`); a document that uses one declares 1.8 (§2).
@@ -1753,6 +1754,7 @@ Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
 |---|---|---|---|
 | `intersect.conic_conic` | `first, second: conical` → `first … fourth: point` | `no_intersection`, `coincident`, `concentric`, `branch_absent`, `outside_part`, `upstream` | `on_both` |
 | `intersect.function_conic` | `function, conic: conical`; `count` → `point.k` | `no_intersection`, `coincident`, `outside_part`, `branch_absent`, `upstream` | `on_both` |
+| `mark.parallel` | `lines: straight[] (min 2)`; param `count` → `mark` | `invalid_parameter`, `upstream` | `parallel` |
 
 - Family `conical`: `conic`, `circle`, `arc` (an arc is met as its carrier
   circle, then filtered, as in §5.4).
@@ -1803,3 +1805,12 @@ Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
   `intersect.conic_conic`, its slots bound by the saved values (`byValue`,
   as `intersect.circle_circle`). `intersect.function_conic` stays in
   `opsWithoutClassic` with the other intersections of functions.
+- `mark.parallel` (`docs/native/ops/mark.parallel.md`): chevrons on two or
+  more lines of family `straight` (`line`, `segment`, `ray`, `vector`; a
+  side of a polygon is its segment `side.i`), value `{kind: "parallel",
+  count}`, mark kind `parallel`. The `parallel` check is `max |u_1 × u_i| ·
+  S` over the unit directions; a segment or a vector of no length leaves it
+  `inconclusive`. The drawing (`parallel_count`, the direction of the
+  chevrons, a second decoration channel) is in §9.3 «Marks». Command
+  `ОтметкаПараллельных(AB, CD[, count])`: a pair of points is the segment
+  between them (a hidden helper unless a visible one exists).

@@ -125,11 +125,14 @@ def is_helper(data: dict, op_id: str) -> bool:
 
 def pair_op(position_type: str) -> str:
     """The operation a pair of points stands for in a slot of ``position_type``:
-    ``segment.by_points`` when the slot takes a segment but not a line,
-    ``line.by_points`` otherwise."""
+    ``segment.by_points`` when the slot takes a segment but not a line, or is
+    the ``straight`` slot of a parallel mark (``AB`` there is the segment the
+    chevrons sit on), ``line.by_points`` otherwise."""
     reg = registry()
     types = {position_type, *reg.families.get(position_type, ())}
-    return 'segment.by_points' if 'segment' in types and 'line' not in types else 'line.by_points'
+    if position_type == 'straight' or ('segment' in types and 'line' not in types):
+        return 'segment.by_points'
+    return 'line.by_points'
 
 
 class _Helper:

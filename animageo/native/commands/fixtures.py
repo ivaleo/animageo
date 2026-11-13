@@ -176,6 +176,10 @@ _OPS = [
         ('right_angle', P3 + 'H = {point.projection}(C, AB)\n{mark.right_angle}(C, H, B)', None),
         ('right_angle_named', P3 + 'r = {mark.right_angle}(B, A, C)', None),
         ('right_angle_count_free', P3 + '{mark.right_angle}(A, B, C)\n{mark.right_angle}(B, C, A)', None),
+        ('parallel_pairs', P4 + 'E = {point.midpoint}(A, C)\nF = {point.midpoint}(B, C)\n'
+                           '{mark.parallel}(AB, EF)', None),
+        ('parallel_named', P4 + 'l = {line.by_points}(A, B)\nv = {vector.by_points}(C, D)\n'
+                           'm = {mark.parallel}(l, v, 2)', None),
     ]),
     ('parse_triangle', [                    # registry 1.5 (L3 stage 1)
         ('altitude_pair', P3 + 'h = {triangle.altitude}(C, AB)', None),

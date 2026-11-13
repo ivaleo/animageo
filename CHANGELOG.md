@@ -27,6 +27,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `intersect.function_line`, `intersect.function_function` or
   `intersect.function_conic`. Their records stay those of registry 1.4 and
   1.1; only a document that uses the new pairs declares 1.8.
+- `mark.parallel` (registry 1.8, `beta`): chevrons on two or more lines of
+  the new family `straight` (`line`, `segment`, `ray`, `vector`; a side of a
+  polygon is its segment), `count` 1–3, value `{kind: "parallel", count}`,
+  mark kind `parallel`. The check `parallel` compares the directions
+  (`inconclusive` for a segment or a vector of no length). Command
+  `ОтметкаПараллельных(AB, CD[, count])` — a pair of points there is the
+  segment between them. `load` checks the overrides `stroke`,
+  `parallel_count` (0–3) and `parallel_direction` of the mark
+  (`$defs/parallelMarkOverrides`). Parity scene `marks_parallel`.
 - GGB import: `Intersect` of two conics, of a conic and a circle and of a
   conic and an arc, with or without the output number, becomes
   `intersect.conic_conic` with its slots bound by the saved values (DSL map

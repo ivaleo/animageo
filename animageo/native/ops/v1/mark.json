@@ -139,5 +139,53 @@
     },
     "math": "docs/native/ops/mark.right_angle.md",
     "signatureHash": "sha256:22f1e524869af7e1d61fa1e6481c78e08b9c2094cbafaa8b4f41d899eec89915"
+  },
+  {
+    "op": "mark.parallel",
+    "status": "beta",
+    "since": "1.8",
+    "inputs": [
+      {
+        "slot": "lines",
+        "type": "straight",
+        "list": true,
+        "min": 2
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 1,
+        "text": "number of chevrons: 1, 2 or 3 (invalid_parameter otherwise)"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "mark",
+        "type": "mark"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "parallel",
+        "text": "the lines are parallel: max |u_1 x u_i| S over the unit directions u_i (a segment or a vector not longer than tol.decide_length is inconclusive)"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "mark",
+    "phrases": {
+      "ru": "{mark} — отметка параллельности {lines}"
+    },
+    "math": "docs/native/ops/mark.parallel.md",
+    "signatureHash": "sha256:7c26b9e96dc299af13b5d14052701f1b62dbbac4ae5479aff125b13ae17f2e7e"
   }
 ]
