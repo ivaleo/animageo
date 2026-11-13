@@ -89,7 +89,9 @@ def ggb_style(info: dict) -> dict:
     if type_ == 'point' and info.get('point_size') is not None:
         out['size_px'] = float(info['point_size']) * 2.0
     if info.get('decoration') and type_ in ('segment', 'angle'):
-        out['tick_count'] = int(info['decoration']) + (1 if type_ == 'angle' else 0)
+        # ticks or arcs, ticks across an arc, a head on it, chevrons (as the classic loadGGB)
+        from ...style.ggb_resolver import ggb_decoration_style
+        out.update(ggb_decoration_style(type_, info['decoration']))
     if type_ == 'angle' and info.get('angle_style') is not None:
         out['angle_range'] = 'reflex' if info['angle_style'] == 2 else 'minor'     # as the classic loadGGB
     return {k: out[k] for k in sorted(out)}

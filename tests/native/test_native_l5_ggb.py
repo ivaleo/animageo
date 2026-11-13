@@ -329,7 +329,8 @@ def test_style_and_labels():
 
 # the keys of ggb_style and the classic elem.ggb_style they come from
 STYLE_KEYS = ('fill', 'fill_opacity', 'stroke', 'stroke_opacity', 'stroke_width_px',
-              'size_px', 'point_shape', 'label_color', 'tick_count', 'angle_range')
+              'size_px', 'point_shape', 'label_color', 'tick_count', 'arc_tick_count', 'arrow_head',
+              'parallel_count', 'angle_range')
 
 
 @pytest.mark.parametrize('rel', REAL_FILES + sorted(f'tests/native/import/synthetic/{n}.ggb' for n in (
@@ -808,3 +809,40 @@ def test_angle_values_by_style(style, stored):
     wrong = ggb_bytes(point('O', 0.0, 0.0) + point('A', -1.0, 1.0) + point('B', 1.0, 1.0)
                       + command('Angle', ['A', 'O', 'B'], ['α']) + element('angle', 'α', extra='<value val="1.0"/>'))
     assert _by_name(_import(wrong)[1])['α']['category'] == 'differs'
+
+
+def test_decorations_become_the_kinds_of_marks(tmp_path):
+    """GeoGebra ``<decoration>`` (``DECORATION_*``): a segment's 4–6 arrows are
+    chevrons (``parallel_count``), an angle's 3–5 ticks are ticks across one
+    arc (``arc_tick_count``), 6 / 7 a head on it (``arrow_head`` ``end`` /
+    ``start``) — in the import report and in the classic ``loadGGB`` alike
+    (1.13.0; they were 4–8 ticks or arcs)."""
+    from animageo.geo.construction import Construction
+    from animageo.parsers import ggb_parser
+
+    def deco(n):
+        return f'<decoration type="{n}"/>'
+    body = (point('A', 0.0, 0.0) + point('B', 4.0, 0.0) + point('C', 1.0, 3.0)
+            + command('Polygon', ['A', 'B', 'C'], ['t1', 'c', 'a', 'b'])
+            + element('polygon', 't1', alpha=0.1) + element('segment', 'c', extra=line_style() + deco(4))
+            + element('segment', 'a', extra=line_style() + deco(6)) + element('segment', 'b', extra=line_style() + deco(2))
+            + command('Angle', ['B', 'A', 'C'], ['α']) + element('angle', 'α', extra=deco(3))
+            + command('Angle', ['C', 'B', 'A'], ['β']) + element('angle', 'β', extra=deco(7)))
+    data = ggb_bytes(body)
+    _, rep = _import(data)
+    e = _by_name(rep)
+    expected = {'c': {'tick_count': 0, 'parallel_count': 1}, 'a': {'tick_count': 0, 'parallel_count': 3},
+                'b': {'tick_count': 2}, 'α': {'tick_count': 1, 'arc_tick_count': 1},
+                'β': {'tick_count': 1, 'arrow_head': 'start'}}
+    for name, keys in expected.items():
+        style = e[name]['ggb_style']
+        assert {k: style.get(k) for k in ('tick_count', 'arc_tick_count', 'arrow_head', 'parallel_count')
+                if k in style} == keys, name
+    path = tmp_path / 'deco.ggb'
+    path.write_bytes(data)
+    constr = Construction()
+    constr.strict_unsupported = constr.log_unsupported = False
+    ggb_parser.load(constr, {}, str(path))
+    for name, keys in expected.items():
+        el = constr.element(constr.get_normalized_name(name))
+        assert {k: el.ggb_style[k] for k in keys} == keys, name

@@ -77,7 +77,7 @@ scene.loadGGB(
 | `label_angle_unit` | значение / функция | `label_angle_unit` |
 | `label_value_separator` | значение / функция | `label_value_separator` |
 | `angle_range` | `<angleStyle val>` | `angle_range` |
-| `tick_count` | `<decoration type>` | `tick_count` |
+| `tick_count` | `<decoration type>` | `tick_count` (стрелки отрезка 4–6 дают ещё `parallel_count`, засечки угла 3–5 — `arc_tick_count`, его стрелки 6/7 — `arrow_head`; поле политики задаёт только `tick_count`) |
 | `font_size_px` | значение / функция, `raw=None` | `font_size_px` |
 | `stroke` | `<objColor>` как `obj_color.hex` | `stroke` |
 | `fill` | `<objColor>` как `obj_color.hex` | `fill` |

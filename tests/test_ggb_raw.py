@@ -136,6 +136,28 @@ class TestGgbResolverUnit:
         result = resolve_ggb_style({'elem_type': 'segment', 'decoration_lines': 2})
         assert result['tick_count'] == 2
 
+    @pytest.mark.parametrize('elem_type, decoration, keys', [
+        ('angle', 0, {'tick_count': 1}),
+        ('angle', 2, {'tick_count': 3}),
+        # GeoGebra DECORATION_ANGLE_*_TICK(S): one arc, ticks across it
+        ('angle', 3, {'tick_count': 1, 'arc_tick_count': 1}),
+        ('angle', 5, {'tick_count': 1, 'arc_tick_count': 3}),
+        # DECORATION_ANGLE_ARROW_ANTICLOCKWISE / _CLOCKWISE: a head on the arc
+        ('angle', 6, {'tick_count': 1, 'arrow_head': 'end'}),
+        ('angle', 7, {'tick_count': 1, 'arrow_head': 'start'}),
+        ('segment', 3, {'tick_count': 3}),
+        # DECORATION_SEGMENT_*_ARROW(S): parallel chevrons, no ticks
+        ('segment', 4, {'tick_count': 0, 'parallel_count': 1}),
+        ('segment', 6, {'tick_count': 0, 'parallel_count': 3}),
+        ('vector', 4, {'tick_count': 4}),        # other types: as before
+    ])
+    def test_decoration_kinds(self, elem_type, decoration, keys):
+        from animageo.style.ggb_resolver import ggb_decoration_style
+        assert ggb_decoration_style(elem_type, decoration) == keys
+        result = resolve_ggb_style({'elem_type': elem_type, 'decoration_lines': decoration})
+        assert {k: result[k] for k in keys} == keys
+        assert not ({'arc_tick_count', 'arrow_head', 'parallel_count'} - set(keys)) & set(result)
+
 
 class TestGgbPointStyleMapping:
     """Lock GeoGebra pointStyle codes to AnimaGeo point_shape names."""

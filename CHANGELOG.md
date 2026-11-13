@@ -113,6 +113,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- GGB import: the GeoGebra decorations that had no style of their own become
+  the new kinds of marks — a segment's one, two or three arrows
+  (`<decoration type>` 4–6) are `parallel_count` 1–3 chevrons, no longer 4–6
+  ticks; an angle's one, two or three ticks (3–5) are `arc_tick_count` 1–3
+  across one arc and its arrow anticlockwise or clockwise (6, 7) is
+  `arrow_head` `end` or `start` on one arc, no longer 4–8 arcs. Classic
+  `loadGGB` (`elem.ggb_style`, `ImportPolicy`, `reloadPolicy` through
+  `animageo.style.ggb_resolver.ggb_decoration_style`) and the native import
+  report (`ggb_style`) alike; decorations 0–3 of a segment and 0–2 of an angle
+  are unchanged. In the 149 example files this changes the drawing of 7 (14
+  segments with one arrow — one chevron instead of four ticks); no example
+  has an angle decoration of 3–7, and the other 142 export the same SVG and
+  TikZ byte for byte.
 - An explicit `null` `right_angle_marker` on a right-angle mark draws the
   square, as an absent key does.
 - `style_key_ineffective` reports the new reason `single_arc` for `arc_shift_px`

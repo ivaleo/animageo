@@ -345,7 +345,7 @@
 |---|---|---|---|---|---|
 | Какую дугу рисовать | `<angleStyle val="1\|2">` | `angle_style` | `angle_range` (`"minor"` / `"reflex"`) | `import.policy.angle_range`, `overlay.per_name` | логика выбора в CreateMObject |
 | Прямой угол (квадратный маркер) | автоматически | — | `right_angle_marker` (bool) | `overlay.per_name` | маркер `Polygon` вместо `AnnularSector` |
-| Число дуг и засечек | `<decoration type>` | `decoration_lines` | `tick_count` (int) | `import.policy.tick_count`, `overlay.per_name` | цикл в CreateMObject |
+| Число дуг и засечек | `<decoration type>` | `decoration_lines` | `tick_count` (int); отрезок 4–6 → `parallel_count` 1–3, угол 3–5 → `arc_tick_count` 1–3, угол 6/7 → `arrow_head` `end`/`start` (`ggb_resolver.ggb_decoration_style`) | `import.policy.tick_count`, `overlay.per_name` | цикл в CreateMObject |
 | Стиль засечки (для Segment/Vector) | — | — | `tick_style` (`"line"` / `"wave"`) | `overlay.per_name` | `Line` против `round_corners_vmobject` |
 | Толщина дуги | `<lineStyle thickness>` (как у линий) | `line_thickness` | `stroke_width_px` | `line_width.*`, `defaults.angle.stroke_width_px` | `stroke_width` |
 | Соединение в прямом угле | — | — | `right_angle_joint` | `rendering.right_angle_joint`, `overlay.per_name` / `per_type` | `joint_type` у `VMobject` прямого угла |

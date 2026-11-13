@@ -38,6 +38,7 @@ from ..style.scaling import (
     ggb_label_offset_to_style,
 )
 from ..style.enums import ggb_point_style_to_elem_style
+from ..style.ggb_resolver import ggb_decoration_style
 from ..labels import geogebra_label_mode_to_style
 def _ggb_parse(constr, code, debug=False):
     """Thin wrapper around ``dsl.run`` so the two call sites below
@@ -594,9 +595,8 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
 
             elem = xelem.find("decoration")
             if elem is not None:
-                style[name]['tick_count'] = int(elem.attrib['type'])
-                if type == 'angle':
-                    style[name]['tick_count'] += 1
+                # ticks or arcs, ticks across an arc, a head on it, chevrons
+                style[name].update(ggb_decoration_style(type, elem.attrib['type']))
                 raw[name]['decoration_lines'] = int(elem.attrib['type'])
 
             elem = xelem.find("show")

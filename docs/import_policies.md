@@ -77,7 +77,7 @@ callable `fn(raw, defaults, elem)`, or a string DSL directive. See
 | `label_angle_unit` | literal / callable | `label_angle_unit` |
 | `label_value_separator` | literal / callable | `label_value_separator` |
 | `angle_range` | `<angleStyle val>` | `angle_range` |
-| `tick_count` | `<decoration type>` | `tick_count` |
+| `tick_count` | `<decoration type>` | `tick_count` (a segment's arrows 4–6 also give `parallel_count`, an angle's ticks 3–5 `arc_tick_count`, its arrows 6/7 `arrow_head`; the policy field sets `tick_count` only) |
 | `font_size_px` | literal / callable (`raw=None`) | `font_size_px` |
 | `stroke` | `<objColor>` as `obj_color.hex` | `stroke` |
 | `fill` | `<objColor>` as `obj_color.hex` | `fill` |

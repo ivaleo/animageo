@@ -345,7 +345,7 @@ The GGB `point_style` code is decomposed into three independent axes (`point_sha
 |---|---|---|---|---|---|
 | Which arc to draw | `<angleStyle val="1\|2">` | `angle_style` | `angle_range` (`"minor"` / `"reflex"`) | `import.policy.angle_range`, `overlay.per_name` | selection logic in CreateMObject |
 | Right angle (square marker) | auto | — | `right_angle_marker` (bool) | `overlay.per_name` | `Polygon` marker instead of `AnnularSector` |
-| Number of arcs/ticks | `<decoration type>` | `decoration_lines` | `tick_count` (int) | `import.policy.tick_count`, `overlay.per_name` | loop in CreateMObject |
+| Number of arcs/ticks | `<decoration type>` | `decoration_lines` | `tick_count` (int); segment 4–6 → `parallel_count` 1–3, angle 3–5 → `arc_tick_count` 1–3, angle 6/7 → `arrow_head` `end`/`start` (`ggb_resolver.ggb_decoration_style`) | `import.policy.tick_count`, `overlay.per_name` | loop in CreateMObject |
 | Tick style (for Segment/Vector) | — | — | `tick_style` (`"line"` / `"wave"`) | `overlay.per_name` | `Line` vs `round_corners_vmobject` |
 | Arc thickness | `<lineStyle thickness>` (same as lines) | `line_thickness` | `stroke_width_px` | `line_width.*`, `defaults.angle.stroke_width_px` | `stroke_width` |
 | Right-angle joint | — | — | `right_angle_joint` | `rendering.right_angle_joint`, `overlay.per_name` / `per_type` | `joint_type` of the right angle's `VMobject` |

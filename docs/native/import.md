@@ -288,7 +288,9 @@ Each entry also carries `command`, `signature`, `detail` (Russian), `ggb_value`,
 `native_value`, `delta`, `label {visible, mode, caption?}`, `ggb_style` (keys
 of `appearance.overrides` the classic `loadGGB` would give: colours 6-digit
 hex, thickness / 2 px, point size × 2 px, exact dash sequences, the point shape,
-`angle_range`), `hidden`, `layer`. The document carries `appearance.visible`
+`angle_range`, the decoration: `tick_count`, and since 1.13.0 a segment's arrows
+4–6 as `parallel_count` 1–3, an angle's ticks 3–5 as `arc_tick_count` 1–3 and
+its arrows 6/7 as `arrow_head` `end`/`start`), `hidden`, `layer`. The document carries `appearance.visible`
 and `appearance.label`; layer order and value-label precision also use
 `appearance.overrides`. The colours are the web's decision (decision 8).
 `dropped`: `script` (a non-default global `ggbOnInit` too), `animation`,
