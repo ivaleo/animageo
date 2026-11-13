@@ -17,7 +17,7 @@ from ..values import Undefined
 from . import op
 from .function import function_window
 
-__all__ = ['LOBE_MAX', 'area_bound', 'continuity', 'root_vertices']
+__all__ = ['LOBE_MAX', 'area_bound', 'continuity', 'root_vertices', 'suspect_cells']
 
 LOBE_MAX = 64            # rings of one region at most (error limit_exceeded above)
 
@@ -66,14 +66,34 @@ def _jump(u, a, b, ua, ub):
     return abs(ub - ua)
 
 
+def suspect_cells(d) -> list:
+    """The cells the jump bisection checks, left to right: the first cell of
+    every plateau — a maximal run of cells with exactly equal ``|Δu|`` ``d``,
+    a single cell too — that is higher than the cell before it and the cell
+    after it (a missing neighbour does not count). A single cell is a strict
+    local maximum; a step through its middle value (two neighbouring cells
+    with the same jump) is one plateau, checked once; so is a straight line,
+    whose cells all have the same ``|Δu|``."""
+    n = len(d)
+    out = []
+    k = 0
+    while k < n:
+        end = k
+        while end + 1 < n and d[end + 1] == d[k]:
+            end += 1
+        if (k == 0 or d[k - 1] < d[k]) and (end == n - 1 or d[end + 1] < d[k]):
+            out.append(k)
+        k = end + 1
+    return out
+
+
 def continuity(u, lo, hi, ctx, slot):
     """``None`` when ``u`` is continuous on ``[lo, hi]`` as far as the grid
     tells, else ``Undefined``: ``out_of_domain`` (``detail.slot``) when it
     has no value at a node of the grid of ``GRID_CELLS`` cells (the last
     node is ``hi`` itself) or at a midpoint of the jump bisection;
-    ``discontinuous`` (decision ``jump``) when a cell whose ``|Δu|`` is a
-    strict local maximum among its neighbours keeps ``|Δu| > tol.decide``
-    after :func:`_jump`."""
+    ``discontinuous`` (decision ``jump``) when a cell of
+    :func:`suspect_cells` keeps ``|Δu| > tol.decide`` after :func:`_jump`."""
     n = GRID_CELLS
     xs = [lo + (k * (hi - lo)) / n for k in range(n + 1)]
     xs[-1] = hi
@@ -82,9 +102,7 @@ def continuity(u, lo, hi, ctx, slot):
         return Undefined('out_of_domain', {'slot': slot})
     d = [abs(us[k + 1] - us[k]) for k in range(n)]
     tol = ctx.tol.decide_length
-    for k in range(n):
-        if (k > 0 and d[k] <= d[k - 1]) or (k < n - 1 and d[k] <= d[k + 1]):
-            continue
+    for k in suspect_cells(d):
         rest = _jump(u, xs[k], xs[k + 1], us[k], us[k + 1])
         if rest is None:
             return Undefined('out_of_domain', {'slot': slot})

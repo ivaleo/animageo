@@ -47,8 +47,10 @@ midpoints of the area are the curve's values.
     3. continuity on [lo, hi] of f and of a graph g:
          x_k = lo + (k·(hi − lo))/512, k = 0 … 512, x_512 = hi;  u_k = u(x_k)
          a null u_k                                          → "out_of_domain", detail.slot
-         d_k = |u_k+1 − u_k|; a cell is suspect when d_k > d_k−1 and d_k > d_k+1
-         (a missing neighbour does not count); for each suspect cell, left to right:
+         d_k = |u_k+1 − u_k|; a plateau is a maximal run k = i … j of cells with
+         exactly equal d (a single cell too); it is suspect when d_i > d_i−1 and
+         d_j > d_j+1 (a missing neighbour does not count), and its first cell i is
+         the suspect cell; for each suspect cell, left to right:
          jump bisection — m = a + (b − a)/2 while a < m < b (at most 200 halvings),
          keep the half with the larger |Δu| (the left one on a tie);
          a null u(m) → "out_of_domain"; the rest |Δu| > tol.decide → "discontinuous"
@@ -67,7 +69,14 @@ A graph piece samples `x_j = x_start + (j·(x_end − x_start))/256`, the last o
 
 The continuity test catches a pole (`1/x`, `tan x`) and a step (`if`): the cell
 of a pole has `|Δu| ≈ 4/h` against `4/(3h)` of its neighbours; a smooth steep
-graph passes, its rest after the bisection is rounding noise.
+graph passes, its rest after the bisection is rounding noise. A step whose
+middle value sits on a node (`if(x < 0, −1, if(x > 0, 1, 0))` on `[−1, 1]`,
+the node `x = 0`) jumps by the same `|Δu|` in two neighbouring cells: no cell
+is a strict maximum, the two make one plateau, and its first cell is checked.
+A plateau gives one cell, not each of its cells: a straight line whose cells
+all have the same `|Δu|` is one plateau and one check (a constant too), and
+the suspect cells are never more than half of the 512, as with strict maxima
+alone.
 
 ## Degenerate cases
 

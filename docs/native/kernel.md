@@ -2054,8 +2054,9 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   lobe of a graph that is the axis for `x < 0`, on the piece where they
   coincide, and a sliver of the area of rounding noise, case `sliver`:
   `empty_region`), two graphs and the second lobe, a graph and a line
-  (limits at the common points, literal limits), a pole and a step, out of
-  the domain, far from the origin. `region.by_boundary`: `region_lines_flip`
+  (limits at the common points, literal limits), a pole and a step (also
+  a step whose middle value sits on a node: two equal jumps, a plateau,
+  `discontinuous`), out of the domain, far from the origin. `region.by_boundary`: `region_lines_flip`
   (a triangle of lines: collinear, turned over, a vertex off its line; three
   lines with their intersections: concurrent, the opposite face),
   `region_owner2` (two crossing segments and a circle; the tangent and

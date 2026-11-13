@@ -205,6 +205,64 @@ def test_steep_smooth_graph_is_continuous():
     assert v['area'] == pytest.approx((math.exp(5) - math.exp(-5)) / 5, rel=1e-8)     # Simpson on 256 cells
 
 
+def _step(left, middle, right):
+    """``if(x < 0, left, if(x > 0, right, middle))``."""
+    return {'if': [{'cmp': '<', 'args': [X, n(0)]}, n(left),
+                   {'if': [{'cmp': '>', 'args': [X, n(0)]}, n(right), n(middle)]}]}
+
+
+def test_a_step_through_its_middle_value_is_discontinuous():
+    # the node x = 0 holds the middle value: two neighbouring cells jump by 1 each,
+    # a plateau of |Δu| that no strict maximum finds
+    _e, rec = region_of(Doc().function('f', _step(-1, 0, 1)).area('S', 'f', a=-1, b=1))
+    assert (rec['state'], rec['reason'], rec['detail']) == ('undefined', 'discontinuous', {'slot': 'first'}), rec
+    _e, v = defined(Doc().function('f', _step(-1, 0, 1)).area('S', 'f', a=0.5, b=1))
+    assert v['area'] == pytest.approx(0.5, abs=1e-12)
+
+
+class _Log:
+    """The decisions of :func:`continuity`, with the tolerances of scale 1."""
+
+    def __init__(self):
+        from animageo.native.kernel.numeric import tolerances
+        self.tol = tolerances(1.0)
+        self.decisions = []
+
+    def decide(self, name, value, tol):
+        self.decisions.append((name, value))
+
+
+def _checked(u, lo=-1.0, hi=1.0):
+    """``(result, cells checked)`` of the continuity test of ``u`` on ``[lo, hi]``."""
+    from animageo.native.kernel.ops.area import continuity
+    log = _Log()
+    result = continuity(u, lo, hi, log, 'first')
+    return result, len([1 for name, _v in log.decisions if name == 'jump'])
+
+
+@pytest.mark.parametrize('u, most', [
+    (lambda x: 2.0, 1),                     # one plateau of zeros, no neighbour: one cell
+    (lambda x: x, 1),                       # every |Δu| equal: one plateau, one cell
+    (lambda x: 3 * x - 0.25, 1),
+    (lambda x: x * x, 2),                   # |Δu| falls to the vertex and rises: the two ends
+    (lambda x: math.sin(3 * x), 8),
+])
+def test_smooth_graphs_check_few_cells(u, most):
+    result, checked = _checked(u)
+    assert result is None
+    assert 1 <= checked <= most, checked
+
+
+def test_plateau_of_a_step_is_checked_once():
+    from animageo.native.kernel.ops.area import suspect_cells
+    assert suspect_cells([0, 0, 1, 1, 0, 0]) == [2]
+    assert suspect_cells([1, 1, 1]) == [0]
+    assert suspect_cells([0, 2, 1, 2, 0]) == [1, 3]           # a single cell: the strict maximum as before
+    assert suspect_cells([0, 1, 1, 2, 0]) == [3]              # a plateau below a higher cell is no maximum
+    result, checked = _checked(lambda x: -1.0 if x < 0 else 1.0 if x > 0 else 0.0)
+    assert result is not None and result.reason == 'discontinuous' and checked == 1
+
+
 def test_large_coordinates():
     # −(x − 1000)(x − 1002): a lobe of width 2 far from the origin
     shift = op('-', X, n(1001))

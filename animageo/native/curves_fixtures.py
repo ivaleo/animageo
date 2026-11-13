@@ -670,13 +670,17 @@ def _area_scenes():
     d.measures('S', 'V', 'L')
     out.append((d, _cases(('base', None), ('vertical', {'Q': P(-1, 4)}), ('below', {'P': P(0, -1), 'Q': P(1, -1)}),
                           ('same_limits', {'Gb': T(-0.5)}))))
-    # 4. a pole, a step and tan between the limits; a steep atan is continuous
+    # 4. a pole, a step and tan between the limits; a steep atan is continuous; a step whose
+    #    middle value sits on the node x = 0 of the grid on [a, 1] = [−1, 1] jumps by the same
+    #    |Δu| in two neighbouring cells (a plateau, no strict maximum) and is discontinuous too
     d = _Doc('region_discontinuous', (-4, -4, 4, 4)).number('a', -1).number('b', 2).number('c', 0)
     d.function('f', o('/', n(1), X)).area('S', 'f', a='a', b='b')
     d.function('g', {'if': [{'cmp': '<', 'args': [X, r(0)]}, n(1), n(2)]}, 'c').area('T', 'g', a='a', b='b')
+    step = {'if': [{'cmp': '<', 'args': [X, n(0)]}, n(-1), {'if': [{'cmp': '>', 'args': [X, n(0)]}, n(1), n(0)]}]}
+    d.function('w', step).area('W', 'w', a='a', b=1)
     d.function('t', call('tan', X)).area('Z', 't', a=1, b='b')
     d.function('h', call('atan', o('*', n(50), X))).area('V', 'h', a='a', b=1)
-    d.measures('S', 'V')
+    d.measures('S', 'V', 'W')
     out.append((d, _cases(('across', None), ('right', {'a': N(0.5)}), ('step_left', {'c': N(-3)}),
                           ('before_pole', {'b': N(1.5)}))))
     # 5. out of the domain: √x and the axis, x on [0, 3]
