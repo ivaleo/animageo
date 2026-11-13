@@ -1,6 +1,6 @@
 {
  "format": "animageo-dsl-map/v1",
- "mapVersion": 6,
+ "mapVersion": 7,
  "registry": "1.10",
  "commands": {
   "abs_i": {
@@ -5483,7 +5483,7 @@
   "number.free": "free element: a number without a command (GGB numeric, DSL Var)",
   "point.at_distance": "no classic command builds it",
   "point.divide": "no classic command builds it",
-  "point.expression": "registry 1.10: classic formula points are not translated yet",
+  "point.expression": "GeoGebra source formulas are read directly; classic point arithmetic is not lowered",
   "point.free": "free element: a point without a command (GGB <element type=\"point\">, DSL Point(x, y) \u2192 point_ii free row)",
   "point.on_function": "registry 1.6: classic functions are not translated yet",
   "point.projection": "no classic command builds it",
@@ -5504,7 +5504,7 @@
   "triangle.incenter": "no classic command builds it",
   "triangle.median": "no classic command builds it",
   "triangle.orthocenter": "no classic command builds it",
-  "vector.expression": "registry 1.10: classic formula vectors are not translated yet",
+  "vector.expression": "GeoGebra source formulas are read directly; existing classic vector lowerings are preserved",
   "line.common_tangents": "no classic command builds it",
   "sector.segment": "no classic command builds it",
   "triangle.cevian": "no classic command builds it",

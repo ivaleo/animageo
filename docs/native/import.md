@@ -107,6 +107,39 @@ keeps its translation; `Rotate(P, α, O)` with a bare angle of a figure stays
 saved with its label in front, with their helpers, for the other
 implementations of the kernel.
 
+Since registry 1.10 (`mapVersion` 7; 1.14.0 already used version 6), the
+import reads `<expression type="point|vector">` from the XML into typed
+`point.expression` / `vector.expression` formulas. Points and vectors are
+pairs inside the formula; the XML element type determines the output.
+Supported forms include `A + v`, `A + B`, `2A − B`, `(a, b)`,
+`(cos(α), sin(α))`, `(x(A), y(v))`, and `(1, f(1))`. Numeric components,
+function arguments and the root are checked by the typed kernel language
+(`expr.md` §6); `x(A)` alone is numeric and cannot define a point.
+References retain their first-occurrence order and identity, so changing
+an input recomputes the formula. A formula vector starts at the origin.
+An unsupported formula is `formula_unsupported`, with its source expression
+in `detail`: lists, polar or 3D coordinates, commands inside coordinates,
+vector division, mixed point/number addition and unsupported functions
+cannot become free copies of their saved positions.
+
+The new reader also handles `Vector[(a, 0)]` in command arguments, for
+example `Rotate(Vector[(a, 0)], α, O)`. Its private `vector.expression`
+helper has no name, `appearance.role: aux`, hidden and locked appearance,
+and `origin: {kind: auto, source: <host operation ID>}`; deleting the host
+removes its helpers. Existing lowerings (`Vector[(0, 2.5)]`, `Vector[(-v)]`,
+`Vector[(a * v)]`, `Translate`) keep their operations and minimum registry.
+A constant point formula without references, such as `(sqrt(2), 0)`,
+remains `point.free` with the saved coordinates. This source reader is
+specific to `from_ggb`; classic `from_construction` keeps its language.
+
+Reproduce the source archives, scenes and parity fixtures with
+`python -m tests.native.ggb_expression_fixtures [--check]`. The four
+`parity/v1/ggb/ggb_{point_expression,vector_expression,vector_rotate,expression_refused}.json`
+files contain live input changes and, in their optional `import` section,
+the source construction XML and expected report entries, including
+`formula_unsupported` refusals. Source archives live in
+`tests/native/import/expressions/`.
+
 1.10.0a2 (`native.has("convert.formula")`): the arithmetic of numbers and
 measures — 24 keys (`+ - * / ^`, the opposite, `Abs`, `Sqrt`, `Sin`, `Cos`,
 `Tan`, `Ctan`, a copy) — is `number.expression`. The other 46 keys of
@@ -295,6 +328,7 @@ dependents.
 | Type | `ggb_value` (from the XML) | Measure |
 |---|---|---|
 | point | `<coords x y z>` → `[x/z, y/z]` | distance |
+| vector | `<coords x y z=0>` → displacement `[x, y]` | distance from the native displacement `b − a` |
 | number, angle | `<value val>` (radians) | difference (an angle — on the circle; with `<angleStyle val="1|2">` the size shown within 0–180° / 180–360° is accepted too, `range` in `ggb_value`) |
 | line, ray | normalised `<coords>` coefficients | coefficients |
 | segment | the coefficients (the check); the two points in `ggb_value` when it is between two points | coefficients |
@@ -304,6 +338,11 @@ dependents.
 
 `from_construction` compares with the classic values (`kernel/bridge.from_classic`).
 Undefined in both (an intersection that does not exist) is `passed`.
+The XML vector report value is `{kind: vector, value: [[0, 0], [x, y]],
+components: true}`: only its displacement is saved, regardless of its
+displayed start point. Without `components`, classic vector comparisons
+still check both endpoints. Point and vector expressions with a value
+different from the saved coordinates are `differs` / `value_mismatch`.
 
 ## 5. The report `import_report.v1`
 
@@ -515,12 +554,27 @@ python -m animageo.native import-audit <paths…> [--weights FILE] [--json OUT] 
 `import-audit` (`convert/audit.py`) imports every `.ggb` file of the paths (a
 directory — its `*.ggb` files recursively) as `from-ggb` does without
 `--namespace` and prints one line of totals, and with `--web-registry X` a
-second one (see below). The corpus of 221 files with `--web-registry 1.8`:
+second one (see below). With map version 7 and `--web-registry 1.9`, the
+weighted corpus of 221 files gives:
 
 ```text
-library files 221 full 206 objects 4885 editable 4839 lost 16 picture 29 differs 1 value_unchecked 1
-web at registry 1.8 files 221 full 206 objects 4885 editable 4727 lost 124 picture 33 differs 1 value_unchecked 1
+library files 221 full 209 objects 4885 editable 4850 lost 14 picture 20 differs 1 value_unchecked 1
+web at registry 1.9 files 221 full 206 objects 4885 editable 4839 lost 18 picture 27 differs 1 value_unchecked 1
 ```
+
+The examples directory, with unit weights (149 files), gives:
+
+```text
+library files 149 full 122 objects 4875 editable 4647 lost 139 picture 74 differs 15 value_unchecked 14
+web at registry 1.9 files 149 full 118 objects 4875 editable 4539 lost 207 picture 115 differs 14 value_unchecked 14
+```
+
+Applying the same corpus weights to examples counts one 42-object file
+twice (150 weighted files): library editable 4689, web editable 4581;
+lost, picture and differing counts stay the same. Compared with 1.14.0,
+the library gains 11 editable objects in the weighted corpus and 108 in
+unit-weighted examples. A consumer on registry 1.9 cannot recompute the
+new expression operations yet.
 
 - `files` — the files, each counted with its weight: `--weights` is a JSON
   object `{sha256: count}`, a file not listed counts once;

@@ -301,7 +301,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         ctx.order[n] = info['order']
         t = info['type']
         command = info.get('command')
-        if t not in ('conicpart', 'segment', 'ray', 'vector'):
+        if t not in ('conicpart', 'segment', 'ray'):
             v = ggb_value(info, point_of)
             if v is not None and t != 'text':
                 ctx.expected[n] = v
@@ -356,6 +356,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     read_functions(infos, norm, ctx)
     from .ggb_inline import read_angle_arguments
     read_angle_arguments(infos, norm, ctx, built_by_command)
+    from .ggb_typed import read_expressions
+    read_expressions(infos, norm, ctx, constr)
     with _quiet():
         tr = translate(constr, ctx)
     from .ggb_conic import check_line_orientations
@@ -417,7 +419,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
                 e['reason'] = 'macro'
             else:
                 e['reason'] = 'no_registry_op'
-            e['detail'] = ctx.forced[n][1] if n in ctx.forced else None
+            e['detail'] = ctx.forced.get(n, (None, None))[1]
         else:
             e['rec'] = rec
             e['status'] = 'translated' if rec.status == 'translated' else 'untranslated'

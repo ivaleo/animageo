@@ -40,7 +40,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `(2, f(2))`). They draw, take labels and move through
   `appearance.<id>.drag.via` like any dependent point; describe prints the
   formula; «Команды» print the operation with `unprintable_operation` and
-  an edit keeps it. GGB import does not produce them yet.
+  an edit keeps it.
+- GeoGebra import reads point and vector expressions directly from XML:
+  `A + v`, `A + B`, `2A − B`, numeric coordinate pairs, point/vector
+  components and function values. Formula vectors start at the origin;
+  `Vector[(a, 0)]` in command arguments uses an owned, hidden helper.
+  Saved point coordinates and vector components check the result;
+  unsupported formulas report their source text. Existing vector
+  lowerings and constant points retain their minimum registry.
+  The import mapping version is 7 (version 6 shipped in 1.14.0).
 - Parity fixtures of typed expressions: `parity/v1/expr/typed.json`
   (`animageo-expr-cases/v1`, 93 cases with the expected value, the text of
   the formula and the pointers of type errors; `python -m animageo.native

@@ -25,7 +25,7 @@ PURPOSE = {
     'macro': {'D': ('editable', None), 'warnings': {'macros_expanded'}},
     'three_d': {'P': ('unsupported', '3d'), 'p': ('unsupported', '3d'), 'dropped': {'3d'}},
     'cas': {'dropped': {'cas'}},
-    'spreadsheet': {'A1': ('editable', None), 'B1': ('editable', None), 'P': ('picture', 'unsupported_signature')},
+    'spreadsheet': {'A1': ('editable', None), 'B1': ('editable', None), 'P': ('editable', None)},
     'dtd': {'refused': 'ggb_invalid'},
     'not_a_ggb': {'refused': 'import_not_ggb'},
     'pictures_only': {'t1': ('editable', None), 't2': ('editable', None),

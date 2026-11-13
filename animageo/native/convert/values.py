@@ -188,6 +188,9 @@ def _delta(expected: dict, actual: dict, scale: float):
         if other is None:
             return math.inf
         return max(abs(ev[0] - other[0]) * scale, abs(ev[1] - other[1]) * scale, abs(ev[2] - other[2]))
+    if ek == 'vector' and ak == ek and expected.get('components'):
+        return _dist([ev[1][i] - ev[0][i] for i in range(2)],
+                     [av[1][i] - av[0][i] for i in range(2)])
     if ek in ('segment', 'vector') and ak == ek:
         return max(_dist(ev[0], av[0]), _dist(ev[1], av[1]))
     if ek == 'ray' and ak == 'ray':
