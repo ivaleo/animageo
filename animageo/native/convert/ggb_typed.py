@@ -5,11 +5,30 @@ import copy
 import re
 from types import SimpleNamespace
 
-from .ggb_expr import ExprError, parse_number, parse_typed
+from .ggb_expr import MAX_CHARS, ExprError, _tokens, parse_number, parse_typed
 from .keys import KeyMaker, operation_id
 
 _VECTOR = re.compile(r'^\s*Vector\s*(?:\[(.*)\]|\((.*)\))\s*$', re.DOTALL)
 _RECOVERABLE = {'parse_error', 'unsupported_signature', 'no_registry_op'}
+
+
+def _two_arguments(source):
+    """Recognize the existing Vector(A, B) form with the native tokenizer."""
+    if len(source) > MAX_CHARS:
+        return False
+    tokens = _tokens(source)
+    closes, commas = [], []
+    for i, (kind, value) in enumerate(tokens):
+        if kind != 'op':
+            continue
+        if value in ('(', '['):
+            closes.append(')' if value == '(' else ']')
+        elif value in (')', ']'):
+            if not closes or closes.pop() != value:
+                return False
+        elif value == ',' and not closes:
+            commas.append(i)
+    return not closes and len(commas) == 1 and 0 < commas[0] < len(tokens) - 1
 
 
 def read_expressions(infos, norm, ctx, constr):
@@ -27,11 +46,9 @@ def read_expressions(infos, norm, ctx, constr):
             return
         wrapper = _VECTOR.fullmatch(text) if kind == 'vector' else None
         source = (wrapper.group(1) if wrapper.group(1) is not None else wrapper.group(2)) if wrapper else text
-        if wrapper:
-            from ...parsers.ggb_parser import _top_level_parts
-            if len(_top_level_parts(source)) == 2:
-                return  # The existing Vector(A, B) lowering owns this form.
         try:
+            if wrapper and _two_arguments(source):
+                return  # The existing Vector(A, B) lowering owns this form.
             ast, refs = parse_typed(source, kinds, result='vec')
         except ExprError as exc:
             ctx.typed_errors[name] = ('formula_unsupported', f'{text[:180]} ({exc.detail})')

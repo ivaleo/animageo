@@ -236,6 +236,8 @@ class _Reader:
             return node
         if self.is_op('+'):
             self.take()
+            if not self.typed:
+                return self.unary()
             self.deeper()
             node = self.unary()
             self.depth -= 1
@@ -261,6 +263,8 @@ class _Reader:
             return node
         if self.is_op('+'):
             self.take()
+            if not self.typed:
+                return self.exponent()
             self.deeper()
             node = self.exponent()
             self.depth -= 1
