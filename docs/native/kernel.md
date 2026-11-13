@@ -2210,16 +2210,17 @@ are `out_of_domain`; an overflow of a component is `non_finite`.
   позже»); an edit keeps it, like a function (§14). A printed formula
   `(2, 3)` would read back as a free point, so the formula itself is not
   printed.
-- **GGB import and the classic DSL** do not produce these operations yet
+- **GGB import** produces them from the GeoGebra formulas of points and
+  vectors (import.md, map version 7); **the classic DSL** does not
   (`dsl_map` `opsWithoutClassic`).
 
 ### 17.4 Fixtures
 
 `parity/v1/expr/typed.json` (`animageo-expr-cases/v1`, `fixtures expr`,
-expr.md §6) — the typed trees alone; the scenes `l4c_point_expression`,
-`l4c_vector_expression` (every reason of both operations and the states
+expr.md §6) — the typed trees alone; the scenes `typed_point_expression`,
+`typed_vector_expression` (every reason of both operations and the states
 `error/formula` and `error/type_mismatch` they keep on purpose) and
-`l4c_expr_chain` (a formula point into a segment and a triangle, a formula
+`typed_expr_chain` (a formula point into a segment and a triangle, a formula
 vector turned by a hidden `measure.angle` — an import helper: `role:
 aux`, `origin: {kind: auto, source}`, deleted with its rotation — upstream
 and recovery) with

@@ -211,7 +211,7 @@ component may differ by `tolerance · max(1, |v|)`), `{reason}` or
 the contract). The cases cover every row of the typing table, every type
 error with its pointer, the limits, `−0`, overflow, `/0`, `call` outside
 its domain and in a branch of `If`, and `abs` of large components. The
-scenes `parity/v1/scenes/l4c_point_expression`, `l4c_vector_expression`
-and `l4c_expr_chain` give the operations with every reason, and a vector
+scenes `parity/v1/scenes/typed_point_expression`, `typed_vector_expression`
+and `typed_expr_chain` give the operations with every reason, and a vector
 turned by a hidden `measure.angle` (`role: aux`, `origin: {kind: auto,
 source: <the rotation>}`) that goes when the rotation is deleted.

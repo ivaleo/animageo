@@ -591,7 +591,7 @@ class TestPrint:
             assert [(i.code, i.line) for i in result.issues] == [('syntax', i.line) for i in texts]
             assert len(problems) == 5 and all(p.startswith('missing text.free') for p in problems)
             return
-        if path.stem.startswith('l4c_'):
+        if path.stem.startswith('typed_'):
             # registry 1.10: a point or a vector by a formula (and a graph) prints as
             # «op(выражение, …)»; «выражение» is no name, so the line and every line
             # that uses its object read back as unknown_name and drop out, nothing else
@@ -628,7 +628,7 @@ class TestPrint:
             assert {i.code for i in result.issues} == {'forbidden'}
         elif path.stem == 'l2a5_text':
             assert {i.code for i in result.issues} == {'syntax'}
-        elif path.stem == 'l4c_expr_chain':           # the hidden angle of the rotation has no name to print
+        elif path.stem == 'typed_expr_chain':           # the hidden angle of the rotation has no name to print
             assert {i.code for i in result.issues} == {'unknown_name'}
         else:
             assert {i.code for i in result.issues} <= {'ambiguous_name'}

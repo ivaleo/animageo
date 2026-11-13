@@ -9,21 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `line.equation` (registry 1.10, `has("line_equation")`): lines from scalar
-  equations with live numeric parameters, GeoGebra orientation,
-  `not_linear` and `degenerate_line` diagnostics, ordinary line rendering
-  and intersections, and import of free GeoGebra line formulas with saved
-  coefficient and orientation checks.
-- A point on a sampled locus (registry 1.10): `path` now accepts `locus`
-  in `point.on_path` and `point.closest`, with a normalized sample-index
-  parameter, projection, drag and an inverse through the classic bridge.
-  Null samples and large jumps remain breaks; empty and stationary paths
-  report `empty_locus` and `degenerate_locus`. GeoGebra `Point(locus)`
-  imports as a glider; `Point(locus, t)` uses the new dependent
-  `point.on_locus`, retaining a numeric parameter reference. Saved points
-  are checked against `<coords>`; dependent segments remain editable.
-  Parity fixtures cover locus points, gaps, degeneracy, dragging and import.
-
 - Operation registry 1.10: the family `operand` (`number`, `point`, `vector`,
   `function`) and the optional key `result` (`"num"` or `"vec"`) of an `expr`
   input, which declares a typed expression slot. `result` enters the
@@ -58,11 +43,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   unsupported formulas report their source text. Existing vector
   lowerings and constant points retain their minimum registry.
   The import mapping version is 7 (version 6 shipped in 1.14.0).
+- `line.equation` (registry 1.10, `has("line_equation")`): lines from scalar
+  equations with live numeric parameters, GeoGebra orientation,
+  `not_linear` and `degenerate_line` diagnostics, ordinary line rendering
+  and intersections, and import of free GeoGebra line formulas with saved
+  coefficient and orientation checks.
+- A point on a sampled locus (registry 1.10): `path` now accepts `locus`
+  in `point.on_path` and `point.closest`, with a normalized sample-index
+  parameter, projection, drag and an inverse through the classic bridge.
+  Null samples and large jumps remain breaks; empty and stationary paths
+  report `empty_locus` and `degenerate_locus`. GeoGebra `Point(locus)`
+  imports as a glider; `Point(locus, t)` uses the new dependent
+  `point.on_locus`, retaining a numeric parameter reference. Saved points
+  are checked against `<coords>`; dependent segments remain editable.
+  Parity fixtures cover locus points, gaps, degeneracy, dragging and import.
 - Parity fixtures of typed expressions: `parity/v1/expr/typed.json`
   (`animageo-expr-cases/v1`, 93 cases with the expected value, the text of
   the formula and the pointers of type errors; `python -m animageo.native
   fixtures expr [--check]`, read by `fixtures verify`) and the scenes
-  `l4c_point_expression`, `l4c_vector_expression`, `l4c_expr_chain`.
+  `typed_point_expression`, `typed_vector_expression`, `typed_expr_chain`.
 
 ## [1.14.1] - 2026-11-13
 

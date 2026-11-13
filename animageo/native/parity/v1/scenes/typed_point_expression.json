@@ -1,11 +1,9 @@
 {
-  "format": "animageo-steps/v1",
-  "id": "l4c_point_expression",
-  "registry": "1.10",
-  "generatedBy": "animageo 1.14.1",
+  "format": "animageo-parity/v1",
+  "id": "typed_point_expression",
   "document": {
     "format": "animageo-construction/v1",
-    "documentId": "l4c_point_expression",
+    "documentId": "typed_point_expression",
     "operationRegistryVersion": "1.10",
     "operations": {
       "op_A": {
@@ -862,689 +860,68 @@
       ]
     }
   },
-  "expect": {
-    "steps": [
-      {
-        "id": "given",
-        "kind": "given",
-        "operationIds": [
-          "op_A",
-          "op_B"
-        ],
-        "elementIds": [
-          "A",
-          "B"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_E",
-        "kind": "op",
-        "operationIds": [
-          "op_E"
-        ],
-        "elementIds": [
-          "E"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_U",
-        "kind": "op",
-        "operationIds": [
-          "op_U"
-        ],
-        "elementIds": [
-          "U"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_V",
-        "kind": "op",
-        "operationIds": [
-          "op_V"
-        ],
-        "elementIds": [
-          "V"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_c",
-        "kind": "op",
-        "operationIds": [
-          "op_c"
-        ],
-        "elementIds": [
-          "c"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_R",
-        "kind": "op",
-        "operationIds": [
-          "op_R"
-        ],
-        "elementIds": [
-          "R"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_e",
-        "kind": "op",
-        "operationIds": [
-          "op_e"
-        ],
-        "elementIds": [
-          "e"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_f",
-        "kind": "op",
-        "operationIds": [
-          "op_f"
-        ],
-        "elementIds": [
-          "f"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_P",
-        "kind": "op",
-        "operationIds": [
-          "op_P"
-        ],
-        "elementIds": [
-          "P"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_k",
-        "kind": "op",
-        "operationIds": [
-          "op_k"
-        ],
-        "elementIds": [
-          "k"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_Z",
-        "kind": "op",
-        "operationIds": [
-          "op_Z"
-        ],
-        "elementIds": [
-          "Z"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_t",
-        "kind": "op",
-        "operationIds": [
-          "op_t"
-        ],
-        "elementIds": [
-          "t"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_N",
-        "kind": "op",
-        "operationIds": [
-          "op_N"
-        ],
-        "elementIds": [
-          "N"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_Q",
-        "kind": "op",
-        "operationIds": [
-          "op_Q"
-        ],
-        "elementIds": [
-          "Q"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_u",
-        "kind": "op",
-        "operationIds": [
-          "op_u"
-        ],
-        "elementIds": [
-          "u"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_K",
-        "kind": "op",
-        "operationIds": [
-          "op_K"
-        ],
-        "elementIds": [
-          "K"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_M",
-        "kind": "op",
-        "operationIds": [
-          "op_M"
-        ],
-        "elementIds": [
-          "M"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_S",
-        "kind": "op",
-        "operationIds": [
-          "op_S"
-        ],
-        "elementIds": [
-          "S"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_T",
-        "kind": "op",
-        "operationIds": [
-          "op_T"
-        ],
-        "elementIds": [
-          "T"
-        ],
-        "auxElementIds": []
-      },
-      {
-        "id": "op:op_s",
-        "kind": "op",
-        "operationIds": [
-          "op_s"
-        ],
-        "elementIds": [
-          "s"
-        ],
-        "auxElementIds": []
-      }
-    ],
-    "describe": [
-      "1. Дано: точки A, B.",
-      "2. Отмечаем точку E = A + 1.",
-      "3. Отмечаем точку U.",
-      "4. Отмечаем точку V.",
-      "5. Задаём число c.",
-      "6. Отмечаем точку R = (10^c, 1).",
-      "7. Строим отрезок EA.",
-      "8. Строим график функции f.",
-      "9. Отмечаем точку P = (c, f(c)).",
-      "10. Строим окружность k с центром A, проходящую через B.",
-      "11. Отмечаем точку Z = A + k.",
-      "12. Задаём число t.",
-      "13. Отмечаем точку N = t·A + (1 - t)·B.",
-      "14. Отмечаем точку Q = A/(t - 0.5).",
-      "15. Строим вектор UV.",
-      "16. Отмечаем точку K = A·u.",
-      "17. Отмечаем точку M = A + u.",
-      "18. Отмечаем точку S = M + (Q - A).",
-      "19. Строим треугольник MNP.",
-      "20. Строим отрезок MN."
-    ],
-    "timeline": {
-      "keyframes": {
-        "version": 2,
-        "keyframes": [
-          {
-            "t": 0.0,
-            "visible": {
-              "A": false,
-              "B": false,
-              "E": false,
-              "U": false,
-              "V": false,
-              "R": false,
-              "e": false,
-              "f": false,
-              "P": false,
-              "k": false,
-              "Z": false,
-              "N": false,
-              "Q": false,
-              "u": false,
-              "K": false,
-              "M": false,
-              "S": false,
-              "T": false,
-              "s": false
-            }
-          },
-          {
-            "t": 0.8,
-            "visible": {
-              "A": true,
-              "B": true
-            },
-            "enter": {
-              "A": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.0
-              },
-              "B": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.3
-              }
-            }
-          },
-          {
-            "t": 1.9,
-            "visible": {
-              "E": true
-            },
-            "enter": {
-              "E": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 3.0,
-            "visible": {
-              "U": true
-            },
-            "enter": {
-              "U": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 4.1,
-            "visible": {
-              "V": true
-            },
-            "enter": {
-              "V": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 5.199999999999999,
-            "visible": {
-              "R": true
-            },
-            "enter": {
-              "R": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 6.299999999999999,
-            "visible": {
-              "e": true
-            },
-            "enter": {
-              "e": {
-                "effect": "create",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 7.399999999999999,
-            "visible": {
-              "f": true
-            },
-            "enter": {
-              "f": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 8.499999999999998,
-            "visible": {
-              "P": true
-            },
-            "enter": {
-              "P": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 9.599999999999998,
-            "visible": {
-              "k": true
-            },
-            "enter": {
-              "k": {
-                "effect": "create",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 10.699999999999998,
-            "visible": {
-              "Z": true
-            },
-            "enter": {
-              "Z": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 11.799999999999997,
-            "visible": {
-              "N": true
-            },
-            "enter": {
-              "N": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 12.899999999999997,
-            "visible": {
-              "Q": true
-            },
-            "enter": {
-              "Q": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 13.999999999999996,
-            "visible": {
-              "u": true
-            },
-            "enter": {
-              "u": {
-                "effect": "create",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 15.099999999999996,
-            "visible": {
-              "K": true
-            },
-            "enter": {
-              "K": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 16.199999999999996,
-            "visible": {
-              "M": true
-            },
-            "enter": {
-              "M": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 17.299999999999997,
-            "visible": {
-              "S": true
-            },
-            "enter": {
-              "S": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 18.4,
-            "visible": {
-              "T": true
-            },
-            "enter": {
-              "T": {
-                "effect": "fade",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          },
-          {
-            "t": 19.5,
-            "visible": {
-              "s": true
-            },
-            "enter": {
-              "s": {
-                "effect": "create",
-                "duration": 0.5,
-                "at": 0.6
-              }
-            }
-          }
-        ]
-      },
-      "steps": [
-        {
-          "stepId": "given",
-          "start": 0.0,
-          "end": 0.8,
-          "elementIds": [
-            "A",
-            "B"
-          ],
-          "text": null
+  "cases": [
+    {
+      "name": "general"
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -2,
+            1
+          ]
         },
-        {
-          "stepId": "op:op_E",
-          "start": 1.4,
-          "end": 1.9,
-          "elementIds": [
-            "E"
-          ],
-          "text": null
+        "t": {
+          "kind": "number",
+          "value": 0.75
         },
-        {
-          "stepId": "op:op_U",
-          "start": 2.5,
-          "end": 3.0,
-          "elementIds": [
-            "U"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_V",
-          "start": 3.6,
-          "end": 4.1,
-          "elementIds": [
-            "V"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_R",
-          "start": 4.699999999999999,
-          "end": 5.199999999999999,
-          "elementIds": [
-            "R"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_e",
-          "start": 5.799999999999999,
-          "end": 6.299999999999999,
-          "elementIds": [
-            "e"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_f",
-          "start": 6.899999999999999,
-          "end": 7.399999999999999,
-          "elementIds": [
-            "f"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_P",
-          "start": 7.999999999999998,
-          "end": 8.499999999999998,
-          "elementIds": [
-            "P"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_k",
-          "start": 9.099999999999998,
-          "end": 9.599999999999998,
-          "elementIds": [
-            "k"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_Z",
-          "start": 10.199999999999998,
-          "end": 10.699999999999998,
-          "elementIds": [
-            "Z"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_N",
-          "start": 11.299999999999997,
-          "end": 11.799999999999997,
-          "elementIds": [
-            "N"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_Q",
-          "start": 12.399999999999997,
-          "end": 12.899999999999997,
-          "elementIds": [
-            "Q"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_u",
-          "start": 13.499999999999996,
-          "end": 13.999999999999996,
-          "elementIds": [
-            "u"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_K",
-          "start": 14.599999999999996,
-          "end": 15.099999999999996,
-          "elementIds": [
-            "K"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_M",
-          "start": 15.699999999999996,
-          "end": 16.199999999999996,
-          "elementIds": [
-            "M"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_S",
-          "start": 16.799999999999997,
-          "end": 17.299999999999997,
-          "elementIds": [
-            "S"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_T",
-          "start": 17.9,
-          "end": 18.4,
-          "elementIds": [
-            "T"
-          ],
-          "text": null
-        },
-        {
-          "stepId": "op:op_s",
-          "start": 19.0,
-          "end": 19.5,
-          "elementIds": [
-            "s"
-          ],
-          "text": null
+        "c": {
+          "kind": "number",
+          "value": 2
         }
-      ],
-      "duration": 19.5
+      }
+    },
+    {
+      "name": "zero_vector",
+      "inputs": {
+        "V": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "division_by_zero",
+      "inputs": {
+        "t": {
+          "kind": "number",
+          "value": 0.5
+        }
+      }
+    },
+    {
+      "name": "outside_the_domain",
+      "inputs": {
+        "c": {
+          "kind": "number",
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "overflow",
+      "inputs": {
+        "c": {
+          "kind": "number",
+          "value": 400
+        }
+      }
     }
-  }
+  ]
 }

@@ -53,14 +53,14 @@ REQUIRED_SCENES = {
     'recipe_right_angle_vertex', 'recipe_right_angle_side', 'recipe_angle_value', 'recipe_angle_equal',
     'recipe_tangent', 'shape_right_triangle', 'shape_equilateral', 'shape_parallelogram', 'shape_square',
     # registry 1.10: points and vectors by a formula, a chain through a hidden helper of a rotation
-    'l4c_point_expression', 'l4c_vector_expression', 'l4c_expr_chain',
+    'typed_point_expression', 'typed_vector_expression', 'typed_expr_chain',
 }
 
 
 # the issues of the scenes that keep refused formulas on purpose (the state error/formula)
 DELIBERATE_ERRORS = {
-    'l4c_point_expression': [('formula', 'op_E'), ('formula', 'op_K'), ('type_mismatch', 'op_Z')],
-    'l4c_vector_expression': [('formula', 'op_D'), ('formula', 'op_w7')],
+    'typed_point_expression': [('formula', 'op_E'), ('formula', 'op_K'), ('type_mismatch', 'op_Z')],
+    'typed_vector_expression': [('formula', 'op_D'), ('formula', 'op_w7')],
 }
 
 

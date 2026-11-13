@@ -1,5 +1,5 @@
 """Fixtures of typed expressions (``parity/v1/expr``, ``animageo-expr-cases/v1``) and the
-scenes ``l4c_*`` (registry 1.10)."""
+scenes ``typed_*`` (registry 1.10)."""
 import json
 import subprocess
 import sys
@@ -91,11 +91,11 @@ def test_cli_check():
     assert '0 mismatches' in out.stdout
 
 
-# ── the scenes l4c_* ─────────────────────────────────────────────────────
+# ── the scenes typed_* ─────────────────────────────────────────────────────
 
 def test_scenes_reach_every_reason():
     states = {}
-    for name in ('l4c_point_expression', 'l4c_vector_expression'):
+    for name in ('typed_point_expression', 'typed_vector_expression'):
         fixture = read_json(EXPECTED_DIR / f'{name}.json')
         assert len(fixture['cases']) >= 3
         for case in fixture['cases']:
@@ -109,7 +109,7 @@ def test_scenes_reach_every_reason():
 
 
 def test_deleting_the_rotation_removes_its_hidden_angle():
-    doc = read_json(SCENES_DIR / 'l4c_expr_chain.json')['document']
+    doc = read_json(SCENES_DIR / 'typed_expr_chain.json')['document']
     assert doc['elements']['mu']['origin'] == {'kind': 'auto', 'source': 'op_v1'}
     assert doc['appearance']['mu']['role'] == 'aux'
     result = delete(doc, ['v1'])
@@ -118,5 +118,5 @@ def test_deleting_the_rotation_removes_its_hidden_angle():
     assert {'N', 's', 'T'}.isdisjoint(elements)                     # the dependents of the turned vector
     assert {'M', 'v', 'alpha', 'Y'} <= elements
     assert native.validate(result.document) == []
-    assert json.dumps(doc, sort_keys=True) == json.dumps(read_json(SCENES_DIR / 'l4c_expr_chain.json')['document'],
+    assert json.dumps(doc, sort_keys=True) == json.dumps(read_json(SCENES_DIR / 'typed_expr_chain.json')['document'],
                                                          sort_keys=True)
