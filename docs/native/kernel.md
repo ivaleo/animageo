@@ -2058,11 +2058,15 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   `error/limit_exceeded`) and `region_chain_errors` (`error/schema`);
   `measure.area` and `measure.perimeter` of each.
 - Paint and output (`has("regions")`). The default paint of a region is
-  that of a polygon of the fill tool of the web: `defaults.region` of the
-  built-in style fills with `presets.color.accent` at the opacity of a
-  polygon (`1`) and has no stroke (`stroke_opacity` and `stroke_width_px`
-  `0`), so a face keeps its look when it changes from a polygon or a
-  sector to a region; label anchor `MC`. `style_keys()` type `region`:
+  that of a polygon of the fill tool of the web: `defaults.region` fills
+  with `presets.color.accent` and has no stroke (`stroke_opacity` and
+  `stroke_width_px` `0`); its `fill_opacity`, `fill_pattern` and `hatch_*`
+  are those of `defaults.polygon` **of the same style** (not constants:
+  `StyleConfig.from_dict` copies them into `defaults.region` unless the
+  style sets its own, so the built-in `style/builtin.json` has none; a
+  client that reads that file without `StyleConfig` repeats the rule), so a
+  face keeps its look when it changes from a polygon to a region; label
+  anchor `MC`. `style_keys()` type `region`:
   stroke, dash, fill, hatch, `z_index`, `z_index_fill`, label and value
   keys. `resolve_paint`: the fill at `z_index_fill` (`Z_FILL`), the stroke
   above the lines as that of a polygon, `stroke.dash.rings` — the pattern
