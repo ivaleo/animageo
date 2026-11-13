@@ -59,7 +59,7 @@ class LayoutInput:
     ``style_config`` — the ``StyleConfig`` the style resolver reads;
     ``bounds`` — ``(left, bottom, right, top)`` of the camera frame in scene
     units (``None``: lines and rays get no clipped anchor and
-    ``viewport_clamp`` does nothing); ``measure_label`` — ``(label_text,
+    ``viewport_clamp`` keeps to the export canvas alone); ``measure_label`` — ``(label_text,
     font_size) → (width, height)`` in scene units, ``font_size`` a manim font
     size (``None``: the manim ``Tex`` measurement of the classic renderer);
     ``label_point_clearance`` — as the scene attribute of that name
@@ -3140,6 +3140,38 @@ def _drawn_box_harm(c, hw, hh, segments, circles, markers, others, own_anchor):
     return geom, labels
 
 
+def _picture_bounds(scene):
+    """``(left, bottom, right, top)`` in scene MU of the exported picture —
+    the frame of ``viewport_clamp``. It is the export canvas SVG, PDF and EPS
+    draw (``int(ptWidth)`` × ``int(ptHeight)`` px from ``(ptXZero, ptYZero)``
+    at ``ptUnit``, any aspect), within the camera frame: the camera keeps the
+    16:9 aspect of the renderer around the canvas, and a moved camera
+    (keyframe ``@camera``) shows only part of it. Without an export canvas,
+    the camera frame; ``None`` when neither is known."""
+    try:
+        frame = tuple(float(v) for v in scene._get_scene_bounds(padding=0))
+    except Exception:
+        logger.debug("viewport_clamp: camera frame unavailable", exc_info=True)
+        frame = None
+    export = getattr(getattr(scene, 'style', None), 'export', None) or {}
+    try:
+        unit = float(export['ptUnit'])
+        ox, oy = float(export['ptXZero']), float(export['ptYZero'])
+        width, height = int(export['ptWidth']), int(export['ptHeight'])
+    except (KeyError, TypeError, ValueError):
+        return frame
+    if not (unit > 0 and width > 0 and height > 0):
+        return frame
+    canvas = (-ox / unit, (oy - height) / unit, (width - ox) / unit, oy / unit)
+    if frame is None:
+        return canvas
+    left, bottom = max(canvas[0], frame[0]), max(canvas[1], frame[1])
+    right, top = min(canvas[2], frame[2]), min(canvas[3], frame[3])
+    if left >= right or bottom >= top:      # the camera looks past the canvas
+        return frame
+    return (left, bottom, right, top)
+
+
 def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
                          distance, padding, weights, ptUnit, *, markers=None,
                          cost_model=None, respect_current=False,
@@ -3336,9 +3368,10 @@ DEFAULT_CONFIG = {
     # clear (uniform, direction-preserving) instead of scanning 8 directions.
     'directional_placement': False,
     'directional_cap_px': 24.0,  # max push along the preferred direction (px)
-    # FP-9 — keep a label's drawn box inside the rendered viewport so it is
-    # never cropped at the canvas edge: a label that leaves it takes the best
-    # solver candidate inside, clear of its own point (``_viewport_clamp_pass``).
+    # FP-9 — keep a label's drawn box inside the exported picture so it is
+    # never cropped at its edge (``_picture_bounds``): a label that leaves it
+    # takes the best solver candidate inside, clear of its own point
+    # (``_viewport_clamp_pass``).
     'viewport_clamp': False,
     # FP-6 — final declutter: push apart label pairs left flush/overlapping by
     # the solver (near-coincident anchors), only where it does not put a label
@@ -3662,14 +3695,8 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
                                          DEFAULT_CONFIG['angle_marker_obstacle']))
     pref_ranks = _resolve_position_priority(position_priority)
 
-    # FP-9: rendered viewport bounds (scene MU) for the optional edge clamp.
-    clamp_bounds = None
-    if viewport_clamp:
-        try:
-            clamp_bounds = scene._get_scene_bounds(padding=0)
-        except Exception:
-            logger.debug("viewport_clamp: scene bounds unavailable", exc_info=True)
-            clamp_bounds = None
+    # FP-9: the exported picture (scene MU) for the optional edge clamp.
+    clamp_bounds = _picture_bounds(scene) if viewport_clamp else None
 
     labels = _collect_labels(
         scene, font_size,

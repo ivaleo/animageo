@@ -77,6 +77,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   labels, the label stays where the solver put it.
   Labels already in the frame keep their places; without `viewport_clamp`
   the layout is unchanged.
+- The frame of `viewport_clamp` is the exported picture — the export canvas
+  SVG, PDF and EPS draw, of any aspect — instead of the camera frame, which
+  keeps the 16:9 aspect of the renderer around it. A label at the left or
+  right edge of a 4:3 or portrait picture could end up outside it.
 
 ### Tests
 

@@ -59,12 +59,13 @@ def circle_through_point(inputs, bounds):
     return b.doc
 
 
-def layout(inputs, bounds, clamp):
+def layout(inputs, bounds, clamp, size=SIZE):
     lp = dict(PRESET, viewport_clamp=clamp)
+    export_layout = dict(LAYOUT, export=dict(LAYOUT['export'], size=list(size)))
     return native.layout_labels(
         circle_through_point(inputs, bounds),
         style_config={'overlay': {'label_placement': lp}},
-        export_layout=LAYOUT, backend='metrics', place=True)
+        export_layout=export_layout, backend='metrics', place=True)
 
 
 def to_px(entries, inputs):
@@ -97,9 +98,9 @@ def geometry_hits(box, inputs, px):
     return hits
 
 
-def inside_frame(box, tol=0.5):
+def inside_frame(box, tol=0.5, size=SIZE):
     x0, y0, x1, y1 = box
-    return x0 >= -tol and y0 >= -tol and x1 <= SIZE[0] + tol and y1 <= SIZE[1] + tol
+    return x0 >= -tol and y0 >= -tol and x1 <= size[0] + tol and y1 <= size[1] + tol
 
 
 class TestCircleThroughPoint:
@@ -128,6 +129,25 @@ class TestCircleThroughPoint:
             assert geometry_hits(entry['box'], GENERAL, px) <= geometry_hits(
                 off[name]['box'], GENERAL, px), name
 
+    @pytest.mark.parametrize('inputs, bounds, size', [
+        (FRACTIONAL, [-2.9, -4.5, 7.1, 3], (800, 600)),     # 4:3, P on the left edge
+        (GENERAL, [-6, -1.5, 4, 6], (800, 600)),            # 4:3, P on the right edge
+        (FRACTIONAL, [-2.9, -4.0, 3.1, 4.0], (600, 800)),   # 3:4, P on the left edge
+        (GENERAL, [-2, -2, 4, 6], (600, 800)),              # 3:4, P on the right edge
+    ], ids=['4:3-left', '4:3-right', '3:4-left', '3:4-right'])
+    def test_side_edges_of_the_picture(self, inputs, bounds, size):
+        """The frame is the exported picture, not the 16:9 camera frame
+        around it: a point on its left or right edge keeps its label inside
+        the picture and off the point."""
+        on, off = layout(inputs, bounds, True, size), layout(inputs, bounds, False, size)
+        assert not inside_frame(off['P']['box'], size=size)   # the solver puts it outside
+        px = to_px(on, inputs)
+        for name, entry in on.items():
+            assert name not in entry['pointOverlaps'], (name, entry['box'])
+            assert inside_frame(entry['box'], size=size), (name, entry['box'])
+            assert geometry_hits(entry['box'], inputs, px) <= geometry_hits(
+                off[name]['box'], inputs, px), name
+
     def test_labels_inside_the_frame_are_untouched(self):
         """Frame by the points (+20 %): every label is already in the frame,
         the clamp changes nothing."""
@@ -150,12 +170,17 @@ class TestClassicScene:
     CODE = ('O = Point(0.3, -0.7)\nP = Point(-2.9, 1.1)\nc = Circle(O, P)\n'
             'r = Segment(O, P)\nM = Midpoint(O, P)\nc2 = Circle(M, O)\nd = Line(O, P)\n')
 
-    def _scene(self):
+    # 80 px per unit; the picture of ``style.export`` puts a point on its edge.
+    EXPORTS = {
+        'P top 4:3': ('P', {'ptWidth': 800, 'ptHeight': 600, 'ptXZero': 592, 'ptYZero': 88}),
+        'P left 4:3': ('P', {'ptWidth': 800, 'ptHeight': 600, 'ptXZero': 232, 'ptYZero': 300}),
+        'O right 3:4': ('O', {'ptWidth': 600, 'ptHeight': 800, 'ptXZero': 576, 'ptYZero': 400}),
+    }
+
+    def _scene(self, export):
         from animageo.animageo import AnimaGeoScene
         sc = AnimaGeoScene()
-        # 80 px per unit, frame [-7.4, 2.6] × [-6.4, 1.1]: P on the top edge.
-        sc.style.export.update({'ptUnit': 80, 'ptWidth': 800, 'ptHeight': 600,
-                                'ptXZero': 592, 'ptYZero': 88, 'ptUnit_ggb': 80})
+        sc.style.export.update(dict(export, ptUnit=80, ptUnit_ggb=80))
         sc.putCode(self.CODE)
         sc.applyStyle(style={'overlay': {'label_placement': {'enabled': True}}})
         for name in ('O', 'P', 'M'):
@@ -173,14 +198,26 @@ class TestClassicScene:
         cy = y + placement.offset_ggb[1] / 80 - edge[1] * h / 2
         return cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2
 
-    def test_label_stays_off_its_point_and_in_the_frame(self):
-        sc = self._scene()
-        left, bottom, right, top = sc._get_scene_bounds(padding=0)
+    @pytest.mark.parametrize('edge', list(EXPORTS))
+    def test_label_stays_off_its_point_and_in_the_picture(self, edge):
+        """The frame is the SVG picture of ``style.export``, not the wider
+        16:9 camera frame around it."""
+        point, ex = self.EXPORTS[edge]
+        sc = self._scene(ex)
+        left, top = -ex['ptXZero'] / 80, ex['ptYZero'] / 80
+        right, bottom = left + ex['ptWidth'] / 80, top - ex['ptHeight'] / 80
+
+        def inside(box):
+            x0, y0, x1, y1 = box
+            return (x0 >= left - 1e-6 and x1 <= right + 1e-6
+                    and y0 >= bottom - 1e-6 and y1 <= top + 1e-6)
+
+        off = compute_label_layout(sc, cfg=dict(PRESET, enabled=True, viewport_clamp=False))
+        assert not inside(self._box(sc, point, off[point]))     # the solver puts it outside
         on = compute_label_layout(sc, cfg=dict(PRESET, enabled=True))
         for name in ('O', 'P', 'M'):
             x0, y0, x1, y1 = self._box(sc, name, on[name])
-            assert x0 >= left - 1e-6 and x1 <= right + 1e-6, name
-            assert y0 >= bottom - 1e-6 and y1 <= top + 1e-6, name
+            assert inside((x0, y0, x1, y1)), name
             px_, py_ = sc.element(name).data.coords[:2]
             r = sc.element(name).style.get('size_px', 6.0) / 2 / 80
             near = math.hypot(px_ - min(max(px_, x0), x1), py_ - min(max(py_, y0), y1))
