@@ -16,6 +16,7 @@ Unit model:
 from __future__ import annotations
 
 from typing import Any, Optional
+from contextlib import contextmanager
 
 from ...geo.lib_elements import textify_cyrillic
 from ...labels import resolve_label_text
@@ -29,6 +30,7 @@ class TikzContext:
         self.scene = scene
         self.opt = options
         self.doc = document
+        self.split_parts = scene._fill_display_enabled()
 
         export = getattr(scene.style, "export", {}) or {}
         self.ptUnit = float(export.get("ptUnit", 1) or 1)
@@ -95,3 +97,45 @@ class TikzContext:
 
     def is_visible(self, elem) -> bool:
         return self.scene._element_visible(elem)
+
+    @contextmanager
+    def part(self, part):
+        """Assign commands to a logical run during split export."""
+        if isinstance(self.doc, PartDocument):
+            previous = self.doc.part
+            self.doc.part = part
+            try:
+                yield
+            finally:
+                self.doc.part = previous
+        else:
+            yield
+
+
+class PartDocument:
+    """Buffer commands while sharing the real document's colours and units."""
+    def __init__(self, document, *, body=False, area=True):
+        self.document = document
+        self.body = body
+        self.area = area
+        self.part = None
+        self.runs = {}
+
+    def __getattr__(self, name):
+        return getattr(self.document, name)
+
+    def line(self, text):
+        part = self.part or ('body' if self.body else 'fill' if self.area and text.startswith('\\fill[') else 'label' if text.startswith('\\node[') else 'stroke')
+        self.runs.setdefault(part, []).append(text)
+
+
+def paint_part(part):
+    """Keep composite decorations together without affecting legacy output."""
+    from functools import wraps
+    def decorate(emit):
+        @wraps(emit)
+        def wrapped(ctx, *args, **kwargs):
+            with ctx.part(part):
+                return emit(ctx, *args, **kwargs)
+        return wrapped
+    return decorate

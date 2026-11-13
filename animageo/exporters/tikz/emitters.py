@@ -32,7 +32,7 @@ from ...angle_marker import fit_settings, marker_extent, marker_fit
 from ...mark_shapes import angle_label_overhang_px, arc_grow, arc_step_px, scene_arc_decor
 from ...label_placement import compute_effective_arc_size_px
 from ...style.colorspace import same_color
-from .context import TikzContext
+from .context import TikzContext, paint_part
 from .document import fmt_num
 from .style_map import (
     anchor_for,
@@ -154,13 +154,15 @@ def _fill_pattern(ctx: TikzContext, elem, region) -> bool:
         dots = _hatch.hatch_dots(region, spec["angle"], spec["spacing_mu"])
         if dots and spec["dot_radius_mu"] > 0.0:
             path = " ".join(f"{_coord(ctx, x, y)} circle ({r})" for x, y in dots)
-            ctx.doc.line(f"\\fill[{', '.join(opts)}] {path};")
+            with ctx.part("fill"):
+                ctx.doc.line(f"\\fill[{', '.join(opts)}] {path};")
         return False
     opts.append(f"line width={fmt_num(ctx.size_pt(spec['width_px']), ctx.opt.size_precision)}pt")
     segs = _hatch.pattern_segments(region, pattern, spec["angle"], spec["spacing_mu"])
     if segs:
         path = " ".join(f"{_coord(ctx, x0, y0)} -- {_coord(ctx, x1, y1)}" for x0, y0, x1, y1 in segs)
-        ctx.doc.line(f"\\draw[{', '.join(opts)}] {path};")
+        with ctx.part("fill"):
+            ctx.doc.line(f"\\draw[{', '.join(opts)}] {path};")
     return False
 
 
@@ -257,6 +259,7 @@ def _emit_marker(ctx, x, y, R, shape, opts, stroke_only):
 
 # ── tick decorations (segments / vectors) ────────────────────────────────
 
+@paint_part("ticks")
 def _emit_ticks(ctx: TikzContext, elem, p1, p2, normal, labels=None) -> None:
     num = int(ctx.resolve(elem, "tick_count", default=0) or 0)
     if num <= 0:
@@ -307,6 +310,7 @@ def emit_segment(ctx: TikzContext, elem, labels: List[str]) -> None:
     emit_label(ctx, elem, m[0], m[1], labels)
 
 
+@paint_part("stroke")
 def _emit_heads(ctx: TikzContext, elem, tips) -> None:
     """Filled heads ``[Tx, Ty, B1x, B1y, B2x, B2y]`` in the stroke of
     ``elem``."""
@@ -322,6 +326,7 @@ def _emit_heads(ctx: TikzContext, elem, tips) -> None:
                      f"-- {_coord(ctx, tip[4], tip[5])} -- cycle;")
 
 
+@paint_part("parallel")
 def _emit_chevrons(ctx: TikzContext, elem, mid, direction, ticks=True) -> None:
     """The chevrons of a parallel line (``mark_shapes.scene_chevrons``):
     solid, butt, mitred, in the stroke of ``elem`` or that of the parallel
@@ -371,11 +376,19 @@ def emit_vector(ctx: TikzContext, elem, labels: List[str]) -> None:
 def emit_circle(ctx: TikzContext, elem, labels: List[str]) -> None:
     cx, cy = float(elem.data.center[0]), float(elem.data.center[1])
     r = float(elem.data.radius)
-    if _fill_pattern(ctx, elem, {"circle": (cx, cy, r)}):
-        opts = _combined_fill_stroke(ctx, elem, fill_default=ctx.scene.style.background)
+    path = f"({ctx.doc.num(cx)},{ctx.doc.num(cy)}) circle ({ctx.doc.num(r)})"
+    solid = _fill_pattern(ctx, elem, {"circle": (cx, cy, r)})
+    if ctx.split_parts:
+        _closed_path(ctx, elem, path, solid=solid)
     else:
-        opts = stroke_options(ctx, elem)
-    ctx.doc.line(f"\\draw[{opts}] ({ctx.doc.num(cx)},{ctx.doc.num(cy)}) circle ({ctx.doc.num(r)});")
+        opts = _combined_fill_stroke(ctx, elem, fill_default=ctx.scene.style.background) if solid else stroke_options(ctx, elem)
+        ctx.doc.line(f"\\draw[{opts}] {path};")
+
+
+def _closed_path(ctx, elem, path, *, solid=True, extra=""):
+    if solid and _fill_opacity(ctx, elem) > 0:
+        ctx.doc.line(f"\\fill[{fill_options(ctx, elem)}{extra}] {path};")
+    ctx.doc.line(f"\\draw[{stroke_options(ctx, elem)}{extra}] {path};")
 
 
 def _arc_start(cx, cy, r, a_rad):
@@ -386,6 +399,9 @@ def emit_arc(ctx: TikzContext, elem, labels: List[str]) -> None:
     cx, cy = float(elem.data.center[0]), float(elem.data.center[1])
     r = float(elem.data.radius)
     a1, a2 = elem.data.angles
+    if ctx.split_parts and type(elem.data).__name__ == "Arc":
+        from ...fill_order import arc_sweep
+        a2 = a1 + arc_sweep(elem.data, mode=ctx.scene._fill_order_mode())
     a1d, a2d = math.degrees(a1), math.degrees(a2)
     sx, sy = _arc_start(cx, cy, r, a1)
     if _fill_opacity(ctx, elem) > 0:
@@ -686,6 +702,9 @@ def emit_conic(ctx: TikzContext, elem, labels: List[str]) -> None:
         res = conic.as_circle()
         if res is not None:
             center, radius = res
+            if ctx.split_parts:
+                _closed_path(ctx, elem, f"({ctx.doc.num(center[0])},{ctx.doc.num(center[1])}) circle ({ctx.doc.num(radius)})")
+                return
             opts = _combined_fill_stroke(ctx, elem, fill_default=ctx.scene.style.background)
             ctx.doc.line(
                 f"\\draw[{opts}] ({ctx.doc.num(center[0])},{ctx.doc.num(center[1])}) "
@@ -699,6 +718,10 @@ def emit_conic(ctx: TikzContext, elem, labels: List[str]) -> None:
             a_semi, b_semi = params["semi_axes"]
             cx, cy = params["center"]
             rot_deg = math.degrees(params["rotation"])
+            if ctx.split_parts:
+                _closed_path(ctx, elem, f"({ctx.doc.num(cx)},{ctx.doc.num(cy)}) ellipse ({ctx.doc.num(a_semi)} and {ctx.doc.num(b_semi)})",
+                             extra=f", rotate around={{{ctx.doc.num(rot_deg)}:({ctx.doc.num(cx)},{ctx.doc.num(cy)})}}")
+                return
             opts = _combined_fill_stroke(ctx, elem, fill_default=ctx.scene.style.background)
             opts += f", rotate around={{{ctx.doc.num(rot_deg)}:({ctx.doc.num(cx)},{ctx.doc.num(cy)})}}"
             ctx.doc.line(

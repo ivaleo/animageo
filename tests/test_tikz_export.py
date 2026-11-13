@@ -337,3 +337,18 @@ class TestCompile:
             cwd=tmp_path, capture_output=True, text=True,
         )
         assert proc.returncode == 0, proc.stdout[-2000:]
+
+
+def test_area_tikz_orders_separate_fill_stroke_and_unclipped_labels():
+    import json
+    from tests.test_fill_order_defaults import classic_scene
+    s = classic_scene({'rendering': {'fill_order': 'area'}})
+    s.geo.element('inner').style.update(label_visible=True, z_index_fill=100)
+    s.updateAllGeometry()
+    tex = s.exportTikZ()
+    refs = [json.loads(line.removeprefix('% paint ')) for line in map(str.strip, tex.splitlines()) if line.startswith('% paint ')]
+    assert refs.index({'id': 'outer', 'part': 'fill'}) < refs.index({'id': 'outer', 'part': 'stroke'})
+    assert refs.index({'id': 'inner', 'part': 'label'}) < refs.index({'id': 'inner', 'part': 'fill'})
+    circle_fill = tex.split('% paint {"id": "outer", "part": "fill"}')[1].split('% paint')[0]
+    assert '\\fill[' in circle_fill and 'circle (3)' in circle_fill
+    assert not any('fill=' in line for line in tex.splitlines() if line.startswith('\\draw[') and 'circle (3)' in line)
