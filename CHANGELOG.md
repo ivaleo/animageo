@@ -63,6 +63,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `If(x<0, u*x, x+u)` no longer fails with `NameError: If`. The formula is read
   as text by the formula parser (including the numbers it refers to, which it
   then follows) and `a`, `b` become the function's `explicit_domain`.
+- `overlay.label_placement.viewport_clamp` no longer lays a label on its own
+  point at the edge of the frame. The clamp clipped the solver's centre into
+  the frame, but that centre is the label's anchor corner, not the middle of
+  the drawn box, so the box could stay half outside and cover its point
+  (a point on the top edge of the frame). The frame is now a constraint of
+  the layout: a label whose drawn box leaves it takes the best candidate of
+  the solver (the same directions, nudges and costs) that lies wholly in the
+  frame, clears its own point and touches no more geometry and labels than
+  before (failing that, the in-frame candidate off its point that touches
+  the fewest); clipping the drawn box into the frame is only the fallback
+  when no candidate reaches into it. Labels already in the frame keep their places;
+  without `viewport_clamp` the layout is unchanged.
 
 ### Tests
 

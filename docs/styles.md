@@ -697,6 +697,7 @@ A greedy solver lays out the labels, minimizing overlaps. 8 candidate directions
 | `w_anchor` | `1.0` | Penalty weight for deviating from the preferred direction |
 | `w_label` | `10.0` | Weight for label×label overlap |
 | `w_geom` | `8.0` | Weight for label×geometry overlap |
+| `viewport_clamp` | `false` | Keeps every label wholly inside the frame. A label whose drawn box would leave the frame moves to the best other place the solver considers (the same directions and costs) that lies in the frame, keeps clear of its own point and touches no more lines and labels than before (failing that, the in-frame place off its point that touches the fewest). Only when no candidate reaches into the frame (its point well outside it) is the label pushed in at the edge. Labels already inside are not moved, nor are angle labels |
 | `dynamic_angles` | `false` | Angle bisectors are recomputed per frame |
 | `keyframe_snapshots` | `false` | The layout is computed at each keyframe and interpolated in between. Takes effect only with `enabled: true`; the snapshots then own every label position in `play_keyframes` (a keyframe `label_offset_px` track is ignored) |
 | `canonicalize_anchor` | `false` | Rewrites all anchors to `MC` with a compensating offset. Removes jumps during interpolation. Off by default: it rewrites recorded label anchors, so existing outputs shift |
