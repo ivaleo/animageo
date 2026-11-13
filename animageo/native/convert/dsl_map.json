@@ -1,6 +1,6 @@
 {
  "format": "animageo-dsl-map/v1",
- "mapVersion": 6,
+ "mapVersion": 7,
  "registry": "1.10",
  "commands": {
   "abs_i": {
@@ -4171,7 +4171,14 @@
    "ggb": [
     "Point"
    ],
-   "unmapped": "no_registry_op"
+   "op": "point.on_path",
+   "args": [
+    "path"
+   ],
+   "outputs": [
+    "point"
+   ],
+   "input": "pathParameter"
   },
   "point_P": {
    "factory": "Point",
