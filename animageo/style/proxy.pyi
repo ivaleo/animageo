@@ -33,7 +33,7 @@ class StyleProxy(dict):
 
     # ── Layering ─────────────────────────────────────────────────
     z_index: float
-    z_index_fill: float                # CircleSector fill layer
+    z_index_fill: float | None                # independent layer of any filled shape
 
     # ── Label positioning ────────────────────────────────────────
     label_offset_px: List[float]       # [dx, dy] in GGB pixel units

@@ -96,7 +96,7 @@ class TestResolvePaint:
     def test_an_angle_of_the_background_has_no_fill(self):
         out = resolve_paint(zoo().doc)['elements']
         assert out['alpha']['fill'] == {'color': None, 'opacity': 0.0, 'isBackground': True,
-                                        'z': out['alpha']['z']}
+                                        'z': .01}
         assert out['T']['fill']['color'] == '#ffffff' and out['T']['fill']['opacity'] == 1.0   # drawn
 
     def test_the_label_anchor_of_no_style_and_of_the_builtin_one(self):
@@ -124,3 +124,67 @@ def test_command_line(tmp_path, capsys):
     capsys.readouterr()
     assert cli_main(['style', 'export', '--check', '-o', str(tmp_path)]) == 1
     assert 'not written here' in capsys.readouterr().out
+
+
+@pytest.mark.parametrize('target', ['c', 'k', 'q', 'sg'])
+def test_stroke_layer_of_round_shapes_does_not_fix_fill(target):
+    doc = paint_fixtures._zoo('stroke_z_keeps_fill_automatic').doc
+    doc['appearance'].setdefault(target, {}).setdefault('overrides', {})['z_index'] = 100
+    entry = resolve_paint(doc)['elements'][target]
+    assert entry['fill']['z'] == .01
+    assert entry['stroke']['z'] >= 100
+
+
+@pytest.mark.parametrize('target', ['T', 'alpha', 'ra'])
+def test_legacy_polygon_and_angle_layers_fix_only_the_fill_channel(target):
+    doc = paint_fixtures._zoo('legacy_fill_layer').doc
+    doc['appearance'].setdefault(target, {}).setdefault('overrides', {}).update(z_index=7, fill='#ff0000')
+    out = resolve_paint(doc)
+    assert out['elements'][target]['fill']['z'] >= 7
+    doc['appearance'][target]['overrides']['z_index_fill'] = -1
+    new = resolve_paint(doc)
+    assert new['elements'][target]['fill']['z'] < 0
+    assert new['elements'][target]['stroke'] == out['elements'][target]['stroke']
+    assert new['elements'][target]['label'] == out['elements'][target]['label']
+
+
+def test_fill_order_omits_zero_hidden_and_transparent_domains():
+    from tests.test_fill_order_defaults import nested_document
+    doc = nested_document()
+    doc['appearance']['outer']['visible'] = False
+    assert resolve_paint(doc)['fillOrder'] == ['inner']
+    doc['appearance']['outer']['visible'] = True
+    doc['appearance']['outer']['overrides']['fill_opacity'] = 0
+    assert resolve_paint(doc)['fillOrder'] == ['inner']
+    doc['appearance']['outer']['overrides']['fill_pattern'] = 'hatch'
+    assert resolve_paint(doc)['fillOrder'] == ['outer', 'inner']
+    doc['appearance']['outer']['overrides']['fill_pattern'] = 'none'
+    assert resolve_paint(doc)['fillOrder'] == ['inner']
+    doc['inputs']['C']['value'] = [0, -.5]
+    assert resolve_paint(doc)['fillOrder'] == []
+
+
+def test_pattern_that_misses_its_domain_has_no_fill_part():
+    d = paint_fixtures._Doc('pattern_misses_domain').free('O', .013, .017).free('R', .013001, .017)
+    d.circle('c', 'O', 'R').overrides('c', fill_pattern='hatch')
+    assert resolve_paint(d.doc)['fillOrder'] == []
+
+
+def test_fill_order_fixtures_replay_inputs_and_export_layout():
+    fixture = paint_fixtures.build_fixtures()['paint_fill_order.json']
+    cases = {case['name']: case for case in fixture['cases']}
+    assert cases['nested_circle_and_polygon']['expect']['fillOrder'] == ['outer', 'inner']
+    assert cases['nested_circle_and_polygon_construction']['expect']['fillOrder'] == ['inner', 'outer']
+    assert cases['drag_small_circle']['inputs']
+    assert cases['drag_small_circle']['expect']['fillOrder'] == ['inner', 'outer']
+    assert cases['output_size']['export_layout']
+    assert paint_fixtures.verify_fixture(fixture)[1] == []
+
+
+def test_view_parts_are_included_in_the_display_plan():
+    from tests.test_fill_order_defaults import nested_document
+    doc = nested_document()
+    doc['viewDefaults'].update(axes={'show': True}, grid={'kind': 'major_minor'})
+    parts = resolve_paint(doc)['partOrder']
+    assert parts[:4] == [{'id': '@view.minor', 'part': 'stroke'}, {'id': '@view.major', 'part': 'stroke'},
+                         {'id': '@view.axes', 'part': 'stroke'}, {'id': '@view.labels', 'part': 'label'}]

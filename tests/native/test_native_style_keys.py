@@ -98,7 +98,7 @@ class TestStyleKeys:
         types = native.style_keys()['types']
         assert 'stroke_dash_ratio' not in types['polygon']['keys']      # the stroke of a polygon is solid
         assert 'stroke_dash_ratio' not in types['sector']['keys']
-        assert 'z_index_fill' not in types['polygon']['keys']
+        assert 'z_index_fill' in types['polygon']['keys']
         assert 'tick_width_px' not in types['angle']['keys']           # a tick across an arc is as wide as the arc
         assert 'arrow_head' not in types['vector']['keys']             # the head of a vector is built in
         assert 'arc_style' not in types['segment']['keys']

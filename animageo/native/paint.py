@@ -95,20 +95,20 @@ _TYPES = {
     # registry 1.9: the fill lies at ``z_index_fill``, the stroke above the lines as that of a
     # polygon; a dashed stroke is fitted to each ring
     'region': ('region', _STROKE + _DASH + _FILL + _HATCH + ('z_index', 'z_index_fill') + _LABEL + _VALUE),
-    # the fill of a polygon lies at its ``z_index``, the stroke is solid
-    'polygon': ('polygon', _STROKE + _FILL + _HATCH + ('z_index',) + _LABEL + _VALUE),
+    # a polygon keeps its legacy body layer; fill z is independent, stroke solid
+    'polygon': ('polygon', _STROKE + _FILL + _HATCH + ('z_index', 'z_index_fill') + _LABEL + _VALUE),
     'polyline': ('locuscurve', _STROKE + _DASH + ('z_index',)),
     'locus': ('locuscurve', _STROKE + _DASH + ('z_index',)),
     # registry 1.6: a graph is a sampled curve without a label; a conic is
     # drawn as the classic Conic (an ellipse filled, the label on the curve)
     'function': ('function', _STROKE + _DASH + ('z_index',)),
     'conic': ('conic', _STROKE + _DASH + _FILL + ('z_index', 'z_index_fill') + _LABEL),
-    'angle': ('angle', _STROKE + _FILL + _HATCH + _ANGLE + _ARC_DECOR + ('z_index',) + _LABEL + _VALUE),
+    'angle': ('angle', _STROKE + _FILL + _HATCH + _ANGLE + _ARC_DECOR + ('z_index', 'z_index_fill') + _LABEL + _VALUE),
     # a right-angle mark draws the square: no arcs to count, space or decorate
     # (with ``right_angle_marker: false`` it reads the keys of an angle, ``ineffective_reason``)
     'mark.right_angle': ('angle', _STROKE + _FILL + _HATCH
                          + tuple(k for k in _ANGLE if k not in ('tick_count', 'arc_shift_px'))
-                         + ('z_index',) + _LABEL + _VALUE),
+                         + ('z_index', 'z_index_fill') + _LABEL + _VALUE),
     'text': ('text', ('label_color', 'font_size_px', 'z_index') + _HALO),
     'mark.equal_segments': (None, ('stroke', 'tick_count')),
     'mark.equal_angles': (None, ('stroke', 'tick_count')),
@@ -292,6 +292,8 @@ def style_keys() -> dict:
         cfg = _builtin()
         _CACHE['keys'] = {
             'format': STYLE_KEYS_FORMAT,
+            'rendering': {'keys': {'fill_order': {'unit': 'enum',
+                'values': ['area', 'construction'], 'default': 'area'}}},
             'types': {type_: _entry(cfg, type_) for type_ in sorted(_TYPES)},
             'view': {'section': 'rendering', 'keys': {
                 key: {'unit': unit, 'default': cfg.rendering.get(key, fallback)}
@@ -795,10 +797,12 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
     tracks of the timeline (its camera does not change the paint). Returns
     ``{"format": "animageo-paint/v1", "background", "ptUnit",
     "ptUnitStyle", "t", "elements": {id: entry}, "order": [id, …],
-    "diagnostics"}``: ``ptUnit`` — output pixels per world unit,
+    "fillOrder": [id, …], "partOrder": [{id, part}, …], "diagnostics"}``: ``ptUnit`` — output pixels per world unit,
     ``ptUnitStyle`` — style pixels per world unit (decorations: world =
     px / ptUnitStyle), ``order`` — the drawn elements by layer, bottom up,
-    ``diagnostics`` — those of ``appearance_plan``.
+    ``fillOrder`` — all actual area fills, ``partOrder`` — their merge with
+    nonfill parts at exact effective layers; native defaults to area order,
+    classic scenes to construction. ``diagnostics`` — those of ``appearance_plan``.
 
     An entry: ``type``, ``styleType`` (of :func:`style_keys`), ``style``
     (the classic style type), ``drawn``; for a drawn element ``z`` (its
@@ -893,7 +897,9 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
     unit = float(_style_ptUnit(final.style))
     background = cfg.presets.get('color', {}).get('background', '#ffffff')
     strong = cfg.presets.get('color', {}).get('strong', '#000000')
-    elements, layers = {}, []
+    from ..fill_order import PaintPart, fill_layer, make_fill_part, order_fills, order_paint_parts, resolve_mode, stable_index
+    mode = resolve_mode(final, default='area')
+    elements, layers, fills, parts = {}, [], [], []
     for el_id in sorted(doc.elements):
         type_ = doc.elements[el_id].get('type')
         style_type = style_type_of(doc, el_id)
@@ -921,7 +927,8 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
         tie = construction.elements.index(elem) * _Z_ORDER_EPSILON
         entry['z'] = _r(_num(z) + tie)
         default_label_z = _Z_FILL_LABEL if _num(z) == _Z_FILL else _Z_LABEL
-        z_label = _r(_num(value('z_index_label', None), default_label_z) + tie)
+        label_layer = _num(value('z_index_label', None), default_label_z) + tie
+        z_label = _r(label_layer)
         layers.append((_num(z) + tie, el_id))
         point = style_type == 'point'
         stroke_default = strong              # ``_build_render_ctx``: ``style.strong``, a point filled with it
@@ -953,10 +960,8 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             if style_type in ('angle', 'mark.right_angle') and is_bg:
                 opacity = 0.0
             fill = {'color': color if opacity > 0 else None, 'opacity': _r(opacity), 'isBackground': is_bg}
-            if style_type in ('circle', 'arc', 'sector', 'circlesegment', 'conic', 'region'):
-                fill['z'] = _r(_num(value('z_index_fill', _Z_FILL), _Z_FILL) + tie)
-            elif style_type in ('polygon', 'angle', 'mark.right_angle'):
-                fill['z'] = entry['z']
+            if not point:
+                fill['z'] = _r(fill_layer(final, elem, _num(z), tie, mode=mode)[0])
             angle_pattern = style_type in ('angle', 'mark.right_angle') and \
                 (value('fill_pattern', 'solid') or 'solid') != 'solid'
             if style_type in _HATCHED or angle_pattern:      # an angle reports only a pattern
@@ -1017,6 +1022,60 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             entry['label'] = _label(final, elem, value, style_type, z_label)
         if style_type in _WITH_VALUE:
             entry['value'] = _value_format(final, value)
+        stable = lambda local: stable_index(construction, elem, local)
+        fill_part = make_fill_part(final, elem, id=el_id, base_z=_num(z), tie=tie, mode=mode)
+        if fill_part is not None:
+            fills.append(fill_part)
+            parts.append(PaintPart(el_id, 'fill', fill_part.layer_z, stable(0)))
+        marker = entry.get('angle')
+        hidden_marker = bool(((marker or {}).get('fit') or {}).get('hidden'))
+        stroke_layer = _num(z) + tie
+        if style_type in ('polygon', 'region'):
+            stroke_layer = max(_Z_STROKE + tie, _num(z) + tie + .1)
+        elif style_type in ('angle', 'mark.right_angle'):
+            stroke_layer = _num(z) + tie + .1
+        if style_type == 'text':
+            halo = entry['label'].get('halo', {})
+            if halo.get('widthPx', 0) > 0 and halo.get('opacity', 0) > 0:
+                parts.append(PaintPart(el_id, 'labelHalo', _num(z) + tie, stable(4)))
+            parts.append(PaintPart(el_id, 'body', _num(z) + tie, stable(5)))
+        elif style_type == 'point':
+            closed = entry['point']['shape'] not in ('cross', 'plus')
+            visible_body = (entry['stroke']['opacity'] > 0 and width_px > 0) or \
+                (closed and (entry['fill']['opacity'] > 0 or entry['point'].get('fill') == 'hollow'))
+            if entry['point']['display'] != 'only_labels' and entry['point']['sizePx'] > 0 and visible_body:
+                parts.append(PaintPart(el_id, 'body', _num(z) + tie, stable(0)))
+        elif not hidden_marker and entry.get('stroke', {}).get('opacity', 0) > 0 and width_px > 0:
+            if marker is None or marker.get('right') or marker.get('arcRadiiPx'):
+                parts.append(PaintPart(el_id, 'stroke', stroke_layer, stable(1)))
+        if entry.get('ticks', {}).get('count', 0) > 0:
+            parts.append(PaintPart(el_id, 'ticks', _num(z) + tie, stable(2)))
+        if entry.get('parallel', {}).get('chevrons'):
+            parts.append(PaintPart(el_id, 'parallel', _num(z) + tie, stable(3)))
+        if entry.get('label', {}).get('shown'):
+            halo = entry['label'].get('halo', {})
+            if halo.get('widthPx', 0) > 0 and halo.get('opacity', 0) > 0:
+                parts.append(PaintPart(el_id, 'labelHalo', label_layer, stable(4)))
+            parts.append(PaintPart(el_id, 'label', label_layer, stable(5)))
+    from .view import view_layout, view_settings, view_style
+    settings = view_settings(doc)
+    if settings is not None:
+        st = view_style(cfg.rendering)
+        u = float(export['ptUnit'])
+        left, top = -export['ptXZero']/u, export['ptYZero']/u
+        rect = (left, top-int(export['ptHeight'])/u, left+int(export['ptWidth'])/u, top)
+        layout = view_layout(settings, rect, margin=st['axes_font_size_px']/unit)
+        for i, (kind, z) in enumerate((('minor', -21), ('major', -20))):
+            if any(layout['grid'][kind].values()) and st['grid_' + ('minor_' if kind == 'minor' else '') + 'opacity'] > 0 \
+                    and st['grid_' + ('minor_' if kind == 'minor' else '') + 'width_px'] > 0:
+                parts.append(PaintPart('@view.' + kind, 'stroke', z, (-1, i, 0)))
+        if any(layout['axes'].values()) and st['axes_opacity'] > 0:
+            if st['axes_width_px'] > 0:
+                parts.append(PaintPart('@view.axes', 'stroke', -10, (-1, 2, 0)))
+            if any(layout['numbers'].values()) or any(layout['labels'].values()):
+                parts.append(PaintPart('@view.labels', 'label', -9, (-1, 3, 0)))
+    fill_order = order_fills(fills, mode=mode)
+    part_order = order_paint_parts(parts, fill_order)
     order = [el_id for _, el_id in sorted(layers)]
     return {
         'format': PAINT_FORMAT,
@@ -1026,6 +1085,8 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
         't': None if sample is None else sample['t'],
         'elements': elements,
         'order': order,
+        'fillOrder': list(fill_order),
+        'partOrder': list(part_order),
         'diagnostics': diagnostics,
     }
 

@@ -1,5 +1,17 @@
 {
  "format": "animageo-style-keys/v1",
+ "rendering": {
+  "keys": {
+   "fill_order": {
+    "unit": "enum",
+    "values": [
+     "area",
+     "construction"
+    ],
+    "default": "area"
+   }
+  }
+ },
  "types": {
   "angle": {
    "style": "angle",
@@ -208,6 +220,10 @@
     "z_index": {
      "unit": "number",
      "default": null
+    },
+    "z_index_fill": {
+     "unit": "number",
+     "default": 0.01
     },
     "z_index_label": {
      "unit": "number",
@@ -1065,6 +1081,10 @@
      "unit": "number",
      "default": null
     },
+    "z_index_fill": {
+     "unit": "number",
+     "default": 0.01
+    },
     "z_index_label": {
      "unit": "number",
      "default": null
@@ -1274,6 +1294,10 @@
     "z_index": {
      "unit": "number",
      "default": null
+    },
+    "z_index_fill": {
+     "unit": "number",
+     "default": 0.01
     },
     "z_index_label": {
      "unit": "number",

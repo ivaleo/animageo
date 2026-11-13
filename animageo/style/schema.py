@@ -132,6 +132,7 @@ JSON Style File Structure
 
     "rendering": {
         "line_cap":               "butt"|"round"|"square",
+        "fill_order":             "area"|"construction", # native: area; classic: construction
         "dash_period_px":         <float>,        # default 10: dash + gap, px
         "background":             "color.background",
         "right_angle_joint":      "auto"|"bevel"|"miter"|"round",
@@ -298,7 +299,7 @@ Positioning / layering
   auto-placement, not a position (see ``label_placement._apply_label_hints``)
 - ``label_radial_offset_px`` (radial label offset for angles, pixels)
 - ``font_size_px`` (pixel-invariant label font size)
-- ``z_index``, ``z_index_fill`` (CircleSector)
+- ``z_index`` (legacy body), ``z_index_fill`` (all filled shapes, finite number or null)
 """
 
 from __future__ import annotations
@@ -400,6 +401,8 @@ def _validate_rendering(style_json: dict, file_hint: str | None = None) -> None:
     rendering = style_json.get('rendering', {})
     if not isinstance(rendering, dict):
         return
+    if 'fill_order' in rendering and rendering['fill_order'] not in ('area', 'construction'):
+        _error('rendering.fill_order must be area or construction', file_hint)
     misplaced = AUTOMATION_RENDERING_KEYS & rendering.keys()
     if misplaced:
         keys = ', '.join(f"rendering.{k}" for k in sorted(misplaced))
@@ -424,6 +427,11 @@ def _validate_style_key_map(raw: object, path: str, file_hint: str | None = None
     for type_name, entries in raw.items():
         if not isinstance(entries, dict):
             continue
+        if 'z_index_fill' in entries:
+            import math
+            z = entries['z_index_fill']
+            if z is not None and (isinstance(z, bool) or not isinstance(z, (int, float)) or not math.isfinite(z)):
+                _error(f'{path}.{type_name}.z_index_fill must be a finite number or null', file_hint)
         removed = REMOVED_STYLE_KEYS & entries.keys()
         if removed:
             key = sorted(removed)[0]
