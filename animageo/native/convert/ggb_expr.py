@@ -25,7 +25,7 @@ from __future__ import annotations
 import math
 import re
 
-__all__ = ['ExprError', 'MAX_CHARS', 'parse_number', 'names_in', 'strip_strings', 'NUMBER_KINDS']
+__all__ = ['ExprError', 'MAX_CHARS', 'parse_number', 'parse_typed', 'names_in', 'strip_strings', 'NUMBER_KINDS']
 
 MAX_CHARS = 1000            # a longer expression is past the limits of AST v1 anyway (256 nodes)
 NUMBER_KINDS = ('numeric', 'angle')     # GGB types an expression of a number may refer to (an angle in radians)
@@ -156,8 +156,9 @@ def _negative(node):
 class _Reader:
     """Recursive descent over :func:`_tokens`; ``labels`` — the references in order."""
 
-    def __init__(self, tokens, kinds, variables=()):
+    def __init__(self, tokens, kinds, variables=(), *, typed=False):
         self.variables = variables
+        self.typed = typed
         self.t = tokens
         self.i = 0
         self.kinds = kinds
@@ -235,7 +236,10 @@ class _Reader:
             return node
         if self.is_op('+'):
             self.take()
-            return self.unary()
+            self.deeper()
+            node = self.unary()
+            self.depth -= 1
+            return node
         return self.power()
 
     def power(self):
@@ -257,7 +261,10 @@ class _Reader:
             return node
         if self.is_op('+'):
             self.take()
-            return self.exponent()
+            self.deeper()
+            node = self.exponent()
+            self.depth -= 1
+            return node
         return self.power()
 
     def postfix(self):
@@ -282,6 +289,11 @@ class _Reader:
             self.take()
             self.deeper()
             node = self.sum()
+            if self.typed and self.is_op(','):
+                self.take()
+                node = {'pair': [node, self.sum()]}
+                if self.is_op(','):
+                    raise ExprError('formula_unsupported', 'пара должна содержать ровно две координаты')
             self.expect(')')
             self.depth -= 1
             return node
@@ -307,13 +319,25 @@ class _Reader:
             return {'var': name}
         kind = self.kinds.get(name)
         if kind is not None:
-            if kind not in NUMBER_KINDS:
+            allowed = NUMBER_KINDS + ('point', 'vector', 'function') if self.typed else NUMBER_KINDS
+            if kind not in allowed:
                 what = 'функция' if kind in ('function', 'functionnvar') else 'не число'
                 raise ExprError('formula_unsupported', f'в выражении {name[:40]} — {what}: в формулу входят '
                                                        'только числа и углы')
             if name not in self.labels:
                 self.labels.append(name)
-            return {'ref': self.labels.index(name)}
+            index = self.labels.index(name)
+            if self.typed and kind == 'function' and call:
+                args = self.arguments()
+                if len(args) != 1:
+                    raise ExprError('formula_unsupported', 'функция должна иметь один аргумент')
+                return {'call': index, 'args': args}
+            return {'ref': index}
+        if self.typed and call and name in ('x', 'y'):
+            args = self.arguments()
+            if len(args) != 1:
+                raise ExprError('formula_unsupported', 'компонента должна иметь один аргумент')
+            return {'fn': name, 'args': args}
         if call and name in _FUNCTIONS:
             args = self.arguments()
             if name == 'log' and len(args) == 2:            # log(b, x): the logarithm of x to the base b
@@ -359,4 +383,33 @@ def parse_number(text: str, kinds: dict, *, variables=()):
     ast = reader.read()
     if problems(ast, len(reader.labels), vars=variables):
         raise ExprError('formula_unsupported', 'выражение выходит за пределы формул (expr.md §2)')
+    return ast, reader.labels
+
+
+def parse_typed(text: str, kinds: dict, *, result: str):
+    """Read the typed language of a ``num`` or ``vec`` slot (registry 1.10).
+
+    Source kinds supply operand types; the kernel checks the tree. Refusals
+    include the source formula, including syntax outside this language.
+    The legacy number/function readers keep their original node set.
+    """
+    from ..expr.validate import MAX_INTEGER_POWER, problems
+    if result not in ('num', 'vec'):
+        raise ValueError('result must be num or vec')
+    text = str(text)
+    try:
+        if len(text) > MAX_CHARS:
+            raise ExprError('formula_unsupported', 'выражение выходит за пределы формул (expr.md §2)')
+        tokens = _tokens(text)
+        if any(k == 'sup' and abs(v) > MAX_INTEGER_POWER for k, v in tokens):
+            raise ExprError('formula_unsupported', 'степень выходит за пределы формул (expr.md §2)')
+        reader = _Reader(tokens, kinds, typed=True)
+        ast = reader.read()
+        operands = ['number' if kinds[n] in NUMBER_KINDS else kinds[n] for n in reader.labels]
+        issues = problems(ast, len(operands), operands=operands, result=result)
+        if issues:
+            raise ExprError('formula_unsupported', issues[0][1])
+    except (ExprError, RecursionError) as exc:
+        detail = exc.detail if isinstance(exc, ExprError) else 'выражение слишком глубоко'
+        raise ExprError('formula_unsupported', f'{text[:180]} ({detail})') from None
     return ast, reader.labels
