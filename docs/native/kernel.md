@@ -2066,8 +2066,9 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   square with a round hole, a sector, a circle segment, a clockwise
   polygon), `region_arc_parts` (a piece inside its arc, beyond its end, off
   its circle; a whole circle from a point to itself), `region_carriers` (a
-  conic and a graph: `unsupported_signature`), `region_limit` (257 circles:
-  `error/limit_exceeded`) and `region_chain_errors` (`error/schema`);
+  conic and a graph: `unsupported_signature`), `region_limit` (257 circles
+  and, of `function.area_between`, the 67 lobes of `sin 10x` on `[0.1,
+  21]`: `error/limit_exceeded`) and `region_chain_errors` (`error/schema`);
   `measure.area` and `measure.perimeter` of each.
 - Paint and output (`has("regions")`). The default paint of a region is
   that of a polygon of the fill tool of the web: `defaults.region` fills

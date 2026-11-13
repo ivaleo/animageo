@@ -777,13 +777,15 @@ def _boundary_scenes():
     d.boundary('R', ['s', 'k'], ['A', 'A'], ['B', 'B'])
     d.function('f', sq(X)).boundary('F', ['s', 'f'], ['A', 'A'], ['B', 'B'])
     out.append((d, _cases(('base', None),)))
-    # the limit of 256 pieces: 257 circles of `inside` (the share of points does not matter,
-    # the count is checked before the pieces meet)
+    # the limits: 256 pieces of region.by_boundary — 257 circles of `inside` (the share of points
+    # does not matter, the count is checked before the pieces meet); 64 rings of
+    # function.area_between — sin 10x on [0.1, 21] has 66 roots inside, 67 lobes
     d = _Doc('region_limit').free('O', 0, 0).free('T', 5, 0)
     for k in range(257):
         d.circle(f'c{k}', 'O', 'T')
     d.boundary('R', inside=[f'c{k}' for k in range(257)])
     d.boundary('Q', inside=['c0'])
+    d.function('f', call('sin', o('*', n(10), X))).area('A', 'f', a=0.1, b=21).measures('A')
     out.append((d, _cases(('base', None),)))
     d = _Doc('region_chain_errors').free('A', 0, 0).free('B', 4, 0).free('C', 0, 3).free('C2', 0, 3)
     d.segment('ab', 'A', 'B').segment('bc', 'B', 'C').segment('ca', 'C', 'A')

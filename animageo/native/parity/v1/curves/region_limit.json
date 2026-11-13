@@ -6267,6 +6267,97 @@
       "elementId": "Q"
      }
     ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "fn": "sin",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 10
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_A": {
+    "id": "op_A",
+    "op": "function.area_between",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "a": {
+      "kind": "number",
+      "value": 0.1
+     },
+     "b": {
+      "kind": "number",
+      "value": 21
+     }
+    },
+    "outputs": [
+     {
+      "slot": "region",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_A_area": {
+    "id": "op_A_area",
+    "op": "measure.area",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "A"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "A_area"
+     }
+    ]
+   },
+   "op_A_len": {
+    "id": "op_A_len",
+    "op": "measure.perimeter",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "A"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "A_len"
+     }
+    ]
    }
   },
   "elements": {
@@ -8618,6 +8709,42 @@
      "operationId": "op_Q",
      "slot": "region"
     }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "A": {
+    "id": "A",
+    "type": "region",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "region"
+    }
+   },
+   "A_area": {
+    "id": "A_area",
+    "type": "number",
+    "displayName": "A_area",
+    "producer": {
+     "operationId": "op_A_area",
+     "slot": "number"
+    }
+   },
+   "A_len": {
+    "id": "A_len",
+    "type": "number",
+    "displayName": "A_len",
+    "producer": {
+     "operationId": "op_A_len",
+     "slot": "number"
+    }
    }
   },
   "inputs": {
@@ -8650,6 +8777,23 @@
    "name": "base",
    "scale": 20.0,
    "expect": {
+    "A": {
+     "state": "error",
+     "type": "region",
+     "reason": "limit_exceeded"
+    },
+    "A_area": {
+     "state": "error",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "A"
+    },
+    "A_len": {
+     "state": "error",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "A"
+    },
     "O": {
      "state": "defined",
      "type": "point",
@@ -11531,6 +11675,33 @@
       ],
       "r": 5.0
      }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sin",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 10
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
     }
    },
    "checks": {
@@ -11792,6 +11963,142 @@
     "op_c97:through_on_circle": "passed",
     "op_c98:through_on_circle": "passed",
     "op_c99:through_on_circle": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      0.506365641
+     ],
+     [
+      -9.375,
+      0.477475781
+     ],
+     [
+      -8.75,
+      0.448060142
+     ],
+     [
+      -8.125,
+      0.418151115
+     ],
+     [
+      -7.5,
+      0.387781635
+     ],
+     [
+      -6.875,
+      0.356985145
+     ],
+     [
+      -6.25,
+      0.325795555
+     ],
+     [
+      -5.625,
+      0.294247212
+     ],
+     [
+      -5.0,
+      0.262374854
+     ],
+     [
+      -4.375,
+      0.230213578
+     ],
+     [
+      -3.75,
+      0.1977988
+     ],
+     [
+      -3.125,
+      0.165166212
+     ],
+     [
+      -2.5,
+      0.13235175
+     ],
+     [
+      -1.875,
+      0.099391547
+     ],
+     [
+      -1.25,
+      0.066321897
+     ],
+     [
+      -0.625,
+      0.033179217
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      -0.033179217
+     ],
+     [
+      1.25,
+      -0.066321897
+     ],
+     [
+      1.875,
+      -0.099391547
+     ],
+     [
+      2.5,
+      -0.13235175
+     ],
+     [
+      3.125,
+      -0.165166212
+     ],
+     [
+      3.75,
+      -0.1977988
+     ],
+     [
+      4.375,
+      -0.230213578
+     ],
+     [
+      5.0,
+      -0.262374854
+     ],
+     [
+      5.625,
+      -0.294247212
+     ],
+     [
+      6.25,
+      -0.325795555
+     ],
+     [
+      6.875,
+      -0.356985145
+     ],
+     [
+      7.5,
+      -0.387781635
+     ],
+     [
+      8.125,
+      -0.418151115
+     ],
+     [
+      8.75,
+      -0.448060142
+     ],
+     [
+      9.375,
+      -0.477475781
+     ],
+     [
+      10.0,
+      -0.506365641
+     ]
+    ]
    }
   }
  ]
