@@ -20,7 +20,12 @@ Changing a numeric ref recomputes the line and its dependents.
 
 ## Reading the equation
 
-Frame `(0, 0, S)`, where `S` is the case scale: `q'(x, y) = q(S·x, S·y)`.
+Frame `(0, 0, S)`, where `S` is the case scale: sample `q(S·x, S·y)`
+at the nine points below. Divide all finite samples by their largest
+absolute value before taking differences; leave all-zero samples unchanged.
+Let `q'` denote these normalized samples. Coefficient recovery, the misfit
+and coefficient normalization then share the same scale, avoiding overflow
+when subtracting finite probes near the limit of a double.
 
     F = q'(0, 0)
     D = (q'(1, 0) − q'(−1, 0))/2
