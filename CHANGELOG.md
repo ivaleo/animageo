@@ -77,9 +77,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   status, an annulus in `paint_regions.json`.
 - `measure.area` and `measure.perimeter` of a region (registry 1.9).
 - Regions in paint and output (`has("regions")`): the default paint is the
-  fill of a polygon of the fill tool (`presets.color.accent`, the opacity of
-  a polygon, no stroke; `defaults.region` of the built-in style, before an
-  unused stroke-less fill of `strong` at 0.15); `style_keys()` and
+  fill of a polygon of the same style (`presets.color.accent`; `fill_opacity`,
+  `fill_pattern` and the `hatch_*` keys of `defaults.polygon` of the style in
+  use, copied into `defaults.region` by `StyleConfig` unless the style sets
+  its own; no stroke), so a style with another `defaults.polygon` fills a
+  region as it fills a polygon; `style_keys()` and
   `resolve_paint` know the type `region` (a dashed stroke fitted to each
   ring, `stroke.dash.rings`). The renderer fills the rings with their holes
   in SVG, PNG, PDF, EPS and video, TikZ by `even odd rule`, the hatch runs

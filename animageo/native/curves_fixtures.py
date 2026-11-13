@@ -641,16 +641,19 @@ def _area_scenes():
     of each region."""
     out = []
     # 1. c − x² and the axis: the lobe, the second lobe that is not there, two limits;
-    #    a lobe number with limits (invalid_parameter); a graph that is the axis for x < 0,
-    #    whose first lobe lies on the axis (empty_region)
+    #    a graph that is the axis for x < 0, whose first lobe lies on the axis (empty_region:
+    #    its area is exactly 0); a lobe number of 0 and a lobe number with limits are not
+    #    parameters (invalid_parameter); a sliver of the area of rounding noise
+    #    (k (1 − x²) on [0.5, 0.500002], k = 2·10⁻⁶) is no region (empty_region)
     d = _Doc('region_parabola_axis', (-4, -3, 4, 3)).number('c', 1).free('A', -2, 0).free('B', 0.5, 0)
     d.function('f', o('-', r(0), sq(X)), 'c').area('S', 'f').area('T', 'f', a='A', b='B').area('U', 'f', lobe=2)
-    d.area('V', 'f', a='A', b='B', lobe=2)
-    d.function('z', {'if': [{'cmp': '<', 'args': [X, n(0)]}, n(0), X]}).area('E', 'z')
+    d.function('z', {'if': [{'cmp': '<', 'args': [X, n(0)]}, n(0), X]}).area('E0', 'z')
+    d.number('k', 1).number('ea', 0.5).number('eb', 1).function('e', o('*', r(0), o('-', n(1), sq(X))), 'k')
+    d.area('Z', 'f', lobe=0).area('Z2', 'f', a='A', b='B', lobe=1).area('E', 'e', a='ea', b='eb')
     d.measures('S', 'T')
     out.append((d, _cases(('base', None), ('wide', {'c': N(4)}), ('below', {'c': N(-1)}),
                           ('touching', {'c': N(0)}), ('nearly', {'c': N(0.01)}),
-                          ('reversed', {'A': P(1.5, 0), 'B': P(-1, 0)}))))
+                          ('reversed', {'A': P(1.5, 0), 'B': P(-1, 0)}), ('sliver', {'k': N(0.000002), 'eb': N(0.500002)}))))
     # 2. two graphs: x + c over x²; x³ and x, the second lobe; sin and cos by lobes; f ≡ g
     d = _Doc('region_two_graphs', (-4, -2, 4, 6)).number('c', 2)
     d.function('f', o('+', X, r(0)), 'c').function('g', sq(X)).area('S', 'f', 'g')
@@ -764,10 +767,19 @@ def _boundary_scenes():
     d.boundary('R', ['k', 'ko', 'oe'], ['E', 'K', 'O'], ['K', 'O', 'E']).circle('c', 'O', 'F')
     d.boundary('W', ['c'], ['F'], ['F']).measures('R', 'W')
     out.append((d, _cases(('base', None), ('beyond', {'K': P(-4, -3)}), ('off', {'K': P(0, 4)}))))
-    # 8. carriers: a conic is not a carrier yet; a broken chain; two point elements at one joint
+    # 8. carriers: a conic or a graph is not a carrier yet (registry 1.9); a broken chain; two point elements at one joint
     eq = o('-', o('+', sq(X), sq(Y)), n(4))
     d = _Doc('region_carriers').free('A', -2, 0).free('B', 2, 0).segment('s', 'A', 'B').equation('k', eq)
     d.boundary('R', ['s', 'k'], ['A', 'A'], ['B', 'B'])
+    d.function('f', sq(X)).boundary('F', ['s', 'f'], ['A', 'A'], ['B', 'B'])
+    out.append((d, _cases(('base', None),)))
+    # the limit of 256 pieces: 257 circles of `inside` (the share of points does not matter,
+    # the count is checked before the pieces meet)
+    d = _Doc('region_limit').free('O', 0, 0).free('T', 5, 0)
+    for k in range(257):
+        d.circle(f'c{k}', 'O', 'T')
+    d.boundary('R', inside=[f'c{k}' for k in range(257)])
+    d.boundary('Q', inside=['c0'])
     out.append((d, _cases(('base', None),)))
     d = _Doc('region_chain_errors').free('A', 0, 0).free('B', 4, 0).free('C', 0, 3).free('C2', 0, 3)
     d.segment('ab', 'A', 'B').segment('bc', 'B', 'C').segment('ca', 'C', 'A')

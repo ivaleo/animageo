@@ -2,7 +2,7 @@
  "format": "animageo-parity/v1",
  "id": "region_carriers",
  "registry": "1.9",
- "generatedBy": "animageo 1.12.0",
+ "generatedBy": "animageo 1.13.0",
  "document": {
   "format": "animageo-construction/v1",
   "documentId": "region_carriers",
@@ -162,6 +162,95 @@
       "elementId": "R"
      }
     ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_F": {
+    "id": "op_F",
+    "op": "region.by_boundary",
+    "args": {
+     "curves": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "s"
+       },
+       {
+        "kind": "ref",
+        "elementId": "f"
+       }
+      ]
+     },
+     "from": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      ]
+     },
+     "to": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      ]
+     },
+     "inside": {
+      "kind": "list",
+      "items": []
+     },
+     "outside": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "region",
+      "elementId": "F"
+     }
+    ]
    }
   },
   "elements": {
@@ -207,6 +296,24 @@
     "displayName": "R",
     "producer": {
      "operationId": "op_R",
+     "slot": "region"
+    }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "F": {
+    "id": "F",
+    "type": "region",
+    "displayName": "F",
+    "producer": {
+     "operationId": "op_F",
      "slot": "region"
     }
    }
@@ -257,12 +364,42 @@
       "y": 0.0
      }
     },
+    "F": {
+     "state": "unsupported",
+     "type": "region",
+     "reason": "unsupported_signature",
+     "detail": {
+      "slot": "curves.1"
+     }
+    },
     "R": {
      "state": "unsupported",
      "type": "region",
      "reason": "unsupported_signature",
      "detail": {
       "slot": "curves.1"
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
      }
     },
     "k": {
@@ -300,6 +437,142 @@
    },
    "checks": {
     "op_s:ends": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
    }
   }
  ]

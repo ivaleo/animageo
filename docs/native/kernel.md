@@ -2039,8 +2039,9 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   (`None` for a literal); `region.by_boundary` reads the chain from it, in
   `evaluate` and in the bridge alike.
 - Fixtures `parity/v1/curves/region_*`: the lobe of a parabola and the
-  axis (a lobe number with limits: `invalid_parameter`; the first lobe of
-  a graph that is the axis for `x < 0`, on the piece where they coincide:
+  axis (a lobe number of 0 or with limits: `invalid_parameter`; the first
+  lobe of a graph that is the axis for `x < 0`, on the piece where they
+  coincide, and a sliver of the area of rounding noise, case `sliver`:
   `empty_region`), two graphs and the second lobe, a graph and a line
   (limits at the common points, literal limits), a pole and a step, out of
   the domain, far from the origin. `region.by_boundary`: `region_lines_flip`
@@ -2053,8 +2054,9 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   square with a round hole, a sector, a circle segment, a clockwise
   polygon), `region_arc_parts` (a piece inside its arc, beyond its end, off
   its circle; a whole circle from a point to itself), `region_carriers` (a
-  conic) and `region_chain_errors` (`error/schema`); `measure.area` and
-  `measure.perimeter` of each.
+  conic and a graph: `unsupported_signature`), `region_limit` (257 circles:
+  `error/limit_exceeded`) and `region_chain_errors` (`error/schema`);
+  `measure.area` and `measure.perimeter` of each.
 - Paint and output (`has("regions")`). The default paint of a region is
   that of a polygon of the fill tool of the web: `defaults.region` of the
   built-in style fills with `presets.color.accent` at the opacity of a
@@ -2093,7 +2095,7 @@ entry that is there. A piece is one of
 
 | `kind` | fields (CSS px of the sheet, y down) |
 |---|---|
-| `segment` | `x1, y1, x2, y2` — a line, a segment or a ray clipped to the view |
+| `segment` | `x1, y1, x2, y2` — a line piece |
 | `arc` | `cx, cy, r, start, sweep` — as `arcs` of the list: the screen start angle (y down) and the signed sweep; a whole circle is `sweep = ±2π` |
 | `chain` | `pts` — `x0, y0, x1, y1, …` of a graph, at least one pair |
 
