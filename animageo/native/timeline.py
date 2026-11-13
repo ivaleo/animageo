@@ -34,7 +34,10 @@ skipped everywhere (a deleted element); ``@camera`` passes through.
    if ``r ≤ P/2`` else ``r − P``; ``long`` — ``r − P`` if ``0 < r ≤ P/2``,
    ``r`` if ``r > P/2``, ``0`` if ``r = 0``; ``ccw`` — ``r``; ``cw`` —
    ``r − P`` if ``r > 0`` else ``0``; on other paths ``(1 − e)·s + e·v``.
-   The value at keyframe ``k+1`` is then ``s + d`` (unwrapped).
+   The value at keyframe ``k+1`` is then ``s + d`` (unwrapped). An ellipse
+   (a conic of registry 1.9 that is an ellipse in the document) wraps with
+   ``2π``; a sampled path parameter keeps ``branch`` and ``pathKind`` of
+   the document's input.
 3. Visibility carries forward (the formula of the web's
    ``keyframe_visibility_parity.json``): ``visible.<id>`` is the value of
    the last keyframe with ``t_k ≤ t`` that mentions ``id`` (``show``, then
@@ -180,8 +183,9 @@ def normalize_timeline(doc, timeline) -> dict:
 
 def _path_periods(doc, ids) -> dict:
     """``{id: period | None}`` of the points on a path in ``ids``: ``2π`` on a
-    circle, ``n`` on a polygon of ``n`` vertices (the document's values),
-    ``3`` on a sector, ``None`` on other paths."""
+    circle and on an ellipse (registry 1.9: a conic that is an ellipse with
+    the document's values), ``n`` on a polygon of ``n`` vertices (the
+    document's values), ``3`` on a sector, ``None`` on other paths."""
     from .registry import registry
     paths = registry().paths
     out = {}
@@ -192,7 +196,14 @@ def _path_periods(doc, ids) -> dict:
         arg = (op or {}).get('args', {}).get('path') or {}
         path_id = arg.get('elementId') if arg.get('kind') == 'ref' else None
         spec = paths.get(doc.elements[path_id]['type']) if path_id in doc.elements else None
-        if spec is None or spec.get('outside') != 'wrap':
+        if spec is not None and spec['kind'] == 'conic':
+            if ev is None:
+                from .kernel.evaluate import evaluate
+                ev = evaluate(doc)
+            record = ev.elements.get(path_id) or {}
+            kind = (record.get('value') or {}).get('kind') if record.get('state') == 'defined' else None
+            out[el_id] = TWO_PI if kind == 'ellipse' else None
+        elif spec is None or spec.get('outside') != 'wrap':
             out[el_id] = None
         elif spec['kind'] == 'angle':
             out[el_id] = TWO_PI
@@ -306,7 +317,10 @@ def sample_timeline(doc, timeline, t) -> dict:
                 value = (1 - e) * start + e * end
         else:
             value = list(start) if kind == 'point' else start
-        inputs[el_id] = {'kind': kind, 'value': value}
+        entry = {'kind': kind, 'value': value}
+        if kind == 'pathParameter':             # the branch and the conic kind of the document stay
+            entry.update({k: v for k, v in (doc.inputs.get(el_id) or {}).items() if k in ('branch', 'pathKind')})
+        inputs[el_id] = entry
     visible = {el_id: appearance_visible(doc, el_id) for el_id in sorted(doc.elements)}
     for kf in keyframes:
         if kf['t'] > t:

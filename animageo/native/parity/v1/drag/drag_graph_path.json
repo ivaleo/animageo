@@ -1,0 +1,157 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_graph_path",
+ "generatedBy": "animageo 1.13.0",
+ "text": "a point on a graph (point.on_path) without a hint: the nearest point, across a gap",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_graph_path",
+  "operationRegistryVersion": "1.9",
+  "operations": {
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "-",
+         "args": [
+          {
+           "num": 0
+          },
+          {
+           "var": "x"
+          }
+         ]
+        },
+        {
+         "if": [
+          {
+           "cmp": ">=",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     },
+     "min": {
+      "kind": "number",
+      "value": -3
+     },
+     "max": {
+      "kind": "number",
+      "value": 4
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "f"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   }
+  },
+  "inputs": {
+   "P": {
+    "kind": "pathParameter",
+    "value": -1.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "inputs": {},
+ "element": "P",
+ "target": [
+  0.8,
+  -0.5
+ ],
+ "expect": {
+  "status": "ok",
+  "inputs": {
+   "P": {
+    "kind": "pathParameter",
+    "value": 1.0
+   }
+  }
+ }
+}

@@ -270,20 +270,21 @@ def _onto_ray(doc, locus, xy, sev):
 
 
 def _project(doc, sev, locus, xy):
-    """:func:`animageo.native.project` of ``xy`` onto the place ``locus``
-    with the evaluation ``sev`` of ``doc`` (one evaluation per apply)."""
+    """:func:`animageo.native.project_input` of ``xy`` onto the place
+    ``locus`` with the evaluation ``sev`` of ``doc`` (one evaluation per
+    apply): the input of a point on it, ``None`` when it is not defined."""
     from ..kernel import paths as _paths
     from ..kernel.evaluate import producer_values
     type_ = doc.elements[locus]['type']
     if type_ not in registry().paths:
-        from .. import project
-        return project(doc, locus, xy)
+        from .. import project_input
+        return project_input(doc, locus, xy)
     states = sev.elements
     if states.get(locus, {}).get('state') != 'defined':
         return None
     producer_op, values = producer_values(locus, doc.elements, doc.operations, states)
     frame = _paths.frame(type_, states[locus]['value'], producer_op, values)
-    return _paths.project(frame, float(xy[0]), float(xy[1]), sev.tolerances.decide_length)
+    return _paths.nearest_input(frame, float(xy[0]), float(xy[1]), sev.tolerances.decide_length, doc.bounds)
 
 
 def _family(name):
@@ -413,12 +414,12 @@ def apply_condition(doc, condition, *, receiver=None, id_factory=None, ev=None, 
     if rop['op'] == 'point.free':
         sev = evaluate(staged) if xy is not None else None
         target = _onto_ray(staged, locus, xy, sev) if xy is not None else None
-        t = _project(staged, sev, locus, target) if target is not None else None
-        if t is None:
+        entry = _project(staged, sev, locus, target) if target is not None else None
+        if entry is None:
             return _refuse(doc, 'no_intersection_now', f'the place of {receiver!r} is not defined now',
                            list(_ESCAPE))
         result = redefine(staged, rop_id, {'op': 'point.on_path', 'args': {'path': _ref(locus)}},
-                          inputs={receiver: {'kind': 'pathParameter', 'value': t}}, _take=True)
+                          inputs={receiver: entry}, _take=True)
     else:
         old_path = next(iter(iter_refs(rop['args'].get('path') or {})), None)
         meet = _meet(staged, old_path, locus) if old_path else None
@@ -481,7 +482,7 @@ def release_condition(doc, condition_id, *, ev=None) -> ConditionResult:
     and the warning ``restored_origin``; one — ``point.on_path`` on the
     place left, at the projection); the places and marks of the condition
     go."""
-    from .. import project
+    from .. import project_input
     from ..kernel.evaluate import evaluate
     doc = as_document(doc)
     conditions = condition_list(doc)
@@ -517,10 +518,9 @@ def release_condition(doc, condition_id, *, ev=None) -> ConditionResult:
                               inputs={receiver: {'kind': 'point', 'value': [xy[0], xy[1]]}})
         else:
             xy = xy if xy is not None else _xy(evaluate(doc), receiver)
-            t = project(staged, left[0], xy)
+            entry = project_input(staged, left[0], xy) or {'kind': 'pathParameter', 'value': 0.0}
             result = redefine(staged, rop_id, {'op': 'point.on_path', 'args': {'path': _ref(left[0])}},
-                              slot_map={rop_slot(doc, receiver): 'point'},
-                              inputs={receiver: {'kind': 'pathParameter', 'value': t if t is not None else 0.0}})
+                              slot_map={rop_slot(doc, receiver): 'point'}, inputs={receiver: entry})
         staged = result.document
         for group in ('added', 'removed', 'modified'):
             for key, ids in result.effects[group].items():

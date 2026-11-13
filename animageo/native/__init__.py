@@ -192,6 +192,7 @@ __all__ = [
     'parse_commands',
     'print_commands',
     'project',
+    'project_input',
     'redefine',
     'registry',
     'rename',
@@ -282,12 +283,26 @@ def check(doc, checks=None, *, inputs=None, relations=None, trials=0, seed=None)
 def project(doc, element_id: str, xy, *, inputs=None) -> float | None:
     """The path parameter of the point of a path nearest to ``xy``.
 
-    ``element_id`` is a path element (segment, ray, line, circle, polygon) or
-    a ``point.on_path`` point (then its path). The parameter is in the frame
-    ``point.on_path`` uses (``docs/native/ops/point.on_path.md``), so
-    ``{"kind": "pathParameter", "value": project(…)}`` puts the point there.
-    ``None`` when the path is not defined; ``ValueError`` when the element is
-    not a path.
+    ``element_id`` is a path element (segment, ray, line, circle, polygon,
+    arc, sector; registry 1.9: a conic, a graph) or a ``point.on_path``
+    point (then its path). The parameter is in the frame ``point.on_path``
+    uses (``docs/native/ops/point.on_path.md``), so ``{"kind":
+    "pathParameter", "value": project(…)}`` puts the point there — on a
+    hyperbola with the branch of :func:`project_input`. ``None`` when the
+    path is not defined or a graph has no point near; ``ValueError`` when the
+    element is not a path.
+    """
+    found = project_input(doc, element_id, xy, inputs=inputs)
+    return None if found is None else found['value']
+
+
+def project_input(doc, element_id: str, xy, *, inputs=None) -> dict | None:
+    """The input of a ``point.on_path`` point at the point of a path nearest
+    to ``xy`` (registry 1.9): ``{"kind": "pathParameter", "value": t}`` with
+    ``project``'s ``t``; on a conic also ``"pathKind"`` (its kind now) and on
+    a hyperbola ``"branch"`` (``±1``, the nearest branch). A graph is
+    searched over the window of ``viewDefaults.bounds`` (kernel.md §16).
+    ``None`` and ``ValueError`` as :func:`project`.
     """
     doc = as_document(doc)
     if element_id not in doc.elements:
@@ -309,4 +324,4 @@ def project(doc, element_id: str, xy, *, inputs=None) -> float | None:
         return None
     producer_op, values = producer_values(path_id, doc.elements, doc.operations, states)
     frame = _paths.frame(type_, states[path_id]['value'], producer_op, values)
-    return _paths.project(frame, x, y, ev.tolerances.decide_length)
+    return _paths.nearest_input(frame, x, y, ev.tolerances.decide_length, doc.bounds)

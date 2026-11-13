@@ -804,11 +804,16 @@ whose `via` fails §2.
 2. A point with `appearance.<id>.drag.via` (§1): Gauss–Newton over the
    `via` inputs (below).
 3. The element of `point.on_path` without a hint: `t = project(path,
-   target)` (§5.5, as `native.project`), the `branch` of its input kept;
-   `clamped` when the path is clamped (`outside: "clamp"`: segment, ray,
-   arc, polyline), `t` equals an end of its range and the distance from the
-   point at `t` to the target is above `tol`; else `ok`. A path that is not
-   defined at rest — `no_convergence`.
+   target)` (§5.5, as `native.project`); the input is its current input
+   with the entries of `native.project_input` set (`value: t`; registry
+   1.9: a conic also `pathKind`, its kind at rest, and a hyperbola `branch`,
+   the nearest branch — the point may change branch), its other keys (a
+   `branch` elsewhere) kept; `clamped` when the path is clamped (`outside`
+   of the frame is `clamp`: segment, ray, arc, polyline, a graph with a
+   given end of its domain), `t` equals an end of its range and the
+   distance from the point at `t` (on its branch) to the target is above
+   `tol`; else `ok`. A path that is not defined at rest, or a graph without
+   a point in its search interval (§16) — `no_convergence`.
 4. The element of `point.on_function` without a hint
    ([ops/point.on_function.md](ops/point.on_function.md)): the input
    becomes `x = target.x`, clamped into the domain `[min, max]` of the
@@ -828,17 +833,20 @@ input gives `t`. Per variable:
 | variable | difference step `h` | range |
 |---|---|---|
 | coordinate | `STEP_FRACTION · S` | none |
-| `t`, both ends finite | `STEP_FRACTION · (hi − lo)` (`STEP_FRACTION` when `hi = lo`) | clamped (`outside: "clamp"`) or wrapped (`"wrap"`: circle, polygon, sector, circle segment) |
-| `t`, an end infinite (line, ray) | `STEP_FRACTION · S / |v|`, `|v|` the length of the frame vector at rest (`STEP_FRACTION` when `|v| ≤ tol`) | ray clamped at `0`, line none |
+| `t`, both ends finite | `STEP_FRACTION · (hi − lo)` (`STEP_FRACTION` when `hi = lo`) | clamped (`outside: "clamp"`) or wrapped (`"wrap"`: circle, polygon, sector, circle segment; registry 1.9: an ellipse, `[0, 2π)`) |
+| `t`, an end infinite (line, ray; registry 1.9: hyperbola, parabola, graph) | `STEP_FRACTION · S / unit`, `unit` at rest: `|v|` the length of the frame vector (line, ray), `b` (hyperbola), `p` (parabola), `1` (graph); `STEP_FRACTION` when `unit ≤ tol` | ray clamped at `0`, a graph at the given end of its domain, line, hyperbola, parabola and a graph without a domain none |
 | `x` of `point.on_function` | `STEP_FRACTION · S` (`c = 1`) | clamped into the domain at rest, each end only where given |
 
-`lo, hi` are `parameter_range` of the path frame at rest (§5.5). A clamped
-`t` starts clamped into its range. The column scale is `c = h /
+`lo, hi` are `parameter_range` of the path frame at rest (§5.5, §16); the
+range is that of `outside(frame)` (`kernel/paths.py`: `_types.json →
+paths.<type>.outside`, a conic by its kind, a graph `clamp` with a given
+end of its domain). A clamped `t` starts clamped into its range (at each
+given end). The column scale is `c = h /
 (STEP_FRACTION · S)` (`1` for a coordinate). `f(u)` is the point
 `element_id` of `evaluate(doc, inputs ⊕ entries(u))`, *undefined* unless its
 state is `defined`; `entries(u)` writes `{"kind": "point", "value": [x, y]}`
-and `{"kind": "pathParameter", "value": t, "branch"?}` (the `branch` of the
-current input is kept; hyperbola branches are not switched).
+and the current `pathParameter` input with `value: t` (its other keys —
+`branch`, `pathKind` — kept; a hyperbola branch is not switched).
 
 **Stencil** at `u` with `p = f(u)`: per variable `j`, `u⁺ = u_j + h`, `u⁻ =
 u_j − h`, then `u⁺ = min(u⁺, hi)`, `u⁻ = max(u⁻, lo)` for a clamped range
@@ -926,8 +934,8 @@ text, doc, inputs, element, target, expect: {status, inputs}}` where
 `expect` is `native.drag(doc, inputs, element, target)`. A port compares
 the status exactly; on `no_convergence` and `singular` `expect.inputs`
 equals `inputs` and the call must return the given object; on `ok` and
-`clamped` a new object whose entries match by key, `kind` and `branch`
-exactly and every number within `1e-9` absolute (world units for a point,
+`clamped` a new object whose entries match by key, `kind`, `branch` and
+`pathKind` exactly and every number within `1e-9` absolute (world units for a point,
 parameter units for a path parameter). Success numbers are written rounded
 to 10 digits. Each document declares the lowest registry version its
 operations need. `python -m animageo.native fixtures drag [-o <dir>]
@@ -1914,6 +1922,25 @@ or a graph in a `path` slot declares 1.9 (`needs_newer_registry` otherwise,
 - Distances (`distance_to_path`; the check `on_path`, incidence): a conic
   gives its focal residual, a graph `|y − f(x)|` (as `on_both`, §15).
 - A cosh/sinh that overflows gives `undefined/non_finite`.
+- `native.project_input(doc, id, xy)` (library 1.14.0) is the whole input
+  of the point at the projection: `{kind: "pathParameter", value: t}`, on a
+  conic with `pathKind` (its kind now) and on a hyperbola with `branch`
+  (the nearest). `native.project` is its `value`; both search a graph over
+  the window of `viewDefaults.bounds`. Library writers of a path parameter
+  (drag without a hint, conditions, the `move` request of commands, GGB
+  import) write that input.
+- Drag (§8.1): without a hint a point on a conic or a graph is projected
+  (the nearest branch of a hyperbola; a graph stops at a given end of its
+  domain — `clamped`); through a hint the parameter of an ellipse wraps
+  over `2π`, a hyperbola keeps its branch, the difference step of a
+  hyperbola, a parabola and a graph is `STEP_FRACTION · S / unit` (`b`,
+  `p`, `1`). A `point.on_function` keeps its 1.12 rule (`x` of the target;
+  no value there — `no_convergence`, the point stays). Fixtures
+  `drag_conic_*`, `drag_graph_path*`, `drag_via_ellipse`,
+  `drag_via_hyperbola` in `parity/v1/drag`.
+- Timeline: a point on an ellipse wraps with the period `2π`; a sampled
+  path parameter keeps `branch` and `pathKind` of the document's input
+  ([timeline.md](timeline.md)).
 - Parity fixtures: `path_conics` (an ellipse, both branches of a
   hyperbola, a parabola: turned, a circle, wrapped parameters, degenerate
   conics), `path_conic_kind` (`x²/9 + k y² = 1`: `path_kind_changed` and

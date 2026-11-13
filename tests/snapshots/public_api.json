@@ -53,6 +53,7 @@
    "parse_commands",
    "print_commands",
    "project",
+   "project_input",
    "redefine",
    "registry",
    "relation",
@@ -385,6 +386,10 @@
     "signature": "(doc, *, lexicon=None)"
    },
    "project": {
+    "kind": "function",
+    "signature": "(doc, element_id, xy, *, inputs=None)"
+   },
+   "project_input": {
     "kind": "function",
     "signature": "(doc, element_id, xy, *, inputs=None)"
    },

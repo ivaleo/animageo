@@ -68,6 +68,7 @@ Values, states and reasons (kernel.md §5–§7); checks and the general case (c
 - `class Evaluated(document_id, scale, elements, diagnostics, tolerances, library='', registry='1.9', computed=<factory>, t=None, visible=None)` — The result of `evaluate()`; `to_dict()` is `animageo-evaluated/v1`.
 - `evaluate(doc, *, inputs=None, t=None, timeline=None)` — Values, states and reasons of every element of `doc`.
 - `project(doc, element_id, xy, *, inputs=None)` — The path parameter of the point of a path nearest to `xy`.
+- `project_input(doc, element_id, xy, *, inputs=None)` — The input of a `point.on_path` point at the point of a path nearest to `xy`: `{"kind": "pathParameter", "value"}`, on a conic with `pathKind` and on a hyperbola with the nearest `branch` (1.14.0, kernel.md §16).
 - `drag(doc, inputs, element_id, target)` — Move the point `element_id` towards `target` by changing input values: `{"inputs", "status"}`, `status` one of `ok`, `clamped`, `no_convergence`, `singular`; a refusal returns the given `inputs` object. A dependent point moves through `appearance.<id>.drag.via` (1.12.0, kernel.md §8.1).
 - `check(doc, checks=None, *, inputs=None, relations=None, trials=0, seed=None)` — Mandatory checks of every operation whose outputs are defined, and relations between elements.
 - `class CheckReport(results=<factory>, errors=<factory>, details=<factory>)` — `results`: key → status; `errors`: key → measured error; `details`: key → reason or `general_position` trial summary.

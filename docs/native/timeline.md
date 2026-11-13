@@ -52,7 +52,8 @@ No classic code, no evaluation except the vertex count of a polygon path.
    has a value for `id`: then a point and a number take that value, a path
    parameter on a non-wrapping path too, and a path parameter on a wrapping
    path (circle — period `P = 2π`; polygon — `P = n`, the vertex count of
-   the polygon in the document now; sector — `P = 3`) becomes `s + d`
+   the polygon in the document now; sector — `P = 3`; registry 1.9: a conic
+   that is an ellipse in the document now — `P = 2π`) becomes `s + d`
    (unwrapped), where `s` is the value at `k`, `v` the keyframe's
    `tparam`, `r = (v − s) mod P ∈ [0, P)` and
 
@@ -63,12 +64,15 @@ No classic code, no evaluation except the vertex count of a polygon path.
    | `ccw` | `r` |
    | `cw` | `r − P` if `r > 0`, else `0` |
 
-   The direction is ignored on segment, ray, line, arc and polyline.
+   The direction is ignored on segment, ray, line, arc, polyline, a
+   hyperbola, a parabola and a graph.
 3. In the interval, an `id` with a value in keyframe `k+1` is
    `(1 − e)·a + e·b` (point coordinates one by one, numbers, path
    parameters on non-wrapping paths) or `a + e·(b − a)` (a path parameter
    on a wrapping path), `a`, `b` its values at `k` and `k+1`; any other
-   animated `id` keeps its value at `k`.
+   animated `id` keeps its value at `k`. A sampled path parameter keeps the
+   `branch` and the `pathKind` of the document's input (registry 1.9: a
+   point stays on its branch of a hyperbola).
 4. **Visibility carries forward** — the formula of the web's
    `tests/fixtures/keyframe_visibility_parity.json` (a copy is
    `tests/native/snapshots/keyframe_visibility_parity.json`): for every

@@ -1,0 +1,248 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_via_ellipse",
+ "generatedBy": "animageo 1.13.0",
+ "text": "a midpoint through a point on an ellipse: the parameter wraps into [0, 2pi)",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_via_ellipse",
+  "operationRegistryVersion": "1.9",
+  "operations": {
+   "op_F1": {
+    "id": "op_F1",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F1"
+     }
+    ]
+   },
+   "op_F2": {
+    "id": "op_F2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F2"
+     }
+    ]
+   },
+   "op_T": {
+    "id": "op_T",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "T"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_e": {
+    "id": "op_e",
+    "op": "conic.ellipse_foci_point",
+    "args": {
+     "f1": {
+      "kind": "ref",
+      "elementId": "F1"
+     },
+     "f2": {
+      "kind": "ref",
+      "elementId": "F2"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "T"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "e"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "e"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_M": {
+    "id": "op_M",
+    "op": "point.midpoint",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "C"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "M"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "F1": {
+    "id": "F1",
+    "type": "point",
+    "displayName": "F1",
+    "producer": {
+     "operationId": "op_F1",
+     "slot": "point"
+    }
+   },
+   "F2": {
+    "id": "F2",
+    "type": "point",
+    "displayName": "F2",
+    "producer": {
+     "operationId": "op_F2",
+     "slot": "point"
+    }
+   },
+   "T": {
+    "id": "T",
+    "type": "point",
+    "displayName": "T",
+    "producer": {
+     "operationId": "op_T",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "e": {
+    "id": "e",
+    "type": "conic",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "conic"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "M": {
+    "id": "M",
+    "type": "point",
+    "displayName": "M",
+    "producer": {
+     "operationId": "op_M",
+     "slot": "point"
+    }
+   }
+  },
+  "inputs": {
+   "F1": {
+    "kind": "point",
+    "value": [
+     -4,
+     0
+    ]
+   },
+   "F2": {
+    "kind": "point",
+    "value": [
+     4,
+     0
+    ]
+   },
+   "T": {
+    "kind": "point",
+    "value": [
+     0,
+     3
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     1,
+     1
+    ]
+   },
+   "P": {
+    "kind": "pathParameter",
+    "value": 6.0,
+    "pathKind": "ellipse"
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  },
+  "appearance": {
+   "M": {
+    "drag": {
+     "via": "P"
+    }
+   }
+  }
+ },
+ "inputs": {},
+ "element": "M",
+ "target": [
+  2.888341222814015,
+  0.9432803099920093
+ ],
+ "expect": {
+  "status": "ok",
+  "inputs": {
+   "P": {
+    "kind": "pathParameter",
+    "value": 0.3000000005,
+    "pathKind": "ellipse"
+   }
+  }
+ }
+}

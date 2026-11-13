@@ -47,11 +47,11 @@ def _move(doc, request):
     path = next(iter(iter_refs((op.get('args') or {}).get('path') or {})), None)
     if path is None:
         return doc
-    t = _project(doc, evaluate(doc), path, tuple(request['point']))
-    if t is None:
+    entry = _project(doc, evaluate(doc), path, tuple(request['point']))
+    if entry is None:
         return doc
     data = copy.deepcopy(doc.data)
-    data.setdefault('inputs', {})[receiver] = {'kind': 'pathParameter', 'value': t}
+    data.setdefault('inputs', {})[receiver] = entry
     return NativeDocument(data)
 
 

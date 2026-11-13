@@ -4,7 +4,7 @@ in ``animageo/native/parity/v1/drag``.
 One file per case: ``{format, id, generatedBy, text, doc, inputs, element,
 target, expect: {status, inputs}}`` — ``expect`` is ``native.drag(doc,
 inputs, element, target)``. The status compares exactly; on ``ok`` and
-``clamped`` the inputs compare by key, ``kind`` and ``branch`` exactly and
+``clamped`` the inputs compare by key, ``kind``, ``branch`` and ``pathKind`` exactly and
 every number within ``1e-9`` (absolute; world units for a point, parameter
 units for a path parameter); on ``no_convergence`` and ``singular``
 ``expect.inputs`` is ``inputs`` and the call returns that very object.
@@ -20,7 +20,11 @@ least change), an incenter moved through a vertex (several steps), and the
 refusals: an incenter outside its reach (``no_convergence``) and the foot of
 a perpendicular moved through the point it drops from (``singular``); a point
 on a graph (``point.on_function``) without a hint (the x of the target, then
-stopped at the end of the domain) and a point reflected from it through its x.
+stopped at the end of the domain) and a point reflected from it through its x;
+registry 1.9: a point on an ellipse, a hyperbola (the nearest branch) and a
+parabola, a point on a graph by ``point.on_path`` (the nearest point across a
+gap, stopped at the end of the domain), and a midpoint through a point on an
+ellipse (the parameter wraps) and on a hyperbola (the branch stays).
 """
 from __future__ import annotations
 
@@ -80,9 +84,16 @@ class _Doc:
         self.doc['inputs'][el_id] = _pt(x, y)
         return self
 
-    def on_path(self, el_id, path, t):
+    def on_path(self, el_id, path, t, **extra):
         self.op('point.on_path', {'path': _ref(path)}, [('point', el_id, 'point')])
-        self.doc['inputs'][el_id] = _par(t)
+        self.doc['inputs'][el_id] = dict(_par(t), **extra)
+        return self
+
+    def conic(self, name, el_id, **refs):
+        """A conic; registry 1.9 for a point on it (the family ``path``)."""
+        self.args(name, el_id, 'conic', **refs)
+        if _version(self.doc['operationRegistryVersion']) < (1, 9):
+            self.doc['operationRegistryVersion'] = '1.9'
         return self
 
     def args(self, name, el_id, type_, slot=None, **refs):
@@ -162,6 +173,46 @@ def _cubic(doc_id, x=1.0):
     return d.via('Q', 'P')
 
 
+def _ellipse(doc_id):
+    """``P`` on the ellipse with foci ``(±4, 0)`` through ``(0, 3)`` (a = 5, b = 3); ``M`` the
+    midpoint of ``P`` and ``C``, dragged through ``P``."""
+    d = _Doc(doc_id).free('F1', -4, 0).free('F2', 4, 0).free('T', 0, 3).free('C', 1, 1)
+    d.conic('conic.ellipse_foci_point', 'e', f1='F1', f2='F2', through='T').on_path('P', 'e', 6.0, pathKind='ellipse')
+    d.args('point.midpoint', 'M', 'point', slot='point', a='P', b='C')
+    return d.via('M', 'P')
+
+
+def _hyperbola(doc_id):
+    """``P`` on the left branch of x²/9 − y²/16 = 1; ``M`` the midpoint of ``P`` and ``C``."""
+    d = _Doc(doc_id).free('F1', -5, 0).free('F2', 5, 0).free('T', 3, 0).free('C', 1, 1)
+    d.conic('conic.hyperbola_foci_point', 'h', f1='F1', f2='F2', through='T')
+    d.on_path('P', 'h', 0.2, branch=-1, pathKind='hyperbola')
+    d.args('point.midpoint', 'M', 'point', slot='point', a='P', b='C')
+    return d.via('M', 'P')
+
+
+def _parabola(doc_id):
+    """``P`` on the parabola with focus ``(0, 1)`` and directrix ``y = −1`` (y = x²/4)."""
+    d = _Doc(doc_id).free('F', 0, 1).free('A', -1, -1).free('B', 1, -1)
+    d.args('line.by_points', 'l', 'line', a='A', b='B')
+    return d.conic('conic.parabola_focus_directrix', 'q', focus='F', directrix='l').on_path('P', 'q', 0.0,
+                                                                                            pathKind='parabola')
+
+
+def _graph_path(doc_id):
+    """``P`` on the graph of ``x < 0: −x; x ≥ 1: x − 1`` (no value between) on ``[−3, 4]``."""
+    def o(name, *args):
+        return {'op': name, 'args': list(args)}
+    ast = {'if': [{'cmp': '<', 'args': [_X, {'num': 0}]}, o('-', {'num': 0}, _X),
+                  {'if': [{'cmp': '>=', 'args': [_X, {'num': 1}]}, o('-', _X, {'num': 1})]}]}
+    d = _Doc(doc_id)
+    d.op('function.expr', {'expr': {'kind': 'expr', 'ast': ast}, 'refs': {'kind': 'list', 'items': []},
+                           'min': {'kind': 'number', 'value': -3}, 'max': {'kind': 'number', 'value': 4}},
+         [('function', 'f', 'function')])
+    d.doc['operationRegistryVersion'] = '1.9'
+    return d.on_path('P', 'f', -1.0)
+
+
 def _foot():
     d = _Doc('drag_singular').free('P', 1, 3).free('B', -2, -1).free('C', 5, 1)
     d.args('line.by_points', 'l', 'line', a='B', b='C')
@@ -200,6 +251,20 @@ CASES = (
      lambda: _cubic('drag_on_function_clamped'), {}, 'P', [5, 0]),
     ('drag_via_on_function', 'a point reflected from a point on a graph, through its x: Q = -P, x = 2.5',
      lambda: _cubic('drag_via_on_function'), {}, 'Q', [-2.5, -1.40625]),
+    ('drag_conic_ellipse', 'a point on an ellipse without a hint: the nearest point, its kind written',
+     lambda: _ellipse('drag_conic_ellipse'), {}, 'P', [1, 0.5]),
+    ('drag_conic_branch', 'a point on a hyperbola without a hint: the nearest point of the nearest branch',
+     lambda: _hyperbola('drag_conic_branch'), {}, 'P', [4.5, -2]),
+    ('drag_conic_parabola', 'a point on a parabola without a hint, above the vertex past the centre of curvature',
+     lambda: _parabola('drag_conic_parabola'), {}, 'P', [0, 5]),
+    ('drag_graph_path', 'a point on a graph (point.on_path) without a hint: the nearest point, across a gap',
+     lambda: _graph_path('drag_graph_path'), {}, 'P', [0.8, -0.5]),
+    ('drag_graph_path_clamped', 'the nearest point of the graph is the end of its domain [-3, 4]',
+     lambda: _graph_path('drag_graph_path_clamped'), {}, 'P', [6, 1]),
+    ('drag_via_ellipse', 'a midpoint through a point on an ellipse: the parameter wraps into [0, 2pi)',
+     lambda: _ellipse('drag_via_ellipse'), {}, 'M', [(5 * math.cos(0.3) + 1) / 2, (3 * math.sin(0.3) + 1) / 2]),
+    ('drag_via_hyperbola', 'a midpoint through a point on a hyperbola: the branch stays, the nearest point it reaches',
+     lambda: _hyperbola('drag_via_hyperbola'), {}, 'M', [3, 2]),
 )
 
 
@@ -285,7 +350,7 @@ def _compare_inputs(expected, actual, where) -> list:
     for key in sorted(expected):
         want, have = expected[key], actual[key]
         if not isinstance(want, dict) or not isinstance(have, dict) or set(want) != set(have) \
-                or want.get('kind') != have.get('kind') or want.get('branch') != have.get('branch'):
+                or any(want.get(k) != have.get(k) for k in ('kind', 'branch', 'pathKind')):
             out.append(f'{where}.{key}: expected {want!r}, got {have!r}')
             continue
         a = want.get('value')

@@ -1,0 +1,210 @@
+{
+ "format": "animageo-drag-parity/v1",
+ "id": "drag_conic_parabola",
+ "generatedBy": "animageo 1.13.0",
+ "text": "a point on a parabola without a hint, above the vertex past the centre of curvature",
+ "doc": {
+  "format": "animageo-construction/v1",
+  "documentId": "drag_conic_parabola",
+  "operationRegistryVersion": "1.9",
+  "operations": {
+   "op_F": {
+    "id": "op_F",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F"
+     }
+    ]
+   },
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_l": {
+    "id": "op_l",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "l"
+     }
+    ]
+   },
+   "op_q": {
+    "id": "op_q",
+    "op": "conic.parabola_focus_directrix",
+    "args": {
+     "focus": {
+      "kind": "ref",
+      "elementId": "F"
+     },
+     "directrix": {
+      "kind": "ref",
+      "elementId": "l"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "q"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "q"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "F": {
+    "id": "F",
+    "type": "point",
+    "displayName": "F",
+    "producer": {
+     "operationId": "op_F",
+     "slot": "point"
+    }
+   },
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "l": {
+    "id": "l",
+    "type": "line",
+    "displayName": "l",
+    "producer": {
+     "operationId": "op_l",
+     "slot": "line"
+    }
+   },
+   "q": {
+    "id": "q",
+    "type": "conic",
+    "displayName": "q",
+    "producer": {
+     "operationId": "op_q",
+     "slot": "conic"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   }
+  },
+  "inputs": {
+   "F": {
+    "kind": "point",
+    "value": [
+     0,
+     1
+    ]
+   },
+   "A": {
+    "kind": "point",
+    "value": [
+     -1,
+     -1
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     1,
+     -1
+    ]
+   },
+   "P": {
+    "kind": "pathParameter",
+    "value": 0.0,
+    "pathKind": "parabola"
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "inputs": {},
+ "element": "P",
+ "target": [
+  0,
+  5
+ ],
+ "expect": {
+  "status": "ok",
+  "inputs": {
+   "P": {
+    "kind": "pathParameter",
+    "value": -1.7320508076,
+    "pathKind": "parabola"
+   }
+  }
+ }
+}

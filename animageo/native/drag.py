@@ -1,8 +1,10 @@
 """Dragging a point of a document (``native.drag``; docs/native/kernel.md §8.1).
 
-A free point goes to the target; a point on a path takes the parameter of the
-nearest point of its path; a point on a graph takes the x of the target
-within the domain. A dependent point moves only through the hint
+A free point goes to the target; a point on a path takes the input of the
+nearest point of its path (``native.project_input``: registry 1.9 — on a
+conic its kind, on a hyperbola the nearest branch; a graph stops at the
+ends of its domain); a point on a graph (``point.on_function``) takes the x
+of the target within the domain. A dependent point moves only through the hint
 ``appearance.<id>.drag.via`` — free inputs (``point.free``,
 ``point.on_path``, ``point.on_function``) upstream of it: a Gauss–Newton
 solve over the joined vector of their values moves them so that the point
@@ -18,9 +20,10 @@ that the web port gives the same inputs (fixtures ``parity/v1/drag``):
   ``inputs``);
 - difference step ``h``: ``STEP_FRACTION · S`` for a coordinate;
   ``STEP_FRACTION · (hi − lo)`` for a parameter whose range is bounded on
-  both sides, ``STEP_FRACTION · S / |v|`` for an affine path open on a side
-  (line, ray; ``|v|`` the frame vector at rest, ``STEP_FRACTION`` when
-  ``|v| ≤ tol``); the column scale is ``c = h / (STEP_FRACTION · S)``;
+  both sides, ``STEP_FRACTION · S / unit`` for a path open on a side
+  (``paths.parameter_unit`` at rest: ``|v|`` of a line or a ray, ``b`` of a
+  hyperbola, ``p`` of a parabola, ``1`` of a graph; ``STEP_FRACTION`` when
+  ``unit ≤ tol``); the column scale is ``c = h / (STEP_FRACTION · S)``;
 - ``J`` by central differences ``(f(u + h) − f(u − h)) / (u⁺ − u⁻)`` over
   the stencil clamped into a clamped range; a column of zero width is zero;
 - rank and step on ``Ĵ = J · diag(c)``: ``σ₁² + σ₂² = Σ|col|²``,
@@ -151,20 +154,20 @@ def _via_problems(doc: NativeDocument, el_id: str, via: list, ancestors=None) ->
 
 def _path_range(doc: NativeDocument, states: dict, via_id: str):
     """``(frame, lo, hi, outside)`` of the path of the ``point.on_path`` input
-    ``via_id`` at rest, ``None`` when the path is not defined."""
+    ``via_id`` at rest (``outside`` of the frame: a conic by its kind, a
+    graph by its domain), ``None`` when the path is not defined."""
     arg = doc.operations[bound_producer(doc, via_id)]['args'].get('path') or {}
     path_id = arg.get('elementId') if arg.get('kind') == 'ref' else None
     rec = states.get(path_id)
     if rec is None or rec['state'] != 'defined':
         return None
     type_ = doc.elements[path_id]['type']
-    spec = registry().paths.get(type_)
-    if spec is None:
+    if type_ not in registry().paths:
         return None
     producer_op, values = producer_values(path_id, doc.elements, doc.operations, states)
     frame = _paths.frame(type_, rec['value'], producer_op, values)
     lo, hi = _paths.parameter_range(frame)
-    return frame, lo, hi, spec.get('outside')
+    return frame, lo, hi, _paths.outside(frame)
 
 
 def _on_function(doc: NativeDocument, el_id: str) -> bool:
@@ -233,11 +236,12 @@ class _Problem:
             if lo is not None and hi is not None:
                 h = STEP_FRACTION * (hi - lo) if hi > lo else STEP_FRACTION
             else:
-                length = math.hypot(*frame.vector)
+                length = _paths.parameter_unit(frame)
                 h = unit / length if length > self.tol else STEP_FRACTION
             t = float(value['value'])
             if outside == 'clamp':
-                t = min(max(t, lo), hi) if hi is not None else max(t, lo)
+                t = max(t, lo) if lo is not None else t
+                t = min(t, hi) if hi is not None else t
                 var = _Var(via_id, h, h / unit, lo=lo, hi=hi)
             elif outside == 'wrap':
                 var = _Var(via_id, h, h / unit, wrap=(lo, hi))
@@ -248,7 +252,8 @@ class _Problem:
 
     def entries(self, u) -> dict:
         """``{via: input value}`` of ``u``; a wrapped parameter goes back into
-        its range, the ``branch`` of a parameter stays."""
+        its range, the other keys of a parameter (``branch``, ``pathKind``)
+        stay."""
         out = {}
         k = 0
         for via_id in self.via:
@@ -265,10 +270,7 @@ class _Problem:
                 t = t - period * math.floor((t - lo) / period)
                 if t >= hi or t < lo:
                     t = lo
-            value = {'kind': 'pathParameter', 'value': t}
-            if 'branch' in current:
-                value['branch'] = current['branch']
-            out[via_id] = value
+            out[via_id] = dict(current, value=t)
             k += 1
         return out
 
@@ -511,17 +513,21 @@ def _project(doc, inputs, element_id, target) -> DragResult:
         return DragResult('no_convergence', inputs)
     frame, lo, hi, outside = found
     tol = rest.tolerances.decide_length
-    t = _paths.project(frame, target[0], target[1], tol)
-    at = _paths.point_at(frame, t)
+    nearest = _paths.nearest_input(frame, target[0], target[1], tol, doc.bounds)
+    if nearest is None:                 # a graph without a point near
+        return DragResult('no_convergence', inputs)
+    t = nearest['value']
+    at = _paths.point_at(frame, t, nearest.get('branch', 1))
+    if at is None:
+        return DragResult('no_convergence', inputs)
     residual = math.hypot(at['x'] - target[0], at['y'] - target[1])
     status = 'ok'
-    if outside == 'clamp' and residual > tol and (t == lo or (hi is not None and t == hi)):
+    if outside == 'clamp' and residual > tol and (t == lo or t == hi):
         status = 'clamped'
     current = dict(doc.inputs)
     current.update(inputs or {})
-    value = {'kind': 'pathParameter', 'value': t}
-    if isinstance(current.get(element_id), dict) and 'branch' in current[element_id]:
-        value['branch'] = current[element_id]['branch']
+    value = dict(current.get(element_id) or {}) if isinstance(current.get(element_id), dict) else {}
+    value.update(nearest)
     return DragResult(status, _new_inputs(inputs, {element_id: value}), 0, residual)
 
 
@@ -587,7 +593,8 @@ def drag(doc, inputs, element_id: str, target) -> dict:
     is never changed.
 
     A free point goes to ``target`` (``ok``); a point on a path without a
-    hint takes the parameter of the nearest point of its path (``clamped``
+    hint takes the parameter of the nearest point of its path, on a conic
+    with its kind and on a hyperbola with the nearest branch (``clamped``
     when it stops at an end of a clamped range away from the target); a
     point on a graph without a hint takes the x of the target, clamped into
     the domain (``clamped`` when that moves it); a

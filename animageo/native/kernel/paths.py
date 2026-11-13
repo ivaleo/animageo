@@ -38,8 +38,8 @@ from ..registry import registry
 from .conic import residual
 from .function import evaluator
 
-__all__ = ['Frame', 'frame', 'point_at', 'project', 'locate', 'distance_to_path', 'parameter_range', 'outside',
-           'parameter_unit', 'arc_fraction', 'ROOT_HALVINGS']
+__all__ = ['Frame', 'frame', 'point_at', 'project', 'locate', 'nearest_input', 'distance_to_path', 'parameter_range',
+           'outside', 'parameter_unit', 'arc_fraction', 'ROOT_HALVINGS']
 
 TWO_PI = 2 * math.pi
 ROOT_HALVINGS = 1100        # halvings of a projection root at most: to the resolution of a double
@@ -512,6 +512,23 @@ def locate(f: Frame, x: float, y: float, tol: float, bounds=None, decide=None):
         u = _locate_graph(f, x, y, bounds)
         return None if u is None else (u, 1)
     return project(f, x, y, tol), 1
+
+
+def nearest_input(f: Frame, x: float, y: float, tol: float, bounds=None) -> dict | None:
+    """The ``pathParameter`` input of ``point.on_path`` at the point of the
+    path nearest to ``(x, y)``: ``{"kind", "value"}``, on a conic also
+    ``pathKind`` (its kind now) and on a hyperbola ``branch`` (the nearest
+    one); ``None`` when a graph has no point."""
+    found = locate(f, x, y, tol, bounds)
+    if found is None:
+        return None
+    t, branch = found
+    out = {'kind': 'pathParameter', 'value': t}
+    if f.kind == 'conic':
+        if f.curve['kind'] == 'hyperbola':
+            out['branch'] = branch
+        out['pathKind'] = f.curve['kind']
+    return out
 
 
 def project(f: Frame, x: float, y: float, tol: float, bounds=None) -> float | None:
