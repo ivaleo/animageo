@@ -612,3 +612,63 @@ def test_no_labels():
 def test_import_without_manim():
     code = 'import sys, animageo.native.labels.r4; assert "manim" not in sys.modules'
     subprocess.run([sys.executable, '-c', code], check=True)
+
+
+# ------------------------------------- regions (registry 1.9): only the stroke
+
+
+def _region_list(**region):
+    """A region of a line, an arc of a quarter circle (screen y down) and a graph
+    as a chain: the ring (100,100) → (200,100) ↷ (100,200) → back by the chain."""
+    entry = {'id': 'R', 'pieces': [
+        {'kind': 'segment', 'x1': 100, 'y1': 100, 'x2': 200, 'y2': 100},
+        {'kind': 'arc', 'cx': 100, 'cy': 100, 'r': 100, 'start': 0, 'sweep': math.pi / 2},
+        {'kind': 'chain', 'pts': [100, 200, 90, 150, 100, 100]},
+    ]}
+    entry.update(region)
+    return {'regions': [entry]}
+
+
+def test_a_stroked_region_is_an_obstacle_by_its_pieces():
+    """Lines as segments, arcs as arcs, graphs as chains, the pad of its stroke;
+    its fill is not an obstacle."""
+    paint = {'byId': {'R': {'strokeWidth': 2}}}
+    obstacles = r4.geometry_obstacles(_region_list(), paint)
+    assert [oid for oid, _hit in obstacles] == ['R'] * 4
+    hits = [hit for _oid, hit in obstacles]
+    assert hits[0]((140, 95, 160, 98))                     # 2 px above the line: the pad is 1 + 2/2
+    assert not hits[0]((140, 90, 160, 97))
+    a = math.pi / 4
+    x, y = 100 + 100 * math.cos(a), 100 + 100 * math.sin(a)
+    assert hits[1]((x - 1, y - 1, x + 1, y + 1))
+    assert not hits[1]((95, 5, 105, 15))                   # the circle beyond the sweep
+    assert hits[2]((92, 160, 98, 170)) and hits[3]((92, 120, 98, 130))
+    assert not any(hit((130, 120, 150, 140)) for hit in hits)   # inside: the fill
+
+
+def test_a_region_without_a_stroke_is_not_an_obstacle():
+    assert r4.geometry_obstacles(_region_list(), {'byId': {'R': {'strokeWidth': 0}}}) == []
+    assert [oid for oid, _ in r4.geometry_obstacles(_region_list())] == ['R'] * 4
+
+
+def test_a_label_leaves_the_stroke_of_a_region():
+    lst = _region_list()
+    lst['points'] = [{'id': 'A', 'x': 150, 'y': 104}]
+    lst['labels'] = [{'id': 'A', 'ax': 150, 'ay': 104, 'box': [150, 92, 160, 108], 'edge': [-1, 0],
+                      'place': {'kind': 'point', 'reach': 4}}]
+    paint = {'byId': {'R': {'strokeWidth': 2}}}
+    placements, _memory, _stats = r4.layout(lst, {'width': 640, 'height': 480}, None, paint)
+    laid = {**lst, 'labels': [{**lst['labels'][0], 'box': list(placements['A']['box'])}]}
+    assert r4.geometry_pairs(lst, paint) == [('A', 'R')]
+    assert r4.geometry_pairs(laid, paint) == []
+
+
+def test_region_input_is_checked():
+    assert r4.DisplayList.from_dict(_region_list()) == r4.DisplayList.from_dict(
+        r4._list_dict(r4.DisplayList.from_dict(_region_list())))
+    with pytest.raises(ValueError, match='kind'):
+        r4.geometry_obstacles(_region_list(pieces=[{'kind': 'curve', 'pts': [0, 0, 1, 1]}]))
+    with pytest.raises(ValueError, match='finite'):
+        r4.geometry_obstacles(_region_list(pieces=[{'kind': 'segment', 'x1': 0, 'y1': 0, 'x2': math.inf, 'y2': 1}]))
+    with pytest.raises(ValueError, match='malformed|expected'):
+        r4.geometry_obstacles({'regions': [{'id': 'R', 'pieces': 3}]})

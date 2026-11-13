@@ -310,6 +310,40 @@ class Arc:
     kind: str = 'arc'  # 'arc' | 'sector' | 'circlesegment'
 
 
+#: Kinds of the pieces of a region and their numbers: a line, an arc (screen
+#: start angle, y down, signed sweep), a graph through its points.
+_REGION_PIECES = {'segment': ('x1', 'y1', 'x2', 'y2'), 'arc': ('cx', 'cy', 'r', 'start', 'sweep'), 'chain': None}
+
+
+@dataclass(frozen=True, slots=True)
+class Region:
+    """A region (registry 1.9) whose stroke is drawn: the pieces of its rings,
+    ``(kind, numbers)`` — ``('segment', (x1, y1, x2, y2))``, ``('arc', (cx,
+    cy, r, start, sweep))``, ``('chain', (x0, y0, x1, y1, …))``. The client
+    lists a region here only when its stroke width and opacity are above 0;
+    its fill is no obstacle."""
+
+    id: str
+    pieces: tuple[tuple[str, tuple[float, ...]], ...] = ()
+
+
+def _region_piece(p: Mapping[str, Any]) -> tuple[str, tuple[float, ...]]:
+    kind = p.get('kind')
+    if kind not in _REGION_PIECES:
+        raise ValueError(f'region piece kind: segment, arc or chain expected, got {kind!r}')
+    keys = _REGION_PIECES[kind]
+    if keys is None:
+        return kind, _nums(p['pts'], 'region chain', multiple=2)
+    return kind, _nums([p[k] for k in keys], f'region {kind}')
+
+
+def _region_piece_dict(kind: str, nums: tuple[float, ...]) -> dict[str, Any]:
+    keys = _REGION_PIECES.get(kind)
+    if keys is None:
+        return {'kind': kind, 'pts': nums}
+    return {'kind': kind, **dict(zip(keys, nums))}
+
+
 @dataclass(frozen=True, slots=True)
 class Angle:
     """Angle decoration: arcs ``radii`` around ``(x, y)`` or the right-angle mark ``square``."""
@@ -347,6 +381,8 @@ class DisplayList:
     angles: tuple[Angle, ...] = ()
     ticks: tuple[Ticks, ...] = ()
     labels: tuple[Label, ...] = ()
+    #: Registry 1.9: regions whose stroke is drawn.
+    regions: tuple[Region, ...] = ()
 
     @classmethod
     @_input('display list')
@@ -413,7 +449,19 @@ class DisplayList:
                 )
                 for lb in items('labels')
             ),
+            regions=tuple(
+                Region(str(g['id']), tuple(_region_piece(p) for p in _region_items(g.get('pieces'))))
+                for g in items('regions')
+            ),
         )
+
+
+def _region_items(v):
+    if v is None:
+        return ()
+    if isinstance(v, (str, bytes, Mapping)) or not isinstance(v, Sequence):
+        raise ValueError('region pieces: list expected')
+    return v
 
 
 @dataclass(frozen=True, slots=True)
@@ -478,6 +526,7 @@ def _list_dict(dl: DisplayList) -> dict[str, Any]:
              'x': lb.x, 'y': lb.y}
             for lb in dl.labels
         ],
+        'regions': [{'id': g.id, 'pieces': [_region_piece_dict(*p) for p in g.pieces]} for g in dl.regions],
     }
 
 
@@ -660,7 +709,9 @@ _ARC = 2
 
 
 def _geometry(dl: DisplayList, paint: Paint | None) -> list[tuple]:
-    """``geometryObstacles``: the same order and paddings as the client."""
+    """``geometryObstacles``: the same order and paddings as the client.
+    Registry 1.9: after the arcs, the pieces of the regions whose stroke is
+    drawn (a paint width of 0 drops a region), the pad of their stroke."""
     out: list[tuple] = []
     widths = paint.stroke_width if paint is not None else {}
     m = _CULL_MARGIN
@@ -717,6 +768,17 @@ def _geometry(dl: DisplayList, paint: Paint | None) -> list[tuple]:
         if a.kind == 'sector' and a.id in sides:
             segment(a.id, a.cx, a.cy, x1, y1)
             segment(a.id, a.cx, a.cy, x2, y2)
+    for g in dl.regions:
+        w = widths.get(g.id)
+        if w is not None and w <= 0:
+            continue                    # no stroke: the fill is no obstacle
+        for kind, v in g.pieces:
+            if kind == 'segment':
+                segment(g.id, *v)
+            elif kind == 'arc':
+                arc(g.id, *v)
+            else:
+                chain(g.id, v)
     for a in dl.angles:
         oid = a.owner if a.owner is not None else a.id
         if a.square is not None:

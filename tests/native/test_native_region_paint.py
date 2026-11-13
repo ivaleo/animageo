@@ -249,3 +249,34 @@ def test_the_bridge_draws_a_boundary_region_with_its_hole():
     image = np.array(camera.get_image().convert('RGB'))
     assert tuple(image[100, 100]) == (255, 255, 255)
     assert tuple(image[100, 160]) == _rgb('#3366cc')
+
+
+def test_a_stroked_region_is_a_label_obstacle_by_its_rings():
+    """Classic placement (``_collect_obstacles``): only a drawn stroke is an
+    obstacle — a whole circle as a circle, an arc and a line as segments, the
+    dash of the stroke kept; the fill is not."""
+    from animageo.label_placement import _collect_obstacles
+    scene, elem = _scene_with(annulus())
+    segments, circles, _pts, seg_dashed, circ_dashed = _collect_obstacles(scene)
+    assert elem.style.get('stroke_width_px') in (None, 0)
+    elem.style['stroke_width_px'] = 2
+    elem.style['stroke_opacity'] = 1
+    elem.style['stroke_dash_ratio'] = 0.5
+    s2, c2, _pts, d2, cd2 = _collect_obstacles(scene)
+    assert s2 == segments
+    assert [(list(c), r) for c, r in c2[len(circles):]] == [([0.0, 0.0], 2.0), ([0.0, 0.0], 1.0)]
+    assert cd2[len(circles):] == [True, True]
+    elem.style['stroke_opacity'] = 0
+    assert len(_collect_obstacles(scene)[1]) == len(circles)
+
+    half = {'rings': [[[[-1.0, 0.0], [1.0, 0.0]], [[1.0, 0.0], [-1.0, 0.0], [0.0, 0.0, 1.0]]]],
+            'shape': [[['line', 'curves.0'], ['ccw', 'curves.1']]], 'area': math.pi / 2}
+    scene, elem = _scene_with(half)
+    base = len(_collect_obstacles(scene)[0])
+    elem.style['stroke_width_px'] = 1
+    elem.style['stroke_opacity'] = 1
+    segments = _collect_obstacles(scene)[0][base:]
+    assert [list(p) for p in segments[0]] == [[-1.0, 0.0], [1.0, 0.0]]
+    arc = segments[1:]
+    assert len(arc) >= 8 and np.allclose(arc[0][0], [1, 0]) and np.allclose(arc[-1][1], [-1, 0])
+    assert all(abs(np.hypot(*q) - 1) < 1e-12 and q[1] >= -1e-12 for seg in arc for q in seg)

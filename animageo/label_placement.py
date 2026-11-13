@@ -711,6 +711,39 @@ def _is_dashed(scene, elem) -> bool:
     return dash_ratio(_resolve_style(scene, elem, 'stroke_dash_ratio', default=None)) is not None
 
 
+def _region_obstacles(scene, elem, dashed, segments, seg_dashed, circles, circ_dashed):
+    """A region (registry 1.9) is an obstacle by its drawn stroke only — width
+    and opacity above 0; its fill is not, as a polygon's fill is not: a line
+    and a graph as segments, an arc sampled as an arc of a sector, a whole
+    circle as a circle."""
+    from .native.kernel.region import arc_sweep
+    width = _resolve_style(scene, elem, 'stroke_width_px', default=0) or 0
+    opacity = _resolve_style(scene, elem, 'stroke_opacity', default=0) or 0
+    if not (float(width) > 0 and float(opacity) > 0):
+        return
+    for ring in elem.data.ring_paths():
+        for kind, piece in ring:
+            if kind == 'line':
+                segments.append((np.array(piece[0], dtype=float), np.array(piece[1], dtype=float)))
+                seg_dashed.append(dashed)
+            elif kind in ('ccw', 'cw'):
+                t0, sweep = arc_sweep(piece, kind)
+                centre, r = np.array(piece[2][:2], dtype=float), float(piece[2][2])
+                if abs(sweep) >= 2 * pi:
+                    circles.append((centre, r))
+                    circ_dashed.append(dashed)
+                    continue
+                pts = _sample_arc(centre, r, t0, sweep, max(8, int(abs(sweep) / (pi / 12))))
+                for k in range(len(pts) - 1):
+                    segments.append((pts[k], pts[k + 1]))
+                    seg_dashed.append(dashed)
+            else:
+                pts = np.array(piece, dtype=float)
+                for k in range(len(pts) - 1):
+                    segments.append((pts[k], pts[k + 1]))
+                    seg_dashed.append(dashed)
+
+
 def _collect_obstacles(scene, *, angle_marker_obstacle=False):
     """Collect obstacles: segments, circles (center+radius), and loose points.
 
@@ -800,6 +833,8 @@ def _collect_obstacles(scene, *, angle_marker_obstacle=False):
             if hasattr(d, 'endpoints') and d.endpoints is not None:
                 segments.append((d.endpoints[0][:2].copy(), d.endpoints[1][:2].copy()))
                 seg_dashed.append(dashed)
+        elif isinstance(d, geo.Region):
+            _region_obstacles(scene, elem, dashed, segments, seg_dashed, circles, circ_dashed)
         for (q1, q2) in _mark_obstacle_segments(scene, elem):
             segments.append((q1, q2))
             seg_dashed.append(False)
