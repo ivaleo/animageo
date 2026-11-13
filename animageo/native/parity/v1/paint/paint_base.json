@@ -2532,19 +2532,12 @@
       "font_size_px": "presets.font_size.main"
      },
      "region": {
-      "_comment": "Regions (registry 1.9) are drawn as a filled face: the fill of a polygon of the fill tool (the accent colour, the opacity of a polygon), no stroke.",
+      "_comment": "Regions (registry 1.9) are drawn as a filled face: the accent colour, no stroke. fill_opacity, fill_pattern and the hatch_* keys are those of defaults.polygon of the same style unless set here (StyleConfig.from_dict).",
       "stroke": "presets.color.strong",
       "stroke_width_px": 0,
       "stroke_opacity": 0,
       "fill": "presets.color.accent",
-      "fill_opacity": 1,
       "label_anchor": "MC",
-      "fill_pattern": "solid",
-      "hatch_angle_deg": 45,
-      "hatch_spacing_px": 6,
-      "hatch_width_px": 0.75,
-      "hatch_color": "stroke",
-      "hatch_opacity": 1,
       "label_color": "presets.color.strong",
       "font_size_px": "presets.font_size.main"
      },

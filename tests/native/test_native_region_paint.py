@@ -280,3 +280,50 @@ def test_a_stroked_region_is_a_label_obstacle_by_its_rings():
     arc = segments[1:]
     assert len(arc) >= 8 and np.allclose(arc[0][0], [1, 0]) and np.allclose(arc[-1][1], [-1, 0])
     assert all(abs(np.hypot(*q) - 1) < 1e-12 and q[1] >= -1e-12 for seg in arc for q in seg)
+
+
+# ── the fill of a region is the fill of a polygon of the same style ───────
+
+POLYGON_FILL_STYLES = {
+    'builtin': None,
+    'custom': {'defaults': {'polygon': {'fill_opacity': 0.4, 'fill_pattern': 'hatch', 'hatch_spacing_px': 9,
+                                        'hatch_angle_deg': 30}}},
+}
+
+
+@pytest.mark.parametrize('name', sorted(POLYGON_FILL_STYLES))
+def test_a_region_has_the_fill_of_a_polygon_of_its_style(name):
+    paint = native.resolve_paint(area_doc(polygon=True), POLYGON_FILL_STYLES[name])
+    region, polygon = paint['elements']['S'], paint['elements']['t']
+    assert region['fill']['color'] == ACCENT
+    for key in ('opacity', 'pattern', 'hatch'):
+        assert region['fill'][key] == polygon['fill'][key], key
+    assert region['stroke']['opacity'] == 0.0 and region['stroke']['widthPx'] == 0.0
+    if name == 'custom':
+        assert region['fill']['opacity'] == 0.4 and region['fill']['pattern'] == 'hatch'
+
+
+def test_a_region_key_of_the_style_beats_the_polygon():
+    style = {'defaults': {'polygon': {'fill_opacity': 0.4}, 'region': {'fill_opacity': 0.7}}}
+    paint = native.resolve_paint(area_doc(polygon=True), style)
+    assert paint['elements']['S']['fill']['opacity'] == 0.7
+    assert paint['elements']['t']['fill']['opacity'] == 0.4
+
+
+def test_the_classic_region_and_the_exports_read_the_polygon_fill():
+    pytest.importorskip('manim')
+    from animageo.animageo import AnimaGeoScene
+    from animageo.geo.lib_elements import Region
+    style = {'defaults': {'polygon': {'fill_opacity': 0.4}}}
+    scene = AnimaGeoScene()
+    scene.loadDocument(area_doc(), style=style, export={'size': {'width': 300, 'height': 300}})
+    elem = next(e for e in scene.geo.elements if isinstance(e.data, Region))
+    elem.data = Region(annulus())
+    fill = scene.CreateMObject(elem)[0]
+    assert fill.get_fill_opacity() == pytest.approx(0.4)
+    assert any('fill opacity=0.4' in l and 'even odd rule' in l for l in scene.exportTikZ().splitlines())
+    from animageo.exporters.jsxgraph.builder import build_board
+    from animageo.exporters.jsxgraph.options import JSXGraphOptions
+    stmt = next(s for s in build_board(scene, JSXGraphOptions()).statements
+                if f'"{elem.name}"' in s and '"curve"' in s)
+    assert 'fillOpacity: 0.4' in stmt and 'fillColor: "#D05456"' in stmt

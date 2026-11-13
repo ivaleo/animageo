@@ -118,6 +118,11 @@ def _deep_copy_value(v):
     return v
 
 
+#: keys of ``defaults.region`` that follow ``defaults.polygon`` of the same style
+REGION_FILL_FROM_POLYGON = ('fill_opacity', 'fill_pattern', 'hatch_angle_deg', 'hatch_spacing_px',
+                            'hatch_width_px', 'hatch_color', 'hatch_opacity')
+
+
 # ── Sub-configs ──────────────────────────────────────────────────────────
 
 @dataclass
@@ -214,9 +219,14 @@ class StyleConfig:
         validate_style_json(d)
 
         defaults_raw = _expand_includes_in_type_map(d.get('defaults', {}), presets)
-        defaults = DefaultsProfile(
-            by_type=cls._resolve_refs_static(_coerce_type_map(defaults_raw), presets)
-        )
+        by_type = cls._resolve_refs_static(_coerce_type_map(defaults_raw), presets)
+        # a region is drawn with the fill of a polygon of the same style: its colour is its own
+        # (the accent), the opacity and the pattern follow ``defaults.polygon`` unless it sets them
+        region = by_type.setdefault('region', {})
+        for key in REGION_FILL_FROM_POLYGON:
+            if key not in region and key in by_type.get('polygon', {}):
+                region[key] = by_type['polygon'][key]
+        defaults = DefaultsProfile(by_type=by_type)
 
         overlay_raw = d.get('overlay', {}) or {}
         overlay_per_type = _expand_includes_in_type_map(overlay_raw.get('per_type', {}), presets)
