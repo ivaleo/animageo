@@ -257,7 +257,9 @@ def emit_angle(ctx, cmd) -> Optional[Emit]:
         # already draws a right angle as a square automatically (type 'auto').
         attrs: dict = {}
         export = getattr(ctx.scene.style, "export", {}) or {}
-        ptUnit = float(export.get("ptUnit", 1) or 1)
+        # the unit of the renderer's pixel sizes (`ptUnit_style`), the same as
+        # the static arcs of a decorated marker
+        ptUnit = float(export.get("ptUnit_style", export.get("ptUnit", 1)) or 1)
         attrs["radius"] = _angle_radius_px(ctx, oe, angle_range) / ptUnit
         detail = None
         if oe is not None and fit_settings(ctx.scene) is not None:

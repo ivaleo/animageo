@@ -204,6 +204,24 @@ class TestJSXGraph:
             ['__parallel_s_0_0', '__parallel_s_0_1', '__parallel_s_1_0', '__parallel_s_1_1']
         assert cov['__parallel_l'][0] == 'static'
 
+    def test_one_unit_for_sector_arcs_and_live_marks(self):
+        """ptUnit != ptUnit_style: the sector of a decorated angle matches its
+        static arcs, live ticks and chevrons carry the ratio of the units."""
+        s = framed(angle_code(extra="a.style.arc_tick_count = 2\na.style.arc_style = 'solid'\n") + SEG
+                   + "s.style.parallel_count = 1\ns.style.tick_count = 1\n")
+        s.style.export.update(ptUnit=2 * PT, ptUnit_style=PT)
+        sp = json.loads(s.exportJSXGraph(output='spec'))
+        xs, ys = element(sp, '__arcs_a')['parents']
+        outer = max(math.hypot(x, y) for x, y in zip(xs, ys) if x is not None)
+        assert element(sp, 'a')['attrs']['radius'] == pytest.approx(outer, abs=1e-3)
+        js = s.exportJSXGraph(output='js')
+        tick = re.search(r'__tick_s_0_p1.*?return \(mx\+tx\*\(\(([-\d.e]+)\)/U\)\)\+nx\*\(\(([-\d.e]+)\)/U\)', js)
+        t0 = float(tick.group(2))
+        s2 = framed(angle_code() + SEG + "s.style.parallel_count = 1\ns.style.tick_count = 1\n")
+        js2 = s2.exportJSXGraph(output='js')
+        t1 = float(re.search(r'__tick_s_0_p1.*?\+nx\*\(\(([-\d.e]+)\)/U\)', js2).group(1))
+        assert t0 == pytest.approx(2 * t1)
+
     def test_schema(self):
         jsonschema = pytest.importorskip('jsonschema')
         from animageo.exporters.jsxgraph.spec import load_schema

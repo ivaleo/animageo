@@ -623,7 +623,9 @@ def _emit_segment_ticks(ctx, seg_name, parents, elem, create, raw_stmt, model):
     shift_px = float(ctx.resolve(elem, "tick_shift_px", default=0.0) or 0.0)
     if length_px <= 0:
         return
-    half_px = length_px / 2.0
+    k = _style_ratio(ctx)
+    half_px = length_px / 2.0 * k
+    shift_px *= k
 
     stroke = _hex(ctx.resolve(elem, "stroke", default="#000000"))
     tw = ctx.resolve(elem, "tick_width_px", default=None)
@@ -668,7 +670,17 @@ def _emit_segment_ticks(ctx, seg_name, parents, elem, create, raw_stmt, model):
         model.coverage.append((base, "live", "segment tick"))
 
 
-def _live_offset(a, b, axis, along_px, normal_px, sign):
+def _style_ratio(ctx) -> float:
+    """``ptUnit / ptUnit_style``: the pixel sizes of marks are drawn at
+    ``size / ptUnit_style`` units, a live board divides by its own
+    px-per-unit (the export's ``ptUnit``), so they carry this ratio."""
+    export = getattr(ctx.scene.style, "export", {}) or {}
+    ptu = float(export.get("ptUnit", 1) or 1)
+    sty = float(export.get("ptUnit_style", ptu) or ptu)
+    return ptu / sty if sty > 0 else 1.0
+
+
+def _live_offset(a, b, axis, along_px, normal_px, sign, k=1.0):
     """One coordinate of a point at ``along_px`` along the segment ``a → b``
     (turned by ``sign``) and ``normal_px`` across it from its middle, in
     pixels divided by the board's live px-per-unit (a JSXGraph function-valued
@@ -679,7 +691,7 @@ def _live_offset(a, b, axis, along_px, normal_px, sign):
            f"var mx=({ax}+{bx})/2,my=({ay}+{by})/2;"
            f"var U=(({a}.board&&{a}.board.unitX)||1);")
     t, n = ("tx", "nx") if axis == "x" else ("ty", "ny")
-    return Raw(f"function(){{{pre}return m{axis}+{t}*(({_n(along_px)})/U)+{n}*(({_n(normal_px)})/U);}}")
+    return Raw(f"function(){{{pre}return m{axis}+{t}*(({_n(along_px * k)})/U)+{n}*(({_n(normal_px * k)})/U);}}")
 
 
 def _emit_live_chevrons(ctx, name, parents, elem, create, model) -> bool:
@@ -695,6 +707,7 @@ def _emit_live_chevrons(ctx, name, parents, elem, create, model) -> bool:
         return False
     a, b = refs[0], refs[1]
     sign = -1.0 if decor.direction == "backward" else 1.0
+    ratio = _style_ratio(ctx)
 
     def value(key):
         try:
@@ -715,8 +728,8 @@ def _emit_live_chevrons(ctx, name, parents, elem, create, model) -> bool:
         base = f"__parallel_{name}_{j}"
         for k in range(3):
             along, across = chevron[2 * k], chevron[2 * k + 1]
-            create(f"{base}_p{k}", "point", [_live_offset(a, b, "x", along, across, sign),
-                                            _live_offset(a, b, "y", along, across, sign)], dict(pt_attrs))
+            create(f"{base}_p{k}", "point", [_live_offset(a, b, "x", along, across, sign, ratio),
+                                            _live_offset(a, b, "y", along, across, sign, ratio)], dict(pt_attrs))
         for k in range(2):
             create(f"{base}_{k}", "segment", [ctx.ref(f"{base}_p{k}"), ctx.ref(f"{base}_p{k + 1}")], dict(attrs))
             model.coverage.append((f"{base}_{k}", "live", "parallel chevron"))
