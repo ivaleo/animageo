@@ -2143,7 +2143,8 @@ without a stroke (no obstacle), and an annulus of two whole circles.
 ## 17. Registry 1.10: typed expressions
 
 Registry 1.10 (animageo 1.15.0, `has("typed_expressions")`) lets a formula
-compute a point or a vector. Nothing of 1.0–1.9 changes: their records,
+compute a point or a vector; `has("line_equation")` adds a line by an
+equation. Nothing of 1.0–1.9 changes: their records,
 signature hashes, catalogs and evaluation stay as they are, and a document
 that declares 1.9 or older reads and evaluates as before.
 
@@ -2156,16 +2157,19 @@ that declares 1.9 or older reads and evaluates as before.
 - The family `operand` (`_types.json → families`): `number`, `point`,
   `vector`, `function` — the types an item of `refs` of a typed slot may
   have. It is new as a whole and has no `familySince`.
-- Two operations, `status: "beta"`, `since: "1.10"`:
+- Three operations, `status: "beta"`, `since: "1.10"`:
 
   | op | inputs → outputs | undefined | checks | stepKind |
   |---|---|---|---|---|
   | [`point.expression`](ops/point.expression.md) | `expr: expr` (`result: "vec"`), `refs: operand[]` (min 0) → `point` | `out_of_domain`, `non_finite`, `upstream` | — | `point_expression` |
   | [`vector.expression`](ops/vector.expression.md) | `expr: expr` (`result: "vec"`), `refs: operand[]` (min 0) → `vector` | `out_of_domain`, `non_finite`, `upstream` | — | `vector_expression` |
 
+  | [`line.equation`](ops/line.equation.md) | `expr: expr` (`vars: ["x", "y"]`), `refs: number[]` (min 0) → `line` | `not_linear`, `degenerate_line`, `upstream` | — | `line_equation` |
+
   A document with one of them that declares a registry below 1.10 is
   `needs_newer_registry` (§2); a 1.9 reader reports `newer_registry` and
-  `unknown_op`. No new reasons and no new decisions.
+  `unknown_op`. `not_linear` and `degenerate_line` are new undefined
+  reasons and noise decisions for equation reading.
 
 ### 17.2 Validation and evaluation
 
@@ -2221,3 +2225,29 @@ vector turned by a hidden `measure.angle` — an import helper: `role:
 aux`, `origin: {kind: auto, source}`, deleted with its rotation — upstream
 and recovery) with
 `expected` and `steps` by `fixtures generate`.
+
+
+### 17.5 Lines by equations
+
+[`line.equation`](ops/line.equation.md) reads the scalar AST with numeric
+refs and variables `x`, `y`, using the same `compile_function` as
+`conic.equation` (§14). It samples in frame `(0, 0, S)` to recover
+`D x + E y + F`. A missing sample or excessive relative misfit gives
+`not_linear`; a zero linear part within tolerance gives `degenerate_line`.
+An undefined numeric ref propagates `upstream` and recovers when its input
+does. See the operation page for the sample points and decision values.
+
+For `q = L − R = a x + b y + c`, the line has direction
+`(b, −a)/hypot(a, b)` and foot `−c·(a, b)/(a² + b²)`. This preserves GGB
+orientation, including the order of intersections. The bridge produces
+an ordinary classic `Line`; rendering, labels and intersections work by
+value type. `describe` and steps use `{line} — прямая, заданная уравнением`
+(`stepKind: line_equation`). «Команды» prints a deferred operation and
+preserves it during edits with a base document.
+
+GGB free lines with formulas become `line.equation`, including constant
+formulas without refs. Unsupported formulas explicitly report
+`formula_unsupported`; saved `<coords>` and their sign are checked, with
+`differs` for a mismatch. Generator-backed `curves/line_eq_*` cover slope,
+vertical lines, orientation, live numbers, line intersections, every
+undefined reason and recovery; `ggb/ggb_line_equation` covers import parity.
