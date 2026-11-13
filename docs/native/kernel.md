@@ -2084,3 +2084,28 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   (`native/labels/r4.py`, the port of the web solver) reads the key `regions`
   of the display list (`[{id, pieces}]`, a piece `segment`, `arc` or
   `chain`; ops page), the classic placement the pieces of a `Region`.
+
+**For the web: the key `regions` of the R4 display list.** `DisplayList.regions`
+is a list of `{id, pieces}`, one entry per region **whose stroke is drawn**
+(stroke width and opacity above 0); the client leaves out a region without
+a stroke, and a paint width of `0` of `paint.byId[id].strokeWidth` drops an
+entry that is there. A piece is one of
+
+| `kind` | fields (CSS px of the sheet, y down) |
+|---|---|
+| `segment` | `x1, y1, x2, y2` — a line, a segment or a ray clipped to the view |
+| `arc` | `cx, cy, r, start, sweep` — as `arcs` of the list: the screen start angle (y down) and the signed sweep; a whole circle is `sweep = ±2π` |
+| `chain` | `pts` — `x0, y0, x1, y1, …` of a graph, at least one pair |
+
+The pieces of every ring go in the order of the rings of the value (the
+outer rings and the holes alike); a piece is an obstacle by itself, with the
+pad `1 + width/2` of its stroke, as a line, an arc or a polyline of the list
+(`kind` `segment` as `linears`, `arc` as `arcs` of kind `arc`, `chain` as
+`polylines`). They come after the arcs and before the angles in the order
+of the obstacles. The fill is no obstacle. A malformed piece (unknown
+`kind`, a number that is not finite, `pieces` that is not a list) is a
+`ValueError`, like any other part of the list. Fixtures:
+`tests/native/fixtures/labels_r4/regions.json` (`animageo-labels-r4-cases/1`;
+the expectations are the port's own, the client has no recording of this
+key yet): a stroked ring of a segment, an arc and a chain, the same ring
+without a stroke (no obstacle), and an annulus of two whole circles.

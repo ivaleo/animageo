@@ -672,3 +672,29 @@ def test_region_input_is_checked():
         r4.geometry_obstacles(_region_list(pieces=[{'kind': 'segment', 'x1': 0, 'y1': 0, 'x2': math.inf, 'y2': 1}]))
     with pytest.raises(ValueError, match='malformed|expected'):
         r4.geometry_obstacles({'regions': [{'id': 'R', 'pieces': 3}]})
+
+
+# ------------------------------- regions: the recorded lists (registry 1.9, rc2)
+
+REGIONS = _cases('regions.json')
+
+
+@pytest.mark.parametrize('case_id', sorted(REGIONS))
+def test_region_case(case_id):
+    """A stroked ring, the same ring without a stroke and an annulus of two
+    contours: the obstacles (id and kind, in order), the pairs and the layout."""
+    case = REGIONS[case_id]
+    s = case['steps'][0]
+    lst = _list(case, 0)
+    dl = r4.DisplayList.from_dict(lst)
+    assert [[o[1], o[0]] for o in r4._geometry(dl, r4._as_paint(s['paint']))] == s['obstacles']
+    assert [list(p) for p in r4.geometry_pairs(lst, s['paint'])] == s['pairs']
+    _check_step(case, 0)
+
+
+def test_the_region_cases_show_what_the_stroke_changes():
+    """The stroke moves a label that the same region without a stroke leaves in place."""
+    stroked, bare, annulus = (REGIONS[k]['steps'][0] for k in ('region/stroked', 'region/unstroked', 'region/annulus'))
+    assert stroked['obstacles'] and not bare['obstacles'] and len(annulus['obstacles']) == 2
+    assert stroked['expect']['labels'][0]['box'] != bare['expect']['labels'][0]['box']
+    assert annulus['pairs'] == [['A', 'S'], ['B', 'S']]

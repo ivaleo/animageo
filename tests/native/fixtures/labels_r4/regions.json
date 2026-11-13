@@ -1,0 +1,443 @@
+{
+ "format": "animageo-labels-r4-cases/1",
+ "source": "registry 1.9 (rc2): the results of r4.py itself (the client has no recording of the key regions yet); the lists are what a client builds for a stroked region",
+ "units": "CSS px of the sheet, y down; box = [l, t, r, b]; obstacles = [[id, kind]] (0 segment, 1 circle, 2 arc) in the order of the list; pairs = geometryPairs before the layout",
+ "cases": [
+  {
+   "id": "region/stroked",
+   "note": "a stroked ring of a line, an arc and a graph (a chain): its pieces are obstacles of the width of the stroke",
+   "steps": [
+    {
+     "list": {
+      "points": [
+       {
+        "id": "A",
+        "x": 150,
+        "y": 120
+       }
+      ],
+      "linears": [],
+      "circles": [],
+      "polygons": [],
+      "arcs": [],
+      "polylines": [],
+      "angles": [],
+      "ticks": [],
+      "regions": [
+       {
+        "id": "R",
+        "pieces": [
+         {
+          "kind": "segment",
+          "x1": 100,
+          "y1": 100,
+          "x2": 200,
+          "y2": 100
+         },
+         {
+          "kind": "arc",
+          "cx": 100,
+          "cy": 100,
+          "r": 100,
+          "start": 0,
+          "sweep": 1.5707963267948966
+         },
+         {
+          "kind": "chain",
+          "pts": [
+           100,
+           200,
+           90,
+           150,
+           100,
+           100
+          ]
+         }
+        ]
+       }
+      ],
+      "labels": [
+       {
+        "id": "A",
+        "x": 155,
+        "y": 115,
+        "edge": [
+         -1,
+         -1
+        ],
+        "ax": 150,
+        "ay": 120,
+        "box": [
+         155,
+         97,
+         166,
+         115
+        ],
+        "place": {
+         "kind": "point",
+         "pinned": false,
+         "reach": 4
+        }
+       }
+      ]
+     },
+     "view": {
+      "width": 640,
+      "height": 480
+     },
+     "paint": {
+      "byId": {
+       "R": {
+        "strokeWidth": 2
+       }
+      }
+     },
+     "memory": null,
+     "obstacles": [
+      [
+       "R",
+       0
+      ],
+      [
+       "R",
+       2
+      ],
+      [
+       "R",
+       0
+      ],
+      [
+       "R",
+       0
+      ]
+     ],
+     "pairs": [
+      [
+       "A",
+       "R"
+      ]
+     ],
+     "expect": {
+      "labels": [
+       {
+        "id": "A",
+        "x": 172.0,
+        "y": 129.0,
+        "box": [
+         172.0,
+         111.0,
+         183.0,
+         129.0
+        ]
+       }
+      ],
+      "memory": {
+       "A": {
+        "k": 8,
+        "ax": 150.0,
+        "ay": 120.0
+       }
+      },
+      "stats": {
+       "evaluated": 1,
+       "moved": 0
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "region/unstroked",
+   "note": "the same ring with a paint width of 0: no obstacle, the label keeps its first place (a client lists only stroked regions; the width 0 is a second guard)",
+   "steps": [
+    {
+     "list": {
+      "points": [
+       {
+        "id": "A",
+        "x": 150,
+        "y": 120
+       }
+      ],
+      "linears": [],
+      "circles": [],
+      "polygons": [],
+      "arcs": [],
+      "polylines": [],
+      "angles": [],
+      "ticks": [],
+      "regions": [
+       {
+        "id": "R",
+        "pieces": [
+         {
+          "kind": "segment",
+          "x1": 100,
+          "y1": 100,
+          "x2": 200,
+          "y2": 100
+         },
+         {
+          "kind": "arc",
+          "cx": 100,
+          "cy": 100,
+          "r": 100,
+          "start": 0,
+          "sweep": 1.5707963267948966
+         },
+         {
+          "kind": "chain",
+          "pts": [
+           100,
+           200,
+           90,
+           150,
+           100,
+           100
+          ]
+         }
+        ]
+       }
+      ],
+      "labels": [
+       {
+        "id": "A",
+        "x": 155,
+        "y": 115,
+        "edge": [
+         -1,
+         -1
+        ],
+        "ax": 150,
+        "ay": 120,
+        "box": [
+         155,
+         97,
+         166,
+         115
+        ],
+        "place": {
+         "kind": "point",
+         "pinned": false,
+         "reach": 4
+        }
+       }
+      ]
+     },
+     "view": {
+      "width": 640,
+      "height": 480
+     },
+     "paint": {
+      "byId": {
+       "R": {
+        "strokeWidth": 0
+       }
+      }
+     },
+     "memory": null,
+     "obstacles": [],
+     "pairs": [],
+     "expect": {
+      "labels": [
+       {
+        "id": "A",
+        "x": 165.55634918610406,
+        "y": 104.44365081389596,
+        "box": [
+         165.55634918610406,
+         86.44365081389596,
+         176.55634918610406,
+         104.44365081389596
+        ]
+       }
+      ],
+      "memory": {
+       "A": {
+        "k": 9,
+        "ax": 150.0,
+        "ay": 120.0
+       }
+      },
+      "stats": {
+       "evaluated": 1,
+       "moved": 0
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "region/annulus",
+   "note": "a ring of two contours (the outer ccw, the hole cw), each a whole circle as an arc of sweep \u00b12\u03c0: both are obstacles",
+   "steps": [
+    {
+     "list": {
+      "points": [
+       {
+        "id": "A",
+        "x": 300,
+        "y": 135
+       },
+       {
+        "id": "B",
+        "x": 300,
+        "y": 200
+       }
+      ],
+      "linears": [],
+      "circles": [],
+      "polygons": [],
+      "arcs": [],
+      "polylines": [],
+      "angles": [],
+      "ticks": [],
+      "regions": [
+       {
+        "id": "S",
+        "pieces": [
+         {
+          "kind": "arc",
+          "cx": 300,
+          "cy": 240,
+          "r": 120,
+          "start": 0,
+          "sweep": 6.283185307179586
+         },
+         {
+          "kind": "arc",
+          "cx": 300,
+          "cy": 240,
+          "r": 60,
+          "start": 0,
+          "sweep": -6.283185307179586
+         }
+        ]
+       }
+      ],
+      "labels": [
+       {
+        "id": "A",
+        "x": 305,
+        "y": 130,
+        "edge": [
+         -1,
+         -1
+        ],
+        "ax": 300,
+        "ay": 135,
+        "box": [
+         305,
+         112,
+         316,
+         130
+        ],
+        "place": {
+         "kind": "point",
+         "pinned": false,
+         "reach": 4
+        }
+       },
+       {
+        "id": "B",
+        "x": 305,
+        "y": 195,
+        "edge": [
+         -1,
+         -1
+        ],
+        "ax": 300,
+        "ay": 200,
+        "box": [
+         305,
+         177,
+         316,
+         195
+        ],
+        "place": {
+         "kind": "point",
+         "pinned": false,
+         "reach": 4
+        }
+       }
+      ]
+     },
+     "view": {
+      "width": 640,
+      "height": 480
+     },
+     "paint": {
+      "byId": {
+       "S": {
+        "strokeWidth": 1.5
+       }
+      }
+     },
+     "memory": null,
+     "obstacles": [
+      [
+       "S",
+       2
+      ],
+      [
+       "S",
+       2
+      ]
+     ],
+     "pairs": [
+      [
+       "A",
+       "S"
+      ],
+      [
+       "B",
+       "S"
+      ]
+     ],
+     "expect": {
+      "labels": [
+       {
+        "id": "A",
+        "x": 294.5,
+        "y": 113.0,
+        "box": [
+         294.5,
+         95.0,
+         305.5,
+         113.0
+        ]
+       },
+       {
+        "id": "B",
+        "x": 294.5,
+        "y": 178.0,
+        "box": [
+         294.5,
+         160.0,
+         305.5,
+         178.0
+        ]
+       }
+      ],
+      "memory": {
+       "A": {
+        "k": 10,
+        "ax": 300.0,
+        "ay": 135.0
+       },
+       "B": {
+        "k": 10,
+        "ax": 300.0,
+        "ay": 200.0
+       }
+      },
+      "stats": {
+       "evaluated": 2,
+       "moved": 0
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
