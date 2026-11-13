@@ -577,7 +577,7 @@ scene.element('sector').style['z_index_fill'] = 0.2   # только для Circ
 |---|---|---|
 | `fill` | hex | `style.background` (для точек — `style.strong`) |
 | `fill_opacity` | float 0..1 | `1` |
-| `fill_pattern` | `"solid"`/`"hatch"`/`"crosshatch"`/`"dots"`/`"none"` (многоугольники, окружности, секторы) | `"solid"` |
+| `fill_pattern` | `"solid"`/`"hatch"`/`"crosshatch"`/`"dots"`/`"none"` (многоугольники, окружности, секторы, углы) | `"solid"` |
 | `hatch_angle_deg` | float, градусы | `45` |
 | `hatch_spacing_px` | float > 0, px | `6` |
 | `hatch_width_px` | float, px (точка — две ширины в поперечнике) | `0.75` |
@@ -589,7 +589,8 @@ scene.element('sector').style['z_index_fill'] = 0.2   # только для Circ
 отсечёнными областью (`animageo/hatch.py`), а не SVG-паттерном, поэтому SVG,
 PDF, PNG, EPS, видео и TikZ показывают одни и те же линии. Линии привязаны к
 плоскости (`n·x = k·spacing`) и не сдвигаются вместе с элементом; размеры
-`*_px` следуют раскладке экспорта, как все украшения.
+`*_px` следуют раскладке экспорта, как все украшения. У угла узор заполняет его
+сектор, а у прямого угла — квадрат.
 
 ### Точки
 
@@ -597,6 +598,7 @@ PDF, PNG, EPS, видео и TikZ показывают одни и те же л�
 |---|---|---|---|
 | `size_px` | float (px) | `style.dot_size` | диаметр = `size_px / 2 / ptUnit` |
 | `point_shape` | строковый enum | `"circle"` | Форма: `"circle"`, `"square"`, `"diamond"`, `"triangle_up"`, `"triangle_down"`, `"triangle_left"`, `"triangle_right"`, `"cross"`, `"plus"`. Соответствие пресетам GGB — в `docs/field_names.md` §3.3. |
+| `point_fill` | `"solid"` \| `"hollow"` | `"solid"` | У выколотой точки отверстие той же формы вдвое меньше. На сплошном листе оно закрашено цветом листа (`style.background`), на прозрачном (`exportSVG` / `exportPDF` с `transparent=True`, TikZ `background=False`) прорезает всё, что лежит под точкой. Крест и плюс ключ не читают |
 
 ### Углы
 
@@ -607,7 +609,15 @@ PDF, PNG, EPS, видео и TikZ показывают одни и те же л�
 | `angle_range` | `"minor"` \| `"reflex"` | Из GGB | `"minor"` — меньший сектор (≤π), `"reflex"` — больший (>π) |
 | `right_angle_marker` | bool \| `null` | `null`: автоматически, `np.isclose(angle, π/2)` | `true` — всегда квадрат, `false` — всегда дуги, `null` — автоматически (у отметки прямого угла — квадрат) |
 | `right_angle_size_px` | float (px) | `defaults.angle.right_angle_size_px` | Размер квадратного маркера прямого угла |
-| `tick_count` | int | 1 | Несколько дуг (двойные, тройные метки) |
+| `tick_count` | int | 1 | Несколько дуг (двойные, тройные метки); при `0` дуг не рисуются и украшения |
+| `arc_style` | `"solid"` \| `"dashed"` \| `"wave"` | `"solid"` | Вид всех дуг. Пунктир: штрихи 2/2 px, подогнанные к каждой дуге (`stroke_dash_pattern_px` их заменяет). Волна: амплитуда 1 px, период 6 px, на дуге целое число периодов; у нескольких дуг шаг между ними больше на две амплитуды |
+| `arc_tick_count` | int 0..3 | `0` | Засечки поперёк дуг посередине угла, размеры — `tick_length_px` / `tick_shift_px` / `tick_width_px` |
+| `arrow_head` | `"none"` \| `"end"` \| `"start"` \| `"both"` | `"none"` | Закрашенный наконечник на внешней дуге; `end` смотрит на вторую сторону. Размеры — `arrow_length_px` / `arrow_width_px` (6 / 4 px), на короткой дуге уменьшаются |
+
+Украшенная отметка (`arc_style` не `solid`, `arc_tick_count > 0` или
+`arrow_head`) прямого угла рисуется дугами, если `right_angle_marker` не
+`true`; квадрат новых ключей не читает. Подпись значения украшенного угла
+отодвигается за украшение (половина засечки, амплитуда волны).
 
 ### Отрезки и векторы
 
@@ -616,6 +626,11 @@ PDF, PNG, EPS, видео и TikZ показывают одни и те же л�
 | `tick_count` | int | None (ключ может отсутствовать) | Количество засечек в середине |
 | `tick_style` | `"line"` \| `"wave"` | `"line"` | `"wave"` — волнистая метка вместо прямых засечек |
 | `tick_radius_px` | float | `tick_shift_px * 0.45` | Радиус скругления углов для `tick_style="wave"` |
+| `arrow_head` | `"none"` \| `"end"` \| `"start"` \| `"both"` | `"none"` | Отрезок: закрашенные наконечники у B (`end`), у A (`start`) или у обоих концов, размером как у вектора (по умолчанию `arrow_length_px` 11, `arrow_width_px` 7.5), не длиннее отрезка (при `both` — его половины); линия обрывается у их оснований. Вектор рисует свой наконечник и ключ не читает |
+| `parallel_count` | int 0..3 | `0` | Шевроны параллельности посередине отрезка, вектора, прямой или луча (видимой части), за засечками, если они есть |
+| `parallel_size_px` | float (px) | `8` | Ширина шеврона поперёк линии (глубина вдоль линии — её половина) |
+| `parallel_shift_px` | float (px) | `3.5` | Шаг между шевронами |
+| `parallel_direction` | `"forward"` \| `"backward"` | `"forward"` | По линии (A → B) или против неё |
 
 ### Подписи
 

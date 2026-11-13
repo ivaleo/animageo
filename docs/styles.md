@@ -519,7 +519,7 @@ keeps its type's layer and label defaults.
 |---|---|---|
 | `fill` | hex | `style.background` (for points — `style.strong`) |
 | `fill_opacity` | float 0..1 | `1` |
-| `fill_pattern` | `"solid"`/`"hatch"`/`"crosshatch"`/`"dots"`/`"none"` (polygons, circles, sectors) | `"solid"` |
+| `fill_pattern` | `"solid"`/`"hatch"`/`"crosshatch"`/`"dots"`/`"none"` (polygons, circles, sectors, angles) | `"solid"` |
 | `hatch_angle_deg` | float, degrees | `45` |
 | `hatch_spacing_px` | float > 0, px | `6` |
 | `hatch_width_px` | float, px (a dot is two widths across) | `0.75` |
@@ -531,7 +531,8 @@ A pattern replaces the solid fill. It is drawn as plain segments or dots cut
 by the region (`animageo/hatch.py`), not as an SVG pattern, so SVG, PDF, PNG,
 EPS, video and TikZ show the same lines. The lines are anchored in the plane
 (`n·x = k·spacing`), so the hatching stays put when the element moves; the
-`*_px` sizes follow the export layout like every decoration.
+`*_px` sizes follow the export layout like every decoration. On an angle the
+pattern fills its sector, or the square of a right angle.
 
 ### Points
 
@@ -539,6 +540,7 @@ EPS, video and TikZ show the same lines. The lines are anchored in the plane
 |---|---|---|---|
 | `size_px` | float (px) | `style.dot_size` | diameter = `size_px / 2 / ptUnit` |
 | `point_shape` | enum string | `"circle"` | Shape: `"circle"`, `"square"`, `"diamond"`, `"triangle_up"`, `"triangle_down"`, `"triangle_left"`, `"triangle_right"`, `"cross"`, `"plus"`. See the GGB preset mapping in `docs/field_names.md` §3.3. |
+| `point_fill` | `"solid"` \| `"hollow"` | `"solid"` | A hollow point has a hole of its own shape at half its size. On a solid sheet the hole is painted in the sheet colour (`style.background`); on a transparent sheet (`exportSVG` / `exportPDF` with `transparent=True`, TikZ `background=False`) it is cut through everything below the point. A cross or a plus ignores it |
 
 ### Angles
 
@@ -549,7 +551,16 @@ EPS, video and TikZ show the same lines. The lines are anchored in the plane
 | `angle_range` | `"minor"` \| `"reflex"` | From GGB | `"minor"` = the smaller sector (≤π), `"reflex"` = the reflex one (>π) |
 | `right_angle_marker` | bool \| `null` | `null`: auto, `np.isclose(angle, π/2)` | `true` — always the square, `false` — always arcs, `null` — auto (on a right-angle mark — the square) |
 | `right_angle_size_px` | float (px) | `defaults.angle.right_angle_size_px` | Size of the square right-angle marker |
-| `tick_count` | int | 1 | Multiple arcs (double, triple arc marks) |
+| `tick_count` | int | 1 | Multiple arcs (double, triple arc marks); with `0` arcs no decoration is drawn either |
+| `arc_style` | `"solid"` \| `"dashed"` \| `"wave"` | `"solid"` | Look of every arc. Dashed: 2/2 px dashes fitted to each arc (`stroke_dash_pattern_px` replaces them). Wave: amplitude 1 px, period 6 px, a whole number of periods per arc; with several arcs the step between them grows by twice the amplitude |
+| `arc_tick_count` | int 0..3 | `0` | Ticks across the arcs in the middle of the angle, sized by `tick_length_px` / `tick_shift_px` / `tick_width_px` |
+| `arrow_head` | `"none"` \| `"end"` \| `"start"` \| `"both"` | `"none"` | A filled head on the outer arc; `end` points at the second side. Sized by `arrow_length_px` / `arrow_width_px` (6 / 4 px), shrunk on a short arc |
+
+A decorated marker (`arc_style` other than `solid`, `arc_tick_count > 0` or
+an `arrow_head`) of a right angle is drawn as arcs unless
+`right_angle_marker` is `true`; the square takes none of the new keys. The
+value label of a decorated angle moves past the decoration (half a tick, the
+wave amplitude).
 
 ### Segments / vectors
 
@@ -558,6 +569,11 @@ EPS, video and TikZ show the same lines. The lines are anchored in the plane
 | `tick_count` | int | None (key may be absent) | Number of tick marks at the midpoint |
 | `tick_style` | `"line"` \| `"wave"` | `"line"` | `"wave"` — a wavy mark instead of straight ticks |
 | `tick_radius_px` | float | `tick_shift_px * 0.45` | Corner rounding radius for `tick_style="wave"` |
+| `arrow_head` | `"none"` \| `"end"` \| `"start"` \| `"both"` | `"none"` | Segments: filled heads at B (`end`), A (`start`) or both, sized like a vector's (`arrow_length_px` 11, `arrow_width_px` 7.5 by default) and at most the segment (half of it for `both`); the line stops at their bases. A vector keeps its own head and ignores this key |
+| `parallel_count` | int 0..3 | `0` | Chevrons of parallel lines in the middle of a segment, vector, line or ray (the visible part), past the ticks when it has some |
+| `parallel_size_px` | float (px) | `8` | Width of a chevron across the line (its depth along the line is half of it) |
+| `parallel_shift_px` | float (px) | `3.5` | Step between chevrons |
+| `parallel_direction` | `"forward"` \| `"backward"` | `"forward"` | Along the line (A → B) or against it |
 
 ### Labels
 

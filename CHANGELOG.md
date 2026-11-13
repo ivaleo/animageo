@@ -45,6 +45,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   in the style; `animageo.angle_marker.max_desired_px` gives the largest
   desired size that still fits. Applied by the renderer, label placement,
   native paint (`angle.fit`), TikZ and JSXGraph (a static radius).
+- Kinds of marks (style keys, off by default; without them every export is
+  unchanged):
+  - angles: `arc_style` (`solid`/`dashed`/`wave`), `arc_tick_count` (ticks
+    across the arcs), `arrow_head` (a head on the outer arc) and
+    `fill_pattern` / `hatch_*` on the sector or the square. A decorated
+    marker of a right angle is drawn as arcs unless `right_angle_marker` is
+    `true`. The value label moves past the decoration;
+  - points: `point_fill: "hollow"` — a hole of the point's shape at half its
+    size, in the sheet colour, or cut through the drawing below on a
+    transparent sheet (`exportSVG` / `exportPDF` with the new keyword
+    `transparent=True`, TikZ `background=False`);
+  - segments: `arrow_head` (`end`/`start`/`both`) with the sizes of a vector;
+  - segments, vectors, lines and rays: `parallel_count` chevrons
+    (`parallel_size_px`, `parallel_shift_px`, `parallel_direction`).
+
+  The geometry lives in `animageo/mark_shapes.py` and is shared by the
+  renderer, label placement (ticks, heads and chevrons are obstacles), the
+  native paint report (`wave`, `arcDashes`, `arcTicks`, `arrow`,
+  `overhangPx`, `hole`, `parallel`; new fixture `paint_marks`), TikZ
+  (explicit paths) and JSXGraph (native segment heads, hollow points and a
+  dashed single arc; live chevrons on segments; static curves for the other
+  decorations).
 
 ### Changed
 
