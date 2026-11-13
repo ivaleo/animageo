@@ -2163,7 +2163,6 @@ that declares 1.9 or older reads and evaluates as before.
   |---|---|---|---|---|
   | [`point.expression`](ops/point.expression.md) | `expr: expr` (`result: "vec"`), `refs: operand[]` (min 0) → `point` | `out_of_domain`, `non_finite`, `upstream` | — | `point_expression` |
   | [`vector.expression`](ops/vector.expression.md) | `expr: expr` (`result: "vec"`), `refs: operand[]` (min 0) → `vector` | `out_of_domain`, `non_finite`, `upstream` | — | `vector_expression` |
-
   | [`line.equation`](ops/line.equation.md) | `expr: expr` (`vars: ["x", "y"]`), `refs: number[]` (min 0) → `line` | `not_linear`, `degenerate_line`, `upstream` | — | `line_equation` |
 
   A document with one of them that declares a registry below 1.10 is

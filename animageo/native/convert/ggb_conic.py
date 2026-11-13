@@ -1,4 +1,4 @@
-"""GGB equations and implicit coordinate axes, without new registry ops."""
+"""GGB conic and line equations, and implicit coordinate axes."""
 from __future__ import annotations
 
 from .ggb_expr import ExprError, parse_number
@@ -8,7 +8,7 @@ from .keys import element_id, operation_id
 def read_equations(infos, norm, ctx):
     kinds = {i['label']: i['type'] for i in infos}
     for info in infos:
-        if info['type'] != 'conic' or info.get('command') != 'Expression' or not info.get('inputs'):
+        if info['type'] not in ('conic', 'line') or info.get('command') != 'Expression' or not info.get('inputs'):
             continue
         name = norm[info['label']]
         forced = ctx.forced.get(name)
@@ -16,16 +16,45 @@ def read_equations(infos, norm, ctx):
             continue
         parts = info['inputs'][0].split('=')
         if len(parts) != 2 or not all(p.strip() for p in parts):
-            ctx.forced[name] = ('formula_unsupported', 'ожидалось уравнение коники с двумя частями')
+            ctx.forced[name] = ('formula_unsupported', 'ожидалось уравнение с двумя частями: ' + info['inputs'][0])
             continue
         try:
             ast, refs = parse_number(f'({parts[0]}) - ({parts[1]})', kinds, variables=('x', 'y'))
         except ExprError as exc:
-            ctx.forced[name] = (exc.reason, exc.detail)
+            ctx.forced[name] = ('formula_unsupported' if info['type'] == 'line' else exc.reason,
+                                f"{info['inputs'][0]}: {exc.detail}")
             continue
         ctx.forced.pop(name, None)
         ctx.formulas[name] = ast, [norm[r] for r in refs]
-        ctx.equations.add(name)
+        ctx.equations[name] = info['type']
+
+
+def check_line_orientations(document, records, infos, norm):
+    """Compare the signed XML normals of equation lines after value checks."""
+    import math
+    from ..kernel.evaluate import evaluate
+    from .values import TOL_IMPORT
+
+    candidates = [(info, records.get(norm[info['label']])) for info in infos
+                  if info['type'] == 'line' and info.get('command') == 'Expression' and info.get('coords')]
+    if not candidates:
+        return
+    ev = evaluate(document)
+    for info, rec in candidates:
+        if rec is None or rec.status != 'translated' or rec.value_check != 'passed' or not rec.native_ids:
+            continue
+        coords = info['coords']
+        a, b = coords.get('x'), coords.get('y')
+        if a is None or b is None or not math.isfinite(math.hypot(a, b)) or math.hypot(a, b) == 0:
+            continue
+        length = math.hypot(a, b)
+        state = ev.elements[rec.native_ids[0]]
+        if state['state'] != 'defined':
+            continue
+        dx, dy = state['value']['dir']
+        delta = max(abs(dx - b / length), abs(dy + a / length)) * ev.tolerances.scale
+        if delta > TOL_IMPORT * ev.tolerances.scale:
+            rec.value_check, rec.delta = 'failed', max(rec.delta or 0, delta)
 
 
 def axis_ref(builder, name):

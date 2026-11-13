@@ -14,7 +14,7 @@ from tests.native.test_native_ggb_texts import text_body
 
 NAMES = ('ggb_text_math', 'ggb_conic_ellipse', 'ggb_conic_hyperbola', 'ggb_conic_parabola',
          'ggb_conic_equation', 'ggb_regular_outputs', 'ggb_axis_projection',
-         'ggb_slider', 'ggb_labels', 'ggb_layers', 'ggb_rotate_angle_formula')
+         'ggb_slider', 'ggb_labels', 'ggb_layers', 'ggb_rotate_angle_formula', 'ggb_line_equation')
 
 
 def import_scene(name):
@@ -30,6 +30,10 @@ def import_scene(name):
         changes = [{'n': ('number', 4.25), 'A': ('point', [-2., 5.])}, {'n': ('number', -2.)}]
     elif name == 'ggb_conic_equation':
         body, changes = equation_body(), [{'a': ('number', 2.)}, {'a': ('number', 0.)}]
+    elif name == 'ggb_line_equation':
+        from tests.native.test_native_ggb_line_equation import scene_body
+        body = scene_body()
+        changes = [{'a': ('number', -1.)}, {'a': ('number', 0.)}, {'a': ('number', 2.)}]
     elif name == 'ggb_regular_outputs':
         body = regular_body(True).replace(' a5="C" a6="D"', '').replace(point('C', 2., 2.), '').replace(point('D', 0., 2.), '')
         changes = [{'B': ('point', [3., 0.])}, {'B': ('point', [0., 2.])}]

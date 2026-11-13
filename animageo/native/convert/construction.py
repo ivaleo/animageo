@@ -98,7 +98,7 @@ class Context:
     formulas: dict = field(default_factory=dict)
     functions: dict = field(default_factory=dict)     # source name → independently parsed FunctionSpec
     function_points: dict = field(default_factory=dict)  # source point → (function name, saved free x)
-    equations: set = field(default_factory=set)       # formulas producing conics, with variables x and y
+    equations: dict = field(default_factory=dict)     # formula name → conic or line, variables x and y
     output_positions: dict = field(default_factory=dict)  # unindexed GGB output label → original slot index
     # classic output name → (AST v1, classic names of its refs) or ('error', reason, detail): the angle
     # argument of a GGB Rotate read from its text (:func:`.ggb_inline.read_angle_arguments`)
@@ -451,7 +451,7 @@ class _Builder:
         op_id = operation_id(self.ns, rec.key)
         equation = name in self.ctx.equations
         op = {'id': op_id, 'op': 'function.expr' if function is not None else
-              'conic.equation' if equation else 'number.expression',
+              self.ctx.equations[name] + '.equation' if equation else 'number.expression',
               'args': {'expr': {'kind': 'expr', 'ast': copy.deepcopy(ast)}, 'refs': {'kind': 'list', 'items': items}},
               'outputs': []}
         self.doc['operations'][op_id] = op
@@ -459,7 +459,7 @@ class _Builder:
             for key, value in zip(('min', 'max'), function.domain):
                 if value is not None:
                     op['args'][key] = _num(value)
-        slot = 'function' if function is not None else 'conic' if equation else 'number'
+        slot = 'function' if function is not None else self.ctx.equations[name] if equation else 'number'
         eid = self.add_element(name, rec, op_id, slot, slot)
         op['outputs'].append({'slot': slot, 'elementId': eid})
         rec.op_id = op_id
