@@ -174,7 +174,10 @@ number, a cube of a length are undefined there), the kernel has none. They are
 The GGB importer reads source function definitions independently of classic
 parsing. A companion `<element type="function">` accepts a bare body in `x`,
 `f(x) = body`, `f(t) = body`, or `y = body`; an explicit function header must
-match its source label and have one formal variable. Only variable nodes are
+match its source label and have one formal variable. Each form may follow the
+source label as GeoGebra saves a graph — `i: y = (-abs(x)) + 4` (since
+1.14.0; before it was `parse_error`); the label of another object there is
+`formula_unsupported`. Only variable nodes are
 renamed to `x`: labels such as `t_1` remain distinct source objects.
 
 The supported arithmetic and math functions are those of the number-expression

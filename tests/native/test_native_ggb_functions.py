@@ -686,3 +686,35 @@ def test_function_domain_guard_does_not_change_default_number_parser():
 
 if __name__ == '__main__':
     FUNCTION_FIXTURE.write_text(json.dumps(function_fixture(), ensure_ascii=False, indent=2, allow_nan=False) + '\n')
+
+
+# C0-a: GeoGebra saves a graph with its label in front, ``i: y = (-abs(x)) + 4``.
+@pytest.mark.parametrize('text', ['f: y = a*x²', 'f : y = a*x²', 'f: a*x²', 'f: f(x) = a*x²', 'f: f(t) = a*t²'])
+def test_function_label_header_is_read(text):
+    spec = parsed(text, {'a': 'numeric'})
+    assert spec.ast == {'op': '*', 'args': [
+        {'ref': 0}, {'op': '^', 'args': [{'var': 'x'}, {'num': 2.0}]}]}
+    assert spec.refs == ['a']
+
+
+def test_function_label_header_with_an_indexed_label():
+    spec = parsed('f_{1}: y = 2x', label='f_{1}')
+    assert compile_function(spec.ast, [])(3.0) == 6.0
+
+
+@pytest.mark.parametrize('text', ['g: y = x²', 'f: g(x) = x²', 'f: g: y = x²', ': y = x²', 'f:= x²', 'f :: x'])
+def test_function_label_header_of_another_object_is_refused(text):
+    with pytest.raises(ExprError) as exc:
+        parsed(text, {'g': 'function'})
+    assert exc.value.reason in ('formula_unsupported', 'parse_error')
+
+
+def test_imported_graph_with_label_header_is_editable_and_live():
+    doc, items = imported(number('a', 4) + function_source('i: y = (-abs(x)) + a', 'i', type_='function'))
+    assert items['i']['category'] == 'editable'
+    assert items['i']['value_check'] == 'passed'
+    assert items['i']['depends_on'] == ['a']
+    assert operation(doc, items, 'i')['op'] == 'function.expr'
+    assert [evaluator(function_value(doc, items, 'i'))(x) for x in (-2.0, 0.0, 3.0)] == [2.0, 4.0, 1.0]
+    moved = function_value(doc, items, 'i', inputs={eid(items, 'a'): {'kind': 'number', 'value': 1.0}})
+    assert evaluator(moved)(-2.0) == -1.0

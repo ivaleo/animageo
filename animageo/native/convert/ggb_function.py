@@ -120,10 +120,13 @@ class _FunctionReader(_BoundedReader):
 
 _HEADER = re.compile(r'^\s*(.*?)\s*\(([^()]*)\)\s*=(?!=)(.*)$', re.DOTALL)
 _Y_HEADER = re.compile(r'^\s*y\s*=(?!=)(.*)$', re.DOTALL)
+# GeoGebra saves a graph with its label in front: ``i: y = (-abs(x)) + 4``.
+_LABEL_HEADER = re.compile(r'^\s*([^\s:=(),]+)\s*:(?![:=])(.*)$', re.DOTALL)
 
 
 def parse_function(text, kinds, *, label) -> FunctionSpec:
-    """Read a bare body, matching ``f(x)=``/``f(t)=``, or ``y=`` graph.
+    """Read a bare body, matching ``f(x)=``/``f(t)=``, or ``y=`` graph,
+    each optionally after the source label ``f:`` (another label is refused).
 
     If and comparisons are opt-in here; parse_number retains its language.
     Only variable nodes normalize to x. Source object names remain unchanged.
@@ -134,6 +137,11 @@ def parse_function(text, kinds, *, label) -> FunctionSpec:
     text = str(text)
     if len(text) > MAX_CHARS:
         raise ExprError('formula_unsupported', 'function definition exceeds expression limits')
+    named = _LABEL_HEADER.match(text)
+    if named:
+        if named.group(1) != label:
+            raise ExprError('formula_unsupported', 'function header must match its source label and one variable')
+        text = named.group(2)
     formal = 'x'
     header = _HEADER.match(text)
     if header:

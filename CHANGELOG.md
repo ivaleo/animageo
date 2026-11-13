@@ -79,6 +79,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--web-registry X` adds the line of a consumer of registry `X`, where the
   operations of a newer registry are pictures and what depends on them is
   closure.
+- GGB import: a function saved with its label in front, `i: y = (-abs(x)) + 4`,
+  is read as `y = (-abs(x)) + 4` (`function.expr`); before it was
+  `parse_error` with its dependents in closure. A label of another object
+  there is `formula_unsupported`.
 
 ## [1.13.0] - 2026-11-13
 
