@@ -620,9 +620,13 @@ def _area_scenes():
     boundary and every status of the operation, with the area and the perimeter
     of each region."""
     out = []
-    # 1. c − x² and the axis: the lobe, the second lobe that is not there, two limits
+    # 1. c − x² and the axis: the lobe, the second lobe that is not there, two limits;
+    #    a lobe number with limits (invalid_parameter); a graph that is the axis for x < 0,
+    #    whose first lobe lies on the axis (empty_region)
     d = _Doc('region_parabola_axis', (-4, -3, 4, 3)).number('c', 1).free('A', -2, 0).free('B', 0.5, 0)
     d.function('f', o('-', r(0), sq(X)), 'c').area('S', 'f').area('T', 'f', a='A', b='B').area('U', 'f', lobe=2)
+    d.area('V', 'f', a='A', b='B', lobe=2)
+    d.function('z', {'if': [{'cmp': '<', 'args': [X, n(0)]}, n(0), X]}).area('E', 'z')
     d.measures('S', 'T')
     out.append((d, _cases(('base', None), ('wide', {'c': N(4)}), ('below', {'c': N(-1)}),
                           ('touching', {'c': N(0)}), ('nearly', {'c': N(0.01)}),

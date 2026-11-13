@@ -2013,9 +2013,11 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   continuous graph), `limit_gap` (`|f − g|` at a limit placed at a common
   point).
 - Fixtures `parity/v1/curves/region_*`: the lobe of a parabola and the
-  axis, two graphs and the second lobe, a graph and a line (limits at the
-  common points, literal limits), a pole and a step, out of the domain,
-  far from the origin.
+  axis (a lobe number with limits: `invalid_parameter`; the first lobe of
+  a graph that is the axis for `x < 0`, on the piece where they coincide:
+  `empty_region`), two graphs and the second lobe, a graph and a line
+  (limits at the common points, literal limits), a pole and a step, out of
+  the domain, far from the origin.
 - Paint and output (`has("regions")`). The default paint of a region is
   that of a polygon of the fill tool of the web: `defaults.region` of the
   built-in style fills with `presets.color.accent` at the opacity of a
