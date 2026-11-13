@@ -19,7 +19,7 @@ from ..region import PIECES_MAX, TWO_PI, arc_area_of, boundary_chain, line_area
 from ..values import Undefined
 from . import op
 
-__all__ = ['Piece', 'chain_pieces', 'contour_ring', 'ring_area']
+__all__ = ['Piece', 'carrier_distance', 'chain_pieces', 'contour_ring', 'reversed_ring', 'ring_area']
 
 _LINEAR = ('line', 'segment', 'ray')
 _ROUND = ('circle', 'arc')
@@ -176,9 +176,98 @@ def _rings(args):
     return rings, None
 
 
+def carrier_distance(carrier, x: float, y: float) -> float:
+    """The distance from ``(x, y)`` to the line or the circle of a carrier (a
+    segment of zero length: to its point)."""
+    v = carrier.value
+    if carrier.type in _ROUND:
+        return abs(math.hypot(x - v['c'][0], y - v['c'][1]) - v['r'])
+    if carrier.type == 'segment':
+        (ax, ay), (bx, by) = v['a'], v['b']
+        length = math.hypot(bx - ax, by - ay)
+        if length == 0.0:
+            return math.hypot(x - ax, y - ay)
+        return abs((x - ax) * (by - ay) - (y - ay) * (bx - ax)) / length
+    (px, py), (dx, dy) = (v['p'], v['dir']) if carrier.type == 'line' else (v['origin'], v['dir'])
+    return abs((x - px) * dy - (y - py) * dx)
+
+
+def _incidence(args, ctx):
+    """Step 1: every vertex within ``tol.inc = tol.check.failed`` of the
+    carrier of its piece (decision ``off_carrier``), else
+    ``not_on_curve`` with ``detail.slot`` ``from.<i>`` / ``to.<i>``; the
+    pieces in document order, ``from`` before ``to``."""
+    tol = ctx.tol.check_failed
+    for i, carrier in enumerate(args['curves']):
+        for slot in ('from', 'to'):
+            x, y = _xy(args[slot][i])
+            d = carrier_distance(carrier, x, y)
+            ctx.decide('off_carrier', d, tol)
+            if d > tol:
+                return Undefined('not_on_curve', {'slot': f'{slot}.{i}'})
+    return None
+
+
+def _within(carrier, piece, ctx) -> bool:
+    """Whether a piece lies on the part of its carrier (decisions
+    ``piece_part``, ``tol.decide``): a segment holds the parameters of both
+    ends in ``[−tol, length + tol]``, a ray in ``[−tol, ∞)``; an arc
+    ``{a0, a1}`` the piece ccw from ``from``: ``φ = (θ_from − a0) mod 2π``
+    (``0`` when ``r·(2π − φ) ≤ tol``) and ``r·(φ + sweep − (a1 − a0)) ≤ tol``."""
+    tol = ctx.tol.decide_length
+    v = carrier.value
+    if carrier.type == 'line' or carrier.type == 'circle':
+        return True
+    if carrier.type == 'arc':
+        cx, cy = v['c']
+        r = v['r']
+        phi = (math.atan2(piece.start[1] - cy, piece.start[0] - cx) - v['a0']) % TWO_PI
+        wrap = r * (TWO_PI - phi)
+        ctx.decide('piece_part', wrap, tol)
+        if wrap <= tol:
+            phi = 0.0
+        e = r * (phi + piece.sweep - (v['a1'] - v['a0']))
+        ctx.decide('piece_part', e, tol)
+        return e <= tol
+    if carrier.type == 'ray':
+        (ox, oy), (dx, dy) = v['origin'], v['dir']
+        for x, y in (piece.start, piece.end):
+            s = (x - ox) * dx + (y - oy) * dy
+            ctx.decide('piece_part', s, tol)
+            if s < -tol:
+                return False
+        return True
+    (ax, ay), (bx, by) = v['a'], v['b']
+    length = math.hypot(bx - ax, by - ay)
+    if length == 0.0:
+        return True
+    ux, uy = (bx - ax) / length, (by - ay) / length
+    for x, y in (piece.start, piece.end):
+        s = (x - ax) * ux + (y - ay) * uy
+        ctx.decide('piece_part', s, tol)
+        ctx.decide('piece_part', s - length, tol)
+        if s < -tol or s > length + tol:
+            return False
+    return True
+
+
+def _parts(args, pieces, ctx):
+    """Step 2: every piece on the part of its carrier, else ``outside_part``
+    with ``detail.slot`` ``curves.<i>``."""
+    for i, carrier in enumerate(args['curves']):
+        if not _within(carrier, pieces[i], ctx):
+            return Undefined('outside_part', {'slot': f'curves.{i}'})
+    return None
+
+
 @op('region.by_boundary')
 def by_boundary(args, ctx):
     rings, failure = _rings(args)
+    if failure is not None:
+        return {'region': failure}
+    failure = _incidence(args, ctx)
+    if failure is None:
+        failure = _parts(args, chain_pieces(args['curves'], args['from'], args['to']), ctx)
     if failure is not None:
         return {'region': failure}
     areas = [ring_area(ring) for ring in rings]

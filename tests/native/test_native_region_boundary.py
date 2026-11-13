@@ -7,7 +7,7 @@ import pytest
 from animageo import native
 from animageo.native.kernel import region as R
 from animageo.native.registry import registry
-from tests.native.conftest import DocBuilder, ref_list
+from tests.native.conftest import DocBuilder, point_input, ref_list
 
 
 class Doc(DocBuilder):
@@ -235,3 +235,81 @@ def test_the_bridge_reruns_the_chain_by_ids():
     construction.rebuild(full=True)
     _e, v = defined(d)
     assert from_classic('region', construction.element(names.by_id['R']).data) == v
+
+
+# ── incidence and the part of the carrier ──────────────────────────────
+
+def quarter(doc=None):
+    """The arc of radius 5 about O from E (5, 0) to F (0, 5) and the segments FO, OE."""
+    d = doc or Doc()
+    d.free('O', 0, 0).free('E', 5, 0).free('F', 0, 5).arc('k', 'O', 'E', 'F')
+    d.segment('fo', 'F', 'O').segment('oe', 'O', 'E')
+    return d
+
+
+def test_quarter_disc_on_an_arc():
+    d = quarter().boundary('R', ['k', 'fo', 'oe'], ['E', 'F', 'O'], ['F', 'O', 'E'])
+    _e, v = defined(d)
+    assert v['shape'] == [[['ccw', 'curves.0'], ['line', 'curves.1'], ['line', 'curves.2']]]
+    assert v['area'] == pytest.approx(25 * math.pi / 4, abs=1e-12)
+
+
+def test_vertex_off_its_line_is_not_on_curve():
+    d = triangle(Doc().free('G', 0.5, 3))
+    d.boundary('R', ['c', 'a', 'b'], ['X', 'Y', 'G'], ['Y', 'G', 'X'])
+    _e, rec = evaluated(d)
+    assert (rec['state'], rec['reason'], rec.get('detail')) == ('undefined', 'not_on_curve', {'slot': 'to.1'})
+
+
+def test_vertex_off_its_circle_is_not_on_curve():
+    d = quarter().free('H', 0, 4).segment('ho', 'H', 'O')
+    d.boundary('R', ['k', 'ho', 'oe'], ['E', 'H', 'O'], ['H', 'O', 'E'])
+    _e, rec = evaluated(d)
+    assert (rec['reason'], rec.get('detail')) == ('not_on_curve', {'slot': 'to.0'})
+
+
+def test_vertex_within_the_incidence_tolerance():
+    d = triangle(Doc().free('G', 1e-9, 3))
+    d.boundary('R', ['c', 'a', 'b'], ['X', 'Y', 'Z'], ['Y', 'G', 'X'])
+    _e, rec = evaluated(d)
+    assert rec['reason'] == 'schema'                       # G is not Z: the chain breaks by IDs
+    d = Doc().free('A', 0, 0).free('B', 4, 0).free('C', 1e-9, 3).free('C0', 0, 3)
+    d.segment('s', 'A', 'B').line('a', 'B', 'C0').line('b', 'C0', 'A')
+    d.boundary('R', ['s', 'a', 'b'], ['A', 'B', 'C'], ['B', 'C', 'A'])
+    defined(d)
+
+
+def test_piece_beyond_its_segment_is_outside_part():
+    d = Doc().free('A', 0, 0).free('B', 4, 0).free('C', 0, 3).free('D', 5, 0)
+    d.segment('s', 'A', 'B').line('a', 'D', 'C').line('b', 'C', 'A')
+    d.boundary('R', ['s', 'a', 'b'], ['A', 'D', 'C'], ['D', 'C', 'A'])
+    _e, rec = evaluated(d)
+    assert (rec['reason'], rec.get('detail')) == ('outside_part', {'slot': 'curves.0'})
+
+
+def test_piece_behind_its_ray_is_outside_part():
+    d = Doc().free('A', 0, 0).free('B', 4, 0).free('C', 0, 3).free('D', 5, 0)
+    d.ray('s', 'B', 'A').line('a', 'D', 'C').line('b', 'C', 'A')
+    d.boundary('R', ['s', 'a', 'b'], ['A', 'D', 'C'], ['D', 'C', 'A'])
+    _e, rec = evaluated(d)
+    assert (rec['reason'], rec.get('detail')) == ('outside_part', {'slot': 'curves.0'})
+    d.doc['inputs']['D'] = point_input(3, 0)
+    defined(d)
+
+
+def test_piece_around_the_rest_of_an_arc_is_outside_part():
+    d = quarter().boundary('R', ['k', 'oe', 'fo'], ['F', 'E', 'O'], ['E', 'O', 'F'])
+    _e, rec = evaluated(d)
+    assert (rec['reason'], rec.get('detail')) == ('outside_part', {'slot': 'curves.0'})
+
+
+def test_whole_circle_on_a_part_of_an_arc_is_outside_part():
+    d = quarter().boundary('R', ['k'], ['E'], ['E'])
+    _e, rec = evaluated(d)
+    assert (rec['reason'], rec.get('detail')) == ('outside_part', {'slot': 'curves.0'})
+
+
+def test_upstream_vertex():
+    d = two_circles(dx=12.0).boundary('R', ['c1', 'c2'], ['Q', 'P'], ['P', 'Q'])
+    _e, rec = evaluated(d)
+    assert rec['reason'] == 'upstream'
