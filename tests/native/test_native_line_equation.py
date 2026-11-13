@@ -133,3 +133,24 @@ def test_line_equation_in_a_subnormal_frame():
     rec = native.evaluate(b.doc).elements['g']
     assert rec['state'] == 'defined', rec
     assert rec['value'] == {'p': [0, 0], 'dir': [0, -1]}
+
+
+@pytest.mark.parametrize('ast,foot,direction', [
+    (o('*', n(9e307), o('+', X, o('*', o('/', n(2), n(9)), Y))),
+     [0, 0], [2 / math.sqrt(85), -9 / math.sqrt(85)]),
+    (o('*', n(1e-300), o('-', X, n(1))), [1, 0], [0, -1]),
+])
+def test_line_equation_normalizes_samples_before_coefficient_differences(ast, foot, direction):
+    from animageo.native.expr import compile_function
+    body = compile_function(ast, vars=('x', 'y'))
+    samples = ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1),
+               (1, 1), (2, -1), (-1, 2), (-1, -1))
+    assert all(math.isfinite(body(x, y)) for x, y in samples)
+    b = DocBuilder('scaled_line_samples', bounds=(0, 0, 1, 1), registry_version='1.10')
+    equation(b, 'g', ast)
+    ev = native.evaluate(b.doc)
+    assert ev.tolerances.scale == 1
+    rec = ev.elements['g']
+    assert rec['state'] == 'defined', rec
+    assert rec['value']['p'] == pytest.approx(foot)
+    assert rec['value']['dir'] == pytest.approx(direction)

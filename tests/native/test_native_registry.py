@@ -66,7 +66,7 @@ SCHOOL_B_OPS = {'line.common_tangents', 'sector.segment', 'triangle.cevian', 'ci
 MEET_OPS = {'intersect.conic_conic', 'intersect.function_conic'}
 MARK_18_OPS = {'mark.parallel'}
 REGION_OPS = {'function.area_between', 'region.by_boundary'}
-EXPRESSION_OPS = {'point.expression', 'vector.expression'}      # registry 1.10
+EXPRESSION_OPS = {'point.expression', 'vector.expression', 'line.equation'}      # registry 1.10
 LOCUS_OPS = {'point.on_locus'}      # registry 1.10
 ALL_OPS = LOCUS_OPS | EXPRESSION_OPS | REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.7 extend 1.0: earlier operations keep their signatures.

@@ -378,6 +378,11 @@ def equation(args, ctx):
         values = [body(scale * x, scale * y) for x, y in samples]
     except ExprError:
         return {'line': Undefined('not_linear')}
+    # Scale every probe together before differences: finite opposite values
+    # can have an infinite difference even when all samples are finite.
+    sample_norm = max(abs(v) for v in values)
+    if sample_norm > 0:
+        values = [v / sample_norm for v in values]
     f, xp, xm, yp, ym = values[:5]
     d, e = (xp - xm) / 2, (yp - ym) / 2
     if not all(math.isfinite(v) for v in (d, e, f)):
