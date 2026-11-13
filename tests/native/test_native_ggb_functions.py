@@ -544,14 +544,38 @@ def test_graph_glider_saved_mismatch_is_differs():
 
 @pytest.mark.parametrize('definition', [
     command('Point', ['f', 'a'], ['P']), command('Point', ['f', '0.5'], ['P']),
-    expression('P', '(a, f(a))'), expression('P', '(1, f(1))'),
 ])
-def test_number_driven_path_parameter_and_function_tuple_are_not_frozen(definition):
+def test_number_driven_path_parameter_is_not_frozen(definition):
     doc, items = imported(number('a', 1) + function_source('x²') + definition + point('P', 1., 1.))
     assert items['f']['category'] == 'editable'
     assert items['P']['category'] in ('picture', 'unsupported', 'closure')
     assert items['P']['reason'] in ('formula_unsupported', 'unsupported_signature', 'depends_on_unsupported',
                                    'no_registry_op', 'parse_error')
+    assert items['P']['native_ids'] == []
+    assert all(el.get('displayName') != 'P' for el in doc['elements'].values())
+
+
+@pytest.mark.parametrize('formula, moved', [('(a, f(a))', (3., 36.)), ('(1, f(1))', (1., 4.))])
+def test_function_coordinate_tuple_is_an_editable_live_expression(formula, moved):
+    # A coordinate tuple is a formula, unlike Point(f, t)'s path parameter.
+    doc, items = imported(number('a', 1) + number('b', 2) + function_source('b*x²')
+                          + expression('P', formula) + point('P', 1., 2.))
+    assert items['P']['category'] == 'editable'
+    assert items['P']['value_check'] == 'passed'
+    assert operation(doc, items, 'P')['op'] == 'point.expression'
+    assert eid(items, 'P') not in doc['inputs']
+    ev = native.evaluate(doc, inputs={eid(items, 'a'): {'kind': 'number', 'value': 3.},
+                                      eid(items, 'b'): {'kind': 'number', 'value': 4.}})
+    assert ev.elements[eid(items, 'P')]['value'] == dict(zip(('x', 'y'), moved))
+
+
+@pytest.mark.parametrize('formula', ['(a, f(A))', '(1, f(1, 2))', '(1, Midpoint[A, A])'])
+def test_unsupported_function_tuple_is_an_import_report_refusal(formula):
+    doc, items = imported(number('a', 1) + point('A', 0., 0.) + function_source('x²')
+                          + expression('P', formula) + point('P', 1., 1.))
+    assert items['P']['category'] == 'picture'
+    assert items['P']['reason'] == 'formula_unsupported'
+    assert formula in items['P']['detail']
     assert items['P']['native_ids'] == []
     assert all(el.get('displayName') != 'P' for el in doc['elements'].values())
 
