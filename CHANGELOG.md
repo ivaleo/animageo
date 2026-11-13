@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.1] - 2026-11-13
+
 ### Fixed
 
 - Native GGB import: a dynamic caption that refers to a constant text (string
@@ -3540,7 +3542,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.12.0...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.12.1...HEAD
+[1.12.1]: https://github.com/ivaleo/animageo/compare/v1.12.0...v1.12.1
 [1.12.0]: https://github.com/ivaleo/animageo/compare/v1.11.4...v1.12.0
 [1.11.4]: https://github.com/ivaleo/animageo/compare/v1.11.3...v1.11.4
 [1.11.3]: https://github.com/ivaleo/animageo/compare/v1.11.2...v1.11.3
