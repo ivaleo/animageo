@@ -139,17 +139,26 @@ def _row_scene(key, row, shift=0):
         return overrides[key]
     used = {}
     args = []
+    setup = []
     for n, ch in enumerate(key.rpartition('_')[2]):
         if ch == 'i' and row.get('index') and n == row['index']['input']:
             args.append(str(1 + shift))
             continue
         k = used.get(ch, 0)
+        if ch == 'L':
+            mover, trace = f'LocusMover{n}', f'LocusTrace{n}'
+            segment = VARIANTS['s'][(k + shift) % len(VARIANTS['s'])]
+            anchor = VARIANTS['p'][(k + shift) % len(VARIANTS['p'])]
+            setup += [f'{mover} = Point({segment})', f'{trace} = Midpoint({mover}, {anchor})']
+            args.append(f'Locus({trace}, {mover})')
+            used[ch] = k + 1
+            continue
         args.append(VARIANTS[ch][(k + shift) % len(VARIANTS[ch])])
         used[ch] = k + 1
     out = row.get('outputs')
     target = ', '.join(f'X{k+1}' for k in range(4 if key == 'vertex_K' else 2)) \
         if isinstance(out, dict) and 'byValue' in out and not row.get('index') else 'X'
-    return f"{target} = {row['factory']}({', '.join(args)})"
+    return '\n'.join(setup + [f"{target} = {row['factory']}({', '.join(args)})"])
 
 
 # rows a DSL construction cannot reach: their input is a function, and a classic
@@ -386,6 +395,8 @@ DEGENERATE = {
     'perpendicular_line_pr': f'X = PerpendicularLine(Point(-1, 0), {_RX})',
     'perpendicular_line_ps': f'X = PerpendicularLine(Point(6, 0), {_SX})',
     'point_C': f'X = Point({_ARC0})',
+    'point_L': 'M = Point(Segment(Point(1, 1), Point(1, 1)))\nT = Midpoint(M, Point(3, 0))\n'
+               'X = Point(Locus(T, M))',
     'point_P': f'X = Point({_FLAT})',
     'point_pv': f'X = Point(Point(1, 1), {_ZV})',
     'point_r': 'X = Point(Ray(Point(1, 1), Point(1, 1)))',
@@ -479,7 +490,8 @@ DEGENERATE_DIFFERS = {
     'dilate_Pip', 'dilate_Pmp', 'dilate_lip', 'dilate_lmp', 'dilate_pip', 'dilate_pmp', 'dilate_sip', 'dilate_smp',
     'intersect_cl', 'intersect_cli', 'intersect_cr', 'intersect_cri', 'intersect_cs', 'intersect_csi',
     'intersect_lc', 'intersect_lci', 'intersect_rc', 'intersect_rci', 'intersect_sc', 'intersect_sci',
-    'point_r', 'polygon_ppi', 'ray_pp', 'ray_pv', 'semicircle_pp', 'tangent_pc', 'tangent_pci',
+    # The classic keeps a point on a stationary locus; native reports degenerate_locus.
+    'point_L', 'point_r', 'polygon_ppi', 'ray_pp', 'ray_pv', 'semicircle_pp', 'tangent_pc', 'tangent_pci',
     # the classic keeps the dimension of a measure: a sum of a length and an area, a length
     # plus a number, a cube of a length are undefined there; the kernel has no dimension
     'add_mi', 'add_mm', 'pow_mi', 'sub_mm',

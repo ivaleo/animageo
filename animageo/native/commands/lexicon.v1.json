@@ -3,6 +3,7 @@
   "commands": [
     {"name": "Точка", "aliases": ["Point"], "op": "point.free", "form": ["$input"]},
     {"name": "Точка", "aliases": ["Point"], "op": "point.on_path", "form": ["path", "$input"], "minArgs": 1},
+    {"name": "ТочкаНаГМТ", "aliases": ["PointOnLocus"], "op": "point.on_locus", "form": ["locus", "parameter"]},
     {"name": "Середина", "aliases": ["Midpoint"], "op": "point.midpoint"},
     {"name": "Пересечение", "aliases": ["Intersect"], "op": "intersect.line_line"},
     {"name": "Пересечение", "aliases": ["Intersect"], "op": "intersect.line_circle"},

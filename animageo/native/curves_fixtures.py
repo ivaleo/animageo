@@ -854,9 +854,10 @@ def _locus_scenes():
     d.op('op_T', 'point.expression', {'expr': {'kind': 'expr', 'ast': ast},
          'refs': {'kind': 'list', 'items': [_ref(v) for v in ('t', 'c', 'k')]}}, [('point', 'T', 'point')])
     d.op('op_g', 'locus.of_point', {'trace': _ref('T'), 'mover': _ref('t')}, [('locus', 'g', 'locus')])
-    d.on_path('Q', 'g', .75).free('Z', .5, 1).closest('F', 'g', 'Z')
-    d.op('op_R', 'point.on_locus', {'locus': _ref('g'), 'parameter': _num(.75)}, [('point', 'R', 'point')])
+    d.on_path('Q', 'g', .75).free('Z', .5, 1).closest('F', 'g', 'Z').number('u', .75)
+    d.op('op_R', 'point.on_locus', {'locus': _ref('g'), 'parameter': _ref('u')}, [('point', 'R', 'point')])
     out.append((d, _cases(('base', None), ('gap', {'Q': T(.25)}), ('before', {'Q': T(-1)}),
+                          ('parameter_gap', {'u': N(.25)}),
                           ('empty', {'c': N(3)}), ('stationary', {'k': N(0)}))))
     # The current trace exists at t=1; none of the 256 samples hits that value.
     d = _Doc('path_locus_empty').number('t', 1)
