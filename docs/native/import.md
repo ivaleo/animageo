@@ -132,6 +132,14 @@ A constant point formula without references, such as `(sqrt(2), 0)`,
 remains `point.free` with the saved coordinates. This source reader is
 specific to `from_ggb`; classic `from_construction` keeps its language.
 
+Reproduce the source archives, scenes and parity fixtures with
+`python -m tests.native.ggb_expression_fixtures [--check]`. The four
+`parity/v1/ggb/ggb_{point_expression,vector_expression,vector_rotate,expression_refused}.json`
+files contain live input changes and, in their optional `import` section,
+the source construction XML and expected report entries, including
+`formula_unsupported` refusals. Source archives live in
+`tests/native/import/expressions/`.
+
 1.10.0a2 (`native.has("convert.formula")`): the arithmetic of numbers and
 measures — 24 keys (`+ - * / ^`, the opposite, `Abs`, `Sqrt`, `Sin`, `Cos`,
 `Tan`, `Ctan`, a copy) — is `number.expression`. The other 46 keys of

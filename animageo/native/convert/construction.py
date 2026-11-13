@@ -103,8 +103,9 @@ class Context:
     # classic output name → (AST v1, classic names of its refs) or ('error', reason, detail): the angle
     # argument of a GGB Rotate read from its text (:func:`.ggb_inline.read_angle_arguments`)
     angle_formulas: dict = field(default_factory=dict)
-    typed_formulas: dict = field(default_factory=dict)  # source/phantom → (AST, normalized refs, point|vector)
+    typed_formulas: dict = field(default_factory=dict)  # source/phantom → (AST, normalized refs, point|vector, text)
     typed_errors: dict = field(default_factory=dict)    # source/phantom → explicit formula refusal
+    source_commands: list = field(default_factory=list)  # XML commands absent from the classic graph
 
 
 @dataclass
@@ -346,11 +347,15 @@ class _Builder:
             if value is not None and KeyMaker.is_phantom(inp):
                 return _num(value)
             raise _Untranslated('depends_on_unsupported', deps=[inp])
-        if isinstance(inp, str) and (inp in self.ctx.functions or inp in self.ctx.typed_formulas):
+        if isinstance(inp, str) and (inp in self.ctx.functions or inp in self.ctx.typed_formulas
+                                    or inp in self.ctx.typed_errors
+                                    or self.ctx.inline_formulas and inp in self.ctx.display):
             # a function the import read itself (the classic did not): its element, once translated
             eid = self.element_of.get(inp)
             if eid is None:
                 raise _Untranslated('depends_on_unsupported', deps=[inp])
+            if slot in params:
+                raise _Untranslated('unsupported_signature', f'параметр {slot} задан объектом')
             return _ref(eid)
         value = _literal(self.constr.dataByStr(inp) if isinstance(inp, str) else inp)
         if value is None or not math.isfinite(value):
@@ -535,7 +540,9 @@ class _Builder:
             return
         inputs = list(cmd.inputs)
         sig = self.signature(cmd, inputs)
-        in_names = [i for i in inputs if isinstance(i, str) and self.is_object(i)]
+        in_names = [i for i in inputs if isinstance(i, str) and (self.is_object(i)
+                    or i in self.ctx.typed_formulas or i in self.ctx.typed_errors
+                    or self.ctx.inline_formulas and i in self.ctx.display)]
         input_keys = []
         for i in inputs:
             if isinstance(i, str) and i in self.records:
@@ -571,9 +578,13 @@ class _Builder:
                 self.source_definition(o)
 
     def build(self, cmd, sig, inputs, outs, recs):
-        if len(outs) == 1 and outs[0] in self.ctx.typed_errors and \
-                self.ctx.xml_types.get(self.ctx.display.get(outs[0], outs[0])) == 'point':
+        if len(outs) == 1 and outs[0] in self.ctx.typed_errors:
             raise _Untranslated(*self.ctx.typed_errors[outs[0]])
+        if len(outs) == 1 and outs[0] in self.ctx.typed_formulas:
+            _, names, kind, _ = self.ctx.typed_formulas[outs[0]]
+            if kind == 'point' and names:
+                self.source_definition(outs[0])
+                return
         if len(outs) == 1 and (outs[0] in self.ctx.equations or outs[0] in self.ctx.functions
                               or outs[0] in self.ctx.function_points):
             self.source_definition(outs[0])
@@ -867,8 +878,10 @@ def translate(constr, ctx: Context) -> Translation:
     from ...geo.lib_vars import Var
     from ..kernel.evaluate import evaluate
     builder = _Builder(constr, ctx)
+    from .ggb_typed import commands_with_source
+    commands = commands_with_source(constr, ctx)
     produced = set()
-    for cmd in constr.commands:
+    for cmd in commands:
         for o in cmd.outputs:
             produced.add(str(getattr(o, 'name', o)))
     free = [e.name for e in constr.elements if e.name not in AXES and e.name not in produced]
@@ -889,7 +902,7 @@ def translate(constr, ctx: Context) -> Translation:
             builder.records[name].status = 'constant'
             continue
         builder.free_object(name)
-    for cmd in constr.commands:
+    for cmd in commands:
         named = [ctx.order[o] for o in (str(getattr(o, 'name', o)) for o in cmd.outputs) if o in ctx.order]
         while pending and named and ctx.order.get(pending[0], 10 ** 6) < min(named):
             builder.source_definition(pending.pop(0))

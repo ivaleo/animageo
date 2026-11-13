@@ -73,3 +73,43 @@ def test_constant_point_keeps_old_registry_and_saved_value():
     assert items['P']['category'] == 'editable'
     assert producer(doc, eid(items, 'P'))['op'] == 'point.free'
     assert doc['operationRegistryVersion'] == '1.0'
+
+
+def test_vector_function_argument_survives_a_missing_classic_command():
+    body = (operands() + command('Translate', ['A', 'Vector[(a, f(a))]'], ['T']) + point('T', 3., 10.)
+            + command('Midpoint', ['A', 'T'], ['M']) + point('M', 2., 6.))
+    doc, items = imported(body)
+    assert all(e['category'] == 'editable' for e in items.values()), items
+    moved = native.evaluate(doc, inputs={eid(items, 'a'): {'kind': 'number', 'value': 3.}})
+    assert moved.elements[eid(items, 'T')]['value'] == dict(x=4., y=29.)
+    assert moved.elements[eid(items, 'M')]['value'] == dict(x=2.5, y=15.5)
+
+
+def test_recovered_vector_and_angle_arithmetic_keep_both_dependencies():
+    body = (operands() + command('Rotate', ['Vector[(a, f(a))]', '-α', 'O'], ['u'])
+            + element('vector', 'u', extra=f'<coords x="{1 + 4 * math.sqrt(3)}" '
+                                           f'y="{4 - math.sqrt(3)}" z="0"/>'))
+    doc, items = imported(body)
+    assert items['u']['category'] == 'editable', items['u']
+    rotate = producer(doc, eid(items, 'u'))
+    angle = rotate['args']['angle']['elementId']
+    assert producer(doc, angle)['op'] == 'number.expression'
+    assert_helper(doc, angle, rotate['id'])
+    changed = native.evaluate(doc, inputs={eid(items, 'α'): {'kind': 'angle', 'value': 0.},
+                                          eid(items, 'a'): {'kind': 'number', 'value': 3.}})
+    assert changed.elements[eid(items, 'u')]['value']['b'] == pytest.approx([3., 27.])
+
+
+def test_xml_type_determines_point_output_of_a_vector_operand():
+    doc, items = imported(operands() + expression('P', '-v', 'point') + point('P', -3., 1.))
+    assert items['P']['category'] == 'editable', items['P']
+    assert doc['elements'][eid(items, 'P')]['type'] == 'point'
+    assert producer(doc, eid(items, 'P'))['op'] == 'point.expression'
+
+
+def test_numeric_expression_cannot_define_a_vector():
+    _, items = imported(operands() + expression('w', '2a', 'vector')
+                        + element('vector', 'w', extra='<coords x="4" y="0" z="0"/>'))
+    assert items['w']['reason'] == 'formula_unsupported'
+    assert '2a' in items['w']['detail']
+    assert not items['w']['native_ids']

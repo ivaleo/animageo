@@ -14,6 +14,8 @@ KINDS = {'A': 'point', 'B': 'point', 'v': 'vector', 'a': 'numeric', 'α': 'angle
     ('x(A)', 'num', {'fn': 'x', 'args': [{'ref': 0}]}, ['A']),
     ('(f(a), y(A))', 'vec', {'pair': [{'call': 0, 'args': [{'ref': 1}]}, {'fn': 'y', 'args': [{'ref': 2}]}]}, ['f', 'a', 'A']),
     ('f(a) + f(1)', 'num', {'op': '+', 'args': [{'call': 0, 'args': [{'ref': 1}]}, {'call': 0, 'args': [{'num': 1.}]}]}, ['f', 'a']),
+    ('log(a, x(A))', 'num', {'op': '/', 'args': [{'fn': 'ln', 'args': [{'fn': 'x', 'args': [{'ref': 0}]}]},
+                                             {'fn': 'ln', 'args': [{'ref': 1}]}]}, ['A', 'a']),
 ])
 def test_canonical_tree(text, result, ast, refs):
     assert parse_typed(text, KINDS, result=result) == (ast, refs)

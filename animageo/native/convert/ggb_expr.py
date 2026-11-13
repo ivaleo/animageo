@@ -405,6 +405,20 @@ def parse_typed(text: str, kinds: dict, *, result: str):
             raise ExprError('formula_unsupported', 'степень выходит за пределы формул (expr.md §2)')
         reader = _Reader(tokens, kinds, typed=True)
         ast = reader.read()
+        # Lowerings such as log(base, value) reorder children. References
+        # follow the emitted tree's pre-order, including the target of call.
+        labels, indices, pending = [], {}, [ast]
+        while pending:
+            node = pending.pop()
+            key = 'ref' if 'ref' in node else 'call' if 'call' in node else None
+            if key:
+                old = node[key]
+                if old not in indices:
+                    indices[old] = len(labels)
+                    labels.append(reader.labels[old])
+                node[key] = indices[old]
+            pending.extend(reversed(node.get('pair', node.get('args', []))))
+        reader.labels = labels
         operands = ['number' if kinds[n] in NUMBER_KINDS else kinds[n] for n in reader.labels]
         issues = problems(ast, len(operands), operands=operands, result=result)
         if issues:
