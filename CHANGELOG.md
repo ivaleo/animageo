@@ -83,6 +83,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is read as `y = (-abs(x)) + 4` (`function.expr`); before it was
   `parse_error` with its dependents in closure. A label of another object
   there is `formula_unsupported`.
+- GGB import: the angle of `Rotate(P, <expression>, O)` given by angle
+  arithmetic — `-theta`, `4 * (α_{2} - 90°)`, `180° - γ` — is read from its
+  text and becomes a hidden `number.expression` helper of the rotation; an
+  angle of a figure in it is measured by a hidden `measure.angle` helper
+  (registry 1.4). The rotation is checked against its saved image. Before it
+  was a picture (`formula_unsupported`) with its dependents in closure; an
+  expression outside the formulas still is, with the expression in `detail`.
+
+### Changed
+
+- GGB import: every hidden helper of the import (an anonymous argument, an
+  axis, the angle of a rotation) has `role: "aux"` and
+  `origin: {kind: "auto", source: <operation of the object it was made for>}`,
+  as the helpers of marks of the web; the document of a file with helpers
+  changes accordingly (fixtures `ggb_inline_arguments`, `ggb_regular_outputs`,
+  `ggb_axis_projection`).
 
 ## [1.13.0] - 2026-11-13
 

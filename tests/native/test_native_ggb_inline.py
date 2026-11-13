@@ -89,9 +89,13 @@ def test_helper_ownership_survives_selecting_one_of_two_objects():
         body += command('Translate', ['A', 'Vector[(-u)]'], [name]) + point(name, 2., 6.)
     doc, items = imported(body)
     assert set(items['T']['native_ids']).isdisjoint(items['U']['native_ids'])
-    # Model the downstream selection: discard all IDs owned by T.
+    # Model the downstream selection: discard all IDs owned by T, with the helpers made for it
+    # (origin auto, source: the operation of T — they go with their host).
     selected = copy.deepcopy(doc)
-    discard = set(items['T']['native_ids'])
+    host = doc['elements'][eid(items, 'T')]['producer']['operationId']
+    discard = set(items['T']['native_ids']) | {
+        h for h, el in doc['elements'].items() if el.get('origin') == {'kind': 'auto', 'source': host}}
+    assert len(discard) > len(items['T']['native_ids'])
     for oid, op in list(selected['operations'].items()):
         if all(out['elementId'] in discard for out in op['outputs']):
             del selected['operations'][oid]

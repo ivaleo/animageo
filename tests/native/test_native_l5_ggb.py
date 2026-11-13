@@ -765,17 +765,18 @@ def test_feature_flags():
 
 
 def test_a_picture_and_its_dependents():
-    # Rotate by an arithmetic of a slider: the point is a picture; what depends on it does not translate
+    # Rotate by an expression outside the formulas (a command in it): the point is a picture; what depends on
+    # it does not translate (angle arithmetic within the formulas translates since C0: test_native_ggb_rotate_angle)
     data = ggb_bytes(element('angle', 'α', extra='<value val="1.7"/><slider min="0" max="6.28" width="100" x="1" '
                                                'y="1" fixed="true" horizontal="true" showAlgebra="true"/>')
                      + point('I', 1.0, 0.0) + point('G', 0.0, 0.0)
-                     + command('Rotate', ['I', '(4 * (α - 90°))', 'G'], ["I'"]) + point("I'", 0.0, 1.0)
+                     + command('Rotate', ['I', '(4 * (α - 90°) * Distance[I, G])', 'G'], ["I'"]) + point("I'", 0.0, 1.0)
                      + command('Midpoint', ["I'", 'G'], ['M']) + point('M', 0.0, 0.5)
                      + command('Circle', ['M', '0.35'], ['r']) + element('conic', 'r', extra=CIRCLE_R3))
     doc, rep = _import(data)
     e = _by_name(rep)
     assert (e["I'"]['category'], e["I'"]['reason']) == ('picture', 'formula_unsupported')
-    assert '4 * (α - 90°)' in e["I'"]['detail']
+    assert '4 * (α - 90°) * Distance[I, G]' in e["I'"]['detail']
     assert (e['M']['category'], e['M']['reason']) == ('picture', 'depends_on_unsupported')
     assert (e['r']['category'], e['r']['reason']) == ('unsupported', 'depends_on_unsupported')
     assert e['α']['category'] == 'editable'

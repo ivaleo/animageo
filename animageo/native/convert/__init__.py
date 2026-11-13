@@ -354,6 +354,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     read_equations(infos, norm, ctx)
     from .ggb_function import read_functions
     read_functions(infos, norm, ctx)
+    from .ggb_inline import read_angle_arguments
+    read_angle_arguments(infos, norm, ctx, built_by_command)
     with _quiet():
         tr = translate(constr, ctx)
     # one entry per <element>
@@ -471,6 +473,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     keep = {nid for e in entries if e['category'] in ('editable', 'differs') for nid in e['native_ids']}
     # an editable/differs element produced together with a dropped one keeps only its own element
     _prune(doc, keep | {helper for nid in keep for helper in helpers.get(nid, ())})
+    from .ggb_inline import own_helpers
+    own_helpers(doc, entries, helpers)
     if any(info.get('layer') for info in infos):
         for e in entries:
             if e['category'] in ('editable', 'differs'):

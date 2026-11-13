@@ -100,6 +100,9 @@ class Context:
     function_points: dict = field(default_factory=dict)  # source point → (function name, saved free x)
     equations: set = field(default_factory=set)       # formulas producing conics, with variables x and y
     output_positions: dict = field(default_factory=dict)  # unindexed GGB output label → original slot index
+    # classic output name → (AST v1, classic names of its refs) or ('error', reason, detail): the angle
+    # argument of a GGB Rotate read from its text (:func:`.ggb_inline.read_angle_arguments`, C0)
+    angle_formulas: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -566,11 +569,20 @@ class _Builder:
             self.source_definition(outs[0])
             return
         row = self.table.lookup(sig)
+        from .ggb_inline import angle_argument, rotate_angle
+        # the angle of a GGB Rotate given by angle arithmetic the classic does not translate: read from its text
+        angle = rotate_angle(self, cmd, sig, inputs, outs)
+        if angle is not None:
+            row = angle.row
         # a dependency that did not translate makes the closure first
-        for name in (i for i in inputs if isinstance(i, str) and self.is_object(i)):
+        for n, name in enumerate(inputs):
+            if angle is not None and n == angle.index or not (isinstance(name, str) and self.is_object(name)):
+                continue
             rec = self.records.get(name)
             if rec is not None and rec.status in ('untranslated', 'closure'):
                 raise _Untranslated('depends_on_unsupported', deps=[name])
+        if angle is not None:
+            angle.resolve(self)
         from .ggb_inline import vector_expression
         if len(recs) == 1 and vector_expression(self, sig, inputs, recs[0]):
             return
@@ -627,8 +639,12 @@ class _Builder:
                 if isinstance(slot, dict):
                     a, b = self.segment_ends(inputs[i])
                     args[slot['ends'][0]], args[slot['ends'][1]] = a, b
+                elif angle is not None and i == angle.index:
+                    args[slot] = None            # emitted last: a failed argument leaves no helper behind
                 else:
                     args[slot] = self.arg_for(inputs[i], slot, params)
+            if angle is not None:
+                args[spec[angle.index]] = angle_argument(self, angle, recs[0])
         # outputs → slots
         out_spec = row['outputs']
         index = None

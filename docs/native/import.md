@@ -88,6 +88,21 @@ Intersections with functions (`Intersect(f, …)`) and `Intersect(a, b,
 their fallback reasons. A bare `pi`
 (`π`) argument, as in `Rotate(B, pi, O)`, is read as its number.
 
+Since 1.14.0 the angle of `Rotate(obj, <expression>, center)` that the classic
+makes into angle arithmetic it does not translate (`-theta`,
+`4 * (α_{2} - 90°)`, `180° - γ`) is read from the text of the argument by the
+number reader (`°` is `·(π/180)`, angles in radians) and becomes a hidden
+`number.expression` helper of the rotation (`transform.rotate`, registry 1.4).
+A number or an angle slider is a reference of the formula; an angle of a
+figure (`Angle(B, C, D)`) is first measured by a hidden `measure.angle`
+helper. The rotation is value-checked by its image against the saved
+`<coords>`. An argument read but outside the formulas (`floor(α)`, a point,
+`x(A)`, a command in it) is `formula_unsupported` with the expression in
+`detail`; one the reader cannot read keeps the classic path. An angle
+argument the classic translates itself (a numeric slider: `-a`, `a/2`)
+keeps its translation; `Rotate(P, α, O)` with a bare angle of a figure stays
+`unsupported_signature`.
+
 1.10.0a2 (`native.has("convert.formula")`): the arithmetic of numbers and
 measures — 24 keys (`+ - * / ^`, the opposite, `Abs`, `Sqrt`, `Sin`, `Cos`,
 `Tan`, `Ctan`, a copy) — is `number.expression`. The other 46 keys of
@@ -102,7 +117,12 @@ arguments of `Translate`, `Segment`, `Line`, `OrthogonalLine`, `Vector`,
 `Point`, `Intersect`, `Ray`, `Circle`, `Rotate`, `Polygon`, `Parabola`,
 `ClosestPoint`, `Midpoint` and `PerpendicularBisector` (and conic equations)
 keep such expressions as hidden, locked helpers outside `native_ids`; their
-results are still value-checked. GeoGebra writes
+results are still value-checked. Since 1.14.0 every helper of the import
+follows the rule of the helpers of marks of the web (1.0.55): no name,
+`appearance` `{visible: false, locked: true, role: "aux", label: {mode: "none"}}`
+and `elements.<id>.origin = {kind: "auto", source: <operation>}` — the
+operation of the first imported object (in the order of the report) that
+needs it. GeoGebra writes
 `sqrt(a)`, `sin(a)` and `2a`, which the classic parser does not take
 (`parse_error` in 1.10.0a2); `Sqrt(a)`, `Sin(a)` and `2*a` translate.
 

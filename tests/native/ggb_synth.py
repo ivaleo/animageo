@@ -211,11 +211,12 @@ def _synthetic() -> dict:
                               + element('segment', 's', extra='<coords x="1" y="-1" z="0"/>')
                               + command('Midpoint', ['s'], ['M']) + point('M', 0.5, 0.5))),
         'formula_argument': (
-            'a rotation by an expression of a slider: a picture and its dependents',
+            'a rotation by an expression outside the formulas (a command in it): a picture and its dependents',
             lambda: ggb_bytes(element('angle', 'α', extra='<value val="1.7"/>' + _SLIDER.replace('max="5"',
                                                                                               'max="6.28"'))
                               + point('I', 1.0, 0.0) + point('G', 0.0, 0.0)
-                              + command('Rotate', ['I', '(4 * (α - 90°))', 'G'], ["I'"]) + point("I'", 0.0, 1.0)
+                              + command('Rotate', ['I', '(4 * (α - 90°) * Distance[I, G])', 'G'], ["I'"])
+                              + point("I'", 0.0, 1.0)
                               + command('Midpoint', ["I'", 'G'], ['M']) + point('M', 0.0, 0.5))),
         'dropped_effects': (
             'conditional visibility, dynamic colour, animation and layers: dropped with warnings',
