@@ -154,6 +154,10 @@ class _Doc:
         self.doc['inputs'][el_id] = T(x)
         return self
 
+    def closest(self, el_id, path, point):
+        return self.op('op_' + el_id, 'point.closest', {'path': _ref(path), 'point': _ref(point)},
+                       [('foot', el_id, 'point')])
+
     def on_path(self, el_id, path, t, **extra):
         """Registry 1.9: ``point.on_path`` on a conic or a graph too."""
         self.op('op_' + el_id, 'point.on_path', {'path': _ref(path)}, [('point', el_id, 'point')])
@@ -572,6 +576,24 @@ def _path_scenes():
     d.function('h', o('/', n(1), X)).on_path('C', 'h', 0.5)
     out.append((d, _cases(('inside', None), ('ends', {'A': T(5), 'B': T(1), 'C': T(-2)}),
                           ('low_end', {'A': T(-3), 'B': T(3)}), ('gap', {'B': T(0.5), 'C': T(0)}))))
+    # 4. the closest point of an ellipse, a hyperbola (the nearest branch) and a parabola
+    d = _Doc('closest_conics').free('F1', -4, 0).free('F2', 4, 0).free('P', 0, 3).ellipse('e', 'F1', 'F2', 'P')
+    d.free('G1', -5, 0).free('G2', 5, 0).free('R', 3, 0).hyperbola('h', 'G1', 'G2', 'R')
+    d.free('F', 0, 1).free('C', -1, -1).free('D', 1, -1).line('dl', 'C', 'D').parabola('p', 'F', 'dl')
+    d.free('Z', 6, 2).closest('E', 'e', 'Z').closest('H', 'h', 'Z').closest('Q', 'p', 'Z')
+    out.append((d, _cases(('outside', None), ('inside', {'Z': P(1, 0.5)}), ('left', {'Z': P(-2.5, -1)}),
+                          ('axis', {'Z': P(1, 0)}), ('far_axis', {'Z': P(20, 0)}), ('centre', {'Z': P(0, 0)}),
+                          ('conjugate', {'Z': P(0, 3)}), ('above', {'Z': P(0, 5)}),
+                          ('turned', {'F1': P(1, 1), 'F2': P(3, 3), 'G1': P(0, 0), 'G2': P(2, 2), 'R': P(3, 0),
+                                      'F': P(1, 1), 'C': P(0, -2), 'D': P(-2, 0)}))))
+    # 5. the closest point of a graph: a domain, a piecewise graph with a gap, no value at all
+    d = _Doc('closest_graphs', (-4, -3, 4, 5)).free('Z', 0, 3)
+    d.function('f', sq(X), lo=-1, hi=2).closest('A', 'f', 'Z')
+    d.function('g', gap).closest('B', 'g', 'Z')
+    d.number('c', 1).function('h', call('sqrt', o('-', r(0), X)), 'c', lo=2, hi=5).closest('C', 'h', 'Z')
+    out.append((d, _cases(('above', None), ('right', {'Z': P(5, 5)}), ('gap_left', {'Z': P(0.3, -0.5)}),
+                          ('gap_right', {'Z': P(0.8, -0.5)}), ('far', {'Z': P(60, 0)}),
+                          ('back', {'c': N(9), 'Z': P(3, 0)}))))
     return out
 
 

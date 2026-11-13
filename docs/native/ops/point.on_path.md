@@ -109,6 +109,62 @@ when the element is not a path. `tol = tol.decide` (length) of the scene.
 Ties (the centre of a circle, the corner of a polygon) go to the smallest
 parameter. `point.on_path` at `project(…)` is the nearest point of the path.
 
+### A conic (registry 1.9)
+
+`(X, Y)` is the point in the frame of the conic: `X = (P − o)·u`,
+`Y = (P − o)·n`, `o` the centre (the vertex of a parabola). `|Y| ≤ tol →
+Y = 0`. A root `root(g, lo, hi)` (`g > 0` left of it) halves while
+`lo < m < hi`, `m = lo + (hi − lo)/2`, at most 1100 times: `g(m) > 0 →
+lo = m`, else `hi = m`; the result is the last `m`.
+
+    ellipse (a ≥ b; Eberly, "Distance from a point to an ellipse"):
+        |X| ≤ tol → X = 0
+        y0 = |X|, y1 = |Y|
+        y1 > 0, y0 > 0:  z0 = y0/a, z1 = y1/b, g = z0² + z1² − 1
+                         g = 0 → (x0, x1) = (y0, y1)
+                         else r = (a/b)², n0 = r·z0
+                              s = root(F, z1 − 1, g < 0 ? 0 : hypot(n0, z1) − 1),
+                                  F(s) = (n0/(s + r))² + (z1/(s + 1))² − 1
+                              (x0, x1) = (r·y0/(s + r), y1/(s + 1))
+        y1 > 0, y0 = 0:  (x0, x1) = (0, b)
+        y1 = 0:          y0·a < a² − b² → q = y0·a/(a² − b²), (x0, x1) = (a·q, b·√(1 − q²))
+                         else (x0, x1) = (a, 0)
+        X < 0 → x0 = −x0;  Y < 0 → x1 = −x1
+        t = atan2(x1/b, x0/a);  t < 0 → t + 2π;  t ≥ 2π → 0
+    hyperbola:
+        branch = −1 when X < −tol, else +1;  X' = branch·X
+        Y = 0:  X' > (a² + b²)/a → t = −acosh(a·X'/(a² + b²)), else t = 0
+        Y ≠ 0:  λ = root(F, −a², b²),  F(λ) = (a·X'/(a² + λ))² − (b·|Y|/(b² − λ))² − 1
+                t = asinh(b·|Y|/(b² − λ)),  negated when Y < 0
+    parabola:
+        Y = 0:  X > p → t = −√(2(X/p − 1)), else t = 0
+        Y ≠ 0:  P = 2(1 − X/p), Q = −2|Y|/p
+                s = root(−(s³ + P·s + Q), 0, max(1, √(|P| + |Q|))),  t = s, negated when Y < 0
+
+On the major axis of an ellipse inside the centre of curvature two points
+are nearest: the side `+n` (the smaller `t`). On the axis of a hyperbola or
+a parabola past the centre of curvature the two points are symmetric: the
+smaller `t` (the side `−n`). The centre of a circle conic gives `0`, the
+centre of an ellipse `π/2`, a point on the conjugate axis of a hyperbola the
+branch `+1`. `native.project` gives `t`; the branch of a hyperbola is the
+nearest one (`native.project_input` gives both, kernel.md §8).
+
+### A graph (registry 1.9)
+
+    (x0, x1) = the x-range of the window B4 of the bounds (as intersect.function_function)
+    a0 = min(x0, X), a1 = max(x1, X)               (X, Y: the point)
+    lo given: a0 = max(a0, lo), a1 = max(a1, lo);  hi given: a0 = min(a0, hi), a1 = min(a1, hi)
+    d²(x) = (x − X)² + (f(x) − Y)²,  no value where f has none
+    nodes x_k = a0 + k·(a1 − a0)/512, k = 0…512;  k* = the first node of the least d²
+    no node with a value → no point (None; point.closest: out_of_domain)
+    (x, d) = golden_min(d², x_max(k*−1, 0), x_min(k*+1, 512))        (function.root.md: 100 steps, no value = +∞)
+    t = x when d < d²(x_k*), else x_k*
+
+The nearest point of a piecewise graph may be the open end of a piece (a
+gap without a value): the search approaches it to the resolution of the
+golden-section search. A tie between two pieces goes to the better grid
+node, not exactly to the smaller `t`.
+
 ## Checks
 
 - `on_path`: distance from the point to the path: a segment and a ray as the

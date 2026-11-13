@@ -1,11 +1,11 @@
 """``point.free``, ``point.midpoint``, ``point.on_path``, ``point.projection``; registry 1.4:
 ``point.divide``, ``point.center``, ``point.closest``, ``point.at_distance`` (docs/native/ops/point.*.md).
-Registry 1.9: ``point.on_path`` on a conic and on a graph."""
+Registry 1.9: ``point.on_path`` and ``point.closest`` on a conic and on a graph."""
 from __future__ import annotations
 
 import math
 
-from ..paths import frame, point_at, project
+from ..paths import frame, locate, point_at
 from ..values import Undefined
 from . import op
 from .intersect import carrier
@@ -83,8 +83,11 @@ def closest(args, ctx):
     path = args['path']
     p = args['point'].value
     f = path.frame if path.frame is not None else frame(path.type, path.value)
-    t = project(f, p['x'], p['y'], ctx.tol.decide_length)
-    return {'foot': point_at(f, t)}
+    found = locate(f, p['x'], p['y'], ctx.tol.decide_length, ctx.bounds, ctx.decide)
+    if found is None:                   # registry 1.9: a graph without a point in its search interval
+        return {'foot': Undefined('out_of_domain')}
+    foot = point_at(f, *found)
+    return {'foot': Undefined('out_of_domain') if foot is None else foot}
 
 
 @op('point.at_distance')

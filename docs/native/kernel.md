@@ -1900,6 +1900,17 @@ or a graph in a `path` slot declares 1.9 (`needs_newer_registry` otherwise,
   domain of the function (a `null` end is open); a point where `f` has no
   value (a gap of a piecewise `If` without `else`, a pole) is
   `undefined/out_of_domain`, as `point.on_function`.
+- `point.closest` (and the projection of `native.project`): the exact
+  nearest point of an ellipse (Eberly's bisection), of the nearest branch of
+  a hyperbola and of a parabola (a root of a monotone function, bisected to
+  the resolution of a double); the nearest point of a graph on a grid of 512
+  cells over the window `B4` of the bounds and the point's abscissa, inside
+  the domain, refined by the golden section (no value at all:
+  `out_of_domain`). Formulas in
+  [point.on_path](ops/point.on_path.md#inverse-nativeprojectdoc-id-x-y). New
+  noise decisions: `closest_axis`, `closest_branch`. The registry has no
+  `PathParameter` operation (a dependent path parameter of GeoGebra), so
+  none is added for the new paths.
 - Distances (`distance_to_path`; the check `on_path`, incidence): a conic
   gives its focal residual, a graph `|y − f(x)|` (as `on_both`, §15).
 - A cosh/sinh that overflows gives `undefined/non_finite`.
@@ -1907,4 +1918,6 @@ or a graph in a `path` slot declares 1.9 (`needs_newer_registry` otherwise,
   hyperbola, a parabola: turned, a circle, wrapped parameters, degenerate
   conics), `path_conic_kind` (`x²/9 + k y² = 1`: `path_kind_changed` and
   the recovery), `path_graphs` (domain ends, a piecewise graph with a gap, a
-  pole) in `parity/v1/curves`.
+  pole), `closest_conics` (inside, outside, on the axes, both branches, a
+  turned set), `closest_graphs` (a domain, the ends of a gap, no value, far
+  from the window) in `parity/v1/curves`.

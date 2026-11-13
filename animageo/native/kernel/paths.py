@@ -26,7 +26,8 @@ A point on a path is ``P(t)`` in the frame of the path element:
   ``P = (x, f(x))``, no point where ``f`` has no value.
 
 ``project`` is the inverse: the parameter of the nearest point of the path,
-ties to the smallest parameter.
+ties to the smallest parameter; ``locate`` also gives the branch of a
+hyperbola (the nearest one) and takes the window of a graph (registry 1.9).
 """
 from __future__ import annotations
 
@@ -37,10 +38,11 @@ from ..registry import registry
 from .conic import residual
 from .function import evaluator
 
-__all__ = ['Frame', 'frame', 'point_at', 'project', 'distance_to_path', 'parameter_range', 'outside', 'parameter_unit',
-           'arc_fraction']
+__all__ = ['Frame', 'frame', 'point_at', 'project', 'locate', 'distance_to_path', 'parameter_range', 'outside',
+           'parameter_unit', 'arc_fraction', 'ROOT_HALVINGS']
 
 TWO_PI = 2 * math.pi
+ROOT_HALVINGS = 1100        # halvings of a projection root at most: to the resolution of a double
 
 
 class Frame(NamedTuple):
@@ -343,13 +345,187 @@ def _sector_candidates(f: Frame, x: float, y: float, tol: float) -> list:
     return [(dist, frac), (d1, 1 + g1), (d0, 2 + g0)]
 
 
-def project(f: Frame, x: float, y: float, tol: float) -> float:
+def _root(g, lo: float, hi: float) -> float:
+    """The root of ``g`` in ``(lo, hi)`` where ``g > 0`` left of it: halve
+    while ``lo < m < hi`` (``m = lo + (hi − lo)/2``, at most
+    :data:`ROOT_HALVINGS` times), ``g(m) > 0`` → ``lo = m``, else ``hi = m``;
+    the last ``m``."""
+    m = lo + (hi - lo) / 2
+    for _ in range(ROOT_HALVINGS):
+        if not (lo < m < hi):
+            break
+        if g(m) > 0:
+            lo = m
+        else:
+            hi = m
+        m = lo + (hi - lo) / 2
+    return m
+
+
+def _conic_frame_xy(value: dict, x: float, y: float) -> tuple:
+    """``(X, Y)``: ``(x, y)`` in the frame of a conic value (from its centre or vertex along ``u``, ``n``)."""
+    ux, uy = value['axis']
+    ox, oy = value['vertex'] if value['kind'] == 'parabola' else value['c']
+    dx, dy = x - ox, y - oy
+    return dx * ux + dy * uy, dy * ux - dx * uy
+
+
+def _ellipse_t(a: float, b: float, X: float, Y: float) -> float:
+    """The nearest point of the ellipse ``(a cos t, b sin t)``, ``a ≥ b``, to
+    ``(X, Y)`` (Eberly, *Distance from a point to an ellipse*): in the first
+    quadrant ``(y0, y1) = (|X|, |Y|)``, then the signs back; ``Y = 0`` (the
+    major axis) takes the side ``+n``."""
+    y0, y1 = abs(X), abs(Y)
+    if y1 > 0:
+        if y0 > 0:
+            z0, z1 = y0 / a, y1 / b
+            g = z0 * z0 + z1 * z1 - 1
+            if g == 0:
+                x0, x1 = y0, y1
+            else:
+                r0 = (a / b) ** 2
+                n0 = r0 * z0
+                s = _root(lambda s: (n0 / (s + r0)) ** 2 + (z1 / (s + 1)) ** 2 - 1,
+                          z1 - 1, 0.0 if g < 0 else math.hypot(n0, z1) - 1)
+                x0, x1 = r0 * y0 / (s + r0), y1 / (s + 1)
+        else:
+            x0, x1 = 0.0, b
+    else:
+        numer, denom = a * y0, a * a - b * b
+        if numer < denom:
+            q = numer / denom
+            x0, x1 = a * q, b * math.sqrt(1 - q * q)
+        else:
+            x0, x1 = a, 0.0
+    if X < 0:
+        x0 = -x0
+    if Y < 0:
+        x1 = -x1
+    t = math.atan2(x1 / b, x0 / a)
+    if t < 0:
+        t += TWO_PI
+    return 0.0 if t >= TWO_PI else t
+
+
+def _hyperbola_t(a: float, b: float, X: float, Y: float) -> float:
+    """The nearest point of the branch ``(a cosh t, b sinh t)`` to ``(X, Y)``,
+    ``X ≥ 0``: for ``Y ≠ 0`` the root ``λ`` of the decreasing
+    ``F(λ) = (aX/(a² + λ))² − (b|Y|/(b² − λ))² − 1`` on ``(−a², b²)``,
+    ``y = b²|Y|/(b² − λ)``, ``t = ±asinh(y/b)`` by the sign of ``Y``; on
+    the axis the vertex, or past the centre of curvature ``(a² + b²)/a`` the
+    foot with ``t < 0`` (ties to the smallest parameter)."""
+    if Y == 0:
+        if X > (a * a + b * b) / a:
+            return -math.acosh(a * X / (a * a + b * b))
+        return 0.0
+    y1 = abs(Y)
+    lam = _root(lambda m: (a * X / (a * a + m)) ** 2 - (b * y1 / (b * b - m)) ** 2 - 1, -a * a, b * b)
+    t = math.asinh(b * y1 / (b * b - lam))
+    return t if Y > 0 else -t
+
+
+def _parabola_t(p: float, X: float, Y: float) -> float:
+    """The nearest point of ``(p t²/2, p t)`` to ``(X, Y)``: for ``Y ≠ 0`` the
+    positive root ``s`` of ``s³ + P s + Q``, ``P = 2(1 − X/p)``,
+    ``Q = −2|Y|/p``, in ``(0, max(1, √(|P| + |Q|)))``, ``t = ±s`` by the
+    sign of ``Y``; on the axis the vertex, or past ``X = p`` the foot with
+    ``t < 0``."""
+    if Y == 0:
+        return -math.sqrt(2 * (X / p - 1)) if X > p else 0.0
+    P, Q = 2 * (1 - X / p), -2 * abs(Y) / p
+    s = _root(lambda s: -(s * s * s + P * s + Q), 0.0, max(1.0, math.sqrt(abs(P) + abs(Q))))
+    return s if Y > 0 else -s
+
+
+def _locate_conic(value: dict, x: float, y: float, tol: float, decide) -> tuple:
+    X, Y = _conic_frame_xy(value, x, y)
+    if decide is not None:
+        decide('closest_axis', Y, tol)
+    if abs(Y) <= tol:
+        Y = 0.0
+    kind = value['kind']
+    if kind == 'parabola':
+        return _parabola_t(value['p'], X, Y), 1
+    if kind == 'ellipse':
+        if decide is not None:
+            decide('closest_axis', X, tol)
+        if abs(X) <= tol:                   # the centre of a circle conic gives 0, as on a circle
+            X = 0.0
+        return _ellipse_t(value['a'], value['b'], X, Y), 1
+    if decide is not None:
+        decide('closest_branch', X, tol)
+    branch = -1 if X < -tol else 1
+    return _hyperbola_t(value['a'], value['b'], branch * X, Y), branch
+
+
+GRAPH_CELLS = 512            # cells of the grid of a graph projection (as the searches of a function)
+
+
+def graph_window(bounds) -> tuple:
+    """``(x0, x1)`` of the window ``B4`` of ``bounds`` (default bounds when ``None``)."""
+    from .numeric import default_bounds
+    from .ops.locus import window
+    box = window(bounds or default_bounds())
+    return box[0], box[2]
+
+
+def _locate_graph(f: Frame, x: float, y: float, bounds):
+    """The abscissa of the nearest point of the graph: a grid of
+    :data:`GRAPH_CELLS` cells over ``[min(x0, x), max(x1, x)]`` (the window
+    ``B4``) brought into the domain, the best node by ``d²`` (the first on a
+    tie), then the golden-section search over its two cells; ``None`` when
+    no node has a value."""
+    from .function import golden_min, grid
+    fx = evaluator(f.curve)
+    x0, x1 = graph_window(bounds)
+    a0, a1 = min(x0, x), max(x1, x)
+    if f.lo is not None:
+        a0, a1 = max(a0, f.lo), max(a1, f.lo)
+    if f.hi is not None:
+        a0, a1 = min(a0, f.hi), min(a1, f.hi)
+
+    def d2(u):
+        v = fx(u)
+        return None if v is None else (u - x) ** 2 + (v - y) ** 2
+
+    nodes = grid(a0, a1, GRAPH_CELLS)
+    best, k_best = None, None
+    for k, u in enumerate(nodes):
+        d = d2(u)
+        if d is not None and (best is None or d < best):
+            best, k_best = d, k
+    if k_best is None:
+        return None
+    u, d = golden_min(d2, nodes[max(k_best - 1, 0)], nodes[min(k_best + 1, GRAPH_CELLS)])
+    return u if d < best else nodes[k_best]
+
+
+def locate(f: Frame, x: float, y: float, tol: float, bounds=None, decide=None):
+    """``(t, branch)`` of the point of the path nearest to ``(x, y)``: the
+    parameter of :func:`project`, ``branch`` ``±1`` the nearest branch of a
+    hyperbola (``+1`` on other paths); ``None`` when a graph has no point to
+    search. ``bounds`` gives the window of a graph; ``decide(name, value,
+    tol)`` records the near decisions (``closest_axis``, ``closest_branch``)."""
+    if f.kind == 'conic':
+        return _locate_conic(f.curve, x, y, tol, decide)
+    if f.kind == 'graph':
+        u = _locate_graph(f, x, y, bounds)
+        return None if u is None else (u, 1)
+    return project(f, x, y, tol), 1
+
+
+def project(f: Frame, x: float, y: float, tol: float, bounds=None) -> float | None:
     """The parameter of the point of the path nearest to ``(x, y)``.
 
     ``tol`` is the decide length tolerance: a degenerate frame vector
     (``|v|² ≤ tol²``) and a point within ``tol`` of the centre give ``0``;
     polygon sides within ``tol`` of the nearest one compete by parameter.
+    Registry 1.9: a conic and a graph by :func:`locate` (``None`` when a
+    graph has no point; the branch of a hyperbola is that of ``locate``).
     """
+    if f.kind in ('conic', 'graph'):
+        found = locate(f, x, y, tol, bounds)
+        return None if found is None else found[0]
     if f.kind == 'affine':
         vx, vy = f.vector
         vv = vx * vx + vy * vy
