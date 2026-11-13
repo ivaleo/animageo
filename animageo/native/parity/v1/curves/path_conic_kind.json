@@ -1,0 +1,467 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "path_conic_kind",
+ "registry": "1.9",
+ "generatedBy": "animageo 1.13.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "path_conic_kind",
+  "operationRegistryVersion": "1.9",
+  "operations": {
+   "op_k": {
+    "id": "op_k",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "k"
+     }
+    ]
+   },
+   "op_q": {
+    "id": "op_q",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 9
+            }
+           ]
+          },
+          {
+           "op": "*",
+           "args": [
+            {
+             "ref": 0
+            },
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "y"
+              },
+              {
+               "num": 2
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "k"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "q"
+     }
+    ]
+   },
+   "op_A": {
+    "id": "op_A",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "q"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "q"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.on_path",
+    "args": {
+     "path": {
+      "kind": "ref",
+      "elementId": "q"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "k": {
+    "id": "k",
+    "type": "number",
+    "displayName": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "number"
+    }
+   },
+   "q": {
+    "id": "q",
+    "type": "conic",
+    "displayName": "q",
+    "producer": {
+     "operationId": "op_q",
+     "slot": "conic"
+    }
+   },
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   }
+  },
+  "inputs": {
+   "k": {
+    "kind": "number",
+    "value": 0.25
+   },
+   "A": {
+    "kind": "pathParameter",
+    "value": 0.5,
+    "pathKind": "ellipse"
+   },
+   "B": {
+    "kind": "pathParameter",
+    "value": 0.5,
+    "branch": -1,
+    "pathKind": "hyperbola"
+   },
+   "C": {
+    "kind": "pathParameter",
+    "value": 0.5
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "ellipse",
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.632747686,
+      "y": 0.958851077
+     }
+    },
+    "B": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "path_kind_changed"
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.632747686,
+      "y": 0.958851077
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    }
+   },
+   "checks": {
+    "op_A:on_path": "passed",
+    "op_C:on_path": "passed"
+   }
+  },
+  {
+   "name": "hyperbola",
+   "inputs": {
+    "k": {
+     "kind": "number",
+     "value": -0.0625
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "path_kind_changed"
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.382877896,
+      "y": 2.084381222
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.382877896,
+      "y": 2.084381222
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -0.0625,
+      "unit": "scalar"
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    }
+   },
+   "checks": {
+    "op_B:on_path": "passed",
+    "op_C:on_path": "passed"
+   }
+  },
+  {
+   "name": "tall",
+   "inputs": {
+    "k": {
+     "kind": "number",
+     "value": 0.0625
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.438276616,
+      "y": 3.510330248
+     }
+    },
+    "B": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "path_kind_changed"
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.438276616,
+      "y": 3.510330248
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0625,
+      "unit": "scalar"
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "a": 4.0,
+      "b": 3.0
+     }
+    }
+   },
+   "checks": {
+    "op_A:on_path": "passed",
+    "op_C:on_path": "passed"
+   }
+  },
+  {
+   "name": "back",
+   "inputs": {
+    "k": {
+     "kind": "number",
+     "value": 0.5
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.632747686,
+      "y": 0.678010099
+     }
+    },
+    "B": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "path_kind_changed"
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.632747686,
+      "y": 0.678010099
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.5,
+      "unit": "scalar"
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 1.414213562
+     }
+    }
+   },
+   "checks": {
+    "op_A:on_path": "passed",
+    "op_C:on_path": "passed"
+   }
+  }
+ ]
+}

@@ -479,12 +479,12 @@ class _Runner:
             t = getattr(element, 'tparam', None)
             if t is None:
                 t = self.free_value['value']
-            input_value = {'kind': 'pathParameter', 'value': float(t)}
+            input_value = dict(self.free_value, value=float(t))      # branch, pathKind (registry 1.9) kept
         elif self.tparam_of is not None:  # point.on_function: x held as the tparam of its element
             t = getattr(self.construction.element(self.tparam_of), 'tparam', None)
             if t is None:
                 t = self.free_value['value']
-            input_value = {'kind': 'pathParameter', 'value': float(t)}
+            input_value = dict(self.free_value, value=float(t))
         for slot in self.end_slots:
             a, b = (from_classic('point', classic[i + k]) for k in range(2))
             i += 2
@@ -529,7 +529,8 @@ class _LocusRunner:
             elif kind == 'number' and isinstance(data, (int, float)) and not isinstance(data, bool):
                 inputs[el_id] = {'kind': 'number', 'value': float(data)}
             elif kind == 'pathParameter' and getattr(element, 'tparam', None) is not None:
-                inputs[el_id] = {'kind': 'pathParameter', 'value': float(element.tparam)}
+                inputs[el_id] = dict(self.values_in.get(el_id) or {'kind': 'pathParameter'},
+                                     value=float(element.tparam))     # branch, pathKind kept
             elif el_id in self.values_in:
                 inputs[el_id] = self.values_in[el_id]
         return inputs

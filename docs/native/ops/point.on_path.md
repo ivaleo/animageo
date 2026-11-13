@@ -4,21 +4,26 @@ Registry 1.1 · group `point` · path parameter `carrier/v1` · see [kernel.md](
 
 | | |
 |---|---|
-| inputs | `path: path` (`line`, `segment`, `ray`, `circle`, `polygon`) |
+| inputs | `path: path` (`line`, `segment`, `ray`, `circle`, `polygon`; 1.4: `arc`, `sector`, `polyline`; 1.7: `circlesegment`; 1.9: `conic`, `function`) |
 | outputs | `point: point` |
 | free | `{kind: "pathParameter"}` — the value comes from `inputs[elementId]` |
-| undefined | `upstream` |
+| undefined | `upstream`; registry 1.9: `path_kind_changed` (a conic), `out_of_domain` (a graph); `non_finite` (any op) |
 | checks | `on_path` |
 
 ## Input
 
-    {"kind": "pathParameter", "value": t, "branch"?: -1 | 1}
+    {"kind": "pathParameter", "value": t, "branch"?: -1 | 1,
+     "pathKind"?: "ellipse" | "hyperbola" | "parabola"}
 
-`t` is a finite number. `branch` is reserved for paths with two branches
-(hyperbolas, a later registry); the paths of registry 1.1 read it and ignore
-it. No valid input value (missing, another kind, a non-finite `t`, a branch
-other than ±1) → `error/schema`, as for `point.free`. Path parameters do not
-take part in the scene scale `S` (only free points do).
+`t` is a finite number. `branch` picks the branch of a hyperbola (registry
+1.9, default `1`); other paths read it and ignore it. `pathKind` (registry
+1.9) is the kind of conic the parameter was written for: a conic of another
+kind gives `undefined/path_kind_changed`, and when the kind returns the same
+`t` applies again; without it any kind takes `t`; other paths ignore it.
+No valid input value (missing, another kind, a non-finite `t`, a branch
+other than ±1, a `pathKind` other than the three names) → `error/schema`, as
+for `point.free`. Path parameters do not take part in the scene scale `S`
+(only free points do).
 
 ## Value: the frame of the path (`carrier/v1`)
 
@@ -37,6 +42,8 @@ point moves with the path (`ops/v1/_types.json` → `paths`):
 | other ray | affine | `o = origin`, `v = dir` | `t < 0` clamped to 0 |
 | circle | angle | centre `c`, radius `r` | angle from +x |
 | polygon (`n` vertices `V`) | perimeter | the sides in order | `[0, n)`, wraps |
+| conic (1.9) | conic | `u = axis`, `n = (−u_y, u_x)` of the conic value | by its kind, below |
+| function (1.9) | graph | `y = f(x)` | `x`, clamped to the domain |
 
     affine:     t' = clamp(t)                (segment: [0, 1]; ray: t' ≥ 0; line: t' = t)
                 point = (ox + t'·vx, oy + t'·vy)
@@ -52,8 +59,37 @@ A zero-length segment or a polygon with coinciding vertices still gives a
 point (`a`, a vertex). The parameter `k` of a polygon picks side
 `side.(k + 1)`.
 
+### A conic (registry 1.9)
+
+    pathKind present and ≠ kind of the conic  →  undefined "path_kind_changed"
+    ellipse:    point = c + a·cos t·u + b·sin t·n           (t wraps over 2π)
+    hyperbola:  point = c + β·a·cosh t·u + b·sinh t·n       (β = branch, default 1)
+    parabola:   point = V + (p·t²/2)·u + p·t·n              (V the vertex)
+
+`u` is the axis of the value (`_types.json` → `types.conic`): the major axis
+of an ellipse (a circle conic: `a = b`, `u = (1, 0)`, so `t` is the angle
+from +x as on a circle), the transverse axis of a hyperbola (branch `+1` on
+the side of `+u`), the axis of a parabola from the vertex towards the focus.
+So `t` of an ellipse is the eccentric anomaly measured from its own axis.
+The axis of a conic value is canonical (`u_y > 0`; on the x direction
+`u_x > 0`): where a turning ellipse crosses that direction the point moves
+by `π`, and a hyperbola point changes side — a product that wants a
+continuous motion follows the conic with `native.project`. `cosh`/`sinh`
+past the float range give `undefined/non_finite`. A degenerate conic is not
+a value: the point is `upstream`.
+
+### A graph (registry 1.9)
+
+    x = clamp(t, lo, hi)          (the domain [lo | null, hi | null] of the value)
+    y = f(x);  no value  →  undefined "out_of_domain"
+    point = (x, y)
+
+The parameter is the abscissa, as for `point.on_function`: a domain clamps
+it to its ends (the ends belong to the graph); a gap of a piecewise `If`
+without `else`, a pole or a complex value has no point.
+
 Defaults for a new point (`paths.<type>.default`): segment, line, ray and
-polygon `0.5`, circle `π/4`.
+polygon `0.5`, circle `π/4`; 1.9: conic `π/4`, function `0`.
 
 ## Inverse: `native.project(doc, id, (x, y))`
 
@@ -77,4 +113,6 @@ parameter. `point.on_path` at `project(…)` is the nearest point of the path.
 
 - `on_path`: distance from the point to the path: a segment and a ray as the
   clamped part (`hypot` to the nearest point), a line as the carrier line, a
-  circle `| hypot(x − cx, y − cy) − r |`, a polygon the minimum over its sides.
+  circle `| hypot(x − cx, y − cy) − r |`, a polygon the minimum over its sides;
+  1.9: a conic its focal residual (zero on the curve, as `on_both` of
+  registry 1.8), a graph `|y − f(x)|`.

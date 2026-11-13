@@ -73,10 +73,7 @@ def trial_inputs(specs, values_in, rng, k, trials, scale, bounds) -> dict:
                 t = current['value'] + (2 * u - 1) * scale / unit
                 if lo is not None and t < lo:
                     t = lo + (lo - t)          # a ray reflects at its origin (no trial at the vertex)
-            value = {'kind': 'pathParameter', 'value': t}
-            if 'branch' in current:
-                value['branch'] = current['branch']
-            out[el_id] = value
+            out[el_id] = dict(current, value=t)        # branch, pathKind kept
         elif kind == 'number':
             u = rng.random()
             if 'min' in info and 'max' in info and info['max'] >= info['min']:

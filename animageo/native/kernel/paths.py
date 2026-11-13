@@ -17,7 +17,13 @@ A point on a path is ``P(t)`` in the frame of the path element:
 - ``sector`` (sector): ``t`` wraps to ``[0, 3)``; ``[0, 1]`` is the arc,
   ``[1, 2]`` the radius ``S1 → c``, ``[2, 3)`` the radius ``c → S0``;
 - ``polyline`` (polyline, ``n`` vertices): ``t' = clamp(t, 0, n − 1)``,
-  ``k = min(floor(t'), n − 2)``, ``P = V[k] + (t' − k)(V[k+1] − V[k])``.
+  ``k = min(floor(t'), n − 2)``, ``P = V[k] + (t' − k)(V[k+1] − V[k])``;
+- ``conic`` (conic, registry 1.9) in the frame of the conic, ``u`` the axis,
+  ``n = (−u_y, u_x)``: ellipse ``P = c + a·cos t·u + b·sin t·n``; hyperbola
+  ``P = c + β·a·cosh t·u + b·sinh t·n`` with the branch ``β = ±1`` of the
+  input; parabola ``P = V + (p t²/2)·u + p t·n``;
+- ``graph`` (function, registry 1.9): ``x = clamp(t, domain)``,
+  ``P = (x, f(x))``, no point where ``f`` has no value.
 
 ``project`` is the inverse: the parameter of the nearest point of the path,
 ties to the smallest parameter.
@@ -28,8 +34,11 @@ import math
 from typing import NamedTuple
 
 from ..registry import registry
+from .conic import residual
+from .function import evaluator
 
-__all__ = ['Frame', 'frame', 'point_at', 'project', 'distance_to_path', 'parameter_range', 'arc_fraction']
+__all__ = ['Frame', 'frame', 'point_at', 'project', 'distance_to_path', 'parameter_range', 'outside', 'parameter_unit',
+           'arc_fraction']
 
 TWO_PI = 2 * math.pi
 
@@ -39,7 +48,8 @@ class Frame(NamedTuple):
 
     ``kind`` ``affine``: ``origin``, ``vector``, ``lo``/``hi`` (``None`` — no
     bound); ``angle``: ``origin`` = centre, ``radius``; ``perimeter``:
-    ``vertices``.
+    ``vertices``; ``conic``: ``curve`` = the conic value; ``graph``:
+    ``curve`` = the function value, ``lo``/``hi`` its domain.
     """
 
     kind: str
@@ -49,6 +59,7 @@ class Frame(NamedTuple):
     hi: float | None = None
     radius: float = 0.0
     vertices: tuple = ()
+    curve: dict | None = None
 
 
 def _xy(value) -> tuple:
@@ -116,6 +127,11 @@ def frame(type_: str, value: dict, producer_op: str | None = None, producer_args
         return Frame(kind, (value['c'][0], value['c'][1]), lo=value['a0'], hi=value['a1'], radius=value['r'])
     if kind == 'polyline':
         return Frame('polyline', vertices=tuple((v[0], v[1]) for v in value['vertices']))
+    if kind == 'conic':
+        return Frame('conic', curve=value)
+    if kind == 'graph':
+        lo, hi = value['domain']
+        return Frame('graph', lo=lo, hi=hi, curve=value)
     raise ValueError(f'unknown path kind {kind!r}')
 
 
@@ -147,8 +163,10 @@ def _sector_ends(f: Frame) -> tuple:
 
 def parameter_range(f: Frame) -> tuple:
     """``(lo, hi)`` of the parameter of frame ``f`` (``None`` — unbounded)."""
-    if f.kind == 'affine':
+    if f.kind in ('affine', 'graph'):
         return f.lo, f.hi
+    if f.kind == 'conic':
+        return (0.0, TWO_PI) if f.curve['kind'] == 'ellipse' else (None, None)
     if f.kind == 'angle':
         return 0.0, TWO_PI
     if f.kind == 'perimeter':
@@ -162,8 +180,74 @@ def parameter_range(f: Frame) -> tuple:
     return 0.0, float(len(f.vertices) - 1)
 
 
-def point_at(f: Frame, t: float) -> dict:
-    """``P(t)`` as an encoded point ``{x, y}``."""
+_WRAPPED = ('angle', 'perimeter', 'sector', 'circlesegment')
+
+
+def outside(f: Frame) -> str:
+    """What a parameter outside :func:`parameter_range` does: ``wrap``,
+    ``clamp`` or ``none`` (``_types.json`` → ``paths.<type>.outside``; a
+    conic by the kind of its value, ``byKind``; a graph clamps to its
+    domain, ``none`` without one)."""
+    if f.kind in _WRAPPED:
+        return 'wrap'
+    if f.kind == 'conic':
+        return 'wrap' if f.curve['kind'] == 'ellipse' else 'none'
+    if f.kind in ('affine', 'graph'):
+        return 'none' if f.lo is None and f.hi is None else 'clamp'
+    return 'clamp'                      # arc, polyline
+
+
+def parameter_unit(f: Frame) -> float:
+    """Length per unit of the parameter near its origin (``0`` — none): ``|v|``
+    of an affine frame, ``b`` of a hyperbola, ``p`` of a parabola, ``1`` of a
+    graph (the abscissa)."""
+    if f.kind == 'affine':
+        return math.hypot(*f.vector)
+    if f.kind == 'graph':
+        return 1.0
+    if f.kind == 'conic' and f.curve['kind'] != 'ellipse':
+        return f.curve['b'] if f.curve['kind'] == 'hyperbola' else f.curve['p']
+    return 0.0
+
+
+def _big(fn, t: float) -> float:
+    """``cosh``/``sinh`` that overflow to ``±inf`` (as in JavaScript), not an error."""
+    try:
+        return fn(t)
+    except OverflowError:
+        return math.copysign(math.inf, t) if fn is math.sinh else math.inf
+
+
+def _conic_xy(value: dict, t: float, branch: int) -> tuple:
+    """``(x, y)`` of the point ``t`` of a conic value (the branch ``±1`` of a hyperbola)."""
+    ux, uy = value['axis']
+    nx, ny = -uy, ux
+    kind = value['kind']
+    if kind == 'parabola':
+        ox, oy = value['vertex']
+        p = value['p']
+        s, r = p * t * t / 2, p * t
+    else:
+        ox, oy = value['c']
+        a, b = value['a'], value['b']
+        if kind == 'ellipse':
+            s, r = a * math.cos(t), b * math.sin(t)
+        else:
+            s, r = (-a if branch == -1 else a) * _big(math.cosh, t), b * _big(math.sinh, t)
+    return ox + s * ux + r * nx, oy + s * uy + r * ny
+
+
+def point_at(f: Frame, t: float, branch: int = 1) -> dict | None:
+    """``P(t)`` as an encoded point ``{x, y}``; ``branch`` (``±1``) picks the
+    branch of a hyperbola, other paths ignore it. A graph gives ``None``
+    where its function has no value."""
+    if f.kind == 'conic':
+        x, y = _conic_xy(f.curve, t, branch)
+        return {'x': x, 'y': y}
+    if f.kind == 'graph':
+        x = _clamp(t, f.lo, f.hi)
+        y = evaluator(f.curve)(x)
+        return None if y is None else {'x': x, 'y': y}
     if f.kind == 'affine':
         s = _clamp(t, f.lo, f.hi)
         return {'x': f.origin[0] + s * f.vector[0], 'y': f.origin[1] + s * f.vector[1]}
@@ -310,7 +394,15 @@ def project(f: Frame, x: float, y: float, tol: float) -> float:
 def distance_to_path(x: float, y: float, type_: str, value: dict) -> float:
     """Distance from ``(x, y)`` to the point set of a path element (the clamped
     part for a segment and a ray, the sides for a polygon, the links for a
-    polyline, the arc itself, the boundary of a sector)."""
+    polyline, the arc itself, the boundary of a sector). Registry 1.9: a
+    conic gives its focal residual (``kernel/conic.py`` ``residual``, zero
+    exactly on the curve, as the checks of registry 1.8), a graph
+    ``|y − f(x)|`` (``∞`` where ``f`` has no value)."""
+    if type_ == 'conic':
+        return residual(value, x, y)
+    if type_ == 'function':
+        fx = evaluator(value)(x)
+        return math.inf if fx is None else abs(y - fx)
     if type_ == 'circle':
         return abs(math.hypot(x - value['c'][0], y - value['c'][1]) - value['r'])
     if type_ == 'segment':

@@ -54,7 +54,8 @@ Argument  = {"kind": "ref", "elementId": ID}
 Element   = {"id": ID, "type": type, "producer": {"operationId": ID, "slot": slot},
              "displayName": string, "origin"?: object}
 Input     = {"kind": "point", "value": [x, y]}                         point.free
-          | {"kind": "pathParameter", "value": t, "branch"?: -1 | 1}    point.on_path
+          | {"kind": "pathParameter", "value": t, "branch"?: -1 | 1,
+             "pathKind"?: "ellipse" | "hyperbola" | "parabola"}        point.on_path (pathKind 1.9)
           | {"kind": "number", "value": v}                              number.free
           | {"kind": "angle", "value": radians}                         segment.from_point_length (1.4)
 ```
@@ -200,6 +201,10 @@ a graph and a conic, and the conics and graphs in the `curve` slots of
 `intersect.other_than` and `intersect.nearest` (§15). The records of
 1.0–1.7 and their signature hashes stay unchanged; a document that declares
 1.7 reads and evaluates as before.
+
+Registry 1.9 puts a point on a conic and on a graph: the family `path`
+takes `conic` and `function` (§16). No record changes; a document that
+declares 1.8 reads and evaluates as before.
 
 **Registry 1.5 is the 1.0 contract** (animageo 1.11.0rc1;
 `tests/native/test_registry_frozen_1_0.py`, snapshot
@@ -549,8 +554,10 @@ exactly at a segment end or at a ray origin is inside the part.
 ### 5.5 Path parameter (`carrier/v1`)
 
 `point.on_path` is free: its value comes from the input
-`{"kind": "pathParameter", "value": t, "branch"?: ±1}` (`branch` is reserved
-for two-branch paths of a later registry and ignored in 1.1 and 1.2). The parameter
+`{"kind": "pathParameter", "value": t, "branch"?: ±1, "pathKind"?: kind}`
+(`branch` picks the branch of a hyperbola, registry 1.9; other paths ignore
+it; `pathKind`, registry 1.9, is the kind of conic the parameter was written
+for, see §16). The parameter
 lives in the frame of the path's definition (`_types.json` → `paths`), so the
 point moves with the path:
 
@@ -572,6 +579,8 @@ point moves with the path:
 | arc (1.4) | arc | `c`, `r`, `a0`, `a1` | fraction of the arc, clamped to `[0, 1]` | `0.5` |
 | sector (1.4) | sector | the arc, then the radius `S1 → c`, then `c → S0` | wraps to `[0, 3)` | `0.5` |
 | polyline (1.4, `n` vertices) | polyline | the links in order | clamped to `[0, n − 1]` | `0.5` |
+| conic (1.9) | conic | `u = axis`, `n = (−u_y, u_x)` of the value | ellipse: eccentric anomaly from `u`, wraps to `[0, 2π)`; hyperbola, parabola: any, with `branch` | `π/4` |
+| function (1.9) | graph | the graph `y = f(x)` | `x`, clamped to the domain | `0` |
 
     affine:     point = o + clamp(t)·v
     angle:      point = (cx + r·cos t, cy + r·sin t)
@@ -583,6 +592,10 @@ point moves with the path:
                 w ≤ 1: the arc point of w;  w ≤ 2: S1 + (w − 1)·(c − S1);  else c + (w − 2)·(S0 − c)
     polyline:   w = clamp(t, 0, n − 1);  k = min(floor(w), n − 2);  f = w − k
                 point = V[k] + f·(V[k + 1] − V[k])
+    conic:      ellipse    point = c + a·cos t·u + b·sin t·n
+                hyperbola  point = c + β·a·cosh t·u + b·sinh t·n     (β = branch, default 1)
+                parabola   point = V + (p·t²/2)·u + p·t·n
+    graph:      x = clamp(t, lo, hi) by the domain;  point = (x, f(x));  no value → out_of_domain
 
 The frame of a path element comes from `frames[<producer op>]` (on the
 values of the producer's arguments) when its producer is listed there,
@@ -1855,3 +1868,43 @@ Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
   chevrons, a second decoration channel) is in §9.3 «Marks». Command
   `ОтметкаПараллельных(AB, CD[, count])`: a pair of points is the segment
   between them (a hidden helper unless a visible one exists).
+
+## 16. Registry 1.9: a point on a conic and on a graph
+
+No new operation: the family `path` takes `conic` and `function`
+(`_types.json → familySince`: `{"path": {"conic": "1.9", "function":
+"1.9"}}`), so `point.on_path` and `point.closest` take them. Their records
+and signatures stay those of 1.1 and 1.4; only a document that puts a conic
+or a graph in a `path` slot declares 1.9 (`needs_newer_registry` otherwise,
+§2). Formulas in [point.on_path](ops/point.on_path.md).
+
+- `paths.conic` (kind `conic`): the parameter lives in the frame of the
+  conic value (`u = axis`, `n = (−u_y, u_x)`). An ellipse (a circle conic
+  too: `a = b`, `u = (1, 0)`) is measured by the eccentric anomaly from its
+  own axis and wraps over `2π`; a hyperbola takes `t ∈ ℝ` and the `branch`
+  `±1` of the input (default `+1`, the branch on `+u`), which the point
+  keeps; a parabola takes `t ∈ ℝ`, `P = V + (p t²/2)·u + p t·n` (the frame
+  of GeoGebra). `byKind` gives the range of each kind. The axis of a conic
+  value is canonical (`u_y > 0`, kernel `conic.py`): a turning ellipse
+  flips `u` where it crosses the x direction, and its points move by `π`
+  there; a near-circle ellipse whose major axis switches turns `u` by `π/2`.
+- `pathKind` (`"ellipse" | "hyperbola" | "parabola"`) of the input is the
+  kind of conic the parameter was written for. A conic of another kind
+  gives the point `undefined/path_kind_changed` (a new reason); when the
+  kind returns, the same `t` applies again. Without `pathKind` any kind
+  takes the parameter. Other paths ignore it; library writers put it only
+  on a point on a conic. Carrying a point over to another kind ("as in
+  GeoGebra") is a stateful wrapper of the product over `native.project`, not
+  part of the kernel.
+- `paths.function` (kind `graph`): `t` is the abscissa, clamped to the
+  domain of the function (a `null` end is open); a point where `f` has no
+  value (a gap of a piecewise `If` without `else`, a pole) is
+  `undefined/out_of_domain`, as `point.on_function`.
+- Distances (`distance_to_path`; the check `on_path`, incidence): a conic
+  gives its focal residual, a graph `|y − f(x)|` (as `on_both`, §15).
+- A cosh/sinh that overflows gives `undefined/non_finite`.
+- Parity fixtures: `path_conics` (an ellipse, both branches of a
+  hyperbola, a parabola: turned, a circle, wrapped parameters, degenerate
+  conics), `path_conic_kind` (`x²/9 + k y² = 1`: `path_kind_changed` and
+  the recovery), `path_graphs` (domain ends, a piecewise graph with a gap, a
+  pole) in `parity/v1/curves`.

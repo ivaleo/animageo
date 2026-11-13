@@ -376,12 +376,15 @@ class _Structure:
             return
         kind = value.get('kind')
         if kind == 'pathParameter':
-            self.keys(value, path, 'a path parameter input', ('kind', 'value'), ('kind', 'value', 'branch'),
-                      elementId=key)
+            self.keys(value, path, 'a path parameter input', ('kind', 'value'),
+                      ('kind', 'value', 'branch', 'pathKind'), elementId=key)
             if 'value' in value and not _is_number(value['value']):
                 self.add(path + '/value', 'a path parameter must be a number', elementId=key)
             if 'branch' in value and (not _is_number(value['branch']) or value['branch'] not in (-1, 1)):
                 self.add(path + '/branch', 'a path branch must be -1 or 1', elementId=key)
+            if 'pathKind' in value and value['pathKind'] not in ('ellipse', 'hyperbola', 'parabola'):
+                self.add(path + '/pathKind', 'a path kind must be "ellipse", "hyperbola" or "parabola"',
+                         elementId=key)
             return
         if kind in ('number', 'angle'):
             self.keys(value, path, f'a{"n" if kind == "angle" else ""} {kind} input', ('kind', 'value'),

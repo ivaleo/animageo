@@ -77,8 +77,9 @@ def N(v):
     return {'kind': 'number', 'value': round(v, 6) + 0.0}
 
 
-def T(t):
-    return {'kind': 'pathParameter', 'value': round(t, 6) + 0.0}
+def T(t, **extra):
+    """A path parameter input; ``extra``: ``branch``, ``pathKind`` (registry 1.9)."""
+    return dict({'kind': 'pathParameter', 'value': round(t, 6) + 0.0}, **extra)
 
 
 class _Doc:
@@ -151,6 +152,12 @@ class _Doc:
     def on_graph(self, el_id, fn, x):
         self.op('op_' + el_id, 'point.on_function', {'function': _ref(fn)}, [('point', el_id, 'point')])
         self.doc['inputs'][el_id] = T(x)
+        return self
+
+    def on_path(self, el_id, path, t, **extra):
+        """Registry 1.9: ``point.on_path`` on a conic or a graph too."""
+        self.op('op_' + el_id, 'point.on_path', {'path': _ref(path)}, [('point', el_id, 'point')])
+        self.doc['inputs'][el_id] = T(t, **extra)
         return self
 
     # conics
@@ -532,7 +539,43 @@ def _meet_scenes():
     return out
 
 
-SCENES = (_function_scenes, _conic_scenes, _meet_scenes)
+def _path_scenes():
+    """Registry 1.9: a point on a conic and on a graph (docs/native/ops/point.on_path.md)."""
+    out = []
+    # 1. an ellipse (a = 5, b = 4), a hyperbola with a point on each branch, a parabola
+    d = _Doc('path_conics').free('F1', -3, 0).free('F2', 3, 0).free('P', 0, 4).ellipse('e', 'F1', 'F2', 'P')
+    d.on_path('E', 'e', 1, pathKind='ellipse')
+    d.free('G1', -5, 0).free('G2', 5, 0).free('R', 3, 0).hyperbola('h', 'G1', 'G2', 'R')
+    d.on_path('H', 'h', 0.5, branch=1, pathKind='hyperbola').on_path('K', 'h', -0.75, branch=-1)
+    d.free('F', 0, 1).free('C', -1, -1).free('D', 1, -1).line('dl', 'C', 'D').parabola('p', 'F', 'dl')
+    d.on_path('Q', 'p', 1.5, pathKind='parabola')
+    out.append((d, _cases(('base', None),
+                          ('turned', {'F1': P(1, 1), 'F2': P(3, 3), 'G1': P(0, 0), 'G2': P(2, 2), 'R': P(3, 0),
+                                      'F': P(1, 1), 'C': P(0, -2), 'D': P(-2, 0)}),
+                          ('circle', {'F1': P(1, 1), 'F2': P(1, 1), 'P': P(4, 5)}),
+                          ('wrapped', {'E': T(8, pathKind='ellipse'), 'H': T(-2, branch=1, pathKind='hyperbola'),
+                                       'K': T(2, branch=-1), 'Q': T(-3, pathKind='parabola')}),
+                          ('degenerate', {'P': P(3, 0), 'F': P(0, -1)}))))
+    # 2. one conic by its equation x²/9 + k·y² = 1: the kind changes under the point
+    d = _Doc('path_conic_kind').number('k', 0.25)
+    d.equation('q', o('-', o('+', o('/', sq(X), n(9)), o('*', r(0), sq(Y))), n(1)), 'k')
+    d.on_path('A', 'q', 0.5, pathKind='ellipse').on_path('B', 'q', 0.5, branch=-1, pathKind='hyperbola')
+    d.on_path('C', 'q', 0.5)
+    out.append((d, _cases(('ellipse', None), ('hyperbola', {'k': N(-0.0625)}), ('tall', {'k': N(0.0625)}),
+                          ('back', {'k': N(0.5)}))))
+    # 3. graphs: a domain, a piecewise graph with a gap, a pole
+    d = _Doc('path_graphs', (-4, -3, 4, 5))
+    d.function('f', sq(X), lo=-1, hi=2).on_path('A', 'f', 0.5)
+    gap = {'if': [{'cmp': '<', 'args': [X, n(0)]}, o('-', n(0), X),
+                  {'if': [{'cmp': '>=', 'args': [X, n(1)]}, o('-', X, n(1))]}]}
+    d.function('g', gap).on_path('B', 'g', -1.5)
+    d.function('h', o('/', n(1), X)).on_path('C', 'h', 0.5)
+    out.append((d, _cases(('inside', None), ('ends', {'A': T(5), 'B': T(1), 'C': T(-2)}),
+                          ('low_end', {'A': T(-3), 'B': T(3)}), ('gap', {'B': T(0.5), 'C': T(0)}))))
+    return out
+
+
+SCENES = (_function_scenes, _conic_scenes, _meet_scenes, _path_scenes)
 
 
 # ── fixtures ─────────────────────────────────────────────────────────────

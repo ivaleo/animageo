@@ -134,10 +134,15 @@ def _valid_point_input(value) -> bool:
     return isinstance(xy, (list, tuple)) and len(xy) == 2 and all(_finite(v) for v in xy)
 
 
+PATH_KINDS = ('ellipse', 'hyperbola', 'parabola')     # registry 1.9: pathKind of a point on a conic
+
+
 def _valid_path_input(value) -> bool:
     if not isinstance(value, dict) or value.get('kind') != 'pathParameter':
         return False
-    if not set(value) <= {'kind', 'value', 'branch'} or not _finite(value.get('value')):
+    if not set(value) <= {'kind', 'value', 'branch', 'pathKind'} or not _finite(value.get('value')):
+        return False
+    if 'pathKind' in value and value['pathKind'] not in PATH_KINDS:
         return False
     branch = value.get('branch', 1)
     return _finite(branch) and branch in (-1, 1)
@@ -161,7 +166,8 @@ _INPUT_VALIDATORS = {'point': _valid_point_input, 'pathParameter': _valid_path_i
 INPUT_DEFAULTS = FREE_INPUT_DEFAULTS
 _INPUT_SHAPES = {
     'point': '{"kind": "point", "value": [x, y]} with finite numbers',
-    'pathParameter': '{"kind": "pathParameter", "value": t, "branch"?: -1 | 1} with a finite t',
+    'pathParameter': '{"kind": "pathParameter", "value": t, "branch"?: -1 | 1, '
+                     '"pathKind"?: "ellipse" | "hyperbola" | "parabola"} with a finite t',
     'number': '{"kind": "number", "value": v} with a finite v',
     'angle': '{"kind": "angle", "value": radians} with a finite value',
 }

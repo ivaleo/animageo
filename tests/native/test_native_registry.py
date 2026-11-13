@@ -332,7 +332,8 @@ def test_contract_table():
         'linear': ['line', 'segment', 'ray'],
         'circular': ['circle', 'arc'],
         'curve': ['line', 'segment', 'ray', 'circle', 'arc', 'conic', 'function'],    # 1.8: conic, function
-        'path': ['line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'circlesegment', 'polyline'],
+        'path': ['line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'circlesegment', 'polyline',
+                 'conic', 'function'],                                                        # 1.9: conic, function
         'round': ['circle', 'arc', 'sector', 'circlesegment'],
         'vertexed': ['segment', 'polyline', 'polygon'],
         'measurable': ['segment', 'vector', 'polyline', 'arc'],
@@ -509,7 +510,8 @@ def test_types_and_policies_catalogs():
                                  'roots_ascending', 'conic_axis_order', 'first_curve_order'}
     assert set(reg.paths) == set(reg.families['path'])
     kinds = {'segment': 'affine', 'line': 'affine', 'ray': 'affine', 'circle': 'angle', 'polygon': 'perimeter',
-             'arc': 'arc', 'sector': 'sector', 'circlesegment': 'circlesegment', 'polyline': 'polyline'}
+             'arc': 'arc', 'sector': 'sector', 'circlesegment': 'circlesegment', 'polyline': 'polyline',
+             'conic': 'conic', 'function': 'graph'}     # registry 1.9
     assert {t: reg.paths[t]['kind'] for t in reg.paths} == kinds
     assert reg.paths['segment']['default'] == 0.5 and reg.paths['line']['default'] == 0.5
     assert reg.paths['circle']['default'] == math.pi / 4

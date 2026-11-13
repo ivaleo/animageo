@@ -1,5 +1,6 @@
 """``point.free``, ``point.midpoint``, ``point.on_path``, ``point.projection``; registry 1.4:
-``point.divide``, ``point.center``, ``point.closest``, ``point.at_distance`` (docs/native/ops/point.*.md)."""
+``point.divide``, ``point.center``, ``point.closest``, ``point.at_distance`` (docs/native/ops/point.*.md).
+Registry 1.9: ``point.on_path`` on a conic and on a graph."""
 from __future__ import annotations
 
 import math
@@ -26,8 +27,12 @@ def midpoint(args, ctx):
 @op('point.on_path')
 def on_path(args, ctx):
     path = args['path']
+    inp = ctx.input
+    if path.type == 'conic' and inp.get('pathKind', path.value['kind']) != path.value['kind']:
+        return {'point': Undefined('path_kind_changed')}       # registry 1.9: the same t when the kind returns
     f = path.frame if path.frame is not None else frame(path.type, path.value)
-    return {'point': point_at(f, float(ctx.input['value']))}
+    point = point_at(f, float(inp['value']), inp.get('branch', 1))
+    return {'point': Undefined('out_of_domain') if point is None else point}
 
 
 @op('point.projection')

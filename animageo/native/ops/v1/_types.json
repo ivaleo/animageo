@@ -100,7 +100,7 @@
     "circular": ["circle", "arc"],
     "curve": ["line", "segment", "ray", "circle", "arc", "conic", "function"],
     "conical": ["conic", "circle", "arc"],
-    "path": ["line", "segment", "ray", "circle", "polygon", "arc", "sector", "circlesegment", "polyline"],
+    "path": ["line", "segment", "ray", "circle", "polygon", "arc", "sector", "circlesegment", "polyline", "conic", "function"],
     "round": ["circle", "arc", "sector", "circlesegment"],
     "vertexed": ["segment", "polyline", "polygon"],
     "measurable": ["segment", "vector", "polyline", "arc"],
@@ -112,7 +112,8 @@
     "straight": ["line", "segment", "ray", "vector"]
   },
   "familySince": {
-    "curve": {"conic": "1.8", "function": "1.8"}
+    "curve": {"conic": "1.8", "function": "1.8"},
+    "path": {"conic": "1.9", "function": "1.9"}
   },
   "paths": {
     "segment": {
@@ -171,6 +172,19 @@
     "polyline": {
       "kind": "polyline", "min": 0, "max": "n - 1", "outside": "clamp", "default": 0.5,
       "text": "t is clamped to [0, n - 1]; k = floor(t) picks the link from vertex k + 1 to vertex k + 2 (the last link at t = n - 1), the fraction t - k runs along it"
+    },
+    "conic": {
+      "kind": "conic", "min": null, "max": null, "outside": "none", "default": 0.7853981633974483,
+      "byKind": {
+        "ellipse": {"min": 0, "max": "2pi", "outside": "wrap"},
+        "hyperbola": {"min": null, "max": null, "outside": "none"},
+        "parabola": {"min": null, "max": null, "outside": "none"}
+      },
+      "text": "in the frame of the conic (u = axis, n = axis turned by +90 deg): ellipse P = c + a cos t u + b sin t n (the eccentric anomaly from its axis, wraps to [0, 2 pi)); hyperbola P = c + branch a cosh t u + b sinh t n, branch +1 | -1 of the input (default +1); parabola P = vertex + (p t^2 / 2) u + p t n; an input pathKind other than the kind of the conic gives path_kind_changed (registry 1.9)"
+    },
+    "function": {
+      "kind": "graph", "min": null, "max": null, "outside": "clamp", "default": 0,
+      "text": "P = (x, f(x)), x = t clamped to the domain [lo | null, hi | null]; no value of f at x gives out_of_domain (registry 1.9)"
     }
   },
   "frameKinds": {
@@ -180,7 +194,9 @@
     "arc": "t' = clamp(t, 0, 1); phi = a0 + t' (a1 - a0); P = c + r (cos phi, sin phi)",
     "sector": "t' = t - 3 floor(t / 3), t' < 0 gives t' + 3, t' >= 3 gives 0; t' <= 1: the arc at t'; 1 < t' <= 2: P = S1 + (t' - 1)(c - S1); t' > 2: P = c + (t' - 2)(S0 - c)",
     "circlesegment": "t wraps to [0,2); t <= 1: the arc at t; otherwise S1 + (t-1)(S0-S1)",
-    "polyline": "t' = clamp(t, 0, n - 1); k = min(floor(t'), n - 2), f = t' - k; P = V[k] + f (V[k + 1] - V[k])"
+    "polyline": "t' = clamp(t, 0, n - 1); k = min(floor(t'), n - 2), f = t' - k; P = V[k] + f (V[k + 1] - V[k])",
+    "conic": "by the kind of the conic value, byKind gives the range: ellipse P = c + a cos t u + b sin t n; hyperbola P = c + branch a cosh t u + b sinh t n; parabola P = vertex + (p t^2 / 2) u + p t n; u = axis, n = (-uy, ux)",
+    "graph": "x = clamp(t, lo, hi) by the domain of the function (a null end is open); P = (x, f(x)); no value gives out_of_domain"
   },
   "units": {
     "length": "coordinates and lengths; parity tolerance parity.length * S",

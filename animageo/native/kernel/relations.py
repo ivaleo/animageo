@@ -432,8 +432,7 @@ def _path_range(doc, op, base_eval) -> dict:
     except (KeyError, ValueError, TypeError):
         return {}
     lo, hi = paths.parameter_range(f)
-    length = math.hypot(*f.vector) if f.kind == 'affine' else 0.0
-    return {'lo': lo, 'hi': hi, 'unit': length}
+    return {'lo': lo, 'hi': hi, 'unit': paths.parameter_unit(f)}
 
 
 def perturbed_inputs(specs, values_in, rng, radius) -> dict:
@@ -460,10 +459,7 @@ def perturbed_inputs(specs, values_in, rng, radius) -> dict:
                 t = current['value'] + (2 * u - 1) * radius / unit
                 if lo is not None and t < lo:
                     t = lo
-            value = {'kind': 'pathParameter', 'value': t}
-            if 'branch' in current:
-                value['branch'] = current['branch']
-            out[el_id] = value
+            out[el_id] = dict(current, value=t)        # branch, pathKind kept
         elif kind == 'number':
             if current is None:
                 continue
