@@ -144,13 +144,14 @@ the circle of `curves[i]`; `0` without pieces.
 
 ## Label obstacles
 
-The format of the key for the web is in `kernel.md` ("For the web: the key `regions` of the R4 display list").
+The format of the key for the web is in `kernel.md` ("For the web: the key `regions` of the display list of the label solver").
 
 
 Only a drawn stroke (width and opacity above 0) keeps labels off a region;
-its fill does not, as with a polygon. R4 reads the key `regions` of the
-display list — `[{id, pieces: [{kind: "segment", x1, y1, x2, y2} | {kind:
-"arc", cx, cy, r, start, sweep} | {kind: "chain", pts}]}]`, CSS px, the arc
+its fill does not, as with a polygon. The label solver of the web client
+(`native/labels/r4.py`) reads the key `regions` of the display list —
+`[{id, pieces: [{kind: "segment", x1, y1, x2, y2} | {kind: "arc", cx, cy,
+r, start, sweep} | {kind: "chain", pts}]}]`, CSS px, the arc
 as the arcs of the list (screen start angle, y down, signed sweep), after
 the arcs in the order of the obstacles; a paint width of `0` drops a region.
 The classic placement collects the same pieces of a `Region` (an arc

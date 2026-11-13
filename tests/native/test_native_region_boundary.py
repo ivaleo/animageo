@@ -215,7 +215,7 @@ def test_sector_and_circle_segment_contours():
 
 
 def test_conic_carrier_is_unsupported():
-    """Graphs and conics as carriers come later (2c): ``unsupported_signature``."""
+    """Graphs and conics as carriers come later: ``unsupported_signature``."""
     circle = {'op': '-', 'args': [{'op': '+', 'args': [{'op': '^', 'args': [{'var': 'x'}, {'num': 2}]},
                                                        {'op': '^', 'args': [{'var': 'y'}, {'num': 2}]}]},
                                   {'num': 4}]}
@@ -273,8 +273,8 @@ def test_vertex_within_the_incidence_tolerance():
     d.boundary('R', ['c', 'a', 'b'], ['X', 'Y', 'Z'], ['Y', 'G', 'X'])
     _e, rec = evaluated(d)
     assert rec['reason'] == 'schema'                       # G is not Z: the chain breaks by IDs
-    d = Doc().free('A', 0, 0).free('B', 4, 0).free('C', 1e-9, 3).free('C0', 0, 3)
-    d.segment('s', 'A', 'B').line('a', 'B', 'C0').line('b', 'C0', 'A')
+    d = Doc().free('A', 0, 0).free('B', 4, 0).free('C', 1e-9, 3).free('K', 0, 3)
+    d.segment('s', 'A', 'B').line('a', 'B', 'K').line('b', 'K', 'A')
     d.boundary('R', ['s', 'a', 'b'], ['A', 'B', 'C'], ['B', 'C', 'A'])
     defined(d)
 

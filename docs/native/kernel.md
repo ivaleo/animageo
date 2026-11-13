@@ -2039,7 +2039,7 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   nesting — an even depth needs a counterclockwise ring, an odd one a
   clockwise ring — (`flipped` for a ring of the chain, `boundary_crossing`
   for a contour), the empty region. A graph or a conic as a carrier is
-  `unsupported_signature` (`detail.slot`) until 2c; more than 256 pieces
+  `unsupported_signature` (`detail.slot`) for now; more than 256 pieces
   is `error/limit_exceeded`. `stepKind` `region_boundary`; «Команды» print
   it with `unprintable_operation`, as functions (§14).
 - Noise decisions of `region.by_boundary`: `off_carrier`, `piece_part` (a
@@ -2099,12 +2099,12 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   and dots, a dashed stroke on three rings, the value label of two lobes;
   an annulus of `region.by_boundary` with the fill tool and hatched.
 - Label obstacles: only the drawn stroke of a region (width and opacity
-  above 0), never its fill, as with a polygon. R4
-  (`native/labels/r4.py`, the port of the web solver) reads the key `regions`
-  of the display list (`[{id, pieces}]`, a piece `segment`, `arc` or
-  `chain`; ops page), the classic placement the pieces of a `Region`.
+  above 0), never its fill, as with a polygon. The label solver of the web
+  client (`native/labels/r4.py`) reads the key `regions` of its display
+  list (`[{id, pieces}]`, a piece `segment`, `arc` or `chain`; ops page),
+  the classic placement the pieces of a `Region`.
 
-**For the web: the key `regions` of the R4 display list.** `DisplayList.regions`
+**For the web: the key `regions` of the display list of the label solver.** `DisplayList.regions`
 is a list of `{id, pieces}`, one entry per region **whose stroke is drawn**
 (stroke width and opacity above 0); the client leaves out a region without
 a stroke, and a paint width of `0` of `paint.byId[id].strokeWidth` drops an

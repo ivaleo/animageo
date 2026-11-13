@@ -126,7 +126,7 @@ def own_helpers(doc, entries, helpers) -> None:
                     h['origin'] = {'kind': 'auto', 'source': el['producer']['operationId']}
 
 
-# -- the angle of Rotate given by angle arithmetic (C0) -----------------------
+# -- the angle of Rotate given by angle arithmetic ----------------------------
 
 def read_angle_arguments(infos, norm, ctx, built_by_command) -> None:
     """The angle argument of a GGB ``Rotate(obj, <expression>, center)`` read

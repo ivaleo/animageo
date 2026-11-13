@@ -688,7 +688,7 @@ if __name__ == '__main__':
     FUNCTION_FIXTURE.write_text(json.dumps(function_fixture(), ensure_ascii=False, indent=2, allow_nan=False) + '\n')
 
 
-# C0-a: GeoGebra saves a graph with its label in front, ``i: y = (-abs(x)) + 4``.
+# GeoGebra saves a graph with its label in front, ``i: y = (-abs(x)) + 4``.
 @pytest.mark.parametrize('text', ['f: y = a*x²', 'f : y = a*x²', 'f: a*x²', 'f: f(x) = a*x²', 'f: f(t) = a*t²'])
 def test_function_label_header_is_read(text):
     spec = parsed(text, {'a': 'numeric'})

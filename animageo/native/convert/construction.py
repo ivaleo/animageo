@@ -101,7 +101,7 @@ class Context:
     equations: set = field(default_factory=set)       # formulas producing conics, with variables x and y
     output_positions: dict = field(default_factory=dict)  # unindexed GGB output label → original slot index
     # classic output name → (AST v1, classic names of its refs) or ('error', reason, detail): the angle
-    # argument of a GGB Rotate read from its text (:func:`.ggb_inline.read_angle_arguments`, C0)
+    # argument of a GGB Rotate read from its text (:func:`.ggb_inline.read_angle_arguments`)
     angle_formulas: dict = field(default_factory=dict)
 
 

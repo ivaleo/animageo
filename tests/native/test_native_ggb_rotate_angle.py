@@ -1,4 +1,4 @@
-"""C0: the angle of ``Rotate(P, <expression>, O)`` — angle arithmetic of a ``.ggb`` — is a hidden
+"""The angle of ``Rotate(P, <expression>, O)`` — angle arithmetic of a ``.ggb`` — is a hidden
 ``number.expression``; a figure angle in it is a hidden ``measure.angle``. Every helper of the import
 has no name, ``role: aux`` and ``origin: {kind: auto, source: <host operation>}``."""
 import math
@@ -125,8 +125,8 @@ def test_a_numeric_slider_keeps_its_translation_and_gets_the_helper_rule():
 
 
 def scene_body():
-    """The parity scene ``ggb_rotate_angle_formula``: both rotations of C0 around one centre and a
-    function saved with its label in front (C0-a)."""
+    """The parity scene ``ggb_rotate_angle_formula``: both rotations by angle arithmetic around one
+    centre and a function saved with its label in front."""
     from tests.native.test_native_ggb_functions import function_source, number
     return (point('A', 1., 0.) + point('O', 0., 0.) + element('angle', 'theta', extra=f'<value val="{THETA!r}"/>')
             + command('Rotate', ['A', '(-theta)', 'O'], ['Q']) + point('Q', *rot(1., 0., -THETA))

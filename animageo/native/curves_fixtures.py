@@ -787,10 +787,10 @@ def _boundary_scenes():
     d.boundary('Q', inside=['c0'])
     d.function('f', call('sin', o('*', n(10), X))).area('A', 'f', a=0.1, b=21).measures('A')
     out.append((d, _cases(('base', None),)))
-    d = _Doc('region_chain_errors').free('A', 0, 0).free('B', 4, 0).free('C', 0, 3).free('C2', 0, 3)
+    d = _Doc('region_chain_errors').free('A', 0, 0).free('B', 4, 0).free('C', 0, 3).free('G', 0, 3)
     d.segment('ab', 'A', 'B').segment('bc', 'B', 'C').segment('ca', 'C', 'A')
     d.boundary('R', ['ab', 'bc'], ['A', 'B'], ['B', 'C'])
-    d.boundary('J', ['ab', 'bc', 'ca'], ['A', 'B', 'C2'], ['B', 'C', 'A'])
+    d.boundary('J', ['ab', 'bc', 'ca'], ['A', 'B', 'G'], ['B', 'C', 'A'])
     out.append((d, _cases(('base', None),)))
     return out
 

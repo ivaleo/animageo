@@ -766,7 +766,7 @@ def test_feature_flags():
 
 def test_a_picture_and_its_dependents():
     # Rotate by an expression outside the formulas (a command in it): the point is a picture; what depends on
-    # it does not translate (angle arithmetic within the formulas translates since C0: test_native_ggb_rotate_angle)
+    # it does not translate (angle arithmetic within the formulas translates: test_native_ggb_rotate_angle)
     data = ggb_bytes(element('angle', 'α', extra='<value val="1.7"/><slider min="0" max="6.28" width="100" x="1" '
                                                'y="1" fixed="true" horizontal="true" showAlgebra="true"/>')
                      + point('I', 1.0, 0.0) + point('G', 0.0, 0.0)
