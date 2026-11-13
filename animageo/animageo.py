@@ -3879,6 +3879,7 @@ class AnimaGeoScene(MovingCameraScene):
             is_clockwise = True
             angle = 2 * PI - angle
 
+        from .angle_marker import fit_settings, marker_fit
         from .label_placement import compute_effective_arc_size_px
         arc_size_resolved = _resolve_style(self, elem, 'arc_size_px', default=17.0)
         r = compute_effective_arc_size_px(
@@ -3890,6 +3891,12 @@ class AnimaGeoScene(MovingCameraScene):
              * arc_shift_px / ptUnit
         if r < 0.001:
             r = 0.2
+        # rendering.angle_marker_fit: the marker moves in to fit the sides,
+        # or is not drawn; the label stays at the fitted extent
+        fit = marker_fit(self, elem) if fit_settings(self) is not None else None
+        fit_shift = fit.delta_px / ptUnit if fit is not None else 0.0
+        hidden = fit is not None and fit.hidden
+        r -= fit_shift
 
         p = [elem.data.vertex[0], elem.data.vertex[1], 0]
         lines = [None, None]
@@ -3931,7 +3938,9 @@ class AnimaGeoScene(MovingCameraScene):
                     self, elem, 'right_angle_size_px', default=arc_size_resolved,
                 )
                 r = right_size_px / SQRT2 / ptUnit
+            r -= fit_shift
 
+        if right_mark and not hidden:
             n1 = elem.data.side1 * (r / np.linalg.norm(elem.data.side1))
             n2 = elem.data.side2 * (r / np.linalg.norm(elem.data.side2))
             p1 = [p[0] + n1[0], p[1] + n1[1], 0]
@@ -3946,7 +3955,7 @@ class AnimaGeoScene(MovingCameraScene):
                 stroke_width=ctx.lw, stroke_opacity=ctx.op_s,
                 joint_type=_JOINT_MAP[ctx.ra_joint],
             ).set_points_as_corners([p1, p2, p3]).set_z_index(ctx.zz + 0.1))
-        else:
+        elif not right_mark and not hidden:
             arr.append(AnnularSector(
                 inner_radius=0, outer_radius=r, angle=angle,
                 color=ctx.col_f, fill_opacity=op_f,
