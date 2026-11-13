@@ -360,6 +360,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     read_angle_arguments(infos, norm, ctx, built_by_command)
     from .ggb_typed import read_expressions
     read_expressions(infos, norm, ctx, constr)
+    from .ggb_function_analysis import read_analysis
+    read_analysis(root, infos, norm, ctx)
     with _quiet():
         tr = translate(constr, ctx)
     from .ggb_conic import check_line_orientations

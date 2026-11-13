@@ -82,7 +82,8 @@ def inline_arguments(doc, entries, records, refs_of):
     dependency closure are retained in the candidate document.
     """
     allowed = {'Translate', 'Segment', 'Line', 'OrthogonalLine', 'Vector', 'Point', 'Intersect', 'Ray',
-               'Circle', 'Rotate', 'Polygon', 'Parabola', 'ClosestPoint', 'Midpoint', 'PerpendicularBisector'}
+               'Circle', 'Rotate', 'Polygon', 'Parabola', 'ClosestPoint', 'Midpoint', 'PerpendicularBisector',
+               'Root', 'Roots', 'Extremum'}
     named = {eid for entry in entries for eid in entry['native_ids']}
     anonymous = {eid for rec in records.values() if KeyMaker.is_phantom(rec.name) for eid in rec.native_ids}
     anonymous.update(set(doc['elements']) - named - {
@@ -91,7 +92,9 @@ def inline_arguments(doc, entries, records, refs_of):
     for entry in entries:
         info = entry['info']
         supported = info.get('command') in allowed or info['type'] == 'text' or \
-            info.get('command') == 'Expression' and info['type'] in ('point', 'vector', 'conic')
+            info.get('command') == 'Expression' and (info['type'] in ('point', 'vector', 'conic') or any(
+                doc['operations'][doc['elements'][eid]['producer']['operationId']]['op'] == 'function.value'
+                for eid in entry['native_ids'] if eid in doc['elements']))
         if entry['status'] != 'translated' or not supported:
             continue
         for eid in entry['native_ids']:

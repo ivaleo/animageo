@@ -107,6 +107,7 @@ class Context:
     typed_formulas: dict = field(default_factory=dict)  # source/phantom → (AST, normalized refs, point|vector, text)
     typed_errors: dict = field(default_factory=dict)    # source/phantom → explicit formula refusal
     source_commands: list = field(default_factory=list)  # XML commands absent from the classic graph
+    function_analysis: dict = field(default_factory=dict)  # source output -> grouped analysis plan
 
 
 @dataclass
@@ -557,7 +558,7 @@ class _Builder:
                 self.warnings.append({'code': 'duplicate_definition', 'name': o})
             return
         inputs = list(cmd.inputs)
-        sig = self.signature(cmd, inputs)
+        sig = getattr(cmd, 'source_signature', None) or self.signature(cmd, inputs)
         in_names = [i for i in inputs if isinstance(i, str) and (self.is_object(i)
                     or i in self.ctx.typed_formulas or i in self.ctx.typed_errors
                     or self.ctx.inline_formulas and i in self.ctx.display)]
@@ -597,6 +598,10 @@ class _Builder:
                 self.source_definition(o)
 
     def build(self, cmd, sig, inputs, outs, recs):
+        if outs[0] in self.ctx.function_analysis:
+            from .ggb_function_analysis import build_analysis
+            build_analysis(self, self.ctx.function_analysis[outs[0]], outs, recs)
+            return
         if len(outs) == 1 and outs[0] in self.ctx.typed_errors:
             raise _Untranslated(*self.ctx.typed_errors[outs[0]])
         if len(outs) == 1 and outs[0] in self.ctx.typed_formulas:
@@ -804,6 +809,8 @@ def _validate(builder: _Builder):
 
 def _expected(builder: _Builder, rec: Record):
     exp = builder.ctx.expected.get(rec.name)
+    if rec.name in builder.ctx.function_analysis:
+        return exp  # Missing source coordinates are not classic value evidence.
     if exp is not None:
         return exp
     if rec.type is None:
@@ -825,6 +832,10 @@ def _resolve_by_value(builder: _Builder, doc, scale: float):
             _project_on_path(builder, [paths[op_id]])
         info = builder.by_value.get(op_id)
         if info is None:
+            continue
+        if info.get('function_analysis'):
+            from .ggb_function_analysis import resolve_slots
+            resolve_slots(builder, op_id, info, scale)
             continue
         # Earlier bindings may feed this operation. Probe the updated graph,
         # rather than evaluating every intersection with provisional ancestors.

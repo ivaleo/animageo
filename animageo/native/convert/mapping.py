@@ -41,6 +41,9 @@ the projected parameter, ``closest_point_Kp`` and ``closest_point_Fp``
 ``Point(conic, t)`` stays ``unsupported_signature`` as on a circle.
 ``mapVersion`` 7 (registry 1.10): ``point_L`` maps to ``point.on_path``;
 explicit locus parameters are read from the source as ``point.on_locus``.
+``mapVersion`` 8 (registry 1.11): the seven function analysis operations
+remain without classic lowerings; the GGB source reader translates their
+supported signatures directly from XML.
 """
 from __future__ import annotations
 

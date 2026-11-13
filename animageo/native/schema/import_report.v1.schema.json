@@ -79,7 +79,7 @@
         "ggb_name": {"type": "string", "minLength": 1, "maxLength": 200},
         "ggb_type": {"type": "string", "minLength": 1, "maxLength": 40},
         "command": {"type": ["string", "null"], "maxLength": 80, "description": "GGB command name; none — a free object or an expression"},
-        "signature": {"type": "string", "minLength": 1, "maxLength": 80, "description": "classic signature key of the command (midpoint_pp, …)"},
+        "signature": {"type": "string", "minLength": 1, "maxLength": 80, "description": "classic dispatch key (midpoint_pp, …) or original signature of a GGB-only source command"},
         "description": {"type": ["string", "null"], "maxLength": 300, "description": "caption of the «Все объекты» row (in Russian); filled by the web"},
         "category": {"enum": ["editable", "picture", "unsupported", "closure", "differs"]},
         "reason": {
