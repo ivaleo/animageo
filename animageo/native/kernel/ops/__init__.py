@@ -59,3 +59,4 @@ from . import angle, arc, circle, intersect, line, locus, mark, measure, number,
 from . import conic, function  # noqa: E402,F401  (registration, registry 1.6)
 from . import meet  # noqa: E402,F401  (registration, registry 1.8)
 from . import area  # noqa: E402,F401  (registration, registry 1.9)
+from . import boundary  # noqa: E402,F401  (registration, registry 1.9)

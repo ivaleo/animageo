@@ -54,6 +54,7 @@ from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, free_slot, input_s
 from . import paths
 from .numeric import Tolerances, scene_scale, tolerances
 from .ops import IMPLEMENTATIONS, OpContext
+from .region import chain_problem
 from .values import (
     STATE_RANK,
     Detailed,
@@ -269,12 +270,12 @@ def build_args(record, resolved, elements, ops, states) -> dict:
     for slot, is_list, ids in resolved.refs:
         if slot in path_slots:
             items = [Input(elements[ref]['type'], states[ref]['value'],
-                           _path_frame(ref, elements, ops, states)) for ref in ids]
+                           _path_frame(ref, elements, ops, states), ref) for ref in ids]
         elif slot in end_slots:
             items = [Input(elements[ref]['type'], states[ref]['value'],
-                           _side_ends(ref, elements, ops, states)) for ref in ids]
+                           _side_ends(ref, elements, ops, states), ref) for ref in ids]
         else:
-            items = [Input(elements[ref]['type'], states[ref]['value']) for ref in ids]
+            items = [Input(elements[ref]['type'], states[ref]['value'], None, ref) for ref in ids]
         args[slot] = items if is_list else items[0]
     return args
 
@@ -312,6 +313,11 @@ def _order(op_ids, deps, cyclic) -> list:
 
 # Operations that read the graph besides their arguments (``OpContext.scope``).
 GRAPH_OPS = frozenset({'locus.of_point'})
+
+# Rules of the structure of the arguments beyond their types (registry 1.9):
+# ``rule(args, {elementId: type}) -> problem | None``; a problem is
+# ``error/schema`` in evaluation and an issue of ``validate``.
+STRUCTURE_RULES = {'region.by_boundary': chain_problem}
 
 # Slots that may be undefined without skipping the checks of their operation
 # (registry 1.5): the extension of an altitude is absent in every acute
@@ -395,7 +401,9 @@ def _argument_status(op, record, doc, reg):
     literal, since registry 1.9 so does a family slot that contains
     ``number`` (``limit``); an ``expr`` or ``template`` slot takes only an
     argument of that kind); an inputSets record requires exactly one
-    alternative; then params
+    alternative; registry 1.9: a rule of the structure of the arguments
+    (:data:`STRUCTURE_RULES`, the chain of ``region.by_boundary``) →
+    ``schema``; then params
     in registry order (wrong literal kind → ``type_mismatch``, a
     required one missing → ``schema``); last, a tree or a template that the
     rules refuse (with the item count of ``refs``) → ``error/formula``.
@@ -447,6 +455,10 @@ def _argument_status(op, record, doc, reg):
                 return ('error', 'type_mismatch')
             ids.append(ref['elementId'])
         resolved.append((item['slot'], bool(item.get('list')), ids))
+    if op['op'] in STRUCTURE_RULES:
+        types = {el_id: doc.elements[el_id]['type'] for _slot, _is_list, ids in resolved for el_id in ids}
+        if STRUCTURE_RULES[op['op']](args, types) is not None:
+            return ('error', 'schema')
     params = {}
     for item in record['params']:
         arg = args.get(item['slot'])

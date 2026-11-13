@@ -1355,3 +1355,29 @@ def _area_between_on_both(args, result, tol):
             return math.inf
         error = max(error, abs(fx - gx))
     return error
+
+
+@register_check('region.by_boundary', 'on_carriers')
+def _by_boundary_on_carriers(args, result, tol):
+    """The largest distance from ``from.i`` and ``to.i`` to the line or the
+    circle of ``curves.i`` (0 without pieces)."""
+    error = 0.0
+    for carrier, *ends in zip(args['curves'], args['from'], args['to']):
+        v = carrier.value
+        for end in ends:
+            x, y = end.value['x'], end.value['y']
+            if carrier.type in ('circle', 'arc'):
+                d = abs(math.hypot(x - v['c'][0], y - v['c'][1]) - v['r'])
+            elif carrier.type == 'line':
+                d = abs((x - v['p'][0]) * v['dir'][1] - (y - v['p'][1]) * v['dir'][0])
+            elif carrier.type == 'ray':
+                d = abs((x - v['origin'][0]) * v['dir'][1] - (y - v['origin'][1]) * v['dir'][0])
+            elif carrier.type == 'segment':
+                (ax, ay), (bx, by) = v['a'], v['b']
+                length = math.hypot(bx - ax, by - ay)
+                d = (abs((x - ax) * (by - ay) - (y - ay) * (bx - ax)) / length if length > 0
+                     else math.hypot(x - ax, y - ay))
+            else:
+                return math.inf
+            error = max(error, d)
+    return error

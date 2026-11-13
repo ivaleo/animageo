@@ -25,8 +25,9 @@ from __future__ import annotations
 
 import math
 
-__all__ = ['ARC_FLATTEN_STEP', 'GRAPH_STEPS', 'arc_area', 'arc_sweep', 'flatten', 'graph_area', 'graph_xs', 'ring_length',
-           'inside', 'label_anchor', 'line_area', 'perimeter', 'piece_length']
+__all__ = ['ARC_FLATTEN_STEP', 'GRAPH_STEPS', 'PIECES_MAX', 'arc_area', 'arc_area_of', 'arc_sweep', 'boundary_chain',
+           'chain_problem', 'flatten', 'graph_area', 'graph_xs', 'ring_length', 'inside', 'label_anchor', 'line_area',
+           'perimeter', 'piece_length']
 
 GRAPH_STEPS = 256                       # equal steps of a graph piece (257 points)
 ARC_FLATTEN_STEP = math.radians(2.0)    # the largest step of a flattened arc
@@ -71,8 +72,92 @@ def arc_area(piece, kind: str) -> float:
     ``cy·r·(cos θ0 − cos θ1) + r²·(sweep/2 − (sin 2θ1 − sin 2θ0)/4)``."""
     _p0, _p1, (_cx, cy, r) = piece
     t0, sweep = arc_sweep(piece, kind)
+    return arc_area_of(cy, r, t0, sweep)
+
+
+def arc_area_of(cy: float, r: float, t0: float, sweep: float) -> float:
+    """The formula of :func:`arc_area` for a start angle ``t0`` and a signed
+    ``sweep`` given directly (a zero sweep gives zero)."""
     t1 = t0 + sweep
     return cy * r * (math.cos(t0) - math.cos(t1)) + r * r * (sweep / 2.0 - (math.sin(2 * t1) - math.sin(2 * t0)) / 4.0)
+
+
+# ── the chain of region.by_boundary (registry 1.9) ───────────────────────
+
+PIECES_MAX = 256        # pieces of all rings of one region.by_boundary (error limit_exceeded above)
+
+
+def boundary_chain(curves, starts, ends, round_=None, contours: int = 0):
+    """The rings of a ``region.by_boundary`` chain, by element IDs only.
+
+    ``curves``, ``starts``, ``ends`` — the IDs of the carrier and of the
+    vertices ``from``/``to`` of each piece; ``round_`` — whether the carrier
+    of each piece is a circle or an arc (``None``: not known); ``contours``
+    — the number of ``inside`` and ``outside`` contours. Returns ``(rings,
+    problem)``: ``rings`` lists each ring as ``[(index, forward), …]`` in
+    the order of the walk, ``problem`` is ``None`` or the text of the first
+    rule broken (the issue ``region_chain``, ``error/schema``):
+
+    - ``curves``, ``from`` and ``to`` have one length; some ring exists;
+    - the first piece of a ring runs forward; each next one starts where the
+      ring has come (forward) or ends there (backward); the ring closes when
+      it comes back to its first vertex, and the next piece opens a new one;
+    - a piece from a vertex to itself (the whole circle) is a ring of its
+      own, on a circle or an arc;
+    - the last ring is closed.
+    """
+    n = len(curves)
+    if len(starts) != n or len(ends) != n:
+        return None, f'curves, from and to have {n}, {len(starts)} and {len(ends)} items; they must be equal'
+    if n == 0 and contours == 0:
+        return None, 'no ring: curves, inside and outside are all empty'
+    rings = []
+    ring = first = end = None
+    for i in range(n):
+        a, b = starts[i], ends[i]
+        if a == b:
+            if round_ is not None and not round_[i]:
+                return None, f'piece {i} runs from {a!r} to itself on a carrier that is not a circle or an arc'
+            if ring is not None:
+                return None, f'piece {i}: a whole circle (from {a!r} to itself) makes a ring of its own'
+            rings.append([(i, True)])
+            continue
+        if ring is None:
+            ring, first, end = [(i, True)], a, b
+            continue
+        if a == end:
+            ring.append((i, True))
+            end = b
+        elif b == end:
+            ring.append((i, False))
+            end = a
+        else:
+            return None, f'piece {i} neither starts nor ends at {end!r}, where its ring has come'
+        if end == first:
+            rings.append(ring)
+            ring = None
+    if ring is not None:
+        return None, f'the last ring is not closed: it has come to {end!r} and started at {first!r}'
+    return rings, None
+
+
+def chain_problem(args: dict, element_types: dict):
+    """The ``region_chain`` problem of the arguments of a ``region.by_boundary``
+    record (``{slot: argument}``), else ``None``; ``None`` too when a list
+    slot is not a list of references (another issue names it)."""
+    ids = {}
+    for slot in ('curves', 'from', 'to', 'inside', 'outside'):
+        arg = args.get(slot)
+        if not isinstance(arg, dict) or arg.get('kind') != 'list':
+            return None
+        items = arg.get('items') or []
+        if not all(isinstance(r, dict) and r.get('kind') == 'ref' for r in items):
+            return None
+        ids[slot] = [r.get('elementId') for r in items]
+    round_ = [element_types.get(c) in ('circle', 'arc') for c in ids['curves']]
+    _rings, problem = boundary_chain(ids['curves'], ids['from'], ids['to'], round_,
+                                     len(ids['inside']) + len(ids['outside']))
+    return problem
 
 
 def graph_area(points, mids) -> float:

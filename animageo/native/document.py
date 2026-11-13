@@ -930,7 +930,7 @@ def validate(doc) -> list:
     ``cycle``, ``input_not_free``, ``missing_input``, ``step_unknown_operation``,
     ``step_duplicate_operation``, ``step_duplicate_id``, ``step_empty``,
     ``step_cycle``, ``drag_via_not_free``, ``drag_via_not_upstream``,
-    ``needs_newer_registry`` (errors) and ``unknown_op``, ``newer_registry``,
+    ``needs_newer_registry``, ``region_chain`` (errors) and ``unknown_op``, ``newer_registry``,
     ``seq_duplicate``, ``role_unknown``, ``drag_singular`` (warnings). The
     ``drag`` hints of ``appearance`` (1.12.0) also give ``dangling_ref`` and
     ``type_mismatch`` (``docs/native/kernel.md`` §8.1).
@@ -1055,6 +1055,12 @@ def validate(doc) -> list:
                 elif arg['kind'] != item['type']:
                     issues.append(Issue('type_mismatch', spath, f"parameter {slot!r} must be a {item['type']}",
                                         operationId=op_id))
+            if op['op'] == 'region.by_boundary':        # registry 1.9: the chain is told by IDs
+                from .kernel.region import chain_problem
+                types = {el_id: el['type'] for el_id, el in elements.items()}
+                problem = chain_problem(args, types)
+                if problem is not None:
+                    issues.append(Issue('region_chain', path + '/args', problem, operationId=op_id))
         else:
             for slot in sorted(args):
                 for ref in iter_refs(args[slot]):

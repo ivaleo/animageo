@@ -578,8 +578,12 @@ class _Printer:
             for slot in order + sorted(set(args) - set(order)):
                 if slot in args:
                     parts.extend(t for t, _k, _p in self._arg(args[slot], None))
-            message = 'функции и коники в «Командах» будут позже' if deferred_op(op['op']) else \
-                f'операция {op["op"]} не соответствует реестру'
+            if op['op'].startswith('region.'):
+                message = 'области в «Командах» будут позже'           # registry 1.9
+            elif deferred_op(op['op']):
+                message = 'функции и коники в «Командах» будут позже'
+            else:
+                message = f'операция {op["op"]} не соответствует реестру'
             self._warn('unprintable_operation', line_no, column, message)
             return f"{prefix}{op['op']}({', '.join(parts)})", info
         command, parts, dropped = call

@@ -434,10 +434,11 @@ class _Runner:
 
     def __init__(self, construction, op_name, layout, out_slots, out_types, tol, *,
                  free_value=None, path_frame=None, tparam_of=None, constants=None, free_input=None,
-                 end_slots=(), bounds=None):
+                 end_slots=(), bounds=None, ids=None):
         self.construction = construction
         self.op_name = op_name
         self.layout = layout              # [(slot, is_list, [element type…])]
+        self.ids = ids                    # [[element ID…]] per layout entry (the Input.id of each item)
         self.constants = constants or {}  # params and number literals: {slot: float | None | Input}
         self.out_slots = out_slots
         self.out_types = out_types
@@ -454,14 +455,14 @@ class _Runner:
         none = [None] * len(self.out_slots)
         args = dict(self.constants)
         i = 0
-        for slot, is_list, types in self.layout:
+        for k, (slot, is_list, types) in enumerate(self.layout):
             items = []
-            for type_ in types:
+            for j, type_ in enumerate(types):
                 value = from_classic(type_, classic[i])
                 i += 1
                 if value is None:
                     return none
-                items.append(Input(type_, value))
+                items.append(Input(type_, value, None, self.ids[k][j] if self.ids is not None else None))
             args[slot] = items if is_list else items[0]
         input_value = self.free_input
         if self.path_frame is not None:
@@ -476,7 +477,7 @@ class _Runner:
                 values[slot] = vals if is_list else vals[0]
             path = args['path']
             frame = paths.frame(path.type, path.value, producer_op, values) if values is not None else None
-            args['path'] = Input(path.type, path.value, frame)
+            args['path'] = Input(path.type, path.value, frame, path.id)
             element = self.construction.element(self.tparam_of)
             t = getattr(element, 'tparam', None)
             if t is None:
@@ -492,7 +493,7 @@ class _Runner:
             i += 2
             side = args[slot]
             frame = ((a['x'], a['y']), (b['x'], b['y'])) if a is not None and b is not None else None
-            args[slot] = Input(side.type, side.value, frame)
+            args[slot] = Input(side.type, side.value, frame, side.id)
         result = IMPLEMENTATIONS[self.op_name](args, OpContext(self.tol, input=input_value, bounds=self.bounds))
         out = []
         for slot, type_ in zip(self.out_slots, self.out_types):
@@ -710,7 +711,8 @@ def build_construction(doc, *, inputs=None, seed=None):
                          [elements[e]['producer']['slot'] for e in outs],
                          [elements[e]['type'] for e in outs], tol,
                          free_value=free_value, path_frame=path_frame, tparam_of=tparam_of,
-                         constants=constants, free_input=free_input, end_slots=end_slots, bounds=doc.bounds)
+                         constants=constants, free_input=free_input, end_slots=end_slots, bounds=doc.bounds,
+                         ids=[ids for _slot, _is_list, ids in resolved.refs])
         construction.add(NativeCommand(op['op'], input_names, [names.by_id[e] for e in outs], op_id, runner))
 
     for el_id in sorted(elements):      # elements of broken operations

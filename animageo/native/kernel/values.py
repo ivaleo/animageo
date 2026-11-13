@@ -58,11 +58,14 @@ class Detailed(NamedTuple):
 
 class Input(NamedTuple):
     """A resolved reference argument: element type and value; ``frame`` is the
-    path frame of a ``path`` slot (``kernel/paths.py``), else ``None``."""
+    path frame of a ``path`` slot (``kernel/paths.py``), else ``None``;
+    ``id`` — the ID of the referenced element (registry 1.9: the chain of
+    ``region.by_boundary`` is told by IDs), ``None`` for a literal."""
 
     type: str
     value: dict
     frame: object = None
+    id: str | None = None
 
 
 def is_finite_value(value) -> bool:

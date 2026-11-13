@@ -1,0 +1,70 @@
+[
+  {
+    "op": "region.by_boundary",
+    "status": "beta",
+    "since": "1.9",
+    "inputs": [
+      {
+        "slot": "curves",
+        "type": "curve",
+        "list": true,
+        "min": 0
+      },
+      {
+        "slot": "from",
+        "type": "point",
+        "list": true,
+        "min": 0
+      },
+      {
+        "slot": "to",
+        "type": "point",
+        "list": true,
+        "min": 0
+      },
+      {
+        "slot": "inside",
+        "type": "contour",
+        "list": true,
+        "min": 0
+      },
+      {
+        "slot": "outside",
+        "type": "contour",
+        "list": true,
+        "min": 0
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "region",
+        "type": "region"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "unsupported_signature",
+      "not_on_curve",
+      "outside_part",
+      "empty_region",
+      "boundary_crossing",
+      "flipped",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_carriers",
+        "text": "every vertex lies on the carriers of the pieces it joins: the largest distance from from.i and to.i to the line or circle of curves.i (0 without pieces)"
+      }
+    ],
+    "orientation": "counterclockwise",
+    "pathParam": null,
+    "stepKind": "region_boundary",
+    "phrases": {
+      "ru": "{region} — область с заданной границей"
+    },
+    "math": "docs/native/ops/region.by_boundary.md",
+    "signatureHash": "sha256:945bb808bd925aeb89b46fdb44c563c6e8a4ba5a4a1035440712a2994c7f3870"
+  }
+]

@@ -245,6 +245,14 @@ class _Doc:
             args['lobe'] = _num(lobe)
         return self.op('op_' + el_id, 'function.area_between', args, [('region', el_id, 'region')])
 
+    def boundary(self, el_id, curves=(), froms=(), tos=(), inside=(), outside=()):
+        """Registry 1.9: ``region.by_boundary`` over lists of element IDs."""
+        def refs(ids):
+            return {'kind': 'list', 'items': [_ref(i) for i in ids]}
+        args = {'curves': refs(curves), 'from': refs(froms), 'to': refs(tos), 'inside': refs(inside),
+                'outside': refs(outside)}
+        return self.op('op_' + el_id, 'region.by_boundary', args, [('region', el_id, 'region')])
+
     def measures(self, *regions):
         """``measure.area`` (``<id>_area``) and ``measure.perimeter`` (``<id>_len``) of each region."""
         for el_id in regions:
@@ -672,7 +680,20 @@ def _area_scenes():
     return out
 
 
-SCENES = (_function_scenes, _conic_scenes, _meet_scenes, _path_scenes, _area_scenes)
+def _boundary_scenes():
+    """Registry 1.9: ``region.by_boundary`` — chains of lines, segments, circles
+    and arcs, contours, and every status of the operation, with the area and the
+    perimeter of each region."""
+    out = []
+    # 1. the triangle of three lines through its free vertices
+    d = _Doc('region_lines_flip', (-5, -5, 5, 5)).free('A', 0, 0).free('B', 4, 0).free('C', 0, 3)
+    d.line('c', 'A', 'B').line('a', 'B', 'C').line('b', 'C', 'A')
+    d.boundary('R', ['c', 'a', 'b'], ['A', 'B', 'C'], ['B', 'C', 'A']).measures('R')
+    out.append((d, _cases(('base', None),)))
+    return out
+
+
+SCENES = (_function_scenes, _conic_scenes, _meet_scenes, _path_scenes, _area_scenes, _boundary_scenes)
 
 
 # ── fixtures ─────────────────────────────────────────────────────────────

@@ -64,7 +64,7 @@ SCHOOL_B_OPS = {'line.common_tangents', 'sector.segment', 'triangle.cevian', 'ci
 # Registry 1.8: common points of conics; the parallel mark
 MEET_OPS = {'intersect.conic_conic', 'intersect.function_conic'}
 MARK_18_OPS = {'mark.parallel'}
-REGION_OPS = {'function.area_between'}
+REGION_OPS = {'function.area_between', 'region.by_boundary'}
 ALL_OPS = REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.7 extend 1.0: earlier operations keep their signatures.
 # Registry 1.6 is frozen since 1.11.0rc5; new school operations go to 1.7.
@@ -200,7 +200,8 @@ def test_ops_and_files():
     reg = registry()
     assert set(reg.ops) == ALL_OPS
     assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark',
-                               'arc', 'measure', 'transform', 'text', 'triangle', 'locus', 'function', 'conic'}
+                               'arc', 'measure', 'transform', 'text', 'triangle', 'locus', 'function', 'conic',
+                               'region'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
