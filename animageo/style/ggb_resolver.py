@@ -15,20 +15,24 @@ from .scaling import (
 from .enums import ggb_point_style_to_elem_style
 
 
-def ggb_decoration_style(elem_type, decoration) -> dict:
+def ggb_decoration_style(elem_type, decoration, flipped=False) -> dict:
     """The style keys of a GeoGebra ``<decoration type>`` (``GeoElement.
     DECORATION_*``). An angle: 0–2 → ``tick_count`` 1–3 arcs; 3–5 (one, two,
     three ticks) → one arc with ``arc_tick_count`` 1–3; 6 / 7 (an arrow
     anticlockwise / clockwise) → one arc with ``arrow_head`` ``end`` /
     ``start``. A segment: 0–3 → ``tick_count``; 4–6 (one, two, three
     arrows) → ``parallel_count`` 1–3 and no ticks. Any other type: the
-    ``tick_count`` as given."""
+    ``tick_count`` as given. ``flipped`` — an angle drawn the other way round
+    (its size over π in the minor range, below it in the reflex): the arrow of
+    GeoGebra's anticlockwise / clockwise follows the drawn arc, so its end and
+    start swap."""
     n = int(decoration)
     if elem_type == 'angle':
         if 3 <= n <= 5:
             return {'tick_count': 1, 'arc_tick_count': n - 2}
         if n in (6, 7):
-            return {'tick_count': 1, 'arrow_head': 'end' if n == 6 else 'start'}
+            end = (n == 6) != bool(flipped)
+            return {'tick_count': 1, 'arrow_head': 'end' if end else 'start'}
         return {'tick_count': n + 1}
     if elem_type == 'segment' and 4 <= n <= 6:
         return {'tick_count': 0, 'parallel_count': n - 3}
@@ -53,7 +57,8 @@ def resolve_ggb_style(ggb_raw: dict) -> dict:
     etype = ggb_raw.get('elem_type')
 
     if 'decoration_lines' in ggb_raw:
-        style.update(ggb_decoration_style(etype, ggb_raw['decoration_lines']))
+        style.update(ggb_decoration_style(etype, ggb_raw['decoration_lines'],
+                                          bool(ggb_raw.get('decoration_flipped'))))
 
     if 'show_object' in ggb_raw:
         style['visible'] = ggb_raw['show_object']

@@ -1,3 +1,4 @@
+import math
 import logging
 import os
 import shutil
@@ -554,6 +555,24 @@ def build_text_segments(constr, raw_exp, debug=False):
     return segments
 
 
+def _flip_arc_arrow(elem, raw, style) -> None:
+    """GeoGebra's arrow of an angle (decoration 6 / 7, anticlockwise /
+    clockwise) follows the arc as drawn: when the arc runs the other way round
+    (size over π in the minor range, below it in the reflex) the arrow of the
+    style (``end`` / ``start`` of the sides) swaps. Known only once the
+    construction is built."""
+    if raw.get('elem_type') != 'angle' or raw.get('decoration_lines') not in (6, 7):
+        return
+    size = getattr(getattr(elem, 'data', None), 'size', None)
+    if size is None:
+        return
+    rng = style.get('angle_range', 'minor')
+    flipped = (rng == 'minor' and float(size) > math.pi) or (rng == 'reflex' and float(size) < math.pi)
+    raw['decoration_flipped'] = flipped
+    if flipped:
+        style.update(ggb_decoration_style('angle', raw['decoration_lines'], True))
+
+
 def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
     xelems_left_to_pass = 0
     fixed_element = False
@@ -1071,6 +1090,7 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
         if isinstance(elem, Var): continue
         if name in raw:
             elem.ggb_raw = raw[name]
+            _flip_arc_arrow(elem, raw[name], style[name])
         for key in style[name]:
             if debug: logger.debug("STYLE >> %s >> %s = %s", name, key, style[name][key])
             if key == 'visible':

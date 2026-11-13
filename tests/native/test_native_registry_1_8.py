@@ -75,3 +75,12 @@ def test_older_documents_keep_evaluating(version):
     ev = native.evaluate(b.doc)
     assert ev.elements['P']['state'] == 'defined'
     assert native.validate(b.doc) == []
+
+
+def test_a_suppressed_parallel_mark_needs_registry_1_8():
+    b = DocBuilder('sup').free('A', 0, 0).free('B', 4, 0)
+    assert native.min_registry_version(b.doc) == '1.0'
+    b.doc['suppressedMarks'] = [{'source': 'c1', 'kind': 'right_angle'}]
+    assert native.min_registry_version(b.doc) == '1.0'
+    b.doc['suppressedMarks'].append({'source': 'c1', 'kind': 'parallel'})
+    assert native.min_registry_version(b.doc) == '1.8'

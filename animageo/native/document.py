@@ -889,6 +889,15 @@ def min_registry_version(doc) -> str:
             if _version_tuple(version) > best:
                 best = _version_tuple(version)
                 text = version
+    # a suppressed mark of kind ``parallel`` names the registry-1.8 operation ``mark.parallel``
+    marks = data.get('suppressedMarks')
+    if isinstance(marks, list) and any(isinstance(m, dict) and m.get('kind') == 'parallel' for m in marks):
+        since = reg.get('mark.parallel')
+        version = '1.8'
+        if isinstance(since, dict) and isinstance(since.get('since'), str):
+            version = since['since']
+        if _version_tuple(version) > best:
+            best, text = _version_tuple(version), version
     return text
 
 

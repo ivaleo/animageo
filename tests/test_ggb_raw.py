@@ -191,3 +191,30 @@ class TestGgbPointStyleMapping:
         assert empty['fill_opacity'] == 0.0
         assert empty['stroke'] == '#123456'
         assert empty['stroke_opacity'] == 1.0
+
+
+class TestArcArrowFollowsTheDrawnArc:
+    """GeoGebra's decoration 6 / 7 (anticlockwise / clockwise) points along the
+    arc as drawn; an arc drawn the other way round swaps end and start."""
+
+    @pytest.mark.parametrize('decoration, flipped, head', [
+        (6, False, 'end'), (7, False, 'start'), (6, True, 'start'), (7, True, 'end'),
+    ])
+    def test_decoration_style(self, decoration, flipped, head):
+        from animageo.style.ggb_resolver import ggb_decoration_style
+        assert ggb_decoration_style('angle', decoration, flipped)['arrow_head'] == head
+        raw = {'elem_type': 'angle', 'decoration_lines': decoration, 'decoration_flipped': flipped}
+        assert resolve_ggb_style(raw)['arrow_head'] == head
+
+    @pytest.mark.parametrize('size, angle_range, flipped', [
+        (1.0, 'minor', False), (4.0, 'minor', True), (4.0, 'reflex', False), (1.0, 'reflex', True),
+    ])
+    def test_flip_after_the_build(self, size, angle_range, flipped):
+        from types import SimpleNamespace
+        from animageo.parsers.ggb_parser import _flip_arc_arrow
+        elem = SimpleNamespace(data=SimpleNamespace(size=size))
+        raw = {'elem_type': 'angle', 'decoration_lines': 6}
+        style = {'angle_range': angle_range, 'arrow_head': 'end'}
+        _flip_arc_arrow(elem, raw, style)
+        assert style['arrow_head'] == ('start' if flipped else 'end')
+        assert raw['decoration_flipped'] is flipped
