@@ -17,9 +17,12 @@ import pytest
 from animageo import native
 from animageo.label_placement import (
     ANCHOR_EDGES,
+    LabelInfo,
     compute_label_layout,
     label_size,
+    _drawn_box_harm,
     _segment_bbox_overlap,
+    _viewport_clamp_pass,
 )
 from tests.native.conftest import DocBuilder
 
@@ -182,3 +185,42 @@ class TestClassicScene:
             r = sc.element(name).style.get('size_px', 6.0) / 2 / 80
             near = math.hypot(px_ - min(max(px_, x0), x1), py_ - min(max(py_, y0), y1))
             assert near >= r, name
+
+
+class TestClampPass:
+    """``_viewport_clamp_pass`` on hand-made labels and obstacles."""
+
+    @staticmethod
+    def _pass(segments, bounds=(-10.0, -10.0, 10.0, 3.0)):
+        lbl = LabelInfo('P', np.array([0.0, 5.0]), 0.5, 0.2, clear_radius=0.05)
+        result = [('P', np.array([0.0, 5.3]), 2)]      # N: drawn box above P
+        none = np.empty((0, 2))
+        _viewport_clamp_pass([lbl], result, bounds, segments, [], none,
+                             0.1, 0.02, (1.0, 10.0, 8.0), 100.0)
+        return result[0]
+
+    def test_other_point_marker_counts(self):
+        """A box that enters another point's marker touches it, even when
+        the point itself lies outside the box; its own marker is not counted."""
+        markers = np.array([[1.2, 0.0, 0.3], [0.0, 0.0, 0.1]])
+        assert _drawn_box_harm((0.0, 0.0), 1.0, 0.5, [], [], markers, [],
+                               (0.0, 0.0)) == (1, 0)
+        far = np.array([[1.4, 0.0, 0.3]])
+        assert _drawn_box_harm((0.0, 0.0), 1.0, 0.5, [], [], far, [],
+                               (0.0, 0.0)) == (0, 0)
+
+    def test_clip_into_the_frame_as_the_fallback(self):
+        """P two units above the frame: no candidate reaches into it, the
+        drawn box is clipped in at the top edge."""
+        name, center, di = self._pass([])
+        ex, ey = ANCHOR_EDGES['BC']                     # the anchor of N
+        assert di == 2
+        assert center[1] - ey * 0.2 == pytest.approx(3.0 - 0.2)   # drawn top = 3
+
+    def test_clip_onto_a_line_keeps_the_label_where_it_was(self):
+        """The clip would lay the label on a line it was clear of: it stays
+        where the solver put it (cropped rather than overlapping)."""
+        line = [(np.array([-10.0, 2.9]), np.array([10.0, 2.9]))]
+        name, center, di = self._pass(line)
+        assert (di, tuple(center)) == (2, (0.0, 5.3))
+

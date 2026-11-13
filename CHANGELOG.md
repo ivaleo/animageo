@@ -70,11 +70,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (a point on the top edge of the frame). The frame is now a constraint of
   the layout: a label whose drawn box leaves it takes the best candidate of
   the solver (the same directions, nudges and costs) that lies wholly in the
-  frame, clears its own point and touches no more geometry and labels than
-  before (failing that, the in-frame candidate off its point that touches
-  the fewest); clipping the drawn box into the frame is only the fallback
-  when no candidate reaches into it. Labels already in the frame keep their places;
-  without `viewport_clamp` the layout is unchanged.
+  frame, clears its own point, touches no more lines and other points and
+  covers other labels no more than before. Clipping the drawn box into the
+  frame is only the fallback, under the same condition; when even the clip
+  would lay the label on its point, on more geometry or deeper on other
+  labels, the label stays where the solver put it.
+  Labels already in the frame keep their places; without `viewport_clamp`
+  the layout is unchanged.
 
 ### Tests
 

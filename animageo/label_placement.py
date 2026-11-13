@@ -3100,10 +3100,26 @@ def _box_touches_disk(c, hw, hh, centre, radius):
     return dx * dx + dy * dy < radius * radius
 
 
-def _drawn_box_harm(c, hw, hh, segments, circles, arc_pts, others, own_anchor):
-    """``(geometry, labels)`` the drawn box at ``c`` touches: curves crossing it
-    and points other than its own inside it; other labels' drawn boxes it
-    overlaps (``others``: ``(centre, hw, hh)``)."""
+def _collect_point_markers(scene, ptUnit):
+    """``(N, 3)`` array ``(x, y, r)`` of the drawn point markers (scene MU)."""
+    from .geo import lib_elements as geo
+    out = []
+    for elem in scene.geo.elements:
+        if (not isinstance(elem.data, geo.Point)
+                or not _resolve_style(scene, elem, 'visible',
+                                      default=getattr(elem, 'visible', True))):
+            continue
+        size = _resolve_style(scene, elem, 'size_px', default=DOT_SIZE_PX)
+        out.append((float(elem.data.coords[0]), float(elem.data.coords[1]),
+                    float(size or 0.0) / 2 / ptUnit))
+    return np.array(out, dtype=float) if out else np.empty((0, 3))
+
+
+def _drawn_box_harm(c, hw, hh, segments, circles, markers, others, own_anchor):
+    """``(geometry, labels)`` of the drawn box at ``c``: the number of curves
+    crossing it and of markers of points other than its own (``markers``:
+    ``(x, y, r)``) it enters; the area it shares with the other labels' drawn
+    boxes (``others``: ``(centre, hw, hh)``)."""
     cx, cy = float(c[0]), float(c[1])
     geom = 0
     for p1, p2 in segments:
@@ -3112,18 +3128,22 @@ def _drawn_box_harm(c, hw, hh, segments, circles, arc_pts, others, own_anchor):
     for cc, cr in circles:
         if _circle_bbox_intersects(cc[0], cc[1], cr, cx, cy, hw, hh):
             geom += 1
-    if len(arc_pts) > 0:
-        inside = ((np.abs(arc_pts[:, 0] - cx) <= hw) & (np.abs(arc_pts[:, 1] - cy) <= hh)
-                  & (np.hypot(arc_pts[:, 0] - own_anchor[0], arc_pts[:, 1] - own_anchor[1]) > 1e-9))
-        geom += int(np.sum(inside))
-    labels = sum(1 for oc, ohw, ohh in others
-                 if _bbox_overlap_area(cx, cy, hw, hh, oc[0], oc[1], ohw, ohh) > 0)
+    if len(markers) > 0:
+        mx, my, mr = markers[:, 0], markers[:, 1], markers[:, 2]
+        dx = mx - np.clip(mx, cx - hw, cx + hw)
+        dy = my - np.clip(my, cy - hh, cy + hh)
+        hit = (dx * dx + dy * dy < mr * mr) | ((dx == 0) & (dy == 0))
+        other = np.hypot(mx - own_anchor[0], my - own_anchor[1]) > 1e-9
+        geom += int(np.sum(hit & other))
+    labels = sum(_bbox_overlap_area(cx, cy, hw, hh, oc[0], oc[1], ohw, ohh)
+                 for oc, ohw, ohh in others)
     return geom, labels
 
 
 def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
-                         distance, padding, weights, ptUnit, *, cost_model=None,
-                         respect_current=False, continuous_steps=0, dir_tol=None):
+                         distance, padding, weights, ptUnit, *, markers=None,
+                         cost_model=None, respect_current=False,
+                         continuous_steps=0, dir_tol=None):
     """FP-9: keep every movable label's drawn box inside the frame ``bounds``.
 
     The frame is a constraint of the layout, not a post-processing clip. A
@@ -3132,16 +3152,21 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
     (base distance + 0..10 px), directions (octants + bisector, or the
     continuous sweep) and costs as ``_solve_greedy`` — whose drawn box lies
     wholly in the frame, clears the label's own point (``clear_radius``) and
-    touches no more geometry and no more other labels than before. Without
-    such a candidate the frame-and-point condition alone decides and the
-    least touching one wins; only when no candidate reaches into the frame
-    (its point far outside) is the drawn box clipped into it. Labels already
-    in the frame (half a pixel of slack) are left untouched; angles (fixed
-    centres) are not moved. ``result`` is mutated in place, in its order,
-    each label seeing the others' current places.
+    touches no more geometry (curves, other points) and overlaps other labels
+    by no more area than before. Without such a candidate (the point far
+    outside the frame, or every place inside taken) the drawn box is clipped
+    into the frame — under the same condition; when the clip would lay it on
+    its point, on more geometry or deeper on other labels, the label stays
+    where the solver put it: an overlap is worse than a cropped label. Labels already in the frame (half a pixel of slack) are
+    left untouched; angles (fixed centres) are not moved. ``result`` is
+    mutated in place, in its order, each label seeing the others' current
+    places.
     """
     tol = 0.5 / ptUnit
     step = 1.0 / ptUnit
+    if markers is None:      # the bare point positions, markers of no size
+        markers = np.column_stack([arc_pts, np.zeros(len(arc_pts))]) \
+            if len(arc_pts) else np.empty((0, 3))
     by_name = {lbl.name: lbl for lbl in labels}
     seg_dashed_full = cost_model.seg_dashed if cost_model is not None else None
     use_cont = cost_model is not None and continuous_steps > 0
@@ -3169,13 +3194,27 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
                   else _drawn_center(c2, d2, l2.half_w, l2.half_h))
             others.append((dc, l2.half_w, l2.half_h))
 
+        # The fallback: the drawn box clipped into the frame.
+        clipped = np.array([float(np.clip(drawn[0], left + hw, right - hw)),
+                            float(np.clip(drawn[1], bottom + hh, top - hh))])
         base_dist = distance + lbl.margin
         reach = (max(base_dist + 10.0 * step,
-                     float(np.hypot(*(drawn - lbl.anchor[:2]))))
+                     float(np.hypot(*(drawn - lbl.anchor[:2]))),
+                     float(np.hypot(*(clipped - lbl.anchor[:2]))))
                  + 2.0 * float(np.hypot(hw, hh)) + padding + 0.05)
         cseg, cdash, ccirc, carc = _cull_obstacles(
             segments, seg_dashed_full, circles, arc_pts, lbl.anchor, reach)
-        harm0 = _drawn_box_harm(drawn, hw, hh, cseg, ccirc, carc, others, lbl.anchor)
+        harm0 = _drawn_box_harm(drawn, hw, hh, cseg, ccirc, markers, others,
+                                lbl.anchor)
+
+        def _no_worse(dc):
+            """Off its own point and touching no more geometry and labels."""
+            if lbl.clear_radius > 0 and _box_touches_disk(
+                    dc, hw, hh, lbl.anchor, lbl.clear_radius):
+                return False
+            geom, lab = _drawn_box_harm(dc, hw, hh, cseg, ccirc, markers,
+                                        others, lbl.anchor)
+            return geom <= harm0[0] and lab <= harm0[1] + 1e-12
 
         cur = lbl.current_center if respect_current else None
         if use_cont:
@@ -3186,7 +3225,6 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
             pref_angle = None
 
         best = None    # (cost, center, dir_idx): in frame, off its point, no worse
-        spare = None   # ((harm, cost), center, dir_idx): in frame, off its point
         for nudge in range(11):
             d = base_dist + nudge * step
             for c, di, a in _ring_candidates(lbl, d, use_cont, continuous_steps,
@@ -3194,32 +3232,25 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
                 dc = _drawn_center(c, di, hw, hh)
                 if not _box_in_frame(dc, hw, hh, bounds, 0.0):
                     continue
-                if lbl.clear_radius > 0 and _box_touches_disk(
-                        dc, hw, hh, lbl.anchor, lbl.clear_radius):
+                if not _no_worse(dc):
                     continue
-                geom, lab = _drawn_box_harm(dc, hw, hh, cseg, ccirc, carc,
-                                            others, lbl.anchor)
                 s = _candidate_score(c, di, a, lbl, placed, cseg, cdash, ccirc,
                                      carc, padding, weights, cost_model, cur,
                                      pref_angle)
-                if geom <= harm0[0] and lab <= harm0[1]:
-                    if best is None or s < best[0]:
-                        best = (s, c, di)
-                elif spare is None or (geom + lab, s) < spare[0]:
-                    spare = ((geom + lab, s), c, di)
+                if best is None or s < best[0]:
+                    best = (s, c, di)
             # The solver's early break: a cheap enough spot ends the search.
             if cur is None and best is not None and best[0] <= brk:
                 break
 
         if best is not None:
             _, new_center, new_dir = best
-        elif spare is not None:
-            _, new_center, new_dir = spare
         else:
+            if not _no_worse(clipped):
+                continue
             ex, ey = ANCHOR_EDGES[_DIR_TO_ANCHOR[dir_idx]]
-            vx = float(np.clip(drawn[0], left + hw, right - hw))
-            vy = float(np.clip(drawn[1], bottom + hh, top - hh))
-            new_center, new_dir = np.array([vx + ex * hw, vy + ey * hh]), dir_idx
+            new_center = np.array([clipped[0] + ex * hw, clipped[1] + ey * hh])
+            new_dir = dir_idx
         result[i] = (name, np.asarray(new_center, dtype=float), new_dir)
 
 
@@ -3973,7 +4004,8 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
     if clamp_bounds is not None:
         _viewport_clamp_pass(
             labels, result, clamp_bounds, segments, circles, arc_pts,
-            distance, padding, weights, ptUnit, cost_model=cost_model,
+            distance, padding, weights, ptUnit,
+            markers=_collect_point_markers(scene, ptUnit), cost_model=cost_model,
             respect_current=respect_any, continuous_steps=continuous_steps,
             dir_tol=dir_tol)
 
