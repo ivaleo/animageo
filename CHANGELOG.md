@@ -72,9 +72,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the solver (the same directions, nudges and costs) that lies wholly in the
   frame, clears its own point, touches no more lines and other points and
   covers other labels no more than before. Clipping the drawn box into the
-  frame is only the fallback, under the same condition; when even the clip
+  frame is only the fallback, under the same condition. When even the clip
   would lay the label on its point, on more geometry or deeper on other
-  labels, the label stays where the solver put it.
+  labels, a label the solver left partly in the frame stays there; one it
+  left wholly outside while its point is in the picture, which would not
+  show at all, takes the cheapest place in the frame whatever it touches
+  (off its own point when there is one), and without any the plain clip.
+  The label of a point outside the picture is not pulled in.
   Labels already in the frame keep their places; without `viewport_clamp`
   the layout is unchanged.
 - The frame of `viewport_clamp` is the exported picture — the export canvas

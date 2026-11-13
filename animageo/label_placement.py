@@ -3172,6 +3172,14 @@ def _picture_bounds(scene):
     return (left, bottom, right, top)
 
 
+def _box_shows(c, hw, hh, bounds, tol):
+    """Whether the box at ``c`` shows in the frame: overlaps it by more than
+    ``tol`` both across and along."""
+    left, bottom, right, top = bounds
+    return (min(c[0] + hw, right) - max(c[0] - hw, left) > tol
+            and min(c[1] + hh, top) - max(c[1] - hh, bottom) > tol)
+
+
 def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
                          distance, padding, weights, ptUnit, *, markers=None,
                          cost_model=None, respect_current=False,
@@ -3187,9 +3195,15 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
     touches no more geometry (curves, other points) and overlaps other labels
     by no more area than before. Without such a candidate (the point far
     outside the frame, or every place inside taken) the drawn box is clipped
-    into the frame — under the same condition; when the clip would lay it on
-    its point, on more geometry or deeper on other labels, the label stays
-    where the solver put it: an overlap is worse than a cropped label. Labels already in the frame (half a pixel of slack) are
+    into the frame — under the same condition. When the clip would lay it on
+    its point, on more geometry or deeper on other labels, a label the solver
+    left partly in the frame stays there (an overlap is worse than a cropped
+    label, and no more of it is outside than before the clamp); one it left
+    wholly outside while its point is in the frame would not show at all, the
+    worst outcome: it takes the cheapest candidate in the frame whatever it
+    touches — off its own point when one is — and with no candidate in the
+    frame the plain clip. The label of a point outside the frame (not drawn)
+    is not pulled in. Labels already in the frame (half a pixel of slack) are
     left untouched; angles (fixed centres) are not moved. ``result`` is
     mutated in place, in its order, each label seeing the others' current
     places.
@@ -3257,6 +3271,14 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
             pref_angle = None
 
         best = None    # (cost, center, dir_idx): in frame, off its point, no worse
+        # An invisible label of a visible point is the worst outcome: for one
+        # the solver put wholly outside, the cheapest place in the frame
+        # whatever it touches, off its point when there is one (``forced[0]``),
+        # else on it. A point outside the frame is not drawn, nor its label.
+        ax, ay = float(lbl.anchor[0]), float(lbl.anchor[1])
+        invisible = (left <= ax <= right and bottom <= ay <= top
+                     and not _box_shows(drawn, hw, hh, bounds, tol))
+        forced = [None, None]
         for nudge in range(11):
             d = base_dist + nudge * step
             for c, di, a in _ring_candidates(lbl, d, use_cont, continuous_steps,
@@ -3264,6 +3286,14 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
                 dc = _drawn_center(c, di, hw, hh)
                 if not _box_in_frame(dc, hw, hh, bounds, 0.0):
                     continue
+                if invisible:
+                    s = _candidate_score(c, di, a, lbl, placed, cseg, cdash, ccirc,
+                                         carc, padding, weights, cost_model, cur,
+                                         pref_angle)
+                    k = int(lbl.clear_radius > 0 and _box_touches_disk(
+                        dc, hw, hh, lbl.anchor, lbl.clear_radius))
+                    if forced[k] is None or s < forced[k][0]:
+                        forced[k] = (s, c, di)
                 if not _no_worse(dc):
                     continue
                 s = _candidate_score(c, di, a, lbl, placed, cseg, cdash, ccirc,
@@ -3277,12 +3307,14 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
 
         if best is not None:
             _, new_center, new_dir = best
-        else:
-            if not _no_worse(clipped):
-                continue
+        elif _no_worse(clipped) or (invisible and forced == [None, None]):
             ex, ey = ANCHOR_EDGES[_DIR_TO_ANCHOR[dir_idx]]
             new_center = np.array([clipped[0] + ex * hw, clipped[1] + ey * hh])
             new_dir = dir_idx
+        elif invisible:
+            _, new_center, new_dir = forced[0] if forced[0] is not None else forced[1]
+        else:
+            continue    # partly in the frame: as much of it outside as before
         result[i] = (name, np.asarray(new_center, dtype=float), new_dir)
 
 

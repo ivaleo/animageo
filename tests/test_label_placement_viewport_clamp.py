@@ -227,14 +227,34 @@ class TestClassicScene:
 class TestClampPass:
     """``_viewport_clamp_pass`` on hand-made labels and obstacles."""
 
-    @staticmethod
-    def _pass(segments, bounds=(-10.0, -10.0, 10.0, 3.0)):
-        lbl = LabelInfo('P', np.array([0.0, 5.0]), 0.5, 0.2, clear_radius=0.05)
-        result = [('P', np.array([0.0, 5.3]), 2)]      # N: drawn box above P
-        none = np.empty((0, 2))
-        _viewport_clamp_pass([lbl], result, bounds, segments, [], none,
-                             0.1, 0.02, (1.0, 10.0, 8.0), 100.0)
+    NONE = np.empty((0, 2))
+    WEIGHTS = (1.0, 10.0, 8.0)
+
+    @classmethod
+    def _pass(cls, segments, bounds=(-10.0, -10.0, 10.0, 3.0),
+              anchor=(0.0, 5.0), center=(0.0, 5.3)):
+        lbl = LabelInfo('P', np.array(anchor), 0.5, 0.2, clear_radius=0.05)
+        result = [('P', np.array(center), 2)]          # N: drawn box above P
+        _viewport_clamp_pass([lbl], result, bounds, segments, [], cls.NONE,
+                             0.1, 0.02, cls.WEIGHTS, 100.0)
         return result[0]
+
+    @staticmethod
+    def _drawn(center, di, hw=0.5, hh=0.2):
+        from animageo.label_placement import _DIR_TO_ANCHOR
+        ex, ey = ANCHOR_EDGES[_DIR_TO_ANCHOR[di]]
+        return np.array([center[0] - ex * hw, center[1] - ey * hh])
+
+    @staticmethod
+    def _fan(anchor, n=37, length=5.0):
+        """Lines from ``anchor`` over the lower half-plane and across it."""
+        x, y = anchor
+        segs = [(np.array([x - 10.0, y]), np.array([x + 10.0, y]))]
+        for k in range(n):
+            t = -math.pi * k / (n - 1)
+            segs.append((np.array([x, y]),
+                         np.array([x + length * math.cos(t), y + length * math.sin(t)])))
+        return segs
 
     def test_other_point_marker_counts(self):
         """A box that enters another point's marker touches it, even when
@@ -254,10 +274,34 @@ class TestClampPass:
         assert di == 2
         assert center[1] - ey * 0.2 == pytest.approx(3.0 - 0.2)   # drawn top = 3
 
-    def test_clip_onto_a_line_keeps_the_label_where_it_was(self):
-        """The clip would lay the label on a line it was clear of: it stays
-        where the solver put it (cropped rather than overlapping)."""
+    def test_point_outside_the_frame_keeps_its_label_out(self):
+        """P above the frame is not drawn: its label is not pulled in onto a
+        line it was clear of (no candidate reaches into the frame)."""
         line = [(np.array([-10.0, 2.9]), np.array([10.0, 2.9]))]
         name, center, di = self._pass(line)
         assert (di, tuple(center)) == (2, (0.0, 5.3))
 
+    def test_partly_visible_keeps_the_solver_place(self):
+        """The solver's box straddles the top edge and every place inside
+        touches more lines: the label stays where it was, partly visible
+        (as much of it outside as before the clamp, no more)."""
+        anchor = (0.0, 2.9)
+        name, center, di = self._pass(self._fan(anchor), anchor=anchor,
+                                      center=(0.0, 2.95))
+        assert (di, tuple(center)) == (2, (0.0, 2.95))
+
+    def test_wholly_outside_near_its_point_takes_the_cheapest_place_inside(self):
+        """test0/t3 A, B: the point just inside the top edge, lines fan out
+        below it, the solver's box wholly above the frame. Every place in the
+        frame touches lines; the label takes the cheapest of them, off its
+        own point, instead of staying invisible."""
+        anchor = (0.0, 2.9)
+        name, center, di = self._pass(self._fan(anchor), anchor=anchor,
+                                      center=(0.0, 3.3))
+        drawn = self._drawn(center, di)
+        left, bottom, right, top = -10.0, -10.0, 10.0, 3.0
+        assert left <= drawn[0] - 0.5 and drawn[0] + 0.5 <= right
+        assert bottom <= drawn[1] - 0.2 and drawn[1] + 0.2 <= top + 1e-12
+        near = math.hypot(max(abs(drawn[0] - anchor[0]) - 0.5, 0.0),
+                          max(abs(drawn[1] - anchor[1]) - 0.2, 0.0))
+        assert near >= 0.05                                       # off its point
