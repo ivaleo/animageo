@@ -35,6 +35,9 @@
     },
     "first_curve_order": {
       "text": "slots follow the points along the first input: a circle or an ellipse by the counterclockwise angle in [0, 2pi) of X - c1 from d = c2 - c1 (c2 the centre or the vertex of the second input; the own axis of the first, or of the second when the first is round, if |d| <= tol.decide), so for two circles first is to the left of c1 -> c2 as circle_side; a hyperbola by its branch (U < 0 first) then by V; a parabola by V (U, V the coordinates along the axis and the axis turned by +90 degrees); an arc by its fraction from a0; a tangency fills two slots, slots beyond the points are branch_absent; the slots swap where a point crosses the ray c1 -> c2 (the seam) or a0"
+    },
+    "distinct_roots_ascending": {
+      "text": "fixed repeated slots in ascending x of distinct solutions; a multiple root occupies one slot; missing slots in a nonempty set are branch_absent, an empty set uses the operation reason"
     }
   }
 }

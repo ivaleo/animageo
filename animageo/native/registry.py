@@ -52,7 +52,7 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.10'
+REGISTRY_VERSION = '1.11'
 REPEAT_MAX = 100
 # Registry 1.10: the types a typed ``expr`` slot may declare as its ``result``.
 RESULT_TYPES = ('num', 'vec')
@@ -356,6 +356,18 @@ def build_index(reg: Registry | None = None) -> dict:
     }
 
 
+# Loading metadata, deliberately excluded from signature(). Entries may be
+# staged alongside their implementations before the complete catalog is frozen.
+_MODULE_GROUPS = {
+    'region.by_boundary': 'regions', 'function.area_between': 'regions',
+    'point.expression': 'expressions', 'vector.expression': 'expressions',
+    'line.equation': 'expressions', 'point.on_locus': 'locus',
+    **{'function.' + name: 'function_analysis' for name in (
+        'roots_polynomial', 'extrema_polynomial', 'value', 'root_near',
+        'root_interval', 'roots_interval', 'extrema_interval')},
+}
+
+
 def registry_problems(reg: Registry | None = None) -> list:
     """Inconsistencies of the registry files, as human-readable strings."""
     reg = reg or registry()
@@ -383,6 +395,10 @@ def registry_problems(reg: Registry | None = None) -> list:
             problems.append(f'path type {type_!r} has no entry in _types.json paths')
     ours = _version_tuple(reg.version)
     for op, record in reg.ops.items():
+        group = _MODULE_GROUPS.get(op)
+        if (group is None and 'moduleGroup' in record) or (group is not None and record.get('moduleGroup') != group):
+            problems.append(f'{op}: moduleGroup must be {group!r}' if group is not None
+                            else f'{op}: moduleGroup is not allowed')
         since = _version_tuple(record.get('since'))
         if since is None or since > ours:
             problems.append(f"{op}: since {record.get('since')!r} is not a registry version up to {reg.version}")

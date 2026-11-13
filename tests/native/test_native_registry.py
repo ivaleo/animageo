@@ -194,9 +194,9 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.10'
-    assert registry().version == '1.10'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.10'
+    assert native.__registry_version__ == '1.11'
+    assert registry().version == '1.11'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.11'
 
 
 def test_ops_and_files():
@@ -204,7 +204,7 @@ def test_ops_and_files():
     assert set(reg.ops) == ALL_OPS
     assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark',
                                'arc', 'measure', 'transform', 'text', 'triangle', 'locus', 'function', 'conic',
-                               'region'}
+                               'region', 'function_analysis'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
@@ -250,7 +250,7 @@ def test_registry_1_5_and_1_6_signatures_stay_frozen():
 @pytest.mark.parametrize('op', sorted(ALL_OPS))
 def test_record_fields(op):
     record = registry().get(op)
-    assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free', 'inputSets'}
+    assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free', 'inputSets', 'moduleGroup'}
     assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors', 'intersect.nearest')
                                 or op in G2_OPS or op in MEET_OPS or op in MARK_18_OPS or op in REGION_OPS
                                 or op in EXPRESSION_OPS or op in LOCUS_OPS else 'stable')
@@ -518,7 +518,7 @@ def test_types_and_policies_catalogs():
     assert reg.types['ray']['value'] == {'origin': 'length', 'dir': 'scalar'}
     assert set(reg.policies) == {'single', 'line_param_order', 'circle_side', 'other_than',
                                  'tangent_side', 'bisector_kind', 'vertex_index', 'sector_sides', 'nearest_to',
-                                 'roots_ascending', 'conic_axis_order', 'first_curve_order'}
+                                 'roots_ascending', 'conic_axis_order', 'first_curve_order', 'distinct_roots_ascending'}
     assert set(reg.paths) == set(reg.families['path'])
     kinds = {'segment': 'affine', 'line': 'affine', 'ray': 'affine', 'circle': 'angle', 'polygon': 'perimeter',
              'arc': 'arc', 'sector': 'sector', 'circlesegment': 'circlesegment', 'polyline': 'polyline',
@@ -544,13 +544,13 @@ def test_registry_problems_catch_bad_catalogs(tmp_path):
     del types['paths']['ray']
     (copy_dir / '_types.json').write_text(json.dumps(types))
     line = json.loads((copy_dir / 'line.json').read_text())
-    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.11'
+    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.12'
     (copy_dir / 'line.json').write_text(json.dumps(line))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
     assert "family 'path': unknown type 'spiral'" in problems
     assert "path type 'ray' has no entry in _types.json paths" in problems
-    assert any(p.startswith("ray.by_points: since '1.11'") for p in problems)
+    assert any(p.startswith("ray.by_points: since '1.12'") for p in problems)
 
 
 def test_implementations_both_ways():
@@ -650,11 +650,11 @@ def test_registry_problems_catch_bad_number_literal_families(tmp_path):
     copy_dir = tmp_path / 'v1'
     shutil.copytree(OPS_DIR, copy_dir)
     types = json.loads((copy_dir / '_types.json').read_text())
-    types['numberLiteralSince'] = {'limit': '1.11', 'curve': '1.9', 'spiral': '1.9'}
+    types['numberLiteralSince'] = {'limit': '1.12', 'curve': '1.9', 'spiral': '1.9'}
     (copy_dir / '_types.json').write_text(json.dumps(types))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
-    assert "numberLiteralSince 'limit': since '1.11' is not a registry version" in problems
+    assert "numberLiteralSince 'limit': since '1.12' is not a registry version" in problems
     assert "numberLiteralSince 'curve': the family has no member 'number'" in problems
     assert "numberLiteralSince 'spiral': the family has no member 'number'" in problems
 
@@ -728,3 +728,11 @@ def test_registry_problems_catch_bad_results(tmp_path):
     assert "number.expression: input 'expr' has the result 'matrix' (one of num, vec)" in problems
     assert "number.expression: input 'refs' has a result but is not an expr slot" in problems
     assert "function.expr: input 'expr' has both vars and a result" in problems
+
+
+def test_registry_signatures_through_1_10_stay_frozen():
+    frozen = json.loads((NATIVE_DIR.parents[1] / 'tests/native/registry_frozen_1_10.json').read_text())['ops']
+    reg = registry()
+    assert {op for op, record in reg.ops.items() if tuple(map(int, record['since'].split('.'))) <= (1, 10)} == set(frozen)
+    for op, digest in frozen.items():
+        assert signature_hash(reg.get(op)) == reg.index['ops'][op] == digest
