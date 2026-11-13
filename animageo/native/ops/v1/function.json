@@ -181,5 +181,89 @@
     },
     "math": "docs/native/ops/function.extremum.md",
     "signatureHash": "sha256:b58f29a49f2029587d4fc90b1c39ca23f6f39ace1bff49ec973bb357ae7f0430"
+  },
+  {
+    "op": "function.area_between",
+    "status": "beta",
+    "since": "1.9",
+    "inputs": [
+      {
+        "slot": "first",
+        "type": "function"
+      },
+      {
+        "slot": "second",
+        "type": "graph_bound"
+      },
+      {
+        "slot": "a",
+        "type": "limit"
+      },
+      {
+        "slot": "b",
+        "type": "limit"
+      }
+    ],
+    "params": [
+      {
+        "slot": "lobe",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "text": "without a and b: the number of the lobe between consecutive roots of first - second in the window B4, a whole number 1..100 (absent: 1); with a and b it must be absent (invalid_parameter)"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "region",
+        "type": "region"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "empty_range",
+      "out_of_domain",
+      "discontinuous",
+      "coincident",
+      "no_root_in_window",
+      "branch_absent",
+      "empty_region",
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_both",
+        "text": "the vertices where the two boundaries meet lie on both: the largest |f(x) - g(x)| at the root vertices of the rings (0 without them)"
+      }
+    ],
+    "orientation": "counterclockwise",
+    "pathParam": null,
+    "stepKind": "area_between",
+    "phrases": {
+      "ru": "{region} — область между графиком {first} и {second}"
+    },
+    "math": "docs/native/ops/function.area_between.md",
+    "signatureHash": "sha256:b084270b2b32e23316996a6eab95e3d33af257c169bc96d347c6ba49b3c56015",
+    "inputSets": [
+      [
+        "first",
+        "a",
+        "b"
+      ],
+      [
+        "first",
+        "second",
+        "a",
+        "b"
+      ],
+      [
+        "first"
+      ],
+      [
+        "first",
+        "second"
+      ]
+    ]
   }
 ]

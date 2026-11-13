@@ -69,9 +69,18 @@ def is_finite_value(value) -> bool:
     if isinstance(value, float):
         return math.isfinite(value)
     if isinstance(value, dict):
-        return all(is_finite_value(v) for v in value.values())
-    if isinstance(value, (list, tuple)):
-        return all(is_finite_value(v) for v in value)
+        items = value.values()
+    elif isinstance(value, (list, tuple)):
+        items = value
+    else:
+        return True
+    isfinite = math.isfinite
+    for item in items:                        # a loop: a region holds thousands of numbers
+        if isinstance(item, float):
+            if not isfinite(item):
+                return False
+        elif not is_finite_value(item):
+            return False
     return True
 
 

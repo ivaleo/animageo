@@ -118,6 +118,9 @@ of its kind; a `context` entry whose `when` holds is used first:
 | `triangle_vertices` | the three points of the op (`a, b, c`, or `vertex` and the two points of the producer of `side`) are the vertices of a `polygon.by_points` with three vertices (the first such polygon by operation ID) | `{triangle}` — that polygon's name |
 | `three_vertices` | a `polygon.by_points` of three vertices | — |
 | `number_mover` | a `locus.of_point` whose mover is a number | — |
+| `area_axis_limits` | a `function.area_between` without `second`, with limits `a`, `b` (registry 1.9) | — |
+| `area_axis` | a `function.area_between` without `second` and limits | — |
+| `area_limits` | a `function.area_between` with `second` and limits | — |
 
 Without an entry for its kind an operation is told by the descriptive
 `phrases.ru` of its registry record. The argument `phrases` (a dict of the

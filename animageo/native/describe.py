@@ -14,7 +14,9 @@ one line ``"<n>. <phrase>."`` per step of :func:`~animageo.native.steps.steps`.
   the three points of the op — ``a, b, c`` or the vertex and the ends of
   the side — are the vertices of a ``polygon.by_points`` of three vertices,
   ``{triangle}`` is that polygon; ``three_vertices``: a polygon of three
-  vertices; ``number_mover``: a locus driven by a number). Without an
+  vertices; ``number_mover``: a locus driven by a number; ``area_axis``,
+  ``area_axis_limits``, ``area_limits``: ``function.area_between`` without
+  ``second``, with limits). Without an
   entry the descriptive ``phrases.ru`` of the registry is used. ``phrases``
   (a dict of the same format, the web overlay) overrides entries by
   ``stepKind`` and the ``given`` phrases.
@@ -200,9 +202,16 @@ def _triangle_polygon(namer, points):
     return namer.triangles.get(frozenset(points))
 
 
+_AREA_WHEN = {                         # registry 1.9: (a second boundary, limits)
+    'area_axis_limits': (False, True), 'area_axis': (False, False), 'area_limits': (True, True)}
+
+
 def _when(cond, op, namer, extra) -> bool:
     if cond == 'circle_segment_points':
         return op['op'] == 'sector.segment' and 'circle' in op['args']
+    if cond in _AREA_WHEN:
+        args = op['args']
+        return op['op'] == 'function.area_between' and _AREA_WHEN[cond] == ('second' in args, 'a' in args)
     if cond == 'cevian_polygon':
         return op['op'] == 'triangle.cevian' and 'polygon' in op['args']
     if cond == 'triangle_vertices':

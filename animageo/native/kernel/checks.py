@@ -1332,3 +1332,26 @@ def run_checks(evaluated, keys=None) -> CheckReport:
             report.errors[key] = error
             report.results[key] = classify(error, tol)
     return report
+
+
+# ── regions (registry 1.9) ────────────────────────────────────────────
+
+@register_check('function.area_between', 'on_both')
+def _area_between_on_both(args, result, tol):
+    from .function import evaluator
+    from .ops.area import area_bound, root_vertices
+    value = result.get('region')
+    if isinstance(value, Undefined) or value is None:
+        return 0.0
+    f = evaluator(args['first'].value)
+    bound = area_bound(args, _QuietContext(tol))
+    if isinstance(bound, Undefined):
+        return math.inf
+    g = bound[0]
+    error = 0.0
+    for x in root_vertices(value):
+        fx, gx = f(x), g(x)
+        if fx is None or gx is None:
+            return math.inf
+        error = max(error, abs(fx - gx))
+    return error

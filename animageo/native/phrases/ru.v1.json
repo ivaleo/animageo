@@ -313,6 +313,23 @@
     "function_extremum": {
       "text": "Отмечаем экстремумы {out:extremum} функции {function} на промежутке от {a} до {b}"
     },
+    "area_between": {
+      "text": "Закрашиваем область {region} между графиком {first} и {second}",
+      "context": [
+        {
+          "when": "area_axis_limits",
+          "text": "Закрашиваем область {region} между графиком {first} и осью Ox от {a} до {b}"
+        },
+        {
+          "when": "area_axis",
+          "text": "Закрашиваем область {region} между графиком {first} и осью Ox"
+        },
+        {
+          "when": "area_limits",
+          "text": "Закрашиваем область {region} между графиком {first} и {second} от {a} до {b}"
+        }
+      ]
+    },
     "conic": {
       "text": "Строим кривую второго порядка {conic}",
       "ops": {

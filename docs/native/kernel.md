@@ -2001,3 +2001,17 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   `boundary_crossing` (pieces cross or touch away from a common vertex, a
   hole left its ring), `discontinuous` (a graph of the boundary jumps or
   has a pole on its piece).
+- `function.area_between` ([ops page](ops/function.area_between.md)):
+  inputs `first: function`, `second: graph_bound`, `a`, `b`: `limit`
+  (`inputSets` `[first, a, b]`, `[first, second, a, b]`, `[first]`,
+  `[first, second]`; without `second` the x-axis), param `lobe` (only
+  without limits). One region, a ring per lobe between the roots of
+  `f − g`, walked counterclockwise. A reason of state `error` returned by
+  an operation is an `error` record (`limit_exceeded`: more than 64 rings).
+- New noise decisions: `jump` (the rest of the jump bisection of a
+  continuous graph), `limit_gap` (`|f − g|` at a limit placed at a common
+  point).
+- Fixtures `parity/v1/curves/region_*`: the lobe of a parabola and the
+  axis, two graphs and the second lobe, a graph and a line (limits at the
+  common points, literal limits), a pole and a step, out of the domain,
+  far from the origin.

@@ -216,6 +216,8 @@ def _context_applies(when, record):
         return {'a', 'b', 'c'} <= slots or {'vertex', 'side'} <= slots
     if when == 'three_vertices':
         return record['op'] == 'polygon.by_points'
+    if when.startswith('area_'):
+        return record['op'] == 'function.area_between'
     return record['op'] == 'locus.of_point'
 
 

@@ -281,9 +281,11 @@ def build_args(record, resolved, elements, ops, states) -> dict:
 
 def undefined_state(reg, reason: str) -> str:
     """The state of an undefined result: ``unsupported`` for a reason whose
-    catalog state is ``unsupported`` (``unsupported_signature``), else
-    ``undefined``."""
-    return 'unsupported' if (reg.reasons.get(reason) or {}).get('state') == 'unsupported' else 'undefined'
+    catalog state is ``unsupported`` (``unsupported_signature``), ``error``
+    for one whose state is ``error`` (registry 1.9: ``limit_exceeded`` of a
+    region), else ``undefined``."""
+    state = (reg.reasons.get(reason) or {}).get('state')
+    return state if state in ('unsupported', 'error') else 'undefined'
 
 
 def _order(op_ids, deps, cyclic) -> list:
