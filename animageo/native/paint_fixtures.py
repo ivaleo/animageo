@@ -669,8 +669,8 @@ def _regions():
     (the accent fill at the opacity of a polygon, no stroke) next to a
     polygon; the appearance of the fill tool on both; hatch, crosshatch and
     dots over the rings; a dashed stroke fitted to each of three rings; the
-    value label at the label anchor of a region of two lobes. Registry 1.9
-    rc2: an annulus of ``region.by_boundary`` with the fill tool and hatched
+    value label at the label anchor of a region of two lobes; an annulus of
+    ``region.by_boundary`` with the fill tool and hatched
     (the classic ``Region`` of the bridge keeps its hole)."""
     parabola = {'op': '-', 'args': [{'num': 1}, {'op': '^', 'args': [_X, {'num': 2}]}]}
     upward = {'op': '-', 'args': [{'op': '^', 'args': [_X, {'num': 2}]}, {'num': 1}]}
@@ -707,7 +707,7 @@ def _regions():
     out.append(('region_value_label', d, None))
 
     def annulus(doc_id):
-        """Registry 1.9 (rc2): ``region.by_boundary`` — a disc with a round hole."""
+        """Registry 1.9: ``region.by_boundary`` — a disc with a round hole."""
         d = _Doc(doc_id, bounds=(-3, -3, 3, 3)).free('O', 0, 0).free('T', 2.5, 0).free('U', 1, 0)
         d.circle('big', 'O', 'T').circle('small', 'O', 'U').look('big', visible=False).look('small', visible=False)
         empty = {'kind': 'list', 'items': []}

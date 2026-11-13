@@ -674,7 +674,7 @@ def test_region_input_is_checked():
         r4.geometry_obstacles({'regions': [{'id': 'R', 'pieces': 3}]})
 
 
-# ------------------------------- regions: the recorded lists (registry 1.9, rc2)
+# ------------------------------------- regions: the recorded lists (registry 1.9)
 
 REGIONS = _cases('regions.json')
 

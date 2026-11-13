@@ -2014,7 +2014,7 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
 - New noise decisions: `jump` (the rest of the jump bisection of a
   continuous graph), `limit_gap` (`|f − g|` at a limit placed at a common
   point).
-- `region.by_boundary` (rc2, [ops page](ops/region.by_boundary.md)):
+- `region.by_boundary` ([ops page](ops/region.by_boundary.md)):
   inputs `curves: curve[]`, `from: point[]`, `to: point[]` — piece `i` on
   `curves[i]` from the vertex `from[i]` to `to[i]` (a line, segment or ray
   a straight piece, a circle or an arc the arc counterclockwise; `from ==
@@ -2084,7 +2084,7 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
 - Fixtures `parity/v1/paint/paint_regions.json`: the default paint next to
   a polygon, the appearance of the fill tool on both, hatch, crosshatch
   and dots, a dashed stroke on three rings, the value label of two lobes;
-  rc2 — an annulus of `region.by_boundary` with the fill tool and hatched.
+  an annulus of `region.by_boundary` with the fill tool and hatched.
 - Label obstacles: only the drawn stroke of a region (width and opacity
   above 0), never its fill, as with a polygon. R4
   (`native/labels/r4.py`, the port of the web solver) reads the key `regions`

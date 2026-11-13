@@ -215,7 +215,7 @@ def test_jsxgraph_draws_a_static_filled_curve():
 
 
 def boundary_annulus_doc(appearance=None):
-    """Registry 1.9 rc2: a disc of radius 2 with a hole of radius 1 by ``region.by_boundary``."""
+    """Registry 1.9: a disc of radius 2 with a hole of radius 1 by ``region.by_boundary``."""
     from tests.native.conftest import ref_list
     d = Doc(bounds=(-3, -3, 3, 3)).free('O', 0, 0).free('T', 2, 0).free('U', 1, 0)
     d.circle('big', 'O', 'T').circle('small', 'O', 'U')
