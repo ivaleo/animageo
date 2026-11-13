@@ -1,0 +1,541 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "line_eq_kinds",
+ "registry": "1.10",
+ "generatedBy": "animageo 1.14.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "line_eq_kinds",
+  "operationRegistryVersion": "1.10",
+  "operations": {
+   "op_t": {
+    "id": "op_t",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "t"
+     }
+    ]
+   },
+   "op_nonlinear": {
+    "id": "op_nonlinear",
+    "op": "line.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "var": "y"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "nonlinear"
+     }
+    ]
+   },
+   "op_domain": {
+    "id": "op_domain",
+    "op": "line.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "fn": "sqrt",
+         "args": [
+          {
+           "var": "x"
+          }
+         ]
+        },
+        {
+         "var": "y"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "domain"
+     }
+    ]
+   },
+   "op_zero": {
+    "id": "op_zero",
+    "op": "line.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "num": 0
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "zero"
+     }
+    ]
+   },
+   "op_constant": {
+    "id": "op_constant",
+    "op": "line.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "num": 1
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "constant"
+     }
+    ]
+   },
+   "op_changing": {
+    "id": "op_changing",
+    "op": "line.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "t"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "changing"
+     }
+    ]
+   },
+   "op_inv": {
+    "id": "op_inv",
+    "op": "number.expression",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "/",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "ref": 0
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "t"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "inv"
+     }
+    ]
+   },
+   "op_dependent": {
+    "id": "op_dependent",
+    "op": "line.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "var": "y"
+        },
+        {
+         "ref": 0
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "inv"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "dependent"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "t": {
+    "id": "t",
+    "type": "number",
+    "displayName": "t",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "number"
+    }
+   },
+   "nonlinear": {
+    "id": "nonlinear",
+    "type": "line",
+    "displayName": "nonlinear",
+    "producer": {
+     "operationId": "op_nonlinear",
+     "slot": "line"
+    }
+   },
+   "domain": {
+    "id": "domain",
+    "type": "line",
+    "displayName": "domain",
+    "producer": {
+     "operationId": "op_domain",
+     "slot": "line"
+    }
+   },
+   "zero": {
+    "id": "zero",
+    "type": "line",
+    "displayName": "zero",
+    "producer": {
+     "operationId": "op_zero",
+     "slot": "line"
+    }
+   },
+   "constant": {
+    "id": "constant",
+    "type": "line",
+    "displayName": "constant",
+    "producer": {
+     "operationId": "op_constant",
+     "slot": "line"
+    }
+   },
+   "changing": {
+    "id": "changing",
+    "type": "line",
+    "displayName": "changing",
+    "producer": {
+     "operationId": "op_changing",
+     "slot": "line"
+    }
+   },
+   "inv": {
+    "id": "inv",
+    "type": "number",
+    "displayName": "inv",
+    "producer": {
+     "operationId": "op_inv",
+     "slot": "number"
+    }
+   },
+   "dependent": {
+    "id": "dependent",
+    "type": "line",
+    "displayName": "dependent",
+    "producer": {
+     "operationId": "op_dependent",
+     "slot": "line"
+    }
+   }
+  },
+  "inputs": {
+   "t": {
+    "kind": "number",
+    "value": 1.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "defined",
+   "scale": 20.0,
+   "expect": {
+    "changing": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       -1.0
+      ]
+     }
+    },
+    "constant": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "degenerate_line"
+    },
+    "dependent": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       1.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "domain": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "not_linear"
+    },
+    "inv": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    },
+    "nonlinear": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "not_linear"
+    },
+    "t": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    },
+    "zero": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "degenerate_line"
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "degenerate_and_upstream",
+   "inputs": {
+    "t": {
+     "kind": "number",
+     "value": 0.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "changing": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "degenerate_line"
+    },
+    "constant": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "degenerate_line"
+    },
+    "dependent": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "upstream",
+     "cause": "inv"
+    },
+    "domain": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "not_linear"
+    },
+    "inv": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "out_of_domain"
+    },
+    "nonlinear": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "not_linear"
+    },
+    "t": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "zero": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "degenerate_line"
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "recovered",
+   "inputs": {
+    "t": {
+     "kind": "number",
+     "value": -2.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "changing": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "constant": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "degenerate_line"
+    },
+    "dependent": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -0.5
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "domain": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "not_linear"
+    },
+    "inv": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -0.5,
+      "unit": "scalar"
+     }
+    },
+    "nonlinear": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "not_linear"
+    },
+    "t": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -2.0,
+      "unit": "scalar"
+     }
+    },
+    "zero": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "degenerate_line"
+    }
+   },
+   "checks": {}
+  }
+ ]
+}

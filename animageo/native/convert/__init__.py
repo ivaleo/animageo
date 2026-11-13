@@ -358,6 +358,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     read_angle_arguments(infos, norm, ctx, built_by_command)
     with _quiet():
         tr = translate(constr, ctx)
+    from .ggb_conic import check_line_orientations
+    check_line_orientations(tr.document, tr.records, infos, norm)
     # one entry per <element>
 
     def root_reason(rec, seen=()):
@@ -415,7 +417,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
                 e['reason'] = 'macro'
             else:
                 e['reason'] = 'no_registry_op'
-            e['detail'] = None
+            e['detail'] = ctx.forced[n][1] if n in ctx.forced else None
         else:
             e['rec'] = rec
             e['status'] = 'translated' if rec.status == 'translated' else 'untranslated'

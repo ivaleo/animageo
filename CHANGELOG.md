@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `line.equation` (registry 1.10, `has("line_equation")`): lines from scalar
+  equations with live numeric parameters, GeoGebra orientation,
+  `not_linear` and `degenerate_line` diagnostics, ordinary line rendering
+  and intersections, and import of free GeoGebra line formulas with saved
+  coefficient and orientation checks.
+
 - Operation registry 1.10: the family `operand` (`number`, `point`, `vector`,
   `function`) and the optional key `result` (`"num"` or `"vec"`) of an `expr`
   input, which declares a typed expression slot. `result` enters the
