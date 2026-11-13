@@ -87,7 +87,7 @@ STEP_EFFECTS = {
     'point': 'fade',
     'segment': 'create', 'line': 'create', 'ray': 'create', 'vector': 'create', 'circle': 'create',
     'arc': 'create', 'polyline': 'create', 'locus': 'create',
-    'polygon': 'fade', 'sector': 'fade', 'circlesegment': 'fade', 'angle': 'fade', 'mark': 'fade',
+    'polygon': 'fade', 'sector': 'fade', 'circlesegment': 'fade', 'region': 'fade', 'angle': 'fade', 'mark': 'fade',
     'text': 'write',
 }
 # The entrance effects of the keyframe JSON v2 (``keyframes.ENTER_EFFECTS``;

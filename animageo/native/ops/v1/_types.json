@@ -77,6 +77,10 @@
       "value": {"c": "length", "vertex": "length", "axis": "scalar", "a": "length", "b": "length", "p": "length"},
       "text": "conic {kind, ...}: ellipse {kind, c: [x, y], axis: [ux, uy], a, b} with a >= b > 0 along the unit axis (a circle: a == b, axis [1, 0]); hyperbola {kind, c, axis, a, b}, a the transverse semi-axis along axis; parabola {kind, vertex: [x, y], axis, p}, axis from the vertex towards the focus, p the distance from the focus to the directrix; kind compares exactly; a degenerate conic is not a value (degenerate_conic) (registry 1.6)"
     },
+    "region": {
+      "value": {"rings": "length", "area": "area"},
+      "text": "region {rings, shape, area}: rings [[piece, ...], ...], a ring the pieces of a closed boundary in order; a piece is line [[x0, y0], [x1, y1]], arc [[x0, y0], [x1, y1], [cx, cy, r]] from the start to the end, or graph [[x, y] x 257] at 256 equal steps of x from the start of the piece to its end; shape [[[kind, source], ...], ...] gives each piece its kind (line, ccw, cw, graph) and the slot of its carrier, compares exactly; the region lies left of every ring: outer rings counterclockwise, holes clockwise; area > 0 (registry 1.9)"
+    },
     "template": {
       "value": {},
       "argument": true,
@@ -104,16 +108,20 @@
     "round": ["circle", "arc", "sector", "circlesegment"],
     "vertexed": ["segment", "polyline", "polygon"],
     "measurable": ["segment", "vector", "polyline", "arc"],
-    "bounded": ["polygon", "circle", "sector", "circlesegment"],
+    "bounded": ["polygon", "circle", "sector", "circlesegment", "region"],
     "figure": ["point", "line", "segment", "ray", "circle", "polygon", "arc", "sector", "circlesegment", "polyline"],
     "transformable": ["point", "segment", "ray", "line", "vector", "circle", "arc", "sector", "circlesegment", "polygon"],
     "insertable": ["number", "point"],
     "locus_driver": ["point", "number"],
-    "straight": ["line", "segment", "ray", "vector"]
+    "straight": ["line", "segment", "ray", "vector"],
+    "limit": ["number", "point"],
+    "graph_bound": ["function", "line"],
+    "contour": ["polygon", "circle", "sector", "circlesegment"]
   },
   "familySince": {
     "curve": {"conic": "1.8", "function": "1.8"},
-    "path": {"conic": "1.9", "function": "1.9"}
+    "path": {"conic": "1.9", "function": "1.9"},
+    "bounded": {"region": "1.9"}
   },
   "paths": {
     "segment": {

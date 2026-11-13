@@ -337,13 +337,16 @@ def test_contract_table():
         'round': ['circle', 'arc', 'sector', 'circlesegment'],
         'vertexed': ['segment', 'polyline', 'polygon'],
         'measurable': ['segment', 'vector', 'polyline', 'arc'],
-        'bounded': ['polygon', 'circle', 'sector', 'circlesegment'],
+        'bounded': ['polygon', 'circle', 'sector', 'circlesegment', 'region'],     # 1.9: region
         'figure': ['point', 'line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'circlesegment', 'polyline'],
         'transformable': ['point', 'segment', 'ray', 'line', 'vector', 'circle', 'arc', 'sector', 'circlesegment', 'polygon'],
         'insertable': ['number', 'point'],
         'locus_driver': ['point', 'number'],      # registry 1.5
         'conical': ['conic', 'circle', 'arc'],     # registry 1.8
         'straight': ['line', 'segment', 'ray', 'vector'],     # registry 1.8: mark.parallel
+        'limit': ['number', 'point'],              # registry 1.9
+        'graph_bound': ['function', 'line'],
+        'contour': ['polygon', 'circle', 'sector', 'circlesegment'],
     }
     assert reg.accepts('linear', 'ray') and not reg.accepts('circular', 'ray')
 

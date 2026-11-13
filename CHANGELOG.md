@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Operation registry 1.9: `point.on_path` takes a conic and a graph (`path`
-  families `conic` and `function`). On an ellipse the parameter is the
+- Operation registry 1.9: the family `path` takes `conic` and `function`, and
+  the new type `region`. The records of 1.0–1.8 stay unchanged; documents
+  declaring registry 1.8 or older read and evaluate as before.
+- `point.on_path` takes a conic and a graph (registry 1.9, `path` families
+  `conic` and `function`). On an ellipse the parameter is the
   eccentric anomaly from its major axis and wraps over 2π; on a hyperbola it
   is `t` of `(±a·cosh t, b·sinh t)`, the branch given by the new input key
   `branch` (±1, default 1); on a parabola `t` of `(p·t²/2, p·t)` from the
@@ -45,6 +48,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`closest_point_Kp`, `closest_point_Fp`; 478 dispatch signatures). A
   degenerate conic, or a graph with no value in the window of the default
   bounds and the abscissa of `P`, gives no point.
+- The type `region` (registry 1.9): closed rings of line, arc and
+  sampled graph pieces, outer rings counterclockwise and holes clockwise, with
+  their exact area (`docs/native/kernel.md` §16); the family `bounded` takes
+  it, new families `limit` (a number or a point; a number literal fits),
+  `graph_bound` and `contour`, new reasons `empty_region`, `flipped`,
+  `boundary_crossing` and `discontinuous`.
 
 ## [1.13.0] - 2026-11-13
 

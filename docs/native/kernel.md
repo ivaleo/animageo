@@ -83,8 +83,9 @@ Input     = {"kind": "point", "value": [x, y]}                         point.fre
   `angle` input may be absent: it then is `0` (`FREE_INPUT_DEFAULTS` of
   `registry.py`); the other kinds are required.
 - `args` holds input slots and params (§4) alike. A `number` argument
-  (literal) is allowed in an input slot of type `number` (a radius) and is
-  the only kind a param takes.
+  (literal) is allowed in an input slot of type `number` (a radius), since
+  registry 1.9 also in a slot of a family that contains `number` (`limit`),
+  and is the only kind a param takes.
 - An `expr` argument (1.4, a5) goes only into an input slot of type `expr`
   (`number.expression`), and that slot takes nothing else. The structure
   checks only that `ast` is an object; the tree itself (nodes, whitelist,
@@ -202,9 +203,13 @@ a graph and a conic, and the conics and graphs in the `curve` slots of
 1.0–1.7 and their signature hashes stay unchanged; a document that declares
 1.7 reads and evaluates as before.
 
-Registry 1.9 puts a point on a conic and on a graph: the family `path`
-takes `conic` and `function` (§16). No record changes; a document that
-declares 1.8 reads and evaluates as before.
+Registry 1.9 puts a point on a conic and on a graph (the family `path`
+takes `conic` and `function`) and adds the type `region`, the area between
+two graphs or a graph and a line or the x-axis (`function.area_between`)
+and the region in the family `bounded` of `measure.area` and
+`measure.perimeter` (§16). The records of 1.0–1.8 and their signature
+hashes stay unchanged; a document that declares 1.8 or older reads and
+evaluates as before.
 
 **Registry 1.5 is the 1.0 contract** (animageo 1.11.0rc1;
 `tests/native/test_registry_frozen_1_0.py`, snapshot
@@ -467,8 +472,9 @@ order):
    `error/type_mismatch`; each reference in order: missing element →
    `error/dangling_ref`, element type not fitting the slot type or family →
    `error/type_mismatch`; a number literal is accepted in an input slot of
-   type `number` (it is the defined value `{value, unit: "scalar"}` and no
-   dependency) and is a `type_mismatch` elsewhere. Then each param in
+   type `number` or, registry 1.9, of a family that contains `number`
+   (`limit`) — it is the defined value `{value, unit: "scalar"}` and no
+   dependency — and is a `type_mismatch` elsewhere. Then each param in
    registry order: absent and required → `error/schema`; not a number
    literal → `error/type_mismatch`. An `expr` or `template` slot (1.4, a5)
    takes only an argument of that kind (else `error/type_mismatch`), and
@@ -1877,7 +1883,9 @@ Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
   `ОтметкаПараллельных(AB, CD[, count])`: a pair of points is the segment
   between them (a hidden helper unless a visible one exists).
 
-## 16. Registry 1.9: a point on a conic and on a graph
+## 16. Registry 1.9: points on conics and graphs; regions
+
+### 16.1 A point on a conic and on a graph
 
 No new operation: the family `path` takes `conic` and `function`
 (`_types.json → familySince`: `{"path": {"conic": "1.9", "function":
@@ -1948,3 +1956,48 @@ or a graph in a `path` slot declares 1.9 (`needs_newer_registry` otherwise,
   pole), `closest_conics` (inside, outside, on the axes, both branches, a
   turned set), `closest_graphs` (a domain, the ends of a gap, no value, far
   from the window) in `parity/v1/curves`.
+
+### 16.2 Regions and the area between graphs
+
+Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
+`docs/native/ops/<op>.md`); a document that uses one declares 1.9 (§2).
+
+- Type `region` (`kernel/region.py`): `{rings, shape, area}`. `rings` —
+  the closed boundaries, a ring the list of its pieces in the order of the
+  walk: `line` `[[x0, y0], [x1, y1]]`; `arc` `[[x0, y0], [x1, y1], [cx, cy,
+  r]]` from the start to the end (a start equal to its end is the whole
+  circle); `graph` `[[x, y] × 257]` at 256 equal steps of `x` from the start
+  of the piece to its end, the last `x` the end itself. `shape` —
+  `[[[kind, source], …], …]`, the kind of each piece (`line`, `ccw`, `cw`,
+  `graph`) and the slot of its carrier (`first`, `second`, `axis`, `limit`;
+  `curves.<i>`, `inside.<i>`, `outside.<i>` of `region.by_boundary`),
+  compared exactly; `rings` compare as lengths, `area` as an area. No
+  object inside a list, so the parity comparison stays that of lists of
+  numbers.
+- Orientation: the region lies left of every ring — outer rings run
+  counterclockwise (a positive signed area), holes clockwise; so the
+  nonzero rule (manim and cairo, SVG, canvas) and the even-odd rule
+  (`hatch.py`, TikZ) fill the same set. Several outer rings are allowed,
+  and nesting of any depth.
+- `area > 0` is `Σ −∫ y dx` over all pieces: a line exactly (a trapezoid),
+  an arc exactly (`cy·r·(cos θ0 − cos θ1) + r²·(sweep/2 − (sin 2θ1 −
+  sin 2θ0)/4)`), a graph by composite Simpson over its 256 cells (nodes and
+  cell midpoints).
+- Derived values, the contract of the web copy: `flatten` — every ring as
+  a polygon (a line its start, an arc `ceil(|sweep|/2°)` equal steps of the
+  angle, a graph its points but the last); `inside` — the even-odd test of
+  flattened rings; `label_anchor` — the centroid of the flattened rings if
+  `inside`, else the middle of the longest inside interval of the
+  horizontal through it; `perimeter` — lines and arcs exactly, graphs by
+  their points.
+- The family `bounded` takes `region` (`familySince`: `{"bounded":
+  {"region": "1.9"}}`). New families: `limit` (`number`, `point`; a slot
+  of this family also takes a number literal, §1), `graph_bound`
+  (`function`, `line`), `contour` (`polygon`, `circle`, `sector`,
+  `circlesegment`; for `region.by_boundary`). `region` is in no other
+  family: a point on its boundary, distances and transforms come later.
+- New reasons: `empty_region` (the area of a ring or of the region is not
+  above the tolerance), `flipped` (a ring turned over through zero area),
+  `boundary_crossing` (pieces cross or touch away from a common vertex, a
+  hole left its ring), `discontinuous` (a graph of the boundary jumps or
+  has a pole on its piece).

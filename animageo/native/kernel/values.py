@@ -10,6 +10,7 @@
 | polygon   | ``{vertices: [[x, y], ...], area}``            |
 | vector    | ``{a: [x, y], b: [x, y], length}``             |
 | number    | ``{value, unit}`` (unit from ``numberUnits``)  |
+| region    | ``{rings, shape, area}`` (registry 1.9, ``region.py``) |
 """
 from __future__ import annotations
 

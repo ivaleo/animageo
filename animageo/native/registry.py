@@ -180,6 +180,12 @@ class Registry:
             return True
         return element_type in self.families.get(slot_type, ())
 
+    def takes_number_literal(self, slot_type: str) -> bool:
+        """Whether a scalar input slot of ``slot_type`` takes a number
+        literal: the type ``number``, or since registry 1.9 a family that
+        contains ``number`` (``limit``)."""
+        return slot_type == 'number' or 'number' in self.families.get(slot_type, ())
+
     def member_since(self, slot_type: str, element_type: str):
         """The registry version since which ``element_type`` fits a slot of the
         family ``slot_type`` (``_types.json → familySince``, registry 1.8);

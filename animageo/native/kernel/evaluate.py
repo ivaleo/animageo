@@ -390,8 +390,10 @@ def _argument_status(op, record, doc, reg):
     registry order (missing → ``schema``, wrong kind or short list →
     ``type_mismatch``, dangling reference → ``dangling_ref``, element type
     not fitting → ``type_mismatch``; a ``number`` slot also takes a number
-    literal, an ``expr`` or ``template`` slot takes only an argument of that
-    kind); an inputSets record requires exactly one alternative; then params
+    literal, since registry 1.9 so does a family slot that contains
+    ``number`` (``limit``); an ``expr`` or ``template`` slot takes only an
+    argument of that kind); an inputSets record requires exactly one
+    alternative; then params
     in registry order (wrong literal kind → ``type_mismatch``, a
     required one missing → ``schema``); last, a tree or a template that the
     rules refuse (with the item count of ``refs``) → ``error/formula``.
@@ -413,7 +415,7 @@ def _argument_status(op, record, doc, reg):
             if 'inputSets' in record:
                 continue
             return ('error', 'schema')
-        if not item.get('list') and item['type'] == 'number' and arg.get('kind') == 'number':
+        if not item.get('list') and reg.takes_number_literal(item['type']) and arg.get('kind') == 'number':
             literals[item['slot']] = float(arg['value'])
             continue
         if item['type'] in ('expr', 'template'):
