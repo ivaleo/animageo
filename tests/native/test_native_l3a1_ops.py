@@ -10,7 +10,7 @@ from animageo import native
 from animageo.native.kernel import bridge
 from animageo.native.kernel.checks import CHECKS, run_checks
 from animageo.native.kernel.ops import locus as locus_ops
-from tests.native.conftest import DocBuilder, num, number_input, path_input, ref
+from tests.native.conftest import DocBuilder, num, number_input, path_input, ref, time_slack
 
 
 def doc_of(build):
@@ -425,7 +425,7 @@ def test_locus_of_the_orthocenter_p95_within_150_ms():
         native.evaluate(doc)
         times.append(time.perf_counter() - start)
     times.sort()
-    assert times[int(0.95 * len(times)) - 1] < 0.15
+    assert times[int(0.95 * len(times)) - 1] < 0.15 * time_slack()
 
 
 def _trajectory(doc, k):

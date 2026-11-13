@@ -17,6 +17,7 @@ from pathlib import Path
 import pytest
 
 from animageo import native
+from tests.native.conftest import time_slack
 from tests.native.test_native_l3a2_budgets import _p95
 from tests.native.test_native_perf import chain_document
 
@@ -121,4 +122,4 @@ def test_evaluate_300_operations_within_50_ms(mix, capsys):
             print(f'\nnative.evaluate ({name}): {n_ops} ops, {defined}/{n_el} defined, '
                   f'p95 {p95 * 1000:.1f} ms (budget {BUDGET_S * 1000:.0f} ms)')
     for name, _n, _d, _e, p95 in rows:
-        assert p95 <= BUDGET_S, f'{name}: p95 {p95 * 1000:.1f} ms > {BUDGET_S * 1000:.0f} ms'
+        assert p95 <= BUDGET_S * time_slack(), f'{name}: p95 {p95 * 1000:.1f} ms > {BUDGET_S * time_slack() * 1000:.0f} ms'

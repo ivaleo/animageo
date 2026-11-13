@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -199,3 +200,11 @@ def builder():
 def read_json(path):
     with open(path, encoding='utf-8') as fh:
         return json.load(fh)
+
+
+def time_slack() -> float:
+    """Multiplier for a time threshold: 1 on an ordinary machine, 3 when ``CI``
+    is set (GitHub Actions sets ``CI=true``). Shared runners are several times
+    slower and noisier than a development machine, so the threshold stays the
+    requirement on the ordinary machine and gets this margin on a runner."""
+    return 3.0 if os.environ.get('CI') else 1.0

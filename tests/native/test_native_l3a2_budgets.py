@@ -14,6 +14,7 @@ from animageo import native
 from animageo.native.conditions.apply import apply_condition
 from animageo.native.conditions.marks import add_auto_marks
 from animageo.native.sampling import check_general
+from tests.native.conftest import time_slack
 from tests.native.test_native_l3a1_ops import _trajectory
 from tests.native.test_native_perf import chain_document
 
@@ -64,12 +65,12 @@ def test_apply_marks_and_general_case_on_300_operations_within_budget():
     condition = {'statement': EQUAL, 'mode': 'construct'}
     result = apply_condition(doc, condition, ev=ev)
     assert result.refusal is None
-    assert _p95(lambda: apply_condition(doc, condition, ev=ev)) < 0.030 * 2
+    assert _p95(lambda: apply_condition(doc, condition, ev=ev)) < 0.030 * 2 * time_slack()
     assert add_auto_marks(doc, ['op_M0'], ev=ev).operations
-    assert _p95(lambda: add_auto_marks(doc, ['op_M0'], ev=ev)) < 0.005 * 2
+    assert _p95(lambda: add_auto_marks(doc, ['op_M0'], ev=ev)) < 0.005 * 2 * time_slack()
     cid = result.condition['id']
     assert check_general(result.document, [cid])[cid]['status'] == 'passed'
-    assert _p95(lambda: check_general(result.document, [cid]), runs=5) < 0.500 * 2
+    assert _p95(lambda: check_general(result.document, [cid]), runs=5) < 0.500 * 2 * time_slack()
 
 
 def _shuffled(doc, seed):
