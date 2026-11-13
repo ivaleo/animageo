@@ -35,4 +35,6 @@ def test_fixture_counts():
     assert len(general) >= 30 and set(statuses) == {'passed', 'failed', 'inconclusive'}
     marks = _cases('marks')
     sources = collections.Counter(s for c in marks if len(c['sources']) == 1 for s in c['sources'])
-    assert len(sources) == 9 and min(sources.values()) >= 3
+    ops = {s: n for s, n in sources.items() if s.startswith('op_')}
+    assert len(ops) == 9 and min(ops.values()) >= 3
+    assert sources.get('c1', 0) >= 2         # automatic parallel marks of a parallel condition
