@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Operation registry 1.9: `point.on_path` takes a conic and a graph (`path`
+  families `conic` and `function`). On an ellipse the parameter is the
+  eccentric anomaly from its major axis and wraps over 2π; on a hyperbola it
+  is `t` of `(±a·cosh t, b·sinh t)`, the branch given by the new input key
+  `branch` (±1, default 1); on a parabola `t` of `(p·t²/2, p·t)` from the
+  vertex; on a graph the abscissa, clamped to the domain (no point in a gap or
+  at a pole: `out_of_domain`). The input key `pathKind` records the kind of
+  conic the parameter was written for: a conic that changes kind leaves the
+  point `undefined` with the new reason `path_kind_changed` until it is moved.
+- `point.closest` takes a conic and a graph (registry 1.9): the nearest point,
+  on a hyperbola of the nearest branch; ties go to the smaller parameter and
+  are recorded as decisions (`closest_axis`, `closest_branch`). A graph is
+  searched over its domain inside four times the document bounds (a grid of
+  512 cells, then a golden-section search: about 1e-8 on flat minima).
+- `native.project_input(doc, element_id, xy, *, inputs=None)`: the whole input
+  of the projection onto a path, with `pathKind` and on a hyperbola `branch`;
+  `native.project` still returns the parameter.
+- `native.drag` moves a point on a conic or a graph: a hyperbola point takes
+  the nearest branch; through a `drag.via` hint the parameter of an ellipse
+  wraps and a hyperbola point keeps its branch. `point.on_function` keeps the
+  rule of 1.12.0. `sample_timeline` gives a point on an ellipse the period
+  2π and keeps `branch` and `pathKind`; condition recipes and the `move`
+  command request write the whole projected input. New fixtures in
+  `fixtures curves` and `fixtures drag`.
+- GGB import (DSL map version 6): `Point(<conic>)` becomes `point.on_path` with
+  the projected saved point (its `pathKind` and hyperbola branch);
+  `ClosestPoint(<conic>, P)` and `ClosestPoint(<function>, P)` become
+  `point.closest`; `Point(f)` on a function with a domain or an `If` becomes
+  `point.on_function` (before: `unsupported_signature`). All are checked by
+  the saved values. `Point(<conic>, t)` stays unsupported. In the example
+  files two pictures become editable (a regular hexagon inscribed through
+  `Point(<conic>)` and the lens scene), with every dependent object.
+- Classic: `ClosestPoint` of a conic and of a function graph
+  (`closest_point_Kp`, `closest_point_Fp`; 478 dispatch signatures). A
+  degenerate conic, or a graph with no value in the window of the default
+  bounds and the abscissa of `P`, gives no point.
+
 ## [1.13.0] - 2026-11-13
 
 ### Added

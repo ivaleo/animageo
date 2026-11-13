@@ -352,7 +352,7 @@ Derived/semantic:
 | `Center(circle_or_conic)`, `Radius(c)` | center point / radius measure |
 | `Rotate(P, angle, O)` | rotate P by angle (radians, CCW) around O; also rotates lines/vectors |
 | `Translate(obj, v)`, `Reflect(P, line)` / `Mirror(...)`, `Dilate(obj, k, O)` | transforms; `Reflect(P, circle)` = inversion; `Dilate` = homothety (factor may be a slider) |
-| `ClosestPoint(path, P)` | nearest point on a line/segment/ray/circle |
+| `ClosestPoint(path, P)` | nearest point on a line/segment/ray/circle/conic/function graph |
 | `Distance(A, B)`, `Length(seg)`, `Area(poly)`, `Perimeter(poly)`, `Slope(line)` | measures (numeric proxies) |
 | `Direction(line)`, `UnitVector(v)`, `PerpendicularVector(v)`, `Dot(u, v)`, `Cross(u, v)` | vector helpers (`Cross` = 2D scalar) |
 | `AngleSize(P, V, Q)` | angle value without drawing a mark |
