@@ -36,6 +36,8 @@ def _prefixed(value, prefix):
                 out[key] = prefix + item
             elif key in ('elementIds', 'operationIds') and isinstance(item, list):
                 out[key] = [prefix + x for x in item]
+            elif key == 'origin' and isinstance(item, dict) and isinstance(item.get('source'), str):
+                out[key] = {**item, 'source': prefix + item['source']}     # the owner of a hidden helper
             else:
                 out[key] = _prefixed(item, prefix)
         return out

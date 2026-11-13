@@ -407,7 +407,9 @@ def _argument_status(op, record, doc, reg):
     ``schema``; then params
     in registry order (wrong literal kind → ``type_mismatch``, a
     required one missing → ``schema``); last, a tree or a template that the
-    rules refuse (with the item count of ``refs``) → ``error/formula``.
+    rules refuse (with the item count of ``refs``) → ``error/formula``;
+    registry 1.10: in a typed slot (``result``) the rules include the types
+    of the elements of ``refs`` (docs/native/expr.md §6).
     """
     args = op['args']
     declared = {item['slot'] for item in record['inputs']} | {item['slot'] for item in record['params']}
@@ -475,8 +477,12 @@ def _argument_status(op, record, doc, reg):
         params[item['slot']] = arg['value'] if item['type'] == 'string' else float(arg['value'])
     if exprs or templates:
         count = next((len(ids) for slot, _is_list, ids in resolved if slot == 'refs'), None)
-        variables = {item['slot']: item.get('vars') or () for item in record['inputs']}
-        if any(expr_problems(ast, count, variables[slot]) for slot, ast in exprs.items()) \
+        refs_ids = next((ids for slot, _is_list, ids in resolved if slot == 'refs'), ())
+        operands = [doc.elements[el_id]['type'] for el_id in refs_ids]
+        slots = {item['slot']: item for item in record['inputs']}
+        if any(expr_problems(ast, count, slots[slot].get('vars') or (),
+                             operands if slots[slot].get('result') else None, slots[slot].get('result'))
+               for slot, ast in exprs.items()) \
                 or any(template_problems(s, count) for s in templates.values()):
             return ('error', 'formula')
     return Arguments(resolved, literals, params, exprs, templates)

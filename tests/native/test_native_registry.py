@@ -1,4 +1,5 @@
 """Registry ops/v1: records, signature hashes, INDEX.json, implementations."""
+import copy
 import json
 import math
 import shutil
@@ -65,7 +66,8 @@ SCHOOL_B_OPS = {'line.common_tangents', 'sector.segment', 'triangle.cevian', 'ci
 MEET_OPS = {'intersect.conic_conic', 'intersect.function_conic'}
 MARK_18_OPS = {'mark.parallel'}
 REGION_OPS = {'function.area_between', 'region.by_boundary'}
-ALL_OPS = REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
+EXPRESSION_OPS = {'point.expression', 'vector.expression'}      # registry 1.10
+ALL_OPS = EXPRESSION_OPS | REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.7 extend 1.0: earlier operations keep their signatures.
 # Registry 1.6 is frozen since 1.11.0rc5; new school operations go to 1.7.
 L0_HASHES = {
@@ -191,9 +193,9 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.9'
-    assert registry().version == '1.9'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.9'
+    assert native.__registry_version__ == '1.10'
+    assert registry().version == '1.10'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.10'
 
 
 def test_ops_and_files():
@@ -241,6 +243,7 @@ def test_registry_1_5_and_1_6_signatures_stay_frozen():
             assert signature_hash(reg.get(op)) == reg.index['ops'][op] == digest
     assert {op for op, record in reg.ops.items() if record['since'] == '1.7'} == SCHOOL_B_OPS
     assert {op for op, record in reg.ops.items() if record['since'] == '1.8'} == MEET_OPS | MARK_18_OPS
+    assert {op for op, record in reg.ops.items() if record['since'] == '1.10'} == EXPRESSION_OPS
 
 
 @pytest.mark.parametrize('op', sorted(ALL_OPS))
@@ -248,7 +251,8 @@ def test_record_fields(op):
     record = registry().get(op)
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free', 'inputSets'}
     assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors', 'intersect.nearest')
-                                or op in G2_OPS or op in MEET_OPS or op in MARK_18_OPS or op in REGION_OPS else 'stable')
+                                or op in G2_OPS or op in MEET_OPS or op in MARK_18_OPS or op in REGION_OPS
+                                or op in EXPRESSION_OPS else 'stable')
     if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
                   'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle',
                   'text.free', 'function.expr', 'function.root', 'function.extremum',
@@ -349,6 +353,7 @@ def test_contract_table():
         'limit': ['number', 'point'],              # registry 1.9
         'graph_bound': ['function', 'line'],
         'contour': ['polygon', 'circle', 'sector', 'circlesegment'],
+        'operand': ['number', 'point', 'vector', 'function'],     # registry 1.10: typed expressions
     }
     assert reg.accepts('linear', 'ray') and not reg.accepts('circular', 'ray')
 
@@ -538,13 +543,13 @@ def test_registry_problems_catch_bad_catalogs(tmp_path):
     del types['paths']['ray']
     (copy_dir / '_types.json').write_text(json.dumps(types))
     line = json.loads((copy_dir / 'line.json').read_text())
-    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.10'
+    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.11'
     (copy_dir / 'line.json').write_text(json.dumps(line))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
     assert "family 'path': unknown type 'spiral'" in problems
     assert "path type 'ray' has no entry in _types.json paths" in problems
-    assert any(p.startswith("ray.by_points: since '1.10'") for p in problems)
+    assert any(p.startswith("ray.by_points: since '1.11'") for p in problems)
 
 
 def test_implementations_both_ways():
@@ -632,7 +637,7 @@ def test_number_literal_families():
     reg = registry()
     assert reg.number_literal_since == {'limit': '1.9'}
     assert reg.takes_number_literal('number', '1.0') and reg.takes_number_literal('number', None)
-    assert reg.takes_number_literal('limit', '1.9') and reg.takes_number_literal('limit', '1.10')
+    assert reg.takes_number_literal('limit', '1.9') and reg.takes_number_literal('limit', '1.11')
     assert not reg.takes_number_literal('limit', '1.8')
     assert not reg.takes_number_literal('limit', None)
     for family in ('locus_driver', 'insertable'):          # a family with number, not listed
@@ -644,11 +649,11 @@ def test_registry_problems_catch_bad_number_literal_families(tmp_path):
     copy_dir = tmp_path / 'v1'
     shutil.copytree(OPS_DIR, copy_dir)
     types = json.loads((copy_dir / '_types.json').read_text())
-    types['numberLiteralSince'] = {'limit': '1.10', 'curve': '1.9', 'spiral': '1.9'}
+    types['numberLiteralSince'] = {'limit': '1.11', 'curve': '1.9', 'spiral': '1.9'}
     (copy_dir / '_types.json').write_text(json.dumps(types))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
-    assert "numberLiteralSince 'limit': since '1.10' is not a registry version" in problems
+    assert "numberLiteralSince 'limit': since '1.11' is not a registry version" in problems
     assert "numberLiteralSince 'curve': the family has no member 'number'" in problems
     assert "numberLiteralSince 'spiral': the family has no member 'number'" in problems
 
@@ -690,3 +695,35 @@ def test_limit_literal_needs_registry_1_9():
                      ('type_mismatch', '/operations/op_S/args/b')]
     rec = native.evaluate(doc).elements['S']
     assert (rec['state'], rec['reason']) == ('error', 'type_mismatch'), rec
+
+
+# ── typed expression slots (registry 1.10) ───────────────────────────────
+
+def test_result_enters_the_signature_only_when_set():
+    from animageo.native.registry import signature, signature_hash
+    record = copy.deepcopy(registry().get('number.expression'))
+    plain = signature_hash(record)
+    assert 'result' not in signature(record)['inputs'][0]
+    record['inputs'][0]['result'] = 'vec'
+    assert signature(record)['inputs'][0]['result'] == 'vec'
+    assert signature_hash(record) != plain
+    record['inputs'][0]['result'] = None              # absent and null alike: the old hash
+    assert signature_hash(record) == plain
+
+
+def test_registry_problems_catch_bad_results(tmp_path):
+    copy_dir = tmp_path / 'v1'
+    shutil.copytree(OPS_DIR, copy_dir)
+    number = json.loads((copy_dir / 'number.json').read_text())
+    record = next(r for r in number if r['op'] == 'number.expression')
+    record['inputs'][0]['result'] = 'matrix'
+    record['inputs'][1]['result'] = 'num'
+    function = json.loads((copy_dir / 'function.json').read_text())
+    next(r for r in function if r['op'] == 'function.expr')['inputs'][0]['result'] = 'num'
+    (copy_dir / 'number.json').write_text(json.dumps(number))
+    (copy_dir / 'function.json').write_text(json.dumps(function))
+    from animageo.native.registry import _load
+    problems = registry_problems(_load(copy_dir))
+    assert "number.expression: input 'expr' has the result 'matrix' (one of num, vec)" in problems
+    assert "number.expression: input 'refs' has a result but is not an expr slot" in problems
+    assert "function.expr: input 'expr' has both vars and a result" in problems

@@ -1,0 +1,1205 @@
+{
+  "format": "animageo-steps/v1",
+  "id": "l4c_vector_expression",
+  "registry": "1.10",
+  "generatedBy": "animageo 1.14.1",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l4c_vector_expression",
+    "operationRegistryVersion": "1.10",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_U": {
+        "id": "op_U",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "U"
+          }
+        ]
+      },
+      "op_V": {
+        "id": "op_V",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "V"
+          }
+        ]
+      },
+      "op_u": {
+        "id": "op_u",
+        "op": "vector.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "U"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "V"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "u"
+          }
+        ]
+      },
+      "op_k": {
+        "id": "op_k",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "k"
+          }
+        ]
+      },
+      "op_c": {
+        "id": "op_c",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "c"
+          }
+        ]
+      },
+      "op_f": {
+        "id": "op_f",
+        "op": "function.expr",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "*",
+              "args": [
+                {
+                  "var": "x"
+                },
+                {
+                  "var": "x"
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          },
+          "min": {
+            "kind": "number",
+            "value": -3
+          },
+          "max": {
+            "kind": "number",
+            "value": 3
+          }
+        },
+        "outputs": [
+          {
+            "slot": "function",
+            "elementId": "f"
+          }
+        ]
+      },
+      "op_w1": {
+        "id": "op_w1",
+        "op": "vector.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "ref": 0
+                },
+                {
+                  "ref": 1
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "A"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "w1"
+          }
+        ]
+      },
+      "op_w2": {
+        "id": "op_w2",
+        "op": "vector.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "*",
+              "args": [
+                {
+                  "ref": 0
+                },
+                {
+                  "ref": 1
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "k"
+              },
+              {
+                "kind": "ref",
+                "elementId": "u"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "w2"
+          }
+        ]
+      },
+      "op_w3": {
+        "id": "op_w3",
+        "op": "vector.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "pair": [
+                {
+                  "num": 1
+                },
+                {
+                  "call": 0,
+                  "args": [
+                    {
+                      "ref": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "f"
+              },
+              {
+                "kind": "ref",
+                "elementId": "c"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "w3"
+          }
+        ]
+      },
+      "op_w4": {
+        "id": "op_w4",
+        "op": "vector.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "/",
+              "args": [
+                {
+                  "ref": 0
+                },
+                {
+                  "op": "-",
+                  "args": [
+                    {
+                      "ref": 1
+                    },
+                    {
+                      "num": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "u"
+              },
+              {
+                "kind": "ref",
+                "elementId": "k"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "w4"
+          }
+        ]
+      },
+      "op_w5": {
+        "id": "op_w5",
+        "op": "vector.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "neg",
+              "args": [
+                {
+                  "pair": [
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "num": 10
+                        },
+                        {
+                          "ref": 0
+                        }
+                      ]
+                    },
+                    {
+                      "num": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "c"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "w5"
+          }
+        ]
+      },
+      "op_w6": {
+        "id": "op_w6",
+        "op": "vector.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "+",
+              "args": [
+                {
+                  "ref": 0
+                },
+                {
+                  "ref": 1
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "w4"
+              },
+              {
+                "kind": "ref",
+                "elementId": "u"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "w6"
+          }
+        ]
+      },
+      "op_w7": {
+        "id": "op_w7",
+        "op": "vector.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "fn": "sin",
+              "args": [
+                {
+                  "ref": 0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "u"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "w7"
+          }
+        ]
+      },
+      "op_L": {
+        "id": "op_L",
+        "op": "measure.length",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "w1"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "L"
+          }
+        ]
+      },
+      "op_A1": {
+        "id": "op_A1",
+        "op": "transform.translate",
+        "args": {
+          "obj": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "vector": {
+            "kind": "ref",
+            "elementId": "w2"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "image",
+            "elementId": "A1"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "vector.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "*",
+              "args": [
+                {
+                  "ref": 0
+                },
+                {
+                  "ref": 1
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "w1"
+              },
+              {
+                "kind": "ref",
+                "elementId": "w2"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "D"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "U": {
+        "id": "U",
+        "type": "point",
+        "displayName": "U",
+        "producer": {
+          "operationId": "op_U",
+          "slot": "point"
+        }
+      },
+      "V": {
+        "id": "V",
+        "type": "point",
+        "displayName": "V",
+        "producer": {
+          "operationId": "op_V",
+          "slot": "point"
+        }
+      },
+      "u": {
+        "id": "u",
+        "type": "vector",
+        "displayName": "u",
+        "producer": {
+          "operationId": "op_u",
+          "slot": "vector"
+        }
+      },
+      "k": {
+        "id": "k",
+        "type": "number",
+        "displayName": "k",
+        "producer": {
+          "operationId": "op_k",
+          "slot": "number"
+        }
+      },
+      "c": {
+        "id": "c",
+        "type": "number",
+        "displayName": "c",
+        "producer": {
+          "operationId": "op_c",
+          "slot": "number"
+        }
+      },
+      "f": {
+        "id": "f",
+        "type": "function",
+        "displayName": "f",
+        "producer": {
+          "operationId": "op_f",
+          "slot": "function"
+        }
+      },
+      "w1": {
+        "id": "w1",
+        "type": "vector",
+        "displayName": "w1",
+        "producer": {
+          "operationId": "op_w1",
+          "slot": "vector"
+        }
+      },
+      "w2": {
+        "id": "w2",
+        "type": "vector",
+        "displayName": "w2",
+        "producer": {
+          "operationId": "op_w2",
+          "slot": "vector"
+        }
+      },
+      "w3": {
+        "id": "w3",
+        "type": "vector",
+        "displayName": "w3",
+        "producer": {
+          "operationId": "op_w3",
+          "slot": "vector"
+        }
+      },
+      "w4": {
+        "id": "w4",
+        "type": "vector",
+        "displayName": "w4",
+        "producer": {
+          "operationId": "op_w4",
+          "slot": "vector"
+        }
+      },
+      "w5": {
+        "id": "w5",
+        "type": "vector",
+        "displayName": "w5",
+        "producer": {
+          "operationId": "op_w5",
+          "slot": "vector"
+        }
+      },
+      "w6": {
+        "id": "w6",
+        "type": "vector",
+        "displayName": "w6",
+        "producer": {
+          "operationId": "op_w6",
+          "slot": "vector"
+        }
+      },
+      "w7": {
+        "id": "w7",
+        "type": "vector",
+        "displayName": "w7",
+        "producer": {
+          "operationId": "op_w7",
+          "slot": "vector"
+        }
+      },
+      "L": {
+        "id": "L",
+        "type": "number",
+        "displayName": "L",
+        "producer": {
+          "operationId": "op_L",
+          "slot": "number"
+        }
+      },
+      "A1": {
+        "id": "A1",
+        "type": "point",
+        "displayName": "A1",
+        "producer": {
+          "operationId": "op_A1",
+          "slot": "image"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "vector",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "vector"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          1,
+          2
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          -2
+        ]
+      },
+      "U": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "V": {
+        "kind": "point",
+        "value": [
+          3,
+          4
+        ]
+      },
+      "k": {
+        "kind": "number",
+        "value": 2
+      },
+      "c": {
+        "kind": "number",
+        "value": -1.5
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "expect": {
+    "steps": [
+      {
+        "id": "given",
+        "kind": "given",
+        "operationIds": [
+          "op_A",
+          "op_B",
+          "op_U",
+          "op_V",
+          "op_c"
+        ],
+        "elementIds": [
+          "A",
+          "B",
+          "U",
+          "V",
+          "c"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_f",
+        "kind": "op",
+        "operationIds": [
+          "op_f"
+        ],
+        "elementIds": [
+          "f"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_k",
+        "kind": "op",
+        "operationIds": [
+          "op_k"
+        ],
+        "elementIds": [
+          "k"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_u",
+        "kind": "op",
+        "operationIds": [
+          "op_u"
+        ],
+        "elementIds": [
+          "u"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_w1",
+        "kind": "op",
+        "operationIds": [
+          "op_w1"
+        ],
+        "elementIds": [
+          "w1"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_L",
+        "kind": "op",
+        "operationIds": [
+          "op_L"
+        ],
+        "elementIds": [
+          "L"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_w2",
+        "kind": "op",
+        "operationIds": [
+          "op_w2"
+        ],
+        "elementIds": [
+          "w2"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_A1",
+        "kind": "op",
+        "operationIds": [
+          "op_A1"
+        ],
+        "elementIds": [
+          "A1"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_D",
+        "kind": "op",
+        "operationIds": [
+          "op_D"
+        ],
+        "elementIds": [
+          "D"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_w3",
+        "kind": "op",
+        "operationIds": [
+          "op_w3"
+        ],
+        "elementIds": [
+          "w3"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_w4",
+        "kind": "op",
+        "operationIds": [
+          "op_w4"
+        ],
+        "elementIds": [
+          "w4"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_w5",
+        "kind": "op",
+        "operationIds": [
+          "op_w5"
+        ],
+        "elementIds": [
+          "w5"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_w6",
+        "kind": "op",
+        "operationIds": [
+          "op_w6"
+        ],
+        "elementIds": [
+          "w6"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_w7",
+        "kind": "op",
+        "operationIds": [
+          "op_w7"
+        ],
+        "elementIds": [
+          "w7"
+        ],
+        "auxElementIds": []
+      }
+    ],
+    "describe": [
+      "1. Дано: точки A, B, U, V; число c.",
+      "2. Строим график функции f.",
+      "3. Задаём число k.",
+      "4. Строим вектор UV.",
+      "5. Строим вектор w1 = B - A.",
+      "6. Находим длину w1.",
+      "7. Строим вектор w2 = k·u.",
+      "8. Строим образ A1 фигуры A при параллельном переносе на вектор w2.",
+      "9. Строим вектор D = w1·w2.",
+      "10. Строим вектор w3 = (1, f(c)).",
+      "11. Строим вектор w4 = u/(k - 1).",
+      "12. Строим вектор w5 = -(10^c, 0).",
+      "13. Строим вектор w6 = w4 + u.",
+      "14. Строим вектор w7 = sin(u)."
+    ],
+    "timeline": {
+      "keyframes": {
+        "version": 2,
+        "keyframes": [
+          {
+            "t": 0.0,
+            "visible": {
+              "A": false,
+              "B": false,
+              "U": false,
+              "V": false,
+              "f": false,
+              "u": false,
+              "w1": false,
+              "w2": false,
+              "A1": false,
+              "D": false,
+              "w3": false,
+              "w4": false,
+              "w5": false,
+              "w6": false,
+              "w7": false
+            }
+          },
+          {
+            "t": 1.4,
+            "visible": {
+              "A": true,
+              "B": true,
+              "U": true,
+              "V": true
+            },
+            "enter": {
+              "A": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.0
+              },
+              "B": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.3
+              },
+              "U": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "V": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 2.5,
+            "visible": {
+              "f": true
+            },
+            "enter": {
+              "f": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "u": true
+            },
+            "enter": {
+              "u": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 4.7,
+            "visible": {
+              "w1": true
+            },
+            "enter": {
+              "w1": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 5.8,
+            "visible": {
+              "w2": true
+            },
+            "enter": {
+              "w2": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.8999999999999995,
+            "visible": {
+              "A1": true
+            },
+            "enter": {
+              "A1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 7.999999999999999,
+            "visible": {
+              "D": true
+            },
+            "enter": {
+              "D": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 9.1,
+            "visible": {
+              "w3": true
+            },
+            "enter": {
+              "w3": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 10.2,
+            "visible": {
+              "w4": true
+            },
+            "enter": {
+              "w4": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 11.299999999999999,
+            "visible": {
+              "w5": true
+            },
+            "enter": {
+              "w5": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 12.399999999999999,
+            "visible": {
+              "w6": true
+            },
+            "enter": {
+              "w6": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 13.499999999999998,
+            "visible": {
+              "w7": true
+            },
+            "enter": {
+              "w7": {
+                "effect": "create",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "stepId": "given",
+          "start": 0.0,
+          "end": 1.4,
+          "elementIds": [
+            "A",
+            "B",
+            "U",
+            "V"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_f",
+          "start": 2.0,
+          "end": 2.5,
+          "elementIds": [
+            "f"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_u",
+          "start": 3.1,
+          "end": 3.6,
+          "elementIds": [
+            "u"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w1",
+          "start": 4.2,
+          "end": 4.7,
+          "elementIds": [
+            "w1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w2",
+          "start": 5.3,
+          "end": 5.8,
+          "elementIds": [
+            "w2"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_A1",
+          "start": 6.3999999999999995,
+          "end": 6.8999999999999995,
+          "elementIds": [
+            "A1"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_D",
+          "start": 7.499999999999999,
+          "end": 7.999999999999999,
+          "elementIds": [
+            "D"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w3",
+          "start": 8.6,
+          "end": 9.1,
+          "elementIds": [
+            "w3"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w4",
+          "start": 9.7,
+          "end": 10.2,
+          "elementIds": [
+            "w4"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w5",
+          "start": 10.799999999999999,
+          "end": 11.299999999999999,
+          "elementIds": [
+            "w5"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w6",
+          "start": 11.899999999999999,
+          "end": 12.399999999999999,
+          "elementIds": [
+            "w6"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_w7",
+          "start": 12.999999999999998,
+          "end": 13.499999999999998,
+          "elementIds": [
+            "w7"
+          ],
+          "text": null
+        }
+      ],
+      "duration": 13.499999999999998
+    }
+  }
+}

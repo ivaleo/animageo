@@ -143,6 +143,21 @@ def _cmd_fixtures_curves(args) -> int:
     return 0
 
 
+def _cmd_fixtures_expr(args) -> int:
+    from .expr_fixtures import DEFAULT_DIR, check_fixtures, verify_fixtures, write_fixtures
+    root = Path(args.out) if args.out else DEFAULT_DIR
+    if args.check:
+        problems = check_fixtures(root)
+        files, cases, mismatches = verify_fixtures(root)
+        for item in problems + mismatches:
+            _out(f'stale: {item}')
+        _out(f'{files} fixtures, {cases} cases, {len(problems) + len(mismatches)} mismatches')
+        return 1 if problems or mismatches else 0
+    for path in write_fixtures(root):
+        _out(str(path))
+    return 0
+
+
 def _cmd_fixtures_drag(args) -> int:
     from .drag_fixtures import DEFAULT_DIR, check_fixtures, verify_fixtures, write_fixtures
     root = Path(args.out) if args.out else DEFAULT_DIR
@@ -570,6 +585,11 @@ def build_parser() -> argparse.ArgumentParser:
     fv.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/curves)')
     fv.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
     fv.set_defaults(func=_cmd_fixtures_curves)
+
+    fe = fsub.add_parser('expr', help='write (or --check) the animageo-expr-cases/v1 fixtures of typed expressions')
+    fe.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/expr)')
+    fe.add_argument('--check', action='store_true', help='compare with a fresh build and replay every case')
+    fe.set_defaults(func=_cmd_fixtures_expr)
 
     fd = fsub.add_parser('drag', help='write (or --check) the animageo-drag-parity/v1 fixtures of native.drag')
     fd.add_argument('-o', '--out', help='directory (default: the shipped parity/v1/drag)')

@@ -66,12 +66,12 @@ INPUT = '$input'
 # parse the expression of a function); the printer prints their lines with a
 # warning, as an expression (commands.md §8). Registry 1.9: regions too.
 DEFERRED_PREFIXES = ('function.', 'conic.', 'intersect.function_', 'intersect.line_conic', 'intersect.conic_conic',
-                     'point.on_function', 'region.')
+                     'point.on_function', 'region.', 'point.expression', 'vector.expression')
 
 
 def deferred_op(op: str) -> bool:
     """Whether ``op`` has no command in «Команды» yet (registry 1.6: functions and conics; 1.8: their
-    intersections; 1.9: regions)."""
+    intersections; 1.9: regions; 1.10: points and vectors by a formula)."""
     return op.startswith(DEFERRED_PREFIXES)
 DEFAULT_PATH = Path(__file__).with_name('lexicon.v1.json')
 

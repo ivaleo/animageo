@@ -354,6 +354,46 @@
     "signatureHash": "sha256:7f2f4e4551fe968c3a7714fe613de1fc65218c5ad6dbc65e911f37d8e05aef11"
   },
   {
+    "op": "vector.expression",
+    "status": "beta",
+    "since": "1.10",
+    "inputs": [
+      {
+        "slot": "expr",
+        "type": "expr",
+        "result": "vec"
+      },
+      {
+        "slot": "refs",
+        "type": "operand",
+        "list": true,
+        "min": 0
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "vector",
+        "type": "vector"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "out_of_domain",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "vector_expression",
+    "phrases": {
+      "ru": "{vector} = {expr}"
+    },
+    "math": "docs/native/ops/vector.expression.md",
+    "signatureHash": "sha256:ac528a2a983aa7acec602b3945304c1a7c48b6b25a286b41e856e33d56d922b0"
+  },
+  {
     "op": "line.angle_bisectors_of_lines",
     "status": "stable",
     "since": "1.4",

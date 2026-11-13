@@ -3,6 +3,7 @@ fixtures and the command line (docs/native/commands.md)."""
 import copy
 import json
 import math
+from ast import literal_eval
 
 import pytest
 
@@ -590,6 +591,19 @@ class TestPrint:
             assert [(i.code, i.line) for i in result.issues] == [('syntax', i.line) for i in texts]
             assert len(problems) == 5 and all(p.startswith('missing text.free') for p in problems)
             return
+        if path.stem.startswith('l4c_'):
+            # registry 1.10: a point or a vector by a formula (and a graph) prints as
+            # «op(выражение, …)»; «выражение» is no name, so the line and every line
+            # that uses its object read back as unknown_name and drop out, nothing else
+            deferred = [i for i in printed.issues if i.code == 'unprintable_operation']
+            assert deferred and [i.code for i in printed.issues] == ['unprintable_operation'] * len(deferred)
+            assert {i.code for i in result.issues} == {'unknown_name'}
+            assert {i.line for i in deferred} <= {i.line for i in result.issues}
+            lines = printed.text.splitlines()
+            failed = {lines[i.line - 1].split(' = ')[0] for i in result.issues}
+            assert problems and all(p.startswith('missing ') for p in problems)
+            assert {name for p in problems for name in literal_eval(p[p.rindex('{'):]).values()} == failed
+            return
         assert [(i.code, i.line, i.column) for i in result.issues] == ambiguous
         others = [i.code for i in printed.issues if i.code != 'ambiguous_name']
         if path.stem in ('intersect_lines', 'intersect_segments'):
@@ -614,6 +628,8 @@ class TestPrint:
             assert {i.code for i in result.issues} == {'forbidden'}
         elif path.stem == 'l2a5_text':
             assert {i.code for i in result.issues} == {'syntax'}
+        elif path.stem == 'l4c_expr_chain':           # the hidden angle of the rotation has no name to print
+            assert {i.code for i in result.issues} == {'unknown_name'}
         else:
             assert {i.code for i in result.issues} <= {'ambiguous_name'}
         assert changed(result.effects) == {}

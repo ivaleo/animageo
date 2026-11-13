@@ -12,7 +12,9 @@ AST v1 is a **strict subset** of the trees of a function (registry 1.6,
 §5): every v1 tree has the same value there, so a v1 document is read
 without migration. The nodes of §5 (`var`, `if`, comparisons) are allowed
 only in an `expr` slot whose record lists `vars` (`function.expr`); every
-other slot refuses them as `formula`.
+other slot refuses them as `formula`. In the same way the nodes of typed
+expressions (registry 1.10, §6: pairs, calls of functions, `x()`, `y()`)
+stand only in a slot whose record has `result`.
 
 ## 1. Nodes
 
@@ -122,3 +124,94 @@ Cond := {"cmp": "<" | "<=" | ">" | ">=", "args": [Expr, Expr]}
 - `compile_function(ast, refs)` (`expr/function.py`) turns the tree into
   `f(x)` once (closures), with the semantics of §3 node by node.
 - `to_text` prints `x`, `If(x < 0, −x, x)`, `(a) && (b)`, `(a) || (b)`, `!(a)`.
+
+## 6. Typed expressions (registry 1.10)
+
+An `expr` slot whose record has `"result": "num"` or `"result": "vec"` is
+**typed** ([point.expression](ops/point.expression.md),
+[vector.expression](ops/vector.expression.md): `"vec"`). Its values are
+numbers (`num`) and pairs (`vec`), and its `refs` are of the family
+`operand` (`number`, `point`, `vector`, `function`). Slots without
+`result` (the records of 1.4–1.9) refuse the nodes below as `formula`, as
+before (`x` is an unknown function, `pair` and `call` unknown nodes);
+`result` and `vars` never stand together.
+
+```text
+Expr (typed slot) += {"pair": [Expr, Expr]}             a vec from two nums
+                   | {"call": k, "args": [Expr]}        the value of the function refs[k] at a num
+                   | {"fn": "x" | "y", "args": [Expr]}  a component of a vec
+```
+
+Node shapes follow §1 (one kind key, no other key; `pair` exactly 2
+values, `call` exactly 1 argument and `k` a valid index of `refs`); no
+conditions; the limits of §2 count `pair` and `call` as nodes.
+
+| item of `refs` | type in the tree | value |
+|---|---|---|
+| `number` (any unit; an angle in radians) | `num` | its value |
+| `point` | `vec` | `(x, y)` |
+| `vector` | `vec` | its components `(b.x − a.x, b.y − a.y)`, not its end |
+| `function` | `fn` | only as the target of `call`; a bare `{"ref": k}` is a type error |
+
+| node | types → result | value |
+|---|---|---|
+| `a ± b` | `vec ± vec → vec`, `num ± num → num` | `(a.x ± b.x, a.y ± b.y)` |
+| `k · v`, `v · k` | `num·vec`, `vec·num → vec` | `(k·v.x, k·v.y)` |
+| `v / k` | `vec / num → vec` | `(v.x / k, v.y / k)`; `k = 0` → `out_of_domain` |
+| `u · v` | `vec·vec → num` | `u.x·v.x + u.y·v.y` (two products, then the sum) |
+| `neg v` | `vec → vec` | `(−v.x, −v.y)` |
+| `x(v)`, `y(v)` | `vec → num` | the component |
+| `abs(v)` | `vec → num` | `hypot(v.x, v.y)` (as `length` of `vector.by_points`) |
+| `pair(a, b)` | `num, num → vec` | `(a, b)` |
+| `call(f, t)` | `fn, num → num` | `f(t)` (`kernel/function.evaluator`); no value (outside the domain, a branch of `If` without one, a pole) → `out_of_domain` |
+| every other node of §1 | `num` only | §3 |
+
+A degree is a number: `α + 30°` is written `α + 30·(pi/180)`.
+
+**Type errors** — `vec + num` (`A + 1`), `num / vec`, `vec / vec`,
+`vec ^ n`, `n ^ vec`, `sin(vec)` and any other function of §1 but `abs`
+with a `vec`, `x(num)`, a `pair` with a `vec`, a `call` of an item that is
+not a function, a `call` with a `vec`, a bare function — are static: the
+issue `formula` with the pointer of the node, the state `error/formula`.
+A root of the other type than `result` is reported at the pointer `""`.
+
+`problems(ast, ref_count, vars=(), operands=None, result=None)` runs the
+structure of §2 first; when it finds nothing and `operands` (the element
+types of `refs`) is given, a second pass types the tree bottom-up over the
+pre-order list (no recursion) and reports the first mistake of each node,
+in pre-order. A node whose child has no type gets none and no problem of
+its own, so a mistake is reported once: in `(A + 1)·2` only the sum. When
+an item of `refs` does not fit `operand` (`type_mismatch`) or dangles
+(`dangling_ref`), the tree is checked for its structure only.
+
+**Evaluation** — `evaluate_typed(ast, operands, result)`: post-order, left
+to right, and inside a pair `x` before `y`; the domain is checked before an
+operation and finiteness after it, for each component (an overflow of
+either component is `non_finite`). The final `−0` comes out as `0` in each
+component. The arithmetic, `sqrt`, the integer power, `pair`, `x`, `y` and
+the dot product are bit-exact in both kernels; `hypot`, the libm functions
+and `call` (a function body with libm) are compared within the parity
+tolerance.
+
+**Text** — `to_text`: `pair` prints `(a, b)`, `call` `f(1)` (the name of
+`refs[k]`), `x(P)`, `abs(u)`; `pair` and `call` are atoms, the precedence
+is §4 (`-(1, 2)`, `2·(1, 2)`, `f(2)^2`, `t·A + (1 - t)·M`). «Команды» do
+not print the formula of a point or a vector: `(2, 3)` would read back as a
+free point. They print the operation with `unprintable_operation`, and an
+edit keeps it.
+
+**Fixtures** — `parity/v1/expr/typed.json` (`animageo-expr-cases/v1`,
+`python -m animageo.native fixtures expr [--check]`, also read by
+`fixtures verify`): `{format, registry, generatedBy, tolerance, cases:
+[{name, ast, operands: [{name, type, value}], result, expect}]}`, where
+`expect` is `{value, text, exact}` (a number, or `[x, y]` for `vec`; `text`
+— `to_text` with the operand names, byte for byte; `exact: false` — a
+component may differ by `tolerance · max(1, |v|)`), `{reason}` or
+`{problems: [pointer]}` (the pointers only; the messages are not part of
+the contract). The cases cover every row of the typing table, every type
+error with its pointer, the limits, `−0`, overflow, `/0`, `call` outside
+its domain and in a branch of `If`, and `abs` of large components. The
+scenes `parity/v1/scenes/l4c_point_expression`, `l4c_vector_expression`
+and `l4c_expr_chain` give the operations with every reason, and a vector
+turned by a hidden `measure.angle` (`role: aux`, `origin: {kind: auto,
+source: <the rotation>}`) that goes when the rotation is deleted.

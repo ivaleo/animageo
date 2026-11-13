@@ -189,7 +189,7 @@ The text `JSON.stringify` prints after object keys are sorted:
 table `animageo/native/parity/v1/canonical.json` is a list of
 `{"value", "canonical"}` pairs that both kernels must reproduce.
 
-## 4. Registry `ops/v1` (version 1.9)
+## 4. Registry `ops/v1` (version 1.10)
 
 Registry 1.4 is frozen since animageo 1.8.1: the records of 1.0–1.4 and their
 `signatureHash` stay as they are (`beta` is a descriptive status outside the
@@ -219,6 +219,12 @@ contours (`region.by_boundary`) and the region in the family `bounded` of
 their signature hashes stay unchanged; a document that declares 1.8 or
 older reads and evaluates as before.
 
+Registry 1.10 adds typed expressions: the optional key `result` of an
+`expr` input, the family `operand` and the operations `point.expression`
+and `vector.expression` (§17). The records of 1.0–1.9 and their signature
+hashes stay unchanged; a document that declares 1.9 or older reads and
+evaluates as before.
+
 **Registry 1.5 is the 1.0 contract** (animageo 1.11.0rc1;
 `tests/native/test_registry_frozen_1_0.py`, snapshot
 `tests/native/registry_frozen_1_0.json`): while the version is 1.5 no record
@@ -233,7 +239,7 @@ a new registry version. `beta` may become `stable` at any time.
 `animageo/native/ops/v1/<group>.json` holds arrays of records:
 
 ```text
-{op, status, since, inputs: [{slot, type, list?, min?}], params: [{slot, type, unit, optional?, default?, text}],
+{op, status, since, inputs: [{slot, type, list?, min?, vars?, result?}], params: [{slot, type, unit, optional?, default?, text}],
  outputs: [{slot, type, repeat?, like?}],
  free?: {kind}, branch: null | {policy, slots, text}, undefined: [reason…], checks: [{id, text}],
  orientation, pathParam: null | "carrier/v1", stepKind, phrases: {ru}, math, signatureHash}
@@ -305,6 +311,8 @@ a new registry version. `beta` may become `stable` at any time.
 | `measure.radius` | 1.4 (a5) | `of: round` → `number` (`length`) | — |
 | `measure.circumference` | 1.4 (a5) | `circle: circle` → `number` (`length`) | — |
 | `number.expression` | 1.4 (a5) | `expr: expr, refs: number[]` (min 0) → `number` (`unit: "scalar"`, [expr.md](expr.md)) | — |
+| `point.expression` (beta) | 1.10 | `expr: expr` (`result: "vec"`), `refs: operand[]` (min 0) → `point` ([expr.md](expr.md) §6) | — |
+| `vector.expression` (beta) | 1.10 | `expr: expr` (`result: "vec"`), `refs: operand[]` (min 0) → `vector` (from the origin) | — |
 | `text.free` | 1.4 (a5) | `text: template, anchor: point, refs: insertable[]` (min 0); param `decimals` → `text` | — |
 | `measure.polygon_angles` | 1.4 (a5) | `polygon: polygon` → `angle.1…N` (interior, at vertex `k`) | `vertex_index` |
 | `transform.translate` | 1.4 (a5) | `obj: transformable, vector: vector` → `image` (like `obj`), `side.1…N`, `vertex.1…N` | `vertex_index` |
@@ -335,6 +343,7 @@ a new registry version. `beta` may become `stable` at any time.
   | `transformable` (1.4, a5) | `point`, `segment`, `ray`, `line`, `vector`, `circle`, `arc`, `sector`, `polygon` |
   | `insertable` (1.4, a5) | `number`, `point` |
   | `straight` (1.8) | `line`, `segment`, `ray`, `vector` |
+  | `operand` (1.10) | `number`, `point`, `vector`, `function` |
 
   An arc in a `circular` slot (`intersect.line_circle`,
   `intersect.circle_circle`, `intersect.other_than`) is intersected as its
@@ -361,7 +370,8 @@ a new registry version. `beta` may become `stable` at any time.
   the hashes of the 1.0 records did not change in 1.1, nor those of the
   1.0 and 1.1 records in 1.2, nor those of the earlier records in 1.3 and
   1.4; registries 1.5, 1.6, 1.7 and 1.8 also preserve all earlier signatures
-  (tests pin them);
+  (tests pin them); an input adds `vars` (1.6) and `result` (1.10) only when
+  set, so the hashes of the records without them did not change;
 - params (`type: "number"`, or since 1.7 `"string"`) are op settings written
   in `args` as matching literals: `optional` (default `false`) and `default`
   (a matching literal or absent) are outside the hash. An absent optional param reaches the
@@ -720,6 +730,7 @@ python -m animageo.native fixtures timeline [--check]           # animageo-timel
 python -m animageo.native fixtures paint [--check]              # animageo-paint-parity/v1, §9.8
 python -m animageo.native fixtures curves [--check]             # parity/v1/curves: graphs and conics, §14
 python -m animageo.native fixtures drag [-o <dir>] [--check]    # animageo-drag-parity/v1, §8.1
+python -m animageo.native fixtures expr [-o <dir>] [--check]    # animageo-expr-cases/v1, expr.md §6
 python -m animageo.native style export [--check]               # native/style: builtin.json, keys.v1.json, §9.8
 python -m animageo.native steps|describe|timeline <doc.json> …  # timeline.md §5
 python -m animageo.native from-ggb <file.ggb> [-o …] [--report …] # import.md §7
@@ -2128,3 +2139,85 @@ of the obstacles. The fill is no obstacle. A malformed piece (unknown
 the expectations are the port's own, the client has no recording of this
 key yet): a stroked ring of a segment, an arc and a chain, the same ring
 without a stroke (no obstacle), and an annulus of two whole circles.
+
+## 17. Registry 1.10: typed expressions
+
+Registry 1.10 (animageo 1.15.0, `has("typed_expressions")`) lets a formula
+compute a point or a vector. Nothing of 1.0–1.9 changes: their records,
+signature hashes, catalogs and evaluation stay as they are, and a document
+that declares 1.9 or older reads and evaluates as before.
+
+### 17.1 Catalog
+
+- An `expr` input may carry `"result": "num" | "vec"` — a **typed slot**
+  ([expr.md](expr.md) §6). The key enters the signature only when set (like
+  `vars`). The registry check refuses `result` on a slot that is not
+  `expr`, a value other than `num`/`vec`, and `result` next to `vars`.
+- The family `operand` (`_types.json → families`): `number`, `point`,
+  `vector`, `function` — the types an item of `refs` of a typed slot may
+  have. It is new as a whole and has no `familySince`.
+- Two operations, `status: "beta"`, `since: "1.10"`:
+
+  | op | inputs → outputs | undefined | checks | stepKind |
+  |---|---|---|---|---|
+  | [`point.expression`](ops/point.expression.md) | `expr: expr` (`result: "vec"`), `refs: operand[]` (min 0) → `point` | `out_of_domain`, `non_finite`, `upstream` | — | `point_expression` |
+  | [`vector.expression`](ops/vector.expression.md) | `expr: expr` (`result: "vec"`), `refs: operand[]` (min 0) → `vector` | `out_of_domain`, `non_finite`, `upstream` | — | `vector_expression` |
+
+  A document with one of them that declares a registry below 1.10 is
+  `needs_newer_registry` (§2); a 1.9 reader reports `newer_registry` and
+  `unknown_op`. No new reasons and no new decisions.
+
+### 17.2 Validation and evaluation
+
+The order of `_argument_status` (§5.2) stays: argument kinds and the items
+of `refs` first (an item outside `operand` — `type_mismatch`, a dangling
+one — `dangling_ref`), the tree last. In a typed slot the tree is checked
+with the element types of `refs` (`problems(ast, n, (), operands,
+result)`): a structure problem or a type mistake is the issue `formula`
+of `validate` with the pointer of its node (`""` for a root of the wrong
+type) and the state `error/formula`. When an item of `refs` is refused, the
+tree is not typed — one issue, no cascade.
+
+Values:
+
+    operands: number → value; point → (x, y); vector → (b.x − a.x, b.y − a.y); function → evaluator(value)
+    (x, y) = evaluate_typed(ast, operands, "vec")         expr.md §6
+    point.expression:  point  = {x: x + 0, y: y + 0}
+    vector.expression: vector = {a: [0, 0], b: [x + 0, y + 0], length: hypot(x, y)}
+
+An undefined item of `refs` makes the result `upstream` (§5.2); division by
+zero, a root of a negative number and a call of a function without a value
+are `out_of_domain`; an overflow of a component is `non_finite`.
+
+### 17.3 Around the kernel
+
+- **Bridge and rendering** (§9.2): the bridge converts values by their
+  type, so a point or a vector of a formula is a classic `Point` or
+  `Vector` like any other; it draws, takes a label (§9.7) and paints like a
+  point of `point.midpoint`.
+- **Drag** (§8.1): a point of a formula is not free; the hint
+  `appearance.<id>.drag.via` moves it through free inputs upstream of it,
+  as any dependent point. A number in a formula is not a `via` input
+  (`(c_x, 4)` does not move through `c_x`).
+- **describe, steps**: the phrases `Отмечаем точку {point} = {expr}` and
+  `Строим вектор {vector} = {expr}`; `{expr}` is `to_text` of the tree with
+  the names of `refs`.
+- **«Команды»**: the operation prints as `M = point.expression(выражение,
+  A, u)` with `unprintable_operation` («выражения в «Командах» будут
+  позже»); an edit keeps it, like a function (§14). A printed formula
+  `(2, 3)` would read back as a free point, so the formula itself is not
+  printed.
+- **GGB import and the classic DSL** do not produce these operations yet
+  (`dsl_map` `opsWithoutClassic`).
+
+### 17.4 Fixtures
+
+`parity/v1/expr/typed.json` (`animageo-expr-cases/v1`, `fixtures expr`,
+expr.md §6) — the typed trees alone; the scenes `l4c_point_expression`,
+`l4c_vector_expression` (every reason of both operations and the states
+`error/formula` and `error/type_mismatch` they keep on purpose) and
+`l4c_expr_chain` (a formula point into a segment and a triangle, a formula
+vector turned by a hidden `measure.angle` — an import helper: `role:
+aux`, `origin: {kind: auto, source}`, deleted with its rotation — upstream
+and recovery) with
+`expected` and `steps` by `fixtures generate`.

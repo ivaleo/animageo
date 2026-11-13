@@ -58,6 +58,7 @@ import re
 from pathlib import Path
 
 from .document import as_document, iter_refs
+from .expr import problems as expr_problems, to_text as expr_text
 from .registry import registry
 from .steps import FREE_GIVEN, steps
 
@@ -236,6 +237,18 @@ def _tidy(text: str) -> str:
     return text.strip().rstrip(',;').strip()
 
 
+def _expr_text(ast, refs, namer) -> str:
+    """The text of the tree of an ``expr`` argument (``A + t·u``) with the
+    names of the items of ``refs``; empty for a tree the rules refuse."""
+    items = refs.get('items') if isinstance(refs, dict) and refs.get('kind') == 'list' else []
+    if not all(isinstance(i, dict) and i.get('kind') == 'ref' and i.get('elementId') in namer.doc.elements
+               for i in items):
+        return ''
+    if expr_problems(ast, len(items), result='vec'):             # the structure of a typed tree
+        return ''
+    return expr_text(ast, [namer.name(i['elementId']) for i in items])
+
+
 def _fill(template, op, namer, extra) -> str:
     args = op['args']
     outputs = {o['slot']: o['elementId'] for o in op['outputs'] if o['elementId'] in namer.doc.elements}
@@ -264,6 +277,8 @@ def _fill(template, op, namer, extra) -> str:
                 return namer.join(list(iter_refs(arg)))
             if kind == 'number':
                 return _number(arg['value'], namer.precision)
+            if kind == 'expr':
+                return _expr_text(arg.get('ast'), args.get('refs'), namer)
             return ''
         if key in outputs:
             return namer.name(outputs[key])
