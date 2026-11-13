@@ -57,6 +57,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   nothing to move. Drawing is unchanged; `docs/styles.md` states that
   `arc_shift_px` acts only with two or more arcs.
 
+### Fixed
+
+- Classic GGB import: `Function(<formula>, a, b)` with a formula such as
+  `If(x<0, u*x, x+u)` no longer fails with `NameError: If`. The formula is read
+  as text by the formula parser (including the numbers it refers to, which it
+  then follows) and `a`, `b` become the function's `explicit_domain`.
+
 ## [1.12.1] - 2026-11-13
 
 ### Fixed

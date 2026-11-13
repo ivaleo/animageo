@@ -17,7 +17,7 @@ from .lib_elements import *
 from .lib_conic import Conic, ConicType
 from .lib_function import Function
 from .lib_implicit import ImplicitCurve
-from .formula_params import bind_parameters
+from .formula_params import bind_parameters, formula_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -2992,10 +2992,21 @@ def line_T(expr_str):
 def function_Tn(expr_str, *params):
     """Function whose formula refers to construction objects: ``f(x) = a x²``,
     ``g(t) = y(A) t``, ``f(t) = g(t) + k`` re-read with the current values on
-    every rebuild (see ``geo/formula_params.py``)."""
+    every rebuild (see ``geo/formula_params.py``).
+
+    Two numbers after the parameters are the domain, ``Function(formula, a, b)``
+    of GeoGebra: ``explicit_domain = (a, b)``."""
     try:
-        return Function.from_string(
+        names = formula_parameters(expr_str, 'function') or []
+        domain = None
+        if len(params) == len(names) + 2:
+            domain = tuple(float(getattr(v, 'value', v)) for v in params[-2:])
+            params = params[:-2]
+        func = Function.from_string(
             expr_str, parameters=bind_parameters(expr_str, 'function', params))
+        if domain is not None:
+            func.explicit_domain = (min(domain), max(domain))
+        return func
     except ValueError as e:
         logger.warning("Function parse failed for %r: %s", expr_str, e)
         return None

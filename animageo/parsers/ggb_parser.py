@@ -16,7 +16,7 @@ from ..geo.construction import Construction
 from ..geo.intersection_binding import ImportedIntersection
 from ..geo.lib_commands import Command, COMMAND_REGISTRY, strCommand
 from ..geo.formula_params import (
-    formula_bindings, formula_objects, formula_parameters, mentioned_numbers,
+    bind_parameters, formula_bindings, formula_objects, formula_parameters, mentioned_numbers,
     mentioned_objects, parametric_inputs,
 )
 from ..geo.lib_vars import *
@@ -375,6 +375,26 @@ def _add_formula_command(constr, name, kind, expr, saved=None, debug=False) -> b
     constr.add(command)
     constr.apply(command, debug=debug)
     return True
+
+
+def _function_formula_input(constr, raw):
+    """The first input of ``Function(formula, a, b)`` as command inputs —
+    the formula text followed by the construction objects it refers to — or
+    ``None`` when it is not a formula the formula parser reads."""
+    try:
+        expr = normalize_formula_text(raw)
+        names = formula_parameters(expr, 'function')
+        if names is None:
+            return None
+        objects = formula_objects(constr)
+        if not all(name in objects for name in names):
+            return None
+        Function.from_string(expr, parameters=bind_parameters(
+            expr, 'function', [objects[n] for n in names]))
+    except Exception as e:
+        logger.debug("Function formula %r is not read as text: %s", raw, e)
+        return None
+    return [expr, *names]
 
 
 _PATH_TYPES = (Circle, Arc, Segment, Line, Ray, Conic, Function, LocusCurve, Polygon)
@@ -812,10 +832,22 @@ def parse_constr(constr: Construction, constr_xelem: XElement, debug = False):
                     # pass below and silently drops the calculation.
                     inputs[i] = inp
             
+            # ``Function(<formula>, a, b)``: the formula is text for the formula
+            # parser (``If(…)``, ``Piecewise``, references to numbers), not a
+            # Python expression of the DSL; ``a``, ``b`` are its domain.
+            formula_input = None
+            if comm_name == 'Function' and len(inputs) == 3:
+                raw_formula = list(input_xelem.attrib.values())[0]
+                if (raw_formula not in constr.name_mapping
+                        and not is_number(raw_formula)):
+                    formula_input = _function_formula_input(constr, raw_formula)
+
             # Обработка выражений во входных параметрах
             new_inputs = []
-            for inp in inputs:
-                if is_simple_value(inp):
+            for index, inp in enumerate(inputs):
+                if index == 0 and formula_input is not None:
+                    new_inputs.extend(formula_input)
+                elif is_simple_value(inp):
                     new_inputs.append(inp)
                 else:
                     # Создаем временную переменную для выражения
