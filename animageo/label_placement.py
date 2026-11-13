@@ -2160,6 +2160,45 @@ def _score_candidate(center, hw, hh, padding,
 
 # ── Greedy solver ─────────────────────────────────────────────────────
 
+def _ring_candidates(lbl, d, use_cont, continuous_steps, pref_angle, cur):
+    """The candidates of one nudge ring at distance ``d`` from the anchor as
+    ``(center, dir_idx, angle)``: the continuous sweep (round-8), or the 8
+    octants plus the exact free-gap bisector (FP-3) when no current position is
+    respected. Shared by the greedy solver and the viewport clamp."""
+    if use_cont:
+        return _generate_candidates_continuous(
+            lbl.anchor, d, continuous_steps, extra_angle=pref_angle)
+    base_cands = _generate_candidates(lbl.anchor, d)
+    cand_list = [(base_cands[i], i, None) for i in range(8)]
+    # FP-3: add the exact free-gap bisector as a continuous-angle
+    # candidate so the label lands precisely on the bisector when free.
+    if cur is None and lbl.bisector_dir is not None:
+        cand_list.append((lbl.anchor + d * lbl.bisector_dir,
+                          _nearest_dir_index(lbl.bisector_dir), None))
+    return cand_list
+
+
+def _candidate_score(c, di, a, lbl, placed, cseg, cdash, ccirc, carc, padding,
+                     weights, cost_model, cur, pref_angle):
+    """Solver cost of one candidate: the legacy ``_score_candidate`` without a
+    cost model, :meth:`LabelCostModel.candidate_cost` with one."""
+    if cost_model is None:
+        return _score_candidate(
+            c, lbl.half_w, lbl.half_h, padding,
+            placed, cseg, ccirc, carc,
+            lbl.preferred_dir, di, weights,
+        )
+    return cost_model.candidate_cost(
+        c, lbl.half_w, lbl.half_h,
+        placed, cseg, ccirc, carc,
+        lbl.preferred_dir, di, current_center=cur,
+        label_luminance=lbl.label_luminance,
+        own_anchor=lbl.anchor,
+        cand_angle=a, pref_angle=pref_angle,
+        seg_dashed=cdash,
+    )
+
+
 def _solve_greedy(labels, segments, circles, arc_pts, distance, padding, weights,
                   ptUnit=1, cost_model=None, *,
                   respect_current=False, keep_current_if_free=False,
@@ -2312,39 +2351,13 @@ def _solve_greedy(labels, segments, circles, arc_pts, distance, padding, weights
 
         for nudge in range(11):  # up to 10 nudge steps = +10px max
             d = base_dist + nudge * step
-            if use_cont:
-                cand_list = _generate_candidates_continuous(
-                    lbl.anchor, d, continuous_steps, extra_angle=pref_angle)
-            else:
-                base_cands = _generate_candidates(lbl.anchor, d)
-                cand_list = [(base_cands[i], i, None) for i in range(8)]
-                # FP-3: add the exact free-gap bisector as a continuous-angle
-                # candidate so the label lands precisely on the bisector when free.
-                if cur is None and lbl.bisector_dir is not None:
-                    cand_list.append((lbl.anchor + d * lbl.bisector_dir,
-                                      _nearest_dir_index(lbl.bisector_dir), None))
-            if cost_model is None:
-                scores = [
-                    _score_candidate(
-                        c, lbl.half_w, lbl.half_h, padding,
-                        placed, cseg, ccirc, carc,
-                        lbl.preferred_dir, di, weights,
-                    )
-                    for (c, di, _a) in cand_list
-                ]
-            else:
-                scores = [
-                    cost_model.candidate_cost(
-                        c, lbl.half_w, lbl.half_h,
-                        placed, cseg, ccirc, carc,
-                        lbl.preferred_dir, di, current_center=cur,
-                        label_luminance=lbl.label_luminance,
-                        own_anchor=lbl.anchor,
-                        cand_angle=a, pref_angle=pref_angle,
-                        seg_dashed=cdash,
-                    )
-                    for (c, di, a) in cand_list
-                ]
+            cand_list = _ring_candidates(lbl, d, use_cont, continuous_steps,
+                                         pref_angle, cur)
+            scores = [
+                _candidate_score(c, di, a, lbl, placed, cseg, cdash, ccirc, carc,
+                                 padding, weights, cost_model, cur, pref_angle)
+                for (c, di, a) in cand_list
+            ]
             best_i = int(np.argmin(scores))
             best_s = scores[best_i]
 
@@ -3063,6 +3076,153 @@ def _declutter_pass(labels, result, segments, circles, arc_pts,
             break
 
 
+def _drawn_center(center, dir_idx, half_w, half_h):
+    """Middle of the box the renderer draws for a solver ``center``.
+
+    The solver's ``center`` is where the label's anchor for ``dir_idx``
+    (``_DIR_TO_ANCHOR``: a corner or mid-edge facing the point) is put, so the
+    drawn box sits half a box further out: ``center − edge·half``
+    (``ui.create_label``; ``canonicalize`` keeps the same box)."""
+    ex, ey = ANCHOR_EDGES[_DIR_TO_ANCHOR[dir_idx]]
+    return np.array([float(center[0]) - ex * half_w, float(center[1]) - ey * half_h])
+
+
+def _box_in_frame(c, hw, hh, bounds, tol):
+    left, bottom, right, top = bounds
+    return (c[0] - hw >= left - tol and c[0] + hw <= right + tol
+            and c[1] - hh >= bottom - tol and c[1] + hh <= top + tol)
+
+
+def _box_touches_disk(c, hw, hh, centre, radius):
+    """True when the box (centre ``c``, half-sizes) enters the disk."""
+    dx = float(centre[0]) - min(max(float(centre[0]), c[0] - hw), c[0] + hw)
+    dy = float(centre[1]) - min(max(float(centre[1]), c[1] - hh), c[1] + hh)
+    return dx * dx + dy * dy < radius * radius
+
+
+def _drawn_box_harm(c, hw, hh, segments, circles, arc_pts, others, own_anchor):
+    """``(geometry, labels)`` the drawn box at ``c`` touches: curves crossing it
+    and points other than its own inside it; other labels' drawn boxes it
+    overlaps (``others``: ``(centre, hw, hh)``)."""
+    cx, cy = float(c[0]), float(c[1])
+    geom = 0
+    for p1, p2 in segments:
+        if _segment_bbox_overlap(p1, p2, cx, cy, hw, hh) > 0:
+            geom += 1
+    for cc, cr in circles:
+        if _circle_bbox_intersects(cc[0], cc[1], cr, cx, cy, hw, hh):
+            geom += 1
+    if len(arc_pts) > 0:
+        inside = ((np.abs(arc_pts[:, 0] - cx) <= hw) & (np.abs(arc_pts[:, 1] - cy) <= hh)
+                  & (np.hypot(arc_pts[:, 0] - own_anchor[0], arc_pts[:, 1] - own_anchor[1]) > 1e-9))
+        geom += int(np.sum(inside))
+    labels = sum(1 for oc, ohw, ohh in others
+                 if _bbox_overlap_area(cx, cy, hw, hh, oc[0], oc[1], ohw, ohh) > 0)
+    return geom, labels
+
+
+def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
+                         distance, padding, weights, ptUnit, *, cost_model=None,
+                         respect_current=False, continuous_steps=0, dir_tol=None):
+    """FP-9: keep every movable label's drawn box inside the frame ``bounds``.
+
+    The frame is a constraint of the layout, not a post-processing clip. A
+    label whose drawn box (:func:`_drawn_center`) leaves the frame by more than
+    half a pixel takes the cheapest candidate of the solver — the same rings
+    (base distance + 0..10 px), directions (octants + bisector, or the
+    continuous sweep) and costs as ``_solve_greedy`` — whose drawn box lies
+    wholly in the frame, clears the label's own point (``clear_radius``) and
+    touches no more geometry and no more other labels than before. Without
+    such a candidate the frame-and-point condition alone decides and the
+    least touching one wins; only when no candidate reaches into the frame
+    (its point far outside) is the drawn box clipped into it. Labels already
+    in the frame (half a pixel of slack) are left untouched; angles (fixed
+    centres) are not moved. ``result`` is mutated in place, in its order,
+    each label seeing the others' current places.
+    """
+    tol = 0.5 / ptUnit
+    step = 1.0 / ptUnit
+    by_name = {lbl.name: lbl for lbl in labels}
+    seg_dashed_full = cost_model.seg_dashed if cost_model is not None else None
+    use_cont = cost_model is not None and continuous_steps > 0
+    max_dir_penalty = (weights[0] * 4 if cost_model is None
+                       else cost_model.max_overlap_free_cost())
+    brk = dir_tol if dir_tol is not None else max_dir_penalty
+    left, bottom, right, top = bounds
+
+    for i, (name, center, dir_idx) in enumerate(result):
+        lbl = by_name.get(name)
+        if lbl is None or lbl.fixed_center is not None:
+            continue
+        hw, hh = lbl.half_w, lbl.half_h
+        drawn = _drawn_center(center, dir_idx, hw, hh)
+        if _box_in_frame(drawn, hw, hh, bounds, tol):
+            continue
+
+        placed, others = [], []
+        for j, (n2, c2, d2) in enumerate(result):
+            l2 = by_name.get(n2)
+            if j == i or l2 is None:
+                continue
+            placed.append((c2, l2.half_w + padding, l2.half_h + padding))
+            dc = (np.asarray(c2, dtype=float) if l2.fixed_center is not None
+                  else _drawn_center(c2, d2, l2.half_w, l2.half_h))
+            others.append((dc, l2.half_w, l2.half_h))
+
+        base_dist = distance + lbl.margin
+        reach = (max(base_dist + 10.0 * step,
+                     float(np.hypot(*(drawn - lbl.anchor[:2]))))
+                 + 2.0 * float(np.hypot(hw, hh)) + padding + 0.05)
+        cseg, cdash, ccirc, carc = _cull_obstacles(
+            segments, seg_dashed_full, circles, arc_pts, lbl.anchor, reach)
+        harm0 = _drawn_box_harm(drawn, hw, hh, cseg, ccirc, carc, others, lbl.anchor)
+
+        cur = lbl.current_center if respect_current else None
+        if use_cont:
+            pvec = (lbl.bisector_dir if lbl.bisector_dir is not None
+                    else _DIRECTIONS[lbl.preferred_dir])
+            pref_angle = atan2(float(pvec[1]), float(pvec[0]))
+        else:
+            pref_angle = None
+
+        best = None    # (cost, center, dir_idx): in frame, off its point, no worse
+        spare = None   # ((harm, cost), center, dir_idx): in frame, off its point
+        for nudge in range(11):
+            d = base_dist + nudge * step
+            for c, di, a in _ring_candidates(lbl, d, use_cont, continuous_steps,
+                                             pref_angle, cur):
+                dc = _drawn_center(c, di, hw, hh)
+                if not _box_in_frame(dc, hw, hh, bounds, 0.0):
+                    continue
+                if lbl.clear_radius > 0 and _box_touches_disk(
+                        dc, hw, hh, lbl.anchor, lbl.clear_radius):
+                    continue
+                geom, lab = _drawn_box_harm(dc, hw, hh, cseg, ccirc, carc,
+                                            others, lbl.anchor)
+                s = _candidate_score(c, di, a, lbl, placed, cseg, cdash, ccirc,
+                                     carc, padding, weights, cost_model, cur,
+                                     pref_angle)
+                if geom <= harm0[0] and lab <= harm0[1]:
+                    if best is None or s < best[0]:
+                        best = (s, c, di)
+                elif spare is None or (geom + lab, s) < spare[0]:
+                    spare = ((geom + lab, s), c, di)
+            # The solver's early break: a cheap enough spot ends the search.
+            if cur is None and best is not None and best[0] <= brk:
+                break
+
+        if best is not None:
+            _, new_center, new_dir = best
+        elif spare is not None:
+            _, new_center, new_dir = spare
+        else:
+            ex, ey = ANCHOR_EDGES[_DIR_TO_ANCHOR[dir_idx]]
+            vx = float(np.clip(drawn[0], left + hw, right - hw))
+            vy = float(np.clip(drawn[1], bottom + hh, top - hh))
+            new_center, new_dir = np.array([vx + ex * hw, vy + ey * hh]), dir_idx
+        result[i] = (name, np.asarray(new_center, dtype=float), new_dir)
+
+
 # ── Public API ────────────────────────────────────────────────────────
 
 DEFAULT_CONFIG = {
@@ -3145,8 +3305,9 @@ DEFAULT_CONFIG = {
     # clear (uniform, direction-preserving) instead of scanning 8 directions.
     'directional_placement': False,
     'directional_cap_px': 24.0,  # max push along the preferred direction (px)
-    # FP-9 — keep a label's bbox inside the rendered viewport so it is never
-    # cropped at the canvas edge (shifts the final center inward minimally).
+    # FP-9 — keep a label's drawn box inside the rendered viewport so it is
+    # never cropped at the canvas edge: a label that leaves it takes the best
+    # solver candidate inside, clear of its own point (``_viewport_clamp_pass``).
     'viewport_clamp': False,
     # FP-6 — final declutter: push apart label pairs left flush/overlapping by
     # the solver (near-coincident anchors), only where it does not put a label
@@ -3807,6 +3968,15 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
             clear_margin=leader_min_clear / ptUnit,
             points_only=leader_points_only)
 
+    # FP-9: the frame constrains the final places — a label whose drawn box
+    # leaves it takes the best solver candidate inside (never its own point).
+    if clamp_bounds is not None:
+        _viewport_clamp_pass(
+            labels, result, clamp_bounds, segments, circles, arc_pts,
+            distance, padding, weights, ptUnit, cost_model=cost_model,
+            respect_current=respect_any, continuous_steps=continuous_steps,
+            dir_tol=dir_tol)
+
     from .geo import lib_elements as geo
 
     labels_by_name = {lbl.name: lbl for lbl in labels}
@@ -3820,13 +3990,6 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
         anchor_pt = _get_anchor(elem, scene)
 
         is_angle = isinstance(elem.data, geo.Angle)
-        # FP-9: keep the label bbox inside the rendered viewport (static labels).
-        # Angles position via their own offset math below, so they are left out.
-        if clamp_bounds is not None and not is_angle:
-            left, bottom, right, top = clamp_bounds
-            cx = float(np.clip(center[0], left + lbl.half_w, right - lbl.half_w))
-            cy = float(np.clip(center[1], bottom + lbl.half_h, top - lbl.half_h))
-            center = np.array([cx, cy])
         offset_scene = center - anchor_pt
         if is_angle:
             label_anchor = lbl.fixed_anchor or 'MC'
