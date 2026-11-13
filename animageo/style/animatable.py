@@ -43,6 +43,8 @@ ANIMATABLE_STYLE_KEYS = {
     'hatch_spacing_px': SCALAR,
     'hatch_width_px': SCALAR,
     'hatch_opacity': SCALAR,
+    'parallel_size_px': SCALAR,
+    'parallel_shift_px': SCALAR,
     # colors
     'stroke': COLOR,
     'fill': COLOR,
@@ -66,6 +68,13 @@ ANIMATABLE_STYLE_KEYS = {
     'z_index_fill': DISCRETE,
     'fill_pattern': DISCRETE,
     'sector_sides': DISCRETE,
+    # kinds of marks (animageo/mark_shapes.py)
+    'arc_style': DISCRETE,
+    'arc_tick_count': DISCRETE,
+    'arrow_head': DISCRETE,
+    'point_fill': DISCRETE,
+    'parallel_count': DISCRETE,
+    'parallel_direction': DISCRETE,
     # semi-discrete
     'stroke_dash_ratio': DASH,
 }

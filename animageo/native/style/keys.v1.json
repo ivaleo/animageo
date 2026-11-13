@@ -20,6 +20,43 @@
      "unit": "px",
      "default": 17
     },
+    "arc_style": {
+     "unit": "enum",
+     "default": "solid",
+     "values": [
+      "solid",
+      "dashed",
+      "wave"
+     ]
+    },
+    "arc_tick_count": {
+     "unit": "count",
+     "default": 0,
+     "values": [
+      0,
+      1,
+      2,
+      3
+     ]
+    },
+    "arrow_head": {
+     "unit": "enum",
+     "default": "none",
+     "values": [
+      "none",
+      "end",
+      "start",
+      "both"
+     ]
+    },
+    "arrow_length_px": {
+     "unit": "px",
+     "default": 6.0
+    },
+    "arrow_width_px": {
+     "unit": "px",
+     "default": 4.0
+    },
     "auto_radius": {
      "unit": "bool",
      "default": true
@@ -32,9 +69,40 @@
      "unit": "opacity",
      "default": 1
     },
+    "fill_pattern": {
+     "unit": "enum",
+     "default": "solid",
+     "values": [
+      "solid",
+      "hatch",
+      "crosshatch",
+      "dots",
+      "none"
+     ]
+    },
     "font_size_px": {
      "unit": "px",
      "default": 14
+    },
+    "hatch_angle_deg": {
+     "unit": "deg",
+     "default": 45.0
+    },
+    "hatch_color": {
+     "unit": "color",
+     "default": "stroke"
+    },
+    "hatch_opacity": {
+     "unit": "opacity",
+     "default": 1.0
+    },
+    "hatch_spacing_px": {
+     "unit": "px",
+     "default": 6.0
+    },
+    "hatch_width_px": {
+     "unit": "px",
+     "default": 0.75
     },
     "label_anchor": {
      "unit": "enum",
@@ -113,6 +181,10 @@
      "unit": "color",
      "default": "#000000"
     },
+    "stroke_dash_pattern_px": {
+     "unit": "px[]",
+     "default": null
+    },
     "stroke_opacity": {
      "unit": "opacity",
      "default": 1
@@ -124,6 +196,14 @@
     "tick_count": {
      "unit": "count",
      "default": 1
+    },
+    "tick_length_px": {
+     "unit": "px",
+     "default": 9
+    },
+    "tick_shift_px": {
+     "unit": "px",
+     "default": 2
     },
     "z_index": {
      "unit": "number",
@@ -641,6 +721,32 @@
      "unit": "px",
      "default": 0.0
     },
+    "parallel_count": {
+     "unit": "count",
+     "default": 0,
+     "values": [
+      0,
+      1,
+      2,
+      3
+     ]
+    },
+    "parallel_direction": {
+     "unit": "enum",
+     "default": "forward",
+     "values": [
+      "forward",
+      "backward"
+     ]
+    },
+    "parallel_shift_px": {
+     "unit": "px",
+     "default": 3.5
+    },
+    "parallel_size_px": {
+     "unit": "px",
+     "default": 8.0
+    },
     "stroke": {
      "unit": "color",
      "default": "#000000"
@@ -738,8 +844,12 @@
    "transfers": [
     "arc_shift_px",
     "arc_size_px",
+    "arc_style",
+    "arc_tick_count",
     "stroke",
-    "tick_count"
+    "tick_count",
+    "tick_length_px",
+    "tick_shift_px"
    ]
   },
   "mark.equal_segments": {
@@ -797,9 +907,40 @@
      "unit": "opacity",
      "default": 1
     },
+    "fill_pattern": {
+     "unit": "enum",
+     "default": "solid",
+     "values": [
+      "solid",
+      "hatch",
+      "crosshatch",
+      "dots",
+      "none"
+     ]
+    },
     "font_size_px": {
      "unit": "px",
      "default": 14
+    },
+    "hatch_angle_deg": {
+     "unit": "deg",
+     "default": 45.0
+    },
+    "hatch_color": {
+     "unit": "color",
+     "default": "stroke"
+    },
+    "hatch_opacity": {
+     "unit": "opacity",
+     "default": 1.0
+    },
+    "hatch_spacing_px": {
+     "unit": "px",
+     "default": 6.0
+    },
+    "hatch_width_px": {
+     "unit": "px",
+     "default": 0.75
     },
     "label_anchor": {
      "unit": "enum",
@@ -945,6 +1086,14 @@
     "label_halo_px": {
      "unit": "px",
      "default": 0.0
+    },
+    "point_fill": {
+     "unit": "enum",
+     "default": "solid",
+     "values": [
+      "solid",
+      "hollow"
+     ]
     },
     "point_shape": {
      "unit": "enum",
@@ -1169,6 +1318,32 @@
      "unit": "px",
      "default": 0.0
     },
+    "parallel_count": {
+     "unit": "count",
+     "default": 0,
+     "values": [
+      0,
+      1,
+      2,
+      3
+     ]
+    },
+    "parallel_direction": {
+     "unit": "enum",
+     "default": "forward",
+     "values": [
+      "forward",
+      "backward"
+     ]
+    },
+    "parallel_shift_px": {
+     "unit": "px",
+     "default": 3.5
+    },
+    "parallel_size_px": {
+     "unit": "px",
+     "default": 8.0
+    },
     "stroke": {
      "unit": "color",
      "default": "#000000"
@@ -1339,6 +1514,24 @@
   "segment": {
    "style": "segment",
    "keys": {
+    "arrow_head": {
+     "unit": "enum",
+     "default": "none",
+     "values": [
+      "none",
+      "end",
+      "start",
+      "both"
+     ]
+    },
+    "arrow_length_px": {
+     "unit": "px",
+     "default": 11
+    },
+    "arrow_width_px": {
+     "unit": "px",
+     "default": 7.5
+    },
     "font_size_px": {
      "unit": "px",
      "default": 14
@@ -1385,6 +1578,32 @@
     "label_value_strip_zeros": {
      "unit": "bool",
      "default": true
+    },
+    "parallel_count": {
+     "unit": "count",
+     "default": 0,
+     "values": [
+      0,
+      1,
+      2,
+      3
+     ]
+    },
+    "parallel_direction": {
+     "unit": "enum",
+     "default": "forward",
+     "values": [
+      "forward",
+      "backward"
+     ]
+    },
+    "parallel_shift_px": {
+     "unit": "px",
+     "default": 3.5
+    },
+    "parallel_size_px": {
+     "unit": "px",
+     "default": 8.0
     },
     "stroke": {
      "unit": "color",
@@ -1547,6 +1766,32 @@
     "label_value_strip_zeros": {
      "unit": "bool",
      "default": true
+    },
+    "parallel_count": {
+     "unit": "count",
+     "default": 0,
+     "values": [
+      0,
+      1,
+      2,
+      3
+     ]
+    },
+    "parallel_direction": {
+     "unit": "enum",
+     "default": "forward",
+     "values": [
+      "forward",
+      "backward"
+     ]
+    },
+    "parallel_shift_px": {
+     "unit": "px",
+     "default": 3.5
+    },
+    "parallel_size_px": {
+     "unit": "px",
+     "default": 8.0
     },
     "stroke": {
      "unit": "color",

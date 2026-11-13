@@ -43,6 +43,21 @@ ANGLE_RANGES: tuple[str, ...] = ("minor", "reflex")
 TickStyle = Literal["line", "wave"]
 TICK_STYLES: tuple[str, ...] = ("line", "wave")
 
+# Kinds of marks (animageo/mark_shapes.py): the look of the arcs of an angle,
+# the heads at the ends of a drawn line, the fill of a point and the
+# direction of the chevrons of parallel lines.
+ArcStyle = Literal["solid", "dashed", "wave"]
+ARC_STYLES: tuple[str, ...] = ("solid", "dashed", "wave")
+
+ArrowHead = Literal["none", "end", "start", "both"]
+ARROW_HEADS: tuple[str, ...] = ("none", "end", "start", "both")
+
+PointFill = Literal["solid", "hollow"]
+POINT_FILLS: tuple[str, ...] = ("solid", "hollow")
+
+ParallelDirection = Literal["forward", "backward"]
+PARALLEL_DIRECTIONS: tuple[str, ...] = ("forward", "backward")
+
 PointDisplay = Literal["auto", "only_labels", "only_points"]
 POINT_DISPLAYS: tuple[str, ...] = ("auto", "only_labels", "only_points")
 

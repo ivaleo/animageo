@@ -33,20 +33,28 @@ _VALUE_ENUMS = {
     'label_anchor': ('TL', 'TC', 'TR', 'ML', 'MC', 'MR', 'BL', 'BC', 'BR'),
     'fill_pattern': ('solid', 'hatch', 'crosshatch', 'dots', 'none'),
     'label_angle_unit': ('degree', 'radian'),
+    # kinds of marks (animageo/mark_shapes.py)
+    'arc_style': ('solid', 'dashed', 'wave'),
+    'arrow_head': ('none', 'end', 'start', 'both'),
+    'point_fill': ('solid', 'hollow'),
+    'parallel_direction': ('forward', 'backward'),
 }
+# the values of a count key
+_COUNT_VALUES = {'arc_tick_count': (0, 1, 2, 3), 'parallel_count': (0, 1, 2, 3)}
 _UNITS = {
     'stroke': 'color', 'fill': 'color', 'label_color': 'color', 'hatch_color': 'color', 'label_halo_color': 'color',
     'stroke_width_px': 'px', 'stroke_dash_period_px': 'px', 'size_px': 'px', 'font_size_px': 'px',
     'label_radial_offset_px': 'px', 'tick_length_px': 'px', 'tick_width_px': 'px', 'tick_shift_px': 'px',
     'tick_radius_px': 'px', 'arrow_length_px': 'px', 'arrow_width_px': 'px', 'arc_size_px': 'px',
     'arc_shift_px': 'px', 'right_angle_size_px': 'px', 'hatch_spacing_px': 'px', 'hatch_width_px': 'px',
-    'label_halo_px': 'px',
+    'label_halo_px': 'px', 'parallel_size_px': 'px', 'parallel_shift_px': 'px',
     'stroke_opacity': 'opacity', 'fill_opacity': 'opacity', 'hatch_opacity': 'opacity', 'label_halo_opacity': 'opacity',
     'stroke_dash_ratio': 'ratio', 'stroke_dash_pattern_px': 'px[]', 'z_index_label': 'number',
     'hatch_angle_deg': 'deg',
-    'tick_count': 'count', 'label_value_precision': 'count',
+    'tick_count': 'count', 'label_value_precision': 'count', 'arc_tick_count': 'count', 'parallel_count': 'count',
     'point_shape': 'enum', 'stroke_linecap': 'enum', 'tick_style': 'enum', 'angle_range': 'enum',
     'right_angle_joint': 'enum', 'label_anchor': 'enum', 'fill_pattern': 'enum', 'label_angle_unit': 'enum',
+    'arc_style': 'enum', 'arrow_head': 'enum', 'point_fill': 'enum', 'parallel_direction': 'enum',
     'label_value_strip_zeros': 'bool', 'right_angle_marker': 'bool', 'auto_radius': 'bool',
     'label_value_separator': 'string',
     'z_index': 'number', 'z_index_fill': 'number',
@@ -63,15 +71,21 @@ _LABEL = ('label_color', 'font_size_px', 'label_anchor', 'z_index_label') + _HAL
 _VALUE = ('label_value_precision', 'label_value_strip_zeros', 'label_value_separator')
 _ANGLE = ('angle_range', 'arc_size_px', 'arc_shift_px', 'tick_count', 'auto_radius', 'right_angle_marker',
           'right_angle_size_px', 'right_angle_joint', 'label_radial_offset_px', 'label_angle_unit')
+# kinds of marks (animageo/mark_shapes.py): the decoration of the arcs of an
+# angle (not of a right-angle square), the chevrons of a parallel line
+_ARC_DECOR = ('arc_style', 'arc_tick_count', 'tick_length_px', 'tick_shift_px', 'arrow_head', 'arrow_length_px',
+              'arrow_width_px', 'stroke_dash_pattern_px')
+_PARALLEL = ('parallel_count', 'parallel_size_px', 'parallel_shift_px', 'parallel_direction')
 
 # document type (a mark by its operation) → (classic style type, keys read).
 _TYPES = {
-    'point': ('point', ('size_px', 'point_shape') + _STROKE + _FILL + ('z_index',) + _LABEL),
-    'segment': ('segment', _STROKE + ('stroke_linecap',) + _DASH + _TICKS + ('z_index',) + _LABEL + _VALUE),
-    'line': ('line', _STROKE + ('stroke_linecap',) + _DASH + ('z_index',) + _LABEL),
-    'ray': ('ray', _STROKE + ('stroke_linecap',) + _DASH + ('z_index',) + _LABEL),
+    'point': ('point', ('size_px', 'point_shape', 'point_fill') + _STROKE + _FILL + ('z_index',) + _LABEL),
+    'segment': ('segment', _STROKE + ('stroke_linecap',) + _DASH + _TICKS
+                + ('arrow_head', 'arrow_length_px', 'arrow_width_px') + _PARALLEL + ('z_index',) + _LABEL + _VALUE),
+    'line': ('line', _STROKE + ('stroke_linecap',) + _DASH + _PARALLEL + ('z_index',) + _LABEL),
+    'ray': ('ray', _STROKE + ('stroke_linecap',) + _DASH + _PARALLEL + ('z_index',) + _LABEL),
     'vector': ('vector', _STROKE + ('stroke_linecap',) + _DASH + _TICKS + ('arrow_length_px', 'arrow_width_px')
-               + ('z_index',) + _LABEL + _VALUE),
+               + _PARALLEL + ('z_index',) + _LABEL + _VALUE),
     'circle': ('circle', _STROKE + _DASH + _FILL + _HATCH + ('z_index', 'z_index_fill') + _LABEL + _VALUE),
     'arc': ('arc', _STROKE + ('stroke_linecap',) + _DASH + _FILL + ('z_index', 'z_index_fill') + _LABEL + _VALUE),
     # the stroke of a sector is solid; its cap counts without ``sector_sides``
@@ -86,10 +100,11 @@ _TYPES = {
     # drawn as the classic Conic (an ellipse filled, the label on the curve)
     'function': ('function', _STROKE + _DASH + ('z_index',)),
     'conic': ('conic', _STROKE + _DASH + _FILL + ('z_index', 'z_index_fill') + _LABEL),
-    'angle': ('angle', _STROKE + _FILL + _ANGLE + ('z_index',) + _LABEL + _VALUE),
-    # a right-angle mark draws the square: no arcs to count or space (with
-    # ``right_angle_marker: false`` it reads the keys of an angle, ``ineffective_reason``)
-    'mark.right_angle': ('angle', _STROKE + _FILL + tuple(k for k in _ANGLE if k not in ('tick_count', 'arc_shift_px'))
+    'angle': ('angle', _STROKE + _FILL + _HATCH + _ANGLE + _ARC_DECOR + ('z_index',) + _LABEL + _VALUE),
+    # a right-angle mark draws the square: no arcs to count, space or decorate
+    # (with ``right_angle_marker: false`` it reads the keys of an angle, ``ineffective_reason``)
+    'mark.right_angle': ('angle', _STROKE + _FILL + _HATCH
+                         + tuple(k for k in _ANGLE if k not in ('tick_count', 'arc_shift_px'))
                          + ('z_index',) + _LABEL + _VALUE),
     'text': ('text', ('label_color', 'font_size_px', 'z_index') + _HALO),
     'mark.equal_segments': (None, ('stroke', 'tick_count')),
@@ -106,7 +121,8 @@ _TYPES = {
 MARK_TRANSFERS = {
     'mark.equal_segments': ('stroke', 'tick_count', 'tick_length_px', 'tick_radius_px', 'tick_shift_px',
                             'tick_style', 'tick_width_px'),
-    'mark.equal_angles': ('stroke', 'tick_count', 'arc_shift_px', 'arc_size_px'),
+    'mark.equal_angles': ('stroke', 'tick_count', 'arc_shift_px', 'arc_size_px', 'arc_style', 'arc_tick_count',
+                          'tick_length_px', 'tick_shift_px'),
 }
 
 # Defaults the built-in style leaves to the renderer (``_build_render_ctx``,
@@ -121,6 +137,9 @@ _RENDERER_DEFAULTS = {
     'stroke_width_px': 1.0, 'font_size_px': 14.0, 'tick_length_px': 0.0, 'tick_width_px': 0.0,
     'tick_shift_px': 0.0, 'arrow_length_px': 0.0, 'arrow_width_px': 0.0, 'arc_shift_px': 0.0,
     'arc_size_px': 17.0,
+    # kinds of marks (``mark_shapes``): nothing more is drawn by default
+    'arc_style': 'solid', 'arc_tick_count': 0, 'arrow_head': 'none', 'point_fill': 'solid',
+    'parallel_count': 0, 'parallel_size_px': 8.0, 'parallel_shift_px': 3.5, 'parallel_direction': 'forward',
     # the ``rendering`` of the given style itself (``GeoStyle.rendering``, not
     # merged with the built-in one): ``label_anchor`` ``None`` is that of the
     # style, else ``BL``
@@ -134,6 +153,18 @@ _RENDERING_DEFAULTS = {
     'label_halo_px': ('label_halo_px', 0.0),
     'label_halo_color': ('label_halo_color', None),
     'label_halo_opacity': ('label_halo_opacity', 1.0),
+}
+
+# Defaults of a key by the classic type that are not in the built-in style:
+# a constant, or ``(type, key)`` of the built-in style — the ticks across the
+# arcs of an angle are those of a segment, the head of a segment that of a
+# vector (``mark_shapes``).
+_TYPE_DEFAULTS = {
+    ('angle', 'tick_length_px'): ('segment', 'tick_length_px'),
+    ('angle', 'tick_shift_px'): ('segment', 'tick_shift_px'),
+    ('angle', 'arrow_length_px'): 6.0, ('angle', 'arrow_width_px'): 4.0,
+    ('segment', 'arrow_length_px'): ('vector', 'arrow_length_px'),
+    ('segment', 'arrow_width_px'): ('vector', 'arrow_width_px'),
 }
 
 _CACHE = {}
@@ -201,6 +232,9 @@ def _default(cfg, style, key):
     value = cfg.defaults.get(style, key, _MISSING)
     if value is not _MISSING:
         return value
+    if (style, key) in _TYPE_DEFAULTS:
+        given = _TYPE_DEFAULTS[(style, key)]
+        return cfg.defaults.get(*given, None) if isinstance(given, tuple) else given
     if key in _RENDERING_DEFAULTS:
         name, fallback = _RENDERING_DEFAULTS[key]
         return cfg.rendering.get(name, fallback)
@@ -214,7 +248,7 @@ def _entry(cfg, type_):
         item = {'unit': _UNITS[key], 'default': None if type_ in MARK_TRANSFERS else _default(cfg, style, key)}
         if type_ in MARK_TRANSFERS and key == 'tick_count':
             item['values'] = [0, 1, 2, 3]
-        values = _VALUE_ENUMS.get(key)
+        values = _VALUE_ENUMS.get(key, _COUNT_VALUES.get(key))
         if key == 'point_shape':
             from ..style.enums import POINT_SHAPES
             values = POINT_SHAPES

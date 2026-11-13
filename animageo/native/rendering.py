@@ -120,6 +120,9 @@ APPEARANCE_STYLE_KEYS = frozenset({
     # angles
     'angle_range', 'arc_size_px', 'arc_shift_px', 'right_angle_size_px', 'right_angle_marker',
     'right_angle_joint', 'auto_radius',
+    # kinds of marks (animageo/mark_shapes.py)
+    'arc_style', 'arc_tick_count', 'arrow_head', 'point_fill',
+    'parallel_count', 'parallel_size_px', 'parallel_shift_px', 'parallel_direction',
     # layers
     'z_index', 'z_index_fill',
 })

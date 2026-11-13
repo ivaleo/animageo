@@ -249,6 +249,9 @@ Points
 - ``size_px`` (diameter, pixels)
 - ``point_shape`` ("circle"|"square"|"diamond"|"triangle_up"|"triangle_down"|
                    "triangle_left"|"triangle_right"|"cross"|"plus")
+- ``point_fill`` ("solid"|"hollow", default "solid"): a hollow point has a
+  hole of its own shape at half its size, in the colour of the sheet (a
+  knockout on a transparent sheet); a cross or a plus ignores it
 
 Angles
 - ``angle_range`` ("minor"|"reflex")
@@ -257,6 +260,18 @@ Angles
 - ``right_angle_size_px`` (right-angle marker size, pixels)
 - ``right_angle_marker`` (bool)
 - ``auto_radius`` (bool, opt-out from overlay.angle_radius)
+- ``arc_style`` ("solid"|"dashed"|"wave", default "solid"): the look of every
+  arc; a dashed arc is fitted 2/2 px dashes (an explicit
+  ``stroke_dash_pattern_px`` replaces them), a wave has amplitude 1 px and
+  period 6 px
+- ``arc_tick_count`` (0..3, default 0): ticks across the arcs, sized by
+  ``tick_length_px`` / ``tick_shift_px`` (those of a segment by default)
+- ``arrow_head`` ("none"|"end"|"start"|"both"): a head on the outer arc,
+  ``end`` at the second side, sized by ``arrow_length_px`` /
+  ``arrow_width_px`` (6 / 4 px by default)
+- a decorated marker (any of the three) of a right angle is drawn as arcs
+  unless ``right_angle_marker`` is ``true``
+- ``fill_pattern`` / ``hatch_*`` hatch the sector (or the square) of an angle
 
 Tick decorations (segments/vectors/angles)
 - ``tick_count`` (int), ``tick_style`` ("line"|"wave"), ``tick_radius_px``
@@ -264,6 +279,14 @@ Tick decorations (segments/vectors/angles)
 
 Arrow heads
 - ``arrow_length_px``, ``arrow_width_px`` (pixels)
+- ``arrow_head`` of a segment ("none"|"end"|"start"|"both"): heads as that
+  of a vector (its sizes by default)
+
+Parallel chevrons (segments, lines, rays, vectors)
+- ``parallel_count`` (0..3, default 0), ``parallel_size_px`` (8),
+  ``parallel_shift_px`` (3.5), ``parallel_direction`` ("forward"|"backward"):
+  chevrons in the middle of the drawn line pointing along it (past the
+  ticks when it has some)
 
 Positioning / layering
 - ``label_offset_px`` ([dx, dy], GGB pixels)

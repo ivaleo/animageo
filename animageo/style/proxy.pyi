@@ -72,6 +72,7 @@ class StyleProxy(dict):
     point_shape: str                   # 'circle', 'square', 'diamond', 'triangle_up',
                                        # 'triangle_down', 'triangle_left',
                                        # 'triangle_right', 'cross', 'plus'
+    point_fill: str                    # 'solid' or 'hollow' (a hole of the shape at half size)
 
     # ── Angle-specific ───────────────────────────────────────────
     angle_range: str                   # 'minor' or 'reflex'
@@ -80,6 +81,9 @@ class StyleProxy(dict):
     right_angle_size_px: float         # right-angle marker size in pixels
     right_angle_marker: bool           # force right-angle square marker
     auto_radius: bool                  # honour overlay.angle_radius scaling
+    arc_style: str                     # 'solid', 'dashed' or 'wave' — the look of the arcs
+    arc_tick_count: int                # 0..3 ticks across the arcs
+    arrow_head: str                    # 'none', 'end', 'start', 'both' (segments and angles)
 
     # ── Tick marks (segments / vectors / angles) ─────────────────
     tick_count: int                    # number of ticks/concentric arcs
@@ -92,6 +96,12 @@ class StyleProxy(dict):
     # ── Arrow heads ───────────────────────────────────────────────
     arrow_length_px: float             # vector arrow head length, pixels
     arrow_width_px: float              # vector arrow head width, pixels
+
+    # ── Parallel chevrons (segments / lines / rays / vectors) ────
+    parallel_count: int                # 0..3 chevrons
+    parallel_size_px: float            # chevron width across the line, pixels (8)
+    parallel_shift_px: float           # spacing between chevrons, pixels (3.5)
+    parallel_direction: str            # 'forward' or 'backward'
 
     # ── Dict API — inherited from dict ───────────────────────────
     # __getitem__, __setitem__, __contains__, get, update, keys,

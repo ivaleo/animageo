@@ -497,6 +497,9 @@
         "point_shape": {
           "$ref": "#/$defs/pointShape"
         },
+        "point_fill": {
+          "enum": ["solid", "hollow"]
+        },
         "angle_range": {
           "enum": ["minor", "reflex"]
         },
@@ -514,6 +517,14 @@
         },
         "auto_radius": {
           "type": "boolean"
+        },
+        "arc_style": {
+          "enum": ["solid", "dashed", "wave"]
+        },
+        "arc_tick_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
         },
         "tick_count": {
           "$ref": "#/$defs/nonNegativeIntegerOrRef"
@@ -538,6 +549,23 @@
         },
         "arrow_width_px": {
           "$ref": "#/$defs/numberOrRef"
+        },
+        "arrow_head": {
+          "enum": ["none", "end", "start", "both"]
+        },
+        "parallel_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "parallel_size_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "parallel_shift_px": {
+          "$ref": "#/$defs/numberOrRef"
+        },
+        "parallel_direction": {
+          "enum": ["forward", "backward"]
         }
       }
     },

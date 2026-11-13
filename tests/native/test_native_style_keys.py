@@ -54,7 +54,9 @@ class TestStyleKeys:
             assert keys['types'][type_]['keys'] == {}
         assert keys['types']['mark.equal_segments']['transfers'] == [
             'stroke', 'tick_count', 'tick_length_px', 'tick_radius_px', 'tick_shift_px', 'tick_style', 'tick_width_px']
-        assert keys['types']['mark.equal_angles']['transfers'] == ['arc_shift_px', 'arc_size_px', 'stroke', 'tick_count']
+        assert keys['types']['mark.equal_angles']['transfers'] == [
+            'arc_shift_px', 'arc_size_px', 'arc_style', 'arc_tick_count', 'stroke', 'tick_count', 'tick_length_px',
+            'tick_shift_px']
         for mark in ('mark.equal_segments', 'mark.equal_angles'):
             assert keys['types'][mark]['keys']['stroke'] == {'unit': 'color', 'default': None}
             assert keys['types'][mark]['keys']['tick_count'] == {'unit': 'count', 'default': None,
@@ -96,7 +98,11 @@ class TestStyleKeys:
         assert 'stroke_dash_ratio' not in types['polygon']['keys']      # the stroke of a polygon is solid
         assert 'stroke_dash_ratio' not in types['sector']['keys']
         assert 'z_index_fill' not in types['polygon']['keys']
-        assert 'tick_length_px' not in types['angle']['keys']
+        assert 'tick_width_px' not in types['angle']['keys']           # a tick across an arc is as wide as the arc
+        assert 'arrow_head' not in types['vector']['keys']             # the head of a vector is built in
+        assert 'arc_style' not in types['segment']['keys']
+        assert 'arc_style' not in types['mark.right_angle']['keys']    # the square has no arcs to decorate
+        assert 'point_fill' not in types['circle']['keys']
         assert 'stroke_linecap' not in types['circle']['keys']
         assert 'label_anchor' not in types['polyline']['keys']
         assert 'label_value_precision' not in types['point']['keys']   # a point has no value
@@ -110,14 +116,18 @@ class TestIneffective:
     @pytest.mark.parametrize('el_id, key, reason', [
         ('T', 'stroke_dash_ratio', 'not_read'),
         ('q', 'stroke_dash_ratio', 'not_read'),
-        ('alpha', 'tick_length_px', 'not_read'),
+        ('alpha', 'tick_width_px', 'not_read'),
+        ('v', 'arrow_head', 'not_read'),
+        ('ra', 'arc_tick_count', 'not_read'),
+        ('c', 'parallel_count', 'not_read'),
         ('A', 'tick_count', 'not_read'),
         ('c', 'stroke_linecap', 'not_read'),
         ('w', 'label_anchor', 'not_read'),
         ('t', 'stroke', 'not_read'),
         ('ra', 'tick_count', 'not_read'),
         ('n', 'stroke', 'not_drawn'),
-        ('ma', 'tick_length_px', 'mark_transfers_only'),
+        ('ma', 'tick_width_px', 'mark_transfers_only'),
+        ('ma', 'arrow_head', 'mark_transfers_only'),
     ])
     def test_warned(self, el_id, key, reason):
         b = zoo()
@@ -148,9 +158,9 @@ class TestIneffective:
         angle: their count and spacing are read, the square's are not."""
         b = zoo()
         b.doc['appearance'] = {'ra': {'overrides': {'right_angle_marker': False, 'tick_count': 2,
-                                                    'arc_shift_px': 3, 'tick_length_px': 4}}}
+                                                    'arc_shift_px': 3, 'arc_style': 'wave', 'tick_width_px': 4}}}
         _, diagnostics = plan_of(b.doc)
-        assert warnings(diagnostics) == [('ra', 'tick_length_px', 'not_read')]
+        assert warnings(diagnostics) == [('ra', 'tick_width_px', 'not_read')]
         b.doc['appearance'] = {'ra': {'overrides': {'right_angle_marker': True, 'tick_count': 2}}}
         _, diagnostics = plan_of(b.doc)
         assert warnings(diagnostics) == [('ra', 'tick_count', 'not_read')]

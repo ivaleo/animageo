@@ -114,7 +114,12 @@ class MarkerExtent:
     side of the square); ``inner_px`` — the innermost arc (the side of the
     square); ``label_px`` — the radius of the label before
     ``label_radial_offset_px``; ``right_size_px`` — the drawn
-    ``right_angle_size_px`` (the diagonal of the square), ``None`` for arcs."""
+    ``right_angle_size_px`` (the diagonal of the square), ``None`` for arcs;
+    ``overhang_px`` — how far the decoration of the arcs reaches past the
+    outer arc (:func:`animageo.mark_shapes.angle_overhang_px`; 0 without
+    one): the fit bounds ``outer_px + overhang_px``. ``shift_px`` is the
+    spacing drawn (``+ 2A`` between waves) and ``label_px`` clears the
+    decoration on the bisector (``mark_shapes.angle_label_overhang_px``)."""
     right: bool
     base_px: float
     count: int
@@ -123,11 +128,13 @@ class MarkerExtent:
     inner_px: float
     label_px: float
     right_size_px: Optional[float] = None
+    overhang_px: float = 0.0
 
 
 def marker_extent(scene, elem) -> MarkerExtent:
     """The marker of the angle ``elem`` as ``AnimaGeoScene._render_angle`` draws it."""
     from .label_placement import compute_effective_arc_size_px
+    from .mark_shapes import angle_label_overhang_px, angle_overhang_px, arc_step_px, scene_arc_decor
     from .style.resolver import resolve
 
     data = elem.data
@@ -136,13 +143,14 @@ def marker_extent(scene, elem) -> MarkerExtent:
     base = float(compute_effective_arc_size_px(elem, data, scene, base_px=arc_size, angle_range=angle_range,
                                                auto_radius=resolve(scene, elem, 'auto_radius', default=True)))
     count = int(resolve(scene, elem, 'tick_count', default=0) or 0)
-    shift = float(resolve(scene, elem, 'arc_shift_px', default=0.0) or 0.0)
+    decor = scene_arc_decor(scene, elem)
+    shift = float(arc_step_px(decor, float(resolve(scene, elem, 'arc_shift_px', default=0.0) or 0.0), count))
     explicit = bool(getattr(elem, '_native_mark_explicit', False))
     right = resolve(scene, elem, 'right_angle_marker', default=None)
     if explicit:
         right = False
-    if right is None:
-        right = is_right_angle(shown_angle(data.size, angle_range))
+    if right is None:       # a decorated marker is arcs: the square has none to decorate
+        right = not decor.forces_arcs and is_right_angle(shown_angle(data.size, angle_range))
     if right:
         overlay = getattr(getattr(scene, 'style_config', None), 'overlay', None)
         auto = getattr(overlay, 'angle_radius', None) or {}
@@ -157,7 +165,11 @@ def marker_extent(scene, elem) -> MarkerExtent:
     if outer / unit < 0.001:            # the renderer's guard
         outer = 0.2 * unit
     inner = outer - (max(count, 1) - 1) * shift
-    return MarkerExtent(False, base, count, shift, outer, inner, outer)
+    if decor.plain or count <= 0:
+        return MarkerExtent(False, base, count, shift, outer, inner, outer)
+    overhang = angle_overhang_px(decor, outer, shown_angle(data.size, angle_range))
+    return MarkerExtent(False, base, count, shift, outer, inner, outer + angle_label_overhang_px(decor),
+                        overhang_px=overhang)
 
 
 # ── the fit ──────────────────────────────────────────────────────────────
@@ -192,7 +204,8 @@ def marker_fit(scene, elem, extent: Optional[MarkerExtent] = None) -> Optional[M
     support = side_support(scene, elem)
     finite = [length for length in support if length is not None]
     limit = settings.side_fraction * min(finite) * _style_unit(scene) if finite else None
-    delta, clamped, hidden = fit_extent(extent.outer_px, extent.inner_px, limit, settings.hide_below_px)
+    delta, clamped, hidden = fit_extent(extent.outer_px + extent.overhang_px, extent.inner_px, limit,
+                                        settings.hide_below_px)
     return MarkerFit(support, limit, delta, clamped, hidden)
 
 
@@ -203,13 +216,14 @@ def max_desired_px(scene, elem) -> Optional[dict]:
 
     ``arcSizePx`` bounds the base radius of the arcs (with
     ``overlay.angle_radius`` — the scaled one), the outer arc being
-    ``(count − 1) · arc_shift_px`` further out; ``rightAngleSizePx`` bounds
+    ``(count − 1) · arc_shift_px`` further out (and its decoration
+    ``overhang_px`` past it); ``rightAngleSizePx`` bounds
     ``right_angle_size_px``."""
     extent = marker_extent(scene, elem)
     fit = marker_fit(scene, elem, extent)
     if fit is None or fit.limit_px is None:
         return None
-    reach = 0.0 if extent.right else extent.outer_px - extent.base_px
+    reach = 0.0 if extent.right else extent.outer_px + extent.overhang_px - extent.base_px
     return {'limitPx': fit.limit_px, 'arcSizePx': fit.limit_px - reach,
             'rightAngleSizePx': math.sqrt(2) * fit.limit_px}
 
