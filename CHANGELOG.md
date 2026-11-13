@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   pass already did. One pass of `native.layout_labels` (a document frame with
   pinned bounds, say) used to leave such labels to the right of their point,
   often inside an angle of the figure.
+- The command line takes a number only where the operation registry lets a
+  literal stand: in a slot of type `number`, and in a family listed in
+  `numberLiteralSince` once the document declares that registry. `ГМТ(Y, 1)`
+  used to write the number into the point slot of `locus.of_point`, which
+  validation then refused; now the command reports that the argument does not
+  fit the slot.
 
 ## [1.14.0] - 2026-11-13
 
