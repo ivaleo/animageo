@@ -494,20 +494,29 @@ def test_vector_wrapper_retains_two_endpoint_arguments(formula, saved):
     assert _op_of(doc, item)['op'] == 'vector.by_points'
 
 
-def test_a_point_by_numbers_of_objects_is_not_editable():
-    """``P = (A1, B1)``: a free point at the saved place would lose the
-    dependency on the numbers — not editable until L4 brings the ops of
-    points by coordinates (1.10.0a3; it was a false ``editable``)."""
+def test_a_point_by_numbers_is_an_editable_expression():
+    """Numeric coordinates stay live in point.expression and its dependents."""
     body = (_numeric('a', 3.0) + _numeric('b', 6.0) + expression('P', '(a, b)') + point('P', 3.0, 6.0)
             + expression('Q', '(1, 2)') + point('Q', 1.0, 2.0) + command('Midpoint', ['P', 'Q'], ['M'])
             + point('M', 2.0, 4.0))
-    _, rep = _import(ggb_bytes(body))
+    doc, rep = _import(ggb_bytes(body))
     e = _by_name(rep)
-    assert (e['P']['category'], e['P']['reason'], e['P']['detail']) == (
-        'picture', 'unsupported_signature', 'точка задана числами (координаты или параметр на пути)')
+    assert e['P']['category'] == e['M']['category'] == 'editable'
+    assert e['P']['value_check'] == e['M']['value_check'] == 'passed'
+    formula = _op_of(doc, e['P'])
+    assert formula['op'] == 'point.expression'
+    assert formula['args'] == {
+        'expr': {'kind': 'expr', 'ast': {'pair': [{'ref': 0}, {'ref': 1}]}},
+        'refs': {'kind': 'list', 'items': [{'kind': 'ref', 'elementId': e[n]['native_ids'][0]}
+                                           for n in ('a', 'b')]}}
     assert e['P']['depends_on'] == ['a', 'b']
-    assert (e['M']['category'], e['M']['reason']) == ('picture', 'depends_on_unsupported')
     assert e['Q']['category'] == e['a']['category'] == e['b']['category'] == 'editable'
+    assert _op_of(doc, e['Q'])['op'] == 'point.free'
+    assert e['P']['native_ids'][0] not in doc['inputs']
+    moved = native.evaluate(doc, inputs={e['a']['native_ids'][0]: {'kind': 'number', 'value': -1.},
+                                        e['b']['native_ids'][0]: {'kind': 'number', 'value': 8.}})
+    assert moved.elements[e['P']['native_ids'][0]]['value'] == {'x': -1., 'y': 8.}
+    assert moved.elements[e['M']['native_ids'][0]]['value'] == {'x': 0., 'y': 5.}
 
 
 def test_expressions_geogebra_writes_are_formulas():
