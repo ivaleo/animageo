@@ -165,14 +165,16 @@ def axes(args, ctx):
     return {'focal': line_through(cx, cy, ux, uy), 'conjugate': line_through(cx, cy, nx, ny)}
 
 
-@op('intersect.line_conic')
-def line_conic(args, ctx):
-    c = carrier(args['line'], ctx)
+def line_conic_points(linear, conic, ctx, line_slot: str) -> list:
+    """``[first, second]`` of a linear input and a conic (``line_param_order``):
+    the slots are fixed on the carrier line; a slot outside the segment or
+    ray is ``outside_part`` with ``detail.slot = line_slot``."""
+    c = carrier(linear, ctx)
     if isinstance(c, Undefined):
-        return {'first': c, 'second': c}
-    found = geo.line_params(args['conic'].value, c, ctx)
+        return [c, c]
+    found = geo.line_params(conic.value, c, ctx)
     if isinstance(found, str):
-        return {'first': Undefined(found), 'second': Undefined(found)}
+        return [Undefined(found), Undefined(found)]
     tol = ctx.tol.decide_length
     out = []
     for t, double in found:
@@ -181,10 +183,16 @@ def line_conic(args, ctx):
             if c.length is not None:
                 ctx.decide('outside_part', t - c.length, tol)
             if t < -tol or (c.length is not None and t > c.length + tol):
-                out.append(Undefined('outside_part', {'slot': 'line'}))
+                out.append(Undefined('outside_part', {'slot': line_slot}))
                 continue
         point = {'x': c.px + t * c.dx, 'y': c.py + t * c.dy}
         out.append(Detailed(point, dict(DOUBLE)) if double else point)
     if len(out) == 1:
         out.append(Undefined('branch_absent'))
-    return {'first': out[0], 'second': out[1]}
+    return out
+
+
+@op('intersect.line_conic')
+def line_conic(args, ctx):
+    first, second = line_conic_points(args['line'], args['conic'], ctx, 'line')
+    return {'first': first, 'second': second}

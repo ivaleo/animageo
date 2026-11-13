@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `intersect.circle_circle`.
 - `intersect.function_conic` (registry 1.8): the common points of a graph
   and a conic, circle or arc by ascending `x` in the search window.
+- `intersect.nearest` and `intersect.other_than` take a conic or a graph in
+  `first` and `second` (registry 1.8, family `curve`): the solutions and
+  their order are those of `intersect.line_conic`, `intersect.conic_conic`,
+  `intersect.function_line`, `intersect.function_function` or
+  `intersect.function_conic`. Their records stay those of registry 1.4 and
+  1.1; only a document that uses the new pairs declares 1.8.
 
 ## [1.12.1] - 2026-11-13
 

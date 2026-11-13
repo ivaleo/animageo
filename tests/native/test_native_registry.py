@@ -330,7 +330,7 @@ def test_contract_table():
     assert reg.families == {     # registry 1.4 adds arc, sector, polyline and two families
         'linear': ['line', 'segment', 'ray'],
         'circular': ['circle', 'arc'],
-        'curve': ['line', 'segment', 'ray', 'circle', 'arc'],
+        'curve': ['line', 'segment', 'ray', 'circle', 'arc', 'conic', 'function'],    # 1.8: conic, function
         'path': ['line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'circlesegment', 'polyline'],
         'round': ['circle', 'arc', 'sector', 'circlesegment'],
         'vertexed': ['segment', 'polyline', 'polygon'],

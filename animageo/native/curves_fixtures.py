@@ -215,6 +215,14 @@ class _Doc:
         return self.op('op_' + prefix, 'intersect.circle_circle', {'first': _ref(first), 'second': _ref(second)},
                        [('first', prefix + '1', 'point'), ('second', prefix + '2', 'point')])
 
+    def nearest(self, el_id, first, second, near):
+        return self.op('op_' + el_id, 'intersect.nearest',
+                       {'first': _ref(first), 'second': _ref(second), 'near': _ref(near)}, [('point', el_id, 'point')])
+
+    def other_than(self, el_id, first, second, known):
+        return self.op('op_' + el_id, 'intersect.other_than',
+                       {'first': _ref(first), 'second': _ref(second), 'known': _ref(known)}, [('point', el_id, 'point')])
+
 
 def _cases(*rows):
     """``(name, {elementId: input})`` → parity scene cases."""
@@ -503,6 +511,24 @@ def _meet_scenes():
     d.function('f', o('*', r(0), sq(o('-', X, r(1)))), 'a', 'm')
     d.free('K', 1000000, 5).free('Q', 1000004, 3).circle('k', 'K', 'Q').graph_conic('g', 'f', 'k')
     out.append((d, _cases(('four', None), ('miss', {'Q': P(1000000, 7)}), ('touching', {'Q': P(1000000, 9)}))))
+    # 9. conics and graphs in the curve slots of intersect.nearest and intersect.other_than:
+    # for each kind of pair the solution nearest to N and the other one than it
+    d = _Doc('meet_curve_slots').number('a', 0.25).number('c', 0).free('N', 3, 1)
+    d.free('F1', -3, 0).free('F2', 3, 0).free('P', 0, 4).ellipse('e', 'F1', 'F2', 'P')
+    d.free('A', -1, 0.5).free('B', 1, 0.5).line('l', 'A', 'B')
+    d.nearest('x1', 'e', 'l', 'N').other_than('y1', 'l', 'e', 'x1')
+    d.free('G1', -5, 0).free('G2', 5, 0).free('R', 3, 0).hyperbola('h', 'G1', 'G2', 'R')
+    d.nearest('x2', 'e', 'h', 'N').other_than('y2', 'h', 'e', 'x2')
+    d.function('f', o('+', o('*', r(0), sq(X)), r(1)), 'a', 'c')
+    d.free('K', 0, 5).free('Q', 4, 3).circle('k', 'K', 'Q')
+    d.nearest('x3', 'f', 'k', 'N').other_than('y3', 'k', 'f', 'x3')
+    d.nearest('x4', 'l', 'f', 'N').other_than('y4', 'f', 'l', 'x4')
+    d.function('g', o('+', X, n(1))).nearest('x5', 'f', 'g', 'N').other_than('y5', 'g', 'f', 'x5')
+    d.free('C', -4, 3).arc('w', 'K', 'C', 'Q').nearest('x6', 'w', 'f', 'N').nearest('x7', 'e', 'w', 'N')
+    d.free('S1', -1, 3).free('S2', 1, 3).segment('s', 'S1', 'S2').nearest('x8', 'f', 's', 'N')
+    out.append((d, _cases(('base', None), ('left', {'N': P(-3, 1)}), ('tangent', {'A': P(-1, 4), 'B': P(1, 4)}),
+                          ('miss', {'c': N(20)}), ('wide', {'S1': P(-4, 3), 'S2': P(4, 3)}),
+                          ('vertical', {'A': P(2, 0), 'B': P(2, 1)}), ('off_arc', {'c': N(6)}))))
     return out
 
 

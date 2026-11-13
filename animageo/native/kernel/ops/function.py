@@ -17,7 +17,7 @@ from . import op
 from .intersect import carrier
 from .locus import window
 
-__all__ = ['DOUBLE', 'function_window']
+__all__ = ['DOUBLE', 'function_function_roots', 'function_line_roots', 'function_window']
 
 DOUBLE = {'multiplicity': 2}
 
@@ -126,17 +126,15 @@ def extremum(args, ctx):
     return out
 
 
-@op('intersect.function_function')
-def function_function(args, ctx):
-    count = _count(args, ctx)
-    if not count:
-        return {}
-    first = args['first'].value
-    second = args['second'].value
+def function_function_roots(first, second, ctx):
+    """The common points of the graphs of the function values ``first`` and
+    ``second``: ``(found, point_of)`` — ``found`` the roots ``[(x,
+    multiplicity)]`` ascending, ``point_of(item)`` the point (``y`` of
+    ``first``) — or one ``Undefined`` (``no_intersection``, ``coincident``)."""
     x0, x1 = function_window(ctx)
     cut = search_interval(x0, x1, _domain(first), _domain(second))
     if cut is None:
-        return _slots('point', count, Undefined('no_intersection'))
+        return Undefined('no_intersection')
     f = evaluator(first)
     g = evaluator(second)
 
@@ -148,54 +146,66 @@ def function_function(args, ctx):
         return None if gx is None else fx - gx
     found = find_roots(h, cut[0], cut[1], ctx)
     if found is None:
-        return _slots('point', count, Undefined('coincident'))
+        return Undefined('coincident')
     if not found:
-        return _slots('point', count, Undefined('no_intersection'))
+        return Undefined('no_intersection')
 
     def point_of(item):
         y = f(item[0])
         return Undefined('non_finite') if y is None else {'x': item[0], 'y': y}
-    return _fill('point', count, found, point_of)
+    return found, point_of
 
 
-def _part(c, x, y, ctx):
-    """``Undefined('outside_part')`` when ``(x, y)`` leaves the segment or ray ``c``, else ``None``."""
+@op('intersect.function_function')
+def function_function(args, ctx):
+    count = _count(args, ctx)
+    if not count:
+        return {}
+    got = function_function_roots(args['first'].value, args['second'].value, ctx)
+    if isinstance(got, Undefined):
+        return _slots('point', count, got)
+    return _fill('point', count, *got)
+
+
+def _part(c, x, y, ctx, slot='line'):
+    """``Undefined('outside_part', {'slot': slot})`` when ``(x, y)`` leaves the
+    segment or ray ``c``, else ``None``."""
     tol = ctx.tol.decide_length
     s = (x - c.px) * c.dx + (y - c.py) * c.dy
     if c.ray:
         ctx.decide('outside_part', s, tol)
-        return Undefined('outside_part', {'slot': 'line'}) if s < -tol else None
+        return Undefined('outside_part', {'slot': slot}) if s < -tol else None
     if c.length is None:
         return None
     ctx.decide('outside_part', s, tol)
     ctx.decide('outside_part', s - c.length, tol)
     if s < -tol or s > c.length + tol:
-        return Undefined('outside_part', {'slot': 'line'})
+        return Undefined('outside_part', {'slot': slot})
     return None
 
 
-@op('intersect.function_line')
-def function_line(args, ctx):
-    count = _count(args, ctx)
-    if not count:
-        return {}
-    value = args['function'].value
-    c = carrier(args['line'], ctx)
+def function_line_roots(value, linear, ctx, line_slot='line'):
+    """The common points of the graph of the function value ``value`` and a
+    linear input: ``(found, point_of)`` — ``found`` the roots ``[(x,
+    multiplicity)]`` ascending, ``point_of(item)`` the point or
+    ``outside_part`` with ``detail.slot = line_slot`` — or one ``Undefined``
+    (``zero_length``, ``no_intersection``, ``coincident``)."""
+    c = carrier(linear, ctx)
     if isinstance(c, Undefined):
-        return _slots('point', count, c)
+        return c
     f = evaluator(value)
     ctx.decide('vertical', c.dx, ctx.tol.decide_scalar)
     if abs(c.dx) <= ctx.tol.decide_scalar:            # a vertical line: at most one point
         x = c.px
         y = f(x)
         if y is None:
-            return _slots('point', count, Undefined('no_intersection'))
-        point = _part(c, x, y, ctx) or {'x': x, 'y': y}
-        return _fill('point', count, [(x, 1)], lambda item: point)
+            return Undefined('no_intersection')
+        point = _part(c, x, y, ctx, line_slot) or {'x': x, 'y': y}
+        return [(x, 1)], lambda item: point
     x0, x1 = function_window(ctx)
     cut = search_interval(x0, x1, _domain(value))
     if cut is None:
-        return _slots('point', count, Undefined('no_intersection'))
+        return Undefined('no_intersection')
     slope = c.dy / c.dx
 
     def h(x):
@@ -203,15 +213,26 @@ def function_line(args, ctx):
         return None if fx is None else fx - (c.py + (x - c.px) * slope)
     found = find_roots(h, cut[0], cut[1], ctx)
     if found is None:
-        return _slots('point', count, Undefined('coincident'))
+        return Undefined('coincident')
     if not found:
-        return _slots('point', count, Undefined('no_intersection'))
+        return Undefined('no_intersection')
 
     def point_of(item):
         x = item[0]
         y = c.py + (x - c.px) * slope
-        return _part(c, x, y, ctx) or {'x': x, 'y': y}
-    return _fill('point', count, found, point_of)    # a slot outside the part has no multiplicity
+        return _part(c, x, y, ctx, line_slot) or {'x': x, 'y': y}
+    return found, point_of
+
+
+@op('intersect.function_line')
+def function_line(args, ctx):
+    count = _count(args, ctx)
+    if not count:
+        return {}
+    got = function_line_roots(args['function'].value, args['line'], ctx)
+    if isinstance(got, Undefined):
+        return _slots('point', count, got)
+    return _fill('point', count, *got)    # a slot outside the part has no multiplicity
 
 
 @op('point.on_function')

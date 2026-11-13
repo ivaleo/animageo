@@ -98,7 +98,7 @@
   "families": {
     "linear": ["line", "segment", "ray"],
     "circular": ["circle", "arc"],
-    "curve": ["line", "segment", "ray", "circle", "arc"],
+    "curve": ["line", "segment", "ray", "circle", "arc", "conic", "function"],
     "conical": ["conic", "circle", "arc"],
     "path": ["line", "segment", "ray", "circle", "polygon", "arc", "sector", "circlesegment", "polyline"],
     "round": ["circle", "arc", "sector", "circlesegment"],
@@ -109,6 +109,9 @@
     "transformable": ["point", "segment", "ray", "line", "vector", "circle", "arc", "sector", "circlesegment", "polygon"],
     "insertable": ["number", "point"],
     "locus_driver": ["point", "number"]
+  },
+  "familySince": {
+    "curve": {"conic": "1.8", "function": "1.8"}
   },
   "paths": {
     "segment": {

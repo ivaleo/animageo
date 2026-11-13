@@ -241,15 +241,7 @@ def other_than(args, ctx):
     first = args['first']
     second = args['second']
     known = args['known'].value
-    if first.type in _LINEAR and second.type in _LINEAR:
-        roots = [line_line_point(first, second, ctx)]
-    elif first.type in _LINEAR:
-        roots = line_circle_points(first, second, ctx, 'first')
-    elif second.type in _LINEAR:
-        roots = line_circle_points(second, first, ctx, 'second')
-    else:
-        roots = circle_circle_points(first, second, ctx)
-    roots = [_plain(r) for r in _filter_both(roots, first, second, ctx)]
+    roots = _pair_roots(first, second, ctx)
     defined = [i for i, r in enumerate(roots) if not isinstance(r, Undefined)]
     if not defined:
         return {'point': roots[0]}
@@ -273,10 +265,17 @@ def other_than(args, ctx):
     return {'point': Undefined('branch_absent')}
 
 
+_MEET = ('conic', 'function')
+
+
 def _pair_roots(first, second, ctx) -> list:
     """The solutions of a curve pair in the order of its policy, filtered by
-    the parts (an arc, a segment, a ray), as plain points or Undefined."""
-    if first.type in _LINEAR and second.type in _LINEAR:
+    the parts (an arc, a segment, a ray), as plain points or Undefined; a
+    conic or a graph (registry 1.8) by :func:`.meet.pair_roots`."""
+    if first.type in _MEET or second.type in _MEET:
+        from .meet import pair_roots
+        roots = pair_roots(first, second, ctx)
+    elif first.type in _LINEAR and second.type in _LINEAR:
         roots = [line_line_point(first, second, ctx)]
     elif first.type in _LINEAR:
         roots = line_circle_points(first, second, ctx, 'first')

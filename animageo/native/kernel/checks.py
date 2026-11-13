@@ -151,7 +151,13 @@ def _incident_both(args, result, tol):
 
 
 def _distance_to_input(x, y, inp, ctx):
-    """Distance from ``(x, y)`` to a circle or to the carrier line of a linear input."""
+    """Distance from ``(x, y)`` to a circle or to the carrier line of a linear
+    input; registry 1.8: the focal residual of a conic, ``|y − f(x)|`` of a
+    graph (``∞`` where ``f`` has no value)."""
+    if inp.type == 'conic':
+        return _off_conic(inp.value, ({'x': x, 'y': y},))
+    if inp.type == 'function':
+        return _off_graph(inp.value, ({'x': x, 'y': y},))
     if inp.type in ('circle', 'arc'):
         v = inp.value
         return abs(math.hypot(x - v['c'][0], y - v['c'][1]) - v['r'])

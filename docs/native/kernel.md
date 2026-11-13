@@ -307,7 +307,7 @@ a new registry version. `beta` may become `stable` at any time.
   |---|---|
   | `linear` | `line`, `segment`, `ray` |
   | `circular` | `circle`, `arc` (1.4) |
-  | `curve` | `line`, `segment`, `ray`, `circle`, `arc` (1.4) |
+  | `curve` | `line`, `segment`, `ray`, `circle`, `arc` (1.4), `conic`, `function` (1.8) |
   | `path` | `line`, `segment`, `ray`, `circle`, `polygon`, `arc`, `sector`, `polyline` (1.4) |
   | `round` (1.4) | `circle`, `arc`, `sector` |
   | `vertexed` (1.4) | `segment`, `polyline`, `polygon` |
@@ -1681,7 +1681,7 @@ Operations `since: "1.6"`, `beta` (formulas, decisions and checks in
   aside) and replays every case. The coverage tests of the parity set and
   the registry mix of L6 read them with `parity/v1/expected`.
 
-## 15. Registry 1.8: common points of conics
+## 15. Registry 1.8: common points of conics and graphs
 
 Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
 `docs/native/ops/<op>.md`); a document that uses one declares 1.8 (§2).
@@ -1715,10 +1715,24 @@ Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
   the grid of §14 over the x-range of `B4` cut by the domain, as
   `intersect.function_function`: policy `roots_ascending`, a tangency in two
   slots, a point off an arc `outside_part` (`detail.slot: "conic"`).
+- Family `curve` takes `conic` and `function` (`_types.json → familySince`:
+  `{"curve": {"conic": "1.8", "function": "1.8"}}`), so
+  `intersect.nearest` and `intersect.other_than` meet them; their records
+  and signatures stay those of 1.4 and 1.1, and only a document that puts a
+  conic or a graph in such a slot declares 1.8. The solutions of a pair are
+  those of its operation, in its order: graph × graph, graph × linear and
+  graph × conic, circle or arc by `x` (`intersect.function_function`,
+  `intersect.function_line`, `intersect.function_conic`), linear × conic
+  along the line (`intersect.line_conic`), conic × conic, circle or arc by
+  `first_curve_order` (`intersect.conic_conic`); `detail.slot` of an
+  `outside_part` names `first` or `second`. `on_both` measures the focal
+  residual of a conic and `|y − f(x)|` of a graph.
 - «Команды»: no commands for them yet (`commands.lexicon.deferred_op`, as §14).
 - Parity fixtures: the scenes `meet_*` of `parity/v1/curves`
   (`curves_fixtures.py`; `meet_graph_*` for the graphs), every reason of the operations, tangency,
   coincidence, close roots, a miss and the recovery, far coordinates, and
   `meet_seam`: a point crossing the seam swaps two slots between the cases
-  `near_before` and `after`. The DSL map lists the operations in
-  `opsWithoutClassic` until the GGB import maps them.
+  `near_before` and `after`; `meet_curve_slots`: `intersect.nearest` and
+  `intersect.other_than` on every kind of pair with a conic or a graph,
+  including a tangency, a vertical line, a part and an arc. The DSL map
+  lists the operations in `opsWithoutClassic` until the GGB import maps them.

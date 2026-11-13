@@ -1,0 +1,5958 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "meet_curve_slots",
+ "registry": "1.8",
+ "generatedBy": "animageo 1.12.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "meet_curve_slots",
+  "operationRegistryVersion": "1.8",
+  "operations": {
+   "op_a": {
+    "id": "op_a",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "a"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_N": {
+    "id": "op_N",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "N"
+     }
+    ]
+   },
+   "op_F1": {
+    "id": "op_F1",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F1"
+     }
+    ]
+   },
+   "op_F2": {
+    "id": "op_F2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "F2"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_e": {
+    "id": "op_e",
+    "op": "conic.ellipse_foci_point",
+    "args": {
+     "f1": {
+      "kind": "ref",
+      "elementId": "F1"
+     },
+     "f2": {
+      "kind": "ref",
+      "elementId": "F2"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "P"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "e"
+     }
+    ]
+   },
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_l": {
+    "id": "op_l",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "l"
+     }
+    ]
+   },
+   "op_x1": {
+    "id": "op_x1",
+    "op": "intersect.nearest",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "e"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "l"
+     },
+     "near": {
+      "kind": "ref",
+      "elementId": "N"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "x1"
+     }
+    ]
+   },
+   "op_y1": {
+    "id": "op_y1",
+    "op": "intersect.other_than",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "l"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "e"
+     },
+     "known": {
+      "kind": "ref",
+      "elementId": "x1"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "y1"
+     }
+    ]
+   },
+   "op_G1": {
+    "id": "op_G1",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "G1"
+     }
+    ]
+   },
+   "op_G2": {
+    "id": "op_G2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "G2"
+     }
+    ]
+   },
+   "op_R": {
+    "id": "op_R",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "R"
+     }
+    ]
+   },
+   "op_h": {
+    "id": "op_h",
+    "op": "conic.hyperbola_foci_point",
+    "args": {
+     "f1": {
+      "kind": "ref",
+      "elementId": "G1"
+     },
+     "f2": {
+      "kind": "ref",
+      "elementId": "G2"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "R"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "h"
+     }
+    ]
+   },
+   "op_x2": {
+    "id": "op_x2",
+    "op": "intersect.nearest",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "e"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "h"
+     },
+     "near": {
+      "kind": "ref",
+      "elementId": "N"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "x2"
+     }
+    ]
+   },
+   "op_y2": {
+    "id": "op_y2",
+    "op": "intersect.other_than",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "h"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "e"
+     },
+     "known": {
+      "kind": "ref",
+      "elementId": "x2"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "y2"
+     }
+    ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "a"
+       },
+       {
+        "kind": "ref",
+        "elementId": "c"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_K": {
+    "id": "op_K",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "K"
+     }
+    ]
+   },
+   "op_Q": {
+    "id": "op_Q",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Q"
+     }
+    ]
+   },
+   "op_k": {
+    "id": "op_k",
+    "op": "circle.center_point",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "K"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "Q"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "circle",
+      "elementId": "k"
+     }
+    ]
+   },
+   "op_x3": {
+    "id": "op_x3",
+    "op": "intersect.nearest",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "k"
+     },
+     "near": {
+      "kind": "ref",
+      "elementId": "N"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "x3"
+     }
+    ]
+   },
+   "op_y3": {
+    "id": "op_y3",
+    "op": "intersect.other_than",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "k"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "known": {
+      "kind": "ref",
+      "elementId": "x3"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "y3"
+     }
+    ]
+   },
+   "op_x4": {
+    "id": "op_x4",
+    "op": "intersect.nearest",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "l"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "near": {
+      "kind": "ref",
+      "elementId": "N"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "x4"
+     }
+    ]
+   },
+   "op_y4": {
+    "id": "op_y4",
+    "op": "intersect.other_than",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "l"
+     },
+     "known": {
+      "kind": "ref",
+      "elementId": "x4"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "y4"
+     }
+    ]
+   },
+   "op_g": {
+    "id": "op_g",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "g"
+     }
+    ]
+   },
+   "op_x5": {
+    "id": "op_x5",
+    "op": "intersect.nearest",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "g"
+     },
+     "near": {
+      "kind": "ref",
+      "elementId": "N"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "x5"
+     }
+    ]
+   },
+   "op_y5": {
+    "id": "op_y5",
+    "op": "intersect.other_than",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "g"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "known": {
+      "kind": "ref",
+      "elementId": "x5"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "y5"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_w": {
+    "id": "op_w",
+    "op": "arc.center_two_points",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "K"
+     },
+     "a": {
+      "kind": "ref",
+      "elementId": "C"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "Q"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "arc",
+      "elementId": "w"
+     }
+    ]
+   },
+   "op_x6": {
+    "id": "op_x6",
+    "op": "intersect.nearest",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "w"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "near": {
+      "kind": "ref",
+      "elementId": "N"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "x6"
+     }
+    ]
+   },
+   "op_x7": {
+    "id": "op_x7",
+    "op": "intersect.nearest",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "e"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "w"
+     },
+     "near": {
+      "kind": "ref",
+      "elementId": "N"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "x7"
+     }
+    ]
+   },
+   "op_S1": {
+    "id": "op_S1",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "S1"
+     }
+    ]
+   },
+   "op_S2": {
+    "id": "op_S2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "S2"
+     }
+    ]
+   },
+   "op_s": {
+    "id": "op_s",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "S1"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "S2"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "s"
+     }
+    ]
+   },
+   "op_x8": {
+    "id": "op_x8",
+    "op": "intersect.nearest",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "s"
+     },
+     "near": {
+      "kind": "ref",
+      "elementId": "N"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "x8"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "a": {
+    "id": "a",
+    "type": "number",
+    "displayName": "a",
+    "producer": {
+     "operationId": "op_a",
+     "slot": "number"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "number",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "number"
+    }
+   },
+   "N": {
+    "id": "N",
+    "type": "point",
+    "displayName": "N",
+    "producer": {
+     "operationId": "op_N",
+     "slot": "point"
+    }
+   },
+   "F1": {
+    "id": "F1",
+    "type": "point",
+    "displayName": "F1",
+    "producer": {
+     "operationId": "op_F1",
+     "slot": "point"
+    }
+   },
+   "F2": {
+    "id": "F2",
+    "type": "point",
+    "displayName": "F2",
+    "producer": {
+     "operationId": "op_F2",
+     "slot": "point"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "e": {
+    "id": "e",
+    "type": "conic",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "conic"
+    }
+   },
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "l": {
+    "id": "l",
+    "type": "line",
+    "displayName": "l",
+    "producer": {
+     "operationId": "op_l",
+     "slot": "line"
+    }
+   },
+   "x1": {
+    "id": "x1",
+    "type": "point",
+    "displayName": "x1",
+    "producer": {
+     "operationId": "op_x1",
+     "slot": "point"
+    }
+   },
+   "y1": {
+    "id": "y1",
+    "type": "point",
+    "displayName": "y1",
+    "producer": {
+     "operationId": "op_y1",
+     "slot": "point"
+    }
+   },
+   "G1": {
+    "id": "G1",
+    "type": "point",
+    "displayName": "G1",
+    "producer": {
+     "operationId": "op_G1",
+     "slot": "point"
+    }
+   },
+   "G2": {
+    "id": "G2",
+    "type": "point",
+    "displayName": "G2",
+    "producer": {
+     "operationId": "op_G2",
+     "slot": "point"
+    }
+   },
+   "R": {
+    "id": "R",
+    "type": "point",
+    "displayName": "R",
+    "producer": {
+     "operationId": "op_R",
+     "slot": "point"
+    }
+   },
+   "h": {
+    "id": "h",
+    "type": "conic",
+    "displayName": "h",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "conic"
+    }
+   },
+   "x2": {
+    "id": "x2",
+    "type": "point",
+    "displayName": "x2",
+    "producer": {
+     "operationId": "op_x2",
+     "slot": "point"
+    }
+   },
+   "y2": {
+    "id": "y2",
+    "type": "point",
+    "displayName": "y2",
+    "producer": {
+     "operationId": "op_y2",
+     "slot": "point"
+    }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "K": {
+    "id": "K",
+    "type": "point",
+    "displayName": "K",
+    "producer": {
+     "operationId": "op_K",
+     "slot": "point"
+    }
+   },
+   "Q": {
+    "id": "Q",
+    "type": "point",
+    "displayName": "Q",
+    "producer": {
+     "operationId": "op_Q",
+     "slot": "point"
+    }
+   },
+   "k": {
+    "id": "k",
+    "type": "circle",
+    "displayName": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "circle"
+    }
+   },
+   "x3": {
+    "id": "x3",
+    "type": "point",
+    "displayName": "x3",
+    "producer": {
+     "operationId": "op_x3",
+     "slot": "point"
+    }
+   },
+   "y3": {
+    "id": "y3",
+    "type": "point",
+    "displayName": "y3",
+    "producer": {
+     "operationId": "op_y3",
+     "slot": "point"
+    }
+   },
+   "x4": {
+    "id": "x4",
+    "type": "point",
+    "displayName": "x4",
+    "producer": {
+     "operationId": "op_x4",
+     "slot": "point"
+    }
+   },
+   "y4": {
+    "id": "y4",
+    "type": "point",
+    "displayName": "y4",
+    "producer": {
+     "operationId": "op_y4",
+     "slot": "point"
+    }
+   },
+   "g": {
+    "id": "g",
+    "type": "function",
+    "displayName": "g",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "function"
+    }
+   },
+   "x5": {
+    "id": "x5",
+    "type": "point",
+    "displayName": "x5",
+    "producer": {
+     "operationId": "op_x5",
+     "slot": "point"
+    }
+   },
+   "y5": {
+    "id": "y5",
+    "type": "point",
+    "displayName": "y5",
+    "producer": {
+     "operationId": "op_y5",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "w": {
+    "id": "w",
+    "type": "arc",
+    "displayName": "w",
+    "producer": {
+     "operationId": "op_w",
+     "slot": "arc"
+    }
+   },
+   "x6": {
+    "id": "x6",
+    "type": "point",
+    "displayName": "x6",
+    "producer": {
+     "operationId": "op_x6",
+     "slot": "point"
+    }
+   },
+   "x7": {
+    "id": "x7",
+    "type": "point",
+    "displayName": "x7",
+    "producer": {
+     "operationId": "op_x7",
+     "slot": "point"
+    }
+   },
+   "S1": {
+    "id": "S1",
+    "type": "point",
+    "displayName": "S1",
+    "producer": {
+     "operationId": "op_S1",
+     "slot": "point"
+    }
+   },
+   "S2": {
+    "id": "S2",
+    "type": "point",
+    "displayName": "S2",
+    "producer": {
+     "operationId": "op_S2",
+     "slot": "point"
+    }
+   },
+   "s": {
+    "id": "s",
+    "type": "segment",
+    "displayName": "s",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "segment"
+    }
+   },
+   "x8": {
+    "id": "x8",
+    "type": "point",
+    "displayName": "x8",
+    "producer": {
+     "operationId": "op_x8",
+     "slot": "point"
+    }
+   }
+  },
+  "inputs": {
+   "a": {
+    "kind": "number",
+    "value": 0.25
+   },
+   "c": {
+    "kind": "number",
+    "value": 0.0
+   },
+   "N": {
+    "kind": "point",
+    "value": [
+     3.0,
+     1.0
+    ]
+   },
+   "F1": {
+    "kind": "point",
+    "value": [
+     -3.0,
+     0.0
+    ]
+   },
+   "F2": {
+    "kind": "point",
+    "value": [
+     3.0,
+     0.0
+    ]
+   },
+   "P": {
+    "kind": "point",
+    "value": [
+     0.0,
+     4.0
+    ]
+   },
+   "A": {
+    "kind": "point",
+    "value": [
+     -1.0,
+     0.5
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     1.0,
+     0.5
+    ]
+   },
+   "G1": {
+    "kind": "point",
+    "value": [
+     -5.0,
+     0.0
+    ]
+   },
+   "G2": {
+    "kind": "point",
+    "value": [
+     5.0,
+     0.0
+    ]
+   },
+   "R": {
+    "kind": "point",
+    "value": [
+     3.0,
+     0.0
+    ]
+   },
+   "K": {
+    "kind": "point",
+    "value": [
+     0.0,
+     5.0
+    ]
+   },
+   "Q": {
+    "kind": "point",
+    "value": [
+     4.0,
+     3.0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     -4.0,
+     3.0
+    ]
+   },
+   "S1": {
+    "kind": "point",
+    "value": [
+     -1.0,
+     3.0
+    ]
+   },
+   "S2": {
+    "kind": "point",
+    "value": [
+     1.0,
+     3.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "base",
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.5
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.5
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "N": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 1.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 3.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       0.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.5
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -1.0,
+       3.0
+      ],
+      "b": [
+       1.0,
+       3.0
+      ],
+      "length": 2.0
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 3.605240263,
+      "a1": 5.819537698
+     }
+    },
+    "x1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.960783708,
+      "y": 0.5
+     }
+    },
+    "x2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.638034376,
+      "y": 2.743977362
+     }
+    },
+    "x3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "x4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.414213562,
+      "y": 0.5
+     }
+    },
+    "x5": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -0.828427125,
+      "y": 0.171572875
+     }
+    },
+    "x6": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "x7": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.783261071,
+      "y": 2.615270316
+     }
+    },
+    "x8": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "second"
+     }
+    },
+    "y1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.960783708,
+      "y": 0.5
+     }
+    },
+    "y2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.638034376,
+      "y": -2.743977362
+     }
+    },
+    "y3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.472135955,
+      "y": 5.0
+     }
+    },
+    "y4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.414213562,
+      "y": 0.5
+     }
+    },
+    "y5": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.828427125,
+      "y": 5.828427125
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_h:on_curve": "passed",
+    "op_h:foci": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_s:ends": "passed",
+    "op_w:ends": "passed",
+    "op_x1:on_both": "passed",
+    "op_x2:on_both": "passed",
+    "op_x3:on_both": "passed",
+    "op_x4:on_both": "passed",
+    "op_x5:on_both": "passed",
+    "op_x6:on_both": "passed",
+    "op_x7:on_both": "passed",
+    "op_y1:on_both": "passed",
+    "op_y2:on_both": "passed",
+    "op_y3:on_both": "passed",
+    "op_y4:on_both": "passed",
+    "op_y5:on_both": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      25.0
+     ],
+     [
+      -9.375,
+      21.97265625
+     ],
+     [
+      -8.75,
+      19.140625
+     ],
+     [
+      -8.125,
+      16.50390625
+     ],
+     [
+      -7.5,
+      14.0625
+     ],
+     [
+      -6.875,
+      11.81640625
+     ],
+     [
+      -6.25,
+      9.765625
+     ],
+     [
+      -5.625,
+      7.91015625
+     ],
+     [
+      -5.0,
+      6.25
+     ],
+     [
+      -4.375,
+      4.78515625
+     ],
+     [
+      -3.75,
+      3.515625
+     ],
+     [
+      -3.125,
+      2.44140625
+     ],
+     [
+      -2.5,
+      1.5625
+     ],
+     [
+      -1.875,
+      0.87890625
+     ],
+     [
+      -1.25,
+      0.390625
+     ],
+     [
+      -0.625,
+      0.09765625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.09765625
+     ],
+     [
+      1.25,
+      0.390625
+     ],
+     [
+      1.875,
+      0.87890625
+     ],
+     [
+      2.5,
+      1.5625
+     ],
+     [
+      3.125,
+      2.44140625
+     ],
+     [
+      3.75,
+      3.515625
+     ],
+     [
+      4.375,
+      4.78515625
+     ],
+     [
+      5.0,
+      6.25
+     ],
+     [
+      5.625,
+      7.91015625
+     ],
+     [
+      6.25,
+      9.765625
+     ],
+     [
+      6.875,
+      11.81640625
+     ],
+     [
+      7.5,
+      14.0625
+     ],
+     [
+      8.125,
+      16.50390625
+     ],
+     [
+      8.75,
+      19.140625
+     ],
+     [
+      9.375,
+      21.97265625
+     ],
+     [
+      10.0,
+      25.0
+     ]
+    ],
+    "g": [
+     [
+      -10.0,
+      -9.0
+     ],
+     [
+      -9.375,
+      -8.375
+     ],
+     [
+      -8.75,
+      -7.75
+     ],
+     [
+      -8.125,
+      -7.125
+     ],
+     [
+      -7.5,
+      -6.5
+     ],
+     [
+      -6.875,
+      -5.875
+     ],
+     [
+      -6.25,
+      -5.25
+     ],
+     [
+      -5.625,
+      -4.625
+     ],
+     [
+      -5.0,
+      -4.0
+     ],
+     [
+      -4.375,
+      -3.375
+     ],
+     [
+      -3.75,
+      -2.75
+     ],
+     [
+      -3.125,
+      -2.125
+     ],
+     [
+      -2.5,
+      -1.5
+     ],
+     [
+      -1.875,
+      -0.875
+     ],
+     [
+      -1.25,
+      -0.25
+     ],
+     [
+      -0.625,
+      0.375
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.625
+     ],
+     [
+      1.25,
+      2.25
+     ],
+     [
+      1.875,
+      2.875
+     ],
+     [
+      2.5,
+      3.5
+     ],
+     [
+      3.125,
+      4.125
+     ],
+     [
+      3.75,
+      4.75
+     ],
+     [
+      4.375,
+      5.375
+     ],
+     [
+      5.0,
+      6.0
+     ],
+     [
+      5.625,
+      6.625
+     ],
+     [
+      6.25,
+      7.25
+     ],
+     [
+      6.875,
+      7.875
+     ],
+     [
+      7.5,
+      8.5
+     ],
+     [
+      8.125,
+      9.125
+     ],
+     [
+      8.75,
+      9.75
+     ],
+     [
+      9.375,
+      10.375
+     ],
+     [
+      10.0,
+      11.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "left",
+   "inputs": {
+    "N": {
+     "kind": "point",
+     "value": [
+      -3.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.5
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.5
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "N": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 1.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 3.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       0.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.5
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -1.0,
+       3.0
+      ],
+      "b": [
+       1.0,
+       3.0
+      ],
+      "length": 2.0
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 3.605240263,
+      "a1": 5.819537698
+     }
+    },
+    "x1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.960783708,
+      "y": 0.5
+     }
+    },
+    "x2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.638034376,
+      "y": 2.743977362
+     }
+    },
+    "x3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 1.0
+     }
+    },
+    "x4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.414213562,
+      "y": 0.5
+     }
+    },
+    "x5": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -0.828427125,
+      "y": 0.171572875
+     }
+    },
+    "x6": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 1.0
+     }
+    },
+    "x7": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.783261071,
+      "y": 2.615270316
+     }
+    },
+    "x8": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "second"
+     }
+    },
+    "y1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.960783708,
+      "y": 0.5
+     }
+    },
+    "y2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.638034376,
+      "y": -2.743977362
+     }
+    },
+    "y3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.472135955,
+      "y": 5.0
+     }
+    },
+    "y4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.414213562,
+      "y": 0.5
+     }
+    },
+    "y5": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.828427125,
+      "y": 5.828427125
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_h:on_curve": "passed",
+    "op_h:foci": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_s:ends": "passed",
+    "op_w:ends": "passed",
+    "op_x1:on_both": "passed",
+    "op_x2:on_both": "passed",
+    "op_x3:on_both": "passed",
+    "op_x4:on_both": "passed",
+    "op_x5:on_both": "passed",
+    "op_x6:on_both": "passed",
+    "op_x7:on_both": "passed",
+    "op_y1:on_both": "passed",
+    "op_y2:on_both": "passed",
+    "op_y3:on_both": "passed",
+    "op_y4:on_both": "passed",
+    "op_y5:on_both": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      25.0
+     ],
+     [
+      -9.375,
+      21.97265625
+     ],
+     [
+      -8.75,
+      19.140625
+     ],
+     [
+      -8.125,
+      16.50390625
+     ],
+     [
+      -7.5,
+      14.0625
+     ],
+     [
+      -6.875,
+      11.81640625
+     ],
+     [
+      -6.25,
+      9.765625
+     ],
+     [
+      -5.625,
+      7.91015625
+     ],
+     [
+      -5.0,
+      6.25
+     ],
+     [
+      -4.375,
+      4.78515625
+     ],
+     [
+      -3.75,
+      3.515625
+     ],
+     [
+      -3.125,
+      2.44140625
+     ],
+     [
+      -2.5,
+      1.5625
+     ],
+     [
+      -1.875,
+      0.87890625
+     ],
+     [
+      -1.25,
+      0.390625
+     ],
+     [
+      -0.625,
+      0.09765625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.09765625
+     ],
+     [
+      1.25,
+      0.390625
+     ],
+     [
+      1.875,
+      0.87890625
+     ],
+     [
+      2.5,
+      1.5625
+     ],
+     [
+      3.125,
+      2.44140625
+     ],
+     [
+      3.75,
+      3.515625
+     ],
+     [
+      4.375,
+      4.78515625
+     ],
+     [
+      5.0,
+      6.25
+     ],
+     [
+      5.625,
+      7.91015625
+     ],
+     [
+      6.25,
+      9.765625
+     ],
+     [
+      6.875,
+      11.81640625
+     ],
+     [
+      7.5,
+      14.0625
+     ],
+     [
+      8.125,
+      16.50390625
+     ],
+     [
+      8.75,
+      19.140625
+     ],
+     [
+      9.375,
+      21.97265625
+     ],
+     [
+      10.0,
+      25.0
+     ]
+    ],
+    "g": [
+     [
+      -10.0,
+      -9.0
+     ],
+     [
+      -9.375,
+      -8.375
+     ],
+     [
+      -8.75,
+      -7.75
+     ],
+     [
+      -8.125,
+      -7.125
+     ],
+     [
+      -7.5,
+      -6.5
+     ],
+     [
+      -6.875,
+      -5.875
+     ],
+     [
+      -6.25,
+      -5.25
+     ],
+     [
+      -5.625,
+      -4.625
+     ],
+     [
+      -5.0,
+      -4.0
+     ],
+     [
+      -4.375,
+      -3.375
+     ],
+     [
+      -3.75,
+      -2.75
+     ],
+     [
+      -3.125,
+      -2.125
+     ],
+     [
+      -2.5,
+      -1.5
+     ],
+     [
+      -1.875,
+      -0.875
+     ],
+     [
+      -1.25,
+      -0.25
+     ],
+     [
+      -0.625,
+      0.375
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.625
+     ],
+     [
+      1.25,
+      2.25
+     ],
+     [
+      1.875,
+      2.875
+     ],
+     [
+      2.5,
+      3.5
+     ],
+     [
+      3.125,
+      4.125
+     ],
+     [
+      3.75,
+      4.75
+     ],
+     [
+      4.375,
+      5.375
+     ],
+     [
+      5.0,
+      6.0
+     ],
+     [
+      5.625,
+      6.625
+     ],
+     [
+      6.25,
+      7.25
+     ],
+     [
+      6.875,
+      7.875
+     ],
+     [
+      7.5,
+      8.5
+     ],
+     [
+      8.125,
+      9.125
+     ],
+     [
+      8.75,
+      9.75
+     ],
+     [
+      9.375,
+      10.375
+     ],
+     [
+      10.0,
+      11.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "tangent",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      4.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 4.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 4.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "N": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 1.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 3.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       0.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       4.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -1.0,
+       3.0
+      ],
+      "b": [
+       1.0,
+       3.0
+      ],
+      "length": 2.0
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 3.605240263,
+      "a1": 5.819537698
+     }
+    },
+    "x1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "x2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.638034376,
+      "y": 2.743977362
+     }
+    },
+    "x3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "x4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 4.0
+     }
+    },
+    "x5": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -0.828427125,
+      "y": 0.171572875
+     }
+    },
+    "x6": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "x7": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.783261071,
+      "y": 2.615270316
+     }
+    },
+    "x8": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "second"
+     }
+    },
+    "y1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "y2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.638034376,
+      "y": -2.743977362
+     }
+    },
+    "y3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.472135955,
+      "y": 5.0
+     }
+    },
+    "y4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 4.0
+     }
+    },
+    "y5": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.828427125,
+      "y": 5.828427125
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_h:on_curve": "passed",
+    "op_h:foci": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_s:ends": "passed",
+    "op_w:ends": "passed",
+    "op_x1:on_both": "passed",
+    "op_x2:on_both": "passed",
+    "op_x3:on_both": "passed",
+    "op_x4:on_both": "passed",
+    "op_x5:on_both": "passed",
+    "op_x6:on_both": "passed",
+    "op_x7:on_both": "passed",
+    "op_y1:on_both": "passed",
+    "op_y2:on_both": "passed",
+    "op_y3:on_both": "passed",
+    "op_y4:on_both": "passed",
+    "op_y5:on_both": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      25.0
+     ],
+     [
+      -9.375,
+      21.97265625
+     ],
+     [
+      -8.75,
+      19.140625
+     ],
+     [
+      -8.125,
+      16.50390625
+     ],
+     [
+      -7.5,
+      14.0625
+     ],
+     [
+      -6.875,
+      11.81640625
+     ],
+     [
+      -6.25,
+      9.765625
+     ],
+     [
+      -5.625,
+      7.91015625
+     ],
+     [
+      -5.0,
+      6.25
+     ],
+     [
+      -4.375,
+      4.78515625
+     ],
+     [
+      -3.75,
+      3.515625
+     ],
+     [
+      -3.125,
+      2.44140625
+     ],
+     [
+      -2.5,
+      1.5625
+     ],
+     [
+      -1.875,
+      0.87890625
+     ],
+     [
+      -1.25,
+      0.390625
+     ],
+     [
+      -0.625,
+      0.09765625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.09765625
+     ],
+     [
+      1.25,
+      0.390625
+     ],
+     [
+      1.875,
+      0.87890625
+     ],
+     [
+      2.5,
+      1.5625
+     ],
+     [
+      3.125,
+      2.44140625
+     ],
+     [
+      3.75,
+      3.515625
+     ],
+     [
+      4.375,
+      4.78515625
+     ],
+     [
+      5.0,
+      6.25
+     ],
+     [
+      5.625,
+      7.91015625
+     ],
+     [
+      6.25,
+      9.765625
+     ],
+     [
+      6.875,
+      11.81640625
+     ],
+     [
+      7.5,
+      14.0625
+     ],
+     [
+      8.125,
+      16.50390625
+     ],
+     [
+      8.75,
+      19.140625
+     ],
+     [
+      9.375,
+      21.97265625
+     ],
+     [
+      10.0,
+      25.0
+     ]
+    ],
+    "g": [
+     [
+      -10.0,
+      -9.0
+     ],
+     [
+      -9.375,
+      -8.375
+     ],
+     [
+      -8.75,
+      -7.75
+     ],
+     [
+      -8.125,
+      -7.125
+     ],
+     [
+      -7.5,
+      -6.5
+     ],
+     [
+      -6.875,
+      -5.875
+     ],
+     [
+      -6.25,
+      -5.25
+     ],
+     [
+      -5.625,
+      -4.625
+     ],
+     [
+      -5.0,
+      -4.0
+     ],
+     [
+      -4.375,
+      -3.375
+     ],
+     [
+      -3.75,
+      -2.75
+     ],
+     [
+      -3.125,
+      -2.125
+     ],
+     [
+      -2.5,
+      -1.5
+     ],
+     [
+      -1.875,
+      -0.875
+     ],
+     [
+      -1.25,
+      -0.25
+     ],
+     [
+      -0.625,
+      0.375
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.625
+     ],
+     [
+      1.25,
+      2.25
+     ],
+     [
+      1.875,
+      2.875
+     ],
+     [
+      2.5,
+      3.5
+     ],
+     [
+      3.125,
+      4.125
+     ],
+     [
+      3.75,
+      4.75
+     ],
+     [
+      4.375,
+      5.375
+     ],
+     [
+      5.0,
+      6.0
+     ],
+     [
+      5.625,
+      6.625
+     ],
+     [
+      6.25,
+      7.25
+     ],
+     [
+      6.875,
+      7.875
+     ],
+     [
+      7.5,
+      8.5
+     ],
+     [
+      8.125,
+      9.125
+     ],
+     [
+      8.75,
+      9.75
+     ],
+     [
+      9.375,
+      10.375
+     ],
+     [
+      10.0,
+      11.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "miss",
+   "inputs": {
+    "c": {
+     "kind": "number",
+     "value": 20.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.5
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.5
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "N": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 1.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 3.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 20.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       20.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.5
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -1.0,
+       3.0
+      ],
+      "b": [
+       1.0,
+       3.0
+      ],
+      "length": 2.0
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 3.605240263,
+      "a1": 5.819537698
+     }
+    },
+    "x1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.960783708,
+      "y": 0.5
+     }
+    },
+    "x2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.638034376,
+      "y": 2.743977362
+     }
+    },
+    "x3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "x4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "x5": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "x6": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "x7": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.783261071,
+      "y": 2.615270316
+     }
+    },
+    "x8": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "y1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.960783708,
+      "y": 0.5
+     }
+    },
+    "y2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.638034376,
+      "y": -2.743977362
+     }
+    },
+    "y3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "x3"
+    },
+    "y4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "x4"
+    },
+    "y5": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "x5"
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_h:on_curve": "passed",
+    "op_h:foci": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_s:ends": "passed",
+    "op_w:ends": "passed",
+    "op_x1:on_both": "passed",
+    "op_x2:on_both": "passed",
+    "op_x7:on_both": "passed",
+    "op_y1:on_both": "passed",
+    "op_y2:on_both": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      45.0
+     ],
+     [
+      -9.375,
+      41.97265625
+     ],
+     [
+      -8.75,
+      39.140625
+     ],
+     [
+      -8.125,
+      36.50390625
+     ],
+     [
+      -7.5,
+      34.0625
+     ],
+     [
+      -6.875,
+      31.81640625
+     ],
+     [
+      -6.25,
+      29.765625
+     ],
+     [
+      -5.625,
+      27.91015625
+     ],
+     [
+      -5.0,
+      26.25
+     ],
+     [
+      -4.375,
+      24.78515625
+     ],
+     [
+      -3.75,
+      23.515625
+     ],
+     [
+      -3.125,
+      22.44140625
+     ],
+     [
+      -2.5,
+      21.5625
+     ],
+     [
+      -1.875,
+      20.87890625
+     ],
+     [
+      -1.25,
+      20.390625
+     ],
+     [
+      -0.625,
+      20.09765625
+     ],
+     [
+      0.0,
+      20.0
+     ],
+     [
+      0.625,
+      20.09765625
+     ],
+     [
+      1.25,
+      20.390625
+     ],
+     [
+      1.875,
+      20.87890625
+     ],
+     [
+      2.5,
+      21.5625
+     ],
+     [
+      3.125,
+      22.44140625
+     ],
+     [
+      3.75,
+      23.515625
+     ],
+     [
+      4.375,
+      24.78515625
+     ],
+     [
+      5.0,
+      26.25
+     ],
+     [
+      5.625,
+      27.91015625
+     ],
+     [
+      6.25,
+      29.765625
+     ],
+     [
+      6.875,
+      31.81640625
+     ],
+     [
+      7.5,
+      34.0625
+     ],
+     [
+      8.125,
+      36.50390625
+     ],
+     [
+      8.75,
+      39.140625
+     ],
+     [
+      9.375,
+      41.97265625
+     ],
+     [
+      10.0,
+      45.0
+     ]
+    ],
+    "g": [
+     [
+      -10.0,
+      -9.0
+     ],
+     [
+      -9.375,
+      -8.375
+     ],
+     [
+      -8.75,
+      -7.75
+     ],
+     [
+      -8.125,
+      -7.125
+     ],
+     [
+      -7.5,
+      -6.5
+     ],
+     [
+      -6.875,
+      -5.875
+     ],
+     [
+      -6.25,
+      -5.25
+     ],
+     [
+      -5.625,
+      -4.625
+     ],
+     [
+      -5.0,
+      -4.0
+     ],
+     [
+      -4.375,
+      -3.375
+     ],
+     [
+      -3.75,
+      -2.75
+     ],
+     [
+      -3.125,
+      -2.125
+     ],
+     [
+      -2.5,
+      -1.5
+     ],
+     [
+      -1.875,
+      -0.875
+     ],
+     [
+      -1.25,
+      -0.25
+     ],
+     [
+      -0.625,
+      0.375
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.625
+     ],
+     [
+      1.25,
+      2.25
+     ],
+     [
+      1.875,
+      2.875
+     ],
+     [
+      2.5,
+      3.5
+     ],
+     [
+      3.125,
+      4.125
+     ],
+     [
+      3.75,
+      4.75
+     ],
+     [
+      4.375,
+      5.375
+     ],
+     [
+      5.0,
+      6.0
+     ],
+     [
+      5.625,
+      6.625
+     ],
+     [
+      6.25,
+      7.25
+     ],
+     [
+      6.875,
+      7.875
+     ],
+     [
+      7.5,
+      8.5
+     ],
+     [
+      8.125,
+      9.125
+     ],
+     [
+      8.75,
+      9.75
+     ],
+     [
+      9.375,
+      10.375
+     ],
+     [
+      10.0,
+      11.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "wide",
+   "inputs": {
+    "S1": {
+     "kind": "point",
+     "value": [
+      -4.0,
+      3.0
+     ]
+    },
+    "S2": {
+     "kind": "point",
+     "value": [
+      4.0,
+      3.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.5
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.5
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "N": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 1.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       0.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.5
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -4.0,
+       3.0
+      ],
+      "b": [
+       4.0,
+       3.0
+      ],
+      "length": 8.0
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 3.605240263,
+      "a1": 5.819537698
+     }
+    },
+    "x1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.960783708,
+      "y": 0.5
+     }
+    },
+    "x2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.638034376,
+      "y": 2.743977362
+     }
+    },
+    "x3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "x4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.414213562,
+      "y": 0.5
+     }
+    },
+    "x5": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -0.828427125,
+      "y": 0.171572875
+     }
+    },
+    "x6": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "x7": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.783261071,
+      "y": 2.615270316
+     }
+    },
+    "x8": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.464101615,
+      "y": 3.0
+     }
+    },
+    "y1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.960783708,
+      "y": 0.5
+     }
+    },
+    "y2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.638034376,
+      "y": -2.743977362
+     }
+    },
+    "y3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.472135955,
+      "y": 5.0
+     }
+    },
+    "y4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.414213562,
+      "y": 0.5
+     }
+    },
+    "y5": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.828427125,
+      "y": 5.828427125
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_h:on_curve": "passed",
+    "op_h:foci": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_s:ends": "passed",
+    "op_w:ends": "passed",
+    "op_x1:on_both": "passed",
+    "op_x2:on_both": "passed",
+    "op_x3:on_both": "passed",
+    "op_x4:on_both": "passed",
+    "op_x5:on_both": "passed",
+    "op_x6:on_both": "passed",
+    "op_x7:on_both": "passed",
+    "op_x8:on_both": "passed",
+    "op_y1:on_both": "passed",
+    "op_y2:on_both": "passed",
+    "op_y3:on_both": "passed",
+    "op_y4:on_both": "passed",
+    "op_y5:on_both": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      25.0
+     ],
+     [
+      -9.375,
+      21.97265625
+     ],
+     [
+      -8.75,
+      19.140625
+     ],
+     [
+      -8.125,
+      16.50390625
+     ],
+     [
+      -7.5,
+      14.0625
+     ],
+     [
+      -6.875,
+      11.81640625
+     ],
+     [
+      -6.25,
+      9.765625
+     ],
+     [
+      -5.625,
+      7.91015625
+     ],
+     [
+      -5.0,
+      6.25
+     ],
+     [
+      -4.375,
+      4.78515625
+     ],
+     [
+      -3.75,
+      3.515625
+     ],
+     [
+      -3.125,
+      2.44140625
+     ],
+     [
+      -2.5,
+      1.5625
+     ],
+     [
+      -1.875,
+      0.87890625
+     ],
+     [
+      -1.25,
+      0.390625
+     ],
+     [
+      -0.625,
+      0.09765625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.09765625
+     ],
+     [
+      1.25,
+      0.390625
+     ],
+     [
+      1.875,
+      0.87890625
+     ],
+     [
+      2.5,
+      1.5625
+     ],
+     [
+      3.125,
+      2.44140625
+     ],
+     [
+      3.75,
+      3.515625
+     ],
+     [
+      4.375,
+      4.78515625
+     ],
+     [
+      5.0,
+      6.25
+     ],
+     [
+      5.625,
+      7.91015625
+     ],
+     [
+      6.25,
+      9.765625
+     ],
+     [
+      6.875,
+      11.81640625
+     ],
+     [
+      7.5,
+      14.0625
+     ],
+     [
+      8.125,
+      16.50390625
+     ],
+     [
+      8.75,
+      19.140625
+     ],
+     [
+      9.375,
+      21.97265625
+     ],
+     [
+      10.0,
+      25.0
+     ]
+    ],
+    "g": [
+     [
+      -10.0,
+      -9.0
+     ],
+     [
+      -9.375,
+      -8.375
+     ],
+     [
+      -8.75,
+      -7.75
+     ],
+     [
+      -8.125,
+      -7.125
+     ],
+     [
+      -7.5,
+      -6.5
+     ],
+     [
+      -6.875,
+      -5.875
+     ],
+     [
+      -6.25,
+      -5.25
+     ],
+     [
+      -5.625,
+      -4.625
+     ],
+     [
+      -5.0,
+      -4.0
+     ],
+     [
+      -4.375,
+      -3.375
+     ],
+     [
+      -3.75,
+      -2.75
+     ],
+     [
+      -3.125,
+      -2.125
+     ],
+     [
+      -2.5,
+      -1.5
+     ],
+     [
+      -1.875,
+      -0.875
+     ],
+     [
+      -1.25,
+      -0.25
+     ],
+     [
+      -0.625,
+      0.375
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.625
+     ],
+     [
+      1.25,
+      2.25
+     ],
+     [
+      1.875,
+      2.875
+     ],
+     [
+      2.5,
+      3.5
+     ],
+     [
+      3.125,
+      4.125
+     ],
+     [
+      3.75,
+      4.75
+     ],
+     [
+      4.375,
+      5.375
+     ],
+     [
+      5.0,
+      6.0
+     ],
+     [
+      5.625,
+      6.625
+     ],
+     [
+      6.25,
+      7.25
+     ],
+     [
+      6.875,
+      7.875
+     ],
+     [
+      7.5,
+      8.5
+     ],
+     [
+      8.125,
+      9.125
+     ],
+     [
+      8.75,
+      9.75
+     ],
+     [
+      9.375,
+      10.375
+     ],
+     [
+      10.0,
+      11.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "vertical",
+   "inputs": {
+    "A": {
+     "kind": "point",
+     "value": [
+      2.0,
+      0.0
+     ]
+    },
+    "B": {
+     "kind": "point",
+     "value": [
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "N": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 1.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 3.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       0.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       2.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -1.0,
+       3.0
+      ],
+      "b": [
+       1.0,
+       3.0
+      ],
+      "length": 2.0
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 3.605240263,
+      "a1": 5.819537698
+     }
+    },
+    "x1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 3.666060556
+     }
+    },
+    "x2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.638034376,
+      "y": 2.743977362
+     }
+    },
+    "x3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "x4": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "x5": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -0.828427125,
+      "y": 0.171572875
+     }
+    },
+    "x6": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "x7": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.783261071,
+      "y": 2.615270316
+     }
+    },
+    "x8": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "second"
+     }
+    },
+    "y1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": -3.666060556
+     }
+    },
+    "y2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.638034376,
+      "y": -2.743977362
+     }
+    },
+    "y3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.472135955,
+      "y": 5.0
+     }
+    },
+    "y4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "y5": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.828427125,
+      "y": 5.828427125
+     }
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_h:on_curve": "passed",
+    "op_h:foci": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_s:ends": "passed",
+    "op_w:ends": "passed",
+    "op_x1:on_both": "passed",
+    "op_x2:on_both": "passed",
+    "op_x3:on_both": "passed",
+    "op_x4:on_both": "passed",
+    "op_x5:on_both": "passed",
+    "op_x6:on_both": "passed",
+    "op_x7:on_both": "passed",
+    "op_y1:on_both": "passed",
+    "op_y2:on_both": "passed",
+    "op_y3:on_both": "passed",
+    "op_y5:on_both": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      25.0
+     ],
+     [
+      -9.375,
+      21.97265625
+     ],
+     [
+      -8.75,
+      19.140625
+     ],
+     [
+      -8.125,
+      16.50390625
+     ],
+     [
+      -7.5,
+      14.0625
+     ],
+     [
+      -6.875,
+      11.81640625
+     ],
+     [
+      -6.25,
+      9.765625
+     ],
+     [
+      -5.625,
+      7.91015625
+     ],
+     [
+      -5.0,
+      6.25
+     ],
+     [
+      -4.375,
+      4.78515625
+     ],
+     [
+      -3.75,
+      3.515625
+     ],
+     [
+      -3.125,
+      2.44140625
+     ],
+     [
+      -2.5,
+      1.5625
+     ],
+     [
+      -1.875,
+      0.87890625
+     ],
+     [
+      -1.25,
+      0.390625
+     ],
+     [
+      -0.625,
+      0.09765625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.09765625
+     ],
+     [
+      1.25,
+      0.390625
+     ],
+     [
+      1.875,
+      0.87890625
+     ],
+     [
+      2.5,
+      1.5625
+     ],
+     [
+      3.125,
+      2.44140625
+     ],
+     [
+      3.75,
+      3.515625
+     ],
+     [
+      4.375,
+      4.78515625
+     ],
+     [
+      5.0,
+      6.25
+     ],
+     [
+      5.625,
+      7.91015625
+     ],
+     [
+      6.25,
+      9.765625
+     ],
+     [
+      6.875,
+      11.81640625
+     ],
+     [
+      7.5,
+      14.0625
+     ],
+     [
+      8.125,
+      16.50390625
+     ],
+     [
+      8.75,
+      19.140625
+     ],
+     [
+      9.375,
+      21.97265625
+     ],
+     [
+      10.0,
+      25.0
+     ]
+    ],
+    "g": [
+     [
+      -10.0,
+      -9.0
+     ],
+     [
+      -9.375,
+      -8.375
+     ],
+     [
+      -8.75,
+      -7.75
+     ],
+     [
+      -8.125,
+      -7.125
+     ],
+     [
+      -7.5,
+      -6.5
+     ],
+     [
+      -6.875,
+      -5.875
+     ],
+     [
+      -6.25,
+      -5.25
+     ],
+     [
+      -5.625,
+      -4.625
+     ],
+     [
+      -5.0,
+      -4.0
+     ],
+     [
+      -4.375,
+      -3.375
+     ],
+     [
+      -3.75,
+      -2.75
+     ],
+     [
+      -3.125,
+      -2.125
+     ],
+     [
+      -2.5,
+      -1.5
+     ],
+     [
+      -1.875,
+      -0.875
+     ],
+     [
+      -1.25,
+      -0.25
+     ],
+     [
+      -0.625,
+      0.375
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.625
+     ],
+     [
+      1.25,
+      2.25
+     ],
+     [
+      1.875,
+      2.875
+     ],
+     [
+      2.5,
+      3.5
+     ],
+     [
+      3.125,
+      4.125
+     ],
+     [
+      3.75,
+      4.75
+     ],
+     [
+      4.375,
+      5.375
+     ],
+     [
+      5.0,
+      6.0
+     ],
+     [
+      5.625,
+      6.625
+     ],
+     [
+      6.25,
+      7.25
+     ],
+     [
+      6.875,
+      7.875
+     ],
+     [
+      7.5,
+      8.5
+     ],
+     [
+      8.125,
+      9.125
+     ],
+     [
+      8.75,
+      9.75
+     ],
+     [
+      9.375,
+      10.375
+     ],
+     [
+      10.0,
+      11.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "off_arc",
+   "inputs": {
+    "c": {
+     "kind": "number",
+     "value": 6.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.5
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.5
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.0,
+      "y": 3.0
+     }
+    },
+    "F1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 0.0
+     }
+    },
+    "F2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "G1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -5.0,
+      "y": 0.0
+     }
+    },
+    "G2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": 0.0
+     }
+    },
+    "K": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 5.0
+     }
+    },
+    "N": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 1.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 4.0
+     }
+    },
+    "Q": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 3.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 3.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 6.0,
+      "unit": "scalar"
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 5.0,
+      "b": 4.0
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "ref": 0
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "ref": 1
+        }
+       ]
+      },
+      "refs": [
+       0.25,
+       6.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "g": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 4.0
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955
+     }
+    },
+    "l": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.5
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -1.0,
+       3.0
+      ],
+      "b": [
+       1.0,
+       3.0
+      ],
+      "length": 2.0
+     }
+    },
+    "w": {
+     "state": "defined",
+     "type": "arc",
+     "value": {
+      "c": [
+       0.0,
+       5.0
+      ],
+      "r": 4.472135955,
+      "a0": 3.605240263,
+      "a1": 5.819537698
+     }
+    },
+    "x1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.960783708,
+      "y": 0.5
+     }
+    },
+    "x2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.638034376,
+      "y": 2.743977362
+     }
+    },
+    "x3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.027541988,
+      "y": 8.291502622
+     }
+    },
+    "x4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "x5": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "x6": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "outside_part",
+     "detail": {
+      "slot": "first"
+     }
+    },
+    "x7": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.783261071,
+      "y": 2.615270316
+     }
+    },
+    "x8": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_intersection"
+    },
+    "y1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -4.960783708,
+      "y": 0.5
+     }
+    },
+    "y2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.638034376,
+      "y": -2.743977362
+     }
+    },
+    "y3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.027541988,
+      "y": 8.291502622
+     }
+    },
+    "y4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "x4"
+    },
+    "y5": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "upstream",
+     "cause": "x5"
+    }
+   },
+   "checks": {
+    "op_e:on_curve": "passed",
+    "op_e:foci": "passed",
+    "op_h:on_curve": "passed",
+    "op_h:foci": "passed",
+    "op_k:through_on_circle": "passed",
+    "op_l:through_a": "passed",
+    "op_l:through_b": "passed",
+    "op_s:ends": "passed",
+    "op_w:ends": "passed",
+    "op_x1:on_both": "passed",
+    "op_x2:on_both": "passed",
+    "op_x3:on_both": "passed",
+    "op_x7:on_both": "passed",
+    "op_y1:on_both": "passed",
+    "op_y2:on_both": "passed",
+    "op_y3:on_both": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      31.0
+     ],
+     [
+      -9.375,
+      27.97265625
+     ],
+     [
+      -8.75,
+      25.140625
+     ],
+     [
+      -8.125,
+      22.50390625
+     ],
+     [
+      -7.5,
+      20.0625
+     ],
+     [
+      -6.875,
+      17.81640625
+     ],
+     [
+      -6.25,
+      15.765625
+     ],
+     [
+      -5.625,
+      13.91015625
+     ],
+     [
+      -5.0,
+      12.25
+     ],
+     [
+      -4.375,
+      10.78515625
+     ],
+     [
+      -3.75,
+      9.515625
+     ],
+     [
+      -3.125,
+      8.44140625
+     ],
+     [
+      -2.5,
+      7.5625
+     ],
+     [
+      -1.875,
+      6.87890625
+     ],
+     [
+      -1.25,
+      6.390625
+     ],
+     [
+      -0.625,
+      6.09765625
+     ],
+     [
+      0.0,
+      6.0
+     ],
+     [
+      0.625,
+      6.09765625
+     ],
+     [
+      1.25,
+      6.390625
+     ],
+     [
+      1.875,
+      6.87890625
+     ],
+     [
+      2.5,
+      7.5625
+     ],
+     [
+      3.125,
+      8.44140625
+     ],
+     [
+      3.75,
+      9.515625
+     ],
+     [
+      4.375,
+      10.78515625
+     ],
+     [
+      5.0,
+      12.25
+     ],
+     [
+      5.625,
+      13.91015625
+     ],
+     [
+      6.25,
+      15.765625
+     ],
+     [
+      6.875,
+      17.81640625
+     ],
+     [
+      7.5,
+      20.0625
+     ],
+     [
+      8.125,
+      22.50390625
+     ],
+     [
+      8.75,
+      25.140625
+     ],
+     [
+      9.375,
+      27.97265625
+     ],
+     [
+      10.0,
+      31.0
+     ]
+    ],
+    "g": [
+     [
+      -10.0,
+      -9.0
+     ],
+     [
+      -9.375,
+      -8.375
+     ],
+     [
+      -8.75,
+      -7.75
+     ],
+     [
+      -8.125,
+      -7.125
+     ],
+     [
+      -7.5,
+      -6.5
+     ],
+     [
+      -6.875,
+      -5.875
+     ],
+     [
+      -6.25,
+      -5.25
+     ],
+     [
+      -5.625,
+      -4.625
+     ],
+     [
+      -5.0,
+      -4.0
+     ],
+     [
+      -4.375,
+      -3.375
+     ],
+     [
+      -3.75,
+      -2.75
+     ],
+     [
+      -3.125,
+      -2.125
+     ],
+     [
+      -2.5,
+      -1.5
+     ],
+     [
+      -1.875,
+      -0.875
+     ],
+     [
+      -1.25,
+      -0.25
+     ],
+     [
+      -0.625,
+      0.375
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.625
+     ],
+     [
+      1.25,
+      2.25
+     ],
+     [
+      1.875,
+      2.875
+     ],
+     [
+      2.5,
+      3.5
+     ],
+     [
+      3.125,
+      4.125
+     ],
+     [
+      3.75,
+      4.75
+     ],
+     [
+      4.375,
+      5.375
+     ],
+     [
+      5.0,
+      6.0
+     ],
+     [
+      5.625,
+      6.625
+     ],
+     [
+      6.25,
+      7.25
+     ],
+     [
+      6.875,
+      7.875
+     ],
+     [
+      7.5,
+      8.5
+     ],
+     [
+      8.125,
+      9.125
+     ],
+     [
+      8.75,
+      9.75
+     ],
+     [
+      9.375,
+      10.375
+     ],
+     [
+      10.0,
+      11.0
+     ]
+    ]
+   }
+  }
+ ]
+}
