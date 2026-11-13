@@ -25,8 +25,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   point/number SVG output coverage. Numeric controls and function AST/refs retain
   full precision in fixtures. Loading metadata `moduleGroup` also covers the
   six existing region, expression and locus operations without changing their
-  signature hashes. GeoGebra source translation and browser porting remain
-  separate from the native operation feature.
+  signature hashes. Browser porting remains separate from the native operation
+  feature.
+- GeoGebra function analysis import (mapVersion 8): XML readers translate
+  polynomial, near and interval roots, polynomial and interval extrema,
+  function intersections with coordinate axes and scalar function calls.
+  Multi-output commands preserve source ordinals, distinct native ranks,
+  undefined outputs and live references. Inline functions and numeric
+  expressions use owned helpers. Saved-coordinate differences remain explicit
+  `differs` results, and unsupported signatures are refused. Reproducible
+  source archives and shared `ggb_function_*` parity fixtures cover saved
+  values and changed inputs, including known differences from GeoGebra.
 
 ## [1.15.0] - 2026-11-13
 

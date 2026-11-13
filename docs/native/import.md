@@ -83,7 +83,7 @@ import reads itself is an argument of a command by its element (its XML type
 `function` gives the signature letter `F`). `Point(<conic>, t)` stays
 `unsupported_signature`, as `Point(<circle>, t)`: the registry has no
 operation for a dependent path parameter (GeoGebra `PathParameter`).
-Intersections with functions (`Intersect(f, …)`) and `Intersect(a, b,
+General intersections with functions (`Intersect(f, …)`) and `Intersect(a, b,
 <Point>)` and conic transformations still require registry support and keep
 their fallback reasons. A bare `pi`
 (`π`) argument, as in `Rotate(B, pi, O)`, is read as its number.
@@ -131,6 +131,94 @@ removes its helpers. Existing lowerings (`Vector[(0, 2.5)]`, `Vector[(-v)]`,
 A constant point formula without references, such as `(sqrt(2), 0)`,
 remains `point.free` with the saved coordinates. This source reader is
 specific to `from_ggb`; classic `from_construction` keeps its language.
+
+### Function analysis (registry 1.11, mapVersion 8)
+
+`from_ggb` reads these commands directly from XML, including commands with
+no classic implementation. The seven analysis operations remain in
+`opsWithoutClassic`; this does not add factories to `from_construction`.
+Their report `signature` retains the original source arguments, including
+on refusal, rather than inventing a classic dispatch key.
+
+| GeoGebra source | Native operation |
+|---|---|
+| `Root(p)` | `function.roots_polynomial` |
+| `Root(f, start)` | `function.root_near` |
+| `Root(f, a, b)` | `function.root_interval` |
+| `Roots(f, a, b)` | `function.roots_interval` |
+| `Extremum(p)` | `function.extrema_polynomial` |
+| `Extremum(f, a, b)` | `function.extrema_interval` |
+| `Intersect(p, xAxis[, k])`, either input order | `function.roots_polynomial`, static `root.k` when indexed |
+| `Intersect(f, yAxis[, 1])`, either input order | `point.expression`, `(0, f(0))` |
+| Numeric `v = f(a)` | `function.value` |
+| `P = (a, f(a))` | Existing typed `point.expression` |
+
+Here `p` must have a native polynomial body; `f` must have a native function
+AST. A conic or implicit curve cannot stand in for a function. Inline bodies
+such as `Root(x^2-a)` use hidden `function.expr` helpers. Numeric arguments
+such as `pi`, `2*pi`, `a+1` use the safe numeric reader and, when necessary,
+hidden `number.expression` helpers. Named numbers retain their identity as
+references even when their saved values are equal. Helpers have no display
+name, are hidden and locked with `role: aux`, and belong to the host
+operation through `origin: {kind: auto, source: <host operation ID>}`.
+Deleting the host removes its helpers under the ordinary deletion rules.
+These seven operations require registry 1.11; ordinate intersections and
+typed coordinate points alone still require only registry 1.10. Consumers
+must implement the operations, not merely accept the registry number.
+
+An unindexed multi-output command stays one operation. Finite saved points
+are matched one-to-one to native solutions using the import tolerance;
+ambiguous or conflicting bindings are refused. Saved undefined outputs keep
+their source ordinal as their native rank. An explicit x-axis index always
+selects `root.k`, irrespective of saved coordinates. Empty output names and
+names without a source `<element>` reserve their ordinal but create no
+element. Capacity is the maximum of one, the highest required native slot
+and the highest source ordinal plus one, up to 100. A larger source capacity
+refuses the file with `import_too_many_objects`. Only source elements are
+bound; evaluation never adds or deletes points. Missing ranks produce
+`branch_absent` for a nonempty result set, otherwise `no_root` or
+`no_extremum`. Defined repeated outputs report the full `detail.found`
+before capacity is applied. Ranks can change when roots merge or disappear;
+they do not track a physical branch through a bifurcation.
+
+Saved `<coords x y z>` are normalized to `(x/z, y/z)` for nonzero `z`,
+and numeric `<value val>` checks scalar values. Both sides undefined pass;
+a defined value on only one side fails. Missing saved evidence yields
+`differs/value_unchecked`; a mismatch yields `differs/value_mismatch`.
+The imported operation and its dependencies remain live in both cases.
+Neither disagreement nor an unsupported signature becomes a free point.
+
+Compatibility follows the native deterministic profile, with these limits:
+
+- Near-root Newton and bracket fallback can choose a different root from
+  GeoGebra, including after changing the start. A saved match checks one
+  frame and does not establish equal attraction basins.
+- Interval root searches retain tangencies that GeoGebra may omit. A native
+  defined slot against a saved undefined point is a mismatch; slots are
+  never skipped to manufacture a match.
+- The zero function gives `coincident` in every native root mode, including
+  single-root modes where GeoGebra may save `(0, 0)`.
+- Interval searches work on detected finite continuous pieces around holes,
+  poles and jumps. Their results do not promise equal numerical completeness
+  on every source expression.
+- Native elements remain fixed when GeoGebra would grow or remove outputs.
+  Additional roots require explicit document editing. Saved-coordinate tests
+  cover particular inputs; they do not certify all static x-axis indices,
+  starts, intervals or zero plateaus of `If`.
+
+CAS lists, nonpolynomial global modes, unbounded nonpolynomial x-axis
+intersections, dynamic or invalid indices, point-valued search inputs and
+unknown extra arguments are explicit `unsupported_signature` refusals.
+Unsupported formula language is `formula_unsupported`; malformed numeric
+text is `parse_error`. A source function's explicit domain also applies to
+ordinate and scalar evaluation, without clamping the requested abscissa.
+
+Reproduce the function source archives, scenes and shared parity data with
+`python -m tests.native.ggb_function_analysis_fixtures [--check]`.
+`tests/native/import/functions/` includes reproducible synthetic archives
+and saved GeoGebra 5.4.936.0 scenes. Their `ggb_function_*` fixtures in
+`parity/v1/ggb/` include import report expectations and changed inputs;
+analytical assertions check roots and extrema independently of generation.
 
 Reproduce the source archives, scenes and parity fixtures with
 `python -m tests.native.ggb_expression_fixtures [--check]`. The four
