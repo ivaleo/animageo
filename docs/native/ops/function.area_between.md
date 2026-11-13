@@ -1,6 +1,6 @@
 # `function.area_between` — the area between two graphs
 
-Registry 1.9 · group `function` · status `beta` · branch `null` · see [kernel.md](../kernel.md) §16.
+Registry 1.9 · group `function` · status `beta` · branch `null` · see [kernel.md](../kernel.md) §16.2.
 
 | | |
 |---|---|
@@ -13,7 +13,7 @@ Registry 1.9 · group `function` · status `beta` · branch `null` · see [kerne
 
 ## The value
 
-One `region` (kernel.md §16): a ring per lobe, the lobes by ascending `x`.
+One `region` (kernel.md §16.2): a ring per lobe, the lobes by ascending `x`.
 A ring is walked counterclockwise:
 
 1. the lower curve from left to right;

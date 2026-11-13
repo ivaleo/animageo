@@ -109,7 +109,9 @@ One line per step: `"<n>. <phrase>."`.
 ```
 
 Every `stepKind` of registries 1.0–1.5 has an entry
-(`tests/native/test_native_l3a1_steps.py::test_phrases_cover_registry`).
+(`tests/native/test_native_l3a1_steps.py::test_phrases_cover_registry`); so do
+those of registry 1.9, `area_between` and `region_boundary` («Закрашиваем
+область {region}»).
 `ops` holds the template of an operation whose slots differ from the others
 of its kind; a `context` entry whose `when` holds is used first:
 

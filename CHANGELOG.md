@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   bounds and the abscissa of `P`, gives no point.
 - The type `region` (registry 1.9): closed rings of line, arc and
   sampled graph pieces, outer rings counterclockwise and holes clockwise, with
-  their exact area (`docs/native/kernel.md` §16); the family `bounded` takes
+  their exact area (`docs/native/kernel.md` §16.2); the family `bounded` takes
   it, new families `limit` (a number or a point; a number literal fits),
   `graph_bound` and `contour`, new reasons `empty_region`, `flipped`,
   `boundary_crossing` and `discontinuous`.
@@ -60,6 +60,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   between the roots of their difference in the search window. A ring per
   lobe; a pole or a jump of a graph is `discontinuous`, a limit past the
   domain `out_of_domain` (`docs/native/ops/function.area_between.md`).
+- `region.by_boundary` (registry 1.9, beta): the region bounded by a chain of
+  pieces — piece `i` on the line, segment, ray, circle or arc `curves[i]`
+  from the point `from[i]` to `to[i]`, a whole circle from a point to itself
+  — and by the contours of `inside` and `outside` (polygons, circles,
+  sectors, circle segments). The rings are assembled by element IDs, so the
+  region does not flow into a neighbouring face when the figure moves. A
+  vertex off its carrier is `not_on_curve`, a piece past the part of its
+  carrier `outside_part`, a ring of zero area `empty_region`, pieces that
+  cross or touch away from a common vertex or a hole that leaves its ring
+  `boundary_crossing`, a ring of the chain turned over `flipped`; graphs and
+  conics as carriers are `unsupported_signature` for now
+  (`docs/native/ops/region.by_boundary.md`). `validate` reports a chain that
+  does not close as `region_chain`; `kernel.Input` carries the element ID of
+  a reference argument (`id`). Parity fixtures `curves/region_*` of every
+  status, an annulus in `paint_regions.json`.
 - `measure.area` and `measure.perimeter` of a region (registry 1.9).
 - Regions in paint and output (`has("regions")`): the default paint is the
   fill of a polygon of the fill tool (`presets.color.accent`, the opacity of
@@ -70,6 +85,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   in SVG, PNG, PDF, EPS and video, TikZ by `even odd rule`, the hatch runs
   over the rings, JSXGraph draws a static filled curve. Fixtures
   `paint_regions.json`.
+- The stroke of a region is a label obstacle, its fill is not (as with a
+  polygon): the R4 solver reads a new key `regions` of the display list
+  (pieces `segment`, `arc`, `chain`; a paint width of 0 drops the region),
+  the classic placement the pieces of a `Region` whose stroke width and
+  opacity are above 0.
 - `python -m animageo.native import-audit <paths…> [--weights FILE]
   [--json OUT] [--web-registry X]` (`animageo.native.convert.audit`): imports
   every `.ggb` of the given files and directories and prints one line of

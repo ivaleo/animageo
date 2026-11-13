@@ -144,6 +144,7 @@ only on a structurally valid document.
 | `type_mismatch` | error | 1.12.0: `appearance.<id>.drag` of an element that is not a point |
 | `drag_via_not_free` | error | 1.12.0: a `via` item that is not the input element of `point.free`, `point.on_path` or `point.on_function` |
 | `drag_via_not_upstream` | error | 1.12.0: a `via` item the point is not built from (the point itself included) |
+| `region_chain` | error | registry 1.9: the arguments of a `region.by_boundary` do not walk into closed rings by IDs — lists of unequal length, a piece that neither starts nor ends where its ring has come, a ring left open, a whole circle (`from == to`) on a carrier that is not a circle or an arc or inside a ring, no ring at all (§16); `path` is `…/args`. Evaluation gives the operation `error/schema` |
 | `drag_singular` | warning | 1.12.0: at rest the point moves in fewer than `min(2, dim u)` directions through `via`, `dim u` the number of solve variables (a `point` input 2, a path parameter or the x of `point.on_function` 1; §8.1); `path` is `…/drag/via` |
 
 The `drag` checks run only when some entry of `appearance` has a `drag` key;
@@ -205,11 +206,12 @@ a graph and a conic, and the conics and graphs in the `curve` slots of
 
 Registry 1.9 puts a point on a conic and on a graph (the family `path`
 takes `conic` and `function`) and adds the type `region`, the area between
-two graphs or a graph and a line or the x-axis (`function.area_between`)
-and the region in the family `bounded` of `measure.area` and
-`measure.perimeter` (§16). The records of 1.0–1.8 and their signature
-hashes stay unchanged; a document that declares 1.8 or older reads and
-evaluates as before.
+two graphs or a graph and a line or the x-axis (`function.area_between`),
+the region bounded by a chain of pieces on lines and circles and by
+contours (`region.by_boundary`) and the region in the family `bounded` of
+`measure.area` and `measure.perimeter` (§16). The records of 1.0–1.8 and
+their signature hashes stay unchanged; a document that declares 1.8 or
+older reads and evaluates as before.
 
 **Registry 1.5 is the 1.0 contract** (animageo 1.11.0rc1;
 `tests/native/test_registry_frozen_1_0.py`, snapshot
@@ -2012,12 +2014,47 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
 - New noise decisions: `jump` (the rest of the jump bisection of a
   continuous graph), `limit_gap` (`|f − g|` at a limit placed at a common
   point).
+- `region.by_boundary` (rc2, [ops page](ops/region.by_boundary.md)):
+  inputs `curves: curve[]`, `from: point[]`, `to: point[]` — piece `i` on
+  `curves[i]` from the vertex `from[i]` to `to[i]` (a line, segment or ray
+  a straight piece, a circle or an arc the arc counterclockwise; `from ==
+  to` the whole circle) — and `inside`, `outside: contour[]`, all lists
+  (min 0, every slot given). The rings are assembled by IDs only
+  (`region.boundary_chain`): no search of a face, so the region does not
+  flow into a neighbouring face when the figure moves. A chain that does
+  not close is the issue `region_chain` (§2) and `error/schema`. The steps:
+  incidence (`not_on_curve`), the part of the carrier (`outside_part`), an
+  empty ring (`empty_region`), a simple boundary (`boundary_crossing`),
+  nesting — an even depth needs a counterclockwise ring, an odd one a
+  clockwise ring — (`flipped` for a ring of the chain, `boundary_crossing`
+  for a contour), the empty region. A graph or a conic as a carrier is
+  `unsupported_signature` (`detail.slot`) until 2c; more than 256 pieces
+  is `error/limit_exceeded`. `stepKind` `region_boundary`; «Команды» print
+  it with `unprintable_operation`, as functions (§14).
+- Noise decisions of `region.by_boundary`: `off_carrier`, `piece_part` (a
+  vertex built on its carrier and at the end of its part), `empty_region`
+  (a ring of exactly zero area), `touch`, `crossing`, `at_vertex` (pieces
+  that meet exactly at an end or at their common vertex).
+- `Input.id` (`kernel/values.py`): the element ID of a reference argument
+  (`None` for a literal); `region.by_boundary` reads the chain from it, in
+  `evaluate` and in the bridge alike.
 - Fixtures `parity/v1/curves/region_*`: the lobe of a parabola and the
   axis (a lobe number with limits: `invalid_parameter`; the first lobe of
   a graph that is the axis for `x < 0`, on the piece where they coincide:
   `empty_region`), two graphs and the second lobe, a graph and a line
   (limits at the common points, literal limits), a pole and a step, out of
-  the domain, far from the origin.
+  the domain, far from the origin. `region.by_boundary`: `region_lines_flip`
+  (a triangle of lines: collinear, turned over, a vertex off its line; three
+  lines with their intersections: concurrent, the opposite face),
+  `region_owner2` (two crossing segments and a circle; the tangent and
+  beyond), `region_lune` and `region_lens` (two circles; internal and
+  external tangency, apart), `region_annulus` (two contours and an island;
+  the hole crosses, touches and leaves its ring), `region_polygon_hole` (a
+  square with a round hole, a sector, a circle segment, a clockwise
+  polygon), `region_arc_parts` (a piece inside its arc, beyond its end, off
+  its circle; a whole circle from a point to itself), `region_carriers` (a
+  conic) and `region_chain_errors` (`error/schema`); `measure.area` and
+  `measure.perimeter` of each.
 - Paint and output (`has("regions")`). The default paint of a region is
   that of a polygon of the fill tool of the web: `defaults.region` of the
   built-in style fills with `presets.color.accent` at the opacity of a
@@ -2040,4 +2077,10 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   `static`: it does not follow a drag).
 - Fixtures `parity/v1/paint/paint_regions.json`: the default paint next to
   a polygon, the appearance of the fill tool on both, hatch, crosshatch
-  and dots, a dashed stroke on three rings, the value label of two lobes.
+  and dots, a dashed stroke on three rings, the value label of two lobes;
+  rc2 — an annulus of `region.by_boundary` with the fill tool and hatched.
+- Label obstacles: only the drawn stroke of a region (width and opacity
+  above 0), never its fill, as with a polygon. R4
+  (`native/labels/r4.py`, the port of the web solver) reads the key `regions`
+  of the display list (`[{id, pieces}]`, a piece `segment`, `arc` or
+  `chain`; ops page), the classic placement the pieces of a `Region`.

@@ -437,6 +437,7 @@ line keeps the operation it names).
 | `unprintable_params` | a param after a left-out one (for example `max` without `min`): the form has no gap | the nearest form the lexicon has; the param after the gap is dropped |
 | `unprintable_operation` | the op is not in the registry, or the operation does not fit its record | `opid(args)` in registry slot order |
 | `unprintable_operation` | a `number.expression` (1.8.1a5): the grammar has no expressions yet | the formula, `e = sqrt(a) + b^3` ([expr.md](expr.md) §4); it reads back as `forbidden` |
+| `unprintable_operation` | a `region.by_boundary` (registry 1.9): «области в «Командах» будут позже» | `region.by_boundary(…)` — its arguments in registry slot order; it does not read back |
 | `unprintable_operation` | a `text.free` (1.8.1a5): the grammar has no strings yet | `t = Текст("a = {0}", A, a)` — the template as a JSON string, the anchor, the refs (`decimals` is not printed); it reads back as `syntax` at `"` |
 
 ## 7. Issues
