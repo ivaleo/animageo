@@ -277,6 +277,7 @@ def to_classic(type_: str, value, *, sides=None, scale=None):
         if not points:
             return None
         obj = LocusCurve(points, breaks=breaks or None)
+        obj._native_locus_scale = 1.0 if scale is None else float(scale)
     elif type_ == 'vector':
         obj = Vector(np.array([value['a'], value['b']], dtype=float))
     elif type_ == 'angle':
@@ -419,6 +420,8 @@ def _native_command_class():
             super().__init__(op_name, inputs, outputs)
             self.operation_id = operation_id
             self._runner = runner
+            if op_name == 'point.on_path':
+                self.tparam_from_coords = runner.project_parameter
 
         def func(self, log_unsupported=True):
             return self._runner
@@ -450,14 +453,25 @@ class _Runner:
         self.end_slots = end_slots        # slots whose side gets the two defining points (registry 1.5)
         self.bounds = bounds              # viewDefaults.bounds (registry 1.6: the window of intersections)
         self.__name__ = op_name
+        self._last_path_frame = None
+
+    def project_parameter(self, coords):
+        """Inverse in the native frame, retaining null sample indices of a locus."""
+        if self._last_path_frame is None:
+            return None
+        return paths.project(self._last_path_frame, float(coords[0]), float(coords[1]),
+                             self.tol.decide_length, self.bounds)
 
     def __call__(self, *classic):
         none = [None] * len(self.out_slots)
+        self._last_path_frame = None
         args = dict(self.constants)
         i = 0
         for k, (slot, is_list, types) in enumerate(self.layout):
             items = []
             for j, type_ in enumerate(types):
+                if type_ == 'locus':
+                    self.tol = tolerances(getattr(classic[i], '_native_locus_scale', self.tol.scale))
                 value = from_classic(type_, classic[i])
                 i += 1
                 if value is None:
@@ -476,7 +490,8 @@ class _Runner:
                     break
                 values[slot] = vals if is_list else vals[0]
             path = args['path']
-            frame = paths.frame(path.type, path.value, producer_op, values) if values is not None else None
+            frame = paths.frame(path.type, path.value, producer_op, values, scale=self.tol.scale) if values is not None else None
+            self._last_path_frame = frame
             args['path'] = Input(path.type, path.value, frame, path.id)
             element = self.construction.element(self.tparam_of)
             t = getattr(element, 'tparam', None)

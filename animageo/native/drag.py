@@ -152,7 +152,7 @@ def _via_problems(doc: NativeDocument, el_id: str, via: list, ancestors=None) ->
 # ── the problem ──────────────────────────────────────────────────────────
 
 
-def _path_range(doc: NativeDocument, states: dict, via_id: str):
+def _path_range(doc: NativeDocument, states: dict, via_id: str, scale=1.0):
     """``(frame, lo, hi, outside)`` of the path of the ``point.on_path`` input
     ``via_id`` at rest (``outside`` of the frame: a conic by its kind, a
     graph by its domain), ``None`` when the path is not defined."""
@@ -165,7 +165,7 @@ def _path_range(doc: NativeDocument, states: dict, via_id: str):
     if type_ not in registry().paths:
         return None
     producer_op, values = producer_values(path_id, doc.elements, doc.operations, states)
-    frame = _paths.frame(type_, rec['value'], producer_op, values)
+    frame = _paths.frame(type_, rec['value'], producer_op, values, scale=scale)
     lo, hi = _paths.parameter_range(frame)
     return frame, lo, hi, _paths.outside(frame)
 
@@ -228,7 +228,7 @@ class _Problem:
                 self.vars.append(_Var(via_id, unit, 1.0, lo=lo, hi=hi))
                 self.u0.append(x)
                 continue
-            found = _path_range(doc, rest.elements, via_id)
+            found = _path_range(doc, rest.elements, via_id, rest.tolerances.scale)
             if found is None:
                 self.ready = False
                 return
@@ -508,7 +508,7 @@ def _gauss_newton(problem: _Problem, target, max_iterations) -> DragResult:
 
 def _project(doc, inputs, element_id, target) -> DragResult:
     rest = evaluate(doc, inputs=inputs)
-    found = _path_range(doc, rest.elements, element_id)
+    found = _path_range(doc, rest.elements, element_id, rest.tolerances.scale)
     if found is None:
         return DragResult('no_convergence', inputs)
     frame, lo, hi, outside = found

@@ -78,3 +78,133 @@ def test_stationary_locus_point_is_undefined_in_the_kernel():
     doc['operations']['op_M']['args'] = {'a': ref('P'), 'b': ref('R')}
     state = native.evaluate(doc).elements['Q']
     assert state['state'] == 'undefined' and state['reason'] == 'degenerate_locus', state
+
+
+def test_projection_and_drag_use_the_same_locus_parameter():
+    doc = locus_doc()
+    for xy in [(1.625, .5625), (2, 1), (-2, -1), (5, 3)]:
+        t = native.project(doc, 'g', xy)
+        result = native.drag(doc, {}, 'Q', xy)
+        assert t is not None and result['inputs']['Q']['value'] == pytest.approx(t)
+        state = native.evaluate(doc, inputs=result['inputs']).elements['Q']
+        assert state['state'] == 'defined'
+    assert native.project(doc, 'Q', (1.625, .5625)) == pytest.approx(.375)
+    assert native.drag(doc, {}, 'Q', (-2, -1))['status'] == 'clamped'
+
+
+def test_projection_uses_scene_scale_for_large_sample_links():
+    doc = locus_doc()
+    # Each link is about 1.3 units: visible at scene scale 850, hidden at scale 1.
+    doc['inputs']['C'] = {'kind': 'point', 'value': [600, 300]}
+    assert native.project(doc, 'g', (150, 75)) is not None
+    result = native.drag(doc, {}, 'Q', (150, 75))
+    assert result['status'] == 'ok'
+
+
+def test_incidence_and_condition_projection_use_the_locus_scene_scale():
+    doc = locus_doc()
+    doc['inputs']['C'] = {'kind': 'point', 'value': [600, 300]}
+    b = DocBuilder()
+    b.doc = doc
+    b.free('Z', 150, 75)
+    rel = {'id': 'on', 'predicate': 'incident', 'args': ['Q', 'g']}
+    assert native.check(doc, relations=[rel]).results['relation:on'] == 'passed'
+    out = native.apply_condition(doc, {'statement': {'kind': 'on', 'point': {'ref': 'Z'},
+                                  'object': {'ref': 'g'}}, 'mode': 'construct', 'source': 'panel'},
+                                 receiver='Z', marks=False)
+    assert out.refusal is None, out.refusal
+
+
+def test_incidence_on_an_undefined_locus_point_is_inconclusive():
+    doc = locus_doc()
+    doc['inputs']['C'] = doc['inputs']['B']
+    rel = {'id': 'on', 'predicate': 'incident', 'args': ['Q', 'g']}
+    assert native.check(doc, relations=[rel]).results['relation:on'] == 'inconclusive'
+
+
+def test_projection_on_broken_locus_selects_nearest_run_and_smallest_parameter():
+    f = frame([[0, 0], [1, 0], None, [0, 2], [1, 2]])
+    assert paths.project(f, .5, 1, 1e-9) == pytest.approx(.125)
+    assert paths.project(f, .5, 1.9, 1e-9) == pytest.approx(.875)
+    assert paths.project(frame([None, None]), 0, 0, 1e-9) is None
+    assert paths.project(frame([[1, 2]] * 3), 1, 2, 1e-9) is None
+
+
+def test_drag_and_project_input_on_a_stationary_locus_have_no_projection():
+    doc = locus_doc()
+    doc['inputs']['C'] = doc['inputs']['B']
+    assert native.project_input(doc, 'g', (2, 3)) is None
+    out = native.drag(doc, {}, 'Q', (2, 3))
+    assert out['status'] == 'no_convergence' and out['inputs'] == {}
+
+
+def test_closest_point_on_a_locus_and_dragging_a_dependent_point():
+    doc = locus_doc()
+    b = DocBuilder('closest', registry_version='1.10')
+    b.doc = doc
+    b.free('Z', 2, 1)
+    b.op('op_F', 'point.closest', {'path': ref('g'), 'point': ref('Z')}, [('foot', 'F', 'point')])
+    b.midpoint('D', 'Q', 'Z')
+    state = native.evaluate(doc).elements['F']
+    assert state['state'] == 'defined', state
+    assert native.project(doc, 'g', (2, 1)) == pytest.approx(8 / 15)
+    doc.setdefault('appearance', {})['D'] = {'drag': {'via': ['Q']}}
+    result = native.drag(doc, {}, 'D', (2.1875, .96875))
+    assert result['status'] == 'ok', result
+    assert result['inputs']['Q']['value'] == pytest.approx(.625, abs=1e-6)
+
+
+def test_classic_bridge_keeps_locus_sample_indices_in_the_inverse():
+    from animageo.native.kernel.bridge import build_construction
+    doc = locus_doc()
+    doc['inputs']['C'] = {'kind': 'point', 'value': [600, 300]}
+    construction, names = build_construction(doc)
+    construction.rebuild(full=True)
+    q = names.by_id['Q']
+    target = (150, 75)
+    t = native.project(doc, 'g', target)
+    assert construction.tparam_from_coords(q, target) == pytest.approx(t)
+    construction.update_tparam(q, t)
+    construction.rebuild(full=True)
+    value = native.evaluate(doc, inputs={'Q': path_input(t)}).elements['Q']['value']
+    assert construction.element(q).data.coords == pytest.approx([value['x'], value['y']])
+
+
+def test_classic_bridge_inverse_does_not_compress_null_samples():
+    from animageo.native.curves_fixtures import _locus_scenes
+    from animageo.native.kernel.bridge import build_construction
+    doc = _locus_scenes()[1][0].doc
+    construction, names = build_construction(doc)
+    construction.rebuild(full=True)
+    value = native.evaluate(doc).elements['Q']['value']
+    target = value['x'], value['y']
+    assert construction.tparam_from_coords(names.by_id['Q'], target) == pytest.approx(.75, abs=1e-9)
+
+
+def test_classic_bridge_locus_uses_the_current_scale_after_a_free_point_moves():
+    from animageo.geo.lib_elements import Point
+    from animageo.native.kernel.bridge import build_construction
+    doc = locus_doc()
+    construction, names = build_construction(doc)
+    construction.rebuild(full=True)
+    construction.update(names.by_id['C'], Point([60000, 30000]))
+    construction.rebuild(full=True)
+    value = native.evaluate(doc, inputs={'C': {'kind': 'point', 'value': [60000, 30000]}}).elements['Q']['value']
+    q = construction.element(names.by_id['Q']).data
+    assert q is not None
+    assert q.coords == pytest.approx([value['x'], value['y']])
+    assert construction.tparam_from_coords(names.by_id['Q'], q.coords) == pytest.approx(.25)
+
+
+def test_closed_locus_kernel_point_and_projection_match_the_closing_link():
+    doc = locus_doc()
+    b = DocBuilder('closed', registry_version='1.10')
+    b.doc = doc
+    b.circle('c', 'A', 'C')
+    doc['operations']['op_P']['args']['path'] = ref('c')
+    doc['inputs']['Q'] = path_input(1 - .5 / 256)
+    ev = native.evaluate(doc)
+    pts = ev.elements['g']['value']['points']
+    target = [(pts[-1][k] + pts[0][k]) / 2 for k in (0, 1)]
+    assert ev.elements['Q']['value'] == pytest.approx(dict(zip(('x', 'y'), target)))
+    assert native.project(doc, 'Q', target) == pytest.approx(1 - .5 / 256, abs=1e-9)

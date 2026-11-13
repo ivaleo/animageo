@@ -327,5 +327,5 @@ def project_input(doc, element_id: str, xy, *, inputs=None) -> dict | None:
     if states[path_id]['state'] != 'defined':
         return None
     producer_op, values = producer_values(path_id, doc.elements, doc.operations, states)
-    frame = _paths.frame(type_, states[path_id]['value'], producer_op, values)
+    frame = _paths.frame(type_, states[path_id]['value'], producer_op, values, scale=ev.tolerances.scale)
     return _paths.nearest_input(frame, x, y, ev.tolerances.decide_length, doc.bounds)
