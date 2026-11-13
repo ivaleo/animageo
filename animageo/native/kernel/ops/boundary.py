@@ -157,13 +157,13 @@ def ring_area(ring) -> float:
 
 
 def _rings(args):
-    """``(rings, None)`` — the rings in the order of the value (chain rings
-    in document order, then ``inside``, then ``outside``) — or ``(None,
-    Undefined)``."""
+    """``(pieces, rings, None)`` — the forward pieces of the chain and the
+    rings in the order of the value (chain rings in document order, then
+    ``inside``, then ``outside``) — or ``(None, None, Undefined)``."""
     curves, starts, ends = args['curves'], args['from'], args['to']
     pieces = chain_pieces(curves, starts, ends)
     if isinstance(pieces, Undefined):
-        return None, pieces
+        return None, None, pieces
     walks, _problem = boundary_chain([c.id for c in curves], [s.id for s in starts], [e.id for e in ends],
                                      [c.type in _ROUND for c in curves], len(args['inside']) + len(args['outside']))
     rings = [[pieces[i] if forward else pieces[i].reversed() for i, forward in walk] for walk in walks or ()]
@@ -172,8 +172,8 @@ def _rings(args):
     for k, contour in enumerate(args['outside']):
         rings.append(reversed_ring(contour_ring(contour, f'outside.{k}')))
     if sum(len(ring) for ring in rings) > PIECES_MAX:
-        return None, Undefined('limit_exceeded')
-    return rings, None
+        return None, None, Undefined('limit_exceeded')
+    return pieces, rings, None
 
 
 def carrier_distance(carrier, x: float, y: float) -> float:
@@ -260,17 +260,333 @@ def _parts(args, pieces, ctx):
     return None
 
 
+# ── step 3: empty rings ──────────────────────────────────────────────────
+
+def _empty(areas, ctx):
+    """Step 3: a ring of ``|A| ≤ tol.decide·S`` (decision ``empty_region``)."""
+    tol = ctx.tol.decide_length * ctx.tol.scale
+    for area in areas:
+        ctx.decide('empty_region', area, tol)
+        if abs(area) <= tol:
+            return Undefined('empty_region')
+    return None
+
+
+# ── step 4: a simple boundary ────────────────────────────────────────────
+
+_OVERLAP = 'overlap'
+
+
+def _interval(p) -> tuple:
+    """``(s, w)``: an arc piece covers the counterclockwise interval ``[s, s + w]``."""
+    return (p.t0, p.sweep) if p.sweep >= 0 else (p.t0 + p.sweep, -p.sweep)
+
+
+def _on_arc(p, x, y, ctx) -> bool:
+    """Whether ``(x, y)`` (on the circle of ``p``) lies on the arc piece:
+    ``φ = (θ − s) mod 2π``, on it when ``r·(φ − w) ≤ tol`` or
+    ``r·(2π − φ) ≤ tol`` (decisions ``crossing``)."""
+    cx, cy, r = p.circle
+    s, w = _interval(p)
+    phi = (math.atan2(y - cy, x - cx) - s) % TWO_PI
+    tol = ctx.tol.decide_length
+    e1 = r * (phi - w)
+    e2 = r * (TWO_PI - phi)
+    ctx.decide('crossing', e1, tol)
+    ctx.decide('crossing', e2, tol)
+    return e1 <= tol or e2 <= tol
+
+
+def _on_line(p, x, y, ctx) -> bool:
+    """Whether ``(x, y)`` (on the line of ``p``) lies on the straight piece:
+    its parameter in ``[−tol, length + tol]`` (decisions ``crossing``); a
+    piece of zero length: within ``tol`` of its point."""
+    (ax, ay), (bx, by) = p.start, p.end
+    tol = ctx.tol.decide_length
+    length = math.hypot(bx - ax, by - ay)
+    if length == 0.0:
+        d = math.hypot(x - ax, y - ay)
+        ctx.decide('crossing', d, tol)
+        return d <= tol
+    t = ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / length
+    ctx.decide('crossing', t, tol)
+    ctx.decide('crossing', t - length, tol)
+    return -tol <= t <= length + tol
+
+
+def _point_segment(x, y, a, b) -> float:
+    """The distance from ``(x, y)`` to the closed segment ``ab``."""
+    (ax, ay), (bx, by) = a, b
+    dx, dy = bx - ax, by - ay
+    dd = dx * dx + dy * dy
+    t = 0.0 if dd == 0.0 else max(0.0, min(1.0, ((x - ax) * dx + (y - ay) * dy) / dd))
+    return math.hypot(x - (ax + t * dx), y - (ay + t * dy))
+
+
+def _line_line(p, q, ctx) -> list:
+    """Common points of two straight pieces: an end of one within ``tol`` of
+    the other (decision ``touch``), and the point of a proper crossing (the
+    ends of each strictly on both sides of the other)."""
+    tol = ctx.tol.decide_length
+    out = []
+    for (x, y), other in ((p.start, q), (p.end, q), (q.start, p), (q.end, p)):
+        d = _point_segment(x, y, other.start, other.end)
+        ctx.decide('touch', d, tol)
+        if d <= tol:
+            out.append((x, y))
+    (ax, ay), (bx, by) = p.start, p.end
+    (cx, cy), (dx, dy) = q.start, q.end
+    rx, ry = bx - ax, by - ay
+    sx, sy = dx - cx, dy - cy
+    o1 = rx * (cy - ay) - ry * (cx - ax)
+    o2 = rx * (dy - ay) - ry * (dx - ax)
+    o3 = sx * (ay - cy) - sy * (ax - cx)
+    o4 = sx * (by - cy) - sy * (bx - cx)
+    if ((o1 > 0 > o2) or (o1 < 0 < o2)) and ((o3 > 0 > o4) or (o3 < 0 < o4)):
+        t = o3 / (o3 - o4)
+        out.append((ax + t * rx, ay + t * ry))
+    return out
+
+
+def _line_arc(p, q, ctx) -> list:
+    """Common points of a straight piece ``p`` and an arc piece ``q``: the
+    points of the line and the circle (decision ``tangent``: one point when
+    ``|h − r| ≤ tol``) that lie on both pieces."""
+    tol = ctx.tol.decide_length
+    cx, cy, r = q.circle
+    (ax, ay), (bx, by) = p.start, p.end
+    length = math.hypot(bx - ax, by - ay)
+    if length == 0.0:
+        e = math.hypot(ax - cx, ay - cy) - r
+        ctx.decide('tangent', e, tol)
+        return [(ax, ay)] if abs(e) <= tol and _on_arc(q, ax, ay, ctx) else []
+    ux, uy = (bx - ax) / length, (by - ay) / length
+    m = (cx - ax) * ux + (cy - ay) * uy
+    h = abs((cx - ax) * uy - (cy - ay) * ux)
+    delta = h - r
+    ctx.decide('tangent', delta, tol)
+    if delta > tol:
+        return []
+    if abs(delta) <= tol:
+        params = (m,)
+    else:
+        k = math.sqrt((r - h) * (r + h))
+        params = (m - k, m + k)
+    out = []
+    for t in params:
+        x, y = ax + t * ux, ay + t * uy
+        if _on_line(p, x, y, ctx) and _on_arc(q, x, y, ctx):
+            out.append((x, y))
+    return out
+
+
+def _arc_arc(p, q, ctx):
+    """Common points of two arc pieces, or :data:`_OVERLAP`. One circle
+    (decisions ``same_centre``, ``same_curve``): the overlap of the arcs
+    longer than ``tol`` (decision ``touch``), else the ends of each on the
+    other. Two circles: their points (decisions ``tangent``) on both arcs."""
+    tol = ctx.tol.decide_length
+    c1x, c1y, r1 = p.circle
+    c2x, c2y, r2 = q.circle
+    ex, ey = c2x - c1x, c2y - c1y
+    d = math.hypot(ex, ey)
+    ctx.decide('same_centre', d, tol)
+    if d <= tol:
+        diff = r1 - r2
+        ctx.decide('same_curve', diff, tol)
+        if abs(diff) > tol:
+            return []
+        s1, w1 = _interval(p)
+        s2, w2 = _interval(q)
+        shift = (s2 - s1) % TWO_PI
+        overlap = 0.0
+        for lo in (shift, shift - TWO_PI):
+            a, b = max(0.0, lo), min(w1, lo + w2)
+            if b > a:
+                overlap = overlap + (b - a)
+        ctx.decide('touch', r1 * overlap, tol)
+        if r1 * overlap > tol:
+            return _OVERLAP
+        out = []
+        for here, other in ((p, q), (q, p)):
+            if here.whole:
+                continue
+            for x, y in (here.start, here.end):
+                if _on_arc(other, x, y, ctx):
+                    out.append((x, y))
+        return out
+    ux, uy = ex / d, ey / d
+    a = (d * d + r1 * r1 - r2 * r2) / (2 * d)
+    e1 = d - (r1 + r2)
+    e2 = abs(r1 - r2) - d
+    ctx.decide('tangent', e1, tol)
+    ctx.decide('tangent', e2, tol)
+    if e1 > tol or e2 > tol:
+        return []
+    fx, fy = c1x + a * ux, c1y + a * uy
+    if abs(e1) <= tol or abs(e2) <= tol:
+        points = [(fx, fy)]
+    else:
+        h = math.sqrt(max(0.0, (r1 - a) * (r1 + a)))
+        points = [(fx - h * uy, fy + h * ux), (fx + h * uy, fy - h * ux)]
+    return [(x, y) for x, y in points if _on_arc(p, x, y, ctx) and _on_arc(q, x, y, ctx)]
+
+
+def common_points(p, q, ctx):
+    """The points common to two pieces (within ``tol.decide``), or
+    :data:`_OVERLAP` when two arcs of one circle share a stretch."""
+    if p.circle is None and q.circle is None:
+        return _line_line(p, q, ctx)
+    if p.circle is None:
+        return _line_arc(p, q, ctx)
+    if q.circle is None:
+        return _line_arc(q, p, ctx)
+    return _arc_arc(p, q, ctx)
+
+
+def _box(p) -> tuple:
+    """A box around a piece: the ends of a line, the square of the circle of an arc."""
+    if p.circle is None:
+        (ax, ay), (bx, by) = p.start, p.end
+        return min(ax, bx), min(ay, by), max(ax, bx), max(ay, by)
+    cx, cy, r = p.circle
+    return cx - r, cy - r, cx + r, cy + r
+
+
+def _simple(rings, ctx):
+    """Step 4: no two pieces meet but adjacent ones at their common vertex
+    (``tol.inc``, decision ``at_vertex``), else ``boundary_crossing``.
+    Pairs in the order of the value; adjacent: the next piece of a ring (the
+    last and the first too), a ring of two pieces meets at both ends. A pair
+    whose boxes (:func:`_box`) are apart by more than ``tol`` has no common
+    point and is skipped: a shortcut that changes no result."""
+    tol_inc = ctx.tol.check_failed
+    tol = ctx.tol.decide_length
+    flat = [(k, j, p) for k, ring in enumerate(rings) for j, p in enumerate(ring)]
+    boxes = [_box(p) for _k, _j, p in flat]
+    for u in range(len(flat)):
+        k1, j1, p = flat[u]
+        n = len(rings[k1])
+        x0, y0, x1, y1 = boxes[u]
+        for v in range(u + 1, len(flat)):
+            k2, j2, q = flat[v]
+            bx0, by0, bx1, by1 = boxes[v]
+            if bx0 > x1 + tol or x0 > bx1 + tol or by0 > y1 + tol or y0 > by1 + tol:
+                continue                        # apart by more than tol: no common point (exact)
+            shared = []
+            if k1 == k2:
+                if j2 == j1 + 1:
+                    shared.append(p.end)
+                if j1 == 0 and j2 == n - 1:
+                    shared.append(q.end)
+            common = common_points(p, q, ctx)
+            if common == _OVERLAP:
+                return Undefined('boundary_crossing')
+            for x, y in common:
+                near = False
+                for vx, vy in shared:
+                    dv = math.hypot(x - vx, y - vy)
+                    ctx.decide('at_vertex', dv, tol_inc)
+                    near = near or dv <= tol_inc
+                if not near:
+                    return Undefined('boundary_crossing')
+    return None
+
+
+# ── step 5: nesting ──────────────────────────────────────────────────────
+
+def _midpoint(p) -> tuple:
+    if p.circle is None:
+        return (p.start[0] + p.end[0]) / 2, (p.start[1] + p.end[1]) / 2
+    cx, cy, r = p.circle
+    t = p.t0 + p.sweep / 2
+    return cx + r * math.cos(t), cy + r * math.sin(t)
+
+
+_HALF_PI = math.pi / 2
+
+
+def monotone_parts(p) -> list:
+    """The y-monotone parts of a piece in the order of the walk:
+    ``[(a, b, side)]``, ``side`` 0 for a line, ``+1``/``−1`` for a part of an
+    arc in the right/left half of its circle. An arc is cut at the angles
+    ``π/2 + kπ`` strictly inside its sweep; the ends of the piece keep their
+    coordinates, a cut is ``(cx + r cos τ, cy + r sin τ)``."""
+    if p.circle is None:
+        return [(p.start, p.end, 0)]
+    cx, cy, r = p.circle
+    lo, hi = (p.t0, p.t0 + p.sweep) if p.sweep >= 0 else (p.t0 + p.sweep, p.t0)
+    k = math.floor((lo - _HALF_PI) / math.pi)
+    cuts = []
+    while True:
+        tau = _HALF_PI + k * math.pi
+        if tau >= hi:
+            break
+        if tau > lo:
+            cuts.append(tau)
+        k = k + 1
+    if p.sweep < 0:
+        cuts.reverse()
+    angles = [p.t0] + cuts + [p.t0 + p.sweep]
+    points = [p.start] + [(cx + r * math.cos(t), cy + r * math.sin(t)) for t in cuts] + [p.end]
+    return [(points[i], points[i + 1], 1 if math.cos((angles[i] + angles[i + 1]) / 2) >= 0 else -1)
+            for i in range(len(points) - 1)]
+
+
+def ring_contains(ring, x: float, y: float, ctx) -> bool:
+    """The exact even-odd test of ``(x, y)`` against one ring: a ray to ``+x``
+    crosses a monotone part ``(a, b)`` when ``(a.y > y) != (b.y > y)`` at
+    ``x_c`` — on a line ``a.x + (y − a.y)(b.x − a.x)/(b.y − a.y)``, on an
+    arc ``cx ± √(r² − (y − cy)²)`` by its side — when ``x_c > x``
+    (decision ``nesting``: ``x_c − x``)."""
+    tol = ctx.tol.decide_length
+    odd = False
+    for p in ring:
+        for (ax, ay), (bx, by), side in monotone_parts(p):
+            if (ay > y) == (by > y):
+                continue
+            if side == 0:
+                xc = ax + (y - ay) * (bx - ax) / (by - ay)
+            else:
+                cx, cy, r = p.circle
+                xc = cx + side * math.sqrt(max(0.0, r * r - (y - cy) * (y - cy)))
+            ctx.decide('nesting', xc - x, tol)
+            if xc > x:
+                odd = not odd
+    return odd
+
+
+def _nested(rings, areas, ctx):
+    """Step 5: the depth of a ring is the number of other rings that hold the
+    middle of its first piece; an even depth needs ``A > 0``, an odd one
+    ``A < 0``. A ring of the chain that breaks it is ``flipped``, a contour
+    (its walk is fixed by its slot) ``boundary_crossing``."""
+    for k, ring in enumerate(rings):
+        x, y = _midpoint(ring[0])
+        depth = sum(1 for j, other in enumerate(rings) if j != k and ring_contains(other, x, y, ctx))
+        if (areas[k] > 0) != (depth % 2 == 0):
+            return Undefined('flipped' if ring[0].index is not None else 'boundary_crossing')
+    return None
+
+
 @op('region.by_boundary')
 def by_boundary(args, ctx):
-    rings, failure = _rings(args)
-    if failure is not None:
-        return {'region': failure}
-    failure = _incidence(args, ctx)
+    pieces, rings, failure = _rings(args)
     if failure is None:
-        failure = _parts(args, chain_pieces(args['curves'], args['from'], args['to']), ctx)
+        failure = _incidence(args, ctx)
+    if failure is None:
+        failure = _parts(args, pieces, ctx)
+    if failure is None:
+        areas = [ring_area(ring) for ring in rings]
+        failure = _empty(areas, ctx) or _simple(rings, ctx) or _nested(rings, areas, ctx)
+    if failure is None:
+        total = sum(areas)
+        tol = ctx.tol.decide_length * ctx.tol.scale
+        ctx.decide('empty_region', total, tol)
+        if total <= tol:
+            failure = Undefined('empty_region')
     if failure is not None:
         return {'region': failure}
-    areas = [ring_area(ring) for ring in rings]
     return {'region': {'rings': [[p.value() for p in ring] for ring in rings],
                        'shape': [[[p.kind, p.source] for p in ring] for ring in rings],
-                       'area': sum(areas)}}
+                       'area': total}}

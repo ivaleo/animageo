@@ -313,3 +313,197 @@ def test_upstream_vertex():
     d = two_circles(dx=12.0).boundary('R', ['c1', 'c2'], ['Q', 'P'], ['P', 'Q'])
     _e, rec = evaluated(d)
     assert rec['reason'] == 'upstream'
+
+
+# ── empty, simple, nested ───────────────────────────────────────────────
+
+def segments_triangle(c=(0, 3)):
+    """Segments AB, BC, CA of the free points A (0, 0), B (4, 0), C."""
+    d = Doc().free('A', 0, 0).free('B', 4, 0).free('C', *c)
+    d.segment('ab', 'A', 'B').segment('bc', 'B', 'C').segment('ca', 'C', 'A')
+    return d.boundary('R', ['ab', 'bc', 'ca'], ['A', 'B', 'C'], ['B', 'C', 'A'])
+
+
+def reason(doc, el_id='R'):
+    _e, rec = evaluated(doc, el_id)
+    return rec['state'], rec['reason']
+
+
+def test_collinear_vertices_are_an_empty_region():
+    assert reason(segments_triangle(c=(2, 0))) == ('undefined', 'empty_region')
+
+
+def test_vertex_across_the_opposite_side_is_flipped():
+    assert reason(segments_triangle(c=(1, -2))) == ('undefined', 'flipped')
+
+
+def concurrent(shift):
+    """Lines y = 0, x = 0 and x + y = shift; the vertices are their intersections."""
+    d = Doc().free('P1', -1, 0).free('P2', 1, 0).free('Q1', 0, -1).free('Q2', 0, 1)
+    d.free('S1', shift + 1, -1).free('S2', shift - 1, 1)
+    d.line('c', 'P1', 'P2').line('b', 'Q1', 'Q2').line('a', 'S1', 'S2')
+    d.intersect('X', 'b', 'c').intersect('Y', 'c', 'a').intersect('Z', 'a', 'b')
+    return d.boundary('R', ['c', 'a', 'b'], ['X', 'Y', 'Z'], ['Y', 'Z', 'X'])
+
+
+def test_third_line_through_a_vertex():
+    """The triangle shrinks to the point X and grows on the other side, walked the same
+    way: empty at the instant, defined (the opposite face) beyond."""
+    _e, v = defined(concurrent(3))
+    assert v['area'] == pytest.approx(4.5, abs=1e-12)
+    assert reason(concurrent(0)) == ('undefined', 'empty_region')
+    _e, v = defined(concurrent(-2))
+    assert v['area'] == pytest.approx(2.0, abs=1e-12)
+
+
+def test_bow_tie_is_a_boundary_crossing():
+    """An uneven bow tie: a symmetric one has zero area and is empty first."""
+    d = Doc().free('A', 0, 0).free('B', 4, 0).free('C', 0, 4).free('D', 6, 4)
+    d.segment('ab', 'A', 'B').segment('bc', 'B', 'C').segment('cd', 'C', 'D').segment('da', 'D', 'A')
+    d.boundary('R', ['ab', 'bc', 'cd', 'da'], ['A', 'B', 'C', 'D'], ['B', 'C', 'D', 'A'])
+    assert reason(d) == ('undefined', 'boundary_crossing')
+
+
+def test_a_vertex_visited_twice_is_a_boundary_crossing():
+    """A figure eight through V: the pieces meet at V away from their own joints."""
+    d = Doc().free('V', 0, 0).free('A', 2, -1).free('B', 2, 1).free('C', -2, 1).free('D', -2, -1)
+    for a, b in (('V', 'A'), ('A', 'B'), ('B', 'V'), ('V', 'C'), ('C', 'D'), ('D', 'V')):
+        d.segment(a.lower() + b.lower(), a, b)
+    d.boundary('R', ['va', 'ab', 'bv', 'vc', 'cd', 'dv'], ['V', 'A', 'B', 'V', 'C', 'D'],
+               ['A', 'B', 'V', 'C', 'D', 'V'])
+    assert reason(d) == ('undefined', 'boundary_crossing')
+
+
+def rings(holes, r_out=5.0, inside_extra=()):
+    """``inside`` the circle of r_out about the origin; ``outside`` circles ``(cx, cy, r)``."""
+    d = Doc().free('O', 0, 0).free('T', r_out, 0).circle('big', 'O', 'T')
+    names = []
+    for k, (cx, cy, r) in enumerate(holes):
+        d.free(f'H{k}', cx, cy).free(f'U{k}', cx + r, cy).circle(f'h{k}', f'H{k}', f'U{k}')
+        names.append(f'h{k}')
+    extra = []
+    for k, (cx, cy, r) in enumerate(inside_extra):
+        d.free(f'I{k}', cx, cy).free(f'J{k}', cx + r, cy).circle(f'i{k}', f'I{k}', f'J{k}')
+        extra.append(f'i{k}')
+    return d.boundary('R', inside=['big'] + extra, outside=names)
+
+
+def test_a_hole_inside():
+    _e, v = defined(rings([(1, 0, 2)]))
+    assert v['area'] == pytest.approx(21 * math.pi, abs=1e-12)
+
+
+def test_a_hole_crossing_its_ring():
+    assert reason(rings([(4, 0, 2)])) == ('undefined', 'boundary_crossing')
+
+
+def test_a_hole_touching_its_ring():
+    assert reason(rings([(3, 0, 2)])) == ('undefined', 'boundary_crossing')
+
+
+def test_a_hole_out_of_its_ring():
+    assert reason(rings([(9, 0, 2)])) == ('undefined', 'boundary_crossing')
+
+
+def test_an_island_in_a_hole():
+    _e, v = defined(rings([(0, 0, 3)], inside_extra=[(0, 0, 1)]))
+    assert v['area'] == pytest.approx((25 - 9 + 1) * math.pi, abs=1e-12)
+    assert v['shape'] == [[['ccw', 'inside.0']], [['ccw', 'inside.1']], [['cw', 'outside.0']]]
+
+
+def test_an_inside_contour_in_its_ring_is_a_boundary_crossing():
+    assert reason(rings([], inside_extra=[(0, 0, 1)])) == ('undefined', 'boundary_crossing')
+
+
+def test_a_chain_hole_walked_clockwise():
+    """A triangle walked clockwise inside a contour is a hole."""
+    d = segments_triangle()
+    d.free('O', 1, 1).free('T', 7, 1).circle('big', 'O', 'T')
+    d.boundary('R', ['ca', 'bc', 'ab'], ['A', 'C', 'B'], ['C', 'B', 'A'], inside=['big'])
+    _e, v = defined(d)
+    assert v['shape'] == [[['line', 'curves.0'], ['line', 'curves.1'], ['line', 'curves.2']], [['ccw', 'inside.0']]]
+    assert v['area'] == pytest.approx(36 * math.pi - 6, abs=1e-12)
+
+
+def test_a_chain_walked_clockwise_alone_is_flipped():
+    d = segments_triangle().boundary('R', ['ca', 'bc', 'ab'], ['A', 'C', 'B'], ['C', 'B', 'A'])
+    assert reason(d) == ('undefined', 'flipped')
+
+
+def lune(dx):
+    """c1 r = 5 about the origin, c2 r = 3 about (dx, 0); the part of c2 outside c1."""
+    d = Doc().free('O1', 0, 0).free('T1', 5, 0).free('O2', dx, 0).free('T2', dx + 3, 0)
+    d.circle('c1', 'O1', 'T1').circle('c2', 'O2', 'T2').circle_circle('P', 'Q', 'c1', 'c2')
+    return d.boundary('R', ['c2', 'c1'], ['Q', 'Q'], ['P', 'P'])
+
+
+def test_lune_at_internal_tangency():
+    _e, v = defined(lune(4))
+    assert v['shape'] == [[['ccw', 'curves.0'], ['cw', 'curves.1']]]
+    assert 0 < v['area'] < 9 * math.pi
+    assert reason(lune(2)) == ('undefined', 'empty_region')
+    assert reason(lune(1)) == ('undefined', 'upstream')
+
+
+def chord(h):
+    """The part of the disc r = 5 above the chord y = h (a circle segment by a chain)."""
+    d = Doc().free('O', 0, 0).free('T', 5, 0).circle('k', 'O', 'T')
+    d.free('L1', -6, h).free('L2', 6, h).segment('s', 'L1', 'L2').line_circle('P', 'Q', 's', 'k')
+    return d.boundary('R', ['k', 's'], ['Q', 'P'], ['P', 'Q'])
+
+
+def test_chord_touching_its_circle():
+    _e, v = defined(chord(3))
+    assert v['area'] == pytest.approx(25 * math.acos(3 / 5) - 3 * 4, abs=1e-12)
+    assert reason(chord(5)) == ('undefined', 'empty_region')
+    assert reason(chord(5.5)) == ('undefined', 'upstream')
+
+
+def test_too_many_pieces_is_an_error():
+    d = Doc()
+    names = []
+    for k in range(257):
+        t = 2 * math.pi * k / 257
+        d.free(f'V{k}', round(5 * math.cos(t), 6), round(5 * math.sin(t), 6))
+        names.append(f'V{k}')
+    d.polygon('poly', *names).boundary('R', inside=['poly'])
+    assert reason(d) == ('error', 'limit_exceeded')
+
+
+def test_the_check_passes():
+    from animageo.native.kernel.checks import run_checks
+    e, _v = defined(chord(3))
+    assert run_checks(e, ['op_R:on_carriers']).results == {'op_R:on_carriers': 'passed'}
+
+
+def test_a_stadium_joins_lines_and_arcs_at_tangents():
+    d = Doc().free('A', -2, -1).free('B', 2, -1).free('C', 2, 1).free('D', -2, 1)
+    d.free('E', 2, 0).free('F', -2, 0)
+    d.segment('bottom', 'A', 'B').segment('top', 'C', 'D').circle('right', 'E', 'B').circle('left', 'F', 'D')
+    d.boundary('R', ['bottom', 'right', 'top', 'left'], ['A', 'B', 'C', 'D'], ['B', 'C', 'D', 'A'])
+    _e, v = defined(d)
+    assert v['area'] == pytest.approx(8 + math.pi, abs=1e-12)
+
+
+def test_a_circle_in_two_arcs():
+    d = Doc().free('O', 0, 0).free('T', 2, 0).circle('k', 'O', 'T')
+    d.free('P', 0, 2).free('Q', 0, -2)
+    d.boundary('R', ['k', 'k'], ['P', 'Q'], ['Q', 'P'])
+    _e, v = defined(d)
+    assert v['area'] == pytest.approx(4 * math.pi, abs=1e-12)
+    assert reason(d.boundary('R', ['k', 'k'], ['P', 'P'], ['Q', 'Q'])) == ('undefined', 'empty_region')
+
+
+def test_a_hole_sharing_a_vertex_with_its_ring():
+    d = Doc().free('A', 0, 0).free('B', 6, 0).free('C', 0, 6).free('D', 2, 1).free('E', 1, 2)
+    for a, b in (('A', 'B'), ('B', 'C'), ('C', 'A'), ('A', 'E'), ('E', 'D'), ('D', 'A')):
+        d.segment(a.lower() + b.lower(), a, b)
+    d.boundary('R', ['ab', 'bc', 'ca', 'ae', 'ed', 'da'], ['A', 'B', 'C', 'A', 'E', 'D'],
+               ['B', 'C', 'A', 'E', 'D', 'A'])
+    assert reason(d) == ('undefined', 'boundary_crossing')
+    d.free('A2', 1, 1).segment('a2e', 'A2', 'E').segment('da2', 'D', 'A2')
+    d.boundary('R', ['ab', 'bc', 'ca', 'a2e', 'ed', 'da2'], ['A', 'B', 'C', 'A2', 'E', 'D'],
+               ['B', 'C', 'A', 'E', 'D', 'A2'])
+    _e, v = defined(d)
+    assert v['area'] == pytest.approx(18 - 0.5, abs=1e-12)
+    assert v['shape'][1] == [['line', 'curves.3'], ['line', 'curves.4'], ['line', 'curves.5']]
