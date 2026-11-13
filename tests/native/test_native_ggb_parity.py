@@ -14,7 +14,7 @@ from tests.native.test_native_ggb_texts import text_body
 
 NAMES = ('ggb_text_math', 'ggb_conic_ellipse', 'ggb_conic_hyperbola', 'ggb_conic_parabola',
          'ggb_conic_equation', 'ggb_regular_outputs', 'ggb_axis_projection',
-         'ggb_slider', 'ggb_labels', 'ggb_layers')
+         'ggb_slider', 'ggb_labels', 'ggb_layers', 'ggb_rotate_angle_formula')
 
 
 def import_scene(name):
@@ -33,6 +33,11 @@ def import_scene(name):
     elif name == 'ggb_regular_outputs':
         body = regular_body(True).replace(' a5="C" a6="D"', '').replace(point('C', 2., 2.), '').replace(point('D', 0., 2.), '')
         changes = [{'B': ('point', [3., 0.])}, {'B': ('point', [0., 2.])}]
+    elif name == 'ggb_rotate_angle_formula':
+        from tests.native.test_native_ggb_rotate_angle import scene_body
+        body = scene_body()
+        changes = [{'theta': ('angle', 1.0)}, {'D': ('point', [-1., 1.])}, {'a': ('number', 1.5)},
+                   {'theta': ('angle', -0.5), 'B': ('point', [0., -2.])}]
     elif name == 'ggb_axis_projection':
         body = command('Point', ['xAxis'], ['P']) + point('P', 3., 0.)
         changes = [{'P': ('pathParameter', -2.)}, {'P': ('pathParameter', 5.)}]

@@ -122,3 +122,26 @@ def test_a_numeric_slider_keeps_its_translation_and_gets_the_helper_rule():
     rotate, angle, formula, measures = helper_chain(doc, eid(items, 'Q'))
     assert formula['args']['expr']['ast'] == {'op': 'neg', 'args': [{'ref': 0}]}
     assert_helper(doc, angle, rotate['id'])
+
+
+def scene_body():
+    """The parity scene ``ggb_rotate_angle_formula``: both rotations of C0 around one centre and a
+    function saved with its label in front (C0-a)."""
+    from tests.native.test_native_ggb_functions import function_source, number
+    return (point('A', 1., 0.) + point('O', 0., 0.) + element('angle', 'theta', extra=f'<value val="{THETA!r}"/>')
+            + command('Rotate', ['A', '(-theta)', 'O'], ['Q']) + point('Q', *rot(1., 0., -THETA))
+            + point('B', 2., 0.) + point('D', 2 * math.cos(ALPHA), 2 * math.sin(ALPHA))
+            + command('Angle', ['B', 'O', 'D'], ['α_{2}']) + element('angle', 'α_{2}', extra=f'<value val="{ALPHA!r}"/>')
+            + command('Rotate', ['A', '(4 * (α_{2} - 90°))', 'O'], ["I'"])
+            + point("I'", *rot(1., 0., 4 * (ALPHA - math.pi / 2)))
+            + number('a', 4) + function_source('i: y = (-abs(x)) + a', 'i', type_='function'))
+
+
+def test_the_parity_scene_is_editable():
+    doc, items = imported(scene_body())
+    assert all(e['category'] == 'editable' and e['value_check'] == 'passed' for e in items.values()), items
+    rotations = [op for op in doc['operations'].values() if op['op'] == 'transform.rotate']
+    assert len(rotations) == 2
+    helpers = [el for el in doc['elements'].values() if 'origin' in el]
+    assert sorted(doc['operations'][el['producer']['operationId']]['op'] for el in helpers) == [
+        'measure.angle', 'number.expression', 'number.expression']

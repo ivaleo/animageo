@@ -101,7 +101,11 @@ helper. The rotation is value-checked by its image against the saved
 `detail`; one the reader cannot read keeps the classic path. An angle
 argument the classic translates itself (a numeric slider: `-a`, `a/2`)
 keeps its translation; `Rotate(P, α, O)` with a bare angle of a figure stays
-`unsupported_signature`.
+`unsupported_signature`. The parity fixture
+`animageo/native/parity/v1/ggb/ggb_rotate_angle_formula.json` (scene in
+`tests/native/import/scenes/`) holds both kinds of rotation and a function
+saved with its label in front, with their helpers, for the other
+implementations of the kernel.
 
 1.10.0a2 (`native.has("convert.formula")`): the arithmetic of numbers and
 measures — 24 keys (`+ - * / ^`, the opposite, `Abs`, `Sqrt`, `Sin`, `Cos`,
@@ -511,7 +515,7 @@ directory — its `*.ggb` files recursively) as `from-ggb` does without
 `--namespace` and prints one line of totals:
 
 ```text
-library files 221 full 204 objects 4885 editable 4718 lost 118 picture 48 differs 1 value_unchecked 1
+library files 221 full 206 objects 4885 editable 4727 lost 112 picture 45 differs 1 value_unchecked 1
 ```
 
 - `files` — the files, each counted with its weight: `--weights` is a JSON

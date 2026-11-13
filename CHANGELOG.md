@@ -90,6 +90,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (registry 1.4). The rotation is checked against its saved image. Before it
   was a picture (`formula_unsupported`) with its dependents in closure; an
   expression outside the formulas still is, with the expression in `detail`.
+- GGB parity fixture `ggb_rotate_angle_formula` (`parity/v1/ggb`): a rotation
+  by `-theta` of an angle slider, a rotation by `4 * (α_{2} - 90°)` of an
+  angle of a figure and a function `i: y = (-abs(x)) + a`, saved and after
+  moving the slider, the figure and the number.
 
 ### Changed
 
