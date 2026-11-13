@@ -99,3 +99,23 @@ def test_static_export_dict_is_the_scene_export(layout):
             assert static[key] == pytest.approx(value), key
         else:
             assert static[key] == value, key
+
+
+def test_one_pass_places_as_the_classic_two_passes(tmp_path):
+    # The classic renderer solves rendered_bounds twice (applyStyle); the
+    # second pass ignores the first one's offsets. Under
+    # respect_current_position one pass of layout_labels gives the labels
+    # without an authored offset the same side.
+    import math
+    from tests.native.test_native_layout_labels import (
+        MEDIAN_POINTS, angle_between, label_direction, median_triangle, respecting)
+    doc = median_triangle()
+    one = native.layout_labels(doc, style_config=respecting(), place=True)
+    layout = {'content': {'source': 'rendered_bounds', 'padding': 40}}
+    report = native.render(doc, style_config=respecting(), export_layout=layout, out=tmp_path / 'm.svg').report
+    for name in MEDIAN_POINTS:
+        element = report['elements'][name]
+        x0, y0, x1, y1 = element['box']                         # the point's marker
+        rendered = {'box': element['label']['box'], 'point': [(x0 + x1) / 2, (y0 + y1) / 2]}
+        dev = math.degrees(angle_between(label_direction(one[name]), label_direction(rendered)))
+        assert dev < 3, (name, dev)

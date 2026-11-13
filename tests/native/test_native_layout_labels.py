@@ -210,3 +210,83 @@ def test_hundred_labels_within_100_ms():
         assert len(out) == 100
         best[place] = min(times)
     assert best[False] <= 0.1 and best[True] <= 0.1, best
+
+
+# The label placement the web canvas solves with (its recommended preset):
+# ``respect_current_position`` on.
+RESPECTING = {
+    'enabled': True, 'distance_px': 7, 'padding_px': 2, 'angle_gap_arc_px': 5, 'angle_gap_sides_px': 4,
+    'w_anchor': 0.5, 'w_label': 10, 'w_geom': 8, 'canonicalize_anchor': True, 'repair_iterations': 6,
+    'soft_falloff_px': 0, 'respect_current_position': True, 'point_bisector': True, 'geom_gap_px': 2,
+    'directional_placement': False, 'viewport_clamp': True, 'declutter_labels': True, 'label_gap_px': 2.5,
+    'w_assoc': 3, 'dashed_overlap_factor': 0.3, 'continuous_placement': True, 'continuous_steps': 72,
+    'angle_label_max_arm_fraction': 0.45, 'cluster_consistency': True, 'compact_labels': True,
+    'compact_gap_px': 1, 'compact_max_push_px': 4, 'overlap_tol_px': 2.5, 'angle_marker_obstacle': True,
+}
+MEDIAN_POINTS = {'A': (-5, -4), 'B': (8, -4), 'C': (-2, 6), 'M': (-3.5, 1)}
+# the lines through each labelled point: the sides of ABC and the median BM
+MEDIAN_RAYS = {'A': 'BC', 'B': 'ACM', 'C': 'AB', 'M': 'ACB'}
+
+
+def median_triangle():
+    b = builder('median_respect', bounds=(-6, -5, 10, 7))
+    b.free('A', *MEDIAN_POINTS['A']).free('B', *MEDIAN_POINTS['B']).free('C', *MEDIAN_POINTS['C'])
+    b.polygon('T', 'A', 'B', 'C', sides=[(1, 'c'), (2, 'a'), (3, 'b')])
+    b.midpoint('M', 'A', 'C').segment('m', 'B', 'M')
+    return b.doc
+
+
+def label_direction(entry):
+    """Direction (radians, y up) from the point to the centre of its label box."""
+    x0, y0, x1, y1 = entry['box']
+    px, py = entry['point']
+    return math.atan2(py - (y0 + y1) / 2, (x0 + x1) / 2 - px)
+
+
+def angle_between(a, b):
+    return abs((a - b + math.pi) % (2 * math.pi) - math.pi)
+
+
+def outer_bisector(name):
+    """Bisector of the widest gap between the lines through a point: outside the figure."""
+    px, py = MEDIAN_POINTS[name]
+    rays = sorted(math.atan2(MEDIAN_POINTS[q][1] - py, MEDIAN_POINTS[q][0] - px) for q in MEDIAN_RAYS[name])
+    gap, start = max(((rays[(i + 1) % len(rays)] - rays[i]) % (2 * math.pi) or 2 * math.pi, rays[i])
+                     for i in range(len(rays)))
+    return start + gap / 2
+
+
+def respecting(**overlay):
+    return {'overlay': {'label_placement': dict(RESPECTING), **overlay}}
+
+
+def test_respect_current_position_skips_the_offset_a_point_is_born_with():
+    # A point's own default offset ([0.5, 0], to the right) is nobody's choice:
+    # it used to hold the labels of A and C on the right of their vertex.
+    out = native.layout_labels(median_triangle(), style_config=respecting(), place=True)
+    for name in MEDIAN_POINTS:
+        assert out[name]['placed'] is True
+        dev = math.degrees(angle_between(label_direction(out[name]), outer_bisector(name)))
+        assert dev < 45, (name, dev)
+
+
+def test_respect_current_position_keeps_an_authored_offset():
+    # A style offset straight down is the author's: A and B keep that side
+    # instead of the outer bisector (down-left of A, down-right of B).
+    style = respecting(per_type={'point': {'label_offset_px': [0, -20]}})
+    out = native.layout_labels(median_triangle(), style_config=style, place=True)
+    for name in ('A', 'B'):
+        assert math.degrees(angle_between(label_direction(out[name]), -math.pi / 2)) < 25, name
+        assert math.degrees(angle_between(label_direction(out[name]), outer_bisector(name))) > 45, name
+
+
+def test_one_pass_places_as_two_passes():
+    # rendered_bounds solves twice (the crop of the first layout, then the
+    # layout at that crop); the second pass ignores the first one's offsets.
+    # A label without an authored offset gets the same side from one pass.
+    doc = median_triangle()
+    one = native.layout_labels(doc, style_config=respecting(), place=True)
+    two = native.layout_labels(doc, style_config=respecting(), place=True,
+                               export_layout={'content': {'source': 'rendered_bounds', 'padding': 40}})
+    for name in MEDIAN_POINTS:
+        assert math.degrees(angle_between(label_direction(one[name]), label_direction(two[name]))) < 3, name

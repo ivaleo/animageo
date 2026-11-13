@@ -93,6 +93,28 @@ class LayoutInput:
 # GeoStyle.dot_size: the renderer's point size when no style layer has size_px.
 DOT_SIZE_PX = 2.8346456692916
 
+# ``trace`` sources of a ``label_offset_px`` nobody chose: the element's own
+# default (a point is born with ``[0.5, 0]``) or no value at all.
+_UNAUTHORED_OFFSET_SOURCES = ('intrinsic.style', 'missing')
+
+
+def _authored_label_offset(scene, elem) -> Optional[list]:
+    """``label_offset_px`` of ``elem`` as an author set it, or ``None``.
+
+    An offset counts as the author's when a layer above the element's own
+    default holds it: an explicit ``elem.style`` write, ``overlay.per_name`` /
+    ``per_type``, the GeoGebra import (``ggb_style``) or the style's
+    ``defaults`` (``style.resolver.trace``). The default an element is born
+    with (a point's ``[0.5, 0]``, source ``intrinsic.style``) and a missing
+    value are not a choice: placement treats such a label as unplaced, so
+    ``respect_current_position`` keeps no side or position for it.
+    """
+    from .style.resolver import trace
+    source, value = trace(scene, elem, 'label_offset_px')
+    if source in _UNAUTHORED_OFFSET_SOURCES:
+        return None
+    return value
+
 
 def point_label_clearance(scene, elem, anchor=None) -> Optional[list]:
     """``label_offset_px`` that hangs the label of a point clear of its marker,
@@ -112,12 +134,11 @@ def point_label_clearance(scene, elem, anchor=None) -> Optional[list]:
     renderer divides ``label_offset_px``.
     """
     from .geo import lib_elements as geo
-    from .style.resolver import trace
     if not getattr(scene, 'label_point_clearance', False) or not isinstance(elem.data, geo.Point):
         return None
     if elem.style.get('_auto_placed') or _resolve_style(scene, elem, 'label_placement_locked', default=False):
         return None
-    if trace(scene, elem, 'label_offset_px')[0] not in ('intrinsic.style', 'missing'):
+    if _authored_label_offset(scene, elem) is not None:
         return None
     if anchor is None:
         anchor = elem.style.get('label_anchor')
@@ -1464,8 +1485,9 @@ def _angle_manual_exterior(scene, elem, angle_range, render_r_px, ptUnit,
     if not respect_current or elem.style.get('_auto_placed'):
         return False
     # Read through the resolver so GGB-imported offsets (which live in the
-    # style-config layer, not ``elem.style``) are seen.
-    off = _resolve_style(scene, elem, 'label_offset_px', default=None)
+    # style-config layer, not ``elem.style``) are seen; an element's own
+    # default offset is nobody's placement.
+    off = _authored_label_offset(scene, elem)
     if off is None:
         return False
     if (float(off[0]) ** 2 + float(off[1]) ** 2) ** 0.5 < respect_min_offset_px:
@@ -3982,8 +4004,13 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
                 # Read through the resolver, not ``elem.style`` directly: GGB
                 # label offsets land in the style-config layer
                 # (per_name/defaults), not in ``elem.style`` — reading the
-                # latter silently ignored every imported manual position.
-                off = _resolve_style(scene, elem, 'label_offset_px', default=None)
+                # latter silently ignored every imported manual position. The
+                # offset an element is born with (a point's ``[0.5, 0]``) is
+                # skipped: it is nobody's choice, and keeping its side held a
+                # label to the right of its point instead of outside the
+                # figure. Such a label is laid out fresh, as on a later pass
+                # (``_auto_placed`` without ``ggb_raw``).
+                off = _authored_label_offset(scene, elem)
             if off is None:
                 continue
             mag = (float(off[0]) ** 2 + float(off[1]) ** 2) ** 0.5
