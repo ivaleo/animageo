@@ -42,7 +42,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..canonical import canonical_json, sha256_of
-from ..registry import FREE_INPUT_DEFAULTS, registry
+from ..registry import FREE_INPUT_DEFAULTS, REGISTRY_VERSION, registry
 
 __all__ = [
     'CHECK_KINDS',
@@ -215,8 +215,15 @@ def _default_min_args(positions) -> int:
     return last + 1
 
 
-def _accept_set(pos: Position) -> frozenset:
+def _accept_set(pos: Position, version=None) -> frozenset:
+    """Argument kinds ``pos`` takes in a document of registry ``version`` (the
+    registry the lexicon writes: the current one by default). A number
+    literal fits the slot type ``number`` and a family listed in
+    ``_types.json -> numberLiteralSince`` once ``version`` reaches it
+    (``Registry.takes_number_literal``), no other family, whatever members it has."""
     reg = registry()
+    if version is None:
+        version = REGISTRY_VERSION
     if pos.kind == 'param':
         return frozenset({STR if pos.type == 'string' else NUM})
     if pos.kind == INPUT:
@@ -225,7 +232,7 @@ def _accept_set(pos: Position) -> frozenset:
         return frozenset({NOT})
     types = {pos.type, *reg.families.get(pos.type, ())}
     out = set(types)
-    if 'number' in types:
+    if reg.takes_number_literal(pos.type, version):
         out.add(NUM)
     if 'segment' in types or 'line' in types:
         out.add(PAIR)

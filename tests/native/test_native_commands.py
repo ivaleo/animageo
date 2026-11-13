@@ -909,3 +909,25 @@ class TestCli:
         edited.write_text(P3 + 'M = Середина(A, Q)\n', encoding='utf-8')
         code, out, err = self.run(capsys, 'commands', 'parse', str(edited), '--base', str(doc))
         assert code == 1 and 'unknown_name 4:17' in err
+
+
+def test_number_literal_follows_the_registry_rule():
+    """A literal fits a slot type `number` and a `numberLiteralSince` family
+    from that registry on; a family that holds `number` among others
+    (`locus_driver`) takes a reference only, so `ГМТ(Y, 1)` is refused."""
+    from animageo.native.commands.lexicon import NUM, Position, _accept_set
+    reg = registry()
+    assert NUM in _accept_set(Position('input', 'x', 'number'))
+    assert 'number' in reg.families['locus_driver']
+    assert NUM not in _accept_set(Position('input', 'mover', 'locus_driver'))
+    limit = Position('input', 'lower', 'limit')
+    assert NUM in _accept_set(limit)
+    assert NUM in _accept_set(limit, '1.9')
+    assert NUM not in _accept_set(limit, '1.8')
+
+    result = parse_commands('A=(0,0)\nB=(1,1)\nc=Circle(A,B)\nY=Point(c)\nГМТ(Y, 1)')
+    assert [i.code for i in result.issues] == ['type_mismatch']
+    assert result.document is None or not any(
+        arg.get('kind') == 'number'
+        for op in result.document.data['operations'].values() if op['op'] == 'locus.of_point'
+        for arg in op['args'].values())
