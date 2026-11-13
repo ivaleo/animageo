@@ -68,7 +68,8 @@ MARK_18_OPS = {'mark.parallel'}
 REGION_OPS = {'function.area_between', 'region.by_boundary'}
 EXPRESSION_OPS = {'point.expression', 'vector.expression', 'line.equation'}      # registry 1.10
 LOCUS_OPS = {'point.on_locus'}      # registry 1.10
-ALL_OPS = LOCUS_OPS | EXPRESSION_OPS | REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
+FUNCTION_ANALYSIS_OPS = {'function.roots_polynomial', 'function.extrema_polynomial'}
+ALL_OPS = FUNCTION_ANALYSIS_OPS | LOCUS_OPS | EXPRESSION_OPS | REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.7 extend 1.0: earlier operations keep their signatures.
 # Registry 1.6 is frozen since 1.11.0rc5; new school operations go to 1.7.
 L0_HASHES = {
@@ -253,12 +254,13 @@ def test_record_fields(op):
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free', 'inputSets', 'moduleGroup'}
     assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors', 'intersect.nearest')
                                 or op in G2_OPS or op in MEET_OPS or op in MARK_18_OPS or op in REGION_OPS
-                                or op in EXPRESSION_OPS or op in LOCUS_OPS else 'stable')
+                                or op in EXPRESSION_OPS or op in LOCUS_OPS or op in FUNCTION_ANALYSIS_OPS else 'stable')
     if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
                   'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle',
                   'text.free', 'function.expr', 'function.root', 'function.extremum',
                   'intersect.function_function', 'intersect.function_line', 'line.common_tangents', 'triangle.cevian',
-                  'intersect.function_conic', 'mark.parallel', 'function.area_between'):
+                  'intersect.function_conic', 'mark.parallel', 'function.area_between',
+                  'function.roots_polynomial', 'function.extrema_polynomial'):
         assert record['params'] == []
     for param in record['params']:
         assert {'slot', 'type', 'unit', 'text'} <= set(param) <= {'slot', 'type', 'unit', 'optional',

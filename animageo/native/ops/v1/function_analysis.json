@@ -1,1 +1,109 @@
-[]
+[
+  {
+    "op": "function.roots_polynomial",
+    "status": "beta",
+    "since": "1.11",
+    "moduleGroup": "function_analysis",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 100,
+        "text": "capacity of the fixed output slots, an integer from 1 to 100"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "root",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "branch": {
+      "policy": "distinct_roots_ascending",
+      "slots": [
+        "root"
+      ],
+      "text": "distinct solutions ordered by ascending x"
+    },
+    "undefined": [
+      "not_polynomial",
+      "coincident",
+      "no_root",
+      "branch_absent",
+      "no_convergence",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "function_roots_polynomial",
+    "phrases": {
+      "ru": "{root} — действительные корни многочлена {function}"
+    },
+    "math": "docs/native/ops/function.roots_polynomial.md",
+    "signatureHash": "sha256:51b363aea45052442ddf3bd860289b177d2101a45cbaff45313793f4bdde1dc2"
+  },
+  {
+    "op": "function.extrema_polynomial",
+    "status": "beta",
+    "since": "1.11",
+    "moduleGroup": "function_analysis",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 100,
+        "text": "capacity of the fixed output slots, an integer from 1 to 100"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "extremum",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "branch": {
+      "policy": "distinct_roots_ascending",
+      "slots": [
+        "extremum"
+      ],
+      "text": "distinct solutions ordered by ascending x"
+    },
+    "undefined": [
+      "not_polynomial",
+      "no_extremum",
+      "branch_absent",
+      "no_convergence",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "function_extrema_polynomial",
+    "phrases": {
+      "ru": "{extremum} — локальные экстремумы многочлена {function}"
+    },
+    "math": "docs/native/ops/function.extrema_polynomial.md",
+    "signatureHash": "sha256:a268db8a55d0bf582f5c52c9c8cb73aa51c1803b2b94ce699c0d1690d6e76993"
+  }
+]
