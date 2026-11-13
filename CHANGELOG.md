@@ -16,6 +16,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hashes stay unchanged; documents declaring registry 1.9 or older read and
   evaluate as before. The registry check refuses a `result` on a slot that is
   not `expr`, a value other than `num`/`vec` and a `result` next to `vars`.
+- Typed expressions (`has("typed_expressions")`; `docs/native/expr.md` §6):
+  in a slot with `result` a formula computes numbers and pairs — points
+  and vectors as pairs `(x, y)` (a vector by its components), `(a, b)`,
+  `f(t)` of a function, `x(V)`, `y(V)`, `abs(V)` (the length), the sum and
+  difference of pairs, a pair times or divided by a number and the dot
+  product of two pairs. A type mistake (`A + 1`, `sin(A)`, `u / v`, a
+  formula of the wrong type) is the issue `formula` at its node, as any
+  refused tree; evaluation reports only `out_of_domain`, `non_finite` and
+  `upstream`, checks each component and turns `−0` into `0`.
+  `expr.problems` takes the element types of the refs and the result,
+  `expr.evaluate_typed` computes a typed tree and `expr.to_text` prints
+  `(a, b)` and `f(1)`.
+- `point.expression` and `vector.expression` (registry 1.10, beta): a point
+  and a vector from the origin by a typed formula over numbers, points,
+  vectors and functions (`A + u`, `t·A + (1 − t)·B`, `(c_x, 4)`,
+  `(2, f(2))`). They draw, take labels and move through
+  `appearance.<id>.drag.via` like any dependent point; describe prints the
+  formula; «Команды» print the operation with `unprintable_operation` and
+  an edit keeps it. GGB import does not produce them yet.
 
 ## [1.14.0] - 2026-11-13
 
