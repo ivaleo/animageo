@@ -1,7 +1,7 @@
 {
   "format": "animageo-commands/v1",
   "id": "parse_triangle",
-  "lexiconHash": "sha256:3da91fdbe3ff60acda855dca7f986bf3e17b4aaad54080a49c03fa354658b080",
+  "lexiconHash": "sha256:b90c502debe249a3d7b00385a79ef57d15027de88cadcc4914dd8d48c086c92e",
   "registry": "1.10",
   "generatedBy": "animageo 1.14.0",
   "cases": [
@@ -2731,6 +2731,344 @@
         ],
         "issues": [],
         "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nc = Окружность(A, B)\nP = Точка(c, 1)\nM = Середина(C, P)\ng = ГМТ(M, P)"
+      }
+    },
+    {
+      "name": "locus_point_parameter",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nP = Точка(AB, 0.25)\nM = Середина(C, P)\ng = ГМТ(M, P)\nQ = ТочкаНаГМТ(g, 0.375)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "point.on_path",
+            "args": {
+              "path": "#1"
+            },
+            "outputs": {
+              "point": "P"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "C",
+              "b": "P"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "locus.of_point",
+            "args": {
+              "trace": "M",
+              "mover": "P"
+            },
+            "outputs": {
+              "locus": "g"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.on_locus",
+            "args": {
+              "locus": "g",
+              "parameter": 0.375
+            },
+            "outputs": {
+              "point": "Q"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "P": {
+            "kind": "pathParameter",
+            "value": 0.25
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "P"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "g"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              "Q"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nP = Точка(AB, 0.25)\nM = Середина(C, P)\ng = ГМТ(M, P)\nQ = ТочкаНаГМТ(g, 0.375)"
+      }
+    },
+    {
+      "name": "locus_point_number",
+      "text": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nP = Точка(AB, 0.25)\nM = Середина(C, P)\ng = ГМТ(M, P)\nt = Параметр(0.625)\nQ = PointOnLocus(g, t)",
+      "base": null,
+      "expect": {
+        "operations": [
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "A"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "B"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.free",
+            "args": {},
+            "outputs": {
+              "point": "C"
+            },
+            "hidden": false
+          },
+          {
+            "op": "line.by_points",
+            "args": {
+              "a": "A",
+              "b": "B"
+            },
+            "outputs": {
+              "line": "#1"
+            },
+            "hidden": true
+          },
+          {
+            "op": "point.on_path",
+            "args": {
+              "path": "#1"
+            },
+            "outputs": {
+              "point": "P"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.midpoint",
+            "args": {
+              "a": "C",
+              "b": "P"
+            },
+            "outputs": {
+              "point": "M"
+            },
+            "hidden": false
+          },
+          {
+            "op": "locus.of_point",
+            "args": {
+              "trace": "M",
+              "mover": "P"
+            },
+            "outputs": {
+              "locus": "g"
+            },
+            "hidden": false
+          },
+          {
+            "op": "number.free",
+            "args": {},
+            "outputs": {
+              "number": "t"
+            },
+            "hidden": false
+          },
+          {
+            "op": "point.on_locus",
+            "args": {
+              "locus": "g",
+              "parameter": "t"
+            },
+            "outputs": {
+              "point": "Q"
+            },
+            "hidden": false
+          }
+        ],
+        "inputs": {
+          "A": {
+            "kind": "point",
+            "value": [
+              0.0,
+              0.0
+            ]
+          },
+          "B": {
+            "kind": "point",
+            "value": [
+              4.0,
+              0.0
+            ]
+          },
+          "C": {
+            "kind": "point",
+            "value": [
+              1.0,
+              3.0
+            ]
+          },
+          "P": {
+            "kind": "pathParameter",
+            "value": 0.25
+          },
+          "t": {
+            "kind": "number",
+            "value": 0.625
+          }
+        },
+        "lines": [
+          {
+            "line": 1,
+            "elements": [
+              "A"
+            ]
+          },
+          {
+            "line": 2,
+            "elements": [
+              "B"
+            ]
+          },
+          {
+            "line": 3,
+            "elements": [
+              "C"
+            ]
+          },
+          {
+            "line": 4,
+            "elements": [
+              "P"
+            ]
+          },
+          {
+            "line": 5,
+            "elements": [
+              "M"
+            ]
+          },
+          {
+            "line": 6,
+            "elements": [
+              "g"
+            ]
+          },
+          {
+            "line": 7,
+            "elements": [
+              "t"
+            ]
+          },
+          {
+            "line": 8,
+            "elements": [
+              "Q"
+            ]
+          }
+        ],
+        "issues": [],
+        "print": "A = (0, 0)\nB = (4, 0)\nC = (1, 3)\nP = Точка(AB, 0.25)\nM = Середина(C, P)\ng = ГМТ(M, P)\nt = 0.625\nQ = ТочкаНаГМТ(g, t)"
       }
     },
     {

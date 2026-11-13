@@ -210,6 +210,11 @@ _OPS = [
                           'g = {locus.of_point}(M, P)', None),
         ('locus_circle', P3 + 'c = {circle.center_point}(A, B)\nP = {point.on_path}(c, 1)\n'
                          'M = {point.midpoint}(C, P)\ng = {locus.of_point:alias}(M, P)', None),
+        ('locus_point_parameter', P3 + 'P = {point.on_path}(AB, 0.25)\nM = {point.midpoint}(C, P)\n'
+                                  'g = {locus.of_point}(M, P)\nQ = {point.on_locus}(g, 0.375)', None),
+        ('locus_point_number', P3 + 'P = {point.on_path}(AB, 0.25)\nM = {point.midpoint}(C, P)\n'
+                               'g = {locus.of_point}(M, P)\nt = {number.free}(0.625)\n'
+                               'Q = {point.on_locus:alias}(g, t)', None),
         ('locus_slider', P3 + 'k = {number.free}(1, 0, 3)\nd = {circle.center_radius}(A, k)\n'
                          'P, Q = {intersect.line_circle}(AB, d)\n{locus.of_point}(Q, k)', None),
     ]),
