@@ -498,7 +498,7 @@ def _angle(final, elem, data, unit, value):
     ``rendering.angle_marker_fit`` — fitted to the sides (``fit``)."""
     from ..angle_marker import fit_settings, marker_fit
     from ..label_placement import compute_effective_arc_size_px
-    from ..mark_shapes import arc_step_px, scene_arc_decor
+    from ..mark_shapes import arc_base_px, arc_step_px, scene_arc_decor
     decor = scene_arc_decor(final, elem)
     angle_range = value('angle_range', 'minor') or 'minor'
     auto_radius = value('auto_radius', True)
@@ -547,11 +547,17 @@ def _angle(final, elem, data, unit, value):
                              [_r(vx + n1[0] + n2[0]), _r(vy + n1[1] + n2[1])],
                              [_r(vx + n2[0]), _r(vy + n2[1])]]
     else:
+        step = shift_px if decor.plain else arc_step_px(decor, shift_px, arcs)
+        if not decor.plain:     # the floors of legibility (mark_shapes.arc_base_px)
+            grown = arc_base_px(decor, radius_px, step, arcs, shown)
+            if grown != radius_px:
+                out['arcGrowPx'] = _r(grown - radius_px)
+                radius_px = grown
+                out['radiusPx'] = _r(radius_px)
         if delta:
             radius_px = radius_px - delta
             out['radiusPx'] = _r(radius_px)
         drawn = 0 if fit is not None and fit.hidden else max(arcs, 0)
-        step = shift_px if decor.plain else arc_step_px(decor, shift_px, arcs)
         radii = [radius_px + (arcs - 1 - i) * step for i in range(drawn)]
         out['arcRadiiPx'] = [_r(r) for r in radii]
         if not decor.plain and radii:
@@ -568,8 +574,8 @@ def _arc_marks(final, elem, data, unit, decor, radii_px, shown, flipped, value):
     decoration. A wave: each arc's samples ``φ_k = start + span·k/(16·N)``,
     ``ρ_k = r + A·sin(2π·(k mod 16)/16)``; a dashed arc: its fitted pattern."""
     from ..angle_marker import marker_extent
-    from ..mark_shapes import (ANGLE_ARROW_PX, WAVE_AMPLITUDE_PX, WAVE_PERIOD_PX, WAVE_SAMPLES, angle_marks,
-                               arrow_fit)
+    from ..mark_shapes import (WAVE_AMPLITUDE_PX, WAVE_GAP_PX, WAVE_MIN_PERIOD_PX, WAVE_PERIOD_PX, WAVE_SAMPLES,
+                               angle_marks, arrow_fit, wave_periods)
     vx, vy = (float(c) for c in data.vertex[:2])
     start = math.atan2(float(data.side2[1]), float(data.side2[0])) if flipped else float(data.start_angle)
     marks = angle_marks((vx, vy), [r / unit for r in radii_px], start, shown, flipped, decor, unit)
@@ -583,13 +589,14 @@ def _arc_marks(final, elem, data, unit, decor, radii_px, shown, flipped, value):
              for arc in marks.arcs]
     if decor.style == 'wave':
         out['wave'] = {'amplitudePx': WAVE_AMPLITUDE_PX, 'periodPx': WAVE_PERIOD_PX,
-                       'samplesPerPeriod': WAVE_SAMPLES,
-                       'periods': max(1, int(round(radii_px[0] * shown / WAVE_PERIOD_PX))),
+                       'samplesPerPeriod': WAVE_SAMPLES, 'gapPx': WAVE_GAP_PX, 'minPeriodPx': WAVE_MIN_PERIOD_PX,
+                       'periods': wave_periods(radii_px[0], shown, len(radii_px)),
                        'arcs': [dict(path, periods=arc.periods, points=[[_r(x), _r(y)] for x, y in arc.points])
                                 for path, arc in zip(paths, marks.arcs)]}
     elif decor.style == 'dashed':
         out['arcDashes'] = [dict(path, onPx=_r(arc.dash.on * unit), offPx=_r(arc.dash.off * unit),
-                                 offsetPx=_r(arc.dash.offset * unit), dashes=arc.dashes)
+                                 offsetPx=_r(arc.dash.offset * unit), dashes=arc.dashes,
+                                 periodPx=None if arc.period_px is None else _r(arc.period_px))
                             for path, arc in zip(paths, marks.arcs)]
     if decor.ticks > 0:
         out['arcTicks'] = {'count': decor.ticks, 'lengthPx': _r(decor.tick_length_px),
@@ -947,11 +954,17 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
                 fill['hatch'] = hatch
             entry['fill'] = fill
         if point:
-            entry['point'] = {'sizePx': _r(_num(value('size_px', DOT_SIZE_PX), DOT_SIZE_PX)),
+            from ..mark_shapes import hollow_size_px, point_hole
+            given = _num(value('size_px', DOT_SIZE_PX), DOT_SIZE_PX)
+            # a hollow point is at least so large that its hole shows
+            size = hollow_size_px(value('point_shape', 'circle'), given, value('point_fill', 'solid'),
+                                  _num(export['ptUnit'], 1.0) / unit)
+            entry['point'] = {'sizePx': _r(size),
                               'shape': value('point_shape', 'circle'),
                               'display': (rendering or {}).get('points_display', 'auto') or 'auto'}
-            from ..mark_shapes import point_hole
-            hole = point_hole(entry['point']['shape'], entry['point']['sizePx'], value('point_fill', 'solid'))
+            if size != given:
+                entry['point']['givenSizePx'] = _r(given)
+            hole = point_hole(entry['point']['shape'], size, value('point_fill', 'solid'))
             if hole is not None:        # a hole of the shape at half size, the sheet's colour on a solid sheet
                 entry['point'].update(fill='hollow', ringPx=_r(hole.ring_px),
                                       hole={'shape': hole.shape, 'radiusPx': _r(hole.radius_px)},

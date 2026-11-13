@@ -67,7 +67,7 @@ class TestTikZ:
         tex = tikz(angle_code(extra="a.style.arc_style = 'wave'\na.style.tick_count = 2\n"))
         plots = re.findall(r'plot coordinates \{(.*?)\};', tex)
         assert len(plots) == 2
-        periods = max(1, round((17 + 3.5) * math.atan2(2, 1) / 6))
+        periods = max(3, round((17 + 4) * math.atan2(2, 1) / 6))     # two waves: 4 px apart, ≥ 3 periods
         assert plots[0].count('(') == 16 * periods + 1
 
     def test_dashed_arc_is_fitted(self):
@@ -102,6 +102,17 @@ class TestTikZ:
     def test_hollow_point_on_a_solid_sheet(self):
         tex = tikz("A = Point(1, 1)\nA.style.point_fill = 'hollow'\nA.style.size_px = 8\n")
         assert re.search(r'\\fill\[fill=agc\d\] \(1,1\) circle \(1\.5pt\);', tex)   # 8/4 px at 0.75 pt/px
+
+    def test_floors_of_legibility(self):
+        # three waves of a narrow angle: the inner arc at 12/Δ px (three periods of 4 px)
+        tex = tikz(angle_code((4, 1.5), "a.style.arc_style = 'wave'\na.style.tick_count = 3\n"))
+        plots = re.findall(r'plot coordinates \{(.*?)\};', tex)
+        inner = [math.hypot(float(x), float(y)) * PT for x, y in re.findall(r'\(([-\d.]+),([-\d.]+)\)', plots[-1])]
+        assert min(inner) == pytest.approx(12 / math.atan2(1.5, 4) - 1, abs=0.01)
+        # a hollow triangle of 8 px is drawn as one of 12 px; a solid one as it is
+        tri = "A = Point(1, 1)\nA.style.point_shape = 'triangle_up'\nA.style.point_fill = '{}'\nA.style.size_px = {}\n"
+        assert tikz(tri.format('hollow', 8)) == tikz(tri.format('hollow', 12))
+        assert tikz(tri.format('solid', 8)) != tikz(tri.format('solid', 12))
 
     def test_hollow_point_on_a_transparent_sheet(self):
         code = "A = Point(0, 0)\nB = Point(3, 0)\ns = Segment(A, B)\nP = Point(1.5, 0)\nP.style.point_fill = 'hollow'\n"
@@ -154,6 +165,14 @@ class TestJSXGraph:
         attrs = element(sp, 'A')['attrs']
         assert attrs['fillColor'] == '#FFFFFF' and attrs['fillOpacity'] == 1
         assert attrs['strokeWidth'] == 2.0 and attrs['size'] == 3.0     # ring ρ/2 = 2, R − ρ/4 = 3
+
+    def test_floors_of_legibility(self):
+        tri = "A = Point(1, 1)\nA.style.point_shape = 'triangle_up'\nA.style.point_fill = 'hollow'\nA.style.size_px = {}\n"
+        assert element(spec(tri.format(8)), 'A')['attrs'] == element(spec(tri.format(12)), 'A')['attrs']
+        sp = spec(angle_code((4, 1.5), "a.style.arc_style = 'wave'\na.style.tick_count = 3\n"))
+        xs, ys = element(sp, '__arcs_a')['parents']
+        assert min(math.hypot(x, y) for x, y in zip(xs, ys) if x is not None) * PT == \
+            pytest.approx(12 / math.atan2(1.5, 4) - 1, abs=0.05)
 
     def test_decorated_angle(self):
         sp = spec(angle_code(extra="a.style.arc_style = 'wave'\na.style.arc_tick_count = 1\n"

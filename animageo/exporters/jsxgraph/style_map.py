@@ -153,8 +153,10 @@ def point_attrs(ctx: JsxContext, elem) -> Dict[str, Any]:
     # JSXGraph `size` is the marker radius in px; the renderer draws size_px/2
     # (see ``_render_point``). Keep it fractional — rounding to an int skews the
     # point-size : line-width ratio away from the SVG/preview (e.g. 2.5→2).
+    from ...mark_shapes import scene_point_size_px
     size_px = ctx.resolve(elem, "size_px", default=ctx.scene.style.dot_size)
     try:
+        size_px = scene_point_size_px(ctx.scene, elem, size_px)     # a hollow point: its hole shows
         attrs["size"] = round(max(float(size_px) / 2.0, 1.0), 2)
     except (TypeError, ValueError):
         pass

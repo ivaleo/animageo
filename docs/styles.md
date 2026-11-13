@@ -540,7 +540,7 @@ pattern fills its sector, or the square of a right angle.
 |---|---|---|---|
 | `size_px` | float (px) | `style.dot_size` | diameter = `size_px / 2 / ptUnit` |
 | `point_shape` | enum string | `"circle"` | Shape: `"circle"`, `"square"`, `"diamond"`, `"triangle_up"`, `"triangle_down"`, `"triangle_left"`, `"triangle_right"`, `"cross"`, `"plus"`. See the GGB preset mapping in `docs/field_names.md` §3.3. |
-| `point_fill` | `"solid"` \| `"hollow"` | `"solid"` | A hollow point has a hole of its own shape at half its size. On a solid sheet the hole is painted in the sheet colour (`style.background`); on a transparent sheet (`exportSVG` / `exportPDF` with `transparent=True`, TikZ `background=False`) it is cut through everything below the point. A cross or a plus ignores it |
+| `point_fill` | `"solid"` \| `"hollow"` | `"solid"` | A hollow point has a hole of its own shape at half its size. On a solid sheet the hole is painted in the sheet colour (`style.background`); on a transparent sheet (`exportSVG` / `exportPDF` with `transparent=True`, TikZ `background=False`) it is cut through everything below the point. A hollow point is drawn at least so large that its hole holds a disc of 3 output px (`size_px` 8 at the style scale: a triangle 12, a square or a diamond 8.49). A cross or a plus ignores it |
 
 ### Angles
 
@@ -552,7 +552,7 @@ pattern fills its sector, or the square of a right angle.
 | `right_angle_marker` | bool \| `null` | `null`: auto, `np.isclose(angle, π/2)` | `true` — always the square, `false` — always arcs, `null` — auto (on a right-angle mark — the square) |
 | `right_angle_size_px` | float (px) | `defaults.angle.right_angle_size_px` | Size of the square right-angle marker |
 | `tick_count` | int | 1 | Multiple arcs (double, triple arc marks); with `0` arcs no decoration is drawn either |
-| `arc_style` | `"solid"` \| `"dashed"` \| `"wave"` | `"solid"` | Look of every arc. Dashed: 2/2 px dashes fitted to each arc (`stroke_dash_pattern_px` replaces them). Wave: amplitude 1 px, period 6 px, a whole number of periods per arc; with several arcs the step between them grows by twice the amplitude |
+| `arc_style` | `"solid"` \| `"dashed"` \| `"wave"` | `"solid"` | Look of every arc. Dashed: 2/2 px dashes fitted to each arc (`stroke_dash_pattern_px` replaces them). Wave: amplitude 1 px, period 6 px, a whole number of periods per arc; several waves are at least 4 px apart (twice the amplitude and 2 px, not less than `arc_shift_px`) and hold at least three periods of 4 px on the inner arc — the arcs move outward on a narrow angle. A dashed marker with ticks, a head or several arcs keeps three dashes on every arc: a shorter period down to 3 px, then larger arcs. `rendering.angle_marker_fit` wins over that growth |
 | `arc_tick_count` | int 0..3 | `0` | Ticks across the arcs in the middle of the angle, sized by `tick_length_px` / `tick_shift_px` / `tick_width_px` |
 | `arrow_head` | `"none"` \| `"end"` \| `"start"` \| `"both"` | `"none"` | A filled head on the outer arc; `end` points at the second side. Sized by `arrow_length_px` / `arrow_width_px` (6 / 4 px), shrunk on a short arc |
 

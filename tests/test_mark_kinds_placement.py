@@ -82,7 +82,7 @@ class TestLabelRadius:
         r = [float(np.hypot(*lp.label_spot(s, elem(s, 'a')))) * PT for s in (plain, ticks, wave)]
         assert r[0] == pytest.approx(17)
         assert r[1] == pytest.approx(17 + 4.5)
-        assert r[2] == pytest.approx(17 + 1.5 + 2 + 1)              # the wave step s + 2A, then A
+        assert r[2] == pytest.approx(17 + 4 + 1)                    # the wave step max(s, 2A + 2), then A
 
     def test_label_spot_is_where_the_renderer_hangs_it(self):
         s = framed(angle_code(extra="a.style.arc_tick_count = 2\na.style.label_visible = True\n"
@@ -130,3 +130,13 @@ class TestArcsInsteadOfSquare:
         s = framed(angle_code((0, 2), 'a.style.arc_tick_count = 1\na.style.tick_count = 0\n'))
         assert not lp._angle_drawn_sector(s, elem(s, 'a'))[3]
         assert lp._mark_obstacle_segments(s, elem(s, 'a')) == []
+
+
+class TestHollowPointSize:
+    def test_labels_clear_the_drawn_hollow_point(self):
+        """A hollow triangle of 8 px is drawn at 12 px (its hole holds 3 px):
+        placement sees the drawn marker, a solid one keeps its size."""
+        code = "P = Point(1, 1)\nP.style.point_shape = 'triangle_up'\nP.style.point_fill = '{}'\nP.style.size_px = {}\n"
+        radius = lambda fill, size: lp._collect_point_markers(framed(code.format(fill, size)), PT)[0][2] * PT  # noqa
+        assert radius('hollow', 8) == pytest.approx(6) == radius('solid', 12)
+        assert radius('solid', 8) == pytest.approx(4)

@@ -54,11 +54,60 @@ def test_explicit_dash_only_for_a_dashed_arc():
 
 # ── step, overhang ───────────────────────────────────────────────────────
 
-def test_waves_are_spaced_by_two_amplitudes():
+def test_waves_are_spaced_by_two_amplitudes_and_a_gap():
     wave = ArcDecor(style='wave')
     assert ms.arc_step_px(wave, 1.5, 1) == 1.5
-    assert ms.arc_step_px(wave, 1.5, 2) == pytest.approx(1.5 + 2 * ms.WAVE_AMPLITUDE_PX)
+    # the board of 13.11: at least 2A + 2 px, never below the spacing of the arcs
+    assert ms.arc_step_px(wave, 1.5, 2) == pytest.approx(2 * ms.WAVE_AMPLITUDE_PX + ms.WAVE_GAP_PX) == 4
+    assert ms.arc_step_px(wave, 5, 3) == 5
     assert ms.arc_step_px(ArcDecor(style='dashed'), 1.5, 3) == 1.5
+
+
+def test_several_waves_hold_three_periods_on_the_inner_arc():
+    wave = ArcDecor(style='wave')
+    assert ms.wave_periods(17, 0.3, 1) == 1                 # one wave: as before
+    assert ms.wave_periods(17, 0.3, 2) == 3
+    assert ms.wave_periods(60, 1.0, 3) == 10
+    # the inner arc grows to three periods of 4 px: r = 12 / Δ
+    assert ms.arc_base_px(wave, 10, 4, 3, 0.5) == pytest.approx(24)
+    assert ms.arc_base_px(wave, 30, 4, 3, 0.5) == 30
+    assert ms.arc_base_px(wave, 10, 4, 1, 0.5) == 10      # one wave is not grown
+    marks = ms.angle_marks((0, 0), [(24 + 8) / UNIT, (24 + 4) / UNIT, 24 / UNIT], 0.0, 0.5, False, wave, UNIT)
+    assert [arc.periods for arc in marks.arcs] == [3, 3, 3]
+    inner = marks.arcs[2]
+    assert inner.radius * UNIT * inner.span / inner.periods == pytest.approx(ms.WAVE_MIN_PERIOD_PX)
+
+
+def test_a_decorated_dashed_arc_has_three_dashes():
+    ticked = ArcDecor(style='dashed', ticks=1)
+    assert ms.dash_period_px(ticked, 1, 9) == 4               # three dashes at 4 px already
+    assert ms.dash_period_px(ticked, 1, 7.6) == pytest.approx(7.6 / 2.5)
+    assert ms.dash_period_px(ticked, 1, 6) == ms.ARC_DASH_MIN_PERIOD_PX
+    arc = ms.angle_marks((0, 0), [7.6 / UNIT], 0.0, 1.0, False, ticked, UNIT).arcs[0]
+    assert (arc.dashes, arc.period_px) == (3, pytest.approx(3.04))
+    # too short even at the floor: the radius grows to L = 2.5 · 3
+    assert ms.arc_base_px(ticked, 6, 1.5, 1, 1.0) == pytest.approx(7.5)
+    assert ms.angle_marks((0, 0), [7.5 / UNIT], 0.0, 1.0, False, ticked, UNIT).arcs[0].dashes == 3
+
+
+@pytest.mark.parametrize('head, radius', [('end', 13.5), ('both', 15.0)])
+def test_a_dashed_arc_with_heads_has_three_dashes_past_them(head, radius):
+    decor = ArcDecor(style='dashed', arrow=head)
+    assert ms.arc_base_px(decor, 10, 1.5, 1, 1.0) == pytest.approx(radius)
+    outer = ms.angle_marks((0, 0), [radius / UNIT], 0.0, 1.0, False, decor, UNIT).arcs[0]
+    assert outer.radius * UNIT * outer.span == pytest.approx(7.5)
+    assert outer.dashes == 3
+    # several arcs: the outer one is the step further out
+    assert ms.arc_base_px(decor, 10, 1.5, 2, 1.0) == pytest.approx(max(7.5, radius - 1.5))
+
+
+def test_a_plain_dashed_arc_keeps_its_dashes():
+    plain = ArcDecor(style='dashed')
+    assert ms.dash_period_px(plain, 1, 6) == 4
+    assert ms.arc_base_px(plain, 6, 1.5, 1, 1.0) == 6
+    assert ms.arc_base_px(ArcDecor(style='dashed', ticks=1, dash_px=(2.0, 2.0)), 6, 1.5, 1, 1.0) == 6
+    # two plain dashed arcs are fitted to three
+    assert ms.arc_base_px(plain, 6, 1.5, 2, 1.0) == pytest.approx(7.5)
 
 
 def test_overhang():
@@ -282,6 +331,23 @@ def test_solid_cross_and_plus_have_no_hole():
     assert ms.point_hole('cross', 6, 'hollow') is None
     assert ms.point_hole('plus', 6, 'hollow') is None
     assert ms.point_hole('circle', 0, 'hollow') is None
+
+
+@pytest.mark.parametrize('shape, size, scale, drawn', [
+    ('triangle_up', 8, 1, 12.0), ('diamond', 8, 1, 6 * math.sqrt(2)), ('square', 8, 1, 6 * math.sqrt(2)),
+    ('circle', 6, 1, 6.0), ('circle', 4, 1, 6.0), ('triangle_up', 8, 2, 8.0), ('triangle_left', 20, 1, 20.0)])
+def test_a_hollow_point_is_large_enough_for_its_hole(shape, size, scale, drawn):
+    assert ms.hollow_size_px(shape, size, 'hollow', scale) == pytest.approx(drawn)
+    hole = ms.point_hole(shape, drawn, 'hollow')
+    # the hole holds a disc of 3 output px
+    assert 2 * hole.radius_px * ms.HOLLOW_INSCRIBED[shape] * scale >= ms.HOLLOW_MIN_HOLE_PX - 1e-9
+
+
+def test_solid_and_other_points_keep_their_size():
+    assert ms.hollow_size_px('triangle_up', 8, 'solid') == 8
+    assert ms.hollow_size_px('cross', 4, 'hollow') == 4
+    assert ms.hollow_size_px('circle', None, 'hollow') is None
+    assert ms.hollow_size_px('circle', 0, 'hollow') == 0
 
 
 def test_hole_outline():

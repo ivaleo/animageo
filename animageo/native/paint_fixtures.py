@@ -625,6 +625,31 @@ def _marks():
         {'t': 2, 'values': {'C': [-1, 2.5]}, 'easing': 'linear'},
     ]}
     out += [(f'mark_parallel_time_{t}', d, None, timeline, t) for t in (0, 1, 2)]
+    # the floors of legibility (the board of 13.11): three waves of a narrow
+    # angle grow to three periods of 4 px on the inner arc, 4 px apart (the
+    # fit wins over the growth); a dashed arc with a tick or a head fitted to
+    # three dashes; a plain one as it was; hollow points large enough for a hole
+    d = _triangle('floor_wave_narrow', c=(4, 1.5)).angle('alpha', 'B', 'A', 'C')
+    d.overrides('alpha', arc_style='wave', tick_count=3).label('alpha')
+    out.append(('floor_wave_narrow', d, None))
+    d = _Doc('floor_wave_fit').free('A', 0, 0).free('B', 0.5, 0).free('C', 0.4, 0.15)
+    d.segment('s', 'A', 'B').segment('t', 'A', 'C').angle('alpha', 'B', 'A', 'C')
+    d.overrides('alpha', arc_style='wave', tick_count=3)
+    out.append(('floor_wave_fit', d, fit))
+    d = _triangle('floor_dashed_tick', c=(4, 1.5)).angle('alpha', 'B', 'A', 'C')
+    d.overrides('alpha', arc_style='dashed', arc_tick_count=1, arc_size_px=12)
+    out.append(('floor_dashed_tick', d, None))
+    d = tri('floor_dashed_arrow').overrides('alpha', arc_style='dashed', arrow_head='end', arc_size_px=8)
+    d.overrides('beta', arc_style='dashed', arrow_head='both', arc_size_px=8)
+    out.append(('floor_dashed_arrow', d, None))
+    d = _triangle('floor_dashed_plain', c=(4, 1.5)).angle('alpha', 'B', 'A', 'C')
+    d.overrides('alpha', arc_style='dashed', arc_size_px=12)
+    out.append(('floor_dashed_plain', d, None))
+    d = _Doc('floor_hollow_8')
+    for i, shape in enumerate(('triangle_up', 'diamond', 'square', 'circle', 'triangle_down')):
+        d.free(f'P{i}', i, 0).overrides(f'P{i}', point_shape=shape, size_px=8, point_fill='hollow')
+    d.free('Q', 0, 1).overrides('Q', point_shape='triangle_up', size_px=8)            # solid: as given
+    out.append(('floor_hollow_8', d, None))
     return out
 
 

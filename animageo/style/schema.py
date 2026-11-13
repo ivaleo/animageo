@@ -251,7 +251,8 @@ Points
                    "triangle_left"|"triangle_right"|"cross"|"plus")
 - ``point_fill`` ("solid"|"hollow", default "solid"): a hollow point has a
   hole of its own shape at half its size, in the colour of the sheet (a
-  knockout on a transparent sheet); a cross or a plus ignores it
+  knockout on a transparent sheet), drawn at least so large that the hole
+  holds a disc of 3 output px; a cross or a plus ignores it
 
 Angles
 - ``angle_range`` ("minor"|"reflex")
@@ -263,7 +264,9 @@ Angles
 - ``arc_style`` ("solid"|"dashed"|"wave", default "solid"): the look of every
   arc; a dashed arc is fitted 2/2 px dashes (an explicit
   ``stroke_dash_pattern_px`` replaces them), a wave has amplitude 1 px and
-  period 6 px
+  period 6 px; several waves are at least 4 px apart with three periods of
+  at least 4 px on the inner arc, a dashed marker with ticks, a head or
+  several arcs three dashes on every arc (the arcs grow for both)
 - ``arc_tick_count`` (0..3, default 0): ticks across the arcs, sized by
   ``tick_length_px`` / ``tick_shift_px`` (those of a segment by default)
 - ``arrow_head`` ("none"|"end"|"start"|"both"): a head on the outer arc,

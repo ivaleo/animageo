@@ -3936,18 +3936,20 @@ class AnimaGeoScene(MovingCameraScene):
 
         from .angle_marker import fit_settings, marker_fit
         from .label_placement import compute_effective_arc_size_px
-        from .mark_shapes import angle_label_overhang_px, arc_step_px, scene_arc_decor
+        from .mark_shapes import angle_label_overhang_px, arc_base_px, arc_step_px, scene_arc_decor
         arc_size_resolved = _resolve_style(self, elem, 'arc_size_px', default=17.0)
         r = compute_effective_arc_size_px(
             elem, elem.data, self, base_px=arc_size_resolved,
             angle_range=ctx.angle_range, auto_radius=ctx.auto_radius,
         ) / ptUnit
         # the kinds of marks (mark_shapes): the look of the arcs, ticks across
-        # them, a head on the outer one; two waves and more step 2A further
+        # them, a head on the outer one; two waves and more at least 2A + g
+        # apart, the inner arc grown to the floors of legibility
         decor = scene_arc_decor(self, elem)
         arc_shift_px = ctx.arc_shift_px
         if not decor.plain:
             arc_shift_px = arc_step_px(decor, arc_shift_px, ctx.tick_count)
+            r = arc_base_px(decor, r * ptUnit, arc_shift_px, ctx.tick_count, angle) / ptUnit
         r += ((max(1, ctx.tick_count) if ctx.mark_explicit else ctx.tick_count) - 1) \
              * arc_shift_px / ptUnit
         if r < 0.001:
@@ -4445,8 +4447,10 @@ class AnimaGeoScene(MovingCameraScene):
     def _render_point(self, elem, ctx):
         style = ctx.style
         ptUnit = ctx.ptUnit_style
-        radius = _resolve_style(self, elem, 'size_px', default=style.dot_size) \
-                 / 2 / ptUnit
+        from .mark_shapes import point_hole, scene_point_size_px
+        # a hollow point is at least so large that its hole shows (mark_shapes.hollow_size_px)
+        radius = scene_point_size_px(self, elem, _resolve_style(self, elem, 'size_px', default=style.dot_size)) \
+            / 2 / ptUnit
         point_shape = _resolve_style(self, elem, 'point_shape', default='circle')
 
         pos = [elem.data.coords[0], elem.data.coords[1], 0]
@@ -4455,7 +4459,6 @@ class AnimaGeoScene(MovingCameraScene):
             ctx.col_s, ctx.col_f, ctx.op_f, ctx.op_s, ctx.lw, ctx.zz,
         )
         arr = [mobj]
-        from .mark_shapes import point_hole
         if point_hole(point_shape, radius * 2 * ptUnit,
                       _resolve_style(self, elem, 'point_fill', default='solid')) is not None:
             # a hollow point: a hole of its shape at half its size, in the

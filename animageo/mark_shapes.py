@@ -21,17 +21,25 @@ the constants below, and without them nothing is drawn differently):
 - a point — ``point_fill`` (``solid`` | ``hollow``).
 
 **Arcs.** The radii ``r_i = r_out − i·s`` (outer first), ``s`` the spacing
-of the arcs, ``s + 2A`` for two waves and more (they never touch). An arc
-``i`` drawn over ``[a_i, a_i + Δ_i]`` (the outer arc stops at the base of
-an arrow head):
+of the arcs, ``max(s, 2A + g)`` for two waves and more (``g`` = 2 px of
+gap between them, :func:`arc_step_px`). The inner radius is the base radius,
+grown (:func:`arc_base_px`) for several waves to ``3·λ_min / Δ`` (three
+periods of at least ``λ_min`` = 4 px on the inner arc) and for a dashed
+marker fitted to three dashes to hold them on every arc. An arc ``i`` drawn
+over ``[a_i, a_i + Δ_i]`` (the outer arc stops at the base of an arrow
+head):
 
-- wave — ``N_i = max(1, round(r_out·Δ_i / λ))`` periods, ``16·N_i + 1``
-  samples ``φ_k = a_i + Δ_i·k / (16·N_i)``, ``ρ_k = r_i + A·sin(2π·(k mod
-  16) / 16)``: both ends on the arc, the waves of arcs of the same span are
-  radial shifts of each other. ``A`` = 1 px, ``λ`` = 6 px;
-- dashed — ``on = off = 2`` px fitted to ``L_i = r_i·Δ_i`` with a dash at
-  both ends (``dash.dash_pattern(…, fit_ends=True)``); an explicit
-  ``stroke_dash_pattern_px`` of the angle is drawn as it is;
+- wave — ``N_i = max(N_min, round(r_out·Δ_i / λ))`` periods (``N_min`` 3
+  for two waves and more, else 1), ``16·N_i + 1`` samples ``φ_k = a_i +
+  Δ_i·k / (16·N_i)``, ``ρ_k = r_i + A·sin(2π·(k mod 16) / 16)``: both ends
+  on the arc, the waves of arcs of the same span are radial shifts of each
+  other. ``A`` = 1 px, ``λ`` = 6 px;
+- dashed — ``on = off = p/2`` fitted to ``L_i = r_i·Δ_i`` with a dash at
+  both ends (``dash.dash_pattern(…, fit_ends=True)``), ``p`` = 4 px; a
+  marker with ticks, a head or several arcs fitted to fewer than three
+  dashes on an arc takes ``p = max(3, min(4, L_i / 2.5))`` there
+  (:func:`dash_period_px`); an explicit ``stroke_dash_pattern_px`` of the
+  angle is drawn as it is;
 - ticks across the arcs — radial lines from ``max(0, r_in − L/2)`` to
   ``r_out + L/2`` at ``θ_j = φ0 + Δ/2 + δ·((1 − k)/2 + j)``, ``δ =
   min(h / r_out, Δ / (k + 1))``;
@@ -42,7 +50,13 @@ an arrow head):
 
 What reaches past the outer arc (:func:`angle_overhang_px`): the wave
 ``A``, half a tick ``L/2``, half a head ``w'/2``; a label on the bisector
-clears the wave and the ticks (:func:`angle_label_overhang_px`).
+clears the wave and the ticks (:func:`angle_label_overhang_px`). With
+``rendering.angle_marker_fit`` the fit moves the grown arcs in: it wins
+over the floors above.
+
+**Hollow points.** The hole is the shape at half the size; a hollow point
+is drawn at least so large that its hole holds a disc of
+``HOLLOW_MIN_HOLE_PX`` output pixels (:func:`hollow_size_px`).
 """
 from __future__ import annotations
 
@@ -55,10 +69,14 @@ from .style.enums import ARC_STYLES, ARROW_HEADS, PARALLEL_DIRECTIONS, POINT_FIL
 __all__ = [
     'WAVE_AMPLITUDE_PX', 'WAVE_PERIOD_PX', 'WAVE_SAMPLES', 'ARC_DASH_PX', 'ANGLE_ARROW_PX', 'TICK_PX',
     'VECTOR_ARROW_PX', 'PARALLEL_SIZE_PX', 'PARALLEL_SHIFT_PX', 'MAX_COUNT', 'HOLLOW_INSCRIBED',
+    'WAVE_GAP_PX', 'WAVE_MIN_PERIOD_PX', 'WAVE_MIN_PERIODS', 'ARC_DASH_MIN_PERIOD_PX', 'ARC_DASH_MIN_DASHES',
+    'HOLLOW_MIN_HOLE_PX',
     'ArcDecor', 'ArcPath', 'AngleMarks', 'ParallelDecor', 'PointHole',
-    'arc_decor', 'scene_arc_decor', 'arc_step_px', 'arrow_fit', 'angle_overhang_px',
+    'arc_decor', 'scene_arc_decor', 'arc_step_px', 'arc_base_px', 'wave_periods', 'dash_period_px',
+    'arrow_fit', 'angle_overhang_px',
     'angle_label_overhang_px', 'angle_marks', 'segment_arrow', 'segment_arrow_px', 'parallel_decor',
     'scene_parallel_decor', 'chevron_center', 'chevrons', 'point_fill', 'point_hole', 'hole_outline',
+    'hollow_size_px', 'export_scale', 'scene_point_size_px',
 ]
 
 WAVE_AMPLITUDE_PX = 1.0
@@ -71,6 +89,13 @@ VECTOR_ARROW_PX = (11.0, 7.5)       # the head of the built-in vector: length, w
 PARALLEL_SIZE_PX = 8.0
 PARALLEL_SHIFT_PX = 3.5
 MAX_COUNT = 3
+# The floors of legibility (the board of 13.11):
+WAVE_GAP_PX = 2.0                   # the least gap between two wavy arcs (their crests)
+WAVE_MIN_PERIOD_PX = 4.0            # the least wavelength on the inner of several waves
+WAVE_MIN_PERIODS = 3                # the least periods of several waves
+ARC_DASH_MIN_PERIOD_PX = 3.0        # the least period of a dashed arc fitted to three dashes
+ARC_DASH_MIN_DASHES = 3
+HOLLOW_MIN_HOLE_PX = 3.0            # the disc a hole holds, output px
 
 # The inscribed radius of a point shape as a share of its circumradius.
 HOLLOW_INSCRIBED = {'circle': 1.0, 'square': 1 / math.sqrt(2), 'diamond': 1 / math.sqrt(2),
@@ -179,10 +204,70 @@ def scene_arc_decor(scene, elem) -> ArcDecor:
 
 
 def arc_step_px(decor: ArcDecor, shift_px, count) -> float:
-    """The spacing of ``count`` arcs: ``shift_px``, ``+ 2A`` between waves."""
+    """The spacing of ``count`` arcs: ``shift_px``; two waves and more at
+    least ``2A + g`` apart (a gap of ``WAVE_GAP_PX`` between their crests)."""
     if decor.style == 'wave' and int(count or 0) >= 2:
-        return float(shift_px) + 2 * WAVE_AMPLITUDE_PX
+        return max(float(shift_px), 2 * WAVE_AMPLITUDE_PX + WAVE_GAP_PX)
     return shift_px
+
+
+def _three_dashes(decor: ArcDecor, count) -> bool:
+    """A dashed marker fitted to three dashes an arc: with ticks, a head
+    or several arcs, its dash not explicit (a plain single dashed arc keeps
+    what it has)."""
+    return decor.style == 'dashed' and decor.dash_px is None and \
+        (decor.ticks > 0 or decor.arrow != 'none' or int(count or 0) >= 2)
+
+
+def _fitted_dashes(length_px, period_px) -> int:
+    """The dashes of ``dash.dash_pattern(…, fit_ends=True)`` with ``on = off = p/2``."""
+    return max(1, int(round((length_px + period_px / 2) / period_px))) if length_px > 0 else 1
+
+
+def wave_periods(r_out_px, span, count) -> int:
+    """``N = max(N_min, round(r_out·span / λ))`` periods of a wavy arc of
+    ``span`` rad, ``N_min`` 3 for ``count`` ≥ 2 arcs, else 1."""
+    least = WAVE_MIN_PERIODS if int(count or 0) >= 2 else 1
+    return max(least, int(round(float(r_out_px) * float(span) / WAVE_PERIOD_PX)))
+
+
+def dash_period_px(decor: ArcDecor, count, length_px) -> float:
+    """The period ``p`` (``on = off = p/2``) of the fitted dashes of an arc
+    ``length_px`` long: 4 px; for a marker fitted to three dashes
+    (:func:`_three_dashes`) with fewer at 4 px, ``max(3, min(4, L / 2.5))`` —
+    three dashes exactly where ``L ≥ 7.5`` px."""
+    period = ARC_DASH_PX[0] + ARC_DASH_PX[1]
+    length_px = float(length_px)
+    if not _three_dashes(decor, count) or length_px <= 0 or \
+            _fitted_dashes(length_px, period) >= ARC_DASH_MIN_DASHES:
+        return period
+    return max(ARC_DASH_MIN_PERIOD_PX, min(period, length_px / (ARC_DASH_MIN_DASHES - 0.5)))
+
+
+def arc_base_px(decor: ArcDecor, base_px, step_px, count, span) -> float:
+    """The inner radius (px) of ``count`` decorated arcs ``step_px`` apart
+    over ``span`` rad: ``base_px``, grown so that the inner of two waves and
+    more holds ``WAVE_MIN_PERIODS`` periods of ``WAVE_MIN_PERIOD_PX`` (``r ≥
+    3·4 / Δ``) and every arc of a dashed marker fitted to three dashes holds
+    three of ``ARC_DASH_MIN_PERIOD_PX`` (``L ≥ T = 2.5·3``: the inner arcs
+    ``r ≥ T / Δ``; the outer one past its ``h`` heads, ``L = max(r·Δ − h·ℓ,
+    r·Δ/2)``, ``r_out ≥ min((T + h·ℓ) / Δ, 2T / Δ)``)."""
+    base = float(base_px)
+    n = int(count or 0)
+    span = float(span)
+    if n <= 0 or not span > 1e-12 or decor.plain:
+        return base
+    if decor.style == 'wave':
+        return max(base, WAVE_MIN_PERIODS * WAVE_MIN_PERIOD_PX / span) if n >= 2 else base
+    if not _three_dashes(decor, n):
+        return base
+    least = (ARC_DASH_MIN_DASHES - 0.5) * ARC_DASH_MIN_PERIOD_PX
+    need = least / span
+    if decor.arrow != 'none' and decor.arrow_length_px > 0:
+        heads = 2 if decor.arrow == 'both' else 1
+        outer = min((least + heads * decor.arrow_length_px) / span, 2 * least / span)
+        need = max(need, outer - (n - 1) * float(step_px))
+    return max(base, need)
 
 
 def arrow_fit(length_px, width_px, radius_px, span, both=False) -> tuple:
@@ -231,6 +316,7 @@ class ArcPath:
     periods: int = 0
     dash: object = None
     dashes: Optional[int] = None
+    period_px: Optional[float] = None       # the period fitted (``dash_period_px``)
 
 
 @dataclass
@@ -295,14 +381,16 @@ def angle_marks(vertex, radii, start, span, flipped, decor: ArcDecor, unit) -> A
         s = span - (trim[0] + trim[1] if i == 0 else 0.0)
         arc = ArcPath(radius, a, s)
         if decor.style == 'wave':
-            arc.periods = max(1, int(round(r_out_px * s / WAVE_PERIOD_PX)))
+            arc.periods = wave_periods(r_out_px, s, len(radii))
             arc.points = _wave(cx, cy, radius, a, s, arc.periods, WAVE_AMPLITUDE_PX / unit)
         elif decor.style == 'dashed':
             if decor.dash_px is not None:
                 arc.dash = explicit_pattern(decor.dash_px, unit)
             else:
-                on, off = ARC_DASH_PX[0] / unit, ARC_DASH_PX[1] / unit
                 length = radius * s
+                arc.period_px = dash_period_px(decor, len(radii), length * unit)
+                k = arc.period_px / (ARC_DASH_PX[0] + ARC_DASH_PX[1])
+                on, off = ARC_DASH_PX[0] * k / unit, ARC_DASH_PX[1] * k / unit
                 arc.dash = dash_pattern(length, on, off, fit_ends=True)
                 arc.dashes = max(1, round((length + off) / (on + off))) if length > 0 else 1
         out.arcs.append(arc)
@@ -476,6 +564,36 @@ def point_hole(shape, size_px, fill) -> Optional[PointHole]:
     if radius <= 0:
         return None
     return PointHole(shape, radius / 2, radius * HOLLOW_INSCRIBED[shape] / 2)
+
+
+def hollow_size_px(shape, size_px, fill, scale=1.0) -> float:
+    """The drawn size of a point (style px): a hollow one at least
+    ``2·H / (k·S)`` — its hole (circumradius ``size/4``) then holds a disc
+    of ``H = HOLLOW_MIN_HOLE_PX`` output px (``k`` — ``HOLLOW_INSCRIBED`` of
+    the shape, ``S = scale`` output px per style px); a solid point, a
+    cross, a plus and a point of no size as given (``size_px`` itself)."""
+    shape = shape or 'circle'
+    if point_fill(fill) != 'hollow' or shape not in HOLLOW_INSCRIBED:
+        return size_px
+    size = _num(size_px, 0.0)
+    if size <= 0:
+        return size_px
+    return max(size, 2 * HOLLOW_MIN_HOLE_PX / (HOLLOW_INSCRIBED[shape] * _positive(scale, 1.0)))
+
+
+def export_scale(scene) -> float:
+    """``S`` — output px per style px of ``scene`` (``ptUnit / ptUnit_style``)."""
+    export = getattr(getattr(scene, 'style', None), 'export', None) or {}
+    unit = _positive(export.get('ptUnit', 1.0), 1.0)
+    return unit / _positive(export.get('ptUnit_style', unit), unit)
+
+
+def scene_point_size_px(scene, elem, size_px) -> float:
+    """:func:`hollow_size_px` of the point ``elem`` of ``scene`` whose
+    ``size_px`` is given (resolved by the caller)."""
+    value = _scene_value(scene, elem)
+    return hollow_size_px(value('point_shape', 'circle'), size_px, value('point_fill', 'solid'),
+                          export_scale(scene))
 
 
 def hole_outline(shape, center, radius) -> list:

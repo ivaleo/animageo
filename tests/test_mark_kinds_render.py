@@ -65,10 +65,10 @@ class TestArcs:
     def test_wave(self):
         group = built(framed(angle_code(extra="a.style.arc_style = 'wave'\na.style.tick_count = 2\n")), 'a')
         outer, inner = group.submobjects[1:3]
-        assert radii(outer).max() == pytest.approx(17 + 1.5 + 2 + 1, abs=1e-6)
+        # the waves step max(s, 2A + 2) = 4 px apart: 2 px between the crests
+        assert radii(outer).max() == pytest.approx(17 + 4 + 1, abs=1e-6)
         assert radii(inner).min() == pytest.approx(17 - 1, abs=1e-6)
-        # the waves step 2A apart: their crests never meet
-        assert radii(outer).min() - radii(inner).max() == pytest.approx(1.5, abs=1e-6)
+        assert radii(outer).min() - radii(inner).max() == pytest.approx(2, abs=1e-6)
 
     def test_dashed_arcs_are_fitted_each(self):
         group = built(framed(angle_code(extra="a.style.arc_style = 'dashed'\na.style.tick_count = 2\n")), 'a')
@@ -166,6 +166,12 @@ class TestHollowPoint:
         assert getattr(hole, '_animageo_hole', False)
         assert hole.width == pytest.approx(outer.width / 2)
         assert hole.get_fill_opacity() == 1
+
+    def test_a_small_hollow_triangle_grows_until_its_hole_shows(self):
+        code = "A = Point(1, 1)\nA.style.point_fill = '{}'\nA.style.point_shape = 'triangle_up'\nA.style.size_px = 8\n"
+        hollow = built(framed(code.format('hollow')), 'A').submobjects[0]
+        solid = built(framed(code.format('solid')), 'A').submobjects[0]
+        assert hollow.width == pytest.approx(solid.width * 12 / 8)
 
     def test_cross_ignores_it(self):
         group = built(framed("A = Point(1, 1)\nA.style.point_fill = 'hollow'\nA.style.point_shape = 'cross'\n"),

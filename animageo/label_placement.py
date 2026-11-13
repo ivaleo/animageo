@@ -132,11 +132,19 @@ def point_label_clearance(scene, elem, anchor=None) -> Optional[list]:
         return None
     ptUnit = _style_ptUnit(scene.style)
     scale = scene.style.export.get('ptUnit_ggb') or ptUnit
-    size = float(_resolve_style(scene, elem, 'size_px', default=DOT_SIZE_PX) or 0.0)
+    size = float(_drawn_point_size_px(scene, elem, _resolve_style(scene, elem, 'size_px', default=DOT_SIZE_PX))
+                 or 0.0)
     gap = float(_overlay_label_placement_config(scene).get(
         'point_gap_px', DEFAULT_CONFIG['point_gap_px']) or 0.0)
     reach = (size / 2 + gap) / ptUnit * scale
     return [-edge[0] / norm * reach, -edge[1] / norm * reach]
+
+
+def _drawn_point_size_px(scene, elem, size_px) -> float:
+    """The size a point is drawn at (``mark_shapes.hollow_size_px``: a
+    hollow point at least so large that its hole shows)."""
+    from .mark_shapes import scene_point_size_px
+    return scene_point_size_px(scene, elem, size_px)
 
 
 def _style_ptUnit(style):
@@ -1766,7 +1774,7 @@ def _collect_labels(scene, font_size, gap_arc_px=3, gap_sides_px=3, point_gap_px
 
         point_clear_radius = 0.0
         if isinstance(elem.data, geo.Point):
-            point_size = _resolve_style(scene, elem, 'size_px', default=6.0)
+            point_size = _drawn_point_size_px(scene, elem, _resolve_style(scene, elem, 'size_px', default=6.0))
             # FP-1: clear the drawn marker (radius) plus a fixed visible gap, so
             # the label never touches the dot — important for large points.
             margin = (point_size / 2 + point_gap_px) / ptUnit
@@ -3216,7 +3224,7 @@ def _collect_point_markers(scene, ptUnit):
                 or not _resolve_style(scene, elem, 'visible',
                                       default=getattr(elem, 'visible', True))):
             continue
-        size = _resolve_style(scene, elem, 'size_px', default=DOT_SIZE_PX)
+        size = _drawn_point_size_px(scene, elem, _resolve_style(scene, elem, 'size_px', default=DOT_SIZE_PX))
         out.append((float(elem.data.coords[0]), float(elem.data.coords[1]),
                     float(size or 0.0) / 2 / ptUnit))
     return np.array(out, dtype=float) if out else np.empty((0, 3))

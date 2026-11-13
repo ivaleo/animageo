@@ -118,8 +118,10 @@ class MarkerExtent:
     ``overhang_px`` — how far the decoration of the arcs reaches past the
     outer arc (:func:`animageo.mark_shapes.angle_overhang_px`; 0 without
     one): the fit bounds ``outer_px + overhang_px``. ``shift_px`` is the
-    spacing drawn (``+ 2A`` between waves) and ``label_px`` clears the
-    decoration on the bisector (``mark_shapes.angle_label_overhang_px``)."""
+    spacing drawn (``max(s, 2A + g)`` between waves), the inner arc is the
+    base grown by :func:`animageo.mark_shapes.arc_base_px` (``base_px`` stays
+    the desired one) and ``label_px`` clears the decoration on the bisector
+    (``mark_shapes.angle_label_overhang_px``)."""
     right: bool
     base_px: float
     count: int
@@ -134,7 +136,7 @@ class MarkerExtent:
 def marker_extent(scene, elem) -> MarkerExtent:
     """The marker of the angle ``elem`` as ``AnimaGeoScene._render_angle`` draws it."""
     from .label_placement import compute_effective_arc_size_px
-    from .mark_shapes import angle_label_overhang_px, angle_overhang_px, arc_step_px, scene_arc_decor
+    from .mark_shapes import angle_label_overhang_px, angle_overhang_px, arc_base_px, arc_step_px, scene_arc_decor
     from .style.resolver import resolve
 
     data = elem.data
@@ -161,7 +163,9 @@ def marker_extent(scene, elem) -> MarkerExtent:
         side = size / math.sqrt(2)
         return MarkerExtent(True, base, count, shift, side, side, side, size)
     unit = _style_unit(scene)
-    outer = base + ((max(1, count) if explicit else count) - 1) * shift
+    # the floors of legibility: several waves, dashes fitted to three
+    grown = arc_base_px(decor, base, shift, count, shown_angle(data.size, angle_range))
+    outer = grown + ((max(1, count) if explicit else count) - 1) * shift
     if outer / unit < 0.001:            # the renderer's guard
         outer = 0.2 * unit
     inner = outer - (max(count, 1) - 1) * shift

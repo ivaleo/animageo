@@ -29,7 +29,7 @@ from ...geo.lib_elements import (
     resolve_text_position, text_to_display_latex, textify_cyrillic,
 )
 from ...angle_marker import fit_settings, marker_extent, marker_fit
-from ...mark_shapes import angle_label_overhang_px, arc_step_px, scene_arc_decor
+from ...mark_shapes import angle_label_overhang_px, arc_base_px, arc_step_px, scene_arc_decor
 from ...label_placement import compute_effective_arc_size_px
 from ...style.colorspace import same_color
 from .context import TikzContext
@@ -179,7 +179,8 @@ def emit_point(ctx: TikzContext, elem, labels: List[str]) -> None:
     display = rendering.get("points_display")
     x, y = float(elem.data.coords[0]), float(elem.data.coords[1])
 
-    size_px = ctx.resolve(elem, "size_px", default=ctx.scene.style.dot_size)
+    from ...mark_shapes import scene_point_size_px
+    size_px = scene_point_size_px(ctx.scene, elem, ctx.resolve(elem, "size_px", default=ctx.scene.style.dot_size))
     R = ctx.size_pt(float(size_px) / 2)
     shape = ctx.resolve(elem, "point_shape", default="circle")
     scol = ctx.resolve(elem, "stroke", default=stroke_default(ctx))
@@ -207,12 +208,13 @@ def hole_path(ctx: TikzContext, elem):
     :func:`animageo.mark_shapes.point_hole` — its shape at half the size), or
     ``None``."""
     from ...geo.lib_elements import Point
-    from ...mark_shapes import point_hole
+    from ...mark_shapes import point_hole, scene_point_size_px
     if not isinstance(elem.data, Point):
         return None
     if ctx.scene.style.rendering.get("points_display") == "only_labels":
         return None
-    size_px = float(ctx.resolve(elem, "size_px", default=ctx.scene.style.dot_size) or 0.0)
+    size_px = scene_point_size_px(ctx.scene, elem,
+                                  float(ctx.resolve(elem, "size_px", default=ctx.scene.style.dot_size) or 0.0))
     shape = ctx.resolve(elem, "point_shape", default="circle")
     if point_hole(shape, size_px, ctx.resolve(elem, "point_fill", default="solid")) is None:
         return None
@@ -489,6 +491,7 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
         tick_count = int(ctx.resolve(elem, "tick_count", default=1) or 0)
         arc_shift_mu = float(arc_step_px(decor, float(ctx.resolve(elem, "arc_shift_px", default=0.0) or 0.0),
                                          tick_count)) / ps
+        r = arc_base_px(decor, r * ps, arc_shift_mu * ps, tick_count, angle) / ps   # the floors of legibility
     r += ((max(1, tick_count) if explicit else tick_count) - 1) * arc_shift_mu
     if r < 0.001:
         r = 0.2

@@ -1389,6 +1389,10 @@ breaking ties by `1e-6`) and, by type:
   drawn also when the fill itself is the background colour;
 - `point`: `sizePx`, `shape`, `display` (`rendering.points_display`); a
   hollow point (`point_fill: hollow`, 1.13.0; a cross or a plus ignores it)
+  is drawn at `sizePx = max(size, 2H / (k·S))` (`H` 3 output px, the disc
+  its hole holds; `k` 1 for a circle, `1/√2` for a square or a diamond, `1/2`
+  for a triangle; `S = ptUnit / ptUnitStyle`), with `givenSizePx` (the
+  `size_px` of the style) when that is larger, and has
   also `fill: "hollow"`, `hole` `{shape, radiusPx}` (the shape of the point
   at half its size, `radiusPx = sizePx / 4`), `ringPx` (half the inscribed
   radius: `sizePx/4` for a circle, `sizePx/(4√2)` for a square or a diamond,
@@ -1429,11 +1433,21 @@ breaking ties by `1e-6`) and, by type:
   decoration — `arc_style` other than `solid`, `arc_tick_count`,
   `arrow_head`; such an angle of 90° is drawn as arcs unless
   `right_angle_marker` is `true`): `arcStyle` (`dashed`, `wave`),
-  `arcStepPx` (two waves and more: `arcShiftPx + 2A`), `wave`
-  `{amplitudePx: 1, periodPx: 6, samplesPerPeriod: 16, periods, arcs}`,
+  `arcStepPx` (two waves and more: `max(arcShiftPx, 2A + gapPx)`),
+  `arcGrowPx` (how far the inner arc grows past `radiusPx` of the style to
+  the floors of legibility: `r_in ≥ 3·minPeriodPx / Δ` for two waves and
+  more; for a dashed marker with ticks, a head or several arcs every arc
+  `L ≥ T = 7.5` px — `r_in ≥ T / Δ`, the outer arc past its `h` heads of
+  length `ℓ` `r_out ≥ min((T + h·ℓ) / Δ, 2T / Δ)`; `radiusPx` and
+  `arcRadiiPx` are the grown ones, the fit moves them in after), `wave`
+  `{amplitudePx: 1, periodPx: 6, samplesPerPeriod: 16, gapPx: 2,
+  minPeriodPx: 4, periods, arcs}`,
   `arcDashes` `[{radiusPx, startAngle, span, onPx, offPx, offsetPx,
-  dashes}, …]` (2/2 px fitted to each arc with a dash at both ends, or the
-  explicit `stroke_dash_pattern_px` as it is; `dashes` `null` then),
+  dashes, periodPx}, …]` (`on = off = periodPx/2` fitted to each arc with
+  a dash at both ends: `periodPx` 4, or, for a dashed marker with ticks, a
+  head or several arcs whose arc gets fewer than three dashes at 4 px,
+  `max(3, min(4, L/2.5))`; the explicit `stroke_dash_pattern_px` as it is,
+  `dashes` and `periodPx` `null` then),
   `arcTicks` `{count, lengthPx, shiftPx, widthPx, lines}` (radial lines from
   `max(0, r_in − L/2)` to `r_out + L/2` at `φ0 + Δ/2 + δ·((1 − k)/2 + j)`,
   `δ = min(h/r_out, Δ/(k + 1))`, as wide as the arcs), `arrow` `{head,
@@ -1448,7 +1462,7 @@ breaking ties by `1e-6`) and, by type:
   points `φ_k = startAngle + span·k/(16·N)`, `ρ_k = r + A·sin(2π·(k mod
   16)/16)` (world units) — both ends on the arc, the arcs of one span radial
   shifts of each other; the outer arc shortened by a head counts its own
-  `N`. An angle of no size draws nothing: `arcRadiiPx: []`;
+  `N`; two waves and more take `N = max(3, …)`. An angle of no size draws nothing: `arcRadiiPx: []`;
 - `decoration` (1.11.0rc13, a drawn equality target): `owner` (mark document
   ID), `color`, `count`, `kind` (`ticks`, `arcs`, or `square`),
   and actual dimensions in style pixels. Ticks report `style`, `lengthPx`,

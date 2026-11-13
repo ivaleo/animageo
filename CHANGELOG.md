@@ -82,11 +82,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     across the arcs), `arrow_head` (a head on the outer arc) and
     `fill_pattern` / `hatch_*` on the sector or the square. A decorated
     marker of a right angle is drawn as arcs unless `right_angle_marker` is
-    `true`. The value label moves past the decoration;
+    `true`. The value label moves past the decoration. Floors of
+    legibility: two waves and more are at least `2A + 2` px apart (4 px with
+    the built-in amplitude, not less than `arc_shift_px`) and their inner arc
+    holds three periods of at least 4 px — the arcs grow outward to
+    `r_in ≥ 12 / Δ` px; a dashed marker with ticks, a head or several arcs
+    fitted to fewer than three dashes on an arc shortens its period to
+    `max(3, L/2.5)` px and, still short, grows until every arc holds three
+    (`L ≥ 7.5` px, past the heads); `angle_marker_fit` wins over the growth.
+    A single plain dashed arc and an explicit dash are drawn as given;
   - points: `point_fill: "hollow"` — a hole of the point's shape at half its
     size, in the sheet colour, or cut through the drawing below on a
     transparent sheet (`exportSVG` / `exportPDF` with the new keyword
-    `transparent=True`, TikZ `background=False`);
+    `transparent=True`, TikZ `background=False`). A hollow point is drawn at
+    least so large that its hole holds a disc of 3 output px (a triangle of
+    `size_px` 8 at the style scale: 12, a square or a diamond: 8.49, a
+    circle: 6); a solid point keeps its size;
   - segments: `arrow_head` (`end`/`start`/`both`) with the sizes of a vector;
   - segments, vectors, lines and rays: `parallel_count` chevrons
     (`parallel_size_px`, `parallel_shift_px`, `parallel_direction`).
@@ -94,7 +105,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The geometry lives in `animageo/mark_shapes.py` and is shared by the
   renderer, label placement (ticks, heads and chevrons are obstacles), the
   native paint report (`wave`, `arcDashes`, `arcTicks`, `arrow`,
-  `overhangPx`, `hole`, `parallel`; new fixture `paint_marks`), TikZ
+  `overhangPx`, `arcGrowPx`, `hole`, `givenSizePx`, `parallel`; new fixture
+  `paint_marks` with the `floor_*` cases of the floors above), TikZ
   (explicit paths) and JSXGraph (native segment heads, hollow points and a
   dashed single arc; live chevrons on segments; static curves for the other
   decorations).

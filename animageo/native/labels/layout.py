@@ -170,7 +170,7 @@ def _drawing_bounds(scene, infinite_policy: str, labels: bool, placements: dict)
     import numpy as np
 
     from ...geo import construction as geo
-    from ...label_placement import DOT_SIZE_PX, _angle_label_params, _style_ptUnit
+    from ...label_placement import DOT_SIZE_PX, _angle_label_params, _drawn_point_size_px, _style_ptUnit
     from ...style.resolver import resolve
 
     unit = _style_ptUnit(scene.style)
@@ -188,7 +188,8 @@ def _drawing_bounds(scene, infinite_policy: str, labels: bool, placements: dict)
         if infinite_policy == 'ignore' and isinstance(data, (geo.Line, geo.Ray)):
             continue
         if isinstance(data, geo.Point):
-            r = float(resolve(scene, elem, 'size_px', default=DOT_SIZE_PX)) / 2 / unit
+            size = _drawn_point_size_px(scene, elem, resolve(scene, elem, 'size_px', default=DOT_SIZE_PX))
+            r = float(size) / 2 / unit
             add(data.coords[0], data.coords[1], r, r)
         elif isinstance(data, geo.Segment) or isinstance(data, geo.Vector):
             for p in data.endpoints:
@@ -335,7 +336,7 @@ def layout_labels(doc, ev=None, *, inputs=None, style_config=None, export_layout
     placements = solve(final) if place else {}
 
     from ...geo import construction as geo
-    from ...label_placement import DOT_SIZE_PX, _style_ptUnit
+    from ...label_placement import DOT_SIZE_PX, _drawn_point_size_px, _style_ptUnit
     from ...style.resolver import resolve
     u = float(export['ptUnit'])
     markers = {}
@@ -343,7 +344,8 @@ def layout_labels(doc, ev=None, *, inputs=None, style_config=None, export_layout
         elem = construction.objectByName(names.by_id[el_id])
         if (isinstance(elem, geo.Element) and type(elem.data) is geo.Point
                 and resolve(final, elem, 'visible', default=getattr(elem, 'visible', True))):
-            r = float(resolve(final, elem, 'size_px', default=DOT_SIZE_PX) or 0.0) / 2 / _style_ptUnit(final.style)
+            r = float(_drawn_point_size_px(final, elem, resolve(final, elem, 'size_px', default=DOT_SIZE_PX))
+                      or 0.0) / 2 / _style_ptUnit(final.style)
             markers[el_id] = (*_px(export, elem.data.coords[0], elem.data.coords[1]), r * u)
     boxes, entries = {}, {}
     for el_id in sorted(doc.elements):
