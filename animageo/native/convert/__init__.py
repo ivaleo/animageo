@@ -356,6 +356,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     read_functions(infos, norm, ctx)
     from .ggb_inline import read_angle_arguments
     read_angle_arguments(infos, norm, ctx, built_by_command)
+    from .ggb_typed import read_expressions
+    read_expressions(infos, norm, ctx, constr)
     with _quiet():
         tr = translate(constr, ctx)
     # one entry per <element>
@@ -415,7 +417,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
                 e['reason'] = 'macro'
             else:
                 e['reason'] = 'no_registry_op'
-            e['detail'] = None
+            e['detail'] = ctx.forced.get(n, (None, None))[1]
         else:
             e['rec'] = rec
             e['status'] = 'translated' if rec.status == 'translated' else 'untranslated'

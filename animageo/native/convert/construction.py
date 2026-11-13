@@ -103,6 +103,8 @@ class Context:
     # classic output name → (AST v1, classic names of its refs) or ('error', reason, detail): the angle
     # argument of a GGB Rotate read from its text (:func:`.ggb_inline.read_angle_arguments`)
     angle_formulas: dict = field(default_factory=dict)
+    typed_formulas: dict = field(default_factory=dict)  # source/phantom → (AST, normalized refs, point|vector)
+    typed_errors: dict = field(default_factory=dict)    # source/phantom → explicit formula refusal
 
 
 @dataclass
@@ -344,7 +346,7 @@ class _Builder:
             if value is not None and KeyMaker.is_phantom(inp):
                 return _num(value)
             raise _Untranslated('depends_on_unsupported', deps=[inp])
-        if isinstance(inp, str) and inp in self.ctx.functions:
+        if isinstance(inp, str) and (inp in self.ctx.functions or inp in self.ctx.typed_formulas):
             # a function the import read itself (the classic did not): its element, once translated
             eid = self.element_of.get(inp)
             if eid is None:
@@ -499,6 +501,10 @@ class _Builder:
         raise _Untranslated('unsupported_signature', 'концы отрезка не являются входами документа')
 
     def source_definition(self, name):
+        if name in self.ctx.typed_formulas or name in self.ctx.typed_errors:
+            from .ggb_typed import build_expression
+            build_expression(self, name)
+            return
         if name not in self.ctx.function_points:
             self.formula(name)
             return
@@ -559,11 +565,15 @@ class _Builder:
         # an expression of a .ggb the classic read but cannot translate (abs of a computed value, …):
         # the formula the import read itself (1.10.0a3)
         for o, rec in zip(outs, recs):
-            if (o in self.ctx.formulas or o in self.ctx.functions or o in self.ctx.function_points) \
+            if (o in self.ctx.formulas or o in self.ctx.functions or o in self.ctx.function_points
+                    or o in self.ctx.typed_formulas or o in self.ctx.typed_errors) \
                     and rec.status != 'translated' and not rec.native_ids:
                 self.source_definition(o)
 
     def build(self, cmd, sig, inputs, outs, recs):
+        if len(outs) == 1 and outs[0] in self.ctx.typed_errors and \
+                self.ctx.xml_types.get(self.ctx.display.get(outs[0], outs[0])) == 'point':
+            raise _Untranslated(*self.ctx.typed_errors[outs[0]])
         if len(outs) == 1 and (outs[0] in self.ctx.equations or outs[0] in self.ctx.functions
                               or outs[0] in self.ctx.function_points):
             self.source_definition(outs[0])
@@ -866,7 +876,8 @@ def translate(constr, ctx: Context) -> Translation:
     free = list(dict.fromkeys(free))          # a name twice (a damaged file): one free object
     # an expression of a .ggb the classic did not parse (its saved value is a free object of the
     # classic): the formula the import read itself, in its place among the commands (1.10.0a3)
-    source_formulas = set(ctx.formulas) | set(ctx.functions) | set(ctx.function_points)
+    source_formulas = (set(ctx.formulas) | set(ctx.functions) | set(ctx.function_points)
+                       | set(ctx.typed_formulas) | set(ctx.typed_errors))
     pending = sorted((n for n in source_formulas if n not in produced), key=lambda n: ctx.order.get(n, 10 ** 6))
     for name in sorted(free, key=lambda n: ctx.order.get(n, 10 ** 6)):
         if name in source_formulas:
