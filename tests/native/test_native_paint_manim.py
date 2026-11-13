@@ -97,6 +97,8 @@ def test_the_renderer_draws_the_paint(case, drawn):
         ctx = scene._build_render_ctx(elem, True)
         assert entry['z'] == pytest.approx(ctx.zz, abs=1e-9), where
         stroke = entry.get('stroke')
+        # a marker hidden by rendering.angle_marker_fit draws no stroke and no fill, only its label
+        marker_hidden = ((entry.get('angle') or {}).get('fit') or {}).get('hidden', False)
         if stroke is not None:
             if stroke['color'] is not None:
                 assert ManimColor(stroke['color']).to_hex() == ctx.col_s.to_hex(), where
@@ -109,7 +111,7 @@ def test_the_renderer_draws_the_paint(case, drawn):
             actual_stroke = dict(stroke)
             if angle is not None and entry.get('decoration') is not None:
                 actual_stroke['color'] = entry['decoration']['color']
-            if angle is None or angle['right'] or angle['arcs'] > 0:
+            if angle is None or ((angle['right'] or angle['arcs'] > 0) and not marker_hidden):
                 _assert_drawn_stroke(actual_stroke, group, unit, where, hidden=hidden, alpha=_fade_alpha(entry))
             if stroke.get('dash') is not None:
                 assert [stroke['dash']['onPx'], stroke['dash']['offPx']] == pytest.approx(list(ctx.dash_px)), where
@@ -119,7 +121,7 @@ def test_the_renderer_draws_the_paint(case, drawn):
         if fill is not None and fill['color'] is not None:
             assert ManimColor(fill['color']).to_hex() == ctx.col_f.to_hex(), where
             assert fill['opacity'] == pytest.approx(ctx.op_f), where
-        if fill is not None and 'z' in fill:
+        if fill is not None and 'z' in fill and not marker_hidden:
             assert fill['z'] == pytest.approx(group.submobjects[0].z_index, abs=1e-9), where
         if fill is not None and fill.get('hatch') is not None:
             _assert_hatch(fill['hatch'], group.submobjects[0], unit, where)
@@ -277,6 +279,11 @@ def _assert_ticks(ticks, group, wave, where):
 
 def _assert_angle(angle, elem, group, unit, where):
     vertex = np.asarray(elem.data.vertex[:2], float)
+    if (angle.get('fit') or {}).get('hidden'):
+        # rendering.angle_marker_fit hid the marker: nothing but the label is drawn
+        assert 'square' not in angle and not angle.get('arcRadiiPx'), where
+        assert all(getattr(m, '_animageo_is_label', False) for m in group.submobjects), where
+        return
     if angle['right']:
         stroke = group.submobjects[1]
         anchors = np.asarray(stroke.points)[:, :2]

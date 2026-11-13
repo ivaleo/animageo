@@ -359,7 +359,9 @@ def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> t
             defined = record.get('state') == 'defined'
             if mark_id not in targets:                  # a right-angle mark draws itself
                 if defined and plan[mark_id]['visible'] and record['value']['kind'] == 'right_angle':
-                    plan[mark_id]['style'].setdefault('right_angle_marker', True)
+                    # the square unless arcs are asked for: an explicit null is the square too
+                    if plan[mark_id]['style'].get('right_angle_marker') is None:
+                        plan[mark_id]['style']['right_angle_marker'] = True
                 continue
             count = _mark_count(doc, mark_id, record)
             if count is None:

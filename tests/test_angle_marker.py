@@ -1,14 +1,32 @@
 """The marker of an angle: its fit to the sides (``rendering.angle_marker_fit``)
-— manim-free (``animageo.angle_marker``)."""
+and its display mode — manim-free (``animageo.angle_marker``, native paint)."""
 import math
 from types import SimpleNamespace
 
 import pytest
 
 from animageo import angle_marker as am
+from animageo import native
+from animageo.native.registry import REGISTRY_VERSION
+from tests.native.conftest import DocBuilder, num, ref, ref_list
 
 FIT = {'rendering': {'angle_marker_fit': True}}
 K = 0.6                          # side_fraction by default
+BOUNDS = (-1, -1, 7, 5)          # ptUnit 100 = ptUnitStyle
+
+
+def doc(c=(0.2, 0.2), bounds=BOUNDS):
+    b = DocBuilder('fit', bounds=bounds, registry_version=REGISTRY_VERSION)
+    b.free('A', 0, 0).free('B', 4, 0).free('C', *c)
+    return b
+
+
+def paint(b, style=FIT, **kw):
+    return native.resolve_paint(b.doc, style, **kw)
+
+
+def angle_of(p, el_id):
+    return p['elements'][el_id]['angle']
 
 
 # ── pure parts ───────────────────────────────────────────────────────────
@@ -58,6 +76,176 @@ class TestSettings:
     def test_right_angle_tolerance_is_the_renderers(self):
         assert am.is_right_angle(math.pi / 2 + 1.5e-5)
         assert not am.is_right_angle(math.pi / 2 + 1.6e-5)
+
+
+# ── supports of the sides (native graph) ─────────────────────────────────
+
+class TestNativeSupport:
+    def test_defining_points(self):
+        b = doc().angle('g', 'B', 'A', 'C')
+        fit = angle_of(paint(b), 'g')['fit']
+        assert fit['supportWorld'] == pytest.approx([4.0, math.hypot(0.2, 0.2)])
+
+    def test_a_visible_line_through_vertex_and_point_lifts_the_bound(self):
+        b = doc().angle('g', 'B', 'A', 'C').line('l', 'A', 'C')
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'][1] is None
+        b.doc['appearance'] = {'l': {'visible': False}}
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'][1] == pytest.approx(math.hypot(0.2, 0.2))
+
+    def test_a_ray_counts_only_from_the_vertex(self):
+        b = doc().angle('g', 'B', 'A', 'C').ray('r', 'A', 'C')
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'][1] is None
+        b = doc().angle('g', 'B', 'A', 'C').ray('r', 'C', 'A')
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'][1] == pytest.approx(math.hypot(0.2, 0.2))
+
+    def test_a_segment_keeps_the_bound(self):
+        b = doc().angle('g', 'B', 'A', 'C').segment('s', 'A', 'C')
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'][1] == pytest.approx(math.hypot(0.2, 0.2))
+
+    def test_a_segment_from_the_vertex_past_the_point(self):
+        b = doc().free('D', 1, 1).angle('g', 'B', 'A', 'C').segment('s', 'A', 'D')
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'][1] == pytest.approx(math.sqrt(2))
+        b.doc['appearance'] = {'s': {'visible': False}}
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'][1] == pytest.approx(math.hypot(0.2, 0.2))
+
+    @pytest.mark.parametrize('ends, start', [
+        (('A', 'D'), (0.1, 0.1)),        # from V, but ends before P
+        (('E', 'D'), (0.1, 0.1)),        # past P, but not from V
+        (('A', 'D'), (1, 2)),            # from V, along another direction
+    ])
+    def test_other_segments_keep_the_distance_to_the_point(self, ends, start):
+        b = doc().free('E', 0.1, 0.1).free('D', *start).angle('g', 'B', 'A', 'C').segment('s', *ends)
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'][1] == pytest.approx(math.hypot(0.2, 0.2))
+
+    @pytest.mark.parametrize('c, support', [((0.2, 0.2), 2 * math.sqrt(2)), ((-0.2, -0.2), math.sqrt(2))])
+    def test_a_segment_through_the_vertex(self, c, support):
+        # the vertex is put on the segment X–D by an operation: its end along the side counts
+        b = DocBuilder('fit', bounds=BOUNDS, registry_version=REGISTRY_VERSION)
+        b.free('X', -1, -1).free('D', 2, 2).segment('s', 'X', 'D').on_path('A', 's', t=1 / 3)
+        b.free('B', 4, 0).free('C', *c).angle('g', 'B', 'A', 'C')
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'] == pytest.approx([4.0, support])
+
+    def test_a_polygon_side_from_the_vertex_past_the_point(self):
+        b = doc().free('D', 1, 1).polygon('T', 'A', 'B', 'D', sides=((1, 's1'), (2, 's2'), (3, 's3')))
+        b.angle('g', 'B', 'A', 'C')
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'] == pytest.approx([4.0, math.sqrt(2)])
+
+    def test_a_point_put_on_the_line_by_an_operation(self):
+        b = doc().free('D', 3, 3).line('l', 'A', 'D').line('m', 'B', 'C').intersect('P', 'l', 'm')
+        b.angle('g', 'B', 'A', 'P')
+        support = angle_of(paint(b), 'g')['fit']['supportWorld']
+        assert support[0] == pytest.approx(4.0) and support[1] is None
+
+    def test_a_line_through_the_point_but_not_the_vertex(self):
+        b = doc().free('D', 3, 3).line('l', 'C', 'D').angle('g', 'B', 'A', 'C')
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'][1] == pytest.approx(math.hypot(0.2, 0.2))
+
+    def test_between_lines_has_no_bound(self):
+        b = doc().line('l', 'A', 'B').line('m', 'A', 'C')
+        b.op('op_g', 'angle.between_lines', {'first': ref('l'), 'second': ref('m')}, [('angle', 'g', 'angle')])
+        fit = angle_of(paint(b), 'g')['fit']
+        assert fit['supportWorld'] == [None, None] and fit['limitPx'] is None and not fit['clamped']
+
+    def test_by_size(self):
+        b = doc()
+        b.op('op_g', 'angle.by_size', {'vertex': ref('A'), 'a': ref('C'), 'size': num(1.0)},
+             [('angle', 'g', 'angle'), ('point', 'P', 'point')])
+        assert angle_of(paint(b), 'g')['fit']['supportWorld'] == pytest.approx([math.hypot(0.2, 0.2)] * 2)
+
+    def test_polygon_angles(self):
+        b = doc().polygon('T', 'A', 'B', 'C')
+        b.op('op_angles', 'measure.polygon_angles', {'polygon': ref('T')},
+             [('angle.1', 'a1', 'angle'), ('angle.2', 'a2', 'angle'), ('angle.3', 'a3', 'angle')])
+        p = paint(b)
+        assert sorted(angle_of(p, 'a1')['fit']['supportWorld']) == pytest.approx(
+            sorted([4.0, math.hypot(0.2, 0.2)]))
+        assert sorted(angle_of(p, 'a2')['fit']['supportWorld']) == pytest.approx(
+            sorted([4.0, math.hypot(3.8, 0.2)]))
+
+
+# ── the fit in paint ─────────────────────────────────────────────────────
+
+class TestPaint:
+    def test_without_the_key_nothing_changes(self):
+        b = doc().angle('g', 'B', 'A', 'C')
+        assert 'fit' not in angle_of(native.resolve_paint(b.doc), 'g')
+        assert native.resolve_paint(b.doc) == native.resolve_paint(b.doc, {'rendering': {}})
+
+    def test_clamped_arcs(self):
+        b = doc().angle('g', 'B', 'A', 'C')
+        g = angle_of(paint(b), 'g')
+        limit = K * math.hypot(0.2, 0.2) * 100
+        assert g['fit']['limitPx'] == pytest.approx(limit) and g['fit']['clamped'] and not g['fit']['hidden']
+        assert g['arcSizePx'] == 17                     # the desired size is kept
+        assert g['radiusPx'] == pytest.approx(limit)
+        assert g['arcRadiiPx'] == pytest.approx([limit])
+
+    def test_spacing_of_several_arcs_is_kept(self):
+        b = doc().angle('g', 'B', 'A', 'C')
+        b.doc['appearance'] = {'g': {'overrides': {'tick_count': 3, 'arc_shift_px': 2}}}
+        g = angle_of(paint(b), 'g')
+        limit = K * math.hypot(0.2, 0.2) * 100
+        assert g['arcRadiiPx'] == pytest.approx([limit, limit - 2, limit - 4])
+
+    def test_unclamped_matches_the_default(self):
+        b = doc(c=(1, 3)).angle('g', 'B', 'A', 'C')
+        with_fit, without = angle_of(paint(b), 'g'), angle_of(native.resolve_paint(b.doc), 'g')
+        fit = with_fit.pop('fit')
+        assert with_fit == without and not fit['clamped']
+
+    def test_hidden_marker_keeps_its_label_radius(self):
+        b = doc(c=(0.03, 0.03)).angle('g', 'B', 'A', 'C')
+        b.doc['appearance'] = {'g': {'label': {'mode': 'name'}}}
+        p = paint(b)
+        g = angle_of(p, 'g')
+        limit = K * math.hypot(0.03, 0.03) * 100
+        assert g['fit']['hidden'] and g['arcRadiiPx'] == [] and g['radiusPx'] == pytest.approx(limit)
+        spot = p['elements']['g']['label']['spotWorld']
+        assert math.hypot(*spot) * 100 == pytest.approx(limit)
+
+    def test_label_of_a_clamped_marker(self):
+        b = doc().angle('g', 'B', 'A', 'C')
+        b.doc['appearance'] = {'g': {'label': {'mode': 'name'}, 'overrides': {'label_radial_offset_px': 2}}}
+        spot = paint(b)['elements']['g']['label']['spotWorld']
+        assert math.hypot(*spot) * 100 == pytest.approx(K * math.hypot(0.2, 0.2) * 100 + 2)
+
+    def test_zoom_brings_the_desired_radius_back(self):
+        b = doc().angle('g', 'B', 'A', 'C')
+        small = paint(b)
+        b.doc['viewDefaults']['bounds'] = [-0.5, -0.5, 3.5, 2.5]
+        big = paint(b)
+        assert (small['ptUnitStyle'], big['ptUnitStyle']) == (100.0, 200.0)
+        assert angle_of(small, 'g')['fit']['clamped'] and angle_of(small, 'g')['radiusPx'] < 17
+        assert not angle_of(big, 'g')['fit']['clamped'] and angle_of(big, 'g')['radiusPx'] == 17
+
+    def test_square(self):
+        b = doc(c=(0, 0.15)).right_mark('ra', 'B', 'A', 'C')
+        ra = angle_of(paint(b), 'ra')
+        s = K * 0.15 * 100
+        assert ra['right'] and ra['fit']['clamped'] and ra['rightSizePx'] == pytest.approx(s * math.sqrt(2))
+        assert ra['square'][0] == pytest.approx([0.09, 0])
+
+    def test_hidden_square(self):
+        b = doc(c=(0, 0.04)).right_mark('ra', 'B', 'A', 'C')
+        ra = angle_of(paint(b), 'ra')
+        assert ra['fit']['hidden'] and 'square' not in ra
+
+    def test_fraction(self):
+        b = doc().angle('g', 'B', 'A', 'C')
+        style = {'rendering': {'angle_marker_fit': {'enabled': True, 'side_fraction': 0.65}}}
+        g = angle_of(paint(b, style), 'g')
+        assert g['fit']['limitPx'] == pytest.approx(0.65 * math.hypot(0.2, 0.2) * 100)
+
+
+# ── modes ────────────────────────────────────────────────────────────────
+
+def test_explicit_null_on_a_right_angle_mark_is_the_square():
+    b = doc(c=(0.5, 3)).right_mark('ra', 'B', 'A', 'C')          # not right: the check fails
+    assert angle_of(native.resolve_paint(b.doc), 'ra')['right'] is True
+    b.doc['appearance'] = {'ra': {'overrides': {'right_angle_marker': None}}}
+    assert angle_of(native.resolve_paint(b.doc), 'ra')['right'] is True
+    b.doc['appearance'] = {'ra': {'overrides': {'right_angle_marker': False}}}
+    assert angle_of(native.resolve_paint(b.doc), 'ra')['right'] is False
 
 
 # ── classic constructions (GGB, DSL) ─────────────────────────────────────

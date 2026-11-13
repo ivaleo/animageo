@@ -12,7 +12,8 @@ wave, the automatic radius of an angle, point shapes and arrows, caps and
 dashes with their fit, label anchors by type, the format of values, the
 layers, ``text.free``, the base without a style and under the built-in one,
 roles, hatching, a style track of a timeline; registry 1.6: graphs and
-conics (``paint_curves``).
+conics (``paint_curves``); the angle marker fitted to its sides
+(``paint_angle_fit``, 1.13.0).
 """
 from __future__ import annotations
 
@@ -415,10 +416,71 @@ def _curves():
     return out
 
 
+def _angle_fit():
+    """1.13.0: ``rendering.angle_marker_fit`` — the marker of an angle at most
+    ``k`` (0.6) of what each side has (graph support; a segment or a polygon
+    side on the vertex counts with how far it reaches along the side, also
+    past the defining point), hidden below ``hide_below_px``;
+    the label stays at the fitted radius. ``ptUnit`` 100 at bounds ``(-1, -1, 7, 5)``,
+    200 at ``(-0.5, -0.5, 3.5, 2.5)``."""
+    fit = {'rendering': {'angle_marker_fit': True}}
+
+    def near(doc_id, c=(0.15, 0.15), bounds=(-1, -1, 7, 5)):
+        return _Doc(doc_id, bounds=bounds).free('A', 0, 0).free('B', 3, 0).free('C', *c)
+
+    out = []
+    d = near('fit_clamped').angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_clamped', d, fit))
+    d = near('fit_disabled').angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_disabled', d, {'rendering': {'angle_marker_fit': False}}))
+    d = near('fit_arcs', c=(0.25, 0.25)).angle('alpha', 'B', 'A', 'C').label('alpha')
+    d.overrides('alpha', tick_count=3, arc_shift_px=4)
+    out.append(('fit_arcs', d, fit))
+    d = near('fit_hidden', c=(0.03, 0.03)).angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_hidden', d, fit))
+    for scale, bounds in ((1, (-1, -1, 7, 5)), (2, (-0.5, -0.5, 3.5, 2.5))):
+        d = near(f'fit_scale_{scale}', bounds=bounds).angle('alpha', 'B', 'A', 'C').label('alpha')
+        out.append((f'fit_scale_{scale}', d, fit))
+    d = near('fit_square', c=(0, 0.15)).right_mark('ra', 'B', 'A', 'C')
+    out.append(('fit_square', d, fit))
+    d = near('fit_square_hidden', c=(0, 0.04)).right_mark('ra', 'B', 'A', 'C')
+    out.append(('fit_square_hidden', d, fit))
+    d = near('fit_line').line('l', 'A', 'C').angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_line', d, fit))
+    d = near('fit_ray').ray('r', 'A', 'C').angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_ray', d, fit))
+    d = near('fit_segment').segment('s', 'A', 'C').segment('t', 'A', 'B')
+    d.angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_segment', d, fit))
+    # a segment (a polygon side) from the vertex past the defining point: its length
+    d = near('fit_segment_past', c=(0.1, 0.1)).free('D', 0.18, 0.18).segment('s', 'A', 'D')
+    d.angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_segment_past', d, fit))
+    d = near('fit_polygon_side_past', c=(0.1, 0.1)).free('D', 0.18, 0.18).polygon('T', 'A', 'B', 'D')
+    d.angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_polygon_side_past', d, fit))
+    # the vertex put on a segment: the end of the segment along the side
+    d = _Doc('fit_segment_through_vertex').free('X', -0.085, -0.085).free('D', 0.17, 0.17).segment('s', 'X', 'D')
+    d.op('point.on_path', {'path': _ref('s')}, [('point', 'A', 'point')])
+    d.doc['inputs']['A'] = {'kind': 'pathParameter', 'value': 1 / 3}
+    d.free('B', 3, 0).free('C', 0.1, 0.1).angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_segment_through_vertex', d, fit))
+    d = near('fit_between_lines').line('l', 'A', 'B').line('m', 'A', 'C')
+    d.op('angle.between_lines', {'first': _ref('l'), 'second': _ref('m')}, [('angle', 'alpha', 'angle')])
+    out.append(('fit_between_lines', d.label('alpha'), fit))
+    d = near('fit_unclamped', c=(1.5, 2.5)).angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_unclamped', d, fit))
+    d = near('fit_fraction', c=(0.15, 0.15)).angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_fraction', d, {'rendering': {'angle_marker_fit': {'enabled': True, 'side_fraction': 0.65}}}))
+    d = near('fit_hide_below', c=(0.05, 0.05)).angle('alpha', 'B', 'A', 'C').label('alpha')
+    out.append(('fit_hide_below', d, {'rendering': {'angle_marker_fit': {'enabled': True, 'hide_below_px': 5}}}))
+    return out
+
+
 THEMES = (('paint_ticks', _ticks), ('paint_angles', _angles), ('paint_points', _points),
           ('paint_dashes', _dashes), ('paint_labels', _labels), ('paint_values', _values),
           ('paint_layers', _layers), ('paint_text', _texts), ('paint_base', _base),
-          ('paint_timeline', _timeline), ('paint_curves', _curves))
+          ('paint_timeline', _timeline), ('paint_curves', _curves), ('paint_angle_fit', _angle_fit))
 
 
 def _expect(document, style, timeline, t) -> dict:

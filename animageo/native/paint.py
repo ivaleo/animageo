@@ -441,7 +441,9 @@ def _ticks(type_, data, unit, value):
 def _angle(final, elem, data, unit, value):
     """The marker of an angle (``_render_angle``): the range, the base and
     the effective radius (``overlay.angle_radius``, ``auto_radius``), the
-    arcs and their spacing, or the right-angle square."""
+    arcs and their spacing, or the right-angle square; with
+    ``rendering.angle_marker_fit`` — fitted to the sides (``fit``)."""
+    from ..angle_marker import fit_settings, marker_fit
     from ..label_placement import compute_effective_arc_size_px
     angle_range = value('angle_range', 'minor') or 'minor'
     auto_radius = value('auto_radius', True)
@@ -463,25 +465,37 @@ def _angle(final, elem, data, unit, value):
            'radiusPx': _r(radius_px), 'arcs': arcs, 'arcShiftPx': _r(shift_px),
            'shownSize': _r(shown), 'right': right,
            'joint': value('right_angle_joint', (final.style.rendering or {}).get('right_angle_joint', 'auto'))}
+    fit = marker_fit(final, elem) if fit_settings(final) is not None else None
+    delta = fit.delta_px if fit is not None else 0.0
+    if fit is not None:
+        out['fit'] = {'supportWorld': [None if v is None else _r(v) for v in fit.support],
+                      'limitPx': None if fit.limit_px is None else _r(fit.limit_px),
+                      'clamped': fit.clamped, 'hidden': fit.hidden}
     if right:
         cfg = final.style_config.overlay.angle_radius or {}
         if cfg.get('enabled', False) and cfg.get('apply_to_right', False):
             square_px = radius_px
         else:
             square_px = _num(value('right_angle_size_px', base_px), base_px)
+        if delta:
+            square_px = square_px - math.sqrt(2) * delta
         out['rightSizePx'] = _r(square_px)
         r = square_px / math.sqrt(2) / unit
         vx, vy = (float(c) for c in data.vertex[:2])
         s1, s2 = ([float(c) for c in s[:2]] for s in (data.side1, data.side2))
         l1, l2 = math.hypot(*s1), math.hypot(*s2)
-        if l1 > 0 and l2 > 0:
+        if l1 > 0 and l2 > 0 and not (fit is not None and fit.hidden):
             n1 = (s1[0] * r / l1, s1[1] * r / l1)
             n2 = (s2[0] * r / l2, s2[1] * r / l2)
             out['square'] = [[_r(vx + n1[0]), _r(vy + n1[1])],
                              [_r(vx + n1[0] + n2[0]), _r(vy + n1[1] + n2[1])],
                              [_r(vx + n2[0]), _r(vy + n2[1])]]
     else:
-        out['arcRadiiPx'] = [_r(radius_px + (arcs - 1 - i) * shift_px) for i in range(max(arcs, 0))]
+        if delta:
+            radius_px = radius_px - delta
+            out['radiusPx'] = _r(radius_px)
+        drawn = 0 if fit is not None and fit.hidden else max(arcs, 0)
+        out['arcRadiiPx'] = [_r(radius_px + (arcs - 1 - i) * shift_px) for i in range(drawn)]
     return out
 
 

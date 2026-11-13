@@ -148,9 +148,10 @@ LAZY_ALLOWED = {
     'animageo/native/convert/style.py': ('animageo.style',),
     # 1.11.0rc3: the defaults of style_keys from the built-in style; resolve_paint reads the
     # classic graph through the resolver, as layout_labels
+    # 1.13.0: the angle marker fitted to its sides (``rendering.angle_marker_fit``)
     'animageo/native/paint.py': (GEO, 'animageo.style', 'animageo.dash', 'animageo.keyframes',
                                  'animageo.label_placement', 'animageo.labels', 'animageo.hatch',
-                                 'animageo.export_layout'),
+                                 'animageo.export_layout', 'animageo.angle_marker'),
     'animageo/native/paint_fixtures.py': ('animageo.style',),
     # registry 1.6 (view axes and grid): the colours of the style keys as hex
     'animageo/native/view.py': ('animageo.style.colorspace',),
