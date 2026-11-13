@@ -1072,6 +1072,12 @@ def _curve_polylines(ctx, elem):
         return polys
     if t == "Conic":
         return _conic_polylines(ctx, d, viewport)
+    if t == "Region":
+        # registry 1.9: the flattened rings, each closed; outer rings run
+        # counterclockwise and holes clockwise, so the nonzero fill of the
+        # one curve (rings split by NaN) keeps the holes
+        return [[(p[0], p[1]) for p in ring] + [(ring[0][0], ring[0][1])]
+                for ring in d.flattened() if len(ring) >= 2]
     return []
 
 
@@ -1157,7 +1163,7 @@ def _emit_static(ctx, name, cmd_name, dynamic, options, create, model):
         elif t == "Polygon":
             verts = [_coord(ctx, v) for v in d.vertices]
             create(name, "polygon", verts, base_attrs(ctx, elem))
-        elif t in ("Conic", "Function", "ImplicitCurve", "LocusCurve", "Arc", "CircleSector"):
+        elif t in ("Conic", "Function", "ImplicitCurve", "LocusCurve", "Arc", "CircleSector", "Region"):
             polys = _curve_polylines(ctx, elem)
             if not polys:
                 model.coverage.append((name, "skip", f"{t} ({cmd_name}) — empty"))
@@ -1169,9 +1175,9 @@ def _emit_static(ctx, name, cmd_name, dynamic, options, create, model):
                 for (x, y) in poly:
                     xs.append(ctx.num(x)); ys.append(ctx.num(y))
             cattrs = base_attrs(ctx, elem)
-            if t != "CircleSector":
+            if t not in ("CircleSector", "Region"):
                 # Open sampled curves must not be filled (JSXGraph would close
-                # them across the endpoints). Sectors stay filled.
+                # them across the endpoints). Sectors and regions stay filled.
                 cattrs.pop("fillColor", None)
                 cattrs.pop("fillOpacity", None)
             create(name, "curve", [f"[{','.join(xs)}]", f"[{','.join(ys)}]"], cattrs)

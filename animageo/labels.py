@@ -612,7 +612,7 @@ def format_label_value(scene, elem) -> str | None:
 
 def label_value_of(elem) -> LabelValue | None:
     """Extract a scalar display value from an element or variable."""
-    from .geo.lib_elements import Angle, Circle, Element, Polygon, Segment, Vector
+    from .geo.lib_elements import Angle, Circle, Element, Polygon, Region, Segment, Vector
     from .geo.lib_vars import AngleSize, Boolean, Measure, Var
 
     data = getattr(elem, "data", elem)
@@ -635,7 +635,7 @@ def label_value_of(elem) -> LabelValue | None:
         return LabelValue(float(np.linalg.norm(data.direction)), "number")
     if isinstance(data, Circle):
         return LabelValue(data.radius, "number")
-    if isinstance(data, Polygon):
+    if isinstance(data, (Polygon, Region)):
         return LabelValue(data.area, "number")
     if isinstance(data, (int, float)):
         return LabelValue(data, "number")

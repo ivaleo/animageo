@@ -245,7 +245,7 @@ def to_classic(type_: str, value, *, sides=None, scale=None):
     if value is None:
         return None
     from ...geo.lib_elements import Angle, Arc, Circle, CircleSector, CircleSegment, Line, LocusCurve, Point, Polygon, Ray, \
-        Segment, Text, Vector
+        Region, Segment, Text, Vector
     from ...geo.lib_vars import AngleSize, Measure
     import numpy as np
 
@@ -306,6 +306,8 @@ def to_classic(type_: str, value, *, sides=None, scale=None):
         obj = native_function(value)
     elif type_ == 'conic':
         obj = native_conic(value)
+    elif type_ == 'region':             # registry 1.9: drawn from the kernel value
+        obj = Region(value)
     else:
         raise ValueError(f'no classic type for {type_!r}')
     obj._native = (_fingerprint(obj), value)
@@ -389,7 +391,7 @@ def from_classic(type_: str, obj):
         if isinstance(obj, (int, float)) and not isinstance(obj, bool):
             return {'value': float(obj), 'unit': 'scalar'}
         raise ValueError(f'no kernel number for {type(obj).__name__}')
-    if type_ in ('function', 'conic'):
+    if type_ in ('function', 'conic', 'region'):
         native = getattr(obj, 'native_value', None)
         if native is None:
             raise ValueError(f'no kernel {type_} for a classic {type(obj).__name__}')

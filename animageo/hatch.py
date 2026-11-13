@@ -16,6 +16,8 @@ Regions::
     {"polygon": [(x, y), …]}            even-odd rule, any simple or self-crossing ring
     {"circle": (cx, cy, r)}             the disc
     {"sector": (cx, cy, r, a0, a1)}     the disc part counterclockwise from a0 to a1 (radians)
+    {"rings": [[(x, y), …], …]}         registry 1.9: the flattened rings of a region
+                                        (``region.flatten``), even-odd over all of them
 """
 from __future__ import annotations
 
@@ -65,23 +67,25 @@ def hatch_spec(resolve, elem, pt_unit_style: float) -> dict:
     }
 
 
-def _intervals_polygon(vertices, n, u, c):
+def _intervals_polygon(vertices, n, u, c, rings=None):
     """Parameters ``t = u·x`` of the parts of the line ``n·x = c`` inside the
     polygon (even-odd): crossings of the edges, half-open at the ends so a
-    vertex on the line counts once."""
+    vertex on the line counts once. ``rings`` — several rings at once (the
+    edges of every ring, even-odd over all; ``vertices`` is then unused)."""
     ts = []
-    count = len(vertices)
-    for i in range(count):
-        px, py = vertices[i]
-        qx, qy = vertices[(i + 1) % count]
-        sp = n[0] * px + n[1] * py
-        sq = n[0] * qx + n[1] * qy
-        if (sp < c) == (sq < c):
-            continue
-        k = (c - sp) / (sq - sp)
-        x = px + k * (qx - px)
-        y = py + k * (qy - py)
-        ts.append(u[0] * x + u[1] * y)
+    for ring in (rings if rings is not None else (vertices,)):
+        count = len(ring)
+        for i in range(count):
+            px, py = ring[i]
+            qx, qy = ring[(i + 1) % count]
+            sp = n[0] * px + n[1] * py
+            sq = n[0] * qx + n[1] * qy
+            if (sp < c) == (sq < c):
+                continue
+            k = (c - sp) / (sq - sp)
+            x = px + k * (qx - px)
+            y = py + k * (qy - py)
+            ts.append(u[0] * x + u[1] * y)
     ts.sort()
     return [(ts[i], ts[i + 1]) for i in range(0, len(ts) - 1, 2)]
 
@@ -147,6 +151,9 @@ def _normal_range(region, n):
     if 'polygon' in region:
         values = [n[0] * x + n[1] * y for x, y in region['polygon']]
         return min(values), max(values)
+    if 'rings' in region:
+        values = [n[0] * x + n[1] * y for ring in region['rings'] for x, y in ring]
+        return (min(values), max(values)) if values else (0.0, -1.0)
     key = next(key for key in ('circle', 'sector', 'circlesegment') if key in region)
     cx, cy, r = region[key][:3]
     mid = n[0] * cx + n[1] * cy
@@ -156,6 +163,8 @@ def _normal_range(region, n):
 def _intervals(region, n, u, c):
     if 'polygon' in region:
         return _intervals_polygon(region['polygon'], n, u, c)
+    if 'rings' in region:
+        return _intervals_polygon(None, n, u, c, rings=region['rings'])
     if 'circle' in region:
         part = _disc_interval(*region['circle'], n, u, c)
         return [part] if part else []

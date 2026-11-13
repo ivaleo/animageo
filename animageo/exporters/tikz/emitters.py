@@ -462,6 +462,52 @@ def emit_polygon(ctx: TikzContext, elem, labels: List[str]) -> None:
         emit_label(ctx, elem, c[0], c[1], labels, default_anchor="center")
 
 
+def _region_path(ctx: TikzContext, value) -> str:
+    """The rings of a region value as one TikZ path: a line piece ``--``, an
+    arc ``arc (start:end:r)`` in its direction, a graph ``--`` through its
+    points; each ring ends with ``-- cycle``."""
+    from ...native.kernel.region import arc_sweep
+
+    parts = []
+    for ring, kinds in zip(value["rings"], value["shape"]):
+        x0, y0 = ring[0][0]
+        out = [_coord(ctx, x0, y0)]
+        for piece, (kind, _source) in zip(ring, kinds):
+            if kind == "line":
+                out.append(f"-- {_coord(ctx, piece[1][0], piece[1][1])}")
+            elif kind in ("ccw", "cw"):
+                t0, sweep = arc_sweep(piece, kind)
+                out.append(f"arc ({ctx.doc.num(math.degrees(t0))}:{ctx.doc.num(math.degrees(t0 + sweep))}:"
+                           f"{ctx.doc.num(piece[2][2])})")
+            else:
+                out.extend(f"-- {_coord(ctx, x, y)}" for x, y in piece[1:])
+        parts.append(" ".join(out) + " -- cycle")
+    return " ".join(parts)
+
+
+def emit_region(ctx: TikzContext, elem, labels: List[str]) -> None:
+    """A region (registry 1.9): the rings filled by the even-odd rule (outer
+    rings counterclockwise, holes clockwise, so it agrees with the nonzero
+    fill of the renderer), the hatch of :mod:`animageo.hatch` over the
+    flattened rings, the stroke only when it is seen."""
+    value = elem.data.native_value
+    path = _region_path(ctx, value)
+    solid = _fill_pattern(ctx, elem, {"rings": elem.data.flattened()})
+    if solid and _fill_opacity(ctx, elem) > 0:
+        ctx.doc.line(f"\\fill[{fill_options(ctx, elem)}, even odd rule] {path};")
+    try:
+        width = float(ctx.resolve(elem, "stroke_width_px", default=0.0) or 0.0)
+    except (TypeError, ValueError):
+        width = 0.0
+    if _stroke_opacity(ctx, elem, default=0.0) > 0 and width > 0:
+        ctx.doc.line(f"\\draw[{stroke_options(ctx, elem, with_cap=False)}] {path};")
+    if ctx.resolve(elem, "label_visible", default=False) is True:
+        from ...native.kernel.region import label_anchor
+        spot = label_anchor(value)
+        if spot is not None:
+            emit_label(ctx, elem, spot[0], spot[1], labels, default_anchor="center")
+
+
 # ── angle ─────────────────────────────────────────────────────────────────
 
 def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
@@ -818,6 +864,7 @@ EMITTERS = {
     "circlesector": emit_circlesector,
     "circlesegment": emit_circlesegment,
     "polygon": emit_polygon,
+    "region": emit_region,
     "angle": emit_angle,
     "conic": emit_conic,
     "function": emit_function,

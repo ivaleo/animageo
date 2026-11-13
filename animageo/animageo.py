@@ -101,6 +101,7 @@ _Z_AUTO_BY_TYPE = {
     geo.Polygon:      Z_FILL,
     geo.CircleSector: Z_FILL,
     geo.CircleSegment: Z_FILL,
+    geo.Region:       Z_FILL,
     geo.Angle:        Z_ANGLE,
     geo.Segment:      Z_STROKE,
     geo.Circle:       Z_STROKE,
@@ -130,6 +131,36 @@ def _scaled_triangle(pos, radius, rotation, col_s, col_f, op_f, op_s, lw, zz):
     if rotation:
         tri.rotate(rotation)
     return tri.set_z_index(zz)
+
+
+def _region_ring_path(vm, ring, kinds):
+    """Append one closed ring of a region value to ``vm`` as a new subpath
+    (``_render_region``): a line piece is a line, an arc cubic Béziers of at
+    most 45° from its start to its exact end, a graph a polyline through its
+    points."""
+    from .native.kernel.region import arc_sweep
+    x0, y0 = ring[0][0]
+    vm.start_new_path(np.array([float(x0), float(y0), 0.0]))
+    for piece, (kind, _source) in zip(ring, kinds):
+        if kind == 'line':
+            vm.add_line_to(np.array([float(piece[1][0]), float(piece[1][1]), 0.0]))
+        elif kind in ('ccw', 'cw'):
+            cx, cy, r = (float(v) for v in piece[2])
+            t0, sweep = arc_sweep(piece, kind)
+            n = max(1, math.ceil(abs(sweep) / (math.pi / 4)))
+            step = sweep / n
+            k = 4.0 / 3.0 * math.tan(step / 4) * r
+            for i in range(n):
+                a, b = t0 + i * step, t0 + (i + 1) * step
+                start = vm.points[-1]
+                end = np.array([float(piece[1][0]), float(piece[1][1]), 0.0]) if i == n - 1 else \
+                    np.array([cx + r * math.cos(b), cy + r * math.sin(b), 0.0])
+                h1 = start + k * np.array([-math.sin(a), math.cos(a), 0.0])
+                h2 = end - k * np.array([-math.sin(b), math.cos(b), 0.0])
+                vm.add_cubic_bezier_curve_to(h1, h2, end)
+        else:
+            vm.add_points_as_corners(np.array([[float(x), float(y), 0.0] for x, y in piece[1:]]))
+    return vm
 
 
 def reorder_objects_by_name(scene, name_order):
@@ -2495,7 +2526,7 @@ class AnimaGeoScene(MovingCameraScene):
             _geo.Point: 'fade', _geo.Segment: 'create', _geo.Line: 'create',
             _geo.Ray: 'create', _geo.Vector: 'create', _geo.Circle: 'create',
             _geo.Arc: 'create', _geo.Polygon: 'fade', _geo.CircleSector: 'fade',
-            _geo.CircleSegment: 'fade',
+            _geo.CircleSegment: 'fade', _geo.Region: 'fade',
             _geo.Angle: 'fade', _geo.Text: 'write',
             _geo.Conic: 'create', _geo.Function: 'create', _geo.ImplicitCurve: 'create',
         }
@@ -4318,6 +4349,33 @@ class AnimaGeoScene(MovingCameraScene):
                 start_angle=a1, angle=a2 - a1,
             ).point_from_proportion(0.5)
             self._append_label(arr, elem, label_pos, ctx)
+        return VGroup(*arr, name=elem.name)
+
+    def _render_region(self, elem, ctx):
+        """A region (registry 1.9): the fill is one path with a subpath per
+        ring at ``z_index_fill`` — outer rings counterclockwise, holes
+        clockwise, so cairo's nonzero rule keeps the holes; the stroke is a
+        path per ring above the lines (as the outline of a polygon), its dash
+        fitted to the ring. Lines are lines, arcs cubic Béziers of at most
+        45°, graphs polylines through their points."""
+        value = elem.data.native_value
+        fill_path = VMobject(fill_color=ctx.col_f, fill_opacity=ctx.op_f, stroke_width=0)
+        strokes = []
+        for ring, kinds in zip(value['rings'], value['shape']):
+            ring_path = VMobject()
+            _region_ring_path(ring_path, ring, kinds)
+            fill_path.append_points(ring_path.points)
+            stroke = VMobject(color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
+                              fill_opacity=0, joint_type=LineJointType.ROUND)
+            stroke.set_points(ring_path.points)
+            strokes.append(self._dash_stroke(stroke.set_z_index(max(ctx.zz_stroke, ctx.zz + 0.1)), ctx, 'closed'))
+        fill = self._fill_pattern_layer(
+            elem, ctx, {'rings': elem.data.flattened()}, fill_path.set_z_index(ctx.zz_fill))
+        arr = [fill, *strokes]
+        if ctx.has_label:
+            from .label_placement import _get_anchor
+            spot = _get_anchor(elem, self)
+            self._append_label(arr, elem, [float(spot[0]), float(spot[1]), 0], ctx)
         return VGroup(*arr, name=elem.name)
 
     def _render_circlesegment(self, elem, ctx):

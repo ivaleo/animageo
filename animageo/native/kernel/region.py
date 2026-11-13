@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import math
 
-__all__ = ['ARC_FLATTEN_STEP', 'GRAPH_STEPS', 'arc_area', 'arc_sweep', 'flatten', 'graph_area', 'graph_xs',
+__all__ = ['ARC_FLATTEN_STEP', 'GRAPH_STEPS', 'arc_area', 'arc_sweep', 'flatten', 'graph_area', 'graph_xs', 'ring_length',
            'inside', 'label_anchor', 'line_area', 'perimeter', 'piece_length']
 
 GRAPH_STEPS = 256                       # equal steps of a graph piece (257 points)
@@ -97,6 +97,14 @@ def piece_length(piece, kind: str) -> float:
     acc = 0.0
     for (xa, ya), (xb, yb) in zip(piece, piece[1:]):
         acc = acc + math.hypot(xb - xa, yb - ya)
+    return acc
+
+
+def ring_length(value, index: int) -> float:
+    """The length of ring ``index`` of a region value."""
+    acc = 0.0
+    for piece, (kind, _source) in zip(value['rings'][index], value['shape'][index]):
+        acc = acc + piece_length(piece, kind)
     return acc
 
 

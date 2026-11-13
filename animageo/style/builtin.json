@@ -216,12 +216,13 @@
             "font_size_px":     "presets.font_size.main"
         },
         "region": {
-            "_comment":         "Regions (region.*, L4) fill or hatch without a stroke by default.",
+            "_comment":         "Regions (registry 1.9) are drawn as a filled face: the fill of a polygon of the fill tool (the accent colour, the opacity of a polygon), no stroke.",
             "stroke":           "presets.color.strong",
-            "stroke_width_px":  "presets.line_width.main",
+            "stroke_width_px":  0,
             "stroke_opacity":   0,
-            "fill":             "presets.color.strong",
-            "fill_opacity":     0.15,
+            "fill":             "presets.color.accent",
+            "fill_opacity":     1,
+            "label_anchor":     "MC",
             "fill_pattern":     "solid",
             "hatch_angle_deg":  45,
             "hatch_spacing_px": 6,

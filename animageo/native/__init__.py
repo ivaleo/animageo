@@ -92,7 +92,7 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'render.tikz_frame', 'delete.cleanup', 'from_ggb.empty_document', 'convert.formula',
             'import_report.text_template', 'import_report.text_literals', 'convert.command_synonyms',
             'convert.ggb_expressions', 'style_keys', 'resolve_paint', 'label.halo', 'label.parts',
-            'timeline.effects', 'render.t.effects', 'view_axes_grid', 'functions', 'conics', 'drag')
+            'timeline.effects', 'render.t.effects', 'view_axes_grid', 'functions', 'conics', 'drag', 'regions')
 
 # Experimental features (``has`` answers them): outside ``FEATURES`` and the
 # public API snapshot, they may change or go without deprecation.

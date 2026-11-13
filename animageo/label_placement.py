@@ -1231,6 +1231,10 @@ def _get_anchor(elem, scene=None):
         return np.zeros(2)
     elif isinstance(d, geo.Polygon):
         return np.mean(d.vertices[:, :2], axis=0)
+    elif isinstance(d, geo.Region):     # registry 1.9: the centroid, or inside on its horizontal
+        from .native.kernel.region import label_anchor
+        spot = label_anchor(d.native_value)
+        return np.zeros(2) if spot is None else np.array(spot, dtype=float)
     elif isinstance(d, geo.Vector):
         if hasattr(d, 'endpoints') and d.endpoints is not None:
             return ((d.endpoints[0] + d.endpoints[1]) / 2)[:2]

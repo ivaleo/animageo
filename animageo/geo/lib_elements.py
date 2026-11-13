@@ -114,7 +114,7 @@ class Element:
         from .lib_function import Function
         from .lib_implicit import ImplicitCurve
         return isinstance(self.data, (Point, Line, Angle, Polygon, Circle, Vector,
-                                      LocusCurve, Conic, Function, ImplicitCurve))
+                                      LocusCurve, Conic, Function, ImplicitCurve, Region))
 
     def has_value(self):
         # Late import to avoid the ``lib_vars``↔``lib_elements`` circular
@@ -124,7 +124,7 @@ class Element:
         # module has finished loading; re-importing explicitly gives
         # reliable names.
         from .lib_vars import Measure, Boolean, AngleSize
-        return isinstance(self.data, (Measure, Boolean, AngleSize, Angle, Segment, Polygon))
+        return isinstance(self.data, (Measure, Boolean, AngleSize, Angle, Segment, Polygon, Region))
 
     def value(self):
         # See ``has_value`` for the circular-import rationale.
@@ -133,7 +133,7 @@ class Element:
         elif isinstance(self.data, Boolean): return float(self.data.value)
         elif isinstance(self.data, Angle): return self.data.value
         elif isinstance(self.data, Segment): return self.data.length
-        elif isinstance(self.data, Polygon): return self.data.area
+        elif isinstance(self.data, (Polygon, Region)): return self.data.area
         else: return None
 
 #--------------------------------------------------------------------------
@@ -525,6 +525,36 @@ class CircleSector(Circle):
                 return True
         return False
 
+class Region:
+    """A region of a native document (registry 1.9; ``native/kernel/region.py``):
+    closed rings of line, arc and graph pieces, outer rings counterclockwise
+    and holes clockwise, so the nonzero fill keeps the holes. No classic
+    command builds it: the bridge carries the kernel value ``native_value``
+    ``{rings, shape, area}``, which the renderer and the exporters draw."""
+
+    def __init__(self, value):
+        self.native_value = value
+        self.style = StyleProxy()
+        self.style['z_index'] = Z_FILL
+
+    def __repr__(self):
+        return f"Region(rings={len(self.native_value['rings'])}, area={self.native_value['area']})"
+
+    @property
+    def area(self):
+        return float(self.native_value['area'])
+
+    def flattened(self):
+        """The rings as polygons (``region.flatten``: arcs at most 2° a step)."""
+        from ..native.kernel.region import flatten
+        return flatten(self.native_value)
+
+    def ring_paths(self):
+        """Each ring as ``[(kind, piece), …]`` in the order of the walk."""
+        return [list(zip((k for k, _s in kinds), ring))
+                for ring, kinds in zip(self.native_value['rings'], self.native_value['shape'])]
+
+
 class Vector:
     def __init__(self, end_points):
         self.endpoints = np.array(end_points)
@@ -695,7 +725,7 @@ def format_object_value(data, decimals):
             format_number(data.coords[0], decimals),
             format_number(data.coords[1], decimals),
         )
-    if isinstance(data, Polygon):
+    if isinstance(data, (Polygon, Region)):
         return format_number(data.area, decimals)
     if isinstance(data, Segment):
         length = float(np.linalg.norm(data.endpoints[0] - data.endpoints[1]))

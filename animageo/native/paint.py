@@ -92,6 +92,9 @@ _TYPES = {
     'sector': ('circlesector', _STROKE + ('stroke_linecap',) + _FILL + _HATCH + ('z_index', 'z_index_fill')
                + _LABEL + _VALUE),
     'circlesegment': ('circlesegment', _STROKE + _FILL + _HATCH + ('z_index', 'z_index_fill') + _LABEL + _VALUE),
+    # registry 1.9: the fill lies at ``z_index_fill``, the stroke above the lines as that of a
+    # polygon; a dashed stroke is fitted to each ring
+    'region': ('region', _STROKE + _DASH + _FILL + _HATCH + ('z_index', 'z_index_fill') + _LABEL + _VALUE),
     # the fill of a polygon lies at its ``z_index``, the stroke is solid
     'polygon': ('polygon', _STROKE + _FILL + _HATCH + ('z_index',) + _LABEL + _VALUE),
     'polyline': ('locuscurve', _STROKE + _DASH + ('z_index',)),
@@ -303,8 +306,8 @@ PAINT_FORMAT = 'animageo-paint/v1'
 
 # ``_Z_AUTO_BY_TYPE`` of ``animageo.py`` (by the exact classic class; others
 # lie at ``Z_FILL``), copied here to stay manim-free; a test compares the two.
-_Z_AUTO_BY_CLASS = {'Polygon': 0.01, 'CircleSector': 0.01, 'CircleSegment': 0.01, 'Angle': 3.0, 'Segment': 5.0, 'Circle': 5.0,
-                    'Arc': 5.0, 'Point': 50.0, 'Text': 50.0}
+_Z_AUTO_BY_CLASS = {'Polygon': 0.01, 'CircleSector': 0.01, 'CircleSegment': 0.01, 'Region': 0.01, 'Angle': 3.0,
+                    'Segment': 5.0, 'Circle': 5.0, 'Arc': 5.0, 'Point': 50.0, 'Text': 50.0}
 _Z_FILL = 0.01
 _Z_FILL_LABEL = 0.1
 _Z_STROKE = 5.0
@@ -312,11 +315,12 @@ _Z_LABEL = 50.0
 _Z_ORDER_EPSILON = 1e-6
 # the path a dash is fitted to (``AnimaGeoScene._dash_stroke``)
 _DASH_FIT = {'segment': 'ends', 'vector': 'ends', 'arc': 'ends', 'circle': 'closed', 'line': 'none',
-             'ray': 'none'}
+             'ray': 'none', 'region': 'closed'}
 _CAPPED = ('segment', 'line', 'ray', 'vector', 'arc', 'sector')
-_FILLED = ('circle', 'arc', 'sector', 'circlesegment', 'polygon')
-_HATCHED = ('circle', 'sector', 'circlesegment', 'polygon')
-_WITH_VALUE = ('segment', 'vector', 'circle', 'arc', 'sector', 'circlesegment', 'polygon', 'angle', 'mark.right_angle')
+_FILLED = ('circle', 'arc', 'sector', 'circlesegment', 'polygon', 'region')
+_HATCHED = ('circle', 'sector', 'circlesegment', 'polygon', 'region')
+_WITH_VALUE = ('segment', 'vector', 'circle', 'arc', 'sector', 'circlesegment', 'polygon', 'region', 'angle',
+               'mark.right_angle')
 
 
 def _num(value, default=0.0):
@@ -423,6 +427,16 @@ def _dash(final, elem, type_, data, unit, width_px, cap):
         fit = 'none'
     elif type_ == 'conic':              # the renderer measures an ellipse; branches are open runs
         fit = 'closed' if _conic_kind(data) == 'ellipse' else 'none'
+    elif type_ == 'region':             # a pattern per ring (``_render_region``), ``drawn`` is None
+        from .kernel.region import ring_length
+        cap_mu = width_px / unit if cap in ('round', 'square') else 0.0
+        rings = []
+        for i in range(len(data.native_value['rings'])):
+            pattern = dash_pattern(ring_length(data.native_value, i), on_px / unit, off_px / unit, closed=True,
+                                   cap_extent_mu=cap_mu)
+            rings.append({'onPx': _r(pattern.on * unit), 'offPx': _r(pattern.off * unit),
+                          'offsetPx': _r(pattern.offset * unit)})
+        return {'onPx': _r(on_px), 'offPx': _r(off_px), 'fit': fit, 'drawn': None, 'rings': rings}
     drawn = None
     if fit == 'none' or length is not None:
         cap_mu = width_px / unit if cap in ('round', 'square') else 0.0
@@ -923,7 +937,7 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             stroke = {'color': _color(value('stroke', stroke_default)),
                       'opacity': _r(_num(value('stroke_opacity', 1), 1)),
                       'widthPx': _r(width_px), 'cap': cap, 'z': entry['z']}
-            if style_type == 'polygon':     # the stroke layer above the fill (``_render_polygon``)
+            if style_type in ('polygon', 'region'):     # the stroke layer above the fill (``_render_polygon``)
                 stroke['z'] = _r(max(_Z_STROKE + tie, _num(z) + tie + 0.1))
             elif style_type in ('angle', 'mark.right_angle'):
                 stroke['z'] = _r(_num(z) + tie + 0.1)
@@ -939,7 +953,7 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             if style_type in ('angle', 'mark.right_angle') and is_bg:
                 opacity = 0.0
             fill = {'color': color if opacity > 0 else None, 'opacity': _r(opacity), 'isBackground': is_bg}
-            if style_type in ('circle', 'arc', 'sector', 'circlesegment', 'conic'):
+            if style_type in ('circle', 'arc', 'sector', 'circlesegment', 'conic', 'region'):
                 fill['z'] = _r(_num(value('z_index_fill', _Z_FILL), _Z_FILL) + tie)
             elif style_type in ('polygon', 'angle', 'mark.right_angle'):
                 fill['z'] = entry['z']
