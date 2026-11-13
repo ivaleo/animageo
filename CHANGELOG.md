@@ -10,9 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Operation registry 1.8. `native.min_registry_version(doc)` gives the oldest
-  registry a document fits; `from_ggb`, `from_construction`, `parse_commands`
-  and the edits declare that version (an edit only raises it), and `validate`
-  reports `needs_newer_registry` when a document uses an operation, or a type
+  registry a document fits (a suppressed mark of kind `parallel` needs 1.8),
+  and `validate` reports `needs_newer_registry` when a document uses an operation, or a type
   in a family slot, of a newer registry than it declares. Documents declaring
   registry 1.7 or older read and evaluate as before.
 - `intersect.conic_conic` (registry 1.8): up to four common points of two
@@ -89,7 +88,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `r_in ≥ 12 / Δ` px; a dashed marker with ticks, a head or several arcs
     fitted to fewer than three dashes on an arc shortens its period to
     `max(3, L/2.5)` px and, still short, grows until every arc holds three
-    (`L ≥ 7.5` px, past the heads); `angle_marker_fit` wins over the growth.
+    (`L ≥ 7.5` px, past the heads). The growth stops at twice the original
+    radius (`r_in ≤ 2·r_base`): beyond it the floor yields — a wave shortens
+    its period down to 3 px, then drops periods (at least two), a dashed arc
+    drops dashes (at least two); `angle_marker_fit` wins over the growth.
     A single plain dashed arc and an explicit dash are drawn as given;
   - points: `point_fill: "hollow"` — a hole of the point's shape at half its
     size, in the sheet colour, or cut through the drawing below on a
@@ -113,12 +115,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `from_ggb`, `from_construction`, `parse_commands` and the edits declare the
+  oldest operation registry the document fits (`native.min_registry_version`;
+  an edit only raises it) instead of a fixed one — `from_ggb` and
+  `parse_commands` stamped `1.0` and now stamp up to `1.7` or `1.8`, which
+  changes their output for a document that uses a newer operation. Documents
+  declaring 1.7 or older read and evaluate as before.
 - GGB import: the GeoGebra decorations that had no style of their own become
   the new kinds of marks — a segment's one, two or three arrows
   (`<decoration type>` 4–6) are `parallel_count` 1–3 chevrons, no longer 4–6
   ticks; an angle's one, two or three ticks (3–5) are `arc_tick_count` 1–3
   across one arc and its arrow anticlockwise or clockwise (6, 7) is
-  `arrow_head` `end` or `start` on one arc, no longer 4–8 arcs. Classic
+  `arrow_head` `end` or `start` on one arc (swapped on an arc drawn the other
+  way round, so the arrow follows the drawn arc), no longer 4–8 arcs. Classic
   `loadGGB` (`elem.ggb_style`, `ImportPolicy`, `reloadPolicy` through
   `animageo.style.ggb_resolver.ggb_decoration_style`) and the native import
   report (`ggb_style`) alike; decorations 0–3 of a segment and 0–2 of an angle
@@ -166,13 +175,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   SVG, PDF and EPS draw, of any aspect — instead of the camera frame, which
   keeps the 16:9 aspect of the renderer around it. A label at the left or
   right edge of a 4:3 or portrait picture could end up outside it.
-
-### Tests
-
-- Regression tests for the GGB import of `Intersect(sector, line)` (OD-048): the
-  saved points of GeoGebra are the points of the arc, and are bound to the
-  `arc.*` slots of `intersect.line_sector` in both argument orders, with and
-  without a number. No behaviour change.
+- The GGB import of `Intersect(sector, line)`: the saved points of GeoGebra
+  are the points of the arc, and are bound to the `arc.*` slots of
+  `intersect.line_sector` in both argument orders, with and without a number
+  (covered by regression tests).
 
 ## [1.12.1] - 2026-11-13
 
