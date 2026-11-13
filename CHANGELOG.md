@@ -64,6 +64,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   as text by the formula parser (including the numbers it refers to, which it
   then follows) and `a`, `b` become the function's `explicit_domain`.
 
+### Tests
+
+- Regression tests for the GGB import of `Intersect(sector, line)` (OD-048): the
+  saved points of GeoGebra are the points of the arc, and are bound to the
+  `arc.*` slots of `intersect.line_sector` in both argument orders, with and
+  without a number. No behaviour change.
+
 ## [1.12.1] - 2026-11-13
 
 ### Fixed
