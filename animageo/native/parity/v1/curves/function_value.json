@@ -1,0 +1,931 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "function_value",
+ "registry": "1.11",
+ "generatedBy": "animageo 1.15.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "function_value",
+  "operationRegistryVersion": "1.11",
+  "operations": {
+   "op_a": {
+    "id": "op_a",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "a"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "c"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_v": {
+    "id": "op_v",
+    "op": "function.value",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "x": {
+      "kind": "ref",
+      "elementId": "a"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "v"
+     }
+    ]
+   },
+   "op_Y": {
+    "id": "op_Y",
+    "op": "point.expression",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "pair": [
+        {
+         "num": 0
+        },
+        {
+         "call": 0,
+         "args": [
+          {
+           "num": 0
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "f"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Y"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.expression",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "pair": [
+        {
+         "ref": 0
+        },
+        {
+         "call": 1,
+         "args": [
+          {
+           "ref": 0
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "a"
+       },
+       {
+        "kind": "ref",
+        "elementId": "f"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "a": {
+    "id": "a",
+    "type": "number",
+    "displayName": "a",
+    "producer": {
+     "operationId": "op_a",
+     "slot": "number"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "number",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "number"
+    }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "v": {
+    "id": "v",
+    "type": "number",
+    "displayName": "v",
+    "producer": {
+     "operationId": "op_v",
+     "slot": "number"
+    }
+   },
+   "Y": {
+    "id": "Y",
+    "type": "point",
+    "displayName": "Y",
+    "producer": {
+     "operationId": "op_Y",
+     "slot": "point"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   }
+  },
+  "inputs": {
+   "a": {
+    "kind": "number",
+    "value": 2.0
+   },
+   "c": {
+    "kind": "number",
+    "value": 3.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "initial",
+   "inputs": {
+    "a": {
+     "kind": "number",
+     "value": 2
+    },
+    "c": {
+     "kind": "number",
+     "value": 3
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2,
+      "y": 12
+     }
+    },
+    "Y": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 3.0,
+      "unit": "scalar"
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [
+       3.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "v": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 12,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {},
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      300.0
+     ],
+     [
+      -9.375,
+      263.671875
+     ],
+     [
+      -8.75,
+      229.6875
+     ],
+     [
+      -8.125,
+      198.046875
+     ],
+     [
+      -7.5,
+      168.75
+     ],
+     [
+      -6.875,
+      141.796875
+     ],
+     [
+      -6.25,
+      117.1875
+     ],
+     [
+      -5.625,
+      94.921875
+     ],
+     [
+      -5.0,
+      75.0
+     ],
+     [
+      -4.375,
+      57.421875
+     ],
+     [
+      -3.75,
+      42.1875
+     ],
+     [
+      -3.125,
+      29.296875
+     ],
+     [
+      -2.5,
+      18.75
+     ],
+     [
+      -1.875,
+      10.546875
+     ],
+     [
+      -1.25,
+      4.6875
+     ],
+     [
+      -0.625,
+      1.171875
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      1.171875
+     ],
+     [
+      1.25,
+      4.6875
+     ],
+     [
+      1.875,
+      10.546875
+     ],
+     [
+      2.5,
+      18.75
+     ],
+     [
+      3.125,
+      29.296875
+     ],
+     [
+      3.75,
+      42.1875
+     ],
+     [
+      4.375,
+      57.421875
+     ],
+     [
+      5.0,
+      75.0
+     ],
+     [
+      5.625,
+      94.921875
+     ],
+     [
+      6.25,
+      117.1875
+     ],
+     [
+      6.875,
+      141.796875
+     ],
+     [
+      7.5,
+      168.75
+     ],
+     [
+      8.125,
+      198.046875
+     ],
+     [
+      8.75,
+      229.6875
+     ],
+     [
+      9.375,
+      263.671875
+     ],
+     [
+      10.0,
+      300.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "argument",
+   "inputs": {
+    "a": {
+     "kind": "number",
+     "value": 4
+    },
+    "c": {
+     "kind": "number",
+     "value": 3
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4,
+      "y": 48
+     }
+    },
+    "Y": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.0,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 3.0,
+      "unit": "scalar"
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [
+       3.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "v": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 48,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {},
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      300.0
+     ],
+     [
+      -9.375,
+      263.671875
+     ],
+     [
+      -8.75,
+      229.6875
+     ],
+     [
+      -8.125,
+      198.046875
+     ],
+     [
+      -7.5,
+      168.75
+     ],
+     [
+      -6.875,
+      141.796875
+     ],
+     [
+      -6.25,
+      117.1875
+     ],
+     [
+      -5.625,
+      94.921875
+     ],
+     [
+      -5.0,
+      75.0
+     ],
+     [
+      -4.375,
+      57.421875
+     ],
+     [
+      -3.75,
+      42.1875
+     ],
+     [
+      -3.125,
+      29.296875
+     ],
+     [
+      -2.5,
+      18.75
+     ],
+     [
+      -1.875,
+      10.546875
+     ],
+     [
+      -1.25,
+      4.6875
+     ],
+     [
+      -0.625,
+      1.171875
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      1.171875
+     ],
+     [
+      1.25,
+      4.6875
+     ],
+     [
+      1.875,
+      10.546875
+     ],
+     [
+      2.5,
+      18.75
+     ],
+     [
+      3.125,
+      29.296875
+     ],
+     [
+      3.75,
+      42.1875
+     ],
+     [
+      4.375,
+      57.421875
+     ],
+     [
+      5.0,
+      75.0
+     ],
+     [
+      5.625,
+      94.921875
+     ],
+     [
+      6.25,
+      117.1875
+     ],
+     [
+      6.875,
+      141.796875
+     ],
+     [
+      7.5,
+      168.75
+     ],
+     [
+      8.125,
+      198.046875
+     ],
+     [
+      8.75,
+      229.6875
+     ],
+     [
+      9.375,
+      263.671875
+     ],
+     [
+      10.0,
+      300.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "coefficient",
+   "inputs": {
+    "a": {
+     "kind": "number",
+     "value": 4
+    },
+    "c": {
+     "kind": "number",
+     "value": -2
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4,
+      "y": -32
+     }
+    },
+    "Y": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.0,
+      "unit": "scalar"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -2.0,
+      "unit": "scalar"
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [
+       -2.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "v": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -32,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {},
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      -200.0
+     ],
+     [
+      -9.375,
+      -175.78125
+     ],
+     [
+      -8.75,
+      -153.125
+     ],
+     [
+      -8.125,
+      -132.03125
+     ],
+     [
+      -7.5,
+      -112.5
+     ],
+     [
+      -6.875,
+      -94.53125
+     ],
+     [
+      -6.25,
+      -78.125
+     ],
+     [
+      -5.625,
+      -63.28125
+     ],
+     [
+      -5.0,
+      -50.0
+     ],
+     [
+      -4.375,
+      -38.28125
+     ],
+     [
+      -3.75,
+      -28.125
+     ],
+     [
+      -3.125,
+      -19.53125
+     ],
+     [
+      -2.5,
+      -12.5
+     ],
+     [
+      -1.875,
+      -7.03125
+     ],
+     [
+      -1.25,
+      -3.125
+     ],
+     [
+      -0.625,
+      -0.78125
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      -0.78125
+     ],
+     [
+      1.25,
+      -3.125
+     ],
+     [
+      1.875,
+      -7.03125
+     ],
+     [
+      2.5,
+      -12.5
+     ],
+     [
+      3.125,
+      -19.53125
+     ],
+     [
+      3.75,
+      -28.125
+     ],
+     [
+      4.375,
+      -38.28125
+     ],
+     [
+      5.0,
+      -50.0
+     ],
+     [
+      5.625,
+      -63.28125
+     ],
+     [
+      6.25,
+      -78.125
+     ],
+     [
+      6.875,
+      -94.53125
+     ],
+     [
+      7.5,
+      -112.5
+     ],
+     [
+      8.125,
+      -132.03125
+     ],
+     [
+      8.75,
+      -153.125
+     ],
+     [
+      9.375,
+      -175.78125
+     ],
+     [
+      10.0,
+      -200.0
+     ]
+    ]
+   }
+  }
+ ]
+}

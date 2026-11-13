@@ -1,0 +1,1602 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "function_roots_poly",
+ "registry": "1.11",
+ "generatedBy": "animageo 1.15.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "function_roots_poly",
+  "operationRegistryVersion": "1.11",
+  "operations": {
+   "op_p": {
+    "id": "op_p",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "*",
+           "args": [
+            {
+             "num": 4
+            },
+            {
+             "var": "x"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 3
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "p"
+     }
+    ]
+   },
+   "op_q": {
+    "id": "op_q",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "num": 3
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "q"
+     }
+    ]
+   },
+   "op_far": {
+    "id": "op_far",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 1000
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "far"
+     }
+    ]
+   },
+   "op_analysis_A": {
+    "id": "op_analysis_A",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "p"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "A1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "A2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "A3"
+     }
+    ]
+   },
+   "op_analysis_B": {
+    "id": "op_analysis_B",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "q"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "B1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "B2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "B3"
+     }
+    ]
+   },
+   "op_analysis_Far": {
+    "id": "op_analysis_Far",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "far"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Far1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "Far2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "Far3"
+     }
+    ]
+   },
+   "op_constant": {
+    "id": "op_constant",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "num": 1
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "constant"
+     }
+    ]
+   },
+   "op_analysis_constant": {
+    "id": "op_analysis_constant",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "constant"
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "constant1"
+     }
+    ]
+   },
+   "op_tiny": {
+    "id": "op_tiny",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "num": 1e-30
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "tiny"
+     }
+    ]
+   },
+   "op_analysis_tiny": {
+    "id": "op_analysis_tiny",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "tiny"
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "tiny1"
+     }
+    ]
+   },
+   "op_zero": {
+    "id": "op_zero",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "num": 0
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "zero"
+     }
+    ]
+   },
+   "op_analysis_zero": {
+    "id": "op_analysis_zero",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "zero"
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "zero1"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "p": {
+    "id": "p",
+    "type": "function",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "function"
+    }
+   },
+   "q": {
+    "id": "q",
+    "type": "function",
+    "displayName": "q",
+    "producer": {
+     "operationId": "op_q",
+     "slot": "function"
+    }
+   },
+   "far": {
+    "id": "far",
+    "type": "function",
+    "displayName": "far",
+    "producer": {
+     "operationId": "op_far",
+     "slot": "function"
+    }
+   },
+   "A1": {
+    "id": "A1",
+    "type": "point",
+    "displayName": "A1",
+    "producer": {
+     "operationId": "op_analysis_A",
+     "slot": "root.1"
+    }
+   },
+   "A2": {
+    "id": "A2",
+    "type": "point",
+    "displayName": "A2",
+    "producer": {
+     "operationId": "op_analysis_A",
+     "slot": "root.2"
+    }
+   },
+   "A3": {
+    "id": "A3",
+    "type": "point",
+    "displayName": "A3",
+    "producer": {
+     "operationId": "op_analysis_A",
+     "slot": "root.3"
+    }
+   },
+   "B1": {
+    "id": "B1",
+    "type": "point",
+    "displayName": "B1",
+    "producer": {
+     "operationId": "op_analysis_B",
+     "slot": "root.1"
+    }
+   },
+   "B2": {
+    "id": "B2",
+    "type": "point",
+    "displayName": "B2",
+    "producer": {
+     "operationId": "op_analysis_B",
+     "slot": "root.2"
+    }
+   },
+   "B3": {
+    "id": "B3",
+    "type": "point",
+    "displayName": "B3",
+    "producer": {
+     "operationId": "op_analysis_B",
+     "slot": "root.3"
+    }
+   },
+   "Far1": {
+    "id": "Far1",
+    "type": "point",
+    "displayName": "Far1",
+    "producer": {
+     "operationId": "op_analysis_Far",
+     "slot": "root.1"
+    }
+   },
+   "Far2": {
+    "id": "Far2",
+    "type": "point",
+    "displayName": "Far2",
+    "producer": {
+     "operationId": "op_analysis_Far",
+     "slot": "root.2"
+    }
+   },
+   "Far3": {
+    "id": "Far3",
+    "type": "point",
+    "displayName": "Far3",
+    "producer": {
+     "operationId": "op_analysis_Far",
+     "slot": "root.3"
+    }
+   },
+   "constant": {
+    "id": "constant",
+    "type": "function",
+    "displayName": "constant",
+    "producer": {
+     "operationId": "op_constant",
+     "slot": "function"
+    }
+   },
+   "constant1": {
+    "id": "constant1",
+    "type": "point",
+    "displayName": "constant1",
+    "producer": {
+     "operationId": "op_analysis_constant",
+     "slot": "root.1"
+    }
+   },
+   "tiny": {
+    "id": "tiny",
+    "type": "function",
+    "displayName": "tiny",
+    "producer": {
+     "operationId": "op_tiny",
+     "slot": "function"
+    }
+   },
+   "tiny1": {
+    "id": "tiny1",
+    "type": "point",
+    "displayName": "tiny1",
+    "producer": {
+     "operationId": "op_analysis_tiny",
+     "slot": "root.1"
+    }
+   },
+   "zero": {
+    "id": "zero",
+    "type": "function",
+    "displayName": "zero",
+    "producer": {
+     "operationId": "op_zero",
+     "slot": "function"
+    }
+   },
+   "zero1": {
+    "id": "zero1",
+    "type": "point",
+    "displayName": "zero1",
+    "producer": {
+     "operationId": "op_analysis_zero",
+     "slot": "root.1"
+    }
+   }
+  },
+  "inputs": {},
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "analytic",
+   "scale": 20.0,
+   "expect": {
+    "A1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "A2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "A3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "B1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "B2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "B3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "Far1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1000,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "Far2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "Far3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "constant": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "num": 1
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "constant1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "far": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "-",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 1000
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "*",
+           "args": [
+            {
+             "num": 4
+            },
+            {
+             "var": "x"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 3
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "q": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "num": 3
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "tiny": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "num": 1e-30
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "tiny1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "zero": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "num": 0
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "zero1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident",
+     "detail": {
+      "stage": "isolation"
+     }
+    }
+   },
+   "checks": {
+    "op_analysis_A:on_graph": "passed",
+    "op_analysis_B:on_graph": "passed",
+    "op_analysis_Far:on_graph": "passed"
+   },
+   "samples": {
+    "constant": [
+     [
+      -10.0,
+      1.0
+     ],
+     [
+      -9.375,
+      1.0
+     ],
+     [
+      -8.75,
+      1.0
+     ],
+     [
+      -8.125,
+      1.0
+     ],
+     [
+      -7.5,
+      1.0
+     ],
+     [
+      -6.875,
+      1.0
+     ],
+     [
+      -6.25,
+      1.0
+     ],
+     [
+      -5.625,
+      1.0
+     ],
+     [
+      -5.0,
+      1.0
+     ],
+     [
+      -4.375,
+      1.0
+     ],
+     [
+      -3.75,
+      1.0
+     ],
+     [
+      -3.125,
+      1.0
+     ],
+     [
+      -2.5,
+      1.0
+     ],
+     [
+      -1.875,
+      1.0
+     ],
+     [
+      -1.25,
+      1.0
+     ],
+     [
+      -0.625,
+      1.0
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.0
+     ],
+     [
+      1.25,
+      1.0
+     ],
+     [
+      1.875,
+      1.0
+     ],
+     [
+      2.5,
+      1.0
+     ],
+     [
+      3.125,
+      1.0
+     ],
+     [
+      3.75,
+      1.0
+     ],
+     [
+      4.375,
+      1.0
+     ],
+     [
+      5.0,
+      1.0
+     ],
+     [
+      5.625,
+      1.0
+     ],
+     [
+      6.25,
+      1.0
+     ],
+     [
+      6.875,
+      1.0
+     ],
+     [
+      7.5,
+      1.0
+     ],
+     [
+      8.125,
+      1.0
+     ],
+     [
+      8.75,
+      1.0
+     ],
+     [
+      9.375,
+      1.0
+     ],
+     [
+      10.0,
+      1.0
+     ]
+    ],
+    "far": [
+     [
+      -10.0,
+      -1010.0
+     ],
+     [
+      -9.375,
+      -1009.375
+     ],
+     [
+      -8.75,
+      -1008.75
+     ],
+     [
+      -8.125,
+      -1008.125
+     ],
+     [
+      -7.5,
+      -1007.5
+     ],
+     [
+      -6.875,
+      -1006.875
+     ],
+     [
+      -6.25,
+      -1006.25
+     ],
+     [
+      -5.625,
+      -1005.625
+     ],
+     [
+      -5.0,
+      -1005.0
+     ],
+     [
+      -4.375,
+      -1004.375
+     ],
+     [
+      -3.75,
+      -1003.75
+     ],
+     [
+      -3.125,
+      -1003.125
+     ],
+     [
+      -2.5,
+      -1002.5
+     ],
+     [
+      -1.875,
+      -1001.875
+     ],
+     [
+      -1.25,
+      -1001.25
+     ],
+     [
+      -0.625,
+      -1000.625
+     ],
+     [
+      0.0,
+      -1000.0
+     ],
+     [
+      0.625,
+      -999.375
+     ],
+     [
+      1.25,
+      -998.75
+     ],
+     [
+      1.875,
+      -998.125
+     ],
+     [
+      2.5,
+      -997.5
+     ],
+     [
+      3.125,
+      -996.875
+     ],
+     [
+      3.75,
+      -996.25
+     ],
+     [
+      4.375,
+      -995.625
+     ],
+     [
+      5.0,
+      -995.0
+     ],
+     [
+      5.625,
+      -994.375
+     ],
+     [
+      6.25,
+      -993.75
+     ],
+     [
+      6.875,
+      -993.125
+     ],
+     [
+      7.5,
+      -992.5
+     ],
+     [
+      8.125,
+      -991.875
+     ],
+     [
+      8.75,
+      -991.25
+     ],
+     [
+      9.375,
+      -990.625
+     ],
+     [
+      10.0,
+      -990.0
+     ]
+    ],
+    "p": [
+     [
+      -10.0,
+      143.0
+     ],
+     [
+      -9.375,
+      128.390625
+     ],
+     [
+      -8.75,
+      114.5625
+     ],
+     [
+      -8.125,
+      101.515625
+     ],
+     [
+      -7.5,
+      89.25
+     ],
+     [
+      -6.875,
+      77.765625
+     ],
+     [
+      -6.25,
+      67.0625
+     ],
+     [
+      -5.625,
+      57.140625
+     ],
+     [
+      -5.0,
+      48.0
+     ],
+     [
+      -4.375,
+      39.640625
+     ],
+     [
+      -3.75,
+      32.0625
+     ],
+     [
+      -3.125,
+      25.265625
+     ],
+     [
+      -2.5,
+      19.25
+     ],
+     [
+      -1.875,
+      14.015625
+     ],
+     [
+      -1.25,
+      9.5625
+     ],
+     [
+      -0.625,
+      5.890625
+     ],
+     [
+      0.0,
+      3.0
+     ],
+     [
+      0.625,
+      0.890625
+     ],
+     [
+      1.25,
+      -0.4375
+     ],
+     [
+      1.875,
+      -0.984375
+     ],
+     [
+      2.5,
+      -0.75
+     ],
+     [
+      3.125,
+      0.265625
+     ],
+     [
+      3.75,
+      2.0625
+     ],
+     [
+      4.375,
+      4.640625
+     ],
+     [
+      5.0,
+      8.0
+     ],
+     [
+      5.625,
+      12.140625
+     ],
+     [
+      6.25,
+      17.0625
+     ],
+     [
+      6.875,
+      22.765625
+     ],
+     [
+      7.5,
+      29.25
+     ],
+     [
+      8.125,
+      36.515625
+     ],
+     [
+      8.75,
+      44.5625
+     ],
+     [
+      9.375,
+      53.390625
+     ],
+     [
+      10.0,
+      63.0
+     ]
+    ],
+    "q": [
+     [
+      -10.0,
+      -172800.0
+     ],
+     [
+      -9.375,
+      -129359.035491943
+     ],
+     [
+      -8.75,
+      -95113.354492188
+     ],
+     [
+      -8.125,
+      -68522.284698486
+     ],
+     [
+      -7.5,
+      -48227.34375
+     ],
+     [
+      -6.875,
+      -33040.795135498
+     ],
+     [
+      -6.25,
+      -21934.204101562
+     ],
+     [
+      -5.625,
+      -14026.993560791
+     ],
+     [
+      -5.0,
+      -8575.0
+     ],
+     [
+      -4.375,
+      -4959.029388428
+     ],
+     [
+      -3.75,
+      -2673.413085938
+     ],
+     [
+      -3.125,
+      -1314.563751221
+     ],
+     [
+      -2.5,
+      -569.53125
+     ],
+     [
+      -1.875,
+      -204.558563232
+     ],
+     [
+      -1.25,
+      -53.637695312
+     ],
+     [
+      -0.625,
+      -7.065582275
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      -1.015472412
+     ],
+     [
+      1.25,
+      -0.659179688
+     ],
+     [
+      1.875,
+      -0.006866455
+     ],
+     [
+      2.5,
+      0.78125
+     ],
+     [
+      3.125,
+      13.904571533
+     ],
+     [
+      3.75,
+      75.366210938
+     ],
+     [
+      4.375,
+      256.41708374
+     ],
+     [
+      5.0,
+      675.0
+     ],
+     [
+      5.625,
+      1507.193756104
+     ],
+     [
+      6.25,
+      2998.657226562
+     ],
+     [
+      6.875,
+      5476.073455811
+     ],
+     [
+      7.5,
+      9358.59375
+     ],
+     [
+      8.125,
+      15169.281768799
+     ],
+     [
+      8.75,
+      23546.557617188
+     ],
+     [
+      9.375,
+      35255.641937256
+     ],
+     [
+      10.0,
+      51200.0
+     ]
+    ],
+    "tiny": [
+     [
+      -10.0,
+      0.0
+     ],
+     [
+      -9.375,
+      0.0
+     ],
+     [
+      -8.75,
+      0.0
+     ],
+     [
+      -8.125,
+      0.0
+     ],
+     [
+      -7.5,
+      0.0
+     ],
+     [
+      -6.875,
+      0.0
+     ],
+     [
+      -6.25,
+      0.0
+     ],
+     [
+      -5.625,
+      0.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      -4.375,
+      0.0
+     ],
+     [
+      -3.75,
+      0.0
+     ],
+     [
+      -3.125,
+      0.0
+     ],
+     [
+      -2.5,
+      0.0
+     ],
+     [
+      -1.875,
+      0.0
+     ],
+     [
+      -1.25,
+      0.0
+     ],
+     [
+      -0.625,
+      0.0
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.0
+     ],
+     [
+      1.25,
+      0.0
+     ],
+     [
+      1.875,
+      0.0
+     ],
+     [
+      2.5,
+      0.0
+     ],
+     [
+      3.125,
+      0.0
+     ],
+     [
+      3.75,
+      0.0
+     ],
+     [
+      4.375,
+      0.0
+     ],
+     [
+      5.0,
+      0.0
+     ],
+     [
+      5.625,
+      0.0
+     ],
+     [
+      6.25,
+      0.0
+     ],
+     [
+      6.875,
+      0.0
+     ],
+     [
+      7.5,
+      0.0
+     ],
+     [
+      8.125,
+      0.0
+     ],
+     [
+      8.75,
+      0.0
+     ],
+     [
+      9.375,
+      0.0
+     ],
+     [
+      10.0,
+      0.0
+     ]
+    ],
+    "zero": [
+     [
+      -10.0,
+      0.0
+     ],
+     [
+      -9.375,
+      0.0
+     ],
+     [
+      -8.75,
+      0.0
+     ],
+     [
+      -8.125,
+      0.0
+     ],
+     [
+      -7.5,
+      0.0
+     ],
+     [
+      -6.875,
+      0.0
+     ],
+     [
+      -6.25,
+      0.0
+     ],
+     [
+      -5.625,
+      0.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      -4.375,
+      0.0
+     ],
+     [
+      -3.75,
+      0.0
+     ],
+     [
+      -3.125,
+      0.0
+     ],
+     [
+      -2.5,
+      0.0
+     ],
+     [
+      -1.875,
+      0.0
+     ],
+     [
+      -1.25,
+      0.0
+     ],
+     [
+      -0.625,
+      0.0
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.0
+     ],
+     [
+      1.25,
+      0.0
+     ],
+     [
+      1.875,
+      0.0
+     ],
+     [
+      2.5,
+      0.0
+     ],
+     [
+      3.125,
+      0.0
+     ],
+     [
+      3.75,
+      0.0
+     ],
+     [
+      4.375,
+      0.0
+     ],
+     [
+      5.0,
+      0.0
+     ],
+     [
+      5.625,
+      0.0
+     ],
+     [
+      6.25,
+      0.0
+     ],
+     [
+      6.875,
+      0.0
+     ],
+     [
+      7.5,
+      0.0
+     ],
+     [
+      8.125,
+      0.0
+     ],
+     [
+      8.75,
+      0.0
+     ],
+     [
+      9.375,
+      0.0
+     ],
+     [
+      10.0,
+      0.0
+     ]
+    ]
+   }
+  }
+ ]
+}

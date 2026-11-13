@@ -1,0 +1,1384 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "function_extrema_poly",
+ "registry": "1.11",
+ "generatedBy": "animageo 1.15.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "function_extrema_poly",
+  "operationRegistryVersion": "1.11",
+  "operations": {
+   "op_cubic": {
+    "id": "op_cubic",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 3
+          }
+         ]
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 3
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "cubic"
+     }
+    ]
+   },
+   "op_analysis_E": {
+    "id": "op_analysis_E",
+    "op": "function.extrema_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "cubic"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "E1"
+     },
+     {
+      "slot": "extremum.2",
+      "elementId": "E2"
+     },
+     {
+      "slot": "extremum.3",
+      "elementId": "E3"
+     }
+    ]
+   },
+   "op_inflection": {
+    "id": "op_inflection",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 3
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "inflection"
+     }
+    ]
+   },
+   "op_analysis_I": {
+    "id": "op_analysis_I",
+    "op": "function.extrema_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "inflection"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "I1"
+     },
+     {
+      "slot": "extremum.2",
+      "elementId": "I2"
+     },
+     {
+      "slot": "extremum.3",
+      "elementId": "I3"
+     }
+    ]
+   },
+   "op_quartic": {
+    "id": "op_quartic",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 4
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "quartic"
+     }
+    ]
+   },
+   "op_analysis_Q": {
+    "id": "op_analysis_Q",
+    "op": "function.extrema_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "quartic"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "Q1"
+     },
+     {
+      "slot": "extremum.2",
+      "elementId": "Q2"
+     },
+     {
+      "slot": "extremum.3",
+      "elementId": "Q3"
+     }
+    ]
+   },
+   "op_linear": {
+    "id": "op_linear",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "var": "x"
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "linear"
+     }
+    ]
+   },
+   "op_analysis_Linear": {
+    "id": "op_analysis_Linear",
+    "op": "function.extrema_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "linear"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "Linear1"
+     },
+     {
+      "slot": "extremum.2",
+      "elementId": "Linear2"
+     },
+     {
+      "slot": "extremum.3",
+      "elementId": "Linear3"
+     }
+    ]
+   },
+   "op_constant": {
+    "id": "op_constant",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "num": 3
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "constant"
+     }
+    ]
+   },
+   "op_analysis_Const": {
+    "id": "op_analysis_Const",
+    "op": "function.extrema_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "constant"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "Const1"
+     },
+     {
+      "slot": "extremum.2",
+      "elementId": "Const2"
+     },
+     {
+      "slot": "extremum.3",
+      "elementId": "Const3"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "cubic": {
+    "id": "cubic",
+    "type": "function",
+    "displayName": "cubic",
+    "producer": {
+     "operationId": "op_cubic",
+     "slot": "function"
+    }
+   },
+   "E1": {
+    "id": "E1",
+    "type": "point",
+    "displayName": "E1",
+    "producer": {
+     "operationId": "op_analysis_E",
+     "slot": "extremum.1"
+    }
+   },
+   "E2": {
+    "id": "E2",
+    "type": "point",
+    "displayName": "E2",
+    "producer": {
+     "operationId": "op_analysis_E",
+     "slot": "extremum.2"
+    }
+   },
+   "E3": {
+    "id": "E3",
+    "type": "point",
+    "displayName": "E3",
+    "producer": {
+     "operationId": "op_analysis_E",
+     "slot": "extremum.3"
+    }
+   },
+   "inflection": {
+    "id": "inflection",
+    "type": "function",
+    "displayName": "inflection",
+    "producer": {
+     "operationId": "op_inflection",
+     "slot": "function"
+    }
+   },
+   "I1": {
+    "id": "I1",
+    "type": "point",
+    "displayName": "I1",
+    "producer": {
+     "operationId": "op_analysis_I",
+     "slot": "extremum.1"
+    }
+   },
+   "I2": {
+    "id": "I2",
+    "type": "point",
+    "displayName": "I2",
+    "producer": {
+     "operationId": "op_analysis_I",
+     "slot": "extremum.2"
+    }
+   },
+   "I3": {
+    "id": "I3",
+    "type": "point",
+    "displayName": "I3",
+    "producer": {
+     "operationId": "op_analysis_I",
+     "slot": "extremum.3"
+    }
+   },
+   "quartic": {
+    "id": "quartic",
+    "type": "function",
+    "displayName": "quartic",
+    "producer": {
+     "operationId": "op_quartic",
+     "slot": "function"
+    }
+   },
+   "Q1": {
+    "id": "Q1",
+    "type": "point",
+    "displayName": "Q1",
+    "producer": {
+     "operationId": "op_analysis_Q",
+     "slot": "extremum.1"
+    }
+   },
+   "Q2": {
+    "id": "Q2",
+    "type": "point",
+    "displayName": "Q2",
+    "producer": {
+     "operationId": "op_analysis_Q",
+     "slot": "extremum.2"
+    }
+   },
+   "Q3": {
+    "id": "Q3",
+    "type": "point",
+    "displayName": "Q3",
+    "producer": {
+     "operationId": "op_analysis_Q",
+     "slot": "extremum.3"
+    }
+   },
+   "linear": {
+    "id": "linear",
+    "type": "function",
+    "displayName": "linear",
+    "producer": {
+     "operationId": "op_linear",
+     "slot": "function"
+    }
+   },
+   "Linear1": {
+    "id": "Linear1",
+    "type": "point",
+    "displayName": "Linear1",
+    "producer": {
+     "operationId": "op_analysis_Linear",
+     "slot": "extremum.1"
+    }
+   },
+   "Linear2": {
+    "id": "Linear2",
+    "type": "point",
+    "displayName": "Linear2",
+    "producer": {
+     "operationId": "op_analysis_Linear",
+     "slot": "extremum.2"
+    }
+   },
+   "Linear3": {
+    "id": "Linear3",
+    "type": "point",
+    "displayName": "Linear3",
+    "producer": {
+     "operationId": "op_analysis_Linear",
+     "slot": "extremum.3"
+    }
+   },
+   "constant": {
+    "id": "constant",
+    "type": "function",
+    "displayName": "constant",
+    "producer": {
+     "operationId": "op_constant",
+     "slot": "function"
+    }
+   },
+   "Const1": {
+    "id": "Const1",
+    "type": "point",
+    "displayName": "Const1",
+    "producer": {
+     "operationId": "op_analysis_Const",
+     "slot": "extremum.1"
+    }
+   },
+   "Const2": {
+    "id": "Const2",
+    "type": "point",
+    "displayName": "Const2",
+    "producer": {
+     "operationId": "op_analysis_Const",
+     "slot": "extremum.2"
+    }
+   },
+   "Const3": {
+    "id": "Const3",
+    "type": "point",
+    "displayName": "Const3",
+    "producer": {
+     "operationId": "op_analysis_Const",
+     "slot": "extremum.3"
+    }
+   }
+  },
+  "inputs": {},
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "analytic",
+   "scale": 20.0,
+   "expect": {
+    "Const1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Const2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Const3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "E1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1,
+      "y": 2
+     },
+     "detail": {
+      "found": 2,
+      "kind": "max"
+     }
+    },
+    "E2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": -2
+     },
+     "detail": {
+      "found": 2,
+      "kind": "min"
+     }
+    },
+    "E3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "I1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "I2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "I3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Linear1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Linear2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Linear3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Q1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     },
+     "detail": {
+      "found": 1,
+      "kind": "min"
+     }
+    },
+    "Q2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "Q3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "constant": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "num": 3
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "cubic": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 3
+          }
+         ]
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 3
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "inflection": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 3
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "linear": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "var": "x"
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "quartic": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 4
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_analysis_E:on_graph": "passed",
+    "op_analysis_Q:on_graph": "passed"
+   },
+   "samples": {
+    "constant": [
+     [
+      -10.0,
+      3.0
+     ],
+     [
+      -9.375,
+      3.0
+     ],
+     [
+      -8.75,
+      3.0
+     ],
+     [
+      -8.125,
+      3.0
+     ],
+     [
+      -7.5,
+      3.0
+     ],
+     [
+      -6.875,
+      3.0
+     ],
+     [
+      -6.25,
+      3.0
+     ],
+     [
+      -5.625,
+      3.0
+     ],
+     [
+      -5.0,
+      3.0
+     ],
+     [
+      -4.375,
+      3.0
+     ],
+     [
+      -3.75,
+      3.0
+     ],
+     [
+      -3.125,
+      3.0
+     ],
+     [
+      -2.5,
+      3.0
+     ],
+     [
+      -1.875,
+      3.0
+     ],
+     [
+      -1.25,
+      3.0
+     ],
+     [
+      -0.625,
+      3.0
+     ],
+     [
+      0.0,
+      3.0
+     ],
+     [
+      0.625,
+      3.0
+     ],
+     [
+      1.25,
+      3.0
+     ],
+     [
+      1.875,
+      3.0
+     ],
+     [
+      2.5,
+      3.0
+     ],
+     [
+      3.125,
+      3.0
+     ],
+     [
+      3.75,
+      3.0
+     ],
+     [
+      4.375,
+      3.0
+     ],
+     [
+      5.0,
+      3.0
+     ],
+     [
+      5.625,
+      3.0
+     ],
+     [
+      6.25,
+      3.0
+     ],
+     [
+      6.875,
+      3.0
+     ],
+     [
+      7.5,
+      3.0
+     ],
+     [
+      8.125,
+      3.0
+     ],
+     [
+      8.75,
+      3.0
+     ],
+     [
+      9.375,
+      3.0
+     ],
+     [
+      10.0,
+      3.0
+     ]
+    ],
+    "cubic": [
+     [
+      -10.0,
+      -970.0
+     ],
+     [
+      -9.375,
+      -795.849609375
+     ],
+     [
+      -8.75,
+      -643.671875
+     ],
+     [
+      -8.125,
+      -512.001953125
+     ],
+     [
+      -7.5,
+      -399.375
+     ],
+     [
+      -6.875,
+      -304.326171875
+     ],
+     [
+      -6.25,
+      -225.390625
+     ],
+     [
+      -5.625,
+      -161.103515625
+     ],
+     [
+      -5.0,
+      -110.0
+     ],
+     [
+      -4.375,
+      -70.615234375
+     ],
+     [
+      -3.75,
+      -41.484375
+     ],
+     [
+      -3.125,
+      -21.142578125
+     ],
+     [
+      -2.5,
+      -8.125
+     ],
+     [
+      -1.875,
+      -0.966796875
+     ],
+     [
+      -1.25,
+      1.796875
+     ],
+     [
+      -0.625,
+      1.630859375
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      -1.630859375
+     ],
+     [
+      1.25,
+      -1.796875
+     ],
+     [
+      1.875,
+      0.966796875
+     ],
+     [
+      2.5,
+      8.125
+     ],
+     [
+      3.125,
+      21.142578125
+     ],
+     [
+      3.75,
+      41.484375
+     ],
+     [
+      4.375,
+      70.615234375
+     ],
+     [
+      5.0,
+      110.0
+     ],
+     [
+      5.625,
+      161.103515625
+     ],
+     [
+      6.25,
+      225.390625
+     ],
+     [
+      6.875,
+      304.326171875
+     ],
+     [
+      7.5,
+      399.375
+     ],
+     [
+      8.125,
+      512.001953125
+     ],
+     [
+      8.75,
+      643.671875
+     ],
+     [
+      9.375,
+      795.849609375
+     ],
+     [
+      10.0,
+      970.0
+     ]
+    ],
+    "inflection": [
+     [
+      -10.0,
+      -1000.0
+     ],
+     [
+      -9.375,
+      -823.974609375
+     ],
+     [
+      -8.75,
+      -669.921875
+     ],
+     [
+      -8.125,
+      -536.376953125
+     ],
+     [
+      -7.5,
+      -421.875
+     ],
+     [
+      -6.875,
+      -324.951171875
+     ],
+     [
+      -6.25,
+      -244.140625
+     ],
+     [
+      -5.625,
+      -177.978515625
+     ],
+     [
+      -5.0,
+      -125.0
+     ],
+     [
+      -4.375,
+      -83.740234375
+     ],
+     [
+      -3.75,
+      -52.734375
+     ],
+     [
+      -3.125,
+      -30.517578125
+     ],
+     [
+      -2.5,
+      -15.625
+     ],
+     [
+      -1.875,
+      -6.591796875
+     ],
+     [
+      -1.25,
+      -1.953125
+     ],
+     [
+      -0.625,
+      -0.244140625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.244140625
+     ],
+     [
+      1.25,
+      1.953125
+     ],
+     [
+      1.875,
+      6.591796875
+     ],
+     [
+      2.5,
+      15.625
+     ],
+     [
+      3.125,
+      30.517578125
+     ],
+     [
+      3.75,
+      52.734375
+     ],
+     [
+      4.375,
+      83.740234375
+     ],
+     [
+      5.0,
+      125.0
+     ],
+     [
+      5.625,
+      177.978515625
+     ],
+     [
+      6.25,
+      244.140625
+     ],
+     [
+      6.875,
+      324.951171875
+     ],
+     [
+      7.5,
+      421.875
+     ],
+     [
+      8.125,
+      536.376953125
+     ],
+     [
+      8.75,
+      669.921875
+     ],
+     [
+      9.375,
+      823.974609375
+     ],
+     [
+      10.0,
+      1000.0
+     ]
+    ],
+    "linear": [
+     [
+      -10.0,
+      -10.0
+     ],
+     [
+      -9.375,
+      -9.375
+     ],
+     [
+      -8.75,
+      -8.75
+     ],
+     [
+      -8.125,
+      -8.125
+     ],
+     [
+      -7.5,
+      -7.5
+     ],
+     [
+      -6.875,
+      -6.875
+     ],
+     [
+      -6.25,
+      -6.25
+     ],
+     [
+      -5.625,
+      -5.625
+     ],
+     [
+      -5.0,
+      -5.0
+     ],
+     [
+      -4.375,
+      -4.375
+     ],
+     [
+      -3.75,
+      -3.75
+     ],
+     [
+      -3.125,
+      -3.125
+     ],
+     [
+      -2.5,
+      -2.5
+     ],
+     [
+      -1.875,
+      -1.875
+     ],
+     [
+      -1.25,
+      -1.25
+     ],
+     [
+      -0.625,
+      -0.625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.625
+     ],
+     [
+      1.25,
+      1.25
+     ],
+     [
+      1.875,
+      1.875
+     ],
+     [
+      2.5,
+      2.5
+     ],
+     [
+      3.125,
+      3.125
+     ],
+     [
+      3.75,
+      3.75
+     ],
+     [
+      4.375,
+      4.375
+     ],
+     [
+      5.0,
+      5.0
+     ],
+     [
+      5.625,
+      5.625
+     ],
+     [
+      6.25,
+      6.25
+     ],
+     [
+      6.875,
+      6.875
+     ],
+     [
+      7.5,
+      7.5
+     ],
+     [
+      8.125,
+      8.125
+     ],
+     [
+      8.75,
+      8.75
+     ],
+     [
+      9.375,
+      9.375
+     ],
+     [
+      10.0,
+      10.0
+     ]
+    ],
+    "quartic": [
+     [
+      -10.0,
+      10000.0
+     ],
+     [
+      -9.375,
+      7724.761962891
+     ],
+     [
+      -8.75,
+      5861.81640625
+     ],
+     [
+      -8.125,
+      4358.062744141
+     ],
+     [
+      -7.5,
+      3164.0625
+     ],
+     [
+      -6.875,
+      2234.039306641
+     ],
+     [
+      -6.25,
+      1525.87890625
+     ],
+     [
+      -5.625,
+      1001.129150391
+     ],
+     [
+      -5.0,
+      625.0
+     ],
+     [
+      -4.375,
+      366.363525391
+     ],
+     [
+      -3.75,
+      197.75390625
+     ],
+     [
+      -3.125,
+      95.367431641
+     ],
+     [
+      -2.5,
+      39.0625
+     ],
+     [
+      -1.875,
+      12.359619141
+     ],
+     [
+      -1.25,
+      2.44140625
+     ],
+     [
+      -0.625,
+      0.152587891
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.152587891
+     ],
+     [
+      1.25,
+      2.44140625
+     ],
+     [
+      1.875,
+      12.359619141
+     ],
+     [
+      2.5,
+      39.0625
+     ],
+     [
+      3.125,
+      95.367431641
+     ],
+     [
+      3.75,
+      197.75390625
+     ],
+     [
+      4.375,
+      366.363525391
+     ],
+     [
+      5.0,
+      625.0
+     ],
+     [
+      5.625,
+      1001.129150391
+     ],
+     [
+      6.25,
+      1525.87890625
+     ],
+     [
+      6.875,
+      2234.039306641
+     ],
+     [
+      7.5,
+      3164.0625
+     ],
+     [
+      8.125,
+      4358.062744141
+     ],
+     [
+      8.75,
+      5861.81640625
+     ],
+     [
+      9.375,
+      7724.761962891
+     ],
+     [
+      10.0,
+      10000.0
+     ]
+    ]
+   }
+  }
+ ]
+}

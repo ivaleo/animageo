@@ -20,8 +20,9 @@ def _floats(value):
     if isinstance(value, float):
         yield value
     elif isinstance(value, dict):
-        for item in value.values():
-            yield from _floats(item)
+        for key, item in value.items():
+            if key != 'expr':  # AST coefficients retain their full precision
+                yield from _floats(item)
     elif isinstance(value, list):
         for item in value:
             yield from _floats(item)

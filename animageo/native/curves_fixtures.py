@@ -917,6 +917,8 @@ def build_fixtures() -> dict:
     for group in SCENES:
         for d, cases in group():
             out[d.doc['documentId'] + '.json'] = _fixture(d.doc, cases)
+    from .function_analysis_fixtures import build_fixtures as function_analysis_fixtures
+    out.update(function_analysis_fixtures())
     return out
 
 

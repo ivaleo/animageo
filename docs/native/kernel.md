@@ -2295,3 +2295,32 @@ point references. Other path imports and expression imports are unchanged.
 Fixtures: `path_locus`, `path_locus_gaps`, `path_locus_empty` in `parity/v1/curves`,
 `drag_locus`, `drag_locus_clamped`, `drag_via_locus` in `parity/v1/drag`,
 and `ggb_locus_point` in `parity/v1/ggb`.
+
+
+## Polynomial analysis and scalar values (registry 1.11)
+
+The staged `function_analysis` module currently implements
+[`function.roots_polynomial`](ops/function.roots_polynomial.md),
+[`function.extrema_polynomial`](ops/function.extrema_polynomial.md) and
+[`function.value`](ops/function.value.md). Polynomial searches are global,
+use live coefficients and filter explicit domain; they do not search the
+view window. Roots are distinct and ascending. Fixed repeated slots have
+`detail.found` before count limits capacity; extrema also have `detail.kind`.
+An extra slot in a nonempty set is `branch_absent`, while an empty set uses
+`no_root` or `no_extremum`. Recompute preserves elements and producer slots.
+
+The complete `has("function_analysis")` flag remains false until all seven
+planned operations and their checks are implemented. Existing
+`has("functions")` keeps its previous meaning. Loading metadata
+`moduleGroup` is outside signature hashes; the exact mapping also covers
+`regions` (`region.by_boundary`, `function.area_between`), `expressions`
+(`point.expression`, `vector.expression`, `line.equation`) and `locus`
+(`point.on_locus`). The registry checker rejects missing, wrong or extra
+metadata. Earlier operation semantics and hashes are unchanged.
+
+Shared `function_*` curves fixtures include independent analytical answers,
+cardinality above count, missing slots, empty sets, rank changes, resource
+limits, domain and upstream recovery. Their original AST coefficients keep
+full precision; numerical coordinates and samples retain the usual parity
+rounding. Close roots can become indistinguishable when expanding the AST
+into double coefficients, as detailed on the roots operation page.

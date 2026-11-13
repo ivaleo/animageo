@@ -1,0 +1,2684 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "function_poly_close_roots",
+ "registry": "1.11",
+ "generatedBy": "animageo 1.15.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "function_poly_close_roots",
+  "operationRegistryVersion": "1.11",
+  "operations": {
+   "op_unit_square": {
+    "id": "op_unit_square",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "unit_square"
+     }
+    ]
+   },
+   "op_analysis_unit_square": {
+    "id": "op_analysis_unit_square",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "unit_square"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "unit_square1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "unit_square2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "unit_square3"
+     }
+    ]
+   },
+   "op_unit_mixed": {
+    "id": "op_unit_mixed",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "+",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "unit_mixed"
+     }
+    ]
+   },
+   "op_analysis_unit_mixed": {
+    "id": "op_analysis_unit_mixed",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "unit_mixed"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "unit_mixed1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "unit_mixed2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "unit_mixed3"
+     }
+    ]
+   },
+   "op_unit_close": {
+    "id": "op_unit_close",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 1e-06
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "unit_close"
+     }
+    ]
+   },
+   "op_analysis_unit_close": {
+    "id": "op_analysis_unit_close",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "unit_close"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "unit_close1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "unit_close2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "unit_close3"
+     }
+    ]
+   },
+   "op_unit_unresolved": {
+    "id": "op_unit_unresolved",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 1e-09
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "unit_unresolved"
+     }
+    ]
+   },
+   "op_analysis_unit_unresolved": {
+    "id": "op_analysis_unit_unresolved",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "unit_unresolved"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "unit_unresolved1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "unit_unresolved2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "unit_unresolved3"
+     }
+    ]
+   },
+   "op_scaled_square": {
+    "id": "op_scaled_square",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1000000.0
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "scaled_square"
+     }
+    ]
+   },
+   "op_analysis_scaled_square": {
+    "id": "op_analysis_scaled_square",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "scaled_square"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "scaled_square1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "scaled_square2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "scaled_square3"
+     }
+    ]
+   },
+   "op_scaled_mixed": {
+    "id": "op_scaled_mixed",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1000000.0
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "+",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "scaled_mixed"
+     }
+    ]
+   },
+   "op_analysis_scaled_mixed": {
+    "id": "op_analysis_scaled_mixed",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "scaled_mixed"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "scaled_mixed1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "scaled_mixed2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "scaled_mixed3"
+     }
+    ]
+   },
+   "op_scaled_close": {
+    "id": "op_scaled_close",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1000000.0
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 1e-06
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "scaled_close"
+     }
+    ]
+   },
+   "op_analysis_scaled_close": {
+    "id": "op_analysis_scaled_close",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "scaled_close"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "scaled_close1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "scaled_close2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "scaled_close3"
+     }
+    ]
+   },
+   "op_scaled_unresolved": {
+    "id": "op_scaled_unresolved",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1000000.0
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 1e-09
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "scaled_unresolved"
+     }
+    ]
+   },
+   "op_analysis_scaled_unresolved": {
+    "id": "op_analysis_scaled_unresolved",
+    "op": "function.roots_polynomial",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "scaled_unresolved"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "scaled_unresolved1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "scaled_unresolved2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "scaled_unresolved3"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "unit_square": {
+    "id": "unit_square",
+    "type": "function",
+    "displayName": "unit_square",
+    "producer": {
+     "operationId": "op_unit_square",
+     "slot": "function"
+    }
+   },
+   "unit_square1": {
+    "id": "unit_square1",
+    "type": "point",
+    "displayName": "unit_square1",
+    "producer": {
+     "operationId": "op_analysis_unit_square",
+     "slot": "root.1"
+    }
+   },
+   "unit_square2": {
+    "id": "unit_square2",
+    "type": "point",
+    "displayName": "unit_square2",
+    "producer": {
+     "operationId": "op_analysis_unit_square",
+     "slot": "root.2"
+    }
+   },
+   "unit_square3": {
+    "id": "unit_square3",
+    "type": "point",
+    "displayName": "unit_square3",
+    "producer": {
+     "operationId": "op_analysis_unit_square",
+     "slot": "root.3"
+    }
+   },
+   "unit_mixed": {
+    "id": "unit_mixed",
+    "type": "function",
+    "displayName": "unit_mixed",
+    "producer": {
+     "operationId": "op_unit_mixed",
+     "slot": "function"
+    }
+   },
+   "unit_mixed1": {
+    "id": "unit_mixed1",
+    "type": "point",
+    "displayName": "unit_mixed1",
+    "producer": {
+     "operationId": "op_analysis_unit_mixed",
+     "slot": "root.1"
+    }
+   },
+   "unit_mixed2": {
+    "id": "unit_mixed2",
+    "type": "point",
+    "displayName": "unit_mixed2",
+    "producer": {
+     "operationId": "op_analysis_unit_mixed",
+     "slot": "root.2"
+    }
+   },
+   "unit_mixed3": {
+    "id": "unit_mixed3",
+    "type": "point",
+    "displayName": "unit_mixed3",
+    "producer": {
+     "operationId": "op_analysis_unit_mixed",
+     "slot": "root.3"
+    }
+   },
+   "unit_close": {
+    "id": "unit_close",
+    "type": "function",
+    "displayName": "unit_close",
+    "producer": {
+     "operationId": "op_unit_close",
+     "slot": "function"
+    }
+   },
+   "unit_close1": {
+    "id": "unit_close1",
+    "type": "point",
+    "displayName": "unit_close1",
+    "producer": {
+     "operationId": "op_analysis_unit_close",
+     "slot": "root.1"
+    }
+   },
+   "unit_close2": {
+    "id": "unit_close2",
+    "type": "point",
+    "displayName": "unit_close2",
+    "producer": {
+     "operationId": "op_analysis_unit_close",
+     "slot": "root.2"
+    }
+   },
+   "unit_close3": {
+    "id": "unit_close3",
+    "type": "point",
+    "displayName": "unit_close3",
+    "producer": {
+     "operationId": "op_analysis_unit_close",
+     "slot": "root.3"
+    }
+   },
+   "unit_unresolved": {
+    "id": "unit_unresolved",
+    "type": "function",
+    "displayName": "unit_unresolved",
+    "producer": {
+     "operationId": "op_unit_unresolved",
+     "slot": "function"
+    }
+   },
+   "unit_unresolved1": {
+    "id": "unit_unresolved1",
+    "type": "point",
+    "displayName": "unit_unresolved1",
+    "producer": {
+     "operationId": "op_analysis_unit_unresolved",
+     "slot": "root.1"
+    }
+   },
+   "unit_unresolved2": {
+    "id": "unit_unresolved2",
+    "type": "point",
+    "displayName": "unit_unresolved2",
+    "producer": {
+     "operationId": "op_analysis_unit_unresolved",
+     "slot": "root.2"
+    }
+   },
+   "unit_unresolved3": {
+    "id": "unit_unresolved3",
+    "type": "point",
+    "displayName": "unit_unresolved3",
+    "producer": {
+     "operationId": "op_analysis_unit_unresolved",
+     "slot": "root.3"
+    }
+   },
+   "scaled_square": {
+    "id": "scaled_square",
+    "type": "function",
+    "displayName": "scaled_square",
+    "producer": {
+     "operationId": "op_scaled_square",
+     "slot": "function"
+    }
+   },
+   "scaled_square1": {
+    "id": "scaled_square1",
+    "type": "point",
+    "displayName": "scaled_square1",
+    "producer": {
+     "operationId": "op_analysis_scaled_square",
+     "slot": "root.1"
+    }
+   },
+   "scaled_square2": {
+    "id": "scaled_square2",
+    "type": "point",
+    "displayName": "scaled_square2",
+    "producer": {
+     "operationId": "op_analysis_scaled_square",
+     "slot": "root.2"
+    }
+   },
+   "scaled_square3": {
+    "id": "scaled_square3",
+    "type": "point",
+    "displayName": "scaled_square3",
+    "producer": {
+     "operationId": "op_analysis_scaled_square",
+     "slot": "root.3"
+    }
+   },
+   "scaled_mixed": {
+    "id": "scaled_mixed",
+    "type": "function",
+    "displayName": "scaled_mixed",
+    "producer": {
+     "operationId": "op_scaled_mixed",
+     "slot": "function"
+    }
+   },
+   "scaled_mixed1": {
+    "id": "scaled_mixed1",
+    "type": "point",
+    "displayName": "scaled_mixed1",
+    "producer": {
+     "operationId": "op_analysis_scaled_mixed",
+     "slot": "root.1"
+    }
+   },
+   "scaled_mixed2": {
+    "id": "scaled_mixed2",
+    "type": "point",
+    "displayName": "scaled_mixed2",
+    "producer": {
+     "operationId": "op_analysis_scaled_mixed",
+     "slot": "root.2"
+    }
+   },
+   "scaled_mixed3": {
+    "id": "scaled_mixed3",
+    "type": "point",
+    "displayName": "scaled_mixed3",
+    "producer": {
+     "operationId": "op_analysis_scaled_mixed",
+     "slot": "root.3"
+    }
+   },
+   "scaled_close": {
+    "id": "scaled_close",
+    "type": "function",
+    "displayName": "scaled_close",
+    "producer": {
+     "operationId": "op_scaled_close",
+     "slot": "function"
+    }
+   },
+   "scaled_close1": {
+    "id": "scaled_close1",
+    "type": "point",
+    "displayName": "scaled_close1",
+    "producer": {
+     "operationId": "op_analysis_scaled_close",
+     "slot": "root.1"
+    }
+   },
+   "scaled_close2": {
+    "id": "scaled_close2",
+    "type": "point",
+    "displayName": "scaled_close2",
+    "producer": {
+     "operationId": "op_analysis_scaled_close",
+     "slot": "root.2"
+    }
+   },
+   "scaled_close3": {
+    "id": "scaled_close3",
+    "type": "point",
+    "displayName": "scaled_close3",
+    "producer": {
+     "operationId": "op_analysis_scaled_close",
+     "slot": "root.3"
+    }
+   },
+   "scaled_unresolved": {
+    "id": "scaled_unresolved",
+    "type": "function",
+    "displayName": "scaled_unresolved",
+    "producer": {
+     "operationId": "op_scaled_unresolved",
+     "slot": "function"
+    }
+   },
+   "scaled_unresolved1": {
+    "id": "scaled_unresolved1",
+    "type": "point",
+    "displayName": "scaled_unresolved1",
+    "producer": {
+     "operationId": "op_analysis_scaled_unresolved",
+     "slot": "root.1"
+    }
+   },
+   "scaled_unresolved2": {
+    "id": "scaled_unresolved2",
+    "type": "point",
+    "displayName": "scaled_unresolved2",
+    "producer": {
+     "operationId": "op_analysis_scaled_unresolved",
+     "slot": "root.2"
+    }
+   },
+   "scaled_unresolved3": {
+    "id": "scaled_unresolved3",
+    "type": "point",
+    "displayName": "scaled_unresolved3",
+    "producer": {
+     "operationId": "op_analysis_scaled_unresolved",
+     "slot": "root.3"
+    }
+   }
+  },
+  "inputs": {},
+  "viewDefaults": {
+   "bounds": [
+    0,
+    0,
+    1,
+    1
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "analytic",
+   "scale": 1.0,
+   "expect": {
+    "scaled_close": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1000000.0
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 1e-06
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "scaled_close1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "scaled_close2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.000001,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "scaled_close3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "scaled_mixed": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1000000.0
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "+",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "scaled_mixed1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "scaled_mixed2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "scaled_mixed3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "scaled_square": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1000000.0
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "scaled_square1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "scaled_square2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "scaled_square3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "scaled_unresolved": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1000000.0
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 1e-09
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "scaled_unresolved1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.000000001,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "scaled_unresolved2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "scaled_unresolved3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "unit_close": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 1e-06
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "unit_close1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "unit_close2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.000001,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "unit_close3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "unit_mixed": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "+",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "unit_mixed1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "unit_mixed2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "unit_mixed3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "unit_square": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "unit_square1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "unit_square2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "unit_square3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "unit_unresolved": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 1
+              }
+             ]
+            },
+            {
+             "num": 1e-09
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "unit_unresolved1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.000000001,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "unit_unresolved2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "unit_unresolved3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_analysis_scaled_close:on_graph": "passed",
+    "op_analysis_scaled_mixed:on_graph": "passed",
+    "op_analysis_scaled_square:on_graph": "passed",
+    "op_analysis_scaled_unresolved:on_graph": "passed",
+    "op_analysis_unit_close:on_graph": "passed",
+    "op_analysis_unit_mixed:on_graph": "passed",
+    "op_analysis_unit_square:on_graph": "passed",
+    "op_analysis_unit_unresolved:on_graph": "passed"
+   },
+   "samples": {
+    "scaled_close": [
+     [
+      0.0,
+      1000001.0
+     ],
+     [
+      0.03125,
+      938477.53125
+     ],
+     [
+      0.0625,
+      878907.1875
+     ],
+     [
+      0.09375,
+      821289.96875
+     ],
+     [
+      0.125,
+      765625.875
+     ],
+     [
+      0.15625,
+      711914.90625
+     ],
+     [
+      0.1875,
+      660157.0625
+     ],
+     [
+      0.21875,
+      610352.34375
+     ],
+     [
+      0.25,
+      562500.75
+     ],
+     [
+      0.28125,
+      516602.28125
+     ],
+     [
+      0.3125,
+      472656.9375
+     ],
+     [
+      0.34375,
+      430664.71875
+     ],
+     [
+      0.375,
+      390625.625
+     ],
+     [
+      0.40625,
+      352539.65625
+     ],
+     [
+      0.4375,
+      316406.8125
+     ],
+     [
+      0.46875,
+      282227.09375
+     ],
+     [
+      0.5,
+      250000.5
+     ],
+     [
+      0.53125,
+      219727.03125
+     ],
+     [
+      0.5625,
+      191406.6875
+     ],
+     [
+      0.59375,
+      165039.46875
+     ],
+     [
+      0.625,
+      140625.375
+     ],
+     [
+      0.65625,
+      118164.40625
+     ],
+     [
+      0.6875,
+      97656.5625
+     ],
+     [
+      0.71875,
+      79101.84375
+     ],
+     [
+      0.75,
+      62500.25
+     ],
+     [
+      0.78125,
+      47851.78125
+     ],
+     [
+      0.8125,
+      35156.4375
+     ],
+     [
+      0.84375,
+      24414.21875
+     ],
+     [
+      0.875,
+      15625.125
+     ],
+     [
+      0.90625,
+      8789.15625
+     ],
+     [
+      0.9375,
+      3906.3125
+     ],
+     [
+      0.96875,
+      976.59375
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ],
+    "scaled_mixed": [
+     [
+      0.0,
+      2000000.0
+     ],
+     [
+      0.03125,
+      1906280.517578125
+     ],
+     [
+      0.0625,
+      1812744.140625
+     ],
+     [
+      0.09375,
+      1719573.974609375
+     ],
+     [
+      0.125,
+      1626953.125
+     ],
+     [
+      0.15625,
+      1535064.697265625
+     ],
+     [
+      0.1875,
+      1444091.796875
+     ],
+     [
+      0.21875,
+      1354217.529296875
+     ],
+     [
+      0.25,
+      1265625.0
+     ],
+     [
+      0.28125,
+      1178497.314453125
+     ],
+     [
+      0.3125,
+      1093017.578125
+     ],
+     [
+      0.34375,
+      1009368.896484375
+     ],
+     [
+      0.375,
+      927734.375
+     ],
+     [
+      0.40625,
+      848297.119140625
+     ],
+     [
+      0.4375,
+      771240.234375
+     ],
+     [
+      0.46875,
+      696746.826171875
+     ],
+     [
+      0.5,
+      625000.0
+     ],
+     [
+      0.53125,
+      556182.861328125
+     ],
+     [
+      0.5625,
+      490478.515625
+     ],
+     [
+      0.59375,
+      428070.068359375
+     ],
+     [
+      0.625,
+      369140.625
+     ],
+     [
+      0.65625,
+      313873.291015625
+     ],
+     [
+      0.6875,
+      262451.171875
+     ],
+     [
+      0.71875,
+      215057.373046875
+     ],
+     [
+      0.75,
+      171875.0
+     ],
+     [
+      0.78125,
+      133087.158203125
+     ],
+     [
+      0.8125,
+      98876.953125
+     ],
+     [
+      0.84375,
+      69427.490234375
+     ],
+     [
+      0.875,
+      44921.875
+     ],
+     [
+      0.90625,
+      25543.212890625
+     ],
+     [
+      0.9375,
+      11474.609375
+     ],
+     [
+      0.96875,
+      2899.169921875
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ],
+    "scaled_square": [
+     [
+      0.0,
+      1000000.0
+     ],
+     [
+      0.03125,
+      938476.5625
+     ],
+     [
+      0.0625,
+      878906.25
+     ],
+     [
+      0.09375,
+      821289.0625
+     ],
+     [
+      0.125,
+      765625.0
+     ],
+     [
+      0.15625,
+      711914.0625
+     ],
+     [
+      0.1875,
+      660156.25
+     ],
+     [
+      0.21875,
+      610351.5625
+     ],
+     [
+      0.25,
+      562500.0
+     ],
+     [
+      0.28125,
+      516601.5625
+     ],
+     [
+      0.3125,
+      472656.25
+     ],
+     [
+      0.34375,
+      430664.0625
+     ],
+     [
+      0.375,
+      390625.0
+     ],
+     [
+      0.40625,
+      352539.0625
+     ],
+     [
+      0.4375,
+      316406.25
+     ],
+     [
+      0.46875,
+      282226.5625
+     ],
+     [
+      0.5,
+      250000.0
+     ],
+     [
+      0.53125,
+      219726.5625
+     ],
+     [
+      0.5625,
+      191406.25
+     ],
+     [
+      0.59375,
+      165039.0625
+     ],
+     [
+      0.625,
+      140625.0
+     ],
+     [
+      0.65625,
+      118164.0625
+     ],
+     [
+      0.6875,
+      97656.25
+     ],
+     [
+      0.71875,
+      79101.5625
+     ],
+     [
+      0.75,
+      62500.0
+     ],
+     [
+      0.78125,
+      47851.5625
+     ],
+     [
+      0.8125,
+      35156.25
+     ],
+     [
+      0.84375,
+      24414.0625
+     ],
+     [
+      0.875,
+      15625.0
+     ],
+     [
+      0.90625,
+      8789.0625
+     ],
+     [
+      0.9375,
+      3906.25
+     ],
+     [
+      0.96875,
+      976.5625
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ],
+    "scaled_unresolved": [
+     [
+      0.0,
+      1000000.001
+     ],
+     [
+      0.03125,
+      938476.56346875
+     ],
+     [
+      0.0625,
+      878906.2509375
+     ],
+     [
+      0.09375,
+      821289.06340625
+     ],
+     [
+      0.125,
+      765625.000875
+     ],
+     [
+      0.15625,
+      711914.06334375
+     ],
+     [
+      0.1875,
+      660156.2508125
+     ],
+     [
+      0.21875,
+      610351.56328125
+     ],
+     [
+      0.25,
+      562500.00075
+     ],
+     [
+      0.28125,
+      516601.56321875
+     ],
+     [
+      0.3125,
+      472656.2506875
+     ],
+     [
+      0.34375,
+      430664.06315625
+     ],
+     [
+      0.375,
+      390625.000625
+     ],
+     [
+      0.40625,
+      352539.06309375
+     ],
+     [
+      0.4375,
+      316406.2505625
+     ],
+     [
+      0.46875,
+      282226.56303125
+     ],
+     [
+      0.5,
+      250000.0005
+     ],
+     [
+      0.53125,
+      219726.56296875
+     ],
+     [
+      0.5625,
+      191406.2504375
+     ],
+     [
+      0.59375,
+      165039.06290625
+     ],
+     [
+      0.625,
+      140625.000375
+     ],
+     [
+      0.65625,
+      118164.06284375
+     ],
+     [
+      0.6875,
+      97656.2503125
+     ],
+     [
+      0.71875,
+      79101.56278125
+     ],
+     [
+      0.75,
+      62500.00025
+     ],
+     [
+      0.78125,
+      47851.56271875
+     ],
+     [
+      0.8125,
+      35156.2501875
+     ],
+     [
+      0.84375,
+      24414.06265625
+     ],
+     [
+      0.875,
+      15625.000125
+     ],
+     [
+      0.90625,
+      8789.06259375
+     ],
+     [
+      0.9375,
+      3906.2500625
+     ],
+     [
+      0.96875,
+      976.56253125
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ],
+    "unit_close": [
+     [
+      0.0,
+      1.000001
+     ],
+     [
+      0.03125,
+      0.938477531
+     ],
+     [
+      0.0625,
+      0.878907188
+     ],
+     [
+      0.09375,
+      0.821289969
+     ],
+     [
+      0.125,
+      0.765625875
+     ],
+     [
+      0.15625,
+      0.711914906
+     ],
+     [
+      0.1875,
+      0.660157063
+     ],
+     [
+      0.21875,
+      0.610352344
+     ],
+     [
+      0.25,
+      0.56250075
+     ],
+     [
+      0.28125,
+      0.516602281
+     ],
+     [
+      0.3125,
+      0.472656938
+     ],
+     [
+      0.34375,
+      0.430664719
+     ],
+     [
+      0.375,
+      0.390625625
+     ],
+     [
+      0.40625,
+      0.352539656
+     ],
+     [
+      0.4375,
+      0.316406813
+     ],
+     [
+      0.46875,
+      0.282227094
+     ],
+     [
+      0.5,
+      0.2500005
+     ],
+     [
+      0.53125,
+      0.219727031
+     ],
+     [
+      0.5625,
+      0.191406687
+     ],
+     [
+      0.59375,
+      0.165039469
+     ],
+     [
+      0.625,
+      0.140625375
+     ],
+     [
+      0.65625,
+      0.118164406
+     ],
+     [
+      0.6875,
+      0.097656562
+     ],
+     [
+      0.71875,
+      0.079101844
+     ],
+     [
+      0.75,
+      0.06250025
+     ],
+     [
+      0.78125,
+      0.047851781
+     ],
+     [
+      0.8125,
+      0.035156437
+     ],
+     [
+      0.84375,
+      0.024414219
+     ],
+     [
+      0.875,
+      0.015625125
+     ],
+     [
+      0.90625,
+      0.008789156
+     ],
+     [
+      0.9375,
+      0.003906313
+     ],
+     [
+      0.96875,
+      0.000976594
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ],
+    "unit_mixed": [
+     [
+      0.0,
+      2.0
+     ],
+     [
+      0.03125,
+      1.906280518
+     ],
+     [
+      0.0625,
+      1.812744141
+     ],
+     [
+      0.09375,
+      1.719573975
+     ],
+     [
+      0.125,
+      1.626953125
+     ],
+     [
+      0.15625,
+      1.535064697
+     ],
+     [
+      0.1875,
+      1.444091797
+     ],
+     [
+      0.21875,
+      1.354217529
+     ],
+     [
+      0.25,
+      1.265625
+     ],
+     [
+      0.28125,
+      1.178497314
+     ],
+     [
+      0.3125,
+      1.093017578
+     ],
+     [
+      0.34375,
+      1.009368896
+     ],
+     [
+      0.375,
+      0.927734375
+     ],
+     [
+      0.40625,
+      0.848297119
+     ],
+     [
+      0.4375,
+      0.771240234
+     ],
+     [
+      0.46875,
+      0.696746826
+     ],
+     [
+      0.5,
+      0.625
+     ],
+     [
+      0.53125,
+      0.556182861
+     ],
+     [
+      0.5625,
+      0.490478516
+     ],
+     [
+      0.59375,
+      0.428070068
+     ],
+     [
+      0.625,
+      0.369140625
+     ],
+     [
+      0.65625,
+      0.313873291
+     ],
+     [
+      0.6875,
+      0.262451172
+     ],
+     [
+      0.71875,
+      0.215057373
+     ],
+     [
+      0.75,
+      0.171875
+     ],
+     [
+      0.78125,
+      0.133087158
+     ],
+     [
+      0.8125,
+      0.098876953
+     ],
+     [
+      0.84375,
+      0.06942749
+     ],
+     [
+      0.875,
+      0.044921875
+     ],
+     [
+      0.90625,
+      0.025543213
+     ],
+     [
+      0.9375,
+      0.011474609
+     ],
+     [
+      0.96875,
+      0.00289917
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ],
+    "unit_square": [
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.03125,
+      0.938476562
+     ],
+     [
+      0.0625,
+      0.87890625
+     ],
+     [
+      0.09375,
+      0.821289062
+     ],
+     [
+      0.125,
+      0.765625
+     ],
+     [
+      0.15625,
+      0.711914062
+     ],
+     [
+      0.1875,
+      0.66015625
+     ],
+     [
+      0.21875,
+      0.610351562
+     ],
+     [
+      0.25,
+      0.5625
+     ],
+     [
+      0.28125,
+      0.516601562
+     ],
+     [
+      0.3125,
+      0.47265625
+     ],
+     [
+      0.34375,
+      0.430664062
+     ],
+     [
+      0.375,
+      0.390625
+     ],
+     [
+      0.40625,
+      0.352539062
+     ],
+     [
+      0.4375,
+      0.31640625
+     ],
+     [
+      0.46875,
+      0.282226562
+     ],
+     [
+      0.5,
+      0.25
+     ],
+     [
+      0.53125,
+      0.219726562
+     ],
+     [
+      0.5625,
+      0.19140625
+     ],
+     [
+      0.59375,
+      0.165039062
+     ],
+     [
+      0.625,
+      0.140625
+     ],
+     [
+      0.65625,
+      0.118164062
+     ],
+     [
+      0.6875,
+      0.09765625
+     ],
+     [
+      0.71875,
+      0.079101562
+     ],
+     [
+      0.75,
+      0.0625
+     ],
+     [
+      0.78125,
+      0.047851562
+     ],
+     [
+      0.8125,
+      0.03515625
+     ],
+     [
+      0.84375,
+      0.024414062
+     ],
+     [
+      0.875,
+      0.015625
+     ],
+     [
+      0.90625,
+      0.008789062
+     ],
+     [
+      0.9375,
+      0.00390625
+     ],
+     [
+      0.96875,
+      0.000976562
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ],
+    "unit_unresolved": [
+     [
+      0.0,
+      1.000000001
+     ],
+     [
+      0.03125,
+      0.938476563
+     ],
+     [
+      0.0625,
+      0.878906251
+     ],
+     [
+      0.09375,
+      0.821289063
+     ],
+     [
+      0.125,
+      0.765625001
+     ],
+     [
+      0.15625,
+      0.711914063
+     ],
+     [
+      0.1875,
+      0.660156251
+     ],
+     [
+      0.21875,
+      0.610351563
+     ],
+     [
+      0.25,
+      0.562500001
+     ],
+     [
+      0.28125,
+      0.516601563
+     ],
+     [
+      0.3125,
+      0.472656251
+     ],
+     [
+      0.34375,
+      0.430664063
+     ],
+     [
+      0.375,
+      0.390625001
+     ],
+     [
+      0.40625,
+      0.352539063
+     ],
+     [
+      0.4375,
+      0.316406251
+     ],
+     [
+      0.46875,
+      0.282226563
+     ],
+     [
+      0.5,
+      0.25
+     ],
+     [
+      0.53125,
+      0.219726563
+     ],
+     [
+      0.5625,
+      0.19140625
+     ],
+     [
+      0.59375,
+      0.165039063
+     ],
+     [
+      0.625,
+      0.140625
+     ],
+     [
+      0.65625,
+      0.118164063
+     ],
+     [
+      0.6875,
+      0.09765625
+     ],
+     [
+      0.71875,
+      0.079101563
+     ],
+     [
+      0.75,
+      0.0625
+     ],
+     [
+      0.78125,
+      0.047851563
+     ],
+     [
+      0.8125,
+      0.03515625
+     ],
+     [
+      0.84375,
+      0.024414063
+     ],
+     [
+      0.875,
+      0.015625
+     ],
+     [
+      0.90625,
+      0.008789063
+     ],
+     [
+      0.9375,
+      0.00390625
+     ],
+     [
+      0.96875,
+      0.000976563
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ]
+   }
+  }
+ ]
+}
