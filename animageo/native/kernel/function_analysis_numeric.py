@@ -519,7 +519,7 @@ class Search:
         except (ExprError, ArithmeticError, ValueError):
             return None
 
-    def _golden(self, objective, a, b):
+    def _golden(self, objective, a, b, tie_breaker=None):
         phi = (math.sqrt(5) - 1) / 2
 
         def lerp(t):
@@ -529,7 +529,10 @@ class Search:
         c, d = lerp(1 - phi), lerp(phi)
         gc, gd = objective(c), objective(d)
         for _ in range(self.profile['goldenSteps']):
-            if gc <= gd:
+            take_left = gc <= gd
+            if gc == gd and tie_breaker is not None:
+                take_left = tie_breaker(c) <= tie_breaker(d)
+            if take_left:
                 b, d, gd = d, c, gc
                 c = lerp(1 - phi)
                 gc = objective(c)
@@ -651,8 +654,14 @@ class Search:
                     v = self.f(t)
                     return math.inf if v is None else sign * v
 
-                x, best = self._golden(objective, xs[i - 1], xs[i + 1])
-                if sign * center <= best:
+                def tie_breaker(t):
+                    # Rounded equal heights still have distinct slopes near a smooth turn.
+                    slope = self.slope(t)
+                    return math.inf if slope is None else abs(slope)
+
+                x, best = self._golden(objective, xs[i - 1], xs[i + 1], tie_breaker)
+                if sign * center < best or (sign * center == best and
+                                           tie_breaker(xs[i]) <= tie_breaker(x)):
                     x, best = xs[i], sign * center
                 if not piece.lo < x < piece.hi or not (sign * left > best < sign * right):
                     continue

@@ -91,6 +91,18 @@ def test_interval_extrema_are_isolated_internal_turns(tree, a, b, xs, ys, kinds)
     points(evaluate(tree, 'extrema_interval', a, b), xs, ys, kinds)
 
 
+@pytest.mark.parametrize('a,b,xs,ys,kinds', [
+    (-4, 4, [-math.pi / 2, math.pi / 2], [-1, 1], ['min', 'max']),
+    (.25, 4, [math.pi / 2], [1], ['max']),
+    (-4, -.25, [-math.pi / 2], [-1], ['min']),
+])
+def test_interval_extrema_retain_rounded_peaks_between_grid_nodes(a, b, xs, ys, kinds):
+    ev = evaluate(fn('sin', X), 'extrema_interval', a, b)
+    points(ev, xs, ys, kinds)
+    for k, x in enumerate(xs, 1):
+        assert ev.elements[f'P{k}']['value']['x'] == pytest.approx(x, rel=0, abs=1e-9)
+
+
 @pytest.mark.parametrize('tree,a,b', [
     (X, -1, 1), (n(2), -1, 1), (power(X, 3), -1, 1), (power(X, 2), 0, 1),
     (o('/', n(1), X), -2, 2), (fn('tan', X), -4, 4),
