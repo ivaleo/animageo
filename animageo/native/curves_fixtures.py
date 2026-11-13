@@ -795,7 +795,49 @@ def _boundary_scenes():
     return out
 
 
-SCENES = (_function_scenes, _conic_scenes, _meet_scenes, _path_scenes, _area_scenes, _boundary_scenes)
+def _line_equation_scenes():
+    out = []
+
+    def equation(d, name, ast, *refs):
+        return d.op('op_' + name, 'line.equation',
+                    {'expr': {'kind': 'expr', 'ast': ast}, 'refs': {'kind': 'list', 'items': [_ref(i) for i in refs]}},
+                    [('line', name, 'line')])
+
+    d = _Doc('line_eq_slope')
+    equation(d, 'g', o('-', Y, o('+', o('*', n(2), X), n(1))))
+    equation(d, 'reverse', o('neg', o('-', Y, o('+', o('*', n(2), X), n(1)))))
+    d.free('A', 4, 0).free('B', 4, 1).line('h', 'A', 'B')
+    d._two('intersect.line_line', 'P', 'g', 'h', 'point', slots=('first', 'second'))
+    out.append((d, _cases(('saved', None), ('moved', {'A': P(-2, 0), 'B': P(-2, 1)}))))
+
+    d = _Doc('line_eq_vertical').number('x0', 4)
+    equation(d, 'g', o('-', X, r(0)), 'x0')
+    equation(d, 'reverse', o('-', r(0), X), 'x0')
+    out.append((d, _cases(('right', None), ('origin', {'x0': N(0)}), ('left', {'x0': N(-3)}))))
+
+    d = _Doc('line_eq_param').number('a', 2).number('b', 1)
+    equation(d, 'g', o('-', Y, o('+', o('*', r(0), X), r(1))), 'a', 'b')
+    d.free('A', 4, 0).free('B', 4, 1).line('h', 'A', 'B')
+    d._two('intersect.line_line', 'P', 'g', 'h', 'point', slots=('first', 'second'))
+    out.append((d, _cases(('positive', None), ('negative', {'a': N(-1), 'b': N(-2)}),
+                          ('horizontal', {'a': N(0)}), ('restored', {'a': N(2), 'b': N(1)}))))
+
+    d = _Doc('line_eq_kinds').number('t', 1)
+    equation(d, 'nonlinear', o('+', sq(X), Y))
+    equation(d, 'domain', o('+', call('sqrt', X), Y))
+    equation(d, 'zero', n(0))
+    equation(d, 'constant', n(1))
+    equation(d, 'changing', o('*', r(0), X), 't')
+    d.op('op_inv', 'number.expression',
+         {'expr': {'kind': 'expr', 'ast': o('/', n(1), r(0))}, 'refs': {'kind': 'list', 'items': [_ref('t')]}},
+         [('number', 'inv', 'number')])
+    equation(d, 'dependent', o('-', Y, r(0)), 'inv')
+    out.append((d, _cases(('defined', None), ('degenerate_and_upstream', {'t': N(0)}),
+                          ('recovered', {'t': N(-2)}))))
+    return out
+
+
+SCENES = (_line_equation_scenes, _function_scenes, _conic_scenes, _meet_scenes, _path_scenes, _area_scenes, _boundary_scenes)
 
 
 # ── fixtures ─────────────────────────────────────────────────────────────

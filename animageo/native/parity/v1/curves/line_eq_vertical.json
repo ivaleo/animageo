@@ -1,0 +1,280 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "line_eq_vertical",
+ "registry": "1.10",
+ "generatedBy": "animageo 1.14.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "line_eq_vertical",
+  "operationRegistryVersion": "1.10",
+  "operations": {
+   "op_x0": {
+    "id": "op_x0",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "x0"
+     }
+    ]
+   },
+   "op_g": {
+    "id": "op_g",
+    "op": "line.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "ref": 0
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "x0"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "g"
+     }
+    ]
+   },
+   "op_reverse": {
+    "id": "op_reverse",
+    "op": "line.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "x0"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "reverse"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "x0": {
+    "id": "x0",
+    "type": "number",
+    "displayName": "x0",
+    "producer": {
+     "operationId": "op_x0",
+     "slot": "number"
+    }
+   },
+   "g": {
+    "id": "g",
+    "type": "line",
+    "displayName": "g",
+    "producer": {
+     "operationId": "op_g",
+     "slot": "line"
+    }
+   },
+   "reverse": {
+    "id": "reverse",
+    "type": "line",
+    "displayName": "reverse",
+    "producer": {
+     "operationId": "op_reverse",
+     "slot": "line"
+    }
+   }
+  },
+  "inputs": {
+   "x0": {
+    "kind": "number",
+    "value": 4.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "right",
+   "scale": 20.0,
+   "expect": {
+    "g": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       4.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       -1.0
+      ]
+     }
+    },
+    "reverse": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       4.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "x0": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "origin",
+   "inputs": {
+    "x0": {
+     "kind": "number",
+     "value": 0.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "g": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       -1.0
+      ]
+     }
+    },
+    "reverse": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "x0": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "left",
+   "inputs": {
+    "x0": {
+     "kind": "number",
+     "value": -3.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "g": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -3.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       -1.0
+      ]
+     }
+    },
+    "reverse": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -3.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "x0": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -3.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {}
+  }
+ ]
+}
