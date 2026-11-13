@@ -180,7 +180,7 @@ The text `JSON.stringify` prints after object keys are sorted:
 table `animageo/native/parity/v1/canonical.json` is a list of
 `{"value", "canonical"}` pairs that both kernels must reproduce.
 
-## 4. Registry `ops/v1` (version 1.8)
+## 4. Registry `ops/v1` (version 1.9)
 
 Registry 1.4 is frozen since animageo 1.8.1: the records of 1.0–1.4 and their
 `signatureHash` stay as they are (`beta` is a descriptive status outside the

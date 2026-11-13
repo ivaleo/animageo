@@ -190,9 +190,9 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.8'
-    assert registry().version == '1.8'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.8'
+    assert native.__registry_version__ == '1.9'
+    assert registry().version == '1.9'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.9'
 
 
 def test_ops_and_files():
@@ -531,13 +531,13 @@ def test_registry_problems_catch_bad_catalogs(tmp_path):
     del types['paths']['ray']
     (copy_dir / '_types.json').write_text(json.dumps(types))
     line = json.loads((copy_dir / 'line.json').read_text())
-    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.9'
+    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.10'
     (copy_dir / 'line.json').write_text(json.dumps(line))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
     assert "family 'path': unknown type 'spiral'" in problems
     assert "path type 'ray' has no entry in _types.json paths" in problems
-    assert any(p.startswith("ray.by_points: since '1.9'") for p in problems)
+    assert any(p.startswith("ray.by_points: since '1.10'") for p in problems)
 
 
 def test_implementations_both_ways():

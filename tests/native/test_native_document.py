@@ -269,7 +269,7 @@ class TestValidate:
 
     def test_newer_registry(self):
         def m(doc):
-            doc['operationRegistryVersion'] = '1.9'
+            doc['operationRegistryVersion'] = '1.10'
             doc['operations']['op_M']['op'] = 'point.magic'
         issues = self._issues(m)
         assert codes(issues) == ['newer_registry']
