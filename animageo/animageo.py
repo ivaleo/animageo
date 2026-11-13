@@ -2934,7 +2934,7 @@ class AnimaGeoScene(MovingCameraScene):
         if touched:
             self.updateGeoElements(touched)
 
-    def _export_cairo(self, filepath, *, surface, dpi, label):
+    def _export_cairo(self, filepath, *, surface, dpi, label, transparent=False):
         """Write the current frame to a cairo vector ``surface``.
 
         Shared by ``exportSVG`` / ``exportPDF`` / ``exportEPS``: identical
@@ -2950,10 +2950,15 @@ class AnimaGeoScene(MovingCameraScene):
         if surface == "eps":
             self._warn_eps_transparency()
 
-        with _get_cairo_context(filepath, self.style, surface=surface, dpi=dpi) as ctx:
-            for mobj in extract_mobject_family_members(self.mobjects, True, True):
-                if isinstance(mobj, ValueTracker): continue
-                _create_svg_from_vmobject_internal(mobj, ctx, style = self.style)
+        with _get_cairo_context(filepath, self.style, surface=surface, dpi=dpi,
+                                background=not transparent) as ctx:
+            family = [m for m in extract_mobject_family_members(self.mobjects, True, True)
+                      if not isinstance(m, ValueTracker)]
+            if transparent:
+                _draw_with_knockout(family, ctx, style=self.style)
+            else:
+                for mobj in family:
+                    _create_svg_from_vmobject_internal(mobj, ctx, style = self.style)
         try:
             size = os.path.getsize(filepath)
             logger.info("%s exported: %s (%d bytes)", label, filepath, size)
@@ -2985,10 +2990,16 @@ class AnimaGeoScene(MovingCameraScene):
         except Exception:
             pass
 
-    def exportSVG(self, filepath):
-        return self._export_cairo(filepath, surface="svg", dpi=96.0, label="SVG")
+    def exportSVG(self, filepath, *, transparent=False):
+        """Export the current frame as SVG.
 
-    def exportPDF(self, filepath, *, dpi=96.0):
+        ``transparent`` — no background sheet: the hole of a hollow point
+        (``point_fill: hollow``) is cut out of everything drawn under the
+        point instead of being painted in the background colour.
+        """
+        return self._export_cairo(filepath, surface="svg", dpi=96.0, label="SVG", transparent=transparent)
+
+    def exportPDF(self, filepath, *, dpi=96.0, transparent=False):
         """Export the current frame as a vector PDF (single page).
 
         Args:
@@ -2996,8 +3007,9 @@ class AnimaGeoScene(MovingCameraScene):
             dpi: Pixels-per-inch governing the physical page size. The default
                 (96) reproduces the on-screen SVG size; the figure stays vector
                 and is rescaled by ``\\includegraphics[width=...]`` in LaTeX.
+            transparent: no background sheet, as in :meth:`exportSVG`.
         """
-        return self._export_cairo(filepath, surface="pdf", dpi=dpi, label="PDF")
+        return self._export_cairo(filepath, surface="pdf", dpi=dpi, label="PDF", transparent=transparent)
 
     def exportEPS(self, filepath, *, dpi=96.0):
         """Export the current frame as vector EPS (Encapsulated PostScript).
@@ -3517,8 +3529,15 @@ class AnimaGeoScene(MovingCameraScene):
         tick_width_px    = _resolve_style(self, elem, 'tick_width_px', default=0.0)
         strich_width     = stroke_width_to_manim(tick_width_px or 0.0, ptUnit_style)
         strich_rshift_mu = _px('tick_shift_px')
-        arrow_w_mu       = _px('arrow_width_px')
-        arrow_h_mu       = _px('arrow_length_px')
+        if isinstance(elem.data, geo.Segment):
+            # the head of a segment (``arrow_head``) is that of a vector of the style
+            from .mark_shapes import VECTOR_ARROW_PX
+            vec = self.style_config.defaults
+            arrow_w_mu = _px('arrow_width_px', vec.get('vector', 'arrow_width_px', VECTOR_ARROW_PX[1]))
+            arrow_h_mu = _px('arrow_length_px', vec.get('vector', 'arrow_length_px', VECTOR_ARROW_PX[0]))
+        else:
+            arrow_w_mu       = _px('arrow_width_px')
+            arrow_h_mu       = _px('arrow_length_px')
 
         tick_count = int(_resolve_style(self, elem, 'tick_count', default=0) or 0)
         # the equality mark whose ticks the element draws, and the ticks
@@ -3881,12 +3900,18 @@ class AnimaGeoScene(MovingCameraScene):
 
         from .angle_marker import fit_settings, marker_fit
         from .label_placement import compute_effective_arc_size_px
+        from .mark_shapes import angle_label_overhang_px, arc_step_px, scene_arc_decor
         arc_size_resolved = _resolve_style(self, elem, 'arc_size_px', default=17.0)
         r = compute_effective_arc_size_px(
             elem, elem.data, self, base_px=arc_size_resolved,
             angle_range=ctx.angle_range, auto_radius=ctx.auto_radius,
         ) / ptUnit
+        # the kinds of marks (mark_shapes): the look of the arcs, ticks across
+        # them, a head on the outer one; two waves and more step 2A further
+        decor = scene_arc_decor(self, elem)
         arc_shift_px = ctx.arc_shift_px
+        if not decor.plain:
+            arc_shift_px = arc_step_px(decor, arc_shift_px, ctx.tick_count)
         r += ((max(1, ctx.tick_count) if ctx.mark_explicit else ctx.tick_count) - 1) \
              * arc_shift_px / ptUnit
         if r < 0.001:
@@ -3918,6 +3943,8 @@ class AnimaGeoScene(MovingCameraScene):
         right_mark = ctx.right_angle_marker
         if right_mark is None:
             right_mark = np.isclose(angle, PI / 2)
+            if right_mark and decor.forces_arcs:
+                right_mark = False      # the square has no arcs to decorate
 
         # A fill of the background colour is no fill (1.11.0rc3, as the web
         # canvas): the built-in style fills an angle with the background at
@@ -3946,23 +3973,31 @@ class AnimaGeoScene(MovingCameraScene):
             p1 = [p[0] + n1[0], p[1] + n1[1], 0]
             p2 = [p1[0] + n2[0], p1[1] + n2[1], 0]
             p3 = [p[0] + n2[0], p[1] + n2[1], 0]
-            arr.append(Polygon(
-                p, p1, p2, p3,
-                color=ctx.col_f, stroke_width=0, fill_opacity=op_f,
-            ).set_z_index(ctx.zz))
+            arr.append(self._fill_pattern_layer(
+                elem, ctx, {'polygon': [(float(q[0]), float(q[1])) for q in (p, p1, p2, p3)]},
+                Polygon(
+                    p, p1, p2, p3,
+                    color=ctx.col_f, stroke_width=0, fill_opacity=op_f,
+                ).set_z_index(ctx.zz)))
             arr.append(VMobject(
                 color=ctx.tick_color, fill_opacity=0,
                 stroke_width=ctx.lw, stroke_opacity=ctx.op_s,
                 joint_type=_JOINT_MAP[ctx.ra_joint],
             ).set_points_as_corners([p1, p2, p3]).set_z_index(ctx.zz + 0.1))
         elif not right_mark and not hidden:
-            arr.append(AnnularSector(
-                inner_radius=0, outer_radius=r, angle=angle,
-                color=ctx.col_f, fill_opacity=op_f,
-            ).set_z_index(ctx.zz)
-             .rotate(rotation_angle, about_point=ORIGIN)
-             .shift([p[0], p[1], 0]))
-            for i in range(ctx.tick_count):
+            arr.append(self._fill_pattern_layer(
+                elem, ctx, {'sector': (float(p[0]), float(p[1]), float(r), float(rotation_angle),
+                                       float(rotation_angle + angle))},
+                AnnularSector(
+                    inner_radius=0, outer_radius=r, angle=angle,
+                    color=ctx.col_f, fill_opacity=op_f,
+                ).set_z_index(ctx.zz)
+                 .rotate(rotation_angle, about_point=ORIGIN)
+                 .shift([p[0], p[1], 0])))
+            if not decor.plain:
+                self._append_arc_marks(arr, elem, ctx, decor, p, r, arc_shift_px, rotation_angle, angle,
+                                       is_clockwise)
+            for i in range(ctx.tick_count if decor.plain else 0):
                 arc = Angle(
                     *lines, radius=r - i * arc_shift_px / ptUnit,
                     other_angle=False,
@@ -3975,10 +4010,83 @@ class AnimaGeoScene(MovingCameraScene):
                 arr.append(arc)
 
         if ctx.has_label:
+            if not right_mark and not decor.plain and ctx.tick_count > 0:
+                r += angle_label_overhang_px(decor) / ptUnit    # clear the wave and the ticks
             r += ctx.label_roff
             label_pos = Angle(*lines, radius=r).point_from_proportion(0.5)
             self._append_label(arr, elem, label_pos, ctx)
         return VGroup(*arr, name=elem.name)
+
+    def _append_arc_marks(self, arr, elem, ctx, decor, vertex, radius, step_px, start, span, flipped):
+        """Append the decorated arcs of an angle (``mark_shapes.angle_marks``):
+        the waves or the fitted dashes of its arcs (outer first), the ticks
+        across them and the heads on the outer one. The arcs and the ticks
+        take the colour of a mark (``tick_color``), the heads the stroke of the
+        angle; those a mark gives are tagged with it."""
+        from .mark_shapes import angle_marks
+        unit = ctx.ptUnit_style
+        count = ctx.tick_count
+        radii = [radius - i * step_px / unit for i in range(count)]
+        marks = angle_marks(vertex[:2], radii, start, span, flipped, decor, unit)
+        z = ctx.zz + 0.1
+        given = self._mark_applied.get(elem.name, {}) if ctx.mark is not None else {}
+        for i, arc in enumerate(marks.arcs):
+            if arc.points is not None:
+                vm = VMobject(color=ctx.tick_color, fill_opacity=0, stroke_width=ctx.lw, stroke_opacity=ctx.op_s)
+                vm.set_points_as_corners([[x, y, 0] for x, y in arc.points])
+            else:
+                vm = Arc(radius=arc.radius, start_angle=arc.start, angle=arc.span,
+                         arc_center=[float(vertex[0]), float(vertex[1]), 0],
+                         color=ctx.tick_color, fill_opacity=0, stroke_width=ctx.lw, stroke_opacity=ctx.op_s)
+                if arc.dash is not None:
+                    vm.cap_style = CapStyleType.BUTT
+                    set_dash(vm, arc.dash)
+            vm.set_z_index(z)
+            if ctx.mark is not None and (ctx.mark_explicit or i < count - ctx.own_ticks or 'arc_style' in given):
+                vm._animageo_mark = ctx.mark
+            arr.append(vm)
+        for x1, y1, x2, y2 in marks.ticks:
+            tick = Line([x1, y1, 0], [x2, y2, 0], color=ctx.tick_color, stroke_width=ctx.lw,
+                        stroke_opacity=ctx.op_s, cap_style=CapStyleType.BUTT).set_z_index(z)
+            if 'arc_tick_count' in given:
+                tick._animageo_mark = ctx.mark
+            arr.append(tick)
+        for tip in marks.tips:
+            arr.append(Polygon(*[[tip[k], tip[k + 1], 0] for k in (0, 2, 4)], color=ctx.col_s,
+                               fill_color=ctx.col_s, fill_opacity=ctx.op_s, stroke_width=0).set_z_index(z))
+
+    def _append_heads(self, arr, tips, ctx):
+        """Append filled heads ``[Tx, Ty, B1x, B1y, B2x, B2y]`` in the stroke
+        colour of the element."""
+        for tip in tips:
+            arr.append(Polygon(*[[tip[k], tip[k + 1], 0] for k in (0, 2, 4)], color=ctx.col_s,
+                               fill_color=ctx.col_s, fill_opacity=ctx.op_s, stroke_width=0).set_z_index(ctx.zz))
+
+    def _append_chevrons(self, arr, elem, mid, direction, ctx, ticks=True):
+        """Append the chevrons of a parallel line (``parallel_count``,
+        ``mark_shapes.chevrons``): around ``mid`` (past the ticks of the
+        element, ``ticks`` — it draws them), pointing along ``direction``
+        (turned by ``parallel_direction``), solid, in the stroke of the
+        element."""
+        from .mark_shapes import chevron_center, chevrons, scene_parallel_decor
+        decor = scene_parallel_decor(self, elem)
+        if decor.count <= 0:
+            return
+        v = np.asarray(direction, dtype=float)[:2]
+        norm = float(np.linalg.norm(v))
+        if norm < 1e-12:
+            return
+        v = v / norm * (-1.0 if decor.direction == 'backward' else 1.0)
+        unit = ctx.ptUnit_style
+        tick_width_px = float(_resolve_style(self, elem, 'tick_width_px', default=0.0) or 0.0)
+        center = chevron_center(mid[:2], v, decor, unit, tick_count=ctx.tick_count if ticks else 0,
+                                tick_shift_px=ctx.strich_rshift * unit, tick_width_px=tick_width_px)
+        for x0, y0, tx, ty, x1, y1 in chevrons(center, v, decor, unit):
+            vm = VMobject(color=ctx.col_s, fill_opacity=0, stroke_width=ctx.lw, stroke_opacity=ctx.op_s,
+                          joint_type=LineJointType.MITER)
+            vm.set_points_as_corners([[x0, y0, 0], [tx, ty, 0], [x1, y1, 0]])
+            vm.cap_style = CapStyleType.BUTT
+            arr.append(vm.set_z_index(ctx.zz))
 
     def _append_tick_marks(self, arr, p1, p2, m, normal, ctx):
         """Append segment/vector equality tick decorations to ``arr``.
@@ -4050,13 +4158,21 @@ class AnimaGeoScene(MovingCameraScene):
         m = (p1 + p2) / 2
         arr = []
 
+        from .mark_shapes import segment_arrow
+        head = _resolve_style(self, elem, 'arrow_head', default='none')
+        heads = segment_arrow(p1, p2, head, ctx.arrow_height * ctx.ptUnit_style,
+                              ctx.arrow_width * ctx.ptUnit_style, ctx.ptUnit_style)
+        a, b = (p1, p2) if heads is None else heads[:2]
         arr.append(self._dash_stroke(Line(
-            [p1[0], p1[1], 0], [p2[0], p2[1], 0],
+            [a[0], a[1], 0], [b[0], b[1], 0],
             color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
             cap_style=_CAP_MAP[ctx.cap],
         ).set_z_index(ctx.zz), ctx, 'ends'))
+        if heads is not None:
+            self._append_heads(arr, heads[2], ctx)
 
         self._append_tick_marks(arr, p1, p2, m, elem.data.normal, ctx)
+        self._append_chevrons(arr, elem, m, p2 - p1, ctx)
 
         if ctx.has_label:
             self._append_label(arr, elem, [m[0], m[1], 0], ctx)
@@ -4088,6 +4204,9 @@ class AnimaGeoScene(MovingCameraScene):
             color=ctx.col_s, stroke_opacity=ctx.op_s, stroke_width=ctx.lw,
             cap_style=_CAP_MAP[ctx.cap],
         ).set_z_index(ctx.zz), ctx, 'none', phase_mu=phase))
+        # chevrons in the middle of the drawn part, along the line (from the start of a ray)
+        self._append_chevrons(arr, elem, (np.asarray(p1) + np.asarray(p2)) / 2, elem.data.direction, ctx,
+                              ticks=False)
         if ctx.has_label:
             m = (p1 + p2) / 2
             self._append_label(arr, elem, [m[0], m[1], 0], ctx)
@@ -4116,6 +4235,7 @@ class AnimaGeoScene(MovingCameraScene):
 
         normal = np.array([p1[1] - p2[1], p2[0] - p1[0]])
         self._append_tick_marks(arr, p1, p2, m, normal, ctx)
+        self._append_chevrons(arr, elem, m, p2 - p1, ctx)
 
         if ctx.has_label:
             self._append_label(arr, elem, [m[0], m[1], 0], ctx)
@@ -4308,11 +4428,22 @@ class AnimaGeoScene(MovingCameraScene):
             ctx.col_s, ctx.col_f, ctx.op_f, ctx.op_s, ctx.lw, ctx.zz,
         )
         arr = [mobj]
+        from .mark_shapes import point_hole
+        if point_hole(point_shape, radius * 2 * ptUnit,
+                      _resolve_style(self, elem, 'point_fill', default='solid')) is not None:
+            # a hollow point: a hole of its shape at half its size, in the
+            # colour of the sheet (on a transparent sheet exportSVG cuts it
+            # out of what lies under the point)
+            hole = mobj.copy().scale(0.5, about_point=np.array(pos, dtype=float))
+            hole.set_fill(color=self.style.background, opacity=1).set_stroke(width=0, opacity=0)
+            hole._animageo_hole = True
+            arr.append(hole.set_z_index(ctx.zz))
 
         if style.rendering.get('points_display') == 'only_labels':
-            arr[0].set_fill(opacity=0)
-            arr[0].set_stroke(opacity=0)
-            arr[0].set_phantom(True)
+            for part in arr:
+                part.set_fill(opacity=0)
+                part.set_stroke(opacity=0)
+                part.set_phantom(True)
 
         if ctx.has_label:
             label = self._append_label(arr, elem, pos, ctx)

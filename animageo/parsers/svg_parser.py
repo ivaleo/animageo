@@ -22,7 +22,7 @@ DEFAULT_DPI: float = 96.0
 # Vector surface kinds understood by ``_get_cairo_context`` / ``_make_cairo_surface``.
 CAIRO_SURFACES = ("svg", "pdf", "ps", "eps")
 
-__all__ = ["create_svg_from_vmobject", "create_svg_from_vgroup", "_get_cairo_context", "extract_mobject_family_members", "_create_svg_from_vmobject_internal"]
+__all__ = ["create_svg_from_vmobject", "create_svg_from_vgroup", "_get_cairo_context", "extract_mobject_family_members", "_create_svg_from_vmobject_internal", "_draw_with_knockout"]
 
 
 def _make_cairo_surface(kind: str, file_name: str | Path, width: float, height: float):
@@ -51,6 +51,7 @@ def _get_cairo_context(
     *,
     surface: str = "svg",
     dpi: float = DEFAULT_DPI,
+    background: bool = True,
 ) -> cairo.Context:
     """Yield a cairo context drawing into ``file_name`` as ``surface``.
 
@@ -59,6 +60,8 @@ def _get_cairo_context(
     device unit is the pixel; for PDF/EPS it is the PostScript point, so the
     MU→px transform is scaled by ``k = 72/dpi`` and the page size by the same
     factor — this reproduces the SVG's physical size at ``dpi``.
+    ``background`` — paint the background of the style (``False`` — a
+    transparent sheet).
     """
     if style is None:
         from manim import config
@@ -89,7 +92,8 @@ def _get_cairo_context(
         surf = _make_cairo_surface(surface, file_name, bg_w, bg_h)
 
     ctx = cairo.Context(surf)
-    _paint_background(ctx, bg_w, bg_h, style)
+    if background:
+        _paint_background(ctx, bg_w, bg_h, style)
     ctx.set_matrix(cairo.Matrix(scale * k, 0, 0, -scale * k, dx * k, dy * k))
     yield ctx
     surf.finish()
@@ -173,13 +177,9 @@ def _apply_fill(ctx: cairo.Context, vmobject: VMobject, style = None):
     _set_cairo_context_color(ctx, vmobject.get_fill_rgbas(), vmobject)
     ctx.fill_preserve()
 
-def _create_svg_from_vmobject_internal(vmobject: VMobject, ctx: cairo.Context, style = None):
-    points = vmobject.points
-    if len(points) == 0: return
-
-    ctx.new_path()
-    
-    subpaths = vmobject.gen_subpaths_from_points_2d(points)
+def _trace_path(ctx: cairo.Context, vmobject: VMobject):
+    """Add the path of ``vmobject`` to the current path of ``ctx``."""
+    subpaths = vmobject.gen_subpaths_from_points_2d(vmobject.points)
     for subpath in subpaths:
         quads = vmobject.gen_cubic_bezier_tuples_from_points(subpath)
         ctx.new_sub_path()
@@ -190,8 +190,60 @@ def _create_svg_from_vmobject_internal(vmobject: VMobject, ctx: cairo.Context, s
         if vmobject.consider_points_equals_2d(subpath[0], subpath[-1]):
             ctx.close_path()
 
+
+def _create_svg_from_vmobject_internal(vmobject: VMobject, ctx: cairo.Context, style = None):
+    points = vmobject.points
+    if len(points) == 0: return
+
+    ctx.new_path()
+    _trace_path(ctx, vmobject)
+
     _apply_fill(ctx, vmobject, style = style)
     _apply_stroke(ctx, vmobject, style = style)
+
+
+def _draw_with_knockout(mobjects, ctx: cairo.Context, style = None):
+    """Draw ``mobjects`` (in drawing order) on a transparent sheet: a hole
+    (a mobject tagged ``_animageo_hole`` — the inside of a hollow point) is
+    not painted, it is cut out of every mobject drawn before it (under it),
+    so the sheet shows through. Each hole clips with the even-odd rule
+    (the canvas minus the hole); several holes clip one after another."""
+    holes = [(i, _bbox(m)) for i, m in enumerate(mobjects) if getattr(m, '_animageo_hole', False) and len(m.points)]
+    for i, mobj in enumerate(mobjects):
+        if getattr(mobj, '_animageo_hole', False):
+            continue
+        box = _bbox(mobj) if holes and len(mobj.points) else None
+        # only the holes over it (the stroke may reach a little past its path)
+        later = [mobjects[j] for j, hole in holes
+                 if j > i and box is not None and _overlap(box, hole, _reach(mobj))]
+        if not later:
+            _create_svg_from_vmobject_internal(mobj, ctx, style = style)
+            continue
+        ctx.save()
+        x0, y0, x1, y1 = ctx.clip_extents()     # the sheet, in user units
+        for hole in later:
+            ctx.new_path()
+            ctx.rectangle(x0, y0, x1 - x0, y1 - y0)
+            _trace_path(ctx, hole)
+            ctx.set_fill_rule(cairo.FILL_RULE_EVEN_ODD)
+            ctx.clip()
+        ctx.set_fill_rule(cairo.FILL_RULE_WINDING)
+        _create_svg_from_vmobject_internal(mobj, ctx, style = style)
+        ctx.restore()
+
+
+def _bbox(mobject):
+    pts = np.asarray(mobject.points)[:, :2]
+    return pts.min(axis=0), pts.max(axis=0)
+
+
+def _reach(mobject):
+    """Half the stroke width (in user units, MU) — how far it paints past the path."""
+    return mobject.get_stroke_width() * CAIRO_LINE_WIDTH_MULTIPLE
+
+
+def _overlap(a, b, pad):
+    return bool(np.all(a[0] - pad <= b[1]) and np.all(b[0] <= a[1] + pad))
 
 def create_svg_from_vmobject(vmobject: VMobject, file_name: str | Path = None, style = None) -> Path:
     if file_name is None:
