@@ -48,50 +48,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`closest_point_Kp`, `closest_point_Fp`; 478 dispatch signatures). A
   degenerate conic, or a graph with no value in the window of the default
   bounds and the abscissa of `P`, gives no point.
-- The type `region` (registry 1.9): closed rings of line, arc and
-  sampled graph pieces, outer rings counterclockwise and holes clockwise, with
-  their exact area (`docs/native/kernel.md` §16.2); the family `bounded` takes
-  it, new families `limit` (a number or a point; a number literal fits),
-  `graph_bound` and `contour`, new reasons `empty_region`, `flipped`,
-  `boundary_crossing` and `discontinuous`.
-- `function.area_between` (registry 1.9, beta): the region between a graph
-  and a second graph, a non-vertical line or the x-axis, from `a` to `b`
-  (numbers, number literals or points) or, without limits, the lobe `lobe`
-  between the roots of their difference in the search window. A ring per
-  lobe; a pole or a jump of a graph is `discontinuous`, a limit past the
-  domain `out_of_domain` (`docs/native/ops/function.area_between.md`).
-- `region.by_boundary` (registry 1.9, beta): the region bounded by a chain of
-  pieces — piece `i` on the line, segment, ray, circle or arc `curves[i]`
-  from the point `from[i]` to `to[i]`, a whole circle from a point to itself
-  — and by the contours of `inside` and `outside` (polygons, circles,
-  sectors, circle segments). The rings are assembled by element IDs, so the
-  region does not flow into a neighbouring face when the figure moves. A
-  vertex off its carrier is `not_on_curve`, a piece past the part of its
-  carrier `outside_part`, a ring of zero area `empty_region`, pieces that
-  cross or touch away from a common vertex or a hole that leaves its ring
-  `boundary_crossing`, a ring of the chain turned over `flipped`; graphs and
-  conics as carriers are `unsupported_signature` for now
-  (`docs/native/ops/region.by_boundary.md`). `validate` reports a chain that
-  does not close as `region_chain`; `kernel.Input` carries the element ID of
-  a reference argument (`id`). Parity fixtures `curves/region_*` of every
-  status, an annulus in `paint_regions.json`.
-- `measure.area` and `measure.perimeter` of a region (registry 1.9).
-- Regions in paint and output (`has("regions")`): the default paint is the
-  fill of a polygon of the same style (`presets.color.accent`; `fill_opacity`,
-  `fill_pattern` and the `hatch_*` keys of `defaults.polygon` of the style in
-  use, copied into `defaults.region` by `StyleConfig` unless the style sets
-  its own; no stroke), so a style with another `defaults.polygon` fills a
-  region as it fills a polygon; `style_keys()` and
-  `resolve_paint` know the type `region` (a dashed stroke fitted to each
-  ring, `stroke.dash.rings`). The renderer fills the rings with their holes
-  in SVG, PNG, PDF, EPS and video, TikZ by `even odd rule`, the hatch runs
-  over the rings, JSXGraph draws a static filled curve. Fixtures
-  `paint_regions.json`.
-- The stroke of a region is a label obstacle, its fill is not (as with a
-  polygon): the R4 solver reads a new key `regions` of the display list
-  (pieces `segment`, `arc`, `chain`; a paint width of 0 drops the region),
-  the classic placement the pieces of a `Region` whose stroke width and
-  opacity are above 0.
+- Regions (registry 1.9; `has("regions")`; `docs/native/kernel.md` §16.2):
+  - the type `region`: closed rings of line, arc and sampled graph pieces,
+    outer rings counterclockwise and holes clockwise, with their exact area;
+    the family `bounded` takes it, new families `limit` (a number or a point;
+    a number literal fits), `graph_bound` and `contour`, new reasons
+    `empty_region`, `flipped`, `boundary_crossing` and `discontinuous`;
+    `measure.area` and `measure.perimeter` of a region;
+  - `function.area_between` (beta): the region between a graph and a second
+    graph, a non-vertical line or the x-axis, from `a` to `b` (numbers,
+    number literals or points) or, without limits, the lobe `lobe` between
+    the roots of their difference in the search window. A ring per lobe; a
+    pole or a jump of a graph is `discontinuous`, a limit past the domain
+    `out_of_domain` (`docs/native/ops/function.area_between.md`);
+  - `region.by_boundary` (beta): the region bounded by a chain of pieces —
+    piece `i` on the line, segment, ray, circle or arc `curves[i]` from the
+    point `from[i]` to `to[i]`, a whole circle from a point to itself — and
+    by the contours of `inside` and `outside` (polygons, circles, sectors,
+    circle segments). The rings are assembled by element IDs, so the region
+    does not flow into a neighbouring face when the figure moves. A vertex
+    off its carrier is `not_on_curve`, a piece past the part of its carrier
+    `outside_part`, a ring of zero area `empty_region`, pieces that cross or
+    touch away from a common vertex or a hole that leaves its ring
+    `boundary_crossing`, a ring of the chain turned over `flipped`; graphs
+    and conics as carriers are `unsupported_signature` for now, more than
+    256 pieces is `error/limit_exceeded`
+    (`docs/native/ops/region.by_boundary.md`). `validate` reports a chain
+    that does not close as `region_chain`; `kernel.Input` carries the
+    element ID of a reference argument (`id`);
+  - paint and output: the default paint is the fill of a polygon of the
+    same style (`presets.color.accent`; `fill_opacity`, `fill_pattern` and
+    the `hatch_*` keys of `defaults.polygon` of the style in use, copied into
+    `defaults.region` by `StyleConfig` unless the style sets its own; no
+    stroke), so a style with another `defaults.polygon` fills a region as it
+    fills a polygon; `style_keys()` and `resolve_paint` know the type
+    `region` (a dashed stroke fitted to each ring, `stroke.dash.rings`). The
+    renderer fills the rings with their holes in SVG, PNG, PDF, EPS and
+    video, TikZ by `even odd rule`, the hatch runs over the rings, JSXGraph
+    draws a static filled curve;
+  - labels: the stroke of a region is a label obstacle, its fill is not (as
+    with a polygon). The label solver of the web client
+    (`animageo.native.labels.r4`) reads a new key `regions` of the display
+    list (pieces `segment`, `arc`, `chain`; a paint width of 0 drops the
+    region), the classic placement the pieces of a `Region` whose stroke
+    width and opacity are above 0;
+  - fixtures: `curves/region_*` with every status of both operations,
+    `paint_regions.json` (an annulus among them) and
+    `tests/native/fixtures/labels_r4/regions.json` (a stroked region, the
+    same region without a stroke, an annulus).
 - `python -m animageo.native import-audit <paths…> [--weights FILE]
   [--json OUT] [--web-registry X]` (`animageo.native.convert.audit`): imports
   every `.ggb` of the given files and directories and prints one line of
