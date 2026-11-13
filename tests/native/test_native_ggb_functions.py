@@ -708,6 +708,14 @@ def test_function_domain_guard_does_not_change_default_number_parser():
         {'op': '^', 'args': [{'num': 1.0}, {'num': 1.0}]}, [])
 
 
+@pytest.mark.parametrize('text', ['+' * 40 + '1', '1^' + '+' * 40 + '1'])
+def test_typed_source_depth_guard_is_opt_in(text):
+    from animageo.native.convert.ggb_expr import parse_typed
+    with pytest.raises(ExprError) as exc:
+        parse_typed(text, {}, result='num')
+    assert exc.value.reason == 'formula_unsupported'
+
+
 # GeoGebra saves a graph with its label in front, ``i: y = (-abs(x)) + 4``.
 @pytest.mark.parametrize('text', ['f: y = a*x²', 'f : y = a*x²', 'f: a*x²', 'f: f(x) = a*x²', 'f: f(t) = a*t²'])
 def test_function_label_header_is_read(text):
