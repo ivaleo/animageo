@@ -99,6 +99,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   as the helpers of marks of the web; the document of a file with helpers
   changes accordingly (fixtures `ggb_inline_arguments`, `ggb_regular_outputs`,
   `ggb_axis_projection`).
+- `native.edit.delete`: an element with `origin {kind: "auto", source}`
+  whose source operation the deletion removed goes too, unless an operation
+  that stays reads it — then it moves to that operation (`source` changes;
+  `effects.modified.elements`). Automatic marks and elements a condition
+  names are left as they are. This is the rule of the helpers of marks of
+  the web 1.0.55 (its cases `mark-helpers-delete` and `mark-helpers-shared`
+  are in `tests/native/fixtures/owned_helpers_delete.json`); before, such
+  helpers stayed behind as hidden orphans.
 
 ## [1.13.0] - 2026-11-13
 

@@ -3,7 +3,8 @@
 Every helper an import adds follows the rule of the helpers of marks of the
 web (1.0.55): no name, hidden and locked, ``role: aux`` and
 ``origin: {kind: auto, source: <the operation it was made for>}``
-(:func:`own_helpers`).
+(:func:`own_helpers`) — deleting that operation deletes it, another
+operation still reading it takes it over (``native.edit.delete``).
 """
 from __future__ import annotations
 

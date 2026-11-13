@@ -277,12 +277,69 @@ def delete(doc, ids, *, mode: str = 'element') -> EditResult:
     marks); a condition whose receiver or participant went is removed.
     ``effects.removed.conditions``, ``effects.modified.restoredFrom`` (the
     restored receivers).
+
+    Owned helpers (the rule of the helpers of marks of the web 1.0.55): an
+    element with ``origin: {kind: "auto", source}`` whose ``source`` is an
+    operation this deletion removed goes too, unless an operation that stays
+    reads it — then it moves to that operation (the first by ID; ``source``
+    is changed, ``effects.modified.elements``). An automatic mark
+    (``type: "mark"``) and an element a condition names (its receiver, its
+    statement) are left as they are.
     """
     doc = as_document(doc)
     if doc.data.get('conditions'):
         from .conditions.editing import delete_with_conditions
-        return delete_with_conditions(doc, ids, mode=mode)
-    return _delete(doc, ids, mode=mode)
+        return _with_owned_helpers(doc, delete_with_conditions(doc, ids, mode=mode))
+    return _with_owned_helpers(doc, _delete(doc, ids, mode=mode))
+
+
+def _with_owned_helpers(before, result: EditResult) -> EditResult:
+    """Apply the rule of owned helpers of :func:`delete` to ``result`` (the
+    deletion of ``before``): the helpers of removed operations go, or move to
+    an operation that still reads them (a fixpoint: an operation all of whose
+    outputs are such helpers claims nothing until one of them is claimed)."""
+    from .conditions.statements import statement_elements
+    removed_ops = set(before.operations)
+    data = result.document.data
+    operations = data.get('operations') or {}
+    elements = data.get('elements') or {}
+    left = set()
+    for el_id, el in elements.items():
+        origin = el.get('origin') if isinstance(el, dict) else None
+        if (isinstance(el, dict) and el.get('type') != 'mark' and isinstance(origin, dict)
+                and origin.get('kind') == 'auto' and isinstance(origin.get('source'), str)
+                and origin['source'] in removed_ops and origin['source'] not in operations):
+            left.add(el_id)
+    if not left:
+        return result
+    for cond in data.get('conditions') or ():
+        if isinstance(cond, dict):
+            left.discard(cond.get('receiver'))
+            left.difference_update(statement_elements(cond.get('statement') or {}))
+    users: dict = {}
+    changed = True
+    while changed:
+        changed = False
+        for op_id in sorted(operations):
+            op = operations[op_id]
+            outs = [o.get('elementId') for o in op.get('outputs') or ()]
+            if outs and all(e in left for e in outs):
+                continue
+            for ref in _op_refs(op):
+                if ref in left:
+                    left.discard(ref)
+                    users[ref] = op_id
+                    changed = True
+    if not users and not left:
+        return result
+    data = json_copy(data)
+    effects = json_copy(result.effects)
+    for el_id in sorted(users):
+        data['elements'][el_id]['origin'] = {'kind': 'auto', 'source': users[el_id]}
+        effects['modified']['elements'].append(el_id)
+    if left:
+        _remove_elements(data, _reach(NativeDocument(data), sorted(left), 'down'), effects)
+    return EditResult(NativeDocument(data), _finish(effects))
 
 
 def _delete(doc, ids, *, mode: str = 'element') -> EditResult:

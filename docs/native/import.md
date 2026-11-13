@@ -122,7 +122,8 @@ follows the rule of the helpers of marks of the web (1.0.55): no name,
 `appearance` `{visible: false, locked: true, role: "aux", label: {mode: "none"}}`
 and `elements.<id>.origin = {kind: "auto", source: <operation>}` — the
 operation of the first imported object (in the order of the report) that
-needs it. GeoGebra writes
+needs it; `native.edit.delete` removes a helper with that operation or hands
+it to another operation that still reads it (kernel.md, `delete`). GeoGebra writes
 `sqrt(a)`, `sin(a)` and `2a`, which the classic parser does not take
 (`parse_error` in 1.10.0a2); `Sqrt(a)`, `Sin(a)` and `2*a` translate.
 
