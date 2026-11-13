@@ -649,9 +649,10 @@ style; `ggb_style` now carries `fill_opacity` 0, and
 `elem.ggb_style` key for key.
 
 
-Registry 1.11 uses map version 8. Its staged function-analysis catalog lists
-`function.roots_polynomial`, `function.extrema_polynomial` and `function.value`
-in `opsWithoutClassic`, so both directions of the mapping remain explicit.
+Registry 1.11 uses map version 8. Its function-analysis catalog lists
+`function.roots_polynomial`, `function.extrema_polynomial`, `function.value`,
+`function.root_near`, `function.root_interval`, `function.roots_interval` and
+`function.extrema_interval` in `opsWithoutClassic`, so both directions of the mapping remain explicit.
 This metadata does not add GeoGebra Root/Extremum source translation or change
-any existing classic command row. The native operations and their analytical
+any existing classic command row. All seven native operations and their analytical
 fixtures can be used independently of that later import work.

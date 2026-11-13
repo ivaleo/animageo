@@ -142,7 +142,7 @@ def test_existing_y_axis_and_tuple_points_follow_live_inputs_without_clamp():
             assert rec['value'] == {'x': a, 'y': c * a * a}
 
 
-def test_staged_analysis_uses_existing_registry_phrase_fallback():
+def test_complete_analysis_has_dedicated_step_phrases():
     from animageo.native.describe import phrase_table
 
     d = value_doc(power(X, 2)).search(count=2)
@@ -150,5 +150,5 @@ def test_staged_analysis_uses_existing_registry_phrase_fallback():
     assert any('значение функции' in line for line in lines)
     assert any('действительные корни многочлена' in line for line in lines)
     for name in ('roots_polynomial', 'extrema_polynomial', 'value'):
-        assert 'function_' + name not in phrase_table()['steps']
-    assert not native.has('function_analysis')
+        assert 'function_' + name in phrase_table()['steps']
+    assert native.has('function_analysis')

@@ -9,15 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Registry 1.11 groundwork: distinct global polynomial roots, isolated local
-  polynomial extrema and scalar function values, with fixed repeated slots,
-  full `detail.found` counts, independent graph checks and analytical curves
-  fixtures. The function-analysis catalog is staged with these three
-  implemented operations; the complete `function_analysis` feature is not
-  advertised yet.
-- Explicit `moduleGroup` loading metadata for the new operations and the six
-  existing region, expression and locus operations. Registry 1.0–1.10
-  signatures and numerical behavior remain unchanged.
+- Registry 1.11 function analysis: distinct global polynomial roots, polynomial
+  extrema, a root from an initial abscissa, one or several roots on an interval,
+  interval extrema and scalar function values. The complete module is available
+  through `has("function_analysis")`, with seven operation records and step
+  phrases. Existing registry 1.0–1.10 signatures and behavior remain unchanged.
+- Numerical searches split finite continuous pieces around detected holes,
+  poles and jumps. Near-root selection uses damped Newton followed by bounded
+  right-first bracket expansion; a single interval root prefers continuous
+  bisection, otherwise the smallest result of the full interval search.
+  Tangencies occupy one slot, fixed repeated outputs report the full
+  `detail.found` count, and extrema also report `detail.kind`. Every path shares
+  the deterministic evaluation budget and preserves upstream recovery.
+- Independent normalized graph checks, analytical shared curves fixtures and
+  point/number SVG output coverage. Numeric controls and function AST/refs retain
+  full precision in fixtures. Loading metadata `moduleGroup` also covers the
+  six existing region, expression and locus operations without changing their
+  signature hashes. GeoGebra source translation and browser porting remain
+  separate from the native operation feature.
 
 ## [1.15.0] - 2026-11-13
 

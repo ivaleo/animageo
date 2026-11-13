@@ -16,9 +16,9 @@ ANALYSIS_OPS = ('roots_polynomial', 'extrema_polynomial', 'value', 'root_near',
 GROUPS.update({'function.' + name: 'function_analysis' for name in ANALYSIS_OPS})
 
 
-def test_registry_version_and_staged_feature():
+def test_registry_version_and_complete_feature():
     assert native.__registry_version__ == '1.11'
-    assert not native.has('function_analysis')
+    assert native.has('function_analysis')
 
 
 def test_registry_module_groups_are_exact():
@@ -58,12 +58,12 @@ def test_registry_additive_numeric_profile_and_reasons():
     assert 'distinct_roots_ascending' in registry().policies
 
 
-def test_registry_only_advertises_implemented_analysis_operations():
+def test_registry_complete_function_analysis_contract():
     reg = registry()
-    assert set(reg.groups['function_analysis']) == {
-        'function.roots_polynomial', 'function.extrema_polynomial', 'function.value'}
+    assert set(reg.groups['function_analysis']) == {'function.' + name for name in ANALYSIS_OPS}
     assert reg.get('function.value')['undefined'] == ['out_of_domain', 'upstream']
-    for name, base in [('roots_polynomial', 'root'), ('extrema_polynomial', 'extremum')]:
+    for name, base in [('roots_polynomial', 'root'), ('extrema_polynomial', 'extremum'),
+                       ('roots_interval', 'root'), ('extrema_interval', 'extremum')]:
         record = reg.get('function.' + name)
         assert record['since'] == '1.11' and record['moduleGroup'] == 'function_analysis'
         assert record['outputs'] == [{'slot': base, 'type': 'point', 'repeat': 'count'}]

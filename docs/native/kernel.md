@@ -2297,30 +2297,82 @@ Fixtures: `path_locus`, `path_locus_gaps`, `path_locus_empty` in `parity/v1/curv
 and `ggb_locus_point` in `parity/v1/ggb`.
 
 
-## Polynomial analysis and scalar values (registry 1.11)
+## Function analysis (registry 1.11)
 
-The staged `function_analysis` module currently implements
-[`function.roots_polynomial`](ops/function.roots_polynomial.md),
-[`function.extrema_polynomial`](ops/function.extrema_polynomial.md) and
-[`function.value`](ops/function.value.md). Polynomial searches are global,
-use live coefficients and filter explicit domain; they do not search the
-view window. Roots are distinct and ascending. Fixed repeated slots have
-`detail.found` before count limits capacity; extrema also have `detail.kind`.
-An extra slot in a nonempty set is `branch_absent`, while an empty set uses
-`no_root` or `no_extremum`. Recompute preserves elements and producer slots.
+`has("function_analysis")` advertises all seven operations and their checks:
 
-The complete `has("function_analysis")` flag remains false until all seven
-planned operations and their checks are implemented. Existing
-`has("functions")` keeps its previous meaning. Loading metadata
-`moduleGroup` is outside signature hashes; the exact mapping also covers
-`regions` (`region.by_boundary`, `function.area_between`), `expressions`
-(`point.expression`, `vector.expression`, `line.equation`) and `locus`
-(`point.on_locus`). The registry checker rejects missing, wrong or extra
-metadata. Earlier operation semantics and hashes are unchanged.
+| operation | result and selection |
+|---|---|
+| [`function.roots_polynomial`](ops/function.roots_polynomial.md) | all distinct real polynomial roots, globally isolated |
+| [`function.root_near`](ops/function.root_near.md) | damped Newton, then right-first expanding brackets from start |
+| [`function.root_interval`](ops/function.root_interval.md) | primary continuous bisection, otherwise the smallest found interval root |
+| [`function.roots_interval`](ops/function.roots_interval.md) | distinct roots found separately on finite continuous pieces |
+| [`function.extrema_polynomial`](ops/function.extrema_polynomial.md) | isolated derivative-sign turns of a polynomial |
+| [`function.extrema_interval`](ops/function.extrema_interval.md) | isolated strict internal local extrema found on finite pieces |
+| [`function.value`](ops/function.value.md) | scalar f(x), preserving the requested abscissa |
 
-Shared `function_*` curves fixtures include independent analytical answers,
-cardinality above count, missing slots, empty sets, rank changes, resource
-limits, domain and upstream recovery. Their original AST coefficients keep
-full precision; numerical coordinates and samples retain the usual parity
-rounding. Close roots can become indistinguishable when expanding the AST
-into double coefficients, as detailed on the roots operation page.
+No search uses the viewport as its interval. The explicit closed domain
+filters polynomial roots and cuts numerical intervals; extrema require two
+sides and exclude domain/interval endpoints. Functions and all numeric refs,
+starts, bounds and abscissas remain live. Unsupported states carry the original
+upstream cause and recover after inputs return, without a last-good-value cache.
+
+Repeated outputs are fixed ascending ranks of distinct solutions. A multiple
+root occupies one slot. `count` is slot capacity, default 100, not the search
+budget. Every defined repeated slot reports `detail.found` before count limits
+binding; extrema also report `detail.kind`. Extra slots in a nonempty set are
+`branch_absent`, an empty set is `no_root` or `no_extremum`, and a recognized
+zero constant or detected zero active branch in a root search is `coincident`.
+Recompute does not create or remove elements. Rank identity is not trajectory
+continuation through a root bifurcation.
+
+Finite-piece discovery uses 512 primary cells, then a separate 512-cell root
+or extremum search on each detected piece. Refine missing-value transitions
+and persistent jumps toward adjacent doubles, up to 2200 steps. Structural
+continuity preserves steep functions such as atan(1e100*x); generic finite
+sampling cannot prove completeness or detect every narrow defect. Artificial
+pole/jump/hole edges remain open. Confirmed finite AST domain endpoints such
+as sqrt(0) can be closed. Poles and jumps split the search rather than failing
+all other pieces. An exact zero at a jump is excluded from search even though
+`function.value` may be defined there. Inexact Newton candidates require a
+confirmed control neighbourhood, so convergence toward an excluded edge cannot
+stand in for a root. Constant-branch proofs propagate through arithmetic and
+function wrappers; local extrema probes reject wrapped plateaus and their edges.
+
+Newton uses 128 steps and up to 16 half-step backtracks after a full proposal.
+Fallback radii are 1 through 1048576, with 20 doublings after the first radius;
+the whole right side is visited before the left. Bisection uses at most 200
+steps, golden section 100. Inexact Newton requires both a small accepted step
+and its normalized residual; bisection requires its final width and residual,
+not only proximity in x. All paths share the 262144-evaluation budget in
+`_numeric.functionAnalysis`; exceeding a resource limit is `error/limit_exceeded`,
+never truncated success. A numerical iteration ambiguity is `no_convergence`.
+Every new constant is shared with consumers in the registry numeric profile.
+
+The six search operations have independent `on_graph` checks. Roots use normal
+length `|y-f(x)|/max(1,|analytic slope|)` with finite one-sided secants when the
+AST derivative is unavailable; extrema use raw `|y-f(x)|`. Missing repeated
+slots do not suppress checks of defined outputs. No check certifies completeness
+or local extremality. Root residual noise reports for the fixture generator
+also use normal length; actual root acceptance keeps the stricter method-specific
+residual, and tangencies keep their separate normalized scalar decision.
+
+The `function_*` curves fixtures use analytical expected values for root
+selection, partial If, poles, jumps, tan, tangencies, fixed counts, constants,
+limits and upstream recovery. Authored AST coefficients, numeric case controls
+and function refs/domain retain full precision; numerical coordinates and
+samples keep the usual parity rounding. Polynomial close-root limitations are
+documented on the roots page. Some numerical Roots tangencies are intentionally
+retained even where GeoGebra's sampled search misses them; Newton basins and
+auto-growth of GeoGebra output elements are not promised.
+
+The `moduleGroup` field is loading metadata outside signature hashes. In
+addition to these seven operations it names `regions` for `region.by_boundary`
+and `function.area_between`, `expressions` for `point.expression`,
+`vector.expression`, `line.equation`, and `locus` for `point.on_locus`.
+The checker enforces this exact map. Earlier operation semantics and hashes,
+including the duplicated roots and reasons of registry 1.6, are unchanged.
+Each new operation has its own stepKind and Russian step phrase; Commands
+continue to use the existing deferred `unprintable_operation` behavior.
+The feature flag does not imply TypeScript parity or a new GeoGebra source
+reader; classic command rows and imported source support remain separate.
