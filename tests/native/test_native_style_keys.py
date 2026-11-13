@@ -13,7 +13,8 @@ from animageo.native.rendering import APPEARANCE_STYLE_KEYS, appearance_plan
 from tests.native.conftest import DocBuilder, num, ref, ref_list
 
 DRAWN = ('point', 'segment', 'line', 'ray', 'vector', 'circle', 'polygon', 'arc', 'sector', 'circlesegment', 'polyline',
-         'locus', 'angle', 'text', 'mark.right_angle', 'function', 'conic')     # registry 1.6: graphs, conics
+         'locus', 'angle', 'text', 'mark.right_angle', 'function', 'conic',     # registry 1.6: graphs, conics
+         'region')                                                              # registry 1.9: regions
 NOT_DRAWN = ('number', 'expr', 'template', 'mark.equal_segments', 'mark.equal_angles', 'mark.parallel')
 
 
