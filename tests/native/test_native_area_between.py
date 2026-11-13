@@ -245,3 +245,25 @@ def test_too_many_lobes_is_an_error():
     d = Doc().function('f', fn('sin', op('*', n(10), X))).area('S', 'f', a=0.1, b=21)
     _e, rec = region_of(d)
     assert rec['state'] == 'error' and rec['reason'] == 'limit_exceeded', rec
+
+
+# ── measure.area and measure.perimeter of a region ────────────────────────
+
+def _measured(doc):
+    doc.op('op_a', 'measure.area', {'of': ref('S')}, [('number', 'a', 'number')])
+    doc.op('op_p', 'measure.perimeter', {'of': ref('S')}, [('number', 'p', 'number')])
+    e = native.evaluate(doc.doc)
+    return e.elements['S'], e.elements['a'], e.elements['p']
+
+
+def test_measures_of_a_region():
+    s, a, p = _measured(Doc().function('f', poly(1, 0, -1)).area('S', 'f'))
+    assert a['state'] == 'defined' and a['value'] == {'value': s['value']['area'], 'unit': 'area'}
+    assert p['value']['unit'] == 'length'
+    assert p['value']['value'] == pytest.approx(2 + 2 * 1.4789428575445975, rel=1e-5)
+    assert p['value']['value'] == R.perimeter(s['value'])
+
+
+def test_measures_of_an_undefined_region_are_upstream():
+    _s, a, p = _measured(Doc().function('f', poly(1, 0, 1)).area('S', 'f'))
+    assert a['reason'] == 'upstream' and p['reason'] == 'upstream'

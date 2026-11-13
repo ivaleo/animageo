@@ -150,6 +150,70 @@
       "elementId": "T"
      }
     ]
+   },
+   "op_S_area": {
+    "id": "op_S_area",
+    "op": "measure.area",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "S"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "S_area"
+     }
+    ]
+   },
+   "op_S_len": {
+    "id": "op_S_len",
+    "op": "measure.perimeter",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "S"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "S_len"
+     }
+    ]
+   },
+   "op_T_area": {
+    "id": "op_T_area",
+    "op": "measure.area",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "T"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "T_area"
+     }
+    ]
+   },
+   "op_T_len": {
+    "id": "op_T_len",
+    "op": "measure.perimeter",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "T"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "T_len"
+     }
+    ]
    }
   },
   "elements": {
@@ -215,6 +279,42 @@
      "operationId": "op_T",
      "slot": "region"
     }
+   },
+   "S_area": {
+    "id": "S_area",
+    "type": "number",
+    "displayName": "S_area",
+    "producer": {
+     "operationId": "op_S_area",
+     "slot": "number"
+    }
+   },
+   "S_len": {
+    "id": "S_len",
+    "type": "number",
+    "displayName": "S_len",
+    "producer": {
+     "operationId": "op_S_len",
+     "slot": "number"
+    }
+   },
+   "T_area": {
+    "id": "T_area",
+    "type": "number",
+    "displayName": "T_area",
+    "producer": {
+     "operationId": "op_T_area",
+     "slot": "number"
+    }
+   },
+   "T_len": {
+    "id": "T_len",
+    "type": "number",
+    "displayName": "T_len",
+    "producer": {
+     "operationId": "op_T_len",
+     "slot": "number"
+    }
    }
   },
   "inputs": {
@@ -249,6 +349,18 @@
       "slot": "first"
      }
     },
+    "S_area": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "S"
+    },
+    "S_len": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "S"
+    },
     "T": {
      "state": "undefined",
      "type": "region",
@@ -256,6 +368,18 @@
      "detail": {
       "slot": "first"
      }
+    },
+    "T_area": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "T"
+    },
+    "T_len": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "T"
     },
     "U": {
      "state": "undefined",
@@ -1675,6 +1799,22 @@
       "area": 3.464065203
      }
     },
+    "S_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 3.464065203,
+      "unit": "area"
+     }
+    },
+    "S_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 8.343262196,
+      "unit": "length"
+     }
+    },
     "T": {
      "state": "defined",
      "type": "region",
@@ -2750,6 +2890,22 @@
        ]
       ],
       "area": 4.5
+     }
+    },
+    "T_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.5,
+      "unit": "area"
+     }
+    },
+    "T_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 10.242640687,
+      "unit": "length"
      }
     },
     "U": {
@@ -4187,6 +4343,22 @@
       "area": 4.666666667
      }
     },
+    "S_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.666666667,
+      "unit": "area"
+     }
+    },
+    "S_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 9.167840773,
+      "unit": "length"
+     }
+    },
     "T": {
      "state": "undefined",
      "type": "region",
@@ -4194,6 +4366,18 @@
      "detail": {
       "slot": "first"
      }
+    },
+    "T_area": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "T"
+    },
+    "T_len": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "T"
     },
     "U": {
      "state": "undefined",

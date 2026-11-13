@@ -245,6 +245,13 @@ class _Doc:
             args['lobe'] = _num(lobe)
         return self.op('op_' + el_id, 'function.area_between', args, [('region', el_id, 'region')])
 
+    def measures(self, *regions):
+        """``measure.area`` (``<id>_area``) and ``measure.perimeter`` (``<id>_len``) of each region."""
+        for el_id in regions:
+            self.op(f'op_{el_id}_area', 'measure.area', {'of': _ref(el_id)}, [('number', el_id + '_area', 'number')])
+            self.op(f'op_{el_id}_len', 'measure.perimeter', {'of': _ref(el_id)}, [('number', el_id + '_len', 'number')])
+        return self
+
 
 def _cases(*rows):
     """``(name, {elementId: input})`` → parity scene cases."""
@@ -610,38 +617,53 @@ def _path_scenes():
 
 def _area_scenes():
     """Registry 1.9: ``function.area_between`` — lobes, limits, kinds of the second
-    boundary and every status of the operation."""
+    boundary and every status of the operation, with the area and the perimeter
+    of each region."""
     out = []
-    # 1. c − x² and the axis: the lobe and the area between two limits
+    # 1. c − x² and the axis: the lobe, the second lobe that is not there, two limits
     d = _Doc('region_parabola_axis', (-4, -3, 4, 3)).number('c', 1).free('A', -2, 0).free('B', 0.5, 0)
-    d.function('f', o('-', r(0), sq(X)), 'c').area('S', 'f').area('T', 'f', a='A', b='B')
+    d.function('f', o('-', r(0), sq(X)), 'c').area('S', 'f').area('T', 'f', a='A', b='B').area('U', 'f', lobe=2)
+    d.measures('S', 'T')
     out.append((d, _cases(('base', None), ('wide', {'c': N(4)}), ('below', {'c': N(-1)}),
-                          ('touching', {'c': N(0)}), ('reversed', {'A': P(1.5, 0), 'B': P(-1, 0)}))))
-    # 2. two graphs: x + c over x²; x³ and x, the second lobe
+                          ('touching', {'c': N(0)}), ('nearly', {'c': N(0.01)}),
+                          ('reversed', {'A': P(1.5, 0), 'B': P(-1, 0)}))))
+    # 2. two graphs: x + c over x²; x³ and x, the second lobe; sin and cos by lobes; f ≡ g
     d = _Doc('region_two_graphs', (-4, -2, 4, 6)).number('c', 2)
     d.function('f', o('+', X, r(0)), 'c').function('g', sq(X)).area('S', 'f', 'g')
     d.function('k', o('^', X, n(3))).function('m', X).area('U', 'k', 'm', lobe=2)
+    d.function('s', call('sin', X)).function('q', call('cos', X)).area('W', 's', 'q').area('W2', 's', 'q', lobe=2)
+    d.function('e', o('*', n(1), X)).area('Z', 'm', 'e')
+    d.measures('S', 'U', 'W')
     out.append((d, _cases(('base', None), ('narrow', {'c': N(0)}), ('apart', {'c': N(-1)}))))
-    # 3. a graph and a line: the lobe, limits at the common points, literal limits
+    # 3. a graph and a line: the lobe; limits at the common points, on the graph, literal
     d = _Doc('region_graph_line', (-4, -2, 4, 8)).free('P', -1, 1).free('Q', 2, 4).line('l', 'P', 'Q')
     d.function('f', sq(X)).area('S', 'f', 'l').graph_line('X', 'f', 'l')
     d.area('T', 'f', 'l', a='X1', b='X2').area('V', 'f', 'l', a=-2, b=3)
-    out.append((d, _cases(('base', None), ('vertical', {'Q': P(-1, 4)}), ('below', {'P': P(0, -1), 'Q': P(1, -1)}))))
-    # 4. a pole and a step between the limits
+    d.on_graph('Ga', 'f', -0.5).on_graph('Gb', 'f', 1.5).area('L', 'f', 'l', a='Ga', b='Gb')
+    d.measures('S', 'V', 'L')
+    out.append((d, _cases(('base', None), ('vertical', {'Q': P(-1, 4)}), ('below', {'P': P(0, -1), 'Q': P(1, -1)}),
+                          ('same_limits', {'Gb': T(-0.5)}))))
+    # 4. a pole, a step and tan between the limits; a steep atan is continuous
     d = _Doc('region_discontinuous', (-4, -4, 4, 4)).number('a', -1).number('b', 2).number('c', 0)
     d.function('f', o('/', n(1), X)).area('S', 'f', a='a', b='b')
     d.function('g', {'if': [{'cmp': '<', 'args': [X, r(0)]}, n(1), n(2)]}, 'c').area('T', 'g', a='a', b='b')
-    out.append((d, _cases(('across', None), ('right', {'a': N(0.5)}), ('step_left', {'c': N(-3)}))))
+    d.function('t', call('tan', X)).area('Z', 't', a=1, b='b')
+    d.function('h', call('atan', o('*', n(50), X))).area('V', 'h', a='a', b=1)
+    d.measures('S', 'V')
+    out.append((d, _cases(('across', None), ('right', {'a': N(0.5)}), ('step_left', {'c': N(-3)}),
+                          ('before_pole', {'b': N(1.5)}))))
     # 5. out of the domain: √x and the axis, x on [0, 3]
     d = _Doc('region_domain', (-2, -1, 6, 4)).number('a', -1).number('b', 1)
     d.function('f', call('sqrt', X)).area('S', 'f', a='a', b='b').area('U', 'f')
     d.function('g', X, lo=0, hi=3).area('T', 'g', a='a', b='b')
+    d.measures('S', 'T')
     out.append((d, _cases(('base', None), ('inside', {'a': N(0), 'b': N(3)}), ('beyond', {'a': N(1), 'b': N(4)}))))
     # 6. far from the origin: a(1 − ((x − m)/10)²), flat enough for the jump test at x ≈ 10⁶
     d = _Doc('region_far', (999900, -100, 1000100, 100)).number('a', 0.5).number('m', 1000000)
     d.free('A', 999995, 0).free('B', 1000012, 0)
     d.function('f', o('*', r(0), o('-', n(1), sq(o('/', o('-', X, r(1)), n(10))))), 'a', 'm')
     d.area('S', 'f').area('T', 'f', a='A', b='B')
+    d.measures('S', 'T')
     out.append((d, _cases(('base', None), ('below', {'a': N(-0.5)}), ('flat', {'a': N(0.25)}))))
     return out
 

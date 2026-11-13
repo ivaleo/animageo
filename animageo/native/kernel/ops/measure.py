@@ -3,12 +3,14 @@
 ``length``, ``distance``, ``perimeter``, ``radius``, ``circumference`` give
 ``unit: "length"``, ``area`` gives ``"area"``, ``angle`` gives ``"angle"``
 (radians).
+Since registry 1.9 ``area`` and ``perimeter`` also measure a ``region``.
 """
 from __future__ import annotations
 
 import math
 
 from ..paths import distance_to_path
+from ..region import perimeter as region_perimeter
 from . import op
 from .angle import TWO_PI
 
@@ -48,6 +50,8 @@ def area(args, ctx):
     elif of.type == 'circlesegment':
         sweep = v['a1'] - v['a0']
         a = v['r'] * v['r'] * (sweep - math.sin(sweep)) / 2
+    elif of.type == 'region':
+        a = v['area']                                 # registry 1.9: kernel/region.py
     else:
         a = v['r'] * v['r'] * (v['a1'] - v['a0']) / 2
     return {'number': {'value': a, 'unit': 'area'}}
@@ -68,6 +72,8 @@ def perimeter(args, ctx):
     elif of.type == 'circlesegment':
         sweep = v['a1'] - v['a0']
         p = v['r'] * (sweep + 2 * abs(math.sin(sweep / 2)))
+    elif of.type == 'region':
+        p = region_perimeter(v)                       # registry 1.9: every ring
     else:
         p = v['r'] * (v['a1'] - v['a0']) + 2 * v['r']
     return {'number': _length(p)}

@@ -162,6 +162,70 @@
       "elementId": "T"
      }
     ]
+   },
+   "op_S_area": {
+    "id": "op_S_area",
+    "op": "measure.area",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "S"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "S_area"
+     }
+    ]
+   },
+   "op_S_len": {
+    "id": "op_S_len",
+    "op": "measure.perimeter",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "S"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "S_len"
+     }
+    ]
+   },
+   "op_T_area": {
+    "id": "op_T_area",
+    "op": "measure.area",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "T"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "T_area"
+     }
+    ]
+   },
+   "op_T_len": {
+    "id": "op_T_len",
+    "op": "measure.perimeter",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "T"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "T_len"
+     }
+    ]
    }
   },
   "elements": {
@@ -226,6 +290,42 @@
     "producer": {
      "operationId": "op_T",
      "slot": "region"
+    }
+   },
+   "S_area": {
+    "id": "S_area",
+    "type": "number",
+    "displayName": "S_area",
+    "producer": {
+     "operationId": "op_S_area",
+     "slot": "number"
+    }
+   },
+   "S_len": {
+    "id": "S_len",
+    "type": "number",
+    "displayName": "S_len",
+    "producer": {
+     "operationId": "op_S_len",
+     "slot": "number"
+    }
+   },
+   "T_area": {
+    "id": "T_area",
+    "type": "number",
+    "displayName": "T_area",
+    "producer": {
+     "operationId": "op_T_area",
+     "slot": "number"
+    }
+   },
+   "T_len": {
+    "id": "T_len",
+    "type": "number",
+    "displayName": "T_len",
+    "producer": {
+     "operationId": "op_T_len",
+     "slot": "number"
     }
    }
   },
@@ -1344,6 +1444,22 @@
        ]
       ],
       "area": 6.666666667
+     }
+    },
+    "S_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 6.666666667,
+      "unit": "area"
+     }
+    },
+    "S_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 40.033283005,
+      "unit": "length"
      }
     },
     "T": {
@@ -3489,6 +3605,22 @@
       "area": 5.838333333
      }
     },
+    "T_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 5.838333333,
+      "unit": "area"
+     }
+    },
+    "T_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 34.625820448,
+      "unit": "length"
+     }
+    },
     "a": {
      "state": "defined",
      "type": "number",
@@ -4791,6 +4923,22 @@
        ]
       ],
       "area": 6.666666667
+     }
+    },
+    "S_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 6.666666667,
+      "unit": "area"
+     }
+    },
+    "S_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 40.033283005,
+      "unit": "length"
      }
     },
     "T": {
@@ -6936,6 +7084,22 @@
       "area": 5.838333333
      }
     },
+    "T_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 5.838333333,
+      "unit": "area"
+     }
+    },
+    "T_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 34.625820448,
+      "unit": "length"
+     }
+    },
     "a": {
      "state": "defined",
      "type": "number",
@@ -8238,6 +8402,22 @@
        ]
       ],
       "area": 3.333333333
+     }
+    },
+    "S_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 3.333333333,
+      "unit": "area"
+     }
+    },
+    "S_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 40.008330084,
+      "unit": "length"
      }
     },
     "T": {
@@ -10381,6 +10561,22 @@
        ]
       ],
       "area": 2.919166667
+     }
+    },
+    "T_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.919166667,
+      "unit": "area"
+     }
+    },
+    "T_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 34.305216848,
+      "unit": "length"
      }
     },
     "a": {
