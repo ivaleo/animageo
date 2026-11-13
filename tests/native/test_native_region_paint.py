@@ -212,3 +212,40 @@ def test_jsxgraph_draws_a_static_filled_curve():
     stmt = next(s for s in model.statements if f'"{elem.name}"' in s and '"curve"' in s)
     assert stmt.count('NaN') == 2           # x and y: one break between the two rings
     assert 'fillColor' in stmt and 'fillOpacity' in stmt
+
+
+def boundary_annulus_doc(appearance=None):
+    """Registry 1.9 rc2: a disc of radius 2 with a hole of radius 1 by ``region.by_boundary``."""
+    from tests.native.conftest import ref_list
+    d = Doc(bounds=(-3, -3, 3, 3)).free('O', 0, 0).free('T', 2, 0).free('U', 1, 0)
+    d.circle('big', 'O', 'T').circle('small', 'O', 'U')
+    d.op('op_S', 'region.by_boundary', {'curves': ref_list(), 'from': ref_list(), 'to': ref_list(),
+                                        'inside': ref_list('big'), 'outside': ref_list('small')},
+         [('region', 'S', 'region')])
+    d.doc['appearance'] = {'big': {'visible': False}, 'small': {'visible': False}, 'O': {'visible': False},
+                           'T': {'visible': False}, 'U': {'visible': False}, **(appearance or {})}
+    return d.doc
+
+
+def test_the_bridge_draws_a_boundary_region_with_its_hole():
+    """The classic ``Region`` of a ``region.by_boundary`` annulus (§9.3): the
+    colour and the opacity of its paint, the hole empty by nonzero."""
+    pytest.importorskip('manim')
+    from manim.camera.camera import Camera
+    from animageo.animageo import AnimaGeoScene
+    from animageo.geo.lib_elements import Region
+    doc = boundary_annulus_doc({'S': FILL_TOOL})
+    paint = native.resolve_paint(doc)['elements']['S']
+    scene = AnimaGeoScene()
+    scene.loadDocument(doc, export={'size': {'width': 300, 'height': 300}})
+    elem = next(e for e in scene.geo.elements if isinstance(e.data, Region))
+    assert elem.data.area == pytest.approx(3 * math.pi)
+    fill = scene.CreateMObject(elem)[0]
+    assert len(fill.get_subpaths()) == 2
+    assert fill.get_fill_color().to_hex().lower() == paint['fill']['color'].lower() == '#3366cc'
+    assert fill.get_fill_opacity() == pytest.approx(paint['fill']['opacity'])
+    camera = Camera(pixel_width=200, pixel_height=200, frame_width=5, frame_height=5, background_color='#ffffff')
+    camera.capture_mobject(fill)
+    image = np.array(camera.get_image().convert('RGB'))
+    assert tuple(image[100, 100]) == (255, 255, 255)
+    assert tuple(image[100, 160]) == _rgb('#3366cc')

@@ -1,0 +1,306 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "region_carriers",
+ "registry": "1.9",
+ "generatedBy": "animageo 1.12.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "region_carriers",
+  "operationRegistryVersion": "1.9",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_s": {
+    "id": "op_s",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "s"
+     }
+    ]
+   },
+   "op_k": {
+    "id": "op_k",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "y"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 4
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "k"
+     }
+    ]
+   },
+   "op_R": {
+    "id": "op_R",
+    "op": "region.by_boundary",
+    "args": {
+     "curves": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "s"
+       },
+       {
+        "kind": "ref",
+        "elementId": "k"
+       }
+      ]
+     },
+     "from": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      ]
+     },
+     "to": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      ]
+     },
+     "inside": {
+      "kind": "list",
+      "items": []
+     },
+     "outside": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "region",
+      "elementId": "R"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "s": {
+    "id": "s",
+    "type": "segment",
+    "displayName": "s",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "segment"
+    }
+   },
+   "k": {
+    "id": "k",
+    "type": "conic",
+    "displayName": "k",
+    "producer": {
+     "operationId": "op_k",
+     "slot": "conic"
+    }
+   },
+   "R": {
+    "id": "R",
+    "type": "region",
+    "displayName": "R",
+    "producer": {
+     "operationId": "op_R",
+     "slot": "region"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     -2.0,
+     0.0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     2.0,
+     0.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "base",
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "R": {
+     "state": "unsupported",
+     "type": "region",
+     "reason": "unsupported_signature",
+     "detail": {
+      "slot": "curves.1"
+     }
+    },
+    "k": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 2.0
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       -2.0,
+       0.0
+      ],
+      "b": [
+       2.0,
+       0.0
+      ],
+      "length": 4.0
+     }
+    }
+   },
+   "checks": {
+    "op_s:ends": "passed"
+   }
+  }
+ ]
+}

@@ -245,6 +245,18 @@ class _Doc:
             args['lobe'] = _num(lobe)
         return self.op('op_' + el_id, 'function.area_between', args, [('region', el_id, 'region')])
 
+    def meet_lines(self, el_id, first, second):
+        return self.op('op_' + el_id, 'intersect.line_line', {'first': _ref(first), 'second': _ref(second)},
+                       [('point', el_id, 'point')])
+
+    def line_circle(self, prefix, line, circle):
+        return self.op('op_' + prefix, 'intersect.line_circle', {'line': _ref(line), 'circle': _ref(circle)},
+                       [('first', prefix + '1', 'point'), ('second', prefix + '2', 'point')])
+
+    def polygon(self, el_id, *vertices):
+        return self.op('op_' + el_id, 'polygon.by_points', {'vertices': {'kind': 'list', 'items': [_ref(v) for v in vertices]}},
+                       [('polygon', el_id, 'polygon')])
+
     def boundary(self, el_id, curves=(), froms=(), tos=(), inside=(), outside=()):
         """Registry 1.9: ``region.by_boundary`` over lists of element IDs."""
         def refs(ids):
@@ -685,10 +697,82 @@ def _boundary_scenes():
     and arcs, contours, and every status of the operation, with the area and the
     perimeter of each region."""
     out = []
-    # 1. the triangle of three lines through its free vertices
-    d = _Doc('region_lines_flip', (-5, -5, 5, 5)).free('A', 0, 0).free('B', 4, 0).free('C', 0, 3)
+    # 1. a triangle of lines through its free vertices: collinear, turned over, a
+    #    vertex off its line; three lines with their intersections: concurrent, beyond
+    d = _Doc('region_lines_flip', (-5, -5, 5, 5)).free('A', 0, 0).free('B', 4, 0).free('C', 0, 3).free('G', 0, 3)
     d.line('c', 'A', 'B').line('a', 'B', 'C').line('b', 'C', 'A')
-    d.boundary('R', ['c', 'a', 'b'], ['A', 'B', 'C'], ['B', 'C', 'A']).measures('R')
+    d.boundary('R', ['c', 'a', 'b'], ['A', 'B', 'C'], ['B', 'C', 'A'])
+    d.boundary('V', ['c', 'a', 'b'], ['A', 'B', 'G'], ['B', 'G', 'A'])
+    d.free('P1', -1, 0).free('P2', 1, 0).free('Q1', 0, -1).free('Q2', 0, 1).free('S1', 4, -1).free('S2', 2, 1)
+    d.line('lc', 'P1', 'P2').line('lb', 'Q1', 'Q2').line('la', 'S1', 'S2')
+    d.meet_lines('X', 'lb', 'lc').meet_lines('Y', 'lc', 'la').meet_lines('Z', 'la', 'lb')
+    d.boundary('T', ['lc', 'la', 'lb'], ['X', 'Y', 'Z'], ['Y', 'Z', 'X']).measures('R', 'T')
+    out.append((d, _cases(('base', None), ('collinear', {'C': P(2, 0)}), ('flipped', {'C': P(1, -2)}),
+                          ('off_line', {'G': P(0.5, 3)}), ('concurrent', {'S1': P(1, -1), 'S2': P(-1, 1)}),
+                          ('opposite', {'S1': P(-1, -1), 'S2': P(-3, 1)}))))
+    # 2. two crossing segments and a circle (the owner's example 2): X the crossing,
+    #    P and Q on the circle; the vertical segment moves to the tangent and beyond
+    d = _Doc('region_owner2').free('O', 0, 0).free('T', 5, 0).circle('k', 'O', 'T')
+    d.free('A', -2, 0).free('B', 7, 0).free('C', 0, -2).free('D', 0, 7)
+    d.segment('ab', 'A', 'B').segment('cd', 'C', 'D').meet_lines('X', 'ab', 'cd')
+    d.line_circle('P', 'ab', 'k').line_circle('Q', 'cd', 'k')
+    d.boundary('R', ['ab', 'k', 'cd'], ['X', 'P2', 'X'], ['P2', 'Q2', 'Q2']).measures('R')
+    out.append((d, _cases(('base', None), ('moved', {'C': P(3, -2), 'D': P(3, 7)}),
+                          ('tilted', {'D': P(1, 7)}), ('tangent', {'C': P(5, -2), 'D': P(5, 7)}),
+                          ('apart', {'C': P(6, -2), 'D': P(6, 7)}), ('cut', {'C': P(0, 1)}))))
+    # 3. the lune of two circles (r 5 and 3): the part of the small one outside the
+    #    big one; internal tangency, then no common points
+    d = _Doc('region_lune').free('O1', 0, 0).free('T1', 5, 0).free('O2', 4, 0).free('T2', 7, 0)
+    d.circle('c1', 'O1', 'T1').circle('c2', 'O2', 'T2').circles('V', 'c1', 'c2')
+    d.boundary('L', ['c2', 'c1'], ['V2', 'V2'], ['V1', 'V1']).measures('L')
+    out.append((d, _cases(('base', None), ('wide', {'O2': P(6, 0), 'T2': P(9, 0)}),
+                          ('tangent', {'O2': P(2, 0), 'T2': P(5, 0)}), ('inside', {'O2': P(1, 0), 'T2': P(4, 0)}))))
+    # 4. the lens of two circles of radius 5: external tangency, apart
+    d = _Doc('region_lens').free('O1', 0, 0).free('T1', 5, 0).free('O2', 6, 0).free('T2', 11, 0)
+    d.circle('c1', 'O1', 'T1').circle('c2', 'O2', 'T2').circles('V', 'c1', 'c2')
+    d.boundary('N', ['c1', 'c2'], ['V2', 'V1'], ['V1', 'V2']).measures('N')
+    out.append((d, _cases(('base', None), ('deep', {'O2': P(2, 0), 'T2': P(7, 0)}),
+                          ('tangent', {'O2': P(10, 0), 'T2': P(15, 0)}), ('apart', {'O2': P(11, 0), 'T2': P(16, 0)}))))
+    # 5. an annulus of two contours and an island in its hole; the hole crosses,
+    #    touches and leaves its ring
+    d = _Doc('region_annulus').free('O', 0, 0).free('T', 5, 0).circle('big', 'O', 'T')
+    d.free('H', 1, 0).free('U', 3, 0).free('W', 2, 0).circle('hole', 'H', 'U').circle('isle', 'H', 'W')
+    d.boundary('R', inside=['big'], outside=['hole']).boundary('I', inside=['big', 'isle'], outside=['hole'])
+    d.measures('R', 'I')
+    out.append((d, _cases(('base', None), ('crossing', {'H': P(4, 0), 'U': P(6, 0), 'W': P(5, 0)}),
+                          ('touching', {'H': P(3, 0), 'U': P(5, 0), 'W': P(4, 0)}),
+                          ('out', {'H': P(9, 0), 'U': P(11, 0), 'W': P(10, 0)}))))
+    # 6. a square with a round hole; a sector, a circle segment and a clockwise polygon
+    d = _Doc('region_polygon_hole').free('A', -4, -4).free('B', 4, -4).free('C', 4, 4).free('D', -4, 4)
+    d.polygon('sq', 'A', 'B', 'C', 'D').free('H', 0, 0).free('U', 2, 0).circle('hole', 'H', 'U')
+    d.boundary('R', inside=['sq'], outside=['hole'])
+    d.free('M', -8, 6).free('Ma', -5, 6).free('Mb', -8, 9)
+    d.op('op_s', 'sector.center_two_points', {'center': _ref('M'), 'a': _ref('Ma'), 'b': _ref('Mb')},
+         [('sector', 's', 'sector')])
+    d.free('N', 6, 6).free('Na', 9, 6).free('Nb', 6, 9).circle('kn', 'N', 'Na')
+    d.op('op_g', 'sector.segment', {'circle': _ref('kn'), 'a': _ref('Na'), 'b': _ref('Nb')},
+         [('segment', 'g', 'circlesegment')])
+    d.free('W1', -9, -9).free('W2', -9, -6).free('W3', -6, -6).free('W4', -6, -9).polygon('cw', 'W1', 'W2', 'W3', 'W4')
+    d.boundary('S', inside=['s']).boundary('G', inside=['g']).boundary('Q', inside=['cw'])
+    d.measures('R', 'S', 'G', 'Q')
+    out.append((d, _cases(('base', None), ('moved', {'H': P(-1, 1), 'U': P(1, 1)}),
+                          ('crossing', {'H': P(3, 0), 'U': P(5, 0)}))))
+    # 7. a piece on an arc: inside its arc, beyond its end, off its circle; a whole
+    #    circle from a point to itself
+    d = _Doc('region_arc_parts').free('O', 0, 0).free('E', 5, 0).free('F', -3, 4).free('K', 0, 5)
+    d.arc('k', 'O', 'E', 'F').segment('ko', 'K', 'O').segment('oe', 'O', 'E')
+    d.boundary('R', ['k', 'ko', 'oe'], ['E', 'K', 'O'], ['K', 'O', 'E']).circle('c', 'O', 'F')
+    d.boundary('W', ['c'], ['F'], ['F']).measures('R', 'W')
+    out.append((d, _cases(('base', None), ('beyond', {'K': P(-4, -3)}), ('off', {'K': P(0, 4)}))))
+    # 8. carriers: a conic is not a carrier yet; a broken chain; two point elements at one joint
+    eq = o('-', o('+', sq(X), sq(Y)), n(4))
+    d = _Doc('region_carriers').free('A', -2, 0).free('B', 2, 0).segment('s', 'A', 'B').equation('k', eq)
+    d.boundary('R', ['s', 'k'], ['A', 'A'], ['B', 'B'])
+    out.append((d, _cases(('base', None),)))
+    d = _Doc('region_chain_errors').free('A', 0, 0).free('B', 4, 0).free('C', 0, 3).free('C2', 0, 3)
+    d.segment('ab', 'A', 'B').segment('bc', 'B', 'C').segment('ca', 'C', 'A')
+    d.boundary('R', ['ab', 'bc'], ['A', 'B'], ['B', 'C'])
+    d.boundary('J', ['ab', 'bc', 'ca'], ['A', 'B', 'C2'], ['B', 'C', 'A'])
     out.append((d, _cases(('base', None),)))
     return out
 

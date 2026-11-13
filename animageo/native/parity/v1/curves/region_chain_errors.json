@@ -1,0 +1,468 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "region_chain_errors",
+ "registry": "1.9",
+ "generatedBy": "animageo 1.12.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "region_chain_errors",
+  "operationRegistryVersion": "1.9",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_C": {
+    "id": "op_C",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C"
+     }
+    ]
+   },
+   "op_C2": {
+    "id": "op_C2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "C2"
+     }
+    ]
+   },
+   "op_ab": {
+    "id": "op_ab",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "ab"
+     }
+    ]
+   },
+   "op_bc": {
+    "id": "op_bc",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "B"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "C"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "bc"
+     }
+    ]
+   },
+   "op_ca": {
+    "id": "op_ca",
+    "op": "segment.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "C"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "A"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "segment",
+      "elementId": "ca"
+     }
+    ]
+   },
+   "op_R": {
+    "id": "op_R",
+    "op": "region.by_boundary",
+    "args": {
+     "curves": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "ab"
+       },
+       {
+        "kind": "ref",
+        "elementId": "bc"
+       }
+      ]
+     },
+     "from": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      ]
+     },
+     "to": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      ]
+     },
+     "inside": {
+      "kind": "list",
+      "items": []
+     },
+     "outside": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "region",
+      "elementId": "R"
+     }
+    ]
+   },
+   "op_J": {
+    "id": "op_J",
+    "op": "region.by_boundary",
+    "args": {
+     "curves": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "ab"
+       },
+       {
+        "kind": "ref",
+        "elementId": "bc"
+       },
+       {
+        "kind": "ref",
+        "elementId": "ca"
+       }
+      ]
+     },
+     "from": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       {
+        "kind": "ref",
+        "elementId": "C2"
+       }
+      ]
+     },
+     "to": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      ]
+     },
+     "inside": {
+      "kind": "list",
+      "items": []
+     },
+     "outside": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "region",
+      "elementId": "J"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "C": {
+    "id": "C",
+    "type": "point",
+    "displayName": "C",
+    "producer": {
+     "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "C2": {
+    "id": "C2",
+    "type": "point",
+    "displayName": "C2",
+    "producer": {
+     "operationId": "op_C2",
+     "slot": "point"
+    }
+   },
+   "ab": {
+    "id": "ab",
+    "type": "segment",
+    "displayName": "ab",
+    "producer": {
+     "operationId": "op_ab",
+     "slot": "segment"
+    }
+   },
+   "bc": {
+    "id": "bc",
+    "type": "segment",
+    "displayName": "bc",
+    "producer": {
+     "operationId": "op_bc",
+     "slot": "segment"
+    }
+   },
+   "ca": {
+    "id": "ca",
+    "type": "segment",
+    "displayName": "ca",
+    "producer": {
+     "operationId": "op_ca",
+     "slot": "segment"
+    }
+   },
+   "R": {
+    "id": "R",
+    "type": "region",
+    "displayName": "R",
+    "producer": {
+     "operationId": "op_R",
+     "slot": "region"
+    }
+   },
+   "J": {
+    "id": "J",
+    "type": "region",
+    "displayName": "J",
+    "producer": {
+     "operationId": "op_J",
+     "slot": "region"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0.0,
+     0.0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     4.0,
+     0.0
+    ]
+   },
+   "C": {
+    "kind": "point",
+    "value": [
+     0.0,
+     3.0
+    ]
+   },
+   "C2": {
+    "kind": "point",
+    "value": [
+     0.0,
+     3.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "base",
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "C2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "J": {
+     "state": "error",
+     "type": "region",
+     "reason": "schema"
+    },
+    "R": {
+     "state": "error",
+     "type": "region",
+     "reason": "schema"
+    },
+    "ab": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       4.0,
+       0.0
+      ],
+      "length": 4.0
+     }
+    },
+    "bc": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       4.0,
+       0.0
+      ],
+      "b": [
+       0.0,
+       3.0
+      ],
+      "length": 5.0
+     }
+    },
+    "ca": {
+     "state": "defined",
+     "type": "segment",
+     "value": {
+      "a": [
+       0.0,
+       3.0
+      ],
+      "b": [
+       0.0,
+       0.0
+      ],
+      "length": 3.0
+     }
+    }
+   },
+   "checks": {
+    "op_ab:ends": "passed",
+    "op_bc:ends": "passed",
+    "op_ca:ends": "passed"
+   }
+  }
+ ]
+}

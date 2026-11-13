@@ -41,6 +41,17 @@
      }
     ]
    },
+   "op_G": {
+    "id": "op_G",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "G"
+     }
+    ]
+   },
    "op_c": {
     "id": "op_c",
     "op": "line.by_points",
@@ -172,6 +183,334 @@
      }
     ]
    },
+   "op_V": {
+    "id": "op_V",
+    "op": "region.by_boundary",
+    "args": {
+     "curves": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "c"
+       },
+       {
+        "kind": "ref",
+        "elementId": "a"
+       },
+       {
+        "kind": "ref",
+        "elementId": "b"
+       }
+      ]
+     },
+     "from": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       {
+        "kind": "ref",
+        "elementId": "G"
+       }
+      ]
+     },
+     "to": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       {
+        "kind": "ref",
+        "elementId": "G"
+       },
+       {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      ]
+     },
+     "inside": {
+      "kind": "list",
+      "items": []
+     },
+     "outside": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "region",
+      "elementId": "V"
+     }
+    ]
+   },
+   "op_P1": {
+    "id": "op_P1",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P1"
+     }
+    ]
+   },
+   "op_P2": {
+    "id": "op_P2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P2"
+     }
+    ]
+   },
+   "op_Q1": {
+    "id": "op_Q1",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Q1"
+     }
+    ]
+   },
+   "op_Q2": {
+    "id": "op_Q2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Q2"
+     }
+    ]
+   },
+   "op_S1": {
+    "id": "op_S1",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "S1"
+     }
+    ]
+   },
+   "op_S2": {
+    "id": "op_S2",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "S2"
+     }
+    ]
+   },
+   "op_lc": {
+    "id": "op_lc",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "P1"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "P2"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "lc"
+     }
+    ]
+   },
+   "op_lb": {
+    "id": "op_lb",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "Q1"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "Q2"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "lb"
+     }
+    ]
+   },
+   "op_la": {
+    "id": "op_la",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "S1"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "S2"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "la"
+     }
+    ]
+   },
+   "op_X": {
+    "id": "op_X",
+    "op": "intersect.line_line",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "lb"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "lc"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "X"
+     }
+    ]
+   },
+   "op_Y": {
+    "id": "op_Y",
+    "op": "intersect.line_line",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "lc"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "la"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Y"
+     }
+    ]
+   },
+   "op_Z": {
+    "id": "op_Z",
+    "op": "intersect.line_line",
+    "args": {
+     "first": {
+      "kind": "ref",
+      "elementId": "la"
+     },
+     "second": {
+      "kind": "ref",
+      "elementId": "lb"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "Z"
+     }
+    ]
+   },
+   "op_T": {
+    "id": "op_T",
+    "op": "region.by_boundary",
+    "args": {
+     "curves": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "lc"
+       },
+       {
+        "kind": "ref",
+        "elementId": "la"
+       },
+       {
+        "kind": "ref",
+        "elementId": "lb"
+       }
+      ]
+     },
+     "from": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "X"
+       },
+       {
+        "kind": "ref",
+        "elementId": "Y"
+       },
+       {
+        "kind": "ref",
+        "elementId": "Z"
+       }
+      ]
+     },
+     "to": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "Y"
+       },
+       {
+        "kind": "ref",
+        "elementId": "Z"
+       },
+       {
+        "kind": "ref",
+        "elementId": "X"
+       }
+      ]
+     },
+     "inside": {
+      "kind": "list",
+      "items": []
+     },
+     "outside": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "region",
+      "elementId": "T"
+     }
+    ]
+   },
    "op_R_area": {
     "id": "op_R_area",
     "op": "measure.area",
@@ -203,6 +542,38 @@
       "elementId": "R_len"
      }
     ]
+   },
+   "op_T_area": {
+    "id": "op_T_area",
+    "op": "measure.area",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "T"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "T_area"
+     }
+    ]
+   },
+   "op_T_len": {
+    "id": "op_T_len",
+    "op": "measure.perimeter",
+    "args": {
+     "of": {
+      "kind": "ref",
+      "elementId": "T"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "T_len"
+     }
+    ]
    }
   },
   "elements": {
@@ -230,6 +601,15 @@
     "displayName": "C",
     "producer": {
      "operationId": "op_C",
+     "slot": "point"
+    }
+   },
+   "G": {
+    "id": "G",
+    "type": "point",
+    "displayName": "G",
+    "producer": {
+     "operationId": "op_G",
      "slot": "point"
     }
    },
@@ -269,6 +649,132 @@
      "slot": "region"
     }
    },
+   "V": {
+    "id": "V",
+    "type": "region",
+    "displayName": "V",
+    "producer": {
+     "operationId": "op_V",
+     "slot": "region"
+    }
+   },
+   "P1": {
+    "id": "P1",
+    "type": "point",
+    "displayName": "P1",
+    "producer": {
+     "operationId": "op_P1",
+     "slot": "point"
+    }
+   },
+   "P2": {
+    "id": "P2",
+    "type": "point",
+    "displayName": "P2",
+    "producer": {
+     "operationId": "op_P2",
+     "slot": "point"
+    }
+   },
+   "Q1": {
+    "id": "Q1",
+    "type": "point",
+    "displayName": "Q1",
+    "producer": {
+     "operationId": "op_Q1",
+     "slot": "point"
+    }
+   },
+   "Q2": {
+    "id": "Q2",
+    "type": "point",
+    "displayName": "Q2",
+    "producer": {
+     "operationId": "op_Q2",
+     "slot": "point"
+    }
+   },
+   "S1": {
+    "id": "S1",
+    "type": "point",
+    "displayName": "S1",
+    "producer": {
+     "operationId": "op_S1",
+     "slot": "point"
+    }
+   },
+   "S2": {
+    "id": "S2",
+    "type": "point",
+    "displayName": "S2",
+    "producer": {
+     "operationId": "op_S2",
+     "slot": "point"
+    }
+   },
+   "lc": {
+    "id": "lc",
+    "type": "line",
+    "displayName": "lc",
+    "producer": {
+     "operationId": "op_lc",
+     "slot": "line"
+    }
+   },
+   "lb": {
+    "id": "lb",
+    "type": "line",
+    "displayName": "lb",
+    "producer": {
+     "operationId": "op_lb",
+     "slot": "line"
+    }
+   },
+   "la": {
+    "id": "la",
+    "type": "line",
+    "displayName": "la",
+    "producer": {
+     "operationId": "op_la",
+     "slot": "line"
+    }
+   },
+   "X": {
+    "id": "X",
+    "type": "point",
+    "displayName": "X",
+    "producer": {
+     "operationId": "op_X",
+     "slot": "point"
+    }
+   },
+   "Y": {
+    "id": "Y",
+    "type": "point",
+    "displayName": "Y",
+    "producer": {
+     "operationId": "op_Y",
+     "slot": "point"
+    }
+   },
+   "Z": {
+    "id": "Z",
+    "type": "point",
+    "displayName": "Z",
+    "producer": {
+     "operationId": "op_Z",
+     "slot": "point"
+    }
+   },
+   "T": {
+    "id": "T",
+    "type": "region",
+    "displayName": "T",
+    "producer": {
+     "operationId": "op_T",
+     "slot": "region"
+    }
+   },
    "R_area": {
     "id": "R_area",
     "type": "number",
@@ -284,6 +790,24 @@
     "displayName": "R_len",
     "producer": {
      "operationId": "op_R_len",
+     "slot": "number"
+    }
+   },
+   "T_area": {
+    "id": "T_area",
+    "type": "number",
+    "displayName": "T_area",
+    "producer": {
+     "operationId": "op_T_area",
+     "slot": "number"
+    }
+   },
+   "T_len": {
+    "id": "T_len",
+    "type": "number",
+    "displayName": "T_len",
+    "producer": {
+     "operationId": "op_T_len",
      "slot": "number"
     }
    }
@@ -308,6 +832,55 @@
     "value": [
      0.0,
      3.0
+    ]
+   },
+   "G": {
+    "kind": "point",
+    "value": [
+     0.0,
+     3.0
+    ]
+   },
+   "P1": {
+    "kind": "point",
+    "value": [
+     -1.0,
+     0.0
+    ]
+   },
+   "P2": {
+    "kind": "point",
+    "value": [
+     1.0,
+     0.0
+    ]
+   },
+   "Q1": {
+    "kind": "point",
+    "value": [
+     0.0,
+     -1.0
+    ]
+   },
+   "Q2": {
+    "kind": "point",
+    "value": [
+     0.0,
+     1.0
+    ]
+   },
+   "S1": {
+    "kind": "point",
+    "value": [
+     4.0,
+     -1.0
+    ]
+   },
+   "S2": {
+    "kind": "point",
+    "value": [
+     2.0,
+     1.0
     ]
    }
   },
@@ -347,6 +920,46 @@
      "value": {
       "x": 0.0,
       "y": 3.0
+     }
+    },
+    "G": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "P1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.0
+     }
+    },
+    "P2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "Q1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "Q2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
      }
     },
     "R": {
@@ -422,6 +1035,176 @@
       "unit": "length"
      }
     },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -1.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "T": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          3.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          3.0,
+          0.0
+         ],
+         [
+          0.0,
+          3.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          3.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 4.5
+     }
+    },
+    "T_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.5,
+      "unit": "area"
+     }
+    },
+    "T_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 10.242640687,
+      "unit": "length"
+     }
+    },
+    "V": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          4.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          4.0,
+          0.0
+         ],
+         [
+          0.0,
+          3.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          3.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 6.0
+     }
+    },
+    "X": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "Y": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "Z": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
     "a": {
      "state": "defined",
      "type": "line",
@@ -463,16 +1246,1892 @@
        0.0
       ]
      }
+    },
+    "la": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.5,
+       1.5
+      ],
+      "dir": [
+       -0.707106781,
+       0.707106781
+      ]
+     }
+    },
+    "lb": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "lc": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
     }
    },
    "checks": {
     "op_R:on_carriers": "passed",
+    "op_T:on_carriers": "passed",
+    "op_V:on_carriers": "passed",
+    "op_X:incident_both": "passed",
+    "op_Y:incident_both": "passed",
+    "op_Z:incident_both": "passed",
     "op_a:through_a": "passed",
     "op_a:through_b": "passed",
     "op_b:through_a": "passed",
     "op_b:through_b": "passed",
     "op_c:through_a": "passed",
-    "op_c:through_b": "passed"
+    "op_c:through_b": "passed",
+    "op_la:through_a": "passed",
+    "op_la:through_b": "passed",
+    "op_lb:through_a": "passed",
+    "op_lb:through_b": "passed",
+    "op_lc:through_a": "passed",
+    "op_lc:through_b": "passed"
+   }
+  },
+  {
+   "name": "collinear",
+   "inputs": {
+    "C": {
+     "kind": "point",
+     "value": [
+      2.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 10.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "G": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "P1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.0
+     }
+    },
+    "P2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "Q1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "Q2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "R": {
+     "state": "undefined",
+     "type": "region",
+     "reason": "empty_region"
+    },
+    "R_area": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "R"
+    },
+    "R_len": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "R"
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -1.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "T": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          3.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          3.0,
+          0.0
+         ],
+         [
+          0.0,
+          3.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          3.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 4.5
+     }
+    },
+    "T_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.5,
+      "unit": "area"
+     }
+    },
+    "T_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 10.242640687,
+      "unit": "length"
+     }
+    },
+    "V": {
+     "state": "undefined",
+     "type": "region",
+     "reason": "not_on_curve",
+     "detail": {
+      "slot": "to.1"
+     }
+    },
+    "X": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "Y": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "Z": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    },
+    "b": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "la": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.5,
+       1.5
+      ],
+      "dir": [
+       -0.707106781,
+       0.707106781
+      ]
+     }
+    },
+    "lb": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "lc": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_T:on_carriers": "passed",
+    "op_X:incident_both": "passed",
+    "op_Y:incident_both": "passed",
+    "op_Z:incident_both": "passed",
+    "op_a:through_a": "passed",
+    "op_a:through_b": "passed",
+    "op_b:through_a": "passed",
+    "op_b:through_b": "passed",
+    "op_c:through_a": "passed",
+    "op_c:through_b": "passed",
+    "op_la:through_a": "passed",
+    "op_la:through_b": "passed",
+    "op_lb:through_a": "passed",
+    "op_lb:through_b": "passed",
+    "op_lc:through_a": "passed",
+    "op_lc:through_b": "passed"
+   }
+  },
+  {
+   "name": "flipped",
+   "inputs": {
+    "C": {
+     "kind": "point",
+     "value": [
+      1.0,
+      -2.0
+     ]
+    }
+   },
+   "scale": 10.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": -2.0
+     }
+    },
+    "G": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "P1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.0
+     }
+    },
+    "P2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "Q1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "Q2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "R": {
+     "state": "undefined",
+     "type": "region",
+     "reason": "flipped"
+    },
+    "R_area": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "R"
+    },
+    "R_len": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "R"
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -1.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "T": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          3.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          3.0,
+          0.0
+         ],
+         [
+          0.0,
+          3.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          3.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 4.5
+     }
+    },
+    "T_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.5,
+      "unit": "area"
+     }
+    },
+    "T_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 10.242640687,
+      "unit": "length"
+     }
+    },
+    "V": {
+     "state": "undefined",
+     "type": "region",
+     "reason": "not_on_curve",
+     "detail": {
+      "slot": "to.1"
+     }
+    },
+    "X": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "Y": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "Z": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.230769231,
+       -1.846153846
+      ],
+      "dir": [
+       -0.832050294,
+       -0.554700196
+      ]
+     }
+    },
+    "b": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -0.447213595,
+       0.894427191
+      ]
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "la": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.5,
+       1.5
+      ],
+      "dir": [
+       -0.707106781,
+       0.707106781
+      ]
+     }
+    },
+    "lb": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "lc": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_T:on_carriers": "passed",
+    "op_X:incident_both": "passed",
+    "op_Y:incident_both": "passed",
+    "op_Z:incident_both": "passed",
+    "op_a:through_a": "passed",
+    "op_a:through_b": "passed",
+    "op_b:through_a": "passed",
+    "op_b:through_b": "passed",
+    "op_c:through_a": "passed",
+    "op_c:through_b": "passed",
+    "op_la:through_a": "passed",
+    "op_la:through_b": "passed",
+    "op_lb:through_a": "passed",
+    "op_lb:through_b": "passed",
+    "op_lc:through_a": "passed",
+    "op_lc:through_b": "passed"
+   }
+  },
+  {
+   "name": "off_line",
+   "inputs": {
+    "G": {
+     "kind": "point",
+     "value": [
+      0.5,
+      3.0
+     ]
+    }
+   },
+   "scale": 10.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "G": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.5,
+      "y": 3.0
+     }
+    },
+    "P1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.0
+     }
+    },
+    "P2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "Q1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "Q2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          4.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          4.0,
+          0.0
+         ],
+         [
+          0.0,
+          3.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          3.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 6.0
+     }
+    },
+    "R_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 6.0,
+      "unit": "area"
+     }
+    },
+    "R_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 12.0,
+      "unit": "length"
+     }
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -1.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 1.0
+     }
+    },
+    "T": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          3.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          3.0,
+          0.0
+         ],
+         [
+          0.0,
+          3.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          3.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 4.5
+     }
+    },
+    "T_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 4.5,
+      "unit": "area"
+     }
+    },
+    "T_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 10.242640687,
+      "unit": "length"
+     }
+    },
+    "V": {
+     "state": "undefined",
+     "type": "region",
+     "reason": "not_on_curve",
+     "detail": {
+      "slot": "to.1"
+     }
+    },
+    "X": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "Y": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "Z": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.44,
+       1.92
+      ],
+      "dir": [
+       -0.8,
+       0.6
+      ]
+     }
+    },
+    "b": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       -1.0
+      ]
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "la": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.5,
+       1.5
+      ],
+      "dir": [
+       -0.707106781,
+       0.707106781
+      ]
+     }
+    },
+    "lb": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "lc": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_R:on_carriers": "passed",
+    "op_T:on_carriers": "passed",
+    "op_X:incident_both": "passed",
+    "op_Y:incident_both": "passed",
+    "op_Z:incident_both": "passed",
+    "op_a:through_a": "passed",
+    "op_a:through_b": "passed",
+    "op_b:through_a": "passed",
+    "op_b:through_b": "passed",
+    "op_c:through_a": "passed",
+    "op_c:through_b": "passed",
+    "op_la:through_a": "passed",
+    "op_la:through_b": "passed",
+    "op_lb:through_a": "passed",
+    "op_lb:through_b": "passed",
+    "op_lc:through_a": "passed",
+    "op_lc:through_b": "passed"
+   }
+  },
+  {
+   "name": "concurrent",
+   "inputs": {
+    "S1": {
+     "kind": "point",
+     "value": [
+      1.0,
+      -1.0
+     ]
+    },
+    "S2": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 10.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "G": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "P1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.0
+     }
+    },
+    "P2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "Q1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "Q2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          4.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          4.0,
+          0.0
+         ],
+         [
+          0.0,
+          3.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          3.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 6.0
+     }
+    },
+    "R_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 6.0,
+      "unit": "area"
+     }
+    },
+    "R_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 12.0,
+      "unit": "length"
+     }
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": -1.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 1.0
+     }
+    },
+    "T": {
+     "state": "undefined",
+     "type": "region",
+     "reason": "empty_region"
+    },
+    "T_area": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "T"
+    },
+    "T_len": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "upstream",
+     "cause": "T"
+    },
+    "V": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          4.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          4.0,
+          0.0
+         ],
+         [
+          0.0,
+          3.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          3.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 6.0
+     }
+    },
+    "X": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "Y": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "Z": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.44,
+       1.92
+      ],
+      "dir": [
+       -0.8,
+       0.6
+      ]
+     }
+    },
+    "b": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       -1.0
+      ]
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "la": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -0.707106781,
+       0.707106781
+      ]
+     }
+    },
+    "lb": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "lc": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_R:on_carriers": "passed",
+    "op_V:on_carriers": "passed",
+    "op_X:incident_both": "passed",
+    "op_Y:incident_both": "passed",
+    "op_Z:incident_both": "passed",
+    "op_a:through_a": "passed",
+    "op_a:through_b": "passed",
+    "op_b:through_a": "passed",
+    "op_b:through_b": "passed",
+    "op_c:through_a": "passed",
+    "op_c:through_b": "passed",
+    "op_la:through_a": "passed",
+    "op_la:through_b": "passed",
+    "op_lb:through_a": "passed",
+    "op_lb:through_b": "passed",
+    "op_lc:through_a": "passed",
+    "op_lc:through_b": "passed"
+   }
+  },
+  {
+   "name": "opposite",
+   "inputs": {
+    "S1": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "S2": {
+     "kind": "point",
+     "value": [
+      -3.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 10.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 0.0
+     }
+    },
+    "C": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "G": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    },
+    "P1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.0
+     }
+    },
+    "P2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "Q1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "Q2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          4.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          4.0,
+          0.0
+         ],
+         [
+          0.0,
+          3.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          3.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 6.0
+     }
+    },
+    "R_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 6.0,
+      "unit": "area"
+     }
+    },
+    "R_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 12.0,
+      "unit": "length"
+     }
+    },
+    "S1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": -1.0
+     }
+    },
+    "S2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.0,
+      "y": 1.0
+     }
+    },
+    "T": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          -2.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          -2.0,
+          0.0
+         ],
+         [
+          0.0,
+          -2.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          -2.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 2.0
+     }
+    },
+    "T_area": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "area"
+     }
+    },
+    "T_len": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 6.828427125,
+      "unit": "length"
+     }
+    },
+    "V": {
+     "state": "defined",
+     "type": "region",
+     "value": {
+      "rings": [
+       [
+        [
+         [
+          0.0,
+          0.0
+         ],
+         [
+          4.0,
+          0.0
+         ]
+        ],
+        [
+         [
+          4.0,
+          0.0
+         ],
+         [
+          0.0,
+          3.0
+         ]
+        ],
+        [
+         [
+          0.0,
+          3.0
+         ],
+         [
+          0.0,
+          0.0
+         ]
+        ]
+       ]
+      ],
+      "shape": [
+       [
+        [
+         "line",
+         "curves.0"
+        ],
+        [
+         "line",
+         "curves.1"
+        ],
+        [
+         "line",
+         "curves.2"
+        ]
+       ]
+      ],
+      "area": 6.0
+     }
+    },
+    "X": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "Y": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 0.0
+     }
+    },
+    "Z": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -2.0
+     }
+    },
+    "a": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.44,
+       1.92
+      ],
+      "dir": [
+       -0.8,
+       0.6
+      ]
+     }
+    },
+    "b": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       -1.0
+      ]
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "la": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.0,
+       -1.0
+      ],
+      "dir": [
+       -0.707106781,
+       0.707106781
+      ]
+     }
+    },
+    "lb": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "lc": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_R:on_carriers": "passed",
+    "op_T:on_carriers": "passed",
+    "op_V:on_carriers": "passed",
+    "op_X:incident_both": "passed",
+    "op_Y:incident_both": "passed",
+    "op_Z:incident_both": "passed",
+    "op_a:through_a": "passed",
+    "op_a:through_b": "passed",
+    "op_b:through_a": "passed",
+    "op_b:through_b": "passed",
+    "op_c:through_a": "passed",
+    "op_c:through_b": "passed",
+    "op_la:through_a": "passed",
+    "op_la:through_b": "passed",
+    "op_lb:through_a": "passed",
+    "op_lb:through_b": "passed",
+    "op_lc:through_a": "passed",
+    "op_lc:through_b": "passed"
    }
   }
  ]
