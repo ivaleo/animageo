@@ -201,7 +201,7 @@ def _assert_drawn_stroke(stroke, group, unit, where, hidden=False, alpha=1.0):
     if hidden:
         assert (layer.get_stroke_opacity(), layer.get_fill_opacity()) == (0, 0), where
         return
-    if stroke['color'] is not None:
+    if stroke['color'] is not None and stroke['opacity'] > 0:     # manim has no colour for a transparent stroke
         assert ManimColor(stroke['color']).to_hex() == layer.get_stroke_color().to_hex(), where
     assert stroke['opacity'] * alpha == pytest.approx(layer.get_stroke_opacity()), where
     assert stroke['widthPx'] == pytest.approx(layer.get_stroke_width() * unit / 100), where
@@ -248,7 +248,8 @@ def _assert_hatch(hatch, layer, unit, where):
         centers = pts.mean(axis=1)
         radius = (pts[0, :, 0].max() - pts[0, :, 0].min()) / 2
         assert hatch['widthPx'] == pytest.approx(radius * unit), where
-        gaps = np.hypot(*(centers[1:] - centers[0]).T)
+        gaps = np.hypot(*(centers[:, None, :] - centers[None, :, :]).transpose(2, 0, 1))
+        np.fill_diagonal(gaps, np.inf)      # the nearest two dots of all (a corner dot may have no row neighbour)
         assert hatch['spacingPx'] == pytest.approx(gaps.min() * unit), where
         return
     assert ManimColor(hatch['color']).to_hex() == layer.get_stroke_color().to_hex(), where

@@ -1,0 +1,1974 @@
+{
+ "format": "animageo-paint-parity/v1",
+ "id": "paint_regions",
+ "registry": "1.9",
+ "generatedBy": "animageo 1.13.0",
+ "cases": [
+  {
+   "name": "region_default_and_polygon",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "regions_default",
+    "operationRegistryVersion": "1.9",
+    "operations": {
+     "op_f": {
+      "id": "op_f",
+      "op": "function.expr",
+      "args": {
+       "expr": {
+        "kind": "expr",
+        "ast": {
+         "op": "-",
+         "args": [
+          {
+           "num": 1
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "refs": {
+        "kind": "list",
+        "items": []
+       }
+      },
+      "outputs": [
+       {
+        "slot": "function",
+        "elementId": "f"
+       }
+      ]
+     },
+     "op_S": {
+      "id": "op_S",
+      "op": "function.area_between",
+      "args": {
+       "first": {
+        "kind": "ref",
+        "elementId": "f"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "region",
+        "elementId": "S"
+       }
+      ]
+     },
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_T": {
+      "id": "op_T",
+      "op": "polygon.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "T"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "f": {
+      "id": "f",
+      "type": "function",
+      "displayName": "f",
+      "producer": {
+       "operationId": "op_f",
+       "slot": "function"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "region",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op_S",
+       "slot": "region"
+      }
+     },
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "T": {
+      "id": "T",
+      "type": "polygon",
+      "displayName": "T",
+      "producer": {
+       "operationId": "op_T",
+       "slot": "polygon"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       -2.5,
+       -2.5
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       -1.5,
+       -2.5
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       -2,
+       -1.5
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -3,
+      -3,
+      3,
+      3
+     ]
+    },
+    "appearance": {}
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 133.333333333,
+    "ptUnitStyle": 133.333333333,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "parts": [
+        {
+         "text": "A",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        -2.5,
+        -2.5
+       ],
+       "offsetWorld": [
+        0.031819805,
+        0.031819805
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "parts": [
+        {
+         "text": "B",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        -1.5,
+        -2.5
+       ],
+       "offsetWorld": [
+        0.031819805,
+        0.031819805
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "parts": [
+        {
+         "text": "C",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        -2.0,
+        -1.5
+       ],
+       "offsetWorld": [
+        0.031819805,
+        0.031819805
+       ]
+      }
+     },
+     "S": {
+      "type": "region",
+      "styleType": "region",
+      "style": "region",
+      "drawn": true,
+      "z": 0.010007,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 0.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 5.000007,
+       "dash": null
+      },
+      "fill": {
+       "color": "#d05456",
+       "opacity": 1.0,
+       "isBackground": false,
+       "z": 0.010007,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "MC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "T": {
+      "type": "polygon",
+      "styleType": "polygon",
+      "style": "polygon",
+      "drawn": true,
+      "z": 0.010005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 5.000005
+      },
+      "fill": {
+       "color": "#ffffff",
+       "opacity": 1.0,
+       "isBackground": true,
+       "z": 0.010005,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "f": {
+      "type": "function",
+      "styleType": "function",
+      "style": "function",
+      "drawn": true,
+      "z": 4.000006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000006,
+       "dash": null
+      }
+     }
+    },
+    "order": [
+     "T",
+     "S",
+     "f",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "region_fill_tool",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "regions_fill_tool",
+    "operationRegistryVersion": "1.9",
+    "operations": {
+     "op_f": {
+      "id": "op_f",
+      "op": "function.expr",
+      "args": {
+       "expr": {
+        "kind": "expr",
+        "ast": {
+         "op": "-",
+         "args": [
+          {
+           "num": 1
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "refs": {
+        "kind": "list",
+        "items": []
+       }
+      },
+      "outputs": [
+       {
+        "slot": "function",
+        "elementId": "f"
+       }
+      ]
+     },
+     "op_S": {
+      "id": "op_S",
+      "op": "function.area_between",
+      "args": {
+       "first": {
+        "kind": "ref",
+        "elementId": "f"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "region",
+        "elementId": "S"
+       }
+      ]
+     },
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_T": {
+      "id": "op_T",
+      "op": "polygon.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "T"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "f": {
+      "id": "f",
+      "type": "function",
+      "displayName": "f",
+      "producer": {
+       "operationId": "op_f",
+       "slot": "function"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "region",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op_S",
+       "slot": "region"
+      }
+     },
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "T": {
+      "id": "T",
+      "type": "polygon",
+      "displayName": "T",
+      "producer": {
+       "operationId": "op_T",
+       "slot": "polygon"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       -2.5,
+       -2.5
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       -1.5,
+       -2.5
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       -2,
+       -1.5
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -3,
+      -3,
+      3,
+      3
+     ]
+    },
+    "appearance": {
+     "S": {
+      "visible": true,
+      "label": {
+       "mode": "none"
+      },
+      "overrides": {
+       "fill": "#1f77b4",
+       "stroke_opacity": 0,
+       "stroke_width_px": 0
+      }
+     },
+     "T": {
+      "visible": true,
+      "label": {
+       "mode": "none"
+      },
+      "overrides": {
+       "fill": "#1f77b4",
+       "stroke_opacity": 0,
+       "stroke_width_px": 0
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 133.333333333,
+    "ptUnitStyle": 133.333333333,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "parts": [
+        {
+         "text": "A",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        -2.5,
+        -2.5
+       ],
+       "offsetWorld": [
+        0.031819805,
+        0.031819805
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "parts": [
+        {
+         "text": "B",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        -1.5,
+        -2.5
+       ],
+       "offsetWorld": [
+        0.031819805,
+        0.031819805
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "parts": [
+        {
+         "text": "C",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        -2.0,
+        -1.5
+       ],
+       "offsetWorld": [
+        0.031819805,
+        0.031819805
+       ]
+      }
+     },
+     "S": {
+      "type": "region",
+      "styleType": "region",
+      "style": "region",
+      "drawn": true,
+      "z": 0.010007,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 0.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 5.000007,
+       "dash": null
+      },
+      "fill": {
+       "color": "#1f77b4",
+       "opacity": 1.0,
+       "isBackground": false,
+       "z": 0.010007,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "MC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "T": {
+      "type": "polygon",
+      "styleType": "polygon",
+      "style": "polygon",
+      "drawn": true,
+      "z": 0.010005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 0.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 5.000005
+      },
+      "fill": {
+       "color": "#1f77b4",
+       "opacity": 1.0,
+       "isBackground": false,
+       "z": 0.010005,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "BL"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "f": {
+      "type": "function",
+      "styleType": "function",
+      "style": "function",
+      "drawn": true,
+      "z": 4.000006,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000006,
+       "dash": null
+      }
+     }
+    },
+    "order": [
+     "T",
+     "S",
+     "f",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "region_hatch",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "regions_hatch",
+    "operationRegistryVersion": "1.9",
+    "operations": {
+     "op_f": {
+      "id": "op_f",
+      "op": "function.expr",
+      "args": {
+       "expr": {
+        "kind": "expr",
+        "ast": {
+         "op": "-",
+         "args": [
+          {
+           "num": 1
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "refs": {
+        "kind": "list",
+        "items": []
+       }
+      },
+      "outputs": [
+       {
+        "slot": "function",
+        "elementId": "f"
+       }
+      ]
+     },
+     "op_S": {
+      "id": "op_S",
+      "op": "function.area_between",
+      "args": {
+       "first": {
+        "kind": "ref",
+        "elementId": "f"
+       },
+       "a": {
+        "kind": "number",
+        "value": -2
+       },
+       "b": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "region",
+        "elementId": "S"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "f": {
+      "id": "f",
+      "type": "function",
+      "displayName": "f",
+      "producer": {
+       "operationId": "op_f",
+       "slot": "function"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "region",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op_S",
+       "slot": "region"
+      }
+     }
+    },
+    "inputs": {},
+    "viewDefaults": {
+     "bounds": [
+      -3,
+      -3,
+      3,
+      3
+     ]
+    },
+    "appearance": {
+     "S": {
+      "overrides": {
+       "fill_pattern": "hatch",
+       "hatch_angle_deg": 30,
+       "hatch_spacing_px": 8
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 133.333333333,
+    "ptUnitStyle": 133.333333333,
+    "t": null,
+    "elements": {
+     "S": {
+      "type": "region",
+      "styleType": "region",
+      "style": "region",
+      "drawn": true,
+      "z": 0.010003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 0.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 5.000003,
+       "dash": null
+      },
+      "fill": {
+       "color": "#d05456",
+       "opacity": 1.0,
+       "isBackground": false,
+       "z": 0.010003,
+       "pattern": "hatch",
+       "hatch": {
+        "pattern": "hatch",
+        "angleDeg": 30.0,
+        "spacingPx": 8.0,
+        "widthPx": 0.75,
+        "color": "#000000",
+        "opacity": 1.0
+       }
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "MC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "f": {
+      "type": "function",
+      "styleType": "function",
+      "style": "function",
+      "drawn": true,
+      "z": 4.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000002,
+       "dash": null
+      }
+     }
+    },
+    "order": [
+     "S",
+     "f"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "region_crosshatch",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "regions_crosshatch",
+    "operationRegistryVersion": "1.9",
+    "operations": {
+     "op_f": {
+      "id": "op_f",
+      "op": "function.expr",
+      "args": {
+       "expr": {
+        "kind": "expr",
+        "ast": {
+         "op": "-",
+         "args": [
+          {
+           "num": 1
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "refs": {
+        "kind": "list",
+        "items": []
+       }
+      },
+      "outputs": [
+       {
+        "slot": "function",
+        "elementId": "f"
+       }
+      ]
+     },
+     "op_S": {
+      "id": "op_S",
+      "op": "function.area_between",
+      "args": {
+       "first": {
+        "kind": "ref",
+        "elementId": "f"
+       },
+       "a": {
+        "kind": "number",
+        "value": -2
+       },
+       "b": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "region",
+        "elementId": "S"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "f": {
+      "id": "f",
+      "type": "function",
+      "displayName": "f",
+      "producer": {
+       "operationId": "op_f",
+       "slot": "function"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "region",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op_S",
+       "slot": "region"
+      }
+     }
+    },
+    "inputs": {},
+    "viewDefaults": {
+     "bounds": [
+      -3,
+      -3,
+      3,
+      3
+     ]
+    },
+    "appearance": {
+     "S": {
+      "overrides": {
+       "fill_pattern": "crosshatch",
+       "hatch_color": "#d62728",
+       "hatch_width_px": 1.5
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 133.333333333,
+    "ptUnitStyle": 133.333333333,
+    "t": null,
+    "elements": {
+     "S": {
+      "type": "region",
+      "styleType": "region",
+      "style": "region",
+      "drawn": true,
+      "z": 0.010003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 0.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 5.000003,
+       "dash": null
+      },
+      "fill": {
+       "color": "#d05456",
+       "opacity": 1.0,
+       "isBackground": false,
+       "z": 0.010003,
+       "pattern": "crosshatch",
+       "hatch": {
+        "pattern": "crosshatch",
+        "angleDeg": 45.0,
+        "spacingPx": 6.0,
+        "widthPx": 1.5,
+        "color": "#d62728",
+        "opacity": 1.0
+       }
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "MC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "f": {
+      "type": "function",
+      "styleType": "function",
+      "style": "function",
+      "drawn": true,
+      "z": 4.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000002,
+       "dash": null
+      }
+     }
+    },
+    "order": [
+     "S",
+     "f"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "region_dots",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "regions_dots",
+    "operationRegistryVersion": "1.9",
+    "operations": {
+     "op_f": {
+      "id": "op_f",
+      "op": "function.expr",
+      "args": {
+       "expr": {
+        "kind": "expr",
+        "ast": {
+         "op": "-",
+         "args": [
+          {
+           "num": 1
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "refs": {
+        "kind": "list",
+        "items": []
+       }
+      },
+      "outputs": [
+       {
+        "slot": "function",
+        "elementId": "f"
+       }
+      ]
+     },
+     "op_S": {
+      "id": "op_S",
+      "op": "function.area_between",
+      "args": {
+       "first": {
+        "kind": "ref",
+        "elementId": "f"
+       },
+       "a": {
+        "kind": "number",
+        "value": -2
+       },
+       "b": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "region",
+        "elementId": "S"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "f": {
+      "id": "f",
+      "type": "function",
+      "displayName": "f",
+      "producer": {
+       "operationId": "op_f",
+       "slot": "function"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "region",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op_S",
+       "slot": "region"
+      }
+     }
+    },
+    "inputs": {},
+    "viewDefaults": {
+     "bounds": [
+      -3,
+      -3,
+      3,
+      3
+     ]
+    },
+    "appearance": {
+     "S": {
+      "overrides": {
+       "fill_pattern": "dots",
+       "hatch_spacing_px": 10,
+       "hatch_opacity": 0.6
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 133.333333333,
+    "ptUnitStyle": 133.333333333,
+    "t": null,
+    "elements": {
+     "S": {
+      "type": "region",
+      "styleType": "region",
+      "style": "region",
+      "drawn": true,
+      "z": 0.010003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 0.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 5.000003,
+       "dash": null
+      },
+      "fill": {
+       "color": "#d05456",
+       "opacity": 1.0,
+       "isBackground": false,
+       "z": 0.010003,
+       "pattern": "dots",
+       "hatch": {
+        "pattern": "dots",
+        "angleDeg": 45.0,
+        "spacingPx": 10.0,
+        "widthPx": 0.75,
+        "color": "#000000",
+        "opacity": 0.6
+       }
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "MC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "f": {
+      "type": "function",
+      "styleType": "function",
+      "style": "function",
+      "drawn": true,
+      "z": 4.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000002,
+       "dash": null
+      }
+     }
+    },
+    "order": [
+     "S",
+     "f"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "region_dashed_rings",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "regions_dashed",
+    "operationRegistryVersion": "1.9",
+    "operations": {
+     "op_f": {
+      "id": "op_f",
+      "op": "function.expr",
+      "args": {
+       "expr": {
+        "kind": "expr",
+        "ast": {
+         "op": "-",
+         "args": [
+          {
+           "num": 1
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "refs": {
+        "kind": "list",
+        "items": []
+       }
+      },
+      "outputs": [
+       {
+        "slot": "function",
+        "elementId": "f"
+       }
+      ]
+     },
+     "op_S": {
+      "id": "op_S",
+      "op": "function.area_between",
+      "args": {
+       "first": {
+        "kind": "ref",
+        "elementId": "f"
+       },
+       "a": {
+        "kind": "number",
+        "value": -2
+       },
+       "b": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "region",
+        "elementId": "S"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "f": {
+      "id": "f",
+      "type": "function",
+      "displayName": "f",
+      "producer": {
+       "operationId": "op_f",
+       "slot": "function"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "region",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op_S",
+       "slot": "region"
+      }
+     }
+    },
+    "inputs": {},
+    "viewDefaults": {
+     "bounds": [
+      -3,
+      -3,
+      3,
+      3
+     ]
+    },
+    "appearance": {
+     "S": {
+      "overrides": {
+       "stroke": "#2ca02c",
+       "stroke_opacity": 1,
+       "stroke_width_px": 2,
+       "stroke_dash_ratio": 0.6,
+       "stroke_dash_period_px": 12
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 133.333333333,
+    "ptUnitStyle": 133.333333333,
+    "t": null,
+    "elements": {
+     "S": {
+      "type": "region",
+      "styleType": "region",
+      "style": "region",
+      "drawn": true,
+      "z": 0.010003,
+      "stroke": {
+       "color": "#2ca02c",
+       "opacity": 1.0,
+       "widthPx": 2.0,
+       "cap": null,
+       "z": 5.000003,
+       "dash": {
+        "onPx": 7.2,
+        "offPx": 4.8,
+        "fit": "closed",
+        "drawn": null,
+        "rings": [
+         {
+          "onPx": 7.167840809,
+          "offPx": 4.778560539,
+          "offsetPx": 0.0
+         },
+         {
+          "onPx": 7.211456897,
+          "offPx": 4.807637931,
+          "offsetPx": 0.0
+         },
+         {
+          "onPx": 7.167840809,
+          "offPx": 4.778560539,
+          "offsetPx": 0.0
+         }
+        ]
+       }
+      },
+      "fill": {
+       "color": "#d05456",
+       "opacity": 1.0,
+       "isBackground": false,
+       "z": 0.010003,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "MC"
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "f": {
+      "type": "function",
+      "styleType": "function",
+      "style": "function",
+      "drawn": true,
+      "z": 4.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000002,
+       "dash": null
+      }
+     }
+    },
+    "order": [
+     "S",
+     "f"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "region_value_label",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "regions_label",
+    "operationRegistryVersion": "1.9",
+    "operations": {
+     "op_f": {
+      "id": "op_f",
+      "op": "function.expr",
+      "args": {
+       "expr": {
+        "kind": "expr",
+        "ast": {
+         "op": "-",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "num": 1
+          }
+         ]
+        }
+       },
+       "refs": {
+        "kind": "list",
+        "items": []
+       }
+      },
+      "outputs": [
+       {
+        "slot": "function",
+        "elementId": "f"
+       }
+      ]
+     },
+     "op_S": {
+      "id": "op_S",
+      "op": "function.area_between",
+      "args": {
+       "first": {
+        "kind": "ref",
+        "elementId": "f"
+       },
+       "a": {
+        "kind": "number",
+        "value": -1
+       },
+       "b": {
+        "kind": "number",
+        "value": 2
+       }
+      },
+      "outputs": [
+       {
+        "slot": "region",
+        "elementId": "S"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "f": {
+      "id": "f",
+      "type": "function",
+      "displayName": "f",
+      "producer": {
+       "operationId": "op_f",
+       "slot": "function"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "region",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op_S",
+       "slot": "region"
+      }
+     }
+    },
+    "inputs": {},
+    "viewDefaults": {
+     "bounds": [
+      -3,
+      -3,
+      3,
+      3
+     ]
+    },
+    "appearance": {
+     "S": {
+      "label": {
+       "mode": "value"
+      },
+      "overrides": {
+       "z_index_fill": 0.5
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 133.333333333,
+    "ptUnitStyle": 133.333333333,
+    "t": null,
+    "elements": {
+     "S": {
+      "type": "region",
+      "styleType": "region",
+      "style": "region",
+      "drawn": true,
+      "z": 0.010003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 0.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 5.000003,
+       "dash": null
+      },
+      "fill": {
+       "color": "#d05456",
+       "opacity": 1.0,
+       "isBackground": false,
+       "z": 0.500003,
+       "pattern": "solid",
+       "hatch": null
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "MC",
+       "z": 0.100003,
+       "text": "$2.7$",
+       "parts": [
+        {
+         "text": "2.7",
+         "italic": false,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        1.564581097,
+        0.275008194
+       ],
+       "offsetWorld": [
+        0.0,
+        0.0
+       ]
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     },
+     "f": {
+      "type": "function",
+      "styleType": "function",
+      "style": "function",
+      "drawn": true,
+      "z": 4.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 1.5,
+       "cap": null,
+       "z": 4.000002,
+       "dash": null
+      }
+     }
+    },
+    "order": [
+     "S",
+     "f"
+    ],
+    "diagnostics": []
+   }
+  }
+ ]
+}

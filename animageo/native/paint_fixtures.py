@@ -13,7 +13,7 @@ dashes with their fit, label anchors by type, the format of values, the
 layers, ``text.free``, the base without a style and under the built-in one,
 roles, hatching, a style track of a timeline; registry 1.6: graphs and
 conics (``paint_curves``); the angle marker fitted to its sides
-(``paint_angle_fit``, 1.13.0).
+(``paint_angle_fit``, 1.13.0); registry 1.9: regions (``paint_regions``).
 """
 from __future__ import annotations
 
@@ -664,11 +664,53 @@ def _marks():
     return out
 
 
+def _regions():
+    """Registry 1.9: regions of ``function.area_between``. The default paint
+    (the accent fill at the opacity of a polygon, no stroke) next to a
+    polygon; the appearance of the fill tool on both; hatch, crosshatch and
+    dots over the rings; a dashed stroke fitted to each of three rings; the
+    value label at the label anchor of a region of two lobes."""
+    parabola = {'op': '-', 'args': [{'num': 1}, {'op': '^', 'args': [_X, {'num': 2}]}]}
+    upward = {'op': '-', 'args': [{'op': '^', 'args': [_X, {'num': 2}]}, {'num': 1}]}
+
+    def area(d, el_id, first, a=None, b=None):
+        args = {'first': _ref(first)}
+        if a is not None:
+            args.update(a=_num(a), b=_num(b))
+        return d.op('function.area_between', args, [('region', el_id, 'region')])
+
+    def base(doc_id, ast=parabola, a=None, b=None):
+        d = _Doc(doc_id, bounds=(-3, -3, 3, 3)).function('f', ast)
+        return area(d, 'S', 'f', a, b)
+
+    fill_tool = {'visible': True, 'label': {'mode': 'none'},
+                 'overrides': {'fill': '#1f77b4', 'stroke_opacity': 0, 'stroke_width_px': 0}}
+    out = []
+    d = base('regions_default').free('A', -2.5, -2.5).free('B', -1.5, -2.5).free('C', -2, -1.5)
+    d.polygon('T', 'A', 'B', 'C')
+    out.append(('region_default_and_polygon', d, None))
+    d = base('regions_fill_tool').free('A', -2.5, -2.5).free('B', -1.5, -2.5).free('C', -2, -1.5)
+    d.polygon('T', 'A', 'B', 'C').look('S', **copy.deepcopy(fill_tool)).look('T', **copy.deepcopy(fill_tool))
+    out.append(('region_fill_tool', d, None))
+    for pattern, keys in (('hatch', {'hatch_angle_deg': 30, 'hatch_spacing_px': 8}),
+                          ('crosshatch', {'hatch_color': '#d62728', 'hatch_width_px': 1.5}),
+                          ('dots', {'hatch_spacing_px': 10, 'hatch_opacity': 0.6})):
+        d = base(f'regions_{pattern}', a=-2, b=2).overrides('S', fill_pattern=pattern, **keys)
+        out.append((f'region_{pattern}', d, None))
+    d = base('regions_dashed', a=-2, b=2)
+    d.overrides('S', stroke='#2ca02c', stroke_opacity=1, stroke_width_px=2, stroke_dash_ratio=0.6,
+                stroke_dash_period_px=12)
+    out.append(('region_dashed_rings', d, None))
+    d = base('regions_label', ast=upward, a=-1, b=2).label('S', 'value').overrides('S', z_index_fill=0.5)
+    out.append(('region_value_label', d, None))
+    return out
+
+
 THEMES = (('paint_ticks', _ticks), ('paint_angles', _angles), ('paint_points', _points),
           ('paint_dashes', _dashes), ('paint_labels', _labels), ('paint_values', _values),
           ('paint_layers', _layers), ('paint_text', _texts), ('paint_base', _base),
           ('paint_timeline', _timeline), ('paint_curves', _curves), ('paint_angle_fit', _angle_fit),
-          ('paint_marks', _marks))
+          ('paint_marks', _marks), ('paint_regions', _regions))
 
 
 def _expect(document, style, timeline, t) -> dict:
