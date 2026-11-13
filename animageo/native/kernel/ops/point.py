@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import math
 
-from ..paths import frame, locate, point_at
+from ..paths import frame, locate, locus_reason, point_at
 from ..values import Undefined
 from . import op
 from .intersect import carrier
@@ -26,13 +26,26 @@ def midpoint(args, ctx):
 
 @op('point.on_path')
 def on_path(args, ctx):
-    path = args['path']
-    inp = ctx.input
+    return _on_path(args['path'], ctx.input, ctx)
+
+
+def _on_path(path, inp, ctx):
     if path.type == 'conic' and inp.get('pathKind', path.value['kind']) != path.value['kind']:
         return {'point': Undefined('path_kind_changed')}       # registry 1.9: the same t when the kind returns
-    f = path.frame if path.frame is not None else frame(path.type, path.value)
+    f = path.frame if path.frame is not None else frame(path.type, path.value, scale=ctx.tol.scale)
+    if f.kind == 'locus':
+        reason = locus_reason(f, ctx.tol.decide_length)
+        if reason is not None:
+            return {'point': Undefined(reason)}
     point = point_at(f, float(inp['value']), inp.get('branch', 1))
-    return {'point': Undefined('out_of_domain') if point is None else point}
+    return {'point': Undefined('discontinuous' if f.kind == 'locus' else 'out_of_domain')
+            if point is None else point}
+
+
+@op('point.on_locus')
+def on_locus(args, ctx):
+    """A dependent normalized parameter, as in GeoGebra Point(locus, t)."""
+    return _on_path(args['locus'], {'value': args['parameter'].value['value']}, ctx)
 
 
 @op('point.projection')
@@ -82,7 +95,11 @@ def center(args, ctx):
 def closest(args, ctx):
     path = args['path']
     p = args['point'].value
-    f = path.frame if path.frame is not None else frame(path.type, path.value)
+    f = path.frame if path.frame is not None else frame(path.type, path.value, scale=ctx.tol.scale)
+    if f.kind == 'locus':
+        reason = locus_reason(f, ctx.tol.decide_length)
+        if reason is not None:
+            return {'foot': Undefined(reason)}
     found = locate(f, p['x'], p['y'], ctx.tol.decide_length, ctx.bounds, ctx.decide)
     if found is None:                   # registry 1.9: a graph without a point in its search interval
         return {'foot': Undefined('out_of_domain')}

@@ -212,9 +212,9 @@ def producer_values(ref, elements, ops, states) -> tuple:
     return producer['op'], values
 
 
-def _path_frame(ref, elements, ops, states):
+def _path_frame(ref, elements, ops, states, scale=1.0):
     producer_op, values = producer_values(ref, elements, ops, states)
-    return paths.frame(elements[ref]['type'], states[ref]['value'], producer_op, values)
+    return paths.frame(elements[ref]['type'], states[ref]['value'], producer_op, values, scale=scale)
 
 
 def side_end_slots(type_: str, producer_op: str):
@@ -253,7 +253,7 @@ def _side_ends(ref, elements, ops, states):
     return (a['x'], a['y']), (b['x'], b['y'])
 
 
-def build_args(record, resolved, elements, ops, states) -> dict:
+def build_args(record, resolved, elements, ops, states, scale=1.0) -> dict:
     """The implementation arguments of a call whose inputs are all defined:
     params, number literals, ``expr``/``template`` arguments and the input
     values (a ``path`` slot with its frame, an ``ends`` slot with
@@ -270,7 +270,7 @@ def build_args(record, resolved, elements, ops, states) -> dict:
     for slot, is_list, ids in resolved.refs:
         if slot in path_slots:
             items = [Input(elements[ref]['type'], states[ref]['value'],
-                           _path_frame(ref, elements, ops, states), ref) for ref in ids]
+                           _path_frame(ref, elements, ops, states, scale), ref) for ref in ids]
         elif slot in end_slots:
             items = [Input(elements[ref]['type'], states[ref]['value'],
                            _side_ends(ref, elements, ops, states), ref) for ref in ids]
@@ -580,7 +580,7 @@ def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
         if worst is not None:
             settle(op_id, worst[0], 'upstream', cause=worst[1])
             continue
-        args = build_args(record, resolved, elements, ops, states)
+        args = build_args(record, resolved, elements, ops, states, tol.scale)
         scope = None
         if op['op'] in GRAPH_OPS:
             scope = GraphScope(doc, reg, op_id, resolved, states, values_in, bound, deps, order, tol,

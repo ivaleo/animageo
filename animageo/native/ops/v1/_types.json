@@ -104,7 +104,7 @@
     "circular": ["circle", "arc"],
     "curve": ["line", "segment", "ray", "circle", "arc", "conic", "function"],
     "conical": ["conic", "circle", "arc"],
-    "path": ["line", "segment", "ray", "circle", "polygon", "arc", "sector", "circlesegment", "polyline", "conic", "function"],
+    "path": ["line", "segment", "ray", "circle", "polygon", "arc", "sector", "circlesegment", "polyline", "conic", "function", "locus"],
     "round": ["circle", "arc", "sector", "circlesegment"],
     "vertexed": ["segment", "polyline", "polygon"],
     "measurable": ["segment", "vector", "polyline", "arc"],
@@ -121,7 +121,7 @@
   },
   "familySince": {
     "curve": {"conic": "1.8", "function": "1.8"},
-    "path": {"conic": "1.9", "function": "1.9"},
+    "path": {"conic": "1.9", "function": "1.9", "locus": "1.10"},
     "bounded": {"region": "1.9"}
   },
   "numberLiteralSince": {"limit": "1.9"},
@@ -192,12 +192,17 @@
       },
       "text": "in the frame of the conic (u = axis, n = axis turned by +90 deg): ellipse P = c + a cos t u + b sin t n (the eccentric anomaly from its axis, wraps to [0, 2 pi)); hyperbola P = c + branch a cosh t u + b sinh t n, branch +1 | -1 of the input (default +1); parabola P = vertex + (p t^2 / 2) u + p t n; an input pathKind other than the kind of the conic gives path_kind_changed (registry 1.9)"
     },
+    "locus": {
+      "kind": "locus", "min": 0, "max": 1, "outside": "clamp", "default": 0.5, "since": "1.10",
+      "text": "normalized sample index (not arc length); closed includes the closing link; null samples and links longer than 0.25*S are breaks (registry 1.10)"
+    },
     "function": {
       "kind": "graph", "min": null, "max": null, "outside": "clamp", "default": 0,
       "text": "P = (x, f(x)), x = t clamped to the domain [lo | null, hi | null]; no value of f at x gives out_of_domain (registry 1.9)"
     }
   },
   "frameKinds": {
+    "locus": "t clamped to [0,1]; w = t * (n-1), k = min(floor(w),n-2), P = points[k] + (w-k)*(points[k+1]-points[k]); append points[0] for closed; breaks have no point (registry 1.10)",
     "affine": "P = o + clamp(t) v; o and v come from frames[producer op], else frames[\"*\"]; min/max clamp t when outside is clamp; a frame expression is a term or a difference of two terms, a term is <src>.<field> (src: value or args) or mid(<term>, <term>), the midpoint of two points",
     "angle": "P = c + r (cos t, sin t), t used as given",
     "perimeter": "t' = t - n floor(t / n), t' < 0 gives t' + n, t' >= n gives 0; k = floor(t'), f = t' - k; P = V[k] + f (V[(k + 1) mod n] - V[k])",

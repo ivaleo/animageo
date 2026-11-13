@@ -214,7 +214,7 @@ class _Subgraph:
                 for el_id in outs:
                     local[el_id] = state_record('undefined', elements[el_id]['type'], 'upstream')
                 continue
-            args = build_args(record, resolved, elements, doc.operations, states)
+            args = build_args(record, resolved, elements, doc.operations, states, scope.tol.scale)
             ctx = OpContext(scope.tol, input=free_input, operation_id=op_id, decisions=scope.decisions,
                             bounds=doc.bounds)
             try:

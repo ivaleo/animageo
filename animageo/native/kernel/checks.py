@@ -199,7 +199,7 @@ def _nearest_on_both(args, result, tol):
 @register_check('point.on_path', 'on_path')
 def _on_path(args, result, tol):
     x, y = _xy(result['point'])
-    return distance_to_path(x, y, args['path'].type, args['path'].value)
+    return distance_to_path(x, y, args['path'].type, args['path'].value, scale=tol.scale)
 
 
 @register_check('polygon.by_points', 'sides_match')
@@ -443,7 +443,13 @@ def _center_matches(args, result, tol):
 @register_check('point.closest', 'on_path')
 def _closest_on_path(args, result, tol):
     x, y = _pt(result['foot'])
-    return distance_to_path(x, y, args['path'].type, args['path'].value)
+    return distance_to_path(x, y, args['path'].type, args['path'].value, scale=tol.scale)
+
+
+@register_check('point.on_locus', 'on_path')
+def _on_locus(args, result, tol):
+    x, y = _xy(result['point'])
+    return distance_to_path(x, y, 'locus', args['locus'].value, scale=tol.scale)
 
 
 @register_check('point.at_distance', 'distance')

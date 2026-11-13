@@ -62,6 +62,7 @@ class Frame(NamedTuple):
     radius: float = 0.0
     vertices: tuple = ()
     curve: dict | None = None
+    gap: float = math.inf
 
 
 def _xy(value) -> tuple:
@@ -103,7 +104,8 @@ def _expr(expr: str, value: dict, args: dict) -> tuple:
     return (x - rx, y - ry)
 
 
-def frame(type_: str, value: dict, producer_op: str | None = None, producer_args: dict | None = None) -> Frame:
+def frame(type_: str, value: dict, producer_op: str | None = None, producer_args: dict | None = None,
+          *, scale: float = 1.0) -> Frame:
     """The frame of a defined path element of ``type_`` with ``value``.
 
     ``producer_args`` maps the producer's argument slots to the values of the
@@ -134,6 +136,11 @@ def frame(type_: str, value: dict, producer_op: str | None = None, producer_args
     if kind == 'graph':
         lo, hi = value['domain']
         return Frame('graph', lo=lo, hi=hi, curve=value)
+    if kind == 'locus':
+        points = tuple(None if p is None else (p[0], p[1]) for p in value['points'])
+        if value['closed'] and points:
+            points += (points[0],)
+        return Frame('locus', lo=0.0, hi=1.0, vertices=points, gap=0.25 * scale)
     raise ValueError(f'unknown path kind {kind!r}')
 
 
@@ -165,7 +172,7 @@ def _sector_ends(f: Frame) -> tuple:
 
 def parameter_range(f: Frame) -> tuple:
     """``(lo, hi)`` of the parameter of frame ``f`` (``None`` — unbounded)."""
-    if f.kind in ('affine', 'graph'):
+    if f.kind in ('affine', 'graph', 'locus'):
         return f.lo, f.hi
     if f.kind == 'conic':
         return (0.0, TWO_PI) if f.curve['kind'] == 'ellipse' else (None, None)
@@ -243,6 +250,20 @@ def point_at(f: Frame, t: float, branch: int = 1) -> dict | None:
     """``P(t)`` as an encoded point ``{x, y}``; ``branch`` (``±1``) picks the
     branch of a hyperbola, other paths ignore it. A graph gives ``None``
     where its function has no value."""
+    if f.kind == 'locus':
+        if locus_reason(f) is not None:
+            return None
+        w = _clamp(t, 0.0, 1.0) * (len(f.vertices) - 1)
+        k = min(math.floor(w), len(f.vertices) - 2)
+        frac = w - k
+        a, b = f.vertices[k:k + 2]
+        if frac == 0 and a is not None:
+            return {'x': a[0], 'y': a[1]}
+        if frac == 1 and b is not None:
+            return {'x': b[0], 'y': b[1]}
+        if a is None or b is None or math.dist(a, b) > f.gap:
+            return None
+        return {'x': a[0] + frac * (b[0] - a[0]), 'y': a[1] + frac * (b[1] - a[1])}
     if f.kind == 'conic':
         x, y = _conic_xy(f.curve, t, branch)
         return {'x': x, 'y': y}
@@ -293,6 +314,16 @@ def point_at(f: Frame, t: float, branch: int = 1) -> dict | None:
     ax, ay = f.vertices[k]
     bx, by = f.vertices[(k + 1) % n]
     return {'x': ax + frac * (bx - ax), 'y': ay + frac * (by - ay)}
+
+
+def locus_reason(f: Frame, tol: float = 0.0) -> str | None:
+    """Why a locus cannot carry a point; repeated samples alone have no path."""
+    if not any(p is not None for p in f.vertices):
+        return 'empty_locus'
+    if not any(a is not None and b is not None and tol < math.dist(a, b) <= f.gap
+               for a, b in zip(f.vertices, f.vertices[1:])):
+        return 'degenerate_locus'
+    return None
 
 
 def _segment_param(x, y, ax, ay, bx, by) -> tuple:
@@ -517,7 +548,8 @@ def locate(f: Frame, x: float, y: float, tol: float, bounds=None, decide=None):
     if f.kind == 'graph':
         u = _locate_graph(f, x, y, bounds)
         return None if u is None else (u, 1)
-    return project(f, x, y, tol), 1
+    t = project(f, x, y, tol)
+    return None if t is None else (t, 1)
 
 
 def nearest_input(f: Frame, x: float, y: float, tol: float, bounds=None) -> dict | None:
@@ -546,6 +578,23 @@ def project(f: Frame, x: float, y: float, tol: float, bounds=None) -> float | No
     Registry 1.9: a conic and a graph by :func:`locate` (``None`` when a
     graph has no point; the branch of a hyperbola is that of ``locate``).
     """
+    if f.kind == 'locus':
+        if locus_reason(f, tol) is not None:
+            return None
+        sides = []
+        n = len(f.vertices) - 1
+        for k, a in enumerate(f.vertices):
+            if a is not None:
+                sides.append((math.hypot(x - a[0], y - a[1]), k / n))
+            if k == n:
+                continue
+            b = f.vertices[k + 1]
+            if a is None or b is None or math.dist(a, b) > f.gap:
+                continue
+            frac, dist = _segment_param(x, y, *a, *b)
+            sides.append((dist, (k + frac) / n))
+        dmin = min(d for d, _ in sides)
+        return min(t for d, t in sides if d <= dmin + tol)
     if f.kind in ('conic', 'graph'):
         found = locate(f, x, y, tol, bounds)
         return None if found is None else found[0]
@@ -590,13 +639,18 @@ def project(f: Frame, x: float, y: float, tol: float, bounds=None) -> float | No
     return best
 
 
-def distance_to_path(x: float, y: float, type_: str, value: dict) -> float:
+def distance_to_path(x: float, y: float, type_: str, value: dict, *, scale: float = 1.0) -> float:
     """Distance from ``(x, y)`` to the point set of a path element (the clamped
     part for a segment and a ray, the sides for a polygon, the links for a
     polyline, the arc itself, the boundary of a sector). Registry 1.9: a
     conic gives its focal residual (``kernel/conic.py`` ``residual``, zero
     exactly on the curve, as the checks of registry 1.8), a graph
     ``|y − f(x)|`` (``∞`` where ``f`` has no value)."""
+    if type_ == 'locus':
+        f = frame(type_, value, scale=scale)
+        t = project(f, x, y, 0.0)
+        at = None if t is None else point_at(f, t)
+        return math.inf if at is None else math.hypot(x - at['x'], y - at['y'])
     if type_ == 'conic':
         return residual(value, x, y)
     if type_ == 'function':
