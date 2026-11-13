@@ -141,20 +141,67 @@ def test_polynomial_tangencies_and_resolvable_close_pair_at_unit_scale(tree, roo
 
 
 @pytest.mark.parametrize('scale', [1, 1e6])
-def test_polynomial_sub_resolution_pair_collapses_during_double_expansion(scale):
+@pytest.mark.parametrize('gap', [1e-8, 1e-9])
+def test_polynomial_sub_resolution_pair_collapses_during_double_expansion(scale, gap):
     from animageo.native.kernel.function_analysis import Budget, coefficients, _normalized
 
     # The pair and a shifted square expand to identical double coefficients;
     # the coefficient profile cannot reconstruct which AST supplied them.
-    tree = o('*', n(scale), o('*', o('-', X, n(1)), o('-', o('-', X, n(1)), n(1e-9))))
+    tree = o('*', n(scale), o('*', o('-', X, n(1)), o('-', o('-', X, n(1)), n(gap))))
     d = Doc(bounds=(0, 0, 1, 1)).function(tree).search(count=3)
     ev = native.evaluate(d.doc)
     c = _normalized(coefficients(ev.elements['f']['value'], Budget()))
     assert c[1] * c[1] - 4 * c[0] * c[2] == 0
-    square = Doc().function(o('*', n(scale), power(o('-', X, n(1 + .5e-9)), 2)))
+    square = Doc().function(o('*', n(scale), power(o('-', X, n(1 + .5 * gap)), 2)))
     square_value = native.evaluate(square.doc).elements['f']['value']
     assert coefficients(ev.elements['f']['value'], Budget()) == coefficients(square_value, Budget())
-    point(ev, 1, 1 + 0.5e-9, found=1)
+    point(ev, 1, 1 + 0.5 * gap, found=1)
+    assert ev.elements['P2']['reason'] == 'branch_absent'
+
+
+@pytest.mark.parametrize('scale', [1, 1e6])
+@pytest.mark.parametrize('gap', [1e-6, 1e-7])
+def test_polynomial_sign_brackets_survive_small_stationary_residual(scale, gap):
+    tree = o('*', n(scale), o('*', o('-', X, n(1)), o('-', X, n(1 + gap))))
+    d = Doc(bounds=(0, 0, 1, 1)).function(tree).search(count=3)
+    ev = native.evaluate(d.doc)
+    assert ev.scale == 1
+    roots = []
+    for k, x in enumerate((1, 1 + gap), 1):
+        rec = ev.elements[f'P{k}']
+        assert rec['state'] == 'defined', rec
+        assert rec['detail'] == {'found': 2}
+        assert rec['value'] == pytest.approx({'x': x, 'y': 0}, rel=0, abs=1e-8)
+        roots.append(rec['value']['x'])
+    assert roots[1] - roots[0] > gap / 2
+    assert ev.elements['P3']['reason'] == 'branch_absent'
+
+
+@pytest.mark.parametrize('gap,found', [(5e-11, 1), (2e-10, 2)])
+def test_resolved_polynomial_roots_merge_only_within_coordinate_tolerance(gap, found):
+    d = Doc(bounds=(0, 0, 1, 1)).function(o('*', X, o('-', X, n(gap)))).search()
+    ev = native.evaluate(d.doc)
+    assert ev.scale == 1
+    assert ev.elements['P1']['value'] == {'x': 0, 'y': 0}
+    assert ev.elements['P1']['detail'] == {'found': found}
+    if found == 2:
+        assert ev.elements['P2']['value'] == {'x': gap, 'y': 0}
+    else:
+        assert ev.elements['P2']['reason'] == 'branch_absent'
+
+
+@pytest.mark.parametrize('mode', ['extrema_polynomial', 'extrema_interval'])
+@pytest.mark.parametrize('center', [-1e20, 1e20])
+@pytest.mark.parametrize('sign,kind', [(1, 'min'), (-1, 'max')])
+def test_polynomial_distant_extrema_have_strictly_exterior_probes(mode, center, sign, kind):
+    tree = o('*', n(sign), power(o('-', X, n(center)), 2))
+    d = Doc().function(tree)
+    if mode == 'extrema_polynomial':
+        d.search(mode)
+    else:
+        d.interval(mode, center - 5e19, center + 5e19)
+    ev = native.evaluate(d.doc)
+    point(ev, 1, center, found=1, kind=kind)
     assert ev.elements['P2']['reason'] == 'branch_absent'
 
 

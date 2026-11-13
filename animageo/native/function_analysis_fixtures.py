@@ -90,7 +90,9 @@ def scenes():
     for f, tree, prefix, solutions in [
         ('cubic', o('-', o('^', X, n(3)), o('*', n(3), X)), 'E', [(-1, 2, 'max'), (1, -2, 'min')]),
         ('inflection', o('^', X, n(3)), 'I', []), ('quartic', o('^', X, n(4)), 'Q', [(0, 0, 'min')]),
-        ('linear', X, 'Linear', []), ('constant', n(3), 'Const', [])]:
+        ('linear', X, 'Linear', []), ('constant', n(3), 'Const', []),
+        ('far_min', sq(o('-', X, n(1e20))), 'FarMin', [(1e20, 0, 'min')]),
+        ('far_max', o('neg', sq(o('+', X, n(1e20)))), 'FarMax', [(-1e20, 0, 'max')])]:
         d.function(f, tree)
         search(d, f, prefix, extrema=True)
         answer.update(_set(prefix, solutions, 3, extrema=True))
@@ -103,8 +105,13 @@ def scenes():
             ('square', sq(o('-', X, n(1))), [1]),
             ('mixed', o('*', sq(o('-', X, n(1))), o('+', X, n(2))), [-2, 1]),
             ('close', o('*', o('-', X, n(1)), o('-', o('-', X, n(1)), n(1e-6))), [1, 1 + 1e-6]),
+            # A binary-exact gap near 1e-7 keeps this shared scene outside
+            # the merge decision margin without coefficient conditioning
+            # shifting coordinates beyond parity tolerance at unit scale.
+            ('near', o('*', o('-', X, n(1)), o('-', X, n(1 + 2**-23))), [1, 1 + 2**-23]),
             # Rounded coefficients lose this pair's discriminant. Pin that
             # double-arithmetic limit, not an algebraic claim of multiplicity.
+            ('unresolved_eight', o('*', o('-', X, n(1)), o('-', o('-', X, n(1)), n(1e-8))), [1 + .5e-8]),
             ('unresolved', o('*', o('-', X, n(1)), o('-', o('-', X, n(1)), n(1e-9))), [1 + .5e-9])]:
             prefix = scale_name + name
             d.function(prefix, o('*', n(scale), tree))

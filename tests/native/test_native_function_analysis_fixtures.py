@@ -104,7 +104,7 @@ def test_function_literal_ast_coefficients_survive_fixture_rounding(fixtures):
     assert tiny['document']['operations']['op_tiny']['args']['expr']['ast'] == {'num': 1e-30}
 
 
-def test_function_shared_fixture_pins_rounding_guard_and_scaling(fixtures):
+def test_function_shared_fixture_pins_coefficient_resolution_and_scaling(fixtures):
     fixture = fixtures['function_poly_close_roots.json']
     assert fixture['cases'][0]['scale'] == 1
     expect = fixture['cases'][0]['expect']
@@ -118,6 +118,24 @@ def test_function_shared_fixture_pins_rounding_guard_and_scaling(fixtures):
             assert rec['detail'] == {'found': 2}
         assert expect[prefix + 'unresolved1']['detail'] == {'found': 1}
         assert expect[prefix + 'unresolved2']['reason'] == 'branch_absent'
+        assert expect[prefix + 'unresolved_eight1']['value'] == {'x': 1 + .5e-8, 'y': 0}
+        assert expect[prefix + 'unresolved_eight1']['detail'] == {'found': 1}
+        assert expect[prefix + 'unresolved_eight2']['reason'] == 'branch_absent'
+
+
+def test_function_precision_fixtures_keep_close_roots_and_distant_extrema(fixtures):
+    roots = fixtures['function_poly_close_roots.json']['cases'][0]['expect']
+    for prefix in ('unit_near', 'scaled_near'):
+        for k, x in enumerate((1, round(1 + 2**-23, 9)), 1):
+            assert roots[f'{prefix}{k}']['value'] == {'x': x, 'y': 0}
+            assert roots[f'{prefix}{k}']['detail'] == {'found': 2}
+        assert roots[prefix + '3']['reason'] == 'branch_absent'
+    for name in ('function_extrema_poly.json', 'function_extrema_interval.json'):
+        extrema = fixtures[name]['cases'][0]['expect']
+        for prefix, x, kind in [('FarMin', 1e20, 'min'), ('FarMax', -1e20, 'max')]:
+            assert extrema[prefix + '1']['value'] == {'x': x, 'y': 0}
+            assert extrema[prefix + '1']['detail'] == {'found': 1, 'kind': kind}
+            assert extrema[prefix + '2']['reason'] == 'branch_absent'
 
 
 def test_numeric_function_fixtures_pin_method_choices_and_partial_search(fixtures):

@@ -68,23 +68,24 @@ finite value at a retained root.
 
 At a stationary candidate, a normalized residual within `1e−10` permits a
 tangency. Two neighbouring sign changes instead preserve a simple pair when
-the residual exceeds the rounding guard `4·degree·epsilon`, where epsilon is
-IEEE double machine epsilon. Below this guard the stationary candidate uses
-one slot; this is a coefficient-arithmetic limitation, separate from merging
-by geometric distance. `tangent`, `root_residual` and `root_merge` decisions
-are reported to the shared fixture generator.
+the stationary sign is confirmed by an outward Horner enclosure. Each normalized
+coefficient is enclosed by its adjacent doubles; the reciprocal argument outside
+[−1,1], every product and every sum are also rounded outwards. If this enclosure
+still includes zero, the stationary candidate uses one slot. This is an arithmetic
+resolution limit, separate from merging by geometric distance. `tangent`,
+`root_residual` and `root_merge` decisions are reported to the shared fixture
+generator.
 
 At S=1, `(x−1)²` and `(x−1)²(x+2)` give one slot for the repeated root 1.
-`(x−1)(x−1−1e−6)` gives two roots; multiplying any of these expressions by
-1e6 preserves the counts. For `(x−1)(x−1−1e−9)`, the normalized double
-coefficients have a zero discriminant and exactly match the expanded double
-coefficients of `(x−(1+0.5e−9))²`. The coefficient profile cannot recover
-which original AST supplied them. The result is one candidate near
-`1+0.5e−9`, also after multiplying by 1e6. Near a double root at 1, the guard
-compares a residual of roughly separation²/16 with `8·epsilon`; it is not a
-universal coordinate separation threshold. Poorly conditioned expanded
-polynomials can therefore lose distinct roots before the geometric merge
-tolerance is reached.
+`(x−1)(x−1−d)` gives two roots for d=1e−6 and d=1e−7; multiplying these
+expressions by 1e6 preserves the counts. For d=1e−8 and d=1e−9, the expanded
+double coefficients exactly match those of `(x−(1+d/2))²`, including after
+multiplication by 1e6. The coefficient profile cannot recover which original
+AST supplied them. The result is one candidate near `1+d/2`. These examples
+bracket the observed resolution limit; it also depends on coefficient rounding
+and is not a universal coordinate separation threshold. Poorly conditioned
+expanded polynomials can lose distinct roots, or shift their coordinates,
+before the geometric merge tolerance is reached.
 
 ## Check
 

@@ -8,7 +8,6 @@ bounds share a positive scale, including reciprocal Horner evaluation outside
 from __future__ import annotations
 
 import math
-import sys
 
 from ..expr import ExprError, compile_function
 from ..registry import registry
@@ -181,6 +180,32 @@ def _ratio(sample):
     return abs(value) / total if total else (0.0 if value == 0 else math.inf)
 
 
+def _uncertain_sign(c, x, budget):
+    """Does outward Horner arithmetic still allow a stationary zero?
+
+    Enclose each normalized coefficient by its adjacent doubles, then round
+    every product and sum outwards. This accounts for normalization and
+    evaluation rounding without treating every small stationary residual as
+    a multiple root. A sign outside this enclosure preserves both brackets;
+    only the coordinate tolerance in _merge may combine isolated roots.
+    """
+    budget.tick()
+    if abs(x) <= 1:
+        terms, tlo, thi = reversed(c), x, x
+    else:
+        terms = iter(c)
+        t = 1.0 / x
+        tlo, thi = math.nextafter(t, -math.inf), math.nextafter(t, math.inf)
+    lo = hi = 0.0
+    for ci in terms:
+        products = (lo * tlo, lo * thi, hi * tlo, hi * thi)
+        lo = math.nextafter(min(products), -math.inf)
+        hi = math.nextafter(max(products), math.inf)
+        lo = math.nextafter(lo + math.nextafter(ci, -math.inf), -math.inf)
+        hi = math.nextafter(hi + math.nextafter(ci, math.inf), math.inf)
+    return lo <= 0 <= hi
+
+
 def _midpoint(a, b):
     return a / 2.0 + b / 2.0 if a < 0 < b else a + (b - a) / 2.0
 
@@ -240,13 +265,11 @@ def isolate(c, budget, ctx):
     for i in range(1, len(xs) - 1):
         ratio = _ratio(values[i])
         ctx.decide('tangent', ratio, tol)
-        # Resolve a nearby simple pair by its two sign changes when its
-        # residual exceeds arithmetic rounding noise. A stationary zero
-        # otherwise contributes one candidate, with no adjacent duplicates.
+        # Two certified sign changes isolate a close simple pair even when
+        # the stationary residual is small enough to qualify as a tangency.
         both_cross = values[i][0] != 0 and all(
             (values[j][0] < 0) != (values[i][0] < 0) for j in (i - 1, i + 1))
-        rounding = 4 * degree * sys.float_info.epsilon
-        if ratio <= tol and (not both_cross or ratio <= rounding):
+        if ratio <= tol and (not both_cross or _uncertain_sign(c, xs[i], budget)):
             accepted.add(i)
     found = [xs[i] for i in sorted(accepted)]
     for i in range(len(xs) - 1):
@@ -285,8 +308,18 @@ def polynomial_points(value, ctx, *, extrema=False, budget=None, c=None, interva
             continue
         kind = None
         if extrema:
-            left = _sample(dc, _midpoint(xs[i - 1] if i else -radius, x), budget)
-            right = _sample(dc, _midpoint(x, xs[i + 1] if i + 1 < len(xs) else radius), budget)
+            left_x = _midpoint(xs[i - 1] if i else -radius, x)
+            right_x = _midpoint(x, xs[i + 1] if i + 1 < len(xs) else radius)
+            # A distant Cauchy endpoint or a midpoint can round to x itself.
+            # The turn test needs strictly exterior, representable probes.
+            if not left_x < x:
+                left_x = math.nextafter(x, -math.inf)
+            if not right_x > x:
+                right_x = math.nextafter(x, math.inf)
+            if not math.isfinite(left_x) or not math.isfinite(right_x):
+                raise AnalysisError('non_finite')
+            left = _sample(dc, left_x, budget)
+            right = _sample(dc, right_x, budget)
             turn = left[0] != 0 and right[0] != 0 and (left[0] < 0) != (right[0] < 0)
             ctx.decide('extremum_turn', min(_ratio(left), _ratio(right)), ctx.tol.decide_scalar)
             if not turn:

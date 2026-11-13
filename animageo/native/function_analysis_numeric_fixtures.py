@@ -100,7 +100,10 @@ def scenes():
         ('reciprocal', o('/', n(1), X), 'Pole', -2, 2, [], 3),
         ('monotone', X, 'Monotone', -2, 2, [], 3),
         ('plateau', n(1), 'Plateau', -2, 2, [], 3),
-        ('endpoint', sq(X), 'Endpoint', 0, 2, [], 3)]:
+        ('endpoint', sq(X), 'Endpoint', 0, 2, [], 3),
+        ('far_min', sq(o('-', X, n(1e20))), 'FarMin', 5e19, 1.5e20, [(1e20, 0, 'min')], 3),
+        ('far_max', o('neg', sq(o('+', X, n(1e20)))), 'FarMax', -1.5e20, -5e19,
+         [(-1e20, 0, 'max')], 3)]:
         d.function(f, tree)
         interval(d, f, key, 'extrema_interval', a, b, count)
         answer.update(_set(key, expected, count, extrema=True))

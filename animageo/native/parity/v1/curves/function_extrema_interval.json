@@ -615,6 +615,159 @@
      }
     ]
    },
+   "op_far_min": {
+    "id": "op_far_min",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "^",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1e+20
+          }
+         ]
+        },
+        {
+         "num": 2
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "far_min"
+     }
+    ]
+   },
+   "op_result_FarMin": {
+    "id": "op_result_FarMin",
+    "op": "function.extrema_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "far_min"
+     },
+     "a": {
+      "kind": "number",
+      "value": 5e+19
+     },
+     "b": {
+      "kind": "number",
+      "value": 1.5e+20
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "FarMin1"
+     },
+     {
+      "slot": "extremum.2",
+      "elementId": "FarMin2"
+     },
+     {
+      "slot": "extremum.3",
+      "elementId": "FarMin3"
+     }
+    ]
+   },
+   "op_far_max": {
+    "id": "op_far_max",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "neg",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "+",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1e+20
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "far_max"
+     }
+    ]
+   },
+   "op_result_FarMax": {
+    "id": "op_result_FarMax",
+    "op": "function.extrema_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "far_max"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1.5e+20
+     },
+     "b": {
+      "kind": "number",
+      "value": -5e+19
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "FarMax1"
+     },
+     {
+      "slot": "extremum.2",
+      "elementId": "FarMax2"
+     },
+     {
+      "slot": "extremum.3",
+      "elementId": "FarMax3"
+     }
+    ]
+   },
    "op_result_One": {
     "id": "op_result_One",
     "op": "function.extrema_interval",
@@ -969,6 +1122,78 @@
      "slot": "extremum.3"
     }
    },
+   "far_min": {
+    "id": "far_min",
+    "type": "function",
+    "displayName": "far_min",
+    "producer": {
+     "operationId": "op_far_min",
+     "slot": "function"
+    }
+   },
+   "FarMin1": {
+    "id": "FarMin1",
+    "type": "point",
+    "displayName": "FarMin1",
+    "producer": {
+     "operationId": "op_result_FarMin",
+     "slot": "extremum.1"
+    }
+   },
+   "FarMin2": {
+    "id": "FarMin2",
+    "type": "point",
+    "displayName": "FarMin2",
+    "producer": {
+     "operationId": "op_result_FarMin",
+     "slot": "extremum.2"
+    }
+   },
+   "FarMin3": {
+    "id": "FarMin3",
+    "type": "point",
+    "displayName": "FarMin3",
+    "producer": {
+     "operationId": "op_result_FarMin",
+     "slot": "extremum.3"
+    }
+   },
+   "far_max": {
+    "id": "far_max",
+    "type": "function",
+    "displayName": "far_max",
+    "producer": {
+     "operationId": "op_far_max",
+     "slot": "function"
+    }
+   },
+   "FarMax1": {
+    "id": "FarMax1",
+    "type": "point",
+    "displayName": "FarMax1",
+    "producer": {
+     "operationId": "op_result_FarMax",
+     "slot": "extremum.1"
+    }
+   },
+   "FarMax2": {
+    "id": "FarMax2",
+    "type": "point",
+    "displayName": "FarMax2",
+    "producer": {
+     "operationId": "op_result_FarMax",
+     "slot": "extremum.2"
+    }
+   },
+   "FarMax3": {
+    "id": "FarMax3",
+    "type": "point",
+    "displayName": "FarMax3",
+    "producer": {
+     "operationId": "op_result_FarMax",
+     "slot": "extremum.3"
+    }
+   },
    "One1": {
     "id": "One1",
     "type": "point",
@@ -1030,6 +1255,50 @@
      "state": "undefined",
      "type": "point",
      "reason": "no_extremum"
+    },
+    "FarMax1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1e+20,
+      "y": 0
+     },
+     "detail": {
+      "found": 1,
+      "kind": "max"
+     }
+    },
+    "FarMax2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "FarMax3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "FarMin1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1e+20,
+      "y": 0
+     },
+     "detail": {
+      "found": 1,
+      "kind": "min"
+     }
+    },
+    "FarMin2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "FarMin3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
     },
     "Join1": {
      "state": "defined",
@@ -1254,6 +1523,71 @@
       ]
      }
     },
+    "far_max": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "neg",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "op": "+",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 1e+20
+            }
+           ]
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "far_min": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1e+20
+          }
+         ]
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
     "monotone": {
      "state": "defined",
      "type": "function",
@@ -1390,6 +1724,8 @@
    },
    "checks": {
     "op_result_Cusp:on_graph": "passed",
+    "op_result_FarMax:on_graph": "passed",
+    "op_result_FarMin:on_graph": "passed",
     "op_result_Join:on_graph": "passed",
     "op_result_One:on_graph": "passed",
     "op_result_Partial:on_graph": "passed",
@@ -1796,6 +2132,274 @@
      [
       10.0,
       100.0
+     ]
+    ],
+    "far_max": [
+     [
+      -10.0,
+      -1e+40
+     ],
+     [
+      -9.375,
+      -1e+40
+     ],
+     [
+      -8.75,
+      -1e+40
+     ],
+     [
+      -8.125,
+      -1e+40
+     ],
+     [
+      -7.5,
+      -1e+40
+     ],
+     [
+      -6.875,
+      -1e+40
+     ],
+     [
+      -6.25,
+      -1e+40
+     ],
+     [
+      -5.625,
+      -1e+40
+     ],
+     [
+      -5.0,
+      -1e+40
+     ],
+     [
+      -4.375,
+      -1e+40
+     ],
+     [
+      -3.75,
+      -1e+40
+     ],
+     [
+      -3.125,
+      -1e+40
+     ],
+     [
+      -2.5,
+      -1e+40
+     ],
+     [
+      -1.875,
+      -1e+40
+     ],
+     [
+      -1.25,
+      -1e+40
+     ],
+     [
+      -0.625,
+      -1e+40
+     ],
+     [
+      0.0,
+      -1e+40
+     ],
+     [
+      0.625,
+      -1e+40
+     ],
+     [
+      1.25,
+      -1e+40
+     ],
+     [
+      1.875,
+      -1e+40
+     ],
+     [
+      2.5,
+      -1e+40
+     ],
+     [
+      3.125,
+      -1e+40
+     ],
+     [
+      3.75,
+      -1e+40
+     ],
+     [
+      4.375,
+      -1e+40
+     ],
+     [
+      5.0,
+      -1e+40
+     ],
+     [
+      5.625,
+      -1e+40
+     ],
+     [
+      6.25,
+      -1e+40
+     ],
+     [
+      6.875,
+      -1e+40
+     ],
+     [
+      7.5,
+      -1e+40
+     ],
+     [
+      8.125,
+      -1e+40
+     ],
+     [
+      8.75,
+      -1e+40
+     ],
+     [
+      9.375,
+      -1e+40
+     ],
+     [
+      10.0,
+      -1e+40
+     ]
+    ],
+    "far_min": [
+     [
+      -10.0,
+      1e+40
+     ],
+     [
+      -9.375,
+      1e+40
+     ],
+     [
+      -8.75,
+      1e+40
+     ],
+     [
+      -8.125,
+      1e+40
+     ],
+     [
+      -7.5,
+      1e+40
+     ],
+     [
+      -6.875,
+      1e+40
+     ],
+     [
+      -6.25,
+      1e+40
+     ],
+     [
+      -5.625,
+      1e+40
+     ],
+     [
+      -5.0,
+      1e+40
+     ],
+     [
+      -4.375,
+      1e+40
+     ],
+     [
+      -3.75,
+      1e+40
+     ],
+     [
+      -3.125,
+      1e+40
+     ],
+     [
+      -2.5,
+      1e+40
+     ],
+     [
+      -1.875,
+      1e+40
+     ],
+     [
+      -1.25,
+      1e+40
+     ],
+     [
+      -0.625,
+      1e+40
+     ],
+     [
+      0.0,
+      1e+40
+     ],
+     [
+      0.625,
+      1e+40
+     ],
+     [
+      1.25,
+      1e+40
+     ],
+     [
+      1.875,
+      1e+40
+     ],
+     [
+      2.5,
+      1e+40
+     ],
+     [
+      3.125,
+      1e+40
+     ],
+     [
+      3.75,
+      1e+40
+     ],
+     [
+      4.375,
+      1e+40
+     ],
+     [
+      5.0,
+      1e+40
+     ],
+     [
+      5.625,
+      1e+40
+     ],
+     [
+      6.25,
+      1e+40
+     ],
+     [
+      6.875,
+      1e+40
+     ],
+     [
+      7.5,
+      1e+40
+     ],
+     [
+      8.125,
+      1e+40
+     ],
+     [
+      8.75,
+      1e+40
+     ],
+     [
+      9.375,
+      1e+40
+     ],
+     [
+      10.0,
+      1e+40
      ]
     ],
     "monotone": [

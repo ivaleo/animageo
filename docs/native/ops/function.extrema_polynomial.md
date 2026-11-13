@@ -39,7 +39,7 @@ not duplicate extrema, and reevaluation creates or removes no elements.
 Ranks can change when coefficients or the number of extrema change.
 
 The polynomial subset, degree limit 64, coefficient normalization, recursive
-isolation, rounding guard and shared numerical budgets are those of
+isolation, arithmetic sign enclosure and shared numerical budgets are those of
 [`function.roots_polynomial`](function.roots_polynomial.md). No finite
 coefficient is discarded just because it is small. Unsupported bodies,
 including `If`, give `not_polynomial`, even if a sampled graph looks
@@ -47,6 +47,11 @@ polynomial. Degree/evaluation exhaustion gives `error/limit_exceeded`;
 unconfirmed isolation gives `no_convergence`; unrepresentable arithmetic or
 an absent original y gives `non_finite`. Undefined dependencies propagate
 `upstream` and the original cause; valid inputs recover automatically.
+
+Derivative sign probes lie strictly on either side of a critical point.
+When a Cauchy endpoint or a midpoint rounds to the critical x, use the next
+representable double on that side. Thus `(x−1e20)²` retains its minimum at
+`(1e20,0)`, also in `extrema_interval` on `[5e19,1.5e20]`.
 
 ## Check
 
