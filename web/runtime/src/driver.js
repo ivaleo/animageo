@@ -5,6 +5,7 @@
  * Python side stays engine-neutral and the runtime is testable with a mock),
  * defaulting to `globalThis.JXG` in `createBoard`.
  */
+import { applyPaintOrder } from './paintOrder.js';
 import { evalExpr, resolveParent, runStmt } from './parents.js';
 
 /** Build the board. Returns `{ board, S, errors }`. Per-element failures are
@@ -37,6 +38,7 @@ export function buildBoard(spec, container, engine, opts = {}) {
       });
     }
   }
+  applyPaintOrder(board, S, spec.paintOrder);
   return { board, S, errors };
 }
 

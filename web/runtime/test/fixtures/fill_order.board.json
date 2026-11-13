@@ -1,0 +1,529 @@
+{
+  "format": "animageo-board/v1",
+  "boundingbox": [
+    -7.111111,
+    4.0,
+    7.111111,
+    -4.0
+  ],
+  "size": [
+    600,
+    400
+  ],
+  "chrome": {
+    "axis": true,
+    "grid": false,
+    "background": "#FFFFFF",
+    "axesColor": null,
+    "gridColor": null,
+    "showXAxis": true,
+    "showYAxis": true,
+    "keepAspectRatio": true,
+    "gridBold": false,
+    "gridStep": null,
+    "xShowNumbers": true,
+    "yShowNumbers": true,
+    "xTickDistance": null,
+    "yTickDistance": null
+  },
+  "options": {
+    "mathjax": true,
+    "showNavigation": true,
+    "jsxgraphVersion": "1.10.1",
+    "divId": "agbox"
+  },
+  "inputs": [
+    {
+      "name": "R",
+      "kind": "point",
+      "x": 3.0,
+      "y": 0.0
+    }
+  ],
+  "elements": [
+    {
+      "name": "R",
+      "role": "input",
+      "kind": "point",
+      "engine": "point",
+      "parents": [
+        3,
+        0
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 0.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(R\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#000000",
+          "layer": 9,
+          "display": "internal"
+        },
+        "size": 3.0,
+        "face": "o"
+      },
+      "detail": "free point"
+    },
+    {
+      "name": "A",
+      "role": "static",
+      "kind": "Point",
+      "engine": "point",
+      "parents": [
+        -0.5,
+        -0.5
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 0.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(A\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#000000",
+          "layer": 9,
+          "display": "internal"
+        },
+        "size": 3.0,
+        "face": "o",
+        "fixed": true
+      },
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "B",
+      "role": "static",
+      "kind": "Point",
+      "engine": "point",
+      "parents": [
+        0.5,
+        -0.5
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 0.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(B\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#000000",
+          "layer": 9,
+          "display": "internal"
+        },
+        "size": 3.0,
+        "face": "o",
+        "fixed": true
+      },
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "C",
+      "role": "static",
+      "kind": "Point",
+      "engine": "point",
+      "parents": [
+        0,
+        0.5
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 0.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(C\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#000000",
+          "layer": 9,
+          "display": "internal"
+        },
+        "size": 3.0,
+        "face": "o",
+        "fixed": true
+      },
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "O",
+      "role": "static",
+      "kind": "Point",
+      "engine": "point",
+      "parents": [
+        0,
+        0
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#000000",
+        "strokeWidth": 0.0,
+        "fillOpacity": 1.0,
+        "layer": 9,
+        "name": "\\(O\\)",
+        "withLabel": true,
+        "label": {
+          "useMathJax": true,
+          "strokeColor": "#000000",
+          "layer": 9,
+          "display": "internal"
+        },
+        "size": 3.0,
+        "face": "o",
+        "fixed": true
+      },
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "inner",
+      "role": "live",
+      "kind": "Polygon",
+      "engine": "polygon",
+      "parents": [
+        {
+          "ref": "A"
+        },
+        {
+          "ref": "B"
+        },
+        {
+          "ref": "C"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#FF0000",
+        "strokeWidth": 1.5,
+        "fillOpacity": 0,
+        "layer": 9,
+        "withLabel": false,
+        "label": {
+          "layer": 9,
+          "display": "internal"
+        },
+        "borders": {
+          "layer": 9
+        }
+      },
+      "detail": "Polygon",
+      "tracksDrag": true
+    },
+    {
+      "name": "outer",
+      "role": "live",
+      "kind": "Circle",
+      "engine": "circle",
+      "parents": [
+        {
+          "ref": "O"
+        },
+        {
+          "ref": "R"
+        }
+      ],
+      "attrs": {
+        "strokeColor": "#000000",
+        "fillColor": "#0000FF",
+        "strokeWidth": 1.5,
+        "fillOpacity": 0,
+        "layer": 9,
+        "withLabel": false,
+        "label": {
+          "layer": 9,
+          "display": "internal"
+        }
+      },
+      "detail": "Circle",
+      "tracksDrag": true
+    },
+    {
+      "name": "__paint_fill_inner",
+      "role": "aux",
+      "kind": "fill",
+      "engine": "polygon",
+      "parents": [
+        {
+          "ref": "A"
+        },
+        {
+          "ref": "B"
+        },
+        {
+          "ref": "C"
+        }
+      ],
+      "attrs": {
+        "strokeWidth": 0,
+        "strokeOpacity": 0,
+        "fillColor": "#FF0000",
+        "fillOpacity": 1.0,
+        "fillRule": "nonzero",
+        "borders": {
+          "visible": false,
+          "strokeOpacity": 0
+        },
+        "vertices": {
+          "visible": false,
+          "withLabel": false
+        },
+        "center": {
+          "visible": false,
+          "withLabel": false
+        },
+        "layer": 9,
+        "fixed": true,
+        "highlight": false,
+        "withLabel": false,
+        "name": ""
+      },
+      "tracksDrag": true
+    },
+    {
+      "name": "__paint_fill_outer",
+      "role": "aux",
+      "kind": "fill",
+      "engine": "circle",
+      "parents": [
+        {
+          "ref": "O"
+        },
+        {
+          "ref": "R"
+        }
+      ],
+      "attrs": {
+        "strokeWidth": 0,
+        "strokeOpacity": 0,
+        "fillColor": "#0000FF",
+        "fillOpacity": 1.0,
+        "fillRule": "nonzero",
+        "borders": {
+          "visible": false,
+          "strokeOpacity": 0
+        },
+        "vertices": {
+          "visible": false,
+          "withLabel": false
+        },
+        "center": {
+          "visible": false,
+          "withLabel": false
+        },
+        "layer": 9,
+        "fixed": true,
+        "highlight": false,
+        "withLabel": false,
+        "name": ""
+      },
+      "tracksDrag": true
+    }
+  ],
+  "coverage": [
+    {
+      "name": "R",
+      "kind": "input",
+      "detail": "free point"
+    },
+    {
+      "name": "A",
+      "kind": "static",
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "B",
+      "kind": "static",
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "C",
+      "kind": "static",
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "O",
+      "kind": "static",
+      "detail": "Point (Point)"
+    },
+    {
+      "name": "inner",
+      "kind": "live",
+      "detail": "Polygon"
+    },
+    {
+      "name": "outer",
+      "kind": "live",
+      "detail": "Circle"
+    },
+    {
+      "name": "@paint",
+      "kind": "static",
+      "detail": "paint order fixed at export frame; drag does not reorder; re-export to recompute"
+    }
+  ],
+  "ptUnitGgb": 50.0,
+  "ptUnitExport": 50.0,
+  "paintOrder": {
+    "mode": "area",
+    "static": true,
+    "fillOrder": [
+      "outer",
+      "inner"
+    ],
+    "partOrder": [
+      {
+        "id": "outer",
+        "part": "fill",
+        "targets": [
+          {
+            "name": "__paint_fill_outer",
+            "node": "self",
+            "fillRule": "nonzero"
+          }
+        ]
+      },
+      {
+        "id": "inner",
+        "part": "fill",
+        "targets": [
+          {
+            "name": "__paint_fill_inner",
+            "node": "self",
+            "fillRule": "nonzero"
+          }
+        ]
+      },
+      {
+        "id": "outer",
+        "part": "stroke",
+        "targets": [
+          {
+            "name": "outer",
+            "node": "self"
+          }
+        ]
+      },
+      {
+        "id": "inner",
+        "part": "stroke",
+        "targets": [
+          {
+            "name": "inner",
+            "node": "borders"
+          }
+        ]
+      },
+      {
+        "id": "A",
+        "part": "body",
+        "targets": [
+          {
+            "name": "A",
+            "node": "self"
+          }
+        ]
+      },
+      {
+        "id": "A",
+        "part": "label",
+        "targets": [
+          {
+            "name": "A",
+            "node": "label"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "part": "body",
+        "targets": [
+          {
+            "name": "B",
+            "node": "self"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "part": "label",
+        "targets": [
+          {
+            "name": "B",
+            "node": "label"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "part": "body",
+        "targets": [
+          {
+            "name": "C",
+            "node": "self"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "part": "label",
+        "targets": [
+          {
+            "name": "C",
+            "node": "label"
+          }
+        ]
+      },
+      {
+        "id": "O",
+        "part": "body",
+        "targets": [
+          {
+            "name": "O",
+            "node": "self"
+          }
+        ]
+      },
+      {
+        "id": "O",
+        "part": "label",
+        "targets": [
+          {
+            "name": "O",
+            "node": "label"
+          }
+        ]
+      },
+      {
+        "id": "R",
+        "part": "body",
+        "targets": [
+          {
+            "name": "R",
+            "node": "self"
+          }
+        ]
+      },
+      {
+        "id": "R",
+        "part": "label",
+        "targets": [
+          {
+            "name": "R",
+            "node": "label"
+          }
+        ]
+      }
+    ]
+  }
+}
+

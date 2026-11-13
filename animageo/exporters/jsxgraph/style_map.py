@@ -322,3 +322,17 @@ def js_attrs(ctx: JsxContext, attrs: Dict[str, Any]) -> str:
         else:
             parts.append(f"{k}: {ctx.js_value(v)}")
     return "{" + ", ".join(parts) + "}"
+
+
+def paint_part_attrs(attrs, engine):
+    """Use one SVG group for an exact structural display list.
+
+    This is an export container, not an encoding of area ranks in user z.
+    Internal SVG labels can participate in the same sequence as geometry.
+    """
+    attrs['layer'] = 9
+    attrs.setdefault('label', {}).update(layer=9, display='internal')
+    if engine == 'polygon':
+        attrs.setdefault('borders', {}).update(layer=9)
+    if engine == 'text':
+        attrs['display'] = 'internal'

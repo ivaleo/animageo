@@ -46,6 +46,9 @@ def board_script(model: BoardModel, opt: JSXGraphOptions, indent: str = "  ",
     ]
     lines += [f"{indent}{s}" for s in _chrome_statements(chrome)]
     lines += [f"{indent}{s}" for s in model.statements]
+    if model.paint_order is not None:
+        lines.append(f"{indent}var paintOrder = {json.dumps(model.paint_order, ensure_ascii=False)};")
+        lines.append(f"{indent}" + _PAINT_ORDER_SCRIPT)
     if expose:
         # Expose board + element map for debugging / programmatic access.
         lines += [f"{indent}window.agboard = board;", f"{indent}window.agS = S;"]
@@ -211,3 +214,22 @@ def _n(v) -> str:
 
 def _b(v) -> str:
     return "true" if v else "false"
+
+
+# Same one-time node placement as @animageo/runtime. Creators stay in their
+# topological order; all paint targets share one SVG layer for exact ties.
+_PAINT_ORDER_SCRIPT = """(function () {
+  var layer = board.renderer && board.renderer.layer && board.renderer.layer[9];
+  if (!layer || !layer.appendChild) return;
+  paintOrder.partOrder.forEach(function (ref) {
+    ref.targets.forEach(function (target) {
+      var obj = S[target.name];
+      var objects = target.node === 'borders' ? (obj && obj.borders || [])
+        : [target.node === 'label' ? obj && obj.label : obj];
+      objects.forEach(function (item) { if (item && item.rendNode) {
+        if (target.fillRule && item.rendNode.setAttribute) item.rendNode.setAttribute('fill-rule', target.fillRule);
+        layer.appendChild(item.rendNode);
+      } });
+    });
+  });
+})();"""

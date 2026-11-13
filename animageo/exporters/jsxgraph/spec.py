@@ -193,7 +193,7 @@ def chrome_to_json(chrome) -> Dict[str, Any]:
 
 def board_to_spec(model, opt, *, width: int, height: int) -> Dict[str, Any]:
     """Assemble the full ``animageo-board/v1`` document from a ``BoardModel``."""
-    return {
+    result = {
         "format": SPEC_FORMAT,
         "boundingbox": [round(float(v), 6) for v in model.boundingbox],
         "size": [int(width), int(height)],
@@ -216,3 +216,7 @@ def board_to_spec(model, opt, *, width: int, height: int) -> Dict[str, Any]:
         # of pixel-sized decorations (angle arcs) the static frame used.
         "ptUnitExport": round(model.ptunit_export, 6) if model.ptunit_export else None,
     }
+
+    if model.paint_order is not None:
+        result["paintOrder"] = model.paint_order
+    return result

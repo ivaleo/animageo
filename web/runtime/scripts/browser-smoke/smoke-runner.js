@@ -43,6 +43,41 @@ export async function runSmoke(spec) {
   check('ready fired', ready);
 
   const inputs = handle.inputs();
+
+  // The complete Python plan must be realized by the SVG nodes, not merely
+  // by numeric engine layers. Local drag may change area but never this list.
+  if (spec.paintOrder) {
+    const layer = handle.board.renderer.layer[9];
+    const wanted = spec.paintOrder.partOrder.flatMap((ref) => ref.targets.flatMap((target) => {
+      const obj = handle.S[target.name];
+      const objects = target.node === 'borders' ? obj?.borders || []
+        : [target.node === 'label' ? obj?.label : obj];
+      return objects.map((item) => item?.rendNode).filter(Boolean);
+    }));
+    const wantedSet = new Set(wanted);
+    const actual = () => Array.from(layer.childNodes).filter((node) => wantedSet.has(node));
+    check('exported part targets exist', wanted.length >= spec.paintOrder.partOrder.length);
+    check('initial DOM matches export-frame part order', JSON.stringify(actual().map((n) => n.id)) === JSON.stringify(wanted.map((n) => n.id)));
+    for (const ref of spec.paintOrder.partOrder) {
+      for (const target of ref.targets) {
+        if (target.fillRule) check('exported fill rule ' + ref.id,
+          handle.S[target.name]?.rendNode?.getAttribute('fill-rule') === target.fillRule);
+      }
+    }
+    const radiusInput = inputs.find((i) => i.name === 'R' && i.kind === 'point');
+    if (radiusInput && handle.S.R && handle.S.outer) {
+      const before = actual().map((n) => n.id);
+      const oldRadius = handle.S.outer.Radius();
+      handle.setValue('R', { x: .1, y: 0 });
+      handle.S.R.triggerEventHandlers(['drag'], [{}]);
+      handle.board.update();
+      check('drag reverses live circle area', oldRadius > 1 && handle.S.outer.Radius() < .2);
+      check('drag preserves export-frame DOM order', JSON.stringify(actual().map((n) => n.id)) === JSON.stringify(before));
+      handle.reset();
+      check('reset preserves export-frame DOM order', JSON.stringify(actual().map((n) => n.id)) === JSON.stringify(before));
+    }
+  }
+
   const pt = inputs.find((i) => i.kind === 'point');
   check('has a point input', !!pt, pt && pt.name);
   if (!pt) return result;

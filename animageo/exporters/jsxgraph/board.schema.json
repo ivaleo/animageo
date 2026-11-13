@@ -41,6 +41,37 @@
       "description": "All board entries in build (topological) order.",
       "type": "array", "items": { "$ref": "#/$defs/element" }
     },
+    "paintOrder": {
+      "description": "Python-computed export-frame order, applied once after board creation. Drag does not reorder parts; re-export to recompute.",
+      "type": "object",
+      "required": ["mode", "static", "fillOrder", "partOrder"],
+      "properties": {
+        "mode": {"enum": ["area", "construction"]},
+        "static": {"const": true},
+        "fillOrder": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "partOrder": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["id", "part", "targets"],
+            "properties": {
+              "id": {"type": "string"},
+              "part": {"enum": ["fill", "stroke", "ticks", "parallel", "body", "label", "labelHalo", "leader"]},
+              "targets": {
+                "type": "array", "minItems": 1,
+                "items": {
+                  "type": "object", "required": ["name", "node"],
+                  "properties": {
+                    "name": {"type": "string"},
+                    "node": {"enum": ["self", "label", "borders"]},
+                    "fillRule": {"enum": ["nonzero", "evenodd"]}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "coverage": {
       "type": "array",
       "items": {

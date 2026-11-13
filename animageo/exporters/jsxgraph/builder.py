@@ -89,6 +89,8 @@ class BoardModel:
     # a live board can use it to reproduce the same absolute pixel size.
     ptunit_export: Optional[float] = None
 
+    paint_order: Optional[dict] = None
+
     def counts(self) -> Dict[str, int]:
         out: Dict[str, int] = {}
         for _n, kind, _d in self.coverage:
@@ -363,6 +365,8 @@ def build_board(scene, options) -> BoardModel:
         )
 
     _annotate_spec(ctx, model, dynamic)
+    from .paint_order import prepare_paint_order
+    prepare_paint_order(ctx, model)
     return model
 
 
@@ -588,6 +592,14 @@ def _emit_polygon_live(ctx, cmd, outs, create, raw, raw_stmt, emitted, model) ->
         if bi is None:
             _emit_static(ctx, oname, "Polygon", set(), ctx.opt, create, model)
             continue
+        if ctx.scene._fill_display_enabled():
+            # The polygon outline and its named edge are separate paint owners.
+            # Sharing one DOM border would make the later part steal that node.
+            parents = [ctx.ref(vnames[bi]), ctx.ref(vnames[(bi + 1) % n])]
+            create(oname, "segment", parents, base_attrs(ctx, oe))
+            _emit_segment_ticks(ctx, oname, parents, oe, create, raw_stmt, model)
+            model.coverage.append((oname, "live", "Polygon edge"))
+            continue
         raw(oname, f"{ctx.ref(poly_name)}.borders[{bi}]", kind="line")
         st = _stroke_only(ctx, oe)
         if st:
@@ -790,7 +802,7 @@ def _emit_static_marks(ctx, elem, decorated, create, model) -> None:
     t = ctx.data_typename(elem)
     unit = float((getattr(ctx.scene.style, "export", {}) or {}).get("ptUnit_style", 1) or 1)
     if t == "Angle":
-        if (ctx.resolve(elem, "fill_pattern", default="solid") or "solid") != "solid":
+        if not ctx.scene._fill_display_enabled() and (ctx.resolve(elem, "fill_pattern", default="solid") or "solid") != "solid":
             model.coverage.append((f"__hatch_{name}", "skip", f"fill_pattern of {name}: no hatch in JSXGraph"))
         marks = angle_mark_geometry(ctx.scene, elem)
         if marks is None or native_dashed_arc(ctx, elem):
@@ -1031,12 +1043,15 @@ def _curve_polylines(ctx, elem):
             return [[(p[0], p[1]) for p in run] for run in d.runs() if len(run) >= 2]
         pts = list(getattr(d, "points", []))
         return [[(p[0], p[1]) for p in pts]] if len(pts) >= 2 else []
-    if t in ("Arc", "CircleSector"):
+    if t in ("Arc", "CircleSector", "CircleSegment"):
         cx, cy = float(d.center[0]), float(d.center[1])
         r = float(d.radius); a1, a2 = d.angles
+        if ctx.scene._fill_display_enabled() and t == "Arc":
+            from ...fill_order import arc_sweep
+            a2 = a1 + arc_sweep(d, mode=ctx.scene._fill_order_mode())
         arc = [(cx + r * math.cos(a1 + (a2 - a1) * k / 64),
                 cy + r * math.sin(a1 + (a2 - a1) * k / 64)) for k in range(65)]
-        return [[(cx, cy)] + arc + [(cx, cy)]] if t == "CircleSector" else [arc]
+        return [[(cx, cy)] + arc + [(cx, cy)]] if t == "CircleSector" else [arc + [arc[0]]] if t == "CircleSegment" else [arc]
     if t == "Function":
         from ...geo.curve_sampling import sample_parametric
         ptUnit = float(ctx.scene.style.export.get("ptUnit", 1) or 1)
@@ -1163,7 +1178,7 @@ def _emit_static(ctx, name, cmd_name, dynamic, options, create, model):
         elif t == "Polygon":
             verts = [_coord(ctx, v) for v in d.vertices]
             create(name, "polygon", verts, base_attrs(ctx, elem))
-        elif t in ("Conic", "Function", "ImplicitCurve", "LocusCurve", "Arc", "CircleSector", "Region"):
+        elif t in ("Conic", "Function", "ImplicitCurve", "LocusCurve", "Arc", "CircleSector", "Region") or (t == "CircleSegment" and ctx.scene._fill_display_enabled()):
             polys = _curve_polylines(ctx, elem)
             if not polys:
                 model.coverage.append((name, "skip", f"{t} ({cmd_name}) — empty"))
