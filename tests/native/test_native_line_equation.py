@@ -113,3 +113,23 @@ def test_render_line_equation(tmp_path):
     b.doc['appearance'] = {'g': {'label': {'visible': False}}}
     native.render(b.doc, out=tmp_path / 'line.svg', fmt='svg', report=False)
     assert b'<path' in (tmp_path / 'line.svg').read_bytes()
+
+
+def test_line_equation_fixtures_cover_reasons_and_motion():
+    from animageo.native import curves_fixtures
+    fixtures = curves_fixtures.build_fixtures()
+    names = {name + '.json' for name in ('line_eq_slope', 'line_eq_vertical', 'line_eq_param', 'line_eq_kinds')}
+    assert names <= fixtures.keys()
+    reasons = {rec.get('reason') for name in names for case in fixtures[name]['cases']
+               for rec in case['expect'].values()}
+    assert {'not_linear', 'degenerate_line', 'upstream'} <= reasons
+    for name in names:
+        assert curves_fixtures.verify_fixture(fixtures[name]) == []
+
+
+def test_line_equation_in_a_subnormal_frame():
+    b = DocBuilder('tiny_line_frame', bounds=(0, 0, 1e-310, 1e-310), registry_version='1.10')
+    equation(b, 'g', X)
+    rec = native.evaluate(b.doc).elements['g']
+    assert rec['state'] == 'defined', rec
+    assert rec['value'] == {'p': [0, 0], 'dir': [0, -1]}

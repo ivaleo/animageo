@@ -396,8 +396,6 @@ def equation(args, ctx):
         return {'line': Undefined('degenerate_line')}
     # Normalize before finding the foot: a²+b² can overflow or underflow
     # even when the equation and the resulting line are finite.
-    a, b = d / norm / scale, e / norm / scale
-    length = math.hypot(a, b)
-    nx, ny = a / length, b / length
-    offset = -(f / norm) / length
+    nx, ny = (d / norm) / length, (e / norm) / length
+    offset = -(f / norm) / length * scale
     return {'line': {'p': [offset * nx, offset * ny], 'dir': [ny, -nx]}}
