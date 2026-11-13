@@ -162,6 +162,7 @@ From a `.ggb` and from the classic graph (import.md).
 | `commands print DOC` / `commands parse TEXT` | «Команды» of a document, and back |
 | `steps DOC`, `describe DOC`, `timeline DOC` | `steps()`, `describe()`, `steps_timeline()` / `sample_timeline()` |
 | `from-ggb FILE.ggb` | the document and `import_report.v1` |
+| `import-audit PATHS…` | the import totals of a corpus of `.ggb` files (`import.md` §7) |
 | `convert map --check` | the GGB command → operation table (`convert/dsl_map.json`) |
 | `registry index --check` | `ops/v1/INDEX.json` matches the records |
 | `fixtures verify`, `fixtures conditions --check`, `fixtures timeline --check`, `fixtures paint --check`, `fixtures curves --check`, `fixtures drag --check` | the parity fixtures are up to date (manim for render fixtures) |

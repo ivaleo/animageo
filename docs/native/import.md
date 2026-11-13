@@ -476,6 +476,42 @@ python -m animageo.native convert corpus record|verify <dir> [--expected <dir>]
 `strict` with objects that are not editable, 2 — a refused or missing file.
 Without `--namespace` the IDs come from the sha256 of the file.
 
+### Import audit
+
+```text
+python -m animageo.native import-audit <paths…> [--weights FILE] [--json OUT] [--web-registry X]
+```
+
+`import-audit` (`convert/audit.py`) imports every `.ggb` file of the paths (a
+directory — its `*.ggb` files recursively) as `from-ggb` does without
+`--namespace` and prints one line of totals:
+
+```text
+library files 221 full 204 objects 4885 editable 4718 lost 118 picture 48 differs 1 value_unchecked 1
+```
+
+- `files` — the files, each counted with its weight: `--weights` is a JSON
+  object `{sha256: count}`, a file not listed counts once;
+- `objects`, `editable`, `picture`, `differs` — the entries of the reports
+  by category; `value_unchecked` — the part of `differs` with that reason;
+  `lost` — `unsupported` + `closure`;
+- `full` — a file with a document and without lost, picture or differing
+  objects and without `dropped` kinds; a refused file counts in `files` only
+  (`refused N`); a file whose import fails with an exception is `errors N`
+  and the exit code is 1.
+
+`--web-registry X` adds the line `web at registry X` of a consumer that knows
+the registry up to `X`: an operation whose `since`, or the `familySince` of a
+type in one of its family slots, is newer than `X` is not recomputed there. An
+editable or differing object it produces, or built on a hidden helper it
+produces, is a `picture` (`web_capability_missing`); the editable and
+differing objects that depend on it (`depends_on`, any chain) are `closure`.
+`--json OUT` writes `animageo.import_audit` v1: `totals` (`library`, `web`)
+and a row per file — `path`, `sha256`, `weight`, `outcome` (`report`,
+`refused` or `error` with `code`), the counts, `dropped`, `elements`
+(`[name, type, category, reason, command, signature]`) and `web` (the counts
+and `changed`: `[name, category, reason]` of the objects the filter moved).
+
 ## 8. Corpus and expectations (1.10.0a2)
 
 `convert corpus record <dir>` writes for every `*.ggb` under `<dir>`

@@ -22,16 +22,19 @@
     python -m animageo.native from-ggb <file.ggb> [-o doc.json] [--report rep.json] [--namespace UUID] [--mode partial|strict]
     python -m animageo.native convert map [--check] [--coverage <dir> [--json]]
     python -m animageo.native convert corpus record|verify <dir> [--expected <dir>]
+    python -m animageo.native import-audit <paths…> [--weights FILE] [--json OUT] [--web-registry X]
 
 Exit codes: 0 success; 1 verify mismatches, validate issues (invalid JSON
 included), an out-of-date registry index or a refused scene, out-of-date
 commands fixtures, a commands text with errors, out-of-date timeline,
 paint, curves, drag or space fixtures, an out-of-date style contract (``style export --check``), ``from-ggb --mode strict`` with objects that do not translate, a
 problem of the GGB command table (``convert map --check``), a corpus that
-differs from its expectations (``convert corpus verify``); 2 an input that
+differs from its expectations (``convert corpus verify``), an ``import-audit``
+in which the import of a file failed with an exception; 2 an input that
 cannot be used (a missing file or directory; for ``evaluate`` a document that
 does not load or bad ``--inputs``; an unusable lexicon; a ``.ggb`` refused by
-``from-ggb``).
+``from-ggb``; unreadable ``--weights`` or a bad ``--web-registry`` of
+``import-audit``).
 """
 from __future__ import annotations
 
@@ -487,6 +490,47 @@ def _cmd_convert_corpus(args) -> int:
     return 1 if problems else 0
 
 
+def _cmd_import_audit(args) -> int:
+    from .convert.audit import audit, audit_files, audit_line, registry_version
+    weights = {}
+    if args.weights:
+        try:
+            raw = json.loads(Path(args.weights).read_text(encoding='utf-8'))
+        except (OSError, ValueError) as exc:
+            _err(f'--weights: {exc}')
+            return 2
+        if not isinstance(raw, dict) or not all(
+                isinstance(k, str) and isinstance(v, int) and not isinstance(v, bool) and v >= 0
+                for k, v in raw.items()):
+            _err('--weights: expected {sha256: count} with counts >= 0')
+            return 2
+        weights = {k.lower(): v for k, v in raw.items()}
+    if args.web_registry is not None:
+        try:
+            registry_version(args.web_registry)
+        except ValueError as exc:
+            _err(f'--web-registry: {exc}')
+            return 2
+    try:
+        audit_files(args.paths)
+    except FileNotFoundError as exc:
+        _err(f'not found: {exc}')
+        return 2
+    import warnings
+    with warnings.catch_warnings():       # numeric warnings of the classic parser of a file are no result
+        warnings.simplefilter('ignore', RuntimeWarning)
+        result = audit(args.paths, weights=weights, web_registry=args.web_registry)
+    if args.json:
+        Path(args.json).write_text(json.dumps(result, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    for row in result['files']:
+        if row['outcome'] == 'error':
+            _err(f"{row['path']}: {row['code']}: {row.get('detail', '')}")
+    _out(audit_line('library', result['totals']['library']))
+    if args.web_registry is not None:
+        _out(audit_line(f'web at registry {args.web_registry}', result['totals']['web']))
+    return 1 if result['totals']['library']['errors'] else 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog='python -m animageo.native',
@@ -625,6 +669,13 @@ def build_parser() -> argparse.ArgumentParser:
         ca.add_argument('--expected', default='tests/native/import/expected',
                         help='the directory of <sha256>.json (default: tests/native/import/expected)')
         ca.set_defaults(func=_cmd_convert_corpus)
+    ia = sub.add_parser('import-audit', help='how much of a corpus of .ggb files the import carries over')
+    ia.add_argument('paths', nargs='+', help='.ggb files or directories (searched recursively for *.ggb)')
+    ia.add_argument('--weights', metavar='FILE', help='JSON {sha256: count}: how often each file counts (default 1)')
+    ia.add_argument('--json', metavar='OUT', help='write the totals and a row per file (animageo.import_audit v1)')
+    ia.add_argument('--web-registry', metavar='X',
+                    help='also count for a consumer of registry X: operations newer than X are pictures')
+    ia.set_defaults(func=_cmd_import_audit)
     return parser
 
 

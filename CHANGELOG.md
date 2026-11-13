@@ -70,6 +70,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   in SVG, PNG, PDF, EPS and video, TikZ by `even odd rule`, the hatch runs
   over the rings, JSXGraph draws a static filled curve. Fixtures
   `paint_regions.json`.
+- `python -m animageo.native import-audit <paths…> [--weights FILE]
+  [--json OUT] [--web-registry X]` (`animageo.native.convert.audit`): imports
+  every `.ggb` of the given files and directories and prints one line of
+  weighted totals — files, full files, objects, editable, lost (unsupported +
+  closure), picture, differs and its `value_unchecked` part. `--weights` is
+  `{sha256: count}`; `--json` writes the totals and a row per file;
+  `--web-registry X` adds the line of a consumer of registry `X`, where the
+  operations of a newer registry are pictures and what depends on them is
+  closure.
 
 ## [1.13.0] - 2026-11-13
 
