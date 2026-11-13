@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.0] - 2026-11-13
+
 ### Added
 
 - Operation registry 1.10: the family `operand` (`number`, `point`, `vector`,
@@ -3937,7 +3939,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.14.1...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.15.0...HEAD
+[1.15.0]: https://github.com/ivaleo/animageo/compare/v1.14.1...v1.15.0
 [1.14.1]: https://github.com/ivaleo/animageo/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/ivaleo/animageo/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/ivaleo/animageo/compare/v1.12.1...v1.13.0
