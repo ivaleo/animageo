@@ -1403,11 +1403,12 @@ breaking ties by `1e-6`) and, by type:
   circle or a closed polyline; `none` — from the start of a line, a ray or an
   open polyline) and the pattern drawn `{onPx, offPx, offsetPx}`
   (`null` for a vector: the renderer measures the
-  stem of its arrow). The fit is computed on the exact length; the renderer
+  stem of its arrow; `null` for a region, whose `dash.rings` has the
+  pattern drawn of each ring, `closed`, registry 1.9). The fit is computed on the exact length; the renderer
   measures its Bézier path, within `1e-3` of it for a circle or an arc;
 - `fill`: `color` (`null` — nothing is drawn), `opacity` as drawn,
-  `isBackground`, `z`, and for a polygon, circle or sector `pattern` and
-  `hatch` (`{pattern, angleDeg, spacingPx, widthPx, color, opacity}` or
+  `isBackground`, `z`, and for a polygon, circle, sector, circle segment or
+  region `pattern` and `hatch` (`{pattern, angleDeg, spacingPx, widthPx, color, opacity}` or
   `null`). An angle or a right-angle mark filled with the background colour
   has no fill (1.11.0rc3); a polygon, a circle, an arc or a sector filled
   with it is drawn (opaque) — `isBackground` tells it. An angle or a
@@ -2015,3 +2016,26 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   axis, two graphs and the second lobe, a graph and a line (limits at the
   common points, literal limits), a pole and a step, out of the domain,
   far from the origin.
+- Paint and output (`has("regions")`). The default paint of a region is
+  that of a polygon of the fill tool of the web: `defaults.region` of the
+  built-in style fills with `presets.color.accent` at the opacity of a
+  polygon (`1`) and has no stroke (`stroke_opacity` and `stroke_width_px`
+  `0`), so a face keeps its look when it changes from a polygon or a
+  sector to a region; label anchor `MC`. `style_keys()` type `region`:
+  stroke, dash, fill, hatch, `z_index`, `z_index_fill`, label and value
+  keys. `resolve_paint`: the fill at `z_index_fill` (`Z_FILL`), the stroke
+  above the lines as that of a polygon, `stroke.dash.rings` — the pattern
+  fitted to each ring (`closed`, the exact length of the ring), the value
+  of a label the area at `label_anchor`.
+- The bridge gives a classic `Region` that carries the kernel value. The
+  renderer (SVG, PNG, PDF, EPS, video) fills the rings as one path, a
+  subpath per ring — a line piece a line, an arc cubic Béziers of at most
+  45°, a graph a polyline through its points — so cairo's nonzero rule keeps
+  the holes; the stroke is a path per ring. TikZ fills the same path by
+  `even odd rule`; the hatch of `hatch.py` takes `{"rings": flatten(value)}`
+  (even-odd over the edges of all rings) in every format; JSXGraph draws a
+  static filled `curve` of the flattened rings split by `NaN` (coverage
+  `static`: it does not follow a drag).
+- Fixtures `parity/v1/paint/paint_regions.json`: the default paint next to
+  a polygon, the appearance of the fill tool on both, hatch, crosshatch
+  and dots, a dashed stroke on three rings, the value label of two lobes.

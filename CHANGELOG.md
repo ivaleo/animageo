@@ -54,6 +54,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   it, new families `limit` (a number or a point; a number literal fits),
   `graph_bound` and `contour`, new reasons `empty_region`, `flipped`,
   `boundary_crossing` and `discontinuous`.
+- `function.area_between` (registry 1.9, beta): the region between a graph
+  and a second graph, a non-vertical line or the x-axis, from `a` to `b`
+  (numbers, number literals or points) or, without limits, the lobe `lobe`
+  between the roots of their difference in the search window. A ring per
+  lobe; a pole or a jump of a graph is `discontinuous`, a limit past the
+  domain `out_of_domain` (`docs/native/ops/function.area_between.md`).
+- `measure.area` and `measure.perimeter` of a region (registry 1.9).
+- Regions in paint and output (`has("regions")`): the default paint is the
+  fill of a polygon of the fill tool (`presets.color.accent`, the opacity of
+  a polygon, no stroke; `defaults.region` of the built-in style, before an
+  unused stroke-less fill of `strong` at 0.15); `style_keys()` and
+  `resolve_paint` know the type `region` (a dashed stroke fitted to each
+  ring, `stroke.dash.rings`). The renderer fills the rings with their holes
+  in SVG, PNG, PDF, EPS and video, TikZ by `even odd rule`, the hatch runs
+  over the rings, JSXGraph draws a static filled curve. Fixtures
+  `paint_regions.json`.
 
 ## [1.13.0] - 2026-11-13
 
