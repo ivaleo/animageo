@@ -481,6 +481,19 @@ def test_angle_bisector_is_angular_bisector(tmp_path):
     assert [c.name for c in constr.commands] == ['AngleBisector', 'AngularBisector']
 
 
+@pytest.mark.parametrize('formula, saved', [
+    ('Vector[A, B]', (2., 4.)), ('Vector[(0, 0), (2, 4)]', (2., 4.)),
+])
+def test_vector_wrapper_retains_two_endpoint_arguments(formula, saved):
+    body = (point('A', 1., 2.) + point('B', 3., 6.) + expression('v', formula, 'vector')
+            + element('vector', 'v', extra=f'<coords x="{saved[0]}" y="{saved[1]}" z="0"/>'))
+    doc, rep = _import(ggb_bytes(body))
+    item = _by_name(rep)['v']
+    assert item['category'] == 'editable'
+    assert item['value_check'] == 'passed'
+    assert _op_of(doc, item)['op'] == 'vector.by_points'
+
+
 def test_a_point_by_numbers_of_objects_is_not_editable():
     """``P = (A1, B1)``: a free point at the saved place would lose the
     dependency on the numbers — not editable until L4 brings the ops of
