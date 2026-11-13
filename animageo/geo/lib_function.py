@@ -86,9 +86,13 @@ def _normalize_expression(s: str) -> str:
 # A coordinate ``xcoord(A)`` (see ``formula_refs``) is one operand:
 # ``x(A) ≤ x ≤ x(B)`` — a graph between two points; so is ``exp(1)``, the
 # ℯ of ``ℯ ≤ x ≤ 3`` (see ``normalize_formula_text``).
-_CHAIN_OPERAND = r'(?:[xy]coord\(\s*\w+\s*\)|exp\(1\)|[^<>=&|(),])'
+#
+# An arrow is no comparison: the ``>`` of ``->`` is not an operator, and
+# ``→``/``⇒`` end an operand, so no chain is formed across an implication.
+_CHAIN_OPERAND = r'(?:[xy]coord\(\s*\w+\s*\)|exp\(1\)|[^<>=&|(),→⇒])'
+_CHAIN_OP = r'(<=|>=|<|(?<!-)>)'
 _CHAIN_COMP_RE = re.compile(
-    rf'({_CHAIN_OPERAND}+?)\s*(<=|>=|<|>)\s*({_CHAIN_OPERAND}+?)\s*(<=|>=|<|>)'
+    rf'({_CHAIN_OPERAND}+?)\s*{_CHAIN_OP}\s*({_CHAIN_OPERAND}+?)\s*{_CHAIN_OP}'
     rf'\s*({_CHAIN_OPERAND}+)'
 )
 
@@ -199,14 +203,20 @@ def _translate_if_to_piecewise(s: str) -> str:
 
 
 _DEFINITION_LHS_RE = re.compile(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*\(\s*([A-Za-z_]\w*)\s*\)\s*$')
+# The definition sign: an ``=`` that is no part of ``<=``, ``>=``, ``==``,
+# ``!=`` or of the arrow ``=>``.
+_DEFINITION_SIGN_RE = re.compile(r'(?<![<>!=])=(?![=>])')
 
 
 def _split_definition(expr_str: str) -> Tuple[str, Optional[str]]:
     """``(rhs, variable)`` of ``y = ...`` / ``f(t) = ...`` / a bare ``...``;
-    ``variable`` is the one named on the left (``t``), else ``None``."""
-    if '=' not in expr_str:
+    ``variable`` is the one named on the left (``t``), else ``None``. The
+    ``=`` of a comparison is no definition sign: ``If(-5 <= x <= -1, …)``
+    is a bare right-hand side."""
+    sign = _DEFINITION_SIGN_RE.search(expr_str)
+    if sign is None:
         return expr_str, None
-    lhs, rhs = expr_str.split('=', 1)
+    lhs, rhs = expr_str[:sign.start()], expr_str[sign.end():]
     # For other left sides ("2*x = y") solving for the free var is the
     # caller's problem: the right-hand side is taken anyway.
     m = _DEFINITION_LHS_RE.match(lhs)

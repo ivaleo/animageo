@@ -104,6 +104,69 @@ class TestPiecewiseParse:
         assert np.isnan(f(2))
 
 
+# ── ASCII comparators read as the Unicode ones ───────────────────────
+#
+# The `=` of `<=`, `>=`, `==`, `!=` is no definition sign: a text without
+# `y =` / `f(x) =` in front used to be split there (`If(-5 <= x <= -1, …)`
+# was a parse error, and `If(-5 ≤ x ≤ -1, …)` too, once `≤` became `<=`).
+
+_CONDITIONS = {
+    '-5 <= x <= -1': '-5 ≤ x ≤ -1',
+    '-5 < x < -1': '-5 < x < -1',
+    '-5 < x <= -1': '-5 < x ≤ -1',
+    '-1 >= x >= -5': '-1 ≥ x ≥ -5',
+    '-1 > x >= -5': '-1 > x ≥ -5',
+    '-5<=x<=-1': '-5≤x≤-1',
+    'x <= -1': 'x ≤ -1',
+    'x >= -1': 'x ≥ -1',
+    'x != -2': 'x ≠ -2',
+}
+
+
+@pytest.mark.parametrize('head', ['', 'y = ', 'f(x) = '])
+@pytest.mark.parametrize('ascii_', sorted(_CONDITIONS))
+def test_ascii_comparators_read_as_unicode_ones(ascii_, head):
+    want, _ = parse_function_expression(f'f(x) = If({_CONDITIONS[ascii_]}, x^2, 7)')
+    got, var = parse_function_expression(f'{head}If({ascii_}, x^2, 7)')
+    assert var.name == 'x' and got == want
+    unicode_, _ = parse_function_expression(f'{head}If({_CONDITIONS[ascii_]}, x^2, 7)')
+    assert unicode_ == want
+
+
+def test_a_chain_without_a_head_is_a_bounded_graph():
+    f = Function.from_string('If(-5 <= x <= -1, sqrt(-x))')
+    assert f(-4) == pytest.approx(2.0)
+    assert f(-1) == pytest.approx(1.0)
+    assert np.isnan(f(0)) and np.isnan(f(-6))
+
+
+@pytest.mark.parametrize('cond', ['x == 1', 'x != 1'])
+def test_equality_keeps_its_meaning_without_a_head(cond):
+    with_head, _ = parse_function_expression(f'y = If({cond}, 1, 0)')
+    assert parse_function_expression(f'If({cond}, 1, 0)')[0] == with_head
+
+
+@pytest.mark.parametrize('text', ['x < 1 -> x > 2', 'x < 1 → x > 2', 'x < 1 ⇒ x > 2', 'a => b'])
+def test_an_arrow_is_no_comparison_of_a_chain(text):
+    from animageo.geo.lib_function import _rewrite_chain_comparisons
+    assert _rewrite_chain_comparisons(text) == text
+
+
+def test_ggb_function_without_a_head_and_ascii_comparators_loads(tmp_path):
+    from animageo.geo.construction import Construction
+    from animageo.parsers import ggb_parser
+    from tests.native.ggb_synth import element, expression, ggb_bytes
+
+    path = tmp_path / 'f.ggb'
+    path.write_bytes(ggb_bytes(expression('f', 'If(-5 <= x <= -1, sqrt(-x))', 'function')
+                               + element('function', 'f')))
+    constr = Construction()
+    ggb_parser.load(constr, {}, str(path))
+    assert not [d for d in constr.command_diagnostics if d['reason'] == 'expression_parse_error']
+    f = constr.element('f').data
+    assert isinstance(f, Function) and f(-4) == pytest.approx(2.0) and np.isnan(f(0))
+
+
 # ── Asymptote rendering ───────────────────────────────────────────────
 
 class TestAsymptotes:

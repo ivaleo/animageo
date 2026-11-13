@@ -138,6 +138,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   are in `tests/native/fixtures/owned_helpers_delete.json`); before, such
   helpers stayed behind as hidden orphans.
 
+### Fixed
+
+- Classic functions: the `=` of `<=`, `>=`, `==` and `!=` is no longer taken
+  for the definition sign, so a formula without `y =` or `f(x) =` in front,
+  `If(-5 <= x <= -1, sqrt(-x))` (and `If(-5 ≤ x ≤ -1, …)`, whose `≤` is
+  read as `<=`), is a graph instead of an `expression_parse_error`. An arrow
+  (`->`, `→`, `⇒`) is not part of a chain of comparisons.
+
 ## [1.13.0] - 2026-11-13
 
 ### Added
