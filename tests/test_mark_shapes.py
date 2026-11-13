@@ -69,9 +69,10 @@ def test_several_waves_hold_three_periods_on_the_inner_arc():
     assert ms.wave_periods(17, 0.3, 2) == 3
     assert ms.wave_periods(60, 1.0, 3) == 10
     # the inner arc grows to three periods of 4 px: r = 12 / Δ
-    assert ms.arc_base_px(wave, 10, 4, 3, 0.5) == pytest.approx(24)
+    assert ms.arc_base_px(wave, 15, 4, 3, 0.5) == pytest.approx(24)
     assert ms.arc_base_px(wave, 30, 4, 3, 0.5) == 30
     assert ms.arc_base_px(wave, 10, 4, 1, 0.5) == 10      # one wave is not grown
+    assert ms.arc_grow(wave, 10, 4, 3, 0.5) == (20, True)  # the ceiling: 2 x the original
     marks = ms.angle_marks((0, 0), [(24 + 8) / UNIT, (24 + 4) / UNIT, 24 / UNIT], 0.0, 0.5, False, wave, UNIT)
     assert [arc.periods for arc in marks.arcs] == [3, 3, 3]
     inner = marks.arcs[2]
@@ -356,3 +357,23 @@ def test_hole_outline():
     assert [c for p in sq for c in p] == pytest.approx([-1, -1, 1, -1, 1, 1, -1, 1])
     assert ms.hole_outline('triangle_up', (0, 0), 1)[0] == pytest.approx([0, 1])
     assert ms.hole_outline('triangle_right', (0, 0), 1)[0] == pytest.approx([1, 0])
+
+
+def test_the_growth_stops_at_twice_the_original_and_the_floors_yield():
+    wave = ArcDecor(style='wave')
+    assert ms.arc_grow(wave, 17, 4, 3, 0.5) == (24, False)
+    assert ms.arc_grow(wave, 17, 4, 3, 0.05) == (34, True)      # 240 px wanted
+    assert ms.arc_grow(wave, 17, 4, 1, 0.05) == (17, False)
+    # the period yields first (down to 3 px), then the number (down to 2)
+    assert ms.wave_periods(42, 0.05, 3, r_in_px=34, capped=True) == 2
+    assert ms.wave_periods(60, 0.3, 3, r_in_px=40, capped=True) == 3      # 12 px: 3 periods of 4
+    assert ms.wave_periods(60, 0.25, 3, r_in_px=40, capped=True) == 3     # 10 px: 3 periods of 3.3
+    assert ms.wave_periods(60, 0.2, 3, r_in_px=40, capped=True) == 2      # 8 px: 3 periods < 3 px
+    assert ms.wave_periods(60, 0.2, 3, r_in_px=40) == 3                   # not capped: as before
+    ticked = ArcDecor(style='dashed', ticks=1)
+    assert ms.arc_grow(ticked, 17, 1.5, 1, 0.05) == (34, True)
+    assert ms.dash_period_px(ticked, 1, 5, capped=True) == 3             # period 3: two dashes
+    assert ms.dash_period_px(ticked, 1, 1.8, capped=True) == pytest.approx(1.2)
+    arc = ms.angle_marks((0, 0), [34 / UNIT], 0.0, 0.05, False, ticked, UNIT, True).arcs[0]
+    assert arc.dashes == 2
+    assert ms.arc_grow(ArcDecor(style='dashed', arrow='both'), 6, 1.5, 1, 1.0) == (12, True)

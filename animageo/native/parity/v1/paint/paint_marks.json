@@ -34186,24 +34186,25 @@
        "range": "minor",
        "autoRadius": true,
        "arcSizePx": 8.0,
-       "radiusPx": 19.098593171,
+       "radiusPx": 16.0,
        "arcs": 1,
        "arcShiftPx": 1.5,
        "shownSize": 0.785398163,
        "right": false,
        "joint": "auto",
-       "arcGrowPx": 11.098593171,
+       "arcGrowMaxPx": 16.0,
+       "arcGrowPx": 8.0,
        "arcRadiiPx": [
-        19.098593171
+        16.0
        ],
        "arcStyle": "dashed",
        "arcDashes": [
         {
-         "radiusPx": 19.098593171,
+         "radiusPx": 16.0,
          "startAngle": 2.552544031,
          "span": 0.392699082,
-         "onPx": 1.5,
-         "offPx": 1.5,
+         "onPx": 1.256637061,
+         "offPx": 1.256637061,
          "offsetPx": 0.0,
          "dashes": 3,
          "periodPx": 3.0
@@ -34213,24 +34214,24 @@
         "head": "both",
         "lengthPx": 6.0,
         "widthPx": 4.0,
-        "drawnLengthPx": 3.75,
-        "drawnWidthPx": 2.5,
+        "drawnLengthPx": 3.141592654,
+        "drawnWidthPx": 2.094395102,
         "tips": [
          [
-          4.864952553,
-          0.135047447,
-          4.831538371,
-          0.114036015,
-          4.850863632,
-          0.098176183
+          4.886862915,
+          0.113137085,
+          4.858869915,
+          0.095534588,
+          4.875059809,
+          0.082247886
          ],
          [
-          4.809014068,
+          4.84,
           0.0,
-          4.825123618,
-          0.036034293,
-          4.800244,
-          0.038484721
+          4.853495905,
+          0.030188018,
+          4.832652805,
+          0.032240885
          ]
         ],
         "stemEndAngles": [
@@ -34238,7 +34239,7 @@
          2.945243113
         ]
        },
-       "overhangPx": 1.25
+       "overhangPx": 1.047197551
       },
       "label": {
        "color": "#000000",
@@ -35274,6 +35275,2426 @@
      "P3",
      "P4",
      "Q"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "floor_wave_capped_5",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "floor_wave_capped_5",
+    "operationRegistryVersion": "1.8",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       5,
+       0.437443
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "alpha": {
+      "overrides": {
+       "arc_style": "wave",
+       "tick_count": 3
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "parts": [
+        {
+         "text": "A",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "parts": [
+        {
+         "text": "B",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "parts": [
+        {
+         "text": "C",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        5.0,
+        0.437443
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 34.0,
+       "arcs": 3,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.0872664,
+       "right": false,
+       "joint": "auto",
+       "arcGrowMaxPx": 34.0,
+       "arcGrowPx": 17.0,
+       "arcRadiiPx": [
+        42.0,
+        38.0,
+        34.0
+       ],
+       "arcStepPx": 4.0,
+       "arcStyle": "wave",
+       "wave": {
+        "amplitudePx": 1.0,
+        "periodPx": 6.0,
+        "samplesPerPeriod": 16,
+        "gapPx": 2.0,
+        "minPeriodPx": 4.0,
+        "periods": 2,
+        "arcs": [
+         {
+          "radiusPx": 42.0,
+          "startAngle": 0.0,
+          "span": 0.0872664,
+          "periods": 2,
+          "points": [
+           [
+            0.42,
+            0.0
+           ],
+           [
+            0.423825258,
+            0.001155806
+           ],
+           [
+            0.427064716,
+            0.002329298
+           ],
+           [
+            0.42922443,
+            0.00351166
+           ],
+           [
+            0.429974417,
+            0.004690476
+           ],
+           [
+            0.429198893,
+            0.005852651
+           ],
+           [
+            0.427013899,
+            0.006987617
+           ],
+           [
+            0.423749613,
+            0.008090162
+           ],
+           [
+            0.419900052,
+            0.009162245
+           ],
+           [
+            0.416047822,
+            0.010213393
+           ],
+           [
+            0.412775395,
+            0.011259486
+           ],
+           [
+            0.410576403,
+            0.012320095
+           ],
+           [
+            0.409780481,
+            0.013414814
+           ],
+           [
+            0.410503101,
+            0.014559246
+           ],
+           [
+            0.412628018,
+            0.015761405
+           ],
+           [
+            0.415825021,
+            0.017019284
+           ],
+           [
+            0.419600254,
+            0.018320129
+           ],
+           [
+            0.423371456,
+            0.019641691
+           ],
+           [
+            0.426556643,
+            0.020955369
+           ],
+           [
+            0.428662728,
+            0.022230811
+           ],
+           [
+            0.429360582,
+            0.023441219
+           ],
+           [
+            0.428535103,
+            0.024568459
+           ],
+           [
+            0.426302682,
+            0.025607038
+           ],
+           [
+            0.422993411,
+            0.026566147
+           ],
+           [
+            0.419100749,
+            0.027469294
+           ],
+           [
+            0.415206336,
+            0.028351411
+           ],
+           [
+            0.411891394,
+            0.029253766
+           ],
+           [
+            0.409648231,
+            0.030217447
+           ],
+           [
+            0.408805316,
+            0.031276407
+           ],
+           [
+            0.409477328,
+            0.032451269
+           ],
+           [
+            0.411547786,
+            0.033744972
+           ],
+           [
+            0.414686878,
+            0.035141105
+           ],
+           [
+            0.418401776,
+            0.036605386
+           ]
+          ]
+         },
+         {
+          "radiusPx": 38.0,
+          "startAngle": 0.0,
+          "span": 0.0872664,
+          "periods": 2,
+          "points": [
+           [
+            0.38,
+            0.0
+           ],
+           [
+            0.383825407,
+            0.001046723
+           ],
+           [
+            0.387065311,
+            0.002111133
+           ],
+           [
+            0.389225769,
+            0.003184415
+           ],
+           [
+            0.389976797,
+            0.004254153
+           ],
+           [
+            0.389202612,
+            0.005307252
+           ],
+           [
+            0.387019254,
+            0.006333148
+           ],
+           [
+            0.383756901,
+            0.007326627
+           ],
+           [
+            0.37990957,
+            0.00828965
+           ],
+           [
+            0.37605987,
+            0.009231745
+           ],
+           [
+            0.372790268,
+            0.010168791
+           ],
+           [
+            0.370594399,
+            0.011120362
+           ],
+           [
+            0.369801898,
+            0.012106052
+           ],
+           [
+            0.370528235,
+            0.013141464
+           ],
+           [
+            0.372657167,
+            0.014234614
+           ],
+           [
+            0.375858482,
+            0.015383495
+           ],
+           [
+            0.379638325,
+            0.016575355
+           ],
+           [
+            0.383414433,
+            0.017787944
+           ],
+           [
+            0.386604824,
+            0.018992663
+           ],
+           [
+            0.388716411,
+            0.020159161
+           ],
+           [
+            0.389420063,
+            0.02126064
+           ],
+           [
+            0.388600679,
+            0.022278968
+           ],
+           [
+            0.38637465,
+            0.023208651
+           ],
+           [
+            0.383072068,
+            0.024058882
+           ],
+           [
+            0.379186392,
+            0.024853171
+           ],
+           [
+            0.375299262,
+            0.025626448
+           ],
+           [
+            0.371991899,
+            0.026419984
+           ],
+           [
+            0.369756613,
+            0.027274867
+           ],
+           [
+            0.368921871,
+            0.02822505
+           ],
+           [
+            0.369602352,
+            0.029291159
+           ],
+           [
+            0.371681576,
+            0.030476131
+           ],
+           [
+            0.374829731,
+            0.031763559
+           ],
+           [
+            0.378553987,
+            0.033119158
+           ]
+          ]
+         },
+         {
+          "radiusPx": 34.0,
+          "startAngle": 0.0,
+          "span": 0.0872664,
+          "periods": 2,
+          "points": [
+           [
+            0.34,
+            0.0
+           ],
+           [
+            0.343825556,
+            0.00093764
+           ],
+           [
+            0.347065906,
+            0.001892968
+           ],
+           [
+            0.349227108,
+            0.002857169
+           ],
+           [
+            0.349979177,
+            0.003817829
+           ],
+           [
+            0.34920633,
+            0.004761854
+           ],
+           [
+            0.347024608,
+            0.00567868
+           ],
+           [
+            0.343764189,
+            0.006563092
+           ],
+           [
+            0.339919089,
+            0.007417056
+           ],
+           [
+            0.336071917,
+            0.008250097
+           ],
+           [
+            0.332805141,
+            0.009078096
+           ],
+           [
+            0.330612395,
+            0.009920629
+           ],
+           [
+            0.329823314,
+            0.01079729
+           ],
+           [
+            0.330553369,
+            0.011723682
+           ],
+           [
+            0.332686316,
+            0.012707823
+           ],
+           [
+            0.335891944,
+            0.013747707
+           ],
+           [
+            0.339676396,
+            0.014830581
+           ],
+           [
+            0.343457411,
+            0.015934197
+           ],
+           [
+            0.346653006,
+            0.017029958
+           ],
+           [
+            0.348770093,
+            0.018087511
+           ],
+           [
+            0.349479543,
+            0.019080062
+           ],
+           [
+            0.348666254,
+            0.019989477
+           ],
+           [
+            0.346446618,
+            0.020810265
+           ],
+           [
+            0.343150725,
+            0.021551618
+           ],
+           [
+            0.339272035,
+            0.022237048
+           ],
+           [
+            0.335392187,
+            0.022901485
+           ],
+           [
+            0.332092404,
+            0.023586202
+           ],
+           [
+            0.329864994,
+            0.024332286
+           ],
+           [
+            0.329038425,
+            0.025173693
+           ],
+           [
+            0.329727377,
+            0.026131048
+           ],
+           [
+            0.331815366,
+            0.02720729
+           ],
+           [
+            0.334972583,
+            0.028386012
+           ],
+           [
+            0.338706199,
+            0.029632931
+           ]
+          ]
+         }
+        ],
+        "cappedMinPeriodPx": 3.0
+       },
+       "overhangPx": 1.0
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "alpha",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "floor_dashed_capped_5",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "floor_dashed_capped_5",
+    "operationRegistryVersion": "1.8",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       5,
+       0.437443
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "alpha": {
+      "overrides": {
+       "arc_style": "dashed",
+       "arc_tick_count": 1
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "parts": [
+        {
+         "text": "A",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "parts": [
+        {
+         "text": "B",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "parts": [
+        {
+         "text": "C",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        5.0,
+        0.437443
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 34.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.0872664,
+       "right": false,
+       "joint": "auto",
+       "arcGrowMaxPx": 34.0,
+       "arcGrowPx": 17.0,
+       "arcRadiiPx": [
+        34.0
+       ],
+       "arcStyle": "dashed",
+       "arcDashes": [
+        {
+         "radiusPx": 34.0,
+         "startAngle": 0.0,
+         "span": 0.0872664,
+         "onPx": 0.989019195,
+         "offPx": 0.989019195,
+         "offsetPx": 0.0,
+         "dashes": 2,
+         "periodPx": 1.97803839
+        }
+       ],
+       "arcTicks": {
+        "count": 1,
+        "lengthPx": 9.0,
+        "shiftPx": 2.0,
+        "widthPx": 0.75,
+        "lines": [
+         [
+          0.294719226,
+          0.01286771,
+          0.384633566,
+          0.016793452
+         ]
+        ]
+       },
+       "overhangPx": 4.5
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "alpha",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "floor_wave_capped_3",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "floor_wave_capped_3",
+    "operationRegistryVersion": "1.8",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       5,
+       0.262039
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "alpha": {
+      "overrides": {
+       "arc_style": "wave",
+       "tick_count": 3
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "parts": [
+        {
+         "text": "A",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "parts": [
+        {
+         "text": "B",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "parts": [
+        {
+         "text": "C",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        5.0,
+        0.262039
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 34.0,
+       "arcs": 3,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.052359898,
+       "right": false,
+       "joint": "auto",
+       "arcGrowMaxPx": 34.0,
+       "arcGrowPx": 17.0,
+       "arcRadiiPx": [
+        42.0,
+        38.0,
+        34.0
+       ],
+       "arcStepPx": 4.0,
+       "arcStyle": "wave",
+       "wave": {
+        "amplitudePx": 1.0,
+        "periodPx": 6.0,
+        "samplesPerPeriod": 16,
+        "gapPx": 2.0,
+        "minPeriodPx": 4.0,
+        "periods": 2,
+        "arcs": [
+         {
+          "radiusPx": 42.0,
+          "startAngle": 0.0,
+          "span": 0.052359898,
+          "periods": 2,
+          "points": [
+           [
+            0.42,
+            0.0
+           ],
+           [
+            0.423826267,
+            0.000693485
+           ],
+           [
+            0.427068781,
+            0.001397585
+           ],
+           [
+            0.429233624,
+            0.002107013
+           ],
+           [
+            0.42999079,
+            0.002814324
+           ],
+           [
+            0.42922443,
+            0.003511664
+           ],
+           [
+            0.427050487,
+            0.004192695
+           ],
+           [
+            0.423799034,
+            0.004854291
+           ],
+           [
+            0.419964018,
+            0.005497632
+           ],
+           [
+            0.416128041,
+            0.006128437
+           ],
+           [
+            0.412873657,
+            0.006756235
+           ],
+           [
+            0.410694673,
+            0.007392775
+           ],
+           [
+            0.409920969,
+            0.008049817
+           ],
+           [
+            0.410668281,
+            0.008736728
+           ],
+           [
+            0.412820594,
+            0.009458324
+           ],
+           [
+            0.416047822,
+            0.010213405
+           ],
+           [
+            0.419856076,
+            0.010994323
+           ],
+           [
+            0.423662879,
+            0.01178773
+           ],
+           [
+            0.426885851,
+            0.012576468
+           ],
+           [
+            0.429031381,
+            0.013342322
+           ],
+           [
+            0.429769772,
+            0.014069211
+           ],
+           [
+            0.428985421,
+            0.014746251
+           ],
+           [
+            0.426794395,
+            0.015370141
+           ],
+           [
+            0.423526738,
+            0.015946397
+           ],
+           [
+            0.419676195,
+            0.016489129
+           ],
+           [
+            0.41582502,
+            0.017019303
+           ],
+           [
+            0.412555317,
+            0.017561696
+           ],
+           [
+            0.410360417,
+            0.018140979
+           ],
+           [
+            0.409569779,
+            0.018777543
+           ],
+           [
+            0.410298854,
+            0.019483781
+           ],
+           [
+            0.412431541,
+            0.02026147
+           ],
+           [
+            0.415637897,
+            0.021100772
+           ],
+           [
+            0.419424404,
+            0.02198111
+           ]
+          ]
+         },
+         {
+          "radiusPx": 38.0,
+          "startAngle": 0.0,
+          "span": 0.052359898,
+          "periods": 2,
+          "points": [
+           [
+            0.38,
+            0.0
+           ],
+           [
+            0.383826321,
+            0.000628035
+           ],
+           [
+            0.387068995,
+            0.001266685
+           ],
+           [
+            0.389234106,
+            0.001910665
+           ],
+           [
+            0.389991647,
+            0.002552527
+           ],
+           [
+            0.389225769,
+            0.003184418
+           ],
+           [
+            0.387052414,
+            0.003800002
+           ],
+           [
+            0.383801658,
+            0.004396152
+           ],
+           [
+            0.379967444,
+            0.004974048
+           ],
+           [
+            0.376132378,
+            0.005539409
+           ],
+           [
+            0.372879011,
+            0.006101766
+           ],
+           [
+            0.370701152,
+            0.006672865
+           ],
+           [
+            0.369928679,
+            0.007264469
+           ],
+           [
+            0.37067733,
+            0.007885944
+           ],
+           [
+            0.372831089,
+            0.008542106
+           ],
+           [
+            0.376059869,
+            0.009231755
+           ],
+           [
+            0.379869783,
+            0.009947244
+           ],
+           [
+            0.383678353,
+            0.010675226
+           ],
+           [
+            0.386903198,
+            0.01139854
+           ],
+           [
+            0.38905071,
+            0.012098975
+           ],
+           [
+            0.389791189,
+            0.012760447
+           ],
+           [
+            0.389009033,
+            0.013372074
+           ],
+           [
+            0.386820309,
+            0.013930555
+           ],
+           [
+            0.383555061,
+            0.014441406
+           ],
+           [
+            0.379707034,
+            0.014918736
+           ],
+           [
+            0.375858482,
+            0.015383513
+           ],
+           [
+            0.372591509,
+            0.015860513
+           ],
+           [
+            0.370399446,
+            0.016374407
+           ],
+           [
+            0.369611752,
+            0.016945587
+           ],
+           [
+            0.370343878,
+            0.017586447
+           ],
+           [
+            0.372479723,
+            0.018298763
+           ],
+           [
+            0.375689344,
+            0.019072695
+           ],
+           [
+            0.379479223,
+            0.019887671
+           ]
+          ]
+         },
+         {
+          "radiusPx": 34.0,
+          "startAngle": 0.0,
+          "span": 0.052359898,
+          "periods": 2,
+          "points": [
+           [
+            0.34,
+            0.0
+           ],
+           [
+            0.343826374,
+            0.000562585
+           ],
+           [
+            0.347069209,
+            0.001135786
+           ],
+           [
+            0.349234588,
+            0.001714316
+           ],
+           [
+            0.349992504,
+            0.002290729
+           ],
+           [
+            0.349227108,
+            0.002857172
+           ],
+           [
+            0.347054342,
+            0.003407309
+           ],
+           [
+            0.343804282,
+            0.003938013
+           ],
+           [
+            0.339970871,
+            0.004450464
+           ],
+           [
+            0.336136715,
+            0.004950382
+           ],
+           [
+            0.332884366,
+            0.005447296
+           ],
+           [
+            0.33070763,
+            0.005952955
+           ],
+           [
+            0.329936389,
+            0.006479121
+           ],
+           [
+            0.330686379,
+            0.00703516
+           ],
+           [
+            0.332841584,
+            0.007625888
+           ],
+           [
+            0.336071917,
+            0.008250106
+           ],
+           [
+            0.33988349,
+            0.008900166
+           ],
+           [
+            0.343693826,
+            0.009562721
+           ],
+           [
+            0.346920546,
+            0.010220613
+           ],
+           [
+            0.349070038,
+            0.010855628
+           ],
+           [
+            0.349812605,
+            0.011451684
+           ],
+           [
+            0.349032644,
+            0.011997897
+           ],
+           [
+            0.346846222,
+            0.012490968
+           ],
+           [
+            0.343583383,
+            0.012936414
+           ],
+           [
+            0.339737872,
+            0.013348343
+           ],
+           [
+            0.335891943,
+            0.013747722
+           ],
+           [
+            0.332627701,
+            0.01415933
+           ],
+           [
+            0.330438475,
+            0.014607835
+           ],
+           [
+            0.329653725,
+            0.015113632
+           ],
+           [
+            0.330388902,
+            0.015689113
+           ],
+           [
+            0.332527904,
+            0.016336055
+           ],
+           [
+            0.33574079,
+            0.017044619
+           ],
+           [
+            0.339534041,
+            0.017794232
+           ]
+          ]
+         }
+        ],
+        "cappedMinPeriodPx": 3.0
+       },
+       "overhangPx": 1.0
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "alpha",
+     "A",
+     "B",
+     "C"
+    ],
+    "diagnostics": []
+   }
+  },
+  {
+   "name": "floor_dashed_capped_3",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "floor_dashed_capped_3",
+    "operationRegistryVersion": "1.8",
+    "operations": {
+     "op_A": {
+      "id": "op_A",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op_B": {
+      "id": "op_B",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op_C": {
+      "id": "op_C",
+      "op": "point.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op_alpha": {
+      "id": "op_alpha",
+      "op": "angle.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "vertex": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "angle",
+        "elementId": "alpha"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op_A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op_B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op_C",
+       "slot": "point"
+      }
+     },
+     "alpha": {
+      "id": "alpha",
+      "type": "angle",
+      "displayName": "alpha",
+      "producer": {
+       "operationId": "op_alpha",
+       "slot": "angle"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point",
+      "value": [
+       0,
+       0
+      ]
+     },
+     "B": {
+      "kind": "point",
+      "value": [
+       5,
+       0
+      ]
+     },
+     "C": {
+      "kind": "point",
+      "value": [
+       5,
+       0.262039
+      ]
+     }
+    },
+    "viewDefaults": {
+     "bounds": [
+      -1,
+      -1,
+      7,
+      5
+     ]
+    },
+    "appearance": {
+     "alpha": {
+      "overrides": {
+       "arc_style": "dashed",
+       "arc_tick_count": 1
+      }
+     }
+    }
+   },
+   "style": null,
+   "t": null,
+   "timeline": null,
+   "expect": {
+    "format": "animageo-paint/v1",
+    "background": "#ffffff",
+    "ptUnit": 100.0,
+    "ptUnitStyle": 100.0,
+    "t": null,
+    "elements": {
+     "A": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000002,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000002
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000002,
+       "text": "$A$",
+       "parts": [
+        {
+         "text": "A",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        0.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "B": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000003,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000003
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000003,
+       "text": "$B$",
+       "parts": [
+        {
+         "text": "B",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        5.0,
+        0.0
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "C": {
+      "type": "point",
+      "styleType": "point",
+      "style": "point",
+      "drawn": true,
+      "z": 50.000004,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.0,
+       "cap": null,
+       "z": 50.000004
+      },
+      "fill": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "isBackground": false
+      },
+      "point": {
+       "sizePx": 6.0,
+       "shape": "circle",
+       "display": "auto"
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": true,
+       "anchor": "BL",
+       "z": 50.000004,
+       "text": "$C$",
+       "parts": [
+        {
+         "text": "C",
+         "italic": true,
+         "script": null
+        }
+       ],
+       "spotWorld": [
+        5.0,
+        0.262039
+       ],
+       "offsetWorld": [
+        0.042426407,
+        0.042426407
+       ]
+      }
+     },
+     "alpha": {
+      "type": "angle",
+      "styleType": "angle",
+      "style": "angle",
+      "drawn": true,
+      "z": 3.000005,
+      "stroke": {
+       "color": "#000000",
+       "opacity": 1.0,
+       "widthPx": 0.75,
+       "cap": null,
+       "z": 3.100005
+      },
+      "fill": {
+       "color": null,
+       "opacity": 0.0,
+       "isBackground": true,
+       "z": 3.000005
+      },
+      "angle": {
+       "range": "minor",
+       "autoRadius": true,
+       "arcSizePx": 17.0,
+       "radiusPx": 34.0,
+       "arcs": 1,
+       "arcShiftPx": 1.5,
+       "shownSize": 0.052359898,
+       "right": false,
+       "joint": "auto",
+       "arcGrowMaxPx": 34.0,
+       "arcGrowPx": 17.0,
+       "arcRadiiPx": [
+        34.0
+       ],
+       "arcStyle": "dashed",
+       "arcDashes": [
+        {
+         "radiusPx": 34.0,
+         "startAngle": 0.0,
+         "span": 0.052359898,
+         "onPx": 0.59341218,
+         "offPx": 0.59341218,
+         "offsetPx": 0.0,
+         "dashes": 2,
+         "periodPx": 1.18682436
+        }
+       ],
+       "arcTicks": {
+        "count": 1,
+        "lengthPx": 9.0,
+        "shiftPx": 2.0,
+        "widthPx": 0.75,
+        "lines": [
+         [
+          0.294898911,
+          0.007722203,
+          0.38486807,
+          0.010078129
+         ]
+        ]
+       },
+       "overhangPx": 4.5
+      },
+      "label": {
+       "color": "#000000",
+       "fontSizePx": 14.0,
+       "halo": {
+        "widthPx": 0.0,
+        "color": "#ffffff",
+        "opacity": 1.0
+       },
+       "shown": false,
+       "anchor": "BL",
+       "radialOffsetPx": 0.0
+      },
+      "value": {
+       "precision": 1,
+       "stripZeros": true,
+       "separator": " = ",
+       "angleUnit": "degree"
+      }
+     }
+    },
+    "order": [
+     "alpha",
+     "A",
+     "B",
+     "C"
     ],
     "diagnostics": []
    }

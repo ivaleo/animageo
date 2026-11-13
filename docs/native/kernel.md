@@ -1439,7 +1439,10 @@ breaking ties by `1e-6`) and, by type:
   more; for a dashed marker with ticks, a head or several arcs every arc
   `L ≥ T = 7.5` px — `r_in ≥ T / Δ`, the outer arc past its `h` heads of
   length `ℓ` `r_out ≥ min((T + h·ℓ) / Δ, 2T / Δ)`; `radiusPx` and
-  `arcRadiiPx` are the grown ones, the fit moves them in after), `wave`
+  `arcRadiiPx` are the grown ones, the fit moves them in after; the growth
+  stops at `2 ×` the original inner radius — then `arcGrowMaxPx` is the
+  ceiling, `wave.cappedMinPeriodPx: 3`, the wave has `N = max(2, min(N, ⌊r_in·Δ / 3⌋))`
+  periods and a dashed arc `periodPx = L / 1.5`, two dashes, below 3 px), `wave`
   `{amplitudePx: 1, periodPx: 6, samplesPerPeriod: 16, gapPx: 2,
   minPeriodPx: 4, periods, arcs}`,
   `arcDashes` `[{radiusPx, startAngle, span, onPx, offPx, offsetPx,

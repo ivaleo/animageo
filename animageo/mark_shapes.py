@@ -69,7 +69,8 @@ from .style.enums import ARC_STYLES, ARROW_HEADS, PARALLEL_DIRECTIONS, POINT_FIL
 __all__ = [
     'WAVE_AMPLITUDE_PX', 'WAVE_PERIOD_PX', 'WAVE_SAMPLES', 'ARC_DASH_PX', 'ANGLE_ARROW_PX', 'TICK_PX',
     'VECTOR_ARROW_PX', 'PARALLEL_SIZE_PX', 'PARALLEL_SHIFT_PX', 'MAX_COUNT', 'HOLLOW_INSCRIBED',
-    'WAVE_GAP_PX', 'WAVE_MIN_PERIOD_PX', 'WAVE_MIN_PERIODS', 'ARC_DASH_MIN_PERIOD_PX', 'ARC_DASH_MIN_DASHES',
+    'WAVE_GAP_PX', 'ARC_GROW_MAX_FACTOR', 'WAVE_CAPPED_MIN_PERIOD_PX', 'WAVE_CAPPED_MIN_PERIODS',
+    'ARC_DASH_CAPPED_MIN_DASHES', 'arc_grow', 'WAVE_MIN_PERIOD_PX', 'WAVE_MIN_PERIODS', 'ARC_DASH_MIN_PERIOD_PX', 'ARC_DASH_MIN_DASHES',
     'HOLLOW_MIN_HOLE_PX',
     'ArcDecor', 'ArcPath', 'AngleMarks', 'ParallelDecor', 'PointHole',
     'arc_decor', 'scene_arc_decor', 'arc_step_px', 'arc_base_px', 'wave_periods', 'dash_period_px',
@@ -93,6 +94,10 @@ MAX_COUNT = 3
 WAVE_GAP_PX = 2.0                   # the least gap between two wavy arcs (their crests)
 WAVE_MIN_PERIOD_PX = 4.0            # the least wavelength on the inner of several waves
 WAVE_MIN_PERIODS = 3                # the least periods of several waves
+ARC_GROW_MAX_FACTOR = 2.0           # the growth of the inner radius for the floors stops at 2 x the original
+WAVE_CAPPED_MIN_PERIOD_PX = 3.0     # a wave under the ceiling: the period yields down to this, then the number
+WAVE_CAPPED_MIN_PERIODS = 2
+ARC_DASH_CAPPED_MIN_DASHES = 2      # a dashed arc under the ceiling: the period yields, then the dashes down to 2
 ARC_DASH_MIN_PERIOD_PX = 3.0        # the least period of a dashed arc fitted to three dashes
 ARC_DASH_MIN_DASHES = 3
 HOLLOW_MIN_HOLE_PX = 3.0            # the disc a hole holds, output px
@@ -224,35 +229,58 @@ def _fitted_dashes(length_px, period_px) -> int:
     return max(1, int(round((length_px + period_px / 2) / period_px))) if length_px > 0 else 1
 
 
-def wave_periods(r_out_px, span, count) -> int:
+def wave_periods(r_out_px, span, count, *, r_in_px=None, capped=False) -> int:
     """``N = max(N_min, round(r_out·span / λ))`` periods of a wavy arc of
-    ``span`` rad, ``N_min`` 3 for ``count`` ≥ 2 arcs, else 1."""
+    ``span`` rad, ``N_min`` 3 for ``count`` ≥ 2 arcs, else 1. Under the
+    ceiling of the growth (``capped``, :func:`arc_grow`) the floor of the
+    inner arc (``r_in_px``) yields: the period first, down to
+    ``WAVE_CAPPED_MIN_PERIOD_PX`` (``N ≤ r_in·span / 3``), then the number,
+    down to ``WAVE_CAPPED_MIN_PERIODS``."""
     least = WAVE_MIN_PERIODS if int(count or 0) >= 2 else 1
-    return max(least, int(round(float(r_out_px) * float(span) / WAVE_PERIOD_PX)))
+    n = max(least, int(round(float(r_out_px) * float(span) / WAVE_PERIOD_PX)))
+    if capped and r_in_px is not None and least > 1:
+        room = int(math.floor(float(r_in_px) * float(span) / WAVE_CAPPED_MIN_PERIOD_PX + 1e-9))
+        n = max(WAVE_CAPPED_MIN_PERIODS, min(n, room))
+    return n
 
 
-def dash_period_px(decor: ArcDecor, count, length_px) -> float:
+def dash_period_px(decor: ArcDecor, count, length_px, capped=False) -> float:
     """The period ``p`` (``on = off = p/2``) of the fitted dashes of an arc
     ``length_px`` long: 4 px; for a marker fitted to three dashes
     (:func:`_three_dashes`) with fewer at 4 px, ``max(3, min(4, L / 2.5))`` —
-    three dashes exactly where ``L ≥ 7.5`` px."""
+    three dashes exactly where ``L ≥ 7.5`` px. Under the ceiling of the growth
+    (``capped``) the period goes on yielding below 3 px, so that the arc keeps
+    ``ARC_DASH_CAPPED_MIN_DASHES`` dashes (``p = L / 1.5``)."""
     period = ARC_DASH_PX[0] + ARC_DASH_PX[1]
     length_px = float(length_px)
     if not _three_dashes(decor, count) or length_px <= 0 or \
             _fitted_dashes(length_px, period) >= ARC_DASH_MIN_DASHES:
         return period
-    return max(ARC_DASH_MIN_PERIOD_PX, min(period, length_px / (ARC_DASH_MIN_DASHES - 0.5)))
+    period = max(ARC_DASH_MIN_PERIOD_PX, min(period, length_px / (ARC_DASH_MIN_DASHES - 0.5)))
+    if capped and _fitted_dashes(length_px, period) < ARC_DASH_CAPPED_MIN_DASHES:
+        period = length_px / (ARC_DASH_CAPPED_MIN_DASHES - 0.5)
+    return period
 
 
-def arc_base_px(decor: ArcDecor, base_px, step_px, count, span) -> float:
+def arc_grow(decor: ArcDecor, base_px, step_px, count, span) -> tuple:
     """The inner radius (px) of ``count`` decorated arcs ``step_px`` apart
-    over ``span`` rad: ``base_px``, grown so that the inner of two waves and
+    over ``span`` rad: ``base_px``, grown (at most to ``ARC_GROW_MAX_FACTOR``
+    times itself; ``(radius, capped)`` — ``capped`` when the ceiling binds and the
+    floors yield, :func:`wave_periods`, :func:`dash_period_px`) so that the inner of two waves and
     more holds ``WAVE_MIN_PERIODS`` periods of ``WAVE_MIN_PERIOD_PX`` (``r ≥
     3·4 / Δ``) and every arc of a dashed marker fitted to three dashes holds
     three of ``ARC_DASH_MIN_PERIOD_PX`` (``L ≥ T = 2.5·3``: the inner arcs
     ``r ≥ T / Δ``; the outer one past its ``h`` heads, ``L = max(r·Δ − h·ℓ,
     r·Δ/2)``, ``r_out ≥ min((T + h·ℓ) / Δ, 2T / Δ)``)."""
     base = float(base_px)
+    need = _arc_need(decor, base, step_px, count, span)
+    ceiling = base * ARC_GROW_MAX_FACTOR if base > 0 else need
+    if need > ceiling + 1e-9:
+        return ceiling, True
+    return need, False
+
+
+def _arc_need(decor, base, step_px, count, span) -> float:
     n = int(count or 0)
     span = float(span)
     if n <= 0 or not span > 1e-12 or decor.plain:
@@ -268,6 +296,11 @@ def arc_base_px(decor: ArcDecor, base_px, step_px, count, span) -> float:
         outer = min((least + heads * decor.arrow_length_px) / span, 2 * least / span)
         need = max(need, outer - (n - 1) * float(step_px))
     return max(base, need)
+
+
+def arc_base_px(decor: ArcDecor, base_px, step_px, count, span) -> float:
+    """The inner radius of :func:`arc_grow`."""
+    return arc_grow(decor, base_px, step_px, count, span)[0]
 
 
 def arrow_fit(length_px, width_px, radius_px, span, both=False) -> tuple:
@@ -341,11 +374,12 @@ def _wave(cx, cy, radius, start, span, periods, amplitude):
     return pts
 
 
-def angle_marks(vertex, radii, start, span, flipped, decor: ArcDecor, unit) -> AngleMarks:
+def angle_marks(vertex, radii, start, span, flipped, decor: ArcDecor, unit, capped=False) -> AngleMarks:
     """The arcs of ``radii`` (world, outer first) around ``vertex`` over
     ``[start, start + span]`` with ``decor``. ``flipped`` — the arc runs from
     the second side (``start`` is at side 2, as ``_render_angle`` draws a
-    flipped angle). ``unit`` — style px per world unit."""
+    flipped angle). ``unit`` — style px per world unit; ``capped`` — the growth of the inner
+    radius hit its ceiling (:func:`arc_grow`)."""
     from .dash import dash_pattern, explicit_pattern
     out = AngleMarks()
     radii = [float(r) for r in radii if r > 0]
@@ -381,14 +415,14 @@ def angle_marks(vertex, radii, start, span, flipped, decor: ArcDecor, unit) -> A
         s = span - (trim[0] + trim[1] if i == 0 else 0.0)
         arc = ArcPath(radius, a, s)
         if decor.style == 'wave':
-            arc.periods = wave_periods(r_out_px, s, len(radii))
+            arc.periods = wave_periods(r_out_px, s, len(radii), r_in_px=radii[-1] * unit, capped=capped)
             arc.points = _wave(cx, cy, radius, a, s, arc.periods, WAVE_AMPLITUDE_PX / unit)
         elif decor.style == 'dashed':
             if decor.dash_px is not None:
                 arc.dash = explicit_pattern(decor.dash_px, unit)
             else:
                 length = radius * s
-                arc.period_px = dash_period_px(decor, len(radii), length * unit)
+                arc.period_px = dash_period_px(decor, len(radii), length * unit, capped)
                 k = arc.period_px / (ARC_DASH_PX[0] + ARC_DASH_PX[1])
                 on, off = ARC_DASH_PX[0] * k / unit, ARC_DASH_PX[1] * k / unit
                 arc.dash = dash_pattern(length, on, off, fit_ends=True)

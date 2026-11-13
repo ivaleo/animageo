@@ -131,12 +131,13 @@ class MarkerExtent:
     label_px: float
     right_size_px: Optional[float] = None
     overhang_px: float = 0.0
+    capped: bool = False        # the growth for the floors hit its ceiling (``mark_shapes.arc_grow``)
 
 
 def marker_extent(scene, elem) -> MarkerExtent:
     """The marker of the angle ``elem`` as ``AnimaGeoScene._render_angle`` draws it."""
     from .label_placement import compute_effective_arc_size_px
-    from .mark_shapes import angle_label_overhang_px, angle_overhang_px, arc_base_px, arc_step_px, scene_arc_decor
+    from .mark_shapes import angle_label_overhang_px, angle_overhang_px, arc_grow, arc_step_px, scene_arc_decor
     from .style.resolver import resolve
 
     data = elem.data
@@ -164,16 +165,16 @@ def marker_extent(scene, elem) -> MarkerExtent:
         return MarkerExtent(True, base, count, shift, side, side, side, size)
     unit = _style_unit(scene)
     # the floors of legibility: several waves, dashes fitted to three
-    grown = arc_base_px(decor, base, shift, count, shown_angle(data.size, angle_range))
+    grown, capped = arc_grow(decor, base, shift, count, shown_angle(data.size, angle_range))
     outer = grown + ((max(1, count) if explicit else count) - 1) * shift
     if outer / unit < 0.001:            # the renderer's guard
         outer = 0.2 * unit
     inner = outer - (max(count, 1) - 1) * shift
     if decor.plain or count <= 0:
-        return MarkerExtent(False, base, count, shift, outer, inner, outer)
+        return MarkerExtent(False, base, count, shift, outer, inner, outer, capped=capped)
     overhang = angle_overhang_px(decor, outer, shown_angle(data.size, angle_range))
     return MarkerExtent(False, base, count, shift, outer, inner, outer + angle_label_overhang_px(decor),
-                        overhang_px=overhang)
+                        overhang_px=overhang, capped=capped)
 
 
 # ── the fit ──────────────────────────────────────────────────────────────

@@ -3936,7 +3936,7 @@ class AnimaGeoScene(MovingCameraScene):
 
         from .angle_marker import fit_settings, marker_fit
         from .label_placement import compute_effective_arc_size_px
-        from .mark_shapes import angle_label_overhang_px, arc_base_px, arc_step_px, scene_arc_decor
+        from .mark_shapes import angle_label_overhang_px, arc_grow, arc_step_px, scene_arc_decor
         arc_size_resolved = _resolve_style(self, elem, 'arc_size_px', default=17.0)
         r = compute_effective_arc_size_px(
             elem, elem.data, self, base_px=arc_size_resolved,
@@ -3947,9 +3947,11 @@ class AnimaGeoScene(MovingCameraScene):
         # apart, the inner arc grown to the floors of legibility
         decor = scene_arc_decor(self, elem)
         arc_shift_px = ctx.arc_shift_px
+        ctx.arc_capped = False
         if not decor.plain:
             arc_shift_px = arc_step_px(decor, arc_shift_px, ctx.tick_count)
-            r = arc_base_px(decor, r * ptUnit, arc_shift_px, ctx.tick_count, angle) / ptUnit
+            r, ctx.arc_capped = arc_grow(decor, r * ptUnit, arc_shift_px, ctx.tick_count, angle)
+            r /= ptUnit
         r += ((max(1, ctx.tick_count) if ctx.mark_explicit else ctx.tick_count) - 1) \
              * arc_shift_px / ptUnit
         if r < 0.001:
@@ -4065,7 +4067,7 @@ class AnimaGeoScene(MovingCameraScene):
         unit = ctx.ptUnit_style
         count = ctx.tick_count
         radii = [radius - i * step_px / unit for i in range(count)]
-        marks = angle_marks(vertex[:2], radii, start, span, flipped, decor, unit)
+        marks = angle_marks(vertex[:2], radii, start, span, flipped, decor, unit, getattr(ctx, 'arc_capped', False))
         z = ctx.zz + 0.1
         given = self._mark_applied.get(elem.name, {}) if ctx.mark is not None else {}
         for i, arc in enumerate(marks.arcs):

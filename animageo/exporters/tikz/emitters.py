@@ -29,7 +29,7 @@ from ...geo.lib_elements import (
     resolve_text_position, text_to_display_latex, textify_cyrillic,
 )
 from ...angle_marker import fit_settings, marker_extent, marker_fit
-from ...mark_shapes import angle_label_overhang_px, arc_base_px, arc_step_px, scene_arc_decor
+from ...mark_shapes import angle_label_overhang_px, arc_grow, arc_step_px, scene_arc_decor
 from ...label_placement import compute_effective_arc_size_px
 from ...style.colorspace import same_color
 from .context import TikzContext
@@ -487,11 +487,13 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
     explicit = bool(getattr(elem, '_native_mark_explicit', False))
     tick_count = int(ctx.resolve(elem, "tick_count", default=1) or (0 if explicit else 1))
     decor = scene_arc_decor(ctx.scene, elem)
+    arc_capped = False
     if not decor.plain:                 # kinds of marks: the step of waves, no arcs for none
         tick_count = int(ctx.resolve(elem, "tick_count", default=1) or 0)
         arc_shift_mu = float(arc_step_px(decor, float(ctx.resolve(elem, "arc_shift_px", default=0.0) or 0.0),
                                          tick_count)) / ps
-        r = arc_base_px(decor, r * ps, arc_shift_mu * ps, tick_count, angle) / ps   # the floors of legibility
+        r, arc_capped = arc_grow(decor, r * ps, arc_shift_mu * ps, tick_count, angle)   # the floors of legibility
+        r /= ps
     r += ((max(1, tick_count) if explicit else tick_count) - 1) * arc_shift_mu
     if r < 0.001:
         r = 0.2
@@ -564,7 +566,7 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
         opts = decoration_opts
         if not decor.plain:
             _emit_arc_marks(ctx, elem, decor, (px, py), [r - i * arc_shift_mu for i in range(arcs_drawn)],
-                            a0, angle, is_clockwise, opts)
+                            a0, angle, is_clockwise, opts, arc_capped)
             arcs_drawn = 0
         for i in range(arcs_drawn):
             ri = r - i * arc_shift_mu
@@ -585,14 +587,14 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
         emit_label(ctx, elem, lx, ly, labels, default_anchor="center")
 
 
-def _emit_arc_marks(ctx: TikzContext, elem, decor, vertex, radii, start, span, flipped, opts) -> None:
+def _emit_arc_marks(ctx: TikzContext, elem, decor, vertex, radii, start, span, flipped, opts, capped=False) -> None:
     """The decorated arcs of an angle (``mark_shapes.angle_marks``, as the
     renderer's ``_append_arc_marks``): waves as plotted polylines, dashes
     fitted to each arc as a ``dash pattern``, the ticks across them (butt) in
     the colour of the marks ``opts``; the heads filled in the stroke."""
     from ...mark_shapes import angle_marks
     ps = ctx.ptUnit_style
-    marks = angle_marks(vertex, radii, start, span, flipped, decor, ps)
+    marks = angle_marks(vertex, radii, start, span, flipped, decor, ps, capped)
     p = ctx.opt.size_precision
     for arc in marks.arcs:
         if arc.points is not None:

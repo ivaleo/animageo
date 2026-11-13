@@ -498,7 +498,7 @@ def _angle(final, elem, data, unit, value):
     ``rendering.angle_marker_fit`` — fitted to the sides (``fit``)."""
     from ..angle_marker import fit_settings, marker_fit
     from ..label_placement import compute_effective_arc_size_px
-    from ..mark_shapes import arc_base_px, arc_step_px, scene_arc_decor
+    from ..mark_shapes import arc_grow, arc_step_px, scene_arc_decor
     decor = scene_arc_decor(final, elem)
     angle_range = value('angle_range', 'minor') or 'minor'
     auto_radius = value('auto_radius', True)
@@ -549,7 +549,9 @@ def _angle(final, elem, data, unit, value):
     else:
         step = shift_px if decor.plain else arc_step_px(decor, shift_px, arcs)
         if not decor.plain:     # the floors of legibility (mark_shapes.arc_base_px)
-            grown = arc_base_px(decor, radius_px, step, arcs, shown)
+            grown, capped = arc_grow(decor, radius_px, step, arcs, shown)
+            if capped:              # the growth stops at 2 x the original: the floors yield
+                out['arcGrowMaxPx'] = _r(grown)
             if grown != radius_px:
                 out['arcGrowPx'] = _r(grown - radius_px)
                 radius_px = grown
@@ -564,21 +566,22 @@ def _angle(final, elem, data, unit, value):
             flipped = (angle_range == 'minor' and size > math.pi) or (angle_range == 'reflex' and size < math.pi)
             if step != shift_px:
                 out['arcStepPx'] = _r(step)
-            out.update(_arc_marks(final, elem, data, unit, decor, radii, shown, flipped, value))
+            out.update(_arc_marks(final, elem, data, unit, decor, radii, shown, flipped, value,
+                                  'arcGrowMaxPx' in out))
     return out
 
 
-def _arc_marks(final, elem, data, unit, decor, radii_px, shown, flipped, value):
+def _arc_marks(final, elem, data, unit, decor, radii_px, shown, flipped, value, capped=False):
     """The decorated arcs of an angle (``mark_shapes.angle_marks``, the
     renderer's ``_append_arc_marks``), world units; only the fields of its
     decoration. A wave: each arc's samples ``φ_k = start + span·k/(16·N)``,
     ``ρ_k = r + A·sin(2π·(k mod 16)/16)``; a dashed arc: its fitted pattern."""
     from ..angle_marker import marker_extent
-    from ..mark_shapes import (WAVE_AMPLITUDE_PX, WAVE_GAP_PX, WAVE_MIN_PERIOD_PX, WAVE_PERIOD_PX, WAVE_SAMPLES,
+    from ..mark_shapes import (WAVE_AMPLITUDE_PX, WAVE_CAPPED_MIN_PERIOD_PX, WAVE_GAP_PX, WAVE_MIN_PERIOD_PX, WAVE_PERIOD_PX, WAVE_SAMPLES,
                                angle_marks, arrow_fit, wave_periods)
     vx, vy = (float(c) for c in data.vertex[:2])
     start = math.atan2(float(data.side2[1]), float(data.side2[0])) if flipped else float(data.start_angle)
-    marks = angle_marks((vx, vy), [r / unit for r in radii_px], start, shown, flipped, decor, unit)
+    marks = angle_marks((vx, vy), [r / unit for r in radii_px], start, shown, flipped, decor, unit, capped)
     out = {}
     if decor.style != 'solid':
         out['arcStyle'] = decor.style
@@ -590,9 +593,11 @@ def _arc_marks(final, elem, data, unit, decor, radii_px, shown, flipped, value):
     if decor.style == 'wave':
         out['wave'] = {'amplitudePx': WAVE_AMPLITUDE_PX, 'periodPx': WAVE_PERIOD_PX,
                        'samplesPerPeriod': WAVE_SAMPLES, 'gapPx': WAVE_GAP_PX, 'minPeriodPx': WAVE_MIN_PERIOD_PX,
-                       'periods': wave_periods(radii_px[0], shown, len(radii_px)),
+                       'periods': wave_periods(radii_px[0], shown, len(radii_px), r_in_px=radii_px[-1], capped=capped),
                        'arcs': [dict(path, periods=arc.periods, points=[[_r(x), _r(y)] for x, y in arc.points])
                                 for path, arc in zip(paths, marks.arcs)]}
+        if capped:
+            out['wave']['cappedMinPeriodPx'] = WAVE_CAPPED_MIN_PERIOD_PX
     elif decor.style == 'dashed':
         out['arcDashes'] = [dict(path, onPx=_r(arc.dash.on * unit), offPx=_r(arc.dash.off * unit),
                                  offsetPx=_r(arc.dash.offset * unit), dashes=arc.dashes,

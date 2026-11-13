@@ -105,7 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The geometry lives in `animageo/mark_shapes.py` and is shared by the
   renderer, label placement (ticks, heads and chevrons are obstacles), the
   native paint report (`wave`, `arcDashes`, `arcTicks`, `arrow`,
-  `overhangPx`, `arcGrowPx`, `hole`, `givenSizePx`, `parallel`; new fixture
+  `overhangPx`, `arcGrowPx`, `arcGrowMaxPx`, `hole`, `givenSizePx`, `parallel`; new fixture
   `paint_marks` with the `floor_*` cases of the floors above), TikZ
   (explicit paths) and JSXGraph (native segment heads, hollow points and a
   dashed single arc; live chevrons on segments; static curves for the other

@@ -889,7 +889,7 @@ def angle_mark_geometry(scene, elem):
     unit = _style_ptUnit(getattr(scene, 'style', None))
     outer = extent.outer_px - fit.delta_px
     radii = [(outer - i * extent.shift_px) / unit for i in range(extent.count)]
-    return angle_marks((float(v[0]), float(v[1])), radii, start, span, flipped, decor, unit)
+    return angle_marks((float(v[0]), float(v[1])), radii, start, span, flipped, decor, unit, extent.capped)
 
 
 def _figure_faces(scene, *, max_vertices=6, max_segments=150):

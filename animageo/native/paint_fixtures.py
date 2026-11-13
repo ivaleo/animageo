@@ -650,6 +650,17 @@ def _marks():
         d.free(f'P{i}', i, 0).overrides(f'P{i}', point_shape=shape, size_px=8, point_fill='hollow')
     d.free('Q', 0, 1).overrides('Q', point_shape='triangle_up', size_px=8)            # solid: as given
     out.append(('floor_hollow_8', d, None))
+    # the ceiling: the growth for the floors stops at 2 x the original inner
+    # radius (17 px), the floors yield (a wave: the period down to 3 px, then
+    # the periods down to 2; dashes: the period, then the dashes down to 2)
+    for deg in (5, 3):
+        c = (5, round(5 * math.tan(math.radians(deg)), 6))
+        d = _triangle(f'floor_wave_capped_{deg}', c=c).angle('alpha', 'B', 'A', 'C')
+        d.overrides('alpha', arc_style='wave', tick_count=3)
+        out.append((f'floor_wave_capped_{deg}', d, None))
+        d = _triangle(f'floor_dashed_capped_{deg}', c=c).angle('alpha', 'B', 'A', 'C')
+        d.overrides('alpha', arc_style='dashed', arc_tick_count=1)
+        out.append((f'floor_dashed_capped_{deg}', d, None))
     return out
 
 
