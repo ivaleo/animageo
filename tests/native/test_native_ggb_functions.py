@@ -556,17 +556,17 @@ def test_number_driven_path_parameter_and_function_tuple_are_not_frozen(definiti
     assert all(el.get('displayName') != 'P' for el in doc['elements'].values())
 
 
-@pytest.mark.parametrize('source', [
-    function_source('If(x >= 0, x²)'),
-    function_source('If(x < 0, -x, x)'),
-    command('Function', ['x²', '-1', '1'], ['f']) + element('function', 'f'),
+@pytest.mark.parametrize('source, saved', [
+    (function_source('If(x >= 0, x²)'), (.5, .25)),
+    (function_source('If(x < 0, -x, x)'), (.5, .5)),
+    (command('Function', ['x²', '-1', '1'], ['f']) + element('function', 'f'), (.5, .25)),
 ])
-def test_if_and_bounded_graph_gliders_keep_explicit_unproven_path_refusal(source):
-    doc, items = imported(source + command('Point', ['f'], ['P']) + point('P', .5, .25))
+def test_if_and_bounded_graph_gliders_are_checked_by_their_saved_point(source, saved):
+    # registry 1.9: a domain clamps x and an If has no value in its gaps, as in GeoGebra
+    doc, items = imported(source + command('Point', ['f'], ['P']) + point('P', *saved))
     assert items['f']['category'] == 'editable'
-    assert items['P']['category'] == 'picture'
-    assert items['P']['reason'] == 'unsupported_signature'
-    assert items['P']['native_ids'] == []
+    assert items['P']['category'] == 'editable' and items['P']['value_check'] == 'passed'
+    assert operation(doc, items, 'P')['op'] == 'point.on_function'
 
 
 @pytest.mark.parametrize('coords', [

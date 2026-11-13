@@ -3359,6 +3359,73 @@ def closest_point_cp(circle, p):
     return Point(c + circle.radius * v / nv)
 
 
+def _kernel_conic(conic):
+    """The value of a non-degenerate ``conic`` in the kernel's form
+    (``animageo/native/kernel/conic.py``: ``{kind, c, axis, a, b}`` with
+    ``a ≥ b`` for an ellipse, ``{kind, vertex, axis, p}`` for a parabola
+    ``Y² = 2pX``), ``None`` for a degenerate one."""
+    kind = conic.type
+    if kind == ConicType.CIRCLE:
+        found = conic.as_circle()
+        if found is None:
+            return None
+        c, r = found
+        return {'kind': 'ellipse', 'c': [float(c[0]), float(c[1])], 'axis': [1.0, 0.0], 'a': float(r), 'b': float(r)}
+    if kind in (ConicType.ELLIPSE, ConicType.HYPERBOLA):
+        params = conic.as_ellipse() if kind == ConicType.ELLIPSE else conic.as_hyperbola()
+        if params is None:
+            return None
+        (a, b), rot = params['semi_axes'], params['rotation']
+        if kind == ConicType.ELLIPSE and a < b:
+            a, b, rot = b, a, rot + np.pi / 2
+        c = params['center']
+        return {'kind': 'ellipse' if kind == ConicType.ELLIPSE else 'hyperbola', 'c': [float(c[0]), float(c[1])],
+                'axis': [float(np.cos(rot)), float(np.sin(rot))], 'a': float(a), 'b': float(b)}
+    if kind == ConicType.PARABOLA:
+        params = conic.as_parabola()
+        if params is None:
+            return None
+        v, u = params['vertex'], params['axis']
+        return {'kind': 'parabola', 'vertex': [float(v[0]), float(v[1])], 'axis': [float(u[0]), float(u[1])],
+                'p': 2.0 * float(params['focal_parameter'])}
+    return None
+
+
+def closest_point_Kp(conic, p):
+    """ClosestPoint(conic, P): the nearest point of an ellipse, of the
+    nearest branch of a hyperbola, of a parabola — the projection of the
+    kernel (``native/kernel/paths.py``); ``None`` for a degenerate conic."""
+    from ..native.kernel import paths
+    value = _kernel_conic(conic)
+    if value is None:
+        return None
+    frame = paths.frame('conic', value)
+    t, branch = paths.locate(frame, float(p.coords[0]), float(p.coords[1]), 1e-12)
+    at = paths.point_at(frame, t, branch)
+    return None if at is None else Point(np.array([at['x'], at['y']]))
+
+
+def closest_point_Fp(function, p):
+    """ClosestPoint(f, P): the nearest point of the graph inside its domain,
+    searched over the window of the default bounds and P's abscissa (the
+    projection of the kernel, ``native/kernel/paths.py``); ``None`` when the
+    graph has no value there."""
+    from ..native.kernel import paths
+
+    def fx(u):
+        try:
+            with np.errstate(all='ignore'):
+                v = complex(function(u))
+        except (TypeError, ValueError, OverflowError):
+            return None
+        return float(v.real) if v.imag == 0 and np.isfinite(v.real) else None
+
+    lo, hi = function.explicit_domain or (None, None)
+    x = paths.nearest_on_graph(fx, lo, hi, float(p.coords[0]), float(p.coords[1]))
+    y = None if x is None else fx(x)
+    return None if y is None else Point(np.array([x, y]))
+
+
 # ── B2: Dilate(Object, factor [, center]) — homothety ──
 def _dilate_coords(coords, r, center):
     return center + r * (np.asarray(coords, dtype=float) - center)

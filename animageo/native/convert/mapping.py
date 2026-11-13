@@ -34,7 +34,11 @@ the conic rows (``Ellipse``, ``Hyperbola``, ``Parabola``, five-point
 ``Intersect`` keys) are op rows of the registry 1.6 conic ops. ``mapVersion``
 5 (registry 1.8): the ``Intersect`` keys of two conics, a conic and a circle
 or an arc (``intersect_KK``, ``Kc``, ``cK``, ``KC``, ``CK`` and their indexed
-forms) are op rows of ``intersect.conic_conic``.
+forms) are op rows of ``intersect.conic_conic``. ``mapVersion`` 6
+(registry 1.9): ``point_K`` (``Point(conic)``) is ``point.on_path`` with
+the projected parameter, ``closest_point_Kp`` and ``closest_point_Fp``
+(``ClosestPoint`` of a conic and of a graph) are ``point.closest``;
+``Point(conic, t)`` stays ``unsupported_signature`` as on a circle.
 """
 from __future__ import annotations
 

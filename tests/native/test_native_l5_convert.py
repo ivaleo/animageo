@@ -152,9 +152,16 @@ def _row_scene(key, row, shift=0):
     return f"{target} = {row['factory']}({', '.join(args)})"
 
 
+# rows a DSL construction cannot reach: their input is a function, and a classic
+# function of the DSL is not translated (``function_T`` is unmapped); a .ggb
+# reaches them through the function the import reads itself
+GGB_ONLY_ROWS = {'closest_point_Fp': 'tests/native/test_native_ggb_paths.py'}
+
+
 def _op_rows():
     from animageo.native.convert import dsl_map
-    return sorted((k, r) for k, r in dsl_map().commands.items() if 'op' in r and k != 'polygon')
+    return sorted((k, r) for k, r in dsl_map().commands.items()
+                  if 'op' in r and k != 'polygon' and k not in GGB_ONLY_ROWS)
 
 
 @pytest.mark.parametrize('key, row', _op_rows(), ids=[k for k, _ in _op_rows()])
@@ -425,8 +432,10 @@ NO_DEGENERACY = {
     'sin_i': 'the sine is defined for every number',
     'cos_i': 'the cosine is defined for every number',
 }
-for _key in ('axes_K', 'center_K', 'focus_K', 'vertex_K'):
+for _key in ('axes_K', 'center_K', 'focus_K', 'vertex_K', 'point_K'):
     NO_DEGENERACY[_key] = 'a degenerate conic is not supplied as a defined input to this command'
+NO_DEGENERACY['closest_point_Fp'] = 'a .ggb row only (GGB_ONLY_ROWS): a DSL function is not translated'
+DEGENERATE['closest_point_Kp'] = 'X = ClosestPoint(Ellipse(Point(-2, 0), Point(2, 0), Point(0, 3)), Point(0, 0))'
 DEGENERATE.update({
     'ellipse_ppp': 'X = Ellipse(Point(-2, 0), Point(2, 0), Point(0, 0))',
     'hyperbola_ppp': 'X = Hyperbola(Point(-2, 0), Point(2, 0), Point(0, 3))',
@@ -494,7 +503,7 @@ def _outputs(code, key):
 def test_every_row_has_three_cases():
     rows = _all_rows()
     generated = {k for k, _ in _op_rows()}
-    assert set(rows) == generated | set(OWN_SCENES)
+    assert set(rows) == generated | set(OWN_SCENES) | set(GGB_ONLY_ROWS)
     assert set(DEGENERATE) | set(NO_DEGENERACY) == set(rows)
     assert not set(DEGENERATE) & set(NO_DEGENERACY)
     assert DEGENERATE_DIFFERS <= set(DEGENERATE)

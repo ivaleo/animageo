@@ -102,5 +102,5 @@ class TestHelpersAreNoCommands:
         assert np.allclose(cpx_to_a(a_to_cpx(np.array([1.5, -2.0]))), [1.5, -2.0])
 
     def test_the_other_commands_are_unchanged(self):
-        assert len(COMMAND_REGISTRY) == 476
+        assert len(COMMAND_REGISTRY) == 478        # + closest_point_Kp, closest_point_Fp (1.14.0)
         assert {'equality_Pm', 'equality_PP', 'area_P', 'vector_pp', 'polygon'} <= set(COMMAND_REGISTRY)

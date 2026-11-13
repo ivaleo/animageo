@@ -30,7 +30,7 @@ __all__ = ['ConvertError', 'Record', 'Context', 'Translation', 'translate', 'DOC
 DOCUMENT_BOUNDS = [-10.0, -6.0, 10.0, 6.0]
 AXES = ('xAxis', 'yAxis')
 _XML_SHORTCUTS = {'point': 'p', 'segment': 's', 'line': 'l', 'ray': 'r', 'polygon': 'P', 'vector': 'v',
-                  'numeric': 'i', 'angle': 'A', 'conicpart': 'C', 'conic': 'K'}
+                  'numeric': 'i', 'angle': 'A', 'conicpart': 'C', 'conic': 'K', 'function': 'F'}
 
 
 class ConvertError(ValueError):
@@ -341,6 +341,12 @@ class _Builder:
             if value is not None and KeyMaker.is_phantom(inp):
                 return _num(value)
             raise _Untranslated('depends_on_unsupported', deps=[inp])
+        if isinstance(inp, str) and inp in self.ctx.functions:
+            # a function the import read itself (the classic did not): its element, once translated
+            eid = self.element_of.get(inp)
+            if eid is None:
+                raise _Untranslated('depends_on_unsupported', deps=[inp])
+            return _ref(eid)
         value = _literal(self.constr.dataByStr(inp) if isinstance(inp, str) else inp)
         if value is None or not math.isfinite(value):
             raise _Untranslated('formula_unsupported', f'аргумент {inp!r}')
@@ -811,7 +817,7 @@ def _resolve_by_value(builder: _Builder, doc, scale: float):
 
 
 def _project_on_path(builder: _Builder, points):
-    from .. import project
+    from .. import project_input
     for name, eid in points:
         if eid not in builder.doc['elements']:
             continue
@@ -821,13 +827,13 @@ def _project_on_path(builder: _Builder, points):
             if isinstance(data, builder._Point):
                 xy = [float(data.coords[0]), float(data.coords[1])]
         try:
-            t = project(builder.doc, eid, xy) if xy is not None else None
+            entry = project_input(builder.doc, eid, xy) if xy is not None else None
         except ValueError:
-            t = None
-        if t is None or not math.isfinite(t):
+            entry = None
+        if entry is None or not math.isfinite(entry['value']):
             builder.warnings.append({'code': 'path_parameter_default', 'name': name})
             continue
-        builder.doc['inputs'][eid] = {'kind': 'pathParameter', 'value': float(t)}
+        builder.doc['inputs'][eid] = dict(entry, value=float(entry['value']))
 
 
 def translate(constr, ctx: Context) -> Translation:

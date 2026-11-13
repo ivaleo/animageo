@@ -237,21 +237,12 @@ def read_functions(infos, norm, ctx) -> None:
     _read_graph_points(infos, norm, ctx)
 
 
-def _has_if(ast):
-    stack = [ast]
-    while stack:
-        node = stack.pop()
-        if isinstance(node, dict):
-            if 'if' in node:
-                return True
-            stack.extend(node.values())
-        elif isinstance(node, list):
-            stack.extend(node)
-    return False
-
-
 def _read_graph_points(infos, norm, ctx):
-    """Only XML Point(f): saved x is its free input, saved y is a check."""
+    """Only XML Point(f): saved x is its free input, saved y is a check.
+
+    A domain clamps x and a piecewise ``If`` has no value in its gaps, in
+    GeoGebra as in ``point.on_function`` (registry 1.9): the saved point
+    checks the branch it is on."""
     for info in infos:
         inputs = info.get('inputs', [])
         if info['type'] != 'point' or info.get('command') != 'Point' or len(inputs) != 1:
@@ -263,9 +254,6 @@ def _read_graph_points(infos, norm, ctx):
         name = norm[info['label']]
         forced = ctx.forced.get(name)
         if forced and forced[0] not in ('parse_error', 'unsupported_signature', 'no_registry_op'):
-            continue
-        if any(bound is not None for bound in spec.domain) or _has_if(spec.ast):
-            ctx.forced[name] = ('unsupported_signature', 'область/If графика требует проверки исходной path-семантики')
             continue
         coords = info.get('coords') or {}
         x, z = coords.get('x'), coords.get('z')

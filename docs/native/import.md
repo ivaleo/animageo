@@ -71,9 +71,21 @@ movement. Branch selection and projection of points on paths follow graph order.
 Since registry 1.8 (`mapVersion` 5) `Intersect` of two conics, of a conic
 and a circle or of a conic and an arc (with or without the output number)
 is `intersect.conic_conic`: its four slots are bound by the saved values as
-those of `intersect.circle_circle`. Intersections with functions (`Intersect(f, …)`)
-and `Intersect(a, b, <Point>)`, conic transformations and points on conics
-still require registry support and keep their fallback reasons. A bare `pi`
+those of `intersect.circle_circle`. Since registry 1.9 (`mapVersion` 6)
+`Point(<conic>)` is `point.on_path` on the conic: its saved point is
+projected (`native.project_input`), the input keeps `pathKind` (the kind of
+the conic now) and on a hyperbola the `branch` of the saved point; the saved
+coordinates check it. `ClosestPoint(<conic>, P)` and `ClosestPoint(<function>,
+P)` are `point.closest` (the nearest branch of a hyperbola; a graph searched
+over the window of the saved view), checked by the saved point; the classic
+gained `closest_point_Kp` and `closest_point_Fp` for them. A function the
+import reads itself is an argument of a command by its element (its XML type
+`function` gives the signature letter `F`). `Point(<conic>, t)` stays
+`unsupported_signature`, as `Point(<circle>, t)`: the registry has no
+operation for a dependent path parameter (GeoGebra `PathParameter`).
+Intersections with functions (`Intersect(f, …)`) and `Intersect(a, b,
+<Point>)` and conic transformations still require registry support and keep
+their fallback reasons. A bare `pi`
 (`π`) argument, as in `Rotate(B, pi, O)`, is read as its number.
 
 1.10.0a2 (`native.has("convert.formula")`): the arithmetic of numbers and
@@ -202,8 +214,8 @@ within the supported source language, not equivalence to arbitrary GeoGebra
 expressions. The GGB-specific reader does not extend `from_construction`, change
 `dsl_map.json` promises, or add support for Root, Extremum or function intersections.
 
-An XML `Point(f)` on an accepted unbounded function without If becomes
-`point.on_function`. Its finite saved abscissa (homogeneous `x/z`) is the free
+An XML `Point(f)` on an accepted function becomes `point.on_function`
+(registry 1.9: also on a literal domain and on an `If`). Its finite saved abscissa (homogeneous `x/z`) is the free
 `pathParameter` input; its ordinate is always recomputed from the function.
 Changing a numeric reference changes the ordinate at the same abscissa, and
 changing the path input changes both coordinates. Saved coordinates are checked:
@@ -215,10 +227,14 @@ an absent/non-finite abscissa is refused rather than invented as zero.
 
 `Point(f,t)`, including literal `t`, and tuple points such as `(a,f(a))` or
 `(1,f(1))` remain unsupported: they do not have a free native abscissa with the
-same dependency and editing semantics. Gliders on explicit restricted domains
-or any If function also retain an explicit `unsupported_signature` refusal;
-their source projection/clamping behavior needs separate evidence. Importing
-the function definition alone does not establish that path equivalence.
+same dependency and editing semantics. On an explicit restricted domain the
+abscissa is clamped to its ends, as GeoGebra clamps the path parameter of a
+function with an interval; on an `If` the point has no value in a gap
+(`out_of_domain`) and the saved point checks the branch it lies on (a saved
+point off the native branch is `differs/value_mismatch`). Dragging such a
+point into a gap leaves it where it was (`native.drag`: `no_convergence`),
+while GeoGebra may move it to the end of the piece; a point on an `If`
+interval (`If(a ≤ x ≤ b, …)`) is not clamped to the interval by drag.
 
 ## 2. Keys and IDs
 

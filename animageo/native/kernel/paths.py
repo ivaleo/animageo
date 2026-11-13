@@ -38,8 +38,8 @@ from ..registry import registry
 from .conic import residual
 from .function import evaluator
 
-__all__ = ['Frame', 'frame', 'point_at', 'project', 'locate', 'nearest_input', 'distance_to_path', 'parameter_range',
-           'outside', 'parameter_unit', 'arc_fraction', 'ROOT_HALVINGS']
+__all__ = ['Frame', 'frame', 'point_at', 'project', 'locate', 'nearest_input', 'nearest_on_graph', 'distance_to_path',
+           'parameter_range', 'outside', 'parameter_unit', 'arc_fraction', 'ROOT_HALVINGS']
 
 TWO_PI = 2 * math.pi
 ROOT_HALVINGS = 1100        # halvings of a projection root at most: to the resolution of a double
@@ -470,19 +470,25 @@ def graph_window(bounds) -> tuple:
 
 
 def _locate_graph(f: Frame, x: float, y: float, bounds):
-    """The abscissa of the nearest point of the graph: a grid of
-    :data:`GRAPH_CELLS` cells over ``[min(x0, x), max(x1, x)]`` (the window
-    ``B4``) brought into the domain, the best node by ``d²`` (the first on a
-    tie), then the golden-section search over its two cells; ``None`` when
-    no node has a value."""
+    """The abscissa of the nearest point of the graph (:func:`nearest_on_graph`)."""
+    return nearest_on_graph(evaluator(f.curve), f.lo, f.hi, x, y, bounds)
+
+
+def nearest_on_graph(fx, lo, hi, x: float, y: float, bounds=None):
+    """The abscissa of the nearest point to ``(x, y)`` of the graph of ``fx``
+    (``fx(u)`` — a number, ``None`` where there is no value) with the domain
+    ``[lo, hi]`` (``None`` — open): a grid of :data:`GRAPH_CELLS` cells over
+    ``[min(x0, x), max(x1, x)]`` (the window ``B4`` of ``bounds``) brought
+    into the domain, the best node by ``d²`` (the first on a tie), then the
+    golden-section search over its two cells; ``None`` when no node has a
+    value."""
     from .function import golden_min, grid
-    fx = evaluator(f.curve)
     x0, x1 = graph_window(bounds)
     a0, a1 = min(x0, x), max(x1, x)
-    if f.lo is not None:
-        a0, a1 = max(a0, f.lo), max(a1, f.lo)
-    if f.hi is not None:
-        a0, a1 = min(a0, f.hi), min(a1, f.hi)
+    if lo is not None:
+        a0, a1 = max(a0, lo), max(a1, lo)
+    if hi is not None:
+        a0, a1 = min(a0, hi), min(a1, hi)
 
     def d2(u):
         v = fx(u)

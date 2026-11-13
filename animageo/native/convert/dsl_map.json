@@ -1,6 +1,6 @@
 {
  "format": "animageo-dsl-map/v1",
- "mapVersion": 5,
+ "mapVersion": 6,
  "registry": "1.9",
  "commands": {
   "abs_i": {
@@ -800,6 +800,34 @@
    ],
    "outputs": [
     "number"
+   ]
+  },
+  "closest_point_Fp": {
+   "factory": "ClosestPoint",
+   "ggb": [
+    "ClosestPoint"
+   ],
+   "op": "point.closest",
+   "args": [
+    "path",
+    "point"
+   ],
+   "outputs": [
+    "foot"
+   ]
+  },
+  "closest_point_Kp": {
+   "factory": "ClosestPoint",
+   "ggb": [
+    "ClosestPoint"
+   ],
+   "op": "point.closest",
+   "args": [
+    "path",
+    "point"
+   ],
+   "outputs": [
+    "foot"
    ]
   },
   "closest_point_cp": {
@@ -4113,24 +4141,30 @@
    "ggb": [
     "Point"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "point.on_path",
+   "args": [
+    "path"
+   ],
+   "outputs": [
+    "point"
+   ],
+   "input": "pathParameter"
   },
   "point_Ki": {
    "factory": "Point",
    "ggb": [
     "Point"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "unmapped": "unsupported_signature",
+   "note": "a point by coordinates or a fixed path parameter given by numbers"
   },
   "point_Km": {
    "factory": "Point",
    "ggb": [
     "Point"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "unmapped": "unsupported_signature",
+   "note": "a point by coordinates or a fixed path parameter given by numbers"
   },
   "point_L": {
    "factory": "Point",
