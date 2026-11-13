@@ -511,6 +511,10 @@ def ggb_value(info: dict, point_of=None):
     from .values import circle_from_matrix, line_coefficients
     type_ = info.get('type')
     c = info.get('coords')
+    if type_ == 'vector' and c is not None:
+        x, y, z = c.get('x'), c.get('y'), c.get('z', 0.)
+        value = None if None in (x, y, z) or z != 0 else [[0., 0.], [x, y]]
+        return {'kind': 'vector', 'value': value, 'components': True}
     if type_ == 'point' and c is not None:
         x, y, z = c.get('x'), c.get('y'), c.get('z', 1.0)
         if None in (x, y, z):

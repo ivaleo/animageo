@@ -301,7 +301,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         ctx.order[n] = info['order']
         t = info['type']
         command = info.get('command')
-        if t not in ('conicpart', 'segment', 'ray', 'vector'):
+        if t not in ('conicpart', 'segment', 'ray'):
             v = ggb_value(info, point_of)
             if v is not None and t != 'text':
                 ctx.expected[n] = v

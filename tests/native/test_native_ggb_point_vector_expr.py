@@ -29,7 +29,7 @@ def operands():
 def test_source_expression_and_dependencies_stay_live(kind, text, saved, moved):
     coords = f'<coords x="{saved[0]}" y="{saved[1]}" z="{1 if kind == "point" else 0}"/>'
     doc, items = imported(operands() + expression('P', text, kind) + element(kind, 'P', extra=coords))
-    assert items['P']['category'] in (('editable',) if kind == 'point' else ('editable', 'differs')), items['P']
+    assert items['P']['category'] == 'editable', items['P']
     assert producer(doc, eid(items, 'P'))['op'] == kind + '.expression'
     assert doc['operationRegistryVersion'] == '1.10'
     ev = native.evaluate(doc, inputs={eid(items, 'a'): {'kind': 'number', 'value': 5.},
