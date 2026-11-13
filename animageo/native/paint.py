@@ -578,7 +578,7 @@ def _arc_marks(final, elem, data, unit, decor, radii_px, shown, flipped, value, 
     ``ρ_k = r + A·sin(2π·(k mod 16)/16)``; a dashed arc: its fitted pattern."""
     from ..angle_marker import marker_extent
     from ..mark_shapes import (WAVE_AMPLITUDE_PX, WAVE_CAPPED_MIN_PERIOD_PX, WAVE_GAP_PX, WAVE_MIN_PERIOD_PX, WAVE_PERIOD_PX, WAVE_SAMPLES,
-                               angle_marks, arrow_fit, wave_periods)
+                               angle_marks, arrow_fit)
     vx, vy = (float(c) for c in data.vertex[:2])
     start = math.atan2(float(data.side2[1]), float(data.side2[0])) if flipped else float(data.start_angle)
     marks = angle_marks((vx, vy), [r / unit for r in radii_px], start, shown, flipped, decor, unit, capped)
@@ -593,7 +593,7 @@ def _arc_marks(final, elem, data, unit, decor, radii_px, shown, flipped, value, 
     if decor.style == 'wave':
         out['wave'] = {'amplitudePx': WAVE_AMPLITUDE_PX, 'periodPx': WAVE_PERIOD_PX,
                        'samplesPerPeriod': WAVE_SAMPLES, 'gapPx': WAVE_GAP_PX, 'minPeriodPx': WAVE_MIN_PERIOD_PX,
-                       'periods': wave_periods(radii_px[0], shown, len(radii_px), r_in_px=radii_px[-1], capped=capped),
+                       'periods': marks.arcs[0].periods,
                        'arcs': [dict(path, periods=arc.periods, points=[[_r(x), _r(y)] for x, y in arc.points])
                                 for path, arc in zip(paths, marks.arcs)]}
         if capped:

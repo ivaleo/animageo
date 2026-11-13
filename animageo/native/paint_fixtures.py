@@ -625,7 +625,7 @@ def _marks():
         {'t': 2, 'values': {'C': [-1, 2.5]}, 'easing': 'linear'},
     ]}
     out += [(f'mark_parallel_time_{t}', d, None, timeline, t) for t in (0, 1, 2)]
-    # the floors of legibility (the board of 13.11): three waves of a narrow
+    # the floors of legibility (legibility of narrow marks): three waves of a narrow
     # angle grow to three periods of 4 px on the inner arc, 4 px apart (the
     # fit wins over the growth); a dashed arc with a tick or a head fitted to
     # three dashes; a plain one as it was; hollow points large enough for a hole
