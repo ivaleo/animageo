@@ -164,7 +164,27 @@ def point_attrs(ctx: JsxContext, elem) -> Dict[str, Any]:
     if "fillColor" not in attrs:
         attrs["fillColor"] = attrs.get("strokeColor", "#000000")
     attrs["fillOpacity"] = round(_opacity(ctx, elem, "fill_opacity", 1.0), 3)
+    _apply_hole(ctx, elem, attrs, size_px, shape)
     return attrs
+
+
+def _apply_hole(ctx: JsxContext, elem, attrs: Dict[str, Any], size_px, shape) -> None:
+    """A hollow point (``point_fill: hollow``, 1.13.0): its face in the
+    colour of the sheet ringed by a stroke of the point's colour as wide as
+    the ring (``ρ/2``), the marker shrunk by half of it so the ring keeps the
+    outer size; the hole is half the size of the point."""
+    from ...mark_shapes import point_hole
+    try:
+        hole = point_hole(shape, float(size_px), ctx.resolve(elem, "point_fill", default="solid"))
+    except (TypeError, ValueError):
+        return
+    if hole is None:
+        return
+    attrs["strokeColor"] = attrs.get("fillColor", attrs.get("strokeColor", "#000000"))
+    attrs["fillColor"] = _hex(getattr(ctx.scene.style, "background", None) or "#ffffff")
+    attrs["fillOpacity"] = 1
+    attrs["strokeWidth"] = round(hole.ring_px, 3)
+    attrs["size"] = round(float(size_px) / 2 - hole.ring_px / 2, 2)
 
 
 # AnimaGeo 9-point label anchor (which corner/edge of the label bbox sits at
@@ -188,7 +208,7 @@ def _anchor_xy(anchor):
     return ax, ay
 
 
-def arrow_attrs(ctx: JsxContext, elem, *, last=True, first=False) -> Dict[str, Any]:
+def arrow_attrs(ctx: JsxContext, elem, *, last=True, first=False, length_px=None) -> Dict[str, Any]:
     """JSXGraph arrowhead attributes for a vector/ray, sized from the resolved
     GGB ``arrow_length_px`` / ``arrow_width_px``.
 
@@ -196,8 +216,9 @@ def arrow_attrs(ctx: JsxContext, elem, *, last=True, first=False) -> Dict[str, A
     roughly the head length in those multiples. Map the GGB head length (px) to
     ``size`` by dividing by the stroke width, clamped to a sane range so a thin
     stroke doesn't yield a giant head. Returns ``{}`` when no arrow size is
-    resolved (then JSXGraph's default head is used)."""
-    length = ctx.resolve(elem, "arrow_length_px", default=None)
+    resolved (then JSXGraph's default head is used). ``length_px`` — the
+    head of a segment (its own or that of a vector of the style)."""
+    length = ctx.resolve(elem, "arrow_length_px", default=None) if length_px is None else length_px
     if length is None:
         return {}
     try:
@@ -218,6 +239,20 @@ def arrow_attrs(ctx: JsxContext, elem, *, last=True, first=False) -> Dict[str, A
     if first:
         out["firstArrow"] = dict(spec)
     return out
+
+
+def segment_arrow_attrs(ctx: JsxContext, elem) -> Dict[str, Any]:
+    """``lastArrow`` / ``firstArrow`` of a segment with ``arrow_head``
+    (1.13.0), the head as long as :func:`animageo.mark_shapes.scene_segment_arrow`;
+    ``{}`` without one."""
+    from ...mark_shapes import scene_segment_arrow
+    if elem is None:
+        return {}
+    head, length_px, _width_px = scene_segment_arrow(ctx.scene, elem)
+    if head == "none":
+        return {}
+    return arrow_attrs(ctx, elem, last=head in ("end", "both"), first=head in ("start", "both"),
+                       length_px=length_px)
 
 
 def _strip_math_delims(text: str) -> str:

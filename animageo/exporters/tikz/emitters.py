@@ -29,6 +29,7 @@ from ...geo.lib_elements import (
     resolve_text_position, text_to_display_latex, textify_cyrillic,
 )
 from ...angle_marker import fit_settings, marker_extent, marker_fit
+from ...mark_shapes import angle_label_overhang_px, arc_step_px, scene_arc_decor
 from ...label_placement import compute_effective_arc_size_px
 from ...style.colorspace import same_color
 from .context import TikzContext
@@ -193,9 +194,46 @@ def emit_point(ctx: TikzContext, elem, labels: List[str]) -> None:
             fill += f", fill opacity={fmt_num(fop, 3)}"
         opts = f"{stroke}, {fill}"
         _emit_marker(ctx, x, y, R, shape, opts, stroke)
+        hole = hole_path(ctx, elem)
+        if hole and ctx.sheet is not None:      # a hollow point: its hole in the colour of the sheet
+            ctx.doc.line(f"\\fill[fill={ctx.doc.color(ctx.sheet)}] {hole};")
 
     if display != "only_points":
         emit_label(ctx, elem, x, y, labels)
+
+
+def hole_path(ctx: TikzContext, elem):
+    """The path of the hole of a hollow point (``point_fill: hollow``,
+    :func:`animageo.mark_shapes.point_hole` — its shape at half the size), or
+    ``None``."""
+    from ...geo.lib_elements import Point
+    from ...mark_shapes import point_hole
+    if not isinstance(elem.data, Point):
+        return None
+    if ctx.scene.style.rendering.get("points_display") == "only_labels":
+        return None
+    size_px = float(ctx.resolve(elem, "size_px", default=ctx.scene.style.dot_size) or 0.0)
+    shape = ctx.resolve(elem, "point_shape", default="circle")
+    if point_hole(shape, size_px, ctx.resolve(elem, "point_fill", default="solid")) is None:
+        return None
+    x, y = float(elem.data.coords[0]), float(elem.data.coords[1])
+    return _marker_path(ctx, x, y, ctx.size_pt(size_px / 4), shape)
+
+
+def _marker_path(ctx, x, y, R, shape):
+    """The closed path of a filled marker (not a cross or a plus)."""
+    if shape == "square":
+        h = R / math.sqrt(2)
+        return f"{_shift(-h, -h, x, y, ctx)} rectangle {_shift(h, h, x, y, ctx)}"
+    if shape == "diamond":
+        pts = [_shift(0, R, x, y, ctx), _shift(R, 0, x, y, ctx), _shift(0, -R, x, y, ctx), _shift(-R, 0, x, y, ctx)]
+        return f"{' -- '.join(pts)} -- cycle"
+    if shape in ("triangle_up", "triangle_down", "triangle_left", "triangle_right"):
+        base = {"triangle_up": 90, "triangle_down": -90, "triangle_left": 180, "triangle_right": 0}[shape]
+        pts = [_shift(R * math.cos(math.radians(base + 120 * k)), R * math.sin(math.radians(base + 120 * k)),
+                      x, y, ctx) for k in range(3)]
+        return f"{' -- '.join(pts)} -- cycle"
+    return f"({ctx.doc.num(x)},{ctx.doc.num(y)}) circle ({fmt_num(R, 3)}pt)"
 
 
 def _shift(dx_pt, dy_pt, x, y, ctx) -> str:
@@ -203,30 +241,6 @@ def _shift(dx_pt, dy_pt, x, y, ctx) -> str:
 
 
 def _emit_marker(ctx, x, y, R, shape, opts, stroke_only):
-    if shape == "square":
-        h = R / math.sqrt(2)
-        ctx.doc.line(
-            f"\\draw[{opts}] {_shift(-h, -h, x, y, ctx)} rectangle {_shift(h, h, x, y, ctx)};"
-        )
-        return
-    if shape == "diamond":
-        pts = [
-            _shift(0, R, x, y, ctx),
-            _shift(R, 0, x, y, ctx),
-            _shift(0, -R, x, y, ctx),
-            _shift(-R, 0, x, y, ctx),
-        ]
-        ctx.doc.line(f"\\draw[{opts}] {' -- '.join(pts)} -- cycle;")
-        return
-    if shape in ("triangle_up", "triangle_down", "triangle_left", "triangle_right"):
-        base = {"triangle_up": 90, "triangle_down": -90,
-                "triangle_left": 180, "triangle_right": 0}[shape]
-        pts = []
-        for k in range(3):
-            ang = math.radians(base + 120 * k)
-            pts.append(_shift(R * math.cos(ang), R * math.sin(ang), x, y, ctx))
-        ctx.doc.line(f"\\draw[{opts}] {' -- '.join(pts)} -- cycle;")
-        return
     if shape == "cross":
         ctx.doc.line(f"\\draw[{stroke_only}] {_shift(-R, R, x, y, ctx)} -- {_shift(R, -R, x, y, ctx)};")
         ctx.doc.line(f"\\draw[{stroke_only}] {_shift(-R, -R, x, y, ctx)} -- {_shift(R, R, x, y, ctx)};")
@@ -235,8 +249,8 @@ def _emit_marker(ctx, x, y, R, shape, opts, stroke_only):
         ctx.doc.line(f"\\draw[{stroke_only}] {_shift(-R, 0, x, y, ctx)} -- {_shift(R, 0, x, y, ctx)};")
         ctx.doc.line(f"\\draw[{stroke_only}] {_shift(0, -R, x, y, ctx)} -- {_shift(0, R, x, y, ctx)};")
         return
-    # default: circle (radius in absolute pt → fixed marker)
-    ctx.doc.line(f"\\draw[{opts}] ({ctx.doc.num(x)},{ctx.doc.num(y)}) circle ({fmt_num(R, 3)}pt);")
+    # the circle (by default) at an absolute pt radius: a fixed marker
+    ctx.doc.line(f"\\draw[{opts}] {_marker_path(ctx, x, y, R, shape)};")
 
 
 # ── tick decorations (segments / vectors) ────────────────────────────────
@@ -275,12 +289,47 @@ def _emit_ticks(ctx: TikzContext, elem, p1, p2, normal, labels=None) -> None:
 # ── 1D primitives ─────────────────────────────────────────────────────────
 
 def emit_segment(ctx: TikzContext, elem, labels: List[str]) -> None:
+    from ...mark_shapes import scene_segment_arrow, segment_arrow
     p1, p2 = elem.data.endpoints
     opts = stroke_options(ctx, elem)
-    ctx.doc.line(f"\\draw[{opts}] {_coord(ctx, p1[0], p1[1])} -- {_coord(ctx, p2[0], p2[1])};")
+    a, b, tips = p1, p2, []
+    head, length_px, width_px = scene_segment_arrow(ctx.scene, elem)
+    geometry = None if head == "none" else segment_arrow(p1, p2, head, length_px, width_px, ctx.ptUnit_style)
+    if geometry is not None:            # the stem between the bases of the heads
+        a, b, tips = geometry
+    ctx.doc.line(f"\\draw[{opts}] {_coord(ctx, a[0], a[1])} -- {_coord(ctx, b[0], b[1])};")
+    _emit_heads(ctx, elem, tips)
     _emit_ticks(ctx, elem, p1, p2, elem.data.normal)
     m = (np.asarray(p1, float) + np.asarray(p2, float)) / 2
+    _emit_chevrons(ctx, elem, m, np.asarray(p2, float) - np.asarray(p1, float))
     emit_label(ctx, elem, m[0], m[1], labels)
+
+
+def _emit_heads(ctx: TikzContext, elem, tips) -> None:
+    """Filled heads ``[Tx, Ty, B1x, B1y, B2x, B2y]`` in the stroke of
+    ``elem``."""
+    if not tips:
+        return
+    col = ctx.resolve(elem, "stroke", default=stroke_default(ctx))
+    opts = [f"fill={ctx.doc.color(col)}"]
+    op = _stroke_opacity(ctx, elem)
+    if op < 1.0:
+        opts.append(f"fill opacity={fmt_num(op, 3)}")
+    for tip in tips:
+        ctx.doc.line(f"\\fill[{', '.join(opts)}] {_coord(ctx, tip[0], tip[1])} -- {_coord(ctx, tip[2], tip[3])} "
+                     f"-- {_coord(ctx, tip[4], tip[5])} -- cycle;")
+
+
+def _emit_chevrons(ctx: TikzContext, elem, mid, direction, ticks=True) -> None:
+    """The chevrons of a parallel line (``mark_shapes.scene_chevrons``):
+    solid, butt, mitred, in the stroke of ``elem``."""
+    from ...mark_shapes import scene_chevrons
+    chevrons = scene_chevrons(ctx.scene, elem, mid, direction, ctx.ptUnit_style, ticks=ticks)
+    if not chevrons:
+        return
+    opts = stroke_options(ctx, elem, with_dash=False, with_cap=False, extra=["line join=miter"])
+    for x0, y0, tx, ty, x1, y1 in chevrons:
+        ctx.doc.line(f"\\draw[{opts}] {_coord(ctx, x0, y0)} -- {_coord(ctx, tx, ty)} -- {_coord(ctx, x1, y1)};")
 
 
 def emit_line(ctx: TikzContext, elem, labels: List[str]) -> None:
@@ -292,6 +341,7 @@ def emit_line(ctx: TikzContext, elem, labels: List[str]) -> None:
     opts = stroke_options(ctx, elem)
     ctx.doc.line(f"\\draw[{opts}] {_coord(ctx, p1[0], p1[1])} -- {_coord(ctx, p2[0], p2[1])};")
     m = (np.asarray(p1, float) + np.asarray(p2, float)) / 2
+    _emit_chevrons(ctx, elem, m, elem.data.direction, ticks=False)
     emit_label(ctx, elem, m[0], m[1], labels)
 
 
@@ -308,6 +358,7 @@ def emit_vector(ctx: TikzContext, elem, labels: List[str]) -> None:
     normal = np.array([p1[1] - p2[1], p2[0] - p1[0]])
     _emit_ticks(ctx, elem, p1, p2, normal)
     m = (np.asarray(p1, float) + np.asarray(p2, float)) / 2
+    _emit_chevrons(ctx, elem, m, np.asarray(p2, float) - np.asarray(p1, float))
     emit_label(ctx, elem, m[0], m[1], labels)
 
 
@@ -431,6 +482,11 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
     arc_shift_mu = float(ctx.resolve(elem, "arc_shift_px", default=0.0) or 0.0) / ps
     explicit = bool(getattr(elem, '_native_mark_explicit', False))
     tick_count = int(ctx.resolve(elem, "tick_count", default=1) or (0 if explicit else 1))
+    decor = scene_arc_decor(ctx.scene, elem)
+    if not decor.plain:                 # kinds of marks: the step of waves, no arcs for none
+        tick_count = int(ctx.resolve(elem, "tick_count", default=1) or 0)
+        arc_shift_mu = float(arc_step_px(decor, float(ctx.resolve(elem, "arc_shift_px", default=0.0) or 0.0),
+                                         tick_count)) / ps
     r += ((max(1, tick_count) if explicit else tick_count) - 1) * arc_shift_mu
     if r < 0.001:
         r = 0.2
@@ -446,20 +502,24 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
     right_marker = ctx.resolve(elem, "right_angle_marker", default=None)
     if explicit:
         right_marker = False
-    if right_marker is None:
-        right_marker = bool(np.isclose(angle, math.pi / 2))
+    if right_marker is None:            # a decorated marker is arcs
+        right_marker = bool(np.isclose(angle, math.pi / 2)) and not decor.forces_arcs
     # rendering.angle_marker_fit: the marker of the renderer (its mode, square
     # and arcs), moved in to fit the sides or not drawn; the label at its extent
     fitted = fit_settings(ctx.scene) is not None
     hidden = False
-    arcs_drawn = max(0 if explicit else 1, tick_count)
+    arcs_drawn = max(0 if explicit else 1, tick_count) if decor.plain else tick_count
+    r_label = None
     if fitted:
         extent = marker_extent(ctx.scene, elem)
         fit = marker_fit(ctx.scene, elem, extent)
         right_marker = extent.right
-        r = (extent.label_px - fit.delta_px) / ps
+        r = ((extent.label_px if extent.right else extent.outer_px) - fit.delta_px) / ps
+        r_label = (extent.label_px - fit.delta_px) / ps
         hidden = fit.hidden
         arcs_drawn = extent.count
+    elif not right_marker and not decor.plain and arcs_drawn > 0:
+        r_label = r + angle_label_overhang_px(decor) / ps        # past the ticks and the wave
     decoration_opts = stroke_options(ctx, elem, with_dash=False,
                                     color_override=getattr(elem, '_native_mark_stroke', None))
 
@@ -480,7 +540,7 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
         p1 = p0 + n1
         p2 = p1 + n2
         p3 = p0 + n2
-        if has_fill:
+        if _fill_pattern(ctx, elem, {"polygon": [tuple(p0), tuple(p1), tuple(p2), tuple(p3)]}) and has_fill:
             ctx.doc.line(
                 f"\\fill[{fill_options(ctx, elem)}] {_coord(ctx, *p0)} -- {_coord(ctx, *p1)} "
                 f"-- {_coord(ctx, *p2)} -- {_coord(ctx, *p3)} -- cycle;"
@@ -491,12 +551,16 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
         )
     else:
         sx, sy = _arc_start(px, py, r, a0)
-        if has_fill:
+        if _fill_pattern(ctx, elem, {"sector": (px, py, r, a0, a1)}) and has_fill:
             ctx.doc.line(
                 f"\\fill[{fill_options(ctx, elem)}] ({ctx.doc.num(px)},{ctx.doc.num(py)}) -- "
                 f"{_coord(ctx, sx, sy)} arc ({ctx.doc.num(a0d)}:{ctx.doc.num(a1d)}:{ctx.doc.num(r)}) -- cycle;"
             )
         opts = decoration_opts
+        if not decor.plain:
+            _emit_arc_marks(ctx, elem, decor, (px, py), [r - i * arc_shift_mu for i in range(arcs_drawn)],
+                            a0, angle, is_clockwise, opts)
+            arcs_drawn = 0
         for i in range(arcs_drawn):
             ri = r - i * arc_shift_mu
             if ri <= 0:
@@ -509,11 +573,40 @@ def emit_angle(ctx: TikzContext, elem, labels: List[str]) -> None:
 
     if ctx.resolve(elem, "label_visible", default=False) is True:
         lr_px = ctx.resolve(elem, "label_radial_offset_px", default=0.0) or 0.0
-        rl = r + float(lr_px) / ps
+        rl = (r if r_label is None else r_label) + float(lr_px) / ps
         mid = (a0 + a1) / 2
         lx = px + rl * math.cos(mid)
         ly = py + rl * math.sin(mid)
         emit_label(ctx, elem, lx, ly, labels, default_anchor="center")
+
+
+def _emit_arc_marks(ctx: TikzContext, elem, decor, vertex, radii, start, span, flipped, opts) -> None:
+    """The decorated arcs of an angle (``mark_shapes.angle_marks``, as the
+    renderer's ``_append_arc_marks``): waves as plotted polylines, dashes
+    fitted to each arc as a ``dash pattern``, the ticks across them (butt) in
+    the colour of the marks ``opts``; the heads filled in the stroke."""
+    from ...mark_shapes import angle_marks
+    ps = ctx.ptUnit_style
+    marks = angle_marks(vertex, radii, start, span, flipped, decor, ps)
+    p = ctx.opt.size_precision
+    for arc in marks.arcs:
+        if arc.points is not None:
+            _polyline(ctx, opts, arc.points)
+            continue
+        arc_opts = opts
+        if arc.dash is not None:
+            lengths = [ctx.size_pt(v * ps) for v in arc.dash.lengths]
+            pattern = " ".join(f"{'on' if i % 2 == 0 else 'off'} {fmt_num(v, p)}pt" for i, v in enumerate(lengths))
+            arc_opts += f", line cap=butt, dash pattern={pattern}"
+            if arc.dash.offset:
+                arc_opts += f", dash phase={fmt_num(ctx.size_pt(arc.dash.offset * ps), p)}pt"
+        a0d, a1d = math.degrees(arc.start), math.degrees(arc.start + arc.span)
+        ax, ay = _arc_start(vertex[0], vertex[1], arc.radius, arc.start)
+        ctx.doc.line(f"\\draw[{arc_opts}] {_coord(ctx, ax, ay)} arc "
+                     f"({ctx.doc.num(a0d)}:{ctx.doc.num(a1d)}:{ctx.doc.num(arc.radius)});")
+    for x1, y1, x2, y2 in marks.ticks:
+        ctx.doc.line(f"\\draw[{opts}, line cap=butt] {_coord(ctx, x1, y1)} -- {_coord(ctx, x2, y2)};")
+    _emit_heads(ctx, elem, marks.tips)
 
 
 # ── conic / function / implicit / locus ──────────────────────────────────

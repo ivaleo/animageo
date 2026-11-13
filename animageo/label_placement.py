@@ -844,30 +844,44 @@ def _mark_obstacle_segments(scene, elem):
 
 def _angle_decoration_segments(scene, elem):
     """The ticks across the arcs of an angle and the heads on its outer arc
-    (``mark_shapes.angle_marks``) at the radii drawn, as segments."""
-    from .mark_shapes import angle_marks, scene_arc_decor
+    (:func:`angle_mark_geometry`) as segments."""
+    from .mark_shapes import scene_arc_decor
     decor = scene_arc_decor(scene, elem)
     if decor.ticks == 0 and decor.arrow == 'none':
         return []
-    fitted = _fitted_angle_marker(scene, elem)
-    info = _angle_drawn_sector(scene, elem)
-    if fitted is None or info is None:
+    marks = angle_mark_geometry(scene, elem)
+    if marks is None:
         return []
-    extent, fit = fitted
-    if extent.right or fit.hidden or extent.count <= 0:
-        return []
-    v, start, span, _right, _r, _s1, _s2 = info
-    angle_range = _resolve_style(scene, elem, 'angle_range', default='minor') or 'minor'
-    size = float(elem.data.size)
-    flipped = (angle_range == 'minor' and size > pi) or (angle_range == 'reflex' and size < pi)
-    unit = _style_ptUnit(scene.style)
-    outer = extent.outer_px - fit.delta_px
-    radii = [(outer - i * extent.shift_px) / unit for i in range(extent.count)]
-    marks = angle_marks((float(v[0]), float(v[1])), radii, start, span, flipped, decor, unit)
     out = [(np.array(t[:2], dtype=float), np.array(t[2:], dtype=float)) for t in marks.ticks]
     for tip in marks.tips:
         out.extend(_triangle_edges(tip))
     return out
+
+
+def angle_mark_geometry(scene, elem):
+    """:class:`animageo.mark_shapes.AngleMarks` of a decorated angle (1.13.0)
+    as the renderer draws it — its arcs at the radii drawn (fitted with
+    ``rendering.angle_marker_fit``), the waves, the dashes, the ticks, the
+    heads — or ``None``: no decoration, a square, a hidden marker, no arcs."""
+    from .mark_shapes import angle_marks, scene_arc_decor
+    decor = scene_arc_decor(scene, elem)
+    if decor.plain:
+        return None
+    fitted = _fitted_angle_marker(scene, elem)
+    info = _angle_drawn_sector(scene, elem)
+    if fitted is None or info is None:
+        return None
+    extent, fit = fitted
+    if extent.right or fit.hidden or extent.count <= 0:
+        return None
+    v, start, span, _right, _r, _s1, _s2 = info
+    angle_range = _resolve_style(scene, elem, 'angle_range', default='minor') or 'minor'
+    size = float(elem.data.size)
+    flipped = (angle_range == 'minor' and size > pi) or (angle_range == 'reflex' and size < pi)
+    unit = _style_ptUnit(getattr(scene, 'style', None))
+    outer = extent.outer_px - fit.delta_px
+    radii = [(outer - i * extent.shift_px) / unit for i in range(extent.count)]
+    return angle_marks((float(v[0]), float(v[1])), radii, start, span, flipped, decor, unit)
 
 
 def _figure_faces(scene, *, max_vertices=6, max_segments=150):

@@ -15,7 +15,7 @@ from ...constants import Z_LINE
 from ...geo.lib_elements import latex_escape_text
 from .context import TikzContext
 from .document import TikZDocument, fmt_num
-from .emitters import emitter_for
+from .emitters import emitter_for, hole_path
 from .options import TikZOptions
 
 logger = logging.getLogger(__name__)
@@ -71,6 +71,7 @@ def export_tikz(
         doc.line(f"\\useasboundingbox {rect};")
 
     bg = _background_color(ctx)
+    ctx.sheet = bg
     if bg is not None:
         doc.line(f"\\fill[{doc.color(bg)}] {rect};")
 
@@ -90,13 +91,29 @@ def export_tikz(
     ]
     drawables.sort(key=lambda e: _z_of(ctx, e))
 
-    for elem in drawables:
+    # a transparent sheet: the hole of a hollow point is cut out of its ring
+    # and of everything drawn before it (an even-odd clip)
+    holes = [] if bg is not None else [(i, path) for i, path in
+                                       ((i, hole_path(ctx, e)) for i, e in enumerate(drawables)) if path]
+    cut = []
+    for index, elem in enumerate(drawables):
+        above = [path for i, path in holes if i >= index]
+        if above != cut:
+            if cut:
+                doc.line("\\end{scope}\\end{scope}")
+            if above:           # the clip takes the rule of its scope; what is drawn the usual one
+                doc.line("\\begin{scope}[even odd rule]")
+                doc.line(f"\\clip {rect} {' '.join(above)};")
+                doc.line("\\begin{scope}[nonzero rule]")
+            cut = above
         emit = emitter_for(elem)
         try:
             emit(ctx, elem, labels)
         except Exception:  # one bad element must not abort the export
             logger.warning("TikZ export: failed to emit %r", getattr(elem, "name", "?"),
                            exc_info=True)
+    if cut:
+        doc.line("\\end{scope}\\end{scope}")
 
     if clip:
         doc.line("\\end{scope}")

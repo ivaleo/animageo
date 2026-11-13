@@ -20,7 +20,7 @@ from ...geo.lib_elements import Text, resolve_text_position, resolve_text_string
 from .command_map import Emit, emitter_for, value_expr
 from .context import JsxContext, Raw
 from .spec import InputSpec, SpecElement, _jsonable_attrs, classify_parent
-from .style_map import _hex, base_attrs, js_attrs, label_name, point_attrs
+from .style_map import _hex, base_attrs, js_attrs, label_name, point_attrs, segment_arrow_attrs
 
 
 def _render_parent(p) -> str:
@@ -226,6 +226,7 @@ def build_board(scene, options) -> BoardModel:
     )
     emitted: set = set()
     kinds: Dict[str, str] = {}   # name -> JSXGraph element kind (for intersect)
+    decorated: set = set()       # kinds of marks drawn live (chevrons, heads of a segment)
 
     def create(name, jsx_type, parents, attrs):
         parents_js = ", ".join(_render_parent(p) for p in parents)
@@ -325,11 +326,23 @@ def build_board(scene, options) -> BoardModel:
             if result.jsx_type == "segment":
                 _emit_segment_ticks(ctx, primary, result.parents, out_elem,
                                     create, raw_stmt, model)
+            if result.jsx_type in ("segment", "arrow"):
+                if _emit_live_chevrons(ctx, primary, result.parents, out_elem, create, model):
+                    decorated.add(primary)
+                if result.jsx_type == "segment":
+                    decorated.add(("heads", primary))
             continue
 
         # 2d) static fallback for each drawable output.
         for oname in outs:
             _emit_static(ctx, oname, cmd.name, dynamic, options, create, model)
+
+    # Kinds of marks JSXGraph has no element for (1.13.0): static decorations
+    # (coordinate parents, eval-free) on the elements drawn.
+    for elem in scene.geo.elements:
+        name = getattr(elem, "name", None)
+        if name and name in emitted and ctx.is_visible(elem):
+            _emit_static_marks(ctx, elem, decorated, create, model)
 
     # P2-A: leader connectors for displaced labels — fixed segments (coordinate
     # parents stay eval-free in the spec), thin, label-coloured, non-interactive.
@@ -655,6 +668,176 @@ def _emit_segment_ticks(ctx, seg_name, parents, elem, create, raw_stmt, model):
         model.coverage.append((base, "live", "segment tick"))
 
 
+def _live_offset(a, b, axis, along_px, normal_px, sign):
+    """One coordinate of a point at ``along_px`` along the segment ``a → b``
+    (turned by ``sign``) and ``normal_px`` across it from its middle, in
+    pixels divided by the board's live px-per-unit (a JSXGraph function-valued
+    coordinate: it follows drags and zoom)."""
+    ax, ay, bx, by = f"{a}.X()", f"{a}.Y()", f"{b}.X()", f"{b}.Y()"
+    pre = (f"var dx={bx}-{ax},dy={by}-{ay},L=Math.hypot(dx,dy)||1;"
+           f"var tx={_n(sign)}*dx/L,ty={_n(sign)}*dy/L,nx=-ty,ny=tx;"
+           f"var mx=({ax}+{bx})/2,my=({ay}+{by})/2;"
+           f"var U=(({a}.board&&{a}.board.unitX)||1);")
+    t, n = ("tx", "nx") if axis == "x" else ("ty", "ny")
+    return Raw(f"function(){{{pre}return m{axis}+{t}*(({_n(along_px)})/U)+{n}*(({_n(normal_px)})/U);}}")
+
+
+def _emit_live_chevrons(ctx, name, parents, elem, create, model) -> bool:
+    """The chevrons of a parallel segment or vector (``parallel_count``,
+    1.13.0), live like its ticks: hidden function-points (offsets in pixels
+    from the middle, past the ticks — ``mark_shapes.chevrons``) joined by
+    short segments in the stroke of the element."""
+    from ...mark_shapes import chevron_center, chevrons, scene_parallel_decor
+    decor = scene_parallel_decor(ctx.scene, elem)
+    refs = [p for p in parents if isinstance(p, str) and p.startswith("S[")]
+    if decor.count <= 0 or len(refs) < 2:
+        return False
+    a, b = refs[0], refs[1]
+    sign = -1.0 if decor.direction == "backward" else 1.0
+
+    def value(key):
+        try:
+            return float(ctx.resolve(elem, key, default=0.0) or 0.0)
+        except (TypeError, ValueError):
+            return 0.0
+    center = chevron_center((0.0, 0.0), (1.0, 0.0), decor, 1.0, tick_count=int(value("tick_count")),
+                            tick_shift_px=value("tick_shift_px"), tick_width_px=value("tick_width_px"))
+    attrs = {"strokeColor": _hex(ctx.resolve(elem, "stroke", default="#000000")), "highlight": False,
+             "fixed": True, "withLabel": False, "layer": 8}
+    try:
+        attrs["strokeWidth"] = float(ctx.resolve(elem, "stroke_width_px", default=1.0))
+    except (TypeError, ValueError):
+        pass
+    pt_attrs = {"visible": False, "fixed": True, "withLabel": False, "name": "", "showInfobox": False}
+    for j, chevron in enumerate(chevrons(center, (1.0, 0.0), decor, 1.0)):
+        base = f"__parallel_{name}_{j}"
+        for k in range(3):
+            along, across = chevron[2 * k], chevron[2 * k + 1]
+            create(f"{base}_p{k}", "point", [_live_offset(a, b, "x", along, across, sign),
+                                            _live_offset(a, b, "y", along, across, sign)], dict(pt_attrs))
+        for k in range(2):
+            create(f"{base}_{k}", "segment", [ctx.ref(f"{base}_p{k}"), ctx.ref(f"{base}_p{k + 1}")], dict(attrs))
+            model.coverage.append((f"{base}_{k}", "live", "parallel chevron"))
+    return True
+
+
+def _decoration_attrs(ctx, elem, color) -> dict:
+    attrs = {"strokeColor": _hex(color), "highlight": False, "fixed": True, "withLabel": False}
+    try:
+        attrs["strokeWidth"] = float(ctx.resolve(elem, "stroke_width_px", default=1.0))
+    except (TypeError, ValueError):
+        pass
+    so = ctx.resolve(elem, "stroke_opacity", default=1.0)
+    try:
+        if float(so) < 1.0:
+            attrs["strokeOpacity"] = round(float(so), 3)
+    except (TypeError, ValueError):
+        pass
+    layer = base_attrs(ctx, elem).get("layer")
+    if layer is not None:
+        attrs["layer"] = layer
+    return attrs
+
+
+def _polylines_parents(ctx, polylines) -> list:
+    xs, ys = [], []
+    for i, poly in enumerate(polylines):
+        if i > 0:
+            xs.append("NaN")
+            ys.append("NaN")
+        for (x, y) in poly:
+            xs.append(ctx.num(x))
+            ys.append(ctx.num(y))
+    return [f"[{','.join(xs)}]", f"[{','.join(ys)}]"]
+
+
+def _static_heads(ctx, elem, name, tips, create, model, what) -> None:
+    col = _hex(ctx.resolve(elem, "stroke", default="#000000"))
+    for i, tip in enumerate(tips):
+        attrs = {"strokeWidth": 0, "fillColor": col, "fillOpacity": round(float(
+            ctx.resolve(elem, "stroke_opacity", default=1.0) or 0.0), 3), "highlight": False, "fixed": True,
+            "withLabel": False}
+        corners = [(tip[0], tip[1]), (tip[2], tip[3]), (tip[4], tip[5]), (tip[0], tip[1])]
+        create(f"__heads_{name}_{i}", "curve", _polylines_parents(ctx, [corners]), attrs)
+        model.coverage.append((f"__heads_{name}_{i}", "static", f"static decoration: {what} of {name}"))
+
+
+def _emit_static_marks(ctx, elem, decorated, create, model) -> None:
+    """Static decorations (curves with coordinate parents) for the kinds of
+    marks JSXGraph does not draw live (1.13.0): the waves, dashes, ticks and
+    heads of a decorated angle, the chevrons of a line or a ray (and of a
+    segment drawn without live parents), the heads of a segment bound to a
+    polygon; a hatched angle is noted in the coverage."""
+    from ...label_placement import angle_mark_geometry, _sample_arc
+    from ...mark_shapes import scene_chevrons, scene_parallel_decor, scene_segment_arrow, segment_arrow
+    from .command_map import native_dashed_arc
+    name = elem.name
+    t = ctx.data_typename(elem)
+    unit = float((getattr(ctx.scene.style, "export", {}) or {}).get("ptUnit_style", 1) or 1)
+    if t == "Angle":
+        if (ctx.resolve(elem, "fill_pattern", default="solid") or "solid") != "solid":
+            model.coverage.append((f"__hatch_{name}", "skip", f"fill_pattern of {name}: no hatch in JSXGraph"))
+        marks = angle_mark_geometry(ctx.scene, elem)
+        if marks is None or native_dashed_arc(ctx, elem):
+            return
+        color = getattr(elem, "_native_mark_stroke", None) or ctx.resolve(elem, "stroke", default="#000000")
+        attrs = _decoration_attrs(ctx, elem, color)
+        polys = []
+        for arc in marks.arcs:
+            if arc.points is not None:
+                polys.append(arc.points)
+            else:
+                n = max(8, int(abs(arc.span) / (math.pi / 36)))
+                polys.append([tuple(p) for p in _sample_arc(np.array([float(elem.data.vertex[0]),
+                                                                       float(elem.data.vertex[1])]),
+                                                             arc.radius, arc.start, arc.span, n)])
+        if polys:
+            arc_attrs = dict(attrs)
+            if any(arc.dash is not None for arc in marks.arcs):
+                arc_attrs["dash"] = 1
+            create(f"__arcs_{name}", "curve", _polylines_parents(ctx, polys), arc_attrs)
+            model.coverage.append((f"__arcs_{name}", "static", f"static decoration: arcs of {name}"))
+        if marks.ticks:
+            create(f"__arcticks_{name}", "curve",
+                   _polylines_parents(ctx, [[(x1, y1), (x2, y2)] for x1, y1, x2, y2 in marks.ticks]), dict(attrs))
+            model.coverage.append((f"__arcticks_{name}", "static", f"static decoration: ticks of {name}"))
+        _static_heads(ctx, elem, name, marks.tips, create, model, "heads")
+        return
+    if t not in ("Segment", "Vector", "Line", "Ray"):
+        return
+    d = elem.data
+    if t == "Segment" and ("heads", name) not in decorated:
+        head, length_px, width_px = scene_segment_arrow(ctx.scene, elem)
+        geometry = None if head == "none" else segment_arrow(d.endpoints[0], d.endpoints[1], head, length_px,
+                                                             width_px, unit)
+        if geometry is not None and not _has_arrow_attrs(model, name):
+            _static_heads(ctx, elem, name, geometry[2], create, model, "heads")
+    if name in decorated or scene_parallel_decor(ctx.scene, elem).count <= 0:
+        return
+    if t in ("Segment", "Vector"):
+        a, b = (np.asarray(e[:2], dtype=float) for e in d.endpoints)
+        mid, direction, ticks = (a + b) / 2, b - a, True
+    else:
+        left, top, right, bottom = ctx.boundingbox()
+        ends = d.get_endpoints([(left, bottom), (right, top)])
+        if ends is None:
+            return
+        mid = (np.asarray(ends[0][:2], dtype=float) + np.asarray(ends[1][:2], dtype=float)) / 2
+        direction, ticks = np.asarray(d.direction[:2], dtype=float), False
+    polys = [[(c[0], c[1]), (c[2], c[3]), (c[4], c[5])]
+             for c in scene_chevrons(ctx.scene, elem, mid, direction, unit, ticks=ticks)]
+    if polys:
+        attrs = _decoration_attrs(ctx, elem, ctx.resolve(elem, "stroke", default="#000000"))
+        create(f"__parallel_{name}", "curve", _polylines_parents(ctx, polys), attrs)
+        model.coverage.append((f"__parallel_{name}", "static", f"static decoration: chevrons of {name}"))
+
+
+def _has_arrow_attrs(model, name) -> bool:
+    """The segment ``name`` was created with native heads."""
+    return any(el.name == name and el.form == "create" and el.attrs and
+               ("lastArrow" in el.attrs or "firstArrow" in el.attrs) for el in model.elements)
+
+
 def _n(v) -> str:
     s = f"{float(v):.6f}".rstrip("0").rstrip(".")
     return "0" if s in ("-0", "") else s
@@ -936,7 +1119,8 @@ def _emit_static(ctx, name, cmd_name, dynamic, options, create, model):
             create(name, "point", [ctx.num(d.coords[0]), ctx.num(d.coords[1])], a)
         elif t == "Segment":
             p1, p2 = d.endpoints
-            create(name, "segment", [_coord(ctx, p1), _coord(ctx, p2)], base_attrs(ctx, elem))
+            create(name, "segment", [_coord(ctx, p1), _coord(ctx, p2)],
+                   {**base_attrs(ctx, elem), **segment_arrow_attrs(ctx, elem)})
         elif t in ("Line", "Ray"):
             left, top, right, bottom = ctx.boundingbox()
             ep = d.get_endpoints([(left, bottom), (right, top)])

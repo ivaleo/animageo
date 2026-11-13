@@ -35,6 +35,9 @@ class TikzContext:
         self.ptUnit_style = float(export.get("ptUnit_style", self.ptUnit) or self.ptUnit)
         self.ptUnit_ggb = float(export.get("ptUnit_ggb", self.ptUnit_style) or self.ptUnit_style)
         self.ggb_font_px = export.get("fontSize")
+        # the colour of the sheet (``None`` — transparent: a hollow point
+        # cuts its hole out of what is under it); set by ``export_tikz``
+        self.sheet = getattr(scene.style, "background", None)
 
         # px → pt factors. ``_size`` covers strokes/markers/fonts; ``_offset``
         # covers GGB label offsets (which were authored at the GGB scale).

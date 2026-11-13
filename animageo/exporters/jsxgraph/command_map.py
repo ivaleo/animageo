@@ -20,7 +20,7 @@ from typing import Dict, List, Optional
 from ...angle_marker import fit_settings, marker_extent, marker_fit
 from ...geo.lib_commands import strCommand
 from .context import JsxContext, Raw
-from .style_map import arrow_attrs
+from .style_map import arrow_attrs, segment_arrow_attrs
 
 
 # ── Tier-V: live numeric value expressions ───────────────────────────────────
@@ -126,7 +126,11 @@ def emit_center(ctx, cmd) -> Optional[Emit]:
 
 def emit_segment(ctx, cmd) -> Optional[Emit]:
     p = _two_points(ctx, cmd)
-    return Emit("segment", p) if p else None
+    if not p:
+        return None
+    # the heads of a segment (arrow_head): native, live
+    oe = ctx.element(ctx.name_of(cmd.outputs[0])) if cmd.outputs else None
+    return Emit("segment", p, segment_arrow_attrs(ctx, oe))
 
 
 def emit_line(ctx, cmd) -> Optional[Emit]:
@@ -262,12 +266,45 @@ def emit_angle(ctx, cmd) -> Optional[Emit]:
             # its radius); a hidden marker keeps its label, so it goes transparent
             extent = marker_extent(ctx.scene, oe)
             fit = marker_fit(ctx.scene, oe, extent)
-            attrs["radius"] = round(max(extent.label_px - fit.delta_px, 0.0), 4) / ptUnit
+            marker_px = extent.label_px if extent.right else extent.outer_px
+            attrs["radius"] = round(max(marker_px - fit.delta_px, 0.0), 4) / ptUnit
             if fit.hidden:
                 attrs.update(strokeOpacity=0, fillOpacity=0)
             detail = f"{cmd.name}: static marker radius fitted to the sides"
+        if oe is not None:
+            _decorated_angle(ctx, oe, attrs, ptUnit)
         return Emit(jsx_type, [ctx.ref(ins[0]), ctx.ref(ins[1]), ctx.ref(ins[2])], attrs, detail)
     return None
+
+
+def native_dashed_arc(ctx, oe) -> bool:
+    """A decorated angle JSXGraph draws itself: one dashed arc, no ticks,
+    no head (``dash`` 1 — its 2/2 pattern; the dashes are not fitted)."""
+    from ...mark_shapes import scene_arc_decor
+    decor = scene_arc_decor(ctx.scene, oe)
+    count = int(ctx.resolve(oe, "tick_count", default=1) or 0)
+    return decor.style == "dashed" and decor.ticks == 0 and decor.arrow == "none" and count == 1
+
+
+def _decorated_angle(ctx, oe, attrs, ptUnit) -> None:
+    """The native angle of a decorated marker (1.13.0): drawn as a sector
+    (a decoration forces arcs), its radius the outer arc (the step of waves
+    included), one plain dashed arc native, any other decorated arcs drawn
+    as static decorations by the builder — the native stroke then hidden."""
+    from ...mark_shapes import scene_arc_decor
+    decor = scene_arc_decor(ctx.scene, oe)
+    if decor.plain:
+        return
+    extent = marker_extent(ctx.scene, oe)
+    if extent.right:
+        return
+    attrs["type"] = "sector"
+    if fit_settings(ctx.scene) is None:
+        attrs["radius"] = round(max(extent.outer_px, 0.0), 4) / ptUnit
+    if native_dashed_arc(ctx, oe):
+        attrs["dash"] = 1
+    else:
+        attrs["strokeOpacity"] = 0
 
 
 def emit_semicircle(ctx, cmd) -> Optional[Emit]:
