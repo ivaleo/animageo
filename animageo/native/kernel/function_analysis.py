@@ -262,14 +262,17 @@ def isolate(c, budget, ctx):
     return _merge(found, ctx)
 
 
-def polynomial_points(value, ctx, *, extrema=False):
+def polynomial_points(value, ctx, *, extrema=False, budget=None, c=None, interval=None):
     """All admissible (x, y, kind) solutions, before limiting output capacity."""
-    budget = Budget()
-    c = coefficients(value, budget)
+    budget = Budget() if budget is None else budget
+    c = coefficients(value, budget) if c is None else c
     if not extrema and len(c) == 1 and c[0] == 0.0:
         raise AnalysisError('coincident')
     f = evaluator(value)
     lo, hi = value['domain']
+    if interval is not None:
+        lo = interval[0] if lo is None else max(lo, interval[0])
+        hi = interval[1] if hi is None else min(hi, interval[1])
     if extrema:
         dc = _normalized(derivative(_normalized(c)))
         xs = isolate(dc, budget, ctx)

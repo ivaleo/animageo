@@ -328,6 +328,8 @@ CHECK_OPTIONAL_SLOTS = {
     # are absent beyond the solutions found; the checks measure the defined ones
     'function.root': frozenset({'root'}),
     'function.roots_polynomial': frozenset({'root'}),
+    'function.roots_interval': frozenset({'root'}),
+    'function.extrema_interval': frozenset({'extremum'}),
     'function.extrema_polynomial': frozenset({'extremum'}),
     'function.extremum': frozenset({'extremum'}),
     'intersect.function_function': frozenset({'point'}),
