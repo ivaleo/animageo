@@ -93,6 +93,9 @@ def caption_owner(*, shown=True):
 
 @pytest.mark.parametrize('latex, source, expected', [
     (False, '"value = " + n', 'value = 3'),
+    (False, '"%n is literal text"', '%n is literal text'),
+    (False, '"%v"', '%v'),
+    (False, '"a\\"" + n + "b"', 'a"3b'),
     (True, r'"\frac{1}{2} = " + n', r'$\frac{1}{2} = 3$'),
 ])
 def test_dynamic_caption_freezes_hidden_text_and_reports_simplification(latex, source, expected):
@@ -121,7 +124,6 @@ def test_dynamic_caption_freezes_hidden_text_and_reports_simplification(latex, s
 @pytest.mark.parametrize('latex, source, expected', [
     (True, r'"\[\varphi\]"', r'$\displaystyle \varphi$'),
     (False, '""', ''),
-    (False, '"%n is literal text"', '%n is literal text'),
     (False, '"a" + "b"', 'ab'),
 ])
 def test_constant_dynamic_caption_stays_editable(latex, source, expected):
@@ -134,6 +136,16 @@ def test_constant_dynamic_caption_stays_editable(latex, source, expected):
     assert owner.get('value_check') != 'not_checked'
     assert doc['appearance'][eid(items, 'A')]['label'] == {'mode': 'caption', 'text': expected}
     assert not any(w['code'] == 'label_caption_simplified' for w in report['warnings'])
+
+
+@pytest.mark.parametrize('mode', [0, 9])
+def test_literal_caption_in_other_label_modes_still_differs(mode):
+    body = caption_owner().replace('<labelMode val="3"/>', f'<labelMode val="{mode}"/>') + text(
+        't', '"abc"', latex=False, show=False)
+    doc, report = native.from_ggb(ggb_bytes(body), id_namespace=NS)
+    owner = report['elements'][0]
+    assert owner['category'] == 'differs'
+    assert any(w['code'] == 'label_caption_simplified' for w in report['warnings'])
 
 
 def test_caption_snapshot_does_not_require_a_placeable_or_live_source_text():

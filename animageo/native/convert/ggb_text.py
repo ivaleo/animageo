@@ -118,12 +118,14 @@ def snapshot_captions(infos, point_of, view, decimals, classic_of, split):
                 shown = inline_tex(value['shown'], source.get('latex'))
                 if not source.get('latex') and '\\' in shown:
                     inline_tex(shown, True)  # labels also accept bare TeX commands
-                snapshots[ref] = ('caption_snapshot', shown, _literal_only(source['inputs'][0]))
+                # GeoGebra substitutes %n/%v/%x/%y/%z in a caption: such a text is not constant
+                snapshots[ref] = ('caption_snapshot', shown, _literal_only(source['inputs'][0])
+                                  and not re.search(r'%[nvxyz]', shown))
             except ValueError as exc:
                 snapshots[ref] = ('caption_error', str(exc), False)
         key, value, static = snapshots[ref]
         info[key] = value
-        if static:
+        if static and info.get('label_mode', 0) == 3:  # other modes show the name/value
             info['caption_static'] = True  # a constant text: the snapshot never goes stale
 
 
