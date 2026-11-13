@@ -1,0 +1,1833 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "l4c_expr_chain",
+  "registry": "1.10",
+  "generatedBy": "animageo 1.14.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "l4c_expr_chain",
+    "operationRegistryVersion": "1.10",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_B": {
+        "id": "op_B",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "B"
+          }
+        ]
+      },
+      "op_C": {
+        "id": "op_C",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "C"
+          }
+        ]
+      },
+      "op_D": {
+        "id": "op_D",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "D"
+          }
+        ]
+      },
+      "op_G": {
+        "id": "op_G",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "G"
+          }
+        ]
+      },
+      "op_l": {
+        "id": "op_l",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "B"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "l"
+          }
+        ]
+      },
+      "op_m": {
+        "id": "op_m",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "D"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "G"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "m"
+          }
+        ]
+      },
+      "op_X": {
+        "id": "op_X",
+        "op": "intersect.line_line",
+        "args": {
+          "first": {
+            "kind": "ref",
+            "elementId": "l"
+          },
+          "second": {
+            "kind": "ref",
+            "elementId": "m"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "X"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "t"
+          }
+        ]
+      },
+      "op_M": {
+        "id": "op_M",
+        "op": "point.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "+",
+              "args": [
+                {
+                  "op": "*",
+                  "args": [
+                    {
+                      "ref": 0
+                    },
+                    {
+                      "ref": 1
+                    }
+                  ]
+                },
+                {
+                  "op": "*",
+                  "args": [
+                    {
+                      "op": "-",
+                      "args": [
+                        {
+                          "num": 1
+                        },
+                        {
+                          "ref": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ref": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "t"
+              },
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "C"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "M"
+          }
+        ]
+      },
+      "op_v": {
+        "id": "op_v",
+        "op": "vector.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "*",
+              "args": [
+                {
+                  "num": 0.5
+                },
+                {
+                  "op": "-",
+                  "args": [
+                    {
+                      "ref": 0
+                    },
+                    {
+                      "ref": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "B"
+              },
+              {
+                "kind": "ref",
+                "elementId": "A"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "v"
+          }
+        ]
+      },
+      "op_alpha": {
+        "id": "op_alpha",
+        "op": "angle.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "B"
+          },
+          "vertex": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "C"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "angle",
+            "elementId": "alpha"
+          }
+        ]
+      },
+      "op_mu": {
+        "id": "op_mu",
+        "op": "measure.angle",
+        "args": {
+          "angle": {
+            "kind": "ref",
+            "elementId": "alpha"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "mu"
+          }
+        ]
+      },
+      "op_v1": {
+        "id": "op_v1",
+        "op": "transform.rotate",
+        "args": {
+          "obj": {
+            "kind": "ref",
+            "elementId": "v"
+          },
+          "angle": {
+            "kind": "ref",
+            "elementId": "mu"
+          },
+          "center": {
+            "kind": "ref",
+            "elementId": "A"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "image",
+            "elementId": "v1"
+          }
+        ]
+      },
+      "op_N": {
+        "id": "op_N",
+        "op": "point.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "+",
+              "args": [
+                {
+                  "ref": 0
+                },
+                {
+                  "ref": 1
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "M"
+              },
+              {
+                "kind": "ref",
+                "elementId": "v1"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "N"
+          }
+        ]
+      },
+      "op_Y": {
+        "id": "op_Y",
+        "op": "point.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "+",
+              "args": [
+                {
+                  "ref": 0
+                },
+                {
+                  "op": "*",
+                  "args": [
+                    {
+                      "num": 2
+                    },
+                    {
+                      "op": "-",
+                      "args": [
+                        {
+                          "ref": 1
+                        },
+                        {
+                          "ref": 0
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "X"
+              },
+              {
+                "kind": "ref",
+                "elementId": "D"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "Y"
+          }
+        ]
+      },
+      "op_s": {
+        "id": "op_s",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "M"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "N"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "s"
+          }
+        ]
+      },
+      "op_T": {
+        "id": "op_T",
+        "op": "polygon.by_points",
+        "args": {
+          "vertices": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "A"
+              },
+              {
+                "kind": "ref",
+                "elementId": "M"
+              },
+              {
+                "kind": "ref",
+                "elementId": "N"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "polygon",
+            "elementId": "T"
+          }
+        ]
+      },
+      "op_r": {
+        "id": "op_r",
+        "op": "segment.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "Y"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "M"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "segment",
+            "elementId": "r"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "B": {
+        "id": "B",
+        "type": "point",
+        "displayName": "B",
+        "producer": {
+          "operationId": "op_B",
+          "slot": "point"
+        }
+      },
+      "C": {
+        "id": "C",
+        "type": "point",
+        "displayName": "C",
+        "producer": {
+          "operationId": "op_C",
+          "slot": "point"
+        }
+      },
+      "D": {
+        "id": "D",
+        "type": "point",
+        "displayName": "D",
+        "producer": {
+          "operationId": "op_D",
+          "slot": "point"
+        }
+      },
+      "G": {
+        "id": "G",
+        "type": "point",
+        "displayName": "G",
+        "producer": {
+          "operationId": "op_G",
+          "slot": "point"
+        }
+      },
+      "l": {
+        "id": "l",
+        "type": "line",
+        "displayName": "l",
+        "producer": {
+          "operationId": "op_l",
+          "slot": "line"
+        }
+      },
+      "m": {
+        "id": "m",
+        "type": "line",
+        "displayName": "m",
+        "producer": {
+          "operationId": "op_m",
+          "slot": "line"
+        }
+      },
+      "X": {
+        "id": "X",
+        "type": "point",
+        "displayName": "X",
+        "producer": {
+          "operationId": "op_X",
+          "slot": "point"
+        }
+      },
+      "t": {
+        "id": "t",
+        "type": "number",
+        "displayName": "t",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "number"
+        }
+      },
+      "M": {
+        "id": "M",
+        "type": "point",
+        "displayName": "M",
+        "producer": {
+          "operationId": "op_M",
+          "slot": "point"
+        }
+      },
+      "v": {
+        "id": "v",
+        "type": "vector",
+        "displayName": "v",
+        "producer": {
+          "operationId": "op_v",
+          "slot": "vector"
+        }
+      },
+      "alpha": {
+        "id": "alpha",
+        "type": "angle",
+        "displayName": "alpha",
+        "producer": {
+          "operationId": "op_alpha",
+          "slot": "angle"
+        }
+      },
+      "mu": {
+        "id": "mu",
+        "type": "number",
+        "displayName": "",
+        "producer": {
+          "operationId": "op_mu",
+          "slot": "number"
+        },
+        "origin": {
+          "kind": "auto",
+          "source": "op_v1"
+        }
+      },
+      "v1": {
+        "id": "v1",
+        "type": "vector",
+        "displayName": "v1",
+        "producer": {
+          "operationId": "op_v1",
+          "slot": "image"
+        }
+      },
+      "N": {
+        "id": "N",
+        "type": "point",
+        "displayName": "N",
+        "producer": {
+          "operationId": "op_N",
+          "slot": "point"
+        }
+      },
+      "Y": {
+        "id": "Y",
+        "type": "point",
+        "displayName": "Y",
+        "producer": {
+          "operationId": "op_Y",
+          "slot": "point"
+        }
+      },
+      "s": {
+        "id": "s",
+        "type": "segment",
+        "displayName": "s",
+        "producer": {
+          "operationId": "op_s",
+          "slot": "segment"
+        }
+      },
+      "T": {
+        "id": "T",
+        "type": "polygon",
+        "displayName": "T",
+        "producer": {
+          "operationId": "op_T",
+          "slot": "polygon"
+        }
+      },
+      "r": {
+        "id": "r",
+        "type": "segment",
+        "displayName": "r",
+        "producer": {
+          "operationId": "op_r",
+          "slot": "segment"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          0,
+          0
+        ]
+      },
+      "B": {
+        "kind": "point",
+        "value": [
+          4,
+          0
+        ]
+      },
+      "C": {
+        "kind": "point",
+        "value": [
+          1,
+          3
+        ]
+      },
+      "D": {
+        "kind": "point",
+        "value": [
+          2,
+          1
+        ]
+      },
+      "G": {
+        "kind": "point",
+        "value": [
+          5,
+          2
+        ]
+      },
+      "t": {
+        "kind": "number",
+        "value": 0.5
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    },
+    "appearance": {
+      "mu": {
+        "visible": false,
+        "locked": true,
+        "role": "aux",
+        "label": {
+          "mode": "none"
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "general",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 1.0
+          }
+        },
+        "G": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 2.0
+          }
+        },
+        "M": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 1.5
+          }
+        },
+        "N": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.132455532033676,
+            "y": 3.3973665961010275
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                0.5,
+                1.5
+              ],
+              [
+                1.132455532033676,
+                3.3973665961010275
+              ]
+            ],
+            "area": 1.1102230246251565e-16
+          }
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -0.9999999999999998,
+            "y": 0.0
+          }
+        },
+        "Y": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 2.0
+          }
+        },
+        "alpha": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 0.0,
+            "a1": 1.2490457723982544,
+            "size": 1.2490457723982544
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.10000000000000009,
+              0.29999999999999993
+            ],
+            "dir": [
+              0.9486832980505138,
+              0.31622776601683794
+            ]
+          }
+        },
+        "mu": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.2490457723982544,
+            "unit": "angle"
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              5.0,
+              2.0
+            ],
+            "b": [
+              0.5,
+              1.5
+            ],
+            "length": 4.527692569068709
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.5,
+              1.5
+            ],
+            "b": [
+              1.132455532033676,
+              3.3973665961010275
+            ],
+            "length": 2.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.5,
+            "unit": "scalar"
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 2.0
+          }
+        },
+        "v1": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              0.6324555320336759,
+              1.8973665961010275
+            ],
+            "length": 2.0
+          }
+        }
+      },
+      "checks": {
+        "op_T:sides_match": "passed",
+        "op_X:incident_both": "passed",
+        "op_alpha:sides": "passed",
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed",
+        "op_r:ends": "passed",
+        "op_s:ends": "passed",
+        "op_v1:image": "passed"
+      }
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            -1,
+            2
+          ]
+        },
+        "t": {
+          "kind": "number",
+          "value": 0.25
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.0,
+            "y": 2.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 1.0
+          }
+        },
+        "G": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 2.0
+          }
+        },
+        "M": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -0.75,
+            "y": 1.5
+          }
+        },
+        "N": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -1.6444271909999157,
+            "y": 3.2888543819998315
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                -0.75,
+                1.5
+              ],
+              [
+                -1.6444271909999157,
+                3.2888543819998315
+              ]
+            ],
+            "area": 0.0
+          }
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -0.9999999999999998,
+            "y": 0.0
+          }
+        },
+        "Y": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 2.0
+          }
+        },
+        "alpha": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 0.0,
+            "a1": 2.0344439357957027,
+            "size": 2.0344439357957027
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.10000000000000009,
+              0.29999999999999993
+            ],
+            "dir": [
+              0.9486832980505138,
+              0.31622776601683794
+            ]
+          }
+        },
+        "mu": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 2.0344439357957027,
+            "unit": "angle"
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              5.0,
+              2.0
+            ],
+            "b": [
+              -0.75,
+              1.5
+            ],
+            "length": 5.771698190307598
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -0.75,
+              1.5
+            ],
+            "b": [
+              -1.6444271909999157,
+              3.2888543819998315
+            ],
+            "length": 1.9999999999999998
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.25,
+            "unit": "scalar"
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 2.0
+          }
+        },
+        "v1": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              -0.8944271909999159,
+              1.7888543819998317
+            ],
+            "length": 2.0
+          }
+        }
+      },
+      "checks": {
+        "op_T:sides_match": "passed",
+        "op_X:incident_both": "passed",
+        "op_alpha:sides": "passed",
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed",
+        "op_r:ends": "passed",
+        "op_s:ends": "passed",
+        "op_v1:image": "passed"
+      }
+    },
+    {
+      "name": "upstream",
+      "inputs": {
+        "G": {
+          "kind": "point",
+          "value": [
+            5,
+            1
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 1.0
+          }
+        },
+        "G": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 1.0
+          }
+        },
+        "M": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 1.5
+          }
+        },
+        "N": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.132455532033676,
+            "y": 3.3973665961010275
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                0.5,
+                1.5
+              ],
+              [
+                1.132455532033676,
+                3.3973665961010275
+              ]
+            ],
+            "area": 1.1102230246251565e-16
+          }
+        },
+        "X": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "parallel"
+        },
+        "Y": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "upstream",
+          "cause": "X"
+        },
+        "alpha": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 0.0,
+            "a1": 1.2490457723982544,
+            "size": 1.2490457723982544
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              1.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "mu": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.2490457723982544,
+            "unit": "angle"
+          }
+        },
+        "r": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "X"
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.5,
+              1.5
+            ],
+            "b": [
+              1.132455532033676,
+              3.3973665961010275
+            ],
+            "length": 2.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.5,
+            "unit": "scalar"
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 2.0
+          }
+        },
+        "v1": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              0.6324555320336759,
+              1.8973665961010275
+            ],
+            "length": 2.0
+          }
+        }
+      },
+      "checks": {
+        "op_T:sides_match": "passed",
+        "op_alpha:sides": "passed",
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed",
+        "op_s:ends": "passed",
+        "op_v1:image": "passed"
+      }
+    },
+    {
+      "name": "recovered",
+      "inputs": {
+        "G": {
+          "kind": "point",
+          "value": [
+            5,
+            3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 3.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 1.0
+          }
+        },
+        "G": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 3.0
+          }
+        },
+        "M": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 1.5
+          }
+        },
+        "N": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.132455532033676,
+            "y": 3.3973665961010275
+          }
+        },
+        "T": {
+          "state": "defined",
+          "type": "polygon",
+          "value": {
+            "vertices": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                0.5,
+                1.5
+              ],
+              [
+                1.132455532033676,
+                3.3973665961010275
+              ]
+            ],
+            "area": 1.1102230246251565e-16
+          }
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.5,
+            "y": 0.0
+          }
+        },
+        "Y": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.5,
+            "y": 2.0
+          }
+        },
+        "alpha": {
+          "state": "defined",
+          "type": "angle",
+          "value": {
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "a0": 0.0,
+            "a1": 1.2490457723982544,
+            "size": 1.2490457723982544
+          }
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.15384615384615374,
+              -0.23076923076923084
+            ],
+            "dir": [
+              0.8320502943378437,
+              0.5547001962252291
+            ]
+          }
+        },
+        "mu": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.2490457723982544,
+            "unit": "angle"
+          }
+        },
+        "r": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              3.5,
+              2.0
+            ],
+            "b": [
+              0.5,
+              1.5
+            ],
+            "length": 3.0413812651491097
+          }
+        },
+        "s": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              0.5,
+              1.5
+            ],
+            "b": [
+              1.132455532033676,
+              3.3973665961010275
+            ],
+            "length": 2.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.5,
+            "unit": "scalar"
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 2.0
+          }
+        },
+        "v1": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              0.6324555320336759,
+              1.8973665961010275
+            ],
+            "length": 2.0
+          }
+        }
+      },
+      "checks": {
+        "op_T:sides_match": "passed",
+        "op_X:incident_both": "passed",
+        "op_alpha:sides": "passed",
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed",
+        "op_r:ends": "passed",
+        "op_s:ends": "passed",
+        "op_v1:image": "passed"
+      }
+    },
+    {
+      "name": "collapsed_angle",
+      "inputs": {
+        "C": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "B": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        },
+        "C": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "D": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 1.0
+          }
+        },
+        "G": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 2.0
+          }
+        },
+        "M": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "N": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "upstream",
+          "cause": "alpha"
+        },
+        "T": {
+          "state": "undefined",
+          "type": "polygon",
+          "reason": "upstream",
+          "cause": "alpha"
+        },
+        "X": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -0.9999999999999998,
+            "y": 0.0
+          }
+        },
+        "Y": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 5.0,
+            "y": 2.0
+          }
+        },
+        "alpha": {
+          "state": "undefined",
+          "type": "angle",
+          "reason": "coincident_points"
+        },
+        "l": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "m": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.10000000000000009,
+              0.29999999999999993
+            ],
+            "dir": [
+              0.9486832980505138,
+              0.31622776601683794
+            ]
+          }
+        },
+        "mu": {
+          "state": "undefined",
+          "type": "number",
+          "reason": "upstream",
+          "cause": "alpha"
+        },
+        "r": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              5.0,
+              2.0
+            ],
+            "b": [
+              0.0,
+              0.0
+            ],
+            "length": 5.385164807134504
+          }
+        },
+        "s": {
+          "state": "undefined",
+          "type": "segment",
+          "reason": "upstream",
+          "cause": "alpha"
+        },
+        "t": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.5,
+            "unit": "scalar"
+          }
+        },
+        "v": {
+          "state": "defined",
+          "type": "vector",
+          "value": {
+            "a": [
+              0.0,
+              0.0
+            ],
+            "b": [
+              2.0,
+              0.0
+            ],
+            "length": 2.0
+          }
+        },
+        "v1": {
+          "state": "undefined",
+          "type": "vector",
+          "reason": "upstream",
+          "cause": "alpha"
+        }
+      },
+      "checks": {
+        "op_X:incident_both": "passed",
+        "op_l:through_a": "passed",
+        "op_l:through_b": "passed",
+        "op_m:through_a": "passed",
+        "op_m:through_b": "passed",
+        "op_r:ends": "passed"
+      }
+    }
+  ]
+}

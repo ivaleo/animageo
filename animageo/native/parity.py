@@ -4,7 +4,9 @@
 registry, generatedBy, document, expect: {steps, describe, timeline}}`` —
 the steps of ``native.steps`` (id, kind, title/text when given,
 operationIds, elementIds, auxElementIds) and the lines of
-``native.describe``; ``verify`` compares them exactly.
+``native.describe``; ``verify`` compares them exactly. ``verify`` also reads
+``animageo-timeline/v1`` and, registry 1.10, ``animageo-expr-cases/v1``
+(``parity/v1/expr``, :mod:`animageo.native.expr_fixtures`).
 
 A scene (``parity/v1/scenes/*.json``) is ``{format, id, document, cases:
 [{name, inputs?}]}``. ``generate`` evaluates every case and writes the
@@ -278,6 +280,9 @@ def verify_fixture(fixture: dict, label: str = '') -> list:
     from .timeline_fixtures import TIMELINE_FORMAT, verify_fixture as verify_timeline_fixture
     if isinstance(fixture, dict) and fixture.get('format') == TIMELINE_FORMAT:
         return verify_timeline_fixture(fixture, label)[1]
+    from .expr_fixtures import EXPR_CASES_FORMAT, verify_fixture as verify_expr_fixture
+    if isinstance(fixture, dict) and fixture.get('format') == EXPR_CASES_FORMAT:
+        return verify_expr_fixture(fixture, label)          # registry 1.10: typed expressions
     try:
         check_scene(fixture)
         doc = load(fixture['document'], strict=True)

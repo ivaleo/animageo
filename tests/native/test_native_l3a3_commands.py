@@ -27,7 +27,8 @@ from tests.native.test_native_commands import describe as describe_ops
 
 SCENES = sorted(p for p in SCENES_DIR.glob('*.json') if p.stem != 'graph_errors')
 # formulas and texts cannot be typed yet; number_free has a step without min/max
-LOSSY = {'l2a5_number_expression', 'l2a5_text', 'number_free'}
+LOSSY = {'l2a5_number_expression', 'l2a5_text', 'number_free',
+         'l4c_point_expression', 'l4c_vector_expression', 'l4c_expr_chain'}   # formulas print as op(выражение, …)
 
 
 def parse(text, base=None, **kw):

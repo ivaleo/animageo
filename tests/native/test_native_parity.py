@@ -52,6 +52,15 @@ REQUIRED_SCENES = {
     'recipe_equal_length_free', 'recipe_equal_length_apex', 'recipe_parallel', 'recipe_perpendicular',
     'recipe_right_angle_vertex', 'recipe_right_angle_side', 'recipe_angle_value', 'recipe_angle_equal',
     'recipe_tangent', 'shape_right_triangle', 'shape_equilateral', 'shape_parallelogram', 'shape_square',
+    # registry 1.10: points and vectors by a formula, a chain through a hidden helper of a rotation
+    'l4c_point_expression', 'l4c_vector_expression', 'l4c_expr_chain',
+}
+
+
+# the issues of the scenes that keep refused formulas on purpose (the state error/formula)
+DELIBERATE_ERRORS = {
+    'l4c_point_expression': [('formula', 'op_E'), ('formula', 'op_K'), ('type_mismatch', 'op_Z')],
+    'l4c_vector_expression': [('formula', 'op_D'), ('formula', 'op_w7')],
 }
 
 
@@ -68,7 +77,11 @@ def test_the_library_set():
         assert data['format'] == 'animageo-parity/v1'
         assert data['id'] == name[:-5]
         assert set(data) <= {'format', 'id', 'document', 'cases'}
-        assert native.validate(data['document']) == [] or data['id'] == 'graph_errors'
+        issues = native.validate(data['document'])
+        if data['id'] in DELIBERATE_ERRORS:      # registry 1.10: refused formulas are part of the scene
+            assert sorted((i.code, i.operationId) for i in issues) == DELIBERATE_ERRORS[data['id']]
+            continue
+        assert issues == [] or data['id'] == 'graph_errors'
 
 
 def test_every_expected_fixture_verifies():

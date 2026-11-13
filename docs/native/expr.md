@@ -199,3 +199,19 @@ is §4 (`-(1, 2)`, `2·(1, 2)`, `f(2)^2`, `t·A + (1 - t)·M`). «Команды
 not print the formula of a point or a vector: `(2, 3)` would read back as a
 free point. They print the operation with `unprintable_operation`, and an
 edit keeps it.
+
+**Fixtures** — `parity/v1/expr/typed.json` (`animageo-expr-cases/v1`,
+`python -m animageo.native fixtures expr [--check]`, also read by
+`fixtures verify`): `{format, registry, generatedBy, tolerance, cases:
+[{name, ast, operands: [{name, type, value}], result, expect}]}`, where
+`expect` is `{value, text, exact}` (a number, or `[x, y]` for `vec`; `text`
+— `to_text` with the operand names, byte for byte; `exact: false` — a
+component may differ by `tolerance · max(1, |v|)`), `{reason}` or
+`{problems: [pointer]}` (the pointers only; the messages are not part of
+the contract). The cases cover every row of the typing table, every type
+error with its pointer, the limits, `−0`, overflow, `/0`, `call` outside
+its domain and in a branch of `If`, and `abs` of large components. The
+scenes `parity/v1/scenes/l4c_point_expression`, `l4c_vector_expression`
+and `l4c_expr_chain` give the operations with every reason, and a vector
+turned by a hidden `measure.angle` (`role: aux`, `origin: {kind: auto,
+source: <the rotation>}`) that goes when the rotation is deleted.

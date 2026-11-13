@@ -1,0 +1,5960 @@
+{
+ "format": "animageo-expr-cases/v1",
+ "registry": "1.10",
+ "generatedBy": "animageo 1.14.0",
+ "tolerance": 1e-09,
+ "cases": [
+  {
+   "name": "point_plus_vector",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     4.0,
+     6.0
+    ],
+    "text": "A + u",
+    "exact": true
+   }
+  },
+  {
+   "name": "point_minus_vector",
+   "ast": {
+    "op": "-",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     -2.0,
+     -2.0
+    ],
+    "text": "A - u",
+    "exact": true
+   }
+  },
+  {
+   "name": "point_minus_point",
+   "ast": {
+    "op": "-",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    },
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     3.0,
+     -4.0
+    ],
+    "text": "B - A",
+    "exact": true
+   }
+  },
+  {
+   "name": "point_plus_point",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     5.0,
+     0.0
+    ],
+    "text": "A + B",
+    "exact": true
+   }
+  },
+  {
+   "name": "vector_plus_vector",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    },
+    {
+     "name": "v",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       -2.0,
+       1.0
+      ],
+      "length": 2.23606797749979
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     1.0,
+     5.0
+    ],
+    "text": "u + v",
+    "exact": true
+   }
+  },
+  {
+   "name": "number_times_vector",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "k",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     6.0,
+     8.0
+    ],
+    "text": "k·u",
+    "exact": true
+   }
+  },
+  {
+   "name": "vector_times_number",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    },
+    {
+     "name": "k",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     6.0,
+     8.0
+    ],
+    "text": "u·k",
+    "exact": true
+   }
+  },
+  {
+   "name": "literal_times_point",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "num": 0.5
+     },
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     2.0,
+     -1.0
+    ],
+    "text": "0.5·B",
+    "exact": true
+   }
+  },
+  {
+   "name": "vector_over_number",
+   "ast": {
+    "op": "/",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "num": 4
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     0.75,
+     1.0
+    ],
+    "text": "u/4",
+    "exact": true
+   }
+  },
+  {
+   "name": "point_over_number",
+   "ast": {
+    "op": "/",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "k",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     0.5,
+     1.0
+    ],
+    "text": "A/k",
+    "exact": true
+   }
+  },
+  {
+   "name": "dot_product",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    },
+    {
+     "name": "v",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       -2.0,
+       1.0
+      ],
+      "length": 2.23606797749979
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": -2.0,
+    "text": "u·v",
+    "exact": true
+   }
+  },
+  {
+   "name": "dot_point_vector",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 11.0,
+    "text": "A·u",
+    "exact": true
+   }
+  },
+  {
+   "name": "neg_vector",
+   "ast": {
+    "op": "neg",
+    "args": [
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     -3.0,
+     -4.0
+    ],
+    "text": "-u",
+    "exact": true
+   }
+  },
+  {
+   "name": "neg_pair",
+   "ast": {
+    "op": "neg",
+    "args": [
+     {
+      "pair": [
+       {
+        "num": 1
+       },
+       {
+        "num": 2
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "value": [
+     -1.0,
+     -2.0
+    ],
+    "text": "-(1, 2)",
+    "exact": true
+   }
+  },
+  {
+   "name": "x_of_point",
+   "ast": {
+    "fn": "x",
+    "args": [
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 1.0,
+    "text": "x(A)",
+    "exact": true
+   }
+  },
+  {
+   "name": "y_of_point",
+   "ast": {
+    "fn": "y",
+    "args": [
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": -2.0,
+    "text": "y(B)",
+    "exact": true
+   }
+  },
+  {
+   "name": "x_of_vector",
+   "ast": {
+    "fn": "x",
+    "args": [
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 3.0,
+    "text": "x(u)",
+    "exact": true
+   }
+  },
+  {
+   "name": "y_of_difference",
+   "ast": {
+    "fn": "y",
+    "args": [
+     {
+      "op": "-",
+      "args": [
+       {
+        "ref": 0
+       },
+       {
+        "ref": 1
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 4.0,
+    "text": "y(A - B)",
+    "exact": true
+   }
+  },
+  {
+   "name": "abs_of_vector",
+   "ast": {
+    "fn": "abs",
+    "args": [
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 5.0,
+    "text": "abs(u)",
+    "exact": false
+   }
+  },
+  {
+   "name": "abs_of_difference",
+   "ast": {
+    "fn": "abs",
+    "args": [
+     {
+      "op": "-",
+      "args": [
+       {
+        "ref": 0
+       },
+       {
+        "ref": 1
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    },
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 5.0,
+    "text": "abs(B - A)",
+    "exact": false
+   }
+  },
+  {
+   "name": "abs_of_number",
+   "ast": {
+    "fn": "abs",
+    "args": [
+     {
+      "op": "-",
+      "args": [
+       {
+        "num": 1
+       },
+       {
+        "ref": 0
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "k",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 1.0,
+    "text": "abs(1 - k)",
+    "exact": true
+   }
+  },
+  {
+   "name": "pair_literal",
+   "ast": {
+    "pair": [
+     {
+      "num": 2
+     },
+     {
+      "num": 3
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "value": [
+     2.0,
+     3.0
+    ],
+    "text": "(2, 3)",
+    "exact": true
+   }
+  },
+  {
+   "name": "pair_of_numbers",
+   "ast": {
+    "pair": [
+     {
+      "ref": 0
+     },
+     {
+      "num": 4
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "c_x",
+     "type": "number",
+     "value": {
+      "value": -1.5,
+      "unit": "length"
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     -1.5,
+     4.0
+    ],
+    "text": "(c_x, 4)",
+    "exact": true
+   }
+  },
+  {
+   "name": "pair_of_coordinates",
+   "ast": {
+    "pair": [
+     {
+      "fn": "y",
+      "args": [
+       {
+        "ref": 0
+       }
+      ]
+     },
+     {
+      "fn": "x",
+      "args": [
+       {
+        "ref": 0
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     2.0,
+     1.0
+    ],
+    "text": "(y(A), x(A))",
+    "exact": true
+   }
+  },
+  {
+   "name": "pair_plus_point",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "pair": [
+       {
+        "num": 1
+       },
+       {
+        "num": -1
+       }
+      ]
+     },
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     2.0,
+     1.0
+    ],
+    "text": "(1, -1) + A",
+    "exact": true
+   }
+  },
+  {
+   "name": "call_value",
+   "ast": {
+    "call": 0,
+    "args": [
+     {
+      "num": 3
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 9.0,
+    "text": "f(3)",
+    "exact": false
+   }
+  },
+  {
+   "name": "call_in_pair",
+   "ast": {
+    "pair": [
+     {
+      "num": 2
+     },
+     {
+      "call": 0,
+      "args": [
+       {
+        "num": 2
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     2.0,
+     4.0
+    ],
+    "text": "(2, f(2))",
+    "exact": false
+   }
+  },
+  {
+   "name": "call_of_coordinate",
+   "ast": {
+    "pair": [
+     {
+      "fn": "x",
+      "args": [
+       {
+        "ref": 1
+       }
+      ]
+     },
+     {
+      "call": 0,
+      "args": [
+       {
+        "fn": "x",
+        "args": [
+         {
+          "ref": 1
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     1.0,
+     1.0
+    ],
+    "text": "(x(A), f(x(A)))",
+    "exact": false
+   }
+  },
+  {
+   "name": "call_with_refs",
+   "ast": {
+    "call": 0,
+    "args": [
+     {
+      "op": "+",
+      "args": [
+       {
+        "ref": 1
+       },
+       {
+        "num": 1
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "p",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [
+       3.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    {
+     "name": "t",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 3.75,
+    "text": "p(t + 1)",
+    "exact": false
+   }
+  },
+  {
+   "name": "call_libm",
+   "ast": {
+    "pair": [
+     {
+      "ref": 1
+     },
+     {
+      "call": 0,
+      "args": [
+       {
+        "ref": 1
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "s",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sin",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    {
+     "name": "α",
+     "type": "number",
+     "value": {
+      "value": 0.5,
+      "unit": "angle"
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     0.5,
+     0.479425538604203
+    ],
+    "text": "(α, s(α))",
+    "exact": false
+   }
+  },
+  {
+   "name": "call_power",
+   "ast": {
+    "op": "^",
+    "args": [
+     {
+      "call": 0,
+      "args": [
+       {
+        "num": 2
+       }
+      ]
+     },
+     {
+      "num": 2
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 16.0,
+    "text": "f(2)^2",
+    "exact": false
+   }
+  },
+  {
+   "name": "call_branch",
+   "ast": {
+    "call": 0,
+    "args": [
+     {
+      "num": -3
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "h",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "num": -1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": -1.0,
+    "text": "h(-3)",
+    "exact": false
+   }
+  },
+  {
+   "name": "affine_combination",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "op": "*",
+      "args": [
+       {
+        "ref": 0
+       },
+       {
+        "ref": 1
+       }
+      ]
+     },
+     {
+      "op": "*",
+      "args": [
+       {
+        "op": "-",
+        "args": [
+         {
+          "num": 1
+         },
+         {
+          "ref": 0
+         }
+        ]
+       },
+       {
+        "ref": 2
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "t",
+     "type": "number",
+     "value": {
+      "value": 0.25,
+      "unit": "scalar"
+     }
+    },
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     3.25,
+     -1.0
+    ],
+    "text": "t·A + (1 - t)·B",
+    "exact": true
+   }
+  },
+  {
+   "name": "midpoint_formula",
+   "ast": {
+    "op": "/",
+    "args": [
+     {
+      "op": "+",
+      "args": [
+       {
+        "ref": 0
+       },
+       {
+        "ref": 1
+       }
+      ]
+     },
+     {
+      "num": 2
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     2.5,
+     0.0
+    ],
+    "text": "(A + B)/2",
+    "exact": true
+   }
+  },
+  {
+   "name": "point_and_twice_vector",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "op": "*",
+      "args": [
+       {
+        "num": 2
+       },
+       {
+        "op": "-",
+        "args": [
+         {
+          "ref": 1
+         },
+         {
+          "ref": 0
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     7.0,
+     -6.0
+    ],
+    "text": "A + 2·(B - A)",
+    "exact": true
+   }
+  },
+  {
+   "name": "rotated_by_degrees",
+   "ast": {
+    "pair": [
+     {
+      "fn": "cos",
+      "args": [
+       {
+        "op": "+",
+        "args": [
+         {
+          "ref": 0
+         },
+         {
+          "op": "*",
+          "args": [
+           {
+            "num": 30
+           },
+           {
+            "op": "/",
+            "args": [
+             {
+              "const": "pi"
+             },
+             {
+              "num": 180
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "fn": "sin",
+      "args": [
+       {
+        "op": "+",
+        "args": [
+         {
+          "ref": 0
+         },
+         {
+          "op": "*",
+          "args": [
+           {
+            "num": 30
+           },
+           {
+            "op": "/",
+            "args": [
+             {
+              "const": "pi"
+             },
+             {
+              "num": 180
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "α",
+     "type": "number",
+     "value": {
+      "value": 0.5,
+      "unit": "angle"
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     0.5202960232131908,
+     0.8539859765994632
+    ],
+    "text": "(cos(α + 30·(pi/180)), sin(α + 30·(pi/180)))",
+    "exact": false
+   }
+  },
+  {
+   "name": "scaled_angle",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "num": 4
+     },
+     {
+      "op": "-",
+      "args": [
+       {
+        "ref": 0
+       },
+       {
+        "op": "*",
+        "args": [
+         {
+          "num": 90
+         },
+         {
+          "op": "/",
+          "args": [
+           {
+            "const": "pi"
+           },
+           {
+            "num": 180
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "α",
+     "type": "number",
+     "value": {
+      "value": 0.5,
+      "unit": "angle"
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": -4.283185307179586,
+    "text": "4·(α - 90·(pi/180))",
+    "exact": true
+   }
+  },
+  {
+   "name": "number_slot_with_pi",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "num": 2
+     },
+     {
+      "const": "pi"
+     }
+    ]
+   },
+   "operands": [],
+   "result": "num",
+   "expect": {
+    "value": 6.283185307179586,
+    "text": "2·pi",
+    "exact": true
+   }
+  },
+  {
+   "name": "sqrt_component",
+   "ast": {
+    "pair": [
+     {
+      "fn": "sqrt",
+      "args": [
+       {
+        "fn": "x",
+        "args": [
+         {
+          "ref": 0
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "num": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     2.0,
+     0.0
+    ],
+    "text": "(sqrt(x(B)), 0)",
+    "exact": true
+   }
+  },
+  {
+   "name": "integer_power_of_component",
+   "ast": {
+    "op": "^",
+    "args": [
+     {
+      "fn": "x",
+      "args": [
+       {
+        "ref": 0
+       }
+      ]
+     },
+     {
+      "num": 3
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 27.0,
+    "text": "x(u)^3",
+    "exact": true
+   }
+  },
+  {
+   "name": "min_max_of_components",
+   "ast": {
+    "pair": [
+     {
+      "fn": "min",
+      "args": [
+       {
+        "fn": "x",
+        "args": [
+         {
+          "ref": 0
+         }
+        ]
+       },
+       {
+        "fn": "y",
+        "args": [
+         {
+          "ref": 0
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "fn": "max",
+      "args": [
+       {
+        "fn": "x",
+        "args": [
+         {
+          "ref": 0
+         }
+        ]
+       },
+       {
+        "fn": "y",
+        "args": [
+         {
+          "ref": 0
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     -2.0,
+     4.0
+    ],
+    "text": "(min(x(B), y(B)), max(x(B), y(B)))",
+    "exact": true
+   }
+  },
+  {
+   "name": "nested_refs",
+   "ast": {
+    "op": "-",
+    "args": [
+     {
+      "op": "*",
+      "args": [
+       {
+        "fn": "abs",
+        "args": [
+         {
+          "ref": 0
+         }
+        ]
+       },
+       {
+        "ref": 1
+       }
+      ]
+     },
+     {
+      "ref": 2
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    },
+    {
+     "name": "v",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       -2.0,
+       1.0
+      ],
+      "length": 2.23606797749979
+     }
+    },
+    {
+     "name": "M",
+     "type": "point",
+     "value": {
+      "x": -0.5,
+      "y": 0.25
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     -9.5,
+     4.75
+    ],
+    "text": "abs(u)·v - M",
+    "exact": false
+   }
+  },
+  {
+   "name": "negative_zero_x",
+   "ast": {
+    "op": "neg",
+    "args": [
+     {
+      "pair": [
+       {
+        "num": 0
+       },
+       {
+        "num": 1
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "value": [
+     0.0,
+     -1.0
+    ],
+    "text": "-(0, 1)",
+    "exact": true
+   }
+  },
+  {
+   "name": "negative_zero_both",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "num": -1
+     },
+     {
+      "pair": [
+       {
+        "num": 0
+       },
+       {
+        "num": 0
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "value": [
+     0.0,
+     0.0
+    ],
+    "text": "-1·(0, 0)",
+    "exact": true
+   }
+  },
+  {
+   "name": "negative_zero_num",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "fn": "x",
+      "args": [
+       {
+        "ref": 0
+       }
+      ]
+     },
+     {
+      "num": -1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "O",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 3.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 0.0,
+    "text": "x(O)·(-1)",
+    "exact": true
+   }
+  },
+  {
+   "name": "negative_zero_divided",
+   "ast": {
+    "op": "/",
+    "args": [
+     {
+      "pair": [
+       {
+        "num": 0
+       },
+       {
+        "num": -0.0
+       }
+      ]
+     },
+     {
+      "num": -2
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "value": [
+     0.0,
+     0.0
+    ],
+    "text": "(0, 0)/(-2)",
+    "exact": true
+   }
+  },
+  {
+   "name": "divide_vector_by_zero",
+   "ast": {
+    "op": "/",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "num": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "reason": "out_of_domain"
+   }
+  },
+  {
+   "name": "divide_by_zero_number",
+   "ast": {
+    "op": "/",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "z",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "reason": "out_of_domain"
+   }
+  },
+  {
+   "name": "sqrt_of_negative_component",
+   "ast": {
+    "pair": [
+     {
+      "fn": "sqrt",
+      "args": [
+       {
+        "fn": "y",
+        "args": [
+         {
+          "ref": 0
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "num": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "B",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": -2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "reason": "out_of_domain"
+   }
+  },
+  {
+   "name": "call_outside_domain",
+   "ast": {
+    "call": 0,
+    "args": [
+     {
+      "num": 2
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "g",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       0.0,
+       1.0
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "reason": "out_of_domain"
+   }
+  },
+  {
+   "name": "call_inside_domain",
+   "ast": {
+    "call": 0,
+    "args": [
+     {
+      "num": 0.5
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "g",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       0.0,
+       1.0
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 0.25,
+    "text": "g(0.5)",
+    "exact": false
+   }
+  },
+  {
+   "name": "call_branch_without_value",
+   "ast": {
+    "call": 0,
+    "args": [
+     {
+      "num": 3
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "h",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "num": -1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "reason": "out_of_domain"
+   }
+  },
+  {
+   "name": "call_root_of_negative",
+   "ast": {
+    "pair": [
+     {
+      "num": 1
+     },
+     {
+      "call": 0,
+      "args": [
+       {
+        "num": -1
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "r",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sqrt",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "reason": "out_of_domain"
+   }
+  },
+  {
+   "name": "call_overflow",
+   "ast": {
+    "call": 0,
+    "args": [
+     {
+      "num": 1e+200
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "reason": "out_of_domain"
+   }
+  },
+  {
+   "name": "overflow_x",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "num": 10
+     },
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "W",
+     "type": "point",
+     "value": {
+      "x": 1e+308,
+      "y": 1.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "reason": "non_finite"
+   }
+  },
+  {
+   "name": "overflow_sum",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "W",
+     "type": "point",
+     "value": {
+      "x": 1e+308,
+      "y": 1.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "reason": "non_finite"
+   }
+  },
+  {
+   "name": "overflow_dot",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "W",
+     "type": "point",
+     "value": {
+      "x": 1e+308,
+      "y": 1.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "reason": "non_finite"
+   }
+  },
+  {
+   "name": "x_before_y_domain",
+   "ast": {
+    "pair": [
+     {
+      "fn": "sqrt",
+      "args": [
+       {
+        "num": -1
+       }
+      ]
+     },
+     {
+      "op": "*",
+      "args": [
+       {
+        "num": 1e+308
+       },
+       {
+        "num": 10
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "reason": "out_of_domain"
+   }
+  },
+  {
+   "name": "x_before_y_overflow",
+   "ast": {
+    "pair": [
+     {
+      "op": "*",
+      "args": [
+       {
+        "num": 1e+308
+       },
+       {
+        "num": 10
+       }
+      ]
+     },
+     {
+      "fn": "sqrt",
+      "args": [
+       {
+        "num": -1
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "reason": "non_finite"
+   }
+  },
+  {
+   "name": "abs_of_large_components",
+   "ast": {
+    "fn": "abs",
+    "args": [
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "w",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       1e+200,
+       1e+200
+      ],
+      "length": 1.414213562373095e+200
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "value": 1.414213562373095e+200,
+    "text": "abs(w)",
+    "exact": false
+   }
+  },
+  {
+   "name": "abs_overflow",
+   "ast": {
+    "fn": "abs",
+    "args": [
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "Q",
+     "type": "point",
+     "value": {
+      "x": 1.7e+308,
+      "y": 1.7e+308
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "reason": "non_finite"
+   }
+  },
+  {
+   "name": "vector_components_overflow",
+   "ast": {
+    "op": "-",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "E",
+     "type": "point",
+     "value": {
+      "x": 1e+308,
+      "y": 0.0
+     }
+    },
+    {
+     "name": "G",
+     "type": "point",
+     "value": {
+      "x": -1e+308,
+      "y": 0.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "reason": "non_finite"
+   }
+  },
+  {
+   "name": "point_plus_number",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "num": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "number_minus_vector",
+   "ast": {
+    "op": "-",
+    "args": [
+     {
+      "num": 1
+     },
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "number_over_vector",
+   "ast": {
+    "op": "/",
+    "args": [
+     {
+      "num": 1
+     },
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "vector_over_vector",
+   "ast": {
+    "op": "/",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    },
+    {
+     "name": "v",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       -2.0,
+       1.0
+      ],
+      "length": 2.23606797749979
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "vector_power",
+   "ast": {
+    "op": "^",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "num": 2
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "number_to_vector_power",
+   "ast": {
+    "op": "^",
+    "args": [
+     {
+      "num": 2
+     },
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "sin_of_point",
+   "ast": {
+    "fn": "sin",
+    "args": [
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "min_of_point",
+   "ast": {
+    "fn": "min",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "num": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "x_of_number",
+   "ast": {
+    "fn": "x",
+    "args": [
+     {
+      "ref": 0
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "k",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "pair_of_vector",
+   "ast": {
+    "pair": [
+     {
+      "ref": 0
+     },
+     {
+      "num": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "call_of_point",
+   "ast": {
+    "call": 0,
+    "args": [
+     {
+      "num": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "call_of_vector_argument",
+   "ast": {
+    "call": 0,
+    "args": [
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "bare_function",
+   "ast": {
+    "ref": 0
+   },
+   "operands": [
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "bare_function_in_sum",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "num": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     "/args/0"
+    ]
+   }
+  },
+  {
+   "name": "root_gives_vec_for_num",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "root_gives_num_for_vec",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    },
+    {
+     "name": "v",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       -2.0,
+       1.0
+      ],
+      "length": 2.23606797749979
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "literal_for_vec",
+   "ast": {
+    "num": 1
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "nested_mistake_once",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "op": "+",
+      "args": [
+       {
+        "ref": 0
+       },
+       {
+        "num": 1
+       }
+      ]
+     },
+     {
+      "num": 2
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     "/args/0"
+    ]
+   }
+  },
+  {
+   "name": "deep_mistake",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "ref": 0
+     },
+     {
+      "op": "*",
+      "args": [
+       {
+        "ref": 1
+       },
+       {
+        "num": 1
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    },
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     "/args/1/args/0"
+    ]
+   }
+  },
+  {
+   "name": "two_mistakes_in_pre_order",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "pair": [
+       {
+        "ref": 0
+       },
+       {
+        "num": 1
+       }
+      ]
+     },
+     {
+      "fn": "sin",
+      "args": [
+       {
+        "ref": 0
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     "/args/0",
+     "/args/1"
+    ]
+   }
+  },
+  {
+   "name": "mistakes_in_pair",
+   "ast": {
+    "pair": [
+     {
+      "fn": "cos",
+      "args": [
+       {
+        "ref": 0
+       }
+      ]
+     },
+     {
+      "op": "/",
+      "args": [
+       {
+        "num": 1
+       },
+       {
+        "ref": 0
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "A",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 2.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     "/pair/0",
+     "/pair/1"
+    ]
+   }
+  },
+  {
+   "name": "call_with_two_arguments",
+   "ast": {
+    "call": 0,
+    "args": [
+     {
+      "num": 1
+     },
+     {
+      "num": 2
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "call_outside_refs",
+   "ast": {
+    "call": 3,
+    "args": [
+     {
+      "num": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "f",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   ],
+   "result": "num",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "pair_of_three",
+   "ast": {
+    "pair": [
+     {
+      "num": 1
+     },
+     {
+      "num": 2
+     },
+     {
+      "num": 3
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "pair_with_extra_key",
+   "ast": {
+    "pair": [
+     {
+      "num": 1
+     },
+     {
+      "num": 2
+     }
+    ],
+    "num": 1
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "condition_in_typed_slot",
+   "ast": {
+    "if": [
+     {
+      "cmp": "<",
+      "args": [
+       {
+        "num": 0
+       },
+       {
+        "num": 1
+       }
+      ]
+     },
+     {
+      "pair": [
+       {
+        "num": 1
+       },
+       {
+        "num": 1
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "deeper_than_32",
+   "ast": {
+    "op": "neg",
+    "args": [
+     {
+      "op": "neg",
+      "args": [
+       {
+        "op": "neg",
+        "args": [
+         {
+          "op": "neg",
+          "args": [
+           {
+            "op": "neg",
+            "args": [
+             {
+              "op": "neg",
+              "args": [
+               {
+                "op": "neg",
+                "args": [
+                 {
+                  "op": "neg",
+                  "args": [
+                   {
+                    "op": "neg",
+                    "args": [
+                     {
+                      "op": "neg",
+                      "args": [
+                       {
+                        "op": "neg",
+                        "args": [
+                         {
+                          "op": "neg",
+                          "args": [
+                           {
+                            "op": "neg",
+                            "args": [
+                             {
+                              "op": "neg",
+                              "args": [
+                               {
+                                "op": "neg",
+                                "args": [
+                                 {
+                                  "op": "neg",
+                                  "args": [
+                                   {
+                                    "op": "neg",
+                                    "args": [
+                                     {
+                                      "op": "neg",
+                                      "args": [
+                                       {
+                                        "op": "neg",
+                                        "args": [
+                                         {
+                                          "op": "neg",
+                                          "args": [
+                                           {
+                                            "op": "neg",
+                                            "args": [
+                                             {
+                                              "op": "neg",
+                                              "args": [
+                                               {
+                                                "op": "neg",
+                                                "args": [
+                                                 {
+                                                  "op": "neg",
+                                                  "args": [
+                                                   {
+                                                    "op": "neg",
+                                                    "args": [
+                                                     {
+                                                      "op": "neg",
+                                                      "args": [
+                                                       {
+                                                        "op": "neg",
+                                                        "args": [
+                                                         {
+                                                          "op": "neg",
+                                                          "args": [
+                                                           {
+                                                            "op": "neg",
+                                                            "args": [
+                                                             {
+                                                              "op": "neg",
+                                                              "args": [
+                                                               {
+                                                                "op": "neg",
+                                                                "args": [
+                                                                 {
+                                                                  "pair": [
+                                                                   {
+                                                                    "num": 1
+                                                                   },
+                                                                   {
+                                                                    "num": 0
+                                                                   }
+                                                                  ]
+                                                                 }
+                                                                ]
+                                                               }
+                                                              ]
+                                                             }
+                                                            ]
+                                                           }
+                                                          ]
+                                                         }
+                                                        ]
+                                                       }
+                                                      ]
+                                                     }
+                                                    ]
+                                                   }
+                                                  ]
+                                                 }
+                                                ]
+                                               }
+                                              ]
+                                             }
+                                            ]
+                                           }
+                                          ]
+                                         }
+                                        ]
+                                       }
+                                      ]
+                                     }
+                                    ]
+                                   }
+                                  ]
+                                 }
+                                ]
+                               }
+                              ]
+                             }
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     "/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/pair/0",
+     "/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/args/0/pair/1"
+    ]
+   }
+  },
+  {
+   "name": "depth_32",
+   "ast": {
+    "op": "neg",
+    "args": [
+     {
+      "op": "neg",
+      "args": [
+       {
+        "op": "neg",
+        "args": [
+         {
+          "op": "neg",
+          "args": [
+           {
+            "op": "neg",
+            "args": [
+             {
+              "op": "neg",
+              "args": [
+               {
+                "op": "neg",
+                "args": [
+                 {
+                  "op": "neg",
+                  "args": [
+                   {
+                    "op": "neg",
+                    "args": [
+                     {
+                      "op": "neg",
+                      "args": [
+                       {
+                        "op": "neg",
+                        "args": [
+                         {
+                          "op": "neg",
+                          "args": [
+                           {
+                            "op": "neg",
+                            "args": [
+                             {
+                              "op": "neg",
+                              "args": [
+                               {
+                                "op": "neg",
+                                "args": [
+                                 {
+                                  "op": "neg",
+                                  "args": [
+                                   {
+                                    "op": "neg",
+                                    "args": [
+                                     {
+                                      "op": "neg",
+                                      "args": [
+                                       {
+                                        "op": "neg",
+                                        "args": [
+                                         {
+                                          "op": "neg",
+                                          "args": [
+                                           {
+                                            "op": "neg",
+                                            "args": [
+                                             {
+                                              "op": "neg",
+                                              "args": [
+                                               {
+                                                "op": "neg",
+                                                "args": [
+                                                 {
+                                                  "op": "neg",
+                                                  "args": [
+                                                   {
+                                                    "op": "neg",
+                                                    "args": [
+                                                     {
+                                                      "op": "neg",
+                                                      "args": [
+                                                       {
+                                                        "op": "neg",
+                                                        "args": [
+                                                         {
+                                                          "op": "neg",
+                                                          "args": [
+                                                           {
+                                                            "op": "neg",
+                                                            "args": [
+                                                             {
+                                                              "op": "neg",
+                                                              "args": [
+                                                               {
+                                                                "pair": [
+                                                                 {
+                                                                  "num": 1
+                                                                 },
+                                                                 {
+                                                                  "num": 0
+                                                                 }
+                                                                ]
+                                                               }
+                                                              ]
+                                                             }
+                                                            ]
+                                                           }
+                                                          ]
+                                                         }
+                                                        ]
+                                                       }
+                                                      ]
+                                                     }
+                                                    ]
+                                                   }
+                                                  ]
+                                                 }
+                                                ]
+                                               }
+                                              ]
+                                             }
+                                            ]
+                                           }
+                                          ]
+                                         }
+                                        ]
+                                       }
+                                      ]
+                                     }
+                                    ]
+                                   }
+                                  ]
+                                 }
+                                ]
+                               }
+                              ]
+                             }
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "value": [
+     1.0,
+     0.0
+    ],
+    "text": "-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(-(1, 0))))))))))))))))))))))))))))))",
+    "exact": true
+   }
+  },
+  {
+   "name": "more_than_256_nodes",
+   "ast": {
+    "op": "+",
+    "args": [
+     {
+      "op": "+",
+      "args": [
+       {
+        "op": "+",
+        "args": [
+         {
+          "op": "+",
+          "args": [
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "op": "+",
+          "args": [
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "op": "+",
+        "args": [
+         {
+          "op": "+",
+          "args": [
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "op": "+",
+          "args": [
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "op": "+",
+      "args": [
+       {
+        "op": "+",
+        "args": [
+         {
+          "op": "+",
+          "args": [
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "op": "+",
+          "args": [
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "op": "+",
+        "args": [
+         {
+          "op": "+",
+          "args": [
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "op": "+",
+          "args": [
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "op": "+",
+            "args": [
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "op": "+",
+              "args": [
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "op": "+",
+                "args": [
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 },
+                 {
+                  "pair": [
+                   {
+                    "num": 1
+                   },
+                   {
+                    "num": 1
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "operands": [],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "power_above_64",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "op": "^",
+      "args": [
+       {
+        "ref": 0
+       },
+       {
+        "num": 65
+       }
+      ]
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "k",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "problems": [
+     "/args/0"
+    ]
+   }
+  },
+  {
+   "name": "power_64",
+   "ast": {
+    "op": "*",
+    "args": [
+     {
+      "op": "^",
+      "args": [
+       {
+        "ref": 0
+       },
+       {
+        "num": -64
+       }
+      ]
+     },
+     {
+      "ref": 1
+     }
+    ]
+   },
+   "operands": [
+    {
+     "name": "k",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    {
+     "name": "u",
+     "type": "vector",
+     "value": {
+      "a": [
+       1.0,
+       1.0
+      ],
+      "b": [
+       4.0,
+       5.0
+      ],
+      "length": 5.0
+     }
+    }
+   ],
+   "result": "vec",
+   "expect": {
+    "value": [
+     1.6263032587282567e-19,
+     2.168404344971009e-19
+    ],
+    "text": "k^(-64)·u",
+    "exact": true
+   }
+  }
+ ]
+}

@@ -35,6 +35,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `appearance.<id>.drag.via` like any dependent point; describe prints the
   formula; «Команды» print the operation with `unprintable_operation` and
   an edit keeps it. GGB import does not produce them yet.
+- Parity fixtures of typed expressions: `parity/v1/expr/typed.json`
+  (`animageo-expr-cases/v1`, 93 cases with the expected value, the text of
+  the formula and the pointers of type errors; `python -m animageo.native
+  fixtures expr [--check]`, read by `fixtures verify`) and the scenes
+  `l4c_point_expression`, `l4c_vector_expression`, `l4c_expr_chain`.
 
 ## [1.14.0] - 2026-11-13
 

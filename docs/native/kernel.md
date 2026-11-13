@@ -730,6 +730,7 @@ python -m animageo.native fixtures timeline [--check]           # animageo-timel
 python -m animageo.native fixtures paint [--check]              # animageo-paint-parity/v1, §9.8
 python -m animageo.native fixtures curves [--check]             # parity/v1/curves: graphs and conics, §14
 python -m animageo.native fixtures drag [-o <dir>] [--check]    # animageo-drag-parity/v1, §8.1
+python -m animageo.native fixtures expr [-o <dir>] [--check]    # animageo-expr-cases/v1, expr.md §6
 python -m animageo.native style export [--check]               # native/style: builtin.json, keys.v1.json, §9.8
 python -m animageo.native steps|describe|timeline <doc.json> …  # timeline.md §5
 python -m animageo.native from-ggb <file.ggb> [-o …] [--report …] # import.md §7
@@ -2208,3 +2209,15 @@ are `out_of_domain`; an overflow of a component is `non_finite`.
   printed.
 - **GGB import and the classic DSL** do not produce these operations yet
   (`dsl_map` `opsWithoutClassic`).
+
+### 17.4 Fixtures
+
+`parity/v1/expr/typed.json` (`animageo-expr-cases/v1`, `fixtures expr`,
+expr.md §6) — the typed trees alone; the scenes `l4c_point_expression`,
+`l4c_vector_expression` (every reason of both operations and the states
+`error/formula` and `error/type_mismatch` they keep on purpose) and
+`l4c_expr_chain` (a formula point into a segment and a triangle, a formula
+vector turned by a hidden `measure.angle` — an import helper: `role:
+aux`, `origin: {kind: auto, source}`, deleted with its rotation — upstream
+and recovery) with
+`expected` and `steps` by `fixtures generate`.
