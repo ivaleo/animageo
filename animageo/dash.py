@@ -193,11 +193,11 @@ def dash_pattern(length_mu, dash_mu, gap_mu, *, closed=False, fit_ends=False,
     phase = float(phase_mu or 0.0)
     if period > 0 and length > 0:
         if closed:
-            n = max(1, round(length / period))
+            n = max(1, math.floor(length / period + 0.5))
             scale = length / (n * period)
             phase = 0.0
         elif fit_ends:
-            n = max(1, round((length + gap) / period))
+            n = max(1, math.floor((length + gap) / period + 0.5))
             scale = length / (n * dash + (n - 1) * gap)
             phase = 0.0
     on = dash * scale

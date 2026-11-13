@@ -29,7 +29,7 @@ marker fitted to three dashes to hold them on every arc. An arc ``i`` drawn
 over ``[a_i, a_i + Δ_i]`` (the outer arc stops at the base of an arrow
 head):
 
-- wave — ``N_i = max(N_min, round(r_out·Δ_i / λ))`` periods (``N_min`` 3
+- wave — ``N_i = max(N_min, floor(r_out·Δ_i / λ + 1/2))`` periods (``N_min`` 3
   for two waves and more, else 1), ``16·N_i + 1`` samples ``φ_k = a_i +
   Δ_i·k / (16·N_i)``, ``ρ_k = r_i + A·sin(2π·(k mod 16) / 16)``: both ends
   on the arc, the waves of arcs of the same span are radial shifts of each
@@ -90,7 +90,7 @@ VECTOR_ARROW_PX = (11.0, 7.5)       # the head of the built-in vector: length, w
 PARALLEL_SIZE_PX = 8.0
 PARALLEL_SHIFT_PX = 3.5
 MAX_COUNT = 3
-# The floors of legibility (the board of 13.11):
+# The floors of legibility (legibility of narrow marks):
 WAVE_GAP_PX = 2.0                   # the least gap between two wavy arcs (their crests)
 WAVE_MIN_PERIOD_PX = 4.0            # the least wavelength on the inner of several waves
 WAVE_MIN_PERIODS = 3                # the least periods of several waves
@@ -226,18 +226,18 @@ def _three_dashes(decor: ArcDecor, count) -> bool:
 
 def _fitted_dashes(length_px, period_px) -> int:
     """The dashes of ``dash.dash_pattern(…, fit_ends=True)`` with ``on = off = p/2``."""
-    return max(1, int(round((length_px + period_px / 2) / period_px))) if length_px > 0 else 1
+    return max(1, math.floor((length_px + period_px / 2) / period_px + 0.5)) if length_px > 0 else 1
 
 
 def wave_periods(r_out_px, span, count, *, r_in_px=None, capped=False) -> int:
-    """``N = max(N_min, round(r_out·span / λ))`` periods of a wavy arc of
+    """``N = max(N_min, floor(r_out·span / λ + 1/2))`` periods of a wavy arc of
     ``span`` rad, ``N_min`` 3 for ``count`` ≥ 2 arcs, else 1. Under the
     ceiling of the growth (``capped``, :func:`arc_grow`) the floor of the
     inner arc (``r_in_px``) yields: the period first, down to
     ``WAVE_CAPPED_MIN_PERIOD_PX`` (``N ≤ r_in·span / 3``), then the number,
     down to ``WAVE_CAPPED_MIN_PERIODS``."""
     least = WAVE_MIN_PERIODS if int(count or 0) >= 2 else 1
-    n = max(least, int(round(float(r_out_px) * float(span) / WAVE_PERIOD_PX)))
+    n = max(least, math.floor(float(r_out_px) * float(span) / WAVE_PERIOD_PX + 0.5))
     if capped and r_in_px is not None and least > 1:
         room = int(math.floor(float(r_in_px) * float(span) / WAVE_CAPPED_MIN_PERIOD_PX + 1e-9))
         n = max(WAVE_CAPPED_MIN_PERIODS, min(n, room))
@@ -426,7 +426,7 @@ def angle_marks(vertex, radii, start, span, flipped, decor: ArcDecor, unit, capp
                 k = arc.period_px / (ARC_DASH_PX[0] + ARC_DASH_PX[1])
                 on, off = ARC_DASH_PX[0] * k / unit, ARC_DASH_PX[1] * k / unit
                 arc.dash = dash_pattern(length, on, off, fit_ends=True)
-                arc.dashes = max(1, round((length + off) / (on + off))) if length > 0 else 1
+                arc.dashes = max(1, math.floor((length + off) / (on + off) + 0.5)) if length > 0 else 1
         out.arcs.append(arc)
     if decor.ticks > 0:
         k = decor.ticks

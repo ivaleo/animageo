@@ -377,3 +377,11 @@ def test_the_growth_stops_at_twice_the_original_and_the_floors_yield():
     arc = ms.angle_marks((0, 0), [34 / UNIT], 0.0, 0.05, False, ticked, UNIT, True).arcs[0]
     assert arc.dashes == 2
     assert ms.arc_grow(ArcDecor(style='dashed', arrow='both'), 6, 1.5, 1, 1.0) == (12, True)
+
+
+def test_exact_halves_round_up_like_math_round():
+    # JS Math.round(2.5) = 3 (Python round gives 2): the rules shared with the web
+    assert ms.wave_periods(15.0, 1.0, 1) == 3
+    assert ms.wave_periods(45.0, 1.0, 1) == 8
+    assert ms._fitted_dashes(20.0, 8.0) == 3        # (20 + 4) / 8 = 3 exactly; 2.5 below
+    assert ms._fitted_dashes(16.0, 8.0) == 3        # (16 + 4) / 8 = 2.5
