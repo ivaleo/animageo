@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Automatic label placement with `respect_current_position` no longer takes
+  the offset a point is born with (`[0.5, 0]`, to the right of the point) for
+  a position someone chose. An offset keeps its side only when an author set
+  it: in `elem.style`, in the style's `overlay` or `defaults`, or imported
+  from GeoGebra. Every other label is laid out fresh — outside the figure, on
+  the bisector of the widest gap between its lines — as a repeated placement
+  pass already did. One pass of `native.layout_labels` (a document frame with
+  pinned bounds, say) used to leave such labels to the right of their point,
+  often inside an angle of the figure.
+
 ## [1.14.0] - 2026-11-13
 
 ### Added
