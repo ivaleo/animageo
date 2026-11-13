@@ -2,7 +2,9 @@
 
 Precedence from low to high: ``+ -``, ``· /``, unary minus, ``^``
 (right-associative), atoms; a right operand of the same level keeps its
-parentheses, so the text reads back as the same tree.
+parentheses, so the text reads back as the same tree. Registry 1.10: a
+``pair`` prints ``(a, b)``, a ``call`` ``f(1)`` (the name of its item of
+``refs``); both are atoms.
 """
 from __future__ import annotations
 
@@ -39,6 +41,11 @@ def _text(node, names) -> str:
         return names[k] if k < len(names) else f'refs[{k}]'
     if 'fn' in node:
         return f"{node['fn']}({', '.join(_text(a, names) for a in node['args'])})"
+    if 'pair' in node:          # registry 1.10: a pair of numbers, a value of a function
+        return f"({_text(node['pair'][0], names)}, {_text(node['pair'][1], names)})"
+    if 'call' in node:
+        k = int(node['call'])
+        return f"{names[k] if k < len(names) else f'refs[{k}]'}({_text(node['args'][0], names)})"
     if 'var' in node:           # registry 1.6: the variable of a function
         return node['var']
     if 'if' in node:
