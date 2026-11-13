@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Label placement with `respect_current_position` and no authored label
+  offsets now gives exactly the layout of the flag being off; the flag alone
+  used to run the final clearance pass and shift some labels by a few pixels.
+
 ## [1.16.0] - 2026-11-13
 
 ### Added

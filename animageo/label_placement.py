@@ -3961,10 +3961,11 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
     # ``label_hint_px``: an explicit, non-locking desired position. A hinted
     # label gets its "home" from the hint (below) instead of from a manual/GGB
     # offset, and is respected even when ``respect_current_position`` is off —
-    # so every respect-driven stage runs for a scene that has a hint. Without
-    # any hint ``respect_any`` is just ``respect_current``.
+    # so every respect-driven stage runs for a scene that has a hint. Otherwise
+    # activate those stages only when an authored offset is accepted below:
+    # the flag alone must not change scoring or run the final clearance guard.
     hinted = any(lbl.hint is not None for lbl in labels)
-    respect_any = respect_current or hinted
+    respect_any = hinted
     if hinted:
         _apply_label_hints(scene, labels, segments, circles, arc_pts,
                            distance=distance, padding=padding,
@@ -4016,6 +4017,9 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
             mag = (float(off[0]) ** 2 + float(off[1]) ** 2) ** 0.5
             if mag < 1e-6:
                 continue  # a truly zero offset carries no direction information
+            # Small authored offsets carry a side preference even when they
+            # do not create a current_center pin; they still need respect.
+            respect_any = True
             # GGB semantics for imported point labels: the offset is relative to
             # the applet base (x + 4, y − 2·pointSize) up-right of the point,
             # and the renderer honours that base (part 1 of the TZ). The visual
