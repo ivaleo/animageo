@@ -14,7 +14,8 @@ path parameter — and nothing descriptive (phrases, checks, status, math)::
 
     signatureHash = "sha256:" + sha256(canonical({
         "op": op,
-        "inputs":  [{"slot", "type", "list": bool = false, "min": int | null, "vars"?: [str]}],  # vars only when set
+        "inputs":  [{"slot", "type", "list": bool = false, "min": int | null,
+                     "vars"?: [str], "result"?: str}],         # vars, result only when set
         "params":  [{"slot", "type", "unit": str | null}],   # optional/default are outside
         "outputs": [{"slot", "type", "repeat": str | null, "like"?: str}],  # like only when set
         "free": {...} | null,
@@ -38,6 +39,7 @@ from .canonical import sha256_of
 __all__ = [
     'REGISTRY_VERSION',
     'REPEAT_MAX',
+    'RESULT_TYPES',
     'FREE_INPUT_DEFAULTS',
     'free_slot',
     'repeat_count',
@@ -50,8 +52,10 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.9'
+REGISTRY_VERSION = '1.10'
 REPEAT_MAX = 100
+# Registry 1.10: the types a typed ``expr`` slot may declare as its ``result``.
+RESULT_TYPES = ('num', 'vec')
 # A free input of these kinds is optional: absent from ``inputs``, it takes this value.
 FREE_INPUT_DEFAULTS = {'angle': {'kind': 'angle', 'value': 0.0}}
 
@@ -128,6 +132,8 @@ def _input_signature(item: dict) -> dict:
     out = {'slot': item['slot'], 'type': item['type'], 'list': bool(item.get('list', False)), 'min': item.get('min')}
     if item.get('vars'):                       # registry 1.6: absent from older records, so their hashes stay
         out['vars'] = list(item['vars'])
+    if item.get('result') is not None:         # registry 1.10: a typed expression slot (num | vec)
+        out['result'] = item['result']
     return out
 
 
@@ -390,6 +396,7 @@ def registry_problems(reg: Registry | None = None) -> list:
         for item in record.get('inputs', []) + record.get('outputs', []):
             if item['type'] not in known_types:
                 problems.append(f"{op}: unknown type {item['type']!r} of slot {item['slot']!r}")
+        problems.extend(_result_problems(op, record))
         choices = record.get('inputSets')
         if choices is not None:
             slots = {item['slot'] for item in record.get('inputs', [])}
@@ -428,6 +435,24 @@ def _output_problems(op: str, record: dict) -> list:
         repeat = item.get('repeat')
         if repeat is not None and repeat not in params and repeat not in inputs:
             out.append(f"{op}: output {item['slot']!r} repeats by unknown slot {repeat!r}")
+    return out
+
+
+def _result_problems(op: str, record: dict) -> list:
+    """Registry 1.10: ``result`` (the type of a typed expression, ``num`` or
+    ``vec``) stands only on an input of type ``expr`` and never together
+    with ``vars``."""
+    out = []
+    for item in record.get('inputs', []):
+        if 'result' not in item:
+            continue
+        if item['type'] != 'expr':
+            out.append(f"{op}: input {item['slot']!r} has a result but is not an expr slot")
+        elif item['result'] not in RESULT_TYPES:
+            out.append(f"{op}: input {item['slot']!r} has the result {item['result']!r} "
+                       f"(one of {', '.join(RESULT_TYPES)})")
+        elif item.get('vars'):
+            out.append(f"{op}: input {item['slot']!r} has both vars and a result")
     return out
 
 

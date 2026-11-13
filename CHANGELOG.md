@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Operation registry 1.10: the family `operand` (`number`, `point`, `vector`,
+  `function`) and the optional key `result` (`"num"` or `"vec"`) of an `expr`
+  input, which declares a typed expression slot. `result` enters the
+  signature hash only when present, so the records of 1.0–1.9 and their
+  hashes stay unchanged; documents declaring registry 1.9 or older read and
+  evaluate as before. The registry check refuses a `result` on a slot that is
+  not `expr`, a value other than `num`/`vec` and a `result` next to `vars`.
+
 ## [1.14.0] - 2026-11-13
 
 ### Added
