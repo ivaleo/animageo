@@ -322,12 +322,14 @@ def _emit_heads(ctx: TikzContext, elem, tips) -> None:
 
 def _emit_chevrons(ctx: TikzContext, elem, mid, direction, ticks=True) -> None:
     """The chevrons of a parallel line (``mark_shapes.scene_chevrons``):
-    solid, butt, mitred, in the stroke of ``elem``."""
+    solid, butt, mitred, in the stroke of ``elem`` or that of the parallel
+    mark that gives them."""
     from ...mark_shapes import scene_chevrons
     chevrons = scene_chevrons(ctx.scene, elem, mid, direction, ctx.ptUnit_style, ticks=ticks)
     if not chevrons:
         return
-    opts = stroke_options(ctx, elem, with_dash=False, with_cap=False, extra=["line join=miter"])
+    opts = stroke_options(ctx, elem, with_dash=False, with_cap=False, extra=["line join=miter"],
+                          color_override=getattr(elem, '_native_parallel_stroke', None))
     for x0, y0, tx, ty, x1, y1 in chevrons:
         ctx.doc.line(f"\\draw[{opts}] {_coord(ctx, x0, y0)} -- {_coord(ctx, tx, ty)} -- {_coord(ctx, x1, y1)};")
 

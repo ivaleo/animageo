@@ -36,6 +36,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   segment between them. `load` checks the overrides `stroke`,
   `parallel_count` (0–3) and `parallel_direction` of the mark
   (`$defs/parallelMarkOverrides`). Parity scene `marks_parallel`.
+  A visible, defined parallel mark puts `parallel_count` and
+  `parallel_direction` on its targets — `backward` where a target runs
+  against the first one, so all the chevrons point the same way; the mark's
+  `parallel_direction: backward` turns them all, `parallel_size_px` and
+  `parallel_shift_px` go along, a target's own keys win; a target that
+  turns in an animation turns its chevrons in the frame. Its `stroke` is a
+  second decoration channel (`appearance_plan` → `parallelDecoration`
+  `{owner, stroke}`; `resolve_paint` and the render report →
+  `parallelDecoration` `{owner, color, count, sizePx, shiftPx, direction}`),
+  so one segment carries the ticks of an equality mark and the chevrons of a
+  parallel mark at once, each in its colour, in the renderer, TikZ and
+  JSXGraph. New `paint_marks` cases `mark_parallel_*` and
+  `mark_double_channel*`; `style_keys()` lists `mark.parallel`.
 - GGB import: `Intersect` of two conics, of a conic and a circle and of a
   conic and an arc, with or without the output number, becomes
   `intersect.conic_conic` with its slots bound by the saved values (DSL map

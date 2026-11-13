@@ -1072,6 +1072,29 @@ Marks (registry 1.3, `native.appearance_plan`):
 - a visible, defined right-angle mark gets `right_angle_marker = true`
   unless its `overrides` set it to `false` (an explicit `null` is the
   square too).
+- a visible, defined parallel mark (`mark.parallel`, registry 1.8) puts
+  `parallel_count = count` and `parallel_direction` on its targets (the
+  elements of its list, in order): the first target of a direction of
+  non-zero length is the reference, a target whose direction (`b − a` of a
+  segment or a vector, `dir` of a line or a ray) makes a negative dot
+  product with it gets `backward`, every other `forward`
+  (`kernel.ops.mark.parallel_directions`), so the chevrons of all the
+  targets point the same way on the sheet. The directions are those of the
+  values evaluated with the inputs of the frame (`resolve_paint` at `t`
+  recomputes them; the classic renderer keeps those of the load). The
+  mark's `overrides.parallel_direction: "backward"` turns them all;
+  `parallel_count` (0–3, `0` draws none), `parallel_size_px` and
+  `parallel_shift_px` go to the targets as the sizes of an equality mark; a
+  target's own `parallel_*` key wins; of several parallel marks on one
+  target the first in ID order wins a key. Its `stroke` colours only the
+  chevrons and lives in a second channel `parallelDecoration: {owner,
+  stroke}` beside `decoration`: one segment carries the ticks of an
+  equality mark and the chevrons of a parallel mark at once, each in its own
+  colour and owned by its own mark (an enter or exit effect of a mark is
+  drawn on its own decoration only). `resolve_paint` and the render report
+  give such a target `parallelDecoration: {owner, color, count, sizePx,
+  shiftPx, direction}`; the chevrons themselves stay in `parallel`. TikZ
+  and JSXGraph draw them in the colour of the channel;
 
 For several equality marks on a target, the first visible, defined mark in
 ID order owns the colour channel, even if it has no colour override (the
@@ -1082,7 +1105,8 @@ No style is written back into the document or the equality value. Marks
 remain decorations, while construction conditions remain `recipes/v1`.
 
 `appearance_plan` keeps the target's body `style` separate from
-`decoration: {owner, stroke, explicit}`. `stroke: null` means target stroke;
+`decoration: {owner, stroke, explicit}` (and `parallelDecoration: {owner,
+stroke}` of a parallel mark). `stroke: null` means target stroke;
 `explicit` means a colour or count override is present. The existing
 count/size keys remain in `style` for compatibility. The bridge keeps the
 colour channel outside the body's style resolver. With a new override an

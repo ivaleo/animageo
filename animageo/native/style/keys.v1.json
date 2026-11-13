@@ -880,6 +880,40 @@
     "tick_width_px"
    ]
   },
+  "mark.parallel": {
+   "style": null,
+   "keys": {
+    "parallel_count": {
+     "unit": "count",
+     "default": null,
+     "values": [
+      0,
+      1,
+      2,
+      3
+     ]
+    },
+    "parallel_direction": {
+     "unit": "enum",
+     "default": null,
+     "values": [
+      "forward",
+      "backward"
+     ]
+    },
+    "stroke": {
+     "unit": "color",
+     "default": null
+    }
+   },
+   "transfers": [
+    "parallel_count",
+    "parallel_direction",
+    "parallel_shift_px",
+    "parallel_size_px",
+    "stroke"
+   ]
+  },
   "mark.right_angle": {
    "style": "angle",
    "keys": {

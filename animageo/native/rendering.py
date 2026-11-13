@@ -149,12 +149,15 @@ def _finite_pair(value) -> bool:
 
 
 EQUALITY_MARKS = ('mark.equal_segments', 'mark.equal_angles')
+# the marks drawn by their targets: the equality marks, the parallel mark (registry 1.8)
+TARGET_MARKS = EQUALITY_MARKS + ('mark.parallel',)
 
 
 def mark_targets(doc) -> dict:
-    """``{markId: [targetId, …]}`` of the elements bound to an equality mark
-    (``mark.equal_segments``, ``mark.equal_angles``): the elements of its list
-    argument in order (a right-angle mark draws itself and is not listed)."""
+    """``{markId: [targetId, …]}`` of the elements bound to a mark its
+    targets draw (``mark.equal_segments``, ``mark.equal_angles``,
+    ``mark.parallel``): the elements of its list argument in order (a
+    right-angle mark draws itself and is not listed)."""
     from .document import bound_producer, iter_refs
     doc = as_document(doc)
     out = {}
@@ -163,7 +166,7 @@ def mark_targets(doc) -> dict:
             continue
         producer = bound_producer(doc, el_id)
         op = doc.operations.get(producer) if producer is not None else None
-        if op is None or op.get('op') not in EQUALITY_MARKS:
+        if op is None or op.get('op') not in TARGET_MARKS:
             continue
         out[el_id] = [r for arg in op.get('args', {}).values() if isinstance(arg, dict) and arg.get('kind') == 'list'
                       for r in iter_refs(arg) if r in doc.elements]
@@ -214,6 +217,15 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
     This is the static drawing; the frame of a timeline puts on the targets
     the keys of the marks in that frame (1.11.0rc5, ``docs/native/timeline.md`` §3).
 
+    A parallel mark (registry 1.8) puts ``parallel_count = count`` and
+    ``parallel_direction`` on its targets — ``backward`` where a target
+    runs against the first one (``kernel.ops.mark.parallel_directions``
+    over the values at ``inputs``), the mark's own ``parallel_direction:
+    backward`` turning them all — and its ``parallel_*`` overrides the same
+    way; its ``stroke`` goes to a second channel ``parallelDecoration``
+    (owner, stroke), so a target carries the ticks of an equality mark and
+    the chevrons of a parallel mark at once.
+
     An override the element does not read (:func:`~animageo.native.paint.style_keys`)
     is applied and reported as ``style_key_ineffective`` with ``reason``
     ``not_read``, ``not_drawn`` or ``mark_transfers_only``
@@ -226,13 +238,14 @@ def appearance_plan(doc, unit: float, *, inputs=None, evaluated=None, roles=None
 
 
 def _mark_style(decorations, present) -> tuple:
-    """``({targetId: {key: value}}, {targetId: markId})`` — the keys the
-    equality marks ``present`` put on their targets, composed as
+    """``({targetId: {key: value}}, {targetId: markId}, {targetId: markId})``
+    — the keys the marks ``present`` put on their targets, composed as
     :func:`appearance_plan` composes them (the first mark in ID order wins a
-    key), and the mark whose ``tick_count`` each target draws. Internal
-    ``_mark_*`` keys go to decoration attributes, not element style.
+    key), the mark whose ``tick_count`` each target draws and the mark whose
+    ``parallel_count`` (the chevrons) it draws. Internal ``_mark_*`` and
+    ``_parallel_*`` keys go to decoration attributes, not element style.
     ``decorations`` — those of :func:`_appearance_plan`."""
-    keys, owner = {}, {}
+    keys, owner, parallel = {}, {}, {}
     for mark_id, targets, _applied in decorations:
         if mark_id not in present:
             continue
@@ -242,12 +255,25 @@ def _mark_style(decorations, present) -> tuple:
                 slot.setdefault(key, value)
             if 'tick_count' in style:
                 owner.setdefault(target, mark_id)
-    return keys, owner
+            if 'parallel_count' in style:
+                parallel.setdefault(target, mark_id)
+    return keys, owner, parallel
 
 
-# Internal decoration channels never enter the body's style resolver.
+# Internal decoration channels never enter the body's style resolver: the
+# ticks of an equality mark (``decoration``) and the chevrons of a parallel
+# mark (``parallelDecoration``).
 _MARK_ATTRIBUTES = {'_mark_stroke': '_native_mark_stroke', '_mark_id': '_native_mark_id',
-                    '_mark_explicit': '_native_mark_explicit'}
+                    '_mark_explicit': '_native_mark_explicit',
+                    '_parallel_stroke': '_native_parallel_stroke', '_parallel_id': '_native_parallel_id',
+                    '_parallel_turned': '_native_parallel_turned'}
+# a key of ``_MARK_ATTRIBUTES`` → (plan entry, its field); ``_parallel_turned``
+# (the mark's ``parallel_direction: backward``) stays with the scene, which
+# turns the chevrons as its targets turn (``AnimaGeoScene._turn_chevrons``)
+_CHANNEL_FIELDS = {'_mark_stroke': ('decoration', 'stroke'), '_mark_id': ('decoration', 'owner'),
+                   '_mark_explicit': ('decoration', 'explicit'),
+                   '_parallel_stroke': ('parallelDecoration', 'stroke'),
+                   '_parallel_id': ('parallelDecoration', 'owner')}
 
 
 def _write_mark_key(elem, key, value, *, remove=False):
@@ -269,7 +295,7 @@ def _mark_count(doc, mark_id, record):
     producer = bound_producer(doc, mark_id)
     arg = doc.operations[producer].get('args', {}).get('count') if producer is not None else None
     if arg is None:
-        return 1  # both equality operations default to one, also before they become defined
+        return 1  # the equality and parallel operations default to one, also before they become defined
     value = arg.get('value') if isinstance(arg, dict) and arg.get('kind') == 'number' else None
     return int(value) if isinstance(value, (int, float)) and value in COUNTS else None
 
@@ -374,29 +400,42 @@ def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> t
             count = _mark_count(doc, mark_id, record)
             if count is None:
                 continue
-            mark_counts[mark_id] = count
+            mark_type = style_type_of(doc, mark_id)
+            if mark_type != 'mark.parallel':
+                mark_counts[mark_id] = count
             entry = appearance.get(mark_id)
             overrides = entry.get('overrides') if isinstance(entry, dict) else None
-            passed = {key: overrides[key] for key in MARK_TRANSFERS.get(style_type_of(doc, mark_id), ())
+            passed = {key: overrides[key] for key in MARK_TRANSFERS.get(mark_type, ())
                       if isinstance(overrides, dict) and key in overrides}
             # A missing stroke occupies the channel too: a later mark must
             # not colour the first mark's ticks. Target stroke is the fallback.
             stroke = passed.pop('stroke', None)
-            # Only a drawn count is explicit: a colour alone keeps the square of a right angle.
-            explicit = isinstance(overrides, dict) and 'tick_count' in overrides
-            keys = {'tick_count': count, **dict(sorted(passed.items()))}
-            keys.update(_mark_stroke=stroke, _mark_id=mark_id, _mark_explicit=explicit)
+            if mark_type == 'mark.parallel':
+                turned = passed.pop('parallel_direction', 'forward') == 'backward'
+                directions = _parallel_directions(evaluated, targets[mark_id], turned)
+                per_target = {target: {'parallel_count': count, 'parallel_direction': directions[i],
+                                       **dict(sorted(passed.items())),
+                                       '_parallel_stroke': stroke, '_parallel_id': mark_id,
+                                       '_parallel_turned': turned}
+                              for i, target in enumerate(targets[mark_id])}
+            else:
+                # Only a drawn count is explicit: a colour alone keeps the square of a right angle.
+                explicit = isinstance(overrides, dict) and 'tick_count' in overrides
+                keys = {'tick_count': count, **dict(sorted(passed.items()))}
+                keys.update(_mark_stroke=stroke, _mark_id=mark_id, _mark_explicit=explicit)
+                per_target = {target: keys for target in targets[mark_id]}
             decorations.append((mark_id, {target: {k: v for k, v in keys.items() if k not in own[target]}
-                                          for target in targets[mark_id]},
+                                          for target, keys in per_target.items()},
                                 defined and plan[mark_id]['visible']))
-        style, _owner = _mark_style(decorations, {mark_id for mark_id, _t, applied in decorations if applied})
+        style, _owner, _parallel = _mark_style(decorations,
+                                               {mark_id for mark_id, _t, applied in decorations if applied})
         for target, keys in style.items():
             for key, value in keys.items():
-                if key in _MARK_ATTRIBUTES:
-                    plan[target].setdefault('decoration', {})[key.removeprefix('_mark_')] = value
-                else:
+                if key in _CHANNEL_FIELDS:
+                    channel, field = _CHANNEL_FIELDS[key]
+                    plan[target].setdefault(channel, {})[field] = value
+                elif key not in _MARK_ATTRIBUTES:
                     plan[target]['style'].setdefault(key, value)
-            plan[target]['decoration']['owner'] = plan[target]['decoration'].pop('id')
     for el_id, key, style_type, given in shifts:
         reason = ineffective_reason(style_type, key, given,
                                     arc_count=_arc_count(plan, el_id, style_type, given, mark_counts))
@@ -404,6 +443,20 @@ def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> t
             diagnostics.append({'code': 'style_key_ineffective', 'elementId': el_id, 'key': key,
                                 'type': style_type, 'reason': reason})
     return plan, diagnostics, decorations
+
+
+def _parallel_directions(evaluated, targets, turned) -> list:
+    """``parallel_direction`` of each target of a parallel mark: against
+    the first target of a direction — ``backward`` (all turned with
+    ``turned``)."""
+    from .kernel.ops.mark import parallel_directions
+    items = []
+    for target in targets:
+        record = evaluated.elements.get(target, {})
+        defined = record.get('state') == 'defined' and record.get('type') in ('line', 'segment', 'ray', 'vector')
+        items.append((record.get('type'), record['value'] if defined else None))
+    flip = {'forward': 'backward', 'backward': 'forward'}
+    return [flip[d] if turned else d for d in parallel_directions(items)]
 
 
 def _arc_count(plan, el_id, style_type, given, mark_counts):
@@ -435,10 +488,8 @@ def apply_appearance(construction, names, plan) -> None:
             elem.visible = entry['visible']
         for key, value in entry['style'].items():
             elem.style[key] = value
-        decoration = entry.get('decoration', {})
-        for key, attr in _MARK_ATTRIBUTES.items():
-            field = 'owner' if key == '_mark_id' else key.removeprefix('_mark_')
-            setattr(elem, attr, decoration.get(field))
+        for key, (channel, field) in _CHANNEL_FIELDS.items():
+            setattr(elem, _MARK_ATTRIBUTES[key], entry.get(channel, {}).get(field))
         if not isinstance(elem, geo.Element) or not geo.is_drawn(elem.data):
             elem.style['label_visible'] = False
 
@@ -958,7 +1009,7 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
     """The ``animageo-render-report/v1`` of a scene loaded by ``loadDocument``."""
     from .. import __version__
     from .kernel.evaluate import evaluate
-    from .paint import _scene_decoration, style_type_of
+    from .paint import _scene_decoration, _scene_parallel_decoration, style_type_of
     from .registry import REGISTRY_VERSION
 
     doc = as_document(doc)
@@ -986,6 +1037,9 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
             decoration = _scene_decoration(scene, elem, style_type_of(doc, el_id))
             if decoration is not None:
                 record['decoration'] = decoration
+            decoration = _scene_parallel_decoration(scene, elem, style_type_of(doc, el_id))
+            if decoration is not None:
+                record['parallelDecoration'] = decoration
             box = _leaf_boxes(mobj, labels=False)
             if states[el_id]['state'] == 'defined' and states[el_id]['type'] == 'locus':
                 box = _locus_box(states[el_id]['value'])

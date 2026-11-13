@@ -109,6 +109,8 @@ _TYPES = {
     'text': ('text', ('label_color', 'font_size_px', 'z_index') + _HALO),
     'mark.equal_segments': (None, ('stroke', 'tick_count')),
     'mark.equal_angles': (None, ('stroke', 'tick_count')),
+    # registry 1.8: the chevrons of its targets
+    'mark.parallel': (None, ('stroke', 'parallel_count', 'parallel_direction')),
     'number': (None, ()),
     'expr': (None, ()),
     'template': (None, ()),
@@ -123,6 +125,9 @@ MARK_TRANSFERS = {
                             'tick_style', 'tick_width_px'),
     'mark.equal_angles': ('stroke', 'tick_count', 'arc_shift_px', 'arc_size_px', 'arc_style', 'arc_tick_count',
                           'tick_length_px', 'tick_shift_px'),
+    # registry 1.8: the chevrons, a channel of their own (``parallelDecoration``);
+    # ``parallel_direction`` turns those of every target (relative to the first)
+    'mark.parallel': ('stroke', 'parallel_count', 'parallel_direction', 'parallel_shift_px', 'parallel_size_px'),
 }
 
 # Defaults the built-in style leaves to the renderer (``_build_render_ctx``,
@@ -672,6 +677,22 @@ def _decoration(final, elem, type_, unit, value, stroke_color):
     return out
 
 
+def _parallel_decoration(elem, value, stroke_color):
+    """The chevrons a parallel mark gives (registry 1.8), shared by paint and
+    rendered-frame reports: its document-ID ``owner``, the actual ``color``
+    (the mark's stroke, else the target's), the ``count``, ``sizePx``,
+    ``shiftPx`` and the ``direction`` drawn; ``None`` when no parallel mark
+    owns the chevrons of ``elem``."""
+    from ..mark_shapes import parallel_decor
+    owner = getattr(elem, '_native_parallel_id', None)
+    if owner is None:
+        return None
+    decor = parallel_decor(value)
+    return {'owner': owner, 'color': _color(getattr(elem, '_native_parallel_stroke', None) or stroke_color),
+            'count': decor.count, 'sizePx': _r(decor.size_px), 'shiftPx': _r(decor.shift_px),
+            'direction': decor.direction}
+
+
 def _scene_decoration(scene, elem, type_):
     """Resolve a rendered scene through the same lazy classic boundary as paint."""
     from ..label_placement import _style_ptUnit
@@ -681,6 +702,18 @@ def _scene_decoration(scene, elem, type_):
         return resolve(scene, elem, key, default=default)
 
     return _decoration(scene, elem, type_, _style_ptUnit(scene.style), value, value('stroke', scene.style.strong))
+
+
+def _scene_parallel_decoration(scene, elem, type_):
+    """:func:`_parallel_decoration` of a rendered scene."""
+    from ..style.resolver import resolve
+
+    def value(key, default=None):
+        return resolve(scene, elem, key, default=default)
+
+    if type_ not in ('segment', 'vector', 'line', 'ray'):
+        return None
+    return _parallel_decoration(elem, value, value('stroke', scene.style.strong))
 
 
 def _value_format(final, value):
@@ -759,7 +792,10 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
     ``{precision, stripZeros, separator, angleUnit}``.
     Equality targets also have ``decoration``: its document-ID ``owner``,
     actual ``color``, ``count`` and sizes in style pixels,
-    separately from the target's ``stroke`` and ``fill``.
+    separately from the target's ``stroke`` and ``fill``. The targets of a
+    parallel mark (registry 1.8) have ``parallelDecoration`` ``{owner,
+    color, count, sizePx, shiftPx, direction}`` beside ``parallel`` (the
+    chevrons drawn), a channel of its own.
     """
     from types import SimpleNamespace
 
@@ -935,6 +971,9 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             parallel = _parallel(final, elem, style_type, data, value, unit)
             if parallel is not None:
                 entry['parallel'] = parallel
+            parallel = _parallel_decoration(elem, value, entry.get('stroke', {}).get('color'))
+            if parallel is not None:
+                entry['parallelDecoration'] = parallel
         if style_type in ('segment', 'vector'):
             entry['ticks'] = _ticks(style_type, data, unit, value)
         if style_type in ('angle', 'mark.right_angle'):

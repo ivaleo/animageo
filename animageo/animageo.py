@@ -449,7 +449,9 @@ class AnimaGeoScene(MovingCameraScene):
     # its targets (``tick_count`` and the keys of ``MARK_TRANSFERS``). They
     # belong to the mark in time: the targets carry them while the mark is
     # in the frame (visible, defined, its effect begun and not done), and
-    # the enter/exit effect of the mark is drawn on them.
+    # the enter/exit effect of the mark is drawn on them. A parallel mark
+    # (``mark.parallel``, registry 1.8) is drawn the same way by the
+    # chevrons of its targets (``parallel_count``), a channel of its own.
 
     def _reset_mark_decorations(self):
         # [(mark, {target: {key: value}})] in mark ID order; the keys the
@@ -460,6 +462,7 @@ class AnimaGeoScene(MovingCameraScene):
         self._mark_targets = {}
         self._mark_applied = {}
         self._mark_owner = {}
+        self._parallel_owner = {}
         self._marks_absent = frozenset()
 
     def _init_mark_decorations(self, names, decorations):
@@ -471,7 +474,7 @@ class AnimaGeoScene(MovingCameraScene):
                             for mark, targets, _applied in decorations]
         self._mark_targets = {mark: tuple(targets) for mark, targets in self._mark_decor}
         applied = {by_id[mark] for mark, _targets, ok in decorations if ok}
-        self._mark_applied, self._mark_owner = _mark_style(
+        self._mark_applied, self._mark_owner, self._parallel_owner = _mark_style(
             [(mark, targets, None) for mark, targets in self._mark_decor], applied)
 
     def _sync_mark_decorations(self):
@@ -485,7 +488,9 @@ class AnimaGeoScene(MovingCameraScene):
             if (elem is not None and getattr(elem, 'visible', True) and isinstance(elem.data, NativeMark)
                     and mark not in self._marks_absent):
                 present.add(mark)
-        desired, owner = _mark_style([(mark, targets, None) for mark, targets in self._mark_decor], present)
+        desired, owner, parallel = _mark_style([(mark, targets, None) for mark, targets in self._mark_decor],
+                                               present)
+        self._turn_chevrons(desired, present)
         changed = set()
         for target in set(desired) | set(self._mark_applied):
             want, have = desired.get(target, {}), self._mark_applied.get(target, {})
@@ -499,8 +504,35 @@ class AnimaGeoScene(MovingCameraScene):
                 for key, value in want.items():
                     _write_mark_key(elem, key, value)
             changed.add(target)
-        self._mark_applied, self._mark_owner = desired, owner
+        self._mark_applied, self._mark_owner, self._parallel_owner = desired, owner, parallel
         return changed
+
+    def _turn_chevrons(self, desired, present):
+        """The ``parallel_direction`` each parallel mark of ``present`` puts
+        on its targets, for their geometry now: the plan has it for the
+        loaded inputs, a target turns as its points move
+        (``mark.parallel_directions``; the first mark in ID order wins)."""
+        from .geo.lib_elements import Line, Segment, Vector
+        from .native.kernel.ops.mark import parallel_directions
+
+        def item(name):
+            data = getattr(self.geo.element(name), 'data', None)
+            if isinstance(data, (Segment, Vector)):
+                return 'segment', {'a': data.endpoints[0], 'b': data.endpoints[1]}
+            if isinstance(data, Line):              # a ray too
+                return 'line', {'dir': data.direction}
+            return None, None
+
+        flip = {'forward': 'backward', 'backward': 'forward'}
+        done = set()
+        for mark, targets in self._mark_decor:
+            if mark not in present or not any('_parallel_turned' in keys for keys in targets.values()):
+                continue
+            natural = parallel_directions([item(name) for name in targets])
+            for (name, keys), d in zip(targets.items(), natural):
+                if 'parallel_direction' in keys and name not in done:
+                    done.add(name)
+                    desired[name]['parallel_direction'] = flip[d] if keys['_parallel_turned'] else d
 
     def _mark_decoration_groups(self, mark):
         """The decorations of ``mark`` in the frame, one ``VGroup`` per
@@ -510,7 +542,7 @@ class AnimaGeoScene(MovingCameraScene):
             return None
         groups = []
         for target in targets:
-            if self._mark_owner.get(target) != mark:
+            if mark not in (self._mark_owner.get(target), self._parallel_owner.get(target)):
                 continue
             mobj = self.mobject(target)
             if mobj is None:
@@ -3544,6 +3576,9 @@ class AnimaGeoScene(MovingCameraScene):
         # (arcs of an angle) it draws without it (1.11.0rc5)
         mark = self._mark_owner.get(elem.name)
         tick_color = getattr(elem, '_native_mark_stroke', None) or col_s
+        # the parallel mark whose chevrons the element draws (registry 1.8)
+        parallel_mark = self._parallel_owner.get(elem.name)
+        chevron_color = getattr(elem, '_native_parallel_stroke', None) or col_s
         mark_explicit = bool(getattr(elem, '_native_mark_explicit', False))
         own_ticks = tick_count
         if mark is not None and 'tick_count' in elem.style:
@@ -3617,6 +3652,7 @@ class AnimaGeoScene(MovingCameraScene):
             arrow_height=arrow_h_mu,
             tick_count=tick_count,
             mark=mark, own_ticks=own_ticks, tick_color=tick_color, mark_explicit=mark_explicit,
+            parallel_mark=parallel_mark, chevron_color=chevron_color,
             tick_style=tick_style,
             tick_radius_px=tick_radius_px,
             angle_range=angle_range,
@@ -4067,13 +4103,16 @@ class AnimaGeoScene(MovingCameraScene):
         ``mark_shapes.chevrons``): around ``mid`` (past the ticks of the
         element, ``ticks`` — it draws them), pointing along ``direction``
         (turned by ``parallel_direction``), solid, in the stroke of the
-        element."""
+        element or that of the parallel mark that gives them (tagged with
+        it)."""
         from .mark_shapes import scene_chevrons
         for x0, y0, tx, ty, x1, y1 in scene_chevrons(self, elem, mid, direction, ctx.ptUnit_style, ticks=ticks):
-            vm = VMobject(color=ctx.col_s, fill_opacity=0, stroke_width=ctx.lw, stroke_opacity=ctx.op_s,
+            vm = VMobject(color=ctx.chevron_color, fill_opacity=0, stroke_width=ctx.lw, stroke_opacity=ctx.op_s,
                           joint_type=LineJointType.MITER)
             vm.set_points_as_corners([[x0, y0, 0], [tx, ty, 0], [x1, y1, 0]])
             vm.cap_style = CapStyleType.BUTT
+            if ctx.parallel_mark is not None:
+                vm._animageo_mark = ctx.parallel_mark
             arr.append(vm.set_z_index(ctx.zz))
 
     def _append_tick_marks(self, arr, p1, p2, m, normal, ctx):

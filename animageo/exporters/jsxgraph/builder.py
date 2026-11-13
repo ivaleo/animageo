@@ -686,7 +686,8 @@ def _emit_live_chevrons(ctx, name, parents, elem, create, model) -> bool:
     """The chevrons of a parallel segment or vector (``parallel_count``,
     1.13.0), live like its ticks: hidden function-points (offsets in pixels
     from the middle, past the ticks — ``mark_shapes.chevrons``) joined by
-    short segments in the stroke of the element."""
+    short segments in the stroke of the element or of the parallel mark that
+    gives them."""
     from ...mark_shapes import chevron_center, chevrons, scene_parallel_decor
     decor = scene_parallel_decor(ctx.scene, elem)
     refs = [p for p in parents if isinstance(p, str) and p.startswith("S[")]
@@ -702,7 +703,8 @@ def _emit_live_chevrons(ctx, name, parents, elem, create, model) -> bool:
             return 0.0
     center = chevron_center((0.0, 0.0), (1.0, 0.0), decor, 1.0, tick_count=int(value("tick_count")),
                             tick_shift_px=value("tick_shift_px"), tick_width_px=value("tick_width_px"))
-    attrs = {"strokeColor": _hex(ctx.resolve(elem, "stroke", default="#000000")), "highlight": False,
+    color = getattr(elem, "_native_parallel_stroke", None) or ctx.resolve(elem, "stroke", default="#000000")
+    attrs = {"strokeColor": _hex(color), "highlight": False,
              "fixed": True, "withLabel": False, "layer": 8}
     try:
         attrs["strokeWidth"] = float(ctx.resolve(elem, "stroke_width_px", default=1.0))
@@ -827,7 +829,8 @@ def _emit_static_marks(ctx, elem, decorated, create, model) -> None:
     polys = [[(c[0], c[1]), (c[2], c[3]), (c[4], c[5])]
              for c in scene_chevrons(ctx.scene, elem, mid, direction, unit, ticks=ticks)]
     if polys:
-        attrs = _decoration_attrs(ctx, elem, ctx.resolve(elem, "stroke", default="#000000"))
+        color = getattr(elem, "_native_parallel_stroke", None) or ctx.resolve(elem, "stroke", default="#000000")
+        attrs = _decoration_attrs(ctx, elem, color)
         create(f"__parallel_{name}", "curve", _polylines_parents(ctx, polys), attrs)
         model.coverage.append((f"__parallel_{name}", "static", f"static decoration: chevrons of {name}"))
 

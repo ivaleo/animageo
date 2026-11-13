@@ -112,6 +112,9 @@ class _Doc:
         return self.op('mark.equal_angles', {'angles': _refs(*angles), 'count': _num(count)},
                        [('mark', el_id, 'mark')])
 
+    def parallel(self, el_id, *lines, count=1):
+        return self.op('mark.parallel', {'lines': _refs(*lines), 'count': _num(count)}, [('mark', el_id, 'mark')])
+
     def text(self, el_id, template, anchor, *refs):
         return self.op('text.free', {'text': {'kind': 'template', 'value': template}, 'anchor': _ref(anchor),
                                      'refs': _refs(*refs)}, [('text', el_id, 'text')])
@@ -585,6 +588,43 @@ def _marks():
     d.overrides('flat', arc_style='wave', arc_tick_count=2, arrow_head='end')
     d.angle('alpha', 'B', 'A', 'C').overrides('alpha', tick_count=0, arc_style='wave', arc_tick_count=2)
     out.append(('degenerate', d, None))
+    # registry 1.8: mark.parallel — chevrons on its targets, the second of them
+    # (DC runs against AB) turned backward; a second decoration channel
+    def trapezoid(doc_id):
+        d = _Doc(doc_id).free('A', 0, 0).free('B', 4, 0).free('C', 3, 2.5).free('D', 1, 2.5)
+        return d.segment('s', 'A', 'B').segment('t', 'D', 'C').segment('u', 'C', 'D')
+    d = trapezoid('mark_parallel_pair').parallel('p', 's', 'u', count=2)
+    out.append(('mark_parallel_pair', d, None))
+    d = trapezoid('mark_parallel_turned').parallel('p', 's', 'u', 't')
+    d.overrides('p', stroke='#2e7d32', parallel_direction='backward', parallel_size_px=10, parallel_shift_px=4)
+    out.append(('mark_parallel_turned', d, None))
+    d = trapezoid('mark_parallel_own_wins').parallel('p', 's', 'u', count=2)
+    d.overrides('p', parallel_count=3).overrides('u', parallel_count=1, parallel_direction='forward')
+    out.append(('mark_parallel_own_wins', d, None))
+    d = trapezoid('mark_parallel_lines').line('l', 'A', 'D').vector('v', 'B', 'C').ray('r', 'C', 'D')
+    d.parallel('p', 's', 'r', count=3).parallel('q', 'l', 'v').overrides('q', parallel_count=0)
+    out.append(('mark_parallel_lines', d, None))
+    d = trapezoid('mark_parallel_hidden').parallel('p', 's', 'u').look('p', visible=False)
+    out.append(('mark_parallel_hidden', d, None))
+    d = trapezoid('mark_parallel_side').op('polygon.by_points', {'vertices': _refs('A', 'B', 'C', 'D')},
+                                           [('polygon', 'T', 'polygon'), ('side.1', 'T1', 'segment'),
+                                            ('side.3', 'T3', 'segment')])
+    d.parallel('p', 'T1', 'T3', count=2)
+    out.append(('mark_parallel_side', d, None))
+    d = trapezoid('mark_double_channel').equal_segments('m', 's', 'u', count=2).parallel('p', 's', 'u')
+    d.overrides('m', stroke='#9933cc').overrides('p', stroke='#2e7d32', parallel_count=2)
+    out.append(('mark_double_channel', d, None))
+    d = trapezoid('mark_double_channel_two_parallel').equal_segments('m', 's', 't').parallel('p', 's', 't')
+    d.parallel('q', 't', 'u').overrides('q', stroke='#d05456', parallel_count=3)
+    out.append(('mark_double_channel_two_parallel', d, None))
+    # in time: C runs past D, so u turns; the mark is hidden in [0, 1)
+    d = trapezoid('mark_parallel_time').parallel('p', 's', 'u').overrides('p', stroke='#2e7d32')
+    timeline = {'version': 2, 'keyframes': [
+        {'t': 0, 'visible': {'p': False}},
+        {'t': 1, 'visible': {'p': True}},
+        {'t': 2, 'values': {'C': [-1, 2.5]}, 'easing': 'linear'},
+    ]}
+    out += [(f'mark_parallel_time_{t}', d, None, timeline, t) for t in (0, 1, 2)]
     return out
 
 
