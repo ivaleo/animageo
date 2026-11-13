@@ -41,3 +41,20 @@ class Doc(DocBuilder):
         slots = slots if slots is not None else range(1, (count or 3) + 1)
         return self.op('op_result', 'function.' + name, args,
                        [(f'{base}.{k}', f'P{k}', 'point') for k in slots])
+
+    def near(self, start=0):
+        arg = ref(start) if isinstance(start, str) else num(start)
+        return self.op('op_result', 'function.root_near', {'function': ref('f'), 'start': arg},
+                       [('root', 'P', 'point')])
+
+    def interval(self, name='roots_interval', a=-2, b=2, count=3, slots=None):
+        arg = lambda v: ref(v) if isinstance(v, str) else num(v)
+        args = {'function': ref('f'), 'a': arg(a), 'b': arg(b)}
+        if name == 'root_interval':
+            return self.op('op_result', 'function.' + name, args, [('root', 'P', 'point')])
+        base = 'extremum' if name == 'extrema_interval' else 'root'
+        if count is not None:
+            args['count'] = num(count)
+        slots = slots if slots is not None else range(1, (count or 3) + 1)
+        return self.op('op_result', 'function.' + name, args,
+                       [(f'{base}.{k}', f'P{k}', 'point') for k in slots])

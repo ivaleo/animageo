@@ -152,5 +152,233 @@
     },
     "math": "docs/native/ops/function.value.md",
     "signatureHash": "sha256:bccba90ed68fd210201146cac35d1e6fe98b7bfe4c88c687f10fc63561b77b92"
+  },
+  {
+    "op": "function.root_near",
+    "status": "beta",
+    "since": "1.11",
+    "moduleGroup": "function_analysis",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      },
+      {
+        "slot": "start",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "root",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "coincident",
+      "no_root",
+      "no_convergence",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_graph",
+        "text": "largest normal distance |y-f(x)| / max(1, |slope(x)|) of the defined outputs"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "function_root_near",
+    "phrases": {
+      "ru": "{root} — корень функции {function} по начальному приближению {start}"
+    },
+    "math": "docs/native/ops/function.root_near.md",
+    "signatureHash": "sha256:ea32e777c720b59db5426e18b35c29fe278548e526442ab27559b518e5e1080d"
+  },
+  {
+    "op": "function.root_interval",
+    "status": "beta",
+    "since": "1.11",
+    "moduleGroup": "function_analysis",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      },
+      {
+        "slot": "a",
+        "type": "number"
+      },
+      {
+        "slot": "b",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "root",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "empty_range",
+      "coincident",
+      "no_root",
+      "no_convergence",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_graph",
+        "text": "largest normal distance |y-f(x)| / max(1, |slope(x)|) of the defined outputs"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "function_root_interval",
+    "phrases": {
+      "ru": "{root} — корень функции {function} на промежутке от {a} до {b}"
+    },
+    "math": "docs/native/ops/function.root_interval.md",
+    "signatureHash": "sha256:a3d2a23f20b3069c2c5bc2f379f73394618e55eac8264736c6750419029cee65"
+  },
+  {
+    "op": "function.roots_interval",
+    "status": "beta",
+    "since": "1.11",
+    "moduleGroup": "function_analysis",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      },
+      {
+        "slot": "a",
+        "type": "number"
+      },
+      {
+        "slot": "b",
+        "type": "number"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 100,
+        "text": "capacity of the fixed output slots, an integer from 1 to 100"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "root",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "branch": {
+      "policy": "distinct_roots_ascending",
+      "slots": [
+        "root"
+      ],
+      "text": "distinct solutions ordered by ascending x"
+    },
+    "undefined": [
+      "empty_range",
+      "coincident",
+      "no_root",
+      "branch_absent",
+      "no_convergence",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_graph",
+        "text": "largest normal distance |y-f(x)| / max(1, |slope(x)|) of the defined outputs"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "function_roots_interval",
+    "phrases": {
+      "ru": "{root} — найденные корни функции {function} на промежутке от {a} до {b}"
+    },
+    "math": "docs/native/ops/function.roots_interval.md",
+    "signatureHash": "sha256:3e4737bd58cddf99b59cc7aca49a8058be376a9c67da5001a44290b7d58d42c8"
+  },
+  {
+    "op": "function.extrema_interval",
+    "status": "beta",
+    "since": "1.11",
+    "moduleGroup": "function_analysis",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      },
+      {
+        "slot": "a",
+        "type": "number"
+      },
+      {
+        "slot": "b",
+        "type": "number"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 100,
+        "text": "capacity of the fixed output slots, an integer from 1 to 100"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "extremum",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "branch": {
+      "policy": "distinct_roots_ascending",
+      "slots": [
+        "extremum"
+      ],
+      "text": "distinct solutions ordered by ascending x"
+    },
+    "undefined": [
+      "empty_range",
+      "no_extremum",
+      "branch_absent",
+      "no_convergence",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_graph",
+        "text": "largest |y-f(x)| of the defined outputs"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "function_extrema_interval",
+    "phrases": {
+      "ru": "{extremum} — найденные локальные экстремумы функции {function} между {a} и {b}"
+    },
+    "math": "docs/native/ops/function.extrema_interval.md",
+    "signatureHash": "sha256:0137342756a2eaae32ce40ae8482fd6d585d51fcf22902197550515ab187be53"
   }
 ]

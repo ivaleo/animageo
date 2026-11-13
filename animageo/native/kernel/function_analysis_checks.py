@@ -8,20 +8,13 @@ import math
 from ..registry import registry
 from .checks import register_check
 from .function import evaluator
-from .function_analysis import AnalysisError, Budget, coefficients, derivative
+from .function_analysis_numeric import derivative_at
 from .values import Undefined
 
 
 def _slope(value, x):
-    """Analytic polynomial derivative, or None when it is not finite."""
-    try:
-        dc = derivative(coefficients(value, Budget()))
-        slope = 0.0
-        for ci in reversed(dc):
-            slope = slope * x + ci
-        return slope if math.isfinite(slope) else None
-    except AnalysisError:
-        return None
+    """A finite analytic AST derivative, or None at a cusp/domain boundary."""
+    return derivative_at(value, x)
 
 
 def _secant(y, fx, dx):
@@ -65,11 +58,15 @@ def _off_graph(args, result, tol, *, roots):
     return error
 
 
+@register_check('function.root_interval', 'on_graph')
+@register_check('function.roots_interval', 'on_graph')
+@register_check('function.root_near', 'on_graph')
 @register_check('function.roots_polynomial', 'on_graph')
 def roots_on_graph(args, result, tol):
     return _off_graph(args, result, tol, roots=True)
 
 
+@register_check('function.extrema_interval', 'on_graph')
 @register_check('function.extrema_polynomial', 'on_graph')
 def extrema_on_graph(args, result, tol):
     return _off_graph(args, result, tol, roots=False)
