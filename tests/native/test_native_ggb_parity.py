@@ -14,12 +14,17 @@ from tests.native.test_native_ggb_texts import text_body
 
 NAMES = ('ggb_text_math', 'ggb_conic_ellipse', 'ggb_conic_hyperbola', 'ggb_conic_parabola',
          'ggb_conic_equation', 'ggb_regular_outputs', 'ggb_axis_projection',
-         'ggb_slider', 'ggb_labels', 'ggb_layers', 'ggb_rotate_angle_formula')
+         'ggb_slider', 'ggb_labels', 'ggb_layers', 'ggb_rotate_angle_formula', 'ggb_locus_point')
 
 
 def import_scene(name):
     kind = name.rsplit('_', 1)[-1].capitalize()
-    if name == 'ggb_slider':
+    if name == 'ggb_locus_point':
+        from tests.native.test_native_ggb_locus import locus_scene
+        body = locus_scene()
+        changes = [{'Q': ('pathParameter', .625)}, {'Q': ('pathParameter', -1.)},
+                   {'B': ('point', [8., 2.])}, {'B': ('point', [0., 0.])}]
+    elif name == 'ggb_slider':
         body = slider_body()
         changes = [{'n': ('number', -10.)}, {'n': ('number', 4.)}, {'n': ('number', 10.)}]
     elif name in ('ggb_labels', 'ggb_layers'):
@@ -47,7 +52,8 @@ def import_scene(name):
         changes = [{'A': ('point', [-5., .5]), 'B': ('point', [5., .5])},
                    {'A': ('point', [-5., y]), 'B': ('point', [5., y])}]
     doc, items = imported(body)
-    assert all(e['category'] == 'editable' for e in items.values())
+    assert all(e['category'] == 'editable' or name == 'ggb_locus_point' and key == 'g'
+               and e['reason'] == 'value_unchecked' for key, e in items.items())
     doc['documentId'] = name
     cases = [{'name': 'saved'}] + [
         {'name': f'changed-{n}', 'inputs': {eid(items, key): {'kind': kind_, 'value': value}

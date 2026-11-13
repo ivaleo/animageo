@@ -71,6 +71,13 @@ compared exactly. `locus` is not in the families `path`, `curve` or `linear`
 
 ## Checks
 
+Registry 1.10: this value is a member of the family `path`.
+[`point.on_path`](point.on_path.md#a-locus-registry-110), `point.closest`,
+projection and drag use its continuous sampled runs. A normalized path
+parameter `[0,1]` is independent of this value's mover `range`.
+[`point.on_locus`](point.on_locus.md) takes that parameter from a number
+argument, preserving a numeric dependency in GeoGebra `Point(locus, t)`.
+
 - `on_trace` (sampled): at `k = 0, N/4, N/2, 3N/4` the document is evaluated
   in full with the mover input at `t_k`; the error is the distance between
   that trace and `points[k]` (`∞` when exactly one of them is not defined).

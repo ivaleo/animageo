@@ -795,7 +795,42 @@ def _boundary_scenes():
     return out
 
 
-SCENES = (_function_scenes, _conic_scenes, _meet_scenes, _path_scenes, _area_scenes, _boundary_scenes)
+def _locus_scenes():
+    d = _Doc('path_locus').free('A', 0, 0).free('B', 4, 0).free('C', 0, 2).segment('s', 'A', 'B')
+    d.on_path('P', 's', .25)
+    d.op('op_T', 'point.midpoint', {'a': _ref('P'), 'b': _ref('C')}, [('point', 'T', 'point')])
+    d.op('op_g', 'locus.of_point', {'trace': _ref('T'), 'mover': _ref('P')}, [('locus', 'g', 'locus')])
+    d.on_path('Q', 'g', .375).number('u', .625)
+    d.op('op_R', 'point.on_locus', {'locus': _ref('g'), 'parameter': _ref('u')}, [('point', 'R', 'point')])
+    d.free('Z', 1, 3).closest('F', 'g', 'Z').segment('h', 'Q', 'C')
+    out = [(d, _cases(('base', None), ('before', {'Q': T(-1)}), ('after', {'Q': T(2)}),
+                     ('moved', {'B': P(8, 2)}), ('parameter', {'u': N(.25)}),
+                     ('collapsed', {'B': P(0, 0)})))]
+    d = _Doc('path_locus_gaps').number('t', 1).number('c', 0).number('k', 1)
+    d.doc['operations']['op_t']['args'] = {'min': _num(-2), 'max': _num(2)}
+    ast = {'pair': [o('*', r(2), r(0)), o('*', r(2), call('sqrt', o('-', r(0), r(1))))]}
+    d.op('op_T', 'point.expression', {'expr': {'kind': 'expr', 'ast': ast},
+         'refs': {'kind': 'list', 'items': [_ref(v) for v in ('t', 'c', 'k')]}}, [('point', 'T', 'point')])
+    d.op('op_g', 'locus.of_point', {'trace': _ref('T'), 'mover': _ref('t')}, [('locus', 'g', 'locus')])
+    d.on_path('Q', 'g', .75).free('Z', .5, 1).closest('F', 'g', 'Z')
+    d.op('op_R', 'point.on_locus', {'locus': _ref('g'), 'parameter': _num(.75)}, [('point', 'R', 'point')])
+    out.append((d, _cases(('base', None), ('gap', {'Q': T(.25)}), ('before', {'Q': T(-1)}),
+                          ('empty', {'c': N(3)}), ('stationary', {'k': N(0)}))))
+    # The current trace exists at t=1; none of the 256 samples hits that value.
+    d = _Doc('path_locus_empty').number('t', 1)
+    d.doc['operations']['op_t']['args'] = {'min': _num(-2), 'max': _num(2)}
+    ast = {'pair': [r(0), call('sqrt', o('neg', sq(o('-', r(0), n(1)))))]}
+    d.op('op_T', 'point.expression', {'expr': {'kind': 'expr', 'ast': ast},
+         'refs': {'kind': 'list', 'items': [_ref('t')]}}, [('point', 'T', 'point')])
+    d.op('op_g', 'locus.of_point', {'trace': _ref('T'), 'mover': _ref('t')}, [('locus', 'g', 'locus')])
+    d.on_path('Q', 'g', .5).free('Z', 0, 0).closest('F', 'g', 'Z')
+    d.op('op_R', 'point.on_locus', {'locus': _ref('g'), 'parameter': _num(.5)}, [('point', 'R', 'point')])
+    out.append((d, _cases(('empty_samples', None),)))
+    return out
+
+
+SCENES = (_function_scenes, _conic_scenes, _meet_scenes, _path_scenes, _area_scenes, _boundary_scenes,
+          _locus_scenes)
 
 
 # ── fixtures ─────────────────────────────────────────────────────────────

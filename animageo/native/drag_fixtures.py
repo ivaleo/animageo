@@ -222,7 +222,23 @@ def _foot():
 
 
 # (name, text, builder, inputs, element, target)
+def _locus(doc_id):
+    d = _Doc(doc_id).free('A', 0, 0).free('B', 4, 0).free('C', 0, 2)
+    d.args('segment.by_points', 's', 'segment', a='A', b='B').on_path('M', 's', .25)
+    d.args('point.midpoint', 'T', 'point', a='M', b='C')
+    d.args('locus.of_point', 'g', 'locus', trace='T', mover='M').on_path('P', 'g', .375)
+    d.doc['operationRegistryVersion'] = '1.10'
+    d.args('point.midpoint', 'D', 'point', a='P', b='C')
+    return d.via('D', 'P')
+
+
 CASES = (
+    ('drag_locus', 'project onto a continuous link of the locus',
+     lambda: _locus('drag_locus'), {}, 'P', [1.25, 2]),
+    ('drag_locus_clamped', 'a normalized locus parameter stops at its end',
+     lambda: _locus('drag_locus_clamped'), {}, 'P', [4, 1]),
+    ('drag_via_locus', 'a dependent midpoint through a continuous locus parameter',
+     lambda: _locus('drag_via_locus'), {}, 'D', [.625, 1.5]),
     ('drag_free', 'a free point goes to the target', _parallelogram, {'B': _pt(4, 0.5)}, 'A', [0.5, -1.25]),
     ('drag_projection', 'a point on a segment without a hint: the nearest point of the segment',
      lambda: _segment('drag_projection'), {}, 'P', [3, 2]),

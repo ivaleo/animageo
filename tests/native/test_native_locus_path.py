@@ -208,3 +208,15 @@ def test_closed_locus_kernel_point_and_projection_match_the_closing_link():
     target = [(pts[-1][k] + pts[0][k]) / 2 for k in (0, 1)]
     assert ev.elements['Q']['value'] == pytest.approx(dict(zip(('x', 'y'), target)))
     assert native.project(doc, 'Q', target) == pytest.approx(1 - .5 / 256, abs=1e-9)
+
+
+def test_all_null_samples_produce_empty_locus_for_each_point_operation():
+    from animageo.native.curves_fixtures import _locus_scenes
+    doc = _locus_scenes()[2][0].doc
+    ev = native.evaluate(doc)
+    assert ev.elements['g']['state'] == 'defined'
+    assert set(ev.elements['g']['value']['points']) == {None}
+    for name in ('Q', 'R', 'F'):
+        assert ev.elements[name]['state'] == 'undefined' and ev.elements[name]['reason'] == 'empty_locus'
+    assert native.project_input(doc, 'Q', (0, 0)) is None
+    assert native.drag(doc, {}, 'Q', (0, 0))['status'] == 'no_convergence'

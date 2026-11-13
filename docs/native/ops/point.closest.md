@@ -14,6 +14,12 @@ The point of a path nearest to `point` — the same projection as
 ray, an arc and a polyline; the centre of a circle gives `θ = 0` (ties go to
 the smallest parameter). GeoGebra `ClosestPoint(path, P)`.
 
+Registry 1.10: a `locus` is also a path. Project onto its continuous
+sampled runs (including the closing link of a closed locus); do not join
+null samples or jumps over `0.25·S`. Ties select the smallest normalized
+sample parameter. An empty or stationary locus gives `empty_locus` or
+`degenerate_locus`. See [point.on_path](point.on_path.md#a-locus-registry-110).
+
 Registry 1.9: the path may be a conic (the family `path`, kernel.md §16):
 the exact nearest point of an ellipse, of the nearest branch of a hyperbola
 (the branch on the side of `point` along the axis, `+1` on the conjugate
