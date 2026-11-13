@@ -1,5 +1,5 @@
-"""``rendering.angle_marker_fit`` in the manim renderer (the manim-free
-contract: ``tests/test_angle_marker.py``)."""
+"""``rendering.angle_marker_fit`` in the manim renderer, TikZ and JSXGraph
+(the manim-free contract: ``tests/test_angle_marker.py``)."""
 import math
 import textwrap
 
@@ -73,3 +73,35 @@ class TestRenderer:
             s.exportSVG(str(path))
             out.append(path.read_bytes())
         assert out[0] == out[1] == out[2]
+
+
+class TestExporters:
+    def test_tikz(self):
+        tex = framed(angle_code((0.2, 0.2)), FIT).exportTikZ()
+        limit = K * math.hypot(0.2, 0.2)
+        assert f':{limit:.4f})' in tex or f':{round(limit, 3)})' in tex or f'{limit:.3f}' in tex
+        assert framed(angle_code((0.2, 0.2))).exportTikZ() == \
+            framed(angle_code((0.2, 0.2)), {'rendering': {'angle_marker_fit': False}}).exportTikZ()
+
+    def test_tikz_hidden(self):
+        tex = framed(angle_code((0.04, 0.04)), FIT).exportTikZ()
+        assert ' arc (' not in tex
+
+    def test_jsxgraph_static_radius(self):
+        from animageo.exporters.jsxgraph.builder import build_board
+        from animageo.exporters.jsxgraph.options import JSXGraphOptions
+        scene = framed(angle_code((0.2, 0.2)), FIT)
+        model = build_board(scene, JSXGraphOptions())
+        angle = next(e for e in model.elements if e.name == 'a')
+        assert angle.attrs['radius'] == pytest.approx(round(K * math.hypot(0.2, 0.2) * PT, 4) / PT)
+        assert ('a', 'live', 'Angle: static marker radius fitted to the sides') in model.coverage
+        plain = next(e for e in build_board(framed(angle_code((0.2, 0.2))), JSXGraphOptions()).elements
+                     if e.name == 'a')
+        assert plain.attrs['radius'] == pytest.approx(17 / PT)
+
+    def test_jsxgraph_hidden_keeps_the_label(self):
+        from animageo.exporters.jsxgraph.builder import build_board
+        from animageo.exporters.jsxgraph.options import JSXGraphOptions
+        angle = next(e for e in build_board(framed(angle_code((0.04, 0.04)), FIT), JSXGraphOptions()).elements
+                     if e.name == 'a')
+        assert angle.attrs['strokeOpacity'] == 0 and angle.attrs['fillOpacity'] == 0
