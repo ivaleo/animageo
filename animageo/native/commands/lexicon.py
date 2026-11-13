@@ -66,7 +66,7 @@ INPUT = '$input'
 # parse the expression of a function); the printer prints their lines with a
 # warning, as an expression (commands.md §8). Registry 1.9: regions too.
 DEFERRED_PREFIXES = ('function.', 'conic.', 'intersect.function_', 'intersect.line_conic', 'intersect.conic_conic',
-                     'point.on_function', 'region.', 'point.expression', 'vector.expression')
+                     'line.equation', 'point.on_function', 'region.', 'point.expression', 'vector.expression')
 
 
 def deferred_op(op: str) -> bool:

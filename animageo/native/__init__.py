@@ -93,7 +93,7 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'import_report.text_template', 'import_report.text_literals', 'convert.command_synonyms',
             'convert.ggb_expressions', 'style_keys', 'resolve_paint', 'label.halo', 'label.parts',
             'timeline.effects', 'render.t.effects', 'view_axes_grid', 'functions', 'conics', 'drag', 'regions',
-            'typed_expressions')
+            'typed_expressions', 'line_equation')
 
 # Experimental features (``has`` answers them): outside ``FEATURES`` and the
 # public API snapshot, they may change or go without deprecation.
@@ -154,7 +154,8 @@ def has(feature: str) -> bool:
     ``parity/v1/drag`` (``docs/native/kernel.md`` §8.1); 1.15.0, registry 1.10:
     ``typed_expressions`` — typed expression slots (``result``), the family
     ``operand``, ``point.expression`` and ``vector.expression``
-    (``docs/native/expr.md`` §6). Experimental, one of
+    (``docs/native/expr.md`` §6); ``line_equation`` — ``line.equation``
+    (``docs/native/ops/line.equation.md``). Experimental, one of
     :data:`EXPERIMENTAL_FEATURES`: ``space`` — :mod:`animageo.native.space`,
     the space registry 1.0 (``docs/native/space.md``)."""
     return feature in FEATURES or feature in EXPERIMENTAL_FEATURES

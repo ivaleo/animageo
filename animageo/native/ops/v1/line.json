@@ -909,5 +909,48 @@
         "polygon"
       ]
     ]
+  },
+  {
+    "op": "line.equation",
+    "status": "beta",
+    "since": "1.10",
+    "inputs": [
+      {
+        "slot": "expr",
+        "type": "expr",
+        "vars": [
+          "x",
+          "y"
+        ]
+      },
+      {
+        "slot": "refs",
+        "type": "number",
+        "list": true,
+        "min": 0
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "not_linear",
+      "degenerate_line",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "line_equation",
+    "phrases": {
+      "ru": "{line} — прямая, заданная уравнением"
+    },
+    "math": "docs/native/ops/line.equation.md",
+    "signatureHash": "sha256:97454c85fe3de8eeec444ea01c16e340dab25bfc81f35a21967fb51a31568131"
   }
 ]

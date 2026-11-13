@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import math
 
+from ...expr import ExprError, compile_function
 from ..values import Detailed, Undefined
 from . import op
 from .intersect import carrier
@@ -363,3 +364,40 @@ def midline(args, ctx):
     m2y = (s2['a'][1] + s2['b'][1]) / 2
     return {'segment': {'a': [m1x, m1y], 'b': [m2x, m2y], 'length': math.hypot(m2x - m1x, m2y - m1y)},
             'mid.1': {'x': m1x, 'y': m1y}, 'mid.2': {'x': m2x, 'y': m2y}}
+
+
+@op('line.equation')
+def equation(args, ctx):
+    """Read an affine equation in frame (0, 0, S), with GGB direction (b, -a)."""
+    refs = [float(r.value['value']) for r in args.get('refs') or []]
+    try:
+        body = compile_function(args['expr'].value, refs, vars=('x', 'y'))
+        scale = ctx.tol.scale
+        samples = ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1),
+                   (1, 1), (2, -1), (-1, 2), (-1, -1))
+        values = [body(scale * x, scale * y) for x, y in samples]
+    except ExprError:
+        return {'line': Undefined('not_linear')}
+    f, xp, xm, yp, ym = values[:5]
+    d, e = (xp - xm) / 2, (yp - ym) / 2
+    if not all(math.isfinite(v) for v in (d, e, f)):
+        return {'line': Undefined('not_linear')}
+    misfit = max(abs(v - (d * x + e * y + f)) for (x, y), v in zip(samples[1:], values[1:]))
+    norm = max(abs(d), abs(e), abs(f))
+    if norm == 0:
+        return {'line': Undefined('not_linear' if misfit > 0 else 'degenerate_line')}
+    tol = ctx.tol.decide_scalar
+    ctx.decide('not_linear', misfit / norm, tol)
+    if misfit / norm > tol:
+        return {'line': Undefined('not_linear')}
+    length = math.hypot(d / norm, e / norm)
+    ctx.decide('degenerate_line', length, tol)
+    if length <= tol:
+        return {'line': Undefined('degenerate_line')}
+    # Normalize before finding the foot: a²+b² can overflow or underflow
+    # even when the equation and the resulting line are finite.
+    a, b = d / norm / scale, e / norm / scale
+    length = math.hypot(a, b)
+    nx, ny = a / length, b / length
+    offset = -(f / norm) / length
+    return {'line': {'p': [offset * nx, offset * ny], 'dir': [ny, -nx]}}
