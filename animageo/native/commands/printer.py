@@ -580,6 +580,9 @@ class _Printer:
                     parts.extend(t for t, _k, _p in self._arg(args[slot], None))
             if op['op'].startswith('region.'):
                 message = 'области в «Командах» будут позже'           # registry 1.9
+            elif op['op'] in ('point.expression', 'vector.expression'):
+                # registry 1.10: not the formula itself — «(2, 3)» would read back as a free point
+                message = 'выражения в «Командах» будут позже'
             elif deferred_op(op['op']):
                 message = 'функции и коники в «Командах» будут позже'
             else:

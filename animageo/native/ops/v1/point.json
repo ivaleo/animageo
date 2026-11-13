@@ -378,5 +378,45 @@
     },
     "math": "docs/native/ops/point.on_function.md",
     "signatureHash": "sha256:8f5a007b4941c0d2dad142edf43098aba9af98e4401cb6aa56f77440fdb933f9"
+  },
+  {
+    "op": "point.expression",
+    "status": "beta",
+    "since": "1.10",
+    "inputs": [
+      {
+        "slot": "expr",
+        "type": "expr",
+        "result": "vec"
+      },
+      {
+        "slot": "refs",
+        "type": "operand",
+        "list": true,
+        "min": 0
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "out_of_domain",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "point_expression",
+    "phrases": {
+      "ru": "{point} = {expr}"
+    },
+    "math": "docs/native/ops/point.expression.md",
+    "signatureHash": "sha256:6950d39511f9bd79050f59cfa97657b77bcb0e1abafd1578c80e9fd61df7b18f"
   }
 ]

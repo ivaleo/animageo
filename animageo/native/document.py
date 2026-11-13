@@ -921,6 +921,21 @@ def is_newer_registry(version) -> bool:
     return theirs is not None and theirs > ours
 
 
+def _operand_types(elements, refs_arg, reg):
+    """The element types of the items of ``refs`` for the type pass of a
+    typed slot (registry 1.10), or ``None`` when an item is not a reference,
+    dangles or does not fit ``operand`` (its own issue; no cascade)."""
+    if not isinstance(refs_arg, dict) or refs_arg.get('kind') != 'list':
+        return None
+    out = []
+    for ref in refs_arg.get('items') or []:
+        target = elements.get(ref.get('elementId')) if isinstance(ref, dict) and ref.get('kind') == 'ref' else None
+        if target is None or not reg.accepts('operand', target['type']):
+            return None
+        out.append(target['type'])
+    return out
+
+
 def validate(doc) -> list:
     """All issues of a document: structure first, then the graph rules.
 
@@ -1009,7 +1024,10 @@ def validate(doc) -> list:
                     count = len(refs_arg['items']) if isinstance(refs_arg, dict) and refs_arg['kind'] == 'list' \
                         else None
                     if item['type'] == 'expr':
-                        for pointer, message in expr_problems(arg['ast'], count, item.get('vars') or ()):
+                        result = item.get('result')
+                        operands = _operand_types(elements, refs_arg, reg) if result else None
+                        for pointer, message in expr_problems(arg['ast'], count, item.get('vars') or (),
+                                                              operands, result):
                             issues.append(Issue('formula', spath + '/ast' + pointer, message, operationId=op_id))
                     else:
                         for message in template_problems(arg['value'], count):
