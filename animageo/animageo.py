@@ -4068,20 +4068,8 @@ class AnimaGeoScene(MovingCameraScene):
         element, ``ticks`` — it draws them), pointing along ``direction``
         (turned by ``parallel_direction``), solid, in the stroke of the
         element."""
-        from .mark_shapes import chevron_center, chevrons, scene_parallel_decor
-        decor = scene_parallel_decor(self, elem)
-        if decor.count <= 0:
-            return
-        v = np.asarray(direction, dtype=float)[:2]
-        norm = float(np.linalg.norm(v))
-        if norm < 1e-12:
-            return
-        v = v / norm * (-1.0 if decor.direction == 'backward' else 1.0)
-        unit = ctx.ptUnit_style
-        tick_width_px = float(_resolve_style(self, elem, 'tick_width_px', default=0.0) or 0.0)
-        center = chevron_center(mid[:2], v, decor, unit, tick_count=ctx.tick_count if ticks else 0,
-                                tick_shift_px=ctx.strich_rshift * unit, tick_width_px=tick_width_px)
-        for x0, y0, tx, ty, x1, y1 in chevrons(center, v, decor, unit):
+        from .mark_shapes import scene_chevrons
+        for x0, y0, tx, ty, x1, y1 in scene_chevrons(self, elem, mid, direction, ctx.ptUnit_style, ticks=ticks):
             vm = VMobject(color=ctx.col_s, fill_opacity=0, stroke_width=ctx.lw, stroke_opacity=ctx.op_s,
                           joint_type=LineJointType.MITER)
             vm.set_points_as_corners([[x0, y0, 0], [tx, ty, 0], [x1, y1, 0]])

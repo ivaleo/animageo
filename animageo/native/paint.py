@@ -619,11 +619,11 @@ def _segment_heads(final, elem, data, unit):
 
 
 def _parallel(final, elem, type_, data, value, unit):
-    """The chevrons of a parallel line (``_append_chevrons``) or ``None``
-    without them: in the middle of a segment or a vector (past its ticks),
-    of the drawn part of a line or a ray, pointing along it."""
+    """The chevrons of a parallel line (``mark_shapes.scene_chevrons``) or
+    ``None`` without them: in the middle of a segment or a vector (past its
+    ticks), of the drawn part of a line or a ray, pointing along it."""
     from ..label_placement import _clipped_line_endpoints
-    from ..mark_shapes import chevron_center, chevrons, parallel_decor
+    from ..mark_shapes import parallel_decor, scene_chevrons
     decor = parallel_decor(value)
     if decor.count <= 0:
         return None
@@ -632,23 +632,14 @@ def _parallel(final, elem, type_, data, value, unit):
     if type_ in ('segment', 'vector'):
         (ax, ay), (bx, by) = ((float(p[0]), float(p[1])) for p in data.endpoints)
         mid, v = ((ax + bx) / 2, (ay + by) / 2), (bx - ax, by - ay)
-        ticks = int(_num(value('tick_count', 0), 0))
     else:
         ends = _clipped_line_endpoints(final, data)
         if ends is None:
             return out
         mid = ((ends[0][0] + ends[1][0]) / 2, (ends[0][1] + ends[1][1]) / 2)
         v = tuple(float(c) for c in data.direction[:2])
-        ticks = 0
-    norm = math.hypot(*v)
-    if norm < 1e-12:
-        return out
-    sign = -1.0 if decor.direction == 'backward' else 1.0
-    v = (sign * v[0] / norm, sign * v[1] / norm)
-    center = chevron_center(mid, v, decor, unit, tick_count=ticks,
-                            tick_shift_px=_num(value('tick_shift_px', 0.0)),
-                            tick_width_px=_num(value('tick_width_px', 0.0)))
-    out['chevrons'] = [[_r(c) for c in ch] for ch in chevrons(center, v, decor, unit)]
+    out['chevrons'] = [[_r(c) for c in ch]
+                       for ch in scene_chevrons(final, elem, mid, v, unit, ticks=type_ in ('segment', 'vector'))]
     return out
 
 

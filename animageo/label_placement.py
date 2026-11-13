@@ -792,9 +792,82 @@ def _collect_obstacles(scene, *, angle_marker_obstacle=False):
             if hasattr(d, 'endpoints') and d.endpoints is not None:
                 segments.append((d.endpoints[0][:2].copy(), d.endpoints[1][:2].copy()))
                 seg_dashed.append(dashed)
+        for (q1, q2) in _mark_obstacle_segments(scene, elem):
+            segments.append((q1, q2))
+            seg_dashed.append(False)
 
     arc_pts_arr = np.array(arc_pts) if arc_pts else np.empty((0, 2))
     return segments, circles, arc_pts_arr, seg_dashed, circ_dashed
+
+
+def _triangle_edges(tip):
+    t, b1, b2 = (np.array(tip[i:i + 2], dtype=float) for i in (0, 2, 4))
+    return [(t, b1), (b1, b2), (b2.copy(), t.copy())]
+
+
+def _mark_obstacle_segments(scene, elem):
+    """Obstacle segments of the kinds of marks drawn on ``elem`` (1.13.0):
+    the ticks and heads on the arcs of an angle, the heads of a segment, the
+    chevrons of a parallel line — solid, as drawn; ``[]`` without them (the
+    ticks of a segment stay out, as before; a wave or a dashed arc is the arc
+    of the angle obstacle)."""
+    from .geo import lib_elements as geo
+    from .mark_shapes import scene_chevrons, scene_segment_arrow, segment_arrow
+    d = elem.data
+    unit = _style_ptUnit(getattr(scene, 'style', None))
+    out = []
+    if isinstance(d, geo.Angle):
+        return _angle_decoration_segments(scene, elem)
+    if isinstance(d, geo.Segment):
+        head, length_px, width_px = scene_segment_arrow(scene, elem)
+        geometry = None if head == 'none' else segment_arrow(d.endpoints[0], d.endpoints[1], head, length_px,
+                                                             width_px, unit)
+        for tip in (geometry[2] if geometry else ()):
+            out.extend(_triangle_edges(tip))
+    if isinstance(d, (geo.Segment, geo.Vector)):
+        if getattr(d, 'endpoints', None) is None:
+            return out
+        a, b = (np.asarray(e[:2], dtype=float) for e in d.endpoints)
+        mid, direction, ticks = (a + b) / 2, b - a, True
+    elif isinstance(d, (geo.Line, geo.Ray)):
+        ends = _clipped_line_endpoints(scene, d)
+        if ends is None:
+            return out
+        mid, direction, ticks = (ends[0] + ends[1]) / 2, np.asarray(d.direction[:2], dtype=float), False
+    else:
+        return out
+    for x0, y0, tx, ty, x1, y1 in scene_chevrons(scene, elem, mid, direction, unit, ticks=ticks):
+        tip = np.array([tx, ty])
+        out.extend([(np.array([x0, y0]), tip), (tip.copy(), np.array([x1, y1]))])
+    return out
+
+
+def _angle_decoration_segments(scene, elem):
+    """The ticks across the arcs of an angle and the heads on its outer arc
+    (``mark_shapes.angle_marks``) at the radii drawn, as segments."""
+    from .mark_shapes import angle_marks, scene_arc_decor
+    decor = scene_arc_decor(scene, elem)
+    if decor.ticks == 0 and decor.arrow == 'none':
+        return []
+    fitted = _fitted_angle_marker(scene, elem)
+    info = _angle_drawn_sector(scene, elem)
+    if fitted is None or info is None:
+        return []
+    extent, fit = fitted
+    if extent.right or fit.hidden or extent.count <= 0:
+        return []
+    v, start, span, _right, _r, _s1, _s2 = info
+    angle_range = _resolve_style(scene, elem, 'angle_range', default='minor') or 'minor'
+    size = float(elem.data.size)
+    flipped = (angle_range == 'minor' and size > pi) or (angle_range == 'reflex' and size < pi)
+    unit = _style_ptUnit(scene.style)
+    outer = extent.outer_px - fit.delta_px
+    radii = [(outer - i * extent.shift_px) / unit for i in range(extent.count)]
+    marks = angle_marks((float(v[0]), float(v[1])), radii, start, span, flipped, decor, unit)
+    out = [(np.array(t[:2], dtype=float), np.array(t[2:], dtype=float)) for t in marks.ticks]
+    for tip in marks.tips:
+        out.extend(_triangle_edges(tip))
+    return out
 
 
 def _figure_faces(scene, *, max_vertices=6, max_segments=150):
@@ -910,7 +983,7 @@ def _angle_drawn_sector(scene, elem):
         effective_angle = _effective_render_angle(d.size, angle_range)
         right_mark = _resolve_style(scene, elem, 'right_angle_marker', default=None)
         if right_mark is None:
-            right_mark = bool(np.isclose(effective_angle, pi / 2))
+            right_mark = bool(np.isclose(effective_angle, pi / 2)) and not _decoration_forces_arcs(scene, elem)
 
     v = np.asarray(d.vertex[:2], dtype=float)
     s1 = np.asarray(d.side1[:2], dtype=float)
@@ -935,15 +1008,35 @@ def _angle_drawn_sector(scene, elem):
 
 def _fitted_angle_marker(scene, elem):
     """``(MarkerExtent, MarkerFit)`` of an angle under
-    ``rendering.angle_marker_fit`` (:mod:`animageo.angle_marker`), ``None``
-    when the fit is off: the marker as the renderer draws it, and how far it
-    moves in to fit the sides. A hidden marker keeps its label at the
-    fitted extent."""
-    from .angle_marker import fit_settings, marker_extent, marker_fit
+    ``rendering.angle_marker_fit`` (:mod:`animageo.angle_marker`) or with a
+    drawn decoration of its arcs (``arc_style``, ``arc_tick_count``,
+    ``arrow_head``; then a fit of ``delta_px`` 0 when the fit is off),
+    ``None`` otherwise: the marker as the renderer draws it — the step of
+    waves, the label past the decoration — and how far it moves in to fit
+    the sides. A hidden marker keeps its label at the fitted extent."""
+    from .angle_marker import MarkerFit, fit_settings, marker_extent, marker_fit
     if fit_settings(scene) is None:
-        return None
+        if not _decorated_arcs(scene, elem):
+            return None
+        return marker_extent(scene, elem), MarkerFit((None, None), None, 0.0, False, False)
     extent = marker_extent(scene, elem)
     return extent, marker_fit(scene, elem, extent)
+
+
+def _decorated_arcs(scene, elem) -> bool:
+    """An angle whose arcs are drawn with a decoration (1.13.0)."""
+    from .mark_shapes import scene_arc_decor
+    if scene_arc_decor(scene, elem).plain:
+        return False
+    return int(_resolve_style(scene, elem, 'tick_count', default=1) or 0) > 0 or \
+        bool(getattr(elem, '_native_mark_explicit', False))
+
+
+def _decoration_forces_arcs(scene, elem) -> bool:
+    """A decorated angle is drawn as arcs in the automatic mode (the
+    square has none to decorate)."""
+    from .mark_shapes import scene_arc_decor
+    return scene_arc_decor(scene, elem).forces_arcs
 
 
 def _angle_marker_obstacle_segments(scene, elem):
@@ -1511,7 +1604,7 @@ def _angle_render_label_radius_px(
     effective_angle = _effective_render_angle(elem.data.size, angle_range)
     right_mark = _resolve_style(scene, elem, 'right_angle_marker', default=None)
     if right_mark is None:
-        right_mark = np.isclose(effective_angle, pi / 2)
+        right_mark = np.isclose(effective_angle, pi / 2) and not _decoration_forces_arcs(scene, elem)
 
     if not right_mark:
         return outer_arc_px
@@ -1555,7 +1648,7 @@ def _angle_label_params(scene, elem, hw, hh, gap_arc_px=3, gap_sides_px=3) -> An
         render_r_px = extent.label_px - fit.delta_px
         label_radial_offset_px = _resolve_style(scene, elem, 'label_radial_offset_px', default=0.0)
         return AngleParams(
-            arc_r_px=render_r_px * sqrt(2) if extent.right else extent.outer_px - fit.delta_px,
+            arc_r_px=render_r_px * sqrt(2) if extent.right else render_r_px,     # past the decoration
             half_w=hw, half_h=hh, gap_arc_px=gap_arc_px, gap_sides_px=gap_sides_px,
             angle_range=angle_range,
             render_r_px=float(render_r_px) + float(label_radial_offset_px or 0.0),
@@ -1582,7 +1675,7 @@ def _angle_label_params(scene, elem, hw, hh, gap_arc_px=3, gap_sides_px=3) -> An
     effective_angle = _effective_render_angle(elem.data.size, angle_range)
     right_mark = _resolve_style(scene, elem, 'right_angle_marker', default=None)
     if right_mark is None:
-        right_mark = bool(np.isclose(effective_angle, pi / 2))
+        right_mark = bool(np.isclose(effective_angle, pi / 2)) and not _decoration_forces_arcs(scene, elem)
     target_arc_px = (render_r_px * sqrt(2)) if right_mark else outer_arc_px
     label_radial_offset_px = _resolve_style(
         scene, elem, 'label_radial_offset_px', default=0.0,
@@ -3448,7 +3541,7 @@ def _angle_placement_params(scene, elem, lbl, *, gap_arc_px, gap_sides_px,
     if fitted is not None:          # rendering.angle_marker_fit: from the fitted extent
         extent, fit = fitted
         render_r_px = extent.label_px - fit.delta_px
-        outer_arc_px = render_r_px * sqrt(2) if extent.right else extent.outer_px - fit.delta_px
+        outer_arc_px = render_r_px * sqrt(2) if extent.right else render_r_px    # past the decoration
     else:
         base_arc_px = _resolve_style(scene, elem, 'arc_size_px', default=30)
         base_arc = compute_effective_arc_size_px(

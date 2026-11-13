@@ -429,6 +429,27 @@ def chevrons(center, direction, decor: ParallelDecor, unit) -> list:
     return out
 
 
+def scene_chevrons(scene, elem, mid, direction, unit, *, ticks=True) -> list:
+    """The chevrons (:func:`chevrons`) the renderer draws on the parallel
+    line ``elem``: around ``mid`` — the middle of a segment or a vector,
+    moved past its ``tick_count`` ticks (``ticks``), or of the drawn part
+    of a line or a ray — pointing along ``direction`` turned by
+    ``parallel_direction``; ``[]`` without them or for a line of no length."""
+    decor = scene_parallel_decor(scene, elem)
+    vx, vy = float(direction[0]), float(direction[1])
+    norm = math.hypot(vx, vy)
+    if decor.count <= 0 or norm < 1e-12:
+        return []
+    sign = -1.0 if decor.direction == 'backward' else 1.0
+    v = (sign * vx / norm, sign * vy / norm)
+    value = _scene_value(scene, elem)
+    center = chevron_center((float(mid[0]), float(mid[1])), v, decor, unit,
+                            tick_count=int(_num(value('tick_count', 0), 0)) if ticks else 0,
+                            tick_shift_px=_num(value('tick_shift_px', 0.0), 0.0),
+                            tick_width_px=_num(value('tick_width_px', 0.0), 0.0))
+    return chevrons(center, v, decor, unit)
+
+
 # ── a hollow point ───────────────────────────────────────────────────────
 
 @dataclass(frozen=True)
