@@ -54,7 +54,7 @@ The operation registry `ops/v1` (kernel.md §4) and what this library can do.
 
 - `REGISTRY_VERSION = '1.9'`
 - `__registry_version__ = '1.9'`
-- `class Registry(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>, family_since=<factory>)` — The loaded registry: records by op, service catalogs and the index.
+- `class Registry(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>, family_since=<factory>, number_literal_since=<factory>)` — The loaded registry: records by op, service catalogs and the index.
 - `registry()` — The registry shipped with this library (cached).
 - `signature_hash(record)` — `"sha256:<hex>"` of the canonical JSON of `signature()`.
 - `FEATURES` — The names `has()` knows, a tuple of strings. A feature is added with the release that brings it and is never removed.

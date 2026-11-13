@@ -374,7 +374,7 @@ class Arguments:
 
     ``refs`` — ``[(slot, list?, [elementId…])]`` of the reference input
     slots in registry order; ``literals`` — ``{slot: value}`` of number
-    literals in ``number`` input slots; ``params`` — ``{slot: float | None}``
+    literals in ``number`` input slots (and ``limit`` slots, registry 1.9); ``params`` — ``{slot: float | None}``
     of every declared param (the default, or ``None``, when absent);
     ``exprs`` — ``{slot: ast}`` of the valid trees in ``expr`` input slots,
     ``templates`` — ``{slot: string}`` of the valid templates in
@@ -398,8 +398,9 @@ def _argument_status(op, record, doc, reg):
     registry order (missing → ``schema``, wrong kind or short list →
     ``type_mismatch``, dangling reference → ``dangling_ref``, element type
     not fitting → ``type_mismatch``; a ``number`` slot also takes a number
-    literal, since registry 1.9 so does a family slot that contains
-    ``number`` (``limit``); an ``expr`` or ``template`` slot takes only an
+    literal, and so does a slot of a family of ``_types.json →
+    numberLiteralSince`` (``limit``) in a document that declares registry
+    1.9 or newer; an ``expr`` or ``template`` slot takes only an
     argument of that kind); an inputSets record requires exactly one
     alternative; registry 1.9: a rule of the structure of the arguments
     (:data:`STRUCTURE_RULES`, the chain of ``region.by_boundary``) →
@@ -425,7 +426,8 @@ def _argument_status(op, record, doc, reg):
             if 'inputSets' in record:
                 continue
             return ('error', 'schema')
-        if not item.get('list') and reg.takes_number_literal(item['type']) and arg.get('kind') == 'number':
+        if not item.get('list') and reg.takes_number_literal(item['type'], doc.registry_version) \
+                and arg.get('kind') == 'number':
             literals[item['slot']] = float(arg['value'])
             continue
         if item['type'] in ('expr', 'template'):

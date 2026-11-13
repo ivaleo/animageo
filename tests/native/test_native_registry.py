@@ -18,7 +18,7 @@ from animageo.native.registry import (
     signature_hash,
     write_index,
 )
-from tests.native.conftest import NATIVE_DIR, REPO_ROOT
+from tests.native.conftest import NATIVE_DIR, REPO_ROOT, SCENES_DIR, DocBuilder, num, ref
 
 OPS_DIR = NATIVE_DIR / 'ops' / 'v1'
 
@@ -624,3 +624,69 @@ def test_reasons_catalog_states():
                 assert reasons[reason]['state'] == 'unsupported'
                 continue
             assert reasons[reason]['state'] in ('undefined', 'inherited')
+
+
+# ── number literals in a family slot (registry 1.9) ──────────────────────
+
+def test_number_literal_families():
+    reg = registry()
+    assert reg.number_literal_since == {'limit': '1.9'}
+    assert reg.takes_number_literal('number', '1.0') and reg.takes_number_literal('number', None)
+    assert reg.takes_number_literal('limit', '1.9') and reg.takes_number_literal('limit', '1.10')
+    assert not reg.takes_number_literal('limit', '1.8')
+    assert not reg.takes_number_literal('limit', None)
+    for family in ('locus_driver', 'insertable'):          # a family with number, not listed
+        assert 'number' in reg.families[family]
+        assert not reg.takes_number_literal(family, '1.9')
+
+
+def test_registry_problems_catch_bad_number_literal_families(tmp_path):
+    copy_dir = tmp_path / 'v1'
+    shutil.copytree(OPS_DIR, copy_dir)
+    types = json.loads((copy_dir / '_types.json').read_text())
+    types['numberLiteralSince'] = {'limit': '1.10', 'curve': '1.9', 'spiral': '1.9'}
+    (copy_dir / '_types.json').write_text(json.dumps(types))
+    from animageo.native.registry import _load
+    problems = registry_problems(_load(copy_dir))
+    assert "numberLiteralSince 'limit': since '1.10' is not a registry version" in problems
+    assert "numberLiteralSince 'curve': the family has no member 'number'" in problems
+    assert "numberLiteralSince 'spiral': the family has no member 'number'" in problems
+
+
+def _locus_with_literal_mover(version):
+    doc = json.loads((SCENES_DIR / 'locus_number.json').read_text())['document']
+    doc['operationRegistryVersion'] = version
+    doc['operations']['op_g']['args']['mover'] = {'kind': 'number', 'value': 1}
+    return doc
+
+
+@pytest.mark.parametrize('version', ['1.5', '1.9'])
+def test_locus_mover_takes_no_number_literal(version):
+    # locus_driver holds number but is no literal family: as before registry 1.9
+    doc = _locus_with_literal_mover(version)
+    issues = [i for i in native.validate(doc) if i.severity == 'error']
+    assert [(i.code, i.path) for i in issues] == [('type_mismatch', '/operations/op_g/args/mover')]
+    rec = native.evaluate(doc).elements['g']
+    assert (rec['state'], rec['reason']) == ('error', 'type_mismatch'), rec
+
+
+def _area_with_literal_limits(version):
+    d = DocBuilder('area_literal', registry_version=version)
+    d.op('op_f', 'function.expr', {'expr': {'kind': 'expr', 'ast': {'var': 'x'}},
+                                   'refs': {'kind': 'list', 'items': []}}, [('function', 'f', 'function')])
+    d.op('op_S', 'function.area_between', {'first': ref('f'), 'a': num(0), 'b': num(2)},
+         [('region', 'S', 'region')])
+    return d.doc
+
+
+def test_limit_literal_needs_registry_1_9():
+    rec = native.evaluate(_area_with_literal_limits('1.9')).elements['S']
+    assert rec['state'] == 'defined' and rec['value']['area'] == pytest.approx(2.0, abs=1e-12)
+    assert not [i for i in native.validate(_area_with_literal_limits('1.9')) if i.severity == 'error']
+    doc = _area_with_literal_limits('1.8')                 # a literal in a limit slot: as before 1.9
+    codes = sorted((i.code, i.path) for i in native.validate(doc) if i.severity == 'error')
+    assert codes == [('needs_newer_registry', '/operations/op_S/op'),
+                     ('type_mismatch', '/operations/op_S/args/a'),
+                     ('type_mismatch', '/operations/op_S/args/b')]
+    rec = native.evaluate(doc).elements['S']
+    assert (rec['state'], rec['reason']) == ('error', 'type_mismatch'), rec

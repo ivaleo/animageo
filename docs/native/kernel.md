@@ -83,9 +83,15 @@ Input     = {"kind": "point", "value": [x, y]}                         point.fre
   `angle` input may be absent: it then is `0` (`FREE_INPUT_DEFAULTS` of
   `registry.py`); the other kinds are required.
 - `args` holds input slots and params (§4) alike. A `number` argument
-  (literal) is allowed in an input slot of type `number` (a radius), since
-  registry 1.9 also in a slot of a family that contains `number` (`limit`),
-  and is the only kind a param takes.
+  (literal) is allowed in an input slot of type `number` (a radius) and is
+  the only kind a param takes. A slot of a family takes it only when
+  `_types.json → numberLiteralSince` lists the family and the document
+  declares that registry or a newer one: `{"limit": "1.9"}`, the limits of
+  `function.area_between`. Elsewhere — a family that holds `number` among
+  other types (`locus_driver`, the `mover` of `locus.of_point`;
+  `insertable`), or a `limit` slot in a document that declares 1.8 or
+  older — a literal is `type_mismatch` (validate and evaluate), as before
+  registry 1.9.
 - An `expr` argument (1.4, a5) goes only into an input slot of type `expr`
   (`number.expression`), and that slot takes nothing else. The structure
   checks only that `ast` is an object; the tree itself (nodes, whitelist,
@@ -135,7 +141,7 @@ only on a structurally valid document.
 | `unknown_slot` | error | an argument or output slot the op does not declare (a repeat slot beyond the list length too) |
 | `missing_slot` | error | a declared input slot or a required param has no argument |
 | `dangling_ref` | error | a reference (argument or `inputs` key) to a missing element |
-| `type_mismatch` | error | argument kind (list vs ref), a list shorter than `min`, an element type that does not fit the slot, an element type that differs from its output slot type, a number literal in an input slot of another type, a param argument that is not a number literal, an input kind that differs from the free kind (`point` for `point.free`, `pathParameter` for `point.on_path`, `number` for `number.free`, `angle` for `segment.from_point_length`) |
+| `type_mismatch` | error | argument kind (list vs ref), a list shorter than `min`, an element type that does not fit the slot, an element type that differs from its output slot type, a number literal in an input slot of another type (but a family slot of `numberLiteralSince`, §1), a param argument that is not a number literal, an input kind that differs from the free kind (`point` for `point.free`, `pathParameter` for `point.on_path`, `number` for `number.free`, `angle` for `segment.from_point_length`) |
 | `cycle` | error | the operation lies on a dependency cycle |
 | `formula` | error | an `expr` tree breaks AST v1 (a node, the whitelist, a limit, a `ref` outside `refs`); `path` points at the node ([expr.md](expr.md) §2). A `template` with a bad brace or an insert outside `refs`; `path` is the template's `value` ([ops/text.free.md](ops/text.free.md)) |
 | `input_not_free` | error | an input value for an element not produced by a free op, or for an element of a free op other than its first output slot |
@@ -377,7 +383,10 @@ Service catalogs:
   wrap of a difference of directions, §5); since 1.8 `familySince`
   (`{family: {type: version}}`: a member that joined a family later than
   the family itself, for `min_registry_version` and
-  `needs_newer_registry`, §2);
+  `needs_newer_registry`, §2); since 1.9 `numberLiteralSince`
+  (`{family: version}`: a family whose slot also takes a number literal in
+  a document that declares that registry or a newer one, §1; the registry
+  check refuses a family without the member `number`);
 - `_reasons.json`: reason → state;
 - `_policies.json`: branch policies (`single`, `line_param_order`,
   `circle_side`, `other_than`; since 1.4 `tangent_side`, `bisector_kind`,
@@ -474,9 +483,10 @@ order):
    `error/type_mismatch`; each reference in order: missing element →
    `error/dangling_ref`, element type not fitting the slot type or family →
    `error/type_mismatch`; a number literal is accepted in an input slot of
-   type `number` or, registry 1.9, of a family that contains `number`
-   (`limit`) — it is the defined value `{value, unit: "scalar"}` and no
-   dependency — and is a `type_mismatch` elsewhere. Then each param in
+   type `number` or of a family of `numberLiteralSince` in a document that
+   declares that registry or a newer one (`limit`, 1.9; §1) — it is the
+   defined value `{value, unit: "scalar"}` and no dependency — and is a
+   `type_mismatch` elsewhere. Then each param in
    registry order: absent and required → `error/schema`; not a number
    literal → `error/type_mismatch`. An `expr` or `template` slot (1.4, a5)
    takes only an argument of that kind (else `error/type_mismatch`), and
@@ -1995,7 +2005,8 @@ Operations `since: "1.9"`, `beta` (formulas, decisions and checks in
   their points.
 - The family `bounded` takes `region` (`familySince`: `{"bounded":
   {"region": "1.9"}}`). New families: `limit` (`number`, `point`; a slot
-  of this family also takes a number literal, §1), `graph_bound`
+  of this family also takes a number literal in a document of registry 1.9
+  or newer, `numberLiteralSince`, §1), `graph_bound`
   (`function`, `line`), `contour` (`polygon`, `circle`, `sector`,
   `circlesegment`; for `region.by_boundary`). `region` is in no other
   family: a point on its boundary, distances and transforms come later.

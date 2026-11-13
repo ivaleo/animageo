@@ -4,7 +4,7 @@ Registry 1.9 · group `function` · status `beta` · branch `null` · see [kerne
 
 | | |
 |---|---|
-| inputs | `first: function`; `second: function \| line` (family `graph_bound`, optional); `a`, `b`: `number \| point` (family `limit`, optional together; a point gives its `x`, a number may be a literal) |
+| inputs | `first: function`; `second: function \| line` (family `graph_bound`, optional); `a`, `b`: `number \| point` (family `limit`, optional together; a point gives its `x`, a number may be a literal — `_types.json → numberLiteralSince`, a document of registry 1.9 or newer) |
 | inputSets | `[first, a, b]`, `[first, second, a, b]`, `[first]`, `[first, second]`; without `second` the second boundary is the x-axis `y = 0` |
 | params | `lobe` (optional; only without `a`, `b`): the number of the lobe, a whole number 1..100, absent — 1 |
 | outputs | `region: region` (`stepKind` `area_between`) |

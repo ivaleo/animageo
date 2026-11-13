@@ -52,7 +52,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - the type `region`: closed rings of line, arc and sampled graph pieces,
     outer rings counterclockwise and holes clockwise, with their exact area;
     the family `bounded` takes it, new families `limit` (a number or a point;
-    a number literal fits), `graph_bound` and `contour`, new reasons
+    a number literal fits in a document of registry 1.9 or newer —
+    `_types.json → numberLiteralSince`, `Registry.takes_number_literal(slot_type,
+    version)`; any other family slot takes a reference only, as before),
+    `graph_bound` and `contour`, new reasons
     `empty_region`, `flipped`, `boundary_crossing` and `discontinuous`;
     `measure.area` and `measure.perimeter` of a region;
   - `function.area_between` (beta): the region between a graph and a second

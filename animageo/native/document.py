@@ -1027,8 +1027,8 @@ def validate(doc) -> list:
                                             operationId=op_id))
                     pairs = [(f'{spath}/items/{i}', r) for i, r in enumerate(refs)]
                 else:
-                    if reg.takes_number_literal(item['type']) and arg['kind'] == 'number':
-                        continue                       # a number literal (a number or limit slot)
+                    if reg.takes_number_literal(item['type'], doc.registry_version) and arg['kind'] == 'number':
+                        continue                       # a number literal (a number slot; a limit since 1.9)
                     pairs = [(spath, arg)]
                 for rpath, ref in pairs:
                     if ref['kind'] != 'ref':

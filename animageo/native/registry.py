@@ -170,6 +170,7 @@ class Registry:
     number_units: dict = field(default_factory=dict)
     mark_kinds: dict = field(default_factory=dict)
     family_since: dict = field(default_factory=dict)
+    number_literal_since: dict = field(default_factory=dict)
 
     def get(self, op: str):
         return self.ops.get(op)
@@ -180,11 +181,19 @@ class Registry:
             return True
         return element_type in self.families.get(slot_type, ())
 
-    def takes_number_literal(self, slot_type: str) -> bool:
+    def takes_number_literal(self, slot_type: str, version) -> bool:
         """Whether a scalar input slot of ``slot_type`` takes a number
-        literal: the type ``number``, or since registry 1.9 a family that
-        contains ``number`` (``limit``)."""
-        return slot_type == 'number' or 'number' in self.families.get(slot_type, ())
+        literal in a document of ``operationRegistryVersion`` ``version``:
+        the type ``number`` always; a family listed in ``_types.json →
+        numberLiteralSince`` (registry 1.9: ``limit``) when the document
+        declares that registry or a newer one. Any other slot, a family that
+        holds ``number`` among others too (``locus_driver``), takes a
+        reference only."""
+        if slot_type == 'number':
+            return True
+        since = _version_tuple(self.number_literal_since.get(slot_type))
+        declared = _version_tuple(version)
+        return since is not None and declared is not None and declared >= since
 
     def member_since(self, slot_type: str, element_type: str):
         """The registry version since which ``element_type`` fits a slot of the
@@ -322,6 +331,7 @@ def _load(directory) -> Registry:
         number_units=service['_types'].get('numberUnits', {}),
         mark_kinds=service['_types'].get('markKinds', {}),
         family_since=service['_types'].get('familySince', {}),
+        number_literal_since=service['_types'].get('numberLiteralSince', {}),
     )
 
 
@@ -356,6 +366,12 @@ def registry_problems(reg: Registry | None = None) -> list:
             version = _version_tuple(since)
             if version is None or version > _version_tuple(reg.version):
                 problems.append(f'familySince {family!r}: {member!r} since {since!r} is not a registry version')
+    for family, since in reg.number_literal_since.items():
+        if 'number' not in reg.families.get(family, ()):
+            problems.append(f"numberLiteralSince {family!r}: the family has no member 'number'")
+        version = _version_tuple(since)
+        if version is None or version > _version_tuple(reg.version):
+            problems.append(f'numberLiteralSince {family!r}: since {since!r} is not a registry version')
     for type_ in reg.families.get('path', ()):
         if type_ not in reg.paths:
             problems.append(f'path type {type_!r} has no entry in _types.json paths')

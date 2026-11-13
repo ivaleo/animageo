@@ -234,14 +234,14 @@
    },
    "Registry": {
     "kind": "class",
-    "signature": "(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>, family_since=<factory>)",
+    "signature": "(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>, family_since=<factory>, number_literal_since=<factory>)",
     "members": {
      "accepts": "(self, slot_type, element_type)",
      "get": "(self, op)",
      "member_since": "(self, slot_type, element_type)",
      "output_slots": "(self, record, args, graph=None, _seen=<frozenset>)",
      "output_type": "(self, record, slot, args=None, graph=None)",
-     "takes_number_literal": "(self, slot_type)",
+     "takes_number_literal": "(self, slot_type, version)",
      "vertex_count": "(self, graph, element_id, _seen=<frozenset>)"
     }
    },
