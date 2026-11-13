@@ -31,7 +31,10 @@ and does not move the dev label of the library. ``mapVersion`` 3
 of ``lib_elements`` that was no command, kernel spec §15). ``mapVersion`` 4:
 the conic rows (``Ellipse``, ``Hyperbola``, ``Parabola``, five-point
 ``Conic``, ``Center``, ``Focus``, ``Vertex``, ``Axes`` and the line/conic
-``Intersect`` keys) are op rows of the registry 1.6 conic ops.
+``Intersect`` keys) are op rows of the registry 1.6 conic ops. ``mapVersion``
+5 (registry 1.8): the ``Intersect`` keys of two conics, a conic and a circle
+or an arc (``intersect_KK``, ``Kc``, ``cK``, ``KC``, ``CK`` and their indexed
+forms) are op rows of ``intersect.conic_conic``.
 """
 from __future__ import annotations
 

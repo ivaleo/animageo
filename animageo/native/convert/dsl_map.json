@@ -1,6 +1,6 @@
 {
  "format": "animageo-dsl-map/v1",
- "mapVersion": 4,
+ "mapVersion": 5,
  "registry": "1.8",
  "commands": {
   "abs_i": {
@@ -1879,16 +1879,43 @@
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.conic_conic",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   }
   },
   "intersect_CKi": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.conic_conic",
+   "args": [
+    "first",
+    "second",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_Cc": {
    "factory": "Intersect",
@@ -2183,16 +2210,43 @@
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.conic_conic",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   }
   },
   "intersect_KCi": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.conic_conic",
+   "args": [
+    "first",
+    "second",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_KF": {
    "factory": "Intersect",
@@ -2231,32 +2285,86 @@
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.conic_conic",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   }
   },
   "intersect_KKi": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.conic_conic",
+   "args": [
+    "first",
+    "second",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_Kc": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.conic_conic",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   }
   },
   "intersect_Kci": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.conic_conic",
+   "args": [
+    "first",
+    "second",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_Kl": {
    "factory": "Intersect",
@@ -2471,16 +2579,43 @@
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.conic_conic",
+   "args": [
+    "first",
+    "second"
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   }
   },
   "intersect_cKi": {
    "factory": "Intersect",
    "ggb": [
     "Intersect"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "intersect.conic_conic",
+   "args": [
+    "first",
+    "second",
+    null
+   ],
+   "outputs": {
+    "byValue": [
+     "first",
+     "second",
+     "third",
+     "fourth"
+    ]
+   },
+   "index": {
+    "input": 2,
+    "base": 1
+   }
   },
   "intersect_cc": {
    "factory": "Intersect",
@@ -5287,14 +5422,13 @@
  "opsWithoutClassic": {
   "angle.between_lines": "no classic Angle(line, line) dispatch key",
   "angle.between_vectors": "no classic Angle(vector, vector) dispatch key",
-  "angle.by_size": "classic Angle(A, B, α) is not a dispatch key",
+  "angle.by_size": "classic Angle(A, B, \u03b1) is not a dispatch key",
   "circle.diameter": "no classic command builds it",
   "circle.excircle": "no classic command builds it",
   "conic.equation": "GGB conic equations are read as formulas outside the classic command table",
   "function.expr": "registry 1.6: classic functions are not translated yet",
   "function.extremum": "registry 1.6: classic functions are not translated yet",
   "function.root": "registry 1.6: classic functions are not translated yet",
-  "intersect.conic_conic": "registry 1.8: classic intersections of conics are not mapped yet",
   "intersect.function_conic": "registry 1.8: classic functions are not translated yet",
   "intersect.function_function": "registry 1.6: classic functions are not translated yet",
   "intersect.function_line": "registry 1.6: classic functions are not translated yet",
@@ -5311,7 +5445,7 @@
   "number.free": "free element: a number without a command (GGB numeric, DSL Var)",
   "point.at_distance": "no classic command builds it",
   "point.divide": "no classic command builds it",
-  "point.free": "free element: a point without a command (GGB <element type=\"point\">, DSL Point(x, y) → point_ii free row)",
+  "point.free": "free element: a point without a command (GGB <element type=\"point\">, DSL Point(x, y) \u2192 point_ii free row)",
   "point.on_function": "registry 1.6: classic functions are not translated yet",
   "point.projection": "no classic command builds it",
   "polygon.parallelogram": "no classic command builds it",

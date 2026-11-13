@@ -1734,5 +1734,9 @@ Operations `since: "1.8"`, `beta` (formulas, decisions and checks in
   `meet_seam`: a point crossing the seam swaps two slots between the cases
   `near_before` and `after`; `meet_curve_slots`: `intersect.nearest` and
   `intersect.other_than` on every kind of pair with a conic or a graph,
-  including a tangency, a vertical line, a part and an arc. The DSL map
-  lists the operations in `opsWithoutClassic` until the GGB import maps them.
+  including a tangency, a vertical line, a part and an arc.
+- GGB import (`mapVersion` 5): `Intersect` of two conics, a conic and a
+  circle or an arc, with or without the output number, is
+  `intersect.conic_conic`, its slots bound by the saved values (`byValue`,
+  as `intersect.circle_circle`). `intersect.function_conic` stays in
+  `opsWithoutClassic` with the other intersections of functions.

@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `intersect.function_line`, `intersect.function_function` or
   `intersect.function_conic`. Their records stay those of registry 1.4 and
   1.1; only a document that uses the new pairs declares 1.8.
+- GGB import: `Intersect` of two conics, of a conic and a circle and of a
+  conic and an arc, with or without the output number, becomes
+  `intersect.conic_conic` with its slots bound by the saved values (DSL map
+  version 5); before it was a picture (`no_registry_op`). Intersections with
+  functions and `Intersect(a, b, <Point>)` are not translated yet.
 
 ## [1.12.1] - 2026-11-13
 

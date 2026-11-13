@@ -439,6 +439,24 @@ for _kind, _factory in (('l', 'Line'), ('r', 'Ray'), ('s', 'Segment')):
             _args = [VARIANTS['K'][0] if ch == 'K' else f'{_factory}(Point(-1, 9), Point(1, 9))' for ch in _order]
             DEGENERATE['intersect_' + _order + _indexed] = (
                 ('X' if _indexed else 'X1, X2') + ' = Intersect(' + ', '.join(_args + (['1'] if _indexed else [])) + ')')
+# registry 1.8, intersect.conic_conic: another configuration of a conic and an
+# arc keeps both points on the arc (the next arc variant misses the ellipse);
+# the degenerate one is a tangency at (0, 3) — the classic gives the touching
+# point once, the kernel twice: the second classic output meets an absent slot
+_ARC_MEET = 'CircleArc(Point(1, 1), Point(1, -2.3), Point(1, 4.3))'
+_TOUCHING = {'K': 'Ellipse(Point(-2, 6), Point(2, 6), Point(0, 3))', 'c': 'Circle(Point(0, 6), 3)',
+             'C': 'CircleArc(Point(0, 6), Point(-3, 6), Point(3, 6))'}
+for _order in ('KK', 'Kc', 'cK', 'KC', 'CK'):
+    for _indexed in ('', 'i'):
+        _target = 'X' if _indexed else 'X1, X2'
+        _other = _order.replace('K', '', 1) or 'K'
+        _args = ([VARIANTS['K'][0], _TOUCHING[_other]] if _order[0] == 'K' else [_TOUCHING[_other], VARIANTS['K'][0]])
+        DEGENERATE['intersect_' + _order + _indexed] = (
+            f"{_target} = Intersect({', '.join(_args + (['1'] if _indexed else []))})")
+        if 'C' in _order:
+            _args = [VARIANTS['K'][1] if ch == 'K' else _ARC_MEET for ch in _order]
+            OTHER['intersect_' + _order + _indexed] = (
+                f"{_target} = Intersect({', '.join(_args + (['2'] if _indexed else []))})")
 # Degenerate configurations where the classic and the kernel disagree. They are
 # reported as differs — never editable — so «zero falsely editable» holds:
 # at a tangency the classic gives one point (the second output is undefined),

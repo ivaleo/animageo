@@ -68,7 +68,11 @@ Conic equations such as `y = a*x^2` retain numeric references. Their homogeneous
 matrices are compared with the saved GeoGebra matrices up to a nonzero factor.
 Intersection slots are assigned together by saved value, then kept fixed during
 movement. Branch selection and projection of points on paths follow graph order.
-General conic/conic intersections, conic transformations and points on conics
+Since registry 1.8 (`mapVersion` 5) `Intersect` of two conics, of a conic
+and a circle or of a conic and an arc (with or without the output number)
+is `intersect.conic_conic`: its four slots are bound by the saved values as
+those of `intersect.circle_circle`. Intersections with functions (`Intersect(f, …)`)
+and `Intersect(a, b, <Point>)`, conic transformations and points on conics
 still require registry support and keep their fallback reasons. A bare `pi`
 (`π`) argument, as in `Rotate(B, pi, O)`, is read as its number.
 
