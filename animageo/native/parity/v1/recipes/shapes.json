@@ -2614,6 +2614,22 @@
     ],
     "document": {
      "appearance": {
+      "aux_c1": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c1_2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c2_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -2691,7 +2707,7 @@
         "op": "point.free"
        },
        "recipe": "parallel",
-       "seq": 6,
+       "seq": 9,
        "shapeId": "T",
        "source": "shape",
        "statement": {
@@ -2758,6 +2774,58 @@
        },
        "type": "polygon"
       },
+      "aux_c1": {
+       "displayName": "",
+       "id": "aux_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c1_2": {
+       "displayName": "",
+       "id": "aux_c1_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c2": {
+       "displayName": "",
+       "id": "aux_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c2_2": {
+       "displayName": "",
+       "id": "aux_c2_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -2793,6 +2861,32 @@
         "slot": "line"
        },
        "type": "line"
+      },
+      "mark_c1": {
+       "displayName": "",
+       "id": "mark_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c2": {
+       "displayName": "",
+       "id": "mark_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_mark_c2",
+        "slot": "mark"
+       },
+       "type": "mark"
       }
      },
      "format": "animageo-construction/v1",
@@ -2907,6 +3001,90 @@
         }
        ]
       },
+      "op_aux_c1": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1",
+         "slot": "segment"
+        }
+       ],
+       "seq": 4
+      },
+      "op_aux_c1_2": {
+       "args": {
+        "a": {
+         "elementId": "D",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 5
+      },
+      "op_aux_c2": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 10
+      },
+      "op_aux_c2_2": {
+       "args": {
+        "a": {
+         "elementId": "B",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 11
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -2968,7 +3146,7 @@
          "slot": "line"
         }
        ],
-       "seq": 4
+       "seq": 7
       },
       "op_c2_2": {
        "args": {
@@ -2989,7 +3167,67 @@
          "slot": "line"
         }
        ],
-       "seq": 5
+       "seq": 8
+      },
+      "op_mark_c1": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c1",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c1",
+         "slot": "mark"
+        }
+       ],
+       "seq": 6
+      },
+      "op_mark_c2": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 2
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c2",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c2_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c2",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c2",
+         "slot": "mark"
+        }
+       ],
+       "seq": 12
       }
      },
      "viewDefaults": {
@@ -3220,6 +3458,22 @@
     ],
     "document": {
      "appearance": {
+      "aux_c1": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c1_2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c2_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -3297,7 +3551,7 @@
         "op": "point.free"
        },
        "recipe": "parallel",
-       "seq": 6,
+       "seq": 9,
        "shapeId": "T",
        "source": "shape",
        "statement": {
@@ -3364,6 +3618,58 @@
        },
        "type": "polygon"
       },
+      "aux_c1": {
+       "displayName": "",
+       "id": "aux_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c1_2": {
+       "displayName": "",
+       "id": "aux_c1_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c2": {
+       "displayName": "",
+       "id": "aux_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c2_2": {
+       "displayName": "",
+       "id": "aux_c2_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -3399,6 +3705,32 @@
         "slot": "line"
        },
        "type": "line"
+      },
+      "mark_c1": {
+       "displayName": "",
+       "id": "mark_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c2": {
+       "displayName": "",
+       "id": "mark_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_mark_c2",
+        "slot": "mark"
+       },
+       "type": "mark"
       }
      },
      "format": "animageo-construction/v1",
@@ -3513,6 +3845,90 @@
         }
        ]
       },
+      "op_aux_c1": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1",
+         "slot": "segment"
+        }
+       ],
+       "seq": 4
+      },
+      "op_aux_c1_2": {
+       "args": {
+        "a": {
+         "elementId": "D",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 5
+      },
+      "op_aux_c2": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 10
+      },
+      "op_aux_c2_2": {
+       "args": {
+        "a": {
+         "elementId": "B",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 11
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -3574,7 +3990,7 @@
          "slot": "line"
         }
        ],
-       "seq": 4
+       "seq": 7
       },
       "op_c2_2": {
        "args": {
@@ -3595,7 +4011,67 @@
          "slot": "line"
         }
        ],
-       "seq": 5
+       "seq": 8
+      },
+      "op_mark_c1": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c1",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c1",
+         "slot": "mark"
+        }
+       ],
+       "seq": 6
+      },
+      "op_mark_c2": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 2
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c2",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c2_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c2",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c2",
+         "slot": "mark"
+        }
+       ],
+       "seq": 12
       }
      },
      "viewDefaults": {
@@ -3848,6 +4324,22 @@
     ],
     "document": {
      "appearance": {
+      "aux_c2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c2_2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c3": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c3_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -3976,7 +4468,7 @@
         "op": "point.free"
        },
        "recipe": "parallel",
-       "seq": 10,
+       "seq": 13,
        "shapeId": "T",
        "source": "shape",
        "statement": {
@@ -4043,6 +4535,58 @@
        },
        "type": "polygon"
       },
+      "aux_c2": {
+       "displayName": "",
+       "id": "aux_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c2_2": {
+       "displayName": "",
+       "id": "aux_c2_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c3": {
+       "displayName": "",
+       "id": "aux_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_aux_c3",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c3_2": {
+       "displayName": "",
+       "id": "aux_c3_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_aux_c3_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -4106,6 +4650,32 @@
        },
        "producer": {
         "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c2": {
+       "displayName": "",
+       "id": "mark_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_mark_c2",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c3": {
+       "displayName": "",
+       "id": "mark_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_mark_c3",
         "slot": "mark"
        },
        "type": "mark"
@@ -4225,6 +4795,90 @@
         }
        ]
       },
+      "op_aux_c2": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 8
+      },
+      "op_aux_c2_2": {
+       "args": {
+        "a": {
+         "elementId": "D",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 9
+      },
+      "op_aux_c3": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c3",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c3",
+         "slot": "segment"
+        }
+       ],
+       "seq": 14
+      },
+      "op_aux_c3_2": {
+       "args": {
+        "a": {
+         "elementId": "B",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c3_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c3_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 15
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -4328,7 +4982,7 @@
          "slot": "line"
         }
        ],
-       "seq": 8
+       "seq": 11
       },
       "op_c3_2": {
        "args": {
@@ -4349,7 +5003,7 @@
          "slot": "line"
         }
        ],
-       "seq": 9
+       "seq": 12
       },
       "op_mark_c1": {
        "args": {
@@ -4375,6 +5029,66 @@
         }
        ],
        "seq": 4
+      },
+      "op_mark_c2": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c2",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c2_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c2",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c2",
+         "slot": "mark"
+        }
+       ],
+       "seq": 10
+      },
+      "op_mark_c3": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 2
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c3",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c3_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c3",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c3",
+         "slot": "mark"
+        }
+       ],
+       "seq": 16
       }
      },
      "viewDefaults": {
@@ -4627,6 +5341,22 @@
     ],
     "document": {
      "appearance": {
+      "aux_c2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c2_2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c3": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c3_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -4755,7 +5485,7 @@
         "op": "point.free"
        },
        "recipe": "parallel",
-       "seq": 10,
+       "seq": 13,
        "shapeId": "T",
        "source": "shape",
        "statement": {
@@ -4822,6 +5552,58 @@
        },
        "type": "polygon"
       },
+      "aux_c2": {
+       "displayName": "",
+       "id": "aux_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c2_2": {
+       "displayName": "",
+       "id": "aux_c2_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c3": {
+       "displayName": "",
+       "id": "aux_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_aux_c3",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c3_2": {
+       "displayName": "",
+       "id": "aux_c3_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_aux_c3_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -4885,6 +5667,32 @@
        },
        "producer": {
         "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c2": {
+       "displayName": "",
+       "id": "mark_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_mark_c2",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c3": {
+       "displayName": "",
+       "id": "mark_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_mark_c3",
         "slot": "mark"
        },
        "type": "mark"
@@ -5004,6 +5812,90 @@
         }
        ]
       },
+      "op_aux_c2": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 8
+      },
+      "op_aux_c2_2": {
+       "args": {
+        "a": {
+         "elementId": "D",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 9
+      },
+      "op_aux_c3": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c3",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c3",
+         "slot": "segment"
+        }
+       ],
+       "seq": 14
+      },
+      "op_aux_c3_2": {
+       "args": {
+        "a": {
+         "elementId": "B",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c3_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c3_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 15
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -5107,7 +5999,7 @@
          "slot": "line"
         }
        ],
-       "seq": 8
+       "seq": 11
       },
       "op_c3_2": {
        "args": {
@@ -5128,7 +6020,7 @@
          "slot": "line"
         }
        ],
-       "seq": 9
+       "seq": 12
       },
       "op_mark_c1": {
        "args": {
@@ -5154,6 +6046,66 @@
         }
        ],
        "seq": 4
+      },
+      "op_mark_c2": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c2",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c2_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c2",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c2",
+         "slot": "mark"
+        }
+       ],
+       "seq": 10
+      },
+      "op_mark_c3": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 2
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c3",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c3_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c3",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c3",
+         "slot": "mark"
+        }
+       ],
+       "seq": 16
       }
      },
      "viewDefaults": {
@@ -5414,6 +6366,14 @@
        "role": "aux",
        "visible": false
       },
+      "aux_c2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c3": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_c": {
        "role": "aux",
        "visible": false
@@ -5537,7 +6497,7 @@
         "op": "point.free"
        },
        "recipe": "parallel",
-       "seq": 11,
+       "seq": 13,
        "shapeId": "T",
        "source": "shape",
        "statement": {
@@ -5630,6 +6590,32 @@
        },
        "type": "segment"
       },
+      "aux_c2": {
+       "displayName": "",
+       "id": "aux_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c3": {
+       "displayName": "",
+       "id": "aux_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_aux_c3",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_c": {
        "displayName": "",
        "id": "c1_c",
@@ -5684,6 +6670,32 @@
        },
        "producer": {
         "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c2": {
+       "displayName": "",
+       "id": "mark_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_mark_c2",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c3": {
+       "displayName": "",
+       "id": "mark_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_mark_c3",
         "slot": "mark"
        },
        "type": "mark"
@@ -5845,6 +6857,48 @@
        ],
        "seq": 4
       },
+      "op_aux_c2": {
+       "args": {
+        "a": {
+         "elementId": "D",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 9
+      },
+      "op_aux_c3": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c3",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c3",
+         "slot": "segment"
+        }
+       ],
+       "seq": 14
+      },
       "op_c1_1": {
        "args": {
         "center": {
@@ -5927,7 +6981,7 @@
          "slot": "line"
         }
        ],
-       "seq": 9
+       "seq": 11
       },
       "op_c3_2": {
        "args": {
@@ -5948,7 +7002,7 @@
          "slot": "line"
         }
        ],
-       "seq": 10
+       "seq": 12
       },
       "op_mark_c1": {
        "args": {
@@ -5979,6 +7033,66 @@
         }
        ],
        "seq": 5
+      },
+      "op_mark_c2": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c2",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c2",
+         "slot": "mark"
+        }
+       ],
+       "seq": 10
+      },
+      "op_mark_c3": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 2
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c3",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c3",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c3",
+         "slot": "mark"
+        }
+       ],
+       "seq": 15
       }
      },
      "viewDefaults": {
@@ -6239,6 +7353,14 @@
        "role": "aux",
        "visible": false
       },
+      "aux_c2": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c3": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_c": {
        "role": "aux",
        "visible": false
@@ -6362,7 +7484,7 @@
         "op": "point.free"
        },
        "recipe": "parallel",
-       "seq": 11,
+       "seq": 13,
        "shapeId": "T",
        "source": "shape",
        "statement": {
@@ -6455,6 +7577,32 @@
        },
        "type": "segment"
       },
+      "aux_c2": {
+       "displayName": "",
+       "id": "aux_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_aux_c2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c3": {
+       "displayName": "",
+       "id": "aux_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_aux_c3",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_c": {
        "displayName": "",
        "id": "c1_c",
@@ -6509,6 +7657,32 @@
        },
        "producer": {
         "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c2": {
+       "displayName": "",
+       "id": "mark_c2",
+       "origin": {
+        "kind": "auto",
+        "source": "c2"
+       },
+       "producer": {
+        "operationId": "op_mark_c2",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c3": {
+       "displayName": "",
+       "id": "mark_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_mark_c3",
         "slot": "mark"
        },
        "type": "mark"
@@ -6670,6 +7844,48 @@
        ],
        "seq": 4
       },
+      "op_aux_c2": {
+       "args": {
+        "a": {
+         "elementId": "D",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 9
+      },
+      "op_aux_c3": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c3",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c3",
+         "slot": "segment"
+        }
+       ],
+       "seq": 14
+      },
       "op_c1_1": {
        "args": {
         "center": {
@@ -6752,7 +7968,7 @@
          "slot": "line"
         }
        ],
-       "seq": 9
+       "seq": 11
       },
       "op_c3_2": {
        "args": {
@@ -6773,7 +7989,7 @@
          "slot": "line"
         }
        ],
-       "seq": 10
+       "seq": 12
       },
       "op_mark_c1": {
        "args": {
@@ -6804,6 +8020,66 @@
         }
        ],
        "seq": 5
+      },
+      "op_mark_c2": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c2",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c2",
+         "slot": "mark"
+        }
+       ],
+       "seq": 10
+      },
+      "op_mark_c3": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 2
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c3",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c3",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c3",
+         "slot": "mark"
+        }
+       ],
+       "seq": 15
       }
      },
      "viewDefaults": {
@@ -7946,6 +9222,14 @@
        "role": "aux",
        "visible": false
       },
+      "aux_c3": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c4": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -8120,7 +9404,7 @@
         "op": "point.free"
        },
        "recipe": "parallel",
-       "seq": 15,
+       "seq": 17,
        "shapeId": "T",
        "source": "shape",
        "statement": {
@@ -8213,6 +9497,32 @@
        },
        "type": "segment"
       },
+      "aux_c3": {
+       "displayName": "",
+       "id": "aux_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_aux_c3",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c4": {
+       "displayName": "",
+       "id": "aux_c4",
+       "origin": {
+        "kind": "auto",
+        "source": "c4"
+       },
+       "producer": {
+        "operationId": "op_aux_c4",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -8298,6 +9608,32 @@
        },
        "producer": {
         "operationId": "op_mark_c2",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c3": {
+       "displayName": "",
+       "id": "mark_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_mark_c3",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c4": {
+       "displayName": "",
+       "id": "mark_c4",
+       "origin": {
+        "kind": "auto",
+        "source": "c4"
+       },
+       "producer": {
+        "operationId": "op_mark_c4",
         "slot": "mark"
        },
        "type": "mark"
@@ -8459,6 +9795,48 @@
        ],
        "seq": 8
       },
+      "op_aux_c3": {
+       "args": {
+        "a": {
+         "elementId": "D",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c3",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c3",
+         "slot": "segment"
+        }
+       ],
+       "seq": 13
+      },
+      "op_aux_c4": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c4",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c4",
+         "slot": "segment"
+        }
+       ],
+       "seq": 18
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -8583,7 +9961,7 @@
          "slot": "line"
         }
        ],
-       "seq": 13
+       "seq": 15
       },
       "op_c4_2": {
        "args": {
@@ -8604,7 +9982,7 @@
          "slot": "line"
         }
        ],
-       "seq": 14
+       "seq": 16
       },
       "op_mark_c1": {
        "args": {
@@ -8660,6 +10038,66 @@
         }
        ],
        "seq": 9
+      },
+      "op_mark_c3": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c2_2",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c3",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c3",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c3",
+         "slot": "mark"
+        }
+       ],
+       "seq": 14
+      },
+      "op_mark_c4": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 2
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c4",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c4",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c4",
+         "slot": "mark"
+        }
+       ],
+       "seq": 19
       }
      },
      "viewDefaults": {
@@ -8942,6 +10380,14 @@
        "role": "aux",
        "visible": false
       },
+      "aux_c3": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c4": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -9116,7 +10562,7 @@
         "op": "point.free"
        },
        "recipe": "parallel",
-       "seq": 15,
+       "seq": 17,
        "shapeId": "T",
        "source": "shape",
        "statement": {
@@ -9209,6 +10655,32 @@
        },
        "type": "segment"
       },
+      "aux_c3": {
+       "displayName": "",
+       "id": "aux_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_aux_c3",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c4": {
+       "displayName": "",
+       "id": "aux_c4",
+       "origin": {
+        "kind": "auto",
+        "source": "c4"
+       },
+       "producer": {
+        "operationId": "op_aux_c4",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -9294,6 +10766,32 @@
        },
        "producer": {
         "operationId": "op_mark_c2",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c3": {
+       "displayName": "",
+       "id": "mark_c3",
+       "origin": {
+        "kind": "auto",
+        "source": "c3"
+       },
+       "producer": {
+        "operationId": "op_mark_c3",
+        "slot": "mark"
+       },
+       "type": "mark"
+      },
+      "mark_c4": {
+       "displayName": "",
+       "id": "mark_c4",
+       "origin": {
+        "kind": "auto",
+        "source": "c4"
+       },
+       "producer": {
+        "operationId": "op_mark_c4",
         "slot": "mark"
        },
        "type": "mark"
@@ -9455,6 +10953,48 @@
        ],
        "seq": 8
       },
+      "op_aux_c3": {
+       "args": {
+        "a": {
+         "elementId": "D",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c3",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c3",
+         "slot": "segment"
+        }
+       ],
+       "seq": 13
+      },
+      "op_aux_c4": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c4",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c4",
+         "slot": "segment"
+        }
+       ],
+       "seq": 18
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -9579,7 +11119,7 @@
          "slot": "line"
         }
        ],
-       "seq": 13
+       "seq": 15
       },
       "op_c4_2": {
        "args": {
@@ -9600,7 +11140,7 @@
          "slot": "line"
         }
        ],
-       "seq": 14
+       "seq": 16
       },
       "op_mark_c1": {
        "args": {
@@ -9656,6 +11196,66 @@
         }
        ],
        "seq": 9
+      },
+      "op_mark_c3": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c2_2",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c3",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c3",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c3",
+         "slot": "mark"
+        }
+       ],
+       "seq": 14
+      },
+      "op_mark_c4": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 2
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c4",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c4",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c4",
+         "slot": "mark"
+        }
+       ],
+       "seq": 19
       }
      },
      "viewDefaults": {
@@ -9868,6 +11468,14 @@
     ],
     "document": {
      "appearance": {
+      "aux_c1": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c1_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -9965,6 +11573,32 @@
        },
        "type": "polygon"
       },
+      "aux_c1": {
+       "displayName": "",
+       "id": "aux_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c1_2": {
+       "displayName": "",
+       "id": "aux_c1_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -9982,6 +11616,19 @@
         "slot": "line"
        },
        "type": "line"
+      },
+      "mark_c1": {
+       "displayName": "",
+       "id": "mark_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
       }
      },
      "format": "animageo-construction/v1",
@@ -10096,6 +11743,48 @@
         }
        ]
       },
+      "op_aux_c1": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1",
+         "slot": "segment"
+        }
+       ],
+       "seq": 4
+      },
+      "op_aux_c1_2": {
+       "args": {
+        "a": {
+         "elementId": "D",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 5
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -10137,6 +11826,36 @@
         }
        ],
        "seq": 2
+      },
+      "op_mark_c1": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c1",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c1",
+         "slot": "mark"
+        }
+       ],
+       "seq": 6
       }
      },
      "viewDefaults": {
@@ -10349,6 +12068,14 @@
     ],
     "document": {
      "appearance": {
+      "aux_c1": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c1_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -10446,6 +12173,32 @@
        },
        "type": "polygon"
       },
+      "aux_c1": {
+       "displayName": "",
+       "id": "aux_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c1_2": {
+       "displayName": "",
+       "id": "aux_c1_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -10463,6 +12216,19 @@
         "slot": "line"
        },
        "type": "line"
+      },
+      "mark_c1": {
+       "displayName": "",
+       "id": "mark_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
       }
      },
      "format": "animageo-construction/v1",
@@ -10577,6 +12343,48 @@
         }
        ]
       },
+      "op_aux_c1": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1",
+         "slot": "segment"
+        }
+       ],
+       "seq": 4
+      },
+      "op_aux_c1_2": {
+       "args": {
+        "a": {
+         "elementId": "D",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "C",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 5
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -10618,6 +12426,36 @@
         }
        ],
        "seq": 2
+      },
+      "op_mark_c1": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c1",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c1",
+         "slot": "mark"
+        }
+       ],
+       "seq": 6
       }
      },
      "viewDefaults": {

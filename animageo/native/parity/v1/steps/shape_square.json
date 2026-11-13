@@ -2,7 +2,7 @@
   "format": "animageo-steps/v1",
   "id": "shape_square",
   "registry": "1.8",
-  "generatedBy": "animageo 1.11.4",
+  "generatedBy": "animageo 1.12.0",
   "document": {
     "appearance": {
       "aux_c2": {
@@ -10,6 +10,14 @@
         "visible": false
       },
       "aux_c2_2": {
+        "role": "aux",
+        "visible": false
+      },
+      "aux_c3": {
+        "role": "aux",
+        "visible": false
+      },
+      "aux_c4": {
         "role": "aux",
         "visible": false
       },
@@ -187,7 +195,7 @@
           "op": "point.free"
         },
         "recipe": "parallel",
-        "seq": 15,
+        "seq": 17,
         "shapeId": "T",
         "source": "shape",
         "statement": {
@@ -280,6 +288,32 @@
         },
         "type": "segment"
       },
+      "aux_c3": {
+        "displayName": "",
+        "id": "aux_c3",
+        "origin": {
+          "kind": "auto",
+          "source": "c3"
+        },
+        "producer": {
+          "operationId": "op_aux_c3",
+          "slot": "segment"
+        },
+        "type": "segment"
+      },
+      "aux_c4": {
+        "displayName": "",
+        "id": "aux_c4",
+        "origin": {
+          "kind": "auto",
+          "source": "c4"
+        },
+        "producer": {
+          "operationId": "op_aux_c4",
+          "slot": "segment"
+        },
+        "type": "segment"
+      },
       "c1_l": {
         "displayName": "",
         "id": "c1_l",
@@ -365,6 +399,32 @@
         },
         "producer": {
           "operationId": "op_mark_c2",
+          "slot": "mark"
+        },
+        "type": "mark"
+      },
+      "mark_c3": {
+        "displayName": "",
+        "id": "mark_c3",
+        "origin": {
+          "kind": "auto",
+          "source": "c3"
+        },
+        "producer": {
+          "operationId": "op_mark_c3",
+          "slot": "mark"
+        },
+        "type": "mark"
+      },
+      "mark_c4": {
+        "displayName": "",
+        "id": "mark_c4",
+        "origin": {
+          "kind": "auto",
+          "source": "c4"
+        },
+        "producer": {
+          "operationId": "op_mark_c4",
           "slot": "mark"
         },
         "type": "mark"
@@ -526,6 +586,48 @@
         ],
         "seq": 8
       },
+      "op_aux_c3": {
+        "args": {
+          "a": {
+            "elementId": "D",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "C",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c3",
+        "op": "segment.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c3",
+            "slot": "segment"
+          }
+        ],
+        "seq": 13
+      },
+      "op_aux_c4": {
+        "args": {
+          "a": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "D",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c4",
+        "op": "segment.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c4",
+            "slot": "segment"
+          }
+        ],
+        "seq": 18
+      },
       "op_c1_1": {
         "args": {
           "a": {
@@ -650,7 +752,7 @@
             "slot": "line"
           }
         ],
-        "seq": 13
+        "seq": 15
       },
       "op_c4_2": {
         "args": {
@@ -671,7 +773,7 @@
             "slot": "line"
           }
         ],
-        "seq": 14
+        "seq": 16
       },
       "op_mark_c1": {
         "args": {
@@ -727,6 +829,66 @@
           }
         ],
         "seq": 9
+      },
+      "op_mark_c3": {
+        "args": {
+          "count": {
+            "kind": "number",
+            "value": 1
+          },
+          "lines": {
+            "items": [
+              {
+                "elementId": "aux_c2_2",
+                "kind": "ref"
+              },
+              {
+                "elementId": "aux_c3",
+                "kind": "ref"
+              }
+            ],
+            "kind": "list"
+          }
+        },
+        "id": "op_mark_c3",
+        "op": "mark.parallel",
+        "outputs": [
+          {
+            "elementId": "mark_c3",
+            "slot": "mark"
+          }
+        ],
+        "seq": 14
+      },
+      "op_mark_c4": {
+        "args": {
+          "count": {
+            "kind": "number",
+            "value": 2
+          },
+          "lines": {
+            "items": [
+              {
+                "elementId": "aux_c4",
+                "kind": "ref"
+              },
+              {
+                "elementId": "aux_c2",
+                "kind": "ref"
+              }
+            ],
+            "kind": "list"
+          }
+        },
+        "id": "op_mark_c4",
+        "op": "mark.parallel",
+        "outputs": [
+          {
+            "elementId": "mark_c4",
+            "slot": "mark"
+          }
+        ],
+        "seq": 19
       }
     },
     "viewDefaults": {
@@ -807,14 +969,18 @@
         "operationIds": [
           "op_c4_1",
           "op_c4_2",
-          "op_D"
+          "op_D",
+          "op_aux_c3",
+          "op_aux_c4"
         ],
         "elementIds": [
           "D"
         ],
         "auxElementIds": [
           "c4_l",
-          "c4_p"
+          "c4_p",
+          "aux_c3",
+          "aux_c4"
         ]
       },
       {
@@ -827,6 +993,28 @@
           "T"
         ],
         "auxElementIds": []
+      },
+      {
+        "id": "op:op_mark_c3",
+        "kind": "op",
+        "operationIds": [
+          "op_mark_c3"
+        ],
+        "elementIds": [
+          "mark_c3"
+        ],
+        "auxElementIds": []
+      },
+      {
+        "id": "op:op_mark_c4",
+        "kind": "op",
+        "operationIds": [
+          "op_mark_c4"
+        ],
+        "elementIds": [
+          "mark_c4"
+        ],
+        "auxElementIds": []
       }
     ],
     "describe": [
@@ -835,7 +1023,9 @@
       "3. Ставим C на окружности с центром B через A: |BA| = |BC|; отмечаем прямой угол ABC; отмечаем равные отрезки BC и AB.",
       "4. Ставим D на прямой через C, параллельной AB.",
       "5. Ставим D на прямой через A, параллельной BC.",
-      "6. Строим многоугольник ABCD."
+      "6. Строим многоугольник ABCD.",
+      "7. Отмечаем параллельные AB и DC.",
+      "8. Отмечаем параллельные AD и BC."
     ],
     "timeline": {
       "keyframes": {
@@ -850,7 +1040,9 @@
               "mark_c1": false,
               "mark_c2": false,
               "D": false,
-              "T": false
+              "T": false,
+              "mark_c3": false,
+              "mark_c4": false
             }
           },
           {
@@ -922,6 +1114,32 @@
                 "at": 0.6
               }
             }
+          },
+          {
+            "t": 5.8,
+            "visible": {
+              "mark_c3": true
+            },
+            "enter": {
+              "mark_c3": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
+          },
+          {
+            "t": 6.8999999999999995,
+            "visible": {
+              "mark_c4": true
+            },
+            "enter": {
+              "mark_c4": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              }
+            }
           }
         ]
       },
@@ -964,9 +1182,27 @@
             "T"
           ],
           "text": null
+        },
+        {
+          "stepId": "op:op_mark_c3",
+          "start": 5.3,
+          "end": 5.8,
+          "elementIds": [
+            "mark_c3"
+          ],
+          "text": null
+        },
+        {
+          "stepId": "op:op_mark_c4",
+          "start": 6.3999999999999995,
+          "end": 6.8999999999999995,
+          "elementIds": [
+            "mark_c4"
+          ],
+          "text": null
         }
       ],
-      "duration": 4.7
+      "duration": 6.8999999999999995
     }
   }
 }

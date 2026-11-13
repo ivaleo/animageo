@@ -13,6 +13,14 @@
         "role": "aux",
         "visible": false
       },
+      "aux_c3": {
+        "role": "aux",
+        "visible": false
+      },
+      "aux_c4": {
+        "role": "aux",
+        "visible": false
+      },
       "c1_l": {
         "role": "aux",
         "visible": false
@@ -187,7 +195,7 @@
           "op": "point.free"
         },
         "recipe": "parallel",
-        "seq": 15,
+        "seq": 17,
         "shapeId": "T",
         "source": "shape",
         "statement": {
@@ -280,6 +288,32 @@
         },
         "type": "segment"
       },
+      "aux_c3": {
+        "displayName": "",
+        "id": "aux_c3",
+        "origin": {
+          "kind": "auto",
+          "source": "c3"
+        },
+        "producer": {
+          "operationId": "op_aux_c3",
+          "slot": "segment"
+        },
+        "type": "segment"
+      },
+      "aux_c4": {
+        "displayName": "",
+        "id": "aux_c4",
+        "origin": {
+          "kind": "auto",
+          "source": "c4"
+        },
+        "producer": {
+          "operationId": "op_aux_c4",
+          "slot": "segment"
+        },
+        "type": "segment"
+      },
       "c1_l": {
         "displayName": "",
         "id": "c1_l",
@@ -365,6 +399,32 @@
         },
         "producer": {
           "operationId": "op_mark_c2",
+          "slot": "mark"
+        },
+        "type": "mark"
+      },
+      "mark_c3": {
+        "displayName": "",
+        "id": "mark_c3",
+        "origin": {
+          "kind": "auto",
+          "source": "c3"
+        },
+        "producer": {
+          "operationId": "op_mark_c3",
+          "slot": "mark"
+        },
+        "type": "mark"
+      },
+      "mark_c4": {
+        "displayName": "",
+        "id": "mark_c4",
+        "origin": {
+          "kind": "auto",
+          "source": "c4"
+        },
+        "producer": {
+          "operationId": "op_mark_c4",
           "slot": "mark"
         },
         "type": "mark"
@@ -526,6 +586,48 @@
         ],
         "seq": 8
       },
+      "op_aux_c3": {
+        "args": {
+          "a": {
+            "elementId": "D",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "C",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c3",
+        "op": "segment.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c3",
+            "slot": "segment"
+          }
+        ],
+        "seq": 13
+      },
+      "op_aux_c4": {
+        "args": {
+          "a": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "D",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c4",
+        "op": "segment.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c4",
+            "slot": "segment"
+          }
+        ],
+        "seq": 18
+      },
       "op_c1_1": {
         "args": {
           "a": {
@@ -650,7 +752,7 @@
             "slot": "line"
           }
         ],
-        "seq": 13
+        "seq": 15
       },
       "op_c4_2": {
         "args": {
@@ -671,7 +773,7 @@
             "slot": "line"
           }
         ],
-        "seq": 14
+        "seq": 16
       },
       "op_mark_c1": {
         "args": {
@@ -727,6 +829,66 @@
           }
         ],
         "seq": 9
+      },
+      "op_mark_c3": {
+        "args": {
+          "count": {
+            "kind": "number",
+            "value": 1
+          },
+          "lines": {
+            "items": [
+              {
+                "elementId": "aux_c2_2",
+                "kind": "ref"
+              },
+              {
+                "elementId": "aux_c3",
+                "kind": "ref"
+              }
+            ],
+            "kind": "list"
+          }
+        },
+        "id": "op_mark_c3",
+        "op": "mark.parallel",
+        "outputs": [
+          {
+            "elementId": "mark_c3",
+            "slot": "mark"
+          }
+        ],
+        "seq": 14
+      },
+      "op_mark_c4": {
+        "args": {
+          "count": {
+            "kind": "number",
+            "value": 2
+          },
+          "lines": {
+            "items": [
+              {
+                "elementId": "aux_c4",
+                "kind": "ref"
+              },
+              {
+                "elementId": "aux_c2",
+                "kind": "ref"
+              }
+            ],
+            "kind": "list"
+          }
+        },
+        "id": "op_mark_c4",
+        "op": "mark.parallel",
+        "outputs": [
+          {
+            "elementId": "mark_c4",
+            "slot": "mark"
+          }
+        ],
+        "seq": 19
       }
     },
     "viewDefaults": {
@@ -826,6 +988,36 @@
             "b": [
               3.0,
               -1.5
+            ],
+            "length": 6.020797289396148
+          }
+        },
+        "aux_c3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.5000000000000004,
+              4.0
+            ],
+            "b": [
+              2.5,
+              4.5
+            ],
+            "length": 6.020797289396148
+          }
+        },
+        "aux_c4": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              -2.0
+            ],
+            "b": [
+              -3.5000000000000004,
+              4.0
             ],
             "length": 6.020797289396148
           }
@@ -940,6 +1132,22 @@
             "kind": "equal_segments",
             "count": 1
           }
+        },
+        "mark_c3": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "parallel",
+            "count": 1
+          }
+        },
+        "mark_c4": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "parallel",
+            "count": 2
+          }
         }
       },
       "checks": {
@@ -948,6 +1156,8 @@
         "op_T:sides_match": "passed",
         "op_aux_c2:ends": "passed",
         "op_aux_c2_2:ends": "passed",
+        "op_aux_c3:ends": "passed",
+        "op_aux_c4:ends": "passed",
         "op_c1_1:through_a": "passed",
         "op_c1_1:through_b": "passed",
         "op_c1_2:through_point": "passed",
@@ -962,7 +1172,9 @@
         "op_c4_2:through_point": "passed",
         "op_c4_2:parallel": "passed",
         "op_mark_c1:right": "passed",
-        "op_mark_c2:equal": "passed"
+        "op_mark_c2:equal": "passed",
+        "op_mark_c3:parallel": "passed",
+        "op_mark_c4:parallel": "passed"
       }
     },
     {
@@ -1061,6 +1273,36 @@
             "b": [
               3.0,
               -1.5
+            ],
+            "length": 5.60357029044876
+          }
+        },
+        "aux_c3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.8000000000000003,
+              3.8999999999999995
+            ],
+            "b": [
+              2.8,
+              4.1
+            ],
+            "length": 5.60357029044876
+          }
+        },
+        "aux_c4": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -2.6,
+              -1.7
+            ],
+            "b": [
+              -2.8000000000000003,
+              3.8999999999999995
             ],
             "length": 5.60357029044876
           }
@@ -1175,6 +1417,22 @@
             "kind": "equal_segments",
             "count": 1
           }
+        },
+        "mark_c3": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "parallel",
+            "count": 1
+          }
+        },
+        "mark_c4": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "parallel",
+            "count": 2
+          }
         }
       },
       "checks": {
@@ -1183,6 +1441,8 @@
         "op_T:sides_match": "passed",
         "op_aux_c2:ends": "passed",
         "op_aux_c2_2:ends": "passed",
+        "op_aux_c3:ends": "passed",
+        "op_aux_c4:ends": "passed",
         "op_c1_1:through_a": "passed",
         "op_c1_1:through_b": "passed",
         "op_c1_2:through_point": "passed",
@@ -1197,7 +1457,9 @@
         "op_c4_2:through_point": "passed",
         "op_c4_2:parallel": "passed",
         "op_mark_c1:right": "passed",
-        "op_mark_c2:equal": "passed"
+        "op_mark_c2:equal": "passed",
+        "op_mark_c3:parallel": "passed",
+        "op_mark_c4:parallel": "passed"
       }
     },
     {
@@ -1298,6 +1560,36 @@
               -1.1
             ],
             "length": 5.770615218501404
+          }
+        },
+        "aux_c3": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.9,
+              3.700000000000002
+            ],
+            "b": [
+              1.8000000000000003,
+              4.600000000000001
+            ],
+            "length": 5.770615218501404
+          }
+        },
+        "aux_c4": {
+          "state": "defined",
+          "type": "segment",
+          "value": {
+            "a": [
+              -3.0,
+              -2.0
+            ],
+            "b": [
+              -3.9,
+              3.700000000000002
+            ],
+            "length": 5.770615218501406
           }
         },
         "c1_l": {
@@ -1410,6 +1702,22 @@
             "kind": "equal_segments",
             "count": 1
           }
+        },
+        "mark_c3": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "parallel",
+            "count": 1
+          }
+        },
+        "mark_c4": {
+          "state": "defined",
+          "type": "mark",
+          "value": {
+            "kind": "parallel",
+            "count": 2
+          }
         }
       },
       "checks": {
@@ -1418,6 +1726,8 @@
         "op_T:sides_match": "passed",
         "op_aux_c2:ends": "passed",
         "op_aux_c2_2:ends": "passed",
+        "op_aux_c3:ends": "passed",
+        "op_aux_c4:ends": "passed",
         "op_c1_1:through_a": "passed",
         "op_c1_1:through_b": "passed",
         "op_c1_2:through_point": "passed",
@@ -1432,7 +1742,9 @@
         "op_c4_2:through_point": "passed",
         "op_c4_2:parallel": "passed",
         "op_mark_c1:right": "passed",
-        "op_mark_c2:equal": "passed"
+        "op_mark_c2:equal": "passed",
+        "op_mark_c3:parallel": "passed",
+        "op_mark_c4:parallel": "passed"
       }
     }
   ]

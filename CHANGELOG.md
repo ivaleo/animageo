@@ -49,6 +49,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   parallel mark at once, each in its colour, in the renderer, TikZ and
   JSXGraph. New `paint_marks` cases `mark_parallel_*` and
   `mark_double_channel*`; `style_keys()` lists `mark.parallel`.
+- **Automatic parallel mark.** A construct condition `parallel` gets a
+  `mark.parallel` on the segments of its two pairs (an existing segment, or
+  `segment_of`, else a hidden helper), like the marks of equal segments; it
+  goes with the condition and `suppressedMarks` kind `parallel` withholds
+  it. Its `count` is the class of the direction: one count per direction
+  (modulo a half turn), so the two pairs of a parallelogram take 1 and 2.
+  The recipe and shape fixtures and the `recipe_parallel`,
+  `shape_parallelogram` and `shape_square` scenes now carry these marks;
+  `marks/marks.json` has three new cases.
 - GGB import: `Intersect` of two conics, of a conic and a circle and of a
   conic and an arc, with or without the output number, becomes
   `intersect.conic_conic` with its slots bound by the saved values (DSL map

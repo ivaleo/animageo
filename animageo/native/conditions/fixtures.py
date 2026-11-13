@@ -386,6 +386,43 @@ def _marks_fixtures() -> list:
     r = add_auto_marks(d.doc, sources)
     cases.append({'name': 'classes-exhausted', 'document': d.doc, 'sources': sources,
                   'expect': {'operations': r.operations, 'warnings': r.warnings}})
+    cases += _parallel_mark_cases()
+    return cases
+
+
+def _parallel_mark_cases() -> list:
+    """Registry 1.8: the parallel mark of ∥ conditions (applied without
+    marks), on segments, on hidden helpers, two classes of a parallelogram."""
+    from .apply import apply_condition, shape_conditions
+    from .marks import add_auto_marks
+    cases = []
+
+    def case(name, doc, sources):
+        r = add_auto_marks(doc, sources)
+        cases.append({'name': name, 'document': doc, 'sources': sources,
+                      'expect': {'operations': r.operations, 'warnings': r.warnings}})
+
+    st = {'kind': 'parallel', 'a': _pair('A', 'B'), 'b': _pair('C', 'D')}
+    for v in range(2):
+        d = _Doc(f'marks-parallel-{v}')
+        d.free('A', -3 + 0.5 * v, -2).free('B', 3, -1.5 + 0.2 * v).free('C', -2, 1).free('D', 2, 2.5 - 0.3 * v)
+        if v == 0:
+            d.two('segment.by_points', 's', 'A', 'B', 'segment').two('segment.by_points', 't', 'D', 'C', 'segment')
+        r = apply_condition(d.doc, {'statement': st, 'mode': 'construct', 'source': 'panel'}, receiver='D',
+                            marks=False)
+        case(f'parallel-{v}', r.document.data, [r.condition['id']])
+    d = _Doc('marks-parallelogram')
+    pts = [('A', -3, -2), ('B', 3, -1.5), ('C', 2.5, 2.2), ('D', -2.2, 1.8)]
+    for nm, x, y in pts:
+        d.free(nm, x, y)
+    d.op('op_T', 'polygon.by_points', {'vertices': {'kind': 'list', 'items': [_r(p[0]) for p in pts]}},
+         [('polygon', 'T', 'polygon')])
+    cur, cids = d.doc, []
+    for item in shape_conditions(cur, 'T', 'parallelogram'):
+        r = apply_condition(cur, {'statement': item['statement'], 'mode': 'construct', 'source': 'shape',
+                                  'shapeId': 'T'}, receiver=item['receiver'], marks=False)
+        cur, cids = r.document, cids + [r.condition['id']]
+    case('parallel-classes', cur.data, cids)
     return cases
 
 

@@ -200,7 +200,7 @@ CONDITIONS = [
     ({'kind': 'perpendicular', 'a': {'pair': ['A', 'C']}, 'b': {'pair': ['A', 'B']}}, 'mark.right_angle'),
     ({'kind': 'eq', 'left': {'angle': [{'ref': 'B'}, {'ref': 'A'}, {'ref': 'C'}]},
       'right': {'angle': [{'ref': 'A'}, {'ref': 'B'}, {'ref': 'D'}]}}, 'mark.equal_angles'),
-    ({'kind': 'parallel', 'a': {'pair': ['A', 'B']}, 'b': {'pair': ['C', 'D']}}, None),
+    ({'kind': 'parallel', 'a': {'pair': ['A', 'B']}, 'b': {'pair': ['C', 'D']}}, 'mark.parallel'),   # 1.13.0
 ]
 
 

@@ -2,9 +2,25 @@
   "format": "animageo-steps/v1",
   "id": "shape_parallelogram",
   "registry": "1.8",
-  "generatedBy": "animageo 1.11.4",
+  "generatedBy": "animageo 1.12.0",
   "document": {
     "appearance": {
+      "aux_c1": {
+        "role": "aux",
+        "visible": false
+      },
+      "aux_c1_2": {
+        "role": "aux",
+        "visible": false
+      },
+      "aux_c2": {
+        "role": "aux",
+        "visible": false
+      },
+      "aux_c2_2": {
+        "role": "aux",
+        "visible": false
+      },
       "c1_l": {
         "role": "aux",
         "visible": false
@@ -82,7 +98,7 @@
           "op": "point.free"
         },
         "recipe": "parallel",
-        "seq": 6,
+        "seq": 9,
         "shapeId": "T",
         "source": "shape",
         "statement": {
@@ -149,6 +165,58 @@
         },
         "type": "polygon"
       },
+      "aux_c1": {
+        "displayName": "",
+        "id": "aux_c1",
+        "origin": {
+          "kind": "auto",
+          "source": "c1"
+        },
+        "producer": {
+          "operationId": "op_aux_c1",
+          "slot": "segment"
+        },
+        "type": "segment"
+      },
+      "aux_c1_2": {
+        "displayName": "",
+        "id": "aux_c1_2",
+        "origin": {
+          "kind": "auto",
+          "source": "c1"
+        },
+        "producer": {
+          "operationId": "op_aux_c1_2",
+          "slot": "segment"
+        },
+        "type": "segment"
+      },
+      "aux_c2": {
+        "displayName": "",
+        "id": "aux_c2",
+        "origin": {
+          "kind": "auto",
+          "source": "c2"
+        },
+        "producer": {
+          "operationId": "op_aux_c2",
+          "slot": "segment"
+        },
+        "type": "segment"
+      },
+      "aux_c2_2": {
+        "displayName": "",
+        "id": "aux_c2_2",
+        "origin": {
+          "kind": "auto",
+          "source": "c2"
+        },
+        "producer": {
+          "operationId": "op_aux_c2_2",
+          "slot": "segment"
+        },
+        "type": "segment"
+      },
       "c1_l": {
         "displayName": "",
         "id": "c1_l",
@@ -184,6 +252,32 @@
           "slot": "line"
         },
         "type": "line"
+      },
+      "mark_c1": {
+        "displayName": "",
+        "id": "mark_c1",
+        "origin": {
+          "kind": "auto",
+          "source": "c1"
+        },
+        "producer": {
+          "operationId": "op_mark_c1",
+          "slot": "mark"
+        },
+        "type": "mark"
+      },
+      "mark_c2": {
+        "displayName": "",
+        "id": "mark_c2",
+        "origin": {
+          "kind": "auto",
+          "source": "c2"
+        },
+        "producer": {
+          "operationId": "op_mark_c2",
+          "slot": "mark"
+        },
+        "type": "mark"
       }
     },
     "format": "animageo-construction/v1",
@@ -298,6 +392,90 @@
           }
         ]
       },
+      "op_aux_c1": {
+        "args": {
+          "a": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "B",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c1",
+        "op": "segment.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c1",
+            "slot": "segment"
+          }
+        ],
+        "seq": 4
+      },
+      "op_aux_c1_2": {
+        "args": {
+          "a": {
+            "elementId": "D",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "C",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c1_2",
+        "op": "segment.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c1_2",
+            "slot": "segment"
+          }
+        ],
+        "seq": 5
+      },
+      "op_aux_c2": {
+        "args": {
+          "a": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "D",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c2",
+        "op": "segment.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c2",
+            "slot": "segment"
+          }
+        ],
+        "seq": 10
+      },
+      "op_aux_c2_2": {
+        "args": {
+          "a": {
+            "elementId": "B",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "C",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c2_2",
+        "op": "segment.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c2_2",
+            "slot": "segment"
+          }
+        ],
+        "seq": 11
+      },
       "op_c1_1": {
         "args": {
           "a": {
@@ -359,7 +537,7 @@
             "slot": "line"
           }
         ],
-        "seq": 4
+        "seq": 7
       },
       "op_c2_2": {
         "args": {
@@ -380,7 +558,67 @@
             "slot": "line"
           }
         ],
-        "seq": 5
+        "seq": 8
+      },
+      "op_mark_c1": {
+        "args": {
+          "count": {
+            "kind": "number",
+            "value": 1
+          },
+          "lines": {
+            "items": [
+              {
+                "elementId": "aux_c1",
+                "kind": "ref"
+              },
+              {
+                "elementId": "aux_c1_2",
+                "kind": "ref"
+              }
+            ],
+            "kind": "list"
+          }
+        },
+        "id": "op_mark_c1",
+        "op": "mark.parallel",
+        "outputs": [
+          {
+            "elementId": "mark_c1",
+            "slot": "mark"
+          }
+        ],
+        "seq": 6
+      },
+      "op_mark_c2": {
+        "args": {
+          "count": {
+            "kind": "number",
+            "value": 2
+          },
+          "lines": {
+            "items": [
+              {
+                "elementId": "aux_c2",
+                "kind": "ref"
+              },
+              {
+                "elementId": "aux_c2_2",
+                "kind": "ref"
+              }
+            ],
+            "kind": "list"
+          }
+        },
+        "id": "op_mark_c2",
+        "op": "mark.parallel",
+        "outputs": [
+          {
+            "elementId": "mark_c2",
+            "slot": "mark"
+          }
+        ],
+        "seq": 12
       }
     },
     "viewDefaults": {
@@ -414,12 +652,14 @@
         "kind": "condition",
         "operationIds": [
           "op_c1_1",
-          "op_c1_2"
+          "op_c1_2",
+          "op_aux_c1"
         ],
         "elementIds": [],
         "auxElementIds": [
           "c1_l",
-          "c1_p"
+          "c1_p",
+          "aux_c1"
         ]
       },
       {
@@ -428,14 +668,22 @@
         "operationIds": [
           "op_c2_1",
           "op_c2_2",
-          "op_D"
+          "op_D",
+          "op_aux_c1_2",
+          "op_aux_c2",
+          "op_aux_c2_2",
+          "op_mark_c2"
         ],
         "elementIds": [
-          "D"
+          "D",
+          "mark_c2"
         ],
         "auxElementIds": [
           "c2_l",
-          "c2_p"
+          "c2_p",
+          "aux_c1_2",
+          "aux_c2",
+          "aux_c2_2"
         ]
       },
       {
@@ -448,13 +696,25 @@
           "T"
         ],
         "auxElementIds": []
+      },
+      {
+        "id": "op:op_mark_c1",
+        "kind": "op",
+        "operationIds": [
+          "op_mark_c1"
+        ],
+        "elementIds": [
+          "mark_c1"
+        ],
+        "auxElementIds": []
       }
     ],
     "describe": [
       "1. Дано: точки A, B, C.",
       "2. Ставим D на прямой через C, параллельной AB.",
-      "3. Ставим D на прямой через A, параллельной BC.",
-      "4. Строим многоугольник ABCD."
+      "3. Ставим D на прямой через A, параллельной BC; отмечаем параллельные AD и BC.",
+      "4. Строим многоугольник ABCD.",
+      "5. Отмечаем параллельные AB и DC."
     ],
     "timeline": {
       "keyframes": {
@@ -467,7 +727,9 @@
               "B": false,
               "C": false,
               "D": false,
-              "T": false
+              "mark_c2": false,
+              "T": false,
+              "mark_c1": false
             }
           },
           {
@@ -496,12 +758,31 @@
             }
           },
           {
-            "t": 2.2,
+            "t": 2.5,
             "visible": {
-              "D": true
+              "D": true,
+              "mark_c2": true
             },
             "enter": {
               "D": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.6
+              },
+              "mark_c2": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
+              }
+            }
+          },
+          {
+            "t": 3.6,
+            "visible": {
+              "T": true
+            },
+            "enter": {
+              "T": {
                 "effect": "fade",
                 "duration": 0.5,
                 "at": 0.6
@@ -509,12 +790,12 @@
             }
           },
           {
-            "t": 3.3000000000000003,
+            "t": 4.7,
             "visible": {
-              "T": true
+              "mark_c1": true
             },
             "enter": {
-              "T": {
+              "mark_c1": {
                 "effect": "fade",
                 "duration": 0.5,
                 "at": 0.6
@@ -538,23 +819,33 @@
         {
           "stepId": "condition:c2",
           "start": 1.7000000000000002,
-          "end": 2.2,
+          "end": 2.5,
           "elementIds": [
-            "D"
+            "D",
+            "mark_c2"
           ],
           "text": null
         },
         {
           "stepId": "op:op_T",
-          "start": 2.8000000000000003,
-          "end": 3.3000000000000003,
+          "start": 3.1,
+          "end": 3.6,
           "elementIds": [
             "T"
           ],
           "text": null
+        },
+        {
+          "stepId": "op:op_mark_c1",
+          "start": 4.2,
+          "end": 4.7,
+          "elementIds": [
+            "mark_c1"
+          ],
+          "text": null
         }
       ],
-      "duration": 3.3000000000000003
+      "duration": 4.7
     }
   }
 }

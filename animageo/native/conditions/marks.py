@@ -23,8 +23,11 @@ Contract (shared with the web):
   (``(a, v, b)`` when ``(a − v) × (b − v) ≥ 0``, else ``(b, v, a)``);
 - class of equality (``count``): the count of an already marked equality of
   the same kind whose value is equal now (within ``check.passed``; lengths,
-  convex angles × S), else the smallest of 1–3 not taken; all taken —
+  convex angles × S, the direction of parallel lines in [0, π) × S, taken
+  modulo π × S), else the smallest of 1–3 not taken; all taken —
   ``count = 3`` and the warning ``mark_classes_exhausted``;
+- a ∥ condition marks the lines of its two pairs (segments as for equal
+  segments) with one ``mark.parallel``;
 - new elements: the mark gets ``origin: {kind: "auto", source}``; the new
   helper segments and angles get the same ``origin`` (so that they go with
   the source) and ``appearance {visible: false, role: "aux"}``;
@@ -47,7 +50,8 @@ __all__ = ['auto_marks', 'add_auto_marks', 'auto_sources', 'AutoMarks', 'mark_ta
 TABLE_PATH = Path(__file__).resolve().parent.parent / 'marks' / 'auto.v1.json'
 TABLE_FORMAT = 'animageo-auto-marks/v1'
 KIND_OP = {'right_angle': 'mark.right_angle', 'equal_segments': 'mark.equal_segments',
-           'equal_angles': 'mark.equal_angles'}
+           'equal_angles': 'mark.equal_angles', 'parallel': 'mark.parallel'}
+KIND_SLOT = {'equal_segments': 'segments', 'equal_angles': 'angles', 'parallel': 'lines'}
 TWO_PI = 2 * math.pi
 
 
@@ -272,6 +276,9 @@ def _condition_requests(cond, mark) -> list:
     if mark == 'equal_angles' and st.get('kind') == 'eq':
         angles = [_angle3(st['left']), _angle3(st['right'])]
         return [('equal_angles', angles)] if None not in angles else []
+    if mark == 'parallel' and st.get('kind') == 'parallel':
+        pairs = [_pair(st.get('a')), _pair(st.get('b'))]
+        return [('parallel', pairs)] if None not in pairs else []
     return []
 
 
@@ -341,10 +348,32 @@ def _oriented(ev, a, v, b):
     return (a, v, b) if cross >= 0 else (b, v, a)
 
 
+def _heading(ev, p, q):
+    """The direction of ``p → q`` in [0, π) × S, ``None`` without one."""
+    a, b = _xy(ev, p), _xy(ev, q)
+    if None in (a, b) or (a[0] == b[0] and a[1] == b[1]):
+        return None
+    return (math.atan2(b[1] - a[1], b[0] - a[0]) % math.pi) * ev.scale
+
+
+def _line_heading(ev, items):
+    """The direction (as :func:`_heading`) of the first defined line of
+    ``items`` that has one — the reference of a parallel mark."""
+    from ..kernel.ops.mark import direction
+    for item in items:
+        state = ev.elements.get(item)
+        if state is None or state['state'] != 'defined':
+            continue
+        dx, dy = direction(state['type'], state['value'])
+        if dx != 0.0 or dy != 0.0:
+            return (math.atan2(dy, dx) % math.pi) * ev.scale
+    return None
+
+
 def _classes(data, ev, kind) -> list:
     """``[(count, value)]`` of the marks of ``kind`` in ``data`` now."""
     op_name = KIND_OP[kind]
-    slot = 'segments' if kind == 'equal_segments' else 'angles'
+    slot = KIND_SLOT[kind]
     out = []
     for oid in sorted(data['operations']):
         op = data['operations'][oid]
@@ -354,6 +383,11 @@ def _classes(data, ev, kind) -> list:
         count = raw.get('value', 1) if isinstance(raw, dict) else 1
         items = list(iter_refs(op['args'].get(slot) or {}))
         if not items:
+            continue
+        if kind == 'parallel':
+            value = _line_heading(ev, items)
+            if value is not None:
+                out.append((count, value))
             continue
         state = ev.elements.get(items[0])
         if state is None or state['state'] != 'defined':
@@ -370,9 +404,13 @@ def _classes(data, ev, kind) -> list:
 def _count(data, ev, kind, value, warnings, made=()) -> int:
     """``made``: ``(kind, count, value)`` of the marks of this call (not in ``ev``)."""
     classes = _classes(data, ev, kind) + [(c, v) for k, c, v in made if k == kind and v is not None]
+    period = math.pi * ev.scale if kind == 'parallel' else None     # a direction θ is θ + π
     if value is not None:
         for count, other in classes:
-            if abs(other - value) <= ev.tolerances.check_passed:
+            gap = abs(other - value)
+            if period is not None:
+                gap = min(gap % period, period - gap % period)
+            if gap <= ev.tolerances.check_passed:
                 return count
     taken = {c for c, _ in classes}
     for count in (1, 2, 3):
@@ -499,6 +537,22 @@ def _build(doc, sources, ev, id_factory, segment_of=None):
                 made.append(('equal_segments', count, value))
                 builder.add('mark.equal_segments', {'segments': {'kind': 'list', 'items': [_ref(s) for s in segments]},
                                                     'count': {'kind': 'number', 'value': count}},
+                            'mark', 'mark', hint, source, False)
+            elif kind == 'parallel':
+                if any(p == q for p, q in spec):
+                    continue
+                lines = []
+                for p, q in spec:
+                    seg = find_segment(data, p, q)
+                    if seg is None:
+                        seg = builder.add('segment.by_points', {'a': _ref(p), 'b': _ref(q)}, 'segment', 'segment',
+                                          f'aux_{source}', source, True)
+                    lines.append(seg)
+                value = _heading(ev, *spec[0])
+                count = _count(data, ev, 'parallel', value, warnings, made)
+                made.append(('parallel', count, value))
+                builder.add('mark.parallel', {'lines': {'kind': 'list', 'items': [_ref(x) for x in lines]},
+                                              'count': {'kind': 'number', 'value': count}},
                             'mark', 'mark', hint, source, False)
             else:
                 if kind == 'equal_angles_on_line':

@@ -2,9 +2,17 @@
   "format": "animageo-steps/v1",
   "id": "recipe_parallel",
   "registry": "1.8",
-  "generatedBy": "animageo 1.11.4",
+  "generatedBy": "animageo 1.12.0",
   "document": {
     "appearance": {
+      "aux_c1": {
+        "role": "aux",
+        "visible": false
+      },
+      "aux_c1_2": {
+        "role": "aux",
+        "visible": false
+      },
       "c1_l": {
         "role": "aux",
         "visible": false
@@ -102,6 +110,32 @@
         },
         "type": "point"
       },
+      "aux_c1": {
+        "displayName": "",
+        "id": "aux_c1",
+        "origin": {
+          "kind": "auto",
+          "source": "c1"
+        },
+        "producer": {
+          "operationId": "op_aux_c1",
+          "slot": "segment"
+        },
+        "type": "segment"
+      },
+      "aux_c1_2": {
+        "displayName": "",
+        "id": "aux_c1_2",
+        "origin": {
+          "kind": "auto",
+          "source": "c1"
+        },
+        "producer": {
+          "operationId": "op_aux_c1_2",
+          "slot": "segment"
+        },
+        "type": "segment"
+      },
       "c1_l": {
         "displayName": "",
         "id": "c1_l",
@@ -128,6 +162,19 @@
           "slot": "circle"
         },
         "type": "circle"
+      },
+      "mark_c1": {
+        "displayName": "",
+        "id": "mark_c1",
+        "origin": {
+          "kind": "auto",
+          "source": "c1"
+        },
+        "producer": {
+          "operationId": "op_mark_c1",
+          "slot": "mark"
+        },
+        "type": "mark"
       },
       "n": {
         "displayName": "n",
@@ -249,6 +296,48 @@
           }
         ]
       },
+      "op_aux_c1": {
+        "args": {
+          "a": {
+            "elementId": "A",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "B",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c1",
+        "op": "segment.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c1",
+            "slot": "segment"
+          }
+        ],
+        "seq": 4
+      },
+      "op_aux_c1_2": {
+        "args": {
+          "a": {
+            "elementId": "C",
+            "kind": "ref"
+          },
+          "b": {
+            "elementId": "D",
+            "kind": "ref"
+          }
+        },
+        "id": "op_aux_c1_2",
+        "op": "segment.by_points",
+        "outputs": [
+          {
+            "elementId": "aux_c1_2",
+            "slot": "segment"
+          }
+        ],
+        "seq": 5
+      },
       "op_c1_1": {
         "args": {
           "a": {
@@ -310,6 +399,36 @@
             "slot": "circle"
           }
         ]
+      },
+      "op_mark_c1": {
+        "args": {
+          "count": {
+            "kind": "number",
+            "value": 1
+          },
+          "lines": {
+            "items": [
+              {
+                "elementId": "aux_c1",
+                "kind": "ref"
+              },
+              {
+                "elementId": "aux_c1_2",
+                "kind": "ref"
+              }
+            ],
+            "kind": "list"
+          }
+        },
+        "id": "op_mark_c1",
+        "op": "mark.parallel",
+        "outputs": [
+          {
+            "elementId": "mark_c1",
+            "slot": "mark"
+          }
+        ],
+        "seq": 6
       },
       "op_n": {
         "args": {
@@ -384,14 +503,20 @@
         "operationIds": [
           "op_c1_1",
           "op_c1_2",
-          "op_D"
+          "op_D",
+          "op_aux_c1",
+          "op_aux_c1_2",
+          "op_mark_c1"
         ],
         "elementIds": [
-          "D"
+          "D",
+          "mark_c1"
         ],
         "auxElementIds": [
           "c1_l",
-          "c1_p"
+          "c1_p",
+          "aux_c1",
+          "aux_c1_2"
         ]
       },
       {
@@ -441,7 +566,7 @@
     ],
     "describe": [
       "1. Дано: точки A, B, C.",
-      "2. Ставим D на прямой через C, параллельной AB.",
+      "2. Ставим D на прямой через C, параллельной AB; отмечаем параллельные AB и CD.",
       "3. Отмечаем точку O.",
       "4. Строим окружность k с центром A, проходящую через B.",
       "5. Задаём число n.",
@@ -458,6 +583,7 @@
               "B": false,
               "C": false,
               "D": false,
+              "mark_c1": false,
               "O": false,
               "k": false,
               "w": false
@@ -489,20 +615,26 @@
             }
           },
           {
-            "t": 2.2,
+            "t": 2.5,
             "visible": {
-              "D": true
+              "D": true,
+              "mark_c1": true
             },
             "enter": {
               "D": {
                 "effect": "fade",
                 "duration": 0.5,
                 "at": 0.6
+              },
+              "mark_c1": {
+                "effect": "fade",
+                "duration": 0.5,
+                "at": 0.8999999999999999
               }
             }
           },
           {
-            "t": 3.3000000000000003,
+            "t": 3.6,
             "visible": {
               "O": true
             },
@@ -515,7 +647,7 @@
             }
           },
           {
-            "t": 4.4,
+            "t": 4.7,
             "visible": {
               "k": true
             },
@@ -528,7 +660,7 @@
             }
           },
           {
-            "t": 5.5,
+            "t": 5.8,
             "visible": {
               "w": true
             },
@@ -557,16 +689,17 @@
         {
           "stepId": "condition:c1",
           "start": 1.7000000000000002,
-          "end": 2.2,
+          "end": 2.5,
           "elementIds": [
-            "D"
+            "D",
+            "mark_c1"
           ],
           "text": null
         },
         {
           "stepId": "op:op_O",
-          "start": 2.8000000000000003,
-          "end": 3.3000000000000003,
+          "start": 3.1,
+          "end": 3.6,
           "elementIds": [
             "O"
           ],
@@ -574,8 +707,8 @@
         },
         {
           "stepId": "op:op_k",
-          "start": 3.9000000000000004,
-          "end": 4.4,
+          "start": 4.2,
+          "end": 4.7,
           "elementIds": [
             "k"
           ],
@@ -583,15 +716,15 @@
         },
         {
           "stepId": "op:op_w",
-          "start": 5.0,
-          "end": 5.5,
+          "start": 5.3,
+          "end": 5.8,
           "elementIds": [
             "w"
           ],
           "text": null
         }
       ],
-      "duration": 5.5
+      "duration": 5.8
     }
   }
 }

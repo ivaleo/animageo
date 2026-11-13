@@ -404,6 +404,7 @@ operation ID of a `segment.by_points` on the same two points, either order.
 | conditions `right_angle.*` | right angle | the three points |
 | condition `perpendicular` with one common point | right angle | `(other, common, other)` |
 | condition `angle.equal` | equal angles | the two angles |
+| condition `parallel` (1.13.0) | parallel lines (`mark.parallel`, registry 1.8) | the segments on the two pairs of the statement |
 
 **Which marks are made.**
 
@@ -441,6 +442,9 @@ operation ID of a `segment.by_points` on the same two points, either order.
   takes its count.
 - Otherwise it takes the smallest of 1–3 not taken.
 - If all are taken: 3, with the warning `mark_classes_exhausted`.
+- Parallel marks: the value is the direction of the first line (of the
+  first pair for a new mark) in `[0, π)` times `S`, compared modulo `π·S`;
+  a mark whose lines have no direction now has no class value.
 
 **New elements.**
 
@@ -501,7 +505,7 @@ document hashes and stored references are not rounded.
 |---|---|
 | `animageo-recipes/v1` | `recipes/{recipes,refusals,two,release,shapes}.json`, 132 cases. Apply cases: `expect {refusal, document, values, shift, check}`. A release case has `release` (and `withValues`: whether `ev` is passed). A shape case has `shape {polygon, shape}` and `expect.conditions` |
 | `animageo-general/v1` | `general/general.json`, 32 cases. `expect {status, passed, failed, undefined, inconclusive, counterexample, seed}`. Seeds are decimal strings |
-| `animageo-marks/v1` | `marks/marks.json`, 34 cases. `expect {operations, warnings}` |
+| `animageo-marks/v1` | `marks/marks.json`, 37 cases. `expect {operations, warnings}` |
 
 - Documents after an edit are written as they are, with the default IDs
   (§4.2, §6). Numbers compare within `tol.parity`.

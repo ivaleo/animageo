@@ -23319,6 +23319,14 @@
     "check": "passed",
     "document": {
      "appearance": {
+      "aux_c1": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c1_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -23416,6 +23424,32 @@
        },
        "type": "point"
       },
+      "aux_c1": {
+       "displayName": "",
+       "id": "aux_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c1_2": {
+       "displayName": "",
+       "id": "aux_c1_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -23442,6 +23476,19 @@
         "slot": "circle"
        },
        "type": "circle"
+      },
+      "mark_c1": {
+       "displayName": "",
+       "id": "mark_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
       },
       "n": {
        "displayName": "n",
@@ -23563,6 +23610,48 @@
         }
        ]
       },
+      "op_aux_c1": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1",
+         "slot": "segment"
+        }
+       ],
+       "seq": 4
+      },
+      "op_aux_c1_2": {
+       "args": {
+        "a": {
+         "elementId": "C",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 5
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -23624,6 +23713,36 @@
          "slot": "circle"
         }
        ]
+      },
+      "op_mark_c1": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c1",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c1",
+         "slot": "mark"
+        }
+       ],
+       "seq": 6
       },
       "op_n": {
        "args": {
@@ -23967,6 +24086,14 @@
     "check": "passed",
     "document": {
      "appearance": {
+      "aux_c1": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c1_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -24064,6 +24191,32 @@
        },
        "type": "point"
       },
+      "aux_c1": {
+       "displayName": "",
+       "id": "aux_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c1_2": {
+       "displayName": "",
+       "id": "aux_c1_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -24090,6 +24243,19 @@
         "slot": "circle"
        },
        "type": "circle"
+      },
+      "mark_c1": {
+       "displayName": "",
+       "id": "mark_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
       },
       "n": {
        "displayName": "n",
@@ -24211,6 +24377,48 @@
         }
        ]
       },
+      "op_aux_c1": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1",
+         "slot": "segment"
+        }
+       ],
+       "seq": 4
+      },
+      "op_aux_c1_2": {
+       "args": {
+        "a": {
+         "elementId": "C",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 5
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -24272,6 +24480,36 @@
          "slot": "circle"
         }
        ]
+      },
+      "op_mark_c1": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c1",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c1",
+         "slot": "mark"
+        }
+       ],
+       "seq": 6
       },
       "op_n": {
        "args": {
@@ -24615,6 +24853,14 @@
     "check": "passed",
     "document": {
      "appearance": {
+      "aux_c1": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c1_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -24712,6 +24958,32 @@
        },
        "type": "point"
       },
+      "aux_c1": {
+       "displayName": "",
+       "id": "aux_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c1_2": {
+       "displayName": "",
+       "id": "aux_c1_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -24738,6 +25010,19 @@
         "slot": "circle"
        },
        "type": "circle"
+      },
+      "mark_c1": {
+       "displayName": "",
+       "id": "mark_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
       },
       "n": {
        "displayName": "n",
@@ -24859,6 +25144,48 @@
         }
        ]
       },
+      "op_aux_c1": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1",
+         "slot": "segment"
+        }
+       ],
+       "seq": 4
+      },
+      "op_aux_c1_2": {
+       "args": {
+        "a": {
+         "elementId": "C",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 5
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -24920,6 +25247,36 @@
          "slot": "circle"
         }
        ]
+      },
+      "op_mark_c1": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c1",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c1",
+         "slot": "mark"
+        }
+       ],
+       "seq": 6
       },
       "op_n": {
        "args": {
@@ -25263,6 +25620,14 @@
     "check": "passed",
     "document": {
      "appearance": {
+      "aux_c1": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c1_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -25360,6 +25725,32 @@
        },
        "type": "point"
       },
+      "aux_c1": {
+       "displayName": "",
+       "id": "aux_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c1_2": {
+       "displayName": "",
+       "id": "aux_c1_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -25386,6 +25777,19 @@
         "slot": "circle"
        },
        "type": "circle"
+      },
+      "mark_c1": {
+       "displayName": "",
+       "id": "mark_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
       },
       "n": {
        "displayName": "n",
@@ -25507,6 +25911,48 @@
         }
        ]
       },
+      "op_aux_c1": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1",
+         "slot": "segment"
+        }
+       ],
+       "seq": 4
+      },
+      "op_aux_c1_2": {
+       "args": {
+        "a": {
+         "elementId": "C",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 5
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -25568,6 +26014,36 @@
          "slot": "circle"
         }
        ]
+      },
+      "op_mark_c1": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c1",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c1",
+         "slot": "mark"
+        }
+       ],
+       "seq": 6
       },
       "op_n": {
        "args": {
@@ -25911,6 +26387,14 @@
     "check": "passed",
     "document": {
      "appearance": {
+      "aux_c1": {
+       "role": "aux",
+       "visible": false
+      },
+      "aux_c1_2": {
+       "role": "aux",
+       "visible": false
+      },
       "c1_l": {
        "role": "aux",
        "visible": false
@@ -26008,6 +26492,32 @@
        },
        "type": "point"
       },
+      "aux_c1": {
+       "displayName": "",
+       "id": "aux_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
+      "aux_c1_2": {
+       "displayName": "",
+       "id": "aux_c1_2",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_aux_c1_2",
+        "slot": "segment"
+       },
+       "type": "segment"
+      },
       "c1_l": {
        "displayName": "",
        "id": "c1_l",
@@ -26034,6 +26544,19 @@
         "slot": "circle"
        },
        "type": "circle"
+      },
+      "mark_c1": {
+       "displayName": "",
+       "id": "mark_c1",
+       "origin": {
+        "kind": "auto",
+        "source": "c1"
+       },
+       "producer": {
+        "operationId": "op_mark_c1",
+        "slot": "mark"
+       },
+       "type": "mark"
       },
       "n": {
        "displayName": "n",
@@ -26155,6 +26678,48 @@
         }
        ]
       },
+      "op_aux_c1": {
+       "args": {
+        "a": {
+         "elementId": "A",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "B",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1",
+         "slot": "segment"
+        }
+       ],
+       "seq": 4
+      },
+      "op_aux_c1_2": {
+       "args": {
+        "a": {
+         "elementId": "C",
+         "kind": "ref"
+        },
+        "b": {
+         "elementId": "D",
+         "kind": "ref"
+        }
+       },
+       "id": "op_aux_c1_2",
+       "op": "segment.by_points",
+       "outputs": [
+        {
+         "elementId": "aux_c1_2",
+         "slot": "segment"
+        }
+       ],
+       "seq": 5
+      },
       "op_c1_1": {
        "args": {
         "a": {
@@ -26216,6 +26781,36 @@
          "slot": "circle"
         }
        ]
+      },
+      "op_mark_c1": {
+       "args": {
+        "count": {
+         "kind": "number",
+         "value": 1
+        },
+        "lines": {
+         "items": [
+          {
+           "elementId": "aux_c1",
+           "kind": "ref"
+          },
+          {
+           "elementId": "aux_c1_2",
+           "kind": "ref"
+          }
+         ],
+         "kind": "list"
+        }
+       },
+       "id": "op_mark_c1",
+       "op": "mark.parallel",
+       "outputs": [
+        {
+         "elementId": "mark_c1",
+         "slot": "mark"
+        }
+       ],
+       "seq": 6
       },
       "op_n": {
        "args": {
