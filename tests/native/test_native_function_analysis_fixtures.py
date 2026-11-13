@@ -13,7 +13,7 @@ def fixtures():
             if name.startswith('function_')}
 
 
-def test_function_fixtures_cover_all_three_implemented_operations(fixtures):
+def test_function_fixtures_cover_all_seven_operations(fixtures):
     assert {'function_roots_poly.json', 'function_extrema_poly.json', 'function_poly_limits.json',
             'function_found_slots.json', 'function_value.json', 'function_value_domain.json',
             'function_value_branches.json', 'function_poly_rank_changes.json',
@@ -22,12 +22,16 @@ def test_function_fixtures_cover_all_three_implemented_operations(fixtures):
     for fixture in fixtures.values():
         assert verify_fixture(fixture) == []
         for op in fixture['document']['operations'].values():
-            if op['op'] not in ('function.roots_polynomial', 'function.extrema_polynomial', 'function.value'):
+            if op['op'] not in ('function.roots_polynomial', 'function.extrema_polynomial', 'function.value',
+                                     'function.root_near', 'function.root_interval',
+                                     'function.roots_interval', 'function.extrema_interval'):
                 continue
             for case in fixture['cases']:
                 if any(case['expect'][out['elementId']]['state'] == 'defined' for out in op['outputs']):
                     defined[op['op']] = defined.get(op['op'], 0) + 1
-    assert set(defined) == {'function.roots_polynomial', 'function.extrema_polynomial', 'function.value'}
+    assert set(defined) == {'function.' + name for name in ('roots_polynomial', 'extrema_polynomial',
+                                                          'value', 'root_near', 'root_interval',
+                                                          'roots_interval', 'extrema_interval')}
     assert min(defined.values()) >= 3
 
 
@@ -79,7 +83,9 @@ def test_function_value_fixture_varies_argument_and_coefficient(fixtures):
 def test_function_fixtures_cover_every_declared_failure(fixtures):
     from animageo.native.registry import registry
 
-    for name in ('function.roots_polynomial', 'function.extrema_polynomial', 'function.value'):
+    for name in ('function.roots_polynomial', 'function.extrema_polynomial', 'function.value',
+                                     'function.root_near', 'function.root_interval',
+                                     'function.roots_interval', 'function.extrema_interval'):
         reasons = set()
         for fixture in fixtures.values():
             for op in fixture['document']['operations'].values():
@@ -112,3 +118,61 @@ def test_function_shared_fixture_pins_rounding_guard_and_scaling(fixtures):
             assert rec['detail'] == {'found': 2}
         assert expect[prefix + 'unresolved1']['detail'] == {'found': 1}
         assert expect[prefix + 'unresolved2']['reason'] == 'branch_absent'
+
+
+def test_numeric_function_fixtures_pin_method_choices_and_partial_search(fixtures):
+    assert {'function_root_near.json', 'function_root_interval.json', 'function_roots_interval.json',
+            'function_extrema_interval.json', 'function_search_constants.json',
+            'function_search_limits.json', 'function_search_recovery.json'} <= set(fixtures)
+    near = fixtures['function_root_near.json']['cases']
+    assert [c['expect']['N']['value']['x'] for c in near] == [
+        round(math.sqrt(2), 9), round(-math.sqrt(2), 9), round(math.sqrt(2), 9)]
+    single = fixtures['function_root_interval.json']['cases'][0]['expect']
+    assert single['Touch']['value'] == {'x': 0, 'y': 0}
+    assert single['Fallback']['value'] == {'x': 1, 'y': 0}
+    assert single['Bisected']['value'] == {'x': 4, 'y': 0}
+    roots = fixtures['function_roots_interval.json']['cases'][0]['expect']
+    assert roots['Partial1']['value'] == {'x': 1, 'y': 0}
+    assert roots['Pole1']['value'] == {'x': 1, 'y': 0}
+    assert roots['Jump1']['value'] == {'x': -1, 'y': 0}
+    assert roots['Jump2']['value'] == {'x': 1, 'y': 0}
+    assert roots['Sine1']['detail'] == {'found': 3}
+    for k, x in enumerate((-math.pi, 0, math.pi), 1):
+        assert roots[f'Tan{k}']['value'] == {'x': round(x, 9), 'y': 0}
+        assert roots[f'Touch{k}']['detail'] == {'found': 3}
+    assert roots['Touch4']['reason'] == 'branch_absent'
+
+
+def test_numeric_constant_refs_keep_tiny_nonzero_controls(fixtures):
+    fixture = fixtures['function_search_constants.json']
+    assert fixture['cases'][-1]['inputs']['c']['value'] == 1e-30
+    for case, reason in zip(fixture['cases'], ['coincident', 'no_root', 'no_root']):
+        expect = case['expect']
+        assert expect['Near']['reason'] == reason
+        assert expect['Single']['reason'] == reason
+        assert expect['Roots1']['reason'] == reason
+    assert fixture['cases'][-1]['expect']['f']['value']['refs'] == [1e-30]
+
+
+def test_numeric_recovery_keeps_elements_and_original_upstream_cause(fixtures):
+    fixture = fixtures['function_search_recovery.json']
+    ids = set(fixture['document']['elements'])
+    assert all(set(c['expect']) == ids for c in fixture['cases'])
+    for case in fixture['cases']:
+        rec = case['expect']['Near']
+        if case['name'] == 'undefined':
+            assert rec['reason'] == 'upstream' and rec['cause'] == 'b'
+            for key in ('Single', 'Roots1', 'Ext1'):
+                assert case['expect'][key]['reason'] == 'upstream'
+                assert case['expect'][key]['cause'] == 'b'
+        else:
+            assert rec['state'] == 'defined'
+
+
+def test_numeric_boundary_fixtures_exclude_reviewed_false_solutions(fixtures):
+    expect = fixtures['function_search_boundaries.json']['cases'][0]['expect']
+    assert expect['ZeroNear']['reason'] == 'coincident'
+    assert expect['OpenNear']['reason'] == 'no_convergence'
+    assert expect['Wrapped1']['reason'] == 'no_extremum'
+    assert expect['Edge1']['reason'] == 'no_extremum'
+    assert expect['ExactNear']['value'] == {'x': -1e-6, 'y': 0}

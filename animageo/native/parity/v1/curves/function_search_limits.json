@@ -1,0 +1,2597 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "function_search_limits",
+ "registry": "1.11",
+ "generatedBy": "animageo 1.15.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "function_search_limits",
+  "operationRegistryVersion": "1.11",
+  "operations": {
+   "op_overflow": {
+    "id": "op_overflow",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1e+308
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 1e+308
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "overflow"
+     }
+    ]
+   },
+   "op_result_overflow_near": {
+    "id": "op_result_overflow_near",
+    "op": "function.root_near",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "overflow"
+     },
+     "start": {
+      "kind": "number",
+      "value": 0
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "overflow_near"
+     }
+    ]
+   },
+   "op_result_overflow_single": {
+    "id": "op_result_overflow_single",
+    "op": "function.root_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "overflow"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "overflow_single"
+     }
+    ]
+   },
+   "op_result_overflow_roots": {
+    "id": "op_result_overflow_roots",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "overflow"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "overflow_roots1"
+     }
+    ]
+   },
+   "op_result_overflow_ext": {
+    "id": "op_result_overflow_ext",
+    "op": "function.extrema_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "overflow"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "overflow_ext1"
+     }
+    ]
+   },
+   "op_degree": {
+    "id": "op_degree",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 64
+          }
+         ]
+        },
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "degree"
+     }
+    ]
+   },
+   "op_result_degree_near": {
+    "id": "op_result_degree_near",
+    "op": "function.root_near",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "degree"
+     },
+     "start": {
+      "kind": "number",
+      "value": 0
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "degree_near"
+     }
+    ]
+   },
+   "op_result_degree_single": {
+    "id": "op_result_degree_single",
+    "op": "function.root_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "degree"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "degree_single"
+     }
+    ]
+   },
+   "op_result_degree_roots": {
+    "id": "op_result_degree_roots",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "degree"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "degree_roots1"
+     }
+    ]
+   },
+   "op_result_degree_ext": {
+    "id": "op_result_degree_ext",
+    "op": "function.extrema_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "degree"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "degree_ext1"
+     }
+    ]
+   },
+   "op_unresolved": {
+    "id": "op_unresolved",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 1e-100
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "unresolved"
+     }
+    ]
+   },
+   "op_result_UnresolvedNear": {
+    "id": "op_result_UnresolvedNear",
+    "op": "function.root_near",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "unresolved"
+     },
+     "start": {
+      "kind": "number",
+      "value": 0
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "UnresolvedNear"
+     }
+    ]
+   },
+   "op_result_UnresolvedSingle": {
+    "id": "op_result_UnresolvedSingle",
+    "op": "function.root_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "unresolved"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1
+     },
+     "b": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "UnresolvedSingle"
+     }
+    ]
+   },
+   "op_result_UnresolvedRoots": {
+    "id": "op_result_UnresolvedRoots",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "unresolved"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1
+     },
+     "b": {
+      "kind": "number",
+      "value": 1
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "UnresolvedRoots1"
+     }
+    ]
+   },
+   "op_unresolved_ext": {
+    "id": "op_unresolved_ext",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 1e-200
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 3
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "unresolved_ext"
+     }
+    ]
+   },
+   "op_result_UnresolvedExt": {
+    "id": "op_result_UnresolvedExt",
+    "op": "function.extrema_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "unresolved_ext"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1
+     },
+     "b": {
+      "kind": "number",
+      "value": 1
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "UnresolvedExt1"
+     }
+    ]
+   },
+   "op_linear": {
+    "id": "op_linear",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "var": "x"
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "linear"
+     }
+    ]
+   },
+   "op_result_EmptySingle": {
+    "id": "op_result_EmptySingle",
+    "op": "function.root_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "linear"
+     },
+     "a": {
+      "kind": "number",
+      "value": 2
+     },
+     "b": {
+      "kind": "number",
+      "value": -2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "EmptySingle"
+     }
+    ]
+   },
+   "op_result_EmptyRoots": {
+    "id": "op_result_EmptyRoots",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "linear"
+     },
+     "a": {
+      "kind": "number",
+      "value": 2
+     },
+     "b": {
+      "kind": "number",
+      "value": -2
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "EmptyRoots1"
+     }
+    ]
+   },
+   "op_result_EmptyExt": {
+    "id": "op_result_EmptyExt",
+    "op": "function.extrema_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "linear"
+     },
+     "a": {
+      "kind": "number",
+      "value": 2
+     },
+     "b": {
+      "kind": "number",
+      "value": -2
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "EmptyExt1"
+     }
+    ]
+   },
+   "op_zero_branch": {
+    "id": "op_zero_branch",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": ">",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "num": 0
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "zero_branch"
+     }
+    ]
+   },
+   "op_result_ZeroBranch": {
+    "id": "op_result_ZeroBranch",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "zero_branch"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "ZeroBranch1"
+     }
+    ]
+   },
+   "op_result_ZeroBranchSingle": {
+    "id": "op_result_ZeroBranchSingle",
+    "op": "function.root_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "zero_branch"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "ZeroBranchSingle"
+     }
+    ]
+   },
+   "op_uncertain_zero": {
+    "id": "op_uncertain_zero",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "fn": "sin",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "*",
+           "args": [
+            {
+             "num": 1e-200
+            },
+            {
+             "var": "x"
+            }
+           ]
+          },
+          {
+           "op": "*",
+           "args": [
+            {
+             "num": 1e-200
+            },
+            {
+             "var": "x"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "uncertain_zero"
+     }
+    ]
+   },
+   "op_result_Uncertain": {
+    "id": "op_result_Uncertain",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "uncertain_zero"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Uncertain1"
+     }
+    ]
+   },
+   "op_many": {
+    "id": "op_many",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "fn": "sin",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 128
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "many"
+     }
+    ]
+   },
+   "op_result_ManyRoots": {
+    "id": "op_result_ManyRoots",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "many"
+     },
+     "a": {
+      "kind": "number",
+      "value": -3.7
+     },
+     "b": {
+      "kind": "number",
+      "value": 3.7
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "ManyRoots1"
+     }
+    ]
+   },
+   "op_result_ManyExt": {
+    "id": "op_result_ManyExt",
+    "op": "function.extrema_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "many"
+     },
+     "a": {
+      "kind": "number",
+      "value": -3.7
+     },
+     "b": {
+      "kind": "number",
+      "value": 3.7
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "ManyExt1"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "overflow": {
+    "id": "overflow",
+    "type": "function",
+    "displayName": "overflow",
+    "producer": {
+     "operationId": "op_overflow",
+     "slot": "function"
+    }
+   },
+   "overflow_near": {
+    "id": "overflow_near",
+    "type": "point",
+    "displayName": "overflow_near",
+    "producer": {
+     "operationId": "op_result_overflow_near",
+     "slot": "root"
+    }
+   },
+   "overflow_single": {
+    "id": "overflow_single",
+    "type": "point",
+    "displayName": "overflow_single",
+    "producer": {
+     "operationId": "op_result_overflow_single",
+     "slot": "root"
+    }
+   },
+   "overflow_roots1": {
+    "id": "overflow_roots1",
+    "type": "point",
+    "displayName": "overflow_roots1",
+    "producer": {
+     "operationId": "op_result_overflow_roots",
+     "slot": "root.1"
+    }
+   },
+   "overflow_ext1": {
+    "id": "overflow_ext1",
+    "type": "point",
+    "displayName": "overflow_ext1",
+    "producer": {
+     "operationId": "op_result_overflow_ext",
+     "slot": "extremum.1"
+    }
+   },
+   "degree": {
+    "id": "degree",
+    "type": "function",
+    "displayName": "degree",
+    "producer": {
+     "operationId": "op_degree",
+     "slot": "function"
+    }
+   },
+   "degree_near": {
+    "id": "degree_near",
+    "type": "point",
+    "displayName": "degree_near",
+    "producer": {
+     "operationId": "op_result_degree_near",
+     "slot": "root"
+    }
+   },
+   "degree_single": {
+    "id": "degree_single",
+    "type": "point",
+    "displayName": "degree_single",
+    "producer": {
+     "operationId": "op_result_degree_single",
+     "slot": "root"
+    }
+   },
+   "degree_roots1": {
+    "id": "degree_roots1",
+    "type": "point",
+    "displayName": "degree_roots1",
+    "producer": {
+     "operationId": "op_result_degree_roots",
+     "slot": "root.1"
+    }
+   },
+   "degree_ext1": {
+    "id": "degree_ext1",
+    "type": "point",
+    "displayName": "degree_ext1",
+    "producer": {
+     "operationId": "op_result_degree_ext",
+     "slot": "extremum.1"
+    }
+   },
+   "unresolved": {
+    "id": "unresolved",
+    "type": "function",
+    "displayName": "unresolved",
+    "producer": {
+     "operationId": "op_unresolved",
+     "slot": "function"
+    }
+   },
+   "UnresolvedNear": {
+    "id": "UnresolvedNear",
+    "type": "point",
+    "displayName": "UnresolvedNear",
+    "producer": {
+     "operationId": "op_result_UnresolvedNear",
+     "slot": "root"
+    }
+   },
+   "UnresolvedSingle": {
+    "id": "UnresolvedSingle",
+    "type": "point",
+    "displayName": "UnresolvedSingle",
+    "producer": {
+     "operationId": "op_result_UnresolvedSingle",
+     "slot": "root"
+    }
+   },
+   "UnresolvedRoots1": {
+    "id": "UnresolvedRoots1",
+    "type": "point",
+    "displayName": "UnresolvedRoots1",
+    "producer": {
+     "operationId": "op_result_UnresolvedRoots",
+     "slot": "root.1"
+    }
+   },
+   "unresolved_ext": {
+    "id": "unresolved_ext",
+    "type": "function",
+    "displayName": "unresolved_ext",
+    "producer": {
+     "operationId": "op_unresolved_ext",
+     "slot": "function"
+    }
+   },
+   "UnresolvedExt1": {
+    "id": "UnresolvedExt1",
+    "type": "point",
+    "displayName": "UnresolvedExt1",
+    "producer": {
+     "operationId": "op_result_UnresolvedExt",
+     "slot": "extremum.1"
+    }
+   },
+   "linear": {
+    "id": "linear",
+    "type": "function",
+    "displayName": "linear",
+    "producer": {
+     "operationId": "op_linear",
+     "slot": "function"
+    }
+   },
+   "EmptySingle": {
+    "id": "EmptySingle",
+    "type": "point",
+    "displayName": "EmptySingle",
+    "producer": {
+     "operationId": "op_result_EmptySingle",
+     "slot": "root"
+    }
+   },
+   "EmptyRoots1": {
+    "id": "EmptyRoots1",
+    "type": "point",
+    "displayName": "EmptyRoots1",
+    "producer": {
+     "operationId": "op_result_EmptyRoots",
+     "slot": "root.1"
+    }
+   },
+   "EmptyExt1": {
+    "id": "EmptyExt1",
+    "type": "point",
+    "displayName": "EmptyExt1",
+    "producer": {
+     "operationId": "op_result_EmptyExt",
+     "slot": "extremum.1"
+    }
+   },
+   "zero_branch": {
+    "id": "zero_branch",
+    "type": "function",
+    "displayName": "zero_branch",
+    "producer": {
+     "operationId": "op_zero_branch",
+     "slot": "function"
+    }
+   },
+   "ZeroBranch1": {
+    "id": "ZeroBranch1",
+    "type": "point",
+    "displayName": "ZeroBranch1",
+    "producer": {
+     "operationId": "op_result_ZeroBranch",
+     "slot": "root.1"
+    }
+   },
+   "ZeroBranchSingle": {
+    "id": "ZeroBranchSingle",
+    "type": "point",
+    "displayName": "ZeroBranchSingle",
+    "producer": {
+     "operationId": "op_result_ZeroBranchSingle",
+     "slot": "root"
+    }
+   },
+   "uncertain_zero": {
+    "id": "uncertain_zero",
+    "type": "function",
+    "displayName": "uncertain_zero",
+    "producer": {
+     "operationId": "op_uncertain_zero",
+     "slot": "function"
+    }
+   },
+   "Uncertain1": {
+    "id": "Uncertain1",
+    "type": "point",
+    "displayName": "Uncertain1",
+    "producer": {
+     "operationId": "op_result_Uncertain",
+     "slot": "root.1"
+    }
+   },
+   "many": {
+    "id": "many",
+    "type": "function",
+    "displayName": "many",
+    "producer": {
+     "operationId": "op_many",
+     "slot": "function"
+    }
+   },
+   "ManyRoots1": {
+    "id": "ManyRoots1",
+    "type": "point",
+    "displayName": "ManyRoots1",
+    "producer": {
+     "operationId": "op_result_ManyRoots",
+     "slot": "root.1"
+    }
+   },
+   "ManyExt1": {
+    "id": "ManyExt1",
+    "type": "point",
+    "displayName": "ManyExt1",
+    "producer": {
+     "operationId": "op_result_ManyExt",
+     "slot": "extremum.1"
+    }
+   }
+  },
+  "inputs": {},
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "analytic",
+   "scale": 20.0,
+   "expect": {
+    "EmptyExt1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "empty_range",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "EmptyRoots1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "empty_range",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "EmptySingle": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "empty_range",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "ManyExt1": {
+     "state": "error",
+     "type": "point",
+     "reason": "limit_exceeded",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "ManyRoots1": {
+     "state": "error",
+     "type": "point",
+     "reason": "limit_exceeded",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "Uncertain1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_convergence",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "UnresolvedExt1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_convergence",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "UnresolvedNear": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_convergence",
+     "detail": {
+      "stage": "bracket"
+     }
+    },
+    "UnresolvedRoots1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_convergence",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "UnresolvedSingle": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_convergence",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "ZeroBranch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "ZeroBranchSingle": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "degree": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 64
+          }
+         ]
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "degree_ext1": {
+     "state": "error",
+     "type": "point",
+     "reason": "limit_exceeded",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "degree_near": {
+     "state": "error",
+     "type": "point",
+     "reason": "limit_exceeded",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "degree_roots1": {
+     "state": "error",
+     "type": "point",
+     "reason": "limit_exceeded",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "degree_single": {
+     "state": "error",
+     "type": "point",
+     "reason": "limit_exceeded",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "linear": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "var": "x"
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "many": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sin",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 128
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "overflow": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1e+308
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 1e+308
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "overflow_ext1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "non_finite",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "overflow_near": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "non_finite",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "overflow_roots1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "non_finite",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "overflow_single": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "non_finite",
+     "detail": {
+      "stage": "isolation"
+     }
+    },
+    "uncertain_zero": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sin",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "op": "*",
+           "args": [
+            {
+             "num": 1e-200
+            },
+            {
+             "var": "x"
+            }
+           ]
+          },
+          {
+           "op": "*",
+           "args": [
+            {
+             "num": 1e-200
+            },
+            {
+             "var": "x"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "unresolved": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "-",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 1e-100
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "unresolved_ext": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "-",
+       "args": [
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 1e-200
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 3
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "zero_branch": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": ">",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "num": 0
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "checks": {},
+   "samples": {
+    "degree": [
+     [
+      -10.0,
+      -1.0000000000000002e+65
+     ],
+     [
+      -9.375,
+      -1.5070684079018091e+63
+     ],
+     [
+      -8.75,
+      -1.700291745575172e+61
+     ],
+     [
+      -8.125,
+      -1.375685080467985e+59
+     ],
+     [
+      -7.5,
+      -7.568017374869512e+56
+     ],
+     [
+      -6.875,
+      -2.646827648847589e+54
+     ],
+     [
+      -6.25,
+      -5.3976053469340295e+51
+     ],
+     [
+      -5.625,
+      -5.727488698632681e+48
+     ],
+     [
+      -5.0,
+      -2.7105054312137617e+45
+     ],
+     [
+      -4.375,
+      -4.60865001102943e+41
+     ],
+     [
+      -3.75,
+      -2.0513152198103924e+37
+     ],
+     [
+      -3.125,
+      -1.4630238608413124e+32
+     ],
+     [
+      -2.5,
+      -7.346839692639299e+25
+     ],
+     [
+      -1.875,
+      -5.560101044427519e+17
+     ],
+     [
+      -1.25,
+      -1991364.888915566
+     ],
+     [
+      -0.625,
+      0.0
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.0
+     ],
+     [
+      1.25,
+      1991364.888915566
+     ],
+     [
+      1.875,
+      5.560101044427519e+17
+     ],
+     [
+      2.5,
+      7.346839692639299e+25
+     ],
+     [
+      3.125,
+      1.4630238608413124e+32
+     ],
+     [
+      3.75,
+      2.0513152198103924e+37
+     ],
+     [
+      4.375,
+      4.60865001102943e+41
+     ],
+     [
+      5.0,
+      2.7105054312137617e+45
+     ],
+     [
+      5.625,
+      5.727488698632681e+48
+     ],
+     [
+      6.25,
+      5.3976053469340295e+51
+     ],
+     [
+      6.875,
+      2.646827648847589e+54
+     ],
+     [
+      7.5,
+      7.568017374869512e+56
+     ],
+     [
+      8.125,
+      1.375685080467985e+59
+     ],
+     [
+      8.75,
+      1.700291745575172e+61
+     ],
+     [
+      9.375,
+      1.5070684079018091e+63
+     ],
+     [
+      10.0,
+      1.0000000000000002e+65
+     ]
+    ],
+    "linear": [
+     [
+      -10.0,
+      -10.0
+     ],
+     [
+      -9.375,
+      -9.375
+     ],
+     [
+      -8.75,
+      -8.75
+     ],
+     [
+      -8.125,
+      -8.125
+     ],
+     [
+      -7.5,
+      -7.5
+     ],
+     [
+      -6.875,
+      -6.875
+     ],
+     [
+      -6.25,
+      -6.25
+     ],
+     [
+      -5.625,
+      -5.625
+     ],
+     [
+      -5.0,
+      -5.0
+     ],
+     [
+      -4.375,
+      -4.375
+     ],
+     [
+      -3.75,
+      -3.75
+     ],
+     [
+      -3.125,
+      -3.125
+     ],
+     [
+      -2.5,
+      -2.5
+     ],
+     [
+      -1.875,
+      -1.875
+     ],
+     [
+      -1.25,
+      -1.25
+     ],
+     [
+      -0.625,
+      -0.625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.625
+     ],
+     [
+      1.25,
+      1.25
+     ],
+     [
+      1.875,
+      1.875
+     ],
+     [
+      2.5,
+      2.5
+     ],
+     [
+      3.125,
+      3.125
+     ],
+     [
+      3.75,
+      3.75
+     ],
+     [
+      4.375,
+      4.375
+     ],
+     [
+      5.0,
+      5.0
+     ],
+     [
+      5.625,
+      5.625
+     ],
+     [
+      6.25,
+      6.25
+     ],
+     [
+      6.875,
+      6.875
+     ],
+     [
+      7.5,
+      7.5
+     ],
+     [
+      8.125,
+      8.125
+     ],
+     [
+      8.75,
+      8.75
+     ],
+     [
+      9.375,
+      9.375
+     ],
+     [
+      10.0,
+      10.0
+     ]
+    ],
+    "many": [
+     [
+      -10.0,
+      0.980263504
+     ],
+     [
+      -9.375,
+      0.088278606
+     ],
+     [
+      -8.75,
+      -0.999753168
+     ],
+     [
+      -8.125,
+      0.132441387
+     ],
+     [
+      -7.5,
+      0.970513489
+     ],
+     [
+      -6.875,
+      -0.346706005
+     ],
+     [
+      -6.25,
+      -0.893969648
+     ],
+     [
+      -5.625,
+      0.544071696
+     ],
+     [
+      -5.0,
+      0.773852498
+     ],
+     [
+      -4.375,
+      -0.714918585
+     ],
+     [
+      -3.75,
+      -0.616016714
+     ],
+     [
+      -3.125,
+      0.85091936
+     ],
+     [
+      -2.5,
+      0.428155428
+     ],
+     [
+      -1.875,
+      -0.945445155
+     ],
+     [
+      -1.25,
+      -0.219425258
+     ],
+     [
+      -0.625,
+      0.993888654
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      -0.993888654
+     ],
+     [
+      1.25,
+      0.219425258
+     ],
+     [
+      1.875,
+      0.945445155
+     ],
+     [
+      2.5,
+      -0.428155428
+     ],
+     [
+      3.125,
+      -0.85091936
+     ],
+     [
+      3.75,
+      0.616016714
+     ],
+     [
+      4.375,
+      0.714918585
+     ],
+     [
+      5.0,
+      -0.773852498
+     ],
+     [
+      5.625,
+      -0.544071696
+     ],
+     [
+      6.25,
+      0.893969648
+     ],
+     [
+      6.875,
+      0.346706005
+     ],
+     [
+      7.5,
+      -0.970513489
+     ],
+     [
+      8.125,
+      -0.132441387
+     ],
+     [
+      8.75,
+      0.999753168
+     ],
+     [
+      9.375,
+      -0.088278606
+     ],
+     [
+      10.0,
+      -0.980263504
+     ]
+    ],
+    "overflow": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      null
+     ],
+     [
+      1.25,
+      null
+     ],
+     [
+      1.875,
+      null
+     ],
+     [
+      2.5,
+      null
+     ],
+     [
+      3.125,
+      null
+     ],
+     [
+      3.75,
+      null
+     ],
+     [
+      4.375,
+      null
+     ],
+     [
+      5.0,
+      null
+     ],
+     [
+      5.625,
+      null
+     ],
+     [
+      6.25,
+      null
+     ],
+     [
+      6.875,
+      null
+     ],
+     [
+      7.5,
+      null
+     ],
+     [
+      8.125,
+      null
+     ],
+     [
+      8.75,
+      null
+     ],
+     [
+      9.375,
+      null
+     ],
+     [
+      10.0,
+      null
+     ]
+    ],
+    "uncertain_zero": [
+     [
+      -10.0,
+      0.0
+     ],
+     [
+      -9.375,
+      0.0
+     ],
+     [
+      -8.75,
+      0.0
+     ],
+     [
+      -8.125,
+      0.0
+     ],
+     [
+      -7.5,
+      0.0
+     ],
+     [
+      -6.875,
+      0.0
+     ],
+     [
+      -6.25,
+      0.0
+     ],
+     [
+      -5.625,
+      0.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      -4.375,
+      0.0
+     ],
+     [
+      -3.75,
+      0.0
+     ],
+     [
+      -3.125,
+      0.0
+     ],
+     [
+      -2.5,
+      0.0
+     ],
+     [
+      -1.875,
+      0.0
+     ],
+     [
+      -1.25,
+      0.0
+     ],
+     [
+      -0.625,
+      0.0
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.0
+     ],
+     [
+      1.25,
+      0.0
+     ],
+     [
+      1.875,
+      0.0
+     ],
+     [
+      2.5,
+      0.0
+     ],
+     [
+      3.125,
+      0.0
+     ],
+     [
+      3.75,
+      0.0
+     ],
+     [
+      4.375,
+      0.0
+     ],
+     [
+      5.0,
+      0.0
+     ],
+     [
+      5.625,
+      0.0
+     ],
+     [
+      6.25,
+      0.0
+     ],
+     [
+      6.875,
+      0.0
+     ],
+     [
+      7.5,
+      0.0
+     ],
+     [
+      8.125,
+      0.0
+     ],
+     [
+      8.75,
+      0.0
+     ],
+     [
+      9.375,
+      0.0
+     ],
+     [
+      10.0,
+      0.0
+     ]
+    ],
+    "unresolved": [
+     [
+      -10.0,
+      -1.0
+     ],
+     [
+      -9.375,
+      -1.0
+     ],
+     [
+      -8.75,
+      -1.0
+     ],
+     [
+      -8.125,
+      -1.0
+     ],
+     [
+      -7.5,
+      -1.0
+     ],
+     [
+      -6.875,
+      -1.0
+     ],
+     [
+      -6.25,
+      -1.0
+     ],
+     [
+      -5.625,
+      -1.0
+     ],
+     [
+      -5.0,
+      -1.0
+     ],
+     [
+      -4.375,
+      -1.0
+     ],
+     [
+      -3.75,
+      -1.0
+     ],
+     [
+      -3.125,
+      -1.0
+     ],
+     [
+      -2.5,
+      -1.0
+     ],
+     [
+      -1.875,
+      -1.0
+     ],
+     [
+      -1.25,
+      -1.0
+     ],
+     [
+      -0.625,
+      -1.0
+     ],
+     [
+      0.0,
+      -1.0
+     ],
+     [
+      0.625,
+      -1.0
+     ],
+     [
+      1.25,
+      -1.0
+     ],
+     [
+      1.875,
+      -1.0
+     ],
+     [
+      2.5,
+      -1.0
+     ],
+     [
+      3.125,
+      -1.0
+     ],
+     [
+      3.75,
+      -1.0
+     ],
+     [
+      4.375,
+      -1.0
+     ],
+     [
+      5.0,
+      -1.0
+     ],
+     [
+      5.625,
+      -1.0
+     ],
+     [
+      6.25,
+      -1.0
+     ],
+     [
+      6.875,
+      -1.0
+     ],
+     [
+      7.5,
+      -1.0
+     ],
+     [
+      8.125,
+      -1.0
+     ],
+     [
+      8.75,
+      -1.0
+     ],
+     [
+      9.375,
+      -1.0
+     ],
+     [
+      10.0,
+      -1.0
+     ]
+    ],
+    "unresolved_ext": [
+     [
+      -10.0,
+      10.0
+     ],
+     [
+      -9.375,
+      9.375
+     ],
+     [
+      -8.75,
+      8.75
+     ],
+     [
+      -8.125,
+      8.125
+     ],
+     [
+      -7.5,
+      7.5
+     ],
+     [
+      -6.875,
+      6.875
+     ],
+     [
+      -6.25,
+      6.25
+     ],
+     [
+      -5.625,
+      5.625
+     ],
+     [
+      -5.0,
+      5.0
+     ],
+     [
+      -4.375,
+      4.375
+     ],
+     [
+      -3.75,
+      3.75
+     ],
+     [
+      -3.125,
+      3.125
+     ],
+     [
+      -2.5,
+      2.5
+     ],
+     [
+      -1.875,
+      1.875
+     ],
+     [
+      -1.25,
+      1.25
+     ],
+     [
+      -0.625,
+      0.625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      -0.625
+     ],
+     [
+      1.25,
+      -1.25
+     ],
+     [
+      1.875,
+      -1.875
+     ],
+     [
+      2.5,
+      -2.5
+     ],
+     [
+      3.125,
+      -3.125
+     ],
+     [
+      3.75,
+      -3.75
+     ],
+     [
+      4.375,
+      -4.375
+     ],
+     [
+      5.0,
+      -5.0
+     ],
+     [
+      5.625,
+      -5.625
+     ],
+     [
+      6.25,
+      -6.25
+     ],
+     [
+      6.875,
+      -6.875
+     ],
+     [
+      7.5,
+      -7.5
+     ],
+     [
+      8.125,
+      -8.125
+     ],
+     [
+      8.75,
+      -8.75
+     ],
+     [
+      9.375,
+      -9.375
+     ],
+     [
+      10.0,
+      -10.0
+     ]
+    ],
+    "zero_branch": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      0.0
+     ],
+     [
+      1.25,
+      0.0
+     ],
+     [
+      1.875,
+      0.0
+     ],
+     [
+      2.5,
+      0.0
+     ],
+     [
+      3.125,
+      0.0
+     ],
+     [
+      3.75,
+      0.0
+     ],
+     [
+      4.375,
+      0.0
+     ],
+     [
+      5.0,
+      0.0
+     ],
+     [
+      5.625,
+      0.0
+     ],
+     [
+      6.25,
+      0.0
+     ],
+     [
+      6.875,
+      0.0
+     ],
+     [
+      7.5,
+      0.0
+     ],
+     [
+      8.125,
+      0.0
+     ],
+     [
+      8.75,
+      0.0
+     ],
+     [
+      9.375,
+      0.0
+     ],
+     [
+      10.0,
+      0.0
+     ]
+    ]
+   }
+  }
+ ]
+}

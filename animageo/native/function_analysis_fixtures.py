@@ -213,24 +213,31 @@ def scenes():
                          'pole_value': _number(1 / a) if a else _absent('out_of_domain', 'number'),
                          'exp_value': _number(math.exp(a)) if a < 1000 else _absent('out_of_domain', 'number')}
     out.append((d, cases, answers))
+    from .function_analysis_numeric_fixtures import scenes as numeric_scenes
+    out.extend(numeric_scenes())
     return out
 
 
 def build_fixtures():
-    from .curves_fixtures import _fixture, _rounded
-    from .parity import verify_fixture
+    from .curves_fixtures import _rounded, case_samples
+    from .parity import PARITY_FORMAT, generate_scene, verify_fixture
 
     out = {}
     for d, cases, answers in scenes():
-        fixture = _fixture(d.doc, cases)
-        # Rounding geometric expectations must never round an AST coefficient
-        # to zero: it changes degree, the root set and even the operation state.
+        raw = generate_scene({'format': PARITY_FORMAT, 'id': d.doc['documentId'],
+                              'document': d.doc, 'cases': cases})
+        for case in raw['cases']:
+            case['samples'] = case_samples(d.doc, case['expect'])
+        fixture = _rounded(raw)
+        # AST, numeric controls and the function's refs/domain are semantic
+        # inputs; decimal display rounding must never change their branches.
         fixture['document'] = d.doc
-        for case in fixture['cases']:
+        for original, case in zip(raw['cases'], fixture['cases']):
+            if 'inputs' in original:
+                case['inputs'] = original['inputs']
             for key, rec in case['expect'].items():
                 if rec['state'] == 'defined' and rec['type'] == 'function':
-                    producer = d.doc['elements'][key]['producer']['operationId']
-                    rec['value']['expr'] = d.doc['operations'][producer]['args']['expr']['ast']
+                    rec['value'] = original['expect'][key]['value']
             case['expect'].update(_rounded(answers[case['name']]))
         problems = verify_fixture(fixture)
         if problems:

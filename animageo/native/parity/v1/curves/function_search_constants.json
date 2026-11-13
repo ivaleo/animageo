@@ -1,0 +1,941 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "function_search_constants",
+ "registry": "1.11",
+ "generatedBy": "animageo 1.15.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "function_search_constants",
+  "operationRegistryVersion": "1.11",
+  "operations": {
+   "op_c": {
+    "id": "op_c",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "ref": 0
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "c"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_result_Near": {
+    "id": "op_result_Near",
+    "op": "function.root_near",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "start": {
+      "kind": "number",
+      "value": 0
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "Near"
+     }
+    ]
+   },
+   "op_result_Single": {
+    "id": "op_result_Single",
+    "op": "function.root_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "Single"
+     }
+    ]
+   },
+   "op_result_Roots": {
+    "id": "op_result_Roots",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Roots1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "Roots2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "Roots3"
+     }
+    ]
+   },
+   "op_result_Ext": {
+    "id": "op_result_Ext",
+    "op": "function.extrema_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "Ext1"
+     },
+     {
+      "slot": "extremum.2",
+      "elementId": "Ext2"
+     },
+     {
+      "slot": "extremum.3",
+      "elementId": "Ext3"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "c": {
+    "id": "c",
+    "type": "number",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "number"
+    }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "Near": {
+    "id": "Near",
+    "type": "point",
+    "displayName": "Near",
+    "producer": {
+     "operationId": "op_result_Near",
+     "slot": "root"
+    }
+   },
+   "Single": {
+    "id": "Single",
+    "type": "point",
+    "displayName": "Single",
+    "producer": {
+     "operationId": "op_result_Single",
+     "slot": "root"
+    }
+   },
+   "Roots1": {
+    "id": "Roots1",
+    "type": "point",
+    "displayName": "Roots1",
+    "producer": {
+     "operationId": "op_result_Roots",
+     "slot": "root.1"
+    }
+   },
+   "Roots2": {
+    "id": "Roots2",
+    "type": "point",
+    "displayName": "Roots2",
+    "producer": {
+     "operationId": "op_result_Roots",
+     "slot": "root.2"
+    }
+   },
+   "Roots3": {
+    "id": "Roots3",
+    "type": "point",
+    "displayName": "Roots3",
+    "producer": {
+     "operationId": "op_result_Roots",
+     "slot": "root.3"
+    }
+   },
+   "Ext1": {
+    "id": "Ext1",
+    "type": "point",
+    "displayName": "Ext1",
+    "producer": {
+     "operationId": "op_result_Ext",
+     "slot": "extremum.1"
+    }
+   },
+   "Ext2": {
+    "id": "Ext2",
+    "type": "point",
+    "displayName": "Ext2",
+    "producer": {
+     "operationId": "op_result_Ext",
+     "slot": "extremum.2"
+    }
+   },
+   "Ext3": {
+    "id": "Ext3",
+    "type": "point",
+    "displayName": "Ext3",
+    "producer": {
+     "operationId": "op_result_Ext",
+     "slot": "extremum.3"
+    }
+   }
+  },
+  "inputs": {
+   "c": {
+    "kind": "number",
+    "value": 1.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "zero",
+   "inputs": {
+    "c": {
+     "kind": "number",
+     "value": 0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "Ext1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Ext2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Ext3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Near": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident",
+     "detail": {
+      "stage": "newton"
+     }
+    },
+    "Roots1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "Roots2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "Roots3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "Single": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "ref": 0
+      },
+      "refs": [
+       0.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "checks": {},
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      0.0
+     ],
+     [
+      -9.375,
+      0.0
+     ],
+     [
+      -8.75,
+      0.0
+     ],
+     [
+      -8.125,
+      0.0
+     ],
+     [
+      -7.5,
+      0.0
+     ],
+     [
+      -6.875,
+      0.0
+     ],
+     [
+      -6.25,
+      0.0
+     ],
+     [
+      -5.625,
+      0.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      -4.375,
+      0.0
+     ],
+     [
+      -3.75,
+      0.0
+     ],
+     [
+      -3.125,
+      0.0
+     ],
+     [
+      -2.5,
+      0.0
+     ],
+     [
+      -1.875,
+      0.0
+     ],
+     [
+      -1.25,
+      0.0
+     ],
+     [
+      -0.625,
+      0.0
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.0
+     ],
+     [
+      1.25,
+      0.0
+     ],
+     [
+      1.875,
+      0.0
+     ],
+     [
+      2.5,
+      0.0
+     ],
+     [
+      3.125,
+      0.0
+     ],
+     [
+      3.75,
+      0.0
+     ],
+     [
+      4.375,
+      0.0
+     ],
+     [
+      5.0,
+      0.0
+     ],
+     [
+      5.625,
+      0.0
+     ],
+     [
+      6.25,
+      0.0
+     ],
+     [
+      6.875,
+      0.0
+     ],
+     [
+      7.5,
+      0.0
+     ],
+     [
+      8.125,
+      0.0
+     ],
+     [
+      8.75,
+      0.0
+     ],
+     [
+      9.375,
+      0.0
+     ],
+     [
+      10.0,
+      0.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "nonzero",
+   "inputs": {
+    "c": {
+     "kind": "number",
+     "value": 1
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "Ext1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Ext2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Ext3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Near": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root",
+     "detail": {
+      "stage": "newton"
+     }
+    },
+    "Roots1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Roots2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Roots3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Single": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "ref": 0
+      },
+      "refs": [
+       1.0
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "checks": {},
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      1.0
+     ],
+     [
+      -9.375,
+      1.0
+     ],
+     [
+      -8.75,
+      1.0
+     ],
+     [
+      -8.125,
+      1.0
+     ],
+     [
+      -7.5,
+      1.0
+     ],
+     [
+      -6.875,
+      1.0
+     ],
+     [
+      -6.25,
+      1.0
+     ],
+     [
+      -5.625,
+      1.0
+     ],
+     [
+      -5.0,
+      1.0
+     ],
+     [
+      -4.375,
+      1.0
+     ],
+     [
+      -3.75,
+      1.0
+     ],
+     [
+      -3.125,
+      1.0
+     ],
+     [
+      -2.5,
+      1.0
+     ],
+     [
+      -1.875,
+      1.0
+     ],
+     [
+      -1.25,
+      1.0
+     ],
+     [
+      -0.625,
+      1.0
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.0
+     ],
+     [
+      1.25,
+      1.0
+     ],
+     [
+      1.875,
+      1.0
+     ],
+     [
+      2.5,
+      1.0
+     ],
+     [
+      3.125,
+      1.0
+     ],
+     [
+      3.75,
+      1.0
+     ],
+     [
+      4.375,
+      1.0
+     ],
+     [
+      5.0,
+      1.0
+     ],
+     [
+      5.625,
+      1.0
+     ],
+     [
+      6.25,
+      1.0
+     ],
+     [
+      6.875,
+      1.0
+     ],
+     [
+      7.5,
+      1.0
+     ],
+     [
+      8.125,
+      1.0
+     ],
+     [
+      8.75,
+      1.0
+     ],
+     [
+      9.375,
+      1.0
+     ],
+     [
+      10.0,
+      1.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "tiny",
+   "inputs": {
+    "c": {
+     "kind": "number",
+     "value": 1e-30
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "Ext1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Ext2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Ext3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Near": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root",
+     "detail": {
+      "stage": "newton"
+     }
+    },
+    "Roots1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Roots2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Roots3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Single": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "ref": 0
+      },
+      "refs": [
+       1e-30
+      ],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "checks": {},
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      0.0
+     ],
+     [
+      -9.375,
+      0.0
+     ],
+     [
+      -8.75,
+      0.0
+     ],
+     [
+      -8.125,
+      0.0
+     ],
+     [
+      -7.5,
+      0.0
+     ],
+     [
+      -6.875,
+      0.0
+     ],
+     [
+      -6.25,
+      0.0
+     ],
+     [
+      -5.625,
+      0.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      -4.375,
+      0.0
+     ],
+     [
+      -3.75,
+      0.0
+     ],
+     [
+      -3.125,
+      0.0
+     ],
+     [
+      -2.5,
+      0.0
+     ],
+     [
+      -1.875,
+      0.0
+     ],
+     [
+      -1.25,
+      0.0
+     ],
+     [
+      -0.625,
+      0.0
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.0
+     ],
+     [
+      1.25,
+      0.0
+     ],
+     [
+      1.875,
+      0.0
+     ],
+     [
+      2.5,
+      0.0
+     ],
+     [
+      3.125,
+      0.0
+     ],
+     [
+      3.75,
+      0.0
+     ],
+     [
+      4.375,
+      0.0
+     ],
+     [
+      5.0,
+      0.0
+     ],
+     [
+      5.625,
+      0.0
+     ],
+     [
+      6.25,
+      0.0
+     ],
+     [
+      6.875,
+      0.0
+     ],
+     [
+      7.5,
+      0.0
+     ],
+     [
+      8.125,
+      0.0
+     ],
+     [
+      8.75,
+      0.0
+     ],
+     [
+      9.375,
+      0.0
+     ],
+     [
+      10.0,
+      0.0
+     ]
+    ]
+   }
+  }
+ ]
+}

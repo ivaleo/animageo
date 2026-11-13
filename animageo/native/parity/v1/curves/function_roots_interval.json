@@ -1,0 +1,2402 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "function_roots_interval",
+ "registry": "1.11",
+ "generatedBy": "animageo 1.15.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "function_roots_interval",
+  "operationRegistryVersion": "1.11",
+  "operations": {
+   "op_sine": {
+    "id": "op_sine",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "fn": "sin",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "sine"
+     }
+    ]
+   },
+   "op_result_Sine": {
+    "id": "op_result_Sine",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "sine"
+     },
+     "a": {
+      "kind": "number",
+      "value": -4
+     },
+     "b": {
+      "kind": "number",
+      "value": 4
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Sine1"
+     }
+    ]
+   },
+   "op_touch": {
+    "id": "op_touch",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "^",
+       "args": [
+        {
+         "fn": "sin",
+         "args": [
+          {
+           "var": "x"
+          }
+         ]
+        },
+        {
+         "num": 2
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "touch"
+     }
+    ]
+   },
+   "op_result_Touch": {
+    "id": "op_result_Touch",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "touch"
+     },
+     "a": {
+      "kind": "number",
+      "value": -4
+     },
+     "b": {
+      "kind": "number",
+      "value": 4
+     },
+     "count": {
+      "kind": "number",
+      "value": 5
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Touch1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "Touch2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "Touch3"
+     },
+     {
+      "slot": "root.4",
+      "elementId": "Touch4"
+     },
+     {
+      "slot": "root.5",
+      "elementId": "Touch5"
+     }
+    ]
+   },
+   "op_tangent": {
+    "id": "op_tangent",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "fn": "tan",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "tangent"
+     }
+    ]
+   },
+   "op_result_Tan": {
+    "id": "op_result_Tan",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "tangent"
+     },
+     "a": {
+      "kind": "number",
+      "value": -4
+     },
+     "b": {
+      "kind": "number",
+      "value": 4
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Tan1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "Tan2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "Tan3"
+     }
+    ]
+   },
+   "op_partial": {
+    "id": "op_partial",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": ">",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "partial"
+     }
+    ]
+   },
+   "op_result_Partial": {
+    "id": "op_result_Partial",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "partial"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Partial1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "Partial2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "Partial3"
+     }
+    ]
+   },
+   "op_pole": {
+    "id": "op_pole",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "/",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1
+          }
+         ]
+        },
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "pole"
+     }
+    ]
+   },
+   "op_result_Pole": {
+    "id": "op_result_Pole",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "pole"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Pole1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "Pole2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "Pole3"
+     }
+    ]
+   },
+   "op_jump": {
+    "id": "op_jump",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "+",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1
+          }
+         ]
+        },
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "jump"
+     }
+    ]
+   },
+   "op_result_Jump": {
+    "id": "op_result_Jump",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "jump"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Jump1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "Jump2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "Jump3"
+     }
+    ]
+   },
+   "op_reciprocal": {
+    "id": "op_reciprocal",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "/",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "reciprocal"
+     }
+    ]
+   },
+   "op_result_Missing": {
+    "id": "op_result_Missing",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "reciprocal"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Missing1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "Missing2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "Missing3"
+     }
+    ]
+   },
+   "op_open_edge": {
+    "id": "op_open_edge",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": ">",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "open_edge"
+     }
+    ]
+   },
+   "op_result_Open": {
+    "id": "op_result_Open",
+    "op": "function.roots_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "open_edge"
+     },
+     "a": {
+      "kind": "number",
+      "value": -2
+     },
+     "b": {
+      "kind": "number",
+      "value": 2
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root.1",
+      "elementId": "Open1"
+     },
+     {
+      "slot": "root.2",
+      "elementId": "Open2"
+     },
+     {
+      "slot": "root.3",
+      "elementId": "Open3"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "sine": {
+    "id": "sine",
+    "type": "function",
+    "displayName": "sine",
+    "producer": {
+     "operationId": "op_sine",
+     "slot": "function"
+    }
+   },
+   "Sine1": {
+    "id": "Sine1",
+    "type": "point",
+    "displayName": "Sine1",
+    "producer": {
+     "operationId": "op_result_Sine",
+     "slot": "root.1"
+    }
+   },
+   "touch": {
+    "id": "touch",
+    "type": "function",
+    "displayName": "touch",
+    "producer": {
+     "operationId": "op_touch",
+     "slot": "function"
+    }
+   },
+   "Touch1": {
+    "id": "Touch1",
+    "type": "point",
+    "displayName": "Touch1",
+    "producer": {
+     "operationId": "op_result_Touch",
+     "slot": "root.1"
+    }
+   },
+   "Touch2": {
+    "id": "Touch2",
+    "type": "point",
+    "displayName": "Touch2",
+    "producer": {
+     "operationId": "op_result_Touch",
+     "slot": "root.2"
+    }
+   },
+   "Touch3": {
+    "id": "Touch3",
+    "type": "point",
+    "displayName": "Touch3",
+    "producer": {
+     "operationId": "op_result_Touch",
+     "slot": "root.3"
+    }
+   },
+   "Touch4": {
+    "id": "Touch4",
+    "type": "point",
+    "displayName": "Touch4",
+    "producer": {
+     "operationId": "op_result_Touch",
+     "slot": "root.4"
+    }
+   },
+   "Touch5": {
+    "id": "Touch5",
+    "type": "point",
+    "displayName": "Touch5",
+    "producer": {
+     "operationId": "op_result_Touch",
+     "slot": "root.5"
+    }
+   },
+   "tangent": {
+    "id": "tangent",
+    "type": "function",
+    "displayName": "tangent",
+    "producer": {
+     "operationId": "op_tangent",
+     "slot": "function"
+    }
+   },
+   "Tan1": {
+    "id": "Tan1",
+    "type": "point",
+    "displayName": "Tan1",
+    "producer": {
+     "operationId": "op_result_Tan",
+     "slot": "root.1"
+    }
+   },
+   "Tan2": {
+    "id": "Tan2",
+    "type": "point",
+    "displayName": "Tan2",
+    "producer": {
+     "operationId": "op_result_Tan",
+     "slot": "root.2"
+    }
+   },
+   "Tan3": {
+    "id": "Tan3",
+    "type": "point",
+    "displayName": "Tan3",
+    "producer": {
+     "operationId": "op_result_Tan",
+     "slot": "root.3"
+    }
+   },
+   "partial": {
+    "id": "partial",
+    "type": "function",
+    "displayName": "partial",
+    "producer": {
+     "operationId": "op_partial",
+     "slot": "function"
+    }
+   },
+   "Partial1": {
+    "id": "Partial1",
+    "type": "point",
+    "displayName": "Partial1",
+    "producer": {
+     "operationId": "op_result_Partial",
+     "slot": "root.1"
+    }
+   },
+   "Partial2": {
+    "id": "Partial2",
+    "type": "point",
+    "displayName": "Partial2",
+    "producer": {
+     "operationId": "op_result_Partial",
+     "slot": "root.2"
+    }
+   },
+   "Partial3": {
+    "id": "Partial3",
+    "type": "point",
+    "displayName": "Partial3",
+    "producer": {
+     "operationId": "op_result_Partial",
+     "slot": "root.3"
+    }
+   },
+   "pole": {
+    "id": "pole",
+    "type": "function",
+    "displayName": "pole",
+    "producer": {
+     "operationId": "op_pole",
+     "slot": "function"
+    }
+   },
+   "Pole1": {
+    "id": "Pole1",
+    "type": "point",
+    "displayName": "Pole1",
+    "producer": {
+     "operationId": "op_result_Pole",
+     "slot": "root.1"
+    }
+   },
+   "Pole2": {
+    "id": "Pole2",
+    "type": "point",
+    "displayName": "Pole2",
+    "producer": {
+     "operationId": "op_result_Pole",
+     "slot": "root.2"
+    }
+   },
+   "Pole3": {
+    "id": "Pole3",
+    "type": "point",
+    "displayName": "Pole3",
+    "producer": {
+     "operationId": "op_result_Pole",
+     "slot": "root.3"
+    }
+   },
+   "jump": {
+    "id": "jump",
+    "type": "function",
+    "displayName": "jump",
+    "producer": {
+     "operationId": "op_jump",
+     "slot": "function"
+    }
+   },
+   "Jump1": {
+    "id": "Jump1",
+    "type": "point",
+    "displayName": "Jump1",
+    "producer": {
+     "operationId": "op_result_Jump",
+     "slot": "root.1"
+    }
+   },
+   "Jump2": {
+    "id": "Jump2",
+    "type": "point",
+    "displayName": "Jump2",
+    "producer": {
+     "operationId": "op_result_Jump",
+     "slot": "root.2"
+    }
+   },
+   "Jump3": {
+    "id": "Jump3",
+    "type": "point",
+    "displayName": "Jump3",
+    "producer": {
+     "operationId": "op_result_Jump",
+     "slot": "root.3"
+    }
+   },
+   "reciprocal": {
+    "id": "reciprocal",
+    "type": "function",
+    "displayName": "reciprocal",
+    "producer": {
+     "operationId": "op_reciprocal",
+     "slot": "function"
+    }
+   },
+   "Missing1": {
+    "id": "Missing1",
+    "type": "point",
+    "displayName": "Missing1",
+    "producer": {
+     "operationId": "op_result_Missing",
+     "slot": "root.1"
+    }
+   },
+   "Missing2": {
+    "id": "Missing2",
+    "type": "point",
+    "displayName": "Missing2",
+    "producer": {
+     "operationId": "op_result_Missing",
+     "slot": "root.2"
+    }
+   },
+   "Missing3": {
+    "id": "Missing3",
+    "type": "point",
+    "displayName": "Missing3",
+    "producer": {
+     "operationId": "op_result_Missing",
+     "slot": "root.3"
+    }
+   },
+   "open_edge": {
+    "id": "open_edge",
+    "type": "function",
+    "displayName": "open_edge",
+    "producer": {
+     "operationId": "op_open_edge",
+     "slot": "function"
+    }
+   },
+   "Open1": {
+    "id": "Open1",
+    "type": "point",
+    "displayName": "Open1",
+    "producer": {
+     "operationId": "op_result_Open",
+     "slot": "root.1"
+    }
+   },
+   "Open2": {
+    "id": "Open2",
+    "type": "point",
+    "displayName": "Open2",
+    "producer": {
+     "operationId": "op_result_Open",
+     "slot": "root.2"
+    }
+   },
+   "Open3": {
+    "id": "Open3",
+    "type": "point",
+    "displayName": "Open3",
+    "producer": {
+     "operationId": "op_result_Open",
+     "slot": "root.3"
+    }
+   }
+  },
+  "inputs": {},
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "analytic",
+   "scale": 20.0,
+   "expect": {
+    "Jump1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "Jump2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "Jump3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "Missing1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Missing2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Missing3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Open1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Open2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Open3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_root"
+    },
+    "Partial1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "Partial2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "Partial3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "Pole1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "Pole2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "Pole3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "Sine1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.141592654,
+      "y": 0
+     },
+     "detail": {
+      "found": 3
+     }
+    },
+    "Tan1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.141592654,
+      "y": 0
+     },
+     "detail": {
+      "found": 3
+     }
+    },
+    "Tan2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     },
+     "detail": {
+      "found": 3
+     }
+    },
+    "Tan3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.141592654,
+      "y": 0
+     },
+     "detail": {
+      "found": 3
+     }
+    },
+    "Touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -3.141592654,
+      "y": 0
+     },
+     "detail": {
+      "found": 3
+     }
+    },
+    "Touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     },
+     "detail": {
+      "found": 3
+     }
+    },
+    "Touch3": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.141592654,
+      "y": 0
+     },
+     "detail": {
+      "found": 3
+     }
+    },
+    "Touch4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "Touch5": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "jump": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "+",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1
+          }
+         ]
+        },
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "open_edge": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": ">",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "partial": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": ">",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "pole": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "/",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1
+          }
+         ]
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "reciprocal": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "/",
+       "args": [
+        {
+         "num": 1
+        },
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "sine": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sin",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "tangent": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "tan",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "touch": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "fn": "sin",
+         "args": [
+          {
+           "var": "x"
+          }
+         ]
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_result_Jump:on_graph": "passed",
+    "op_result_Partial:on_graph": "passed",
+    "op_result_Pole:on_graph": "passed",
+    "op_result_Sine:on_graph": "passed",
+    "op_result_Tan:on_graph": "passed",
+    "op_result_Touch:on_graph": "passed"
+   },
+   "samples": {
+    "jump": [
+     [
+      -10.0,
+      -9.0
+     ],
+     [
+      -9.375,
+      -8.375
+     ],
+     [
+      -8.75,
+      -7.75
+     ],
+     [
+      -8.125,
+      -7.125
+     ],
+     [
+      -7.5,
+      -6.5
+     ],
+     [
+      -6.875,
+      -5.875
+     ],
+     [
+      -6.25,
+      -5.25
+     ],
+     [
+      -5.625,
+      -4.625
+     ],
+     [
+      -5.0,
+      -4.0
+     ],
+     [
+      -4.375,
+      -3.375
+     ],
+     [
+      -3.75,
+      -2.75
+     ],
+     [
+      -3.125,
+      -2.125
+     ],
+     [
+      -2.5,
+      -1.5
+     ],
+     [
+      -1.875,
+      -0.875
+     ],
+     [
+      -1.25,
+      -0.25
+     ],
+     [
+      -0.625,
+      0.375
+     ],
+     [
+      0.0,
+      -1.0
+     ],
+     [
+      0.625,
+      -0.375
+     ],
+     [
+      1.25,
+      0.25
+     ],
+     [
+      1.875,
+      0.875
+     ],
+     [
+      2.5,
+      1.5
+     ],
+     [
+      3.125,
+      2.125
+     ],
+     [
+      3.75,
+      2.75
+     ],
+     [
+      4.375,
+      3.375
+     ],
+     [
+      5.0,
+      4.0
+     ],
+     [
+      5.625,
+      4.625
+     ],
+     [
+      6.25,
+      5.25
+     ],
+     [
+      6.875,
+      5.875
+     ],
+     [
+      7.5,
+      6.5
+     ],
+     [
+      8.125,
+      7.125
+     ],
+     [
+      8.75,
+      7.75
+     ],
+     [
+      9.375,
+      8.375
+     ],
+     [
+      10.0,
+      9.0
+     ]
+    ],
+    "open_edge": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      0.625
+     ],
+     [
+      1.25,
+      1.25
+     ],
+     [
+      1.875,
+      1.875
+     ],
+     [
+      2.5,
+      2.5
+     ],
+     [
+      3.125,
+      3.125
+     ],
+     [
+      3.75,
+      3.75
+     ],
+     [
+      4.375,
+      4.375
+     ],
+     [
+      5.0,
+      5.0
+     ],
+     [
+      5.625,
+      5.625
+     ],
+     [
+      6.25,
+      6.25
+     ],
+     [
+      6.875,
+      6.875
+     ],
+     [
+      7.5,
+      7.5
+     ],
+     [
+      8.125,
+      8.125
+     ],
+     [
+      8.75,
+      8.75
+     ],
+     [
+      9.375,
+      9.375
+     ],
+     [
+      10.0,
+      10.0
+     ]
+    ],
+    "partial": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      -0.375
+     ],
+     [
+      1.25,
+      0.25
+     ],
+     [
+      1.875,
+      0.875
+     ],
+     [
+      2.5,
+      1.5
+     ],
+     [
+      3.125,
+      2.125
+     ],
+     [
+      3.75,
+      2.75
+     ],
+     [
+      4.375,
+      3.375
+     ],
+     [
+      5.0,
+      4.0
+     ],
+     [
+      5.625,
+      4.625
+     ],
+     [
+      6.25,
+      5.25
+     ],
+     [
+      6.875,
+      5.875
+     ],
+     [
+      7.5,
+      6.5
+     ],
+     [
+      8.125,
+      7.125
+     ],
+     [
+      8.75,
+      7.75
+     ],
+     [
+      9.375,
+      8.375
+     ],
+     [
+      10.0,
+      9.0
+     ]
+    ],
+    "pole": [
+     [
+      -10.0,
+      1.1
+     ],
+     [
+      -9.375,
+      1.106666667
+     ],
+     [
+      -8.75,
+      1.114285714
+     ],
+     [
+      -8.125,
+      1.123076923
+     ],
+     [
+      -7.5,
+      1.133333333
+     ],
+     [
+      -6.875,
+      1.145454545
+     ],
+     [
+      -6.25,
+      1.16
+     ],
+     [
+      -5.625,
+      1.177777778
+     ],
+     [
+      -5.0,
+      1.2
+     ],
+     [
+      -4.375,
+      1.228571429
+     ],
+     [
+      -3.75,
+      1.266666667
+     ],
+     [
+      -3.125,
+      1.32
+     ],
+     [
+      -2.5,
+      1.4
+     ],
+     [
+      -1.875,
+      1.533333333
+     ],
+     [
+      -1.25,
+      1.8
+     ],
+     [
+      -0.625,
+      2.6
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      -0.6
+     ],
+     [
+      1.25,
+      0.2
+     ],
+     [
+      1.875,
+      0.466666667
+     ],
+     [
+      2.5,
+      0.6
+     ],
+     [
+      3.125,
+      0.68
+     ],
+     [
+      3.75,
+      0.733333333
+     ],
+     [
+      4.375,
+      0.771428571
+     ],
+     [
+      5.0,
+      0.8
+     ],
+     [
+      5.625,
+      0.822222222
+     ],
+     [
+      6.25,
+      0.84
+     ],
+     [
+      6.875,
+      0.854545455
+     ],
+     [
+      7.5,
+      0.866666667
+     ],
+     [
+      8.125,
+      0.876923077
+     ],
+     [
+      8.75,
+      0.885714286
+     ],
+     [
+      9.375,
+      0.893333333
+     ],
+     [
+      10.0,
+      0.9
+     ]
+    ],
+    "reciprocal": [
+     [
+      -10.0,
+      -0.1
+     ],
+     [
+      -9.375,
+      -0.106666667
+     ],
+     [
+      -8.75,
+      -0.114285714
+     ],
+     [
+      -8.125,
+      -0.123076923
+     ],
+     [
+      -7.5,
+      -0.133333333
+     ],
+     [
+      -6.875,
+      -0.145454545
+     ],
+     [
+      -6.25,
+      -0.16
+     ],
+     [
+      -5.625,
+      -0.177777778
+     ],
+     [
+      -5.0,
+      -0.2
+     ],
+     [
+      -4.375,
+      -0.228571429
+     ],
+     [
+      -3.75,
+      -0.266666667
+     ],
+     [
+      -3.125,
+      -0.32
+     ],
+     [
+      -2.5,
+      -0.4
+     ],
+     [
+      -1.875,
+      -0.533333333
+     ],
+     [
+      -1.25,
+      -0.8
+     ],
+     [
+      -0.625,
+      -1.6
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      1.6
+     ],
+     [
+      1.25,
+      0.8
+     ],
+     [
+      1.875,
+      0.533333333
+     ],
+     [
+      2.5,
+      0.4
+     ],
+     [
+      3.125,
+      0.32
+     ],
+     [
+      3.75,
+      0.266666667
+     ],
+     [
+      4.375,
+      0.228571429
+     ],
+     [
+      5.0,
+      0.2
+     ],
+     [
+      5.625,
+      0.177777778
+     ],
+     [
+      6.25,
+      0.16
+     ],
+     [
+      6.875,
+      0.145454545
+     ],
+     [
+      7.5,
+      0.133333333
+     ],
+     [
+      8.125,
+      0.123076923
+     ],
+     [
+      8.75,
+      0.114285714
+     ],
+     [
+      9.375,
+      0.106666667
+     ],
+     [
+      10.0,
+      0.1
+     ]
+    ],
+    "sine": [
+     [
+      -10.0,
+      0.544021111
+     ],
+     [
+      -9.375,
+      -0.049757406
+     ],
+     [
+      -8.75,
+      -0.624723954
+     ],
+     [
+      -8.125,
+      -0.963498766
+     ],
+     [
+      -7.5,
+      -0.937999977
+     ],
+     [
+      -6.875,
+      -0.557868008
+     ],
+     [
+      -6.25,
+      0.033179217
+     ],
+     [
+      -5.625,
+      0.61168225
+     ],
+     [
+      -5.0,
+      0.958924275
+     ],
+     [
+      -4.375,
+      0.943622192
+     ],
+     [
+      -3.75,
+      0.571561319
+     ],
+     [
+      -3.125,
+      -0.016591892
+     ],
+     [
+      -2.5,
+      -0.598472144
+     ],
+     [
+      -1.875,
+      -0.954085782
+     ],
+     [
+      -1.25,
+      -0.948984619
+     ],
+     [
+      -0.625,
+      -0.585097273
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.585097273
+     ],
+     [
+      1.25,
+      0.948984619
+     ],
+     [
+      1.875,
+      0.954085782
+     ],
+     [
+      2.5,
+      0.598472144
+     ],
+     [
+      3.125,
+      0.016591892
+     ],
+     [
+      3.75,
+      -0.571561319
+     ],
+     [
+      4.375,
+      -0.943622192
+     ],
+     [
+      5.0,
+      -0.958924275
+     ],
+     [
+      5.625,
+      -0.61168225
+     ],
+     [
+      6.25,
+      -0.033179217
+     ],
+     [
+      6.875,
+      0.557868008
+     ],
+     [
+      7.5,
+      0.937999977
+     ],
+     [
+      8.125,
+      0.963498766
+     ],
+     [
+      8.75,
+      0.624723954
+     ],
+     [
+      9.375,
+      0.049757406
+     ],
+     [
+      10.0,
+      -0.544021111
+     ]
+    ],
+    "tangent": [
+     [
+      -10.0,
+      -0.648360827
+     ],
+     [
+      -9.375,
+      0.049819116
+     ],
+     [
+      -8.75,
+      0.800060712
+     ],
+     [
+      -8.125,
+      3.599001898
+     ],
+     [
+      -7.5,
+      -2.706013867
+     ],
+     [
+      -6.875,
+      -0.672187074
+     ],
+     [
+      -6.25,
+      0.033197494
+     ],
+     [
+      -5.625,
+      0.773201246
+     ],
+     [
+      -5.0,
+      3.380515006
+     ],
+     [
+      -4.375,
+      -2.850612135
+     ],
+     [
+      -3.75,
+      -0.696550851
+     ],
+     [
+      -3.125,
+      0.016594176
+     ],
+     [
+      -2.5,
+      0.747022297
+     ],
+     [
+      -1.875,
+      3.18523892
+     ],
+     [
+      -1.25,
+      -3.009569674
+     ],
+     [
+      -0.625,
+      -0.721484441
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.721484441
+     ],
+     [
+      1.25,
+      3.009569674
+     ],
+     [
+      1.875,
+      -3.18523892
+     ],
+     [
+      2.5,
+      -0.747022297
+     ],
+     [
+      3.125,
+      -0.016594176
+     ],
+     [
+      3.75,
+      0.696550851
+     ],
+     [
+      4.375,
+      2.850612135
+     ],
+     [
+      5.0,
+      -3.380515006
+     ],
+     [
+      5.625,
+      -0.773201246
+     ],
+     [
+      6.25,
+      -0.033197494
+     ],
+     [
+      6.875,
+      0.672187074
+     ],
+     [
+      7.5,
+      2.706013867
+     ],
+     [
+      8.125,
+      -3.599001898
+     ],
+     [
+      8.75,
+      -0.800060712
+     ],
+     [
+      9.375,
+      -0.049819116
+     ],
+     [
+      10.0,
+      0.648360827
+     ]
+    ],
+    "touch": [
+     [
+      -10.0,
+      0.295958969
+     ],
+     [
+      -9.375,
+      0.002475799
+     ],
+     [
+      -8.75,
+      0.390280018
+     ],
+     [
+      -8.125,
+      0.928329873
+     ],
+     [
+      -7.5,
+      0.879843956
+     ],
+     [
+      -6.875,
+      0.311216714
+     ],
+     [
+      -6.25,
+      0.00110086
+     ],
+     [
+      -5.625,
+      0.374155175
+     ],
+     [
+      -5.0,
+      0.919535765
+     ],
+     [
+      -4.375,
+      0.890422842
+     ],
+     [
+      -3.75,
+      0.326682341
+     ],
+     [
+      -3.125,
+      0.000275291
+     ],
+     [
+      -2.5,
+      0.358168907
+     ],
+     [
+      -1.875,
+      0.910279679
+     ],
+     [
+      -1.25,
+      0.900571808
+     ],
+     [
+      -0.625,
+      0.342338819
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.342338819
+     ],
+     [
+      1.25,
+      0.900571808
+     ],
+     [
+      1.875,
+      0.910279679
+     ],
+     [
+      2.5,
+      0.358168907
+     ],
+     [
+      3.125,
+      0.000275291
+     ],
+     [
+      3.75,
+      0.326682341
+     ],
+     [
+      4.375,
+      0.890422842
+     ],
+     [
+      5.0,
+      0.919535765
+     ],
+     [
+      5.625,
+      0.374155175
+     ],
+     [
+      6.25,
+      0.00110086
+     ],
+     [
+      6.875,
+      0.311216714
+     ],
+     [
+      7.5,
+      0.879843956
+     ],
+     [
+      8.125,
+      0.928329873
+     ],
+     [
+      8.75,
+      0.390280018
+     ],
+     [
+      9.375,
+      0.002475799
+     ],
+     [
+      10.0,
+      0.295958969
+     ]
+    ]
+   }
+  }
+ ]
+}

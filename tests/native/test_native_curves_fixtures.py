@@ -21,7 +21,7 @@ def _floats(value):
         yield value
     elif isinstance(value, dict):
         for key, item in value.items():
-            if key != 'expr':  # AST coefficients retain their full precision
+            if key not in ('expr', 'refs', 'domain'):  # semantic function inputs retain precision
                 yield from _floats(item)
     elif isinstance(value, list):
         for item in value:

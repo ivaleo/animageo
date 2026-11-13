@@ -1,0 +1,1439 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "function_search_boundaries",
+ "registry": "1.11",
+ "generatedBy": "animageo 1.15.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "function_search_boundaries",
+  "operationRegistryVersion": "1.11",
+  "operations": {
+   "op_zero_join": {
+    "id": "op_zero_join",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "var": "x"
+        },
+        {
+         "num": 0
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "zero_join"
+     }
+    ]
+   },
+   "op_open_edge": {
+    "id": "op_open_edge",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "var": "x"
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "open_edge"
+     }
+    ]
+   },
+   "op_exact_edge": {
+    "id": "op_exact_edge",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "+",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1e-06
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "exact_edge"
+     }
+    ]
+   },
+   "op_wrapped_plateau": {
+    "id": "op_wrapped_plateau",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "+",
+       "args": [
+        {
+         "fn": "max",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "fn": "abs",
+             "args": [
+              {
+               "var": "x"
+              }
+             ]
+            },
+            {
+             "num": 0.001
+            }
+           ]
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "wrapped_plateau"
+     }
+    ]
+   },
+   "op_edge_plateau": {
+    "id": "op_edge_plateau",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "fn": "max",
+       "args": [
+        {
+         "fn": "max",
+         "args": [
+          {
+           "op": "neg",
+           "args": [
+            {
+             "var": "x"
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 0.001
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 0
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "edge_plateau"
+     }
+    ]
+   },
+   "op_result_ZeroNear": {
+    "id": "op_result_ZeroNear",
+    "op": "function.root_near",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "zero_join"
+     },
+     "start": {
+      "kind": "number",
+      "value": -1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "ZeroNear"
+     }
+    ]
+   },
+   "op_result_OpenNear": {
+    "id": "op_result_OpenNear",
+    "op": "function.root_near",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "open_edge"
+     },
+     "start": {
+      "kind": "number",
+      "value": -1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "OpenNear"
+     }
+    ]
+   },
+   "op_result_ExactNear": {
+    "id": "op_result_ExactNear",
+    "op": "function.root_near",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "exact_edge"
+     },
+     "start": {
+      "kind": "number",
+      "value": -1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "root",
+      "elementId": "ExactNear"
+     }
+    ]
+   },
+   "op_result_Wrapped": {
+    "id": "op_result_Wrapped",
+    "op": "function.extrema_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "wrapped_plateau"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1
+     },
+     "b": {
+      "kind": "number",
+      "value": 1
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "Wrapped1"
+     },
+     {
+      "slot": "extremum.2",
+      "elementId": "Wrapped2"
+     },
+     {
+      "slot": "extremum.3",
+      "elementId": "Wrapped3"
+     }
+    ]
+   },
+   "op_result_Edge": {
+    "id": "op_result_Edge",
+    "op": "function.extrema_interval",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "edge_plateau"
+     },
+     "a": {
+      "kind": "number",
+      "value": -1
+     },
+     "b": {
+      "kind": "number",
+      "value": 1
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "extremum.1",
+      "elementId": "Edge1"
+     },
+     {
+      "slot": "extremum.2",
+      "elementId": "Edge2"
+     },
+     {
+      "slot": "extremum.3",
+      "elementId": "Edge3"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "zero_join": {
+    "id": "zero_join",
+    "type": "function",
+    "displayName": "zero_join",
+    "producer": {
+     "operationId": "op_zero_join",
+     "slot": "function"
+    }
+   },
+   "open_edge": {
+    "id": "open_edge",
+    "type": "function",
+    "displayName": "open_edge",
+    "producer": {
+     "operationId": "op_open_edge",
+     "slot": "function"
+    }
+   },
+   "exact_edge": {
+    "id": "exact_edge",
+    "type": "function",
+    "displayName": "exact_edge",
+    "producer": {
+     "operationId": "op_exact_edge",
+     "slot": "function"
+    }
+   },
+   "wrapped_plateau": {
+    "id": "wrapped_plateau",
+    "type": "function",
+    "displayName": "wrapped_plateau",
+    "producer": {
+     "operationId": "op_wrapped_plateau",
+     "slot": "function"
+    }
+   },
+   "edge_plateau": {
+    "id": "edge_plateau",
+    "type": "function",
+    "displayName": "edge_plateau",
+    "producer": {
+     "operationId": "op_edge_plateau",
+     "slot": "function"
+    }
+   },
+   "ZeroNear": {
+    "id": "ZeroNear",
+    "type": "point",
+    "displayName": "ZeroNear",
+    "producer": {
+     "operationId": "op_result_ZeroNear",
+     "slot": "root"
+    }
+   },
+   "OpenNear": {
+    "id": "OpenNear",
+    "type": "point",
+    "displayName": "OpenNear",
+    "producer": {
+     "operationId": "op_result_OpenNear",
+     "slot": "root"
+    }
+   },
+   "ExactNear": {
+    "id": "ExactNear",
+    "type": "point",
+    "displayName": "ExactNear",
+    "producer": {
+     "operationId": "op_result_ExactNear",
+     "slot": "root"
+    }
+   },
+   "Wrapped1": {
+    "id": "Wrapped1",
+    "type": "point",
+    "displayName": "Wrapped1",
+    "producer": {
+     "operationId": "op_result_Wrapped",
+     "slot": "extremum.1"
+    }
+   },
+   "Wrapped2": {
+    "id": "Wrapped2",
+    "type": "point",
+    "displayName": "Wrapped2",
+    "producer": {
+     "operationId": "op_result_Wrapped",
+     "slot": "extremum.2"
+    }
+   },
+   "Wrapped3": {
+    "id": "Wrapped3",
+    "type": "point",
+    "displayName": "Wrapped3",
+    "producer": {
+     "operationId": "op_result_Wrapped",
+     "slot": "extremum.3"
+    }
+   },
+   "Edge1": {
+    "id": "Edge1",
+    "type": "point",
+    "displayName": "Edge1",
+    "producer": {
+     "operationId": "op_result_Edge",
+     "slot": "extremum.1"
+    }
+   },
+   "Edge2": {
+    "id": "Edge2",
+    "type": "point",
+    "displayName": "Edge2",
+    "producer": {
+     "operationId": "op_result_Edge",
+     "slot": "extremum.2"
+    }
+   },
+   "Edge3": {
+    "id": "Edge3",
+    "type": "point",
+    "displayName": "Edge3",
+    "producer": {
+     "operationId": "op_result_Edge",
+     "slot": "extremum.3"
+    }
+   }
+  },
+  "inputs": {},
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "analytic",
+   "scale": 20.0,
+   "expect": {
+    "Edge1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Edge2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Edge3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "ExactNear": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1e-06,
+      "y": 0
+     }
+    },
+    "OpenNear": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_convergence",
+     "detail": {
+      "stage": "bracket"
+     }
+    },
+    "Wrapped1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Wrapped2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "Wrapped3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_extremum"
+    },
+    "ZeroNear": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "coincident",
+     "detail": {
+      "stage": "pieces"
+     }
+    },
+    "edge_plateau": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "max",
+       "args": [
+        {
+         "fn": "max",
+         "args": [
+          {
+           "op": "neg",
+           "args": [
+            {
+             "var": "x"
+            }
+           ]
+          },
+          {
+           "op": "-",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 0.001
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 0
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "exact_edge": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "+",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 1e-06
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "open_edge": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "var": "x"
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "wrapped_plateau": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "+",
+       "args": [
+        {
+         "fn": "max",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "fn": "abs",
+             "args": [
+              {
+               "var": "x"
+              }
+             ]
+            },
+            {
+             "num": 0.001
+            }
+           ]
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "zero_join": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "var": "x"
+        },
+        {
+         "num": 0
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_result_ExactNear:on_graph": "passed"
+   },
+   "samples": {
+    "edge_plateau": [
+     [
+      -10.0,
+      10.0
+     ],
+     [
+      -9.375,
+      9.375
+     ],
+     [
+      -8.75,
+      8.75
+     ],
+     [
+      -8.125,
+      8.125
+     ],
+     [
+      -7.5,
+      7.5
+     ],
+     [
+      -6.875,
+      6.875
+     ],
+     [
+      -6.25,
+      6.25
+     ],
+     [
+      -5.625,
+      5.625
+     ],
+     [
+      -5.0,
+      5.0
+     ],
+     [
+      -4.375,
+      4.375
+     ],
+     [
+      -3.75,
+      3.75
+     ],
+     [
+      -3.125,
+      3.125
+     ],
+     [
+      -2.5,
+      2.5
+     ],
+     [
+      -1.875,
+      1.875
+     ],
+     [
+      -1.25,
+      1.25
+     ],
+     [
+      -0.625,
+      0.625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.624
+     ],
+     [
+      1.25,
+      1.249
+     ],
+     [
+      1.875,
+      1.874
+     ],
+     [
+      2.5,
+      2.499
+     ],
+     [
+      3.125,
+      3.124
+     ],
+     [
+      3.75,
+      3.749
+     ],
+     [
+      4.375,
+      4.374
+     ],
+     [
+      5.0,
+      4.999
+     ],
+     [
+      5.625,
+      5.624
+     ],
+     [
+      6.25,
+      6.249
+     ],
+     [
+      6.875,
+      6.874
+     ],
+     [
+      7.5,
+      7.499
+     ],
+     [
+      8.125,
+      8.124
+     ],
+     [
+      8.75,
+      8.749
+     ],
+     [
+      9.375,
+      9.374
+     ],
+     [
+      10.0,
+      9.999
+     ]
+    ],
+    "exact_edge": [
+     [
+      -10.0,
+      -9.999999
+     ],
+     [
+      -9.375,
+      -9.374999
+     ],
+     [
+      -8.75,
+      -8.749999
+     ],
+     [
+      -8.125,
+      -8.124999
+     ],
+     [
+      -7.5,
+      -7.499999
+     ],
+     [
+      -6.875,
+      -6.874999
+     ],
+     [
+      -6.25,
+      -6.249999
+     ],
+     [
+      -5.625,
+      -5.624999
+     ],
+     [
+      -5.0,
+      -4.999999
+     ],
+     [
+      -4.375,
+      -4.374999
+     ],
+     [
+      -3.75,
+      -3.749999
+     ],
+     [
+      -3.125,
+      -3.124999
+     ],
+     [
+      -2.5,
+      -2.499999
+     ],
+     [
+      -1.875,
+      -1.874999
+     ],
+     [
+      -1.25,
+      -1.249999
+     ],
+     [
+      -0.625,
+      -0.624999
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.0
+     ],
+     [
+      1.25,
+      1.0
+     ],
+     [
+      1.875,
+      1.0
+     ],
+     [
+      2.5,
+      1.0
+     ],
+     [
+      3.125,
+      1.0
+     ],
+     [
+      3.75,
+      1.0
+     ],
+     [
+      4.375,
+      1.0
+     ],
+     [
+      5.0,
+      1.0
+     ],
+     [
+      5.625,
+      1.0
+     ],
+     [
+      6.25,
+      1.0
+     ],
+     [
+      6.875,
+      1.0
+     ],
+     [
+      7.5,
+      1.0
+     ],
+     [
+      8.125,
+      1.0
+     ],
+     [
+      8.75,
+      1.0
+     ],
+     [
+      9.375,
+      1.0
+     ],
+     [
+      10.0,
+      1.0
+     ]
+    ],
+    "open_edge": [
+     [
+      -10.0,
+      -10.0
+     ],
+     [
+      -9.375,
+      -9.375
+     ],
+     [
+      -8.75,
+      -8.75
+     ],
+     [
+      -8.125,
+      -8.125
+     ],
+     [
+      -7.5,
+      -7.5
+     ],
+     [
+      -6.875,
+      -6.875
+     ],
+     [
+      -6.25,
+      -6.25
+     ],
+     [
+      -5.625,
+      -5.625
+     ],
+     [
+      -5.0,
+      -5.0
+     ],
+     [
+      -4.375,
+      -4.375
+     ],
+     [
+      -3.75,
+      -3.75
+     ],
+     [
+      -3.125,
+      -3.125
+     ],
+     [
+      -2.5,
+      -2.5
+     ],
+     [
+      -1.875,
+      -1.875
+     ],
+     [
+      -1.25,
+      -1.25
+     ],
+     [
+      -0.625,
+      -0.625
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.0
+     ],
+     [
+      1.25,
+      1.0
+     ],
+     [
+      1.875,
+      1.0
+     ],
+     [
+      2.5,
+      1.0
+     ],
+     [
+      3.125,
+      1.0
+     ],
+     [
+      3.75,
+      1.0
+     ],
+     [
+      4.375,
+      1.0
+     ],
+     [
+      5.0,
+      1.0
+     ],
+     [
+      5.625,
+      1.0
+     ],
+     [
+      6.25,
+      1.0
+     ],
+     [
+      6.875,
+      1.0
+     ],
+     [
+      7.5,
+      1.0
+     ],
+     [
+      8.125,
+      1.0
+     ],
+     [
+      8.75,
+      1.0
+     ],
+     [
+      9.375,
+      1.0
+     ],
+     [
+      10.0,
+      1.0
+     ]
+    ],
+    "wrapped_plateau": [
+     [
+      -10.0,
+      10.999
+     ],
+     [
+      -9.375,
+      10.374
+     ],
+     [
+      -8.75,
+      9.749
+     ],
+     [
+      -8.125,
+      9.124
+     ],
+     [
+      -7.5,
+      8.499
+     ],
+     [
+      -6.875,
+      7.874
+     ],
+     [
+      -6.25,
+      7.249
+     ],
+     [
+      -5.625,
+      6.624
+     ],
+     [
+      -5.0,
+      5.999
+     ],
+     [
+      -4.375,
+      5.374
+     ],
+     [
+      -3.75,
+      4.749
+     ],
+     [
+      -3.125,
+      4.124
+     ],
+     [
+      -2.5,
+      3.499
+     ],
+     [
+      -1.875,
+      2.874
+     ],
+     [
+      -1.25,
+      2.249
+     ],
+     [
+      -0.625,
+      1.624
+     ],
+     [
+      0.0,
+      1.0
+     ],
+     [
+      0.625,
+      1.624
+     ],
+     [
+      1.25,
+      2.249
+     ],
+     [
+      1.875,
+      2.874
+     ],
+     [
+      2.5,
+      3.499
+     ],
+     [
+      3.125,
+      4.124
+     ],
+     [
+      3.75,
+      4.749
+     ],
+     [
+      4.375,
+      5.374
+     ],
+     [
+      5.0,
+      5.999
+     ],
+     [
+      5.625,
+      6.624
+     ],
+     [
+      6.25,
+      7.249
+     ],
+     [
+      6.875,
+      7.874
+     ],
+     [
+      7.5,
+      8.499
+     ],
+     [
+      8.125,
+      9.124
+     ],
+     [
+      8.75,
+      9.749
+     ],
+     [
+      9.375,
+      10.374
+     ],
+     [
+      10.0,
+      10.999
+     ]
+    ],
+    "zero_join": [
+     [
+      -10.0,
+      -10.0
+     ],
+     [
+      -9.375,
+      -9.375
+     ],
+     [
+      -8.75,
+      -8.75
+     ],
+     [
+      -8.125,
+      -8.125
+     ],
+     [
+      -7.5,
+      -7.5
+     ],
+     [
+      -6.875,
+      -6.875
+     ],
+     [
+      -6.25,
+      -6.25
+     ],
+     [
+      -5.625,
+      -5.625
+     ],
+     [
+      -5.0,
+      -5.0
+     ],
+     [
+      -4.375,
+      -4.375
+     ],
+     [
+      -3.75,
+      -3.75
+     ],
+     [
+      -3.125,
+      -3.125
+     ],
+     [
+      -2.5,
+      -2.5
+     ],
+     [
+      -1.875,
+      -1.875
+     ],
+     [
+      -1.25,
+      -1.25
+     ],
+     [
+      -0.625,
+      -0.625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.0
+     ],
+     [
+      1.25,
+      0.0
+     ],
+     [
+      1.875,
+      0.0
+     ],
+     [
+      2.5,
+      0.0
+     ],
+     [
+      3.125,
+      0.0
+     ],
+     [
+      3.75,
+      0.0
+     ],
+     [
+      4.375,
+      0.0
+     ],
+     [
+      5.0,
+      0.0
+     ],
+     [
+      5.625,
+      0.0
+     ],
+     [
+      6.25,
+      0.0
+     ],
+     [
+      6.875,
+      0.0
+     ],
+     [
+      7.5,
+      0.0
+     ],
+     [
+      8.125,
+      0.0
+     ],
+     [
+      8.75,
+      0.0
+     ],
+     [
+      9.375,
+      0.0
+     ],
+     [
+      10.0,
+      0.0
+     ]
+    ]
+   }
+  }
+ ]
+}
