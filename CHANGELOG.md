@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `has("fill_order")`, independent `z_index_fill` for polygons and angles,
+  and additive paint `fillOrder`/`partOrder` lists. Native documents default
+  to area ordering; classic scenes retain construction ordering and their
+  previous export bytes. An explicit `rendering.fill_order` selects either
+  mode. Only explicit fill layers disable area sorting; outline and label
+  layers remain independent, including imported and previously stored z.
+- Shared winding-aware area and structural ordering for Cairo/manim output,
+  with stateless update/seek ordering, fitted angle-marker areas, fixed-layer
+  slots and distinct full/zero native arc domains. Solid polygons retain
+  nonzero winding and patterns even-odd. Geometry measures and operation
+  registry records are unchanged. TikZ and static JSXGraph area adapters
+  remain separate work; JSXGraph will retain export order after local drag.
+
 ### Fixed
 
 - Label placement with `respect_current_position` and no authored label

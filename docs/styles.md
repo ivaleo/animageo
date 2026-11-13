@@ -1170,6 +1170,39 @@ scene.element('α').style['tick_count'] = 2
 scene.element('α').style['arc_shift_px'] = 3  # 3 px farther out
 ```
 
+### Order fills by area
+
+```json
+{"rendering": {"fill_order": "area"}}
+```
+
+The largest visible fill draws first, so smaller regions remain visible.
+Native documents default to `area`; classic scenes, DSL and GGB imports default
+to `construction`, preserving their previous output. Either mode can be selected
+explicitly. The common built-in style leaves this key absent.
+
+`z_index_fill` is an independent layer for every filled shape, including polygons
+and angle markers. For example, `scene.element('poly').style.z_index_fill = 7`
+raises only its fill; the outline and label retain their previous layers.
+A polygon/angle's explicit legacy `z_index` also fixes its fill. A circle, arc,
+sector, circle segment, ellipse/conic or region's `z_index` controls the outline
+and leaves its fill automatic. `z_index_label` never fixes a fill.
+
+A finite number, including zero or a negative/fractional value, is explicit.
+Missing/null fill z means automatic, unless a polygon/angle has a numeric legacy
+layer. Resolver priority applies independently to each channel. Authored
+per-type defaults, overlays, roles and imported layers are explicit; intrinsic
+defaults are automatic. Stored layers are preserved without guessing their
+origin from their numeric range. Automatic ranks are never written into style.
+
+Area means the whole domain before clipping: solid polygons use nonzero winding,
+patterns use even-odd. Marker area uses its final fitted size. Opacity does not
+scale area and patterns use supporting area. Public geometry measures stay the
+same. See [the paint contract](native/kernel.md#98-paint-without-manim-nativeresolve_paint-1110rc3)
+for epsilon groups and the structural display plan. Cairo/manim consume this
+plan; TikZ/JSXGraph area adapters are separate work. JSXGraph's planned contract
+uses the export frame and does not reorder after local drag.
+
 ### A polygon "above everything"
 
 ```json

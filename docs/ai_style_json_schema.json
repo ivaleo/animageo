@@ -170,6 +170,10 @@
         "background": {
           "$ref": "#/$defs/colorOrRef"
         },
+        "fill_order": {
+          "enum": ["area", "construction"],
+          "description": "Native default: area; classic default: construction."
+        },
         "line_cap": {
           "$ref": "#/$defs/lineCap"
         },
@@ -429,7 +433,7 @@
           "$ref": "#/$defs/numberOrRef"
         },
         "z_index_fill": {
-          "$ref": "#/$defs/numberOrRef"
+          "type": ["number", "null"]
         },
         "label_offset_px": {
           "$ref": "#/$defs/point2OrRef"

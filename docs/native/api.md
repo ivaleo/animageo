@@ -139,8 +139,8 @@ Rendering needs manim; label layout does not (kernel.md §9).
 - `render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None, inputs=None, t=None, timeline=None, report=True, video=None)` — Render `doc` to `out` (a temporary file when `None`).
 - `source_view(doc)` — `{ptWidth, ptHeight, ptUnit, ptXZero, ptYZero}` of `viewDefaults.bounds`.
 - `layout_labels(doc, ev=None, *, inputs=None, style_config=None, export_layout=None, backend='metrics', place=None)` — Label positions of `doc` as `native.render` would draw them, without manim.
-- `resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None, export_layout=None)` — The paint `native.render` draws each element with, in style pixels, without manim (1.11.0rc3; kernel.md §9.8).
-- `style_keys()` — The keys of `appearance.overrides` each element type reads: unit, default under the built-in style, and the keys an equality mark passes to its targets (1.11.0rc3; kernel.md §9).
+- `resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None, export_layout=None)` — The paint `native.render` draws each element with, in style pixels, without manim. `has("fill_order")` adds bottom-to-top `fillOrder` and logical `partOrder`; native defaults to area ordering, classic to construction (kernel.md §9.8).
+- `style_keys()` — The keys of `appearance.overrides` each element type reads: unit, default under the built-in style, and the keys an equality mark passes to its targets. Its separate `rendering.keys.fill_order` describes the native default `area`; classic defaults to `construction` (kernel.md §9).
 
 ## Import
 

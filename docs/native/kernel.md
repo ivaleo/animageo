@@ -1401,7 +1401,83 @@ is that of the element in full; `docs/native/timeline.md` §3). It returns
 
     {"format": "animageo-paint/v1", "background": "#ffffff",
      "ptUnit": 100.0, "ptUnitStyle": 100.0, "t": null,
-     "elements": {id: entry}, "order": [id, …], "diagnostics": […]}
+     "elements": {id: entry}, "order": [id, …],
+     "fillOrder": [id, …], "partOrder": [{"id": id, "part": "fill"}, …],
+     "diagnostics": […]}
+
+**Fill order** (`has("fill_order")`). `rendering.fill_order` accepts `"area"`
+or `"construction"`. Its default depends on the entry point:
+
+| Entry point without the setting | Default |
+| --- | --- |
+| `native.resolve_paint`, `native.render`, `scene.loadDocument` | `area` |
+| Classic scenes, DSL and `loadGGB`, including their exporters | `construction` |
+
+An explicit setting overrides either default, including a loaded `StyleConfig`.
+The shared built-in style intentionally omits the setting. A native scene
+retains its path default through the classic bridge; individual geometry
+values never change a classic scene's default.
+
+`fillOrder` is the complete bottom-to-top list of actual area fills, including
+fixed layers. `partOrder` merges those fills with strokes, ticks, parallel
+marks, labels and indivisible bodies. Each reference is `{id, part}`; parts
+are `fill`, `stroke`, `ticks`, `parallel`, `label`, `body`, and, where present,
+`labelHalo` and `leader`. All rings of an outline and all glyphs of a label
+share a logical run. View parts use `@view.minor`, `@view.major`, `@view.axes`
+and `@view.labels`; the sheet background and one-shot effects are outside
+this state list. The fill projection of `partOrder` equals `fillOrder` exactly.
+The existing element-level `order` retains its meaning.
+
+In area mode, automatic fills share layer `0.01` without a numeric rank or
+tie offset. Larger domains draw below smaller ones. Sort positive, unrounded
+areas in descending order, then group from the largest remaining reference
+area while `reference - area <= 1e-9 * reference`. Within a group use the
+canonical construction index, with ID as the final tie. This reference rule
+is transitive and stateless; pairwise approximate comparison is unsuitable.
+Equal-layer fixed fills and nonfill parts retain their canonical slots.
+Merge using exact effective z before paint's numeric rounding. Consumers must
+use the order arrays rather than reconstructing them from rounded `fill.z`.
+
+Only a finite explicit `z_index_fill`, or legacy `z_index` of a polygon or
+angle (including `mark.right_angle`), makes a fill fixed. Body-only `z_index`
+of a circle, arc, sector, circle segment, ellipse/conic or region controls its
+outline and does not disable area sorting. `z_index_label` is independent.
+The new fill key wins over a polygon/angle's legacy layer without moving its
+outline or label. Zero, negative and fractional layers are valid; booleans,
+NaN and infinity are invalid. Missing/null fill z means automatic, unless the
+independent legacy polygon/angle channel is numeric. A winning null masks
+only its own channel. Resolver defaults, roles, overlays, enabled imports and
+authored writes count as explicit; intrinsic clean defaults do not. Existing
+stored layers, including imported layer zero, remain explicit. No numeric
+range is interpreted as an automatic layer and documents are never migrated.
+Fixed fills preserve their previous effective z, including the construction
+tie: an explicit fill can still draw above an outline or a label.
+
+Areas describe the entire fill domain before clipping and occlusion, in
+style pixels squared (`world area * ptUnitStyle²`). Opacity does not weight
+area; pattern areas describe their supporting region. Solid polygons use
+nonzero winding; hatch/crosshatch/dots use even-odd, matching the painters.
+Self-intersections are measured as filled sets, not signed shoelace sums.
+Circle/ellipse areas are analytic; sector area is `r²θ/2`, chord-closed arcs
+and circle segments use `r²(θ-sin θ)/2`, including major segments. Angles use
+the actual marker after radius, decoration and fit resolution; region area
+comes from the kernel, including holes, islands and all lobes. Zero-area,
+hidden, undefined and unpainted parts are absent. Point glyphs and arrowheads
+are decorations, not area fills. Public geometric measures are unchanged.
+
+The native/server scene recomputes ordering from the current geometry on
+update and timeline seek, including unchanged neighbors. Output DPI, pan and
+clip do not change a finite object's area. In area mode a native arc with an
+explicit full sweep draws the full turn, distinct from a zero sweep; classic
+arcs retain their modulo domain. Classic `construction` without a new fill
+override retains its previous SVG/TikZ bytes and writer traversal. The
+operation registry and construction/keyframe formats are unchanged.
+
+Cairo vector output and the scene-local manim camera consume this structural
+plan. The TikZ and JSXGraph adapters are separate work; their area ordering
+is not provided by this change. The JSXGraph contract is a static order at
+the export frame: local drag will keep that order, and a new export will
+compute a new one. It does not promise live area sorting.
 
 `ptUnit` — output pixels per world unit, `ptUnitStyle` — style pixels per
 world unit (a decoration of `n` px is `n / ptUnitStyle` world units),
