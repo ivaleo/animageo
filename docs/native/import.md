@@ -512,10 +512,12 @@ python -m animageo.native import-audit <paths…> [--weights FILE] [--json OUT] 
 
 `import-audit` (`convert/audit.py`) imports every `.ggb` file of the paths (a
 directory — its `*.ggb` files recursively) as `from-ggb` does without
-`--namespace` and prints one line of totals:
+`--namespace` and prints one line of totals, and with `--web-registry X` a
+second one (see below). The corpus of 221 files with `--web-registry 1.8`:
 
 ```text
-library files 221 full 206 objects 4885 editable 4727 lost 112 picture 45 differs 1 value_unchecked 1
+library files 221 full 206 objects 4885 editable 4839 lost 16 picture 29 differs 1 value_unchecked 1
+web at registry 1.8 files 221 full 206 objects 4885 editable 4727 lost 124 picture 33 differs 1 value_unchecked 1
 ```
 
 - `files` — the files, each counted with its weight: `--weights` is a JSON
