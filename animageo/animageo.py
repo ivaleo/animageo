@@ -224,6 +224,11 @@ class DashCamera(MovingCamera):
     ``butt`` and ``miter``, as cairo starts and the SVG writes.
     """
 
+    def get_mobjects_to_display(self, mobjects, include_submobjects=True, excluded_mobjects=None):
+        family = super().get_mobjects_to_display(mobjects, include_submobjects, excluded_mobjects)
+        scene = getattr(self, '_animageo_scene', None)
+        return scene._order_display_family(family) if scene is not None else family
+
     def apply_stroke(self, ctx, vmobject, background=False):
         import cairo
         if getattr(vmobject, 'cap_style', None) in (None, CapStyleType.AUTO):
@@ -243,6 +248,7 @@ class AnimaGeoScene(MovingCameraScene):
         # Video frames go through DashCamera: dashes are a stroke property,
         # not a path cut into pieces, so the camera has to apply them.
         super().__init__(camera_class=DashCamera)
+        self.camera._animageo_scene = self
         # Cyrillic-capable TeX template as the process-wide manim default, so
         # no Tex path — ours, manim's own, future or degradational — can fall
         # back to the stock template and die on "Unicode character … not set
@@ -634,6 +640,11 @@ class AnimaGeoScene(MovingCameraScene):
                 set_dash(sub_old, get_dash(sub_new))
                 # the ticks of an equality mark stay its (its effect finds them)
                 sub_old._animageo_mark = getattr(sub_new, '_animageo_mark', None)
+                for key in ('_animageo_owner', '_animageo_part', '_animageo_stable', '_animageo_fill_part'):
+                    if hasattr(sub_new, key):
+                        setattr(sub_old, key, getattr(sub_new, key))
+                    elif key in sub_old.__dict__:
+                        delattr(sub_old, key)
 
     def _defer_build(self, elem, *, z_auto):
         """Record the build of ``elem`` (the last one wins): how it is built —
@@ -3015,8 +3026,7 @@ class AnimaGeoScene(MovingCameraScene):
 
         with _get_cairo_context(filepath, self.style, surface=surface, dpi=dpi,
                                 background=not transparent) as ctx:
-            family = [m for m in extract_mobject_family_members(self.mobjects, True, True)
-                      if not isinstance(m, ValueTracker)]
+            family = self._ordered_display_family()
             if transparent:
                 _draw_with_knockout(family, ctx, style=self.style)
             else:
@@ -3028,6 +3038,81 @@ class AnimaGeoScene(MovingCameraScene):
         except OSError:
             logger.info("%s exported: %s", label, filepath)
         return filepath
+
+    def _fill_order_mode(self):
+        from .fill_order import resolve_mode
+        native = getattr(self, '_construction_source', {}).get('kind') == 'native'
+        return resolve_mode(self, default='area' if native else 'construction')
+
+    def _has_fill_override(self, elem):
+        from .style.resolver import trace
+        source, value = trace(self, elem, 'z_index_fill')
+        return source not in ('missing', 'intrinsic.style') and value is not None
+
+    def _fill_display_enabled(self):
+        return self._fill_order_mode() == 'area' or any(
+            self._has_fill_override(e) for e in self.geo.elements)
+
+    def get_moving_mobjects(self, *animations):
+        if self._fill_display_enabled():
+            # A geometry updater can reorder an otherwise stationary neighbor.
+            # Keep the complete drawing in the live frame, outside manim's
+            # cached static background, so the structural plan is always applied.
+            return self.get_mobject_family_members()
+        return super().get_moving_mobjects(*animations)
+
+    def _tag_display_parts(self, mobject, elem, ctx):
+        from .fill_order import stable_index
+        kind = type(elem.data).__name__
+        filled = kind in ('Polygon', 'Angle', 'Circle', 'Arc', 'CircleSector', 'CircleSegment', 'Region')
+        if kind == 'Conic':
+            filled = elem.data.type in (ConicType.CIRCLE, ConicType.ELLIPSE)
+        mobject._animageo_fill_part = ctx.fill_part
+        local = {'fill': 0, 'body': 0, 'stroke': 1, 'ticks': 2, 'parallel': 3,
+                 'labelHalo': 4, 'label': 5, 'leader': 6}
+
+        def tag(node, inherited):
+            part = getattr(node, '_animageo_part', inherited)
+            if getattr(node, '_animageo_is_halo', False):
+                part = 'labelHalo'
+            node._animageo_owner = elem.name
+            node._animageo_part = part
+            node._animageo_stable = stable_index(self.geo, elem, 5 if kind == 'Text' and part == 'body' else local[part])
+            for child in node.submobjects:
+                tag(child, part)
+
+        for i, child in enumerate(mobject.submobjects):
+            body = kind in ('Point', 'Text') or (kind == 'Conic' and elem.data.type == ConicType.POINT)
+            part = 'body' if body else ('fill' if filled and i == 0 else 'stroke')
+            tag(child, part)
+
+    def _ordered_display_family(self):
+        family = [m for m in extract_mobject_family_members(self.mobjects, True, True)
+                  if not isinstance(m, ValueTracker)]
+        return self._order_display_family(family)
+
+    def _order_display_family(self, family):
+        if not self._fill_display_enabled():
+            return family
+        from .fill_order import PaintPart, order_fills, order_paint_parts
+        fills = [getattr(m, '_animageo_fill_part', None) for m in self.mobjects]
+        fills = [p for p in fills if p is not None]
+        fill_order = order_fills(fills, mode=self._fill_order_mode())
+        visible_fills = set(fill_order)
+        runs, parts = {}, []
+        for i, mob in enumerate(family):
+            owner = getattr(mob, '_animageo_owner', '@decoration.' + str(i))
+            part = getattr(mob, '_animageo_part', 'body')
+            if part == 'fill' and owner not in visible_fills:
+                continue
+            key = (owner, part)
+            if key not in runs:
+                runs[key] = []
+                parts.append(PaintPart(owner, part, float(mob.z_index),
+                                       getattr(mob, '_animageo_stable', (99, i, 0))))
+            runs[key].append(mob)
+        plan = order_paint_parts(parts, fill_order)
+        return [mob for ref in plan for mob in runs[(ref['id'], ref['part'])]]
 
     def _warn_eps_transparency(self):
         """Warn once if the scene has semi-transparent elements.
@@ -3436,6 +3521,13 @@ class AnimaGeoScene(MovingCameraScene):
             group.add(label.set_z_index(-9))
         if len(group) == 0:
             return None
+        if self._fill_display_enabled():
+            for child in group.submobjects:
+                kind = {-21: 'minor', -20: 'major', -10: 'axes', -9: 'labels'}[child.z_index]
+                for node in child.get_family():
+                    node._animageo_owner = '@view.' + kind
+                    node._animageo_part = 'label' if kind == 'labels' else 'stroke'
+                    node._animageo_stable = (-1, ('minor', 'major', 'axes', 'labels').index(kind), 0)
         self.add(group)
         return group
 
@@ -3629,6 +3721,8 @@ class AnimaGeoScene(MovingCameraScene):
 
         zz = _resolve_style(self, elem, 'z_index', default=None)
         zz_fill = _resolve_style(self, elem, 'z_index_fill', default=Z_FILL)
+        if zz_fill is None:
+            zz_fill = Z_FILL
         if zz is None and z_auto:
             zz = _Z_AUTO_BY_TYPE.get(type(elem.data))
         if zz is None:
@@ -3649,12 +3743,20 @@ class AnimaGeoScene(MovingCameraScene):
         zz_label = _resolve_style(self, elem, 'z_index_label', default=None)
         if zz_label is None:
             zz_label = Z_FILL_LABEL if zz == Z_FILL else Z_LABEL
+        from .fill_order import fill_layer, make_fill_part
+        fill_mode = self._fill_order_mode()
+        fill_part = make_fill_part(self, elem, id=elem.name, base_z=zz, tie=z_tie, mode=fill_mode)
+        if type(elem.data) in (geo.Polygon, geo.Angle, geo.Circle, geo.Arc, geo.CircleSector,
+                                geo.CircleSegment, geo.Conic, geo.Region):
+            zz_fill = fill_layer(self, elem, zz, z_tie, mode=fill_mode)[0]
+        else:
+            zz_fill = _ordered_z(zz_fill)
         zz = _ordered_z(zz)
-        zz_fill = _ordered_z(zz_fill)
         zz_stroke = Z_STROKE + z_tie
         zz_label = zz_label + z_tie
 
         return SimpleNamespace(
+            fill_mode=fill_mode, fill_part=fill_part,
             dash_explicit=_resolve_style(self, elem, 'stroke_dash_pattern_px', default=None) is not None,
             style=style,
             ptUnit=ptUnit, ptUnit_style=ptUnit_style, ptUnit_ggb=ptUnit_ggb,
@@ -3779,6 +3881,7 @@ class AnimaGeoScene(MovingCameraScene):
         )
         if label is None:
             return None
+        label._animageo_part = 'label'
         self._add_label_halo(label, ctx)
         # The spot the label is attached to (scene units), for render reports.
         label._animageo_label_anchor = (float(pos[0]), float(pos[1]))
@@ -3792,6 +3895,7 @@ class AnimaGeoScene(MovingCameraScene):
                             [float(ax), float(ay), 0.0],
                             stroke_width=stroke_width_to_manim(0.6, ctx.ptUnit_style),
                             color=col_label)
+                line._animageo_part = 'leader'
                 line.set_z_index(ctx.zz_label - 1)
                 label.add(line)
             except Exception:
@@ -3935,7 +4039,7 @@ class AnimaGeoScene(MovingCameraScene):
                 *pp,
                 color=ctx.col_s, fill_color=ctx.col_f, fill_opacity=ctx.op_f,
                 stroke_width=0, stroke_opacity=0,
-            ).set_z_index(ctx.zz))
+            ).set_z_index(ctx.zz_fill))
         stroke_layer = Polygon(
             *pp, joint_type=LineJointType.ROUND,
             color=ctx.col_s, fill_opacity=0,
@@ -4049,7 +4153,7 @@ class AnimaGeoScene(MovingCameraScene):
                 Polygon(
                     p, p1, p2, p3,
                     color=ctx.col_f, stroke_width=0, fill_opacity=op_f,
-                ).set_z_index(ctx.zz)))
+                ).set_z_index(ctx.zz_fill)))
             arr.append(VMobject(
                 color=ctx.tick_color, fill_opacity=0,
                 stroke_width=ctx.lw, stroke_opacity=ctx.op_s,
@@ -4062,7 +4166,7 @@ class AnimaGeoScene(MovingCameraScene):
                 AnnularSector(
                     inner_radius=0, outer_radius=r, angle=angle,
                     color=ctx.col_f, fill_opacity=op_f,
-                ).set_z_index(ctx.zz)
+                ).set_z_index(ctx.zz_fill)
                  .rotate(rotation_angle, about_point=ORIGIN)
                  .shift([p[0], p[1], 0])))
             if not decor.plain:
@@ -4148,6 +4252,7 @@ class AnimaGeoScene(MovingCameraScene):
             vm.cap_style = CapStyleType.BUTT
             if ctx.parallel_mark is not None:
                 vm._animageo_mark = ctx.parallel_mark
+            vm._animageo_part = 'parallel'
             arr.append(vm.set_z_index(ctx.zz))
 
     def _append_tick_marks(self, arr, p1, p2, m, normal, ctx):
@@ -4197,6 +4302,7 @@ class AnimaGeoScene(MovingCameraScene):
             wave.cap_style = CapStyleType.BUTT
             if ctx.mark is not None:
                 wave._animageo_mark = ctx.mark      # the ticks of an equality mark
+            wave._animageo_part = 'ticks'
             arr.append(wave)
             return
 
@@ -4212,6 +4318,7 @@ class AnimaGeoScene(MovingCameraScene):
             tick = line.copy().shift([v[0] * d, v[1] * d, 0])
             if ctx.mark is not None:
                 tick._animageo_mark = ctx.mark      # the ticks of an equality mark
+            tick._animageo_part = 'ticks'
             arr.append(tick)
 
     def _render_segment(self, elem, ctx):
@@ -4329,7 +4436,8 @@ class AnimaGeoScene(MovingCameraScene):
     def _render_arc(self, elem, ctx):
         c = [elem.data.center[0], elem.data.center[1], 0]
         a1, a2 = elem.data.angles
-        angle = (a2 - a1) % (2 * np.pi)
+        from .fill_order import arc_sweep
+        angle = arc_sweep(elem.data, mode=ctx.fill_mode)
         arr = [
             Arc(arc_center=c, radius=elem.data.radius,
                 start_angle=a1, angle=angle,
@@ -4552,6 +4660,7 @@ class AnimaGeoScene(MovingCameraScene):
         # registry 1.6: a kernel conic fills below its stroke, as a circle
         # (fill at z_index_fill), and hangs its label off the curve
         native = getattr(conic, 'native_value', None)
+        split_fill = native is not None or ctx.fill_mode == 'area' or self._has_fill_override(elem)
 
         left, bottom, right_x, top_y = self._get_scene_bounds()
         viewport = (left, bottom, right_x, top_y)
@@ -4571,7 +4680,7 @@ class AnimaGeoScene(MovingCameraScene):
             res = conic.as_circle()
             if res is not None:
                 center, radius = res
-                if native is not None:
+                if split_fill:
                     arr.append(Circle(
                         arc_center=[float(center[0]), float(center[1]), 0], radius=radius,
                         fill_color=ctx.col_f, fill_opacity=ctx.op_f, stroke_opacity=0, stroke_width=0,
@@ -4580,7 +4689,7 @@ class AnimaGeoScene(MovingCameraScene):
                     arc_center=[float(center[0]), float(center[1]), 0],
                     radius=radius,
                     color=ctx.col_s, fill_color=ctx.col_f,
-                    fill_opacity=0 if native is not None else ctx.op_f, stroke_opacity=ctx.op_s,
+                    fill_opacity=0 if split_fill else ctx.op_f, stroke_opacity=ctx.op_s,
                     stroke_width=ctx.lw,
                 ).set_z_index(ctx.zz)
                 arr.append(self._dash_stroke(circ, ctx, 'closed'))
@@ -4591,7 +4700,7 @@ class AnimaGeoScene(MovingCameraScene):
                 a_semi, b_semi = params['semi_axes']
                 cx, cy = params['center']
                 rot = params['rotation']
-                if native is not None:
+                if split_fill:
                     arr.append(Ellipse(
                         width=2 * a_semi, height=2 * b_semi,
                         fill_color=ctx.col_f, fill_opacity=ctx.op_f, stroke_opacity=0, stroke_width=0,
@@ -4599,7 +4708,7 @@ class AnimaGeoScene(MovingCameraScene):
                 ell = Ellipse(
                     width=2 * a_semi, height=2 * b_semi,
                     color=ctx.col_s, fill_color=ctx.col_f,
-                    fill_opacity=0 if native is not None else ctx.op_f, stroke_opacity=ctx.op_s,
+                    fill_opacity=0 if split_fill else ctx.op_f, stroke_opacity=ctx.op_s,
                     stroke_width=ctx.lw,
                 ).rotate(rot).move_to([float(cx), float(cy), 0]).set_z_index(ctx.zz)
                 arr.append(self._dash_stroke(ell, ctx, 'closed'))
@@ -4858,7 +4967,10 @@ class AnimaGeoScene(MovingCameraScene):
                     elem.name, type(elem.data).__name__,
                 )
                 return None
-            return renderer(elem, ctx)
+            mobject = renderer(elem, ctx)
+            if mobject is not None and self._fill_display_enabled():
+                self._tag_display_parts(mobject, elem, ctx)
+            return mobject
         except Exception as e:
             hint = ''
             if isinstance(e, RecursionError):

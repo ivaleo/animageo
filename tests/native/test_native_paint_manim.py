@@ -66,9 +66,10 @@ def _load(case):
     from animageo.native.document import as_document
     if case['timeline'] is None:
         scene = AnimaGeoScene()
-        scene.loadDocument(case['document'], style=case['style'])
+        scene.loadDocument(case['document'], style=case['style'], inputs=case.get('inputs'),
+                           **(case.get('export_layout') or {}))
         return scene
-    return rendering._still_scene(as_document(case['document']), case['style'], None, {},
+    return rendering._still_scene(as_document(case['document']), case['style'], case.get('inputs'), case.get('export_layout') or {},
                                   case['timeline'], case['t'])
 
 
@@ -125,7 +126,7 @@ def test_the_renderer_draws_the_paint(case, drawn):
             assert fill['opacity'] == pytest.approx(ctx.op_f), where
         if fill is not None and 'z' in fill and not marker_hidden:
             assert fill['z'] == pytest.approx(group.submobjects[0].z_index, abs=1e-9), where
-        if fill is not None and fill.get('hatch') is not None:
+        if fill is not None and fill.get('hatch') is not None and el_id in expect['fillOrder']:
             _assert_hatch(fill['hatch'], group.submobjects[0], unit, where)
         point = entry.get('point')
         if point is not None:
@@ -390,3 +391,67 @@ def test_the_drawn_dash_is_that_of_the_renderer():
         p = patterns[0]
         assert p.on * unit == pytest.approx(drawn['onPx'], rel=rel), el_id
         assert p.off * unit == pytest.approx(drawn['offPx'], rel=rel), el_id
+
+
+def test_native_display_and_cairo_follow_fill_order_on_reverse_seek(tmp_path):
+    import cairo
+    from animageo import AnimaGeoScene, native
+    from animageo.parsers.svg_parser import _create_svg_from_vmobject_internal
+    from tests.test_fill_order_defaults import nested_document
+    doc = nested_document()
+    for point in ('A', 'B', 'C', 'O', 'R'):
+        doc['appearance'][point] = {'visible': False}
+    timeline = {'version': 2, 'keyframes': [
+        {'t': 0, 'values': {'R': [3, 0]}},
+        {'t': 1, 'values': {'R': [.2, 0]}, 'easing': 'linear'}]}
+    scene = AnimaGeoScene()
+    scene.loadDocument(doc, export={'size': {'width': 240, 'height': 240}})
+    for t in (0, 1, .5, 0):
+        from animageo.native.rendering import _bridged_timeline
+        from animageo.native.document import as_document
+        scene.seek_keyframes(_bridged_timeline(as_document(doc), timeline, None), t)
+        expected = native.resolve_paint(doc, t=t, timeline=timeline)
+        family = scene._ordered_display_family()
+        owners = [scene.native_names.by_name[m._animageo_owner] for m in family
+                  if getattr(m, '_animageo_part', None) == 'fill']
+        assert owners == expected['fillOrder']
+        assert [scene.native_names.by_name[m._animageo_owner] for m in scene.camera.get_mobjects_to_display(scene.mobjects)
+                if getattr(m, '_animageo_part', None) == 'fill'] == owners
+        out = tmp_path / f'frame-{t}.svg'
+        scene.exportSVG(out)
+        fresh = AnimaGeoScene()
+        fresh.loadDocument(doc, export={'size': {'width': 240, 'height': 240}})
+        fresh.seek_keyframes(_bridged_timeline(as_document(doc), timeline, None), t)
+        fresh.exportSVG(tmp_path / 'fresh.svg')
+        assert out.read_bytes() == (tmp_path / 'fresh.svg').read_bytes()
+        # Exercise the real vector drawing loop on a raster Cairo surface.
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 240, 240)
+        ctx = cairo.Context(surface)
+        export = scene.style.export
+        ctx.set_matrix(cairo.Matrix(export['ptUnit'], 0, 0, -export['ptUnit'], export['ptXZero'], export['ptYZero']))
+        for mob in family:
+            _create_svg_from_vmobject_internal(mob, ctx, style=scene.style)
+        surface.flush()
+        offset = 120 * surface.get_stride() + 120 * 4
+        b, g, r, a = bytes(surface.get_data())[offset:offset+4]
+        assert (r, g, b) == ((0, 0, 255) if t == 1 else (255, 0, 0))
+
+
+@pytest.mark.parametrize('name', [name + '.json' for name, _ in paint_fixtures.THEMES])
+def test_actual_logical_display_parts_match_paint(name):
+    for case in paint_fixtures.build_fixtures()[name]['cases']:
+        if ((case.get('style') or {}).get('rendering') or {}).get('fill_order') == 'construction':
+            continue  # each construction writer retains its own legacy traversal
+        scene = _load(case)
+        seen = set()
+        refs = []
+        for mob in scene._ordered_display_family():
+            if mob.get_fill_opacity() <= 0 and (mob.get_stroke_opacity() <= 0 or mob.get_stroke_width() <= 0):
+                continue
+            if not hasattr(mob, '_animageo_owner'):
+                continue
+            key = (scene.native_names.by_name.get(mob._animageo_owner, mob._animageo_owner), mob._animageo_part)
+            if key not in seen:
+                refs.append({'id': key[0], 'part': key[1]})
+                seen.add(key)
+        assert refs == case['expect']['partOrder'], case['name']
