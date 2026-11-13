@@ -101,6 +101,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   show at all, takes the cheapest place in the frame whatever it touches
   (off its own point when there is one), and without any the plain clip.
   The label of a point outside the picture is not pulled in.
+  Other labels count with a reading gap around them, `max(label_gap_px,
+  0.25 em)` (em is the font size of the label), so the clamp does not set a
+  label flush against another (two one-letter labels read as one word).
   Labels already in the frame keep their places; without `viewport_clamp`
   the layout is unchanged.
 - The frame of `viewport_clamp` is the exported picture — the export canvas

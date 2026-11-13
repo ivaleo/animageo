@@ -22,6 +22,7 @@ from animageo.label_placement import (
     label_size,
     _drawn_box_harm,
     _segment_bbox_overlap,
+    _drawn_center,
     _viewport_clamp_pass,
 )
 from tests.native.conftest import DocBuilder
@@ -305,3 +306,25 @@ class TestClampPass:
         near = math.hypot(max(abs(drawn[0] - anchor[0]) - 0.5, 0.0),
                           max(abs(drawn[1] - anchor[1]) - 0.2, 0.0))
         assert near >= 0.05                                       # off its point
+
+    def test_label_keeps_the_reading_gap_to_another_label(self):
+        """A label the clamp moves into the frame is not set flush against
+        another one (two one-letter labels read as one word): the gap between
+        the drawn boxes is at least ``0.25 em``. The scene is ``E`` and ``H`` of
+        a portrait example: E's point on the left edge, H a few pixels to its
+        right; without the gap E took a place 2.5 px from H."""
+        em = 0.2222
+        e = LabelInfo('E', np.array([0.0, 2.5395]), 0.08395, 0.07842,
+                      clear_radius=0.0613, font_em=em)
+        h = LabelInfo('H', np.array([0.7565, 2.2841]), 0.0971, 0.07876,
+                      fixed_center=np.array([0.5354, 2.6115]), fixed_anchor='MC')
+        line = [(np.array([0.0, 2.2987]), np.array([0.2629, 3.0358]))]
+        result = [('E', np.array([-0.18057, 2.5395]), 4),
+                  ('H', np.array([0.5354, 2.6115]), 4)]
+        _viewport_clamp_pass([e, h], result, (-0.06945, -0.3202, 4.06945, 4.3202),
+                             line, [], self.NONE, 0.0972, 0.02778, self.WEIGHTS,
+                             71.99, label_gap=0.0347)
+        drawn = _drawn_center(result[0][1], result[0][2], e.half_w, e.half_h)
+        gap_x = abs(drawn[0] - 0.5354) - e.half_w - h.half_w
+        gap_y = abs(drawn[1] - 2.6115) - e.half_h - h.half_h
+        assert max(gap_x, gap_y) >= 0.25 * em - 1e-9

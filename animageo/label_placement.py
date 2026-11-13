@@ -3290,7 +3290,7 @@ def _box_shows(c, hw, hh, bounds, tol):
 def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
                          distance, padding, weights, ptUnit, *, markers=None,
                          cost_model=None, respect_current=False,
-                         continuous_steps=0, dir_tol=None):
+                         continuous_steps=0, dir_tol=None, label_gap=0.0):
     """FP-9: keep every movable label's drawn box inside the frame ``bounds``.
 
     The frame is a constraint of the layout, not a post-processing clip. A
@@ -3313,7 +3313,10 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
     is not pulled in. Labels already in the frame (half a pixel of slack) are
     left untouched; angles (fixed centres) are not moved. ``result`` is
     mutated in place, in its order, each label seeing the others' current
-    places.
+    places. Other labels count with a reading gap around them —
+    ``max(label_gap, 0.25 em)`` (``label_gap`` in scene MU, em = the font size
+    of the label being moved) — so a label is not set flush against another
+    (two one-letter labels reading as one word); a touch counts as overlap.
     """
     tol = 0.5 / ptUnit
     step = 1.0 / ptUnit
@@ -3337,6 +3340,8 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
         if _box_in_frame(drawn, hw, hh, bounds, tol):
             continue
 
+        # Gap of reading: ``font_em`` is the label's font size in scene MU.
+        gap = max(label_gap, 0.25 * lbl.font_em)
         placed, others = [], []
         for j, (n2, c2, d2) in enumerate(result):
             l2 = by_name.get(n2)
@@ -3345,7 +3350,7 @@ def _viewport_clamp_pass(labels, result, bounds, segments, circles, arc_pts,
             placed.append((c2, l2.half_w + padding, l2.half_h + padding))
             dc = (np.asarray(c2, dtype=float) if l2.fixed_center is not None
                   else _drawn_center(c2, d2, l2.half_w, l2.half_h))
-            others.append((dc, l2.half_w, l2.half_h))
+            others.append((dc, l2.half_w + gap, l2.half_h + gap))
 
         # The fallback: the drawn box clipped into the frame.
         clipped = np.array([float(np.clip(drawn[0], left + hw, right - hw)),
@@ -4173,7 +4178,7 @@ def compute_label_layout(scene, *, cfg=None, canonicalize: bool = False) -> dict
             distance, padding, weights, ptUnit,
             markers=_collect_point_markers(scene, ptUnit), cost_model=cost_model,
             respect_current=respect_any, continuous_steps=continuous_steps,
-            dir_tol=dir_tol)
+            dir_tol=dir_tol, label_gap=label_gap_px / ptUnit)
 
     from .geo import lib_elements as geo
 
