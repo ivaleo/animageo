@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-11-13
+
 ### Added
 
 - Operation registry 1.8. `native.min_registry_version(doc)` gives the oldest
@@ -3715,7 +3717,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.12.1...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/ivaleo/animageo/compare/v1.12.1...v1.13.0
 [1.12.1]: https://github.com/ivaleo/animageo/compare/v1.12.0...v1.12.1
 [1.12.0]: https://github.com/ivaleo/animageo/compare/v1.11.4...v1.12.0
 [1.11.4]: https://github.com/ivaleo/animageo/compare/v1.11.3...v1.11.4
