@@ -1358,9 +1358,32 @@ breaking ties by `1e-6`) and, by type:
   `hatch` (`{pattern, angleDeg, spacingPx, widthPx, color, opacity}` or
   `null`). An angle or a right-angle mark filled with the background colour
   has no fill (1.11.0rc3); a polygon, a circle, an arc or a sector filled
-  with it is drawn (opaque) — `isBackground` tells it;
-- `point`: `sizePx`, `shape`, `display` (`rendering.points_display`);
-- `arrow` (a vector): `lengthPx`, `widthPx`;
+  with it is drawn (opaque) — `isBackground` tells it. An angle or a
+  right-angle mark has `pattern` and `hatch` only with a `fill_pattern`
+  other than `solid` (1.13.0): the sector to the outer arc or the square,
+  drawn also when the fill itself is the background colour;
+- `point`: `sizePx`, `shape`, `display` (`rendering.points_display`); a
+  hollow point (`point_fill: hollow`, 1.13.0; a cross or a plus ignores it)
+  also `fill: "hollow"`, `hole` `{shape, radiusPx}` (the shape of the point
+  at half its size, `radiusPx = sizePx / 4`), `ringPx` (half the inscribed
+  radius: `sizePx/4` for a circle, `sizePx/(4√2)` for a square or a diamond,
+  `sizePx/8` for a triangle) and `innerColor` — the background: the hole is
+  painted with it on a solid sheet and cut out of every layer under the
+  point on a transparent one (`exportSVG(…, transparent=True)`);
+- `arrow` (a vector): `lengthPx`, `widthPx`; a segment with `arrow_head`
+  (1.13.0): `head` (`end`, `start`, `both`), `lengthPx`, `widthPx` (those
+  of a vector of the style by default), `stem` `[x1, y1, x2, y2]` (the line
+  between the bases, its dash fitted to it) and `tips` `[[Tx, Ty, B1x, B1y,
+  B2x, B2y], …]` (world units; a head is at most the segment long, half of
+  it for two);
+- `parallel` (a segment, a line, a ray, a vector with `parallel_count`,
+  1.13.0): `count`, `sizePx`, `depthPx` (`sizePx/2`), `shiftPx`,
+  `direction`, `chevrons` `[[x0, y0, Tx, Ty, x1, y1], …]` (world units;
+  `[]` for a line of no length): around the middle of a segment or a vector
+  (moved past its ticks by `tick_shift_px·(n − 1)/2 + tick_width_px/2 +
+  s/2 + (p·(k − 1) + s/2)/2`) or of the drawn part of a line or a ray,
+  tips `T_j = c + v·(s/4 + p·((1 − k)/2 + j))`, arms to `T_j − v·s/2 ±
+  n·s/2`; solid, butt, mitred, in the stroke of the element;
 - `ticks` (a segment, a vector): `count`, `style`, `lengthPx`, `widthPx`,
   `shiftPx`, `radiusPx`, and the lines `[[x1, y1, x2, y2], …]` or the
   corners of the wave `wave` with its `cornerRadius` (world units);
@@ -1377,12 +1400,36 @@ breaking ties by `1e-6`) and, by type:
   `hidden`; `radiusPx`, `arcRadiiPx`, `rightSizePx` and `square` are then
   the fitted marker (`arcSizePx` stays the desired base), a hidden marker
   has `arcRadiiPx: []` and no `square` (no fill either), and the label
-  stands at the fitted extent;
+  stands at the fitted extent. The kinds of marks (1.13.0, only with a
+  decoration — `arc_style` other than `solid`, `arc_tick_count`,
+  `arrow_head`; such an angle of 90° is drawn as arcs unless
+  `right_angle_marker` is `true`): `arcStyle` (`dashed`, `wave`),
+  `arcStepPx` (two waves and more: `arcShiftPx + 2A`), `wave`
+  `{amplitudePx: 1, periodPx: 6, samplesPerPeriod: 16, periods, arcs}`,
+  `arcDashes` `[{radiusPx, startAngle, span, onPx, offPx, offsetPx,
+  dashes}, …]` (2/2 px fitted to each arc with a dash at both ends, or the
+  explicit `stroke_dash_pattern_px` as it is; `dashes` `null` then),
+  `arcTicks` `{count, lengthPx, shiftPx, widthPx, lines}` (radial lines from
+  `max(0, r_in − L/2)` to `r_out + L/2` at `φ0 + Δ/2 + δ·((1 − k)/2 + j)`,
+  `δ = min(h/r_out, Δ/(k + 1))`, as wide as the arcs), `arrow` `{head,
+  lengthPx, widthPx, drawnLengthPx, drawnWidthPx, tips, stemEndAngles}` (a
+  head on the outer arc, `end` at the second side; `ℓ' = min(ℓ,
+  r_out·Δ_e/2)`, `w' = w·ℓ'/ℓ`; the outer arc stops at its base,
+  `stemEndAngles`) and `overhangPx` — how far the decoration reaches past
+  the outer arc (the wave `A`, half a tick, half a head; the fit bounds
+  `r_out + overhangPx`, the label clears the wave and the ticks). Every arc
+  of `wave.arcs` is `{radiusPx, startAngle, span, periods, points}`: the
+  sample rule is `N = max(1, round(r_out·span/λ))` periods, `16·N + 1`
+  points `φ_k = startAngle + span·k/(16·N)`, `ρ_k = r + A·sin(2π·(k mod
+  16)/16)` (world units) — both ends on the arc, the arcs of one span radial
+  shifts of each other; the outer arc shortened by a head counts its own
+  `N`. An angle of no size draws nothing: `arcRadiiPx: []`;
 - `decoration` (1.11.0rc13, a drawn equality target): `owner` (mark document
   ID), `color`, `count`, `kind` (`ticks`, `arcs`, or `square`),
   and actual dimensions in style pixels. Ticks report `style`, `lengthPx`,
   `widthPx`, `shiftPx`, `radiusPx`; arcs report `arcSizePx`, `radiusPx`,
-  `arcShiftPx`, `widthPx`. The same entry is in `render().report.elements`.
+  `arcShiftPx`, `widthPx` and, decorated (1.13.0), `arcStyle` and
+  `arcTicks` (their count). The same entry is in `render().report.elements`.
   It is absent when no visible, defined mark contributes. Existing paint
   fields and diagnostic warnings keep their rc12 values without new
   overrides; `decoration` is additive. Use its colour to compare a mark,
@@ -1411,13 +1458,18 @@ format of values, layers, `text.free`, the zoo of types without a style,
 under the built-in style and a preset, roles, hatching, a dark background,
 a style track of a timeline, a right-angle mark drawn as arcs (1.11.0), the
 enter and exit effects of a timeline with a style track and a discrete one
-(1.11.0). A test renders each scene — a scene with a timeline as the frame
+(1.11.0), the kinds of marks (`paint_marks`, 1.13.0: waves, dashes, ticks
+and heads on arcs, arcs instead of a square, hatched angles, equality marks
+passing them, the overhang in the fit, hollow points, heads of segments,
+chevrons, degenerate cases). A test renders each scene — a scene with a timeline as the frame
 `render(t)` draws — and compares with the entry of every element its render
 context and what it draws: the layers of the fill and the label, the size
 and shape of a point, the hatch (spacing, angle, width, colour), the lines
 or the corners of the wave of the ticks, the radii of the arcs and the
-corners of the right-angle square, the font size, the dash patterns, and
-that an element not drawn is not in the frame.
+corners of the right-angle square, the font size, the dash patterns, the
+samples of waves, the dashes, ticks and heads of arcs, the hole of a hollow
+point, the heads of a segment, the chevrons, and that an element not drawn
+is not in the frame.
 
 The style contract for code generation (`animageo/native/style`, `python -m
 animageo.native style export [-o DIR] [--check]`): `builtin.json` — the

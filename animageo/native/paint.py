@@ -405,6 +405,10 @@ def _dash(final, elem, type_, data, unit, width_px, cap):
     elif type_ == 'segment':
         (ax, ay), (bx, by) = data.endpoints
         length = math.hypot(bx - ax, by - ay)
+        heads = _segment_heads(final, elem, data, unit)
+        if heads is not None:           # the dash runs along the stem between the heads
+            (ax, ay), (bx, by) = heads[1:3]
+            length = math.hypot(bx - ax, by - ay)
     elif type_ == 'arc':
         a0, a1 = data.angles
         length = float(data.radius) * ((a1 - a0) % (2 * math.pi))
@@ -489,6 +493,8 @@ def _angle(final, elem, data, unit, value):
     ``rendering.angle_marker_fit`` — fitted to the sides (``fit``)."""
     from ..angle_marker import fit_settings, marker_fit
     from ..label_placement import compute_effective_arc_size_px
+    from ..mark_shapes import arc_step_px, scene_arc_decor
+    decor = scene_arc_decor(final, elem)
     angle_range = value('angle_range', 'minor') or 'minor'
     auto_radius = value('auto_radius', True)
     base_px = _num(value('arc_size_px', 17.0), 17.0)
@@ -504,6 +510,7 @@ def _angle(final, elem, data, unit, value):
         right = False
     if right is None:
         right = abs(shown - math.pi / 2) <= 1e-8 + 1e-5 * math.pi / 2     # numpy.isclose of the renderer
+        right = right and not decor.forces_arcs        # the square has no arcs to decorate
     right = bool(right)
     out = {'range': angle_range, 'autoRadius': auto_radius is not False, 'arcSizePx': _r(base_px),
            'radiusPx': _r(radius_px), 'arcs': arcs, 'arcShiftPx': _r(shift_px),
@@ -539,7 +546,109 @@ def _angle(final, elem, data, unit, value):
             radius_px = radius_px - delta
             out['radiusPx'] = _r(radius_px)
         drawn = 0 if fit is not None and fit.hidden else max(arcs, 0)
-        out['arcRadiiPx'] = [_r(radius_px + (arcs - 1 - i) * shift_px) for i in range(drawn)]
+        step = shift_px if decor.plain else arc_step_px(decor, shift_px, arcs)
+        radii = [radius_px + (arcs - 1 - i) * step for i in range(drawn)]
+        out['arcRadiiPx'] = [_r(r) for r in radii]
+        if not decor.plain and radii:
+            flipped = (angle_range == 'minor' and size > math.pi) or (angle_range == 'reflex' and size < math.pi)
+            if step != shift_px:
+                out['arcStepPx'] = _r(step)
+            out.update(_arc_marks(final, elem, data, unit, decor, radii, shown, flipped, value))
+    return out
+
+
+def _arc_marks(final, elem, data, unit, decor, radii_px, shown, flipped, value):
+    """The decorated arcs of an angle (``mark_shapes.angle_marks``, the
+    renderer's ``_append_arc_marks``), world units; only the fields of its
+    decoration. A wave: each arc's samples ``φ_k = start + span·k/(16·N)``,
+    ``ρ_k = r + A·sin(2π·(k mod 16)/16)``; a dashed arc: its fitted pattern."""
+    from ..angle_marker import marker_extent
+    from ..mark_shapes import (ANGLE_ARROW_PX, WAVE_AMPLITUDE_PX, WAVE_PERIOD_PX, WAVE_SAMPLES, angle_marks,
+                               arrow_fit)
+    vx, vy = (float(c) for c in data.vertex[:2])
+    start = math.atan2(float(data.side2[1]), float(data.side2[0])) if flipped else float(data.start_angle)
+    marks = angle_marks((vx, vy), [r / unit for r in radii_px], start, shown, flipped, decor, unit)
+    out = {}
+    if decor.style != 'solid':
+        out['arcStyle'] = decor.style
+    if not marks.arcs:                  # an angle of no size: nothing is drawn
+        out['arcRadiiPx'] = []
+        return out
+    paths = [{'radiusPx': _r(arc.radius * unit), 'startAngle': _r(arc.start), 'span': _r(arc.span)}
+             for arc in marks.arcs]
+    if decor.style == 'wave':
+        out['wave'] = {'amplitudePx': WAVE_AMPLITUDE_PX, 'periodPx': WAVE_PERIOD_PX,
+                       'samplesPerPeriod': WAVE_SAMPLES,
+                       'periods': max(1, int(round(radii_px[0] * shown / WAVE_PERIOD_PX))),
+                       'arcs': [dict(path, periods=arc.periods, points=[[_r(x), _r(y)] for x, y in arc.points])
+                                for path, arc in zip(paths, marks.arcs)]}
+    elif decor.style == 'dashed':
+        out['arcDashes'] = [dict(path, onPx=_r(arc.dash.on * unit), offPx=_r(arc.dash.off * unit),
+                                 offsetPx=_r(arc.dash.offset * unit), dashes=arc.dashes)
+                            for path, arc in zip(paths, marks.arcs)]
+    if decor.ticks > 0:
+        out['arcTicks'] = {'count': decor.ticks, 'lengthPx': _r(decor.tick_length_px),
+                           'shiftPx': _r(decor.tick_shift_px),
+                           'widthPx': _r(_num(value('stroke_width_px', 1.0), 1.0)),
+                           'lines': [[_r(c) for c in line] for line in marks.ticks]}
+    if decor.arrow != 'none':
+        length, width = arrow_fit(decor.arrow_length_px, decor.arrow_width_px, radii_px[0], shown,
+                                  decor.arrow == 'both')
+        outer = marks.arcs[0]
+        out['arrow'] = {'head': decor.arrow, 'lengthPx': _r(decor.arrow_length_px),
+                        'widthPx': _r(decor.arrow_width_px), 'drawnLengthPx': _r(length),
+                        'drawnWidthPx': _r(width), 'tips': [[_r(c) for c in tip] for tip in marks.tips],
+                        'stemEndAngles': [_r(outer.start), _r(outer.start + outer.span)]}
+    overhang = marker_extent(final, elem).overhang_px
+    if overhang:
+        out['overhangPx'] = _r(overhang)
+    return out
+
+
+def _segment_heads(final, elem, data, unit):
+    """``(head, stem_a, stem_b, tips)`` of a segment with ``arrow_head``
+    (``mark_shapes.segment_arrow``) or ``None``."""
+    from ..mark_shapes import scene_segment_arrow, segment_arrow
+    head, length_px, width_px = scene_segment_arrow(final, elem)
+    if head == 'none':
+        return None
+    geometry = segment_arrow(data.endpoints[0], data.endpoints[1], head, length_px, width_px, unit)
+    if geometry is None:
+        return None
+    return (head,) + tuple(geometry)
+
+
+def _parallel(final, elem, type_, data, value, unit):
+    """The chevrons of a parallel line (``_append_chevrons``) or ``None``
+    without them: in the middle of a segment or a vector (past its ticks),
+    of the drawn part of a line or a ray, pointing along it."""
+    from ..label_placement import _clipped_line_endpoints
+    from ..mark_shapes import chevron_center, chevrons, parallel_decor
+    decor = parallel_decor(value)
+    if decor.count <= 0:
+        return None
+    out = {'count': decor.count, 'sizePx': _r(decor.size_px), 'depthPx': _r(decor.size_px / 2),
+           'shiftPx': _r(decor.shift_px), 'direction': decor.direction, 'chevrons': []}
+    if type_ in ('segment', 'vector'):
+        (ax, ay), (bx, by) = ((float(p[0]), float(p[1])) for p in data.endpoints)
+        mid, v = ((ax + bx) / 2, (ay + by) / 2), (bx - ax, by - ay)
+        ticks = int(_num(value('tick_count', 0), 0))
+    else:
+        ends = _clipped_line_endpoints(final, data)
+        if ends is None:
+            return out
+        mid = ((ends[0][0] + ends[1][0]) / 2, (ends[0][1] + ends[1][1]) / 2)
+        v = tuple(float(c) for c in data.direction[:2])
+        ticks = 0
+    norm = math.hypot(*v)
+    if norm < 1e-12:
+        return out
+    sign = -1.0 if decor.direction == 'backward' else 1.0
+    v = (sign * v[0] / norm, sign * v[1] / norm)
+    center = chevron_center(mid, v, decor, unit, tick_count=ticks,
+                            tick_shift_px=_num(value('tick_shift_px', 0.0)),
+                            tick_width_px=_num(value('tick_width_px', 0.0)))
+    out['chevrons'] = [[_r(c) for c in ch] for ch in chevrons(center, v, decor, unit)]
     return out
 
 
@@ -563,6 +672,10 @@ def _decoration(final, elem, type_, unit, value, stroke_color):
         out.update({k: angle[k] for k in ('arcSizePx', 'radiusPx', 'arcShiftPx')})
         out.update(kind='square' if angle['right'] else 'arcs', count=1 if angle['right'] else angle['arcs'],
                    widthPx=_r(_num(value('stroke_width_px', 1), 1)))
+        if 'arcStyle' in angle:
+            out['arcStyle'] = angle['arcStyle']
+        if 'arcTicks' in angle:
+            out['arcTicks'] = angle['arcTicks']['count']
     else:
         return None
     return out
@@ -791,7 +904,9 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
                 fill['z'] = _r(_num(value('z_index_fill', _Z_FILL), _Z_FILL) + tie)
             elif style_type in ('polygon', 'angle', 'mark.right_angle'):
                 fill['z'] = entry['z']
-            if style_type in _HATCHED:
+            angle_pattern = style_type in ('angle', 'mark.right_angle') and \
+                (value('fill_pattern', 'solid') or 'solid') != 'solid'
+            if style_type in _HATCHED or angle_pattern:      # an angle reports only a pattern
                 pattern = value('fill_pattern', 'solid') or 'solid'
                 hatch = None
                 if pattern not in ('solid', 'none'):
@@ -808,9 +923,27 @@ def resolve_paint(doc, style_config=None, t=None, *, timeline=None, inputs=None,
             entry['point'] = {'sizePx': _r(_num(value('size_px', DOT_SIZE_PX), DOT_SIZE_PX)),
                               'shape': value('point_shape', 'circle'),
                               'display': (rendering or {}).get('points_display', 'auto') or 'auto'}
+            from ..mark_shapes import point_hole
+            hole = point_hole(entry['point']['shape'], entry['point']['sizePx'], value('point_fill', 'solid'))
+            if hole is not None:        # a hole of the shape at half size, the sheet's colour on a solid sheet
+                entry['point'].update(fill='hollow', ringPx=_r(hole.ring_px),
+                                      hole={'shape': hole.shape, 'radiusPx': _r(hole.radius_px)},
+                                      innerColor=_color(background))
         if style_type == 'vector':
             entry['arrow'] = {'lengthPx': _r(_num(value('arrow_length_px', 0.0))),
                               'widthPx': _r(_num(value('arrow_width_px', 0.0)))}
+        if style_type == 'segment':
+            heads = _segment_heads(final, elem, data, unit)
+            if heads is not None:
+                from ..mark_shapes import scene_segment_arrow
+                _head, length_px, width_px = scene_segment_arrow(final, elem)
+                entry['arrow'] = {'head': heads[0], 'lengthPx': _r(length_px), 'widthPx': _r(width_px),
+                                  'stem': [_r(c) for c in (*heads[1], *heads[2])],
+                                  'tips': [[_r(c) for c in tip] for tip in heads[3]]}
+        if style_type in ('segment', 'vector', 'line', 'ray'):
+            parallel = _parallel(final, elem, style_type, data, value, unit)
+            if parallel is not None:
+                entry['parallel'] = parallel
         if style_type in ('segment', 'vector'):
             entry['ticks'] = _ticks(style_type, data, unit, value)
         if style_type in ('angle', 'mark.right_angle'):

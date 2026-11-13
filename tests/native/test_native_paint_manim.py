@@ -4,7 +4,9 @@ context of each drawn element (``_build_render_ctx``) and what it draws —
 the colour, opacity, width and cap of the stroke layer, the font size of the
 label text, the layers of the fill and the label, the size and the shape of a point, the
 hatch, the lines or the wave of the ticks, the radii of the arcs of an angle
-and the corners of a right-angle square, the dash patterns. A scene with a
+and the corners of a right-angle square, the dash patterns; the kinds of
+marks (1.13.0): the waves and fitted dashes of arcs, the ticks and heads on
+them, the hole of a hollow point, the heads of a segment, the chevrons. A scene with a
 timeline is the frame ``render(t)`` draws (1.11.0): the document loaded as
 the video loads it and the timeline seeked to ``t`` — its style tracks, the
 elements in the frame."""
@@ -111,7 +113,7 @@ def test_the_renderer_draws_the_paint(case, drawn):
             actual_stroke = dict(stroke)
             if angle is not None and entry.get('decoration') is not None:
                 actual_stroke['color'] = entry['decoration']['color']
-            if angle is None or ((angle['right'] or angle['arcs'] > 0) and not marker_hidden):
+            if angle is None or ((angle['right'] or angle.get('arcRadiiPx')) and not marker_hidden):
                 _assert_drawn_stroke(actual_stroke, group, unit, where, hidden=hidden, alpha=_fade_alpha(entry))
             if stroke.get('dash') is not None:
                 assert [stroke['dash']['onPx'], stroke['dash']['offPx']] == pytest.approx(list(ctx.dash_px)), where
@@ -129,6 +131,11 @@ def test_the_renderer_draws_the_paint(case, drawn):
         if point is not None:
             shape, radius = drawn['point'][name]
             assert (point['shape'], point['sizePx']) == (shape, pytest.approx(2 * radius * unit)), where
+            _assert_hole(point, group, radius, where)
+        if entry.get('type') == 'segment' and 'arrow' in entry:
+            _assert_segment_heads(entry['arrow'], group, where)
+        if 'parallel' in entry:
+            _assert_chevrons(entry['parallel'], group, where)
         ticks = entry.get('ticks')
         if ticks is not None:
             assert (ticks['count'], ticks['style']) == (ctx.tick_count, ctx.tick_style), where
@@ -251,6 +258,8 @@ def _assert_hatch(hatch, layer, unit, where):
     families = [base] + ([base + math.pi / 2] if hatch['pattern'] == 'crosshatch' else [])
     by_family = {i: [] for i in range(len(families))}
     for a, b in _ends(layer):
+        if np.hypot(*(b - a)) < 1e-12:      # a hatch line through a corner of the region: nothing drawn
+            continue
         direction = math.atan2(b[1] - a[1], b[0] - a[0])
         match = [i for i, f in enumerate(families) if abs(math.sin(direction - f)) < 1e-9]
         assert len(match) == 1, where
@@ -290,11 +299,76 @@ def _assert_angle(angle, elem, group, unit, where):
         corners = [anchors[0]] + [anchors[i + 3] for i in range(0, len(anchors), 4)]
         assert np.allclose(corners, angle['square'], atol=1e-9), where
         return
-    arcs = group.submobjects[1:1 + angle['arcs']]
+    arcs = group.submobjects[1:1 + len(angle['arcRadiiPx'])]
     assert len(arcs) == len(angle['arcRadiiPx']), where
-    for arc, radius_px in zip(arcs, angle['arcRadiiPx']):
-        anchors = np.asarray(arc.points)[::4, :2]
-        assert np.hypot(*(anchors - vertex).T) * unit == pytest.approx(radius_px, rel=1e-9), where
+    if angle['arcs'] > len(arcs):       # a decorated angle of no size draws no arcs
+        assert not angle['arcRadiiPx'] and all(type(m).__name__ != 'Arc' for m in group.submobjects), where
+    if angle.get('arcStyle') == 'wave' and arcs:
+        for arc, wave in zip(arcs, angle['wave']['arcs']):
+            assert np.allclose(_corners(arc), wave['points'], rtol=0, atol=1e-8), where
+            assert len(wave['points']) == angle['wave']['samplesPerPeriod'] * wave['periods'] + 1, where
+    else:
+        for arc, radius_px in zip(arcs, angle['arcRadiiPx']):
+            anchors = np.asarray(arc.points)[::4, :2]
+            assert np.hypot(*(anchors - vertex).T) * unit == pytest.approx(radius_px, rel=1e-9), where
+    for arc, dash in zip(arcs, angle.get('arcDashes', ())):
+        from animageo.dash import get_dash
+        drawn = get_dash(arc)
+        assert [drawn.on * unit, drawn.off * unit, drawn.offset * unit] == \
+            pytest.approx([dash['onPx'], dash['offPx'], dash['offsetPx']], abs=1e-6), where
+    rest = group.submobjects[1 + len(arcs):]
+    if 'arcTicks' in angle:
+        lines = [m for m in rest if type(m).__name__ == 'Line']
+        assert len(lines) == len(angle['arcTicks']['lines']), where
+        for line, (x1, y1, x2, y2) in zip(lines, angle['arcTicks']['lines']):
+            assert np.allclose([*line.get_start()[:2], *line.get_end()[:2]], [x1, y1, x2, y2], atol=1e-8), where
+            assert line.get_stroke_width() * unit / 100 == pytest.approx(angle['arcTicks']['widthPx']), where
+    if 'arrow' in angle:
+        heads = [m for m in rest if type(m).__name__ == 'Polygon']
+        assert len(heads) == len(angle['arrow']['tips']), where
+        for head, tip in zip(heads, angle['arrow']['tips']):
+            assert np.allclose(head.get_vertices()[:, :2], np.reshape(tip, (3, 2)), atol=1e-8), where
+        outer = arcs[0]
+        start, end = angle['arrow']['stemEndAngles']
+        for e, phi in zip((_corners(outer)[0], _corners(outer)[-1]), (start, end)):
+            assert np.allclose((e - vertex) / np.hypot(*(e - vertex)), [math.cos(phi), math.sin(phi)],
+                               atol=1e-8), where
+
+
+def _corners(mob):
+    """The corners of a polyline drawn with ``set_points_as_corners``."""
+    pts = np.asarray(mob.points)[:, :2]
+    return np.vstack([pts[::4], pts[-1:]])
+
+
+def _assert_hole(point, group, radius, where):
+    from manim import ManimColor
+    holes = [m for m in group.submobjects if getattr(m, '_animageo_hole', False)]
+    if point.get('fill') != 'hollow':
+        assert not holes, where
+        return
+    (hole,) = holes
+    outer = group.submobjects[0]
+    assert hole.width == pytest.approx(outer.width / 2), where
+    assert np.allclose(hole.get_center(), outer.get_center()), where
+    assert ManimColor(point['innerColor']).to_hex() == hole.get_fill_color().to_hex(), where
+    assert point['hole']['radiusPx'] == pytest.approx(point['sizePx'] / 4), where
+
+
+def _assert_segment_heads(arrow, group, where):
+    stem = group.submobjects[0]
+    assert np.allclose([*stem.get_start()[:2], *stem.get_end()[:2]], arrow['stem'], atol=1e-8), where
+    heads = group.submobjects[1:1 + len(arrow['tips'])]
+    for head, tip in zip(heads, arrow['tips']):
+        assert type(head).__name__ == 'Polygon', where
+        assert np.allclose(head.get_vertices()[:, :2], np.reshape(tip, (3, 2)), atol=1e-8), where
+
+
+def _assert_chevrons(parallel, group, where):
+    shapes = [m for m in group.submobjects if type(m).__name__ == 'VMobject' and len(m.points) == 8]
+    assert len(shapes) == len(parallel['chevrons']), where
+    for shape, chevron in zip(shapes, parallel['chevrons']):
+        assert np.allclose(_corners(shape), np.reshape(chevron, (3, 2)), atol=1e-8), where
 
 
 def test_the_drawn_dash_is_that_of_the_renderer():

@@ -477,10 +477,122 @@ def _angle_fit():
     return out
 
 
+def _marks():
+    """1.13.0: kinds of marks (``animageo/mark_shapes.py``) — the arcs of an
+    angle as waves (``A`` 1 px, ``λ`` 6 px, ``16`` samples a period, two waves
+    and more ``arc_shift_px + 2A`` apart) or fitted 2/2 px dashes, ticks
+    across them, heads on the outer arc (a decorated right angle is arcs
+    unless ``right_angle_marker`` is ``true``), the overhang of the
+    decoration in ``angle_marker_fit``; hatched angles; hollow points; heads
+    of a segment; chevrons of parallel lines."""
+    def tri(doc_id, c=(1.5, 3.5)):
+        return _triangle(doc_id, c).angle('alpha', 'B', 'A', 'C').angle('beta', 'C', 'B', 'A')
+
+    out = []
+    d = tri('arc_wave_1').overrides('alpha', arc_style='wave')
+    out.append(('arc_wave_1', d, None))
+    d = tri('arc_wave_3arcs').overrides('alpha', arc_style='wave', tick_count=3, arc_size_px=24)
+    out.append(('arc_wave_3arcs', d.label('alpha'), None))
+    d = tri('arc_dashed_1').overrides('alpha', arc_style='dashed')
+    out.append(('arc_dashed_1', d, None))
+    d = tri('arc_dashed_2arcs').overrides('alpha', arc_style='dashed', tick_count=2, arc_size_px=24)
+    out.append(('arc_dashed_2arcs', d, None))
+    d = tri('arc_dashed_pattern').overrides('alpha', arc_style='dashed', stroke_dash_pattern_px=[3, 1.5])
+    out.append(('arc_dashed_pattern', d, None))
+    d = tri('arc_dashed_aux_role').look('alpha', role='aux')     # the dash of a role is no arc style
+    out.append(('arc_dashed_aux_role', d, None))
+    for k in (1, 2, 3):
+        d = tri(f'arc_ticks_{k}').overrides('alpha', arc_tick_count=k)
+        out.append((f'arc_ticks_{k}', d, None))
+    d = tri('arc_ticks_2arcs').overrides('alpha', tick_count=2, arc_tick_count=2, tick_length_px=6)
+    out.append(('arc_ticks_2arcs', d.label('alpha'), None))
+    d = _triangle('arc_ticks_narrow', c=(5.5, 0.6)).angle('alpha', 'B', 'A', 'C')
+    d.overrides('alpha', arc_tick_count=3, arc_size_px=30, tick_shift_px=4)
+    out.append(('arc_ticks_narrow', d, None))
+    for head in ('end', 'start'):
+        d = tri(f'arc_arrow_{head}').overrides('alpha', arrow_head=head, arc_size_px=24)
+        out.append((f'arc_arrow_{head}', d, None))
+    d = tri('arc_arrow_reflex').overrides('alpha', arrow_head='end', angle_range='reflex', arc_size_px=12)
+    out.append(('arc_arrow_reflex', d, None))
+    d = tri('arc_arrow_short').overrides('beta', arrow_head='both', arc_size_px=12)
+    out.append(('arc_arrow_short', d, None))
+    d = tri('arc_arrow_wave').overrides('alpha', arrow_head='end', arc_style='wave', tick_count=2,
+                                         arc_size_px=24)
+    out.append(('arc_arrow_wave', d, None))
+    d = _triangle('arc_auto_90_to_arcs', c=(0, 3)).angle('alpha', 'B', 'A', 'C').overrides('alpha', arc_tick_count=1)
+    out.append(('arc_auto_90_to_arcs', d, None))
+    d = _triangle('arc_square_true', c=(0, 3)).angle('alpha', 'B', 'A', 'C')
+    d.overrides('alpha', arc_tick_count=1, arc_style='wave', right_angle_marker=True)
+    out.append(('arc_square_true', d, None))
+    d = tri('angle_hatch_sector').overrides('alpha', fill_pattern='hatch', arc_size_px=30)
+    out.append(('angle_hatch_sector', d, None))
+    d = _triangle('angle_hatch_square', c=(0, 3)).right_mark('ra', 'B', 'A', 'C')
+    d.overrides('ra', fill_pattern='crosshatch', right_angle_size_px=30, hatch_spacing_px=4)
+    out.append(('angle_hatch_square', d, None))
+    d = tri('angle_hatch_bg_fill').overrides('alpha', fill='#ffffff', fill_pattern='dots', hatch_color='#d05456',
+                                             arc_size_px=30)
+    out.append(('angle_hatch_bg_fill', d, None))
+    d = tri('equal_angles_wave_ticks').equal_angles('m', 'alpha', 'beta', count=2)
+    d.overrides('m', arc_style='wave', arc_tick_count=1, tick_length_px=7)
+    out.append(('equal_angles_wave_ticks', d, None))
+    d = tri('equal_angles_own_wins').equal_angles('m', 'alpha', 'beta', count=2)
+    d.overrides('m', arc_style='wave', arc_tick_count=2).overrides('alpha', arc_style='dashed', arc_tick_count=1)
+    out.append(('equal_angles_own_wins', d, None))
+    d = tri('equal_angles_stroke').equal_angles('m', 'alpha', 'beta')
+    d.overrides('m', stroke='#9933cc', arc_tick_count=2).overrides('alpha', arrow_head='end', stroke='#112233')
+    out.append(('equal_angles_stroke', d, None))
+    d = _triangle('right_mark_arcs_wave', c=(0, 3)).right_mark('ra', 'B', 'A', 'C')
+    d.overrides('ra', right_angle_marker=False, arc_style='wave', tick_count=2)
+    out.append(('right_mark_arcs_wave', d, None))
+    fit = {'rendering': {'angle_marker_fit': True}}
+    d = _Doc('fit_overhang').free('A', 0, 0).free('B', 3, 0).free('C', 0.2, 0.2).angle('alpha', 'B', 'A', 'C')
+    d.overrides('alpha', arc_style='wave', arc_tick_count=1, tick_count=2).label('alpha')
+    out.append(('fit_overhang', d, fit))
+    from ..style.enums import POINT_SHAPES
+    d = _Doc('point_hollow_shapes')
+    for i, shape in enumerate(POINT_SHAPES[:7]):
+        d.free(f'P{i}', i % 3 * 2, i // 3 * 1.5).overrides(f'P{i}', point_shape=shape, size_px=8 + 2 * i,
+                                                          point_fill='hollow')
+    d.free('Q', 5, 0).free('R', 5, 3).line('l', 'Q', 'R').free('S', 5, 1.5).overrides('S', point_fill='hollow')
+    out.append(('point_hollow_shapes', d, None))
+    d = _triangle('point_hollow_role_sought').look('C', role='sought').overrides('C', point_fill='hollow')
+    out.append(('point_hollow_role_sought', d, None))
+    d = _triangle('point_hollow_cross').overrides('A', point_shape='cross', point_fill='hollow', stroke_width_px=1.5)
+    d.overrides('B', point_shape='plus', point_fill='hollow', stroke_width_px=1.5)
+    out.append(('point_hollow_cross', d, None))
+    for head in ('end', 'start', 'both'):
+        d = _triangle(f'segment_arrow_{head}').segment('s', 'A', 'B').segment('t', 'B', 'C')
+        d.overrides('s', arrow_head=head).overrides('t', arrow_head=head, arrow_length_px=16, arrow_width_px=9)
+        out.append((f'segment_arrow_{head}', d, None))
+    d = _triangle('segment_arrow_dashed').segment('s', 'A', 'B').overrides('s', arrow_head='end',
+                                                                          stroke_dash_ratio=0.5)
+    out.append(('segment_arrow_dashed', d, None))
+    d = _triangle('parallel_segment_1').segment('s', 'A', 'B').overrides('s', parallel_count=1)
+    out.append(('parallel_segment_1', d, None))
+    d = _triangle('parallel_line_2').line('l', 'A', 'C').overrides('l', parallel_count=2)
+    out.append(('parallel_line_2', d, None))
+    d = _triangle('parallel_ray').ray('r', 'C', 'B').vector('v', 'A', 'C')
+    d.overrides('r', parallel_count=3).overrides('v', parallel_count=1, parallel_size_px=12)
+    out.append(('parallel_ray', d, None))
+    d = _triangle('parallel_backward').segment('s', 'A', 'B').overrides('s', parallel_count=2,
+                                                                       parallel_direction='backward')
+    out.append(('parallel_backward', d, None))
+    d = _triangle('parallel_with_ticks').segment('s', 'A', 'B').segment('t', 'B', 'C')
+    d.equal_segments('m', 's', 't', count=2).overrides('s', parallel_count=2).overrides('t', parallel_count=1)
+    out.append(('parallel_with_ticks', d, None))
+    d = _triangle('degenerate').free('D', 0, 0).free('E', 2, 0).segment('z', 'A', 'D')
+    d.overrides('z', parallel_count=2, arrow_head='both').angle('flat', 'B', 'A', 'E')
+    d.overrides('flat', arc_style='wave', arc_tick_count=2, arrow_head='end')
+    d.angle('alpha', 'B', 'A', 'C').overrides('alpha', tick_count=0, arc_style='wave', arc_tick_count=2)
+    out.append(('degenerate', d, None))
+    return out
+
+
 THEMES = (('paint_ticks', _ticks), ('paint_angles', _angles), ('paint_points', _points),
           ('paint_dashes', _dashes), ('paint_labels', _labels), ('paint_values', _values),
           ('paint_layers', _layers), ('paint_text', _texts), ('paint_base', _base),
-          ('paint_timeline', _timeline), ('paint_curves', _curves), ('paint_angle_fit', _angle_fit))
+          ('paint_timeline', _timeline), ('paint_curves', _curves), ('paint_angle_fit', _angle_fit),
+          ('paint_marks', _marks))
 
 
 def _expect(document, style, timeline, t) -> dict:
