@@ -33,7 +33,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 OPS_DIR = REPO_ROOT / 'animageo' / 'native' / 'ops' / 'v1'
 FROZEN_PATH = Path(__file__).with_name('registry_frozen_1_0.json')
 FROZEN_VERSION = '1.5'
-NEXT = '1.11'          # a version above the registry now (TestRules)
+NEXT = '1.12'          # a version above the registry now (TestRules)
 SERVICE = ('_types', '_policies', '_reasons', '_numeric')
 
 
@@ -178,7 +178,7 @@ class TestRules:
         state['version'] = NEXT
         state['records']['point.midpoint']['phrases']['ru'] += ' '
         assert self.problems(frozen, state) == [
-            'point.midpoint: record changed, its since is 1.0, not the new version 1.11']
+            'point.midpoint: record changed, its since is 1.0, not the new version 1.12']
         state['records']['point.midpoint']['since'] = NEXT
         assert self.problems(frozen, state) == []
 
@@ -215,7 +215,7 @@ class TestRules:
         state['records']['point.new'] = new
         assert self.problems(frozen, state) == ['point.new: new op without a new registry version']
         state['version'] = NEXT
-        assert self.problems(frozen, state) == ['point.new: new op with since 1.0 (must be above 1.10)']
+        assert self.problems(frozen, state) == ['point.new: new op with since 1.0 (must be above 1.11)']
         new['since'] = NEXT
         assert self.problems(frozen, state) == []
 

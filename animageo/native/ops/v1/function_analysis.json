@@ -43,7 +43,12 @@
       "non_finite",
       "upstream"
     ],
-    "checks": [],
+    "checks": [
+      {
+        "id": "on_graph",
+        "text": "largest normal distance |y-f(x)| / max(1, |slope(x)|) of the defined outputs"
+      }
+    ],
     "orientation": null,
     "pathParam": null,
     "stepKind": "function_roots_polynomial",
@@ -96,7 +101,12 @@
       "non_finite",
       "upstream"
     ],
-    "checks": [],
+    "checks": [
+      {
+        "id": "on_graph",
+        "text": "largest |y-f(x)| of the defined outputs"
+      }
+    ],
     "orientation": null,
     "pathParam": null,
     "stepKind": "function_extrema_polynomial",
@@ -105,5 +115,42 @@
     },
     "math": "docs/native/ops/function.extrema_polynomial.md",
     "signatureHash": "sha256:a268db8a55d0bf582f5c52c9c8cb73aa51c1803b2b94ce699c0d1690d6e76993"
+  },
+  {
+    "op": "function.value",
+    "status": "beta",
+    "since": "1.11",
+    "moduleGroup": "function_analysis",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      },
+      {
+        "slot": "x",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "out_of_domain",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "function_value",
+    "phrases": {
+      "ru": "{number} — значение функции {function} при абсциссе {x}"
+    },
+    "math": "docs/native/ops/function.value.md",
+    "signatureHash": "sha256:bccba90ed68fd210201146cac35d1e6fe98b7bfe4c88c687f10fc63561b77b92"
   }
 ]

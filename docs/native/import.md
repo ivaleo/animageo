@@ -647,3 +647,11 @@ fill (alpha 0) lost its fill keys and was drawn with the default fill of the
 style; `ggb_style` now carries `fill_opacity` 0, and
 `test_native_l5_ggb.py` compares `ggb_style` with the classic
 `elem.ggb_style` key for key.
+
+
+Registry 1.11 uses map version 8. Its staged function-analysis catalog lists
+`function.roots_polynomial`, `function.extrema_polynomial` and `function.value`
+in `opsWithoutClassic`, so both directions of the mapping remain explicit.
+This metadata does not add GeoGebra Root/Extremum source translation or change
+any existing classic command row. The native operations and their analytical
+fixtures can be used independently of that later import work.

@@ -56,3 +56,19 @@ def test_registry_additive_numeric_profile_and_reasons():
         assert registry().reasons[reason]['state'] == 'undefined'
     assert 'not_bracketed' not in registry().reasons
     assert 'distinct_roots_ascending' in registry().policies
+
+
+def test_registry_only_advertises_implemented_analysis_operations():
+    reg = registry()
+    assert set(reg.groups['function_analysis']) == {
+        'function.roots_polynomial', 'function.extrema_polynomial', 'function.value'}
+    assert reg.get('function.value')['undefined'] == ['out_of_domain', 'upstream']
+    for name, base in [('roots_polynomial', 'root'), ('extrema_polynomial', 'extremum')]:
+        record = reg.get('function.' + name)
+        assert record['since'] == '1.11' and record['moduleGroup'] == 'function_analysis'
+        assert record['outputs'] == [{'slot': base, 'type': 'point', 'repeat': 'count'}]
+        assert record['branch']['policy'] == 'distinct_roots_ascending'
+        assert record['branch']['slots'] == [base]
+        assert record['params'][0]['default'] == 100
+        assert [check['id'] for check in record['checks']] == ['on_graph']
+        assert not set(record['undefined']) & {'not_bracketed', 'out_of_domain', 'discontinuous'}

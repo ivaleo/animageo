@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Registry 1.11 groundwork: distinct global polynomial roots, isolated local
+  polynomial extrema and scalar function values, with fixed repeated slots,
+  full `detail.found` counts, independent graph checks and analytical curves
+  fixtures. The function-analysis catalog is staged with these three
+  implemented operations; the complete `function_analysis` feature is not
+  advertised yet.
+- Explicit `moduleGroup` loading metadata for the new operations and the six
+  existing region, expression and locus operations. Registry 1.0–1.10
+  signatures and numerical behavior remain unchanged.
+
 ## [1.15.0] - 2026-11-13
 
 ### Added

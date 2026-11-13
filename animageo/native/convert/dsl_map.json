@@ -1,7 +1,7 @@
 {
  "format": "animageo-dsl-map/v1",
- "mapVersion": 7,
- "registry": "1.10",
+ "mapVersion": 8,
+ "registry": "1.11",
  "commands": {
   "abs_i": {
    "factory": "Abs",
@@ -5463,7 +5463,7 @@
  "opsWithoutClassic": {
   "angle.between_lines": "no classic Angle(line, line) dispatch key",
   "angle.between_vectors": "no classic Angle(vector, vector) dispatch key",
-  "angle.by_size": "classic Angle(A, B, α) is not a dispatch key",
+  "angle.by_size": "classic Angle(A, B, \u03b1) is not a dispatch key",
   "circle.diameter": "no classic command builds it",
   "circle.excircle": "no classic command builds it",
   "line.equation": "GGB line equations are read as formulas outside the classic command table",
@@ -5517,7 +5517,10 @@
   "triangle.cevian": "no classic command builds it",
   "circle.nine_point": "no classic command builds it",
   "line.euler": "no classic command builds it",
-  "point.on_locus": "registry 1.10: explicit Point(locus, parameter) is read from the source"
+  "point.on_locus": "registry 1.10: explicit Point(locus, parameter) is read from the source",
+  "function.roots_polynomial": "registry 1.11: native function analysis has no classic command lowering",
+  "function.extrema_polynomial": "registry 1.11: native function analysis has no classic command lowering",
+  "function.value": "registry 1.11: native function analysis has no classic command lowering"
  },
  "seedDropped": {}
 }

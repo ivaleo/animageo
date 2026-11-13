@@ -327,6 +327,8 @@ CHECK_OPTIONAL_SLOTS = {
     # registry 1.6: the repeated slots of a search (``root.k`` by the base name)
     # are absent beyond the solutions found; the checks measure the defined ones
     'function.root': frozenset({'root'}),
+    'function.roots_polynomial': frozenset({'root'}),
+    'function.extrema_polynomial': frozenset({'extremum'}),
     'function.extremum': frozenset({'extremum'}),
     'intersect.function_function': frozenset({'point'}),
     'intersect.function_line': frozenset({'point'}),

@@ -37,3 +37,12 @@ def roots_polynomial(args, ctx):
 @op('function.extrema_polynomial')
 def extrema_polynomial(args, ctx):
     return _polynomial(args, ctx, extrema=True)
+
+
+@op('function.value')
+def value(args, ctx):
+    from ..function import evaluator
+
+    y = evaluator(args['function'].value)(float(args['x'].value['value']))
+    return {'number': Undefined('out_of_domain') if y is None else
+            {'value': y + 0.0, 'unit': 'scalar'}}

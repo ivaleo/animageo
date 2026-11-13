@@ -68,7 +68,7 @@ MARK_18_OPS = {'mark.parallel'}
 REGION_OPS = {'function.area_between', 'region.by_boundary'}
 EXPRESSION_OPS = {'point.expression', 'vector.expression', 'line.equation'}      # registry 1.10
 LOCUS_OPS = {'point.on_locus'}      # registry 1.10
-FUNCTION_ANALYSIS_OPS = {'function.roots_polynomial', 'function.extrema_polynomial'}
+FUNCTION_ANALYSIS_OPS = {'function.roots_polynomial', 'function.extrema_polynomial', 'function.value'}
 ALL_OPS = FUNCTION_ANALYSIS_OPS | LOCUS_OPS | EXPRESSION_OPS | REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.7 extend 1.0: earlier operations keep their signatures.
 # Registry 1.6 is frozen since 1.11.0rc5; new school operations go to 1.7.
