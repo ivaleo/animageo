@@ -76,6 +76,22 @@ number; `boolean` → boolean. (Same value family as AnimaGeo keyframes.)
 `createBoard(spec, container, opts)` — `engine`, `debounceMs` (collapse rapid
 `change`), `showNavigation`, `pan`, `zoom`, `mathjax`.
 
+## Export-frame paint order
+
+An optional `paintOrder` in `animageo-board/v1` contains Python's export-frame
+`mode`, `static: true`, `fillOrder` and `partOrder`. Each part has an owner
+`id`, a `part`, and `targets` naming exported elements and their `self`,
+`label`, or `borders` SVG nodes. Native owners use document IDs. The runtime
+creates elements in dependency order, then places these nodes once in the
+supplied order. Optional target `fillRule` preserves nonzero solid fills.
+No area calculation, board-update sorter or drag sorter runs in JavaScript.
+Dragging keeps this order even when areas cross; re-export to recompute it.
+Static geometry coverage (including regions and exported patterns/markers)
+is reported separately. Specs without `paintOrder` keep the previous path.
+
+Run `node scripts/browser-smoke/run.mjs --fixture fill_order --screenshot`
+for actual initial DOM order, live area reversal and unchanged order after drag.
+
 ## Notes
 
 - Mostly declarative: only live function-valued parents (`{"fn":…}`) and the few

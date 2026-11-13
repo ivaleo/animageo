@@ -170,3 +170,15 @@ loci, conic constructors) and every `TikZOptions` setting are checked, with a
 `pdflatex` compile smoke test (skipped when no LaTeX toolchain is present).
 
 See also: `animageo/exporters/tikz/`.
+
+
+## Fill ordering
+
+Native documents use area ordering by default; classic scenes keep their
+previous construction traversal and bytes unless explicitly configured with
+`rendering.fill_order: "area"`. Area export emits fill, stroke and label runs
+independently in the shared paint order, including circles and ellipses.
+Explicit fill layers retain their position relative to outlines and labels.
+Labels remain outside the geometry clip; hole and hollow-point scopes remain
+attached to the appropriate runs. Solid polygons use nonzero winding;
+patterns preserve their even-odd supporting region.

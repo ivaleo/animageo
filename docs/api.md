@@ -678,3 +678,21 @@ deterministic order.
 A hard cap on the numeric methods guarantees no hangs: 1D scans use
 `n_samples=401` points over the range `[-50, 50]`; 2D marching squares uses a
 `grid_n=128` × 128 cell grid.
+
+
+### Fill order in TikZ and interactive exports
+
+`rendering.fill_order` defaults to `area` for native documents and
+`construction` for classic scenes. Classic exports without a flag preserve
+previous bytes. In area mode TikZ emits separate fill, outline and label
+commands in the shared paint order; labels remain outside the geometry clip,
+including when a higher explicit fill layer covers them.
+
+JSXGraph HTML/JS and `output="spec"` carry a Python-computed `paintOrder`
+snapshot for the current export frame. The additive v1 metadata lists the
+mode, owners, parts and concrete render targets. The runtime applies it once
+after all construction creators exist. Drag preserves this order even when
+areas cross; re-export the current frame to calculate a new order. Regions,
+patterns and resolved angle markers use the documented static geometry
+coverage. Solid polygons keep nonzero winding and pattern support keeps
+even-odd. No browser area algorithm or update listener is installed.

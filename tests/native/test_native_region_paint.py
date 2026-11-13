@@ -324,6 +324,11 @@ def test_the_classic_region_and_the_exports_read_the_polygon_fill():
     assert any('fill opacity=0.4' in l and 'even odd rule' in l for l in scene.exportTikZ().splitlines())
     from animageo.exporters.jsxgraph.builder import build_board
     from animageo.exporters.jsxgraph.options import JSXGraphOptions
-    stmt = next(s for s in build_board(scene, JSXGraphOptions()).statements
-                if f'"{elem.name}"' in s and '"curve"' in s)
-    assert 'fillOpacity: 0.4' in stmt and 'fillColor: "#D05456"' in stmt
+    model = build_board(scene, JSXGraphOptions())
+    by_name = {e.name: e for e in model.elements}
+    assert by_name[elem.name].attrs['fillOpacity'] == 0
+    part = next(p for p in model.paint_order['partOrder'] if p['id'] == 'S' and p['part'] == 'fill')
+    attrs = by_name[part['targets'][0]['name']].attrs
+    assert attrs['fillOpacity'] == pytest.approx(.4)
+    assert attrs['fillColor'] == '#D05456'
+    assert part['targets'][0]['fillRule'] == 'nonzero'

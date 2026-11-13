@@ -19,8 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   with stateless update/seek ordering, fitted angle-marker areas, fixed-layer
   slots and distinct full/zero native arc domains. Solid polygons retain
   nonzero winding and patterns even-odd. Geometry measures and operation
-  registry records are unchanged. TikZ and static JSXGraph area adapters
-  remain separate work; JSXGraph will retain export order after local drag.
+  registry records are unchanged.
+- TikZ emits independent fill, stroke and label runs using the shared paint
+  plan, including explicit fills above labels and clipped paths with holes.
+  JSXGraph exports an additive `paintOrder` snapshot in `animageo-board/v1`,
+  HTML and JS. The runtime applies it once after creating the board; local
+  drag keeps that order and a new export recomputes it. Solid winding and
+  hatch/crosshatch/dots are preserved on the export frame. Classic exports
+  without an explicit mode or independent fill override retain their bytes.
 
 ### Fixed
 

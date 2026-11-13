@@ -1473,11 +1473,27 @@ arcs retain their modulo domain. Classic `construction` without a new fill
 override retains its previous SVG/TikZ bytes and writer traversal. The
 operation registry and construction/keyframe formats are unchanged.
 
-Cairo vector output and the scene-local manim camera consume this structural
-plan. The TikZ and JSXGraph adapters are separate work; their area ordering
-is not provided by this change. The JSXGraph contract is a static order at
-the export frame: local drag will keep that order, and a new export will
-compute a new one. It does not promise live area sorting.
+Cairo vector output, the scene-local manim camera and TikZ consume this
+structural plan. TikZ separates fills, outlines and labels, preserving their
+relative layers even when an explicit fill sits above a label. Geometry
+remains clipped and labels remain outside the geometry clip.
+
+JSXGraph HTML, JS and `animageo-board/v1` exports include an additive
+`paintOrder` snapshot when area order or an independent fill override is
+active. It contains `mode`, `static: true`, `fillOrder`, and bottom-to-top
+`partOrder` entries with `{id, part, targets}`. Native owners use document
+IDs; each target names an exported element and its `self`, `label`, or
+`borders` render nodes. An optional target `fillRule` preserves the solid
+nonzero domain. Build creators in their original topological order, then
+place these nodes once in the supplied sequence; numeric JSXGraph layers
+alone cannot express the complete order. The spec format stays v1.
+
+Local drag keeps the exported order, and a new export computes a new one.
+The runtime does not calculate areas or sort on board updates. Unsupported
+live geometry, regions, resolved angle markers and patterns retain explicit
+static coverage; patterns are exported as their actual strokes/dots, never
+substituted with solid fill. Classic exports without the flag retain their
+previous bytes.
 
 `ptUnit` — output pixels per world unit, `ptUnitStyle` — style pixels per
 world unit (a decoration of `n` px is `n / ptUnitStyle` world units),
