@@ -220,6 +220,21 @@
         },
         "color_interpolation": {
           "enum": ["oklab", "srgb"]
+        },
+        "angle_marker_fit": {
+          "description": "Off by default; true (or enabled: true) fits the angle marker to its sides: side_fraction 0.6, hide_below_px 3.",
+          "anyOf": [
+            {"type": "boolean"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "side_fraction": {"type": "number", "exclusiveMinimum": 0},
+                "hide_below_px": {"type": "number", "minimum": 0}
+              }
+            }
+          ]
         }
       }
     },

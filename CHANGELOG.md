@@ -32,6 +32,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `intersect.conic_conic` with its slots bound by the saved values (DSL map
   version 5); before it was a picture (`no_registry_op`). Intersections with
   functions and `Intersect(a, b, <Point>)` are not translated yet.
+- `rendering.angle_marker_fit` (off by default): the marker of an angle is at
+  most `side_fraction` (0.6) of what each of its sides has — a visible line or
+  ray along the side leaves it unbounded, a visible segment or polygon side
+  on the vertex along the side bounds it by how far it reaches from the
+  vertex (also past the defining point), otherwise the distance to the
+  defining point. Lengths compare in output pixels with the
+  marker size in style pixels. Every arc moves in by the same amount, the
+  spacing between arcs is kept, and a marker whose inner arc or square side
+  falls below `hide_below_px` (3) is hidden whole. The value label is placed
+  from the fitted size, also when the marker is hidden. The desired sizes stay
+  in the style; `animageo.angle_marker.max_desired_px` gives the largest
+  desired size that still fits. Applied by the renderer, label placement,
+  native paint (`angle.fit`), TikZ and JSXGraph (a static radius).
+
+### Changed
+
+- An explicit `null` `right_angle_marker` on a right-angle mark draws the
+  square, as an absent key does.
 
 ## [1.12.1] - 2026-11-13
 

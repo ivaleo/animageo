@@ -135,6 +135,10 @@ JSON Style File Structure
         "dash_period_px":         <float>,        # default 10: dash + gap, px
         "background":             "color.background",
         "right_angle_joint":      "auto"|"bevel"|"miter"|"round",
+        "angle_marker_fit":       <bool>|{"enabled": <bool>, "side_fraction": <float>,
+                                          "hide_below_px": <float>},
+                                                  # default off; on: 0.6 and 3 px —
+                                                  # the angle marker within its sides
         "polygon_boundary_layer": "top"|null,
         "points_display":         "auto"|"only_labels"|"only_points",
         "label_anchor":           "TL"|"TC"|"TR"|"ML"|"MC"|"MR"|"BL"|"BC"|"BR",

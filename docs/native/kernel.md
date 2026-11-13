@@ -1069,7 +1069,8 @@ Marks (registry 1.3, `native.appearance_plan`):
   instead of the square; a colour alone keeps the square. A target's own
   count and size overrides still win. Other keys are reported as `mark_transfers_only`;
 - a visible, defined right-angle mark gets `right_angle_marker = true`
-  unless its `overrides` set it.
+  unless its `overrides` set it to `false` (an explicit `null` is the
+  square too).
 
 For several equality marks on a target, the first visible, defined mark in
 ID order owns the colour channel, even if it has no colour override (the
@@ -1366,7 +1367,16 @@ breaking ties by `1e-6`) and, by type:
   `arcSizePx` (the base), `radiusPx` (after `overlay.angle_radius`),
   `arcs`, `arcShiftPx`, `arcRadiiPx` or, for a right angle, `rightSizePx`
   and the corners of the square `square` (world units), `shownSize`,
-  `right`, `joint`;
+  `right`, `joint`. With `rendering.angle_marker_fit` (off by default;
+  on: `limitPx = side_fraction · min(L1, L2) · ptUnitStyle`, `side_fraction`
+  0.6, see `docs/styles.md` §8) also `fit`: `supportWorld` (`[L1, L2]` — a
+  visible segment or polygon side on the vertex along a side counts with
+  how far it reaches, also past the defining point; `null` — a
+  side without a bound), `limitPx` (`null` — no bound), `clamped`,
+  `hidden`; `radiusPx`, `arcRadiiPx`, `rightSizePx` and `square` are then
+  the fitted marker (`arcSizePx` stays the desired base), a hidden marker
+  has `arcRadiiPx: []` and no `square` (no fill either), and the label
+  stands at the fitted extent;
 - `decoration` (1.11.0rc13, a drawn equality target): `owner` (mark document
   ID), `color`, `count`, `kind` (`ticks`, `arcs`, or `square`),
   and actual dimensions in style pixels. Ticks report `style`, `lengthPx`,
