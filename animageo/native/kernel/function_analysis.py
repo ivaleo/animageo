@@ -79,7 +79,10 @@ def coefficients(value, budget):
         c = [0.0] * (len(a) + len(b) - 1)
         for i, av in enumerate(a):
             for j, bv in enumerate(b):
-                c[i + j] += av * bv
+                product = av * bv
+                if product == 0.0 and av != 0.0 and bv != 0.0:
+                    raise AnalysisError('non_finite')
+                c[i + j] += product
         return _trim(c)
 
     def read(node):
@@ -103,7 +106,10 @@ def coefficients(value, budget):
             if name == '/':
                 if b == 0.0:
                     raise AnalysisError('not_polynomial')
-                return _trim([v / b for v in a])
+                quotient = [v / b for v in a]
+                if any(v != 0.0 and q == 0.0 for v, q in zip(a, quotient)):
+                    raise AnalysisError('non_finite')
+                return _trim(quotient)
             if b < 0 or not b.is_integer():
                 raise AnalysisError('not_polynomial')
             if (len(a) - 1) * b > maximum:

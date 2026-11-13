@@ -123,3 +123,47 @@ def test_polynomial_isolation_limits_are_explicit(monkeypatch):
 def test_polynomial_unfinished_isolation_is_not_an_empty_set(monkeypatch):
     monkeypatch.setitem(native.registry().numeric['functionAnalysis'], 'bisectionSteps', 1)
     assert result(o('-', power(X, 2), n(2))).elements['P1']['reason'] == 'no_convergence'
+
+
+@pytest.mark.parametrize('scale', [1, 1e6])
+@pytest.mark.parametrize('tree,roots', [
+    (power(o('-', X, n(1)), 2), [1]),
+    (o('*', power(o('-', X, n(1)), 2), o('+', X, n(2))), [-2, 1]),
+    (o('*', o('-', X, n(1)), o('-', o('-', X, n(1)), n(1e-6))), [1, 1 + 1e-6]),
+])
+def test_polynomial_tangencies_and_resolvable_close_pair_at_unit_scale(tree, roots, scale):
+    d = Doc(bounds=(0, 0, 1, 1)).function(o('*', n(scale), tree)).search(count=3)
+    ev = native.evaluate(d.doc)
+    assert ev.scale == 1
+    for k, x in enumerate(roots, 1):
+        point(ev, k, x, found=len(roots))
+    assert ev.elements[f'P{len(roots) + 1}']['reason'] == 'branch_absent'
+
+
+@pytest.mark.parametrize('scale', [1, 1e6])
+def test_polynomial_sub_resolution_pair_collapses_during_double_expansion(scale):
+    from animageo.native.kernel.function_analysis import Budget, coefficients, _normalized
+
+    # The pair and a shifted square expand to identical double coefficients;
+    # the coefficient profile cannot reconstruct which AST supplied them.
+    tree = o('*', n(scale), o('*', o('-', X, n(1)), o('-', o('-', X, n(1)), n(1e-9))))
+    d = Doc(bounds=(0, 0, 1, 1)).function(tree).search(count=3)
+    ev = native.evaluate(d.doc)
+    c = _normalized(coefficients(ev.elements['f']['value'], Budget()))
+    assert c[1] * c[1] - 4 * c[0] * c[2] == 0
+    square = Doc().function(o('*', n(scale), power(o('-', X, n(1 + .5e-9)), 2)))
+    square_value = native.evaluate(square.doc).elements['f']['value']
+    assert coefficients(ev.elements['f']['value'], Budget()) == coefficients(square_value, Budget())
+    point(ev, 1, 1 + 0.5e-9, found=1)
+    assert ev.elements['P2']['reason'] == 'branch_absent'
+
+
+@pytest.mark.parametrize('tree', [
+    o('-', o('*', o('*', n(1e-200), X), o('*', n(1e-200), X)), n(1)),
+    o('-', o('/', o('*', n(1e-200), X), n(1e200)), n(1)),
+])
+@pytest.mark.parametrize('name', ['roots_polynomial', 'extrema_polynomial'])
+def test_polynomial_unrepresentable_coefficients_are_not_silently_zeroed(tree, name):
+    ev = result(tree, name)
+    assert ev.elements['P1']['reason'] == 'non_finite'
+    assert not ev.diagnostics
