@@ -138,6 +138,8 @@ class TestIneffective:
         defaults = native.style_keys()['types'][type_]['keys']
         b.doc['appearance'] = {el_id: {'overrides': {k: v['default'] for k, v in defaults.items()
                                                      if v['default'] is not None}}}
+        if type_ == 'angle':                    # a shift needs several arcs
+            b.doc['appearance'][el_id]['overrides']['tick_count'] = 2
         _, diagnostics = plan_of(b.doc)
         assert warnings(diagnostics) == []
 
@@ -227,3 +229,61 @@ class TestMarkTransfer:
         b.doc['appearance'] = {'mk': ['x']}
         plan, _ = plan_of(b.doc)
         assert plan['s']['style']['tick_count'] == 2 and 'tick_length_px' not in plan['s']['style']
+
+
+class TestSingleArc:
+    def test_reason(self):
+        from animageo.native.paint import ineffective_reason as r
+        assert r('angle', 'arc_shift_px', {}) is None                     # no count known, none assumed
+        assert r('angle', 'arc_shift_px', {'tick_count': 1}) == 'single_arc'
+        assert r('angle', 'arc_shift_px', {'tick_count': 0}) == 'single_arc'
+        assert r('angle', 'arc_shift_px', {'tick_count': 2}) is None
+        assert r('mark.equal_angles', 'arc_shift_px', {'tick_count': 1}) == 'single_arc'
+        assert r('mark.equal_angles', 'arc_shift_px', {}) is None          # the count comes from the operation
+        assert r('mark.equal_angles', 'arc_shift_px', {'tick_count': 3}) is None
+        assert r('mark.right_angle', 'arc_shift_px', {'right_angle_marker': False, 'tick_count': 1}) == 'single_arc'
+        assert r('mark.right_angle', 'arc_shift_px', {'right_angle_marker': False, 'tick_count': 2}) is None
+        assert r('mark.right_angle', 'arc_shift_px', {}) == 'not_read'
+        assert r('angle', 'arc_size_px', {}) is None
+
+    def test_arc_count_given_by_the_caller_wins(self):
+        from animageo.native.paint import ineffective_reason as r
+        assert r('angle', 'arc_shift_px', {'tick_count': 1}, arc_count=2) is None
+        assert r('angle', 'arc_shift_px', {}, arc_count=1) == 'single_arc'
+        assert r('mark.equal_angles', 'arc_shift_px', {}, arc_count=1) == 'single_arc'
+        assert r('mark.equal_angles', 'arc_shift_px', {}, arc_count=2) is None
+
+    @staticmethod
+    def drawing(count):
+        b = DocBuilder('arcs', registry_version='1.3', bounds=(-1, -1, 5, 4))
+        b.free('A', 0, 0).free('B', 4, 0).free('C', 1, 3)
+        b.angle('g', 'B', 'A', 'C').angle('h', 'A', 'B', 'C').equal_angles('n', 'g', 'h', count=count)
+        return b
+
+    def test_target_of_a_mark_of_two_arcs_keeps_its_shift(self):
+        b = self.drawing(2)
+        b.doc['appearance'] = {'g': {'overrides': {'arc_shift_px': 11}}}
+        assert warnings(plan_of(b.doc)[1]) == []
+
+    def test_mark_of_one_arc_reports_its_shift(self):
+        b = self.drawing(1)
+        b.doc['appearance'] = {'n': {'overrides': {'arc_shift_px': 11}}}
+        assert warnings(plan_of(b.doc)[1]) == [('n', 'arc_shift_px', 'single_arc')]
+        b.doc['appearance'] = {'g': {'overrides': {'arc_shift_px': 11}}}     # its target draws one arc too
+        assert warnings(plan_of(b.doc)[1]) == [('g', 'arc_shift_px', 'single_arc')]
+
+    def test_mark_of_two_arcs_takes_its_shift(self):
+        b = self.drawing(2)
+        b.doc['appearance'] = {'n': {'overrides': {'arc_shift_px': 11}}}
+        assert warnings(plan_of(b.doc)[1]) == []
+        b.doc['appearance'] = {'n': {'overrides': {'arc_shift_px': 11, 'tick_count': 1}}}   # the override counts
+        assert warnings(plan_of(b.doc)[1]) == [('n', 'arc_shift_px', 'single_arc')]
+
+    def test_reaches_diagnostics(self):
+        b = zoo()
+        b.doc['appearance'] = {'alpha': {'overrides': {'arc_shift_px': 11, 'tick_count': 1}}}
+        plan, diagnostics = plan_of(b.doc)
+        assert warnings(diagnostics) == [('alpha', 'arc_shift_px', 'single_arc')]
+        assert plan['alpha']['style']['arc_shift_px'] == 11             # still applied
+        b.doc['appearance'] = {'alpha': {'overrides': {'arc_shift_px': 11, 'tick_count': 2}}}
+        assert warnings(plan_of(b.doc)[1]) == []

@@ -155,12 +155,14 @@ def style_type_of(doc, el_id):
     return name if name in _TYPES else None
 
 
-def ineffective_reason(type_, key, style=None):
+def ineffective_reason(type_, key, style=None, arc_count=None):
     """Why ``key`` of ``appearance.overrides`` does nothing on an element of
     :func:`style_keys` type ``type_``, or ``None`` when it is read (or the
     type is unknown): ``not_drawn`` — the element is not drawn (a number, an
     expression, a template); ``mark_transfers_only`` — an equality mark
-    passes only :data:`MARK_TRANSFERS` to its targets; ``not_read`` — the
+    passes only :data:`MARK_TRANSFERS` to its targets; ``single_arc`` —
+    ``arc_shift_px`` of an angle with one arc (``tick_count`` ≤ 1, or
+    ``arc_count`` — the drawn number of arcs, given by the caller); ``not_read`` — the
     renderer of the type does not read the key. ``style`` — the keys the
     element is given (1.11.0): a right-angle mark with ``right_angle_marker:
     false`` is drawn as the arcs of an angle and reads the keys of an
@@ -169,6 +171,14 @@ def ineffective_reason(type_, key, style=None):
         return None
     if type_ == 'mark.right_angle' and (style or {}).get('right_angle_marker') is False:
         type_ = 'angle'
+    if key == 'arc_shift_px' and type_ in ('angle', 'mark.equal_angles'):
+        # the shift is the distance between several arcs: one arc has nothing to shift.
+        # ``arc_count`` — the number of arcs drawn, known to the caller (a mark's count comes
+        # from its operation, an angle's from the marks that target it); without it only an
+        # explicit ``tick_count`` of ``style`` counts
+        count = arc_count if arc_count is not None else (style or {}).get('tick_count')
+        if isinstance(count, (int, float)) and not isinstance(count, bool) and count <= 1:
+            return 'single_arc'
     if type_ in MARK_TRANSFERS:
         return None if key in MARK_TRANSFERS[type_] else 'mark_transfers_only'
     style, keys = _TYPES[type_]

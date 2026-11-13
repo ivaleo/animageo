@@ -603,7 +603,7 @@ PDF, PNG, EPS, видео и TikZ показывают одни и те же л�
 | Ключ | Тип | По умолчанию | Действие |
 |---|---|---|---|
 | `arc_size_px` | float (px) | `defaults.angle.arc_size_px` | Базовый радиус дуги |
-| `arc_shift_px` | float (px) | `defaults.angle.arc_shift_px` | Радиальный сдвиг между концентрическими дугами при `tick_count > 1` |
+| `arc_shift_px` | float (px) | `defaults.angle.arc_shift_px` | Радиальный сдвиг между концентрическими дугами; действует только при двух и более дугах (`tick_count > 1`) |
 | `angle_range` | `"minor"` \| `"reflex"` | Из GGB | `"minor"` — меньший сектор (≤π), `"reflex"` — больший (>π) |
 | `right_angle_marker` | bool \| `null` | `null`: автоматически, `np.isclose(angle, π/2)` | `true` — всегда квадрат, `false` — всегда дуги, `null` — автоматически (у отметки прямого угла — квадрат) |
 | `right_angle_size_px` | float (px) | `defaults.angle.right_angle_size_px` | Размер квадратного маркера прямого угла |

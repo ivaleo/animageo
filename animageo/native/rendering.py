@@ -290,6 +290,7 @@ def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> t
         if el_id not in doc.elements:
             diagnostics.append({'code': 'unknown_element', 'elementId': el_id})
     plan = {}
+    shifts = []
     for el_id in sorted(doc.elements):
         el = doc.elements[el_id]
         entry = appearance.get(el_id)
@@ -339,6 +340,9 @@ def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> t
             for key in sorted(overrides):
                 if key in APPEARANCE_STYLE_KEYS:
                     style[key] = overrides[key]
+                    if key == 'arc_shift_px':       # judged by the drawn count of arcs, below
+                        shifts.append((el_id, key, style_type, given))
+                        continue
                     reason = ineffective_reason(style_type, key, given)
                     if reason is not None:
                         diagnostics.append({'code': 'style_key_ineffective', 'elementId': el_id, 'key': key,
@@ -348,6 +352,7 @@ def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> t
         plan[el_id] = {'visible': visible if isinstance(visible, bool) else True, 'style': style}
     marks = sorted(el_id for el_id, el in doc.elements.items() if el.get('type') == 'mark')
     decorations = []
+    mark_counts = {}
     if marks:
         if evaluated is None:
             from .kernel.evaluate import evaluate
@@ -366,6 +371,7 @@ def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> t
             count = _mark_count(doc, mark_id, record)
             if count is None:
                 continue
+            mark_counts[mark_id] = count
             entry = appearance.get(mark_id)
             overrides = entry.get('overrides') if isinstance(entry, dict) else None
             passed = {key: overrides[key] for key in MARK_TRANSFERS.get(style_type_of(doc, mark_id), ())
@@ -388,7 +394,25 @@ def _appearance_plan(doc, unit, *, inputs=None, evaluated=None, roles=None) -> t
                 else:
                     plan[target]['style'].setdefault(key, value)
             plan[target]['decoration']['owner'] = plan[target]['decoration'].pop('id')
+    for el_id, key, style_type, given in shifts:
+        reason = ineffective_reason(style_type, key, given,
+                                    arc_count=_arc_count(plan, el_id, style_type, given, mark_counts))
+        if reason is not None:
+            diagnostics.append({'code': 'style_key_ineffective', 'elementId': el_id, 'key': key,
+                                'type': style_type, 'reason': reason})
     return plan, diagnostics, decorations
+
+
+def _arc_count(plan, el_id, style_type, given, mark_counts):
+    """How many arcs ``el_id`` draws: an equality mark of angles — its ``tick_count``
+    override, else the count of its operation; an angle (or a right-angle mark drawn as
+    arcs) — the ``tick_count`` of its plan style, its own or the one the first applied
+    equality mark gives it, else the style default (1)."""
+    if style_type == 'mark.equal_angles':
+        explicit = given.get('tick_count')
+        return explicit if explicit is not None else mark_counts.get(el_id)
+    count = plan[el_id]['style'].get('tick_count')
+    return 1 if count is None else count
 
 
 def apply_appearance(construction, names, plan) -> None:

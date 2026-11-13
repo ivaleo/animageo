@@ -1127,7 +1127,8 @@ elementId, mode}`, `{code: "bad_label_offset", elementId}`,
 "style_key_ineffective", elementId, key, type, reason}` (1.11.0rc3; `type`
 of `style_keys()`, `reason` — `not_read`: the drawing of the type does not
 read the key, `not_drawn`: the element is not drawn, `mark_transfers_only`:
-an equality mark passes only `transfers`). The keys of a role are not
+an equality mark passes only `transfers`, `single_arc`: `arc_shift_px` is the
+distance between several arcs and an angle with `tick_count` ≤ 1 has one). The keys of a role are not
 reported: a role is written for every type. A right-angle mark given
 `right_angle_marker: false` is drawn as the arcs of an angle and reads the
 keys of `angle` (its `tick_count`, `arc_shift_px`; 1.11.0).

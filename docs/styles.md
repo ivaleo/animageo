@@ -545,7 +545,7 @@ EPS, video and TikZ show the same lines. The lines are anchored in the plane
 | Key | Type | Default | Effect |
 |---|---|---|---|
 | `arc_size_px` | float (px) | `defaults.angle.arc_size_px` | Base arc radius |
-| `arc_shift_px` | float (px) | `defaults.angle.arc_shift_px` | Radial shift between concentric arcs when `tick_count > 1` |
+| `arc_shift_px` | float (px) | `defaults.angle.arc_shift_px` | Radial shift between concentric arcs; acts only with two or more arcs (`tick_count > 1`) |
 | `angle_range` | `"minor"` \| `"reflex"` | From GGB | `"minor"` = the smaller sector (≤π), `"reflex"` = the reflex one (>π) |
 | `right_angle_marker` | bool \| `null` | `null`: auto, `np.isclose(angle, π/2)` | `true` — always the square, `false` — always arcs, `null` — auto (on a right-angle mark — the square) |
 | `right_angle_size_px` | float (px) | `defaults.angle.right_angle_size_px` | Size of the square right-angle marker |

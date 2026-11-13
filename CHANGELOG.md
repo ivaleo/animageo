@@ -50,6 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - An explicit `null` `right_angle_marker` on a right-angle mark draws the
   square, as an absent key does.
+- `style_key_ineffective` reports the new reason `single_arc` for `arc_shift_px`
+  of an angle or an equality mark of angles drawn with one arc (the count is the
+  drawn one: the mark's override or operation count, for an angle its own
+  `tick_count` or that of the equality mark targeting it): the shift is the distance between several arcs and has
+  nothing to move. Drawing is unchanged; `docs/styles.md` states that
+  `arc_shift_px` acts only with two or more arcs.
 
 ## [1.12.1] - 2026-11-13
 
