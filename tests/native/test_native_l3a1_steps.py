@@ -234,7 +234,7 @@ def test_steps_fixtures_cover_every_scene_and_verify():
     assert mismatches == [] and files == len(SCENES) == cases
     fixture = read_json(STEPS_DIR / 'triangle_chain.json')
     assert list(fixture) == ['format', 'id', 'registry', 'generatedBy', 'document', 'expect']
-    assert fixture['registry'] == native.__registry_version__
+    assert fixture['registry'] == '1.12'
     assert list(fixture['expect']) == ['steps', 'describe', 'timeline']
 
 

@@ -19,7 +19,7 @@ def catalog():
 
 
 def test_catalog_and_active_registry_are_honest():
-    assert native.__registry_version__ == '1.12'
+    assert native.__registry_version__ == '1.13'
     assert native.has('tangency')
     assert set(catalog()) == NAMES
     assert {k for k, v in _MODULE_GROUPS.items() if v == 'tangency'} == NAMES
@@ -38,7 +38,7 @@ def test_catalog_and_active_registry_are_honest():
 def test_all_operations_through_1_11_keep_hash_and_since():
     frozen = json.loads((NATIVE_DIR.parents[1] / 'tests/native/registry_frozen_1_11.json').read_text())
     assert frozen['registryVersion'] == '1.11' and len(frozen['ops']) == 122
-    old = {k: v for k, v in registry().ops.items() if v['since'] != '1.12'}
+    old = {k: v for k, v in registry().ops.items() if tuple(map(int, v['since'].split('.'))) < (1, 12)}
     assert set(old) == set(frozen['ops'])
     for name, record in old.items():
         assert {'signatureHash': signature_hash(record), 'since': record['since']} == frozen['ops'][name]

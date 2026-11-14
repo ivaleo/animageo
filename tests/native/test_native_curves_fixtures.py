@@ -47,8 +47,9 @@ def test_shape_of_the_parity_fixtures():
     for name, fixture in _fixtures().items():
         assert list(fixture) == ['format', 'id', 'registry', 'generatedBy', 'document', 'cases']
         assert fixture['format'] == PARITY_FORMAT and fixture['id'] + '.json' == name
-        assert fixture['registry'] == native.__registry_version__
-        assert fixture['document']['operationRegistryVersion'] == native.__registry_version__
+        assert fixture['registry'] == fixture['document']['operationRegistryVersion']
+        assert tuple(map(int, fixture['registry'].split('.'))) <= tuple(map(int, native.__registry_version__.split('.')))
+        assert fixture['document']['operationRegistryVersion'] in ('1.12', '1.13')
         graphs = {e for e, el in fixture['document']['elements'].items() if el['type'] == 'function'}
         for case in fixture['cases']:
             assert set(case) <= {'name', 'inputs', 'scale', 'expect', 'checks', 'samples'}

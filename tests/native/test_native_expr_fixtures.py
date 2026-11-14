@@ -27,7 +27,7 @@ def test_up_to_date_and_verified():
 def test_the_format():
     fixture = read_json(FIXTURE)
     assert list(fixture) == ['format', 'registry', 'generatedBy', 'tolerance', 'cases']
-    assert fixture['format'] == 'animageo-expr-cases/v1' and fixture['registry'] == native.__registry_version__
+    assert fixture['format'] == 'animageo-expr-cases/v1' and fixture['registry'] == '1.12'
     names = [case['name'] for case in fixture['cases']]
     assert len(names) == len(set(names))
     for case in fixture['cases']:

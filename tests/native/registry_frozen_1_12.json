@@ -1,0 +1,623 @@
+{
+  "registryVersion": "1.12",
+  "ops": {
+    "angle.between_lines": {
+      "signatureHash": "sha256:49c323bdc7ada36c6509d2670557366148fe31536756072c4183dce14c57b477",
+      "since": "1.4"
+    },
+    "angle.between_vectors": {
+      "signatureHash": "sha256:7d8ff7320a48bbbe7f67a7fc0d8bb0db452df0e13ca934c52ae8aeaef9ab49b0",
+      "since": "1.4"
+    },
+    "angle.by_points": {
+      "signatureHash": "sha256:6cff8a588d81eec06ee2b49dfdd3fd97f810f09a77d47ee7538efd69d8e19dd9",
+      "since": "1.3"
+    },
+    "angle.by_size": {
+      "signatureHash": "sha256:f1a36b488adcc0c581a38fb64da94b56df9a93d59864035638606ed7bdc039fd",
+      "since": "1.4"
+    },
+    "arc.center_two_points": {
+      "signatureHash": "sha256:fe5c2ff513657d24f8d5c23b0350d5fd25a3a3ee99b40e7a51125981d153306c",
+      "since": "1.4"
+    },
+    "arc.on_circle": {
+      "signatureHash": "sha256:2c1cfcb60333d073d18d3bc2fc73eaef0ce2eef56fe79fafe46eb4dbaaef2f14",
+      "since": "1.4"
+    },
+    "arc.semicircle": {
+      "signatureHash": "sha256:8bc2859513e8f02f7dee2c714b0fd7fae95c8227fdf895cb3db78577b662109f",
+      "since": "1.4"
+    },
+    "arc.three_points": {
+      "signatureHash": "sha256:12a2819007e70894b76cf8325598773cafae7520491816dfb746ffaf8b9c6ce3",
+      "since": "1.4"
+    },
+    "circle.center_point": {
+      "signatureHash": "sha256:f3b2e070e9310312708009adfc04cfd7411128d482a4b7522f7320af35ca9810",
+      "since": "1.0"
+    },
+    "circle.center_radius": {
+      "signatureHash": "sha256:c3cf41fefb5b9675a41b3eb39298640a6651d988efef6865edd85f6462746349",
+      "since": "1.2"
+    },
+    "circle.center_segment": {
+      "signatureHash": "sha256:21b82f041d85dfed482669b22866afd82a6f2facc04e4f8bce5c18fd0e5b0e09",
+      "since": "1.4"
+    },
+    "circle.diameter": {
+      "signatureHash": "sha256:817a9e20bff4b4e28d9e874d2837251143757910216934e664196805ae11acd2",
+      "since": "1.4"
+    },
+    "circle.excircle": {
+      "signatureHash": "sha256:5be3ce87c71c4854792c68651eb54442966ec7fe3b28048459632b48a8a7995d",
+      "since": "1.4"
+    },
+    "circle.incircle": {
+      "signatureHash": "sha256:34708fea4fe868318bd751e18738c0e9281810946593126bfca83f0ab0a47ee6",
+      "since": "1.3"
+    },
+    "circle.nine_point": {
+      "signatureHash": "sha256:f21c03fea87274230b740159127a10cf0147efb13caaf3ada403042a96b219b2",
+      "since": "1.7"
+    },
+    "circle.three_points": {
+      "signatureHash": "sha256:143575451176f3a78d933062a88a75fa09836dab57dfedcc5c4d759a8d4b484b",
+      "since": "1.2"
+    },
+    "conic.axes": {
+      "signatureHash": "sha256:1c96c87965f0ed6de03520a982f968858d30bfbb8bf0e5601704270dbc9cc472",
+      "since": "1.6"
+    },
+    "conic.center": {
+      "signatureHash": "sha256:61b48ccdcf7d742a1c5e58bd14ebb79320e2491d7b80f3c17b13d9d673dbd535",
+      "since": "1.6"
+    },
+    "conic.ellipse_foci_point": {
+      "signatureHash": "sha256:36ddcf296139b0c09a72aa3848c4a189206810d4217700cb89d9ab3d0033cf8a",
+      "since": "1.6"
+    },
+    "conic.equation": {
+      "signatureHash": "sha256:43e4ab0fecb9cf05353a34e1938bba28dada1d5f8bcfc4ff86d41d1af0b7e0e1",
+      "since": "1.6"
+    },
+    "conic.five_points": {
+      "signatureHash": "sha256:78f40308bd8ff41f3982836e5aa2390d1592e14ab4b4df9923e8d253280b602c",
+      "since": "1.6"
+    },
+    "conic.foci": {
+      "signatureHash": "sha256:c2ded955091ec752bd1e5d1da31d72410600a5ee5ca3a0a5d325cec778aba7c5",
+      "since": "1.6"
+    },
+    "conic.hyperbola_foci_point": {
+      "signatureHash": "sha256:557264e57e1eeadf9261dfe9e22d0160fbc847e70a07e73977de2ebe9e0dffba",
+      "since": "1.6"
+    },
+    "conic.parabola_focus_directrix": {
+      "signatureHash": "sha256:69b9f66775d86c1b90b2545c5cb75d4c2f1b506fecba7c0de2b46c1d15e70621",
+      "since": "1.6"
+    },
+    "conic.vertices": {
+      "signatureHash": "sha256:66ad2e08a54061894a38d2cd3aba395c571b9c4ddb74d98668e363fb310c87bc",
+      "since": "1.6"
+    },
+    "function.area_between": {
+      "signatureHash": "sha256:b084270b2b32e23316996a6eab95e3d33af257c169bc96d347c6ba49b3c56015",
+      "since": "1.9"
+    },
+    "function.expr": {
+      "signatureHash": "sha256:333c52964319c9e8e42870a3fd5bec84fe0d8d954f310fc54fcaf26a40e8f60e",
+      "since": "1.6"
+    },
+    "function.extrema_interval": {
+      "signatureHash": "sha256:0137342756a2eaae32ce40ae8482fd6d585d51fcf22902197550515ab187be53",
+      "since": "1.11"
+    },
+    "function.extrema_polynomial": {
+      "signatureHash": "sha256:a268db8a55d0bf582f5c52c9c8cb73aa51c1803b2b94ce699c0d1690d6e76993",
+      "since": "1.11"
+    },
+    "function.extremum": {
+      "signatureHash": "sha256:b58f29a49f2029587d4fc90b1c39ca23f6f39ace1bff49ec973bb357ae7f0430",
+      "since": "1.6"
+    },
+    "function.root": {
+      "signatureHash": "sha256:ba26a9c2b7e0ddc3ae2f258b08f940914b2d99a6a0925e64ca7fde806a8fad01",
+      "since": "1.6"
+    },
+    "function.root_interval": {
+      "signatureHash": "sha256:a3d2a23f20b3069c2c5bc2f379f73394618e55eac8264736c6750419029cee65",
+      "since": "1.11"
+    },
+    "function.root_near": {
+      "signatureHash": "sha256:ea32e777c720b59db5426e18b35c29fe278548e526442ab27559b518e5e1080d",
+      "since": "1.11"
+    },
+    "function.roots_interval": {
+      "signatureHash": "sha256:3e4737bd58cddf99b59cc7aca49a8058be376a9c67da5001a44290b7d58d42c8",
+      "since": "1.11"
+    },
+    "function.roots_polynomial": {
+      "signatureHash": "sha256:51b363aea45052442ddf3bd860289b177d2101a45cbaff45313793f4bdde1dc2",
+      "since": "1.11"
+    },
+    "function.value": {
+      "signatureHash": "sha256:bccba90ed68fd210201146cac35d1e6fe98b7bfe4c88c687f10fc63561b77b92",
+      "since": "1.11"
+    },
+    "intersect.circle_circle": {
+      "signatureHash": "sha256:aaf9cd94fe4397efd5334ab77080571b7bec01cd314cc8ee25ff781cbdbfb657",
+      "since": "1.1"
+    },
+    "intersect.conic_conic": {
+      "signatureHash": "sha256:17dccaf5001c5a0a9aa2153b58136d276b2fa00451084ba4dca148d3a6c1118a",
+      "since": "1.8"
+    },
+    "intersect.function_conic": {
+      "signatureHash": "sha256:3acee86cf9b0af82a54149197688ab46425415433a28801f20a934c9863a1787",
+      "since": "1.8"
+    },
+    "intersect.function_function": {
+      "signatureHash": "sha256:989197f22defd4d2563965c73a5ada60e27bdb80430767ef03abbdb77c093830",
+      "since": "1.6"
+    },
+    "intersect.function_line": {
+      "signatureHash": "sha256:8f3df17ee8795b5fb33a8fd23825da54cec385892b7edf5975ca47ea61dbf4d6",
+      "since": "1.6"
+    },
+    "intersect.line_circle": {
+      "signatureHash": "sha256:f02f846a64efd9254acce5e15862bd73b76e1da86dd91851d65720ef0cbdb8c8",
+      "since": "1.1"
+    },
+    "intersect.line_conic": {
+      "signatureHash": "sha256:5c8b43984d7edc2e1ab5cdfaff44c00b745b90a00f459e9607e1dc5c5e717bb6",
+      "since": "1.6"
+    },
+    "intersect.line_line": {
+      "signatureHash": "sha256:be74b127f909906e8dfe346f7ad79043e483defde31d0aac29628ae550f925d2",
+      "since": "1.0"
+    },
+    "intersect.line_sector": {
+      "signatureHash": "sha256:ad6efcd2b4fdeda63f3caf448501fc287dbe8b322a2d289b6244db1d7293d268",
+      "since": "1.4"
+    },
+    "intersect.nearest": {
+      "signatureHash": "sha256:ed8cbe159e5f9027d5c19caee8752dc360a3e7ed7db0ce30a722e182b92d2d31",
+      "since": "1.4"
+    },
+    "intersect.other_than": {
+      "signatureHash": "sha256:2f4d6797ee18797329eccd116a221f147f701ae15d6da0892528cb553b9700cd",
+      "since": "1.1"
+    },
+    "line.angle_bisector": {
+      "signatureHash": "sha256:6ffd1703f1ee29ee4fb8c79821f0fec0ffe843603ddbcbc1e62b96e1d1bdc611",
+      "since": "1.2"
+    },
+    "line.angle_bisectors_of_lines": {
+      "signatureHash": "sha256:8a6a02030d83530ee0f45d054a1fd512e3a7310a38520c67f2e3b86f92a0594d",
+      "since": "1.4"
+    },
+    "line.by_points": {
+      "signatureHash": "sha256:fcebec1d748517206963944a677642a99ed3277715db0b080587c3f92d4f1b6a",
+      "since": "1.0"
+    },
+    "line.common_tangents": {
+      "signatureHash": "sha256:d251b78c16266ddcc3ebd93e9faf4062eb2ee7e6af96354e8f2f9173a74b26c0",
+      "since": "1.7"
+    },
+    "line.equation": {
+      "signatureHash": "sha256:97454c85fe3de8eeec444ea01c16e340dab25bfc81f35a21967fb51a31568131",
+      "since": "1.10"
+    },
+    "line.euler": {
+      "signatureHash": "sha256:27890e7e72fa9d3bfcb818360cc1a8de342aba48db593dd6d5728fe554558f40",
+      "since": "1.7"
+    },
+    "line.external_bisector": {
+      "signatureHash": "sha256:1fe1079ea7947fb9f7ab15c6bf323a7ed82f6ff13239b4aae6248c8822f08396",
+      "since": "1.4"
+    },
+    "line.parallel": {
+      "signatureHash": "sha256:accc08e8e25d6d93e61db4b712bf57d6c04040f795e331cde964388b3824ad08",
+      "since": "1.2"
+    },
+    "line.perpendicular": {
+      "signatureHash": "sha256:31a8254ebc3e153ebf3ec03ca88a34b0f172ecadb6ca75458dda8b49a7da7c21",
+      "since": "1.2"
+    },
+    "line.perpendicular_bisector": {
+      "signatureHash": "sha256:9483c6abef4e1451223fc437f8fb971b767b2b71e0a9f9bdfc63f7d605da8d4b",
+      "since": "1.2"
+    },
+    "line.slope": {
+      "signatureHash": "sha256:e6e86ed4533dba7413273ab731bb5bc193c7a580439f4bdf9d9ae930bf3ac375",
+      "since": "1.12"
+    },
+    "line.tangent_at": {
+      "signatureHash": "sha256:8771ad63c25fe30cc2583be47fdb2efeffd06c2d19d639f950f2df3373a62fc4",
+      "since": "1.4"
+    },
+    "line.tangent_conic_at": {
+      "signatureHash": "sha256:a248d90121420b521262005ee80be19bebeff9081500f9d3c9664e23a4deb3a9",
+      "since": "1.12"
+    },
+    "line.tangent_function_at": {
+      "signatureHash": "sha256:cec9635268d5c0ed4fb48f33fcb303d3b819e51708aa63413937a609b2631989",
+      "since": "1.12"
+    },
+    "line.tangents_from_point": {
+      "signatureHash": "sha256:a8cdf3c712f75b4d1f523964c08a2539656d6b3e79332ba63995ea9950470d96",
+      "since": "1.4"
+    },
+    "line.tangents_from_point_conic": {
+      "signatureHash": "sha256:0aad2f53fd0140bc1a2a22da735f71f8598da4421fb8487b4169912759fdae83",
+      "since": "1.12"
+    },
+    "line.tangents_parallel_conic": {
+      "signatureHash": "sha256:c6dba46d99ef7ebb0252318243878ea242adedea26cda9b46b94c78f1c232cd9",
+      "since": "1.12"
+    },
+    "locus.of_point": {
+      "signatureHash": "sha256:9c8bcc1eb0d5c74546855b4b573922cb44209c0393e3f9b442e78d0851bf4f07",
+      "since": "1.5"
+    },
+    "mark.equal_angles": {
+      "signatureHash": "sha256:15ac3c04805733999d86b498aba04faeb02ca31705673802ea5f312016c9c2e3",
+      "since": "1.3"
+    },
+    "mark.equal_segments": {
+      "signatureHash": "sha256:5ba6180e0246c4dc70cf392096184e1427760c4d9a39b6bb5842e3ddd4de668a",
+      "since": "1.3"
+    },
+    "mark.parallel": {
+      "signatureHash": "sha256:7c26b9e96dc299af13b5d14052701f1b62dbbac4ae5479aff125b13ae17f2e7e",
+      "since": "1.8"
+    },
+    "mark.right_angle": {
+      "signatureHash": "sha256:22f1e524869af7e1d61fa1e6481c78e08b9c2094cbafaa8b4f41d899eec89915",
+      "since": "1.3"
+    },
+    "measure.angle": {
+      "signatureHash": "sha256:e8ff36ab632de7060019fe69dfc281ba8c5cab20044a8d37e86671d69490335a",
+      "since": "1.4"
+    },
+    "measure.area": {
+      "signatureHash": "sha256:81324352795e06c3eb4fb4982bfe5e1c78145bc3c108a69085512e24836d40c9",
+      "since": "1.4"
+    },
+    "measure.circumference": {
+      "signatureHash": "sha256:6d9768f2b07d4731cc5a97e4e42b457d1db301e3ce43d3c0f3b1a7aefa3594c3",
+      "since": "1.4"
+    },
+    "measure.distance": {
+      "signatureHash": "sha256:b0c3e912246fcf3b36af5973475fbd309fd618e27f4800b1d25395ae5dbdd31b",
+      "since": "1.4"
+    },
+    "measure.length": {
+      "signatureHash": "sha256:71e6c3f9a86a8e38c882cff862f5f3dbb876569d37564638249f7fec3fddccbb",
+      "since": "1.4"
+    },
+    "measure.perimeter": {
+      "signatureHash": "sha256:1cf84b1d544f82ed7e58f5b40ba168fc649733175267decee9ddd6ddf0e629d1",
+      "since": "1.4"
+    },
+    "measure.polygon_angles": {
+      "signatureHash": "sha256:6d7a2465d42a5eff438911e19e7a7aaf352a45023a353c8518da7fad046118ba",
+      "since": "1.4"
+    },
+    "measure.radius": {
+      "signatureHash": "sha256:526084d283c6395fbb56ef37bdb68c8fdd9dbfa6397a7e28a36d1d72c18b493f",
+      "since": "1.4"
+    },
+    "number.angle": {
+      "signatureHash": "sha256:6417bcd5a01b1a097a59cd8c2aa44625023021db8a73cd495d57f4dbb756d7fa",
+      "since": "1.4"
+    },
+    "number.expression": {
+      "signatureHash": "sha256:505399eccb4aa57b83b582daf2430cec60b49bbfefe864ef30e6d27f4429fb9f",
+      "since": "1.4"
+    },
+    "number.free": {
+      "signatureHash": "sha256:1b23a21461be5d9d3b96461a10823bfc46c347a8bc7da320cffa91e36bca6f2a",
+      "since": "1.2"
+    },
+    "point.at_distance": {
+      "signatureHash": "sha256:502a94cc805fd807497a7b5a5e5b63088dec178422408840a2f754d98c861fa3",
+      "since": "1.4"
+    },
+    "point.center": {
+      "signatureHash": "sha256:72226b6a4de7942d76e49ef33880d34ffe0c316aa9b787bdbaba3d12a0163935",
+      "since": "1.4"
+    },
+    "point.closest": {
+      "signatureHash": "sha256:75d52848e5699863005a819907c866fc141483bf50ecc12e42e5b349e88b07c5",
+      "since": "1.4"
+    },
+    "point.divide": {
+      "signatureHash": "sha256:fff526a27a4a155d9b6b7bf7d215e2f6baa4b37d24388e7c1974d28b7795c658",
+      "since": "1.4"
+    },
+    "point.expression": {
+      "signatureHash": "sha256:6950d39511f9bd79050f59cfa97657b77bcb0e1abafd1578c80e9fd61df7b18f",
+      "since": "1.10"
+    },
+    "point.free": {
+      "signatureHash": "sha256:8b74a96e3fc44081f156f70c28fd7ff0a313aa75c844bcf33a64077d8715bb63",
+      "since": "1.0"
+    },
+    "point.midpoint": {
+      "signatureHash": "sha256:487dfc5d3ce9f32ebae3ee47bfc7a5d5127675a88b55c996af6b8133f028ade7",
+      "since": "1.0"
+    },
+    "point.on_function": {
+      "signatureHash": "sha256:8f5a007b4941c0d2dad142edf43098aba9af98e4401cb6aa56f77440fdb933f9",
+      "since": "1.6"
+    },
+    "point.on_locus": {
+      "signatureHash": "sha256:c68dd8d35949566d4c91ce77143bfa6566c2ec45faa487e860ff47c570897bf8",
+      "since": "1.10"
+    },
+    "point.on_path": {
+      "signatureHash": "sha256:6be50eade341c6f39273693152fcb25f733d8875492505670e76c12b38916a72",
+      "since": "1.1"
+    },
+    "point.projection": {
+      "signatureHash": "sha256:d335c0ed75eeb527edd741676e32473b0fc8e3a23b4a46a36a8575f2f2d1bba5",
+      "since": "1.2"
+    },
+    "polygon.by_points": {
+      "signatureHash": "sha256:4108d41bea24861a3d178199e4f71555531690b60bc98da2328da512209ea272",
+      "since": "1.0"
+    },
+    "polygon.centroid": {
+      "signatureHash": "sha256:1a703d97f6bd189c8f26c5385f3f11ee41d5a428073953f839d3950dbd7852b9",
+      "since": "1.4"
+    },
+    "polygon.parallelogram": {
+      "signatureHash": "sha256:9ee1be1cad9009c5c2a8da20e14cff2e71efc5a0f3b60c301ed7fba44943542b",
+      "since": "1.4"
+    },
+    "polygon.regular": {
+      "signatureHash": "sha256:2c9af541f175d1738c7162459a2941a4ca096647a7b342fc4d585bf4a4b11f8b",
+      "since": "1.4"
+    },
+    "polygon.regular_center": {
+      "signatureHash": "sha256:39c88056bb4d27c7a26f54b680288d1c06f826b6058bbeee6366a67987556435",
+      "since": "1.4"
+    },
+    "polygon.vertex": {
+      "signatureHash": "sha256:5d74370516697dfbd62126e6659523a248fe88b874896186cf89ce5f8c48f220",
+      "since": "1.4"
+    },
+    "polyline.by_points": {
+      "signatureHash": "sha256:8ee4d2f1dc0a83f5ff59a8736f126a236fa76bdc0865298933b6ba565be878f8",
+      "since": "1.4"
+    },
+    "ray.at_angle": {
+      "signatureHash": "sha256:64d4eb3af97414f105e7e5c8f175879e8ee29f402854167dcc46590883132b97",
+      "since": "1.4"
+    },
+    "ray.by_points": {
+      "signatureHash": "sha256:799d3583f4263ffd7c7c9c71236851e44764de7e5136e02284c49fb4898bfa80",
+      "since": "1.1"
+    },
+    "ray.by_vector": {
+      "signatureHash": "sha256:9aa590570a7ee603f99405de5fe4c091cf834393919953c3f1a14d3ce205a564",
+      "since": "1.4"
+    },
+    "region.by_boundary": {
+      "signatureHash": "sha256:945bb808bd925aeb89b46fdb44c563c6e8a4ba5a4a1035440712a2994c7f3870",
+      "since": "1.9"
+    },
+    "sector.center_two_points": {
+      "signatureHash": "sha256:58986571fdbcd9eddab49953e4a193238c6d8117e2cacef44cf08645db5bdf82",
+      "since": "1.4"
+    },
+    "sector.from_angle": {
+      "signatureHash": "sha256:af62c00bcc05471271c977be722e4987688cef687c75901a9835b7796bb758e5",
+      "since": "1.4"
+    },
+    "sector.on_circle": {
+      "signatureHash": "sha256:308f1afd6b02ad3aa4dd3d0cffcbfe1e74babfab0cc45e3011c1f81c1f7dea2a",
+      "since": "1.4"
+    },
+    "sector.segment": {
+      "signatureHash": "sha256:e795482a87d9e8d73140e1d2a70d5b3113e6b54ba779e487a8af88b788638c83",
+      "since": "1.7"
+    },
+    "sector.three_points": {
+      "signatureHash": "sha256:2fdda62dfe0677041ed81fef9b2bba3ad8e3e9ffee4ae48428365277fb134cd7",
+      "since": "1.4"
+    },
+    "segment.by_points": {
+      "signatureHash": "sha256:be1a52a14b19e85053b0533d3dd3d8a0b12a43b1f5969fafcbe12c79988dcc0d",
+      "since": "1.0"
+    },
+    "segment.from_point_length": {
+      "signatureHash": "sha256:3104127cfff0fa3a18cd94422a8f5ee37437dbf024dd2e3aeac1b9f6d8eb7d88",
+      "since": "1.4"
+    },
+    "segment.midline": {
+      "signatureHash": "sha256:f9080853fc77c5cc00a537bf594f03c540fc03671e77400a704223f1b336c394",
+      "since": "1.4"
+    },
+    "text.free": {
+      "signatureHash": "sha256:1ac2a20404ba190ff963202c85848dc3b23aa4890ff43279ab432e9fb7c1715c",
+      "since": "1.4"
+    },
+    "transform.dilate": {
+      "signatureHash": "sha256:2c469c8abed13e3c25b1494495f263784ae27d5825fa5eae0d7e06a791dc1f4e",
+      "since": "1.4"
+    },
+    "transform.reflect_line": {
+      "signatureHash": "sha256:bae523d182d4d7d6e304b20fe4042cc2afe9c3f79ee1f4b077f6ac10efec6374",
+      "since": "1.4"
+    },
+    "transform.reflect_point": {
+      "signatureHash": "sha256:265a56c8c8e12e887db5b35995c0c45027499dbc1574f62c4aab6efaed15f0fc",
+      "since": "1.4"
+    },
+    "transform.rotate": {
+      "signatureHash": "sha256:d4217dff3414aeeb04e23551a999a3fac706e6a9ed716dd7210bdb922086c1bc",
+      "since": "1.4"
+    },
+    "transform.translate": {
+      "signatureHash": "sha256:e01e8feba29536aed49dc73897abff38588d4fb4b302abfd1555ef0ee4abc06f",
+      "since": "1.4"
+    },
+    "triangle.altitude": {
+      "signatureHash": "sha256:89682cb1b93e5cf0e6cc2a3aa65647b7bcdb3b4b0fcbaa8bc02dda1e814e903c",
+      "since": "1.5"
+    },
+    "triangle.bisector": {
+      "signatureHash": "sha256:8948173089746c28d14855f75f1b0332e82f330380c82100010b134599735a59",
+      "since": "1.5"
+    },
+    "triangle.centroid": {
+      "signatureHash": "sha256:8886459aed7e1d4522bfedc79a85df4690521eae3b17ced5ca37efa91258a2fa",
+      "since": "1.5"
+    },
+    "triangle.cevian": {
+      "signatureHash": "sha256:fc461aafa7de66dae5a344b32a8b1f9dfb99c84a903d2dd345428553c104e59b",
+      "since": "1.7"
+    },
+    "triangle.circumcenter": {
+      "signatureHash": "sha256:91efe1f8a625d0d920ed5fc6967658275a325ef7c274f35ec9c646d23a725686",
+      "since": "1.5"
+    },
+    "triangle.excenters": {
+      "signatureHash": "sha256:a88f7a6c350cf922c26ab870d4338bfb602f0ffb04ae55dfadbdd5863a49f952",
+      "since": "1.5"
+    },
+    "triangle.incenter": {
+      "signatureHash": "sha256:e72161477ef4adce85ad95d07f21768abd9e1fa0ae7f7b6749d603c97ce4e643",
+      "since": "1.5"
+    },
+    "triangle.median": {
+      "signatureHash": "sha256:c425bcddb91881124985940e8d7a0bb4ecf7f9d22e2a8e76d80f6245bd24d21d",
+      "since": "1.5"
+    },
+    "triangle.orthocenter": {
+      "signatureHash": "sha256:35b4854d8ca761ecd6f92827d0cbc6a3f9a7b4713a21f45488022f519e92e247",
+      "since": "1.5"
+    },
+    "vector.by_points": {
+      "signatureHash": "sha256:7f2f4e4551fe968c3a7714fe613de1fc65218c5ad6dbc65e911f37d8e05aef11",
+      "since": "1.2"
+    },
+    "vector.expression": {
+      "signatureHash": "sha256:ac528a2a983aa7acec602b3945304c1a7c48b6b25a286b41e856e33d56d922b0",
+      "since": "1.10"
+    }
+  },
+  "unchangedFiles": {
+    "animageo/native/conic_tangency_fixtures.py": "157fa8bac5ab045428a973faaaef5a2f59825ab7666a34868f859c24ff729f1c",
+    "animageo/native/kernel/tangency_conic.py": "e737b7b21e6fd557b366ef87da9e02aca34a02e42710ffbe1eb70b5e81839520",
+    "animageo/native/kernel/conic.py": "f0734e2389a448d9e3d34c41dd38ea04025b635d85841e2c425981c23df92a72",
+    "animageo/native/kernel/ops/tangency_conic.py": "dbb6fbbd1a2a755b15eae4bc4c5bfb0e303114932e1b080edb5e8071d7c5008f",
+    "animageo/native/kernel/ops/conic.py": "a17396b09f9edfc0e158d7dfdeaeb1b08207fcb71075db55555f99e0a6ffa051",
+    "animageo/native/ops/v1/tangency.json": "e159b61729724d11a8006cfdef91b20d33b84d02a386368a8cab21dbcab595a9",
+    "animageo/native/ops/v1/conic.json": "6726d4f6c92fa907a134f5ba196ba84b3668f41b51e499e874efb266778009cd",
+    "animageo/native/parity/v1/curves/graph_tangent_abscissa.json": "69a0cf1db7adf24b81f139ffe4380be55ba610fafeeb3d44a173035dc44622b6",
+    "animageo/native/parity/v1/curves/conic_parabola.json": "dd7c4254dffc0b125739366218e3f3ed6a337a2597dd09d3006bde09b5f46ff1",
+    "animageo/native/parity/v1/curves/graph_tangent_live_parameter.json": "1173cb4a7d706bc47b835e6dff73300709301ab21d4a98d1bdf76f970b0ff2a6",
+    "animageo/native/parity/v1/curves/graph_tangent_numeric_limits.json": "3113f747912bfb52de109564851d7b346b567821a041f98c4ee6712943a0bd05",
+    "animageo/native/parity/v1/curves/conic_tangent_infinite_contact.json": "c8d7923be263d67f95b7415a3e8335b14745c6c10d69e79e10901a834fd76de3",
+    "animageo/native/parity/v1/curves/region_owner2.json": "757e6c256a6649bbebcf016b85fe368b40143eb7ee68c6d1f8a4080842c0eda8",
+    "animageo/native/parity/v1/curves/conic_line_hyperbola.json": "f12d80c8910f8c7817b70e84fa9470cc9cc473205c69533a959bd185a58144fa",
+    "animageo/native/parity/v1/curves/region_annulus.json": "f354986ab3b5f5fcea2e94635141cec97b7a4d6c00da542bde6e6519bb80fa07",
+    "animageo/native/parity/v1/curves/fn_abs_kink.json": "a028f645479dd88d62f64d30270189778a04df1b945ab74eba617a7738488406",
+    "animageo/native/parity/v1/curves/fn_graph_graph.json": "73501ce6dc03b7cc53ae7d5be06b9193d16a2724720ab8ae5b3e0afa9e6eff6c",
+    "animageo/native/parity/v1/curves/function_search_constants.json": "113cfa0e6740bb73cc8515c64c330cbcb1968f7826eb876fa60fcc8c75bf32ad",
+    "animageo/native/parity/v1/curves/region_parabola_axis.json": "7122751c5448b68a4e1d0be7f9804e576cf7e4ca43cd5089e36fa48ee0cf979f",
+    "animageo/native/parity/v1/curves/conic_equation_central.json": "bfbd4768256df594d8dc4f1159358e956883364015e6cd6c541dfdb2063d79de",
+    "animageo/native/parity/v1/curves/meet_two_ellipses.json": "d3ef0e17eaa1cbc97450cd731b414034de66f577a8e05479cc855d5d74dbadfa",
+    "animageo/native/parity/v1/curves/region_two_graphs.json": "e740f0a0ba7adec6cd6049fd92b3ded63c66b36fbe2b4be9b655afed620a9b5e",
+    "animageo/native/parity/v1/curves/conic_ellipse.json": "a6920d70ba0c822df72b9cceda334fa24b0425fc1466fa248d554c773c9c6eed",
+    "animageo/native/parity/v1/curves/fn_graph_parts.json": "af1cf44cf554e1d2c57ff4875f2b6b8335088891b453d440e52f1ec1ada8e887",
+    "animageo/native/parity/v1/curves/closest_graphs.json": "5ca7054acc8807f5a063f79940fa41eaf4c65f9f5e5f89e2916336ba205d8fe5",
+    "animageo/native/parity/v1/curves/graph_tangent_hole_pole.json": "90818f1bc24deb5fdfc40ec426b3b623b85941ea06b8069ec3b1684bb8bbcbee",
+    "animageo/native/parity/v1/curves/function_value_branches.json": "b4c69667d6855fe8858f916b7aca73f95eb2ef2f19b738472843fd9d6acd295c",
+    "animageo/native/parity/v1/curves/conic_line_rectangular.json": "f2a0d8ebd405e1e8cae6142c166e5ab400e11b1443f7f60fc722da9af454b11d",
+    "animageo/native/parity/v1/curves/fn_graph_line.json": "7f28596282d7ec3d2e20029d9dbf45ca846ac2ae69d8b1cf66d979cd9610e6e6",
+    "animageo/native/parity/v1/curves/region_lens.json": "302bed6a925869363d9ba9e999bea7292eeb279aa95d30453efabc8ba5a204e8",
+    "animageo/native/parity/v1/curves/fn_point_on.json": "9cd2010b2a794959d4f749b00018c53a5fcd84f8ee7ce28aa9e513ec19457a49",
+    "animageo/native/parity/v1/curves/function_extrema_poly.json": "848401366562fef93e7e9d3e02035589b2416843e705b2f6f1dd5d22fba4a949",
+    "animageo/native/parity/v1/curves/region_lines_flip.json": "e6153957e9d6b7033f5df2b620c3e8c429d8b702381810a7fbac94d75e5af042",
+    "animageo/native/parity/v1/curves/conic_equation_kinds.json": "220716b4ef94de63df727b43cb2a757bf3a3579901a0c78a3b3ba17da679372d",
+    "animageo/native/parity/v1/curves/region_polygon_hole.json": "faa8ec97e32acb1888d67f18ae63078ca71744640ee82cd4e7f9bd0f232c3598",
+    "animageo/native/parity/v1/curves/conic_chain.json": "3339fb0cf25df9cd638c3bd42599dccf583b3d030517cb558fc9190b5a5edb3f",
+    "animageo/native/parity/v1/curves/line_eq_param.json": "dc9d546685c43f00a12f6c76ae46ef4b54826de152d6e4143d6a35df20b444c4",
+    "animageo/native/parity/v1/curves/region_chain_errors.json": "66ecf4cfd0b494f62eaec1129a7335effc0861ae8c06144dba4f7fc23292aae0",
+    "animageo/native/parity/v1/curves/function_poly_close_roots.json": "4e5151e0c566d8518c549f23813413c20fc98619f171b2e2b2d0464bcf02aa50",
+    "animageo/native/parity/v1/curves/function_search_limits.json": "fbf5674b772bc660648696b7c12f9b8e84b2953f3bd4f193ae77b732534a4651",
+    "animageo/native/parity/v1/curves/region_far.json": "415a6f6ebf86fa79e49b7b8329d5b8becf528146eece5c125f7590282c85e53b",
+    "animageo/native/parity/v1/curves/conic_line_ellipse.json": "8a703b523f52170eb830af78834bd0839479f544e3f1bbaad29025c495563886",
+    "animageo/native/parity/v1/curves/region_domain.json": "f69828d416d4a5bd46f4e08f3ffbf06480beac049e080155a877c768a0a2bc4f",
+    "animageo/native/parity/v1/curves/conic_tangent_at.json": "7661640d3716ddf87563a88b6b4f17749880bdac306927dd1db30e18260b856b",
+    "animageo/native/parity/v1/curves/graph_tangent_domain.json": "591ff51495c452d785911f7153053636c3d5b8611fdb7decf0c0c366ef605b6a",
+    "animageo/native/parity/v1/curves/conic_tangents_from_point.json": "dfafd941f29d9c0b356c836d1d23d873edcc5b6d786113927a8ba713660e612e",
+    "animageo/native/parity/v1/curves/tangent_found_capacity.json": "09846d4cbb58a0c8f1e44ae9667873a585805a6dad9f002062a7e3c72824f9f5",
+    "animageo/native/parity/v1/curves/conic_parabola_segment.json": "eb691eadfc8f7f8e50ff1a61a4e84b88b4a31ef5c8afb1fe4112cd2af0e2d0f9",
+    "animageo/native/parity/v1/curves/path_locus.json": "f4f4c977219611b5e7d56ac38a9426a046621c93ec954c11e01e07cbd5a8c360",
+    "animageo/native/parity/v1/curves/conic_parts_hyperbola.json": "0fc41f8a6665f1fe5a13ee1366c8ad428de7d77508623cbfddbfb566f1752b6d",
+    "animageo/native/parity/v1/curves/conic_hyperbola.json": "1a3d5e3e8f35f8ef354d69cd862dbe6999b0b154cf286bd7c36ac673180052ba",
+    "animageo/native/parity/v1/curves/graph_tangent_corner_join.json": "19f970e348ca5f2ed482240607021570dac532de842644a2282e0511dc4658f7",
+    "animageo/native/parity/v1/curves/path_locus_empty.json": "0be6257b731bea7a9ef835a0a1bccefd5d3a603c5f5065ce70659cf9bc14de36",
+    "animageo/native/parity/v1/curves/function_poly_upstream.json": "0406a057ffe485da31e289047512a841aa22097e8369770a774acb217822de63",
+    "animageo/native/parity/v1/curves/region_discontinuous.json": "e1c89c96efb3461fd86dd415c2352252bf1c4e9b8e3290042de8583b2c7f9846",
+    "animageo/native/parity/v1/curves/fn_parabola_k.json": "2bf771c6f98c68be4305cd83e2fb3c8f6be1171d4addc5788d71b150e50cb9f7",
+    "animageo/native/parity/v1/curves/function_search_boundaries.json": "10ce679884f97fbcd9639edd560fec05a5f2fa561af7eed121064783d713e086",
+    "animageo/native/parity/v1/curves/path_conic_kind.json": "7912781e4580b43be72853041096d7d5e578ceda75b6054906c0c6d52d89e4d2",
+    "animageo/native/parity/v1/curves/path_conics.json": "724eb45a35f54b318489f7b87426888c89bc882c11b2cf3e4a38a5c48fabe09b",
+    "animageo/native/parity/v1/curves/function_poly_rank_changes.json": "6ccb2c7be7b0ec5cbba49f44ecb18d9e83f6d8342379fd1621315f7d3a02f847",
+    "animageo/native/parity/v1/curves/tangent_slot_changes.json": "92e7f6305dcd218ddc5780221c29423a3cb8593bd206c01ff4225b2b480ff82b",
+    "animageo/native/parity/v1/curves/fn_empty_domain.json": "916fad79854a85750a5ca79c36b3402ed6e8c8990a54371abe70f3ac1907e062",
+    "animageo/native/parity/v1/curves/region_carriers.json": "381837512bf46c3ffa7e2e22adf92b18852e361da65fc7ea7ccb5c5e1b9e3343",
+    "animageo/native/parity/v1/curves/meet_graph_conic.json": "730da898331ea1ba2de3eb9c7f9ad7e12a5d701ada96a88f0fe45576882daed9",
+    "animageo/native/parity/v1/curves/conic_parts_ellipse.json": "661829fed366f9cd71b8e9b0acd89205d6f725bcb1594c77ece44e0ea897d339",
+    "animageo/native/parity/v1/curves/line_eq_kinds.json": "ec300d9514b1b378853b023a065fa35adabeeb62892a7139dd3284664f72ea0a",
+    "animageo/native/parity/v1/curves/fn_graph_graph_kinds.json": "37aa0c3cd5bad2c2259dea8c997e562610015c541e7a0b38d4a8ead9d7b7f2d2",
+    "animageo/native/parity/v1/curves/function_found_slots.json": "3c5ee407c157def4a4c8a12b0fc1267cfdc73dcefba74bcc45a62ed8c5787225",
+    "animageo/native/parity/v1/curves/function_poly_limits.json": "dba5d7734c9464c8b9d1ea0a2ae98054bd9757b3e2110a00d0080b8fefaa21f8",
+    "animageo/native/parity/v1/curves/closest_conics.json": "5d6eb089d7a893fe6c7c6c928762aeb35f96fa67588ca68db9e85771fdf2d6ec",
+    "animageo/native/parity/v1/curves/fn_root_kinds.json": "d5fd5869602901284b108dd7aa67f8ad779b7bf1a9387bbb37c886c84ea4c766",
+    "animageo/native/parity/v1/curves/line_eq_vertical.json": "05d45b30aa1bea6b5fbb71c520ae4e97908728a40a9ddeb57888716ed637f2ec",
+    "animageo/native/parity/v1/curves/meet_graph_far.json": "527935db871bd4aeff91cbb976ba56020dcce3bee430946b348b75ee43ddead6",
+    "animageo/native/parity/v1/curves/fn_piecewise.json": "07dbf72a2958bb9477c8867703b30aba9dc1cc576898d07cd89d2b06d6659013",
+    "animageo/native/parity/v1/curves/conic_parts_parabola.json": "4cf60e9a4065a01f974866ce2b04f2a999f5cac0aa25b0867623877a44b238aa",
+    "animageo/native/parity/v1/curves/function_root_near.json": "20d3319b339c7edfc9bbad25a9a26092b09bf143406bb490cd228f9f5a98ffda",
+    "animageo/native/parity/v1/curves/function_roots_interval.json": "ce448d2a5f673a8fab71df3e90a5490d1298ac0cb33f700cc0a12c4b69c7e224",
+    "animageo/native/parity/v1/curves/conic_line_parabola.json": "77d93250baee4d8cd003ba22584b028076ae4fc5a76b795c18a5c1c9233bde3d",
+    "animageo/native/parity/v1/curves/function_roots_poly.json": "57549f8502ae5537303f13928be3124e4ecb9292e5a5a55688cbccbbb50ec172",
+    "animageo/native/parity/v1/curves/function_value.json": "1aa21ecd8311bf64901b46a8e7bdf95fdf1e3384799b1d098793be92f00b25e6",
+    "animageo/native/parity/v1/curves/region_limit.json": "3b68f08cabd16c91e522c67ba53a51efedae9e498c91b18caf3ce50a717f7ca0",
+    "animageo/native/parity/v1/curves/conic_tangent_numeric_limits.json": "a863301bf38f74f243e363b9df812263425033b5d613675607c27dac4fd79554",
+    "animageo/native/parity/v1/curves/function_value_domain.json": "8acb86412147b0ccdea9c8ae633371d0320fd40a3db7a413e934038f9e62fe1c",
+    "animageo/native/parity/v1/curves/region_lune.json": "51806f8e6ef1bb3f98d66cb1afc3fba8f86331950ccff21c8aa5325a0088e368",
+    "animageo/native/parity/v1/curves/meet_curve_slots.json": "b06c9bd5e524349073546eb043d57f2625f434ce115653d8eeea7c71b3d504db",
+    "animageo/native/parity/v1/curves/conic_tangents_parallel.json": "86283f45653d0b561e693156ec3ac7dbafcb2075886c7396e7f5f0a6320f6190",
+    "animageo/native/parity/v1/curves/fn_sine_window.json": "0bb2aa5b00334c61490d1e8e603fd90427ef476067987d641ba8aecbc44f078f",
+    "animageo/native/parity/v1/curves/line_slope_normal.json": "cdddf91286b21f60057235c192cf16b8d488438c388ab184aaf82cad6395048e",
+    "animageo/native/parity/v1/curves/region_arc_parts.json": "b8840e775040a7708a3006ebdf2506747e3c10e4a20cf889fb80aa44c46a3ec4",
+    "animageo/native/parity/v1/curves/conic_five_points.json": "03633d3857d4901306e97fd9c8ec651f32465dd23a653849b01912b809a55064",
+    "animageo/native/parity/v1/curves/fn_graph_line_kinds.json": "32b3778a38ccd8e7caebcc134ccf897dd4c8fa5275a63d662d55683429578efc",
+    "animageo/native/parity/v1/curves/conic_line_parts.json": "bc53d2692774391b8515536612e2d0301af7fb6fc703c21de681d36748e4db58",
+    "animageo/native/parity/v1/curves/fn_cubic_extrema.json": "76a4fcbc0bec45e508679facf7d277f78685bccb66043acc88138ece97942653",
+    "animageo/native/parity/v1/curves/fn_domain.json": "9ae48aaa297cd561de532cab0af17eec7702db8a94b60ce22d46f187aebd2b0d",
+    "animageo/native/parity/v1/curves/meet_hyperbola_parabola.json": "b17f0a5bf2c691ecf4e8295d0d627d3ae439e662d8fd931c6780f4537c91bba7",
+    "animageo/native/parity/v1/curves/path_locus_gaps.json": "9e7fcc845346254d26d13201207ae9524e0e3916dc82f8559f125f1e7e04e53b",
+    "animageo/native/parity/v1/curves/meet_ellipse_circle.json": "ef7ec8aedeffb93313b4fc1c4c03fbf3a7ccb97f25f61abc67560998102fa4b7",
+    "animageo/native/parity/v1/curves/meet_seam.json": "2a202d9d1804703858ec9db8f6dc027706c0c5ddeede4f8d3b35402960090093",
+    "animageo/native/parity/v1/curves/region_graph_line.json": "7f0caabe40597fa36cf72a1e1d3739c3d169da8ccb87c79d303a8f4ddad1d873",
+    "animageo/native/parity/v1/curves/path_graphs.json": "51ac1f1f7ea2797846dd206a0f37333ae311c7572f547525b8f2320ebb868f7b",
+    "animageo/native/parity/v1/curves/function_root_interval.json": "7fb4ce7115cbec6fafa6196850753b32899c0e3e5e4630014d5a1e8abcb0b13e",
+    "animageo/native/parity/v1/curves/meet_far.json": "0299ef1c7cab00da41299c33a447f698b02dd44fd179695478b4cb41489e4e0a",
+    "animageo/native/parity/v1/curves/conic_tangent_degeneracy.json": "f8c1435dc341fbd7ab5bc6a08f698e28dc3d23ce06acc87f74bb96f6b8c3da39",
+    "animageo/native/parity/v1/curves/function_search_recovery.json": "afa616ce0fafb61f65b32ad89db1a34dc52771c4482b32d97d07ba1e6ecd0f53",
+    "animageo/native/parity/v1/curves/line_eq_slope.json": "9d6334ba134018a6d0d2f34dc0a7db1fd2e512687cf3b19fe17cef62581c02db",
+    "animageo/native/parity/v1/curves/meet_circles.json": "7ba91607993bc97dadfc49d50cef693ccd84f094814da54116d20ecf32775246",
+    "animageo/native/parity/v1/curves/function_extrema_interval.json": "06af4118f16c41e4c80489906fda163a042f561d280d1689cddfc5d953925a79",
+    "animageo/native/parity/v1/curves/conic_equation_parabola.json": "eeb2fb5a493eeb56dd754d0d3d0fd632ed40f9fff6dee4fc95730fc49535567f"
+  }
+}
