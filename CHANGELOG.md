@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Native registry 1.13 adds circle-to-conic conversion, finite directrices
+  and asymptotes, point polars and conjugate diameters. The five new operations
+  use the `conic_elements` module group, canonical native-frame order, fixed
+  output slots, length-based checks and analytic parity fixtures. Existing
+  conic-part and tangency signatures and fixtures remain unchanged. Import
+  lowering and the `conic_elements` capability are deferred; the public API
+  snapshot records the new registry version.
+
 ## [1.18.0] - 2026-11-14
 
 ### Added
