@@ -109,6 +109,7 @@ class Context:
     source_commands: list = field(default_factory=list)  # XML commands absent from the classic graph
     function_analysis: dict = field(default_factory=dict)  # source output -> grouped analysis plan
     tangency: dict = field(default_factory=dict)      # source output -> grouped tangency plan
+    conic_elements: dict = field(default_factory=dict)  # source output -> grouped conic element plan
 
 
 @dataclass
@@ -599,6 +600,10 @@ class _Builder:
                 self.source_definition(o)
 
     def build(self, cmd, sig, inputs, outs, recs):
+        if outs[0] in self.ctx.conic_elements:
+            from .ggb_conic_elements import build_elements
+            build_elements(self, self.ctx.conic_elements[outs[0]], outs, recs)
+            return
         if outs[0] in self.ctx.tangency:
             from .ggb_tangency import build_tangency
             build_tangency(self, self.ctx.tangency[outs[0]], outs, recs)
@@ -635,6 +640,9 @@ class _Builder:
             angle.resolve(self)
         from .ggb_inline import vector_expression
         if len(recs) == 1 and vector_expression(self, sig, inputs, recs[0]):
+            return
+        from .ggb_conic_elements import build_classic_elements
+        if build_classic_elements(self, cmd, sig, inputs, outs, recs):
             return
         if row is None:
             same = [k for k in self.table.commands if k.rpartition('_')[0] == sig.rpartition('_')[0]
@@ -817,7 +825,7 @@ def _validate(builder: _Builder):
 
 def _expected(builder: _Builder, rec: Record):
     exp = builder.ctx.expected.get(rec.name)
-    if rec.name in builder.ctx.function_analysis or rec.name in builder.ctx.tangency:
+    if rec.name in builder.ctx.function_analysis or rec.name in builder.ctx.tangency or rec.name in builder.ctx.conic_elements:
         return exp  # Missing source coordinates are not classic value evidence.
     if exp is not None:
         return exp
@@ -840,6 +848,10 @@ def _resolve_by_value(builder: _Builder, doc, scale: float):
             _project_on_path(builder, [paths[op_id]])
         info = builder.by_value.get(op_id)
         if info is None:
+            continue
+        if info.get('conic_elements'):
+            from .ggb_conic_element_slots import resolve_slots
+            resolve_slots(builder, op_id, info, scale)
             continue
         if info.get('tangency'):
             from .ggb_tangency import resolve_slots

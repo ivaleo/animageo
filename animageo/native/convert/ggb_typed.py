@@ -120,6 +120,7 @@ def commands_with_source(constr, ctx):
     result, chunk = [], []
     for cmd in constr.commands:
         if any(str(getattr(o, 'name', o)) in ctx.function_analysis or str(getattr(o, 'name', o)) in ctx.tangency
+               or str(getattr(o, 'name', o)) in ctx.conic_elements
                for o in cmd.outputs):
             continue
         chunk.append(cmd)

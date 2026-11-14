@@ -1,6 +1,6 @@
 {
  "format": "animageo-dsl-map/v1",
- "mapVersion": 9,
+ "mapVersion": 10,
  "registry": "1.13",
  "commands": {
   "abs_i": {
@@ -1370,8 +1370,16 @@
    "ggb": [
     "Directrix"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.directrices",
+   "args": [
+    "conic"
+   ],
+   "outputs": {
+    "byValue": [
+     "directrix.1",
+     "directrix.2"
+    ]
+   }
   },
   "distance_Kp": {
    "factory": "Distance",
@@ -1654,8 +1662,7 @@
    "ggb": [
     "Eccentricity"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "unmapped": "unsupported_signature"
   },
   "ellipse_ppi": {
    "factory": "Ellipse",
@@ -3541,8 +3548,7 @@
    "ggb": [
     "LinearEccentricity"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "unmapped": "unsupported_signature"
   },
   "locus_pp": {
    "factory": "Locus",
@@ -3561,10 +3567,16 @@
   "major_axis_K": {
    "factory": "MajorAxis",
    "ggb": [
-    "MajorAxis"
+    "MajorAxis",
+    "FirstAxis"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.axes",
+   "args": [
+    "conic"
+   ],
+   "outputs": [
+    "focal"
+   ]
   },
   "midpoint_K": {
    "factory": "Midpoint",
@@ -3609,10 +3621,16 @@
   "minor_axis_K": {
    "factory": "MinorAxis",
    "ggb": [
-    "MinorAxis"
+    "MinorAxis",
+    "SecondAxis"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "conic.axes",
+   "args": [
+    "conic"
+   ],
+   "outputs": [
+    "conjugate"
+   ]
   },
   "mirror_cc": {
    "factory": "Mirror",
@@ -4343,40 +4361,56 @@
    "ggb": [
     "Polar"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "unmapped": "unsupported_signature"
   },
   "polar_Kp": {
    "factory": "Polar",
    "ggb": [
     "Polar"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "line.polar_conic",
+   "args": [
+    "conic",
+    "point"
+   ],
+   "outputs": [
+    "line"
+   ]
   },
   "polar_lK": {
    "factory": "Polar",
    "ggb": [
     "Polar"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "unmapped": "unsupported_signature"
   },
   "polar_pK": {
    "factory": "Polar",
    "ggb": [
     "Polar"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "line.polar_conic",
+   "args": [
+    "point",
+    "conic"
+   ],
+   "outputs": [
+    "line"
+   ]
   },
   "polar_pc": {
    "factory": "Polar",
    "ggb": [
     "Polar"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "line.polar_conic",
+   "args": [
+    "point",
+    "conic"
+   ],
+   "outputs": [
+    "line"
+   ]
   },
   "polygon": {
    "factory": "Polygon",
@@ -4815,16 +4849,14 @@
    "ggb": [
     "SemiMajorAxisLength"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "unmapped": "unsupported_signature"
   },
   "semi_minor_axis_length_K": {
    "factory": "SemiMinorAxisLength",
    "ggb": [
     "SemiMinorAxisLength"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "unmapped": "unsupported_signature"
   },
   "semicircle_pp": {
    "factory": "Semicircle",
@@ -5587,11 +5619,9 @@
   "function.root_interval": "registry 1.11: native function analysis has no classic command lowering",
   "function.roots_interval": "registry 1.11: native function analysis has no classic command lowering",
   "function.extrema_interval": "registry 1.11: native function analysis has no classic command lowering",
-  "conic.from_circle": "native conic element; classic and GeoGebra lowering deferred",
-  "conic.directrices": "native conic element; classic and GeoGebra lowering deferred",
-  "conic.asymptotes": "native conic element; classic and GeoGebra lowering deferred",
-  "line.polar_conic": "native conic element; classic and GeoGebra lowering deferred",
-  "line.conjugate_diameter": "native conic element; classic and GeoGebra lowering deferred"
+  "conic.from_circle": "owned native circle-to-conic adapter; no classic command constructs this representation",
+  "conic.asymptotes": "GeoGebra source lowering; no classic Asymptote dispatch key",
+  "line.conjugate_diameter": "GeoGebra Diameter/ConjugateDiameter source lowering; no classic dispatch key"
  },
  "seedDropped": {}
 }

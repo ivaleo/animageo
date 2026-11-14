@@ -50,6 +50,12 @@ point or parallel to a line, and scalar line slopes have classic lowerings.
 numeric x-coordinate dependency. The XML reader captures original arguments
 and output ordinals before classic parsing; new conic groups match lines by
 normalized coefficients and refuse coincident named saved outputs.
+``mapVersion`` 10 (registry 1.13): directrices, point polars and axis
+selectors have classic lowerings. Source conic elements also include
+asymptotes and conjugate diameters. Center routes by the actual native type;
+circle foci, vertices and axes use an owned ``conic.from_circle`` adapter.
+Fixed point slots preserve circle-focus multiplicity; repeated lines remain
+distinct. Public axis aliases share the same selected native slots.
 """
 from __future__ import annotations
 

@@ -81,6 +81,7 @@ def inline_arguments(doc, entries, records, refs_of):
     contract of source objects. Their own UUID5 IDs, hidden appearance and
     dependency closure are retained in the candidate document.
     """
+    from .ggb_conic_elements import COMMANDS
     allowed = {'Translate', 'Segment', 'Line', 'OrthogonalLine', 'Vector', 'Point', 'Intersect', 'Ray',
                'Circle', 'Rotate', 'Polygon', 'Parabola', 'ClosestPoint', 'Midpoint', 'PerpendicularBisector',
                'Root', 'Roots', 'Extremum'}
@@ -91,12 +92,17 @@ def inline_arguments(doc, entries, records, refs_of):
     helpers = {}
     for entry in entries:
         info = entry['info']
+        conic_elements = info.get('command') in COMMANDS and any(
+            doc['operations'][doc['elements'][eid]['producer']['operationId']]['op'] in (
+                'conic.center', 'point.center', 'conic.foci', 'conic.vertices', 'conic.axes',
+                'conic.directrices', 'conic.asymptotes', 'line.polar_conic', 'line.conjugate_diameter')
+            for eid in entry['native_ids'] if eid in doc['elements'])
         tangency = info.get('command') in ('Tangent', 'Slope') and any(
             doc['operations'][doc['elements'][eid]['producer']['operationId']]['op'] in (
                 'line.tangent_function_at', 'line.tangents_from_point_conic',
                 'line.tangents_parallel_conic', 'line.slope')
             for eid in entry['native_ids'] if eid in doc['elements'])
-        supported = info.get('command') in allowed or tangency or info['type'] == 'text' or \
+        supported = info.get('command') in allowed or tangency or conic_elements or info['type'] == 'text' or \
             info.get('command') == 'Expression' and (info['type'] in ('point', 'vector', 'conic') or any(
                 doc['operations'][doc['elements'][eid]['producer']['operationId']]['op'] == 'function.value'
                 for eid in entry['native_ids'] if eid in doc['elements']))

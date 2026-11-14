@@ -59,7 +59,8 @@ def from_construction(constr, *, mode: str = 'strict', id_namespace, key_of=None
                 display[obj.name] = str(key).split(':', 1)[-1]
     ctx = Context(namespace=ns, prefix='dsl', mode=mode, display=display, keys=keys, origin_of=origin_of)
     from .ggb_tangency import read_classic_curves
-    read_classic_curves(constr, ctx)
+    from .ggb_conic_elements import COMMANDS
+    read_classic_curves(constr, ctx, consumers={'Tangent'} | set(COMMANDS))
     with _quiet():
         tr = translate(constr, ctx)
     rep = construction_report(tr)
@@ -256,6 +257,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
         macro_names = {m.attrib.get('cmdName') for m in macro_root.iter('macro') if m.attrib.get('cmdName')}
     from .ggb_tangency import read_tangency, snapshot_commands
     tangency_commands = snapshot_commands(root)
+    from .ggb_conic_elements import read_elements, snapshot_commands as snapshot_conic_elements
+    conic_commands = snapshot_conic_elements(root)
     with _quiet():
         constr, parse_errors = _classic_parse(root, macro_root, sc)
     from ...geo.construction import normalize_name
@@ -369,6 +372,9 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     from .ggb_function_analysis import read_analysis
     read_analysis(root, infos, norm, ctx)
     read_tangency(tangency_commands, infos, norm, ctx)
+    from ...geo.lib_commands import strFullCommand
+    read_elements(conic_commands, infos, norm, ctx, constr, lambda cmd: strFullCommand(
+        cmd.name, [constr.dataByStr(i) if isinstance(i, str) else i for i in cmd.inputs]))
     with _quiet():
         tr = translate(constr, ctx)
     from .ggb_conic import check_line_orientations

@@ -269,8 +269,8 @@ def build_classic_tangency(builder, row, inputs, outs, recs):
     return True
 
 
-def read_classic_curves(constr, ctx):
-    """Read formula curves used by DSL tangents; other classic rows are unchanged."""
+def read_classic_curves(constr, ctx, *, consumers=('Tangent',)):
+    """Read formula curves used by selected DSL commands."""
     from .ggb_conic import read_equations
     from .ggb_function import read_functions, source_report_value
     from .construction import _literal
@@ -278,7 +278,7 @@ def read_classic_curves(constr, ctx):
 
     commands = {str(getattr(o, 'name', o)): cmd for cmd in constr.commands for o in cmd.outputs}
     needed = set()
-    pending = [i for cmd in constr.commands if cmd.name == 'Tangent' for i in cmd.inputs if isinstance(i, str)]
+    pending = [i for cmd in constr.commands if cmd.name in consumers for i in cmd.inputs if isinstance(i, str)]
     if not pending:
         return
     while pending:
