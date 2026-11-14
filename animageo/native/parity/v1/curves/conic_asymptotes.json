@@ -1,0 +1,1259 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_asymptotes",
+ "registry": "1.13",
+ "generatedBy": "animageo 1.18.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_asymptotes",
+  "operationRegistryVersion": "1.13",
+  "operations": {
+   "op_m": {
+    "id": "op_m",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "m"
+     }
+    ]
+   },
+   "op_h": {
+    "id": "op_h",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "op": "-",
+         "args": [
+          {
+           "op": "-",
+           "args": [
+            {
+             "op": "/",
+             "args": [
+              {
+               "op": "^",
+               "args": [
+                {
+                 "var": "x"
+                },
+                {
+                 "num": 2
+                }
+               ]
+              },
+              {
+               "num": 4
+              }
+             ]
+            },
+            {
+             "op": "/",
+             "args": [
+              {
+               "op": "^",
+               "args": [
+                {
+                 "var": "y"
+                },
+                {
+                 "num": 2
+                }
+               ]
+              },
+              {
+               "num": 9
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "num": 1
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "m"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "h"
+     }
+    ]
+   },
+   "op_e": {
+    "id": "op_e",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 9
+            }
+           ]
+          },
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "y"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 4
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "e"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "y"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 4
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "p"
+     }
+    ]
+   },
+   "op_r": {
+    "id": "op_r",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "op": "+",
+               "args": [
+                {
+                 "op": "*",
+                 "args": [
+                  {
+                   "num": 0.6
+                  },
+                  {
+                   "op": "-",
+                   "args": [
+                    {
+                     "var": "x"
+                    },
+                    {
+                     "num": 5
+                    }
+                   ]
+                  }
+                 ]
+                },
+                {
+                 "op": "*",
+                 "args": [
+                  {
+                   "num": 0.8
+                  },
+                  {
+                   "op": "+",
+                   "args": [
+                    {
+                     "var": "y"
+                    },
+                    {
+                     "num": 7
+                    }
+                   ]
+                  }
+                 ]
+                }
+               ]
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 4
+            }
+           ]
+          },
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "op": "+",
+               "args": [
+                {
+                 "op": "*",
+                 "args": [
+                  {
+                   "num": -0.8
+                  },
+                  {
+                   "op": "-",
+                   "args": [
+                    {
+                     "var": "x"
+                    },
+                    {
+                     "num": 5
+                    }
+                   ]
+                  }
+                 ]
+                },
+                {
+                 "op": "*",
+                 "args": [
+                  {
+                   "num": 0.6
+                  },
+                  {
+                   "op": "+",
+                   "args": [
+                    {
+                     "var": "y"
+                    },
+                    {
+                     "num": 7
+                    }
+                   ]
+                  }
+                 ]
+                }
+               ]
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 9
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "r"
+     }
+    ]
+   },
+   "op_ha": {
+    "id": "op_ha",
+    "op": "conic.asymptotes",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "h"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "asymptote.1",
+      "elementId": "ha1"
+     },
+     {
+      "slot": "asymptote.2",
+      "elementId": "ha2"
+     },
+     {
+      "slot": "asymptote.3",
+      "elementId": "ha3"
+     }
+    ]
+   },
+   "op_ra": {
+    "id": "op_ra",
+    "op": "conic.asymptotes",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "r"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "asymptote.1",
+      "elementId": "ra1"
+     },
+     {
+      "slot": "asymptote.2",
+      "elementId": "ra2"
+     },
+     {
+      "slot": "asymptote.3",
+      "elementId": "ra3"
+     }
+    ]
+   },
+   "op_ea": {
+    "id": "op_ea",
+    "op": "conic.asymptotes",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "e"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "asymptote.1",
+      "elementId": "ea1"
+     },
+     {
+      "slot": "asymptote.2",
+      "elementId": "ea2"
+     },
+     {
+      "slot": "asymptote.3",
+      "elementId": "ea3"
+     }
+    ]
+   },
+   "op_pa": {
+    "id": "op_pa",
+    "op": "conic.asymptotes",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "asymptote.1",
+      "elementId": "pa1"
+     },
+     {
+      "slot": "asymptote.2",
+      "elementId": "pa2"
+     },
+     {
+      "slot": "asymptote.3",
+      "elementId": "pa3"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "m": {
+    "id": "m",
+    "type": "number",
+    "displayName": "m",
+    "producer": {
+     "operationId": "op_m",
+     "slot": "number"
+    }
+   },
+   "h": {
+    "id": "h",
+    "type": "conic",
+    "displayName": "h",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "conic"
+    }
+   },
+   "e": {
+    "id": "e",
+    "type": "conic",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "conic"
+    }
+   },
+   "p": {
+    "id": "p",
+    "type": "conic",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "conic"
+    }
+   },
+   "r": {
+    "id": "r",
+    "type": "conic",
+    "displayName": "r",
+    "producer": {
+     "operationId": "op_r",
+     "slot": "conic"
+    }
+   },
+   "ha1": {
+    "id": "ha1",
+    "type": "line",
+    "displayName": "ha1",
+    "producer": {
+     "operationId": "op_ha",
+     "slot": "asymptote.1"
+    }
+   },
+   "ha2": {
+    "id": "ha2",
+    "type": "line",
+    "displayName": "ha2",
+    "producer": {
+     "operationId": "op_ha",
+     "slot": "asymptote.2"
+    }
+   },
+   "ha3": {
+    "id": "ha3",
+    "type": "line",
+    "displayName": "ha3",
+    "producer": {
+     "operationId": "op_ha",
+     "slot": "asymptote.3"
+    }
+   },
+   "ra1": {
+    "id": "ra1",
+    "type": "line",
+    "displayName": "ra1",
+    "producer": {
+     "operationId": "op_ra",
+     "slot": "asymptote.1"
+    }
+   },
+   "ra2": {
+    "id": "ra2",
+    "type": "line",
+    "displayName": "ra2",
+    "producer": {
+     "operationId": "op_ra",
+     "slot": "asymptote.2"
+    }
+   },
+   "ra3": {
+    "id": "ra3",
+    "type": "line",
+    "displayName": "ra3",
+    "producer": {
+     "operationId": "op_ra",
+     "slot": "asymptote.3"
+    }
+   },
+   "ea1": {
+    "id": "ea1",
+    "type": "line",
+    "displayName": "ea1",
+    "producer": {
+     "operationId": "op_ea",
+     "slot": "asymptote.1"
+    }
+   },
+   "ea2": {
+    "id": "ea2",
+    "type": "line",
+    "displayName": "ea2",
+    "producer": {
+     "operationId": "op_ea",
+     "slot": "asymptote.2"
+    }
+   },
+   "ea3": {
+    "id": "ea3",
+    "type": "line",
+    "displayName": "ea3",
+    "producer": {
+     "operationId": "op_ea",
+     "slot": "asymptote.3"
+    }
+   },
+   "pa1": {
+    "id": "pa1",
+    "type": "line",
+    "displayName": "pa1",
+    "producer": {
+     "operationId": "op_pa",
+     "slot": "asymptote.1"
+    }
+   },
+   "pa2": {
+    "id": "pa2",
+    "type": "line",
+    "displayName": "pa2",
+    "producer": {
+     "operationId": "op_pa",
+     "slot": "asymptote.2"
+    }
+   },
+   "pa3": {
+    "id": "pa3",
+    "type": "line",
+    "displayName": "pa3",
+    "producer": {
+     "operationId": "op_pa",
+     "slot": "asymptote.3"
+    }
+   }
+  },
+  "inputs": {
+   "m": {
+    "kind": "number",
+    "value": 1.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "positive",
+   "inputs": {
+    "m": {
+     "kind": "number",
+     "value": 1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ea1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "ea2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "ea3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "ha1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.554700196,
+       0.832050294
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ha2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -0.554700196,
+       0.832050294
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ha3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "m": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pa1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "pa2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "pa3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "r": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       5.0,
+       -7.0
+      ],
+      "axis": [
+       0.6,
+       0.8
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "ra1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       2.249230769,
+       0.793846154
+      ],
+      "dir": [
+       -0.332820118,
+       0.942990334
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ra2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.372307692,
+       -6.701538462
+      ],
+      "dir": [
+       -0.998460353,
+       0.05547002
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ra3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_ha:through_center": "passed",
+    "op_ha:asymptotic_direction": "passed",
+    "op_ra:through_center": "passed",
+    "op_ra:asymptotic_direction": "passed"
+   }
+  },
+  {
+   "name": "negative",
+   "inputs": {
+    "m": {
+     "kind": "number",
+     "value": -1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ea1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "ea2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "ea3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "ha1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.554700196,
+       0.832050294
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ha2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -0.554700196,
+       0.832050294
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ha3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "m": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -1.0,
+      "unit": "scalar"
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pa1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "pa2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "pa3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "r": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       5.0,
+       -7.0
+      ],
+      "axis": [
+       0.6,
+       0.8
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "ra1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       2.249230769,
+       0.793846154
+      ],
+      "dir": [
+       -0.332820118,
+       0.942990334
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ra2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.372307692,
+       -6.701538462
+      ],
+      "dir": [
+       -0.998460353,
+       0.05547002
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ra3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_ha:through_center": "passed",
+    "op_ha:asymptotic_direction": "passed",
+    "op_ra:through_center": "passed",
+    "op_ra:asymptotic_direction": "passed"
+   }
+  },
+  {
+   "name": "scaled",
+   "inputs": {
+    "m": {
+     "kind": "number",
+     "value": 2.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ea1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "ea2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "ea3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "ha1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.554700196,
+       0.832050294
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ha2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -0.554700196,
+       0.832050294
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ha3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "m": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pa1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "pa2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "pa3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "r": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       5.0,
+       -7.0
+      ],
+      "axis": [
+       0.6,
+       0.8
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "ra1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       2.249230769,
+       0.793846154
+      ],
+      "dir": [
+       -0.332820118,
+       0.942990334
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ra2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.372307692,
+       -6.701538462
+      ],
+      "dir": [
+       -0.998460353,
+       0.05547002
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ra3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_ha:through_center": "passed",
+    "op_ha:asymptotic_direction": "passed",
+    "op_ra:through_center": "passed",
+    "op_ra:asymptotic_direction": "passed"
+   }
+  }
+ ]
+}

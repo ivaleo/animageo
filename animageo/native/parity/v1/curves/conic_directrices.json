@@ -1,0 +1,1438 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_directrices",
+ "registry": "1.13",
+ "generatedBy": "animageo 1.18.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_directrices",
+  "operationRegistryVersion": "1.13",
+  "operations": {
+   "op_m": {
+    "id": "op_m",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "m"
+     }
+    ]
+   },
+   "op_O": {
+    "id": "op_O",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "O"
+     }
+    ]
+   },
+   "op_R": {
+    "id": "op_R",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "R"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "circle.center_point",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "O"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "R"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "circle",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_e": {
+    "id": "op_e",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "ref": 0
+        },
+        {
+         "op": "-",
+         "args": [
+          {
+           "op": "+",
+           "args": [
+            {
+             "op": "/",
+             "args": [
+              {
+               "op": "^",
+               "args": [
+                {
+                 "var": "x"
+                },
+                {
+                 "num": 2
+                }
+               ]
+              },
+              {
+               "num": 9
+              }
+             ]
+            },
+            {
+             "op": "/",
+             "args": [
+              {
+               "op": "^",
+               "args": [
+                {
+                 "var": "y"
+                },
+                {
+                 "num": 2
+                }
+               ]
+              },
+              {
+               "num": 4
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "num": 1
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "m"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "e"
+     }
+    ]
+   },
+   "op_h": {
+    "id": "op_h",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 4
+            }
+           ]
+          },
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "y"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 9
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "h"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "y"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 4
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "p"
+     }
+    ]
+   },
+   "op_ed": {
+    "id": "op_ed",
+    "op": "conic.directrices",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "e"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "directrix.1",
+      "elementId": "ed1"
+     },
+     {
+      "slot": "directrix.2",
+      "elementId": "ed2"
+     },
+     {
+      "slot": "directrix.3",
+      "elementId": "ed3"
+     }
+    ]
+   },
+   "op_hd": {
+    "id": "op_hd",
+    "op": "conic.directrices",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "h"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "directrix.1",
+      "elementId": "hd1"
+     },
+     {
+      "slot": "directrix.2",
+      "elementId": "hd2"
+     },
+     {
+      "slot": "directrix.3",
+      "elementId": "hd3"
+     }
+    ]
+   },
+   "op_pd": {
+    "id": "op_pd",
+    "op": "conic.directrices",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "directrix.1",
+      "elementId": "pd1"
+     },
+     {
+      "slot": "directrix.2",
+      "elementId": "pd2"
+     },
+     {
+      "slot": "directrix.3",
+      "elementId": "pd3"
+     }
+    ]
+   },
+   "op_cd": {
+    "id": "op_cd",
+    "op": "conic.directrices",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "c"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "directrix.1",
+      "elementId": "cd1"
+     },
+     {
+      "slot": "directrix.2",
+      "elementId": "cd2"
+     },
+     {
+      "slot": "directrix.3",
+      "elementId": "cd3"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "m": {
+    "id": "m",
+    "type": "number",
+    "displayName": "m",
+    "producer": {
+     "operationId": "op_m",
+     "slot": "number"
+    }
+   },
+   "O": {
+    "id": "O",
+    "type": "point",
+    "displayName": "O",
+    "producer": {
+     "operationId": "op_O",
+     "slot": "point"
+    }
+   },
+   "R": {
+    "id": "R",
+    "type": "point",
+    "displayName": "R",
+    "producer": {
+     "operationId": "op_R",
+     "slot": "point"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "circle",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "circle"
+    }
+   },
+   "e": {
+    "id": "e",
+    "type": "conic",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "conic"
+    }
+   },
+   "h": {
+    "id": "h",
+    "type": "conic",
+    "displayName": "h",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "conic"
+    }
+   },
+   "p": {
+    "id": "p",
+    "type": "conic",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "conic"
+    }
+   },
+   "ed1": {
+    "id": "ed1",
+    "type": "line",
+    "displayName": "ed1",
+    "producer": {
+     "operationId": "op_ed",
+     "slot": "directrix.1"
+    }
+   },
+   "ed2": {
+    "id": "ed2",
+    "type": "line",
+    "displayName": "ed2",
+    "producer": {
+     "operationId": "op_ed",
+     "slot": "directrix.2"
+    }
+   },
+   "ed3": {
+    "id": "ed3",
+    "type": "line",
+    "displayName": "ed3",
+    "producer": {
+     "operationId": "op_ed",
+     "slot": "directrix.3"
+    }
+   },
+   "hd1": {
+    "id": "hd1",
+    "type": "line",
+    "displayName": "hd1",
+    "producer": {
+     "operationId": "op_hd",
+     "slot": "directrix.1"
+    }
+   },
+   "hd2": {
+    "id": "hd2",
+    "type": "line",
+    "displayName": "hd2",
+    "producer": {
+     "operationId": "op_hd",
+     "slot": "directrix.2"
+    }
+   },
+   "hd3": {
+    "id": "hd3",
+    "type": "line",
+    "displayName": "hd3",
+    "producer": {
+     "operationId": "op_hd",
+     "slot": "directrix.3"
+    }
+   },
+   "pd1": {
+    "id": "pd1",
+    "type": "line",
+    "displayName": "pd1",
+    "producer": {
+     "operationId": "op_pd",
+     "slot": "directrix.1"
+    }
+   },
+   "pd2": {
+    "id": "pd2",
+    "type": "line",
+    "displayName": "pd2",
+    "producer": {
+     "operationId": "op_pd",
+     "slot": "directrix.2"
+    }
+   },
+   "pd3": {
+    "id": "pd3",
+    "type": "line",
+    "displayName": "pd3",
+    "producer": {
+     "operationId": "op_pd",
+     "slot": "directrix.3"
+    }
+   },
+   "cd1": {
+    "id": "cd1",
+    "type": "line",
+    "displayName": "cd1",
+    "producer": {
+     "operationId": "op_cd",
+     "slot": "directrix.1"
+    }
+   },
+   "cd2": {
+    "id": "cd2",
+    "type": "line",
+    "displayName": "cd2",
+    "producer": {
+     "operationId": "op_cd",
+     "slot": "directrix.2"
+    }
+   },
+   "cd3": {
+    "id": "cd3",
+    "type": "line",
+    "displayName": "cd3",
+    "producer": {
+     "operationId": "op_cd",
+     "slot": "directrix.3"
+    }
+   }
+  },
+  "inputs": {
+   "m": {
+    "kind": "number",
+    "value": 1.0
+   },
+   "O": {
+    "kind": "point",
+    "value": [
+     0.0,
+     0.0
+    ]
+   },
+   "R": {
+    "kind": "point",
+    "value": [
+     3.0,
+     0.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "ellipse",
+   "inputs": {
+    "m": {
+     "kind": "number",
+     "value": 1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "O": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       0.0
+      ],
+      "r": 3.0
+     }
+    },
+    "cd1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "cd2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "cd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ed1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       4.024922359,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ed2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -4.024922359,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ed3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "hd1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.109400392,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "hd2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.109400392,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "hd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "m": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pd1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "pd2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "pd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_c:through_on_circle": "passed",
+    "op_ed:focus_directrix": "passed",
+    "op_hd:focus_directrix": "passed",
+    "op_pd:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "negative_equation",
+   "inputs": {
+    "m": {
+     "kind": "number",
+     "value": -1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "O": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       0.0
+      ],
+      "r": 3.0
+     }
+    },
+    "cd1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "cd2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "cd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ed1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       4.024922359,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ed2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -4.024922359,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ed3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "hd1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.109400392,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "hd2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.109400392,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "hd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "m": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -1.0,
+      "unit": "scalar"
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pd1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "pd2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "pd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_c:through_on_circle": "passed",
+    "op_ed:focus_directrix": "passed",
+    "op_hd:focus_directrix": "passed",
+    "op_pd:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "degenerate",
+   "inputs": {
+    "m": {
+     "kind": "number",
+     "value": 0.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "O": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       0.0
+      ],
+      "r": 3.0
+     }
+    },
+    "cd1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "cd2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "cd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "e": {
+     "state": "undefined",
+     "type": "conic",
+     "reason": "degenerate_conic"
+    },
+    "ed1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "upstream",
+     "cause": "e"
+    },
+    "ed2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "upstream",
+     "cause": "e"
+    },
+    "ed3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "upstream",
+     "cause": "e"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "hd1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.109400392,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "hd2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.109400392,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "hd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "m": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pd1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "pd2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "pd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_c:through_on_circle": "passed",
+    "op_hd:focus_directrix": "passed",
+    "op_pd:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "recovery",
+   "inputs": {
+    "m": {
+     "kind": "number",
+     "value": 1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "O": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": 0.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       0.0
+      ],
+      "r": 3.0
+     }
+    },
+    "cd1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "cd2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "cd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ed1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       4.024922359,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ed2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -4.024922359,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ed3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "hd1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.109400392,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "hd2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.109400392,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "hd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "m": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pd1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "pd2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "pd3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_c:through_on_circle": "passed",
+    "op_ed:focus_directrix": "passed",
+    "op_hd:focus_directrix": "passed",
+    "op_pd:focus_directrix": "passed"
+   }
+  }
+ ]
+}

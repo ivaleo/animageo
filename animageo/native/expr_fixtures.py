@@ -23,7 +23,7 @@ import json
 import math
 from pathlib import Path
 
-from .registry import REGISTRY_VERSION
+from ._fixture_registry import BASELINE_VERSION as FIXTURE_REGISTRY_VERSION
 
 __all__ = ['DEFAULT_DIR', 'EXPR_CASES_FORMAT', 'TOLERANCE', 'build_fixtures', 'case_expect', 'check_fixtures',
            'verify_fixture', 'verify_fixtures', 'write_fixtures']
@@ -284,7 +284,7 @@ def build_fixtures() -> dict:
         items = [{'name': n, 'type': t, 'value': v} for n, t, v in operands]
         cases.append({'name': name, 'ast': ast, 'operands': items, 'result': result,
                       'expect': case_expect(ast, items, result)})
-    fixture = {'format': EXPR_CASES_FORMAT, 'registry': REGISTRY_VERSION, 'generatedBy': f'animageo {__version__}',
+    fixture = {'format': EXPR_CASES_FORMAT, 'registry': FIXTURE_REGISTRY_VERSION, 'generatedBy': f'animageo {__version__}',
                'tolerance': TOLERANCE, 'cases': cases}
     return {'typed.json': json.loads(json.dumps(fixture))}
 

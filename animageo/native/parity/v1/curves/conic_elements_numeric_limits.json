@@ -1,0 +1,769 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_elements_numeric_limits",
+ "registry": "1.13",
+ "generatedBy": "animageo 1.18.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_elements_numeric_limits",
+  "operationRegistryVersion": "1.13",
+  "operations": {
+   "op_s": {
+    "id": "op_s",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "s"
+     }
+    ]
+   },
+   "op_e": {
+    "id": "op_e",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 9
+            }
+           ]
+          },
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "y"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 4
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "e"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "y"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 4
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "p"
+     }
+    ]
+   },
+   "op_P": {
+    "id": "op_P",
+    "op": "point.expression",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "pair": [
+        {
+         "fn": "exp",
+         "args": [
+          {
+           "op": "*",
+           "args": [
+            {
+             "num": -720
+            },
+            {
+             "ref": 0
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 0
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_d": {
+    "id": "op_d",
+    "op": "vector.expression",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "pair": [
+        {
+         "num": 1
+        },
+        {
+         "fn": "exp",
+         "args": [
+          {
+           "op": "*",
+           "args": [
+            {
+             "num": -720
+            },
+            {
+             "ref": 0
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "vector",
+      "elementId": "d"
+     }
+    ]
+   },
+   "op_polar": {
+    "id": "op_polar",
+    "op": "line.polar_conic",
+    "args": {
+     "point": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "e"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "polar"
+     }
+    ]
+   },
+   "op_diameter": {
+    "id": "op_diameter",
+    "op": "line.conjugate_diameter",
+    "args": {
+     "direction": {
+      "kind": "ref",
+      "elementId": "d"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "diameter"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "s": {
+    "id": "s",
+    "type": "number",
+    "displayName": "s",
+    "producer": {
+     "operationId": "op_s",
+     "slot": "number"
+    }
+   },
+   "e": {
+    "id": "e",
+    "type": "conic",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "conic"
+    }
+   },
+   "p": {
+    "id": "p",
+    "type": "conic",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "conic"
+    }
+   },
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "d": {
+    "id": "d",
+    "type": "vector",
+    "displayName": "d",
+    "producer": {
+     "operationId": "op_d",
+     "slot": "vector"
+    }
+   },
+   "polar": {
+    "id": "polar",
+    "type": "line",
+    "displayName": "polar",
+    "producer": {
+     "operationId": "op_polar",
+     "slot": "line"
+    }
+   },
+   "diameter": {
+    "id": "diameter",
+    "type": "line",
+    "displayName": "diameter",
+    "producer": {
+     "operationId": "op_diameter",
+     "slot": "line"
+    }
+   }
+  },
+  "inputs": {
+   "s": {
+    "kind": "number",
+    "value": 1.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "overflow",
+   "inputs": {
+    "s": {
+     "kind": "number",
+     "value": 1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "d": {
+     "state": "defined",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       1.0,
+       0.0
+      ],
+      "length": 1.0
+     }
+    },
+    "diameter": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "non_finite"
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "polar": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "non_finite"
+    },
+    "s": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "finite",
+   "inputs": {
+    "s": {
+     "kind": "number",
+     "value": 0.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "d": {
+     "state": "defined",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       1.0,
+       1.0
+      ],
+      "length": 1.414213562
+     }
+    },
+    "diameter": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       2.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "polar": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       9.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_diameter:conjugacy": "passed",
+    "op_diameter:through_center": "passed",
+    "op_polar:polar_incidence": "passed"
+   }
+  },
+  {
+   "name": "distant",
+   "inputs": {
+    "s": {
+     "kind": "number",
+     "value": 0.01
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.000746586,
+      "y": 0.0
+     }
+    },
+    "d": {
+     "state": "defined",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       1.0,
+       0.000746586
+      ],
+      "length": 1.000000279
+     }
+    },
+    "diameter": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       2678.861528789
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "polar": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       12054.87687955,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.01,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_diameter:conjugacy": "passed",
+    "op_diameter:through_center": "passed",
+    "op_polar:polar_incidence": "passed"
+   }
+  },
+  {
+   "name": "recovery",
+   "inputs": {
+    "s": {
+     "kind": "number",
+     "value": 0.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "d": {
+     "state": "defined",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       1.0,
+       1.0
+      ],
+      "length": 1.414213562
+     }
+    },
+    "diameter": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       2.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "polar": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       9.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "s": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_diameter:conjugacy": "passed",
+    "op_diameter:through_center": "passed",
+    "op_polar:polar_incidence": "passed"
+   }
+  }
+ ]
+}

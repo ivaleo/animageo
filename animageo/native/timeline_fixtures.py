@@ -15,7 +15,7 @@ import json
 import math
 from pathlib import Path
 
-from .registry import REGISTRY_VERSION
+from ._fixture_registry import BASELINE_VERSION as FIXTURE_REGISTRY_VERSION
 
 __all__ = ['TIMELINE_FORMAT', 'DEFAULT_DIR', 'build_fixtures', 'write_fixtures', 'check_fixtures',
            'verify_fixture', 'verify_fixtures']
@@ -32,7 +32,7 @@ def _ref(el_id):
 class _Doc:
     def __init__(self, doc_id, bounds=(-6, -4, 6, 4)):
         self.doc = {'format': 'animageo-construction/v1', 'documentId': doc_id,
-                    'operationRegistryVersion': REGISTRY_VERSION, 'operations': {}, 'elements': {},
+                    'operationRegistryVersion': FIXTURE_REGISTRY_VERSION, 'operations': {}, 'elements': {},
                     'inputs': {}, 'viewDefaults': {'bounds': list(bounds)}}
 
     def op(self, name, args, outputs, op_id=None):
@@ -175,7 +175,7 @@ def build_fixtures() -> dict:
             rows.append({'name': name, 'timeline': timeline, 'samples': samples,
                          'expect': _expect(document, timeline, samples)})
         out[document['documentId'] + '.json'] = {
-            'format': TIMELINE_FORMAT, 'id': document['documentId'], 'registry': REGISTRY_VERSION,
+            'format': TIMELINE_FORMAT, 'id': document['documentId'], 'registry': FIXTURE_REGISTRY_VERSION,
             'generatedBy': f'animageo {__version__}', 'document': document, 'steps': steps, 'cases': rows}
     return out
 

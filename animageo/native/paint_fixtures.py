@@ -22,7 +22,7 @@ import json
 import math
 from pathlib import Path
 
-from .registry import REGISTRY_VERSION
+from ._fixture_registry import BASELINE_VERSION as FIXTURE_REGISTRY_VERSION
 
 __all__ = ['PAINT_PARITY_FORMAT', 'DEFAULT_DIR', 'build_fixtures', 'write_fixtures', 'check_fixtures',
            'verify_fixture', 'verify_fixtures']
@@ -47,7 +47,7 @@ def _num(v):
 class _Doc:
     def __init__(self, doc_id, bounds=(-1, -1, 7, 5)):
         self.doc = {'format': 'animageo-construction/v1', 'documentId': doc_id,
-                    'operationRegistryVersion': REGISTRY_VERSION, 'operations': {}, 'elements': {},
+                    'operationRegistryVersion': FIXTURE_REGISTRY_VERSION, 'operations': {}, 'elements': {},
                     'inputs': {}, 'viewDefaults': {'bounds': list(bounds)}, 'appearance': {}}
 
     def op(self, name, args, outputs, op_id=None):
@@ -864,7 +864,7 @@ def _rows(scenes) -> list:
 def build_fixtures() -> dict:
     """``{file name: fixture}``."""
     from .. import __version__
-    return {name + '.json': {'format': PAINT_PARITY_FORMAT, 'id': name, 'registry': REGISTRY_VERSION,
+    return {name + '.json': {'format': PAINT_PARITY_FORMAT, 'id': name, 'registry': FIXTURE_REGISTRY_VERSION,
                              'generatedBy': f'animageo {__version__}', 'cases': _rows(scenes())}
             for name, scenes in THEMES}
 

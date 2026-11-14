@@ -1,0 +1,1248 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_conjugate_diameter",
+ "registry": "1.13",
+ "generatedBy": "animageo 1.18.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_conjugate_diameter",
+  "operationRegistryVersion": "1.13",
+  "operations": {
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_d": {
+    "id": "op_d",
+    "op": "vector.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "vector",
+      "elementId": "d"
+     }
+    ]
+   },
+   "op_e": {
+    "id": "op_e",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 9
+            }
+           ]
+          },
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "y"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 4
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "e"
+     }
+    ]
+   },
+   "op_h": {
+    "id": "op_h",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 4
+            }
+           ]
+          },
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "y"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 9
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "h"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "y"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 4
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "p"
+     }
+    ]
+   },
+   "op_ed": {
+    "id": "op_ed",
+    "op": "line.conjugate_diameter",
+    "args": {
+     "direction": {
+      "kind": "ref",
+      "elementId": "d"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "e"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "ed"
+     }
+    ]
+   },
+   "op_hd": {
+    "id": "op_hd",
+    "op": "line.conjugate_diameter",
+    "args": {
+     "direction": {
+      "kind": "ref",
+      "elementId": "d"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "h"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "hd"
+     }
+    ]
+   },
+   "op_pd": {
+    "id": "op_pd",
+    "op": "line.conjugate_diameter",
+    "args": {
+     "direction": {
+      "kind": "ref",
+      "elementId": "d"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "pd"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "d": {
+    "id": "d",
+    "type": "vector",
+    "displayName": "d",
+    "producer": {
+     "operationId": "op_d",
+     "slot": "vector"
+    }
+   },
+   "e": {
+    "id": "e",
+    "type": "conic",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "conic"
+    }
+   },
+   "h": {
+    "id": "h",
+    "type": "conic",
+    "displayName": "h",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "conic"
+    }
+   },
+   "p": {
+    "id": "p",
+    "type": "conic",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "conic"
+    }
+   },
+   "ed": {
+    "id": "ed",
+    "type": "line",
+    "displayName": "ed",
+    "producer": {
+     "operationId": "op_ed",
+     "slot": "line"
+    }
+   },
+   "hd": {
+    "id": "hd",
+    "type": "line",
+    "displayName": "hd",
+    "producer": {
+     "operationId": "op_hd",
+     "slot": "line"
+    }
+   },
+   "pd": {
+    "id": "pd",
+    "type": "line",
+    "displayName": "pd",
+    "producer": {
+     "operationId": "op_pd",
+     "slot": "line"
+    }
+   }
+  },
+  "inputs": {
+   "A": {
+    "kind": "point",
+    "value": [
+     0.0,
+     0.0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "diagonal",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "d": {
+     "state": "defined",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       1.0,
+       1.0
+      ],
+      "length": 1.414213562
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ed": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -0.913811549,
+       0.406138466
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "hd": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.406138466,
+       0.913811549
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pd": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       2.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_d:ends": "passed",
+    "op_ed:conjugacy": "passed",
+    "op_ed:through_center": "passed",
+    "op_hd:conjugacy": "passed",
+    "op_hd:through_center": "passed",
+    "op_pd:conjugacy": "passed",
+    "op_pd:through_center": "passed"
+   }
+  },
+  {
+   "name": "reversed",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      -1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": -1.0
+     }
+    },
+    "d": {
+     "state": "defined",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       -1.0,
+       -1.0
+      ],
+      "length": 1.414213562
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ed": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -0.913811549,
+       0.406138466
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "hd": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.406138466,
+       0.913811549
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pd": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       2.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_d:ends": "passed",
+    "op_ed:conjugacy": "passed",
+    "op_ed:through_center": "passed",
+    "op_hd:conjugacy": "passed",
+    "op_hd:through_center": "passed",
+    "op_pd:conjugacy": "passed",
+    "op_pd:through_center": "passed"
+   }
+  },
+  {
+   "name": "asymptotic",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      2.0,
+      3.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 3.0
+     }
+    },
+    "d": {
+     "state": "defined",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       2.0,
+       3.0
+      ],
+      "length": 3.605551275
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ed": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -0.958798113,
+       0.28408833
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "hd": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.554700196,
+       0.832050294
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pd": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       1.333333333
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_d:ends": "passed",
+    "op_ed:conjugacy": "passed",
+    "op_ed:through_center": "passed",
+    "op_hd:conjugacy": "passed",
+    "op_hd:through_center": "passed",
+    "op_pd:conjugacy": "passed",
+    "op_pd:through_center": "passed"
+   }
+  },
+  {
+   "name": "axis",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      1.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "d": {
+     "state": "defined",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       1.0,
+       0.0
+      ],
+      "length": 1.0
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ed": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "hd": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pd": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_finite_line"
+    }
+   },
+   "checks": {
+    "op_d:ends": "passed",
+    "op_ed:conjugacy": "passed",
+    "op_ed:through_center": "passed",
+    "op_hd:conjugacy": "passed",
+    "op_hd:through_center": "passed"
+   }
+  },
+  {
+   "name": "zero",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "d": {
+     "state": "defined",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       0.0,
+       0.0
+      ],
+      "length": 0.0
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ed": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "invalid_parameter"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "hd": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "invalid_parameter"
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pd": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "invalid_parameter"
+    }
+   },
+   "checks": {
+    "op_d:ends": "passed"
+   }
+  },
+  {
+   "name": "recovery",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "d": {
+     "state": "defined",
+     "type": "vector",
+     "value": {
+      "a": [
+       0.0,
+       0.0
+      ],
+      "b": [
+       1.0,
+       1.0
+      ],
+      "length": 1.414213562
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 3.0,
+      "b": 2.0
+     }
+    },
+    "ed": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -0.913811549,
+       0.406138466
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 3.0
+     }
+    },
+    "hd": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.406138466,
+       0.913811549
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "pd": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       2.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_d:ends": "passed",
+    "op_ed:conjugacy": "passed",
+    "op_ed:through_center": "passed",
+    "op_hd:conjugacy": "passed",
+    "op_hd:through_center": "passed",
+    "op_pd:conjugacy": "passed",
+    "op_pd:through_center": "passed"
+   }
+  }
+ ]
+}

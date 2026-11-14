@@ -33,6 +33,7 @@ import math
 from pathlib import Path
 
 from .document import load
+from ._fixture_registry import fixture_version
 from .kernel.checks import run_checks
 from .kernel.evaluate import evaluate
 from .kernel.numeric import decision_margin, tolerances
@@ -170,7 +171,7 @@ def generate_scene(scene: dict) -> dict:
     return {
         'format': PARITY_FORMAT,
         'id': scene['id'],
-        'registry': REGISTRY_VERSION,
+        'registry': fixture_version(scene['document']),
         'generatedBy': f'animageo {_library_version()}',
         'document': scene['document'],
         'cases': cases,
@@ -207,7 +208,7 @@ def steps_fixture(scene: dict) -> dict:
     return {
         'format': STEPS_FORMAT,
         'id': scene['id'],
-        'registry': REGISTRY_VERSION,
+        'registry': fixture_version(scene['document']),
         'generatedBy': f'animageo {_library_version()}',
         'document': scene['document'],
         'expect': expect,

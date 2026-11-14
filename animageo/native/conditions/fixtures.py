@@ -29,7 +29,7 @@ from pathlib import Path
 
 from .._fixture_compare import same_fixture
 from ..canonical import canonical_json
-from ..registry import REGISTRY_VERSION
+from .._fixture_registry import BASELINE_VERSION as FIXTURE_REGISTRY_VERSION
 
 __all__ = ['RECIPES_FORMAT', 'GENERAL_FORMAT', 'MARKS_FORMAT', 'DEFAULT_ROOT', 'build_fixtures',
            'write_fixtures', 'check_fixtures', 'verify_fixtures', 'replay_case']
@@ -47,7 +47,7 @@ TRIALS = 50
 class _Doc:
     def __init__(self, doc_id):
         self.doc = {'format': 'animageo-construction/v1', 'documentId': doc_id,
-                    'operationRegistryVersion': REGISTRY_VERSION, 'operations': {}, 'elements': {}, 'inputs': {},
+                    'operationRegistryVersion': FIXTURE_REGISTRY_VERSION, 'operations': {}, 'elements': {}, 'inputs': {},
                     'viewDefaults': {'bounds': list(BOUNDS)}}
 
     def op(self, op_id, name, args, outputs):
@@ -484,11 +484,11 @@ def build_fixtures() -> dict:
     gen = f'animageo {_version()}'
     out = {}
     for fid, cases in _recipe_fixtures().items():
-        out[f'recipes/{fid}.json'] = {'format': RECIPES_FORMAT, 'id': fid, 'registry': REGISTRY_VERSION,
+        out[f'recipes/{fid}.json'] = {'format': RECIPES_FORMAT, 'id': fid, 'registry': FIXTURE_REGISTRY_VERSION,
                                       'generatedBy': gen, 'cases': cases}
-    out['general/general.json'] = {'format': GENERAL_FORMAT, 'id': 'general', 'registry': REGISTRY_VERSION,
+    out['general/general.json'] = {'format': GENERAL_FORMAT, 'id': 'general', 'registry': FIXTURE_REGISTRY_VERSION,
                                    'generatedBy': gen, 'cases': _general_fixtures()}
-    out['marks/marks.json'] = {'format': MARKS_FORMAT, 'id': 'marks', 'registry': REGISTRY_VERSION,
+    out['marks/marks.json'] = {'format': MARKS_FORMAT, 'id': 'marks', 'registry': FIXTURE_REGISTRY_VERSION,
                                'generatedBy': gen, 'cases': _marks_fixtures()}
     for sid, scene in build_scenes().items():
         out[f'scenes/{sid}.json'] = scene

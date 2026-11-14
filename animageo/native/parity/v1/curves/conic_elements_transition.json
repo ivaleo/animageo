@@ -1,0 +1,987 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_elements_transition",
+ "registry": "1.13",
+ "generatedBy": "animageo 1.18.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_elements_transition",
+  "operationRegistryVersion": "1.13",
+  "operations": {
+   "op_e": {
+    "id": "op_e",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "e"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "*",
+           "args": [
+            {
+             "op": "-",
+             "args": [
+              {
+               "num": 1
+              },
+              {
+               "op": "^",
+               "args": [
+                {
+                 "ref": 0
+                },
+                {
+                 "num": 2
+                }
+               ]
+              }
+             ]
+            },
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "y"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 4
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": [
+       {
+        "kind": "ref",
+        "elementId": "e"
+       }
+      ]
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_d": {
+    "id": "op_d",
+    "op": "conic.directrices",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "c"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "directrix.1",
+      "elementId": "d1"
+     },
+     {
+      "slot": "directrix.2",
+      "elementId": "d2"
+     },
+     {
+      "slot": "directrix.3",
+      "elementId": "d3"
+     }
+    ]
+   },
+   "op_a": {
+    "id": "op_a",
+    "op": "conic.asymptotes",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "c"
+     },
+     "count": {
+      "kind": "number",
+      "value": 3
+     }
+    },
+    "outputs": [
+     {
+      "slot": "asymptote.1",
+      "elementId": "a1"
+     },
+     {
+      "slot": "asymptote.2",
+      "elementId": "a2"
+     },
+     {
+      "slot": "asymptote.3",
+      "elementId": "a3"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "e": {
+    "id": "e",
+    "type": "number",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "number"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "conic",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "conic"
+    }
+   },
+   "d1": {
+    "id": "d1",
+    "type": "line",
+    "displayName": "d1",
+    "producer": {
+     "operationId": "op_d",
+     "slot": "directrix.1"
+    }
+   },
+   "d2": {
+    "id": "d2",
+    "type": "line",
+    "displayName": "d2",
+    "producer": {
+     "operationId": "op_d",
+     "slot": "directrix.2"
+    }
+   },
+   "d3": {
+    "id": "d3",
+    "type": "line",
+    "displayName": "d3",
+    "producer": {
+     "operationId": "op_d",
+     "slot": "directrix.3"
+    }
+   },
+   "a1": {
+    "id": "a1",
+    "type": "line",
+    "displayName": "a1",
+    "producer": {
+     "operationId": "op_a",
+     "slot": "asymptote.1"
+    }
+   },
+   "a2": {
+    "id": "a2",
+    "type": "line",
+    "displayName": "a2",
+    "producer": {
+     "operationId": "op_a",
+     "slot": "asymptote.2"
+    }
+   },
+   "a3": {
+    "id": "a3",
+    "type": "line",
+    "displayName": "a3",
+    "producer": {
+     "operationId": "op_a",
+     "slot": "asymptote.3"
+    }
+   }
+  },
+  "inputs": {
+   "e": {
+    "kind": "number",
+    "value": 0.5
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "ellipse",
+   "inputs": {
+    "e": {
+     "kind": "number",
+     "value": 0.5
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       2.666666667,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.666666667,
+      "b": 2.309401077
+     }
+    },
+    "d1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       8.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "d2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -2.666666667,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "d3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "e": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.5,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_d:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "near_parabola",
+   "inputs": {
+    "e": {
+     "kind": "number",
+     "value": 0.99
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       100.502512563,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 100.502512563,
+      "b": 14.1776241
+     }
+    },
+    "d1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       202.02020202,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "d2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.015176895,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "d3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "e": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.99,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_d:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "parabola",
+   "inputs": {
+    "e": {
+     "kind": "number",
+     "value": 1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "d1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "d2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "d3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "e": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_d:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "hyperbola",
+   "inputs": {
+    "e": {
+     "kind": "number",
+     "value": 1.5
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.888888889,
+       0.795046392
+      ],
+      "dir": [
+       0.666666667,
+       0.745355992
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "a2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.888888889,
+       -0.795046392
+      ],
+      "dir": [
+       -0.666666667,
+       0.745355992
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "a3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       -1.6,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.6,
+      "b": 1.788854382
+     }
+    },
+    "d1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.533333333,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "d2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -2.666666667,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "d3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "e": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.5,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_a:through_center": "passed",
+    "op_a:asymptotic_direction": "passed",
+    "op_d:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "parabola_return",
+   "inputs": {
+    "e": {
+     "kind": "number",
+     "value": 1.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "p": 2.0
+     }
+    },
+    "d1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "d2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "d3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "e": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_d:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "ellipse_return",
+   "inputs": {
+    "e": {
+     "kind": "number",
+     "value": 0.5
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       2.666666667,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.666666667,
+      "b": 2.309401077
+     }
+    },
+    "d1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       8.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "d2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -2.666666667,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "d3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "e": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.5,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_d:focus_directrix": "passed"
+   }
+  },
+  {
+   "name": "circle",
+   "inputs": {
+    "e": {
+     "kind": "number",
+     "value": 0.0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       2.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 2.0
+     }
+    },
+    "d1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "d2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "d3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_directrix"
+    },
+    "e": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "recovery",
+   "inputs": {
+    "e": {
+     "kind": "number",
+     "value": 0.5
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "a1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "a3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_asymptote"
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       2.666666667,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.666666667,
+      "b": 2.309401077
+     }
+    },
+    "d1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       8.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "d2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -2.666666667,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "d3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "e": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.5,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_d:focus_directrix": "passed"
+   }
+  }
+ ]
+}

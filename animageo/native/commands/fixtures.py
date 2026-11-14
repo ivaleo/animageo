@@ -23,7 +23,7 @@ from pathlib import Path
 
 from ..canonical import canonical_json
 from ..edit import name_key
-from ..registry import REGISTRY_VERSION
+from .._fixture_registry import BASELINE_VERSION as FIXTURE_REGISTRY_VERSION
 from .build import is_helper, parse_commands
 from .lexicon import Lexicon, as_lexicon, lexicon_hash
 from .naming import next_name, polygon_side_names
@@ -503,7 +503,7 @@ def _naming_fixture() -> dict:
     return {
         'format': NAMING_FORMAT,
         'id': 'naming',
-        'registry': REGISTRY_VERSION,
+        'registry': FIXTURE_REGISTRY_VERSION,
         'generatedBy': f'animageo {_library_version()}',
         'cases': [{'name': n, 'type': t, 'taken': taken, 'expect': next_name(t, taken)}
                   for n, t, taken in _NAMING_CASES],
@@ -522,7 +522,7 @@ def build_fixtures(lexicon=None) -> dict:
             'format': COMMANDS_FORMAT,
             'id': fixture_id,
             'lexiconHash': lexicon_hash(lex.data),
-            'registry': REGISTRY_VERSION,
+            'registry': FIXTURE_REGISTRY_VERSION,
             'generatedBy': f'animageo {_library_version()}',
             'cases': [_case(name, text, base, lex) for name, text, base in cases],
         }
@@ -532,7 +532,7 @@ def build_fixtures(lexicon=None) -> dict:
             'format': COMMANDS_FORMAT,
             'id': fixture_id,
             'lexiconHash': lexicon_hash(lex.data),
-            'registry': REGISTRY_VERSION,
+            'registry': FIXTURE_REGISTRY_VERSION,
             'generatedBy': f'animageo {_library_version()}',
             'cases': [build_case(name, spec, lex) for name, spec in cases],
         }

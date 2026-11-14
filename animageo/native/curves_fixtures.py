@@ -19,8 +19,6 @@ import json
 import math
 from pathlib import Path
 
-from .registry import REGISTRY_VERSION
-
 __all__ = ['DEFAULT_DIR', 'build_fixtures', 'write_fixtures', 'check_fixtures', 'verify_fixtures',
            'verify_fixture', 'case_samples']
 
@@ -83,9 +81,9 @@ def T(t, **extra):
 
 
 class _Doc:
-    def __init__(self, doc_id, bounds=(-10, -10, 10, 10)):
+    def __init__(self, doc_id, bounds=(-10, -10, 10, 10), *, registry_version='1.12'):
         self.doc = {'format': 'animageo-construction/v1', 'documentId': doc_id,
-                    'operationRegistryVersion': REGISTRY_VERSION, 'operations': {}, 'elements': {}, 'inputs': {},
+                    'operationRegistryVersion': registry_version, 'operations': {}, 'elements': {}, 'inputs': {},
                     'viewDefaults': {'bounds': list(bounds)}}
 
     def op(self, op_id, name, args, outputs):
@@ -923,6 +921,11 @@ def build_fixtures() -> dict:
     out.update(tangency_fixtures())
     from .conic_tangency_fixtures import build_fixtures as conic_tangency_fixtures
     out.update(conic_tangency_fixtures())
+    # Existing documents and parity labels remain a byte-stable 1.12 corpus.
+    for fixture in out.values():
+        fixture['registry'] = '1.12'
+    from .conic_elements_fixtures import build_fixtures as conic_elements_fixtures
+    out.update(conic_elements_fixtures())
     return out
 
 
