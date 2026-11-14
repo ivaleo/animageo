@@ -212,6 +212,16 @@ def producer_values(ref, elements, ops, states) -> tuple:
             continue
         vals = [r['value'] for r in recs]
         values[slot] = vals if arg.get('kind') == 'list' else vals[0]
+    if producer['op'] in ('line.tangents_from_point_conic', 'line.tangents_parallel_conic'):
+        slot = elements[ref]['producer']['slot']
+        values['_output_slot'] = slot
+        touch_slot = 'touch.'+slot.partition('.')[2]
+        for output in producer['outputs']:
+            if output['slot'] == touch_slot:
+                touch = states.get(output['elementId'])
+                if touch is not None and touch['state'] == 'defined':
+                    values['_touch'] = touch['value']
+                break
     return producer['op'], values
 
 
@@ -345,6 +355,8 @@ CHECK_OPTIONAL_SLOTS = {
     # registry 1.8: fewer common points than four slots
     'intersect.conic_conic': frozenset({'third', 'fourth'}),
     'intersect.function_conic': frozenset({'point'}),
+    'line.tangents_from_point_conic': frozenset({'tangent', 'touch'}),
+    'line.tangents_parallel_conic': frozenset({'tangent', 'touch'}),
 }
 
 

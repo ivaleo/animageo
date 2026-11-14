@@ -73,6 +73,21 @@ def _xy(value) -> tuple:
 
 def _term(expr: str, value: dict, args: dict) -> tuple:
     expr = expr.strip()
+    if expr == 'contact(args.conic, value)':
+        from .tangency_conic import contact, from_point, parallel
+        if '_touch' in args:
+            return _xy(args['_touch'])
+        if '_output_slot' in args:
+            from .numeric import tolerances
+            from .ops import OpContext
+            ctx = OpContext(tolerances(args['_scale']))
+            if 'base' in args:
+                pairs = parallel(args['conic'], args['base']['dir'], ctx)
+            else:
+                pairs = from_point(args['conic'], _xy(args['point']), ctx)
+            index = int(args['_output_slot'].partition('.')[2])-1
+            return pairs[index][1]
+        return contact(args['conic'], value)
     if expr == 'graph(args.function, args.x)':
         from .function import evaluator
         x = args['x']['value']
@@ -123,8 +138,9 @@ def frame(type_: str, value: dict, producer_op: str | None = None, producer_args
     if kind == 'affine':
         frames = spec['frames']
         rule = frames.get(producer_op) if producer_op in frames and producer_args is not None else frames['*']
-        origin = _expr(rule['origin'], value, producer_args or {})
-        vector = _expr(rule['vector'], value, producer_args or {})
+        frame_args = dict(producer_args or {}, _scale=scale)
+        origin = _expr(rule['origin'], value, frame_args)
+        vector = _expr(rule['vector'], value, frame_args)
         lo = spec['min'] if spec.get('outside') == 'clamp' else None
         hi = spec['max'] if spec.get('outside') == 'clamp' else None
         return Frame('affine', origin, vector, lo, hi)

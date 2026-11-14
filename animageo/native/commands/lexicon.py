@@ -67,7 +67,8 @@ INPUT = '$input'
 # warning, as an expression (commands.md §8). Registry 1.9: regions too.
 DEFERRED_PREFIXES = ('function.', 'conic.', 'intersect.function_', 'intersect.line_conic', 'intersect.conic_conic',
                      'line.equation', 'point.on_function', 'region.', 'point.expression', 'vector.expression')
-DEFERRED_OPS = frozenset({'line.tangent_function_at', 'line.slope'})
+DEFERRED_OPS = frozenset({'line.tangent_function_at', 'line.tangent_conic_at',
+                        'line.tangents_from_point_conic', 'line.tangents_parallel_conic', 'line.slope'})
 
 
 def deferred_op(op: str) -> bool:
