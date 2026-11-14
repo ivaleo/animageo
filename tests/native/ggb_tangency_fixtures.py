@@ -24,7 +24,7 @@ from tests.native.test_native_tangency_import import conic, function, line, numb
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE_DIR = ROOT / 'tests/native/import/tangency'
-SYNTHETIC = ('graph', 'helpers', 'conic', 'sparse', 'parallel_circle', 'slope', 'refused')
+SYNTHETIC = ('graph', 'helpers', 'inline_points', 'conic', 'sparse', 'parallel_circle', 'slope', 'refused')
 SAVED = ('abscissa', 'parameter', 'domain', 'corner', 'hole', 'external', 'multiplicity',
          'inside', 'vertical', 'parallel', 'hyperbola', 'parabola', 'slope', 'circle')
 NAMES = tuple('ggb_tangency_' + n for n in SYNTHETIC) + tuple('ggb_tangency_saved_' + n for n in SAVED)
@@ -45,6 +45,12 @@ def synthetic_source(name):
         body += command('Tangent', ['A', 'a*x^2'], ['t']) + line('t', (8, 1, 8))
         body += command('Tangent', ['x(A)+a', 'x^2'], ['s']) + line('s', (0, 1, 0))
         changes = [('zero', {'A': [0, 99]}), ('positive', {'A': [3, -7]}), ('coefficient', {'a': -1})]
+    elif name == 'inline_points':
+        body = point('A', 1., 7.) + function()
+        for arg, label, x in [('(1,0)', 'literal', 1), ('(1,7)', 'ordinate', 1),
+                              ('A + (1,0)', 'shifted', 2), ('x(A)+1', 'numeric', 2)]:
+            body += command('Tangent', [arg, 'f'], [label]) + line(label, (-2*x, 1, x*x))
+        changes = [('ordinate', {'A': [1, -99]}), ('abscissa', {'A': [3, 99]}), ('negative', {'A': [-2, 99]})]
     elif name == 'conic':
         body = point('P', 4., 0.) + conic() + command('Tangent', ['P', 'K'], ['lower', 'upper'])
         body += line('lower', (math.sqrt(3), -6, -4*math.sqrt(3)))

@@ -55,6 +55,34 @@ def test_graph_tangent_uses_live_abscissa_and_ignores_point_ordinate(arg):
     assert eid(items, 't') not in doc['inputs']
 
 
+@pytest.mark.parametrize('arg,x,moved_x,depends_on_point', [
+    ('(1,0)', 1, 1, False),
+    ('(1,7)', 1, 1, False),
+    ('A + (1,0)', 2, 4, True),
+    ('x(A)+1', 2, 4, True),
+])
+def test_inline_point_or_numeric_abscissa_keeps_graph_tangent_semantics(arg, x, moved_x, depends_on_point):
+    doc, items = imported(point('A', 1., 7.) + function()
+                          + command('Tangent', [arg, 'f'], ['t']) + line('t', (-2*x, 1, x*x)))
+    assert items['t']['category'] == 'editable' and items['t']['value_check'] == 'passed'
+    assert producer(doc, items, 't')['op'] == 'line.tangent_function_at'
+    assert coefficients(native.evaluate(doc), items, 't') == pytest.approx(line_coefficients(-2*x, 1, x*x))
+    assert ('A' in items['t']['depends_on']) == depends_on_point
+    for xy, expected_x in [([1, -99], x), ([3, -99], moved_x), ([-2, 99], -1 if depends_on_point else x)]:
+        ev = native.evaluate(doc, inputs={eid(items, 'A'): {'kind': 'point', 'value': xy}})
+        assert coefficients(ev, items, 't') == pytest.approx(line_coefficients(-2*expected_x, 1, expected_x**2))
+    assert eid(items, 't') not in doc['inputs']
+    assert native.validate(native.load(native.dumps(doc))) == []
+    helpers = set(doc['elements']) - {eid(items, n) for n in items}
+    assert helpers
+    owner = producer(doc, items, 't')['id']
+    for helper in helpers:
+        assert doc['elements'][helper]['origin'] == {'kind': 'auto', 'source': owner}
+        assert doc['appearance'][helper]['role'] == 'aux' and not doc['appearance'][helper]['visible']
+    cleaned, _ = native.delete(doc, [eid(items, 't')], mode='operation')
+    assert not helpers.intersection(cleaned.elements)
+
+
 @pytest.mark.parametrize('text,x,coords,reason', [
     ('sqrt(x)', 0, ('-Infinity', 1, 'NaN'), 'not_differentiable'),
     ('1/x', 0, ('Infinity', 1, 'NaN'), 'out_of_domain'),

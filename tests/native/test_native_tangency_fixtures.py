@@ -46,6 +46,32 @@ def test_saved_geogebra_coefficients_are_independent_line_evidence(name):
     assert checked > 0
 
 
+def test_inline_point_fixture_checks_saved_coefficients_and_live_abscissas():
+    raw, scene, fixture = ggb.build('ggb_tangency_inline_points')
+    doc = scene['document']
+    items = {e['ggb_name']: e for e in fixture['import']['elements']}
+    saved = native.evaluate(doc)
+    checked = 0
+    for info in scan(parse_xml(read_ggb(raw).xml))['elements']:
+        if info.get('command') != 'Tangent':
+            continue
+        item = items[info['label']]
+        assert item['category'] == 'editable' and item['value_check'] == 'passed'
+        coords = info['coords']
+        expected = line_coefficients(coords['x'], coords['y'], coords['z'])
+        value = saved.elements[item['native_ids'][0]]['value']
+        assert native_report_value('line', value)['value'] == pytest.approx(expected, abs=1e-9)
+        checked += 1
+    assert checked == 4
+    for case, shifted_x in zip(scene['cases'], (2, 2, 4, -1), strict=True):
+        ev = native.evaluate(doc, inputs=case.get('inputs'))
+        for name in ('literal', 'ordinate', 'shifted', 'numeric'):
+            x = 1 if name in ('literal', 'ordinate') else shifted_x
+            value = ev.elements[items[name]['native_ids'][0]]['value']
+            actual = native_report_value('line', value)['value']
+            assert actual == pytest.approx(line_coefficients(-2*x, 1, x*x), abs=1e-9)
+
+
 def test_saved_multiplicity_refuses_both_labels_and_jump_is_honestly_different():
     _, _, fixture = ggb.build('ggb_tangency_saved_multiplicity')
     items = {e['ggb_name']: e for e in fixture['import']['elements']}

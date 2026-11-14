@@ -94,9 +94,16 @@ def read_tangency(nodes, infos, norm, ctx):
                     plan.operation = 'line.tangent_function_at'
                     plan.function = _function(b, kinds, norm, ctx)
                     text = f'x({a})' if kinds.get(a) == 'point' else a
-                    ast, refs = parse_typed(text, kinds, result='num')
+                    try:
+                        ast, refs = parse_typed(text, kinds, result='num')
+                    except ExprError as scalar_error:
+                        try:
+                            point_ast, refs = parse_typed(text, kinds, result='vec')
+                        except ExprError:
+                            raise scalar_error
+                        ast = {'fn': 'x', 'args': [point_ast]}
                     if any(kinds[r] not in ('numeric', 'angle', 'point') for r in refs):
-                        raise ExprError('unsupported_signature', 'a numeric abscissa is required')
+                        raise ExprError('unsupported_signature', 'abscissa expressions may reference only numbers, angles and points')
                     plan.number = NumberSource(ast, [norm[r] for r in refs])
                 elif kinds.get(b) == 'conic' and kinds.get(a) in ('point', 'line'):
                     parallel = kinds[a] == 'line'
