@@ -1,0 +1,4986 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "graph_tangent_domain",
+ "registry": "1.12",
+ "generatedBy": "animageo 1.17.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "graph_tangent_domain",
+  "operationRegistryVersion": "1.12",
+  "operations": {
+   "op_x": {
+    "id": "op_x",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "x"
+     }
+    ]
+   },
+   "op_closed": {
+    "id": "op_closed",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     },
+     "min": {
+      "kind": "number",
+      "value": 0
+     },
+     "max": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "closed"
+     }
+    ]
+   },
+   "op_open": {
+    "id": "op_open",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "and": [
+          {
+           "cmp": ">",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 0
+            }
+           ]
+          },
+          {
+           "cmp": "<",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "open"
+     }
+    ]
+   },
+   "op_root": {
+    "id": "op_root",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "fn": "sqrt",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "root"
+     }
+    ]
+   },
+   "op_guarded": {
+    "id": "op_guarded",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": ">=",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "guarded"
+     }
+    ]
+   },
+   "op_closed_t": {
+    "id": "op_closed_t",
+    "op": "line.tangent_function_at",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "closed"
+     },
+     "x": {
+      "kind": "ref",
+      "elementId": "x"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "closed_t"
+     },
+     {
+      "slot": "touch",
+      "elementId": "closed_t_touch"
+     }
+    ]
+   },
+   "op_open_t": {
+    "id": "op_open_t",
+    "op": "line.tangent_function_at",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "open"
+     },
+     "x": {
+      "kind": "ref",
+      "elementId": "x"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "open_t"
+     },
+     {
+      "slot": "touch",
+      "elementId": "open_t_touch"
+     }
+    ]
+   },
+   "op_root_t": {
+    "id": "op_root_t",
+    "op": "line.tangent_function_at",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "root"
+     },
+     "x": {
+      "kind": "ref",
+      "elementId": "x"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "root_t"
+     },
+     {
+      "slot": "touch",
+      "elementId": "root_t_touch"
+     }
+    ]
+   },
+   "op_guarded_t": {
+    "id": "op_guarded_t",
+    "op": "line.tangent_function_at",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "guarded"
+     },
+     "x": {
+      "kind": "ref",
+      "elementId": "x"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "guarded_t"
+     },
+     {
+      "slot": "touch",
+      "elementId": "guarded_t_touch"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "x": {
+    "id": "x",
+    "type": "number",
+    "displayName": "x",
+    "producer": {
+     "operationId": "op_x",
+     "slot": "number"
+    }
+   },
+   "closed": {
+    "id": "closed",
+    "type": "function",
+    "displayName": "closed",
+    "producer": {
+     "operationId": "op_closed",
+     "slot": "function"
+    }
+   },
+   "open": {
+    "id": "open",
+    "type": "function",
+    "displayName": "open",
+    "producer": {
+     "operationId": "op_open",
+     "slot": "function"
+    }
+   },
+   "root": {
+    "id": "root",
+    "type": "function",
+    "displayName": "root",
+    "producer": {
+     "operationId": "op_root",
+     "slot": "function"
+    }
+   },
+   "guarded": {
+    "id": "guarded",
+    "type": "function",
+    "displayName": "guarded",
+    "producer": {
+     "operationId": "op_guarded",
+     "slot": "function"
+    }
+   },
+   "closed_t": {
+    "id": "closed_t",
+    "type": "line",
+    "displayName": "closed_t",
+    "producer": {
+     "operationId": "op_closed_t",
+     "slot": "line"
+    }
+   },
+   "closed_t_touch": {
+    "id": "closed_t_touch",
+    "type": "point",
+    "displayName": "closed_t_touch",
+    "producer": {
+     "operationId": "op_closed_t",
+     "slot": "touch"
+    }
+   },
+   "open_t": {
+    "id": "open_t",
+    "type": "line",
+    "displayName": "open_t",
+    "producer": {
+     "operationId": "op_open_t",
+     "slot": "line"
+    }
+   },
+   "open_t_touch": {
+    "id": "open_t_touch",
+    "type": "point",
+    "displayName": "open_t_touch",
+    "producer": {
+     "operationId": "op_open_t",
+     "slot": "touch"
+    }
+   },
+   "root_t": {
+    "id": "root_t",
+    "type": "line",
+    "displayName": "root_t",
+    "producer": {
+     "operationId": "op_root_t",
+     "slot": "line"
+    }
+   },
+   "root_t_touch": {
+    "id": "root_t_touch",
+    "type": "point",
+    "displayName": "root_t_touch",
+    "producer": {
+     "operationId": "op_root_t",
+     "slot": "touch"
+    }
+   },
+   "guarded_t": {
+    "id": "guarded_t",
+    "type": "line",
+    "displayName": "guarded_t",
+    "producer": {
+     "operationId": "op_guarded_t",
+     "slot": "line"
+    }
+   },
+   "guarded_t_touch": {
+    "id": "guarded_t_touch",
+    "type": "point",
+    "displayName": "guarded_t_touch",
+    "producer": {
+     "operationId": "op_guarded_t",
+     "slot": "touch"
+    }
+   }
+  },
+  "inputs": {
+   "x": {
+    "kind": "number",
+    "value": 0.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "left",
+   "inputs": {
+    "x": {
+     "kind": "number",
+     "value": 0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "closed": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       0.0,
+       2.0
+      ]
+     }
+    },
+    "closed_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "closed_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    "guarded": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": ">=",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "guarded_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "guarded_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    "open": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "and": [
+          {
+           "cmp": ">",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 0
+            }
+           ]
+          },
+          {
+           "cmp": "<",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "open_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "out_of_domain"
+    },
+    "open_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "out_of_domain"
+    },
+    "root": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sqrt",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "root_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "not_differentiable"
+    },
+    "root_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "not_differentiable"
+    },
+    "x": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_closed_t:on_curve": "passed",
+    "op_closed_t:tangent": "passed",
+    "op_guarded_t:on_curve": "passed",
+    "op_guarded_t:tangent": "passed"
+   },
+   "samples": {
+    "closed": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.0625,
+      0.00390625
+     ],
+     [
+      0.125,
+      0.015625
+     ],
+     [
+      0.1875,
+      0.03515625
+     ],
+     [
+      0.25,
+      0.0625
+     ],
+     [
+      0.3125,
+      0.09765625
+     ],
+     [
+      0.375,
+      0.140625
+     ],
+     [
+      0.4375,
+      0.19140625
+     ],
+     [
+      0.5,
+      0.25
+     ],
+     [
+      0.5625,
+      0.31640625
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      0.6875,
+      0.47265625
+     ],
+     [
+      0.75,
+      0.5625
+     ],
+     [
+      0.8125,
+      0.66015625
+     ],
+     [
+      0.875,
+      0.765625
+     ],
+     [
+      0.9375,
+      0.87890625
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.0625,
+      1.12890625
+     ],
+     [
+      1.125,
+      1.265625
+     ],
+     [
+      1.1875,
+      1.41015625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.3125,
+      1.72265625
+     ],
+     [
+      1.375,
+      1.890625
+     ],
+     [
+      1.4375,
+      2.06640625
+     ],
+     [
+      1.5,
+      2.25
+     ],
+     [
+      1.5625,
+      2.44140625
+     ],
+     [
+      1.625,
+      2.640625
+     ],
+     [
+      1.6875,
+      2.84765625
+     ],
+     [
+      1.75,
+      3.0625
+     ],
+     [
+      1.8125,
+      3.28515625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      1.9375,
+      3.75390625
+     ],
+     [
+      2.0,
+      4.0
+     ]
+    ],
+    "guarded": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ],
+    "open": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      null
+     ],
+     [
+      3.125,
+      null
+     ],
+     [
+      3.75,
+      null
+     ],
+     [
+      4.375,
+      null
+     ],
+     [
+      5.0,
+      null
+     ],
+     [
+      5.625,
+      null
+     ],
+     [
+      6.25,
+      null
+     ],
+     [
+      6.875,
+      null
+     ],
+     [
+      7.5,
+      null
+     ],
+     [
+      8.125,
+      null
+     ],
+     [
+      8.75,
+      null
+     ],
+     [
+      9.375,
+      null
+     ],
+     [
+      10.0,
+      null
+     ]
+    ],
+    "root": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.790569415
+     ],
+     [
+      1.25,
+      1.118033989
+     ],
+     [
+      1.875,
+      1.369306394
+     ],
+     [
+      2.5,
+      1.58113883
+     ],
+     [
+      3.125,
+      1.767766953
+     ],
+     [
+      3.75,
+      1.936491673
+     ],
+     [
+      4.375,
+      2.091650066
+     ],
+     [
+      5.0,
+      2.236067977
+     ],
+     [
+      5.625,
+      2.371708245
+     ],
+     [
+      6.25,
+      2.5
+     ],
+     [
+      6.875,
+      2.62202212
+     ],
+     [
+      7.5,
+      2.738612788
+     ],
+     [
+      8.125,
+      2.850438563
+     ],
+     [
+      8.75,
+      2.958039892
+     ],
+     [
+      9.375,
+      3.061862178
+     ],
+     [
+      10.0,
+      3.16227766
+     ]
+    ]
+   }
+  },
+  {
+   "name": "right",
+   "inputs": {
+    "x": {
+     "kind": "number",
+     "value": 2
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "closed": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       0.0,
+       2.0
+      ]
+     }
+    },
+    "closed_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.941176471,
+       -0.235294118
+      ],
+      "dir": [
+       0.242535625,
+       0.9701425
+      ]
+     }
+    },
+    "closed_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2,
+      "y": 4
+     }
+    },
+    "guarded": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": ">=",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "guarded_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.941176471,
+       -0.235294118
+      ],
+      "dir": [
+       0.242535625,
+       0.9701425
+      ]
+     }
+    },
+    "guarded_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2,
+      "y": 4
+     }
+    },
+    "open": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "and": [
+          {
+           "cmp": ">",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 0
+            }
+           ]
+          },
+          {
+           "cmp": "<",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "open_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "out_of_domain"
+    },
+    "open_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "out_of_domain"
+    },
+    "root": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sqrt",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "root_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.222222222,
+       0.628539361
+      ],
+      "dir": [
+       0.942809042,
+       0.333333333
+      ]
+     }
+    },
+    "root_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2,
+      "y": 1.414213562
+     }
+    },
+    "x": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_closed_t:on_curve": "passed",
+    "op_closed_t:tangent": "passed",
+    "op_guarded_t:on_curve": "passed",
+    "op_guarded_t:tangent": "passed",
+    "op_root_t:on_curve": "passed",
+    "op_root_t:tangent": "passed"
+   },
+   "samples": {
+    "closed": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.0625,
+      0.00390625
+     ],
+     [
+      0.125,
+      0.015625
+     ],
+     [
+      0.1875,
+      0.03515625
+     ],
+     [
+      0.25,
+      0.0625
+     ],
+     [
+      0.3125,
+      0.09765625
+     ],
+     [
+      0.375,
+      0.140625
+     ],
+     [
+      0.4375,
+      0.19140625
+     ],
+     [
+      0.5,
+      0.25
+     ],
+     [
+      0.5625,
+      0.31640625
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      0.6875,
+      0.47265625
+     ],
+     [
+      0.75,
+      0.5625
+     ],
+     [
+      0.8125,
+      0.66015625
+     ],
+     [
+      0.875,
+      0.765625
+     ],
+     [
+      0.9375,
+      0.87890625
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.0625,
+      1.12890625
+     ],
+     [
+      1.125,
+      1.265625
+     ],
+     [
+      1.1875,
+      1.41015625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.3125,
+      1.72265625
+     ],
+     [
+      1.375,
+      1.890625
+     ],
+     [
+      1.4375,
+      2.06640625
+     ],
+     [
+      1.5,
+      2.25
+     ],
+     [
+      1.5625,
+      2.44140625
+     ],
+     [
+      1.625,
+      2.640625
+     ],
+     [
+      1.6875,
+      2.84765625
+     ],
+     [
+      1.75,
+      3.0625
+     ],
+     [
+      1.8125,
+      3.28515625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      1.9375,
+      3.75390625
+     ],
+     [
+      2.0,
+      4.0
+     ]
+    ],
+    "guarded": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ],
+    "open": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      null
+     ],
+     [
+      3.125,
+      null
+     ],
+     [
+      3.75,
+      null
+     ],
+     [
+      4.375,
+      null
+     ],
+     [
+      5.0,
+      null
+     ],
+     [
+      5.625,
+      null
+     ],
+     [
+      6.25,
+      null
+     ],
+     [
+      6.875,
+      null
+     ],
+     [
+      7.5,
+      null
+     ],
+     [
+      8.125,
+      null
+     ],
+     [
+      8.75,
+      null
+     ],
+     [
+      9.375,
+      null
+     ],
+     [
+      10.0,
+      null
+     ]
+    ],
+    "root": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.790569415
+     ],
+     [
+      1.25,
+      1.118033989
+     ],
+     [
+      1.875,
+      1.369306394
+     ],
+     [
+      2.5,
+      1.58113883
+     ],
+     [
+      3.125,
+      1.767766953
+     ],
+     [
+      3.75,
+      1.936491673
+     ],
+     [
+      4.375,
+      2.091650066
+     ],
+     [
+      5.0,
+      2.236067977
+     ],
+     [
+      5.625,
+      2.371708245
+     ],
+     [
+      6.25,
+      2.5
+     ],
+     [
+      6.875,
+      2.62202212
+     ],
+     [
+      7.5,
+      2.738612788
+     ],
+     [
+      8.125,
+      2.850438563
+     ],
+     [
+      8.75,
+      2.958039892
+     ],
+     [
+      9.375,
+      3.061862178
+     ],
+     [
+      10.0,
+      3.16227766
+     ]
+    ]
+   }
+  },
+  {
+   "name": "outside",
+   "inputs": {
+    "x": {
+     "kind": "number",
+     "value": -1
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "closed": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       0.0,
+       2.0
+      ]
+     }
+    },
+    "closed_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "out_of_domain"
+    },
+    "closed_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "out_of_domain"
+    },
+    "guarded": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": ">=",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "guarded_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "out_of_domain"
+    },
+    "guarded_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "out_of_domain"
+    },
+    "open": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "and": [
+          {
+           "cmp": ">",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 0
+            }
+           ]
+          },
+          {
+           "cmp": "<",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "open_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "out_of_domain"
+    },
+    "open_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "out_of_domain"
+    },
+    "root": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sqrt",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "root_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "out_of_domain"
+    },
+    "root_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "out_of_domain"
+    },
+    "x": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {},
+   "samples": {
+    "closed": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.0625,
+      0.00390625
+     ],
+     [
+      0.125,
+      0.015625
+     ],
+     [
+      0.1875,
+      0.03515625
+     ],
+     [
+      0.25,
+      0.0625
+     ],
+     [
+      0.3125,
+      0.09765625
+     ],
+     [
+      0.375,
+      0.140625
+     ],
+     [
+      0.4375,
+      0.19140625
+     ],
+     [
+      0.5,
+      0.25
+     ],
+     [
+      0.5625,
+      0.31640625
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      0.6875,
+      0.47265625
+     ],
+     [
+      0.75,
+      0.5625
+     ],
+     [
+      0.8125,
+      0.66015625
+     ],
+     [
+      0.875,
+      0.765625
+     ],
+     [
+      0.9375,
+      0.87890625
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.0625,
+      1.12890625
+     ],
+     [
+      1.125,
+      1.265625
+     ],
+     [
+      1.1875,
+      1.41015625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.3125,
+      1.72265625
+     ],
+     [
+      1.375,
+      1.890625
+     ],
+     [
+      1.4375,
+      2.06640625
+     ],
+     [
+      1.5,
+      2.25
+     ],
+     [
+      1.5625,
+      2.44140625
+     ],
+     [
+      1.625,
+      2.640625
+     ],
+     [
+      1.6875,
+      2.84765625
+     ],
+     [
+      1.75,
+      3.0625
+     ],
+     [
+      1.8125,
+      3.28515625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      1.9375,
+      3.75390625
+     ],
+     [
+      2.0,
+      4.0
+     ]
+    ],
+    "guarded": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ],
+    "open": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      null
+     ],
+     [
+      3.125,
+      null
+     ],
+     [
+      3.75,
+      null
+     ],
+     [
+      4.375,
+      null
+     ],
+     [
+      5.0,
+      null
+     ],
+     [
+      5.625,
+      null
+     ],
+     [
+      6.25,
+      null
+     ],
+     [
+      6.875,
+      null
+     ],
+     [
+      7.5,
+      null
+     ],
+     [
+      8.125,
+      null
+     ],
+     [
+      8.75,
+      null
+     ],
+     [
+      9.375,
+      null
+     ],
+     [
+      10.0,
+      null
+     ]
+    ],
+    "root": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.790569415
+     ],
+     [
+      1.25,
+      1.118033989
+     ],
+     [
+      1.875,
+      1.369306394
+     ],
+     [
+      2.5,
+      1.58113883
+     ],
+     [
+      3.125,
+      1.767766953
+     ],
+     [
+      3.75,
+      1.936491673
+     ],
+     [
+      4.375,
+      2.091650066
+     ],
+     [
+      5.0,
+      2.236067977
+     ],
+     [
+      5.625,
+      2.371708245
+     ],
+     [
+      6.25,
+      2.5
+     ],
+     [
+      6.875,
+      2.62202212
+     ],
+     [
+      7.5,
+      2.738612788
+     ],
+     [
+      8.125,
+      2.850438563
+     ],
+     [
+      8.75,
+      2.958039892
+     ],
+     [
+      9.375,
+      3.061862178
+     ],
+     [
+      10.0,
+      3.16227766
+     ]
+    ]
+   }
+  },
+  {
+   "name": "interior",
+   "inputs": {
+    "x": {
+     "kind": "number",
+     "value": 1
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "closed": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       0.0,
+       2.0
+      ]
+     }
+    },
+    "closed_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     }
+    },
+    "closed_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     }
+    },
+    "guarded": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": ">=",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "guarded_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     }
+    },
+    "guarded_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     }
+    },
+    "open": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "and": [
+          {
+           "cmp": ">",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 0
+            }
+           ]
+          },
+          {
+           "cmp": "<",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "open_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     }
+    },
+    "open_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     }
+    },
+    "root": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sqrt",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "root_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.2,
+       0.4
+      ],
+      "dir": [
+       0.894427191,
+       0.447213595
+      ]
+     }
+    },
+    "root_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1.0
+     }
+    },
+    "x": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_closed_t:on_curve": "passed",
+    "op_closed_t:tangent": "passed",
+    "op_guarded_t:on_curve": "passed",
+    "op_guarded_t:tangent": "passed",
+    "op_open_t:on_curve": "passed",
+    "op_open_t:tangent": "passed",
+    "op_root_t:on_curve": "passed",
+    "op_root_t:tangent": "passed"
+   },
+   "samples": {
+    "closed": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.0625,
+      0.00390625
+     ],
+     [
+      0.125,
+      0.015625
+     ],
+     [
+      0.1875,
+      0.03515625
+     ],
+     [
+      0.25,
+      0.0625
+     ],
+     [
+      0.3125,
+      0.09765625
+     ],
+     [
+      0.375,
+      0.140625
+     ],
+     [
+      0.4375,
+      0.19140625
+     ],
+     [
+      0.5,
+      0.25
+     ],
+     [
+      0.5625,
+      0.31640625
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      0.6875,
+      0.47265625
+     ],
+     [
+      0.75,
+      0.5625
+     ],
+     [
+      0.8125,
+      0.66015625
+     ],
+     [
+      0.875,
+      0.765625
+     ],
+     [
+      0.9375,
+      0.87890625
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.0625,
+      1.12890625
+     ],
+     [
+      1.125,
+      1.265625
+     ],
+     [
+      1.1875,
+      1.41015625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.3125,
+      1.72265625
+     ],
+     [
+      1.375,
+      1.890625
+     ],
+     [
+      1.4375,
+      2.06640625
+     ],
+     [
+      1.5,
+      2.25
+     ],
+     [
+      1.5625,
+      2.44140625
+     ],
+     [
+      1.625,
+      2.640625
+     ],
+     [
+      1.6875,
+      2.84765625
+     ],
+     [
+      1.75,
+      3.0625
+     ],
+     [
+      1.8125,
+      3.28515625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      1.9375,
+      3.75390625
+     ],
+     [
+      2.0,
+      4.0
+     ]
+    ],
+    "guarded": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ],
+    "open": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      null
+     ],
+     [
+      3.125,
+      null
+     ],
+     [
+      3.75,
+      null
+     ],
+     [
+      4.375,
+      null
+     ],
+     [
+      5.0,
+      null
+     ],
+     [
+      5.625,
+      null
+     ],
+     [
+      6.25,
+      null
+     ],
+     [
+      6.875,
+      null
+     ],
+     [
+      7.5,
+      null
+     ],
+     [
+      8.125,
+      null
+     ],
+     [
+      8.75,
+      null
+     ],
+     [
+      9.375,
+      null
+     ],
+     [
+      10.0,
+      null
+     ]
+    ],
+    "root": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.790569415
+     ],
+     [
+      1.25,
+      1.118033989
+     ],
+     [
+      1.875,
+      1.369306394
+     ],
+     [
+      2.5,
+      1.58113883
+     ],
+     [
+      3.125,
+      1.767766953
+     ],
+     [
+      3.75,
+      1.936491673
+     ],
+     [
+      4.375,
+      2.091650066
+     ],
+     [
+      5.0,
+      2.236067977
+     ],
+     [
+      5.625,
+      2.371708245
+     ],
+     [
+      6.25,
+      2.5
+     ],
+     [
+      6.875,
+      2.62202212
+     ],
+     [
+      7.5,
+      2.738612788
+     ],
+     [
+      8.125,
+      2.850438563
+     ],
+     [
+      8.75,
+      2.958039892
+     ],
+     [
+      9.375,
+      3.061862178
+     ],
+     [
+      10.0,
+      3.16227766
+     ]
+    ]
+   }
+  },
+  {
+   "name": "beyond",
+   "inputs": {
+    "x": {
+     "kind": "number",
+     "value": 3
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "closed": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       0.0,
+       2.0
+      ]
+     }
+    },
+    "closed_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "out_of_domain"
+    },
+    "closed_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "out_of_domain"
+    },
+    "guarded": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": ">=",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "guarded_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.459459459,
+       -0.243243243
+      ],
+      "dir": [
+       0.164398987,
+       0.986393924
+      ]
+     }
+    },
+    "guarded_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3,
+      "y": 9
+     }
+    },
+    "open": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "and": [
+          {
+           "cmp": ">",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 0
+            }
+           ]
+          },
+          {
+           "cmp": "<",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "open_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "out_of_domain"
+    },
+    "open_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "out_of_domain"
+    },
+    "root": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sqrt",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "root_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.230769231,
+       0.799408065
+      ],
+      "dir": [
+       0.960768923,
+       0.277350098
+      ]
+     }
+    },
+    "root_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3,
+      "y": 1.732050808
+     }
+    },
+    "x": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 3.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_guarded_t:on_curve": "passed",
+    "op_guarded_t:tangent": "passed",
+    "op_root_t:on_curve": "passed",
+    "op_root_t:tangent": "passed"
+   },
+   "samples": {
+    "closed": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.0625,
+      0.00390625
+     ],
+     [
+      0.125,
+      0.015625
+     ],
+     [
+      0.1875,
+      0.03515625
+     ],
+     [
+      0.25,
+      0.0625
+     ],
+     [
+      0.3125,
+      0.09765625
+     ],
+     [
+      0.375,
+      0.140625
+     ],
+     [
+      0.4375,
+      0.19140625
+     ],
+     [
+      0.5,
+      0.25
+     ],
+     [
+      0.5625,
+      0.31640625
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      0.6875,
+      0.47265625
+     ],
+     [
+      0.75,
+      0.5625
+     ],
+     [
+      0.8125,
+      0.66015625
+     ],
+     [
+      0.875,
+      0.765625
+     ],
+     [
+      0.9375,
+      0.87890625
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.0625,
+      1.12890625
+     ],
+     [
+      1.125,
+      1.265625
+     ],
+     [
+      1.1875,
+      1.41015625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.3125,
+      1.72265625
+     ],
+     [
+      1.375,
+      1.890625
+     ],
+     [
+      1.4375,
+      2.06640625
+     ],
+     [
+      1.5,
+      2.25
+     ],
+     [
+      1.5625,
+      2.44140625
+     ],
+     [
+      1.625,
+      2.640625
+     ],
+     [
+      1.6875,
+      2.84765625
+     ],
+     [
+      1.75,
+      3.0625
+     ],
+     [
+      1.8125,
+      3.28515625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      1.9375,
+      3.75390625
+     ],
+     [
+      2.0,
+      4.0
+     ]
+    ],
+    "guarded": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ],
+    "open": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      null
+     ],
+     [
+      3.125,
+      null
+     ],
+     [
+      3.75,
+      null
+     ],
+     [
+      4.375,
+      null
+     ],
+     [
+      5.0,
+      null
+     ],
+     [
+      5.625,
+      null
+     ],
+     [
+      6.25,
+      null
+     ],
+     [
+      6.875,
+      null
+     ],
+     [
+      7.5,
+      null
+     ],
+     [
+      8.125,
+      null
+     ],
+     [
+      8.75,
+      null
+     ],
+     [
+      9.375,
+      null
+     ],
+     [
+      10.0,
+      null
+     ]
+    ],
+    "root": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.790569415
+     ],
+     [
+      1.25,
+      1.118033989
+     ],
+     [
+      1.875,
+      1.369306394
+     ],
+     [
+      2.5,
+      1.58113883
+     ],
+     [
+      3.125,
+      1.767766953
+     ],
+     [
+      3.75,
+      1.936491673
+     ],
+     [
+      4.375,
+      2.091650066
+     ],
+     [
+      5.0,
+      2.236067977
+     ],
+     [
+      5.625,
+      2.371708245
+     ],
+     [
+      6.25,
+      2.5
+     ],
+     [
+      6.875,
+      2.62202212
+     ],
+     [
+      7.5,
+      2.738612788
+     ],
+     [
+      8.125,
+      2.850438563
+     ],
+     [
+      8.75,
+      2.958039892
+     ],
+     [
+      9.375,
+      3.061862178
+     ],
+     [
+      10.0,
+      3.16227766
+     ]
+    ]
+   }
+  },
+  {
+   "name": "recovery",
+   "inputs": {
+    "x": {
+     "kind": "number",
+     "value": 0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "closed": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       0.0,
+       2.0
+      ]
+     }
+    },
+    "closed_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "closed_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    "guarded": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": ">=",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "guarded_t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "guarded_t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    "open": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "and": [
+          {
+           "cmp": ">",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 0
+            }
+           ]
+          },
+          {
+           "cmp": "<",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "open_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "out_of_domain"
+    },
+    "open_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "out_of_domain"
+    },
+    "root": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "fn": "sqrt",
+       "args": [
+        {
+         "var": "x"
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "root_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "not_differentiable"
+    },
+    "root_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "not_differentiable"
+    },
+    "x": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_closed_t:on_curve": "passed",
+    "op_closed_t:tangent": "passed",
+    "op_guarded_t:on_curve": "passed",
+    "op_guarded_t:tangent": "passed"
+   },
+   "samples": {
+    "closed": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.0625,
+      0.00390625
+     ],
+     [
+      0.125,
+      0.015625
+     ],
+     [
+      0.1875,
+      0.03515625
+     ],
+     [
+      0.25,
+      0.0625
+     ],
+     [
+      0.3125,
+      0.09765625
+     ],
+     [
+      0.375,
+      0.140625
+     ],
+     [
+      0.4375,
+      0.19140625
+     ],
+     [
+      0.5,
+      0.25
+     ],
+     [
+      0.5625,
+      0.31640625
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      0.6875,
+      0.47265625
+     ],
+     [
+      0.75,
+      0.5625
+     ],
+     [
+      0.8125,
+      0.66015625
+     ],
+     [
+      0.875,
+      0.765625
+     ],
+     [
+      0.9375,
+      0.87890625
+     ],
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.0625,
+      1.12890625
+     ],
+     [
+      1.125,
+      1.265625
+     ],
+     [
+      1.1875,
+      1.41015625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.3125,
+      1.72265625
+     ],
+     [
+      1.375,
+      1.890625
+     ],
+     [
+      1.4375,
+      2.06640625
+     ],
+     [
+      1.5,
+      2.25
+     ],
+     [
+      1.5625,
+      2.44140625
+     ],
+     [
+      1.625,
+      2.640625
+     ],
+     [
+      1.6875,
+      2.84765625
+     ],
+     [
+      1.75,
+      3.0625
+     ],
+     [
+      1.8125,
+      3.28515625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      1.9375,
+      3.75390625
+     ],
+     [
+      2.0,
+      4.0
+     ]
+    ],
+    "guarded": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ],
+    "open": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      null
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      null
+     ],
+     [
+      3.125,
+      null
+     ],
+     [
+      3.75,
+      null
+     ],
+     [
+      4.375,
+      null
+     ],
+     [
+      5.0,
+      null
+     ],
+     [
+      5.625,
+      null
+     ],
+     [
+      6.25,
+      null
+     ],
+     [
+      6.875,
+      null
+     ],
+     [
+      7.5,
+      null
+     ],
+     [
+      8.125,
+      null
+     ],
+     [
+      8.75,
+      null
+     ],
+     [
+      9.375,
+      null
+     ],
+     [
+      10.0,
+      null
+     ]
+    ],
+    "root": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.790569415
+     ],
+     [
+      1.25,
+      1.118033989
+     ],
+     [
+      1.875,
+      1.369306394
+     ],
+     [
+      2.5,
+      1.58113883
+     ],
+     [
+      3.125,
+      1.767766953
+     ],
+     [
+      3.75,
+      1.936491673
+     ],
+     [
+      4.375,
+      2.091650066
+     ],
+     [
+      5.0,
+      2.236067977
+     ],
+     [
+      5.625,
+      2.371708245
+     ],
+     [
+      6.25,
+      2.5
+     ],
+     [
+      6.875,
+      2.62202212
+     ],
+     [
+      7.5,
+      2.738612788
+     ],
+     [
+      8.125,
+      2.850438563
+     ],
+     [
+      8.75,
+      2.958039892
+     ],
+     [
+      9.375,
+      3.061862178
+     ],
+     [
+      10.0,
+      3.16227766
+     ]
+    ]
+   }
+  }
+ ]
+}

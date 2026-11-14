@@ -71,7 +71,8 @@ LOCUS_OPS = {'point.on_locus'}      # registry 1.10
 FUNCTION_ANALYSIS_OPS = {'function.roots_polynomial', 'function.extrema_polynomial', 'function.value',
                          'function.root_near', 'function.root_interval', 'function.roots_interval',
                          'function.extrema_interval'}
-ALL_OPS = FUNCTION_ANALYSIS_OPS | LOCUS_OPS | EXPRESSION_OPS | REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
+TANGENCY_OPS = {'line.tangent_function_at', 'line.slope'}
+ALL_OPS = TANGENCY_OPS | FUNCTION_ANALYSIS_OPS | LOCUS_OPS | EXPRESSION_OPS | REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.7 extend 1.0: earlier operations keep their signatures.
 # Registry 1.6 is frozen since 1.11.0rc5; new school operations go to 1.7.
 L0_HASHES = {
@@ -197,9 +198,9 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.11'
-    assert registry().version == '1.11'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.11'
+    assert native.__registry_version__ == '1.12'
+    assert registry().version == '1.12'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.12'
 
 
 def test_ops_and_files():
@@ -207,7 +208,7 @@ def test_ops_and_files():
     assert set(reg.ops) == ALL_OPS
     assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark',
                                'arc', 'measure', 'transform', 'text', 'triangle', 'locus', 'function', 'conic',
-                               'region', 'function_analysis'}
+                               'region', 'function_analysis', 'tangency'}
     for name in ('_types', '_policies', '_reasons', '_numeric', 'INDEX'):
         assert (OPS_DIR / f'{name}.json').is_file()
 
@@ -256,7 +257,7 @@ def test_record_fields(op):
     assert RECORD_FIELDS <= set(record) <= RECORD_FIELDS | {'free', 'inputSets', 'moduleGroup'}
     assert record['status'] == ('beta' if op in ('ray.by_vector', 'angle.between_vectors', 'intersect.nearest')
                                 or op in G2_OPS or op in MEET_OPS or op in MARK_18_OPS or op in REGION_OPS
-                                or op in EXPRESSION_OPS or op in LOCUS_OPS or op in FUNCTION_ANALYSIS_OPS else 'stable')
+                                or op in EXPRESSION_OPS or op in LOCUS_OPS or op in FUNCTION_ANALYSIS_OPS or op in TANGENCY_OPS else 'stable')
     if op not in ('point.projection', 'number.free', 'mark.equal_segments', 'mark.equal_angles',
                   'polygon.vertex', 'polygon.regular', 'polygon.regular_center', 'number.angle',
                   'text.free', 'function.expr', 'function.root', 'function.extremum',
@@ -342,6 +343,7 @@ def test_contract_table():
     assert branches['intersect.other_than']['slots'] == ['point']
     assert reg.families == {     # registry 1.4 adds arc, sector, polyline and two families
         'linear': ['line', 'segment', 'ray'],
+        'conic_section': ['circle', 'conic'],
         'circular': ['circle', 'arc'],
         'curve': ['line', 'segment', 'ray', 'circle', 'arc', 'conic', 'function'],    # 1.8: conic, function
         'path': ['line', 'segment', 'ray', 'circle', 'polygon', 'arc', 'sector', 'circlesegment', 'polyline',
@@ -523,7 +525,8 @@ def test_types_and_policies_catalogs():
     assert reg.types['ray']['value'] == {'origin': 'length', 'dir': 'scalar'}
     assert set(reg.policies) == {'single', 'line_param_order', 'circle_side', 'other_than',
                                  'tangent_side', 'bisector_kind', 'vertex_index', 'sector_sides', 'nearest_to',
-                                 'roots_ascending', 'conic_axis_order', 'first_curve_order', 'distinct_roots_ascending'}
+                                 'roots_ascending', 'conic_axis_order', 'first_curve_order', 'distinct_roots_ascending',
+                                 'polar_contacts_descending', 'oriented_conic_support'}
     assert set(reg.paths) == set(reg.families['path'])
     kinds = {'segment': 'affine', 'line': 'affine', 'ray': 'affine', 'circle': 'angle', 'polygon': 'perimeter',
              'arc': 'arc', 'sector': 'sector', 'circlesegment': 'circlesegment', 'polyline': 'polyline',
@@ -549,13 +552,13 @@ def test_registry_problems_catch_bad_catalogs(tmp_path):
     del types['paths']['ray']
     (copy_dir / '_types.json').write_text(json.dumps(types))
     line = json.loads((copy_dir / 'line.json').read_text())
-    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.12'
+    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.13'
     (copy_dir / 'line.json').write_text(json.dumps(line))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
     assert "family 'path': unknown type 'spiral'" in problems
     assert "path type 'ray' has no entry in _types.json paths" in problems
-    assert any(p.startswith("ray.by_points: since '1.12'") for p in problems)
+    assert any(p.startswith("ray.by_points: since '1.13'") for p in problems)
 
 
 def test_implementations_both_ways():
@@ -655,11 +658,11 @@ def test_registry_problems_catch_bad_number_literal_families(tmp_path):
     copy_dir = tmp_path / 'v1'
     shutil.copytree(OPS_DIR, copy_dir)
     types = json.loads((copy_dir / '_types.json').read_text())
-    types['numberLiteralSince'] = {'limit': '1.12', 'curve': '1.9', 'spiral': '1.9'}
+    types['numberLiteralSince'] = {'limit': '1.13', 'curve': '1.9', 'spiral': '1.9'}
     (copy_dir / '_types.json').write_text(json.dumps(types))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
-    assert "numberLiteralSince 'limit': since '1.12' is not a registry version" in problems
+    assert "numberLiteralSince 'limit': since '1.13' is not a registry version" in problems
     assert "numberLiteralSince 'curve': the family has no member 'number'" in problems
     assert "numberLiteralSince 'spiral': the family has no member 'number'" in problems
 

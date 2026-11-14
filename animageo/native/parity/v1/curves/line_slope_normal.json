@@ -1,0 +1,1152 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "line_slope_normal",
+ "registry": "1.12",
+ "generatedBy": "animageo 1.17.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "line_slope_normal",
+  "operationRegistryVersion": "1.12",
+  "operations": {
+   "op_x": {
+    "id": "op_x",
+    "op": "number.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "x"
+     }
+    ]
+   },
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_t": {
+    "id": "op_t",
+    "op": "line.tangent_function_at",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "x": {
+      "kind": "ref",
+      "elementId": "x"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "t"
+     },
+     {
+      "slot": "touch",
+      "elementId": "t_touch"
+     }
+    ]
+   },
+   "op_normal": {
+    "id": "op_normal",
+    "op": "line.perpendicular",
+    "args": {
+     "point": {
+      "kind": "ref",
+      "elementId": "t_touch"
+     },
+     "base": {
+      "kind": "ref",
+      "elementId": "t"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "normal"
+     }
+    ]
+   },
+   "op_t_slope": {
+    "id": "op_t_slope",
+    "op": "line.slope",
+    "args": {
+     "line": {
+      "kind": "ref",
+      "elementId": "t"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "t_slope"
+     }
+    ]
+   },
+   "op_normal_slope": {
+    "id": "op_normal_slope",
+    "op": "line.slope",
+    "args": {
+     "line": {
+      "kind": "ref",
+      "elementId": "normal"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "number",
+      "elementId": "normal_slope"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "x": {
+    "id": "x",
+    "type": "number",
+    "displayName": "x",
+    "producer": {
+     "operationId": "op_x",
+     "slot": "number"
+    }
+   },
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "t": {
+    "id": "t",
+    "type": "line",
+    "displayName": "t",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "line"
+    }
+   },
+   "t_touch": {
+    "id": "t_touch",
+    "type": "point",
+    "displayName": "t_touch",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "touch"
+    }
+   },
+   "normal": {
+    "id": "normal",
+    "type": "line",
+    "displayName": "normal",
+    "producer": {
+     "operationId": "op_normal",
+     "slot": "line"
+    }
+   },
+   "t_slope": {
+    "id": "t_slope",
+    "type": "number",
+    "displayName": "t_slope",
+    "producer": {
+     "operationId": "op_t_slope",
+     "slot": "number"
+    }
+   },
+   "normal_slope": {
+    "id": "normal_slope",
+    "type": "number",
+    "displayName": "normal_slope",
+    "producer": {
+     "operationId": "op_normal_slope",
+     "slot": "number"
+    }
+   }
+  },
+  "inputs": {
+   "x": {
+    "kind": "number",
+    "value": 1.0
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "positive",
+   "inputs": {
+    "x": {
+     "kind": "number",
+     "value": 1
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "normal": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.6,
+       1.2
+      ],
+      "dir": [
+       -0.894427191,
+       0.447213595
+      ]
+     }
+    },
+    "normal_slope": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -0.5,
+      "unit": "scalar"
+     }
+    },
+    "t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     }
+    },
+    "t_slope": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2,
+      "unit": "scalar"
+     }
+    },
+    "t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     }
+    },
+    "x": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_normal:through_point": "passed",
+    "op_normal:perpendicular": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "horizontal",
+   "inputs": {
+    "x": {
+     "kind": "number",
+     "value": 0
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "normal": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "normal_slope": {
+     "state": "undefined",
+     "type": "number",
+     "reason": "vertical_line"
+    },
+    "t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "t_slope": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0,
+      "unit": "scalar"
+     }
+    },
+    "t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    "x": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_normal:through_point": "passed",
+    "op_normal:perpendicular": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "negative",
+   "inputs": {
+    "x": {
+     "kind": "number",
+     "value": -1
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "normal": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.6,
+       1.2
+      ],
+      "dir": [
+       0.894427191,
+       0.447213595
+      ]
+     }
+    },
+    "normal_slope": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 0.5,
+      "unit": "scalar"
+     }
+    },
+    "t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       -0.894427191
+      ]
+     }
+    },
+    "t_slope": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -2,
+      "unit": "scalar"
+     }
+    },
+    "t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1,
+      "y": 1
+     }
+    },
+    "x": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_normal:through_point": "passed",
+    "op_normal:perpendicular": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "recovery",
+   "inputs": {
+    "x": {
+     "kind": "number",
+     "value": 1
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "^",
+       "args": [
+        {
+         "var": "x"
+        },
+        {
+         "num": 2
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "normal": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.6,
+       1.2
+      ],
+      "dir": [
+       -0.894427191,
+       0.447213595
+      ]
+     }
+    },
+    "normal_slope": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": -0.5,
+      "unit": "scalar"
+     }
+    },
+    "t": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     }
+    },
+    "t_slope": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 2,
+      "unit": "scalar"
+     }
+    },
+    "t_touch": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     }
+    },
+    "x": {
+     "state": "defined",
+     "type": "number",
+     "value": {
+      "value": 1.0,
+      "unit": "scalar"
+     }
+    }
+   },
+   "checks": {
+    "op_normal:through_point": "passed",
+    "op_normal:perpendicular": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   },
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      100.0
+     ],
+     [
+      -9.375,
+      87.890625
+     ],
+     [
+      -8.75,
+      76.5625
+     ],
+     [
+      -8.125,
+      66.015625
+     ],
+     [
+      -7.5,
+      56.25
+     ],
+     [
+      -6.875,
+      47.265625
+     ],
+     [
+      -6.25,
+      39.0625
+     ],
+     [
+      -5.625,
+      31.640625
+     ],
+     [
+      -5.0,
+      25.0
+     ],
+     [
+      -4.375,
+      19.140625
+     ],
+     [
+      -3.75,
+      14.0625
+     ],
+     [
+      -3.125,
+      9.765625
+     ],
+     [
+      -2.5,
+      6.25
+     ],
+     [
+      -1.875,
+      3.515625
+     ],
+     [
+      -1.25,
+      1.5625
+     ],
+     [
+      -0.625,
+      0.390625
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ]
+   }
+  }
+ ]
+}

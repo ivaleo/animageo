@@ -919,6 +919,8 @@ def build_fixtures() -> dict:
             out[d.doc['documentId'] + '.json'] = _fixture(d.doc, cases)
     from .function_analysis_fixtures import build_fixtures as function_analysis_fixtures
     out.update(function_analysis_fixtures())
+    from .tangency_fixtures import build_fixtures as tangency_fixtures
+    out.update(tangency_fixtures())
     return out
 
 

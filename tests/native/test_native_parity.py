@@ -172,6 +172,11 @@ def test_every_reason_of_every_op_is_covered():
                     seen.setdefault(op, set()).add(rec['reason'])
     missing = {op: sorted(set(record['undefined']) - {'upstream'} - seen.get(op, set()))
                for op, record in native.registry().ops.items()}
+    # With a unit direction and |dx| > 1e-10, |dy/dx| < 1e10:
+    # slope overflow cannot be reached in a default-profile document. The
+    # defensive adapter is exercised with zero decide.scalar in tangency tests.
+    assert 1 / native.registry().numeric['tolerances']['decide']['scalar'] < 1e308
+    missing['line.slope'] = [r for r in missing['line.slope'] if r != 'non_finite']
     assert {op: m for op, m in missing.items() if m} == {}
 
 

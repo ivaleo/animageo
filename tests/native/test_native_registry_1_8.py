@@ -11,9 +11,9 @@ OPS_DIR = NATIVE_DIR / 'ops' / 'v1'
 
 
 def test_version():
-    assert native.__registry_version__ == '1.11'
-    assert registry().version == '1.11'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.11'
+    assert native.__registry_version__ == '1.12'
+    assert registry().version == '1.12'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.12'
     assert registry_problems() == []
 
 

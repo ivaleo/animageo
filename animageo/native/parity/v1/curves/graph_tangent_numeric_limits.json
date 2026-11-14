@@ -1,0 +1,890 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "graph_tangent_numeric_limits",
+ "registry": "1.12",
+ "generatedBy": "animageo 1.17.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "graph_tangent_numeric_limits",
+  "operationRegistryVersion": "1.12",
+  "operations": {
+   "op_f": {
+    "id": "op_f",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": "<=",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "num": 0
+        },
+        {
+         "fn": "sin",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "num": 1
+            },
+            {
+             "var": "x"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "f"
+     }
+    ]
+   },
+   "op_missing": {
+    "id": "op_missing",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "/",
+         "args": [
+          {
+           "num": 1
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "missing"
+     }
+    ]
+   },
+   "op_overflow": {
+    "id": "op_overflow",
+    "op": "function.expr",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1e+308
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 2
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "function",
+      "elementId": "overflow"
+     }
+    ]
+   },
+   "op_t": {
+    "id": "op_t",
+    "op": "line.tangent_function_at",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "f"
+     },
+     "x": {
+      "kind": "number",
+      "value": 0
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "t"
+     },
+     {
+      "slot": "touch",
+      "elementId": "t_touch"
+     }
+    ]
+   },
+   "op_missing_t": {
+    "id": "op_missing_t",
+    "op": "line.tangent_function_at",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "missing"
+     },
+     "x": {
+      "kind": "number",
+      "value": 0
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "missing_t"
+     },
+     {
+      "slot": "touch",
+      "elementId": "missing_t_touch"
+     }
+    ]
+   },
+   "op_overflow_t": {
+    "id": "op_overflow_t",
+    "op": "line.tangent_function_at",
+    "args": {
+     "function": {
+      "kind": "ref",
+      "elementId": "overflow"
+     },
+     "x": {
+      "kind": "number",
+      "value": 0
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "overflow_t"
+     },
+     {
+      "slot": "touch",
+      "elementId": "overflow_t_touch"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "f": {
+    "id": "f",
+    "type": "function",
+    "displayName": "f",
+    "producer": {
+     "operationId": "op_f",
+     "slot": "function"
+    }
+   },
+   "missing": {
+    "id": "missing",
+    "type": "function",
+    "displayName": "missing",
+    "producer": {
+     "operationId": "op_missing",
+     "slot": "function"
+    }
+   },
+   "overflow": {
+    "id": "overflow",
+    "type": "function",
+    "displayName": "overflow",
+    "producer": {
+     "operationId": "op_overflow",
+     "slot": "function"
+    }
+   },
+   "t": {
+    "id": "t",
+    "type": "line",
+    "displayName": "t",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "line"
+    }
+   },
+   "t_touch": {
+    "id": "t_touch",
+    "type": "point",
+    "displayName": "t_touch",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "touch"
+    }
+   },
+   "missing_t": {
+    "id": "missing_t",
+    "type": "line",
+    "displayName": "missing_t",
+    "producer": {
+     "operationId": "op_missing_t",
+     "slot": "line"
+    }
+   },
+   "missing_t_touch": {
+    "id": "missing_t_touch",
+    "type": "point",
+    "displayName": "missing_t_touch",
+    "producer": {
+     "operationId": "op_missing_t",
+     "slot": "touch"
+    }
+   },
+   "overflow_t": {
+    "id": "overflow_t",
+    "type": "line",
+    "displayName": "overflow_t",
+    "producer": {
+     "operationId": "op_overflow_t",
+     "slot": "line"
+    }
+   },
+   "overflow_t_touch": {
+    "id": "overflow_t_touch",
+    "type": "point",
+    "displayName": "overflow_t_touch",
+    "producer": {
+     "operationId": "op_overflow_t",
+     "slot": "touch"
+    }
+   }
+  },
+  "inputs": {},
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "unconfirmed",
+   "scale": 20.0,
+   "expect": {
+    "f": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": "<=",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "num": 0
+        },
+        {
+         "fn": "sin",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "num": 1
+            },
+            {
+             "var": "x"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "missing": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "if": [
+        {
+         "cmp": "<",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "/",
+         "args": [
+          {
+           "num": 1
+          },
+          {
+           "num": 0
+          }
+         ]
+        },
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "missing_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_convergence"
+    },
+    "missing_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_convergence"
+    },
+    "overflow": {
+     "state": "defined",
+     "type": "function",
+     "value": {
+      "expr": {
+       "op": "*",
+       "args": [
+        {
+         "num": 1e+308
+        },
+        {
+         "op": "*",
+         "args": [
+          {
+           "num": 2
+          },
+          {
+           "var": "x"
+          }
+         ]
+        }
+       ]
+      },
+      "refs": [],
+      "domain": [
+       null,
+       null
+      ]
+     }
+    },
+    "overflow_t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "non_finite"
+    },
+    "overflow_t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "non_finite"
+    },
+    "t": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_convergence"
+    },
+    "t_touch": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_convergence"
+    }
+   },
+   "checks": {},
+   "samples": {
+    "f": [
+     [
+      -10.0,
+      0.0
+     ],
+     [
+      -9.375,
+      0.0
+     ],
+     [
+      -8.75,
+      0.0
+     ],
+     [
+      -8.125,
+      0.0
+     ],
+     [
+      -7.5,
+      0.0
+     ],
+     [
+      -6.875,
+      0.0
+     ],
+     [
+      -6.25,
+      0.0
+     ],
+     [
+      -5.625,
+      0.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      -4.375,
+      0.0
+     ],
+     [
+      -3.75,
+      0.0
+     ],
+     [
+      -3.125,
+      0.0
+     ],
+     [
+      -2.5,
+      0.0
+     ],
+     [
+      -1.875,
+      0.0
+     ],
+     [
+      -1.25,
+      0.0
+     ],
+     [
+      -0.625,
+      0.0
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.999573603
+     ],
+     [
+      1.25,
+      0.717356091
+     ],
+     [
+      1.875,
+      0.508406551
+     ],
+     [
+      2.5,
+      0.389418342
+     ],
+     [
+      3.125,
+      0.314566561
+     ],
+     [
+      3.75,
+      0.263517391
+     ],
+     [
+      4.375,
+      0.226586339
+     ],
+     [
+      5.0,
+      0.198669331
+     ],
+     [
+      5.625,
+      0.176842814
+     ],
+     [
+      6.25,
+      0.159318207
+     ],
+     [
+      6.875,
+      0.14494219
+     ],
+     [
+      7.5,
+      0.132938623
+     ],
+     [
+      8.125,
+      0.122766432
+     ],
+     [
+      8.75,
+      0.114037091
+     ],
+     [
+      9.375,
+      0.10646451
+     ],
+     [
+      10.0,
+      0.099833417
+     ]
+    ],
+    "missing": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      null
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      0.390625
+     ],
+     [
+      1.25,
+      1.5625
+     ],
+     [
+      1.875,
+      3.515625
+     ],
+     [
+      2.5,
+      6.25
+     ],
+     [
+      3.125,
+      9.765625
+     ],
+     [
+      3.75,
+      14.0625
+     ],
+     [
+      4.375,
+      19.140625
+     ],
+     [
+      5.0,
+      25.0
+     ],
+     [
+      5.625,
+      31.640625
+     ],
+     [
+      6.25,
+      39.0625
+     ],
+     [
+      6.875,
+      47.265625
+     ],
+     [
+      7.5,
+      56.25
+     ],
+     [
+      8.125,
+      66.015625
+     ],
+     [
+      8.75,
+      76.5625
+     ],
+     [
+      9.375,
+      87.890625
+     ],
+     [
+      10.0,
+      100.0
+     ]
+    ],
+    "overflow": [
+     [
+      -10.0,
+      null
+     ],
+     [
+      -9.375,
+      null
+     ],
+     [
+      -8.75,
+      null
+     ],
+     [
+      -8.125,
+      null
+     ],
+     [
+      -7.5,
+      null
+     ],
+     [
+      -6.875,
+      null
+     ],
+     [
+      -6.25,
+      null
+     ],
+     [
+      -5.625,
+      null
+     ],
+     [
+      -5.0,
+      null
+     ],
+     [
+      -4.375,
+      null
+     ],
+     [
+      -3.75,
+      null
+     ],
+     [
+      -3.125,
+      null
+     ],
+     [
+      -2.5,
+      null
+     ],
+     [
+      -1.875,
+      null
+     ],
+     [
+      -1.25,
+      null
+     ],
+     [
+      -0.625,
+      -1.25e+308
+     ],
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.625,
+      1.25e+308
+     ],
+     [
+      1.25,
+      null
+     ],
+     [
+      1.875,
+      null
+     ],
+     [
+      2.5,
+      null
+     ],
+     [
+      3.125,
+      null
+     ],
+     [
+      3.75,
+      null
+     ],
+     [
+      4.375,
+      null
+     ],
+     [
+      5.0,
+      null
+     ],
+     [
+      5.625,
+      null
+     ],
+     [
+      6.25,
+      null
+     ],
+     [
+      6.875,
+      null
+     ],
+     [
+      7.5,
+      null
+     ],
+     [
+      8.125,
+      null
+     ],
+     [
+      8.75,
+      null
+     ],
+     [
+      9.375,
+      null
+     ],
+     [
+      10.0,
+      null
+     ]
+    ]
+   }
+  }
+ ]
+}

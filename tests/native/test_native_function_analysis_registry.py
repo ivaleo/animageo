@@ -13,11 +13,12 @@ GROUPS = {
 }
 ANALYSIS_OPS = ('roots_polynomial', 'extrema_polynomial', 'value', 'root_near',
                 'root_interval', 'roots_interval', 'extrema_interval')
+GROUPS.update({'line.tangent_function_at': 'tangency', 'line.slope': 'tangency'})
 GROUPS.update({'function.' + name: 'function_analysis' for name in ANALYSIS_OPS})
 
 
 def test_registry_version_and_complete_feature():
-    assert native.__registry_version__ == '1.11'
+    assert native.__registry_version__ == '1.12'
     assert native.has('function_analysis')
 
 
