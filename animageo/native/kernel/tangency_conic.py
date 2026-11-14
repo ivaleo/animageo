@@ -9,8 +9,6 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from .conic import residual as conic_residual
-
 __all__ = ['ConicTangencyError', 'contact', 'from_point', 'parallel',
            'tangent_at', 'curve_residual', 'gradient', 'line_distance']
 
@@ -132,20 +130,43 @@ def _frame(value):
 
 
 def _residual(frame, point):
+    """Scaled implicit residual divided by the geometric gradient norm.
+
+    This measures first-order normal displacement in length units. Focal
+    residuals can saturate near a hyperbola's asymptote, even in exact
+    arithmetic, and subtracting focal distances loses off-curve evidence
+    on a distant parabola axis. Compensated polynomial products preserve
+    that evidence without squaring large world coordinates.
+    """
     u, v = frame.local(point)
-    scale = max(frame.a, frame.b if frame.kind != 'parabola' else 0, abs(u), abs(v))
     if frame.kind == 'parabola':
-        value = {'kind': 'parabola', 'vertex': [0, 0], 'axis': [1, 0], 'p': frame.a/scale}
+        scale = max(frame.a, abs(u), abs(v))
+        x, y, p = u/scale, v/scale, frame.a/scale
+        polynomial = _sum_products(((y, y), (-2*p, x)))
+        norm = 2*math.hypot(p, y)
+        if norm == 0:
+            raise ConicTangencyError('non_finite')
+        error = (abs(polynomial)/norm)*scale
     else:
-        value = {'kind': frame.kind, 'c': [0, 0], 'axis': [1, 0],
-                 'a': frame.a/scale, 'b': frame.b/scale}
-    error = conic_residual(value, u/scale, v/scale)*scale
+        x, y = u/frame.a, v/frame.b
+        _finite(x, y)
+        if x == y == 0:
+            return min(frame.a, frame.b) if frame.kind == 'ellipse' else frame.a
+        scale = max(abs(x), abs(y), 1.0)
+        x, y, inverse = x/scale, y/scale, 1/scale
+        sign = 1 if frame.kind == 'ellipse' else -1
+        polynomial = _sum_products(((x, x), (sign*y, y), (-inverse, inverse)))
+        h = min(frame.a, frame.b)
+        norm = 2*math.hypot(x*(h/frame.a), y*(h/frame.b))
+        if norm == 0:
+            raise ConicTangencyError('non_finite')
+        error = ((abs(polynomial)*scale)/norm)*h
     _finite(error)
     return error
 
 
 def curve_residual(value, point):
-    """The geometric focal residual, evaluated in a scaled local frame."""
+    """First-order normal displacement in a scaled canonical frame."""
     return _residual(_frame(value), point)
 
 
@@ -243,10 +264,10 @@ def _roots(a, b, c, ctx, *, linear=True):
     """Stable real quadratic roots, with an explicit linear limit."""
     _finite(a, b, c)
     tol = ctx.tol.decide_scalar
-    # Only a dimensionless geometric cancellation can turn a quadratic
-    # into a line. A small parabola parameter or a distant point must not
-    # discard a second, large but finite root after coefficient scaling.
-    is_linear = linear and abs(a) <= tol
+    # A small nonzero quadratic coefficient still has a second finite
+    # root. Only the exact linear limit has a contact at infinity; losing
+    # an unrepresentable finite root must fail the whole set instead.
+    is_linear = linear and a == 0.0
     if linear:
         ctx.decide('tangent_linear', a, tol)
     scale = max(abs(a), abs(b), abs(c))

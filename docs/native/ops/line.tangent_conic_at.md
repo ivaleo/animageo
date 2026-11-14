@@ -10,9 +10,11 @@ Registry 1.12 · module group `tangency` · status `beta`.
 | checks | `through_point`, `on_curve`, `tangent` |
 
 The point must belong to the current nondegenerate ellipse, hyperbola or
-parabola. Membership uses the geometric length residual in `kernel/conic.py`
-and `decide.length`; the point is neither projected nor reinterpreted as an
-external point. Moving it off the curve gives `not_on_curve`.
+parabola. Membership compares a scaled implicit polynomial divided by its
+gradient norm with `decide.length`. This is normal displacement in length
+units near the curve; compensated products avoid focal-distance cancellation
+and loss of sensitivity near asymptotes. The point is neither projected nor
+reinterpreted as an external point. Moving it off the curve gives `not_on_curve`.
 
 The canonical central equation has F(center)=−1; the parabola has positive
 nonzero quadratic eigenvalue. Turn its normal at the input point by +90°

@@ -325,3 +325,78 @@ def test_distant_rotated_parabola_never_returns_failed_geometric_checks():
         assert run_checks(ev).ok
     else:
         assert ev.elements['t1']['reason'] == 'non_finite'
+
+
+@pytest.mark.parametrize('tree,point', [
+    (PARABOLA, (0, 1e16)),
+    (HYPERBOLA, (1e16, 1e16-8)),
+    (ELLIPSE, (1e16, 0)),
+])
+def test_distant_points_are_not_contacts_of_a_strict_tangent(tree, point):
+    ev = evaluate(tangents(document(tree, point), strict=True))
+    assert ev.elements['t']['reason'] == 'not_on_curve'
+
+
+@pytest.mark.parametrize('tree,point', [
+    (PARABOLA, (0, 1e16)),
+    (HYPERBOLA, (1e16, 1e16-8)),
+])
+def test_distant_noncontact_points_do_not_bypass_the_tangent_search(tree, point):
+    ev = evaluate(tangents(document(tree, point)))
+    assert all(ev.elements[key]['reason'] == 'no_tangent' for key in ('t1', 't2', 'Q1', 'Q2'))
+
+
+@pytest.mark.parametrize('tree,point', [
+    (PARABOLA, (0, 1e16)),
+    (HYPERBOLA, (1e16, 1e16-8)),
+    (ELLIPSE, (1e16, 0)),
+])
+def test_on_curve_check_rejects_distant_corrupted_contacts(tree, point):
+    source = (0, 0) if tree == PARABOLA else (1, 0) if tree == HYPERBOLA else (2, 0)
+    ev = evaluate(tangents(document(tree, source)))
+    ev.computed['op_t'][2]['touch.1'] = {'x': point[0], 'y': point[1]}
+    assert run_checks(ev).results['op_t:on_curve'] == 'failed'
+
+
+@pytest.mark.parametrize('scale', [1e-80, 1, 1e80])
+@pytest.mark.parametrize('kind', ['parabola', 'hyperbola', 'ellipse'])
+def test_contact_membership_and_checks_use_length_units_at_extreme_coordinates(kind, scale):
+    from animageo.native.kernel.checks import CHECKS, classify
+    from animageo.native.kernel.numeric import tolerances
+    from animageo.native.kernel.ops import IMPLEMENTATIONS, OpContext
+    from animageo.native.kernel.values import Input, Undefined
+    if kind == 'parabola':
+        conic = {'kind': kind, 'vertex': [0, 0], 'axis': [0, 1], 'p': .5*scale}
+        point = {'x': 0, 'y': 1e16*scale}
+    else:
+        conic = {'kind': kind, 'c': [0, 0], 'axis': [1, 0],
+                 'a': (2 if kind == 'ellipse' else 1)*scale, 'b': scale}
+        point = {'x': 1e16*scale, 'y': (1e16-8)*scale if kind == 'hyperbola' else 0}
+    args = {'conic': Input('conic', conic), 'point': Input('point', point), 'count': 2}
+    tol = tolerances(scale)
+    strict = IMPLEMENTATIONS['line.tangent_conic_at'](args, OpContext(tol))
+    assert isinstance(strict['line'], Undefined) and strict['line'].reason == 'not_on_curve'
+    # This carrier is deliberately corrupt: on_curve must independently
+    # reject the contact even when the producer result is supplied directly.
+    result = {'tangent.1': {'p': [0, 0], 'dir': [1, 0]}, 'touch.1': point}
+    error = CHECKS[('line.tangents_from_point_conic', 'on_curve')](args, result, tol)
+    assert classify(error, tol) == 'failed'
+    if kind != 'ellipse':
+        found = IMPLEMENTATIONS['line.tangents_from_point_conic'](args, OpContext(tol))
+        assert all(isinstance(value, Undefined) and value.reason == 'no_tangent' for value in found.values())
+
+
+@pytest.mark.parametrize('side', [-1, 1])
+def test_small_nonzero_hyperbola_quadratic_keeps_the_distant_finite_branch(side):
+    ev = evaluate(tangents(document(HYPERBOLA, (1, 1+side*1e-12))))
+    records = [ev.elements[key] for key in ('t1', 't2', 'Q1', 'Q2')]
+    if records[0]['state'] == 'defined':
+        assert all(record['state'] == 'defined' and record['detail'] == {'found': 2} for record in records)
+        assert run_checks(ev).ok
+    else:
+        assert all(record['reason'] == 'non_finite' for record in records)
+
+
+def test_exact_hyperbola_linear_limit_still_has_one_finite_contact():
+    ev = evaluate(tangents(document(HYPERBOLA, (1, 1))))
+    assert_contacts(ev, [(1, 0)])
