@@ -48,7 +48,6 @@ this is y=−x/2+3/2; at 0 the tangent is horizontal and the normal vertical.
 No separate normal operation is needed. Selecting an external point A uses
 only x(A) in this mode; the tangent and normal pass through Q.
 
-The current registry exposes this operation and `line.slope`; the three
-conic contracts in `tangency.json` are staged outside the runtime registry
-until their kernels ship. `has("tangency")` remains false until the full
-module is available. Classic command conversion is not yet provided.
+All five tangency operations are active in registry 1.12. `has("tangency")`
+remains false until the module's import integration is available. Classic
+command conversion is not yet provided.

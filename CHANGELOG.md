@@ -11,8 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Native registry 1.12: graph tangents at a live abscissa, contact points,
   composed normals and scalar line slopes. Graph corners, jumps and infinite
-  derivatives are undefined. Conic tangency contracts are staged until their
-  kernels are implemented; the complete `tangency` capability is not yet exposed.
+  derivatives are undefined. Strict conic tangents, distinct tangents through
+  a point and tangents parallel to an oriented line support finite contacts,
+  paired fixed slots and deterministic geometric order. The complete
+  `tangency` capability waits for import integration.
 
 ## [1.17.0] - 2026-11-14
 
