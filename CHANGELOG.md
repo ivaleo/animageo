@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.18.0] - 2026-11-14
+
 ### Added
 
 - Native registry 1.12: graph tangents at a live abscissa, contact points,
@@ -4026,7 +4028,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.17.0...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.18.0...HEAD
+[1.18.0]: https://github.com/ivaleo/animageo/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/ivaleo/animageo/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/ivaleo/animageo/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/ivaleo/animageo/compare/v1.14.1...v1.15.0
