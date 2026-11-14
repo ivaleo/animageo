@@ -387,14 +387,21 @@ def test_contact_membership_and_checks_use_length_units_at_extreme_coordinates(k
 
 
 @pytest.mark.parametrize('side', [-1, 1])
-def test_small_nonzero_hyperbola_quadratic_keeps_the_distant_finite_branch(side):
+def test_small_nonzero_hyperbola_quadratic_does_not_drop_the_distant_branch(side):
+    # The second contact lies near (-1e12, -1e12): finite, but beyond what the
+    # checks can confirm in binary64, so the whole set is refused rather than
+    # reported as a single tangent.
     ev = evaluate(tangents(document(HYPERBOLA, (1, 1+side*1e-12))))
     records = [ev.elements[key] for key in ('t1', 't2', 'Q1', 'Q2')]
-    if records[0]['state'] == 'defined':
-        assert all(record['state'] == 'defined' and record['detail'] == {'found': 2} for record in records)
-        assert run_checks(ev).ok
-    else:
-        assert all(record['reason'] == 'non_finite' for record in records)
+    assert all(record['reason'] == 'non_finite' for record in records)
+
+
+def test_moderately_distant_hyperbola_branch_is_kept():
+    # P = (1, 1 + 1e-3): the second contact is near (-1000, -1000).
+    ev = evaluate(tangents(document(HYPERBOLA, (1, 1.001))))
+    records = [ev.elements[key] for key in ('t1', 't2', 'Q1', 'Q2')]
+    assert all(record['state'] == 'defined' and record['detail'] == {'found': 2} for record in records)
+    assert run_checks(ev).ok
 
 
 def test_exact_hyperbola_linear_limit_still_has_one_finite_contact():
