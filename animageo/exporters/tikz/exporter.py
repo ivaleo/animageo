@@ -237,6 +237,9 @@ def _emit_ordered(ctx, rect):
             logger.warning("TikZ export: failed to emit %r", elem.name, exc_info=True)
         finally:
             ctx.doc = doc
+        halo = ctx.scene._build_render_ctx(elem, True).label_halo
+        if labels and halo and halo['widthPx'] > 0 and halo['opacity'] > 0:
+            doc.comment('Unsupported labelHalo for ' + json.dumps(owner_id(ctx.scene, elem.name)) + '; label retained')
         for line in labels:
             part = 'leader' if line.startswith('\\draw[') else 'label'
             buffer.runs.setdefault(part, []).append(line)

@@ -182,3 +182,9 @@ Explicit fill layers retain their position relative to outlines and labels.
 Labels remain outside the geometry clip; hole and hollow-point scopes remain
 attached to the appropriate runs. Solid polygons use nonzero winding;
 patterns preserve their even-odd supporting region.
+
+
+Label halos are unsupported, as in construction-mode export. Area export
+retains the label and omits only the `labelHalo` run from the shared paint
+plan, with an output comment identifying the omission. The relative order of
+all remaining parts is unchanged.

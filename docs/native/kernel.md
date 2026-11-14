@@ -1488,6 +1488,11 @@ nonzero domain. Build creators in their original topological order, then
 place these nodes once in the supplied sequence; numeric JSXGraph layers
 alone cannot express the complete order. The spec format stays v1.
 
+TikZ and JSXGraph do not render label halos. Their writer plans omit only
+unsupported `labelHalo` entries, retain the label itself, and keep every other
+part in its native relative order. TikZ comments and JSXGraph coverage report
+the omission; compare supported-part projections when checking these writers.
+
 Local drag keeps the exported order, and a new export computes a new one.
 The runtime does not calculate areas or sort on board updates. Unsupported
 live geometry, regions, resolved angle markers and patterns retain explicit

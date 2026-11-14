@@ -167,6 +167,9 @@ def prepare_paint_order(ctx, model):
         if kind != 'Angle':
             target(elem.name, part, elem.name, 'borders' if el.engine == 'polygon' else 'self')
         if render.has_label:
+            halo = render.label_halo
+            if halo and halo['widthPx'] > 0 and halo['opacity'] > 0:
+                model.coverage.append((elem.name, 'skip', 'labelHalo is unsupported; label is exported without its outline'))
             if kind == 'Angle':
                 angle_label(elem, el.attrs)
             else:
