@@ -294,6 +294,15 @@ def delete(doc, ids, *, mode: str = 'element') -> EditResult:
 
 
 def _with_owned_helpers(before, result: EditResult) -> EditResult:
+    """Clean nested ownership after each removal until the graph is stable."""
+    while True:
+        size = (len(result.document.operations), len(result.document.elements))
+        result = _cleanup_owned_helpers(before, result)
+        if size == (len(result.document.operations), len(result.document.elements)):
+            return result
+
+
+def _cleanup_owned_helpers(before, result: EditResult) -> EditResult:
     """Apply the rule of owned helpers of :func:`delete` to ``result`` (the
     deletion of ``before``): the helpers of removed operations go, or move to
     an operation that still reads them (a fixpoint: an operation all of whose
