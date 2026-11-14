@@ -6,7 +6,7 @@ from decimal import Decimal, localcontext
 import pytest
 
 from animageo import native
-from animageo.native.kernel.checks import CHECKS, run_checks
+from animageo.native.kernel.checks import CHECKS, classify, run_checks
 from animageo.native.kernel.numeric import tolerances
 from animageo.native.kernel.ops import IMPLEMENTATIONS, OpContext
 from animageo.native.kernel.values import Detailed, Input, Undefined
@@ -259,14 +259,18 @@ def decimal_polar(value, point):
     with localcontext() as context:
         context.prec = 800
         x, y = map(Decimal, point)
-        cx, cy = map(Decimal, value['c'])
+        cx, cy = map(Decimal, value['vertex'] if value['kind'] == 'parabola' else value['c'])
         ux, uy = map(Decimal, value['axis'])
-        a, b = Decimal(value['a']), Decimal(value['b'])
         s, t = (x-cx)*ux+(y-cy)*uy, -(x-cx)*uy+(y-cy)*ux
-        gu, gv = s/(a*a), t/(b*b)*(1 if value['kind'] == 'ellipse' else -1)
+        if value['kind'] == 'parabola':
+            # The independent polar equation is -p*s + t0*t = p*s0.
+            gu, gv, rhs = -Decimal(value['p']), t, Decimal(value['p'])*s
+        else:
+            a, b = Decimal(value['a']), Decimal(value['b'])
+            gu, gv, rhs = s/(a*a), t/(b*b)*(1 if value['kind'] == 'ellipse' else -1), Decimal(1)
         gx, gy = gu*ux-gv*uy, gu*uy+gv*ux
         norm2 = gx*gx+gy*gy
-        h = 1+gx*cx+gy*cy
+        h = rhs+gx*cx+gy*cy
         return {'p': [float(gx*h/norm2), float(gy*h/norm2)],
                 'dir': [float(-gy/norm2.sqrt()), float(gx/norm2.sqrt())]}
 
@@ -345,3 +349,69 @@ def test_canonical_degenerate_values_are_rejected(name):
 def test_circle_adapter_rejects_nonfinite_canonical_data():
     r = IMPLEMENTATIONS['conic.from_circle']({'circle': Input('circle', {'c': [0, 0], 'r': math.inf})}, OpContext(tolerances(20)))
     assert r == {'conic': Undefined('non_finite')}
+
+
+@pytest.mark.parametrize('value,point', [
+    (dict(PARABOLA, axis=[.6, .8], p=1e150), (1e-200, 0)),
+    (dict(ELLIPSE, a=1e150, b=1e-150), (1e-200, 1e-200)),
+])
+def test_polar_rounds_unrepresentable_unit_normal_component(value, point):
+    result = call('line.polar_conic', value, point=point)
+    actual = line(result)
+    expected = decimal_polar(value, point)
+    assert actual['p'] == pytest.approx(expected['p'], rel=2e-14, abs=0)
+    assert actual['dir'] == pytest.approx(expected['dir'], abs=2e-15)
+    args = {'conic': Input('conic', value),
+            'point': Input('point', dict(zip(('x', 'y'), point)))}
+    tol = tolerances(20)
+    error = CHECKS[('line.polar_conic', 'polar_incidence')](args, result, tol)
+    assert classify(error, tol) == 'passed'
+
+
+def test_parabola_diameter_with_tiny_direction_keeps_finite_offset_and_checks():
+    value = dict(PARABOLA, axis=[.6, .8], p=1e150)
+    direction = (1e-200, 0)
+    result = call('line.conjugate_diameter', value, direction=direction, scale=1e150)
+    actual = line(result)
+    # dv*t=p*du gives t=-3*p/4, so its nearest point is -3*p*n/4.
+    assert actual['p'] == pytest.approx([6e149, -4.5e149], rel=2e-14, abs=0)
+    assert actual['dir'] == pytest.approx([.6, .8], abs=2e-15)
+    args = {'conic': Input('conic', value),
+            'direction': Input('line', {'p': [0, 0], 'dir': direction})}
+    tol = tolerances(1e150)
+    for check in ('conjugacy', 'through_center'):
+        error = CHECKS[('line.conjugate_diameter', check)](args, result, tol)
+        assert classify(error, tol) == 'passed'
+
+
+def test_ellipse_diameter_rounds_unrepresentable_unit_normal_component():
+    value = dict(ELLIPSE, a=1e150, b=1e-150)
+    direction = (math.sqrt(.5), math.sqrt(.5))
+    result = call('line.conjugate_diameter', value, direction=direction)
+    # Qd has component ratio b²/a²=1e-600; its rounded unit normal is (0,1).
+    assert line(result) == {'p': [0, 0], 'dir': [-1, 0]}
+    args = {'conic': Input('conic', value),
+            'direction': Input('line', {'p': [0, 0], 'dir': direction})}
+    tol = tolerances(20)
+    for check in ('conjugacy', 'through_center'):
+        error = CHECKS[('line.conjugate_diameter', check)](args, result, tol)
+        assert classify(error, tol) == 'passed'
+
+
+def test_circle_polar_accuracy_stays_within_input_coordinate_ulps():
+    radius, point = 1e16, (1, 0)
+    value = {'c': [-radius, 0], 'r': radius}
+    result = call('line.polar_conic', value, point=point, scale=radius)
+    actual = line(result)
+    # x=-r+r²/(r+1)=-r/(r+1); evaluate before binary64 cancellation.
+    with localcontext() as context:
+        context.prec = 80
+        true_x = float(-Decimal(radius)/(Decimal(radius)+1))
+    input_size = max(abs(v) for v in (*value['c'], radius, *point))
+    assert abs(actual['p'][0]-true_x) <= 2*math.ulp(input_size)
+    assert actual['p'][1] == 0
+    assert actual['dir'] == [0, 1]
+    args = {'conic': Input('circle', value), 'point': Input('point', {'x': 1, 'y': 0})}
+    tol = tolerances(radius)
+    error = CHECKS[('line.polar_conic', 'polar_incidence')](args, result, tol)
+    assert classify(error, tol) == 'passed'
