@@ -1,0 +1,297 @@
+[
+  {
+    "op": "line.tangent_function_at",
+    "status": "beta",
+    "since": "1.12",
+    "moduleGroup": "tangency",
+    "inputs": [
+      {
+        "slot": "function",
+        "type": "function"
+      },
+      {
+        "slot": "x",
+        "type": "number"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      },
+      {
+        "slot": "touch",
+        "type": "point"
+      }
+    ],
+    "free": null,
+    "branch": null,
+    "undefined": [
+      "out_of_domain",
+      "not_differentiable",
+      "no_convergence",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_curve",
+        "text": "distance of touch from (x, f(x))"
+      },
+      {
+        "id": "tangent",
+        "text": "line passes through touch and its unit direction agrees with the local graph tangent; angular error times S"
+      }
+    ],
+    "orientation": "graph_increasing_x",
+    "pathParam": null,
+    "stepKind": "tangent_function_at",
+    "phrases": {
+      "ru": "{line} — касательная к графику {function} при абсциссе {x}; {touch} — точка касания"
+    },
+    "math": "docs/native/ops/line.tangent_function_at.md",
+    "signatureHash": "sha256:cec9635268d5c0ed4fb48f33fcb303d3b819e51708aa63413937a609b2631989"
+  },
+  {
+    "op": "line.tangent_conic_at",
+    "status": "beta",
+    "since": "1.12",
+    "moduleGroup": "tangency",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "free": null,
+    "branch": null,
+    "undefined": [
+      "not_on_curve",
+      "degenerate_conic",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_point",
+        "text": "distance from the input point to line"
+      },
+      {
+        "id": "on_curve",
+        "text": "geometric conic residual of the contact point"
+      },
+      {
+        "id": "tangent",
+        "text": "line direction is perpendicular to the conic gradient; angular error times S"
+      }
+    ],
+    "orientation": "conic_gradient_ccw90",
+    "pathParam": null,
+    "stepKind": "tangent_conic_at",
+    "phrases": {
+      "ru": "{line} — касательная к {conic} в точке {point}"
+    },
+    "math": "docs/native/ops/line.tangent_conic_at.md",
+    "signatureHash": "sha256:a248d90121420b521262005ee80be19bebeff9081500f9d3c9664e23a4deb3a9"
+  },
+  {
+    "op": "line.tangents_from_point_conic",
+    "status": "beta",
+    "since": "1.12",
+    "moduleGroup": "tangency",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 2,
+        "text": "capacity of fixed output slots, an integer from 1 to 100; at most two distinct conic tangents"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "tangent",
+        "type": "line",
+        "repeat": "count"
+      },
+      {
+        "slot": "touch",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "free": null,
+    "branch": {
+      "policy": "polar_contacts_descending",
+      "slots": [
+        "tangent",
+        "touch"
+      ],
+      "text": "distinct finite contacts ordered by descending polar direction projection, tolerance clusters then xy tie-break"
+    },
+    "undefined": [
+      "point_inside",
+      "no_tangent",
+      "branch_absent",
+      "degenerate_conic",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_point",
+        "text": "largest distance from the input point to each defined tangent"
+      },
+      {
+        "id": "on_curve",
+        "text": "largest geometric conic residual of defined contacts"
+      },
+      {
+        "id": "tangent",
+        "text": "largest tangent/gradient angular error times S"
+      }
+    ],
+    "orientation": "conic_gradient_ccw90",
+    "pathParam": null,
+    "stepKind": "tangents_from_point_conic",
+    "phrases": {
+      "ru": "{tangent} — касательные из точки {point} к {conic}; {touch} — точки касания"
+    },
+    "math": "docs/native/ops/line.tangents_from_point_conic.md",
+    "signatureHash": "sha256:0aad2f53fd0140bc1a2a22da735f71f8598da4421fb8487b4169912759fdae83"
+  },
+  {
+    "op": "line.tangents_parallel_conic",
+    "status": "beta",
+    "since": "1.12",
+    "moduleGroup": "tangency",
+    "inputs": [
+      {
+        "slot": "base",
+        "type": "line"
+      },
+      {
+        "slot": "conic",
+        "type": "conic_section"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 2,
+        "text": "capacity of fixed output slots, an integer from 1 to 100; at most two distinct conic tangents"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "tangent",
+        "type": "line",
+        "repeat": "count"
+      },
+      {
+        "slot": "touch",
+        "type": "point",
+        "repeat": "count"
+      }
+    ],
+    "free": null,
+    "branch": {
+      "policy": "oriented_conic_support",
+      "slots": [
+        "tangent",
+        "touch"
+      ],
+      "text": "base normal keeps its sign: descending support for ellipse/circle, ascending for hyperbola; parabola has at most one"
+    },
+    "undefined": [
+      "no_tangent",
+      "branch_absent",
+      "degenerate_conic",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "on_curve",
+        "text": "largest geometric curve residual of defined contacts"
+      },
+      {
+        "id": "tangent",
+        "text": "largest tangent/gradient angular error times S"
+      },
+      {
+        "id": "parallel",
+        "text": "largest cross product of unit tangent and base directions times S"
+      }
+    ],
+    "orientation": "carrier_dir",
+    "pathParam": null,
+    "stepKind": "tangents_parallel_conic",
+    "phrases": {
+      "ru": "{tangent} — касательные к {conic}, параллельные {base}; {touch} — точки касания"
+    },
+    "math": "docs/native/ops/line.tangents_parallel_conic.md",
+    "signatureHash": "sha256:c6dba46d99ef7ebb0252318243878ea242adedea26cda9b46b94c78f1c232cd9"
+  },
+  {
+    "op": "line.slope",
+    "status": "beta",
+    "since": "1.12",
+    "moduleGroup": "tangency",
+    "inputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "number",
+        "type": "number"
+      }
+    ],
+    "free": null,
+    "branch": null,
+    "undefined": [
+      "vertical_line",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "line_slope",
+    "phrases": {
+      "ru": "{number} — наклон прямой {line}"
+    },
+    "math": "docs/native/ops/line.slope.md",
+    "signatureHash": "sha256:e6e86ed4533dba7413273ab731bb5bc193c7a580439f4bdf9d9ae930bf3ac375"
+  }
+]

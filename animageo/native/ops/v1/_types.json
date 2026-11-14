@@ -101,6 +101,7 @@
   "numberUnits": {"scalar": "scalar", "length": "length", "area": "area", "angle": "scalar", "count": "scalar"},
   "families": {
     "linear": ["line", "segment", "ray"],
+    "conic_section": ["circle", "conic"],
     "circular": ["circle", "arc"],
     "curve": ["line", "segment", "ray", "circle", "arc", "conic", "function"],
     "conical": ["conic", "circle", "arc"],
@@ -142,6 +143,7 @@
         "line.external_bisector": {"origin": "args.vertex", "vector": "value.dir"},
         "line.tangents_from_point": {"origin": "args.point", "vector": "value.dir"},
         "line.tangent_at": {"origin": "args.point", "vector": "value.dir"},
+        "line.tangent_function_at": {"origin": "graph(args.function, args.x)", "vector": "value.dir"},
         "*": {"origin": "value.p", "vector": "value.dir"}
       },
       "text": "P = o + t v in the frame of the producer: a line through a and b gives o = a, v = b - a"

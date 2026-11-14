@@ -52,7 +52,7 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.11'
+REGISTRY_VERSION = '1.12'
 REPEAT_MAX = 100
 # Registry 1.10: the types a typed ``expr`` slot may declare as its ``result``.
 RESULT_TYPES = ('num', 'vec')
@@ -62,6 +62,12 @@ FREE_INPUT_DEFAULTS = {'angle': {'kind': 'angle', 'value': 0.0}}
 _SERVICE_FILES = ('_types', '_policies', '_reasons', '_numeric')
 _INDEX_FILE = 'INDEX.json'
 _REPEAT_SLOT = re.compile(r'^(?P<base>[A-Za-z_][A-Za-z0-9_]*)\.(?P<index>[1-9][0-9]*)$')
+
+# Catalog contracts prepared ahead of their kernels. They are deliberately
+# absent from the runtime registry and INDEX until their handlers are shipped.
+_PENDING_OPS = frozenset({
+    'line.tangent_conic_at', 'line.tangents_from_point_conic', 'line.tangents_parallel_conic',
+})
 
 
 def free_slot(record: dict):
@@ -314,7 +320,7 @@ def _load(directory) -> Registry:
     groups: dict = {}
     for entry in _group_entries(directory):
         group = entry.name[:-len('.json')]
-        records = _read_json(entry)
+        records = [r for r in _read_json(entry) if r['op'] not in _PENDING_OPS]
         groups[group] = [r['op'] for r in records]
         for record in records:
             if record['op'] in ops:
@@ -365,6 +371,9 @@ _MODULE_GROUPS = {
     **{'function.' + name: 'function_analysis' for name in (
         'roots_polynomial', 'extrema_polynomial', 'value', 'root_near',
         'root_interval', 'roots_interval', 'extrema_interval')},
+    **{'line.' + name: 'tangency' for name in (
+        'tangent_function_at', 'tangent_conic_at', 'tangents_from_point_conic',
+        'tangents_parallel_conic', 'slope')},
 }
 
 

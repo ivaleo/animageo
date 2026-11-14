@@ -1,7 +1,7 @@
 {
  "format": "animageo-dsl-map/v1",
  "mapVersion": 8,
- "registry": "1.11",
+ "registry": "1.12",
  "commands": {
   "abs_i": {
    "factory": "Abs",
@@ -5461,6 +5461,8 @@
   }
  },
  "opsWithoutClassic": {
+  "line.tangent_function_at": "native graph tangent; classic lowering is not yet implemented",
+  "line.slope": "native line slope; classic lowering is not yet implemented",
   "angle.between_lines": "no classic Angle(line, line) dispatch key",
   "angle.between_vectors": "no classic Angle(vector, vector) dispatch key",
   "angle.by_size": "classic Angle(A, B, \u03b1) is not a dispatch key",
