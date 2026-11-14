@@ -44,6 +44,18 @@
     },
     "oriented_conic_support": {
       "text": "Oriented unit normal n=(base.dir.y, -base.dir.x), without sign canonicalization. Distinct finite contacts ordered by descending n dot Q for ellipse/circle, ascending for hyperbola; parabola has at most one. Cluster close ranks by decide tolerances, then exact xy tie-break. Paired line/touch slots and distinct found before capacity."
+    },
+    "conic_directrix_order": {
+      "text": "In the native frame: +a/e then -a/e, paired with focus second then first; parabola V-p*u/2 only; circle empty. found before capacity, empty reason in all slots, excess branch_absent."
+    },
+    "conic_asymptote_order": {
+      "text": "Hyperbola only: directions normalize(a*u+b*n), normalize(-a*u+b*n), n=CCW90(u), through C; found=2 before capacity. Other kinds no_asymptote."
+    },
+    "conic_normal_ccw": {
+      "text": "Direction CCW90 of the canonical quadratic normal. Directrices use n=CCW90(axis). Polar retains gradient sign. Diameter unit normal chooses nx>0 when abs(nx)>decide.scalar, otherwise ny>0, without zeroing any component; invariant under reversing input direction."
+    },
+    "conic_asymptote_frame": {
+      "text": "Oriented native frame: normalize(a*u+b*n), normalize(-a*u+b*n), scaling a,b before normalization."
     }
   }
 }

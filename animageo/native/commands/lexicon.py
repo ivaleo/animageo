@@ -68,7 +68,8 @@ INPUT = '$input'
 DEFERRED_PREFIXES = ('function.', 'conic.', 'intersect.function_', 'intersect.line_conic', 'intersect.conic_conic',
                      'line.equation', 'point.on_function', 'region.', 'point.expression', 'vector.expression')
 DEFERRED_OPS = frozenset({'line.tangent_function_at', 'line.tangent_conic_at',
-                        'line.tangents_from_point_conic', 'line.tangents_parallel_conic', 'line.slope'})
+                        'line.tangents_from_point_conic', 'line.tangents_parallel_conic', 'line.slope',
+                        'line.polar_conic', 'line.conjugate_diameter'})
 
 
 def deferred_op(op: str) -> bool:

@@ -52,7 +52,7 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.12'
+REGISTRY_VERSION = '1.13'
 REPEAT_MAX = 100
 # Registry 1.10: the types a typed ``expr`` slot may declare as its ``result``.
 RESULT_TYPES = ('num', 'vec')
@@ -359,6 +359,8 @@ def build_index(reg: Registry | None = None) -> dict:
 # Loading metadata, deliberately excluded from signature(). Entries may be
 # staged alongside their implementations before the complete catalog is frozen.
 _MODULE_GROUPS = {
+    **{name: 'conic_elements' for name in ('conic.from_circle', 'conic.directrices',
+        'conic.asymptotes', 'line.polar_conic', 'line.conjugate_diameter')},
     'region.by_boundary': 'regions', 'function.area_between': 'regions',
     'point.expression': 'expressions', 'vector.expression': 'expressions',
     'line.equation': 'expressions', 'point.on_locus': 'locus',

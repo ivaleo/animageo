@@ -1,0 +1,261 @@
+[
+  {
+    "op": "conic.from_circle",
+    "status": "beta",
+    "since": "1.13",
+    "moduleGroup": "conic_elements",
+    "inputs": [
+      {
+        "slot": "circle",
+        "type": "circle"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "conic",
+        "type": "conic"
+      }
+    ],
+    "free": null,
+    "branch": null,
+    "undefined": [
+      "degenerate_conic",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "same_circle",
+        "text": "center and both radii agree, in length units"
+      }
+    ],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "conic_conversion",
+    "phrases": {
+      "ru": "{conic} — коника окружности {circle}"
+    },
+    "math": "docs/native/ops/conic.from_circle.md",
+    "helper": {
+      "ownership": "owned",
+      "role": "aux"
+    },
+    "signatureHash": "sha256:402a43bb7528a8162b8b30a0dd447662e218ce3b6e31ca8be66d79be4b4347a0"
+  },
+  {
+    "op": "conic.directrices",
+    "status": "beta",
+    "since": "1.13",
+    "moduleGroup": "conic_elements",
+    "inputs": [
+      {
+        "slot": "conic",
+        "type": "conic_section"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 2,
+        "text": "fixed output capacity, integer 1 to 100; found counts the full set before capacity"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "directrix",
+        "type": "line",
+        "repeat": "count"
+      }
+    ],
+    "free": null,
+    "branch": {
+      "policy": "conic_directrix_order",
+      "slots": [
+        "directrix"
+      ],
+      "text": "fixed native-frame order; full set computed before output capacity"
+    },
+    "undefined": [
+      "no_directrix",
+      "branch_absent",
+      "degenerate_conic",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "focus_directrix",
+        "text": "focus/directrix distance relation and frame orientation of every defined slot, in length units"
+      }
+    ],
+    "orientation": "conic_normal_ccw",
+    "pathParam": null,
+    "stepKind": "conic_directrices",
+    "phrases": {
+      "ru": "{out:directrix} — слоты директрис коники {conic}"
+    },
+    "math": "docs/native/ops/conic.directrices.md",
+    "signatureHash": "sha256:997c6502ed972eb59efa05c31da0c09b4165c48678fea7d96410c00eefacac21"
+  },
+  {
+    "op": "conic.asymptotes",
+    "status": "beta",
+    "since": "1.13",
+    "moduleGroup": "conic_elements",
+    "inputs": [
+      {
+        "slot": "conic",
+        "type": "conic_section"
+      }
+    ],
+    "params": [
+      {
+        "slot": "count",
+        "type": "number",
+        "unit": "count",
+        "optional": true,
+        "default": 2,
+        "text": "fixed output capacity, integer 1 to 100; found counts the full set before capacity"
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "asymptote",
+        "type": "line",
+        "repeat": "count"
+      }
+    ],
+    "free": null,
+    "branch": {
+      "policy": "conic_asymptote_order",
+      "slots": [
+        "asymptote"
+      ],
+      "text": "fixed native-frame order; full set computed before output capacity"
+    },
+    "undefined": [
+      "no_asymptote",
+      "branch_absent",
+      "degenerate_conic",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "through_center",
+        "text": "distance of the center to every defined line"
+      },
+      {
+        "id": "asymptotic_direction",
+        "text": "angular distance from the ordered unit quadratic null direction times S for every defined line"
+      }
+    ],
+    "orientation": "conic_asymptote_frame",
+    "pathParam": null,
+    "stepKind": "conic_asymptotes",
+    "phrases": {
+      "ru": "{out:asymptote} — слоты асимптот коники {conic}"
+    },
+    "math": "docs/native/ops/conic.asymptotes.md",
+    "signatureHash": "sha256:ebf9278bd780dbace5f8cfa02f9d3159842b4d6dbe28bf9fc99cc2d06fc6f5d6"
+  },
+  {
+    "op": "line.polar_conic",
+    "status": "beta",
+    "since": "1.13",
+    "moduleGroup": "conic_elements",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point"
+      },
+      {
+        "slot": "conic",
+        "type": "conic_section"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "free": null,
+    "branch": null,
+    "undefined": [
+      "no_finite_line",
+      "degenerate_conic",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "polar_incidence",
+        "text": "normalized bilinear polar residual and canonical direction error times S"
+      }
+    ],
+    "orientation": "conic_normal_ccw",
+    "pathParam": null,
+    "stepKind": "polar_line",
+    "phrases": {
+      "ru": "{line} — поляра точки {point} относительно {conic}"
+    },
+    "math": "docs/native/ops/line.polar_conic.md",
+    "signatureHash": "sha256:633ff77188f6b28e9a55494ff9a0e2ac7556119f0e3d9f215bb49806f25b68a4"
+  },
+  {
+    "op": "line.conjugate_diameter",
+    "status": "beta",
+    "since": "1.13",
+    "moduleGroup": "conic_elements",
+    "inputs": [
+      {
+        "slot": "direction",
+        "type": "straight"
+      },
+      {
+        "slot": "conic",
+        "type": "conic_section"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line"
+      }
+    ],
+    "free": null,
+    "branch": null,
+    "undefined": [
+      "no_finite_line",
+      "invalid_parameter",
+      "degenerate_conic",
+      "non_finite",
+      "upstream"
+    ],
+    "checks": [
+      {
+        "id": "conjugacy",
+        "text": "quadratic conjugacy residual times S and parabola chord-midpoint residual"
+      },
+      {
+        "id": "through_center",
+        "text": "distance of the center to the defined central diameter"
+      }
+    ],
+    "orientation": "conic_normal_ccw",
+    "pathParam": null,
+    "stepKind": "conjugate_diameter",
+    "phrases": {
+      "ru": "{line} — диаметр коники {conic}, сопряжённый направлению {direction}"
+    },
+    "math": "docs/native/ops/line.conjugate_diameter.md",
+    "signatureHash": "sha256:f4d47e4c24030eec95b932b93dcdd9b0bb96596e035c76129afa21358c1fb8d8"
+  }
+]
