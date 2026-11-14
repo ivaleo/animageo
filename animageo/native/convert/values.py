@@ -42,6 +42,10 @@ def _f(v) -> float:
 def line_coefficients(a: float, b: float, c: float):
     """Normalized ``[a, b, c]`` (``None`` for a degenerate line)."""
     n = math.hypot(a, b)
+    if math.isinf(n) and all(math.isfinite(v) for v in (a, b, c)):
+        scale = max(abs(a), abs(b))
+        a, b, c = a / scale, b / scale, c / scale
+        n = math.hypot(a, b)
     if not (math.isfinite(n) and n > 0 and math.isfinite(c)):
         return None
     a, b, c = a / n, b / n, c / n
