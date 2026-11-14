@@ -144,6 +144,9 @@
         "line.tangents_from_point": {"origin": "args.point", "vector": "value.dir"},
         "line.tangent_at": {"origin": "args.point", "vector": "value.dir"},
         "line.tangent_function_at": {"origin": "graph(args.function, args.x)", "vector": "value.dir"},
+        "line.tangent_conic_at": {"origin": "args.point", "vector": "value.dir"},
+        "line.tangents_from_point_conic": {"origin": "contact(args.conic, value)", "vector": "value.dir"},
+        "line.tangents_parallel_conic": {"origin": "contact(args.conic, value)", "vector": "value.dir"},
         "*": {"origin": "value.p", "vector": "value.dir"}
       },
       "text": "P = o + t v in the frame of the producer: a line through a and b gives o = a, v = b - a"

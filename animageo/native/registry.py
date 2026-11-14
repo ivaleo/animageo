@@ -63,12 +63,6 @@ _SERVICE_FILES = ('_types', '_policies', '_reasons', '_numeric')
 _INDEX_FILE = 'INDEX.json'
 _REPEAT_SLOT = re.compile(r'^(?P<base>[A-Za-z_][A-Za-z0-9_]*)\.(?P<index>[1-9][0-9]*)$')
 
-# Catalog contracts prepared ahead of their kernels. They are deliberately
-# absent from the runtime registry and INDEX until their handlers are shipped.
-_PENDING_OPS = frozenset({
-    'line.tangent_conic_at', 'line.tangents_from_point_conic', 'line.tangents_parallel_conic',
-})
-
 
 def free_slot(record: dict):
     """The output slot of a free operation whose element holds the input
@@ -320,7 +314,7 @@ def _load(directory) -> Registry:
     groups: dict = {}
     for entry in _group_entries(directory):
         group = entry.name[:-len('.json')]
-        records = [r for r in _read_json(entry) if r['op'] not in _PENDING_OPS]
+        records = _read_json(entry)
         groups[group] = [r['op'] for r in records]
         for record in records:
             if record['op'] in ops:
