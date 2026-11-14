@@ -31,6 +31,17 @@ def test_catalog_and_import_capability_are_complete():
     assert adapter['helper'] == {'ownership': 'owned', 'role': 'aux'}
 
 
+def _content_digest(path):
+    """File digest that ignores the release stamp of parity fixtures."""
+    data = path.read_bytes()
+    if path.suffix == '.json':
+        doc = json.loads(data)
+        if isinstance(doc, dict):
+            doc.pop('generatedBy', None)
+        data = json.dumps(doc, sort_keys=True, ensure_ascii=False, separators=(',', ':')).encode()
+    return hashlib.sha256(data).hexdigest()
+
+
 def test_all_operations_through_1_12_and_old_conic_fixtures_stay_frozen():
     frozen = json.loads((REPO_ROOT / 'tests/native/registry_frozen_1_12.json').read_text())
     assert len(frozen['ops']) == 127
@@ -39,7 +50,7 @@ def test_all_operations_through_1_12_and_old_conic_fixtures_stay_frozen():
     for name, r in old.items():
         assert {'signatureHash': signature_hash(r), 'since': r['since']} == frozen['ops'][name]
     for name, digest in frozen['unchangedFiles'].items():
-        assert hashlib.sha256((REPO_ROOT / name).read_bytes()).hexdigest() == digest, name
+        assert _content_digest(REPO_ROOT / name) == digest, name
 
 
 def test_repeated_slot_policies_and_reasons():
