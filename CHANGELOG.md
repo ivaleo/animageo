@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.0] - 2026-11-14
+
 ### Added
 
 - Native registry 1.13 adds circle-to-conic conversion, finite directrices
@@ -22,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   adapters; Center selects `point.center` for actual circle inputs.
   Existing DSL conic factories share these lowerings. Unsupported scalar,
   pole and function-asymptote signatures keep explicit refusals.
+
+### Fixed
+
+- Saved GGB line coefficients whose norm overflows binary64 are rescaled
+  before comparison instead of being treated as degenerate.
 
 ## [1.18.0] - 2026-11-14
 
@@ -4044,7 +4051,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.18.0...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.19.0...HEAD
+[1.19.0]: https://github.com/ivaleo/animageo/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/ivaleo/animageo/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/ivaleo/animageo/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/ivaleo/animageo/compare/v1.15.0...v1.16.0
