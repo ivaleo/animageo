@@ -523,7 +523,9 @@ separate: new operations report `unprintable_operation` where it has no syntax.
 
 Native frame signs and fixed ranks may differ from GeoGebra eigenvectors;
 the saved-value matcher settles the import frame without promising identical
-motion history. Native retains finite near-center polars and distant diameters
+motion history. A fully undefined saved set is bound by its original output
+ordinals; after movement, GeoGebra's order may differ because of the sign of
+its own eigenvector. Native retains finite near-center polars and distant diameters
 where GeoGebra may apply an absolute epsilon. Degenerate conics remain
 undefined, even when GeoGebra continues algebraic parts.
 
