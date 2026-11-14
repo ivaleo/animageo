@@ -1199,9 +1199,14 @@ Area means the whole domain before clipping: solid polygons use nonzero winding,
 patterns use even-odd. Marker area uses its final fitted size. Opacity does not
 scale area and patterns use supporting area. Public geometry measures stay the
 same. See [the paint contract](native/kernel.md#98-paint-without-manim-nativeresolve_paint-1110rc3)
-for epsilon groups and the structural display plan. Cairo/manim consume this
-plan; TikZ/JSXGraph area adapters are separate work. JSXGraph's planned contract
-uses the export frame and does not reorder after local drag.
+for epsilon groups and the structural display plan. Cairo/manim and TikZ consume
+this plan. TikZ emits separate fills, outlines and labels, preserving explicit
+layers and keeping labels outside the geometry clip. JSXGraph HTML, JS and v1
+spec carry a Python-computed `paintOrder` for the export frame. The runtime
+applies this sequence once after creating the board; local drag retains it,
+and a new export recalculates it. Neither TikZ nor JSXGraph draws label halos:
+those writers omit the unsupported `labelHalo` part, retain the label, and
+preserve the relative order of every supported part.
 
 ### A polygon "above everything"
 

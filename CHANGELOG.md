@@ -28,6 +28,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hatch/crosshatch/dots are preserved on the export frame. Classic exports
   without an explicit mode or independent fill override retain their bytes.
 
+### Changed
+
+- Native documents now order fills by area by default: a larger automatic
+  fill is painted below a smaller one regardless of construction order, and
+  paint output carries the order in `fillOrder`/`partOrder` with automatic
+  fills on the common fill layer. Set `rendering.fill_order: "construction"`
+  to keep the previous order. Classic scenes are unchanged unless they opt
+  in. TikZ and JSXGraph do not draw label halos; in area mode the halo part is
+  reported as skipped in the export coverage while the label itself is kept.
+
 ### Fixed
 
 - Label placement with `respect_current_position` and no authored label
