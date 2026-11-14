@@ -67,12 +67,13 @@ INPUT = '$input'
 # warning, as an expression (commands.md §8). Registry 1.9: regions too.
 DEFERRED_PREFIXES = ('function.', 'conic.', 'intersect.function_', 'intersect.line_conic', 'intersect.conic_conic',
                      'line.equation', 'point.on_function', 'region.', 'point.expression', 'vector.expression')
+DEFERRED_OPS = frozenset({'line.tangent_function_at', 'line.slope'})
 
 
 def deferred_op(op: str) -> bool:
     """Whether ``op`` has no command in «Команды» yet (registry 1.6: functions and conics; 1.8: their
     intersections; 1.9: regions; 1.10: points and vectors by a formula)."""
-    return op.startswith(DEFERRED_PREFIXES)
+    return op in DEFERRED_OPS or op.startswith(DEFERRED_PREFIXES)
 DEFAULT_PATH = Path(__file__).with_name('lexicon.v1.json')
 
 # Argument kinds a position accepts, besides element types: a number
@@ -506,7 +507,7 @@ class Lexicon:
             return list(found)
         reg = registry()
         record = reg.get(name)
-        if record is not None:
+        if record is not None and name not in DEFERRED_OPS:
             if 'inputSets' in record:
                 params = [p['slot'] for p in record.get('params', ())]
                 positions = [_positions(record, choice + params) for choice in record['inputSets']]

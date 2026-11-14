@@ -1390,3 +1390,4 @@ def _by_boundary_on_carriers(args, result, tol):
 
 
 from . import function_analysis_checks  # noqa: E402,F401  (late registration, registry 1.11)
+from . import tangency_checks  # noqa: E402,F401  (late registration, registry 1.12)

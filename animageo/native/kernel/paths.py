@@ -73,6 +73,10 @@ def _xy(value) -> tuple:
 
 def _term(expr: str, value: dict, args: dict) -> tuple:
     expr = expr.strip()
+    if expr == 'graph(args.function, args.x)':
+        from .function import evaluator
+        x = args['x']['value']
+        return x, evaluator(args['function'])(x)
     if expr.startswith('mid(') and expr.endswith(')'):
         inner = expr[4:-1]
         depth = 0
@@ -95,7 +99,8 @@ def _term(expr: str, value: dict, args: dict) -> tuple:
 
 def _expr(expr: str, value: dict, args: dict) -> tuple:
     """A term or ``"<term> - <term>"``; a term is ``<src>.<field>`` (``src`` is
-    ``value`` or ``args``) or ``mid(<term>, <term>)``, ``((x1 + x2)/2, (y1 + y2)/2)``."""
+    ``value`` or ``args``), ``mid(<term>, <term>)``, or
+    ``graph(args.function, args.x)`` for the contact of a graph tangent."""
     left, minus, right = expr.partition(' - ')
     x, y = _term(left, value, args)
     if not minus:

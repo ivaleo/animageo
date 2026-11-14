@@ -204,6 +204,9 @@ def producer_values(ref, elements, ops, states) -> tuple:
     producer = ops[elements[ref]['producer']['operationId']]
     values = {}
     for slot, arg in producer['args'].items():
+        if arg.get('kind') == 'number':
+            values[slot] = {'value': arg['value'], 'unit': 'scalar'}
+            continue
         recs = [states.get(i) for i in iter_refs(arg)]
         if not recs or not all(r is not None and r['state'] == 'defined' for r in recs):
             continue
