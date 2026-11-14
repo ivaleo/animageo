@@ -150,6 +150,26 @@ def _secant(a, b, h):
     return ((a / scale - b / scale) / h) * scale if scale else 0.0
 
 
+def _extrapolate(now, old, divisor=1):
+    """now + (now-old)/divisor, without multiplying large slopes."""
+    if not (math.isfinite(now) and math.isfinite(old)):
+        return math.nan
+    difference = now-old
+    if math.isfinite(difference):
+        return now+difference/divisor
+    scale = max(abs(now), abs(old))
+    return (now/scale+(now/scale-old/scale)/divisor)*scale
+
+
+def _one_sided(a, b, y, h):
+    first, second = a-y, b-a
+    if math.isfinite(first) and math.isfinite(second):
+        numerator = _extrapolate(first, second, 2)
+        if math.isfinite(numerator):
+            return numerator/h
+    return _extrapolate(_secant(a, y, h), _secant(b, y, 2*h))
+
+
 def _confirm(value, x, y, sample, profile):
     sides = _sides(value, x)
     if not sides:
@@ -163,7 +183,7 @@ def _confirm(value, x, y, sample, profile):
             h = min(h, abs(end - x) / 4)
     previous = None
     previous_central = None
-    stable = mismatch = jump = 0
+    stable = mismatch = jump = overflow = 0
     needed = profile['requiredStableLevels']
     for _ in range(profile['maxRefinements']):
         data, near_values, hints = [], [], []
@@ -177,21 +197,21 @@ def _confirm(value, x, y, sample, profile):
                 break
             # Three-point second order one-sided derivative, and extrapolated
             # function limit. Both sides use signed h in increasing-x units.
-            m = 2*_secant(a, y, side*h) - _secant(b, y, side*2*h)
-            limit = a + (a - b)
+            m = _one_sided(a, b, y, side*h)
+            limit = _extrapolate(a, b)
             data.append((m, limit))
             near_values.append(a)
             # Extrapolate available analytic neighbor derivatives to the
             # contact. This catches plateaus caused by lost value precision;
             # a constant graph remains distinguishable from an unresolved one.
             da, db = derivative_at(value, near), derivative_at(value, far)
-            hint = None if da is None or db is None else 2*da - db
+            hint = None if da is None or db is None else _extrapolate(da, db)
             hints.append(hint if hint is not None and math.isfinite(hint) else None)
-        if len(data) == len(sides) and all(math.isfinite(v) for row in data for v in row):
+        if len(data) == len(sides) and all(not math.isnan(m) and math.isfinite(limit) for m, limit in data):
             central = (_secant(near_values[1], near_values[0], 2*h)
                        if len(sides) == 2 else data[0][0])
             if previous is not None:
-                ms = [(4*now[0] - old[0])/3 for now, old in zip(data, previous)]
+                ms = [_extrapolate(now[0], old[0], 3) for now, old in zip(data, previous)]
                 # Linear extrapolation of the side limit converges quadratically.
                 continuity_scale = max(1.0, abs(y), *(abs(row[1]) for row in data))
                 continuous = all(abs(limit - y) / continuity_scale <= profile['continuityRel']
@@ -201,6 +221,12 @@ def _confirm(value, x, y, sample, profile):
                 jump = jump + 1 if limits_stable and not continuous else 0
                 if jump >= needed:
                     raise TangencyError('not_differentiable')
+                overflowing = (continuous and limits_stable and all(
+                    math.isinf(now[0]) and now[0] == old[0] for now, old in zip(data, previous)))
+                overflow = overflow+1 if overflowing else 0
+                if overflow >= needed:
+                    signs = {math.copysign(1, m) for m, limit in data}
+                    raise TangencyError('non_finite' if len(signs) == 1 else 'not_differentiable')
                 if all(math.isfinite(m) for m in ms):
                     dirs = [direction(m) for m in ms]
                     agreed = len(dirs) == 1 or _distance(dirs[0], dirs[1]) <= profile['directionAbs']
@@ -221,13 +247,16 @@ def _confirm(value, x, y, sample, profile):
                     if stable >= needed:
                         # Central second-order difference and Richardson for
                         # the two-sided case; the same extrapolation one-sided.
-                        return (4*central - previous_central)/3
+                        slope = _extrapolate(central, previous_central, 3)
+                        if not math.isfinite(slope):
+                            raise TangencyError('non_finite')
+                        return slope
             previous = data
             previous_central = central
         else:
             previous = None
             previous_central = None
-            stable = mismatch = jump = 0
+            stable = mismatch = jump = overflow = 0
         h /= 2
     raise TangencyError('no_convergence')
 

@@ -278,3 +278,30 @@ def test_commands_printer_reports_the_deferred_operations():
     assert printed.text.count('line.tangent_function_at') == 1
     assert printed.text.count('line.slope') == 1
     assert [i.code for i in printed.issues] == ['unprintable_operation']*3
+
+
+@pytest.mark.parametrize('slope', [1e308, -1e308, float.fromhex('0x1.fffffffffffffp+1023')])
+def test_smooth_join_preserves_large_finite_derivatives_without_stencil_overflow(slope):
+    tree = o('*', n(slope), X)
+    ev = evaluate(graph(conditional(tree, tree), 0))
+    assert ev.elements['Q']['value'] == {'x': 0, 'y': 0}
+    assert ev.elements['t']['state'] == 'defined'
+    dx, dy = ev.elements['t']['value']['dir']
+    assert dx > 0 and dx*slope == pytest.approx(math.copysign(1, slope))
+    assert dy == math.copysign(1, slope)
+    assert run_checks(ev).ok
+
+
+def test_included_endpoint_preserves_a_large_finite_one_sided_derivative():
+    tree = conditional(o('*', n(1e308), X), comparison='>=')
+    rec = evaluate(graph(tree, 0)).elements['t']
+    assert rec['state'] == 'defined'
+    assert rec['value']['dir'][0]*1e308 == pytest.approx(1)
+    assert rec['value']['dir'][1] == 1
+
+
+def test_smooth_join_reports_a_truly_unrepresentable_derivative():
+    tree = o('*', n(1e308), o('*', n(2), X))
+    ev = evaluate(graph(conditional(tree, tree), 0))
+    for key in ('t', 'Q'):
+        assert ev.elements[key]['reason'] == 'non_finite'
