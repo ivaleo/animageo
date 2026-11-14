@@ -116,7 +116,10 @@ VARIANTS = {
 VARIANTS['p'].append('Point(-2.3, 2.1)')
 VARIANTS['S'].append('CircleSector(Point(-1, 0), Point(1.5, -1), Point(-2, 2))')
 VARIANTS['C'].append('CircleArc(Point(-1, 0), Point(1.5, -1), Point(-2, 2))')
+VARIANTS['F'] = ['Function("x^2")', 'Function("x^3+1")']
 OVERRIDE = {
+    'tangent_pK': 'X1, X2 = Tangent(Point(8, 1), Ellipse(Point(-2, 0), Point(2, 0), Point(0, 3)))',
+    'tangent_Kp': 'X1, X2 = Tangent(Ellipse(Point(-2, 0), Point(2, 0), Point(0, 3)), Point(8, 1))',
     'tangent_pc': 'X1, X2 = Tangent(Point(6, 1), Circle(Point(1, 1), 2.5))',
     'tangent_pci': 'X = Tangent(Point(6, 1), Circle(Point(1, 1), 2.5), 2)',
     'polygon_ppi': 'X = Polygon(Point(0, 0), Point(1, 0), 5)',
@@ -229,6 +232,8 @@ def test_by_value_slots_follow_the_classic_outputs(code):
 # a tangency, a zero factor or vector); a row without one names the reason.
 
 OTHER = {
+    'tangent_pK': 'X1, X2 = Tangent(Point(-8, 2), Ellipse(Point(-1, 1), Point(3, 1), Point(1, 4)))',
+    'tangent_Kp': 'X1, X2 = Tangent(Ellipse(Point(-1, 1), Point(3, 1), Point(1, 4)), Point(-8, 2))',
     'tangent_pc': 'X1, X2 = Tangent(Point(-3, 4), Circle(Point(0, 0), 2))',
     'tangent_pci': 'X = Tangent(Point(-3, 4), Circle(Point(0, 0), 2), 2)',
     'polygon_ppi': 'X = Polygon(Point(2, 1), Point(-1, 0), 7)',
@@ -448,6 +453,16 @@ for _key in ('axes_K', 'center_K', 'focus_K', 'vertex_K', 'point_K'):
 NO_DEGENERACY['closest_point_Fp'] = 'a .ggb row only (GGB_ONLY_ROWS): a DSL function is not translated'
 DEGENERATE['closest_point_Kp'] = 'X = ClosestPoint(Ellipse(Point(-2, 0), Point(2, 0), Point(0, 3)), Point(0, 0))'
 DEGENERATE.update({
+    'slope_l': 'X = Slope(Line(Point(0, 0), Point(0, 1)))',
+    'tangent_iF': 'X = Tangent(0, Function("abs(x)"))',
+    'tangent_mF': 'X = Tangent(Distance(Point(0, 0), Point(0, 0)), Function("abs(x)"))',
+    'tangent_pF': 'X = Tangent(Point(0, 7), Function("abs(x)"))',
+    'tangent_pK': 'X1, X2 = Tangent(Point(0, 0), Ellipse(Point(-2, 0), Point(2, 0), Point(0, 3)))',
+    'tangent_Kp': 'X1, X2 = Tangent(Ellipse(Point(-2, 0), Point(2, 0), Point(0, 3)), Point(0, 0))',
+    'tangent_lK': 'X1, X2 = Tangent(Line(Point(0, 0), Point(1, 1.7320508075688772)), Hyperbola(Point(-2, 0), Point(2, 0), Point(1, 0)))',
+    'tangent_Kl': 'X1, X2 = Tangent(Hyperbola(Point(-2, 0), Point(2, 0), Point(1, 0)), Line(Point(0, 0), Point(1, 1.7320508075688772)))',
+})
+DEGENERATE.update({
     'ellipse_ppp': 'X = Ellipse(Point(-2, 0), Point(2, 0), Point(0, 0))',
     'hyperbola_ppp': 'X = Hyperbola(Point(-2, 0), Point(2, 0), Point(0, 3))',
     'conic_ppppp': 'X = Conic(Point(0, 0), Point(1, 0), Point(2, 0), Point(3, 0), Point(4, 0))',
@@ -497,6 +512,9 @@ DEGENERATE_DIFFERS = {
     'add_mi', 'add_mm', 'pow_mi', 'sub_mm',
 }
 DEGENERATE_DIFFERS.add('conic_ppppp')
+# The classic parallel solver can emit an asymptote as its first tangent;
+# native deliberately retains only finite contacts on the hyperbola.
+DEGENERATE_DIFFERS.update({'tangent_lK', 'tangent_Kl'})
 
 
 def _all_rows():

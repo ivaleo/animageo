@@ -173,7 +173,7 @@ class TestNative:
         current = native_api()['names']
         # A capability is additive; retain the previous API snapshot as the
         # compatibility baseline and pin this extension explicitly.
-        assert current['FEATURES']['value'] == snapshot['native']['names']['FEATURES']['value'] + ['fill_order']
+        assert current['FEATURES']['value'] == snapshot['native']['names']['FEATURES']['value'] + ['fill_order', 'tangency']
         current['FEATURES'] = snapshot['native']['names']['FEATURES']
         assert _diff(snapshot['native']['names'], current) == []
 

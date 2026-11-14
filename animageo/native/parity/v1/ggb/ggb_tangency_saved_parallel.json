@@ -1,0 +1,964 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_tangency_saved_parallel",
+  "registry": "1.12",
+  "generatedBy": "animageo 1.17.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_tangency_saved_parallel",
+    "operationRegistryVersion": "1.12",
+    "operations": {
+      "a768ac95-7422-591e-871e-7ed780013ba1": {
+        "id": "a768ac95-7422-591e-871e-7ed780013ba1",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+          }
+        ],
+        "seq": 1
+      },
+      "796b9b47-93fa-56bc-a2be-23b5b3aea50c": {
+        "id": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "x"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    },
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "y"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 4.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        ],
+        "seq": 2
+      },
+      "19e19009-53f2-562c-87d5-c73325dbb310": {
+        "id": "19e19009-53f2-562c-87d5-c73325dbb310",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "/",
+                      "args": [
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "x"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        },
+                        {
+                          "num": 4.0
+                        }
+                      ]
+                    },
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "y"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 1.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "b4b8feb4-a6ab-5659-8b80-0163d123be6a"
+          }
+        ],
+        "seq": 3
+      },
+      "f71f5410-8856-5a69-bc57-14db027b3995": {
+        "id": "f71f5410-8856-5a69-bc57-14db027b3995",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "/",
+                      "args": [
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "op": "+",
+                              "args": [
+                                {
+                                  "op": "*",
+                                  "args": [
+                                    {
+                                      "var": "x"
+                                    },
+                                    {
+                                      "fn": "cos",
+                                      "args": [
+                                        {
+                                          "op": "/",
+                                          "args": [
+                                            {
+                                              "const": "pi"
+                                            },
+                                            {
+                                              "num": 6.0
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "op": "*",
+                                  "args": [
+                                    {
+                                      "var": "y"
+                                    },
+                                    {
+                                      "fn": "sin",
+                                      "args": [
+                                        {
+                                          "op": "/",
+                                          "args": [
+                                            {
+                                              "const": "pi"
+                                            },
+                                            {
+                                              "num": 6.0
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        },
+                        {
+                          "num": 4.0
+                        }
+                      ]
+                    },
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "op": "+",
+                          "args": [
+                            {
+                              "op": "*",
+                              "args": [
+                                {
+                                  "op": "neg",
+                                  "args": [
+                                    {
+                                      "var": "x"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "fn": "sin",
+                                  "args": [
+                                    {
+                                      "op": "/",
+                                      "args": [
+                                        {
+                                          "const": "pi"
+                                        },
+                                        {
+                                          "num": 6.0
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "*",
+                              "args": [
+                                {
+                                  "var": "y"
+                                },
+                                {
+                                  "fn": "cos",
+                                  "args": [
+                                    {
+                                      "op": "/",
+                                      "args": [
+                                        {
+                                          "const": "pi"
+                                        },
+                                        {
+                                          "num": 6.0
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 1.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+          }
+        ],
+        "seq": 4
+      },
+      "f00890fb-ba0e-5e9a-a1b8-277d10e035be": {
+        "id": "f00890fb-ba0e-5e9a-a1b8-277d10e035be",
+        "op": "line.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "-",
+                  "args": [
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "fn": "cos",
+                          "args": [
+                            {
+                              "ref": 0
+                            }
+                          ]
+                        },
+                        {
+                          "var": "y"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "fn": "sin",
+                          "args": [
+                            {
+                              "ref": 0
+                            }
+                          ]
+                        },
+                        {
+                          "var": "x"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 0.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          }
+        ],
+        "seq": 5
+      },
+      "127523fc-d655-585b-8b1a-d397fbc7352b": {
+        "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
+        "op": "line.tangents_parallel_conic",
+        "args": {
+          "base": {
+            "kind": "ref",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          },
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "tangent.2",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          {
+            "slot": "tangent.1",
+            "elementId": "ad0753b8-c583-5530-a763-0f6847f45a4c"
+          }
+        ],
+        "seq": 6
+      },
+      "07dd8058-8be4-5e18-ac45-dc12bdbbad90": {
+        "id": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+        "op": "line.tangents_parallel_conic",
+        "args": {
+          "base": {
+            "kind": "ref",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          },
+          "conic": {
+            "kind": "ref",
+            "elementId": "b4b8feb4-a6ab-5659-8b80-0163d123be6a"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "tangent.2",
+            "elementId": "8d8c2e28-9ac9-5a72-8768-01f424ba254a"
+          },
+          {
+            "slot": "tangent.1",
+            "elementId": "f50022d7-1b43-50db-b73b-2192ef952b7a"
+          }
+        ],
+        "seq": 7
+      },
+      "e39e8d8a-986f-59bd-a7d3-4d073fce72fb": {
+        "id": "e39e8d8a-986f-59bd-a7d3-4d073fce72fb",
+        "op": "line.tangents_parallel_conic",
+        "args": {
+          "base": {
+            "kind": "ref",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          },
+          "conic": {
+            "kind": "ref",
+            "elementId": "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "tangent.2",
+            "elementId": "42945d35-d800-5d6a-853d-14421dcd9e49"
+          },
+          {
+            "slot": "tangent.1",
+            "elementId": "666a9962-5c3d-53e1-95f0-e0ac9523916d"
+          }
+        ],
+        "seq": 8
+      }
+    },
+    "elements": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "id": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0",
+        "type": "number",
+        "producer": {
+          "operationId": "a768ac95-7422-591e-871e-7ed780013ba1",
+          "slot": "number"
+        },
+        "displayName": "a"
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "id": "951608cb-59a9-55d1-902a-0c49772efb03",
+        "type": "conic",
+        "producer": {
+          "operationId": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "slot": "conic"
+        },
+        "displayName": "k"
+      },
+      "b4b8feb4-a6ab-5659-8b80-0163d123be6a": {
+        "id": "b4b8feb4-a6ab-5659-8b80-0163d123be6a",
+        "type": "conic",
+        "producer": {
+          "operationId": "19e19009-53f2-562c-87d5-c73325dbb310",
+          "slot": "conic"
+        },
+        "displayName": "e"
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "id": "4178d272-1a5c-503e-b99e-2e3e8769d34a",
+        "type": "conic",
+        "producer": {
+          "operationId": "f71f5410-8856-5a69-bc57-14db027b3995",
+          "slot": "conic"
+        },
+        "displayName": "g"
+      },
+      "565e5a1d-b3f1-5636-9703-3a258daaf018": {
+        "id": "565e5a1d-b3f1-5636-9703-3a258daaf018",
+        "type": "line",
+        "producer": {
+          "operationId": "f00890fb-ba0e-5e9a-a1b8-277d10e035be",
+          "slot": "line"
+        },
+        "displayName": "l"
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "id": "7381003a-c131-598f-a9bb-43c860a099c4",
+        "type": "line",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "tangent.2"
+        },
+        "displayName": "f"
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "id": "ad0753b8-c583-5530-a763-0f6847f45a4c",
+        "type": "line",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "tangent.1"
+        },
+        "displayName": "h"
+      },
+      "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+        "id": "8d8c2e28-9ac9-5a72-8768-01f424ba254a",
+        "type": "line",
+        "producer": {
+          "operationId": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+          "slot": "tangent.2"
+        },
+        "displayName": "i"
+      },
+      "f50022d7-1b43-50db-b73b-2192ef952b7a": {
+        "id": "f50022d7-1b43-50db-b73b-2192ef952b7a",
+        "type": "line",
+        "producer": {
+          "operationId": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+          "slot": "tangent.1"
+        },
+        "displayName": "j"
+      },
+      "42945d35-d800-5d6a-853d-14421dcd9e49": {
+        "id": "42945d35-d800-5d6a-853d-14421dcd9e49",
+        "type": "line",
+        "producer": {
+          "operationId": "e39e8d8a-986f-59bd-a7d3-4d073fce72fb",
+          "slot": "tangent.2"
+        },
+        "displayName": "m"
+      },
+      "666a9962-5c3d-53e1-95f0-e0ac9523916d": {
+        "id": "666a9962-5c3d-53e1-95f0-e0ac9523916d",
+        "type": "line",
+        "producer": {
+          "operationId": "e39e8d8a-986f-59bd-a7d3-4d073fce72fb",
+          "slot": "tangent.1"
+        },
+        "displayName": "n"
+      }
+    },
+    "inputs": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "kind": "number",
+        "value": 0.0
+      }
+    },
+    "appearance": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "visible": false,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "b4b8feb4-a6ab-5659-8b80-0163d123be6a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "565e5a1d-b3f1-5636-9703-3a258daaf018": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "f50022d7-1b43-50db-b73b-2192ef952b7a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "42945d35-d800-5d6a-853d-14421dcd9e49": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "666a9962-5c3d-53e1-95f0-e0ac9523916d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10.0,
+        -8.0,
+        10.0,
+        8.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": "a",
+        "951608cb-59a9-55d1-902a-0c49772efb03": "k",
+        "b4b8feb4-a6ab-5659-8b80-0163d123be6a": "e",
+        "4178d272-1a5c-503e-b99e-2e3e8769d34a": "g",
+        "565e5a1d-b3f1-5636-9703-3a258daaf018": "l",
+        "7381003a-c131-598f-a9bb-43c860a099c4": "f",
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": "h",
+        "8d8c2e28-9ac9-5a72-8768-01f424ba254a": "i",
+        "f50022d7-1b43-50db-b73b-2192ef952b7a": "j",
+        "42945d35-d800-5d6a-853d-14421dcd9e49": "m",
+        "666a9962-5c3d-53e1-95f0-e0ac9523916d": "n"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 20.0,
+      "expect": {
+        "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              0.8660254037844386,
+              0.49999999999999994
+            ],
+            "a": 2.0,
+            "b": 1.0
+          }
+        },
+        "42945d35-d800-5d6a-853d-14421dcd9e49": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              1.3228756555322954
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "565e5a1d-b3f1-5636-9703-3a258daaf018": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.0,
+              -0.0
+            ],
+            "dir": [
+              1.0,
+              -0.0
+            ]
+          }
+        },
+        "666a9962-5c3d-53e1-95f0-e0ac9523916d": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              -1.3228756555322954
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "7381003a-c131-598f-a9bb-43c860a099c4": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              2.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              1.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              0.0
+            ],
+            "a": 2.0,
+            "b": 2.0
+          }
+        },
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              -2.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "b4b8feb4-a6ab-5659-8b80-0163d123be6a": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 2.0,
+            "b": 1.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "scalar"
+          }
+        },
+        "f50022d7-1b43-50db-b73b-2192ef952b7a": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              -1.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        }
+      },
+      "checks": {
+        "07dd8058-8be4-5e18-ac45-dc12bdbbad90:on_curve": "passed",
+        "07dd8058-8be4-5e18-ac45-dc12bdbbad90:tangent": "passed",
+        "07dd8058-8be4-5e18-ac45-dc12bdbbad90:parallel": "passed",
+        "127523fc-d655-585b-8b1a-d397fbc7352b:on_curve": "passed",
+        "127523fc-d655-585b-8b1a-d397fbc7352b:tangent": "passed",
+        "127523fc-d655-585b-8b1a-d397fbc7352b:parallel": "passed",
+        "e39e8d8a-986f-59bd-a7d3-4d073fce72fb:on_curve": "passed",
+        "e39e8d8a-986f-59bd-a7d3-4d073fce72fb:tangent": "passed",
+        "e39e8d8a-986f-59bd-a7d3-4d073fce72fb:parallel": "passed"
+      }
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<geogebra format=\"5.0\" version=\"5.4.936.0\" app=\"classic\" platform=\"w2d\" id=\"0c5a8436-42ed-4a9d-8c5a-c23a5cb22bd9\" xsi:noNamespaceSchemaLocation=\"https://www.geogebra.org/apps/xsd/ggb.xsd\" xmlns=\"\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n<gui>\n\t<window width=\"900\" height=\"700\"/>\n\t<perspectives>\n<perspective id=\"tmp\">\n\t<panes>\n\t<pane location=\"\" divider=\"0.4\" orientation=\"1\"/>\n</panes>\n\t<views>\n\t<view id=\"4097\" visible=\"false\" inframe=\"false\" stylebar=\"true\" location=\"1,1,1,1\" size=\"400\" window=\"100,100,700,550\"/>\n\t<view id=\"4\" toolbar=\"0 || 2020 , 2021 , 2022 || 2001 , 2003 , 2002 , 2004 , 2005 || 2040 , 2041 , 2042 , 2044 , 2043\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1,1\" size=\"300\" window=\"100,100,600,400\"/>\n\t<view id=\"8\" toolbar=\"1001 | 1002 | 1003  || 1005 | 1004 || 1006 | 1007 | 1010 || 1008 | 1009 || 6\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1,3\" size=\"300\" window=\"100,100,600,400\"/>\n\t<view id=\"1\" visible=\"true\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"530\" window=\"100,100,600,400\"/>\n\t<view id=\"2\" visible=\"true\" inframe=\"false\" stylebar=\"false\" location=\"3\" size=\"360\" tab=\"ALGEBRA\" window=\"100,100,600,400\"/>\n\t<view id=\"16\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"300\" window=\"50,50,500,500\"/>\n\t<view id=\"32\" visible=\"false\" inframe=\"false\" stylebar=\"true\" location=\"1\" size=\"300\" window=\"50,50,500,500\"/>\n\t<view id=\"64\" toolbar=\"0\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"480\" window=\"50,50,500,500\"/>\n\t<view id=\"128\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"480\" window=\"50,50,500,500\"/>\n\t<view id=\"70\" toolbar=\"0 || 2020 || 2021 || 2022\" visible=\"false\" inframe=\"false\" stylebar=\"true\" location=\"1\" size=\"900\" window=\"50,50,500,500\"/>\n</views>\n\t<toolbar show=\"false\" items=\"0 73 62 | 1 501 67 , 5 19 , 72 75 76 | 2 15 45 , 18 65 , 7 37 | 4 3 8 9 , 13 44 , 58 , 47 | 16 51 64 , 70 | 10 34 53 11 , 24  20 22 , 21 23 | 55 56 57 , 12 | 36 46 , 38 49  50 , 71  14  68 | 30 29 54 32 31 33 | 25 17 26 60 52 61 | 40 41 42 , 27 28 35 , 6\" position=\"1\" help=\"false\"/>\n\t<input show=\"false\" cmd=\"true\" top=\"algebra\"/>\n\t<dockBar show=\"false\" east=\"false\"/>\n</perspective>\n</perspectives>\n\t<labelingStyle val=\"0\"/>\n\t<font size=\"16\"/>\n</gui>\n<euclidianView>\n\t<size width=\"530\" height=\"698\"/>\n\t<coordSystem xZero=\"265\" yZero=\"349\" scale=\"26.5\" yscale=\"43.625\"/>\n\t<evSettings axes=\"true\" grid=\"true\" gridIsBold=\"false\" pointCapturing=\"3\" rightAngleStyle=\"1\" checkboxSize=\"26\" gridType=\"3\"/>\n\t<bgColor r=\"255\" g=\"255\" b=\"255\"/>\n\t<axesColor r=\"28\" g=\"28\" b=\"31\"/>\n\t<gridColor r=\"180\" g=\"179\" b=\"186\"/>\n\t<lineStyle axes=\"1\" grid=\"0\"/>\n\t<axis id=\"0\" show=\"true\" label=\"\" unitLabel=\"\" tickStyle=\"1\" showNumbers=\"true\"/>\n\t<axis id=\"1\" show=\"true\" label=\"\" unitLabel=\"\" tickStyle=\"1\" showNumbers=\"true\"/>\n</euclidianView>\n<algebraView>\n\t<mode val=\"3\"/>\n</algebraView>\n<kernel>\n\t<continuous val=\"false\"/>\n\t<usePathAndRegionParameters val=\"true\"/>\n\t<decimals val=\"2\"/>\n\t<angleUnit val=\"degree\"/>\n\t<algebraStyle val=\"3\" spreadsheet=\"0\"/>\n\t<coordStyle val=\"0\"/>\n</kernel>\n<tableview min=\"0\" max=\"0\" step=\"0\"/>\n<scripting blocked=\"false\" disabled=\"false\"/>\n<construction title=\"\" author=\"\" date=\"\">\n<expression label=\"a\" exp=\"0\"/>\n<element type=\"numeric\" label=\"a\">\n\t<value val=\"0\"/>\n\t<show object=\"false\" label=\"true\"/>\n</element>\n<expression label=\"k\" exp=\"x^(2) + y^(2) = 4\" type=\"conic\"/>\n<element type=\"conic\" label=\"k\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<animation step=\"0.1\" type=\"0\" playing=\"false\"/>\n\t<fixed val=\"true\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"user\"/>\n\t<eigenvectors x0=\"1\" y0=\"0\" z0=\"1\" x1=\"0\" y1=\"1\" z1=\"1\"/>\n\t<matrix A0=\"1\" A1=\"1\" A2=\"-4\" A3=\"0\" A4=\"0\" A5=\"0\"/>\n</element>\n<expression label=\"e\" exp=\"x^(2) / 4 + y^(2) = 1\" type=\"conic\"/>\n<element type=\"conic\" label=\"e\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<animation step=\"0.1\" type=\"0\" playing=\"false\"/>\n\t<fixed val=\"true\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"user\"/>\n\t<eigenvectors x0=\"1\" y0=\"0\" z0=\"1\" x1=\"0\" y1=\"1\" z1=\"1\"/>\n\t<matrix A0=\"0.25\" A1=\"1\" A2=\"-1\" A3=\"0\" A4=\"0\" A5=\"0\"/>\n</element>\n<expression label=\"g\" exp=\"((x * cos(pi / 6)) + (y * sin(pi / 6)))^(2) / 4 + (((-x) * sin(pi / 6)) + (y * cos(pi / 6)))^(2) = 1\" type=\"conic\"/>\n<element type=\"conic\" label=\"g\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<animation step=\"0.1\" type=\"0\" playing=\"false\"/>\n\t<fixed val=\"true\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"user\"/>\n\t<eigenvectors x0=\"0.8660254037844386\" y0=\"0.5\" z0=\"1\" x1=\"-0.5\" y1=\"0.8660254037844386\" z1=\"1\"/>\n\t<matrix A0=\"0.875\" A1=\"1.6250000000000002\" A2=\"-2\" A3=\"-0.649519052838329\" A4=\"0\" A5=\"0\"/>\n</element>\n<expression label=\"l\" exp=\"(cos(a) * y) - (sin(a) * x) = 0\" type=\"line\"/>\n<element type=\"line\" label=\"l\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<fixed val=\"true\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"user\"/>\n\t<coords x=\"0\" y=\"1\" z=\"0\"/>\n</element>\n<command name=\"Tangent\">\n\t<input a0=\"l\" a1=\"k\"/>\n\t<output a0=\"f\" a1=\"h\"/>\n</command>\n<element type=\"line\" label=\"f\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"0\" y=\"1\" z=\"-2\"/>\n</element>\n<element type=\"line\" label=\"h\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"0\" y=\"1\" z=\"2\"/>\n</element>\n<command name=\"Tangent\">\n\t<input a0=\"l\" a1=\"e\"/>\n\t<output a0=\"i\" a1=\"j\"/>\n</command>\n<element type=\"line\" label=\"i\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"0\" y=\"1\" z=\"-1\"/>\n</element>\n<element type=\"line\" label=\"j\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"0\" y=\"1\" z=\"1\"/>\n</element>\n<command name=\"Tangent\">\n\t<input a0=\"l\" a1=\"g\"/>\n\t<output a0=\"m\" a1=\"n\"/>\n</command>\n<element type=\"line\" label=\"m\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"0\" y=\"1\" z=\"-1.322875655532295\"/>\n</element>\n<element type=\"line\" label=\"n\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"0\" y=\"1\" z=\"1.3228756555322951\"/>\n</element>\n</construction>\n</geogebra>\n",
+    "elements": [
+      {
+        "ggb_name": "a",
+        "ggb_type": "numeric",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+        ]
+      },
+      {
+        "ggb_name": "k",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "951608cb-59a9-55d1-902a-0c49772efb03"
+        ]
+      },
+      {
+        "ggb_name": "e",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "b4b8feb4-a6ab-5659-8b80-0163d123be6a"
+        ]
+      },
+      {
+        "ggb_name": "g",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+        ]
+      },
+      {
+        "ggb_name": "l",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "565e5a1d-b3f1-5636-9703-3a258daaf018"
+        ]
+      },
+      {
+        "ggb_name": "f",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7381003a-c131-598f-a9bb-43c860a099c4"
+        ]
+      },
+      {
+        "ggb_name": "h",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "ad0753b8-c583-5530-a763-0f6847f45a4c"
+        ]
+      },
+      {
+        "ggb_name": "i",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "8d8c2e28-9ac9-5a72-8768-01f424ba254a"
+        ]
+      },
+      {
+        "ggb_name": "j",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "f50022d7-1b43-50db-b73b-2192ef952b7a"
+        ]
+      },
+      {
+        "ggb_name": "m",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "42945d35-d800-5d6a-853d-14421dcd9e49"
+        ]
+      },
+      {
+        "ggb_name": "n",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "666a9962-5c3d-53e1-95f0-e0ac9523916d"
+        ]
+      }
+    ]
+  }
+}

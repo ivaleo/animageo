@@ -1,0 +1,237 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_tangency_saved_hyperbola",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_tangency_saved_hyperbola",
+    "operationRegistryVersion": "1.12",
+    "operations": {
+      "e9fba105-df77-53b8-97f5-40d89980b343": {
+        "id": "e9fba105-df77-53b8-97f5-40d89980b343",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          }
+        ],
+        "seq": 2
+      },
+      "796b9b47-93fa-56bc-a2be-23b5b3aea50c": {
+        "id": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "-",
+                  "args": [
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "x"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    },
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "y"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 1.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        ],
+        "seq": 1
+      },
+      "127523fc-d655-585b-8b1a-d397fbc7352b": {
+        "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
+        "op": "line.tangents_from_point_conic",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          },
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "tangent.1",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          {
+            "slot": "tangent.2",
+            "elementId": "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+          }
+        ],
+        "seq": 3
+      }
+    },
+    "elements": {
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "id": "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "id": "951608cb-59a9-55d1-902a-0c49772efb03",
+        "type": "conic",
+        "producer": {
+          "operationId": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "slot": "conic"
+        },
+        "displayName": "k"
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "id": "7381003a-c131-598f-a9bb-43c860a099c4",
+        "type": "line",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "tangent.1"
+        },
+        "displayName": "f"
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "id": "4178d272-1a5c-503e-b99e-2e3e8769d34a",
+        "type": "line",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "tangent.2"
+        },
+        "displayName": "g"
+      }
+    },
+    "inputs": {
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "kind": "point",
+        "value": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "appearance": {
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10.0,
+        -8.0,
+        10.0,
+        8.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": "P",
+        "951608cb-59a9-55d1-902a-0c49772efb03": "k",
+        "7381003a-c131-598f-a9bb-43c860a099c4": "f",
+        "4178d272-1a5c-503e-b99e-2e3e8769d34a": "g"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved"
+    },
+    {
+      "name": "center",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "vertex",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            1,
+            1
+          ]
+        }
+      }
+    }
+  ]
+}

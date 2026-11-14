@@ -1,0 +1,309 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_tangency_parallel_circle",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_tangency_parallel_circle",
+    "operationRegistryVersion": "1.12",
+    "operations": {
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          }
+        ],
+        "seq": 2
+      },
+      "a602bd3f-ef10-501b-96fc-4f0b3a651add": {
+        "id": "a602bd3f-ef10-501b-96fc-4f0b3a651add",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          }
+        ],
+        "seq": 3
+      },
+      "03c64d68-6804-5156-91d5-284cbc41480a": {
+        "id": "03c64d68-6804-5156-91d5-284cbc41480a",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "x"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    },
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "y"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 4.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          }
+        ],
+        "seq": 1
+      },
+      "f00890fb-ba0e-5e9a-a1b8-277d10e035be": {
+        "id": "f00890fb-ba0e-5e9a-a1b8-277d10e035be",
+        "op": "line.by_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          }
+        ],
+        "seq": 4
+      },
+      "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913": {
+        "id": "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913",
+        "op": "line.tangents_parallel_conic",
+        "args": {
+          "base": {
+            "kind": "ref",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          },
+          "conic": {
+            "kind": "ref",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "tangent.2",
+            "elementId": "58c35f0a-5076-5742-a395-3c25ac6a87f0"
+          },
+          {
+            "slot": "tangent.1",
+            "elementId": "06a17f48-500f-58b8-8cda-395c93ed8b20"
+          }
+        ],
+        "seq": 5
+      }
+    },
+    "elements": {
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "id": "0d178f00-10cc-5e64-b3a7-004058ad2948",
+        "type": "point",
+        "producer": {
+          "operationId": "a602bd3f-ef10-501b-96fc-4f0b3a651add",
+          "slot": "point"
+        },
+        "displayName": "B"
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "id": "7dd23c39-d910-5294-89eb-c434449ddced",
+        "type": "conic",
+        "producer": {
+          "operationId": "03c64d68-6804-5156-91d5-284cbc41480a",
+          "slot": "conic"
+        },
+        "displayName": "K"
+      },
+      "565e5a1d-b3f1-5636-9703-3a258daaf018": {
+        "id": "565e5a1d-b3f1-5636-9703-3a258daaf018",
+        "type": "line",
+        "producer": {
+          "operationId": "f00890fb-ba0e-5e9a-a1b8-277d10e035be",
+          "slot": "line"
+        },
+        "displayName": "l"
+      },
+      "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+        "id": "58c35f0a-5076-5742-a395-3c25ac6a87f0",
+        "type": "line",
+        "producer": {
+          "operationId": "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913",
+          "slot": "tangent.2"
+        },
+        "displayName": "t"
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "id": "06a17f48-500f-58b8-8cda-395c93ed8b20",
+        "type": "line",
+        "producer": {
+          "operationId": "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913",
+          "slot": "tangent.1"
+        },
+        "displayName": "s"
+      }
+    },
+    "inputs": {
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "kind": "point",
+        "value": [
+          0.0,
+          0.0
+        ]
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "kind": "point",
+        "value": [
+          1.0,
+          0.0
+        ]
+      }
+    },
+    "appearance": {
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "565e5a1d-b3f1-5636-9703-3a258daaf018": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A",
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": "B",
+        "7dd23c39-d910-5294-89eb-c434449ddced": "K",
+        "565e5a1d-b3f1-5636-9703-3a258daaf018": "l",
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": "t",
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": "s"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved"
+    },
+    {
+      "name": "vertical",
+      "inputs": {
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "kind": "point",
+          "value": [
+            0,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "name": "reversed",
+      "inputs": {
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "kind": "point",
+          "value": [
+            -1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "restored",
+      "inputs": {
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "kind": "point",
+          "value": [
+            1,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,595 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_tangency_conic",
+  "registry": "1.12",
+  "generatedBy": "animageo 1.17.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_tangency_conic",
+    "operationRegistryVersion": "1.12",
+    "operations": {
+      "e9fba105-df77-53b8-97f5-40d89980b343": {
+        "id": "e9fba105-df77-53b8-97f5-40d89980b343",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          }
+        ],
+        "seq": 1
+      },
+      "03c64d68-6804-5156-91d5-284cbc41480a": {
+        "id": "03c64d68-6804-5156-91d5-284cbc41480a",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "x"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "num": 4.0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "y"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 4.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          }
+        ],
+        "seq": 2
+      },
+      "aa4f6b6f-a6ce-523d-af49-091a45f68323": {
+        "id": "aa4f6b6f-a6ce-523d-af49-091a45f68323",
+        "op": "line.tangents_from_point_conic",
+        "args": {
+          "point": {
+            "kind": "ref",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          },
+          "conic": {
+            "kind": "ref",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "tangent.2",
+            "elementId": "1fce143e-8552-51da-8f18-851823204c1f"
+          },
+          {
+            "slot": "tangent.1",
+            "elementId": "351aab13-5851-56ac-9859-37a1b7af3e9b"
+          }
+        ],
+        "seq": 3
+      }
+    },
+    "elements": {
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "id": "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "id": "7dd23c39-d910-5294-89eb-c434449ddced",
+        "type": "conic",
+        "producer": {
+          "operationId": "03c64d68-6804-5156-91d5-284cbc41480a",
+          "slot": "conic"
+        },
+        "displayName": "K"
+      },
+      "1fce143e-8552-51da-8f18-851823204c1f": {
+        "id": "1fce143e-8552-51da-8f18-851823204c1f",
+        "type": "line",
+        "producer": {
+          "operationId": "aa4f6b6f-a6ce-523d-af49-091a45f68323",
+          "slot": "tangent.2"
+        },
+        "displayName": "lower"
+      },
+      "351aab13-5851-56ac-9859-37a1b7af3e9b": {
+        "id": "351aab13-5851-56ac-9859-37a1b7af3e9b",
+        "type": "line",
+        "producer": {
+          "operationId": "aa4f6b6f-a6ce-523d-af49-091a45f68323",
+          "slot": "tangent.1"
+        },
+        "displayName": "upper"
+      }
+    },
+    "inputs": {
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "kind": "point",
+        "value": [
+          4.0,
+          0.0
+        ]
+      }
+    },
+    "appearance": {
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "1fce143e-8552-51da-8f18-851823204c1f": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "351aab13-5851-56ac-9859-37a1b7af3e9b": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": "P",
+        "7dd23c39-d910-5294-89eb-c434449ddced": "K",
+        "1fce143e-8552-51da-8f18-851823204c1f": "lower",
+        "351aab13-5851-56ac-9859-37a1b7af3e9b": "upper"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 16.0,
+      "expect": {
+        "1fce143e-8552-51da-8f18-851823204c1f": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.3076923076923078,
+              -1.0658774200423864
+            ],
+            "dir": [
+              0.9607689228305228,
+              0.27735009811261463
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "351aab13-5851-56ac-9859-37a1b7af3e9b": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.3076923076923077,
+              1.0658774200423862
+            ],
+            "dir": [
+              -0.9607689228305228,
+              0.2773500981126146
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 2.0,
+            "b": 1.0
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:through_point": "passed",
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:on_curve": "passed",
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:tangent": "passed"
+      }
+    },
+    {
+      "name": "on_curve",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            2,
+            0
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "1fce143e-8552-51da-8f18-851823204c1f": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "351aab13-5851-56ac-9859-37a1b7af3e9b": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          },
+          "detail": {
+            "found": 1
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 2.0,
+            "b": 1.0
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:through_point": "passed",
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:on_curve": "passed",
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:tangent": "passed"
+      }
+    },
+    {
+      "name": "inside",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "1fce143e-8552-51da-8f18-851823204c1f": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "point_inside"
+        },
+        "351aab13-5851-56ac-9859-37a1b7af3e9b": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "point_inside"
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 2.0,
+            "b": 1.0
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {}
+    },
+    {
+      "name": "opposite",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            -4,
+            0
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "1fce143e-8552-51da-8f18-851823204c1f": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.3076923076923077,
+              1.0658774200423862
+            ],
+            "dir": [
+              -0.9607689228305228,
+              -0.2773500981126146
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "351aab13-5851-56ac-9859-37a1b7af3e9b": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.3076923076923078,
+              -1.0658774200423864
+            ],
+            "dir": [
+              0.9607689228305228,
+              -0.27735009811261463
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 2.0,
+            "b": 1.0
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:through_point": "passed",
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:on_curve": "passed",
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:tangent": "passed"
+      }
+    },
+    {
+      "name": "restored",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            4,
+            0
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "1fce143e-8552-51da-8f18-851823204c1f": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.3076923076923078,
+              -1.0658774200423864
+            ],
+            "dir": [
+              0.9607689228305228,
+              0.27735009811261463
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "351aab13-5851-56ac-9859-37a1b7af3e9b": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.3076923076923077,
+              1.0658774200423862
+            ],
+            "dir": [
+              -0.9607689228305228,
+              0.2773500981126146
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 2.0,
+            "b": 1.0
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 4.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:through_point": "passed",
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:on_curve": "passed",
+        "aa4f6b6f-a6ce-523d-af49-091a45f68323:tangent": "passed"
+      }
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?><geogebra format=\"5.0\" version=\"5.4.927.1\" app=\"classic\" platform=\"w\"><euclidianView><size width=\"800\" height=\"600\"/><coordSystem xZero=\"400\" yZero=\"300\" scale=\"50\" yscale=\"50\"/></euclidianView><kernel><decimals val=\"2\"/></kernel><construction title=\"\" author=\"\" date=\"\"><element type=\"point\" label=\"P\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"4.0\" y=\"0.0\" z=\"1\"/></element><expression label=\"K\" exp=\"x^2+4*y^2=4\" type=\"conic\"/><element type=\"conic\" label=\"K\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><matrix A0=\"1\" A1=\"4\" A2=\"-4\" A3=\"0\" A4=\"0\" A5=\"0\"/></element><command name=\"Tangent\"><input a0=\"P\" a1=\"K\"/><output a0=\"lower\" a1=\"upper\"/></command><element type=\"line\" label=\"lower\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"1.7320508075688772\" y=\"-6\" z=\"-6.928203230275509\"/></element><element type=\"line\" label=\"upper\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"-1.7320508075688772\" y=\"-6\" z=\"6.928203230275509\"/></element></construction></geogebra>",
+    "elements": [
+      {
+        "ggb_name": "P",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+        ]
+      },
+      {
+        "ggb_name": "K",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7dd23c39-d910-5294-89eb-c434449ddced"
+        ]
+      },
+      {
+        "ggb_name": "lower",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "1fce143e-8552-51da-8f18-851823204c1f"
+        ]
+      },
+      {
+        "ggb_name": "upper",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "351aab13-5851-56ac-9859-37a1b7af3e9b"
+        ]
+      }
+    ]
+  }
+}

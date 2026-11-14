@@ -1,0 +1,669 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_tangency_saved_parallel",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_tangency_saved_parallel",
+    "operationRegistryVersion": "1.12",
+    "operations": {
+      "a768ac95-7422-591e-871e-7ed780013ba1": {
+        "id": "a768ac95-7422-591e-871e-7ed780013ba1",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+          }
+        ],
+        "seq": 1
+      },
+      "796b9b47-93fa-56bc-a2be-23b5b3aea50c": {
+        "id": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "x"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    },
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "y"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 4.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        ],
+        "seq": 2
+      },
+      "19e19009-53f2-562c-87d5-c73325dbb310": {
+        "id": "19e19009-53f2-562c-87d5-c73325dbb310",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "/",
+                      "args": [
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "x"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        },
+                        {
+                          "num": 4.0
+                        }
+                      ]
+                    },
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "y"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 1.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "b4b8feb4-a6ab-5659-8b80-0163d123be6a"
+          }
+        ],
+        "seq": 3
+      },
+      "f71f5410-8856-5a69-bc57-14db027b3995": {
+        "id": "f71f5410-8856-5a69-bc57-14db027b3995",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "/",
+                      "args": [
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "op": "+",
+                              "args": [
+                                {
+                                  "op": "*",
+                                  "args": [
+                                    {
+                                      "var": "x"
+                                    },
+                                    {
+                                      "fn": "cos",
+                                      "args": [
+                                        {
+                                          "op": "/",
+                                          "args": [
+                                            {
+                                              "const": "pi"
+                                            },
+                                            {
+                                              "num": 6.0
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "op": "*",
+                                  "args": [
+                                    {
+                                      "var": "y"
+                                    },
+                                    {
+                                      "fn": "sin",
+                                      "args": [
+                                        {
+                                          "op": "/",
+                                          "args": [
+                                            {
+                                              "const": "pi"
+                                            },
+                                            {
+                                              "num": 6.0
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        },
+                        {
+                          "num": 4.0
+                        }
+                      ]
+                    },
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "op": "+",
+                          "args": [
+                            {
+                              "op": "*",
+                              "args": [
+                                {
+                                  "op": "neg",
+                                  "args": [
+                                    {
+                                      "var": "x"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "fn": "sin",
+                                  "args": [
+                                    {
+                                      "op": "/",
+                                      "args": [
+                                        {
+                                          "const": "pi"
+                                        },
+                                        {
+                                          "num": 6.0
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "*",
+                              "args": [
+                                {
+                                  "var": "y"
+                                },
+                                {
+                                  "fn": "cos",
+                                  "args": [
+                                    {
+                                      "op": "/",
+                                      "args": [
+                                        {
+                                          "const": "pi"
+                                        },
+                                        {
+                                          "num": 6.0
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 1.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+          }
+        ],
+        "seq": 4
+      },
+      "f00890fb-ba0e-5e9a-a1b8-277d10e035be": {
+        "id": "f00890fb-ba0e-5e9a-a1b8-277d10e035be",
+        "op": "line.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "-",
+                  "args": [
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "fn": "cos",
+                          "args": [
+                            {
+                              "ref": 0
+                            }
+                          ]
+                        },
+                        {
+                          "var": "y"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "fn": "sin",
+                          "args": [
+                            {
+                              "ref": 0
+                            }
+                          ]
+                        },
+                        {
+                          "var": "x"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 0.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          }
+        ],
+        "seq": 5
+      },
+      "127523fc-d655-585b-8b1a-d397fbc7352b": {
+        "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
+        "op": "line.tangents_parallel_conic",
+        "args": {
+          "base": {
+            "kind": "ref",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          },
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "tangent.2",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          {
+            "slot": "tangent.1",
+            "elementId": "ad0753b8-c583-5530-a763-0f6847f45a4c"
+          }
+        ],
+        "seq": 6
+      },
+      "07dd8058-8be4-5e18-ac45-dc12bdbbad90": {
+        "id": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+        "op": "line.tangents_parallel_conic",
+        "args": {
+          "base": {
+            "kind": "ref",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          },
+          "conic": {
+            "kind": "ref",
+            "elementId": "b4b8feb4-a6ab-5659-8b80-0163d123be6a"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "tangent.2",
+            "elementId": "8d8c2e28-9ac9-5a72-8768-01f424ba254a"
+          },
+          {
+            "slot": "tangent.1",
+            "elementId": "f50022d7-1b43-50db-b73b-2192ef952b7a"
+          }
+        ],
+        "seq": 7
+      },
+      "e39e8d8a-986f-59bd-a7d3-4d073fce72fb": {
+        "id": "e39e8d8a-986f-59bd-a7d3-4d073fce72fb",
+        "op": "line.tangents_parallel_conic",
+        "args": {
+          "base": {
+            "kind": "ref",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          },
+          "conic": {
+            "kind": "ref",
+            "elementId": "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "tangent.2",
+            "elementId": "42945d35-d800-5d6a-853d-14421dcd9e49"
+          },
+          {
+            "slot": "tangent.1",
+            "elementId": "666a9962-5c3d-53e1-95f0-e0ac9523916d"
+          }
+        ],
+        "seq": 8
+      }
+    },
+    "elements": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "id": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0",
+        "type": "number",
+        "producer": {
+          "operationId": "a768ac95-7422-591e-871e-7ed780013ba1",
+          "slot": "number"
+        },
+        "displayName": "a"
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "id": "951608cb-59a9-55d1-902a-0c49772efb03",
+        "type": "conic",
+        "producer": {
+          "operationId": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "slot": "conic"
+        },
+        "displayName": "k"
+      },
+      "b4b8feb4-a6ab-5659-8b80-0163d123be6a": {
+        "id": "b4b8feb4-a6ab-5659-8b80-0163d123be6a",
+        "type": "conic",
+        "producer": {
+          "operationId": "19e19009-53f2-562c-87d5-c73325dbb310",
+          "slot": "conic"
+        },
+        "displayName": "e"
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "id": "4178d272-1a5c-503e-b99e-2e3e8769d34a",
+        "type": "conic",
+        "producer": {
+          "operationId": "f71f5410-8856-5a69-bc57-14db027b3995",
+          "slot": "conic"
+        },
+        "displayName": "g"
+      },
+      "565e5a1d-b3f1-5636-9703-3a258daaf018": {
+        "id": "565e5a1d-b3f1-5636-9703-3a258daaf018",
+        "type": "line",
+        "producer": {
+          "operationId": "f00890fb-ba0e-5e9a-a1b8-277d10e035be",
+          "slot": "line"
+        },
+        "displayName": "l"
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "id": "7381003a-c131-598f-a9bb-43c860a099c4",
+        "type": "line",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "tangent.2"
+        },
+        "displayName": "f"
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "id": "ad0753b8-c583-5530-a763-0f6847f45a4c",
+        "type": "line",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "tangent.1"
+        },
+        "displayName": "h"
+      },
+      "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+        "id": "8d8c2e28-9ac9-5a72-8768-01f424ba254a",
+        "type": "line",
+        "producer": {
+          "operationId": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+          "slot": "tangent.2"
+        },
+        "displayName": "i"
+      },
+      "f50022d7-1b43-50db-b73b-2192ef952b7a": {
+        "id": "f50022d7-1b43-50db-b73b-2192ef952b7a",
+        "type": "line",
+        "producer": {
+          "operationId": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+          "slot": "tangent.1"
+        },
+        "displayName": "j"
+      },
+      "42945d35-d800-5d6a-853d-14421dcd9e49": {
+        "id": "42945d35-d800-5d6a-853d-14421dcd9e49",
+        "type": "line",
+        "producer": {
+          "operationId": "e39e8d8a-986f-59bd-a7d3-4d073fce72fb",
+          "slot": "tangent.2"
+        },
+        "displayName": "m"
+      },
+      "666a9962-5c3d-53e1-95f0-e0ac9523916d": {
+        "id": "666a9962-5c3d-53e1-95f0-e0ac9523916d",
+        "type": "line",
+        "producer": {
+          "operationId": "e39e8d8a-986f-59bd-a7d3-4d073fce72fb",
+          "slot": "tangent.1"
+        },
+        "displayName": "n"
+      }
+    },
+    "inputs": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "kind": "number",
+        "value": 0.0
+      }
+    },
+    "appearance": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "visible": false,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "b4b8feb4-a6ab-5659-8b80-0163d123be6a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "565e5a1d-b3f1-5636-9703-3a258daaf018": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "f50022d7-1b43-50db-b73b-2192ef952b7a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "42945d35-d800-5d6a-853d-14421dcd9e49": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "666a9962-5c3d-53e1-95f0-e0ac9523916d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10.0,
+        -8.0,
+        10.0,
+        8.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": "a",
+        "951608cb-59a9-55d1-902a-0c49772efb03": "k",
+        "b4b8feb4-a6ab-5659-8b80-0163d123be6a": "e",
+        "4178d272-1a5c-503e-b99e-2e3e8769d34a": "g",
+        "565e5a1d-b3f1-5636-9703-3a258daaf018": "l",
+        "7381003a-c131-598f-a9bb-43c860a099c4": "f",
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": "h",
+        "8d8c2e28-9ac9-5a72-8768-01f424ba254a": "i",
+        "f50022d7-1b43-50db-b73b-2192ef952b7a": "j",
+        "42945d35-d800-5d6a-853d-14421dcd9e49": "m",
+        "666a9962-5c3d-53e1-95f0-e0ac9523916d": "n"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved"
+    }
+  ]
+}
